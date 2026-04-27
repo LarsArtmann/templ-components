@@ -1,3 +1,4 @@
+// Package utils provides testing utilities for templ components.
 package utils
 
 import (

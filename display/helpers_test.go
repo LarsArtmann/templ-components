@@ -1,8 +1,10 @@
+// Package display provides tests for display components like Badge, Card, Modal, and EmptyState.
 package display
 
 import "testing"
 
 func TestMapStatusToBadgeType(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		status string
 		want   BadgeType
@@ -15,14 +17,18 @@ func TestMapStatusToBadgeType(t *testing.T) {
 		{"unknown-random", BadgeNeutral},
 	}
 	for _, tt := range tests {
-		got := mapStatusToBadgeType(tt.status)
-		if got != tt.want {
-			t.Errorf("mapStatusToBadgeType(%q) = %q, want %q", tt.status, got, tt.want)
-		}
+		t.Run(tt.status, func(t *testing.T) {
+			t.Parallel()
+			got := mapStatusToBadgeType(tt.status)
+			if got != tt.want {
+				t.Errorf("mapStatusToBadgeType(%q) = %q, want %q", tt.status, got, tt.want)
+			}
+		})
 	}
 }
 
 func TestBadgeSizeClass(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		size BadgeSize
 		want string
@@ -32,14 +38,18 @@ func TestBadgeSizeClass(t *testing.T) {
 		{BadgeSizeLg, "px-3 py-1 text-sm"},
 	}
 	for _, tt := range tests {
-		got := badgeSizeClass(tt.size)
-		if got != tt.want {
-			t.Errorf("badgeSizeClass(%q) = %q, want %q", tt.size, got, tt.want)
-		}
+		t.Run(string(tt.size), func(t *testing.T) {
+			t.Parallel()
+			got := badgeSizeClass(tt.size)
+			if got != tt.want {
+				t.Errorf("badgeSizeClass(%q) = %q, want %q", tt.size, got, tt.want)
+			}
+		})
 	}
 }
 
 func TestCardPaddingClass(t *testing.T) {
+	t.Parallel()
 	tests := []struct {
 		padding string
 		want    string
@@ -50,9 +60,12 @@ func TestCardPaddingClass(t *testing.T) {
 		{"lg", "px-6 py-6"},
 	}
 	for _, tt := range tests {
-		got := cardPaddingClass(tt.padding)
-		if got != tt.want {
-			t.Errorf("cardPaddingClass(%q) = %q, want %q", tt.padding, got, tt.want)
-		}
+		t.Run(tt.padding, func(t *testing.T) {
+			t.Parallel()
+			got := cardPaddingClass(tt.padding)
+			if got != tt.want {
+				t.Errorf("cardPaddingClass(%q) = %q, want %q", tt.padding, got, tt.want)
+			}
+		})
 	}
 }

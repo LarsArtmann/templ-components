@@ -1,3 +1,4 @@
+// Package layout provides tests for layout components like Base, Minimal, ThemeScript, and ThemeToggle.
 package layout
 
 import (
@@ -7,6 +8,7 @@ import (
 )
 
 func TestThemeScriptRender(t *testing.T) {
+	t.Parallel()
 	output := utils.Render(t, ThemeScript("abc123"))
 	utils.AssertContains(t, output, `nonce="abc123"`)
 	utils.AssertContains(t, output, "localStorage")
@@ -14,6 +16,7 @@ func TestThemeScriptRender(t *testing.T) {
 }
 
 func TestThemeToggleRender(t *testing.T) {
+	t.Parallel()
 	output := utils.Render(t, ThemeToggle("Toggle theme", "nonce-xyz"))
 	utils.AssertContains(t, output, `aria-label="Toggle theme"`)
 	utils.AssertContains(t, output, `nonce="nonce-xyz"`)
@@ -21,12 +24,21 @@ func TestThemeToggleRender(t *testing.T) {
 }
 
 func TestBaseRender(t *testing.T) {
+	t.Parallel()
 	props := BaseProps{
-		Title:    "Test Page",
-		Locale:   "en",
-		CSSPath:  "/app.css",
-		Nonce:    "test-nonce",
-		BodyClass: "bg-white",
+		Title:          "Test Page",
+		Description:    "",
+		Locale:         "en",
+		OGImage:        "",
+		ThemeColor:     "",
+		DarkThemeColor: "",
+		CSSPath:        "/app.css",
+		Favicon:        "",
+		HTMXVersion:    "",
+		HTMXSRI:        "",
+		BodyClass:      "bg-white",
+		Nonce:          "test-nonce",
+		HeadContent:    nil,
 	}
 	output := utils.Render(t, Base(props))
 	utils.AssertContains(t, output, "<title>Test Page</title>")
@@ -36,6 +48,7 @@ func TestBaseRender(t *testing.T) {
 }
 
 func TestMinimalRender(t *testing.T) {
+	t.Parallel()
 	output := utils.Render(t, Minimal("Simple", "en"))
 	utils.AssertContains(t, output, "<title>Simple</title>")
 	utils.AssertContains(t, output, `lang="en"`)

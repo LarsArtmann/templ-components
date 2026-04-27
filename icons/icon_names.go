@@ -1,3 +1,4 @@
+// Package icons provides constants for predefined icon names used throughout the component library.
 package icons
 
 // Name represents a named icon from the library

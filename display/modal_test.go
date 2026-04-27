@@ -1,3 +1,4 @@
+// Package display provides tests for display components like Badge, Card, Modal, and EmptyState.
 package display
 
 import (
@@ -7,12 +8,20 @@ import (
 )
 
 func TestModalRender(t *testing.T) {
+	t.Parallel()
 	t.Run("closed modal", func(t *testing.T) {
+		t.Parallel()
 		props := ModalProps{
-			BaseProps: utils.BaseProps{ID: "test-modal"},
-			Title:     "Confirm",
-			Size:      "md",
-			Nonce:     "test-nonce",
+			BaseProps: utils.BaseProps{
+				ID:        "test-modal",
+				Class:     "",
+				Attrs:     nil,
+				AriaLabel: "",
+			},
+			Title: "Confirm",
+			Open:  false,
+			Size:  "md",
+			Nonce: "test-nonce",
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, `id="test-modal"`)
@@ -25,11 +34,18 @@ func TestModalRender(t *testing.T) {
 	})
 
 	t.Run("open modal", func(t *testing.T) {
+		t.Parallel()
 		props := ModalProps{
-			BaseProps: utils.BaseProps{ID: "open-modal"},
-			Title:     "Hello",
-			Open:      true,
-			Nonce:     "n",
+			BaseProps: utils.BaseProps{
+				ID:        "open-modal",
+				Class:     "",
+				Attrs:     nil,
+				AriaLabel: "",
+			},
+			Title: "Hello",
+			Open:  true,
+			Size:  "md",
+			Nonce: "n",
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, "opacity-100")
@@ -46,10 +62,18 @@ func TestModalRender(t *testing.T) {
 		}
 		for size, want := range sizes {
 			t.Run(size, func(t *testing.T) {
+				t.Parallel()
 				props := ModalProps{
-					BaseProps: utils.BaseProps{ID: "sz-modal"},
-					Size:      size,
-					Nonce:     "n",
+					BaseProps: utils.BaseProps{
+						ID:        "sz-modal",
+						Class:     "",
+						Attrs:     nil,
+						AriaLabel: "",
+					},
+					Title: "Test Modal",
+					Open:  false,
+					Size:  size,
+					Nonce: "n",
 				}
 				output := utils.Render(t, Modal(props))
 				utils.AssertContains(t, output, want)

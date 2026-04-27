@@ -1,8 +1,7 @@
+// Package display provides modal dialog components and related functionality.
 package display
 
 import (
-	"fmt"
-
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -19,7 +18,16 @@ type ModalProps struct {
 // DefaultModalProps returns sensible defaults
 func DefaultModalProps() ModalProps {
 	return ModalProps{
-		Size: "md",
+		BaseProps: utils.BaseProps{
+			ID:        "",
+			Class:     "",
+			Attrs:     nil,
+			AriaLabel: "",
+		},
+		Title: "",
+		Open:  false,
+		Size:  "md",
+		Nonce: "",
 	}
 }
 
@@ -39,9 +47,13 @@ func modalSizeClass(size string) string {
 }
 
 func modalCloseHandler(id string) templ.ComponentScript {
+	name := "tcCloseModal_" + id
+	fn := "function tcCloseModal_" + id + "(id){tcCloseModal(id)}"
+	call := "tcCloseModal('" + id + "')"
 	return templ.ComponentScript{
-		Name:     fmt.Sprintf("tcCloseModal_%s", id),
-		Function: fmt.Sprintf(`function tcCloseModal_%s(id){tcCloseModal(id)}`, id),
-		Call:     fmt.Sprintf(`tcCloseModal('%s')`, id),
+		Name:       name,
+		Function:   fn,
+		Call:       call,
+		CallInline: "",
 	}
 }

@@ -1,3 +1,4 @@
+// Package feedback provides tests for feedback components like Alert, Toast, Spinner, and Loading.
 package feedback
 
 import (
@@ -7,8 +8,21 @@ import (
 )
 
 func TestAlertRender(t *testing.T) {
+	t.Parallel()
 	t.Run("error alert", func(t *testing.T) {
-		props := AlertProps{Title: "Error", Message: "Something failed", Type: AlertError}
+		t.Parallel()
+		props := AlertProps{
+			BaseProps: utils.BaseProps{
+				ID:        "",
+				Class:     "",
+				Attrs:     nil,
+				AriaLabel: "",
+			},
+			Title:       "Error",
+			Message:     "Something failed",
+			Type:        AlertError,
+			Dismissible: false,
+		}
 		output := utils.Render(t, Alert(props))
 		utils.AssertContains(t, output, "Error")
 		utils.AssertContains(t, output, "Something failed")
@@ -17,32 +31,59 @@ func TestAlertRender(t *testing.T) {
 	})
 
 	t.Run("dismissible alert", func(t *testing.T) {
-		props := AlertProps{Title: "Warning", Type: AlertWarning, Dismissible: true}
+		t.Parallel()
+		props := AlertProps{
+			BaseProps: utils.BaseProps{
+				ID:        "",
+				Class:     "",
+				Attrs:     nil,
+				AriaLabel: "",
+			},
+			Title:       "Warning",
+			Message:     "",
+			Type:        AlertWarning,
+			Dismissible: true,
+		}
 		output := utils.Render(t, Alert(props))
 		utils.AssertContains(t, output, `aria-label="Dismiss"`)
 	})
 }
 
 func TestToastContainerRender(t *testing.T) {
+	t.Parallel()
 	output := utils.Render(t, ToastContainer("test-nonce"))
 	utils.AssertContains(t, output, "tc-toast-container")
 	utils.AssertContains(t, output, `nonce="test-nonce"`)
 }
 
 func TestToastRender(t *testing.T) {
-	props := ToastProps{Message: "Saved!", Type: ToastSuccess}
+	t.Parallel()
+	props := ToastProps{
+		BaseProps: utils.BaseProps{
+			ID:        "",
+			Class:     "",
+			Attrs:     nil,
+			AriaLabel: "",
+		},
+		Message:  "Saved!",
+		Title:    "",
+		Type:     ToastSuccess,
+		Duration: 0,
+	}
 	output := utils.Render(t, Toast(props))
 	utils.AssertContains(t, output, "Saved!")
 	utils.AssertContains(t, output, `role="alert"`)
 }
 
 func TestInlineErrorRender(t *testing.T) {
+	t.Parallel()
 	output := utils.Render(t, InlineError("Required"))
 	utils.AssertContains(t, output, "Required")
 	utils.AssertContains(t, output, "text-red-600")
 }
 
 func TestInlineSuccessRender(t *testing.T) {
+	t.Parallel()
 	output := utils.Render(t, InlineSuccess("Done"))
 	utils.AssertContains(t, output, "Done")
 	utils.AssertContains(t, output, "text-green-600")

@@ -1,8 +1,10 @@
+// Package navigation provides tests for navigation components like Nav, NavLink, and Breadcrumbs.
 package navigation
 
 import "testing"
 
 func TestNavLinkClasses(t *testing.T) {
+	t.Parallel()
 	active := navLinkClasses(true)
 	if active == "" {
 		t.Error("navLinkClasses(true) returned empty string")

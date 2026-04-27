@@ -1,3 +1,4 @@
+// Package forms provides utility functions for form components.
 package forms
 
 import (

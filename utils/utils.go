@@ -3,7 +3,7 @@ package utils
 import (
 	"time"
 
-	"github.com/Oudwins/tailwind-merge-go"
+	twmerge "github.com/Oudwins/tailwind-merge-go"
 	"github.com/a-h/templ"
 )
 
