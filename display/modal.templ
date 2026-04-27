@@ -1,0 +1,72 @@
+package display
+
+// Modal renders an accessible modal dialog with backdrop
+//
+//	@display.Modal(display.ModalProps{Title: "Confirm", ID: "confirm-modal", Nonce: nonce}) {
+//	   <p>Are you sure?</p>
+//	}
+templ Modal(props ModalProps) {
+	<div
+		id={ props.ID }
+		class={ "fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-200",
+			templ.KV("opacity-100 pointer-events-auto", props.Open),
+			templ.KV("opacity-0 pointer-events-none", !props.Open) }
+		role="dialog"
+		aria-modal="true"
+		aria-labelledby={ props.ID + "-title" }
+	>
+		<div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick={ modalCloseHandler(props.ID) }></div>
+		<div class={ "relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200",
+			modalSizeClass(props.Size),
+			props.Class,
+			templ.KV("scale-100 opacity-100", props.Open),
+			templ.KV("scale-95 opacity-0", !props.Open) }
+			{ props.Attrs... }
+		>
+			if props.Title != "" {
+				<div class="flex items-center justify-between px-4 py-3 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+					<h2 id={ props.ID + "-title" } class="text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h2>
+					<button
+						type="button"
+						class="rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						onclick={ modalCloseHandler(props.ID) }
+						aria-label="Close"
+					>
+						<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+						</svg>
+					</button>
+				</div>
+			}
+			<div class="px-4 py-4 sm:px-6">
+				{ children... }
+			</div>
+		</div>
+	</div>
+	<script nonce={ props.Nonce }>
+		function tcCloseModal(id) {
+			var modal = document.getElementById(id);
+			if (modal) {
+				modal.classList.remove('opacity-100', 'pointer-events-auto');
+				modal.classList.add('opacity-0', 'pointer-events-none');
+				var inner = modal.querySelector('[role="dialog"] > div:last-child');
+				if (inner) {
+					inner.classList.remove('scale-100', 'opacity-100');
+					inner.classList.add('scale-95', 'opacity-0');
+				}
+			}
+		}
+		function tcOpenModal(id) {
+			var modal = document.getElementById(id);
+			if (modal) {
+				modal.classList.remove('opacity-0', 'pointer-events-none');
+				modal.classList.add('opacity-100', 'pointer-events-auto');
+				var inner = modal.querySelector('[role="dialog"] > div:last-child');
+				if (inner) {
+					inner.classList.remove('scale-95', 'opacity-0');
+					inner.classList.add('scale-100', 'opacity-100');
+				}
+			}
+		}
+	</script>
+}
