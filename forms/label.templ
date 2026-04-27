@@ -1,0 +1,23 @@
+package forms
+
+// Label renders a form label with optional required indicator
+//
+//	@forms.Label("email", "Email address", true)
+templ Label(forID, text string, required bool) {
+	<label
+		for={ forID }
+		class="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
+	>
+		{ text }
+		if required {
+			<span class="text-red-500 ml-0.5" aria-hidden="true">*</span>
+		}
+	</label>
+}
+
+// FieldError renders a field-level validation error
+//
+//	@forms.FieldError("This field is required")
+templ FieldError(message string) {
+	<p class="mt-2 text-sm text-red-600 dark:text-red-400" id={ message + "-error" }>{ message }</p>
+}

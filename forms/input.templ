@@ -1,0 +1,142 @@
+package forms
+
+// InputType defines HTML input types
+type InputType string
+
+const (
+	InputText     InputType = "text"
+	InputEmail    InputType = "email"
+	InputPassword InputType = "password"
+	InputNumber   InputType = "number"
+	InputTel      InputType = "tel"
+	InputURL      InputType = "url"
+	InputDate     InputType = "date"
+	InputTime     InputType = "time"
+	InputDatetime InputType = "datetime-local"
+	InputSearch   InputType = "search"
+	InputHidden   InputType = "hidden"
+)
+
+// InputProps configures a text input
+type InputProps struct {
+	Type        InputType
+	Name        string
+	ID          string
+	Value       string
+	Placeholder string
+	Label       string
+	Required    bool
+	Disabled    bool
+	ReadOnly    bool
+	AutoFocus   bool
+	Error       string
+	HelpText    string
+	Class       string
+	Attrs       templ.Attributes
+}
+
+// baseInputClass returns the shared Tailwind classes for inputs
+func baseInputClass(hasError bool) string {
+	base := "block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 transition-colors dark:bg-gray-800 dark:ring-gray-700 dark:placeholder:text-gray-500"
+	if hasError {
+		return base + " ring-red-300 focus:ring-red-500 dark:ring-red-700 dark:focus:ring-red-500"
+	}
+	return base + " ring-gray-300 focus:ring-blue-600 dark:focus:ring-blue-500"
+}
+
+// Input renders a labeled text input with optional error and help text
+//
+//	@forms.Input(forms.InputProps{
+//	   Name: "email",
+//	   Type: forms.InputEmail,
+//	   Label: "Email address",
+//	   Required: true,
+//	})
+templ Input(props InputProps) {
+	if props.Label != "" {
+		@Label(props.ID, props.Label, props.Required)
+	}
+	<div class="relative">
+		<input
+			type={ string(props.Type) }
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			value={ props.Value }
+			if props.Placeholder != "" {
+				placeholder={ props.Placeholder }
+			}
+			class={ baseInputClass(props.Error != ""), props.Class }
+			if props.Required {
+				required
+			}
+			if props.Disabled {
+				disabled
+			}
+			if props.ReadOnly {
+				readonly
+			}
+			if props.AutoFocus {
+				autofocus
+			}
+			{ props.Attrs... }
+		/>
+	</div>
+	if props.Error != "" {
+		@FieldError(props.Error)
+	}
+	if props.HelpText != "" {
+		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+	}
+}
+
+// CheckboxProps configures a checkbox input
+type CheckboxProps struct {
+	Name     string
+	ID       string
+	Label    string
+	Checked  bool
+	Required bool
+	Disabled bool
+	Error    string
+	HelpText string
+	Attrs    templ.Attributes
+}
+
+// Checkbox renders a checkbox with label
+//
+//	@forms.Checkbox(forms.CheckboxProps{Name: "terms", ID: "terms", Label: "I agree to the terms"})
+templ Checkbox(props CheckboxProps) {
+	<div class="flex items-start">
+		<div class="flex h-6 items-center">
+			<input
+				id={ props.ID }
+				name={ props.Name }
+				type="checkbox"
+				class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-blue-600"
+				if props.Checked {
+					checked
+				}
+				if props.Required {
+					required
+				}
+				if props.Disabled {
+					disabled
+				}
+				{ props.Attrs... }
+			/>
+		</div>
+		<div class="ml-3 text-sm leading-6">
+			if props.Label != "" {
+				<label for={ props.ID } class="font-medium text-gray-900 dark:text-white">{ props.Label }</label>
+			}
+			if props.HelpText != "" {
+				<p class="text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+			}
+		</div>
+	</div>
+	if props.Error != "" {
+		@FieldError(props.Error)
+	}
+}

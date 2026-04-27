@@ -1,0 +1,100 @@
+package layout
+
+// BaseProps configures the base layout
+type BaseProps struct {
+	Title       string
+	Description string
+	Locale      string
+	OGImage     string
+	ThemeColor  string
+	DarkThemeColor string
+	CSSPath     string
+	Favicon     string
+	HTMXVersion string
+	BodyClass   string
+	HeadContent templ.Component
+}
+
+// DefaultBaseProps returns sensible defaults for BaseProps
+func DefaultBaseProps() BaseProps {
+	return BaseProps{
+		Locale:         "en",
+		ThemeColor:     "#4f46e5",
+		DarkThemeColor: "#1e1b4b",
+		CSSPath:        "/app.css",
+		Favicon:        "/favicon.svg",
+		HTMXVersion:    "2.0.6",
+		BodyClass:      "bg-white text-gray-900 antialiased min-h-full flex flex-col dark:bg-gray-950 dark:text-gray-100",
+	}
+}
+
+// Base renders a complete HTML5 base layout with HTMX, theme support, and meta tags
+// Use with children... to inject page content into the body
+//
+//	@layout.Base(props) {
+//	  <h1>My Page</h1>
+//	}
+templ Base(props BaseProps) {
+	<!DOCTYPE html>
+	<html lang={ props.Locale } class="h-full">
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>{ props.Title }</title>
+			if props.Description != "" {
+				<meta name="description" content={ props.Description }/>
+			}
+			<link rel="icon" type="image/svg+xml" href={ props.Favicon }/>
+			<meta name="theme-color" content={ props.ThemeColor } media="(prefers-color-scheme: light)"/>
+			<meta name="theme-color" content={ props.DarkThemeColor } media="(prefers-color-scheme: dark)"/>
+			<meta property="og:title" content={ props.Title }/>
+			if props.Description != "" {
+				<meta property="og:description" content={ props.Description }/>
+			}
+			<meta property="og:type" content="website"/>
+			if props.OGImage != "" {
+				<meta property="og:image" content={ props.OGImage }/>
+			}
+			<meta property="og:locale" content={ props.Locale }/>
+			<meta name="twitter:card" content="summary_large_image"/>
+			<meta name="twitter:title" content={ props.Title }/>
+			if props.Description != "" {
+				<meta name="twitter:description" content={ props.Description }/>
+			}
+			if props.CSSPath != "" {
+				<link rel="stylesheet" href={ props.CSSPath }/>
+			}
+			if props.HTMXVersion != "" {
+				<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion }></script>
+				<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion + "/dist/ext/response-targets.js" }></script>
+			}
+			@ThemeScript()
+			if props.HeadContent != nil {
+				@props.HeadContent
+			}
+		</head>
+		<body class={ props.BodyClass }>
+			{ children... }
+		</body>
+	</html>
+}
+
+// Minimal renders a minimal HTML5 document without HTMX or external dependencies
+// Useful for static pages, emails, or PDF generation
+//
+//	@layout.Minimal("My Title", "en") {
+//	  <h1>Hello</h1>
+//	}
+templ Minimal(title, locale string) {
+	<!DOCTYPE html>
+	<html lang={ locale }>
+		<head>
+			<meta charset="UTF-8"/>
+			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<title>{ title }</title>
+		</head>
+		<body>
+			{ children... }
+		</body>
+	</html>
+}

@@ -1,0 +1,36 @@
+package navigation
+
+// BreadcrumbItem represents a single breadcrumb segment
+type BreadcrumbItem struct {
+	Text   string
+	Href   string
+	Active bool
+}
+
+// Breadcrumbs renders a horizontal breadcrumb navigation
+//
+//	@navigation.Breadcrumbs([]navigation.BreadcrumbItem{
+//	   {Text: "Home", Href: "/"},
+//	   {Text: "Users", Href: "/users"},
+//	   {Text: "Edit", Active: true},
+//	})
+templ Breadcrumbs(items []BreadcrumbItem) {
+	<nav class="flex" aria-label="Breadcrumb">
+		<ol class="inline-flex items-center space-x-1 md:space-x-3">
+			for i, item := range items {
+				<li class="inline-flex items-center">
+					if i > 0 {
+						<svg class="mr-2 h-4 w-4 text-gray-400" fill="currentColor" viewBox="0 0 20 20">
+							<path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+						</svg>
+					}
+					if item.Active || item.Href == "" {
+						<span class="text-sm font-medium text-gray-500 dark:text-gray-400" aria-current="page">{ item.Text }</span>
+					} else {
+						<a href={ templ.SafeURL(item.Href) } class="text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white">{ item.Text }</a>
+					}
+				</li>
+			}
+		</ol>
+	</nav>
+}

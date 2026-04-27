@@ -1,0 +1,84 @@
+package navigation
+
+import "github.com/larsartmann/templ-components/utils"
+
+// NavProps configures a navigation bar
+type NavProps struct {
+	Brand       templ.Component
+	Links       []NavLinkProps
+	RightItems  templ.Component
+	CurrentPath string
+	Sticky      bool
+}
+
+// Nav renders a responsive navigation bar
+//
+//	@navigation.Nav(navigation.NavProps{
+//	   Brand: @myLogo(),
+//	   Links: []navigation.NavLinkProps{
+//	     {Href: "/", Text: "Home"},
+//	     {Href: "/about", Text: "About"},
+//	   },
+//	   CurrentPath: "/",
+//	})
+templ Nav(props NavProps) {
+	<nav
+		class={ "z-40 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900",
+			templ.KV("sticky top-0", props.Sticky) }
+	>
+		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<div class="flex h-16 justify-between">
+				<div class="flex">
+					if props.Brand != nil {
+						<div class="flex flex-shrink-0 items-center">
+							@props.Brand
+						</div>
+					}
+					<div class="hidden sm:ml-6 sm:flex sm:space-x-8">
+						for _, link := range props.Links {
+							@NavLink(link, props.CurrentPath)
+						}
+					</div>
+				</div>
+				if props.RightItems != nil {
+					<div class="flex items-center gap-2">
+						@props.RightItems
+					</div>
+				}
+				@MobileMenuToggle(len(props.Links) > 0)
+			</div>
+		</div>
+		@MobileMenu(props.Links, props.CurrentPath)
+	</nav>
+}
+
+// SimpleNav renders a minimal navigation with text brand
+//
+//	@navigation.SimpleNav("MyApp", "/", []navigation.NavLinkProps{
+//	   {Href: "/", Text: "Home"},
+//	}, "/")
+templ SimpleNav(brandText, brandHref string, links []NavLinkProps, currentPath string) {
+	@Nav(NavProps{
+		Brand:       simpleBrand(brandText, brandHref),
+		Links:       links,
+		CurrentPath: currentPath,
+		Sticky:      true,
+	})
+}
+
+templ simpleBrand(text, href string) {
+	<a href={ templ.SafeURL(href) } class="text-xl font-bold text-blue-600 dark:text-blue-400">{ text }</a>
+}
+
+// Footer renders a simple footer
+//
+//	@navigation.Footer("MyApp")
+templ Footer(brandText string) {
+	<footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+		<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+			<p class="text-center text-sm text-gray-500 dark:text-gray-400">
+				&copy; { utils.CurrentYear() } { brandText }. All rights reserved.
+			</p>
+		</div>
+	</footer>
+}

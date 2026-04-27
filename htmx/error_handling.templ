@@ -1,0 +1,110 @@
+package htmx
+
+// GlobalErrorHandling renders a comprehensive global HTMX error handling script
+// Include this once in your base layout, ideally at the end of the body
+//
+//	@htmx.GlobalErrorHandling()
+templ GlobalErrorHandling() {
+	<script>
+		(function() {
+			'use strict';
+
+			const errorHistory = [];
+			const maxErrorHistory = 10;
+			let retryCount = 0;
+			const maxRetries = 2;
+
+			function tcHandleHTMXError(event, type) {
+				var xhr = event.detail.xhr;
+				var target = event.detail.target;
+
+				console.error('HTMX Error:', {
+					type: type,
+					status: xhr ? xhr.status : 0,
+					statusText: xhr ? xhr.statusText : '',
+					url: xhr ? xhr.responseURL : 'unknown',
+					timestamp: new Date().toISOString()
+				});
+
+				errorHistory.unshift({
+					type: type,
+					status: xhr ? xhr.status : 0,
+					url: xhr ? xhr.responseURL : '',
+					timestamp: Date.now()
+				});
+				if (errorHistory.length > maxErrorHistory) {
+					errorHistory.length = maxErrorHistory;
+				}
+
+				// Show toast if available
+				if (typeof tcShowToast === 'function') {
+					var message, toastType, title;
+					if (type === 'network' || !xhr || xhr.status === 0) {
+						message = 'Network error. Check your connection.';
+						toastType = 'error';
+						title = 'Connection Lost';
+					} else if (xhr.status >= 500) {
+						message = 'Server error. Please try again.';
+						toastType = 'error';
+						title = 'Server Error';
+					} else if (xhr.status === 404) {
+						message = 'Requested resource not found.';
+						toastType = 'warning';
+						title = 'Not Found';
+					} else if (xhr.status === 403) {
+						message = 'You do not have permission to perform this action.';
+						toastType = 'warning';
+						title = 'Access Denied';
+					} else if (xhr.status === 401) {
+						message = 'Your session has expired. Please refresh the page.';
+						toastType = 'error';
+						title = 'Authentication Required';
+						setTimeout(function() { window.location.reload(); }, 3000);
+					} else if (xhr.status >= 400) {
+						message = 'Request failed. Please try again.';
+						try {
+							var response = JSON.parse(xhr.responseText);
+							if (response.error) message = response.error;
+							else if (response.message) message = response.message;
+						} catch (e) {}
+						toastType = 'error';
+						title = 'Request Failed';
+					}
+					tcShowToast(message, toastType, title, 5000);
+				}
+			}
+
+			document.addEventListener('htmx:sendError', function(event) {
+				tcHandleHTMXError(event, 'network');
+			});
+
+			document.addEventListener('htmx:responseError', function(event) {
+				var xhr = event.detail.xhr;
+				if ((xhr.status >= 500 || xhr.status === 0) && retryCount < maxRetries) {
+					retryCount++;
+					setTimeout(function() {
+						var elt = event.detail.elt;
+						if (elt && elt.click) elt.click();
+					}, 1000 * retryCount);
+				} else {
+					retryCount = 0;
+					tcHandleHTMXError(event, 'response');
+				}
+			});
+
+			document.addEventListener('htmx:afterRequest', function(event) {
+				var target = event.detail.target;
+				if (target) {
+					target.classList.remove('htmx-loading');
+					var timer = target.getAttribute('data-loading-timer');
+					if (timer) {
+						clearTimeout(parseInt(timer));
+						target.removeAttribute('data-loading-timer');
+					}
+				}
+			});
+
+			window.htmxErrorHistory = function() { return errorHistory; };
+		})();
+	</script>
+}

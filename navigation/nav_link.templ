@@ -1,0 +1,55 @@
+package navigation
+
+// NavLinkProps configures a single navigation link
+type NavLinkProps struct {
+	Href     string
+	Text     string
+	External bool
+	Attrs    templ.Attributes
+}
+
+// NavLink renders a single navigation link with active state styling
+//
+//	@navigation.NavLink(navigation.NavLinkProps{Href: "/", Text: "Home"}, "/")
+templ NavLink(props NavLinkProps, currentPath string) {
+	{{ isActive := props.Href == currentPath }}
+	if props.External {
+		<a
+			href={ templ.SafeURL(props.Href) }
+			target="_blank"
+			rel="noopener noreferrer"
+			class={ "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium transition-colors",
+				templ.KV("border-blue-500 text-gray-900 dark:text-white", isActive),
+				templ.KV("border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200", !isActive) }
+			{ props.Attrs... }
+		>
+			{ props.Text }
+		</a>
+	} else {
+		<a
+			href={ templ.SafeURL(props.Href) }
+			class={ "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium transition-colors",
+				templ.KV("border-blue-500 text-gray-900 dark:text-white", isActive),
+				templ.KV("border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200", !isActive) }
+			{ props.Attrs... }
+		>
+			{ props.Text }
+		</a>
+	}
+}
+
+// MobileNavLink renders a mobile-friendly navigation link
+//
+//	@navigation.MobileNavLink(navigation.NavLinkProps{Href: "/", Text: "Home"}, "/")
+templ MobileNavLink(props NavLinkProps, currentPath string) {
+	{{ isActive := props.Href == currentPath }}
+	<a
+		href={ templ.SafeURL(props.Href) }
+		class={ "block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors",
+			templ.KV("border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300", isActive),
+			templ.KV("border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-200", !isActive) }
+		{ props.Attrs... }
+	>
+		{ props.Text }
+	</a>
+}

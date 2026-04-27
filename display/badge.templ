@@ -1,0 +1,134 @@
+package display
+
+// BadgeType defines the visual style of a badge
+type BadgeType string
+
+const (
+	BadgeDefault  BadgeType = "default"
+	BadgePrimary  BadgeType = "primary"
+	BadgeSuccess  BadgeType = "success"
+	BadgeWarning  BadgeType = "warning"
+	BadgeError    BadgeType = "error"
+	BadgeInfo     BadgeType = "info"
+	BadgeNeutral  BadgeType = "neutral"
+)
+
+// BadgeSize defines the size of a badge
+type BadgeSize string
+
+const (
+	BadgeSizeSm  BadgeSize = "sm"
+	BadgeSizeMd  BadgeSize = "md"
+	BadgeSizeLg  BadgeSize = "lg"
+)
+
+// BadgeProps configures a status badge
+type BadgeProps struct {
+	Text  string
+	Type  BadgeType
+	Size  BadgeSize
+	Pill  bool
+	Dot   bool // Show a colored dot before text
+}
+
+// DefaultBadgeProps returns sensible defaults
+func DefaultBadgeProps() BadgeProps {
+	return BadgeProps{
+		Type: BadgeDefault,
+		Size: BadgeSizeMd,
+	}
+}
+
+// Badge renders a compact status label
+//
+//	@display.Badge(display.BadgeProps{Text: "Active", Type: display.BadgeSuccess, Dot: true})
+templ Badge(props BadgeProps) {
+	<span class={ "inline-flex items-center font-medium", badgeSizeClass(props.Size), badgeShapeClass(props.Pill), badgeColorClass(props.Type) }>
+		if props.Dot {
+			<span class={ "mr-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>
+		}
+		{ props.Text }
+	</span>
+}
+
+func badgeSizeClass(s BadgeSize) string {
+	switch s {
+	case BadgeSizeSm:
+		return "px-2 py-0.5 text-xs"
+	case BadgeSizeLg:
+		return "px-3 py-1 text-sm"
+	default:
+		return "px-2.5 py-0.5 text-xs"
+	}
+}
+
+func badgeShapeClass(pill bool) string {
+	if pill {
+		return "rounded-full"
+	}
+	return "rounded-md"
+}
+
+func badgeColorClass(t BadgeType) string {
+	switch t {
+	case BadgePrimary:
+		return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
+	case BadgeSuccess:
+		return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
+	case BadgeWarning:
+		return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
+	case BadgeError:
+		return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
+	case BadgeInfo:
+		return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300"
+	case BadgeNeutral:
+		return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+	default:
+		return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+	}
+}
+
+func badgeDotColorClass(t BadgeType) string {
+	switch t {
+	case BadgePrimary:
+		return "bg-blue-500"
+	case BadgeSuccess:
+		return "bg-green-500"
+	case BadgeWarning:
+		return "bg-yellow-500"
+	case BadgeError:
+		return "bg-red-500"
+	case BadgeInfo:
+		return "bg-indigo-500"
+	case BadgeNeutral:
+		return "bg-gray-500"
+	default:
+		return "bg-gray-500"
+	}
+}
+
+// StatusBadge is a convenience wrapper for common status values
+// Maps status strings to badge types automatically
+//
+//	@display.StatusBadge("active")
+templ StatusBadge(status string) {
+	{{ mapped := mapStatusToBadgeType(status) }}
+	@Badge(BadgeProps{Text: status, Type: mapped, Dot: true})
+}
+
+func mapStatusToBadgeType(status string) BadgeType {
+	switch status {
+	case "active", "healthy", "success", "completed", "done", "passed", "green":
+		return BadgeSuccess
+	case "pending", "warning", "degraded", "yellow", "in_progress":
+		return BadgeWarning
+	case "error", "failed", "critical", "unhealthy", "red", "down":
+		return BadgeError
+	case "info", "blue", "running":
+		return BadgeInfo
+	case "primary", "default":
+		return BadgePrimary
+	default:
+		return BadgeNeutral
+	}
+}

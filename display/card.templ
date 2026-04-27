@@ -1,0 +1,113 @@
+package display
+
+// CardProps configures a card container
+type CardProps struct {
+	Title       string
+	Subtitle    string
+	Footer      templ.Component
+	HeaderAction templ.Component
+	Class       string
+	Padding     string // "none", "sm", "md", "lg"
+}
+
+// DefaultCardProps returns sensible defaults
+func DefaultCardProps() CardProps {
+	return CardProps{
+		Padding: "md",
+	}
+}
+
+// Card renders a bordered card with optional header and footer
+//
+//	@display.Card(display.CardProps{Title: "Users", Subtitle: "Manage your users"}) {
+//	   <p>Card content goes here</p>
+//	 }
+templ Card(props CardProps) {
+	<div class={ "bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm overflow-hidden", props.Class }>
+		if props.Title != "" || props.HeaderAction != nil {
+			<div class="flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-slate-700">
+				<div>
+					if props.Title != "" {
+						<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">{ props.Title }</h3>
+					}
+					if props.Subtitle != "" {
+						<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.Subtitle }</p>
+					}
+				</div>
+				if props.HeaderAction != nil {
+					<div class="flex-shrink-0">
+						@props.HeaderAction
+					</div>
+				}
+			</div>
+		}
+		<div class={ cardPaddingClass(props.Padding) }>
+			{ children... }
+		</div>
+		if props.Footer != nil {
+			<div class="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-slate-900/50 border-t border-gray-200 dark:border-slate-700">
+				@props.Footer
+			</div>
+		}
+	</div>
+}
+
+func cardPaddingClass(p string) string {
+	switch p {
+	case "none":
+		return ""
+	case "sm":
+		return "px-3 py-3"
+	case "lg":
+		return "px-6 py-6"
+	default:
+		return "px-4 py-5 sm:p-6"
+	}
+}
+
+// SimpleCard renders a card without header/footer for quick use
+//
+//	@display.SimpleCard() {
+//	   <p>Content</p>
+//	 }
+templ SimpleCard() {
+	<div class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm p-4">
+		{ children... }
+	</div>
+}
+
+// StatCard renders a dashboard stat card with value, label, and optional change indicator
+//
+//	@display.StatCard("1,234", "Total Users", "+12%", true)
+templ StatCard(value, label, change string, positive bool) {
+	<div class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm p-5">
+		<dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{ label }</dt>
+		<div class="mt-1 flex items-baseline">
+			<dd class="text-2xl font-semibold text-gray-900 dark:text-white">{ value }</dd>
+			if change != "" {
+				<div class={ "ml-2 flex items-baseline text-sm font-semibold",
+					templ.KV("text-green-600 dark:text-green-400", positive),
+					templ.KV("text-red-600 dark:text-red-400", !positive) }
+				>
+					if positive {
+						<svg class="self-center flex-shrink-0 h-4 w-4 text-green-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+							<path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd"/>
+						</svg>
+					} else {
+						<svg class="self-center flex-shrink-0 h-4 w-4 text-red-500" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+							<path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+						</svg>
+					}
+					<span class="sr-only">
+						if positive {
+							Increased by
+						} else {
+							Decreased by
+						}
+					</span>
+					{ change }
+				</div>
+			}
+		</div>
+	</div>
+}

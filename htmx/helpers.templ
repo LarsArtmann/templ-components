@@ -1,0 +1,36 @@
+package htmx
+
+// ConfirmDelete renders a button with a confirmation dialog for destructive actions
+//
+//	@htmx.ConfirmDelete("/delete/123", "#item-123", "Are you sure?")
+templ ConfirmDelete(hxDelete, hxTarget, confirmMessage string) {
+	<button
+		type="button"
+		class="text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300"
+		hx-delete={ hxDelete }
+		hx-target={ hxTarget }
+		hx-swap="outerHTML"
+		hx-confirm={ confirmMessage }
+	>
+		Delete
+	</button>
+}
+
+// SwapOOB renders an out-of-band swap wrapper for HTMX responses
+// Use this to update multiple elements in a single response
+//
+//	@htmx.SwapOOB("#toast-container", "beforeend") {
+//	   @feedback.Toast(props)
+//	 }
+templ SwapOOB(selector, swapStyle string) {
+	<div hx-swap-oob={ swapStyle + ":" + selector }>
+		{ children... }
+	</div>
+}
+
+// CSRFToken renders a hidden input for HTMX forms with CSRF protection
+//
+//	@htmx.CSRFToken("csrf_token_value")
+templ CSRFToken(token string) {
+	<input type="hidden" name="csrf_token" value={ token }/>
+}

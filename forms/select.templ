@@ -1,0 +1,73 @@
+package forms
+
+// SelectOption represents a single option in a select
+type SelectOption struct {
+	Value    string
+	Label    string
+	Disabled bool
+	Selected bool
+}
+
+// SelectProps configures a select dropdown
+type SelectProps struct {
+	Name     string
+	ID       string
+	Label    string
+	Options  []SelectOption
+	Required bool
+	Disabled bool
+	Error    string
+	HelpText string
+	Class    string
+	Attrs    templ.Attributes
+}
+
+// Select renders a labeled select dropdown
+//
+//	@forms.Select(forms.SelectProps{
+//	   Name: "country",
+//	   Label: "Country",
+//	   Options: []forms.SelectOption{
+//	     {Value: "de", Label: "Germany"},
+//	     {Value: "at", Label: "Austria"},
+//	   },
+//	})
+templ Select(props SelectProps) {
+	if props.Label != "" {
+		@Label(props.ID, props.Label, props.Required)
+	}
+	<select
+		name={ props.Name }
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ baseInputClass(props.Error != ""), props.Class }
+		if props.Required {
+			required
+		}
+		if props.Disabled {
+			disabled
+		}
+		{ props.Attrs... }
+	>
+		for _, opt := range props.Options {
+			<option
+				value={ opt.Value }
+				if opt.Disabled {
+					disabled
+				}
+				if opt.Selected {
+					selected
+				}
+			>
+				{ opt.Label }
+			</option>
+		}
+	</select>
+	if props.Error != "" {
+		@FieldError(props.Error)
+	}
+	if props.HelpText != "" {
+		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+	}
+}

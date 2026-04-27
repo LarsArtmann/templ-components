@@ -1,0 +1,67 @@
+package forms
+
+import "fmt"
+
+// TextareaProps configures a textarea
+type TextareaProps struct {
+	Name        string
+	ID          string
+	Value       string
+	Placeholder string
+	Label       string
+	Rows        int
+	Required    bool
+	Disabled    bool
+	ReadOnly    bool
+	Error       string
+	HelpText    string
+	Class       string
+	Attrs       templ.Attributes
+}
+
+// Textarea renders a labeled textarea
+//
+//	@forms.Textarea(forms.TextareaProps{
+//	   Name: "bio",
+//	   Label: "Bio",
+//	   Rows: 4,
+//	   Placeholder: "Tell us about yourself...",
+//	})
+templ Textarea(props TextareaProps) {
+	if props.Label != "" {
+		@Label(props.ID, props.Label, props.Required)
+	}
+	<textarea
+		name={ props.Name }
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		if props.Placeholder != "" {
+			placeholder={ props.Placeholder }
+		}
+		if props.Rows > 0 {
+			rows={ fmt.Sprintf("%d", props.Rows) }
+		} else {
+			rows="3"
+		}
+		class={ baseInputClass(props.Error != ""), props.Class }
+		if props.Required {
+			required
+		}
+		if props.Disabled {
+			disabled
+		}
+		if props.ReadOnly {
+			readonly
+		}
+		{ props.Attrs... }
+	>
+		{ props.Value }
+	</textarea>
+	if props.Error != "" {
+		@FieldError(props.Error)
+	}
+	if props.HelpText != "" {
+		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+	}
+}

@@ -1,0 +1,122 @@
+package feedback
+
+import "fmt"
+
+// SpinnerSize defines the size of a loading spinner
+type SpinnerSize string
+
+const (
+	SpinnerSmall  SpinnerSize = "small"
+	SpinnerMedium SpinnerSize = "medium"
+	SpinnerLarge  SpinnerSize = "large"
+)
+
+// spinnerSizeClass returns Tailwind size classes
+func spinnerSizeClass(s SpinnerSize) string {
+	switch s {
+	case SpinnerSmall:
+		return "h-4 w-4"
+	case SpinnerLarge:
+		return "h-8 w-8"
+	default:
+		return "h-6 w-6"
+	}
+}
+
+// Spinner renders a simple animated loading spinner
+//
+//	@feedback.Spinner(feedback.SpinnerMedium, "text-blue-600")
+templ Spinner(size SpinnerSize, colorClass string) {
+	<svg
+		class={ "animate-spin", spinnerSizeClass(size), colorClass }
+		xmlns="http://www.w3.org/2000/svg"
+		fill="none"
+		viewBox="0 0 24 24"
+		aria-hidden="true"
+	>
+		<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
+		<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+	</svg>
+}
+
+// LoadingOverlay renders a full-screen loading overlay
+//
+//	@feedback.LoadingOverlay("Loading...", true, 45)
+templ LoadingOverlay(message string, showProgress bool, progress int) {
+	<div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center">
+		<div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl p-8 max-w-sm w-full mx-4">
+			<div class="text-center">
+				<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
+					@Spinner(SpinnerMedium, "text-blue-600 dark:text-blue-400")
+				</div>
+				<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{ message }</h3>
+				if showProgress {
+					<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+						<div
+							class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out"
+							style={ fmt.Sprintf("width: %d%%", progress) }
+						></div>
+					</div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", progress) }</p>
+				} else {
+					<p class="text-sm text-gray-500 dark:text-gray-400">Please wait...</p>
+				}
+			</div>
+		</div>
+	</div>
+}
+
+// InlineLoading renders a compact inline loading indicator
+//
+//	@feedback.InlineLoading("Saving...")
+templ InlineLoading(message string) {
+	<div class="inline-flex items-center gap-2">
+		@Spinner(SpinnerSmall, "text-blue-600 dark:text-blue-400")
+		<span class="text-sm text-gray-600 dark:text-gray-400">{ message }</span>
+	</div>
+}
+
+// Skeleton renders a pulsing placeholder for loading content
+//
+//	@feedback.Skeleton("text")
+templ Skeleton(variant string) {
+	switch variant {
+		case "text":
+			<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+		case "text-short":
+			<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+		case "title":
+			<div class="animate-pulse h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+		case "avatar":
+			<div class="animate-pulse h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+		case "image":
+			<div class="animate-pulse h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+		case "card":
+			<div class="animate-pulse space-y-4">
+				<div class="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+				<div class="space-y-3">
+					<div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+				</div>
+			</div>
+		case "table-row":
+			<div class="animate-pulse grid grid-cols-4 gap-4 mb-3">
+				for i := 0; i < 4; i++ {
+					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+				}
+			</div>
+		default:
+			<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+	}
+}
+
+// SkeletonGroup renders multiple skeleton placeholders
+//
+//	@feedback.SkeletonGroup([]string{"title", "text", "text", "text"})
+templ SkeletonGroup(variants []string) {
+	<div class="space-y-3 animate-pulse">
+		for _, v := range variants {
+			@Skeleton(v)
+		}
+	</div>
+}
