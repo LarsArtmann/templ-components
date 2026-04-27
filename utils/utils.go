@@ -13,6 +13,7 @@ type BaseProps struct {
 	Class     string
 	Attrs     templ.Attributes
 	AriaLabel string
+	Nonce     string
 }
 
 // Class merges Tailwind classes intelligently using tailwind-merge-go.

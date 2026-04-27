@@ -27,8 +27,8 @@ templ MobileMenuToggle(show bool) {
 
 // MobileMenu renders the collapsible mobile navigation menu
 //
-//	@navigation.MobileMenu(links, "/")
-templ MobileMenu(links []NavLinkProps, currentPath string) {
+//	@navigation.MobileMenu(links, "/", "")
+templ MobileMenu(links []NavLinkProps, currentPath string, nonce string) {
 	<div class="hidden sm:hidden" id="tc-mobile-menu">
 		<div class="space-y-1 pb-3 pt-2 border-t border-gray-200 dark:border-gray-800">
 			for _, link := range links {
@@ -36,7 +36,7 @@ templ MobileMenu(links []NavLinkProps, currentPath string) {
 			}
 		</div>
 	</div>
-	<script>
+	<script nonce={ nonce }>
 		function tcToggleMobileMenu(btn) {
 			var nav = btn.closest('nav');
 			if (!nav) return;

@@ -1,7 +1,7 @@
 package feedback
 
 import (
-	"fmt"
+	"strings"
 
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -58,13 +58,14 @@ func toastStyles(t ToastType) (border, bg, text, icon string) {
 
 // toastJSStyles generates the JS color map string from the Go style definitions
 func toastJSStyles() string {
-	js := "var tcToastColors = {"
+	var b strings.Builder
+	b.WriteString("var tcToastColors = {")
 	for _, t := range []ToastType{ToastSuccess, ToastError, ToastWarning, ToastInfo} {
 		s := toastStyleMap[t]
-		js += fmt.Sprintf("'%s': {border:'%s',bg:'%s',text:'%s',icon:'%s'},", string(t), s.Border, s.BG, s.Text, s.Icon)
+		b.WriteString("'" + string(t) + "': {border:'" + s.Border + "',bg:'" + s.BG + "',text:'" + s.Text + "',icon:'" + s.Icon + "'},")
 	}
-	js += "};"
-	return js
+	b.WriteString("};")
+	return b.String()
 }
 
 // ToastContainer renders the fixed-position container for toasts

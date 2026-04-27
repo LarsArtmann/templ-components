@@ -23,6 +23,7 @@ func DefaultModalProps() ModalProps {
 			Class:     "",
 			Attrs:     nil,
 			AriaLabel: "",
+			Nonce:     "",
 		},
 		Title: "",
 		Open:  false,

@@ -49,7 +49,7 @@ templ Nav(props NavProps) {
 				@MobileMenuToggle(len(props.Links) > 0)
 			</div>
 		</div>
-		@MobileMenu(props.Links, props.CurrentPath)
+		@MobileMenu(props.Links, props.CurrentPath, props.Nonce)
 	</nav>
 }
 
