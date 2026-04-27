@@ -12,6 +12,7 @@ type BaseProps struct {
 	Favicon     string
 	HTMXVersion string
 	BodyClass   string
+	Nonce       string
 	HeadContent templ.Component
 }
 
@@ -68,7 +69,7 @@ templ Base(props BaseProps) {
 				<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion }></script>
 				<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion + "/dist/ext/response-targets.js" }></script>
 			}
-			@ThemeScript()
+			@ThemeScript(props.Nonce)
 			if props.HeadContent != nil {
 				@props.HeadContent
 			}

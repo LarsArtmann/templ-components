@@ -4,8 +4,8 @@ package htmx
 // Include this once in your base layout, ideally at the end of the body
 //
 //	@htmx.GlobalErrorHandling()
-templ GlobalErrorHandling() {
-	<script>
+templ GlobalErrorHandling(nonce string) {
+	<script nonce={ nonce }>
 		(function() {
 			'use strict';
 

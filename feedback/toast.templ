@@ -60,11 +60,11 @@ func toastStyles(t ToastType) (border, bg, text, icon string) {
 // Place this once near the top of your body
 //
 //	@feedback.ToastContainer()
-templ ToastContainer() {
+templ ToastContainer(nonce string) {
 	<div id="tc-toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none">
 		<!-- Toasts are injected here -->
 	</div>
-	<script>
+	<script nonce={ nonce }>
 		function tcEscapeHTML(str) {
 			var div = document.createElement('div');
 			div.appendChild(document.createTextNode(str));

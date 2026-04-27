@@ -44,7 +44,7 @@ func MyPage() templ.Component {
         Title:       "Dashboard",
         Description: "My awesome dashboard",
     }) {
-        @feedback.ToastContainer()
+        @feedback.ToastContainer("")
         @display.Card(display.CardProps{Title: "Welcome"}) {
             <p>Hello, world!</p>
         }
@@ -61,7 +61,7 @@ func MyPage() templ.Component {
     <h1>Content</h1>
 }
 
-@layout.ThemeToggle("Toggle theme")
+@layout.ThemeToggle("Toggle theme", "")
 
 @layout.Minimal("Title", "en") {
     <p>Static content</p>
@@ -72,7 +72,7 @@ func MyPage() templ.Component {
 
 ```templ
 // Toast notifications
-@feedback.ToastContainer()
+@feedback.ToastContainer("")
 
 @feedback.Toast(feedback.ToastProps{
     Message: "Saved successfully!",
@@ -174,7 +174,7 @@ func MyPage() templ.Component {
 ### `htmx` - HTMX Utilities
 
 ```templ
-@htmx.GlobalErrorHandling()
+@htmx.GlobalErrorHandling("")
 @htmx.LoadingIndicator()
 @htmx.InlineLoadingOverlay("form-loading")
 ```
@@ -200,13 +200,13 @@ module.exports = {
 All components support dark mode via Tailwind's `dark:` prefix. Include the theme script in your base layout:
 
 ```templ
-@layout.ThemeScript()
+@layout.ThemeScript("")
 ```
 
 And add the toggle button:
 
 ```templ
-@layout.ThemeToggle("Toggle theme")
+@layout.ThemeToggle("Toggle theme", "")
 ```
 
 ## Browser Support
