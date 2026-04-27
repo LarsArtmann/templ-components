@@ -1,0 +1,19 @@
+# Generated templ files
+*_templ.go
+
+# Build artifacts
+/server
+coverage.out
+
+# Test coverage
+/coverage
+
+# Go vendor directory
+/vendor
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
