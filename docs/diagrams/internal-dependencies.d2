@@ -1,0 +1,143 @@
+direction: right
+
+title: |md
+  # Internal Package Dependency Graph
+  **templ-components — Cross-Package Imports** | {near: top-center}
+
+# ═══════════════════════════════════════════════════════════════
+# EXTERNAL DEPENDENCIES
+# ═══════════════════════════════════════════════════════════════
+
+external: External Dependencies {
+  style.fill: "#ffebee"
+  style.stroke: "#c62828"
+  style.stroke-width: 2
+
+  templ: github.com/a-h/templ {
+    shape: cylinder
+    style.fill: "#ffcdd2"
+  }
+
+  fmt: fmt {
+    shape: cylinder
+    style.fill: "#ffcdd2"
+  }
+
+  time: time {
+    shape: cylinder
+    style.fill: "#ffcdd2"
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# LIBRARY PACKAGES
+# ═══════════════════════════════════════════════════════════════
+
+layout: layout {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  Base
+  ThemeScript
+  ThemeToggle
+  Minimal
+}
+
+feedback: feedback {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  ToastContainer
+  Toast
+  Alert
+  Spinner
+  Skeleton
+  ProgressBar
+}
+
+display: display {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  Badge
+  Card
+  StatCard
+  EmptyState
+}
+
+forms: forms {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  Input
+  Select
+  Textarea
+  Checkbox
+  "Label"
+}
+
+navigation: navigation {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  Nav
+  NavLink
+  Breadcrumbs
+  Footer
+  MobileMenu
+}
+
+icons: icons {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  "Icon"
+  IconNames
+}
+
+htmx: htmx {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  GlobalErrorHandling
+  LoadingIndicator
+  CSRFToken
+  SwapOOB
+}
+
+utils: utils {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  CurrentYear
+  Ternary
+  Ptr
+  Deref
+}
+
+# ═══════════════════════════════════════════════════════════════
+# EXTERNAL IMPORTS (dashed = generated/runtime, solid = explicit)
+# ═══════════════════════════════════════════════════════════════
+
+external.templ -> layout: {style.stroke-dash: 3; style.stroke: "#9e9e9e"}
+external.templ -> feedback: {style.stroke-dash: 3; style.stroke: "#9e9e9e"}
+external.templ -> display: {style.stroke-dash: 3; style.stroke: "#9e9e9e"}
+external.templ -> forms: {style.stroke-dash: 3; style.stroke: "#9e9e9e"}
+external.templ -> navigation: {style.stroke-dash: 3; style.stroke: "#9e9e9e"}
+external.templ -> icons: {style.stroke-dash: 3; style.stroke: "#9e9e9e"}
+external.templ -> htmx: {style.stroke-dash: 3; style.stroke: "#9e9e9e"}
+
+external.fmt -> feedback: {style.stroke: "#ef5350"}
+external.fmt -> forms: {style.stroke: "#ef5350"}
+
+external.time -> utils: {style.stroke: "#ef5350"}
+
+# ═══════════════════════════════════════════════════════════════
+# INTERNAL CROSS-PACKAGE IMPORTS
+# ═══════════════════════════════════════════════════════════════
+
+display -> icons: {style.stroke: "#1565c0"; style.stroke-width: 2}
+navigation -> utils: {style.stroke: "#1565c0"; style.stroke-width: 2}
+
+# ═══════════════════════════════════════════════════════════════
+# LEGEND
+# ═══════════════════════════════════════════════════════════════
+
+legend: |md
+  **Legend**
+  - **Solid blue arrows**: Explicit internal imports
+  - **Dashed grey arrows**: Generated templ runtime imports (all packages)
+  - **Solid red arrows**: Standard library imports (fmt, time)
+| {near: bottom-right}

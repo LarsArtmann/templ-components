@@ -1,0 +1,223 @@
+direction: down
+
+title: |md
+  # Current Architecture: templ-components Ecosystem
+  **As of 2026-04-27** | {near: top-center}
+
+# ═══════════════════════════════════════════════════════════════
+# EXTERNAL DEPENDENCIES
+# ═══════════════════════════════════════════════════════════════
+
+deps: External Dependencies {
+  style.fill: "#ffebee"
+  style.stroke: "#c62828"
+  style.stroke-width: 2
+
+  templ: github.com/a-h/templ {
+    shape: cylinder
+    style.fill: "#ffcdd2"
+  }
+
+  tailwind: Tailwind CSS {
+    shape: cloud
+    style.fill: "#ffcdd2"
+  }
+
+  htmx: HTMX 2.x {
+    shape: cloud
+    style.fill: "#ffcdd2"
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# TEMPL-COMPONENTS LIBRARY (what we built)
+# ═══════════════════════════════════════════════════════════════
+
+library: templ-components Library {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  style.stroke-width: 2
+
+  layout: layout {
+    style.fill: "#bbdefb"
+    Base
+    ThemeScript
+    ThemeToggle
+    Minimal
+  }
+
+  feedback: feedback {
+    style.fill: "#bbdefb"
+    ToastContainer
+    Toast
+    Alert
+    Spinner
+    Skeleton
+    ProgressBar
+  }
+
+  display: display {
+    style.fill: "#bbdefb"
+    Badge
+    Card
+    StatCard
+    EmptyState
+  }
+
+  forms: forms {
+    style.fill: "#bbdefb"
+    Input
+    Select
+    Textarea
+    Checkbox
+    "Label"
+  }
+
+  navigation: navigation {
+    style.fill: "#bbdefb"
+    Nav
+    NavLink
+    Breadcrumbs
+    Footer
+    MobileMenu
+  }
+
+  icons: icons {
+    style.fill: "#bbdefb"
+    "Icon"
+    icon_names
+  }
+
+  htmx_utils: htmx {
+    style.fill: "#bbdefb"
+    GlobalErrorHandling
+    LoadingIndicator
+    CSRFToken
+  }
+
+  utils: utils {
+    style.fill: "#bbdefb"
+    helpers
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# BUILD PIPELINE
+# ═══════════════════════════════════════════════════════════════
+
+pipeline: Build Pipeline {
+  style.fill: "#fff3e0"
+  style.stroke: "#e65100"
+  style.stroke-width: 2
+
+  templ_generate: templ generate {
+    shape: oval
+    style.fill: "#ffe0b2"
+  }
+
+  go_build: go build ./... {
+    shape: oval
+    style.fill: "#ffe0b2"
+  }
+
+  go_vet: go vet ./... {
+    shape: oval
+    style.fill: "#ffe0b2"
+  }
+
+  templ_generate -> go_build -> go_vet
+}
+
+# ═══════════════════════════════════════════════════════════════
+# CONSUMING PROJECTS (current state — duplicated code)
+# ═══════════════════════════════════════════════════════════════
+
+projects: Consuming Projects {
+  style.fill: "#f3e5f5"
+  style.stroke: "#6a1b9a"
+  style.stroke-width: 2
+
+  gwt: go-website-template {
+    style.fill: "#e1bee7"
+    Base Layout
+    Toast System
+    Theme Toggle
+    HTMX Utils
+    style.stroke-dash: 3
+  }
+
+  crb: CreditReformBilanzampel {
+    style.fill: "#e1bee7"
+    Form Helpers
+    Loading Spinners
+    HTMX Utils
+    style.stroke-dash: 3
+  }
+
+  sbt: standard-bug-tracking-schema {
+    style.fill: "#e1bee7"
+    Command Palette
+    Chart Components
+    Auth Layouts
+    Validated Forms
+    SSE Notifications
+    style.stroke-dash: 3
+  }
+
+  atw: artmann-technologies-website {
+    style.fill: "#e1bee7"
+    Navigation
+    Footer
+    Icons
+    style.stroke-dash: 3
+  }
+
+  lbp: lean-business-plan {
+    style.fill: "#e1bee7"
+    Base Layout
+    style.stroke-dash: 3
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# DUPLICATION PROBLEM
+# ═══════════════════════════════════════════════════════════════
+
+dup: Code Duplication {
+  style.fill: "#ffebee"
+  style.stroke: "#c62828"
+  style.stroke-dash: 5
+
+  dup_label: |md
+    **THE PROBLEM**
+    - 5 projects with ~60 duplicated components
+    - No shared library consumption yet
+    - Each project invents its own Toast, Spinner, Card, etc.
+    - Inconsistent Tailwind class names across projects
+    - No centralized dark mode or HTMX error handling
+  |
+}
+
+# ═══════════════════════════════════════════════════════════════
+# CONNECTIONS
+# ═══════════════════════════════════════════════════════════════
+
+deps.templ -> library.layout
+
+deps.tailwind -> library
+
+deps.htmx -> library.htmx_utils
+
+library -> pipeline.templ_generate: generates
+
+library -> projects.gwt: "NOT YET USED"
+library -> projects.crb: "NOT YET USED"
+library -> projects.sbt: "NOT YET USED"
+library -> projects.atw: "NOT YET USED"
+library -> projects.lbp: "NOT YET USED"
+
+projects.gwt -> dup
+projects.crb -> dup
+projects.sbt -> dup
+projects.atw -> dup
+projects.lbp -> dup

@@ -65,6 +65,11 @@ templ ToastContainer() {
 		<!-- Toasts are injected here -->
 	</div>
 	<script>
+		function tcEscapeHTML(str) {
+			var div = document.createElement('div');
+			div.appendChild(document.createTextNode(str));
+			return div.innerHTML;
+		}
 		function tcShowToast(message, type, title, duration) {
 			var container = document.getElementById('tc-toast-container');
 			if (!container) return;
@@ -89,16 +94,35 @@ templ ToastContainer() {
 			};
 			var typeKey = type || 'info';
 			toast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 translate-x-full ' + (colors[typeKey] || colors.info);
-			toast.innerHTML = '<div class="flex items-start gap-3">' +
-				'<svg class="h-5 w-5 flex-shrink-0 mt-0.5 ' + (iconColors[typeKey] || iconColors.info) + '" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (icons[typeKey] || icons.info) + '</svg>' +
-				'<div class="flex-1 min-w-0">' +
-					(title ? '<div class="text-sm font-semibold">' + title + '</div>' : '') +
-					'<div class="text-sm">' + message + '</div>' +
-				'</div>' +
-				'<button onclick="this.closest(\'.pointer-events-auto\').remove()" class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors" aria-label="Dismiss">' +
-					'<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>' +
-				'</button>' +
-			'</div>';
+			var inner = document.createElement('div');
+			inner.className = 'flex items-start gap-3';
+			var svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+			svgEl.setAttribute('class', 'h-5 w-5 flex-shrink-0 mt-0.5 ' + (iconColors[typeKey] || iconColors.info));
+			svgEl.setAttribute('fill', 'none');
+			svgEl.setAttribute('viewBox', '0 0 24 24');
+			svgEl.setAttribute('stroke', 'currentColor');
+			svgEl.innerHTML = (icons[typeKey] || icons.info);
+			inner.appendChild(svgEl);
+			var content = document.createElement('div');
+			content.className = 'flex-1 min-w-0';
+			if (title) {
+				var titleEl = document.createElement('div');
+				titleEl.className = 'text-sm font-semibold';
+				titleEl.textContent = title;
+				content.appendChild(titleEl);
+			}
+			var msgEl = document.createElement('div');
+			msgEl.className = 'text-sm';
+			msgEl.textContent = message;
+			content.appendChild(msgEl);
+			inner.appendChild(content);
+			var btn = document.createElement('button');
+			btn.className = 'flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors';
+			btn.setAttribute('aria-label', 'Dismiss');
+			btn.onclick = function() { this.closest('.pointer-events-auto').remove(); };
+			btn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
+			inner.appendChild(btn);
+			toast.appendChild(inner);
 			container.appendChild(toast);
 			requestAnimationFrame(function() { toast.classList.remove('translate-x-full'); });
 			if (duration && duration > 0) {

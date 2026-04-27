@@ -1,0 +1,286 @@
+direction: down
+
+title: |md
+  # Future Architecture: templ-components Ecosystem
+  **Target State — templui + Thin Wrappers + CI/CD** | {near: top-center}
+
+# ═══════════════════════════════════════════════════════════════
+# EXTERNAL DEPENDENCIES
+# ═══════════════════════════════════════════════════════════════
+
+deps: External Dependencies {
+  style.fill: "#ffebee"
+  style.stroke: "#c62828"
+  style.stroke-width: 2
+
+  templ: github.com/a-h/templ {
+    shape: cylinder
+    style.fill: "#ffcdd2"
+  }
+
+  tailwind: Tailwind CSS {
+    shape: cloud
+    style.fill: "#ffcdd2"
+  }
+
+  htmx: HTMX 2.x {
+    shape: cloud
+    style.fill: "#ffcdd2"
+  }
+
+  templui: github.com/axzilla/templui {
+    shape: cloud
+    style.fill: "#ffcdd2"
+    style.stroke: "#1565c0"
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# LAYER 1: FOUNDATION (templui — adopted)
+# ═══════════════════════════════════════════════════════════════
+
+foundation: Layer 1 — Foundation (templui) {
+  style.fill: "#e8f5e9"
+  style.stroke: "#2e7d32"
+  style.stroke-width: 2
+
+  desc: |md
+    **Adopt templui as the base**
+    - 30+ production-grade components
+    - CSP compliant (external JS)
+    - Alpine.js interactivity
+    - CLI installer
+    - Officially recommended by templ.guide
+  |
+
+  components: Standard Components {
+    style.fill: "#c8e6c9"
+    Button
+    Card
+    Input
+    Select
+    Badge
+    Modal
+    Toast
+    Tabs
+    Table
+    Breadcrumb
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# LAYER 2: THIN WRAPPER (our library, refocused)
+# ═══════════════════════════════════════════════════════════════
+
+wrapper: Layer 2 — Thin Wrappers {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  style.stroke-width: 2
+
+  desc: |md
+    **Our library becomes a thin abstraction**
+    - Wraps templui with project-specific defaults
+    - Adds HTMX-specific helpers
+    - Provides Go-native prop types
+    - Hides Alpine.js complexity where not needed
+  |
+
+  htmx: HTMX Helpers {
+    style.fill: "#bbdefb"
+    GlobalErrorHandling
+    LoadingIndicator
+    SwapOOB
+    ConfirmDelete
+  }
+
+  layout: Layout Wrappers {
+    style.fill: "#bbdefb"
+    BaseProps
+    ThemeProvider
+    AppShell
+  }
+
+  feedback: Feedback Extensions {
+    style.fill: "#bbdefb"
+    InlineError
+    InlineSuccess
+    NetworkErrorMessage
+  }
+
+  navigation: Navigation Extensions {
+    style.fill: "#bbdefb"
+    MobileNavToggle
+    LanguageSwitcher
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# LAYER 3: PROJECT-SPECIFIC COMPONENTS
+# ═══════════════════════════════════════════════════════════════
+
+project_specific: Layer 3 — Project-Specific {
+  style.fill: "#fff3e0"
+  style.stroke: "#e65100"
+  style.stroke-width: 2
+
+  desc: |md
+    **Each project adds its own domain components**
+    - Command Palette (bug-tracker)
+    - Chart Wrappers (bug-tracker)
+    - Financial Ratio Cards (bilanzampel)
+    - Auth Layouts (bug-tracker)
+    - Validated Forms (bug-tracker)
+  |
+
+  chart: Chart Components {
+    style.fill: "#ffe0b2"
+    ApexChart
+    ChartContainer
+    ChartExport
+  }
+
+  auth: Auth Components {
+    style.fill: "#ffe0b2"
+    LoginForm
+    RegisterForm
+    PasswordStrength
+  }
+
+  cmd: Command Palette {
+    style.fill: "#ffe0b2"
+    CommandPalette
+    CommandPaletteModal
+    CommandResults
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# CI/CD & TOOLING
+# ═══════════════════════════════════════════════════════════════
+
+cicd: CI/CD & Tooling {
+  style.fill: "#f3e5f5"
+  style.stroke: "#6a1b9a"
+  style.stroke-width: 2
+
+  github_actions: GitHub Actions {
+    style.fill: "#e1bee7"
+    "templ generate"
+    "go test ./..."
+    "go vet ./..."
+    "go build ./..."
+  }
+
+  cli: CLI Tool {
+    style.fill: "#e1bee7"
+    "templ-components init"
+    "templ-components add modal"
+    "templ-components add table"
+  }
+
+  docs: Docs Site {
+    style.fill: "#e1bee7"
+    Component Gallery
+    Storybook-like Preview
+    API Reference
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# CONSUMING PROJECTS (future state — using library)
+# ═══════════════════════════════════════════════════════════════
+
+projects: Consuming Projects {
+  style.fill: "#e8f5e9"
+  style.stroke: "#2e7d32"
+  style.stroke-width: 2
+
+  gwt: go-website-template {
+    style.fill: "#c8e6c9"
+    imports: Layer 1 + Layer 2
+  }
+
+  crb: CreditReformBilanzampel {
+    style.fill: "#c8e6c9"
+    imports: Layer 1 + Layer 2
+  }
+
+  sbt: standard-bug-tracking-schema {
+    style.fill: "#c8e6c9"
+    imports: Layer 1 + Layer 2 + Layer 3
+  }
+
+  atw: artmann-technologies-website {
+    style.fill: "#c8e6c9"
+    imports: Layer 1 + Layer 2
+  }
+
+  lbp: lean-business-plan {
+    style.fill: "#c8e6c9"
+    imports: Layer 1 + Layer 2
+  }
+}
+
+# ═══════════════════════════════════════════════════════════════
+# MIGRATION PATH
+# ═══════════════════════════════════════════════════════════════
+
+migration: Migration Path {
+  style.fill: "#fff8e1"
+  style.stroke: "#ff6f00"
+  style.stroke-width: 2
+
+  step1: "1. Add templui dependency" {
+    style.fill: "#ffecb3"
+  }
+
+  step2: "2. Migrate standard components\n(Button, Card, Input, Badge)" {
+    style.fill: "#ffecb3"
+  }
+
+  step3: "3. Keep our library as thin wrapper" {
+    style.fill: "#ffecb3"
+  }
+
+  step4: "4. Add project-specific components\nto Layer 3" {
+    style.fill: "#ffecb3"
+  }
+
+  step5: "5. Set up CI/CD + CLI + Docs" {
+    style.fill: "#ffecb3"
+  }
+
+  step1 -> step2 -> step3 -> step4 -> step5
+}
+
+# ═══════════════════════════════════════════════════════════════
+# CONNECTIONS
+# ═══════════════════════════════════════════════════════════════
+
+deps.templ -> foundation
+
+deps.tailwind -> foundation
+
+deps.tailwind -> wrapper
+
+deps.htmx -> wrapper
+
+deps.templui -> foundation
+
+foundation -> wrapper: wraps & extends
+
+wrapper -> project_specific: extends
+
+wrapper -> projects.gwt
+wrapper -> projects.crb
+wrapper -> projects.sbt
+wrapper -> projects.atw
+wrapper -> projects.lbp
+
+project_specific -> projects.sbt
+
+wrapper -> cicd.github_actions
+wrapper -> cicd.cli
+wrapper -> cicd.docs
+
+migration.step5 -> cicd
