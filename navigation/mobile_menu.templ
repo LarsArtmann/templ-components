@@ -11,7 +11,7 @@ templ MobileMenuToggle(show bool) {
 				class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:hover:bg-gray-800 dark:hover:text-gray-300"
 				aria-controls="tc-mobile-menu"
 				aria-expanded="false"
-				onclick="tcToggleMobileMenu()"
+				onclick="tcToggleMobileMenu(this)"
 			>
 				<span class="sr-only">Open main menu</span>
 				<svg class="tc-menu-open block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -37,12 +37,13 @@ templ MobileMenu(links []NavLinkProps, currentPath string) {
 		</div>
 	</div>
 	<script>
-		function tcToggleMobileMenu() {
-			var menu = document.getElementById('tc-mobile-menu');
-			var openIcon = document.querySelector('.tc-menu-open');
-			var closeIcon = document.querySelector('.tc-menu-close');
-			var btn = document.querySelector('[aria-controls="tc-mobile-menu"]');
-			if (!menu || !openIcon || !closeIcon || !btn) return;
+		function tcToggleMobileMenu(btn) {
+			var nav = btn.closest('nav');
+			if (!nav) return;
+			var menu = nav.querySelector('#tc-mobile-menu');
+			var openIcon = nav.querySelector('.tc-menu-open');
+			var closeIcon = nav.querySelector('.tc-menu-close');
+			if (!menu || !openIcon || !closeIcon) return;
 			var isHidden = menu.classList.contains('hidden');
 			if (isHidden) {
 				menu.classList.remove('hidden');

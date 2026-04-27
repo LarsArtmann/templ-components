@@ -86,6 +86,27 @@ func TestIfNotNilString(t *testing.T) {
 	})
 }
 
+func TestSanitizeID(t *testing.T) {
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{"simple text", "This field is required", "This-field-is-required"},
+		{"already clean", "email-error", "email-error"},
+		{"special chars", "foo@bar.baz!", "foo-bar-baz-"},
+		{"empty", "", ""},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got := SanitizeID(tt.input)
+			if got != tt.want {
+				t.Errorf("SanitizeID(%q) = %q, want %q", tt.input, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestBoolToString(t *testing.T) {
 	tests := []struct {
 		name string

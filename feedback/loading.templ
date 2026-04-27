@@ -101,7 +101,7 @@ templ Skeleton(variant string) {
 			</div>
 		case "table-row":
 			<div class="animate-pulse grid grid-cols-4 gap-4 mb-3">
-				for i := 0; i < 4; i++ {
+				for range 4 {
 					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
 				}
 			</div>

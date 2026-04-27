@@ -11,6 +11,7 @@ type BaseProps struct {
 	CSSPath     string
 	Favicon     string
 	HTMXVersion string
+	HTMXSRI     string
 	BodyClass   string
 	Nonce       string
 	HeadContent templ.Component
@@ -25,6 +26,7 @@ func DefaultBaseProps() BaseProps {
 		CSSPath:        "/app.css",
 		Favicon:        "/favicon.svg",
 		HTMXVersion:    "2.0.6",
+		HTMXSRI:        "true",
 		BodyClass:      "bg-white text-gray-900 antialiased min-h-full flex flex-col dark:bg-gray-950 dark:text-gray-100",
 	}
 }
@@ -66,8 +68,14 @@ templ Base(props BaseProps) {
 				<link rel="stylesheet" href={ props.CSSPath }/>
 			}
 			if props.HTMXVersion != "" {
-				<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion }></script>
-				<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion + "/dist/ext/response-targets.js" }></script>
+				if props.HTMXSRI == "true" {
+					{{ htmxSRI := htmxIntegrityHash(props.HTMXVersion) }}
+					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion } integrity={ htmxSRI } crossorigin="anonymous"></script>
+					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion + "/dist/ext/response-targets.js" } integrity={ htmxResponseTargetsIntegrityHash(props.HTMXVersion) } crossorigin="anonymous"></script>
+				} else {
+					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion }></script>
+					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion + "/dist/ext/response-targets.js" }></script>
+				}
 			}
 			@ThemeScript(props.Nonce)
 			if props.HeadContent != nil {

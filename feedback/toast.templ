@@ -1,5 +1,7 @@
 package feedback
 
+import "fmt"
+
 // ToastType represents the visual style of a toast
 type ToastType string
 
@@ -25,35 +27,39 @@ const (
 	ToastDurationLong   = 8000
 )
 
+// toastStyleSet holds the CSS classes for a toast type
+type toastStyleSet struct {
+	Border, BG, Text, Icon string
+}
+
+// toastStyleMap is the single source of truth for toast styles
+var toastStyleMap = map[ToastType]toastStyleSet{
+	ToastSuccess: {"border-green-200 dark:border-green-800", "bg-green-50 dark:bg-green-900/30", "text-green-800 dark:text-green-200", "text-green-600 dark:text-green-400"},
+	ToastError:   {"border-red-200 dark:border-red-800", "bg-red-50 dark:bg-red-900/30", "text-red-800 dark:text-red-200", "text-red-600 dark:text-red-400"},
+	ToastWarning: {"border-yellow-200 dark:border-yellow-800", "bg-yellow-50 dark:bg-yellow-900/30", "text-yellow-800 dark:text-yellow-200", "text-yellow-600 dark:text-yellow-400"},
+	ToastInfo:    {"border-blue-200 dark:border-blue-800", "bg-blue-50 dark:bg-blue-900/30", "text-blue-800 dark:text-blue-200", "text-blue-600 dark:text-blue-400"},
+}
+
+var toastStyleDefault = toastStyleSet{"border-gray-200 dark:border-gray-700", "bg-gray-50 dark:bg-gray-800", "text-gray-800 dark:text-gray-200", "text-gray-600 dark:text-gray-400"}
+
 // toastStyles returns Tailwind classes for each toast type
 func toastStyles(t ToastType) (border, bg, text, icon string) {
-	switch t {
-	case ToastSuccess:
-		return "border-green-200 dark:border-green-800",
-			"bg-green-50 dark:bg-green-900/30",
-			"text-green-800 dark:text-green-200",
-			"text-green-600 dark:text-green-400"
-	case ToastError:
-		return "border-red-200 dark:border-red-800",
-			"bg-red-50 dark:bg-red-900/30",
-			"text-red-800 dark:text-red-200",
-			"text-red-600 dark:text-red-400"
-	case ToastWarning:
-		return "border-yellow-200 dark:border-yellow-800",
-			"bg-yellow-50 dark:bg-yellow-900/30",
-			"text-yellow-800 dark:text-yellow-200",
-			"text-yellow-600 dark:text-yellow-400"
-	case ToastInfo:
-		return "border-blue-200 dark:border-blue-800",
-			"bg-blue-50 dark:bg-blue-900/30",
-			"text-blue-800 dark:text-blue-200",
-			"text-blue-600 dark:text-blue-400"
-	default:
-		return "border-gray-200 dark:border-gray-700",
-			"bg-gray-50 dark:bg-gray-800",
-			"text-gray-800 dark:text-gray-200",
-			"text-gray-600 dark:text-gray-400"
+	s, ok := toastStyleMap[t]
+	if !ok {
+		s = toastStyleDefault
 	}
+	return s.Border, s.BG, s.Text, s.Icon
+}
+
+// toastJSStyles generates the JS color map string from the Go style definitions
+func toastJSStyles() string {
+	js := "var tcToastColors = {"
+	for _, t := range []ToastType{ToastSuccess, ToastError, ToastWarning, ToastInfo} {
+		s := toastStyleMap[t]
+		js += fmt.Sprintf("'%s': {border:'%s',bg:'%s',text:'%s',icon:'%s'},", string(t), s.Border, s.BG, s.Text, s.Icon)
+	}
+	js += "};"
+	return js
 }
 
 // ToastContainer renders the fixed-position container for toasts
@@ -65,43 +71,28 @@ templ ToastContainer(nonce string) {
 		<!-- Toasts are injected here -->
 	</div>
 	<script nonce={ nonce }>
-		function tcEscapeHTML(str) {
-			var div = document.createElement('div');
-			div.appendChild(document.createTextNode(str));
-			return div.innerHTML;
-		}
+		{{ toastJSStyles() }}
+		var tcToastIcons = {
+			success: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
+			error: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"/>',
+			warning: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"/>',
+			info: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>'
+		};
 		function tcShowToast(message, type, title, duration) {
 			var container = document.getElementById('tc-toast-container');
 			if (!container) return;
 			var toast = document.createElement('div');
-			var colors = {
-				success: 'border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/30 text-green-800 dark:text-green-200',
-				error: 'border-red-200 dark:border-red-800 bg-red-50 dark:bg-red-900/30 text-red-800 dark:text-red-200',
-				warning: 'border-yellow-200 dark:border-yellow-800 bg-yellow-50 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200',
-				info: 'border-blue-200 dark:border-blue-800 bg-blue-50 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200'
-			};
-			var iconColors = {
-				success: 'text-green-600 dark:text-green-400',
-				error: 'text-red-600 dark:text-red-400',
-				warning: 'text-yellow-600 dark:text-yellow-400',
-				info: 'text-blue-600 dark:text-blue-400'
-			};
-			var icons = {
-				success: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>',
-				error: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"/>',
-				warning: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"/>',
-				info: '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>'
-			};
 			var typeKey = type || 'info';
-			toast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 translate-x-full ' + (colors[typeKey] || colors.info);
+			var style = tcToastColors[typeKey] || tcToastColors.info;
+			toast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;
 			var inner = document.createElement('div');
 			inner.className = 'flex items-start gap-3';
 			var svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-			svgEl.setAttribute('class', 'h-5 w-5 flex-shrink-0 mt-0.5 ' + (iconColors[typeKey] || iconColors.info));
+			svgEl.setAttribute('class', 'h-5 w-5 flex-shrink-0 mt-0.5 ' + style.icon);
 			svgEl.setAttribute('fill', 'none');
 			svgEl.setAttribute('viewBox', '0 0 24 24');
 			svgEl.setAttribute('stroke', 'currentColor');
-			svgEl.innerHTML = (icons[typeKey] || icons.info);
+			svgEl.innerHTML = (tcToastIcons[typeKey] || tcToastIcons.info);
 			inner.appendChild(svgEl);
 			var content = document.createElement('div');
 			content.className = 'flex-1 min-w-0';
