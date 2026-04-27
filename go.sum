@@ -1,3 +1,5 @@
+github.com/Oudwins/tailwind-merge-go v0.2.1 h1:jxRaEqGtwwwF48UuFIQ8g8XT7YSualNuGzCvQ89nPFE=
+github.com/Oudwins/tailwind-merge-go v0.2.1/go.mod h1:kkZodgOPvZQ8f7SIrlWkG/w1g9JTbtnptnePIh3V72U=
 github.com/a-h/templ v0.3.1001 h1:yHDTgexACdJttyiyamcTHXr2QkIeVF1MukLy44EAhMY=
 github.com/a-h/templ v0.3.1001/go.mod h1:oCZcnKRf5jjsGpf2yELzQfodLphd2mwecwG4Crk5HBo=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=

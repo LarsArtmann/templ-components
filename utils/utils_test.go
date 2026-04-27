@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"strings"
 	"testing"
 	"time"
 
@@ -82,23 +83,48 @@ func TestDerefOr(t *testing.T) {
 
 func TestClass(t *testing.T) {
 	tests := []struct {
-		name      string
-		defaults  string
-		overrides string
-		want      string
+		name        string
+		classes     []string
+		wantContain []string
+		wantNotContain []string
 	}{
-		{"empty overrides", "a b c", "", "a b c"},
-		{"with overrides", "a b c", "d e", "d e"},
-		{"trim spaces", "  a b  ", "", "a b"},
+		{"single string", []string{"a b c"}, []string{"a", "b", "c"}, nil},
+		{"tailwind merge", []string{"bg-red-500 hover:bg-blue-500", "bg-green-500"}, []string{"bg-green-500", "hover:bg-blue-500"}, []string{"bg-red-500"}},
+		{"empty ignored", []string{"a b", ""}, []string{"a", "b"}, nil},
+		{"multiple overrides", []string{"p-4", "p-6", "px-8"}, []string{"p-6", "px-8"}, []string{"p-4"}},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := Class(tt.defaults, tt.overrides)
-			if got != tt.want {
-				t.Errorf("Class(%q, %q) = %q, want %q", tt.defaults, tt.overrides, got, tt.want)
+			got := Class(tt.classes...)
+			for _, want := range tt.wantContain {
+				if !containsWord(got, want) {
+					t.Errorf("Class(%v) = %q, want to contain %q", tt.classes, got, want)
+				}
+			}
+			for _, notWant := range tt.wantNotContain {
+				if containsWord(got, notWant) {
+					t.Errorf("Class(%v) = %q, should not contain %q", tt.classes, got, notWant)
+				}
 			}
 		})
 	}
+}
+
+func containsWord(s, word string) bool {
+	for _, w := range splitSpace(s) {
+		if w == word {
+			return true
+		}
+	}
+	return false
+}
+
+func splitSpace(s string) []string {
+	var parts []string
+	for _, p := range strings.Fields(s) {
+		parts = append(parts, p)
+	}
+	return parts
 }
 
 func TestMergeAttrs(t *testing.T) {

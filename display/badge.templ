@@ -24,11 +24,12 @@ const (
 
 // BadgeProps configures a status badge
 type BadgeProps struct {
-	Text  string
-	Type  BadgeType
-	Size  BadgeSize
-	Pill  bool
-	Dot   bool // Show a colored dot before text
+	utils.BaseProps
+	Text string
+	Type BadgeType
+	Size BadgeSize
+	Pill bool
+	Dot  bool // Show a colored dot before text
 }
 
 // DefaultBadgeProps returns sensible defaults
@@ -43,7 +44,16 @@ func DefaultBadgeProps() BadgeProps {
 //
 //	@display.Badge(display.BadgeProps{Text: "Active", Type: display.BadgeSuccess, Dot: true})
 templ Badge(props BadgeProps) {
-	<span class={ "inline-flex items-center font-medium", badgeSizeClass(props.Size), badgeShapeClass(props.Pill), badgeColorClass(props.Type) }>
+	<span
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ "inline-flex items-center font-medium", badgeSizeClass(props.Size), badgeShapeClass(props.Pill), badgeColorClass(props.Type), props.Class }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
 		if props.Dot {
 			<span class={ "mr-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>
 		}

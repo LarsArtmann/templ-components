@@ -1,9 +1,9 @@
 package utils
 
 import (
-	"strings"
 	"time"
 
+	"github.com/Oudwins/tailwind-merge-go"
 	"github.com/a-h/templ"
 )
 
@@ -15,13 +15,10 @@ type BaseProps struct {
 	AriaLabel string
 }
 
-// Class merges Tailwind classes, with overrides taking precedence over defaults
-// Later arguments override earlier ones when they conflict
-func Class(defaults string, overrides string) string {
-	if overrides == "" {
-		return strings.TrimSpace(defaults)
-	}
-	return strings.TrimSpace(overrides)
+// Class merges Tailwind classes intelligently using tailwind-merge-go.
+// Conflicting classes are resolved with later arguments overriding earlier ones.
+func Class(classes ...string) string {
+	return twmerge.Merge(classes...)
 }
 
 // MergeAttrs merges multiple attribute maps, with later maps overriding earlier ones
