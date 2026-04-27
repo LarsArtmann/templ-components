@@ -1,5 +1,7 @@
 package navigation
 
+import "github.com/larsartmann/templ-components/utils"
+
 func navLinkClasses(isActive bool) string {
 	if isActive {
 		return "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium transition-colors border-blue-500 text-gray-900 dark:text-white"
@@ -9,6 +11,7 @@ func navLinkClasses(isActive bool) string {
 
 // NavLinkProps configures a single navigation link
 type NavLinkProps struct {
+	utils.BaseProps
 	Href     string
 	Text     string
 	External bool

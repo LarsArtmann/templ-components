@@ -1,6 +1,10 @@
 package feedback
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // ToastType represents the visual style of a toast
 type ToastType string
@@ -14,9 +18,10 @@ const (
 
 // ToastProps configures a toast notification
 type ToastProps struct {
-	Message string
-	Title   string
-	Type    ToastType
+	utils.BaseProps
+	Message  string
+	Title    string
+	Type     ToastType
 	Duration int // milliseconds, 0 for no auto-dismiss
 }
 

@@ -1,9 +1,13 @@
 package display
 
-import "github.com/larsartmann/templ-components/icons"
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // EmptyStateProps configures an empty state illustration
 type EmptyStateProps struct {
+	utils.BaseProps
 	Title       string
 	Description string
 	Icon        string // one of the preset icon names
