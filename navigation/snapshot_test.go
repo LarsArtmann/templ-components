@@ -57,3 +57,43 @@ func TestFooterRender(t *testing.T) {
 	utils.AssertContains(t, output, "MyApp")
 	utils.AssertContains(t, output, "All rights reserved")
 }
+
+func TestMobileMenuToggleRender(t *testing.T) {
+	t.Parallel()
+	t.Run("shown", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, MobileMenuToggle(true))
+		utils.AssertContains(t, output, `data-mobile-menu-toggle`)
+		utils.AssertContains(t, output, `aria-controls="tc-mobile-menu"`)
+		utils.AssertContains(t, output, `aria-expanded="false"`)
+	})
+	t.Run("hidden", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, MobileMenuToggle(false))
+		utils.AssertNotContains(t, output, "button")
+	})
+}
+
+func TestMobileMenuRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, MobileMenu(
+		[]NavLinkProps{{Href: "/", Text: "Home"}, {Href: "/about", Text: "About"}},
+		"/",
+		"test-nonce",
+	))
+	utils.AssertContains(t, output, "Home")
+	utils.AssertContains(t, output, "About")
+	utils.AssertContains(t, output, `id="tc-mobile-menu"`)
+	utils.AssertContains(t, output, `nonce="test-nonce"`)
+}
+
+func TestSimpleNavRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, SimpleNav("MyApp", "/", []NavLinkProps{
+		{Href: "/", Text: "Home"},
+		{Href: "/about", Text: "About"},
+	}, "/"))
+	utils.AssertContains(t, output, "MyApp")
+	utils.AssertContains(t, output, "Home")
+	utils.AssertContains(t, output, `aria-label="Main navigation"`)
+}

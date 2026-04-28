@@ -92,3 +92,75 @@ func TestInlineSuccessRender(t *testing.T) {
 	utils.AssertContains(t, output, "Done")
 	utils.AssertContains(t, output, "text-green-600")
 }
+
+func TestSpinnerRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Spinner(SpinnerMedium, "text-blue-600"))
+	utils.AssertContains(t, output, "<svg")
+	utils.AssertContains(t, output, "animate-spin")
+	utils.AssertContains(t, output, "h-6 w-6")
+}
+
+func TestLoadingOverlayRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, LoadingOverlay("Loading...", true, 45))
+	utils.AssertContains(t, output, "Loading...")
+	utils.AssertContains(t, output, "fixed inset-0")
+	utils.AssertContains(t, output, "width: 45%")
+}
+
+func TestInlineLoadingRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, InlineLoading("Saving..."))
+	utils.AssertContains(t, output, "Saving...")
+	utils.AssertContains(t, output, "animate-spin")
+}
+
+func TestSkeletonRender(t *testing.T) {
+	t.Parallel()
+	t.Run("text variant", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Skeleton(SkeletonText))
+		utils.AssertContains(t, output, "animate-pulse")
+		utils.AssertContains(t, output, "w-3/4")
+		utils.AssertContains(t, output, `aria-busy="true"`)
+	})
+	t.Run("card variant", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Skeleton(SkeletonCard))
+		utils.AssertContains(t, output, "animate-pulse")
+		utils.AssertContains(t, output, "space-y-4")
+	})
+}
+
+func TestSkeletonGroupRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, SkeletonGroup([]SkeletonVariant{SkeletonTitle, SkeletonText, SkeletonText}))
+	utils.AssertContains(t, output, "space-y-3")
+	utils.AssertContains(t, output, `aria-busy="true"`)
+}
+
+func TestProgressBarRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, ProgressBar(ProgressBarProps{
+		Current:  50,
+		Total:    100,
+		Label:    "Upload",
+		ShowLabel: true,
+	}))
+	utils.AssertContains(t, output, "Upload")
+	utils.AssertContains(t, output, `role="progressbar"`)
+	utils.AssertContains(t, output, `aria-valuenow="50"`)
+}
+
+func TestStepIndicatorRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, StepIndicator(StepIndicatorProps{
+		Steps:       []string{"Details", "Review", "Confirm"},
+		CurrentStep: 1,
+	}))
+	utils.AssertContains(t, output, "Details")
+	utils.AssertContains(t, output, "Review")
+	utils.AssertContains(t, output, "Confirm")
+	utils.AssertContains(t, output, `aria-current="step"`)
+}
