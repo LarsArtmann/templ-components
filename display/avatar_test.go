@@ -15,8 +15,8 @@ func TestAvatarRender(t *testing.T) {
 		output := utils.Render(t, Avatar(AvatarProps{
 			Src:      "/avatar.jpg",
 			Alt:      "Alice",
-			Size:     "md",
-			Shape:    "circle",
+			Size:     AvatarSizeMD,
+			Shape:    AvatarShapeCircle,
 		}))
 		utils.AssertContains(t, output, `src="/avatar.jpg"`)
 		utils.AssertContains(t, output, `alt="Alice"`)
@@ -27,8 +27,8 @@ func TestAvatarRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
 			Initials: "AB",
-			Size:     "lg",
-			Shape:    "square",
+			Size:     AvatarSizeLG,
+			Shape:    AvatarShapeSquare,
 		}))
 		utils.AssertContains(t, output, "AB")
 		utils.AssertContains(t, output, "rounded-lg")

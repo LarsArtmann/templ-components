@@ -2,35 +2,54 @@ package display
 
 import "github.com/larsartmann/templ-components/utils"
 
+// AvatarSize defines the size of an avatar
+type AvatarSize string
+
+const (
+	AvatarSizeXS AvatarSize = "xs"
+	AvatarSizeSM AvatarSize = "sm"
+	AvatarSizeMD AvatarSize = "md"
+	AvatarSizeLG AvatarSize = "lg"
+	AvatarSizeXL AvatarSize = "xl"
+)
+
+// AvatarShape defines the shape of an avatar
+type AvatarShape string
+
+const (
+	AvatarShapeCircle AvatarShape = "circle"
+	AvatarShapeSquare AvatarShape = "square"
+)
+
 // AvatarProps configures an avatar component
 type AvatarProps struct {
 	utils.BaseProps
 	Src      string
 	Alt      string
 	Initials string
-	Size     string // "xs", "sm", "md", "lg", "xl"
-	Shape    string // "circle", "square"
+	Size     AvatarSize
+	Shape    AvatarShape
 	Online   bool
 	Offline  bool
 }
 
-func avatarSizeClass(size string) string {
+func avatarSizeClass(size AvatarSize) string {
 	switch size {
-	case "xs":
+	case AvatarSizeXS:
 		return "h-6 w-6 text-xs"
-	case "sm":
+	case AvatarSizeSM:
 		return "h-8 w-8 text-sm"
-	case "lg":
+	case AvatarSizeLG:
 		return "h-12 w-12 text-lg"
-	case "xl":
+	case AvatarSizeXL:
 		return "h-14 w-14 text-xl"
 	default:
 		return "h-10 w-10 text-base"
 	}
 }
 
-func avatarShapeClass(shape string) string {
-	if shape == "square" {
+func avatarShapeClass(shape AvatarShape) string {
+	if shape == AvatarShapeSquare {
 		return "rounded-lg"
 	}
 	return "rounded-full"
