@@ -8,30 +8,44 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+// ModalSize defines the width of a modal dialog
+type ModalSize string
+
+// Modal size constants
+const (
+	ModalSizeSM   ModalSize = "sm"
+	ModalSizeMD   ModalSize = "md"
+	ModalSizeLG   ModalSize = "lg"
+	ModalSizeXL   ModalSize = "xl"
+	ModalSizeFull ModalSize = "full"
+)
+
 // ModalProps configures a modal dialog
 type ModalProps struct {
 	utils.BaseProps
 	Title string
 	Open  bool
-	Size  string // "sm", "md", "lg", "xl", "full"
+	Size  ModalSize
 }
 
 // DefaultModalProps returns sensible defaults
 func DefaultModalProps() ModalProps {
 	return ModalProps{ //nolint:exhaustruct // intentionally minimal defaults
-		Size: "md",
+		Size: ModalSizeMD,
 	}
 }
 
-func modalSizeClass(size string) string {
+func modalSizeClass(size ModalSize) string {
 	switch size {
-	case "sm":
+	case ModalSizeSM:
 		return "max-w-sm"
-	case "lg":
+	case ModalSizeMD:
+		return "max-w-md"
+	case ModalSizeLG:
 		return "max-w-lg"
-	case "xl":
+	case ModalSizeXL:
 		return "max-w-xl"
-	case "full":
+	case ModalSizeFull:
 		return "max-w-4xl"
 	default:
 		return "max-w-md"

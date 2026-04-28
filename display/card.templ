@@ -2,6 +2,16 @@ package display
 
 import "github.com/larsartmann/templ-components/utils"
 
+// CardPadding defines the internal padding of a card
+type CardPadding string
+
+const (
+	CardPaddingNone CardPadding = "none"
+	CardPaddingSM   CardPadding = "sm"
+	CardPaddingMD   CardPadding = "md"
+	CardPaddingLG   CardPadding = "lg"
+)
+
 // CardProps configures a card container
 type CardProps struct {
 	utils.BaseProps
@@ -9,13 +19,13 @@ type CardProps struct {
 	Subtitle     string
 	Footer       templ.Component
 	HeaderAction templ.Component
-	Padding      string // "none", "sm", "md", "lg"
+	Padding      CardPadding
 }
 
 // DefaultCardProps returns sensible defaults
 func DefaultCardProps() CardProps {
 	return CardProps{
-		Padding: "md",
+		Padding: CardPaddingMD,
 	}
 }
 
@@ -60,13 +70,13 @@ templ Card(props CardProps) {
 	</div>
 }
 
-func cardPaddingClass(p string) string {
+func cardPaddingClass(p CardPadding) string {
 	switch p {
-	case "none":
+	case CardPaddingNone:
 		return ""
-	case "sm":
+	case CardPaddingSM:
 		return "px-3 py-3"
-	case "lg":
+	case CardPaddingLG:
 		return "px-6 py-6"
 	default:
 		return "px-4 py-5 sm:p-6"

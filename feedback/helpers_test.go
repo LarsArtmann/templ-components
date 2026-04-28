@@ -97,16 +97,15 @@ func TestAlertStyles(t *testing.T) {
 func TestProgressHeightClass(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		size string
+		size ProgressBarSize
 		want string
 	}{
-		{"sm", "h-1.5"},
-		{"md", "h-2.5"},
-		{"lg", "h-4"},
-		{"unknown", "h-2.5"},
+		{ProgressBarSizeSM, "h-1.5"},
+		{ProgressBarSizeMD, "h-2.5"},
+		{ProgressBarSizeLG, "h-4"},
 	}
 	for _, tt := range tests {
-		t.Run(tt.size, func(t *testing.T) {
+		t.Run(string(tt.size), func(t *testing.T) {
 			t.Parallel()
 			got := progressHeightClass(tt.size)
 			if got != tt.want {

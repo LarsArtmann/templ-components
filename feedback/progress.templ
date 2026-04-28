@@ -2,20 +2,29 @@ package feedback
 
 import "fmt"
 
+// ProgressBarSize defines the height of a progress bar
+type ProgressBarSize string
+
+const (
+	ProgressBarSizeSM ProgressBarSize = "sm"
+	ProgressBarSizeMD ProgressBarSize = "md"
+	ProgressBarSizeLG ProgressBarSize = "lg"
+)
+
 // ProgressBarProps configures a progress bar
 type ProgressBarProps struct {
 	Current   int
 	Total     int
 	Label     string
-	Size      string // "sm", "md", "lg"
-	Color     string // Tailwind color class, e.g. "bg-blue-600"
+	Size      ProgressBarSize
+	Color     string
 	ShowLabel bool
 }
 
 // DefaultProgressBarProps returns sensible defaults
 func DefaultProgressBarProps() ProgressBarProps {
 	return ProgressBarProps{
-		Size:  "md",
+		Size:  ProgressBarSizeMD,
 		Color: "bg-blue-600 dark:bg-blue-500",
 	}
 }
@@ -45,15 +54,15 @@ templ ProgressBar(props ProgressBarProps) {
 	</div>
 }
 
-func progressTrackClass(size string) string {
+func progressTrackClass(size ProgressBarSize) string {
 	return "w-full bg-gray-200 dark:bg-gray-700 rounded-full " + progressHeightClass(size)
 }
 
-func progressHeightClass(size string) string {
+func progressHeightClass(size ProgressBarSize) string {
 	switch size {
-	case "sm":
+	case ProgressBarSizeSM:
 		return "h-1.5"
-	case "lg":
+	case ProgressBarSizeLG:
 		return "h-4"
 	default:
 		return "h-2.5"

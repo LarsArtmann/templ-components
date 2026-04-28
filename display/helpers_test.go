@@ -51,16 +51,16 @@ func TestBadgeSizeClass(t *testing.T) {
 func TestCardPaddingClass(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		padding string
+		padding CardPadding
 		want    string
 	}{
-		{"none", ""},
-		{"sm", "px-3 py-3"},
-		{"md", "px-4 py-5 sm:p-6"},
-		{"lg", "px-6 py-6"},
+		{CardPaddingNone, ""},
+		{CardPaddingSM, "px-3 py-3"},
+		{CardPaddingMD, "px-4 py-5 sm:p-6"},
+		{CardPaddingLG, "px-6 py-6"},
 	}
 	for _, tt := range tests {
-		t.Run(tt.padding, func(t *testing.T) {
+		t.Run(string(tt.padding), func(t *testing.T) {
 			t.Parallel()
 			got := cardPaddingClass(tt.padding)
 			if got != tt.want {

@@ -23,6 +23,19 @@ func spinnerSizeClass(s SpinnerSize) string {
 	}
 }
 
+// SkeletonVariant defines the shape of a skeleton placeholder
+type SkeletonVariant string
+
+const (
+	SkeletonText      SkeletonVariant = "text"
+	SkeletonTextShort SkeletonVariant = "text-short"
+	SkeletonTitle     SkeletonVariant = "title"
+	SkeletonAvatar    SkeletonVariant = "avatar"
+	SkeletonImage     SkeletonVariant = "image"
+	SkeletonCard      SkeletonVariant = "card"
+	SkeletonTableRow  SkeletonVariant = "table-row"
+)
+
 // Spinner renders a simple animated loading spinner
 //
 //	@feedback.Spinner(feedback.SpinnerMedium, "text-blue-600")
@@ -79,20 +92,20 @@ templ InlineLoading(message string) {
 // Skeleton renders a pulsing placeholder for loading content
 //
 //	@feedback.Skeleton("text")
-templ Skeleton(variant string) {
+templ Skeleton(variant SkeletonVariant) {
 	<div aria-busy="true" role="status" aria-label="Loading" class="contents">
 		switch variant {
-		case "text":
+		case SkeletonText:
 			<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-		case "text-short":
+		case SkeletonTextShort:
 			<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-		case "title":
+		case SkeletonTitle:
 			<div class="animate-pulse h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-		case "avatar":
+		case SkeletonAvatar:
 			<div class="animate-pulse h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-		case "image":
+		case SkeletonImage:
 			<div class="animate-pulse h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
-		case "card":
+		case SkeletonCard:
 			<div class="animate-pulse space-y-4">
 				<div class="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
 				<div class="space-y-3">
@@ -100,7 +113,7 @@ templ Skeleton(variant string) {
 					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
 				</div>
 			</div>
-		case "table-row":
+		case SkeletonTableRow:
 			<div class="animate-pulse grid grid-cols-4 gap-4 mb-3">
 				for range 4 {
 					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
@@ -115,7 +128,7 @@ templ Skeleton(variant string) {
 // SkeletonGroup renders multiple skeleton placeholders
 //
 //	@feedback.SkeletonGroup([]string{"title", "text", "text", "text"})
-templ SkeletonGroup(variants []string) {
+templ SkeletonGroup(variants []SkeletonVariant) {
 	<div class="space-y-3 animate-pulse" aria-busy="true" role="status" aria-label="Loading content">
 		for _, v := range variants {
 			@Skeleton(v)

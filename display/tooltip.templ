@@ -2,33 +2,43 @@ package display
 
 import "github.com/larsartmann/templ-components/utils"
 
+// TooltipPosition defines where the tooltip appears relative to the trigger
+type TooltipPosition string
+
+const (
+	TooltipPositionTop    TooltipPosition = "top"
+	TooltipPositionBottom TooltipPosition = "bottom"
+	TooltipPositionLeft   TooltipPosition = "left"
+	TooltipPositionRight  TooltipPosition = "right"
+)
+
 // TooltipProps configures a tooltip component
 type TooltipProps struct {
 	utils.BaseProps
 	Text     string
-	Position string // "top", "bottom", "left", "right"
+	Position TooltipPosition
 }
 
-func tooltipPositionClass(pos string) string {
+func tooltipPositionClass(pos TooltipPosition) string {
 	switch pos {
-	case "bottom":
+	case TooltipPositionBottom:
 		return "top-full left-1/2 -translate-x-1/2 mt-2"
-	case "left":
+	case TooltipPositionLeft:
 		return "right-full top-1/2 -translate-y-1/2 mr-2"
-	case "right":
+	case TooltipPositionRight:
 		return "left-full top-1/2 -translate-y-1/2 ml-2"
 	default:
 		return "bottom-full left-1/2 -translate-x-1/2 mb-2"
 	}
 }
 
-func tooltipArrowClass(pos string) string {
+func tooltipArrowClass(pos TooltipPosition) string {
 	switch pos {
-	case "bottom":
+	case TooltipPositionBottom:
 		return "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 dark:border-b-gray-700"
-	case "left":
+	case TooltipPositionLeft:
 		return "left-full top-1/2 -translate-y-1/2 border-l-gray-900 dark:border-l-gray-700"
-	case "right":
+	case TooltipPositionRight:
 		return "right-full top-1/2 -translate-y-1/2 border-r-gray-900 dark:border-r-gray-700"
 	default:
 		return "top-full left-1/2 -translate-x-1/2 border-t-gray-900 dark:border-t-gray-700"

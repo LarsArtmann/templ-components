@@ -17,7 +17,7 @@ func TestCardRender(t *testing.T) {
 			Subtitle:     "",
 			Footer:       nil,
 			HeaderAction: nil,
-			Padding:      "md",
+			Padding:      CardPaddingMD,
 		}
 		output := utils.Render(t, Card(props))
 		utils.AssertContains(t, output, "Users")
@@ -38,7 +38,7 @@ func TestCardRender(t *testing.T) {
 			Subtitle:     "",
 			Footer:       nil,
 			HeaderAction: nil,
-			Padding:      "md",
+			Padding:      CardPaddingMD,
 		}
 		output := utils.Render(t, Card(props))
 		utils.AssertContains(t, output, `id="my-card"`)

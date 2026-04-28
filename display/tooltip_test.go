@@ -14,7 +14,7 @@ func TestTooltipRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tooltip(TooltipProps{
 			Text:     "More info",
-			Position: "top",
+			Position: TooltipPositionTop,
 		}))
 		utils.AssertContains(t, output, "More info")
 		utils.AssertContains(t, output, `role="tooltip"`)
@@ -26,7 +26,7 @@ func TestTooltipRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tooltip(TooltipProps{
 			Text:     "Help",
-			Position: "bottom",
+			Position: TooltipPositionBottom,
 		}))
 		utils.AssertContains(t, output, "Help")
 		utils.AssertContains(t, output, "top-full")
@@ -36,7 +36,7 @@ func TestTooltipRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tooltip(TooltipProps{
 			Text:     "Details",
-			Position: "right",
+			Position: TooltipPositionRight,
 		}))
 		utils.AssertContains(t, output, "left-full")
 	})

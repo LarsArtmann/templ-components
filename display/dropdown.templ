@@ -11,12 +11,20 @@ type DropdownItem struct {
 	Attrs    templ.Attributes
 }
 
+// DropdownPosition defines where the dropdown menu appears
+type DropdownPosition string
+
+const (
+	DropdownPositionLeft  DropdownPosition = "left"
+	DropdownPositionRight DropdownPosition = "right"
+)
+
 // DropdownProps configures a dropdown action menu
 type DropdownProps struct {
 	utils.BaseProps
 	Label    string
 	Items    []DropdownItem
-	Position string // "left", "right"
+	Position DropdownPosition
 }
 
 // Dropdown renders a button-triggered action menu
@@ -53,7 +61,7 @@ templ Dropdown(props DropdownProps) {
 			aria-orientation="vertical"
 			aria-labelledby={ props.ID + "-button" }
 			tabindex="-1"
-			if props.Position == "right" {
+			if props.Position == DropdownPositionRight {
 				data-dropdown-align="right"
 			}
 		>

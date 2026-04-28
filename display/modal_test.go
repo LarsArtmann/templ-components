@@ -1,4 +1,3 @@
-// Package display provides tests for display components like Badge, Card, Modal, and EmptyState.
 package display
 
 import (
@@ -21,7 +20,7 @@ func TestModalRender(t *testing.T) {
 			},
 			Title: "Confirm",
 			Open:  false,
-			Size:  "md",
+			Size:  ModalSizeMD,
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, `id="test-modal"`)
@@ -44,7 +43,7 @@ func TestModalRender(t *testing.T) {
 			},
 			Title: "Hello",
 			Open:  true,
-			Size:  "md",
+			Size:  ModalSizeMD,
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, "opacity-100")
@@ -52,15 +51,15 @@ func TestModalRender(t *testing.T) {
 	})
 
 	t.Run("size variants", func(t *testing.T) {
-		sizes := map[string]string{
-			"sm":   "max-w-sm",
-			"md":   "max-w-md",
-			"lg":   "max-w-lg",
-			"xl":   "max-w-xl",
-			"full": "max-w-4xl",
+		sizes := map[ModalSize]string{
+			ModalSizeSM:   "max-w-sm",
+			ModalSizeMD:   "max-w-md",
+			ModalSizeLG:   "max-w-lg",
+			ModalSizeXL:   "max-w-xl",
+			ModalSizeFull: "max-w-4xl",
 		}
 		for size, want := range sizes {
-			t.Run(size, func(t *testing.T) {
+			t.Run(string(size), func(t *testing.T) {
 				t.Parallel()
 				props := ModalProps{
 					BaseProps: utils.BaseProps{

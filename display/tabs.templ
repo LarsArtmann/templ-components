@@ -11,11 +11,19 @@ type Tab struct {
 	Content templ.Component
 }
 
+// TabsStyle defines the visual style of tabs
+type TabsStyle string
+
+const (
+	TabsStyleDefault  TabsStyle = "default"
+	TabsStylePills    TabsStyle = "pills"
+)
+
 // TabsProps configures a tab component
 type TabsProps struct {
 	utils.BaseProps
 	Tabs      []Tab
-	TabStyle  string // "default", "pills", "underline"
+	TabStyle  TabsStyle
 }
 
 // Tabs renders a tabbed interface with accessible markup
@@ -35,11 +43,11 @@ templ Tabs(props TabsProps) {
 		{ props.Attrs... }
 	>
 		<div role="tablist" aria-label="Tabs" class="border-b border-gray-200 dark:border-slate-700">
-			<nav class={ "-mb-px flex space-x-8", templ.KV("space-x-2", props.TabStyle == "pills") }
+			<nav class={ "-mb-px flex space-x-8", templ.KV("space-x-2", props.TabStyle == TabsStylePills) }
 				aria-label="Tabs"
 			>
 				for _, tab := range props.Tabs {
-					if props.TabStyle == "pills" {
+					if props.TabStyle == TabsStylePills {
 						if tab.Active {
 							<a
 								href={ templ.SafeURL("#" + tab.ID) }
