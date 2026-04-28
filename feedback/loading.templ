@@ -80,7 +80,8 @@ templ InlineLoading(message string) {
 //
 //	@feedback.Skeleton("text")
 templ Skeleton(variant string) {
-	switch variant {
+	<div aria-busy="true" role="status" aria-label="Loading" class="contents">
+		switch variant {
 		case "text":
 			<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
 		case "text-short":
@@ -107,14 +108,15 @@ templ Skeleton(variant string) {
 			</div>
 		default:
 			<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-	}
+		}
+	</div>
 }
 
 // SkeletonGroup renders multiple skeleton placeholders
 //
 //	@feedback.SkeletonGroup([]string{"title", "text", "text", "text"})
 templ SkeletonGroup(variants []string) {
-	<div class="space-y-3 animate-pulse">
+	<div class="space-y-3 animate-pulse" aria-busy="true" role="status" aria-label="Loading content">
 		for _, v := range variants {
 			@Skeleton(v)
 		}

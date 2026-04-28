@@ -5,7 +5,9 @@ package forms
 //	@forms.Label("email", "Email address", true)
 templ Label(forID, text string, required bool) {
 	<label
-		for={ forID }
+		if forID != "" {
+			for={ forID }
+		}
 		class="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
 	>
 		{ text }
@@ -17,7 +19,11 @@ templ Label(forID, text string, required bool) {
 
 // FieldError renders a field-level validation error
 //
-//	@forms.FieldError("This field is required")
-templ FieldError(message string) {
-	<p class="mt-2 text-sm text-red-600 dark:text-red-400" id={ SanitizeID(message) + "-error" }>{ message }</p>
+//	@forms.FieldError("email", "This field is required")
+templ FieldError(fieldID, message string) {
+	if fieldID != "" {
+		<p class="mt-2 text-sm text-red-600 dark:text-red-400" id={ fieldID + "-error" }>{ message }</p>
+	} else {
+		<p class="mt-2 text-sm text-red-600 dark:text-red-400">{ message }</p>
+	}
 }

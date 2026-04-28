@@ -8,9 +8,9 @@ Designed to be shared across all your Go projects. Import only the packages you 
 
 - **Layout** - Base HTML layouts, theme toggle, dark mode support
 - **Feedback** - Toasts, alerts, loading spinners, skeletons, progress bars
-- **Display** - Badges, cards, stat cards, empty states
+- **Display** - Badges, cards, stat cards, empty states, tables, tabs
 - **Forms** - Inputs, textareas, selects, labels, validation errors
-- **Navigation** - Navbars, breadcrumbs, mobile menus
+- **Navigation** - Navbars, breadcrumbs, mobile menus, pagination
 - **Icons** - 40+ common SVG icons
 - **HTMX** - Error handling, loading indicators, helpers
 - **Utils** - Common Go helpers
@@ -39,8 +39,8 @@ import (
     "github.com/larsartmann/templ-components/display"
 )
 
-func MyPage() templ.Component {
-    return layout.Base(layout.BaseProps{
+templ MyPage() {
+    @layout.Base(layout.BaseProps{
         Title:       "Dashboard",
         Description: "My awesome dashboard",
     }) {
@@ -116,6 +116,22 @@ func MyPage() templ.Component {
     ActionText:  "Connect",
     ActionHref:  "/connect",
 })
+
+@display.Table(display.TableProps{
+    Headers: []string{"Name", "Email", "Role"},
+    Rows: []display.TableRow{
+        display.SimpleTableRow("Alice", "alice@example.com", "Admin"),
+        display.SimpleTableRow("Bob", "bob@example.com", "User"),
+    },
+    Striped: true,
+})
+
+@display.Tabs(display.TabsProps{
+    Tabs: []display.Tab{
+        {ID: "users", Label: "Users", Active: true},
+        {ID: "settings", Label: "Settings"},
+    },
+})
 ```
 
 ### `forms` - Form Primitives
@@ -162,6 +178,12 @@ func MyPage() templ.Component {
 })
 
 @navigation.Footer("MyApp")
+
+@navigation.Pagination(navigation.PaginationProps{
+    CurrentPage: 2,
+    TotalPages:  10,
+    BaseURL:     "/users",
+})
 ```
 
 ### `icons` - SVG Icons

@@ -1,0 +1,87 @@
+// Package display provides data display components like Table, Card, Badge, and Tabs.
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// TableCell represents a single cell in a table row
+type TableCell struct {
+	Text string
+}
+
+// TableRow represents a single row in a table
+type TableRow struct {
+	Cells []TableCell
+}
+
+// SimpleTableRow creates a row from string values for convenience
+func SimpleTableRow(values ...string) TableRow {
+	r := TableRow{Cells: make([]TableCell, len(values))}
+	for i, v := range values {
+		r.Cells[i] = TableCell{Text: v}
+	}
+	return r
+}
+
+// TableProps configures a data table
+type TableProps struct {
+	utils.BaseProps
+	Caption string
+	Headers []string
+	Rows    []TableRow
+	Striped bool
+	Hover   bool
+	Bordered bool
+}
+
+// Table renders a responsive data table
+//
+//	@display.Table(display.TableProps{
+//	   Headers: []string{"Name", "Email", "Role"},
+//	   Rows: []display.TableRow{
+//	     display.SimpleTableRow("Alice", "alice@example.com", "Admin"),
+//	     display.SimpleTableRow("Bob", "bob@example.com", "User"),
+//	   },
+//	})
+templ Table(props TableProps) {
+	<div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-slate-700">
+		<table
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-sm", props.Class) }
+			{ props.Attrs... }
+		>
+			if props.Caption != "" {
+				<caption class="sr-only">{ props.Caption }</caption>
+			}
+			if len(props.Headers) > 0 {
+				<thead class="bg-gray-50 dark:bg-slate-800">
+					<tr>
+						for _, h := range props.Headers {
+							<th
+								scope="col"
+								class="px-4 py-3 text-left font-semibold text-gray-900 dark:text-white"
+							>
+								{ h }
+							</th>
+						}
+					</tr>
+				</thead>
+			}
+			<tbody class="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-900">
+				for i, row := range props.Rows {
+					<tr
+						class={
+							templ.KV("bg-gray-50 dark:bg-slate-800/50", props.Striped && i%2 == 1),
+							templ.KV("hover:bg-gray-100 dark:hover:bg-slate-800", props.Hover),
+						}
+					>
+						for _, cell := range row.Cells {
+							<td class="px-4 py-3 text-gray-700 dark:text-gray-300">{ cell.Text }</td>
+						}
+					</tr>
+				}
+			</tbody>
+		</table>
+	</div>
+}

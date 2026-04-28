@@ -1,7 +1,10 @@
 // Package feedback provides tests for feedback components like Alert, Toast, Spinner, and Loading.
 package feedback
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 func TestSpinnerSizeClass(t *testing.T) {
 	t.Parallel()
@@ -27,13 +30,28 @@ func TestSpinnerSizeClass(t *testing.T) {
 
 func TestToastStyles(t *testing.T) {
 	t.Parallel()
-	types := []ToastType{ToastSuccess, ToastError, ToastWarning, ToastInfo}
-	for _, tt := range types {
-		t.Run(string(tt), func(t *testing.T) {
+	tests := []struct {
+		typ           ToastType
+		wantBorder    string
+		wantIconColor string
+	}{
+		{ToastSuccess, "border-green-200 dark:border-green-800", "text-green-600 dark:text-green-400"},
+		{ToastError, "border-red-200 dark:border-red-800", "text-red-600 dark:text-red-400"},
+		{ToastWarning, "border-yellow-200 dark:border-yellow-800", "text-yellow-600 dark:text-yellow-400"},
+		{ToastInfo, "border-blue-200 dark:border-blue-800", "text-blue-600 dark:text-blue-400"},
+	}
+	for _, tt := range tests {
+		t.Run(string(tt.typ), func(t *testing.T) {
 			t.Parallel()
-			border, bg, text, icon := toastStyles(tt)
+			border, bg, text, icon := toastStyles(tt.typ)
 			if border == "" || bg == "" || text == "" || icon == "" {
-				t.Errorf("toastStyles(%q) returned empty value: border=%q bg=%q text=%q icon=%q", tt, border, bg, text, icon)
+				t.Errorf("toastStyles(%q) returned empty value: border=%q bg=%q text=%q icon=%q", tt.typ, border, bg, text, icon)
+			}
+			if border != tt.wantBorder {
+				t.Errorf("toastStyles(%q) border = %q, want %q", tt.typ, border, tt.wantBorder)
+			}
+			if icon != tt.wantIconColor {
+				t.Errorf("toastStyles(%q) icon = %q, want %q", tt.typ, icon, tt.wantIconColor)
 			}
 		})
 	}
@@ -49,13 +67,28 @@ func TestToastStylesDefault(t *testing.T) {
 
 func TestAlertStyles(t *testing.T) {
 	t.Parallel()
-	types := []AlertType{AlertSuccess, AlertError, AlertWarning, AlertInfo}
-	for _, tt := range types {
-		t.Run(string(tt), func(t *testing.T) {
+	tests := []struct {
+		typ           AlertType
+		wantBorder    string
+		wantIconColor string
+	}{
+		{AlertSuccess, "border-green-200 dark:border-green-800", "text-green-400"},
+		{AlertError, "border-red-200 dark:border-red-800", "text-red-400"},
+		{AlertWarning, "border-yellow-200 dark:border-yellow-800", "text-yellow-400"},
+		{AlertInfo, "border-blue-200 dark:border-blue-800", "text-blue-400"},
+	}
+	for _, tt := range tests {
+		t.Run(string(tt.typ), func(t *testing.T) {
 			t.Parallel()
-			border, bg, text, icon := alertStyles(tt)
+			border, bg, text, icon := alertStyles(tt.typ)
 			if border == "" || bg == "" || text == "" || icon == "" {
-				t.Errorf("alertStyles(%q) returned empty value: border=%q bg=%q text=%q icon=%q", tt, border, bg, text, icon)
+				t.Errorf("alertStyles(%q) returned empty value: border=%q bg=%q text=%q icon=%q", tt.typ, border, bg, text, icon)
+			}
+			if border != tt.wantBorder {
+				t.Errorf("alertStyles(%q) border = %q, want %q", tt.typ, border, tt.wantBorder)
+			}
+			if icon != tt.wantIconColor {
+				t.Errorf("alertStyles(%q) icon = %q, want %q", tt.typ, icon, tt.wantIconColor)
 			}
 		})
 	}
@@ -97,18 +130,18 @@ func TestStepCircleClass(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		step, current int
-		wantContains  string
+		want          string
 	}{
-		{0, 2, "bg-blue-600"},
-		{2, 2, "border-blue-600"},
-		{3, 2, "bg-gray-100"},
+		{0, 2, "bg-blue-600 text-white dark:bg-blue-500"},
+		{2, 2, "bg-white border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"},
+		{3, 2, "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"},
 	}
 	for _, tt := range tests {
-		t.Run("", func(t *testing.T) {
+		t.Run(fmt.Sprintf("step-%d-current-%d", tt.step, tt.current), func(t *testing.T) {
 			t.Parallel()
 			got := stepCircleClass(tt.step, tt.current)
-			if got == "" {
-				t.Errorf("stepCircleClass(%d, %d) returned empty", tt.step, tt.current)
+			if got != tt.want {
+				t.Errorf("stepCircleClass(%d, %d) = %q, want %q", tt.step, tt.current, got, tt.want)
 			}
 		})
 	}

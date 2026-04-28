@@ -54,12 +54,18 @@ templ Textarea(props TextareaProps) {
 		if props.ReadOnly {
 			readonly
 		}
+		if props.Error != "" {
+			aria-invalid="true"
+			if props.ID != "" {
+				aria-describedby={ props.ID + "-error" }
+			}
+		}
 		{ props.Attrs... }
 	>
 		{ props.Value }
 	</textarea>
 	if props.Error != "" {
-		@FieldError(props.Error)
+		@FieldError(props.ID, props.Error)
 	}
 	if props.HelpText != "" {
 		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>

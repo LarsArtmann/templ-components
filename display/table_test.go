@@ -1,0 +1,57 @@
+// Package display provides tests for display components.
+package display
+
+import (
+	"testing"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+func TestTableRender(t *testing.T) {
+	t.Parallel()
+	t.Run("basic table", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"Name", "Email"},
+			Rows: []TableRow{
+				SimpleTableRow("Alice", "alice@example.com"),
+				SimpleTableRow("Bob", "bob@example.com"),
+			},
+		}))
+		utils.AssertContains(t, output, "Name")
+		utils.AssertContains(t, output, "Email")
+		utils.AssertContains(t, output, "Alice")
+		utils.AssertContains(t, output, "bob@example.com")
+		utils.AssertContains(t, output, "scope=\"col\"")
+	})
+
+	t.Run("striped rows", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A"},
+			Rows:    []TableRow{SimpleTableRow("1"), SimpleTableRow("2")},
+			Striped: true,
+		}))
+		utils.AssertContains(t, output, "bg-gray-50")
+	})
+
+	t.Run("with caption", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Caption: "User list",
+			Headers: []string{"Name"},
+			Rows:    []TableRow{SimpleTableRow("Alice")},
+		}))
+		utils.AssertContains(t, output, "User list")
+	})
+
+	t.Run("with custom id", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			BaseProps: utils.BaseProps{ID: "users-table"},
+			Headers:   []string{"Name"},
+			Rows:      []TableRow{SimpleTableRow("Alice")},
+		}))
+		utils.AssertContains(t, output, `id="users-table"`)
+	})
+}

@@ -48,6 +48,12 @@ templ Select(props SelectProps) {
 		if props.Disabled {
 			disabled
 		}
+		if props.Error != "" {
+			aria-invalid="true"
+			if props.ID != "" {
+				aria-describedby={ props.ID + "-error" }
+			}
+		}
 		{ props.Attrs... }
 	>
 		for _, opt := range props.Options {
@@ -65,7 +71,7 @@ templ Select(props SelectProps) {
 		}
 	</select>
 	if props.Error != "" {
-		@FieldError(props.Error)
+		@FieldError(props.ID, props.Error)
 	}
 	if props.HelpText != "" {
 		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>

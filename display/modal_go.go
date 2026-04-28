@@ -2,6 +2,8 @@
 package display
 
 import (
+	"strings"
+
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -17,18 +19,8 @@ type ModalProps struct {
 
 // DefaultModalProps returns sensible defaults
 func DefaultModalProps() ModalProps {
-	return ModalProps{
-		BaseProps: utils.BaseProps{
-			ID:        "",
-			Class:     "",
-			Attrs:     nil,
-			AriaLabel: "",
-			Nonce:     "",
-		},
-		Title: "",
-		Open:  false,
-		Size:  "md",
-		Nonce: "",
+	return ModalProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Size: "md",
 	}
 }
 
@@ -50,7 +42,9 @@ func modalSizeClass(size string) string {
 func modalCloseHandler(id string) templ.ComponentScript {
 	name := "tcCloseModal_" + id
 	fn := "function tcCloseModal_" + id + "(id){tcCloseModal(id)}"
-	call := "tcCloseModal('" + id + "')"
+	// Escape single quotes in id to prevent breaking the generated JavaScript
+	escapedID := strings.ReplaceAll(id, "'", "\\'")
+	call := "tcCloseModal('" + escapedID + "')"
 	return templ.ComponentScript{
 		Name:       name,
 		Function:   fn,

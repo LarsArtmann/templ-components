@@ -24,6 +24,7 @@ type NavProps struct {
 //	})
 templ Nav(props NavProps) {
 	<nav
+		aria-label="Main navigation"
 		class={ "z-40 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900",
 			templ.KV("sticky top-0", props.Sticky) }
 	>

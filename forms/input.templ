@@ -80,11 +80,17 @@ templ Input(props InputProps) {
 			if props.AutoFocus {
 				autofocus
 			}
+			if props.Error != "" {
+				aria-invalid="true"
+				if props.ID != "" {
+					aria-describedby={ props.ID + "-error" }
+				}
+			}
 			{ props.Attrs... }
 		/>
 	</div>
 	if props.Error != "" {
-		@FieldError(props.Error)
+		@FieldError(props.ID, props.Error)
 	}
 	if props.HelpText != "" {
 		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
@@ -124,6 +130,12 @@ templ Checkbox(props CheckboxProps) {
 				if props.Disabled {
 					disabled
 				}
+				if props.Error != "" {
+					aria-invalid="true"
+					if props.ID != "" {
+						aria-describedby={ props.ID + "-error" }
+					}
+				}
 				{ props.Attrs... }
 			/>
 		</div>
@@ -137,6 +149,6 @@ templ Checkbox(props CheckboxProps) {
 		</div>
 	</div>
 	if props.Error != "" {
-		@FieldError(props.Error)
+		@FieldError(props.ID, props.Error)
 	}
 }

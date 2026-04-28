@@ -1,0 +1,101 @@
+// Package display provides tab components for content switching.
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// Tab represents a single tab panel
+type Tab struct {
+	ID      string
+	Label   string
+	Active  bool
+	Content templ.Component
+}
+
+// TabsProps configures a tab component
+type TabsProps struct {
+	utils.BaseProps
+	Tabs      []Tab
+	TabStyle  string // "default", "pills", "underline"
+}
+
+// Tabs renders a tabbed interface with accessible markup
+//
+//	@display.Tabs(display.TabsProps{
+//	   Tabs: []display.Tab{
+//	     {ID: "users", Label: "Users", Active: true},
+//	     {ID: "settings", Label: "Settings"},
+//	   },
+//	})
+templ Tabs(props TabsProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("w-full", props.Class) }
+		{ props.Attrs... }
+	>
+		<div role="tablist" aria-label="Tabs" class="border-b border-gray-200 dark:border-slate-700">
+			<nav class={ "-mb-px flex space-x-8", templ.KV("space-x-2", props.TabStyle == "pills") }
+				aria-label="Tabs"
+			>
+				for _, tab := range props.Tabs {
+					if props.TabStyle == "pills" {
+						if tab.Active {
+							<a
+								href={ templ.SafeURL("#" + tab.ID) }
+								role="tab"
+								aria-selected="true"
+								class="rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white"
+							>
+								{ tab.Label }
+							</a>
+						} else {
+							<a
+								href={ templ.SafeURL("#" + tab.ID) }
+								role="tab"
+								aria-selected="false"
+								class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
+							>
+								{ tab.Label }
+							</a>
+						}
+					} else {
+						if tab.Active {
+							<a
+								href={ templ.SafeURL("#" + tab.ID) }
+								role="tab"
+								aria-selected="true"
+								class="whitespace-nowrap border-b-2 border-blue-500 px-1 py-4 text-sm font-medium text-blue-600 dark:text-blue-400"
+							>
+								{ tab.Label }
+							</a>
+						} else {
+							<a
+								href={ templ.SafeURL("#" + tab.ID) }
+								role="tab"
+								aria-selected="false"
+								class="whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200"
+							>
+								{ tab.Label }
+							</a>
+						}
+					}
+				}
+			</nav>
+		</div>
+		for _, tab := range props.Tabs {
+			if tab.Content != nil {
+				<div
+					id={ tab.ID }
+					role="tabpanel"
+					if !tab.Active {
+						hidden
+					}
+					class="mt-4"
+				>
+					@tab.Content
+				</div>
+			}
+		}
+	</div>
+}
