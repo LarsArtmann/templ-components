@@ -2,6 +2,7 @@
 package utils
 
 import (
+	"slices"
 	"strings"
 	"testing"
 	"time"
@@ -124,12 +125,7 @@ func TestClass(t *testing.T) {
 }
 
 func containsWord(s, word string) bool {
-	for _, w := range splitSpace(s) {
-		if w == word {
-			return true
-		}
-	}
-	return false
+	return slices.Contains(splitSpace(s), word)
 }
 
 func splitSpace(s string) []string {

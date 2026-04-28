@@ -2,6 +2,7 @@ package navigation
 
 import (
 	"fmt"
+	"strings"
 
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -24,19 +25,10 @@ func (p PaginationProps) pageURL(page int) string {
 	sep := "?"
 	if len(p.BaseURL) > 0 && p.BaseURL[len(p.BaseURL)-1] == '?' {
 		sep = ""
-	} else if containsQuery(p.BaseURL) {
+	} else if strings.Contains(p.BaseURL, "?") {
 		sep = "&"
 	}
 	return fmt.Sprintf("%s%s%s=%d", p.BaseURL, sep, param, page)
-}
-
-func containsQuery(s string) bool {
-	for i := 0; i < len(s); i++ {
-		if s[i] == '?' {
-			return true
-		}
-	}
-	return false
 }
 
 func paginationRange(current, total, maxVisible int) (start, end int) {
