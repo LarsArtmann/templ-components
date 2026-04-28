@@ -20,7 +20,8 @@ func TestThemeToggleRender(t *testing.T) {
 	output := utils.Render(t, ThemeToggle("Toggle theme", "nonce-xyz"))
 	utils.AssertContains(t, output, `aria-label="Toggle theme"`)
 	utils.AssertContains(t, output, `nonce="nonce-xyz"`)
-	utils.AssertContains(t, output, "tcToggleTheme")
+	utils.AssertContains(t, output, "data-theme-toggle")
+	utils.AssertNotContains(t, output, "onclick=")
 }
 
 func TestBaseRender(t *testing.T) {
