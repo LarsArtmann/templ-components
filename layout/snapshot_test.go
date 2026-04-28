@@ -45,6 +45,38 @@ func TestBaseRender(t *testing.T) {
 	utils.AssertContains(t, output, `lang="en"`)
 	utils.AssertContains(t, output, `nonce="test-nonce"`)
 	utils.AssertContains(t, output, `href="/app.css"`)
+	utils.AssertContains(t, output, `id="main-content"`)
+	utils.AssertContains(t, output, "Skip to main content")
+}
+
+func TestBaseRenderFullProps(t *testing.T) {
+	t.Parallel()
+	props := BaseProps{
+		Title:          "Full Page",
+		Description:    "A test page",
+		Locale:         "de",
+		OGImage:        "/og.png",
+		ThemeColor:     "#ffffff",
+		DarkThemeColor: "#000000",
+		CSSPath:        "/style.css",
+		Favicon:        "/fav.ico",
+		HTMXVersion:    "2.0.6",
+		HTMXSRI:        "true",
+		BodyClass:      "bg-gray-50",
+		Nonce:          "abc",
+		HeadContent:    nil,
+	}
+	output := utils.Render(t, Base(props))
+	utils.AssertContains(t, output, "<title>Full Page</title>")
+	utils.AssertContains(t, output, `name="description" content="A test page"`)
+	utils.AssertContains(t, output, `property="og:image" content="/og.png"`)
+	utils.AssertContains(t, output, `name="theme-color" content="#ffffff"`)
+	utils.AssertContains(t, output, `name="theme-color" content="#000000"`)
+	utils.AssertContains(t, output, `href="/style.css"`)
+	utils.AssertContains(t, output, `href="/fav.ico"`)
+	utils.AssertContains(t, output, `nonce="abc"`)
+	utils.AssertContains(t, output, "htmx.org@2.0.6")
+	utils.AssertContains(t, output, "response-targets.js")
 }
 
 func TestMinimalRender(t *testing.T) {

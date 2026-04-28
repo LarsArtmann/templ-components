@@ -7,8 +7,8 @@ Designed to be shared across all your Go projects. Import only the packages you 
 ## Features
 
 - **Layout** - Base HTML layouts, theme toggle, dark mode support
-- **Feedback** - Toasts, alerts, loading spinners, skeletons, progress bars
-- **Display** - Badges, cards, stat cards, empty states, tables, tabs
+- **Feedback** - Toasts, alerts, loading spinners, skeletons, progress bars, inline errors/success
+- **Display** - Badges, cards, stat cards, empty states, tables, tabs, accordions, dropdowns, tooltips, avatars
 - **Forms** - Inputs, textareas, selects, labels, validation errors
 - **Navigation** - Navbars, breadcrumbs, mobile menus, pagination
 - **Icons** - 40+ common SVG icons
@@ -132,6 +132,27 @@ templ MyPage() {
         {ID: "settings", Label: "Settings"},
     },
 })
+
+@display.Accordion(display.AccordionProps{
+    Items: []display.AccordionItem{
+        {ID: "faq1", Title: "What is this?", Open: true},
+        {ID: "faq2", Title: "How does it work?"},
+    },
+})
+
+@display.Dropdown(display.DropdownProps{
+    Label: "Actions",
+    Items: []display.DropdownItem{
+        {Text: "Edit", Href: "/edit"},
+        {Text: "Delete", Href: "/delete"},
+    },
+})
+
+@display.Tooltip(display.TooltipProps{Text: "More info"}) {
+    <button>Hover me</button>
+}
+
+@display.Avatar(display.AvatarProps{Src: "/avatar.jpg", Alt: "Alice"})
 ```
 
 ### `forms` - Form Primitives

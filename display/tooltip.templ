@@ -1,0 +1,61 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// TooltipProps configures a tooltip component
+type TooltipProps struct {
+	utils.BaseProps
+	Text     string
+	Position string // "top", "bottom", "left", "right"
+}
+
+func tooltipPositionClass(pos string) string {
+	switch pos {
+	case "bottom":
+		return "top-full left-1/2 -translate-x-1/2 mt-2"
+	case "left":
+		return "right-full top-1/2 -translate-y-1/2 mr-2"
+	case "right":
+		return "left-full top-1/2 -translate-y-1/2 ml-2"
+	default:
+		return "bottom-full left-1/2 -translate-x-1/2 mb-2"
+	}
+}
+
+func tooltipArrowClass(pos string) string {
+	switch pos {
+	case "bottom":
+		return "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 dark:border-b-gray-700"
+	case "left":
+		return "left-full top-1/2 -translate-y-1/2 border-l-gray-900 dark:border-l-gray-700"
+	case "right":
+		return "right-full top-1/2 -translate-y-1/2 border-r-gray-900 dark:border-r-gray-700"
+	default:
+		return "top-full left-1/2 -translate-x-1/2 border-t-gray-900 dark:border-t-gray-700"
+	}
+}
+
+// Tooltip wraps content in a hover-activated tooltip
+//
+//	@display.Tooltip(display.TooltipProps{Text: "More info"}) {
+//	   <button>Hover me</button>
+//	 }
+templ Tooltip(props TooltipProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("group relative inline-flex", props.Class) }
+		{ props.Attrs... }
+	>
+		{ children... }
+		<div
+			class={ "absolute z-20 hidden group-hover:block whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-white shadow-sm",
+				tooltipPositionClass(props.Position) }
+			role="tooltip"
+		>
+			{ props.Text }
+			<div class={ "absolute h-0 w-0 border-4 border-transparent", tooltipArrowClass(props.Position) }></div>
+		</div>
+	</div>
+}

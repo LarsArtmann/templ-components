@@ -78,7 +78,7 @@ templ Alert(props AlertProps) {
 						<button
 							type="button"
 							class={ "inline-flex rounded-md p-1.5 hover:bg-opacity-80 focus:outline-none focus:ring-2 focus:ring-offset-2", bg, text }
-							onclick="this.closest('[role=alert]').remove()"
+							data-dismiss="alert"
 							aria-label="Dismiss"
 						>
 							<svg class="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
@@ -89,6 +89,20 @@ templ Alert(props AlertProps) {
 				</div>
 			}
 		</div>
+		if props.Dismissible {
+			<script nonce={ props.Nonce }>
+				if (!window.tcAlertDismissAttached) {
+					window.tcAlertDismissAttached = true;
+					document.addEventListener('click', function(e) {
+						var btn = e.target.closest('[data-dismiss="alert"]');
+						if (btn) {
+							var alert = btn.closest('[role="alert"]');
+							if (alert) alert.remove();
+						}
+					});
+				}
+			</script>
+		}
 	</div>
 }
 
