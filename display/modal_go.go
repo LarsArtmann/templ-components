@@ -2,7 +2,7 @@
 package display
 
 import (
-	"strings"
+	"strconv"
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
@@ -14,7 +14,6 @@ type ModalProps struct {
 	Title string
 	Open  bool
 	Size  string // "sm", "md", "lg", "xl", "full"
-	Nonce string
 }
 
 // DefaultModalProps returns sensible defaults
@@ -42,9 +41,9 @@ func modalSizeClass(size string) string {
 func modalCloseHandler(id string) templ.ComponentScript {
 	name := "tcCloseModal_" + id
 	fn := "function tcCloseModal_" + id + "(id){tcCloseModal(id)}"
-	// Escape single quotes in id to prevent breaking the generated JavaScript
-	escapedID := strings.ReplaceAll(id, "'", "\\'")
-	call := "tcCloseModal('" + escapedID + "')"
+	// Use JSON string escaping to safely embed id in JavaScript
+	escapedID := strconv.Quote(id)
+	call := "tcCloseModal(" + escapedID + ")"
 	return templ.ComponentScript{
 		Name:       name,
 		Function:   fn,

@@ -17,11 +17,11 @@ func TestModalRender(t *testing.T) {
 				Class:     "",
 				Attrs:     nil,
 				AriaLabel: "",
+				Nonce:     "test-nonce",
 			},
 			Title: "Confirm",
 			Open:  false,
 			Size:  "md",
-			Nonce: "test-nonce",
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, `id="test-modal"`)
@@ -45,7 +45,6 @@ func TestModalRender(t *testing.T) {
 			Title: "Hello",
 			Open:  true,
 			Size:  "md",
-			Nonce: "n",
 		}
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, "opacity-100")
@@ -73,7 +72,6 @@ func TestModalRender(t *testing.T) {
 					Title: "Test Modal",
 					Open:  false,
 					Size:  size,
-					Nonce: "n",
 				}
 				output := utils.Render(t, Modal(props))
 				utils.AssertContains(t, output, want)
