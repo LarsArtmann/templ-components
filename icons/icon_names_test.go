@@ -5,9 +5,9 @@ import "testing"
 func TestIconNames(t *testing.T) {
 	t.Parallel()
 
-	icons := []struct {
+	testCases := []struct {
 		name  string
-		value string
+		value Name
 	}{
 		{name: "Home", value: Home},
 		{name: "Users", value: Users},
@@ -53,7 +53,7 @@ func TestIconNames(t *testing.T) {
 		{name: "Question", value: Question},
 	}
 
-	for _, tt := range icons {
+	for _, tt := range testCases {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			if tt.value == "" {
@@ -65,7 +65,7 @@ func TestIconNames(t *testing.T) {
 
 func TestIconCount(t *testing.T) {
 	t.Parallel()
-	actual := len([]string{
+	actual := len([]Name{
 		Home, Users, Folder, Document, Search, Settings, Chart, Inbox,
 		Check, X, Plus, Minus,
 		ChevronRight, ChevronLeft, ChevronDown, ChevronUp,

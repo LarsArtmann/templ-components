@@ -12,7 +12,7 @@ func TestIconRender(t *testing.T) {
 
 	tests := []struct {
 		name  string
-		icon  string
+		icon  Name
 		class string
 	}{
 		{"home with class", Home, "h-5 w-5"},
