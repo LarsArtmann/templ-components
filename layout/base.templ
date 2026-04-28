@@ -2,19 +2,21 @@ package layout
 
 // BaseProps configures the base layout
 type BaseProps struct {
-	Title       string
-	Description string
-	Locale      string
-	OGImage     string
-	ThemeColor  string
+	Title          string
+	Description    string
+	Locale         string
+	OGImage        string
+	ThemeColor     string
 	DarkThemeColor string
-	CSSPath     string
-	Favicon     string
-	HTMXVersion string
-	HTMXSRI     string
-	BodyClass   string
-	Nonce       string
-	HeadContent templ.Component
+	CSSPath        string
+	Favicon        string
+	HTMXVersion    string
+	HTMXSRI        string
+	BodyClass      string
+	Nonce          string
+	HeadContent    templ.Component
+	// SecurityHeaders controls whether security meta tags are included
+	SecurityHeaders bool
 }
 
 // DefaultBaseProps returns sensible defaults for BaseProps
@@ -43,6 +45,10 @@ templ Base(props BaseProps) {
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			if props.SecurityHeaders {
+				<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
+				<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin"/>
+			}
 			<title>{ props.Title }</title>
 			if props.Description != "" {
 				<meta name="description" content={ props.Description }/>

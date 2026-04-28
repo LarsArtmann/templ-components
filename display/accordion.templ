@@ -64,6 +64,9 @@ templ Accordion(props AccordionProps) {
 					role="region"
 					aria-labelledby={ item.ID + "-trigger" }
 					class={ "overflow-hidden transition-all duration-200", templ.KV("max-h-0", !item.Open), templ.KV("max-h-96", item.Open) }
+					if !item.Open {
+						hidden
+					}
 				>
 					<div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">
 						if item.Content != nil {

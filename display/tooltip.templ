@@ -50,7 +50,7 @@ templ Tooltip(props TooltipProps) {
 	>
 		{ children... }
 		<div
-			class={ "absolute z-20 hidden group-hover:block whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-white shadow-sm",
+			class={ "absolute z-20 hidden group-hover:block group-focus-within:block whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-white shadow-sm",
 				tooltipPositionClass(props.Position) }
 			role="tooltip"
 		>
