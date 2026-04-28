@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"maps"
 	"sync"
 	"time"
 
@@ -30,12 +31,10 @@ func Class(classes ...string) string {
 }
 
 // MergeAttrs merges multiple attribute maps, with later maps overriding earlier ones
-func MergeAttrs(maps ...templ.Attributes) templ.Attributes {
+func MergeAttrs(m ...templ.Attributes) templ.Attributes {
 	result := make(templ.Attributes)
-	for _, m := range maps {
-		for k, v := range m {
-			result[k] = v
-		}
+	for _, attrs := range m {
+		maps.Copy(result, attrs)
 	}
 	return result
 }
