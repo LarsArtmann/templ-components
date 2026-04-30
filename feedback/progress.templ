@@ -33,7 +33,10 @@ func DefaultProgressBarProps() ProgressBarProps {
 //
 //	@feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100, Label: "Uploading"})
 templ ProgressBar(props ProgressBarProps) {
-	{{ percent := 0; if props.Total > 0 { percent = props.Current * 100 / props.Total } }}
+	{{ percent := 0
+if props.Total > 0 {
+	percent = props.Current * 100 / props.Total
+} }}
 	<div class="w-full">
 		if props.ShowLabel || props.Label != "" {
 			<div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -87,14 +90,15 @@ templ StepIndicator(props StepIndicatorProps) {
 						<div class={ "flex-1 h-0.5 mx-2", stepLineClass(i, props.CurrentStep) }></div>
 					}
 					<div class="flex flex-col items-center">
-						<div class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(i, props.CurrentStep) }
+						<div
+							class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(i, props.CurrentStep) }
 							if i == props.CurrentStep {
 								aria-current="step"
 							}
 						>
 							if i < props.CurrentStep {
 								<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"/>
+									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
 								</svg>
 							} else {
 								{ fmt.Sprintf("%d", i+1) }

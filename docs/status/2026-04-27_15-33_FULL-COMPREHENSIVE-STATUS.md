@@ -20,6 +20,7 @@ The project has gone from a single initial commit to a production-viable compone
 ## A) FULLY DONE ✅
 
 ### Security
+
 - [x] **XSS vulnerability fixed** — `tcShowToast` uses DOM APIs (textContent/createElement) instead of innerHTML
 - [x] **SRI hashes for HTMX CDN** — Pre-computed sha384 hashes in `layout/sri.go`, opt-in via `HTMXSRI` prop
 - [x] **CSP nonce support** — All `<script>` tags accept nonce parameter
@@ -27,6 +28,7 @@ The project has gone from a single initial commit to a production-viable compone
 - [x] **FieldError ID sanitization** — `SanitizeID()` prevents invalid HTML IDs
 
 ### Components (8 packages)
+
 - [x] `layout` — Base, Minimal, ThemeScript, ThemeToggle
 - [x] `feedback` — Toast, Alert, Spinner, Loading, Skeleton, ProgressBar, StepIndicator
 - [x] `display` — Badge, StatusBadge, Card, SimpleCard, StatCard, EmptyState, **Modal** (NEW)
@@ -37,13 +39,15 @@ The project has gone from a single initial commit to a production-viable compone
 - [x] `utils` — Class (tailwind-merge), MergeAttrs, Ternary, Ptr, Deref, DerefOr, CurrentYear, BaseProps
 
 ### Infrastructure
+
 - [x] **CI pipeline** — GitHub Actions: golangci-lint, templ generate, go vet, go build, go test -race
 - [x] **golangci-lint config** — 60+ linters enabled, comprehensive rules
-- [x] **.gitignore** — Excludes *_templ.go, coverage, vendor, IDE files
+- [x] **.gitignore** — Excludes \*\_templ.go, coverage, vendor, IDE files
 - [x] **MIT LICENSE** file
 - [x] **Architecture diagrams** (D2 format) in docs/diagrams/
 
 ### Code Quality
+
 - [x] **BaseProps pattern** applied to Card, EmptyState, Alert, Toast, Nav, NavLink (ID, Class, Attrs, AriaLabel)
 - [x] **Dark mode** on every component
 - [x] **Accessibility** — aria-label, role="alert", aria-live, aria-modal, sr-only throughout
@@ -55,6 +59,7 @@ The project has gone from a single initial commit to a production-viable compone
 - [x] **Go 1.23 modernization** — `for range 4` instead of `for i := 0; i < 4; i++`
 
 ### Testing
+
 - [x] `utils` — 62.1% coverage (Class, MergeAttrs, Ternary, Ptr, Deref, DerefOr, CurrentYear)
 - [x] `display` — 57.1% coverage (Badge rendering, StatusBadge mapping, sizes, card padding)
 - [x] `layout` — 51.8% coverage (SRI hashes, snapshot tests for Base, Minimal, ThemeScript, ThemeToggle)
@@ -69,12 +74,14 @@ The project has gone from a single initial commit to a production-viable compone
 ## B) PARTIALLY DONE 🔶
 
 ### Test Coverage
+
 - **24.3% overall** — helpers are well-tested, but component rendering (the templ templates themselves) has low coverage
 - `forms` at 2.4% — Go helpers tested, but Input, Checkbox, Select, Textarea rendering has zero tests
 - `navigation` at 0.7% — only `navLinkClasses` tested; Nav, Breadcrumbs, MobileMenu untested
 - `icons` at 0.0% — no tests at all (hard to test SVG switch cases meaningfully)
 
 ### Documentation
+
 - README exists and covers all packages with examples
 - But no godoc on exported types/functions
 - No CHANGELOG
@@ -106,6 +113,7 @@ The project has gone from a single initial commit to a production-viable compone
 **Nothing is fucked up.** The build is clean, all tests pass, no vet issues, no templ drift. The git history is linear and well-structured. No broken features, no regressions.
 
 The closest thing to a concern:
+
 - The `go.mod` specifies `go 1.23.0` but CI uses `go-version: '1.24'` and golangci-lint config says `go: 1.26.2` — minor inconsistency, not broken but should be aligned
 
 ---
@@ -113,12 +121,14 @@ The closest thing to a concern:
 ## E) WHAT WE SHOULD IMPROVE
 
 ### High Impact
+
 1. **Test coverage to 60%+** — Currently 24.3%. The biggest gap is component rendering tests. Use the existing `utils.Render()` + `utils.AssertContains()` pattern from badge_test.go.
 2. **Align Go version** — `go.mod` says 1.23, CI says 1.24, golangci-lint says 1.26.2. Pick one.
 3. **README update** — Missing Modal component, BaseProps pattern, Nonce/CSP docs, SRI docs
 4. **Snapshot test regression** — Add golden-file snapshot tests for ALL components so breaking HTML changes are caught
 
 ### Medium Impact
+
 5. **SRI hash automation** — Script to compute hashes for any HTMX version
 6. **Example app** — Standalone `example/` directory with a working server
 7. **Semantic versioning** — Tag v0.1.0, set up goreleaser or similar
@@ -126,6 +136,7 @@ The closest thing to a concern:
 9. **Accessibility testing** — Integrate pa11y or similar into CI
 
 ### Low Impact
+
 10. **CONTRIBUTING.md** — If this is open-source, contribution guidelines matter
 11. **CHANGELOG** — Track changes for consumers
 12. **Go doc comments** — Structured API documentation
@@ -138,33 +149,33 @@ The closest thing to a concern:
 
 Ranked by impact × effort (highest first):
 
-| # | Task | Impact | Effort | Package |
-|---|------|--------|--------|---------|
-| 1 | Add rendering tests for all forms components (Input, Checkbox, Select, Textarea) | High | Low | forms |
-| 2 | Add rendering tests for navigation (Nav, Breadcrumbs, MobileMenu, Footer) | High | Low | navigation |
-| 3 | Update README with Modal, BaseProps, Nonce/CSP, SRI documentation | High | Low | docs |
-| 4 | Align Go version across go.mod, CI, and golangci-lint config | Medium | Trivial | infra |
-| 5 | Add icon rendering test (verify each constant produces SVG output) | Medium | Low | icons |
-| 6 | Tag v0.1.0 and set up semantic versioning | Medium | Low | infra |
-| 7 | Add Skeleton and ProgressBar rendering tests | Medium | Low | feedback |
-| 8 | Add EmptyState and SimpleEmptyState rendering tests | Medium | Low | display |
-| 9 | Add Modal rendering tests (open/closed states, sizes) | Medium | Low | display |
-| 10 | Add StepIndicator rendering tests | Medium | Low | feedback |
-| 11 | Add ConfirmDelete, SwapOOB, CSRFToken rendering tests | Medium | Low | htmx |
-| 12 | Create example/ directory with working server | Medium | Medium | infra |
-| 13 | Add CHANGELOG.md | Low | Trivial | docs |
-| 14 | Automate SRI hash computation (script or Go code) | Medium | Low | layout |
-| 15 | Add StatCard and SimpleCard rendering tests | Low | Low | display |
-| 16 | Add Input type tests (email, password, number, date, hidden, etc.) | Medium | Low | forms |
-| 17 | Add godoc to all exported types and functions | Medium | Medium | all |
-| 18 | Add InlineError and InlineSuccess rendering tests | Low | Low | feedback |
-| 19 | Set up Codecov or similar for coverage tracking | Low | Low | infra |
-| 20 | Add CONTRIBUTING.md | Low | Low | docs |
-| 21 | Investigate accessibility testing (pa11y/axe-core) | High | High | infra |
-| 22 | Add rendering benchmarks for hot-path components | Low | Medium | all |
-| 23 | Consider extracting toast JS into a standalone .js file for CSP strict-dynamic | Low | Medium | feedback |
-| 24 | Add MobileNavLink rendering tests | Low | Low | navigation |
-| 25 | Review if BadgeProps embedding BaseProps is correct pattern for all components | Low | Low | display |
+| #   | Task                                                                             | Impact | Effort  | Package    |
+| --- | -------------------------------------------------------------------------------- | ------ | ------- | ---------- |
+| 1   | Add rendering tests for all forms components (Input, Checkbox, Select, Textarea) | High   | Low     | forms      |
+| 2   | Add rendering tests for navigation (Nav, Breadcrumbs, MobileMenu, Footer)        | High   | Low     | navigation |
+| 3   | Update README with Modal, BaseProps, Nonce/CSP, SRI documentation                | High   | Low     | docs       |
+| 4   | Align Go version across go.mod, CI, and golangci-lint config                     | Medium | Trivial | infra      |
+| 5   | Add icon rendering test (verify each constant produces SVG output)               | Medium | Low     | icons      |
+| 6   | Tag v0.1.0 and set up semantic versioning                                        | Medium | Low     | infra      |
+| 7   | Add Skeleton and ProgressBar rendering tests                                     | Medium | Low     | feedback   |
+| 8   | Add EmptyState and SimpleEmptyState rendering tests                              | Medium | Low     | display    |
+| 9   | Add Modal rendering tests (open/closed states, sizes)                            | Medium | Low     | display    |
+| 10  | Add StepIndicator rendering tests                                                | Medium | Low     | feedback   |
+| 11  | Add ConfirmDelete, SwapOOB, CSRFToken rendering tests                            | Medium | Low     | htmx       |
+| 12  | Create example/ directory with working server                                    | Medium | Medium  | infra      |
+| 13  | Add CHANGELOG.md                                                                 | Low    | Trivial | docs       |
+| 14  | Automate SRI hash computation (script or Go code)                                | Medium | Low     | layout     |
+| 15  | Add StatCard and SimpleCard rendering tests                                      | Low    | Low     | display    |
+| 16  | Add Input type tests (email, password, number, date, hidden, etc.)               | Medium | Low     | forms      |
+| 17  | Add godoc to all exported types and functions                                    | Medium | Medium  | all        |
+| 18  | Add InlineError and InlineSuccess rendering tests                                | Low    | Low     | feedback   |
+| 19  | Set up Codecov or similar for coverage tracking                                  | Low    | Low     | infra      |
+| 20  | Add CONTRIBUTING.md                                                              | Low    | Low     | docs       |
+| 21  | Investigate accessibility testing (pa11y/axe-core)                               | High   | High    | infra      |
+| 22  | Add rendering benchmarks for hot-path components                                 | Low    | Medium  | all        |
+| 23  | Consider extracting toast JS into a standalone .js file for CSP strict-dynamic   | Low    | Medium  | feedback   |
+| 24  | Add MobileNavLink rendering tests                                                | Low    | Low     | navigation |
+| 25  | Review if BadgeProps embedding BaseProps is correct pattern for all components   | Low    | Low     | display    |
 
 ---
 
@@ -196,16 +207,16 @@ Git status        → Clean, up to date with origin/master
 
 ## Per-Package Coverage
 
-| Package | Coverage | Test Files |
-|---------|----------|------------|
-| utils | 62.1% | utils_test.go |
-| display | 57.1% | badge_test.go, card_test.go, helpers_test.go, modal_test.go |
-| layout | 51.8% | sri_test.go, snapshot_test.go |
-| feedback | 33.8% | helpers_test.go, snapshot_test.go |
-| htmx | 17.0% | snapshot_test.go |
-| forms | 2.4% | helpers_test.go |
-| navigation | 0.7% | nav_link_test.go |
-| icons | 0.0% | (none) |
+| Package    | Coverage | Test Files                                                  |
+| ---------- | -------- | ----------------------------------------------------------- |
+| utils      | 62.1%    | utils_test.go                                               |
+| display    | 57.1%    | badge_test.go, card_test.go, helpers_test.go, modal_test.go |
+| layout     | 51.8%    | sri_test.go, snapshot_test.go                               |
+| feedback   | 33.8%    | helpers_test.go, snapshot_test.go                           |
+| htmx       | 17.0%    | snapshot_test.go                                            |
+| forms      | 2.4%     | helpers_test.go                                             |
+| navigation | 0.7%     | nav_link_test.go                                            |
+| icons      | 0.0%     | (none)                                                      |
 
 ## Git History (16 commits)
 

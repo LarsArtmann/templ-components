@@ -229,13 +229,13 @@ This library assumes you have Tailwind CSS configured with the `dark` class stra
 ```js
 // tailwind.config.js
 module.exports = {
-  darkMode: 'class',
+  darkMode: "class",
   content: [
-    './templates/**/*.templ',
-    './node_modules/github.com/larsartmann/templ-components/**/*.templ',
+    "./templates/**/*.templ",
+    "./node_modules/github.com/larsartmann/templ-components/**/*.templ",
   ],
   // ...
-}
+};
 ```
 
 ## Dark Mode

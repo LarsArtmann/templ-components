@@ -17,3 +17,9 @@ coverage.out
 
 # OS
 .DS_Store
+# Dependencies
+node_modules/
+# Copy/paste detection report
+/report/jscpd-report.json
+# Build artifacts
+/templ-components

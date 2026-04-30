@@ -9,35 +9,36 @@
 
 ## Quick Stats
 
-| Metric | Count |
-|---|---|
-| `.templ` source files | 29 |
-| `templ` components (public + private) | 57 |
-| Test files | 23 |
-| Test functions | 66 |
-| Go packages | 8 |
-| Lines of `.templ` source | 2,915 |
-| Lines of test code | 1,712 |
-| Lines of generated `_templ.go` | 8,692 |
+| Metric                                | Count |
+| ------------------------------------- | ----- |
+| `.templ` source files                 | 29    |
+| `templ` components (public + private) | 57    |
+| Test files                            | 23    |
+| Test functions                        | 66    |
+| Go packages                           | 8     |
+| Lines of `.templ` source              | 2,915 |
+| Lines of test code                    | 1,712 |
+| Lines of generated `_templ.go`        | 8,692 |
 
 ### Test Coverage Per Package
 
-| Package | Tests | Status |
-|---|---|---|
-| `display` | 14 | PASS |
-| `feedback` | 12 | PASS |
-| `forms` | 9 | PASS |
-| `htmx` | 7 | PASS |
-| `icons` | 3 | PASS |
-| `layout` | 7 | PASS |
-| `navigation` | 7 | PASS |
-| `utils` | 7 | PASS |
+| Package      | Tests | Status |
+| ------------ | ----- | ------ |
+| `display`    | 14    | PASS   |
+| `feedback`   | 12    | PASS   |
+| `forms`      | 9     | PASS   |
+| `htmx`       | 7     | PASS   |
+| `icons`      | 3     | PASS   |
+| `layout`     | 7     | PASS   |
+| `navigation` | 7     | PASS   |
+| `utils`      | 7     | PASS   |
 
 ---
 
 ## A) FULLY DONE
 
 ### Security Fixes
+
 - **XSS in modal close handler** — `strconv.Quote` replaces `strings.ReplaceAll` for robust JS string escaping (`display/modal_go.go`)
 - **CSP compliance** — Removed all inline `onclick` handlers. Alert and Toast use `data-dismiss` + event delegation with nonce (`feedback/alert.templ`, `feedback/toast.templ`)
 - **Duplicate `Nonce` field removed** from `ModalProps` — was shadowing `BaseProps.Nonce` (`display/modal_go.go`)
@@ -45,6 +46,7 @@
 - **SRI hashes** — HTMX loaded with Subresource Integrity hashes (`layout/sri.go`)
 
 ### Accessibility Improvements
+
 - **Skip-to-content link** — `<a href="#main-content">` + `<main id="main-content">` (`layout/base.templ`)
 - **`aria-expanded`, `aria-controls`, `aria-labelledby`, `role="region"`** — Accordion (`display/accordion.templ`)
 - **`role="tablist"`, `aria-selected`** — Tabs (`display/tabs.templ`)
@@ -61,11 +63,13 @@
 - **`<dl>` wrapper** — StatCard `<dt>`/`<dd>` fixed (`display/card.templ`)
 
 ### Performance Fixes
+
 - **Data race fix** — `sync.Mutex` in `utils.Class()` protects non-thread-safe tailwind-merge-go (`utils/utils.go`)
 - **SRI hash allocation** — `getHtmxSRIHashes()` converted to package-level var (`layout/sri.go`)
 - **`maps.Copy`** — Replaces manual loop in `MergeAttrs` (`utils/utils.go`)
 
 ### Code Quality
+
 - **Dead code removal** — `FormatFloat`, `IsSelected`, `IfNotNil`, `IfNotNilString`, `BoolToString` removed from `forms/helpers.go`
 - **`FieldError(fieldID, message)`** — Deterministic element IDs instead of hashing message text (`forms/label.templ`)
 - **Conditional `for` attribute** — `Label` only renders `for` when `forID != ""` (`forms/label.templ`)
@@ -73,6 +77,7 @@
 - **Typed enums** — `AvatarSize`, `AvatarShape` constants replacing raw strings (`display/avatar.templ`)
 
 ### New Components (7 total)
+
 1. **Table** — Striped/hover/bordered, caption, `<th scope>` (`display/table.templ`)
 2. **Tabs** — Default and pills styles, `role="tablist"` (`display/tabs.templ`)
 3. **Accordion** — Accessible expand/collapse with JS toggle (`display/accordion.templ`)
@@ -82,18 +87,21 @@
 7. **Pagination** — Smart range logic, desktop+mobile layouts (`navigation/pagination.templ`)
 
 ### New Test Files (10 total)
+
 - `display/table_test.go`, `display/tabs_test.go`, `display/accordion_test.go`
 - `display/dropdown_test.go`, `display/tooltip_test.go`, `display/avatar_test.go`
 - `navigation/pagination_test.go`, `navigation/snapshot_test.go`
 - `forms/snapshot_test.go`, `icons/snapshot_test.go`
 
 ### Existing Tests Strengthened
+
 - `feedback/helpers_test.go` — Tests now verify exact class strings and specific colors instead of "non-empty"
 - `feedback/snapshot_test.go` — Verify `data-dismiss` attributes and absence of `onclick=`
 - `htmx/snapshot_test.go` — Expanded from 2 to 7 tests
 - `layout/snapshot_test.go` — Added `TestBaseRenderFullProps`, verifies skip link + main id
 
 ### Documentation
+
 - **README.md** — Fixed invalid Go syntax in Quick Start, added examples for all 7 new components
 
 ---
@@ -101,14 +109,17 @@
 ## B) PARTIALLY DONE
 
 ### Typed Enum Standardization
+
 - **Done:** `AvatarSize`, `AvatarShape`, `BadgeType`, `BadgeSize`, `AlertType`, `ToastType`, `SpinnerSize`
 - **NOT done:** `ModalSize` (raw `string` in `modal_go.go`), `SkeletonVariant` (raw `string` param), `ProgressBarSize` (raw `string` in `progress.templ`)
 
 ### BaseProps Embedding
+
 - **Done (14 components):** Accordion, Avatar, Badge, Card, Dropdown, EmptyState, Table, Tabs, Tooltip, Alert, Toast, Nav, NavLink, Pagination
 - **NOT done:** Modal, Spinner, LoadingOverlay, InlineLoading, Skeleton, SkeletonGroup, ProgressBar, StepIndicator, all htmx, all layout, all forms, Breadcrumbs, MobileMenu, MobileMenuToggle
 
 ### Icons aria-label Override
+
 - **Current state:** All 42 SVG instances hardcode `aria-hidden="true"` with no way to override
 - **Impact:** Decorative icons are correct, but meaningful icons (like checkmarks in progress steps, warning icons) cannot have accessible labels
 
@@ -117,34 +128,42 @@
 ## C) NOT STARTED
 
 ### Forms Package BaseProps Migration
+
 - `InputProps`, `CheckboxProps`, `SelectProps`, `TextareaProps` manually declare `ID`, `Class`, `Attrs`
 - Should embed `utils.BaseProps` for `AriaLabel` and `Nonce` support
 - **Breaking API change** — all callers must update
 
 ### Form Label Auto-ID
+
 - When `props.ID == ""`, label and input are not programmatically linked
 - Fallback: `SanitizeID(props.Name)` as auto-generated ID
 
 ### `layout.BaseProps` → `PageProps` Rename
+
 - Avoids collision with `utils.BaseProps`
 - **Breaking API change** — update all references
 
 ### Color Palette Standardization
+
 - `gray-*` dominates (273 uses), `slate-*` secondary (41 uses)
 - Pick one family, update all components consistently
 
 ### Missing Test Coverage
+
 These components have **zero render tests**:
+
 - `feedback`: LoadingOverlay, InlineLoading, Skeleton, SkeletonGroup, ProgressBar, StepIndicator
 - `navigation`: Nav (with links+brand), SimpleNav, MobileMenu, MobileMenuToggle
 - `layout`: Minimal, ThemeScript
 
 ### Modal Accessibility
+
 - No focus trap when modal is open
 - No escape key handler
 - Focus not returned to trigger on close
 
 ### MobileMenu Accessibility
+
 - Missing `aria-expanded` on toggle
 - Missing `aria-label` on menu
 
@@ -169,21 +188,25 @@ These components have **zero render tests**:
 ## E) WHAT WE SHOULD IMPROVE
 
 ### Architecture
+
 - **Plugin system** — Components like Modal, Dropdown, Accordion all need JS. Currently each injects its own `<script>` block. A centralized JS plugin registry would reduce duplication and allow single-bundle output.
 - **Theme system** — Hardcoded Tailwind classes everywhere. A semantic token system (`text-primary`, `bg-surface`) would enable real theming.
 - **Component composition API** — Many components accept `templ.Component` children. A standard `Slot` pattern (like Web Components) would formalize this.
 
 ### Developer Experience
+
 - **Interactive playground** — A `templ`-based demo page that renders all components. Would serve as both documentation and visual regression check.
 - **Go doc examples** — `Example*` test functions that appear in pkg.go.dev.
 - **Migration guide** — Breaking changes (BaseProps embedding, FieldError signature) need versioned release notes.
 
 ### Testing
+
 - **Visual regression** — Screenshot comparison tests (e.g., with playwright or similar) would catch CSS breakage.
 - **Accessibility audit** — Automated axe-core or pa11y integration.
 - **Benchmark suite** — `Benchmark*` functions for render performance, especially around `Class()` mutex contention.
 
 ### Code Quality
+
 - **Consistent `utils.Class()` usage** — Forms package uses raw string concatenation while display uses `Class()`. Standardize.
 - **Error types** — No custom error types anywhere. `SanitizeID` returns a string. Structured errors would improve debugging.
 
@@ -191,33 +214,33 @@ These components have **zero render tests**:
 
 ## F) TOP 25 THINGS TO DO NEXT
 
-| # | Task | Impact | Effort | Category |
-|---|---|---|---|---|
-| 1 | Complete typed enums: `ModalSize`, `SkeletonVariant`, `ProgressBarSize` | Medium | Small | Code Quality |
-| 2 | Fix Dropdown hardcoded `aria-expanded="false"` | High | Small | Accessibility |
-| 3 | Add `aria-label` override to `icons.Icon` | High | Small | Accessibility |
-| 4 | Add feedback render tests (LoadingOverlay, Skeleton, ProgressBar, etc.) | Medium | Medium | Testing |
-| 5 | Add navigation render tests (Nav, MobileMenu, etc.) | Medium | Medium | Testing |
-| 6 | Embed `utils.BaseProps` in forms props structs | High | Medium | Architecture |
-| 7 | Auto-generate form IDs from `Name` when `ID` is empty | Medium | Small | Accessibility |
-| 8 | Standardize color palette (`gray` vs `slate`) | Low | Medium | Consistency |
-| 9 | Rename `layout.BaseProps` to `PageProps` | Low | Small | Clarity |
-| 10 | Add Modal focus trap + escape key handler | High | Medium | Accessibility |
-| 11 | Add `aria-expanded` to MobileMenuToggle | High | Small | Accessibility |
-| 12 | Centralize component JS into plugin registry | High | Large | Architecture |
-| 13 | Add interactive playground / demo page | High | Large | DX |
-| 14 | Standardize `utils.Class()` usage in forms package | Low | Small | Consistency |
-| 15 | Resolve accordion `hidden` vs animation conflict | Medium | Medium | Accessibility |
-| 16 | Add Go doc `Example*` test functions | Medium | Medium | DX |
-| 17 | Add visual regression tests | High | Large | Testing |
-| 18 | Add benchmark suite for render performance | Medium | Medium | Performance |
-| 19 | Embed `utils.BaseProps` in Modal, Loading, Progress components | Medium | Medium | Architecture |
-| 20 | Semantic theme tokens instead of hardcoded Tailwind classes | High | Large | Architecture |
-| 21 | Versioned releases with changelog | Medium | Small | DX |
-| 22 | Remove generated `*_templ.go` from git, use build-time generation | Low | Small | Hygiene |
-| 23 | Add structured error types | Low | Small | Code Quality |
-| 24 | Add `aria-label` to all icon-only buttons across components | Medium | Small | Accessibility |
-| 25 | CI pipeline: test, lint, generate check on every PR | High | Medium | Infrastructure |
+| #   | Task                                                                    | Impact | Effort | Category       |
+| --- | ----------------------------------------------------------------------- | ------ | ------ | -------------- |
+| 1   | Complete typed enums: `ModalSize`, `SkeletonVariant`, `ProgressBarSize` | Medium | Small  | Code Quality   |
+| 2   | Fix Dropdown hardcoded `aria-expanded="false"`                          | High   | Small  | Accessibility  |
+| 3   | Add `aria-label` override to `icons.Icon`                               | High   | Small  | Accessibility  |
+| 4   | Add feedback render tests (LoadingOverlay, Skeleton, ProgressBar, etc.) | Medium | Medium | Testing        |
+| 5   | Add navigation render tests (Nav, MobileMenu, etc.)                     | Medium | Medium | Testing        |
+| 6   | Embed `utils.BaseProps` in forms props structs                          | High   | Medium | Architecture   |
+| 7   | Auto-generate form IDs from `Name` when `ID` is empty                   | Medium | Small  | Accessibility  |
+| 8   | Standardize color palette (`gray` vs `slate`)                           | Low    | Medium | Consistency    |
+| 9   | Rename `layout.BaseProps` to `PageProps`                                | Low    | Small  | Clarity        |
+| 10  | Add Modal focus trap + escape key handler                               | High   | Medium | Accessibility  |
+| 11  | Add `aria-expanded` to MobileMenuToggle                                 | High   | Small  | Accessibility  |
+| 12  | Centralize component JS into plugin registry                            | High   | Large  | Architecture   |
+| 13  | Add interactive playground / demo page                                  | High   | Large  | DX             |
+| 14  | Standardize `utils.Class()` usage in forms package                      | Low    | Small  | Consistency    |
+| 15  | Resolve accordion `hidden` vs animation conflict                        | Medium | Medium | Accessibility  |
+| 16  | Add Go doc `Example*` test functions                                    | Medium | Medium | DX             |
+| 17  | Add visual regression tests                                             | High   | Large  | Testing        |
+| 18  | Add benchmark suite for render performance                              | Medium | Medium | Performance    |
+| 19  | Embed `utils.BaseProps` in Modal, Loading, Progress components          | Medium | Medium | Architecture   |
+| 20  | Semantic theme tokens instead of hardcoded Tailwind classes             | High   | Large  | Architecture   |
+| 21  | Versioned releases with changelog                                       | Medium | Small  | DX             |
+| 22  | Remove generated `*_templ.go` from git, use build-time generation       | Low    | Small  | Hygiene        |
+| 23  | Add structured error types                                              | Low    | Small  | Code Quality   |
+| 24  | Add `aria-label` to all icon-only buttons across components             | Medium | Small  | Accessibility  |
+| 25  | CI pipeline: test, lint, generate check on every PR                     | High   | Medium | Infrastructure |
 
 ---
 
@@ -226,11 +249,13 @@ These components have **zero render tests**:
 **Should `*_templ.go` generated files remain committed to git?**
 
 Arguments for keeping (current state):
+
 - `go get` / `go install` works without `templ` CLI installed
 - Go module proxy can serve the package without build steps
 - Consumers don't need `templ` in their toolchain
 
 Arguments for removing:
+
 - Merge conflicts on generated code are noisy
 - `goimports` / LSP sometimes fights with generated files
 - Standard practice for code generation (protobuf, etc.) is CI-generated

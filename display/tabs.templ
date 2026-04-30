@@ -15,15 +15,15 @@ type Tab struct {
 type TabsStyle string
 
 const (
-	TabsStyleDefault  TabsStyle = "default"
-	TabsStylePills    TabsStyle = "pills"
+	TabsStyleDefault TabsStyle = "default"
+	TabsStylePills   TabsStyle = "pills"
 )
 
 // TabsProps configures a tab component
 type TabsProps struct {
 	utils.BaseProps
-	Tabs      []Tab
-	TabStyle  TabsStyle
+	Tabs     []Tab
+	TabStyle TabsStyle
 }
 
 // Tabs renders a tabbed interface with accessible markup
@@ -43,7 +43,8 @@ templ Tabs(props TabsProps) {
 		{ props.Attrs... }
 	>
 		<div role="tablist" aria-label="Tabs" class="border-b border-gray-200 dark:border-slate-700">
-			<nav class={ "-mb-px flex space-x-8", templ.KV("space-x-2", props.TabStyle == TabsStylePills) }
+			<nav
+				class={ "-mb-px flex space-x-8", templ.KV("space-x-2", props.TabStyle == TabsStylePills) }
 				aria-label="Tabs"
 			>
 				for _, tab := range props.Tabs {

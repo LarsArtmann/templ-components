@@ -35,9 +35,17 @@ func TestToastStyles(t *testing.T) {
 		wantBorder    string
 		wantIconColor string
 	}{
-		{ToastSuccess, "border-green-200 dark:border-green-800", "text-green-600 dark:text-green-400"},
+		{
+			ToastSuccess,
+			"border-green-200 dark:border-green-800",
+			"text-green-600 dark:text-green-400",
+		},
 		{ToastError, "border-red-200 dark:border-red-800", "text-red-600 dark:text-red-400"},
-		{ToastWarning, "border-yellow-200 dark:border-yellow-800", "text-yellow-600 dark:text-yellow-400"},
+		{
+			ToastWarning,
+			"border-yellow-200 dark:border-yellow-800",
+			"text-yellow-600 dark:text-yellow-400",
+		},
 		{ToastInfo, "border-blue-200 dark:border-blue-800", "text-blue-600 dark:text-blue-400"},
 	}
 	for _, tt := range tests {
@@ -45,7 +53,14 @@ func TestToastStyles(t *testing.T) {
 			t.Parallel()
 			border, bg, text, icon := toastStyles(tt.typ)
 			if border == "" || bg == "" || text == "" || icon == "" {
-				t.Errorf("toastStyles(%q) returned empty value: border=%q bg=%q text=%q icon=%q", tt.typ, border, bg, text, icon)
+				t.Errorf(
+					"toastStyles(%q) returned empty value: border=%q bg=%q text=%q icon=%q",
+					tt.typ,
+					border,
+					bg,
+					text,
+					icon,
+				)
 			}
 			if border != tt.wantBorder {
 				t.Errorf("toastStyles(%q) border = %q, want %q", tt.typ, border, tt.wantBorder)
@@ -61,7 +76,13 @@ func TestToastStylesDefault(t *testing.T) {
 	t.Parallel()
 	border, bg, text, icon := toastStyles("unknown")
 	if border == "" || bg == "" || text == "" || icon == "" {
-		t.Errorf("toastStyles(unknown) returned empty value: border=%q bg=%q text=%q icon=%q", border, bg, text, icon)
+		t.Errorf(
+			"toastStyles(unknown) returned empty value: border=%q bg=%q text=%q icon=%q",
+			border,
+			bg,
+			text,
+			icon,
+		)
 	}
 }
 
@@ -82,7 +103,14 @@ func TestAlertStyles(t *testing.T) {
 			t.Parallel()
 			border, bg, text, icon := alertStyles(tt.typ)
 			if border == "" || bg == "" || text == "" || icon == "" {
-				t.Errorf("alertStyles(%q) returned empty value: border=%q bg=%q text=%q icon=%q", tt.typ, border, bg, text, icon)
+				t.Errorf(
+					"alertStyles(%q) returned empty value: border=%q bg=%q text=%q icon=%q",
+					tt.typ,
+					border,
+					bg,
+					text,
+					icon,
+				)
 			}
 			if border != tt.wantBorder {
 				t.Errorf("alertStyles(%q) border = %q, want %q", tt.typ, border, tt.wantBorder)
@@ -132,7 +160,11 @@ func TestStepCircleClass(t *testing.T) {
 		want          string
 	}{
 		{0, 2, "bg-blue-600 text-white dark:bg-blue-500"},
-		{2, 2, "bg-white border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"},
+		{
+			2,
+			2,
+			"bg-white border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400",
+		},
 		{3, 2, "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"},
 	}
 	for _, tt := range tests {

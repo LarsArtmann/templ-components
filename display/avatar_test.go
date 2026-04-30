@@ -13,10 +13,10 @@ func TestAvatarRender(t *testing.T) {
 	t.Run("with image", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
-			Src:      "/avatar.jpg",
-			Alt:      "Alice",
-			Size:     AvatarSizeMD,
-			Shape:    AvatarShapeCircle,
+			Src:   "/avatar.jpg",
+			Alt:   "Alice",
+			Size:  AvatarSizeMD,
+			Shape: AvatarShapeCircle,
 		}))
 		utils.AssertContains(t, output, `src="/avatar.jpg"`)
 		utils.AssertContains(t, output, `alt="Alice"`)
@@ -38,9 +38,9 @@ func TestAvatarRender(t *testing.T) {
 	t.Run("with online status", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
-			Src:     "/me.jpg",
-			Alt:     "Me",
-			Online:  true,
+			Src:    "/me.jpg",
+			Alt:    "Me",
+			Online: true,
 		}))
 		utils.AssertContains(t, output, "bg-green-400")
 	})

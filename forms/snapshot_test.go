@@ -24,10 +24,10 @@ func TestInputRender(t *testing.T) {
 	t.Run("input with error", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			Name:   "email",
-			ID:     "email",
-			Label:  "Email address",
-			Error:  "Invalid email",
+			Name:  "email",
+			ID:    "email",
+			Label: "Email address",
+			Error: "Invalid email",
 		}))
 		utils.AssertContains(t, output, `aria-invalid="true"`)
 		utils.AssertContains(t, output, `aria-describedby="email-error"`)

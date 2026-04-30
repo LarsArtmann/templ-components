@@ -135,7 +135,10 @@ func TestSkeletonRender(t *testing.T) {
 
 func TestSkeletonGroupRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, SkeletonGroup([]SkeletonVariant{SkeletonTitle, SkeletonText, SkeletonText}))
+	output := utils.Render(
+		t,
+		SkeletonGroup([]SkeletonVariant{SkeletonTitle, SkeletonText, SkeletonText}),
+	)
 	utils.AssertContains(t, output, "space-y-3")
 	utils.AssertContains(t, output, `aria-busy="true"`)
 }
@@ -143,9 +146,9 @@ func TestSkeletonGroupRender(t *testing.T) {
 func TestProgressBarRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ProgressBar(ProgressBarProps{
-		Current:  50,
-		Total:    100,
-		Label:    "Upload",
+		Current:   50,
+		Total:     100,
+		Label:     "Upload",
 		ShowLabel: true,
 	}))
 	utils.AssertContains(t, output, "Upload")

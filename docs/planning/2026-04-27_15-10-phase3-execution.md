@@ -23,27 +23,27 @@
 
 ### Tier A: High Impact, Low Work (Do First)
 
-| # | Task | Est. | Impact |
-|---|------|------|--------|
-| A1 | Apply BaseProps to Card, Alert, Toast, EmptyState, Input, Select, Textarea, NavLink, Nav | 45min | Consistent API |
-| A2 | Add rendering snapshot tests for Card, Alert, Toast, ThemeScript, ThemeToggle, GlobalErrorHandling, LoadingIndicator | 30min | Prevents regressions |
-| A3 | Fix go-website-template `cookieConsent` and `posthogScript` to use nonce pattern from library | 15min | CSP completeness |
+| #   | Task                                                                                                                 | Est.  | Impact               |
+| --- | -------------------------------------------------------------------------------------------------------------------- | ----- | -------------------- |
+| A1  | Apply BaseProps to Card, Alert, Toast, EmptyState, Input, Select, Textarea, NavLink, Nav                             | 45min | Consistent API       |
+| A2  | Add rendering snapshot tests for Card, Alert, Toast, ThemeScript, ThemeToggle, GlobalErrorHandling, LoadingIndicator | 30min | Prevents regressions |
+| A3  | Fix go-website-template `cookieConsent` and `posthogScript` to use nonce pattern from library                        | 15min | CSP completeness     |
 
 ### Tier B: Medium Impact, Medium Work
 
-| # | Task | Est. | Impact |
-|---|------|------|--------|
-| B1 | Add Modal component (display/modal.templ) | 30min | Most requested |
-| B2 | Extract inline JS to Script() component pattern | 60min | CSP hardening |
+| #   | Task                                            | Est.  | Impact         |
+| --- | ----------------------------------------------- | ----- | -------------- |
+| B1  | Add Modal component (display/modal.templ)       | 30min | Most requested |
+| B2  | Extract inline JS to Script() component pattern | 60min | CSP hardening  |
 
 ### Tier C: Lower Impact (Defer)
 
-| # | Task | Est. | Impact |
-|---|------|------|--------|
-| C1 | Add Table + Pagination components | 45min | Data apps |
-| C2 | Add Tabs + Accordion | 30min | Common UI |
-| C3 | Component gallery / docs site | 90min | Adoption |
-| C4 | Evaluate templui adoption | 60min | Strategic |
+| #   | Task                              | Est.  | Impact    |
+| --- | --------------------------------- | ----- | --------- |
+| C1  | Add Table + Pagination components | 45min | Data apps |
+| C2  | Add Tabs + Accordion              | 30min | Common UI |
+| C3  | Component gallery / docs site     | 90min | Adoption  |
+| C4  | Evaluate templui adoption         | 60min | Strategic |
 
 ---
 
@@ -55,4 +55,4 @@
 4. B1: Add Modal
 5. Commit + push each step
 
-*Plan complete. Executing now.*
+_Plan complete. Executing now._

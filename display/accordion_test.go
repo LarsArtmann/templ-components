@@ -15,8 +15,17 @@ func TestAccordionRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Accordion(AccordionProps{
 			Items: []AccordionItem{
-				{ID: "faq1", Title: "What is this?", Open: true, Content: templ.Raw("\u003cp\u003eAnswer 1\u003c/p\u003e")},
-				{ID: "faq2", Title: "How does it work?", Content: templ.Raw("\u003cp\u003eAnswer 2\u003c/p\u003e")},
+				{
+					ID:      "faq1",
+					Title:   "What is this?",
+					Open:    true,
+					Content: templ.Raw("\u003cp\u003eAnswer 1\u003c/p\u003e"),
+				},
+				{
+					ID:      "faq2",
+					Title:   "How does it work?",
+					Content: templ.Raw("\u003cp\u003eAnswer 2\u003c/p\u003e"),
+				},
 			},
 		}))
 		utils.AssertContains(t, output, "What is this?")
@@ -35,6 +44,10 @@ func TestAccordionRender(t *testing.T) {
 				{ID: "item1", Title: "Closed", Open: false, Content: templ.Raw("Content")},
 			},
 		}))
-		utils.AssertContains(t, output, `class="overflow-hidden transition-all duration-200 max-h-0"`)
+		utils.AssertContains(
+			t,
+			output,
+			`class="overflow-hidden transition-all duration-200 max-h-0"`,
+		)
 	})
 }

@@ -47,8 +47,8 @@ templ Spinner(size SpinnerSize, colorClass string) {
 		viewBox="0 0 24 24"
 		aria-hidden="true"
 	>
-		<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
-		<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"/>
+		<circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+		<path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
 	</svg>
 }
 
@@ -95,32 +95,32 @@ templ InlineLoading(message string) {
 templ Skeleton(variant SkeletonVariant) {
 	<div aria-busy="true" role="status" aria-label="Loading" class="contents">
 		switch variant {
-		case SkeletonText:
-			<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-		case SkeletonTextShort:
-			<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-		case SkeletonTitle:
-			<div class="animate-pulse h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-		case SkeletonAvatar:
-			<div class="animate-pulse h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-		case SkeletonImage:
-			<div class="animate-pulse h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
-		case SkeletonCard:
-			<div class="animate-pulse space-y-4">
-				<div class="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-				<div class="space-y-3">
-					<div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+			case SkeletonText:
+				<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+			case SkeletonTextShort:
+				<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+			case SkeletonTitle:
+				<div class="animate-pulse h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+			case SkeletonAvatar:
+				<div class="animate-pulse h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+			case SkeletonImage:
+				<div class="animate-pulse h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+			case SkeletonCard:
+				<div class="animate-pulse space-y-4">
+					<div class="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+					<div class="space-y-3">
+						<div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+						<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+					</div>
 				</div>
-			</div>
-		case SkeletonTableRow:
-			<div class="animate-pulse grid grid-cols-4 gap-4 mb-3">
-				for range 4 {
-					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
-				}
-			</div>
-		default:
-			<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+			case SkeletonTableRow:
+				<div class="animate-pulse grid grid-cols-4 gap-4 mb-3">
+					for range 4 {
+						<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+					}
+				</div>
+			default:
+				<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
 		}
 	</div>
 }

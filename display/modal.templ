@@ -16,7 +16,8 @@ templ Modal(props ModalProps) {
 		aria-labelledby={ props.ID + "-title" }
 	>
 		<div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick={ modalCloseHandler(props.ID) }></div>
-		<div class={ "relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200",
+		<div
+			class={ "relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200",
 			modalSizeClass(props.Size),
 			props.Class,
 			templ.KV("scale-100 opacity-100", props.Open),
@@ -33,7 +34,7 @@ templ Modal(props ModalProps) {
 						aria-label="Close"
 					>
 						<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
 						</svg>
 					</button>
 				</div>

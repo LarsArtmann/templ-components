@@ -53,8 +53,10 @@ func Ternary[T any](condition bool, a, b T) T {
 }
 
 // Ptr returns a pointer to the given value
+//
+//go:fix inline
 func Ptr[T any](v T) *T {
-	return &v
+	return new(v)
 }
 
 // Deref returns the value pointed to by p, or the zero value if p is nil

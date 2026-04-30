@@ -10,12 +10,12 @@ import (
 func TestPaginationRange(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name         string
-		current      int
-		total        int
-		maxVisible   int
-		wantStart    int
-		wantEnd      int
+		name       string
+		current    int
+		total      int
+		maxVisible int
+		wantStart  int
+		wantEnd    int
 	}{
 		{"small total", 2, 3, 5, 1, 3},
 		{"current in middle", 5, 10, 5, 3, 7},

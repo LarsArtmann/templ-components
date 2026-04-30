@@ -27,7 +27,13 @@ func TestNavLinkRender(t *testing.T) {
 
 	t.Run("external link", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, NavLink(NavLinkProps{Href: "https://example.com", Text: "External", External: true}, "/"))
+		output := utils.Render(
+			t,
+			NavLink(
+				NavLinkProps{Href: "https://example.com", Text: "External", External: true},
+				"/",
+			),
+		)
 		utils.AssertContains(t, output, `target="_blank"`)
 		utils.AssertContains(t, output, `rel="noopener noreferrer"`)
 	})

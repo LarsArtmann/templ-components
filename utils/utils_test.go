@@ -44,7 +44,7 @@ func TestTernary(t *testing.T) {
 func TestPtr(t *testing.T) {
 	t.Parallel()
 	v := "hello"
-	p := Ptr(v)
+	p := new(v)
 	if p == nil {
 		t.Fatal("Ptr() returned nil")
 	}
@@ -101,10 +101,30 @@ func TestClass(t *testing.T) {
 		wantContain    []string
 		wantNotContain []string
 	}{
-		{name: "single string", classes: []string{"a b c"}, wantContain: []string{"a", "b", "c"}, wantNotContain: nil},
-		{name: "tailwind merge", classes: []string{"bg-red-500 hover:bg-blue-500", "bg-green-500"}, wantContain: []string{"bg-green-500", "hover:bg-blue-500"}, wantNotContain: []string{"bg-red-500"}},
-		{name: "empty ignored", classes: []string{"a b", ""}, wantContain: []string{"a", "b"}, wantNotContain: nil},
-		{name: "multiple overrides", classes: []string{"p-4", "p-6", "px-8"}, wantContain: []string{"p-6", "px-8"}, wantNotContain: []string{"p-4"}},
+		{
+			name:           "single string",
+			classes:        []string{"a b c"},
+			wantContain:    []string{"a", "b", "c"},
+			wantNotContain: nil,
+		},
+		{
+			name:           "tailwind merge",
+			classes:        []string{"bg-red-500 hover:bg-blue-500", "bg-green-500"},
+			wantContain:    []string{"bg-green-500", "hover:bg-blue-500"},
+			wantNotContain: []string{"bg-red-500"},
+		},
+		{
+			name:           "empty ignored",
+			classes:        []string{"a b", ""},
+			wantContain:    []string{"a", "b"},
+			wantNotContain: nil,
+		},
+		{
+			name:           "multiple overrides",
+			classes:        []string{"p-4", "p-6", "px-8"},
+			wantContain:    []string{"p-6", "px-8"},
+			wantNotContain: []string{"p-4"},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
