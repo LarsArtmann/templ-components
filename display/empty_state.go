@@ -1,22 +1,20 @@
 package display
 
-import "github.com/larsartmann/templ-components/icons"
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+//nolint:gochecknoglobals // Package-level lookup table for empty state icons
+var emptyStateIconMap = map[string]icons.Name{
+	"folder":   icons.Folder,
+	"search":   icons.Search,
+	"document": icons.Document,
+	"inbox":    icons.Inbox,
+	"chart":    icons.Chart,
+	"users":    icons.Users,
+}
 
 func mapEmptyStateIcon(name string) icons.Name {
-	switch name {
-	case "folder":
-		return icons.Folder
-	case "search":
-		return icons.Search
-	case "document":
-		return icons.Document
-	case "inbox":
-		return icons.Inbox
-	case "chart":
-		return icons.Chart
-	case "users":
-		return icons.Users
-	default:
-		return icons.Inbox
-	}
+	return utils.MapEnum(emptyStateIconMap, icons.Inbox, name)
 }

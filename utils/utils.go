@@ -75,3 +75,12 @@ func DerefOr[T any](p *T, fallback T) T {
 	}
 	return *p
 }
+
+// MapEnum looks up a string key in a map and returns the corresponding enum value,
+// or the fallback if the key is not found.
+func MapEnum[T ~string](m map[string]T, fallback T, key string) T {
+	if v, ok := m[key]; ok {
+		return v
+	}
+	return fallback
+}
