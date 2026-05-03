@@ -8,15 +8,15 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 
 ## Tech Stack
 
-| Layer | Technology |
-|-------|-----------|
-| Language | Go 1.26 |
-| Templates | templ v0.3.1001 |
-| Styling | Tailwind CSS (via class strings) |
-| Class merging | tailwind-merge-go v0.2.1 |
-| Interactivity | HTMX 2.0.6 + vanilla JS |
-| Build | `templ generate` + `go build` |
-| CI | GitHub Actions (lint + build + test) |
+| Layer         | Technology                           |
+| ------------- | ------------------------------------ |
+| Language      | Go 1.26                              |
+| Templates     | templ v0.3.1001                      |
+| Styling       | Tailwind CSS (via class strings)     |
+| Class merging | tailwind-merge-go v0.2.1             |
+| Interactivity | HTMX 2.0.6 + vanilla JS              |
+| Build         | `templ generate` + `go build`        |
+| CI            | GitHub Actions (lint + build + test) |
 
 ## Package Layout
 
@@ -91,14 +91,14 @@ No other runtime dependencies.
 
 ## Naming Conventions
 
-| Pattern | Example | Purpose |
-|---------|---------|---------|
-| `XxxProps` | `CardProps` | Component configuration struct |
-| `XxxType` | `AlertType` | String enum for visual variants |
-| `XxxSize` | `BadgeSize` | String enum for size variants |
-| `XxxPosition` | `TooltipPosition` | String enum for positional variants |
-| `DefaultXxxProps()` | `DefaultCardProps()` | Constructor with sensible defaults |
-| `xxxClass()` | `badgeColorClass()` | Unexported: enum → Tailwind class mapping |
+| Pattern             | Example              | Purpose                                   |
+| ------------------- | -------------------- | ----------------------------------------- |
+| `XxxProps`          | `CardProps`          | Component configuration struct            |
+| `XxxType`           | `AlertType`          | String enum for visual variants           |
+| `XxxSize`           | `BadgeSize`          | String enum for size variants             |
+| `XxxPosition`       | `TooltipPosition`    | String enum for positional variants       |
+| `DefaultXxxProps()` | `DefaultCardProps()` | Constructor with sensible defaults        |
+| `xxxClass()`        | `badgeColorClass()`  | Unexported: enum → Tailwind class mapping |
 
 ## Architecture Decisions
 

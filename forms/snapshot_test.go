@@ -25,9 +25,9 @@ func TestInputRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
 			BaseProps: utils.BaseProps{ID: "email"},
-			Name:  "email",
-			Label: "Email address",
-			Error: "Invalid email",
+			Name:      "email",
+			Label:     "Email address",
+			Error:     "Invalid email",
 		}))
 		utils.AssertContains(t, output, `aria-invalid="true"`)
 		utils.AssertContains(t, output, `aria-describedby="email-error"`)
@@ -48,8 +48,8 @@ func TestCheckboxRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Checkbox(CheckboxProps{
 		BaseProps: utils.BaseProps{ID: "terms"},
-		Name:  "terms",
-		Label: "I agree",
+		Name:      "terms",
+		Label:     "I agree",
 	}))
 	utils.AssertContains(t, output, `name="terms"`)
 	utils.AssertContains(t, output, `id="terms"`)
