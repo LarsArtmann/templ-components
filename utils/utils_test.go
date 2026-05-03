@@ -44,7 +44,7 @@ func TestTernary(t *testing.T) {
 func TestPtr(t *testing.T) {
 	t.Parallel()
 	v := "hello"
-	p := new(v)
+	p := Ptr(v)
 	if p == nil {
 		t.Fatal("Ptr() returned nil")
 	}
