@@ -1,11 +1,15 @@
 package forms
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // TextareaProps configures a textarea
 type TextareaProps struct {
+	utils.BaseProps
 	Name        string
-	ID          string
 	Value       string
 	Placeholder string
 	Label       string
@@ -15,8 +19,6 @@ type TextareaProps struct {
 	ReadOnly    bool
 	Error       string
 	HelpText    string
-	Class       string
-	Attrs       templ.Attributes
 }
 
 // Textarea renders a labeled textarea

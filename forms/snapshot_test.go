@@ -24,8 +24,8 @@ func TestInputRender(t *testing.T) {
 	t.Run("input with error", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
+			BaseProps: utils.BaseProps{ID: "email"},
 			Name:  "email",
-			ID:    "email",
 			Label: "Email address",
 			Error: "Invalid email",
 		}))
@@ -47,8 +47,8 @@ func TestInputRender(t *testing.T) {
 func TestCheckboxRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Checkbox(CheckboxProps{
+		BaseProps: utils.BaseProps{ID: "terms"},
 		Name:  "terms",
-		ID:    "terms",
 		Label: "I agree",
 	}))
 	utils.AssertContains(t, output, `name="terms"`)
