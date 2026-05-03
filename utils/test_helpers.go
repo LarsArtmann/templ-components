@@ -35,3 +35,11 @@ func AssertNotContains(t *testing.T, output, notWant string) {
 		t.Errorf("output should not contain %q:\n%s", notWant, output)
 	}
 }
+
+// AssertEqual checks that got equals want, reporting a test error with context if not
+func AssertEqual[T comparable](t *testing.T, context string, got, want T) {
+	t.Helper()
+	if got != want {
+		t.Errorf("%s = %v, want %v", context, got, want)
+	}
+}

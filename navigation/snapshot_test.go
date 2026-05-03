@@ -80,13 +80,11 @@ func TestMobileMenuToggleRender(t *testing.T) {
 	})
 }
 
+var testNavLinks = []NavLinkProps{{Href: "/", Text: "Home"}, {Href: "/about", Text: "About"}}
+
 func TestMobileMenuRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, MobileMenu(
-		[]NavLinkProps{{Href: "/", Text: "Home"}, {Href: "/about", Text: "About"}},
-		"/",
-		"test-nonce",
-	))
+	output := utils.Render(t, MobileMenu(testNavLinks, "/", "test-nonce"))
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, "About")
 	utils.AssertContains(t, output, `id="tc-mobile-menu"`)
@@ -95,10 +93,7 @@ func TestMobileMenuRender(t *testing.T) {
 
 func TestSimpleNavRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, SimpleNav("MyApp", "/", []NavLinkProps{
-		{Href: "/", Text: "Home"},
-		{Href: "/about", Text: "About"},
-	}, "/"))
+	output := utils.Render(t, SimpleNav("MyApp", "/", testNavLinks, "/"))
 	utils.AssertContains(t, output, "MyApp")
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, `aria-label="Main navigation"`)

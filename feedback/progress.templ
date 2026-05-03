@@ -33,10 +33,12 @@ func DefaultProgressBarProps() ProgressBarProps {
 //
 //	@feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100, Label: "Uploading"})
 templ ProgressBar(props ProgressBarProps) {
-	{{ percent := 0
-if props.Total > 0 {
-	percent = props.Current * 100 / props.Total
-} }}
+	{{
+		percent := 0
+		if props.Total > 0 {
+			percent = props.Current * 100 / props.Total
+		}
+	}}
 	<div class="w-full">
 		if props.ShowLabel || props.Label != "" {
 			<div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">

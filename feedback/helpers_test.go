@@ -4,6 +4,8 @@ package feedback
 import (
 	"fmt"
 	"testing"
+
+	"github.com/larsartmann/templ-components/utils"
 )
 
 func TestSpinnerSizeClass(t *testing.T) {
@@ -20,15 +22,20 @@ func TestSpinnerSizeClass(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(string(tt.size), func(t *testing.T) {
 			t.Parallel()
-			got := spinnerSizeClass(tt.size)
-			if got != tt.want {
-				t.Errorf("spinnerSizeClass(%q) = %q, want %q", tt.size, got, tt.want)
-			}
+			utils.AssertEqual(
+				t,
+				fmt.Sprintf("spinnerSizeClass(%q)", tt.size),
+				spinnerSizeClass(tt.size),
+				tt.want,
+			)
 		})
 	}
 }
 
-func assertStyleFunc4(t *testing.T, funcName string, border, bg, text, icon string, wantBorder, wantIconColor string) {
+func assertStyleFunc4(
+	t *testing.T,
+	funcName, border, bg, text, icon, wantBorder, wantIconColor string,
+) {
 	t.Helper()
 	if border == "" || bg == "" || text == "" || icon == "" {
 		t.Errorf(
@@ -72,7 +79,16 @@ func TestToastStyles(t *testing.T) {
 		t.Run(string(tt.typ), func(t *testing.T) {
 			t.Parallel()
 			border, bg, text, icon := toastStyles(tt.typ)
-			assertStyleFunc4(t, fmt.Sprintf("toastStyles(%q)", tt.typ), border, bg, text, icon, tt.wantBorder, tt.wantIconColor)
+			assertStyleFunc4(
+				t,
+				fmt.Sprintf("toastStyles(%q)", tt.typ),
+				border,
+				bg,
+				text,
+				icon,
+				tt.wantBorder,
+				tt.wantIconColor,
+			)
 		})
 	}
 }
@@ -99,7 +115,16 @@ func TestAlertStyles(t *testing.T) {
 		t.Run(string(tt.typ), func(t *testing.T) {
 			t.Parallel()
 			border, bg, text, icon := alertStyles(tt.typ)
-			assertStyleFunc4(t, fmt.Sprintf("alertStyles(%q)", tt.typ), border, bg, text, icon, tt.wantBorder, tt.wantIconColor)
+			assertStyleFunc4(
+				t,
+				fmt.Sprintf("alertStyles(%q)", tt.typ),
+				border,
+				bg,
+				text,
+				icon,
+				tt.wantBorder,
+				tt.wantIconColor,
+			)
 		})
 	}
 }
@@ -117,10 +142,12 @@ func TestProgressHeightClass(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(string(tt.size), func(t *testing.T) {
 			t.Parallel()
-			got := progressHeightClass(tt.size)
-			if got != tt.want {
-				t.Errorf("progressHeightClass(%q) = %q, want %q", tt.size, got, tt.want)
-			}
+			utils.AssertEqual(
+				t,
+				fmt.Sprintf("progressHeightClass(%q)", tt.size),
+				progressHeightClass(tt.size),
+				tt.want,
+			)
 		})
 	}
 }
@@ -137,9 +164,12 @@ func TestStepLineClass(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("step-%d-current-%d", tt.step, tt.current), func(t *testing.T) {
 			t.Parallel()
-			if got := stepLineClass(tt.step, tt.current); got != tt.want {
-				t.Errorf("stepLineClass(%d, %d) = %q, want %q", tt.step, tt.current, got, tt.want)
-			}
+			utils.AssertEqual(
+				t,
+				fmt.Sprintf("stepLineClass(%d, %d)", tt.step, tt.current),
+				stepLineClass(tt.step, tt.current),
+				tt.want,
+			)
 		})
 	}
 }
@@ -161,10 +191,12 @@ func TestStepCircleClass(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(fmt.Sprintf("step-%d-current-%d", tt.step, tt.current), func(t *testing.T) {
 			t.Parallel()
-			got := stepCircleClass(tt.step, tt.current)
-			if got != tt.want {
-				t.Errorf("stepCircleClass(%d, %d) = %q, want %q", tt.step, tt.current, got, tt.want)
-			}
+			utils.AssertEqual(
+				t,
+				fmt.Sprintf("stepCircleClass(%d, %d)", tt.step, tt.current),
+				stepCircleClass(tt.step, tt.current),
+				tt.want,
+			)
 		})
 	}
 }

@@ -24,7 +24,7 @@ templ emptyStateAction(text string, href string, attrs templ.Attributes) {
 	if href != "" {
 		<a
 			href={ templ.SafeURL(href) }
-			class=emptyStateActionClass
+			class="emptyStateActionClass"
 			{ attrs... }
 		>
 			{ text }
@@ -32,7 +32,7 @@ templ emptyStateAction(text string, href string, attrs templ.Attributes) {
 	} else {
 		<button
 			type="button"
-			class=emptyStateActionClass
+			class="emptyStateActionClass"
 			{ attrs... }
 		>
 			{ text }

@@ -1,7 +1,12 @@
 // Package display provides tests for display components like Badge, Card, Modal, and EmptyState.
 package display
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 func TestMapStatusToBadgeType(t *testing.T) {
 	t.Parallel()
@@ -19,10 +24,12 @@ func TestMapStatusToBadgeType(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.status, func(t *testing.T) {
 			t.Parallel()
-			got := mapStatusToBadgeType(tt.status)
-			if got != tt.want {
-				t.Errorf("mapStatusToBadgeType(%q) = %q, want %q", tt.status, got, tt.want)
-			}
+			utils.AssertEqual(
+				t,
+				fmt.Sprintf("mapStatusToBadgeType(%q)", tt.status),
+				mapStatusToBadgeType(tt.status),
+				tt.want,
+			)
 		})
 	}
 }
@@ -40,10 +47,12 @@ func TestBadgeSizeClass(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(string(tt.size), func(t *testing.T) {
 			t.Parallel()
-			got := badgeSizeClass(tt.size)
-			if got != tt.want {
-				t.Errorf("badgeSizeClass(%q) = %q, want %q", tt.size, got, tt.want)
-			}
+			utils.AssertEqual(
+				t,
+				fmt.Sprintf("badgeSizeClass(%q)", tt.size),
+				badgeSizeClass(tt.size),
+				tt.want,
+			)
 		})
 	}
 }
@@ -62,10 +71,12 @@ func TestCardPaddingClass(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(string(tt.padding), func(t *testing.T) {
 			t.Parallel()
-			got := cardPaddingClass(tt.padding)
-			if got != tt.want {
-				t.Errorf("cardPaddingClass(%q) = %q, want %q", tt.padding, got, tt.want)
-			}
+			utils.AssertEqual(
+				t,
+				fmt.Sprintf("cardPaddingClass(%q)", tt.padding),
+				cardPaddingClass(tt.padding),
+				tt.want,
+			)
 		})
 	}
 }

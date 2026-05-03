@@ -52,32 +52,20 @@ func TestPaginationRender(t *testing.T) {
 
 	t.Run("first page disables previous", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 1,
-			TotalPages:  3,
-			BaseURL:     "/users",
-		}))
+		output := renderPagination(t, 1, 3, "/users")
 		utils.AssertContains(t, output, `aria-disabled="true"`)
 		utils.AssertNotContains(t, output, `href="/users?page=0"`)
 	})
 
 	t.Run("last page disables next", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 3,
-			TotalPages:  3,
-			BaseURL:     "/users",
-		}))
+		output := renderPagination(t, 3, 3, "/users")
 		utils.AssertNotContains(t, output, `href="/users?page=4"`)
 	})
 
 	t.Run("hidden when single page", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 1,
-			TotalPages:  1,
-			BaseURL:     "/users",
-		}))
+		output := renderPagination(t, 1, 1, "/users")
 		if output != "" {
 			t.Errorf("expected empty output for single page, got: %s", output)
 		}
@@ -93,4 +81,13 @@ func TestPaginationRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `href="/search?q=test&amp;p=1"`)
 	})
+}
+
+func renderPagination(t *testing.T, currentPage, totalPages int, baseURL string) string {
+	t.Helper()
+	return utils.Render(t, Pagination(PaginationProps{
+		CurrentPage: currentPage,
+		TotalPages:  totalPages,
+		BaseURL:     baseURL,
+	}))
 }

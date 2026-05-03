@@ -12,9 +12,9 @@ func TestAlertRender(t *testing.T) {
 	t.Run("error alert", func(t *testing.T) {
 		t.Parallel()
 		props := AlertProps{
-			Title:       "Error",
-			Message:     "Something failed",
-			Type:        AlertError,
+			Title:   "Error",
+			Message: "Something failed",
+			Type:    AlertError,
 		}
 		output := utils.Render(t, Alert(props))
 		utils.AssertContains(t, output, "Error")

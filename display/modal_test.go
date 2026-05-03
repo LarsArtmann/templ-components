@@ -12,8 +12,8 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
-				ID:     "test-modal",
-				Nonce:  "test-nonce",
+				ID:    "test-modal",
+				Nonce: "test-nonce",
 			},
 			Title: "Confirm",
 			Open:  false,

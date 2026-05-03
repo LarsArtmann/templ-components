@@ -10,12 +10,12 @@ import (
 func TestTooltipRender(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
-		name      string
-		text      string
-		position  TooltipPosition
-		wantAll   []string
-		wantAny   []string
-		wantNone  []string
+		name     string
+		text     string
+		position TooltipPosition
+		wantAll  []string
+		wantAny  []string
+		wantNone []string
 	}{
 		{
 			name:     "top tooltip",
