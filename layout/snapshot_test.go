@@ -26,7 +26,7 @@ func TestThemeToggleRender(t *testing.T) {
 
 func TestBaseRender(t *testing.T) {
 	t.Parallel()
-	props := BaseProps{
+	props := PageProps{
 		Title:          "Test Page",
 		Description:    "",
 		Locale:         "en",
@@ -52,7 +52,7 @@ func TestBaseRender(t *testing.T) {
 
 func TestBaseRenderFullProps(t *testing.T) {
 	t.Parallel()
-	props := BaseProps{
+	props := PageProps{
 		Title:          "Full Page",
 		Description:    "A test page",
 		Locale:         "de",

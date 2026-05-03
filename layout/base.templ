@@ -1,7 +1,7 @@
 package layout
 
-// BaseProps configures the base layout
-type BaseProps struct {
+// PageProps configures the base page layout
+type PageProps struct {
 	Title          string
 	Description    string
 	Locale         string
@@ -19,9 +19,9 @@ type BaseProps struct {
 	SecurityHeaders bool
 }
 
-// DefaultBaseProps returns sensible defaults for BaseProps
-func DefaultBaseProps() BaseProps {
-	return BaseProps{
+// DefaultPageProps returns sensible defaults for PageProps
+func DefaultPageProps() PageProps {
+	return PageProps{
 		Locale:         "en",
 		ThemeColor:     "#4f46e5",
 		DarkThemeColor: "#1e1b4b",
@@ -39,7 +39,7 @@ func DefaultBaseProps() BaseProps {
 //	@layout.Base(props) {
 //	  <h1>My Page</h1>
 //	}
-templ Base(props BaseProps) {
+templ Base(props PageProps) {
 	<!DOCTYPE html>
 	<html lang={ props.Locale } class="h-full">
 		<head>
