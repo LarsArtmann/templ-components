@@ -10,15 +10,15 @@ Legend: ✅ Done | 🔨 In Progress | ⬜ Not Started | ❌ Blocked
 
 | # | Status | Task | Priority | Notes |
 |---|--------|------|----------|-------|
-| 1 | ⬜ | Extract shared SVG helpers (`fillIcon`, spinner) to `internal/svg/` package | P1 | Resolves cross-package issues, breaks `icons → feedback` dependency |
+| 1 | ✅ | Extract shared SVG helpers (`fillIcon`, spinner) to `internal/svg/` package | — | Done — commit dc383a4. Breaks `icons → feedback` dependency |
 | 2 | ⬜ | Unify `AlertType`/`ToastType` into shared `SemanticLevel` type | P1 | Two identical enums with near-identical style maps |
-| 3 | ⬜ | Generic `utils.MapEnum[T ~string](map, fallback, key) T` | P2 | Replace hand-written switches in `mapEmptyStateIcon`, `mapStatusToBadgeType` |
+| 3 | ✅ | Generic `utils.MapEnum[T ~string](map, fallback, key) T` | — | Done — commit 82ed623. Used in `display/empty_state.go` |
 | 4 | ✅ | All Props structs embed `utils.BaseProps` | — | Forms and ProgressBarProps were last, now done |
 | 5 | ✅ | Map-based style lookups (not switches) | — | alertStyles, badgeColorClass, badgeDotColorClass converted |
 | 6 | ✅ | Rename `layout.BaseProps` → `PageProps` | — | Eliminates name collision with `utils.BaseProps` |
 | 7 | ⬜ | Cross-package circular import guard test | P4 | Verify `icons → feedback` is one-directional |
-| 8 | ⬜ | Add `CONTEXT.md` with architecture decisions | P3 | Package layout rationale, import graph |
-| 9 | ⬜ | Add `docs/adr/` for architecture decision records | P3 | First ADR: shared SVG package decision |
+| 8 | ✅ | Add `CONTEXT.md` with architecture decisions | — | Done — commit 01d2cde. Package layout, import graph, patterns |
+| 9 | ✅ | Add `docs/adr/` for architecture decision records | — | Done — commit 01d2cde. ADR-0001: shared SVG package |
 
 ## Testing
 
@@ -39,7 +39,7 @@ Legend: ✅ Done | 🔨 In Progress | ⬜ Not Started | ❌ Blocked
 
 | # | Status | Task | Priority | Notes |
 |---|--------|------|----------|-------|
-| 20 | ⬜ | Nonce propagation audit | P1 | Some components have `props.Nonce`, some don't |
+| 20 | ✅ | Nonce propagation audit | — | All inline scripts verified — all use nonce attribute correctly |
 | 21 | ⬜ | Add `SecurityHeaders` test to layout | P2 | Verify meta tags rendered when `SecurityHeaders=true` |
 | 22 | ✅ | CSP compliance for all inline scripts | — | All scripts use `nonce` attribute |
 
@@ -47,7 +47,7 @@ Legend: ✅ Done | 🔨 In Progress | ⬜ Not Started | ❌ Blocked
 
 | # | Status | Task | Priority | Notes |
 |---|--------|------|----------|-------|
-| 23 | ⬜ | Set up GitHub Actions CI | P1 | Build + test + vet on push |
+| 23 | ✅ | Set up GitHub Actions CI | — | Done — Go 1.26, lint+build+test, coverage artifact |
 | 24 | ⬜ | Release automation (goreleaser) | P3 | Tag-based releases |
 | 25 | ⬜ | Investigate nix flake migration | P3 | No build system exists |
 | 26 | ⬜ | Pre-commit hook for `templ generate` | P2 | Ensure generated files stay in sync |
@@ -71,15 +71,22 @@ Legend: ✅ Done | 🔨 In Progress | ⬜ Not Started | ❌ Blocked
 
 ---
 
-## Completed This Session (2026-05-03)
+## Completed This Session (2026-05-03, 17 commits)
 
-- Semantic deduplication: 13→7 clone groups
+- Semantic deduplication: 13→7→11 clone groups (extracted 10+ sub-templates)
 - Fix TestPtr bug (was testing `new()` not `Ptr()`)
 - Rename `layout.BaseProps` → `PageProps`
 - Forms embed `utils.BaseProps` (InputProps, SelectProps, TextareaProps, CheckboxProps)
-- ProgressBarProps embed `utils.BaseProps`
+- ProgressBarProps embeds `utils.BaseProps`
 - Switch→map style lookups (alertStyles, badgeColorClass, badgeDotColorClass)
 - Consolidate SRI hash functions into single `htmxSRI()`
-- Create FEATURES.md
-- Create TODO_LIST.md
-- Prune old status reports
+- Extract shared SVG helpers to `internal/svg/` package (FillIcon, SpinnerSVG)
+- Add generic `utils.MapEnum[T ~string]` for data-driven enum mapping
+- Fix CI Go version: 1.24 → 1.26
+- Create FEATURES.md (53 components, 42 types, 42 icons)
+- Create TODO_LIST.md (33 items)
+- Create CONTEXT.md (architecture, patterns, import graph)
+- Create docs/adr/0001-shared-svg-helpers.md (first ADR)
+- Nonce propagation audit: all inline scripts verified correct
+- Prune 9 old status reports
+- All pushed to origin
