@@ -1,6 +1,10 @@
 package feedback
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // ProgressBarSize defines the height of a progress bar
 type ProgressBarSize string
@@ -13,6 +17,7 @@ const (
 
 // ProgressBarProps configures a progress bar
 type ProgressBarProps struct {
+	utils.BaseProps
 	Current   int
 	Total     int
 	Label     string
