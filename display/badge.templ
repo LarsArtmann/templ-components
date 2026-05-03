@@ -81,42 +81,42 @@ func badgeShapeClass(pill bool) string {
 	return "rounded-md"
 }
 
-func badgeColorClass(t BadgeType) string {
-	switch t {
-	case BadgePrimary:
-		return "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300"
-	case BadgeSuccess:
-		return "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300"
-	case BadgeWarning:
-		return "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300"
-	case BadgeError:
-		return "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300"
-	case BadgeInfo:
-		return "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300"
-	case BadgeNeutral:
-		return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
-	default:
-		return "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
-	}
+//nolint:gochecknoglobals // Package-level lookup tables for badge styles
+var badgeColorMap = map[BadgeType]string{
+	BadgePrimary: "bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300",
+	BadgeSuccess: "bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300",
+	BadgeWarning: "bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300",
+	BadgeError:   "bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300",
+	BadgeInfo:    "bg-indigo-100 text-indigo-800 dark:bg-indigo-900/30 dark:text-indigo-300",
+	BadgeNeutral: "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300",
 }
 
-func badgeDotColorClass(t BadgeType) string {
-	switch t {
-	case BadgePrimary:
-		return "bg-blue-500"
-	case BadgeSuccess:
-		return "bg-green-500"
-	case BadgeWarning:
-		return "bg-yellow-500"
-	case BadgeError:
-		return "bg-red-500"
-	case BadgeInfo:
-		return "bg-indigo-500"
-	case BadgeNeutral:
-		return "bg-gray-500"
-	default:
-		return "bg-gray-500"
+const badgeColorDefault = "bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+
+func badgeColorClass(t BadgeType) string {
+	if c, ok := badgeColorMap[t]; ok {
+		return c
 	}
+	return badgeColorDefault
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for badge dot colors
+var badgeDotColorMap = map[BadgeType]string{
+	BadgePrimary: "bg-blue-500",
+	BadgeSuccess: "bg-green-500",
+	BadgeWarning: "bg-yellow-500",
+	BadgeError:   "bg-red-500",
+	BadgeInfo:    "bg-indigo-500",
+	BadgeNeutral: "bg-gray-500",
+}
+
+const badgeDotColorDefault = "bg-gray-500"
+
+func badgeDotColorClass(t BadgeType) string {
+	if c, ok := badgeDotColorMap[t]; ok {
+		return c
+	}
+	return badgeDotColorDefault
 }
 
 // StatusBadge is a convenience wrapper for common status values
