@@ -1,24 +1,30 @@
-// Package layout provides layout components like Base, Theme, and SRI utilities.
 package layout
 
+// htmxSRIEntry holds the SRI hashes for a single HTMX version
+type htmxSRIEntry struct {
+	Main            string
+	ResponseTargets string
+}
+
 //nolint:gochecknoglobals // Package-level lookup table for HTMX SRI hashes
-var htmxSRIHashes = map[string]struct{ Main, ResponseTargets string }{
+var htmxSRIHashes = map[string]htmxSRIEntry{
 	"2.0.6": {
 		Main:            "sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm",
 		ResponseTargets: "sha384-FcXXcaqsB+SLXujBqU9KJ7E84XV/wxvVAMAGam/W56Y4g0mE9pgh4HG+A4IlfbNd",
 	},
 }
 
-func htmxIntegrityHash(version string) string {
-	if h, ok := htmxSRIHashes[version]; ok {
+// htmxSRI returns the SRI hash for the given version and extension.
+// ext should be "main" or "response-targets".
+func htmxSRI(version, ext string) string {
+	h, ok := htmxSRIHashes[version]
+	if !ok {
+		return ""
+	}
+	switch ext {
+	case "response-targets":
+		return h.ResponseTargets
+	default:
 		return h.Main
 	}
-	return ""
-}
-
-func htmxResponseTargetsIntegrityHash(version string) string {
-	if h, ok := htmxSRIHashes[version]; ok {
-		return h.ResponseTargets
-	}
-	return ""
 }

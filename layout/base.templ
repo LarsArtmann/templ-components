@@ -75,9 +75,9 @@ templ Base(props PageProps) {
 			}
 			if props.HTMXVersion != "" {
 				if props.HTMXSRI == "true" {
-					{{ htmxSRI := htmxIntegrityHash(props.HTMXVersion) }}
-					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion } integrity={ htmxSRI } crossorigin="anonymous"></script>
-					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion + "/dist/ext/response-targets.js" } integrity={ htmxResponseTargetsIntegrityHash(props.HTMXVersion) } crossorigin="anonymous"></script>
+					{{ mainSRI := htmxSRI(props.HTMXVersion, "main") }}
+					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion } integrity={ mainSRI } crossorigin="anonymous"></script>
+					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion + "/dist/ext/response-targets.js" } integrity={ htmxSRI(props.HTMXVersion, "response-targets") } crossorigin="anonymous"></script>
 				} else {
 					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion }></script>
 					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion + "/dist/ext/response-targets.js" }></script>
