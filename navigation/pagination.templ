@@ -55,6 +55,45 @@ func paginationRange(current, total, maxVisible int) (start, end int) {
 	return start, end
 }
 
+// mobilePageButton renders an enabled link or disabled span for mobile pagination
+templ mobilePageButton(enabled bool, href string, marginClass string, text string) {
+	if enabled {
+		<a
+			href={ templ.SafeURL(href) }
+			class={ "relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700", marginClass }
+		>
+			{ text }
+		</a>
+	} else {
+		<span class={ "relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed", marginClass }>{ text }</span>
+	}
+}
+
+// paginationArrowIcon renders the shared icon content for pagination arrows
+templ paginationArrowIcon(srText string, svgPath string) {
+	<span class="sr-only">{ srText }</span>
+	<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+		<path fill-rule="evenodd" d={ svgPath } clip-rule="evenodd"></path>
+	</svg>
+}
+
+// paginationArrow renders a previous/next arrow button for desktop pagination
+templ paginationArrow(enabled bool, href string, roundedSide string, ariaLabel string, srText string, svgPath string) {
+	if enabled {
+		<a
+			href={ templ.SafeURL(href) }
+			class={ "relative inline-flex items-center px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0", "rounded-" + roundedSide + "-md" }
+			aria-label={ ariaLabel }
+		>
+			@paginationArrowIcon(srText, svgPath)
+		</a>
+	} else {
+		<span class={ "relative inline-flex items-center px-2 py-2 text-gray-300 dark:text-gray-600 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed", "rounded-" + roundedSide + "-md" } aria-disabled="true" tabindex="-1">
+			@paginationArrowIcon(srText, svgPath)
+		</span>
+	}
+}
+
 // Pagination renders a page navigation bar
 //
 //	@navigation.Pagination(navigation.PaginationProps{
@@ -73,26 +112,8 @@ templ Pagination(props PaginationProps) {
 			{ props.Attrs... }
 		>
 			<div class="flex flex-1 justify-between sm:hidden">
-				if props.CurrentPage > 1 {
-					<a
-						href={ templ.SafeURL(props.pageURL(props.CurrentPage - 1)) }
-						class="relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
-					>
-						Previous
-					</a>
-				} else {
-					<span class="relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed">Previous</span>
-				}
-				if props.CurrentPage < props.TotalPages {
-					<a
-						href={ templ.SafeURL(props.pageURL(props.CurrentPage + 1)) }
-						class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700"
-					>
-						Next
-					</a>
-				} else {
-					<span class="relative ml-3 inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed">Next</span>
-				}
+				@mobilePageButton(props.CurrentPage > 1, props.pageURL(props.CurrentPage - 1), "", "Previous")
+				@mobilePageButton(props.CurrentPage < props.TotalPages, props.pageURL(props.CurrentPage + 1), "ml-3", "Next")
 			</div>
 			<div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
 				<div>
@@ -106,25 +127,14 @@ templ Pagination(props PaginationProps) {
 				<div>
 					<ol class="isolate inline-flex -space-x-px rounded-md shadow-sm" aria-label="Pagination">
 						<li>
-							if props.CurrentPage > 1 {
-								<a
-									href={ templ.SafeURL(props.pageURL(props.CurrentPage - 1)) }
-									class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0"
-									aria-label="Previous page"
-								>
-									<span class="sr-only">Previous</span>
-									<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-										<path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd"></path>
-									</svg>
-								</a>
-							} else {
-								<span class="relative inline-flex items-center rounded-l-md px-2 py-2 text-gray-300 dark:text-gray-600 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed" aria-disabled="true" tabindex="-1">
-									<span class="sr-only">Previous</span>
-									<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-										<path fill-rule="evenodd" d="M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z" clip-rule="evenodd"></path>
-									</svg>
-								</span>
-							}
+							@paginationArrow(
+								props.CurrentPage > 1,
+								props.pageURL(props.CurrentPage - 1),
+								"l",
+								"Previous page",
+								"Previous",
+								"M12.79 5.23a.75.75 0 01-.02 1.06L8.832 10l3.938 3.71a.75.75 0 11-1.04 1.08l-4.5-4.25a.75.75 0 010-1.08l4.5-4.25a.75.75 0 011.06.02z",
+							)
 						</li>
 						{{ start, end := paginationRange(props.CurrentPage, props.TotalPages, props.MaxVisible) }}
 						for p := start; p <= end; p++ {
@@ -147,25 +157,14 @@ templ Pagination(props PaginationProps) {
 							</li>
 						}
 						<li>
-							if props.CurrentPage < props.TotalPages {
-								<a
-									href={ templ.SafeURL(props.pageURL(props.CurrentPage + 1)) }
-									class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0"
-									aria-label="Next page"
-								>
-									<span class="sr-only">Next</span>
-									<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-										<path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd"></path>
-									</svg>
-								</a>
-							} else {
-								<span class="relative inline-flex items-center rounded-r-md px-2 py-2 text-gray-300 dark:text-gray-600 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed" aria-disabled="true" tabindex="-1">
-									<span class="sr-only">Next</span>
-									<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-										<path fill-rule="evenodd" d="M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z" clip-rule="evenodd"></path>
-									</svg>
-								</span>
-							}
+							@paginationArrow(
+								props.CurrentPage < props.TotalPages,
+								props.pageURL(props.CurrentPage + 1),
+								"r",
+								"Next page",
+								"Next",
+								"M7.21 14.77a.75.75 0 01.02-1.06L11.168 10 7.23 6.29a.75.75 0 111.04-1.08l4.5 4.25a.75.75 0 010 1.08l-4.5 4.25a.75.75 0 01-1.06-.02z",
+							)
 						</li>
 					</ol>
 				</div>

@@ -12,11 +12,8 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
-				ID:        "test-modal",
-				Class:     "",
-				Attrs:     nil,
-				AriaLabel: "",
-				Nonce:     "test-nonce",
+				ID:     "test-modal",
+				Nonce:  "test-nonce",
 			},
 			Title: "Confirm",
 			Open:  false,
@@ -36,10 +33,7 @@ func TestModalRender(t *testing.T) {
 		t.Parallel()
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
-				ID:        "open-modal",
-				Class:     "",
-				Attrs:     nil,
-				AriaLabel: "",
+				ID: "open-modal",
 			},
 			Title: "Hello",
 			Open:  true,
@@ -63,10 +57,7 @@ func TestModalRender(t *testing.T) {
 				t.Parallel()
 				props := ModalProps{
 					BaseProps: utils.BaseProps{
-						ID:        "sz-modal",
-						Class:     "",
-						Attrs:     nil,
-						AriaLabel: "",
+						ID: "sz-modal",
 					},
 					Title: "Test Modal",
 					Open:  false,

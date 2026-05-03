@@ -27,6 +27,25 @@ type DropdownProps struct {
 	Position DropdownPosition
 }
 
+// dropdownItemClass returns the shared class for all dropdown items
+const dropdownItemClass = "block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
+
+// dropdownItemLink renders an anchor dropdown item
+templ dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) {
+	<a
+		href={ templ.SafeURL(item.Href) }
+		if item.External {
+			target="_blank"
+			rel="noopener noreferrer"
+		}
+		class=dropdownItemClass
+		role="menuitem"
+		{ item.Attrs... }
+	>
+		{ item.Text }
+	</a>
+}
+
 // Dropdown renders a button-triggered action menu
 //
 //	@display.Dropdown(display.DropdownProps{
@@ -49,9 +68,7 @@ templ Dropdown(props DropdownProps) {
 				aria-label={ props.Label }
 			>
 				{ props.Label }
-				<svg class="-mr-1 h-5 w-5 text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-					<path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path>
-				</svg>
+				@fillIcon("-mr-1 h-5 w-5 text-gray-400", "M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z")
 			</button>
 		</div>
 		<div
@@ -68,31 +85,11 @@ templ Dropdown(props DropdownProps) {
 			<div class="py-1" role="none">
 				for _, item := range props.Items {
 					if item.Href != "" {
-						if item.External {
-							<a
-								href={ templ.SafeURL(item.Href) }
-								target="_blank"
-								rel="noopener noreferrer"
-								class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
-								role="menuitem"
-								{ item.Attrs... }
-							>
-								{ item.Text }
-							</a>
-						} else {
-							<a
-								href={ templ.SafeURL(item.Href) }
-								class="block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
-								role="menuitem"
-								{ item.Attrs... }
-							>
-								{ item.Text }
-							</a>
-						}
+						@dropdownItemLink(item)
 					} else {
 						<button
 							type="button"
-							class="block w-full text-left px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
+							class={ "block w-full text-left", dropdownItemClass }
 							role="menuitem"
 							{ item.Attrs... }
 						>

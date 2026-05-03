@@ -50,14 +50,11 @@ templ Accordion(props AccordionProps) {
 					data-accordion-trigger={ item.ID }
 				>
 					<span>{ item.Title }</span>
-					<svg
-						class={ "h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-200", templ.KV("rotate-180", item.Open) }
-						viewBox="0 0 20 20"
-						fill="currentColor"
-						aria-hidden="true"
-					>
-						<path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"></path>
-					</svg>
+					@fillIcon(
+						"h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-200",
+						"M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z",
+						item.Open,
+					)
 				</button>
 				<div
 					id={ item.ID + "-panel" }

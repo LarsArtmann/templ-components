@@ -119,26 +119,36 @@ templ alertIconPath(t AlertType) {
 	}
 }
 
+// inlineMessage renders a compact inline status message with icon
+templ inlineMessage(message string, colorClass string, role string, icon templ.Component) {
+	<div class={ "mt-2 flex items-center gap-1.5 text-sm", colorClass } role={ role } aria-live="polite">
+		@icon
+		<span>{ message }</span>
+	</div>
+}
+
 // InlineError renders a compact inline error message for forms
 //
 //	@feedback.InlineError("This field is required")
 templ InlineError(message string) {
-	<div class="mt-2 flex items-center gap-1.5 text-sm text-red-600 dark:text-red-400" role="alert" aria-live="polite">
-		<svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
-		</svg>
-		<span>{ message }</span>
-	</div>
+	@inlineMessage(message, "text-red-600 dark:text-red-400", "alert", inlineErrorIcon())
 }
 
 // InlineSuccess renders a compact inline success message
 //
 //	@feedback.InlineSuccess("Saved successfully")
 templ InlineSuccess(message string) {
-	<div class="mt-2 flex items-center gap-1.5 text-sm text-green-600 dark:text-green-400" role="status" aria-live="polite">
-		<svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-			<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-		</svg>
-		<span>{ message }</span>
-	</div>
+	@inlineMessage(message, "text-green-600 dark:text-green-400", "status", inlineSuccessIcon())
+}
+
+templ inlineErrorIcon() {
+	<svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.664-.833-2.464 0L4.35 16.5c-.77.833.192 2.5 1.732 2.5z"></path>
+	</svg>
+}
+
+templ inlineSuccessIcon() {
+	<svg class="h-4 w-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+		<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+	</svg>
 }

@@ -28,6 +28,26 @@ func TestSpinnerSizeClass(t *testing.T) {
 	}
 }
 
+func assertStyleFunc4(t *testing.T, funcName string, border, bg, text, icon string, wantBorder, wantIconColor string) {
+	t.Helper()
+	if border == "" || bg == "" || text == "" || icon == "" {
+		t.Errorf(
+			"%s returned empty value: border=%q bg=%q text=%q icon=%q",
+			funcName,
+			border,
+			bg,
+			text,
+			icon,
+		)
+	}
+	if wantBorder != "" && border != wantBorder {
+		t.Errorf("%s border = %q, want %q", funcName, border, wantBorder)
+	}
+	if wantIconColor != "" && icon != wantIconColor {
+		t.Errorf("%s icon = %q, want %q", funcName, icon, wantIconColor)
+	}
+}
+
 func TestToastStyles(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -52,22 +72,7 @@ func TestToastStyles(t *testing.T) {
 		t.Run(string(tt.typ), func(t *testing.T) {
 			t.Parallel()
 			border, bg, text, icon := toastStyles(tt.typ)
-			if border == "" || bg == "" || text == "" || icon == "" {
-				t.Errorf(
-					"toastStyles(%q) returned empty value: border=%q bg=%q text=%q icon=%q",
-					tt.typ,
-					border,
-					bg,
-					text,
-					icon,
-				)
-			}
-			if border != tt.wantBorder {
-				t.Errorf("toastStyles(%q) border = %q, want %q", tt.typ, border, tt.wantBorder)
-			}
-			if icon != tt.wantIconColor {
-				t.Errorf("toastStyles(%q) icon = %q, want %q", tt.typ, icon, tt.wantIconColor)
-			}
+			assertStyleFunc4(t, fmt.Sprintf("toastStyles(%q)", tt.typ), border, bg, text, icon, tt.wantBorder, tt.wantIconColor)
 		})
 	}
 }
@@ -75,15 +80,7 @@ func TestToastStyles(t *testing.T) {
 func TestToastStylesDefault(t *testing.T) {
 	t.Parallel()
 	border, bg, text, icon := toastStyles("unknown")
-	if border == "" || bg == "" || text == "" || icon == "" {
-		t.Errorf(
-			"toastStyles(unknown) returned empty value: border=%q bg=%q text=%q icon=%q",
-			border,
-			bg,
-			text,
-			icon,
-		)
-	}
+	assertStyleFunc4(t, "toastStyles(unknown)", border, bg, text, icon, "", "")
 }
 
 func TestAlertStyles(t *testing.T) {
@@ -102,22 +99,7 @@ func TestAlertStyles(t *testing.T) {
 		t.Run(string(tt.typ), func(t *testing.T) {
 			t.Parallel()
 			border, bg, text, icon := alertStyles(tt.typ)
-			if border == "" || bg == "" || text == "" || icon == "" {
-				t.Errorf(
-					"alertStyles(%q) returned empty value: border=%q bg=%q text=%q icon=%q",
-					tt.typ,
-					border,
-					bg,
-					text,
-					icon,
-				)
-			}
-			if border != tt.wantBorder {
-				t.Errorf("alertStyles(%q) border = %q, want %q", tt.typ, border, tt.wantBorder)
-			}
-			if icon != tt.wantIconColor {
-				t.Errorf("alertStyles(%q) icon = %q, want %q", tt.typ, icon, tt.wantIconColor)
-			}
+			assertStyleFunc4(t, fmt.Sprintf("alertStyles(%q)", tt.typ), border, bg, text, icon, tt.wantBorder, tt.wantIconColor)
 		})
 	}
 }
@@ -145,11 +127,20 @@ func TestProgressHeightClass(t *testing.T) {
 
 func TestStepLineClass(t *testing.T) {
 	t.Parallel()
-	if got := stepLineClass(0, 2); got != "bg-blue-600 dark:bg-blue-500" {
-		t.Errorf("stepLineClass(0, 2) = %q", got)
+	tests := []struct {
+		step, current int
+		want          string
+	}{
+		{0, 2, "bg-blue-600 dark:bg-blue-500"},
+		{3, 2, "bg-gray-200 dark:bg-gray-700"},
 	}
-	if got := stepLineClass(3, 2); got != "bg-gray-200 dark:bg-gray-700" {
-		t.Errorf("stepLineClass(3, 2) = %q", got)
+	for _, tt := range tests {
+		t.Run(fmt.Sprintf("step-%d-current-%d", tt.step, tt.current), func(t *testing.T) {
+			t.Parallel()
+			if got := stepLineClass(tt.step, tt.current); got != tt.want {
+				t.Errorf("stepLineClass(%d, %d) = %q, want %q", tt.step, tt.current, got, tt.want)
+			}
+		})
 	}
 }
 

@@ -12,12 +12,8 @@ func TestCardRender(t *testing.T) {
 	t.Run("basic card with title", func(t *testing.T) {
 		t.Parallel()
 		props := CardProps{
-			BaseProps:    utils.BaseProps{},
-			Title:        "Users",
-			Subtitle:     "",
-			Footer:       nil,
-			HeaderAction: nil,
-			Padding:      CardPaddingMD,
+			Title:   "Users",
+			Padding: CardPaddingMD,
 		}
 		output := utils.Render(t, Card(props))
 		utils.AssertContains(t, output, "Users")
@@ -29,16 +25,11 @@ func TestCardRender(t *testing.T) {
 		t.Parallel()
 		props := CardProps{
 			BaseProps: utils.BaseProps{
-				ID:        "my-card",
-				Class:     "mt-4",
-				Attrs:     nil,
-				AriaLabel: "",
+				ID:    "my-card",
+				Class: "mt-4",
 			},
-			Title:        "Test",
-			Subtitle:     "",
-			Footer:       nil,
-			HeaderAction: nil,
-			Padding:      CardPaddingMD,
+			Title:   "Test",
+			Padding: CardPaddingMD,
 		}
 		output := utils.Render(t, Card(props))
 		utils.AssertContains(t, output, `id="my-card"`)

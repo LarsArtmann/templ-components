@@ -1,7 +1,10 @@
-// Package display provides tab components for content switching.
 package display
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // Tab represents a single tab panel
 type Tab struct {
@@ -24,6 +27,18 @@ type TabsProps struct {
 	utils.BaseProps
 	Tabs     []Tab
 	TabStyle TabsStyle
+}
+
+// tabLink renders a single tab link with the given class based on active state
+templ tabLink(tab Tab, activeClass, inactiveClass string) {
+	<a
+		href={ templ.SafeURL("#" + tab.ID) }
+		role="tab"
+		aria-selected={ fmt.Sprintf("%t", tab.Active) }
+		class={ utils.Ternary(tab.Active, activeClass, inactiveClass) }
+	>
+		{ tab.Label }
+	</a>
 }
 
 // Tabs renders a tabbed interface with accessible markup
@@ -49,45 +64,15 @@ templ Tabs(props TabsProps) {
 			>
 				for _, tab := range props.Tabs {
 					if props.TabStyle == TabsStylePills {
-						if tab.Active {
-							<a
-								href={ templ.SafeURL("#" + tab.ID) }
-								role="tab"
-								aria-selected="true"
-								class="rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white"
-							>
-								{ tab.Label }
-							</a>
-						} else {
-							<a
-								href={ templ.SafeURL("#" + tab.ID) }
-								role="tab"
-								aria-selected="false"
-								class="rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200"
-							>
-								{ tab.Label }
-							</a>
-						}
+						@tabLink(tab,
+							"rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white",
+							"rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
+						)
 					} else {
-						if tab.Active {
-							<a
-								href={ templ.SafeURL("#" + tab.ID) }
-								role="tab"
-								aria-selected="true"
-								class="whitespace-nowrap border-b-2 border-blue-500 px-1 py-4 text-sm font-medium text-blue-600 dark:text-blue-400"
-							>
-								{ tab.Label }
-							</a>
-						} else {
-							<a
-								href={ templ.SafeURL("#" + tab.ID) }
-								role="tab"
-								aria-selected="false"
-								class="whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200"
-							>
-								{ tab.Label }
-							</a>
-						}
+						@tabLink(tab,
+							"whitespace-nowrap border-b-2 border-blue-500 px-1 py-4 text-sm font-medium text-blue-600 dark:text-blue-400",
+							"whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200",
+						)
 					}
 				}
 			</nav>

@@ -9,35 +9,43 @@ import (
 
 func TestTooltipRender(t *testing.T) {
 	t.Parallel()
-
-	t.Run("top tooltip", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Tooltip(TooltipProps{
-			Text:     "More info",
-			Position: TooltipPositionTop,
-		}))
-		utils.AssertContains(t, output, "More info")
-		utils.AssertContains(t, output, `role="tooltip"`)
-		utils.AssertContains(t, output, "group-hover:block")
-		utils.AssertContains(t, output, "bottom-full")
-	})
-
-	t.Run("bottom tooltip", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Tooltip(TooltipProps{
-			Text:     "Help",
-			Position: TooltipPositionBottom,
-		}))
-		utils.AssertContains(t, output, "Help")
-		utils.AssertContains(t, output, "top-full")
-	})
-
-	t.Run("right tooltip", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Tooltip(TooltipProps{
-			Text:     "Details",
-			Position: TooltipPositionRight,
-		}))
-		utils.AssertContains(t, output, "left-full")
-	})
+	tests := []struct {
+		name      string
+		text      string
+		position  TooltipPosition
+		wantAll   []string
+		wantAny   []string
+		wantNone  []string
+	}{
+		{
+			name:     "top tooltip",
+			text:     "More info",
+			position: TooltipPositionTop,
+			wantAll:  []string{"More info", `role="tooltip"`, "group-hover:block", "bottom-full"},
+		},
+		{
+			name:     "bottom tooltip",
+			text:     "Help",
+			position: TooltipPositionBottom,
+			wantAll:  []string{"Help", "top-full"},
+		},
+		{
+			name:     "right tooltip",
+			text:     "Details",
+			position: TooltipPositionRight,
+			wantAll:  []string{"left-full"},
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Tooltip(TooltipProps{
+				Text:     tt.text,
+				Position: tt.position,
+			}))
+			for _, want := range tt.wantAll {
+				utils.AssertContains(t, output, want)
+			}
+		})
+	}
 }

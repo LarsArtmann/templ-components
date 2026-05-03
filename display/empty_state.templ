@@ -16,6 +16,30 @@ type EmptyStateProps struct {
 	ActionAttrs templ.Attributes
 }
 
+// emptyStateActionClass is the shared class for empty state action buttons/links
+const emptyStateActionClass = "inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
+
+// emptyStateAction renders an action link or button for the empty state
+templ emptyStateAction(text string, href string, attrs templ.Attributes) {
+	if href != "" {
+		<a
+			href={ templ.SafeURL(href) }
+			class=emptyStateActionClass
+			{ attrs... }
+		>
+			{ text }
+		</a>
+	} else {
+		<button
+			type="button"
+			class=emptyStateActionClass
+			{ attrs... }
+		>
+			{ text }
+		</button>
+	}
+}
+
 // EmptyState renders a centered empty state with icon, title, description, and optional action
 //
 //	@display.EmptyState(display.EmptyStateProps{
@@ -37,23 +61,7 @@ templ EmptyState(props EmptyStateProps) {
 			}
 			if props.ActionText != "" {
 				<div class="mt-6">
-					if props.ActionHref != "" {
-						<a
-							href={ templ.SafeURL(props.ActionHref) }
-							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
-							{ props.ActionAttrs... }
-						>
-							{ props.ActionText }
-						</a>
-					} else {
-						<button
-							type="button"
-							class="inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
-							{ props.ActionAttrs... }
-						>
-							{ props.ActionText }
-						</button>
-					}
+					@emptyStateAction(props.ActionText, props.ActionHref, props.ActionAttrs)
 				</div>
 			}
 		</div>

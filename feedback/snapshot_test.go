@@ -12,16 +12,9 @@ func TestAlertRender(t *testing.T) {
 	t.Run("error alert", func(t *testing.T) {
 		t.Parallel()
 		props := AlertProps{
-			BaseProps: utils.BaseProps{
-				ID:        "",
-				Class:     "",
-				Attrs:     nil,
-				AriaLabel: "",
-			},
 			Title:       "Error",
 			Message:     "Something failed",
 			Type:        AlertError,
-			Dismissible: false,
 		}
 		output := utils.Render(t, Alert(props))
 		utils.AssertContains(t, output, "Error")
@@ -33,14 +26,7 @@ func TestAlertRender(t *testing.T) {
 	t.Run("dismissible alert", func(t *testing.T) {
 		t.Parallel()
 		props := AlertProps{
-			BaseProps: utils.BaseProps{
-				ID:        "",
-				Class:     "",
-				Attrs:     nil,
-				AriaLabel: "",
-			},
 			Title:       "Warning",
-			Message:     "",
 			Type:        AlertWarning,
 			Dismissible: true,
 		}
@@ -61,16 +47,8 @@ func TestToastContainerRender(t *testing.T) {
 func TestToastRender(t *testing.T) {
 	t.Parallel()
 	props := ToastProps{
-		BaseProps: utils.BaseProps{
-			ID:        "",
-			Class:     "",
-			Attrs:     nil,
-			AriaLabel: "",
-		},
-		Message:  "Saved!",
-		Title:    "",
-		Type:     ToastSuccess,
-		Duration: 0,
+		Message: "Saved!",
+		Type:    ToastSuccess,
 	}
 	output := utils.Render(t, Toast(props))
 	utils.AssertContains(t, output, "Saved!")
