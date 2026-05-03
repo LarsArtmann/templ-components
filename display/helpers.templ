@@ -1,13 +1,8 @@
 package display
 
-// fillIcon renders a 20x20 filled SVG icon with the given class and path
+import "github.com/larsartmann/templ-components/internal/svg"
+
+// fillIcon renders a 20x20 filled SVG icon — delegates to shared svg.FillIcon
 templ fillIcon(class string, path string, rotate ...bool) {
-	<svg
-		class={ class, templ.KV("rotate-180", len(rotate) > 0 && rotate[0]) }
-		viewBox="0 0 20 20"
-		fill="currentColor"
-		aria-hidden="true"
-	>
-		<path fill-rule="evenodd" d={ path } clip-rule="evenodd"></path>
-	</svg>
+	@svg.FillIcon(class, path, rotate...)
 }
