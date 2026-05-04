@@ -38,7 +38,7 @@ templ dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) {
 			target="_blank"
 			rel="noopener noreferrer"
 		}
-		class="dropdownItemClass"
+		class={ dropdownItemClass }
 		role="menuitem"
 		{ item.Attrs... }
 	>

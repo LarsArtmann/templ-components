@@ -1,0 +1,132 @@
+direction: down
+
+title: |md
+  # templ-components — Target Architecture (2026-05-04)
+  Deepened modules, eliminated split brains, data-driven icons | {near: top-center}
+
+# FOUNDATION LAYER
+
+foundation: Foundation Layer {
+  style.fill: "#e8f5e9"
+  style.stroke: "#2e7d32"
+  style.stroke-width: 2
+
+  utils: utils {
+    style.fill: "#c8e6c9"
+    BaseProps: "BaseProps struct (ID, Class, Attrs, AriaLabel, Nonce)"
+    helpers: "Class() MergeAttrs() Ternary[T]() Ptr[T]() MapEnum[T]() BoolString()"
+  }
+
+  internal_svg: "internal/svg" {
+    style.fill: "#c8e6c9"
+    FillIcon: "FillIcon(class, path, rotate...)"
+    SpinnerSVG: "SpinnerSVG()"
+  }
+}
+
+# ICON LAYER (deepened)
+
+icons_layer: icons {
+  style.fill: "#fff3e0"
+  style.stroke: "#e65100"
+  style.stroke-width: 2
+
+  icon_comp: "Icon(name, class)" {
+    style.fill: "#ffe0b2"
+  }
+  icon_paths: "iconPaths map[Name]string + strokeIcon() helper" {
+    style.fill: "#a5d6a7"
+  }
+  icon_names: "42 Name constants" {
+    style.fill: "#ffe0b2"
+  }
+}
+
+# FEEDBACK LAYER (deepened: unified style engine)
+
+feedback_layer: feedback {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  style.stroke-width: 2
+
+  style_engine: "Unified Style Engine" {
+    style.fill: "#a5d6a7"
+    core: "feedbackStyleSet struct (Border, BG, Text, Icon)"
+    lookup: "feedbackStyleMap[FeedbackType]"
+    func: "feedbackStyles(t) returns 4-string tuple"
+    icons: "feedbackIconPath(t) shared icon sub-template"
+  }
+
+  alert: Alert {style.fill: "#bbdefb"}
+  toast: Toast {style.fill: "#bbdefb"}
+  spinner: Spinner
+  skeleton: Skeleton
+  progress: ProgressBar
+  loading: Loading states
+}
+
+# FORMS LAYER (deepened: shared error rendering)
+
+forms_layer: forms {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  style.stroke-width: 2
+
+  field: "Shared Field Helpers" {
+    style.fill: "#a5d6a7"
+    helpers: "errorAttrs(id, errMsg) + errorSlot(id, errMsg) + baseInputClass(hasError)"
+  }
+
+  input: Input
+  select: Select
+  textarea: Textarea
+  checkbox: Checkbox
+}
+
+# DISPLAY LAYER (type safety improvements)
+
+display: display {
+  style.fill: "#bbdefb"
+
+  avatar_fix: "AvatarStatus enum: Online/Offline/None (replaces bool pair)" {
+    style.fill: "#a5d6a7"
+  }
+  statcard_fix: "TrendDirection enum: Up/Down/None (replaces positive bool)" {
+    style.fill: "#a5d6a7"
+  }
+}
+
+# OTHER PACKAGES
+
+navigation: navigation {style.fill: "#bbdefb"}
+layout: layout {style.fill: "#bbdefb"}
+htmx: htmx {style.fill: "#bbdefb"}
+
+# KEY IMPROVEMENTS
+
+improvements: Key Improvements {
+  style.fill: "#e8f5e9"
+  style.stroke: "#2e7d32"
+  style.stroke-width: 2
+
+  imp1: "Eliminated split brains: unified feedbackStyleSet replaces duplicate alertStyleSet/toastStyleSet"
+  imp2: "Deepened icons: path-data map + shared SVG renderer (minus 100 lines)"
+  imp3: "Deepened forms: shared error/aria helpers (minus 30 lines duplication)"
+  imp4: "Type safety: AvatarStatus enum, TrendDirection enum (impossible states unrepresentable)"
+  imp5: "Data-driven: all enum-to-class lookups via MapEnum or maps, no switch statements"
+}
+
+# CONNECTIONS
+
+feedback_layer.style_engine -> feedback_layer.alert: "uses"
+feedback_layer.style_engine -> feedback_layer.toast: "uses"
+forms_layer.field -> forms_layer.input: "uses"
+forms_layer.field -> forms_layer.select: "uses"
+forms_layer.field -> forms_layer.textarea: "uses"
+forms_layer.field -> forms_layer.checkbox: "uses"
+icons_layer.icon_paths -> icons_layer.icon_comp: "path lookup"
+foundation.utils -> feedback_layer
+foundation.utils -> forms_layer
+foundation.utils -> display
+foundation.utils -> navigation
+foundation.utils -> layout

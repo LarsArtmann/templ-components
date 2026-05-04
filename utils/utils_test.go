@@ -152,6 +152,47 @@ func splitSpace(s string) []string {
 	return strings.Fields(s)
 }
 
+type testEnum string
+
+const (
+	testEnumA testEnum = "a"
+	testEnumB testEnum = "b"
+	testEnumC testEnum = "c"
+)
+
+func TestMapEnum(t *testing.T) {
+	t.Parallel()
+
+	lookup := map[string]testEnum{
+		"alpha": testEnumA,
+		"beta":  testEnumB,
+	}
+
+	t.Run("found key returns mapped value", func(t *testing.T) {
+		t.Parallel()
+		got := MapEnum(lookup, testEnumC, "alpha")
+		if got != testEnumA {
+			t.Errorf("MapEnum() = %q, want %q", got, testEnumA)
+		}
+	})
+
+	t.Run("missing key returns fallback", func(t *testing.T) {
+		t.Parallel()
+		got := MapEnum(lookup, testEnumC, "unknown")
+		if got != testEnumC {
+			t.Errorf("MapEnum() = %q, want %q (fallback)", got, testEnumC)
+		}
+	})
+
+	t.Run("empty key returns fallback", func(t *testing.T) {
+		t.Parallel()
+		got := MapEnum(lookup, testEnumC, "")
+		if got != testEnumC {
+			t.Errorf("MapEnum() = %q, want %q (fallback)", got, testEnumC)
+		}
+	})
+}
+
 func TestMergeAttrs(t *testing.T) {
 	t.Parallel()
 	t.Run("merge two maps", func(t *testing.T) {

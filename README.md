@@ -40,7 +40,7 @@ import (
 )
 
 templ MyPage() {
-    @layout.Base(layout.BaseProps{
+    @layout.Base(layout.PageProps{
         Title:       "Dashboard",
         Description: "My awesome dashboard",
     }) {
@@ -57,7 +57,7 @@ templ MyPage() {
 ### `layout` - Page Structure
 
 ```templ
-@layout.Base(layout.BaseProps{Title: "My Page"}) {
+@layout.Base(layout.PageProps{Title: "My Page"}) {
     <h1>Content</h1>
 }
 

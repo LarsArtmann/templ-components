@@ -1,0 +1,149 @@
+direction: down
+
+title: |md
+  # templ-components — Current Architecture (2026-05-04)
+  56 templ components, 44 exported types, 42 icons | {near: top-center}
+
+# FOUNDATION LAYER
+
+foundation: Foundation Layer {
+  style.fill: "#e8f5e9"
+  style.stroke: "#2e7d32"
+  style.stroke-width: 2
+
+  utils: utils {
+    style.fill: "#c8e6c9"
+    BaseProps: "BaseProps struct (ID, Class, Attrs, AriaLabel, Nonce)"
+    helpers: "Class() MergeAttrs() Ternary[T]() Ptr[T]() MapEnum[T]()"
+  }
+
+  internal_svg: "internal/svg" {
+    style.fill: "#c8e6c9"
+    FillIcon: "FillIcon(class, path, rotate...)"
+    SpinnerSVG: "SpinnerSVG()"
+  }
+}
+
+# ICON LAYER
+
+icons_layer: icons {
+  style.fill: "#fff3e0"
+  style.stroke: "#e65100"
+  style.stroke-width: 2
+
+  icon_comp: "Icon(name, class)" {
+    style.fill: "#ffe0b2"
+  }
+  icon_names: "42 Name constants" {
+    style.fill: "#ffe0b2"
+  }
+}
+
+# COMPONENT LAYER
+
+components: Component Packages {
+  style.fill: "#e3f2fd"
+  style.stroke: "#1565c0"
+  style.stroke-width: 2
+
+  display: display {
+    style.fill: "#bbdefb"
+    desc: "15 components: Accordion, Avatar, Badge, Card, StatCard, Dropdown, EmptyState, Modal, Table, Tabs, Tooltip"
+  }
+
+  feedback: feedback {
+    style.fill: "#bbdefb"
+    desc: "12 components: Alert, Toast, Spinner, Skeleton, ProgressBar, StepIndicator, LoadingOverlay"
+  }
+
+  forms: forms {
+    style.fill: "#bbdefb"
+    desc: "6 components: Input, Select, Textarea, Checkbox, Label, FieldError"
+  }
+
+  htmx_pkg: htmx {
+    style.fill: "#bbdefb"
+    desc: "7 components: GlobalErrorHandling, LoadingIndicator, ConfirmDelete, SwapOOB, CSRFToken, LoadingButton"
+  }
+
+  navigation: navigation {
+    style.fill: "#bbdefb"
+    desc: "9 components: Nav, NavLink, MobileMenu, Breadcrumbs, Pagination, Footer"
+  }
+
+  layout: layout {
+    style.fill: "#bbdefb"
+    desc: "4 components: Base, Minimal, ThemeScript, ThemeToggle + PageProps"
+  }
+}
+
+# EXTERNAL DEPENDENCIES
+
+deps: External Dependencies {
+  style.fill: "#fce4ec"
+  style.stroke: "#c62828"
+  style.stroke-width: 2
+
+  templ: "github.com/a-h/templ v0.3.1001" {
+    shape: cylinder
+    style.fill: "#f8bbd0"
+  }
+  tw_merge: "tailwind-merge-go v0.2.1" {
+    shape: cylinder
+    style.fill: "#f8bbd0"
+  }
+  tw_css: "Tailwind CSS (class strings)" {
+    shape: cloud
+    style.fill: "#f8bbd0"
+  }
+  htmx_ext: "HTMX 2.0.6 (CDN with SRI)" {
+    shape: cloud
+    style.fill: "#f8bbd0"
+  }
+}
+
+# CONSUMERS
+
+consumers: Consuming Projects {
+  style.fill: "#f3e5f5"
+  style.stroke: "#6a1b9a"
+  style.stroke-width: 2
+
+  consumer_apps: "Go web applications" {
+    style.fill: "#e1bee7"
+    style.stroke-dash: 3
+  }
+}
+
+# KNOWN ISSUES
+
+issues: Known Issues {
+  style.fill: "#fff9c4"
+  style.stroke: "#f57f17"
+  style.stroke-dash: 5
+
+  split_brains: "Split Brains: alertStyleSet equals toastStyleSet, alertStyles equals toastStyles"
+  shallow: "Shallow: icon.templ 187-line switch, form error pattern repeated x4"
+}
+
+# IMPORT GRAPH
+
+deps.templ -> foundation.utils: "templ.Component rendering"
+deps.tw_merge -> foundation.utils: "class merging"
+
+foundation.utils -> components.display: "BaseProps, Class()"
+foundation.utils -> components.feedback: "BaseProps, Class()"
+foundation.utils -> components.forms: "BaseProps, Class()"
+foundation.utils -> components.navigation: "BaseProps, Class()"
+foundation.utils -> components.layout: "MapEnum, Class()"
+
+foundation.internal_svg -> components.display: "FillIcon, SpinnerSVG"
+foundation.internal_svg -> components.feedback: "SpinnerSVG"
+foundation.internal_svg -> icons_layer: "FillIcon"
+
+icons_layer -> components.display: "Icon() in EmptyState"
+
+components -> consumers.consumer_apps: "go get"
+
+components.display -> issues
+components.feedback -> issues
