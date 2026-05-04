@@ -18,11 +18,11 @@ templ-components fills an **unoccupied niche** — a pure-Tailwind, no-DaisyUI, 
 
 The templ + Tailwind component library space has only 2-3 entrants, and **none** are pure-Tailwind without DaisyUI:
 
-| Library | CSS Approach | Node.js Required | Go Module | Maturity |
-|---------|-------------|-------------------|-----------|----------|
-| **templ-components** (this) | Raw Tailwind only | No | Yes | 53 components, 341 tests |
-| goshipit (haatos) | Tailwind + DaisyUI | Yes | Yes | Active, has website |
-| templ_components (tego101) | Tailwind + DaisyUI | Yes | No (no go.mod) | Early, unfinished |
+| Library                     | CSS Approach       | Node.js Required | Go Module      | Maturity                 |
+| --------------------------- | ------------------ | ---------------- | -------------- | ------------------------ |
+| **templ-components** (this) | Raw Tailwind only  | No               | Yes            | 53 components, 341 tests |
+| goshipit (haatos)           | Tailwind + DaisyUI | Yes              | Yes            | Active, has website      |
+| templ_components (tego101)  | Tailwind + DaisyUI | Yes              | No (no go.mod) | Early, unfinished        |
 
 **First-mover advantage in the "pure Tailwind, pure Go" space.**
 
@@ -141,14 +141,14 @@ The project already has a proper MIT license. Legal readiness is zero-effort.
 
 ### Make public NOW, with these pre-conditions:
 
-| # | Condition | Priority | Effort | Status |
-|---|-----------|----------|--------|--------|
-| 1 | Tag v0.1.0-alpha with clear "pre-release" disclaimer | P0 | Low | Not done |
-| 2 | Fix empty CI workflow — add working GitHub Actions | P0 | Low | Directory exists, no config |
-| 3 | Update CHANGELOG.md to reflect actual changes | P1 | Low | Generic placeholder |
-| 4 | Add "Alpha / Pre-release" badge to README | P1 | Trivial | Not done |
-| 5 | Add CONTRIBUTING.md with expectations | P1 | Low | Not done |
-| 6 | Submit to awesome-templ | P2 | Trivial | After going public |
+| #   | Condition                                            | Priority | Effort  | Status                      |
+| --- | ---------------------------------------------------- | -------- | ------- | --------------------------- |
+| 1   | Tag v0.1.0-alpha with clear "pre-release" disclaimer | P0       | Low     | Not done                    |
+| 2   | Fix empty CI workflow — add working GitHub Actions   | P0       | Low     | Directory exists, no config |
+| 3   | Update CHANGELOG.md to reflect actual changes        | P1       | Low     | Generic placeholder         |
+| 4   | Add "Alpha / Pre-release" badge to README            | P1       | Trivial | Not done                    |
+| 5   | Add CONTRIBUTING.md with expectations                | P1       | Low     | Not done                    |
+| 6   | Submit to awesome-templ                              | P2       | Trivial | After going public          |
 
 ### Post-publication roadmap:
 
@@ -161,19 +161,19 @@ The project already has a proper MIT license. Legal readiness is zero-effort.
 
 ## Risk Assessment
 
-| Risk | Severity | Mitigation |
-|------|----------|------------|
-| Breaking changes upset early adopters | Medium | Clear "alpha" label, semver pre-release tags |
-| templ itself breaks compatibility | Low | Pin templ version, follow releases closely |
-| Maintenance overwhelm as solo dev | Medium | Low contribution barrier, clear CONTRIBUTING.md |
-| Low adoption / crickets | Low | No downside — private repo also has zero adoption |
-| Someone forks and does it better | Low | First-mover advantage + continuous improvement wins |
-| Security issue in public code | Low | No secrets, CSP-compliant, `templ` auto-escapes |
+| Risk                                  | Severity | Mitigation                                          |
+| ------------------------------------- | -------- | --------------------------------------------------- |
+| Breaking changes upset early adopters | Medium   | Clear "alpha" label, semver pre-release tags        |
+| templ itself breaks compatibility     | Low      | Pin templ version, follow releases closely          |
+| Maintenance overwhelm as solo dev     | Medium   | Low contribution barrier, clear CONTRIBUTING.md     |
+| Low adoption / crickets               | Low      | No downside — private repo also has zero adoption   |
+| Someone forks and does it better      | Low      | First-mover advantage + continuous improvement wins |
+| Security issue in public code         | Low      | No secrets, CSP-compliant, `templ` auto-escapes     |
 
 ---
 
 ## Verdict
 
-**The upsides of going public significantly outweigh the downsides.** The code is clean, tested, documented, and fills a genuine gap in the Go/templ ecosystem. The only real risk is API churn — which is manageable with clear pre-release labeling. The risk of *not* going public is that someone else fills this niche first, and the first-mover advantage is lost permanently.
+**The upsides of going public significantly outweigh the downsides.** The code is clean, tested, documented, and fills a genuine gap in the Go/templ ecosystem. The only real risk is API churn — which is manageable with clear pre-release labeling. The risk of _not_ going public is that someone else fills this niche first, and the first-mover advantage is lost permanently.
 
 **Go public. Tag alpha. Ship iteratively.**
