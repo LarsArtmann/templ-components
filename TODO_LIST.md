@@ -90,7 +90,49 @@ Legend: ✅ Done | 🔨 In Progress | ⬜ Not Started | ❌ Blocked
 
 ---
 
-## Completed This Session (2026-05-07)
+## New Items (Discovered 2026-05-07 Audit)
+
+| #   | Status | Task                                                         | Priority | Notes                                                       |
+| --- | ------ | ------------------------------------------------------------ | -------- | ----------------------------------------------------------- |
+| 53  | ⬜     | Add 11 missing `DefaultXxxProps()` constructors              | P1       | EmptyState, Modal, Loading, Progress, Label, ErrorHandling, HTMXLoading, Breadcrumbs, MobileMenu, NavLink, Base (verify) |
+| 54  | ⬜     | Add `aria-required` to form inputs when `Required: true`     | P1       | WCAG requirement. Input, Select, Textarea.                  |
+| 55  | ⬜     | Add `<html lang>` to Base layout (new `Lang` field)          | P1       | WCAG 3.1.1. Add `Lang string` to PageProps, default "en".   |
+| 56  | ⬜     | Add skip-to-content link in Base layout                      | P1       | WCAG 2.4.1. Hidden link that jumps to `#main-content`.      |
+| 57  | ⬜     | Update migration guide with `icons.Name` breaking change     | P1       | `Icon: "folder"` → `Icon: icons.Folder` not in docs.        |
+| 58  | ⬜     | Add `alt` text to Avatar `<img>`                             | P1       | WCAG 1.1.1. Add `Alt` field to AvatarProps.                 |
+| 59  | ⬜     | Add Table `Caption` field + render `<caption>`               | P2       | WCAG 1.3.1. Tables should have captions for screen readers. |
+| 60  | ⬜     | Fix pre-commit hook to be executable                         | P3       | `chmod +x scripts/pre-commit.sh` — every commit shows warning. |
+| 61  | ⬜     | Convert 6 remaining components to `utils.Class()`            | P2       | Alert, Loading, Progress, Toast, NavLink (Modal: KV limitation). |
+| 62  | ⬜     | Add `aria-live="polite"` to HTMX loading indicators          | P2       | Screen reader announcements for dynamic loading.            |
+| 63  | ⬜     | Add `aria-live="polite"` to HTMX error handling              | P2       | Dynamic error announcements for screen readers.             |
+| 64  | ⬜     | Improve forms test coverage (58% → 75%+)                     | P2       | Lowest package coverage.                                    |
+| 65  | ⬜     | Improve utils test coverage (56% → 75%+)                     | P2       | MergeAttrs, CurrentYear, Deref undertested.                 |
+| 66  | ⬜     | Add EmptyState landmark role (`role="region"`)               | P3       | Screen reader navigation aid.                               |
+| 67  | ⬜     | Add Table header `scope` attributes                          | P2       | `<th scope="col">` for screen reader column association.    |
+| 68  | ⬜     | Document `PageProps` not embedding `BaseProps`               | P3       | Only Props struct that breaks convention. Document why.      |
+| 69  | ⬜     | Exclude `examples/` from golangci-lint properly              | P3       | 23 issues in demo/main.go. Can't exclude via config.         |
+
+## Session 3 (2026-05-07) — Class Merge, Type Safety, A11y, Docs
+| 1 | `39e237e` | fix: Tailwind class merge, a11y gaps, and form help text IDs |
+| 2 | `1c014ef` | feat: add 17 missing DefaultXxxProps() constructors across all packages |
+| 3 | `3d5aded` | feat!: type-safe icons — DropdownItem.Icon and EmptyStateProps.Icon now use icons.Name |
+| 4 | `c9981d7` | feat(a11y): add modal focus trap and Escape key handler |
+| 5 | `a1a81b5` | feat(a11y): add dropdown keyboard navigation |
+| 6 | `e8acc3f` | fix(a11y): add proper ARIA linkage to tabs |
+| 7 | `e6b403c` | fix(a11y): add id to tooltip div for aria-describedby linkage |
+| 8 | `9884910` | docs: add package doc comments for all packages |
+
+Key changes:
+- **Silent bug fix**: `utils.Class()` replaces comma-join in forms, Badge, StatCard, Nav — consumer class overrides were silently ignored
+- **17 DefaultXxxProps() constructors** added across all packages
+- **Type safety**: `Icon` fields changed from `string` to `icons.Name` (breaking change)
+- **Modal a11y**: Focus trap, Escape key, focus management on open/close
+- **Dropdown a11y**: Arrow key navigation, Escape to close, auto-focus first item
+- **Tabs a11y**: Proper id/aria-controls/aria-labelledby/tabindex linkage
+- **Tooltip a11y**: Deterministic id on tooltip div for aria-describedby
+- **Package docs**: doc.go for display, feedback, htmx, icons, layout, navigation
+
+## Session 2 (2026-05-04) — Architecture, Tests, Demo
 
 - Unified `alertStyleSet`/`toastStyleSet` into shared `feedbackStyleSet` + generic `lookupFeedbackStyle[T]()`
 - Deepened icon rendering: 187-line switch → `iconPathData` map + `strokeIcon()` sub-template
@@ -110,9 +152,8 @@ Legend: ✅ Done | 🔨 In Progress | ⬜ Not Started | ❌ Blocked
 - Added `Default*Props()` constructor tests for Card, Badge, Modal, ProgressBar
 - Added dropdown XSS safety test verifying templ auto-escaping
 - Added benchmark tests for `utils.Class()` and Badge rendering
-- Total: 321 tests passing (up from 332)
 
-## Completed Previous Session (2026-05-04)
+## Session 1 (2026-05-03) — Initial Audit
 
 - Fixed critical bug: `class="dropdownItemClass"` rendering literal string (dropdown.templ L41)
 - Fixed critical bug: `class="emptyStateActionClass"` rendering literal string (empty_state.templ L27, L35)
