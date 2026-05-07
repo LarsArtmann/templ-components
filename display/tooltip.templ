@@ -59,14 +59,17 @@ func tooltipArrowClass(pos TooltipPosition) string {
 //	 }
 templ Tooltip(props TooltipProps) {
 	<div
+		class={ utils.Class("group relative inline-flex", props.Class) }
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class("group relative inline-flex", props.Class) }
 		{ props.Attrs... }
 	>
 		{ children... }
 		<div
+			if props.ID != "" {
+				id={ props.ID + "-tooltip" }
+			}
 			class={ "absolute z-20 hidden group-hover:block group-focus-within:block whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-white shadow-sm",
 				tooltipPositionClass(props.Position) }
 			role="tooltip"
