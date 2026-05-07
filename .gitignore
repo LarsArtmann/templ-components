@@ -23,3 +23,4 @@ node_modules/
 /report/jscpd-report.json
 # Build artifacts
 /templ-components
+/demo

@@ -1,0 +1,107 @@
+package layout
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+func TestIntegrationFullPageRender(t *testing.T) {
+	t.Parallel()
+
+	t.Run("base renders complete HTML document", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultPageProps()
+		props.Title = "Test Page"
+		props.Description = "A test page"
+		output := utils.Render(t, Base(props))
+
+		if !strings.HasPrefix(strings.ToLower(output), "<!doctype html>") {
+			t.Error("output should start with <!DOCTYPE html>")
+		}
+		if !strings.Contains(output, `<html lang="en"`) {
+			t.Error("output should contain html element with lang")
+		}
+		if !strings.Contains(output, "<title>Test Page</title>") {
+			t.Error("output should contain title")
+		}
+		if !strings.Contains(output, `content="A test page"`) {
+			t.Error("output should contain description meta")
+		}
+		if !strings.Contains(output, `<main id="main-content"`) {
+			t.Error("output should contain main element")
+		}
+		if !strings.Contains(output, "Skip to main content") {
+			t.Error("output should contain skip link")
+		}
+	})
+
+	t.Run("base with security headers renders meta tags", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultPageProps()
+		props.SecurityHeaders = true
+		output := utils.Render(t, Base(props))
+
+		utils.AssertContains(t, output, `http-equiv="X-Content-Type-Options"`)
+		utils.AssertContains(t, output, `http-equiv="Referrer-Policy"`)
+	})
+
+	t.Run("base without security headers omits meta tags", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultPageProps()
+		props.SecurityHeaders = false
+		output := utils.Render(t, Base(props))
+
+		utils.AssertNotContains(t, output, `http-equiv="X-Content-Type-Options"`)
+		utils.AssertNotContains(t, output, `http-equiv="Referrer-Policy"`)
+	})
+
+	t.Run("base with HTMX SRI renders integrity attributes", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultPageProps()
+		props.HTMXUseSRI = true
+		output := utils.Render(t, Base(props))
+
+		utils.AssertContains(t, output, `integrity="`)
+		utils.AssertContains(t, output, `crossorigin="anonymous"`)
+	})
+
+	t.Run("base without HTMX SRI omits integrity", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultPageProps()
+		props.HTMXUseSRI = false
+		output := utils.Render(t, Base(props))
+
+		utils.AssertNotContains(t, output, `integrity="`)
+	})
+
+	t.Run("base with CSS path renders stylesheet", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultPageProps()
+		props.CSSPath = "/custom.css"
+		output := utils.Render(t, Base(props))
+
+		utils.AssertContains(t, output, `href="/custom.css"`)
+		utils.AssertContains(t, output, `rel="stylesheet"`)
+	})
+
+	t.Run("base with OG image renders meta", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultPageProps()
+		props.OGImage = "/og.png"
+		output := utils.Render(t, Base(props))
+
+		utils.AssertContains(t, output, `property="og:image" content="/og.png"`)
+	})
+
+	t.Run("minimal renders stripped HTML", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Minimal("Simple", "de"))
+
+		utils.AssertContains(t, strings.ToLower(output), "<!doctype html>")
+		utils.AssertContains(t, output, `<html lang="de">`)
+		utils.AssertContains(t, output, "<title>Simple</title>")
+		utils.AssertNotContains(t, output, "htmx")
+	})
+}
