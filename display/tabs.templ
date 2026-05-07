@@ -39,9 +39,12 @@ func DefaultTabsProps() TabsProps {
 // tabLink renders a single tab link with the given class based on active state
 templ tabLink(tab Tab, activeClass, inactiveClass string) {
 	<a
+		id={ tab.ID + "-tab" }
 		href={ templ.SafeURL("#" + tab.ID) }
 		role="tab"
 		aria-selected={ fmt.Sprintf("%t", tab.Active) }
+		aria-controls={ tab.ID }
+		tabindex={ fmt.Sprintf("%d", func() int { if tab.Active { return 0 }; return -1 }()) }
 		class={ utils.Ternary(tab.Active, activeClass, inactiveClass) }
 	>
 		{ tab.Label }
@@ -89,6 +92,7 @@ templ Tabs(props TabsProps) {
 				<div
 					id={ tab.ID }
 					role="tabpanel"
+					aria-labelledby={ tab.ID + "-tab" }
 					if !tab.Active {
 						hidden
 					}
