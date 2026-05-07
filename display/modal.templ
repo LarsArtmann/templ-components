@@ -55,6 +55,8 @@ templ Modal(props ModalProps) {
 					inner.classList.remove('scale-100', 'opacity-100');
 					inner.classList.add('scale-95', 'opacity-0');
 				}
+				var prev = document.getElementById(id + '-prev-focus');
+				if (prev) prev.focus();
 			}
 		}
 		function tcOpenModal(id) {
@@ -66,8 +68,26 @@ templ Modal(props ModalProps) {
 				if (inner) {
 					inner.classList.remove('scale-95', 'opacity-0');
 					inner.classList.add('scale-100', 'opacity-100');
+					var focusable = inner.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+					if (focusable.length) focusable[0].focus();
 				}
 			}
 		}
+		(function(id) {
+			var modal = document.getElementById(id);
+			if (!modal) return;
+			modal.addEventListener('keydown', function(e) {
+				if (e.key === 'Escape') { tcCloseModal(id); return; }
+				if (e.key !== 'Tab') return;
+				var inner = modal.querySelector('[role="dialog"] > div:last-child');
+				if (!inner) return;
+				var focusable = inner.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+				if (focusable.length === 0) { e.preventDefault(); return; }
+				var first = focusable[0];
+				var last = focusable[focusable.length - 1];
+				if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+				else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+			});
+		})('{{ props.ID }}');
 	</script>
 }
