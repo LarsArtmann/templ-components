@@ -85,6 +85,11 @@ type StepIndicatorProps struct {
 	CurrentStep int
 }
 
+// DefaultStepIndicatorProps returns sensible defaults
+func DefaultStepIndicatorProps() StepIndicatorProps {
+	return StepIndicatorProps{}
+}
+
 // StepIndicator renders a horizontal step indicator
 //
 //	@feedback.StepIndicator(feedback.StepIndicatorProps{Steps: []string{"Details", "Review", "Confirm"}, CurrentStep: 1})

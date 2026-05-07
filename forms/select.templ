@@ -22,6 +22,11 @@ type SelectProps struct {
 	HelpText string
 }
 
+// DefaultSelectProps returns sensible defaults
+func DefaultSelectProps() SelectProps {
+	return SelectProps{}
+}
+
 // Select renders a labeled select dropdown
 //
 //	@forms.Select(forms.SelectProps{

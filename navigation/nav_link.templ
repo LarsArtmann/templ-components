@@ -18,6 +18,11 @@ type NavLinkProps struct {
 	Attrs    templ.Attributes
 }
 
+// DefaultNavLinkProps returns sensible defaults
+func DefaultNavLinkProps() NavLinkProps {
+	return NavLinkProps{}
+}
+
 // NavLink renders a single navigation link with active state styling
 //
 //	@navigation.NavLink(navigation.NavLinkProps{Href: "/", Text: "Home"}, "/")

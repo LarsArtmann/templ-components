@@ -29,6 +29,13 @@ type TabsProps struct {
 	TabStyle TabsStyle
 }
 
+// DefaultTabsProps returns sensible defaults
+func DefaultTabsProps() TabsProps {
+	return TabsProps{
+		TabStyle: TabsStyleDefault,
+	}
+}
+
 // tabLink renders a single tab link with the given class based on active state
 templ tabLink(tab Tab, activeClass, inactiveClass string) {
 	<a

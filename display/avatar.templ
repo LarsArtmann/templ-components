@@ -41,6 +41,15 @@ type AvatarProps struct {
 	Status   AvatarStatus
 }
 
+// DefaultAvatarProps returns sensible defaults
+func DefaultAvatarProps() AvatarProps {
+	return AvatarProps{
+		Size:   AvatarSizeMD,
+		Shape:  AvatarShapeCircle,
+		Status: AvatarStatusNone,
+	}
+}
+
 func avatarSizeClass(size AvatarSize) string {
 	switch size {
 	case AvatarSizeXS:

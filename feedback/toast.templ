@@ -60,6 +60,14 @@ func toastJSStyles() string {
 	return b.String()
 }
 
+// DefaultToastProps returns sensible defaults
+func DefaultToastProps() ToastProps {
+	return ToastProps{
+		Type:     ToastInfo,
+		Duration: ToastDurationMedium,
+	}
+}
+
 // ToastContainer renders the fixed-position container for toasts
 // Place this once near the top of your body
 //

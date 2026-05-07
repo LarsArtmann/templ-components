@@ -19,6 +19,13 @@ type TooltipProps struct {
 	Position TooltipPosition
 }
 
+// DefaultTooltipProps returns sensible defaults
+func DefaultTooltipProps() TooltipProps {
+	return TooltipProps{
+		Position: TooltipPositionTop,
+	}
+}
+
 func tooltipPositionClass(pos TooltipPosition) string {
 	switch pos {
 	case TooltipPositionBottom:

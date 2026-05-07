@@ -12,6 +12,11 @@ type NavProps struct {
 	Sticky      bool
 }
 
+// DefaultNavProps returns sensible defaults
+func DefaultNavProps() NavProps {
+	return NavProps{}
+}
+
 // Nav renders a responsive navigation bar
 //
 //	@navigation.Nav(navigation.NavProps{

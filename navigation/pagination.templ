@@ -17,6 +17,14 @@ type PaginationProps struct {
 	MaxVisible  int
 }
 
+// DefaultPaginationProps returns sensible defaults
+func DefaultPaginationProps() PaginationProps {
+	return PaginationProps{
+		QueryParam: "page",
+		MaxVisible: 5,
+	}
+}
+
 func (p PaginationProps) pageURL(page int) string {
 	param := p.QueryParam
 	if param == "" {

@@ -35,6 +35,13 @@ type InputProps struct {
 	HelpText    string
 }
 
+// DefaultInputProps returns sensible defaults
+func DefaultInputProps() InputProps {
+	return InputProps{
+		Type: InputText,
+	}
+}
+
 // baseInputClass returns the shared Tailwind classes for inputs
 func baseInputClass(hasError bool) string {
 	base := "block w-full rounded-md border-0 py-1.5 text-gray-900 dark:text-white shadow-sm ring-1 ring-inset placeholder:text-gray-400 focus:ring-2 focus:ring-inset sm:text-sm sm:leading-6 transition-colors dark:bg-gray-800 dark:ring-gray-700 dark:placeholder:text-gray-500"
@@ -102,6 +109,11 @@ type CheckboxProps struct {
 	Disabled bool
 	Error    string
 	HelpText string
+}
+
+// DefaultCheckboxProps returns sensible defaults
+func DefaultCheckboxProps() CheckboxProps {
+	return CheckboxProps{}
 }
 
 // Checkbox renders a checkbox with label

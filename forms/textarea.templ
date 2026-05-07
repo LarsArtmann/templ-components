@@ -21,6 +21,13 @@ type TextareaProps struct {
 	HelpText    string
 }
 
+// DefaultTextareaProps returns sensible defaults
+func DefaultTextareaProps() TextareaProps {
+	return TextareaProps{
+		Rows: 4,
+	}
+}
+
 // Textarea renders a labeled textarea
 //
 //	@forms.Textarea(forms.TextareaProps{

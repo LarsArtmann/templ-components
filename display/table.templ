@@ -41,6 +41,11 @@ type TableProps struct {
 	Bordered bool
 }
 
+// DefaultTableProps returns sensible defaults
+func DefaultTableProps() TableProps {
+	return TableProps{}
+}
+
 // Table renders a responsive data table
 //
 //	@display.Table(display.TableProps{

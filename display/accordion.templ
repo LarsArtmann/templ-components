@@ -16,6 +16,11 @@ type AccordionProps struct {
 	Items []AccordionItem
 }
 
+// DefaultAccordionProps returns sensible defaults
+func DefaultAccordionProps() AccordionProps {
+	return AccordionProps{}
+}
+
 // Accordion renders a collapsible accordion with accessible markup
 //
 //	@display.Accordion(display.AccordionProps{
