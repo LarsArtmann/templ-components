@@ -49,6 +49,7 @@ templ Select(props SelectProps) {
 		class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
 		if props.Required {
 			required
+			aria-required="true"
 		}
 		if props.Disabled {
 			disabled

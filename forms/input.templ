@@ -77,6 +77,7 @@ templ Input(props InputProps) {
 			class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
 			if props.Required {
 				required
+				aria-required="true"
 			}
 			if props.Disabled {
 				disabled
@@ -132,6 +133,7 @@ templ Checkbox(props CheckboxProps) {
 				}
 				if props.Required {
 					required
+					aria-required="true"
 				}
 				if props.Disabled {
 					disabled
