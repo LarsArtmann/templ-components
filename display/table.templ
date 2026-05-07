@@ -5,7 +5,15 @@ import "github.com/larsartmann/templ-components/utils"
 
 // TableCell represents a single cell in a table row
 type TableCell struct {
-	Text string
+	Text    string
+	Content templ.Component
+}
+
+func tableBorderedClass(bordered bool) string {
+	if bordered {
+		return "border border-gray-200 dark:border-slate-700"
+	}
+	return ""
 }
 
 // TableRow represents a single row in a table
@@ -48,7 +56,7 @@ templ Table(props TableProps) {
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class("min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-sm", props.Class) }
+			class={ utils.Class("min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-sm", tableBorderedClass(props.Bordered), props.Class) }
 			{ props.Attrs... }
 		>
 			if props.Caption != "" {
@@ -77,7 +85,13 @@ templ Table(props TableProps) {
 						}
 					>
 						for _, cell := range row.Cells {
-							<td class="px-4 py-3 text-gray-700 dark:text-gray-300">{ cell.Text }</td>
+							<td class="px-4 py-3 text-gray-700 dark:text-gray-300">
+								if cell.Content != nil {
+									@cell.Content
+								} else {
+									{ cell.Text }
+								}
+							</td>
 						}
 					</tr>
 				}

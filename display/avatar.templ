@@ -21,6 +21,15 @@ const (
 	AvatarShapeSquare AvatarShape = "square"
 )
 
+// AvatarStatus represents the online status indicator for an avatar
+type AvatarStatus string
+
+const (
+	AvatarStatusNone   AvatarStatus = ""
+	AvatarStatusOnline AvatarStatus = "online"
+	AvatarStatusOffline AvatarStatus = "offline"
+)
+
 // AvatarProps configures an avatar component
 type AvatarProps struct {
 	utils.BaseProps
@@ -29,8 +38,7 @@ type AvatarProps struct {
 	Initials string
 	Size     AvatarSize
 	Shape    AvatarShape
-	Online   bool
-	Offline  bool
+	Status   AvatarStatus
 }
 
 func avatarSizeClass(size AvatarSize) string {
@@ -70,11 +78,11 @@ templ Avatar(props AvatarProps) {
 				class={ utils.Class("inline-block object-cover bg-gray-100 dark:bg-gray-800", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class) }
 				{ props.Attrs... }
 			/>
-			if props.Online || props.Offline {
+			if props.Status != AvatarStatusNone {
 				<span
 					class={ "absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-gray-900",
-						templ.KV("bg-green-400", props.Online),
-						templ.KV("bg-gray-400", props.Offline) }
+						templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
+						templ.KV("bg-gray-400", props.Status == AvatarStatusOffline) }
 				></span>
 			}
 		</div>

@@ -76,6 +76,14 @@ func DerefOr[T any](p *T, fallback T) T {
 	return *p
 }
 
+// BoolString returns "true" or "false" for a boolean value
+func BoolString(b bool) string {
+	if b {
+		return "true"
+	}
+	return "false"
+}
+
 // MapEnum looks up a string key in a map and returns the corresponding enum value,
 // or the fallback if the key is not found.
 func MapEnum[T ~string](m map[string]T, fallback T, key string) T {

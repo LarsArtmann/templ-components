@@ -40,7 +40,7 @@ func TestAvatarRender(t *testing.T) {
 		output := utils.Render(t, Avatar(AvatarProps{
 			Src:    "/me.jpg",
 			Alt:    "Me",
-			Online: true,
+			Status: AvatarStatusOnline,
 		}))
 		utils.AssertContains(t, output, "bg-green-400")
 	})
@@ -48,9 +48,9 @@ func TestAvatarRender(t *testing.T) {
 	t.Run("with offline status", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
-			Src:     "/me.jpg",
-			Alt:     "Me",
-			Offline: true,
+			Src:    "/me.jpg",
+			Alt:    "Me",
+			Status: AvatarStatusOffline,
 		}))
 		utils.AssertContains(t, output, "bg-gray-400")
 	})

@@ -94,34 +94,52 @@ templ SimpleCard() {
 	</div>
 }
 
+// TrendDirection represents the direction of a stat change
+type TrendDirection string
+
+const (
+	TrendUp   TrendDirection = "up"
+	TrendDown TrendDirection = "down"
+	TrendNone TrendDirection = ""
+)
+
 // StatCard renders a dashboard stat card with value, label, and optional change indicator
 //
-//	@display.StatCard("1,234", "Total Users", "+12%", true)
-templ StatCard(value, label, change string, positive bool) {
+//	@display.StatCard(display.StatCardProps{Value: "1,234", Label: "Total Users", Change: "+12%", Trend: display.TrendUp})
+type StatCardProps struct {
+	utils.BaseProps
+	Value  string
+	Label  string
+	Change string
+	Trend  TrendDirection
+}
+
+// StatCard renders a dashboard stat card with value, label, and optional change indicator
+templ StatCard(props StatCardProps) {
 	<div class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-sm p-5">
 		<dl>
-			<dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{ label }</dt>
+			<dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{ props.Label }</dt>
 			<div class="mt-1 flex items-baseline">
-				<dd class="text-2xl font-semibold text-gray-900 dark:text-white">{ value }</dd>
-				if change != "" {
+				<dd class="text-2xl font-semibold text-gray-900 dark:text-white">{ props.Value }</dd>
+				if props.Change != "" {
 					<div
 						class={ "ml-2 flex items-baseline text-sm font-semibold",
-						templ.KV("text-green-600 dark:text-green-400", positive),
-						templ.KV("text-red-600 dark:text-red-400", !positive) }
+						templ.KV("text-green-600 dark:text-green-400", props.Trend == TrendUp),
+						templ.KV("text-red-600 dark:text-red-400", props.Trend == TrendDown) }
 					>
-						if positive {
+						if props.Trend == TrendUp {
 							@fillIcon("self-center flex-shrink-0 h-4 w-4 text-green-500", "M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z")
-						} else {
+						} else if props.Trend == TrendDown {
 							@fillIcon("self-center flex-shrink-0 h-4 w-4 text-red-500", "M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z")
 						}
 						<span class="sr-only">
-							if positive {
+							if props.Trend == TrendUp {
 								Increased by
 							} else {
 								Decreased by
 							}
 						</span>
-						{ change }
+						{ props.Change }
 					</div>
 				}
 			</div>

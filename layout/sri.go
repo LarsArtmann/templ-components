@@ -1,3 +1,4 @@
+// Package layout provides Sub-Resource Integrity hashes for HTMX CDN scripts.
 package layout
 
 // htmxSRIEntry holds the SRI hashes for a single HTMX version

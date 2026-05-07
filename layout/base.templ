@@ -11,7 +11,7 @@ type PageProps struct {
 	CSSPath        string
 	Favicon        string
 	HTMXVersion    string
-	HTMXSRI        string
+	HTMXUseSRI     bool
 	BodyClass      string
 	Nonce          string
 	HeadContent    templ.Component
@@ -28,7 +28,7 @@ func DefaultPageProps() PageProps {
 		CSSPath:        "/app.css",
 		Favicon:        "/favicon.svg",
 		HTMXVersion:    "2.0.6",
-		HTMXSRI:        "true",
+		HTMXUseSRI:     true,
 		BodyClass:      "bg-white text-gray-900 antialiased min-h-full flex flex-col dark:bg-gray-950 dark:text-gray-100",
 	}
 }
@@ -74,7 +74,7 @@ templ Base(props PageProps) {
 				<link rel="stylesheet" href={ props.CSSPath }/>
 			}
 			if props.HTMXVersion != "" {
-				if props.HTMXSRI == "true" {
+				if props.HTMXUseSRI {
 					{{ mainSRI := htmxSRI(props.HTMXVersion, "main") }}
 					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion } integrity={ mainSRI } crossorigin="anonymous"></script>
 					<script src={ "https://unpkg.com/htmx.org@" + props.HTMXVersion + "/dist/ext/response-targets.js" } integrity={ htmxSRI(props.HTMXVersion, "response-targets") } crossorigin="anonymous"></script>

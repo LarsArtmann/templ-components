@@ -32,27 +32,19 @@ const (
 	ToastDurationLong   = 8000
 )
 
-// toastStyleSet holds the CSS classes for a toast type
-type toastStyleSet struct {
-	Border, BG, Text, Icon string
-}
-
 // toastStyleMap is the single source of truth for toast styles
-var toastStyleMap = map[ToastType]toastStyleSet{
+var toastStyleMap = map[ToastType]feedbackStyleSet{
 	ToastSuccess: {"border-green-200 dark:border-green-800", "bg-green-50 dark:bg-green-900/30", "text-green-800 dark:text-green-200", "text-green-600 dark:text-green-400"},
 	ToastError:   {"border-red-200 dark:border-red-800", "bg-red-50 dark:bg-red-900/30", "text-red-800 dark:text-red-200", "text-red-600 dark:text-red-400"},
 	ToastWarning: {"border-yellow-200 dark:border-yellow-800", "bg-yellow-50 dark:bg-yellow-900/30", "text-yellow-800 dark:text-yellow-200", "text-yellow-600 dark:text-yellow-400"},
 	ToastInfo:    {"border-blue-200 dark:border-blue-800", "bg-blue-50 dark:bg-blue-900/30", "text-blue-800 dark:text-blue-200", "text-blue-600 dark:text-blue-400"},
 }
 
-var toastStyleDefault = toastStyleSet{"border-gray-200 dark:border-gray-700", "bg-gray-50 dark:bg-gray-800", "text-gray-800 dark:text-gray-200", "text-gray-600 dark:text-gray-400"}
+var toastStyleDefault = feedbackStyleSet{"border-gray-200 dark:border-gray-700", "bg-gray-50 dark:bg-gray-800", "text-gray-800 dark:text-gray-200", "text-gray-600 dark:text-gray-400"}
 
 // toastStyles returns Tailwind classes for each toast type
 func toastStyles(t ToastType) (border, bg, text, icon string) {
-	s, ok := toastStyleMap[t]
-	if !ok {
-		s = toastStyleDefault
-	}
+	s := lookupFeedbackStyle(toastStyleMap, toastStyleDefault, t)
 	return s.Border, s.BG, s.Text, s.Icon
 }
 
