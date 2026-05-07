@@ -1,12 +1,15 @@
 package display
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // DropdownItem represents a single action in a dropdown menu
 type DropdownItem struct {
 	Text     string
 	Href     string
-	Icon     string
+	Icon     icons.Name
 	External bool
 	Attrs    templ.Attributes
 }
@@ -47,6 +50,9 @@ templ dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) {
 		role="menuitem"
 		{ item.Attrs... }
 	>
+		if item.Icon != "" {
+			@icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500")
+		}
 		{ item.Text }
 	</a>
 }
@@ -98,6 +104,9 @@ templ Dropdown(props DropdownProps) {
 							role="menuitem"
 							{ item.Attrs... }
 						>
+							if item.Icon != "" {
+								@icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500")
+							}
 							{ item.Text }
 						</button>
 					}

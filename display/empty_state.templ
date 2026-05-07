@@ -10,7 +10,7 @@ type EmptyStateProps struct {
 	utils.BaseProps
 	Title       string
 	Description string
-	Icon        string // one of the preset icon names
+	Icon        icons.Name
 	ActionText  string
 	ActionHref  string
 	ActionAttrs templ.Attributes
@@ -83,6 +83,6 @@ templ SimpleEmptyState(message string) {
 }
 
 // mapEmptyStateIcon maps icon name strings to icons package constants
-templ emptyStateIcon(name string) {
-	@icons.Icon(mapEmptyStateIcon(name), "h-6 w-6 text-gray-600 dark:text-gray-400")
+templ emptyStateIcon(name icons.Name) {
+	@icons.Icon(name, "h-6 w-6 text-gray-600 dark:text-gray-400")
 }
