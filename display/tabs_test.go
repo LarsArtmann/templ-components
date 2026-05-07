@@ -44,7 +44,7 @@ func TestTabsRender(t *testing.T) {
 	t.Run("pills style", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tabs(TabsProps{
-			TabStyle: TabsStylePills,
+			Variant: TabsPills,
 			Tabs: []Tab{
 				{ID: "a", Label: "A", Active: true},
 			},

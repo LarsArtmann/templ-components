@@ -175,7 +175,7 @@ func TestTabsUserCanSwitchViews(t *testing.T) {
 			Tabs: []Tab{
 				{ID: "a", Label: "A", Active: true},
 			},
-			TabStyle: TabsStylePills,
+			Variant: TabsPills,
 		}))
 		utils.AssertContains(t, output, "rounded-md")
 	})
