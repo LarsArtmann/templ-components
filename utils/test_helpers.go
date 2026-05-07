@@ -1,4 +1,5 @@
-// Package utils provides testing utilities for templ components.
+// Package utils provides shared utilities for templ components including Tailwind class
+// merging, attribute helpers, and test rendering utilities.
 package utils
 
 import (
