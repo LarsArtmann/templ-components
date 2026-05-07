@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"strings"
 
+	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -80,9 +81,7 @@ templ mobilePageButton(enabled bool, href string, marginClass string, text strin
 // paginationArrowIcon renders the shared icon content for pagination arrows
 templ paginationArrowIcon(srText string, svgPath string) {
 	<span class="sr-only">{ srText }</span>
-	<svg class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-		<path fill-rule="evenodd" d={ svgPath } clip-rule="evenodd"></path>
-	</svg>
+	@svg.FillIcon("h-5 w-5", svgPath)
 }
 
 // paginationArrow renders a previous/next arrow button for desktop pagination

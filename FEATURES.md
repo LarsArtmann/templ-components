@@ -56,22 +56,22 @@ type BaseProps struct {
 
 ### Components
 
-| Component          | Description                     | Key Features                                             |
-| ------------------ | ------------------------------- | -------------------------------------------------------- |
-| `Accordion`        | Collapsible accordion panels    | JS toggle, accessible `aria-expanded`, multiple items    |
+| Component          | Description                     | Key Features                                                    |
+| ------------------ | ------------------------------- | --------------------------------------------------------------- |
+| `Accordion`        | Collapsible accordion panels    | JS toggle, accessible `aria-expanded`, multiple items           |
 | `Avatar`           | User avatar with image/initials | AvatarStatus enum (Online/Offline/None), 5 sizes, circle/square |
-| `Badge`            | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator        |
-| `StatusBadge`      | Auto-mapped status badge        | Maps ~20 status strings to badge types                   |
-| `Card`             | Bordered card container         | Header, subtitle, footer, header action, 4 padding sizes |
-| `SimpleCard`       | Minimal card                    | Children-only, no header/footer                          |
-| `StatCard`         | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None) |
-| `Dropdown`         | Button-triggered menu           | External/internal links, buttons, left/right position    |
-| `EmptyState`       | Centered empty state            | Icon, title, description, action link/button             |
-| `SimpleEmptyState` | Minimal empty state             | Text-only                                                |
-| `Modal`            | Accessible modal dialog         | Backdrop blur, open/close animation, 5 sizes             |
-| `Table`            | Responsive data table           | Headers, rows, striping, hover, caption, bordered        |
-| `Tabs`             | Tabbed interface                | Default underline or pills style, active state           |
-| `Tooltip`          | Hover tooltip                   | 4 positions, arrow indicator, wraps children             |
+| `Badge`            | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator               |
+| `StatusBadge`      | Auto-mapped status badge        | Maps ~20 status strings to badge types                          |
+| `Card`             | Bordered card container         | Header, subtitle, footer, header action, 4 padding sizes        |
+| `SimpleCard`       | Minimal card                    | Children-only, no header/footer                                 |
+| `StatCard`         | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None)        |
+| `Dropdown`         | Button-triggered menu           | External/internal links, buttons, left/right position           |
+| `EmptyState`       | Centered empty state            | Icon, title, description, action link/button                    |
+| `SimpleEmptyState` | Minimal empty state             | Text-only                                                       |
+| `Modal`            | Accessible modal dialog         | Backdrop blur, open/close animation, 5 sizes                    |
+| `Table`            | Responsive data table           | Headers, rows, striping, hover, caption, bordered               |
+| `Tabs`             | Tabbed interface                | Default underline or pills style, active state                  |
+| `Tooltip`          | Hover tooltip                   | 4 positions, arrow indicator, wraps children                    |
 
 ### Enums
 
@@ -85,8 +85,8 @@ type BaseProps struct {
 | `DropdownPosition` | Left, Right                                              |
 | `ModalSize`        | SM, MD, LG, XL, Full                                     |
 | `TabsStyle`        | Default, Pills                                           |
-| `AvatarStatus`      | Online, Offline, None                                       |
-| `TrendDirection`    | Up, Down, None                                              |
+| `AvatarStatus`     | Online, Offline, None                                    |
+| `TrendDirection`   | Up, Down, None                                           |
 
 ---
 

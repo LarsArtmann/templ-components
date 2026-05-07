@@ -87,10 +87,10 @@ var iconPathData = map[Name]string{ Eye: "M2.036...|M15 12...", ... }
 
 ### Enum Types (Impossible States Unrepresentable)
 
-| Type              | Values                    | Replaces                     |
-| ----------------- | ------------------------- | ---------------------------- |
-| `AvatarStatus`    | Online, Offline, None     | Two bool fields (both true)  |
-| `TrendDirection`  | Up, Down, None            | `positive bool` on StatCard  |
+| Type             | Values                | Replaces                    |
+| ---------------- | --------------------- | --------------------------- |
+| `AvatarStatus`   | Online, Offline, None | Two bool fields (both true) |
+| `TrendDirection` | Up, Down, None        | `positive bool` on StatCard |
 
 ### CSP Compliance
 

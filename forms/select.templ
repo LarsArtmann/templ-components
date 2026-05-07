@@ -75,6 +75,6 @@ templ Select(props SelectProps) {
 		@FieldError(props.ID, props.Error)
 	}
 	if props.HelpText != "" {
-		<p id={ HelpTextID(props.ID) } class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+		@helpText(props.ID, props.HelpText)
 	}
 }

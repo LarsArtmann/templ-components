@@ -25,7 +25,7 @@ const (
 // TabsProps configures a tab component
 type TabsProps struct {
 	utils.BaseProps
-	Tabs     []Tab
+	Tabs    []Tab
 	Variant TabsVariant
 }
 
@@ -44,7 +44,12 @@ templ tabLink(tab Tab, activeClass, inactiveClass string) {
 		role="tab"
 		aria-selected={ fmt.Sprintf("%t", tab.Active) }
 		aria-controls={ tab.ID }
-		tabindex={ fmt.Sprintf("%d", func() int { if tab.Active { return 0 }; return -1 }()) }
+		tabindex={ fmt.Sprintf("%d", func() int {
+	if tab.Active {
+		return 0
+	}
+	return -1
+}()) }
 		class={ utils.Ternary(tab.Active, activeClass, inactiveClass) }
 	>
 		{ tab.Label }

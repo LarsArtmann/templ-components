@@ -122,7 +122,7 @@ func TestNavRender(t *testing.T) {
 	t.Run("nav with right items", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Nav(NavProps{
-			Brand: simpleBrand("App", "/"),
+			Brand:      simpleBrand("App", "/"),
 			RightItems: simpleBrand("Profile", "/profile"),
 		}))
 		utils.AssertContains(t, output, "Profile")

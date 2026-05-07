@@ -17,6 +17,13 @@ templ Label(forID, text string, required bool) {
 	</label>
 }
 
+// helpText renders the shared help text paragraph for form fields
+templ helpText(id, text string) {
+	if text != "" {
+		<p id={ HelpTextID(id) } class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ text }</p>
+	}
+}
+
 // FieldError renders a field-level validation error
 //
 //	@forms.FieldError("email", "This field is required")

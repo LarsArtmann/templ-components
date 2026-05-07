@@ -13,21 +13,21 @@ This session resolved **17 TODO items** across architecture, testing, DevOps, an
 
 ### Numbers
 
-| Metric                        | Before Session | After Session | Delta   |
-| ----------------------------- | -------------- | ------------- | ------- |
-| TODO items resolved           | —              | 17            | +17     |
-| TODO items remaining          | 25+            | 9             | -16     |
-| `.templ` source files         | 31             | 31            | =       |
-| `.go` hand-written files      | ~35            | 41            | +6 new  |
-| `.templ` lines                | —              | 2,837         | —       |
-| `.go` hand-written lines      | —              | 409           | —       |
-| Test lines                    | —              | 3,312         | —       |
-| Generated `_templ.go` lines   | —              | 8,455         | —       |
-| Packages                      | 9              | 9             | =       |
-| Top-level tests (`=== RUN`)   | —              | 440           | —       |
-| Subtests passing              | 332            | 316*          | see note |
+| Metric                      | Before Session | After Session | Delta    |
+| --------------------------- | -------------- | ------------- | -------- |
+| TODO items resolved         | —              | 17            | +17      |
+| TODO items remaining        | 25+            | 9             | -16      |
+| `.templ` source files       | 31             | 31            | =        |
+| `.go` hand-written files    | ~35            | 41            | +6 new   |
+| `.templ` lines              | —              | 2,837         | —        |
+| `.go` hand-written lines    | —              | 409           | —        |
+| Test lines                  | —              | 3,312         | —        |
+| Generated `_templ.go` lines | —              | 8,455         | —        |
+| Packages                    | 9              | 9             | =        |
+| Top-level tests (`=== RUN`) | —              | 440           | —        |
+| Subtests passing            | 332            | 316\*         | see note |
 
-> *Note: Test count methodology changed — previously counted subtests, now counts both top-level + subtests. Absolute test count increased substantially (new test files added in 5 packages).
+> \*Note: Test count methodology changed — previously counted subtests, now counts both top-level + subtests. Absolute test count increased substantially (new test files added in 5 packages).
 
 ### Build & Test
 
@@ -51,65 +51,65 @@ ok  github.com/larsartmann/templ-components/utils       0.002s
 
 ### Architecture (8 items)
 
-| #   | Item                                                                   | What Was Done                                                                                                              |
-| --- | ---------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
-| 6   | Unify `alertStyleSet`/`toastStyleSet`                                  | Created `feedback/styles.go` with shared `feedbackStyleSet` struct + `lookupFeedbackStyle[T ~string]()` generic function. Both `alert.templ` and `toast.templ` now use these. |
-| 11  | Deepen icon rendering: path-data map + shared SVG helper               | Replaced 187-line `switch` in `icon.templ` with `iconPathData map[Name]string` + `strokeIcon()` sub-template. Multi-path icons use `\|` separator. |
-| 13  | Replace `AvatarProps.Online/Offline bool` with `AvatarStatus` enum     | New `AvatarStatus` type with `AvatarStatusOnline`, `AvatarStatusOffline`, `AvatarStatusNone`. Impossible state (both true) is now unrepresentable. |
-| 14  | Replace `StatCard.positive bool` with `TrendDirection` enum            | New `StatCardProps` struct with `Trend TrendDirection` (`TrendUp`, `TrendDown`, `TrendNone`). Old positional parameters replaced. |
-| 15  | Fix `HTMXSRI string` → `HTMXUseSRI bool`                              | `PageProps.HTMXSRI string` was stringly-typed (`"true"`/`""`). Now `HTMXUseSRI bool` with `true` default.                |
-| 16  | Fix integer division in ProgressBar percent                            | `props.Current * 100 / props.Total` truncated (e.g., 1/3 = 0%). Now `float64(props.Current) * 100.0 / float64(props.Total)` with `%.0f` formatting. |
-| 17  | Add `Content templ.Component` to `TableCell`                           | New optional field. Template checks `cell.Content != nil` first, falls back to `cell.Text`. No breaking change.           |
-| 18  | Implement `TableProps.Bordered` styling                                | Was dead code. Now renders `border border-gray-200 dark:border-slate-700` on the table element when `Bordered: true`.     |
+| #   | Item                                                               | What Was Done                                                                                                                                                                 |
+| --- | ------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 6   | Unify `alertStyleSet`/`toastStyleSet`                              | Created `feedback/styles.go` with shared `feedbackStyleSet` struct + `lookupFeedbackStyle[T ~string]()` generic function. Both `alert.templ` and `toast.templ` now use these. |
+| 11  | Deepen icon rendering: path-data map + shared SVG helper           | Replaced 187-line `switch` in `icon.templ` with `iconPathData map[Name]string` + `strokeIcon()` sub-template. Multi-path icons use `\|` separator.                            |
+| 13  | Replace `AvatarProps.Online/Offline bool` with `AvatarStatus` enum | New `AvatarStatus` type with `AvatarStatusOnline`, `AvatarStatusOffline`, `AvatarStatusNone`. Impossible state (both true) is now unrepresentable.                            |
+| 14  | Replace `StatCard.positive bool` with `TrendDirection` enum        | New `StatCardProps` struct with `Trend TrendDirection` (`TrendUp`, `TrendDown`, `TrendNone`). Old positional parameters replaced.                                             |
+| 15  | Fix `HTMXSRI string` → `HTMXUseSRI bool`                           | `PageProps.HTMXSRI string` was stringly-typed (`"true"`/`""`). Now `HTMXUseSRI bool` with `true` default.                                                                     |
+| 16  | Fix integer division in ProgressBar percent                        | `props.Current * 100 / props.Total` truncated (e.g., 1/3 = 0%). Now `float64(props.Current) * 100.0 / float64(props.Total)` with `%.0f` formatting.                           |
+| 17  | Add `Content templ.Component` to `TableCell`                       | New optional field. Template checks `cell.Content != nil` first, falls back to `cell.Text`. No breaking change.                                                               |
+| 18  | Implement `TableProps.Bordered` styling                            | Was dead code. Now renders `border border-gray-200 dark:border-slate-700` on the table element when `Bordered: true`.                                                         |
 
 ### Testing (9 items)
 
-| #   | Item                                             | What Was Done                                                                                                                                                 |
-| --- | ------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 19  | Add tests for `icons.IconAttrs`                  | Two subtests (with/without aria-label) + `TestAllIconsRender` verifying all 42 icons render valid SVG.                                                        |
-| 22  | Add render tests for breadcrumbs                 | `navigation/a11y_test.go`: 6 subtests — aria-label, aria-current, link rendering, empty list, single item, 3-level separators.                               |
-| 23  | Add render tests for nav                         | `navigation/a11y_test.go`: 8 subtests — brand+links, sticky, non-sticky, right items, no brand, dark mode border/bg.                                         |
-| 25  | Add render tests for htmx error_handling         | `htmx/a11y_test.go`: 4 subtests — nonce, event listeners, retry logic, error history.                                                                        |
-| 27  | Add a11y attribute validation tests              | `display/a11y_test.go`: 7 subtests — modal role=dialog, dropdown ARIA, tabs ARIA, tooltip role, accordion aria-expanded, avatar alt, table caption.          |
-| 28  | Add dark mode output verification tests          | `display/a11y_test.go`: 5 subtests — card, badge, table, dropdown, avatar dark classes. `navigation/a11y_test.go`: footer, nav dark classes. `layout/a11y_test.go`: body dark classes. |
-| 30  | Add benchmark tests for hot paths                | `display/a11y_test.go`: `BenchmarkHotPaths` with sub-benchmarks for `utils.Class()` merge and Badge render.                                                  |
-| 33  | Test all `Default*Props()` constructors          | `display/a11y_test.go`: Card, Badge, Modal, ProgressBar — verifies defaults and renders without panic.                                                        |
-| 36  | Add `SecurityHeaders` test to layout             | `layout/a11y_test.go`: X-Content-Type-Options, Referrer-Policy, skip link, main landmark. Plus `TestDefaultPageProps` and `TestHTMXSRI`.                     |
-| 38  | Verify dropdown JS XSS safety                    | `display/a11y_test.go`: Injects `<script>alert('xss')</script>` as ID — verifies templ auto-escapes to `&lt;script&gt;`.                                      |
+| #   | Item                                     | What Was Done                                                                                                                                                                          |
+| --- | ---------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 19  | Add tests for `icons.IconAttrs`          | Two subtests (with/without aria-label) + `TestAllIconsRender` verifying all 42 icons render valid SVG.                                                                                 |
+| 22  | Add render tests for breadcrumbs         | `navigation/a11y_test.go`: 6 subtests — aria-label, aria-current, link rendering, empty list, single item, 3-level separators.                                                         |
+| 23  | Add render tests for nav                 | `navigation/a11y_test.go`: 8 subtests — brand+links, sticky, non-sticky, right items, no brand, dark mode border/bg.                                                                   |
+| 25  | Add render tests for htmx error_handling | `htmx/a11y_test.go`: 4 subtests — nonce, event listeners, retry logic, error history.                                                                                                  |
+| 27  | Add a11y attribute validation tests      | `display/a11y_test.go`: 7 subtests — modal role=dialog, dropdown ARIA, tabs ARIA, tooltip role, accordion aria-expanded, avatar alt, table caption.                                    |
+| 28  | Add dark mode output verification tests  | `display/a11y_test.go`: 5 subtests — card, badge, table, dropdown, avatar dark classes. `navigation/a11y_test.go`: footer, nav dark classes. `layout/a11y_test.go`: body dark classes. |
+| 30  | Add benchmark tests for hot paths        | `display/a11y_test.go`: `BenchmarkHotPaths` with sub-benchmarks for `utils.Class()` merge and Badge render.                                                                            |
+| 33  | Test all `Default*Props()` constructors  | `display/a11y_test.go`: Card, Badge, Modal, ProgressBar — verifies defaults and renders without panic.                                                                                 |
+| 36  | Add `SecurityHeaders` test to layout     | `layout/a11y_test.go`: X-Content-Type-Options, Referrer-Policy, skip link, main landmark. Plus `TestDefaultPageProps` and `TestHTMXSRI`.                                               |
+| 38  | Verify dropdown JS XSS safety            | `display/a11y_test.go`: Injects `<script>alert('xss')</script>` as ID — verifies templ auto-escapes to `&lt;script&gt;`.                                                               |
 
 ### DevOps & Docs (4 items)
 
-| #   | Item                                    | What Was Done                                                                                                 |
-| --- | --------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 42  | Pre-commit hook for `templ generate`    | `scripts/pre-commit.sh` — detects staged `.templ` files, runs `templ generate`, auto-stages generated `_templ.go` files. |
-| 43  | Add `layout/sri.go` package comment     | Added `// Package layout provides Sub-Resource Integrity hashes for HTMX CDN scripts.`                        |
-| 46  | Update CHANGELOG.md                     | Full changelog with Added/Changed/Fixed sections. Breaking changes documented.                                 |
-| 52  | Move `boolString()` to `utils/`         | `utils.BoolString()` added. Local `boolString()` removed from `accordion.templ`. Accordion now uses `utils.BoolString(item.Open)`. |
+| #   | Item                                 | What Was Done                                                                                                                      |
+| --- | ------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| 42  | Pre-commit hook for `templ generate` | `scripts/pre-commit.sh` — detects staged `.templ` files, runs `templ generate`, auto-stages generated `_templ.go` files.           |
+| 43  | Add `layout/sri.go` package comment  | Added `// Package layout provides Sub-Resource Integrity hashes for HTMX CDN scripts.`                                             |
+| 46  | Update CHANGELOG.md                  | Full changelog with Added/Changed/Fixed sections. Breaking changes documented.                                                     |
+| 52  | Move `boolString()` to `utils/`      | `utils.BoolString()` added. Local `boolString()` removed from `accordion.templ`. Accordion now uses `utils.BoolString(item.Open)`. |
 
 ---
 
 ## B) PARTIALLY DONE 🔨
 
-| #   | Item                                   | What's Done                                        | What's Left                                        |
-| --- | -------------------------------------- | -------------------------------------------------- | -------------------------------------------------- |
-| —   | Golden file tests (#26)               | Infrastructure exists (`utils.Render`)             | No golden file comparison framework built yet       |
-| —   | Component composition tests (#29)     | Basic component tests exist                        | No nesting/composition tests (complex in templ)    |
+| #   | Item                              | What's Done                            | What's Left                                     |
+| --- | --------------------------------- | -------------------------------------- | ----------------------------------------------- |
+| —   | Golden file tests (#26)           | Infrastructure exists (`utils.Render`) | No golden file comparison framework built yet   |
+| —   | Component composition tests (#29) | Basic component tests exist            | No nesting/composition tests (complex in templ) |
 
 ---
 
 ## C) NOT STARTED ⬜
 
-| #   | Item                                    | Priority | Notes                                         |
-| --- | --------------------------------------- | -------- | --------------------------------------------- |
-| 12  | Extract shared form error/aria helper   | P2       | Low impact — `FieldError` already shared      |
-| 26  | Convert snapshot tests to golden files  | P1       | Current substring assertions work well         |
-| 29  | Component composition tests             | P2       | Complex to test outside templ files            |
-| 40  | Release automation (goreleaser)         | P3       | Tag-based releases                             |
-| 41  | Nix flake migration                     | P3       | No build system exists                         |
-| 47  | Example/demo app                        | P2       | Showcase all components                        |
-| 48  | Documentation site generation           | P3       | Auto-generated from source                     |
-| 49  | Version migration guides                | P3       | Breaking changes documentation                 |
-| 51  | Remaining 9 test clone groups (dupl)    | P3       | All in test files — structural only            |
+| #   | Item                                   | Priority | Notes                                    |
+| --- | -------------------------------------- | -------- | ---------------------------------------- |
+| 12  | Extract shared form error/aria helper  | P2       | Low impact — `FieldError` already shared |
+| 26  | Convert snapshot tests to golden files | P1       | Current substring assertions work well   |
+| 29  | Component composition tests            | P2       | Complex to test outside templ files      |
+| 40  | Release automation (goreleaser)        | P3       | Tag-based releases                       |
+| 41  | Nix flake migration                    | P3       | No build system exists                   |
+| 47  | Example/demo app                       | P2       | Showcase all components                  |
+| 48  | Documentation site generation          | P3       | Auto-generated from source               |
+| 49  | Version migration guides               | P3       | Breaking changes documentation           |
+| 51  | Remaining 9 test clone groups (dupl)   | P3       | All in test files — structural only      |
 
 ---
 
@@ -181,33 +181,33 @@ However, there are **risks and honest concerns**:
 
 Ranked by impact × effort (Pareto):
 
-| #   | Task                                                          | Impact | Effort | Rationale                                           |
-| --- | ------------------------------------------------------------- | ------ | ------ | --------------------------------------------------- |
-| 1   | Run `golangci-lint` full pass, fix all issues                | High   | Low    | Verify code quality, catch latent issues             |
-| 2   | Update `CONTEXT.md` with new architecture                    | High   | Low    | Reflects new enums, shared styles, icon map          |
-| 3   | Update `README.md` for new API (AvatarStatus, StatCardProps) | High   | Low    | Consumers rely on README for examples                |
-| 4   | Default `PageProps.SecurityHeaders` to `true`                | High   | Low    | Security-by-default                                 |
-| 5   | Add `DefaultStatCardProps()` constructor                     | Med    | Low    | Consistency with other components                    |
-| 6   | Create example/demo app (#47)                                | High   | Med    | Biggest DX improvement for consumers                 |
-| 7   | Write migration guide for v0.2 breaking changes (#49)        | High   | Med    | Three breaking changes need documentation             |
-| 8   | Convert snapshot tests to golden files (#26)                 | Med    | Med    | Catches rendering regressions substring tests miss    |
-| 9   | Extract shared form error/aria helper (#12)                  | Med    | Med    | ~30 lines deduped across 4 form components            |
-| 10  | Add `feedback/styles.go` package comment                     | Low    | Low    | Fixes lint warning                                   |
-| 11  | Fix `EmptyStateProps` icon mapping to use `icons.Name` keys  | Med    | Low    | Type-safe instead of stringly-typed                  |
-| 12  | Add `TableCell` documentation (`Content` priority)           | Low    | Low    | API clarity                                          |
-| 13  | Add component composition tests (#29)                        | Med    | Med    | Verify nesting works                                 |
-| 14  | Set up goreleaser (#40)                                       | Med    | Med    | Enables versioned releases                           |
-| 15  | Investigate nix flake migration (#41)                        | Med    | Med    | Reproducible builds                                  |
-| 16  | Add integration test: full page render with Base + components| High   | Med    | Verify components compose in real HTML               |
-| 17  | Benchmark all component renders                               | Med    | Low    | Performance baseline                                 |
-| 18  | Add automated a11y checking (axe-core or similar)            | High   | High   | Catch missing ARIA attributes automatically          |
-| 19  | Documentation site generation (#48)                           | Med    | High   | Auto-generated API docs                              |
-| 20  | Investigate visual regression testing                        | High   | High   | Catch CSS rendering regressions                      |
-| 21  | Deduplicate test clone groups (#51)                           | Low    | Med    | Structural duplication in test files                 |
-| 22  | Document icon multi-path `|` convention                       | Low    | Low    | Hidden convention in `icon_paths.go`                 |
-| 23  | Verify README examples compile                               | Med    | Low    | README may have stale imports                        |
-| 24  | Add `AGENTS.md` with project-specific instructions            | Med    | Low    | Helps future AI sessions understand conventions      |
-| 25  | Tag v0.2.0 release with breaking changes                     | High   | Low    | Formalize the API changes                            |
+| #   | Task                                                          | Impact       | Effort | Rationale                                          |
+| --- | ------------------------------------------------------------- | ------------ | ------ | -------------------------------------------------- | ------------------------------------ |
+| 1   | Run `golangci-lint` full pass, fix all issues                 | High         | Low    | Verify code quality, catch latent issues           |
+| 2   | Update `CONTEXT.md` with new architecture                     | High         | Low    | Reflects new enums, shared styles, icon map        |
+| 3   | Update `README.md` for new API (AvatarStatus, StatCardProps)  | High         | Low    | Consumers rely on README for examples              |
+| 4   | Default `PageProps.SecurityHeaders` to `true`                 | High         | Low    | Security-by-default                                |
+| 5   | Add `DefaultStatCardProps()` constructor                      | Med          | Low    | Consistency with other components                  |
+| 6   | Create example/demo app (#47)                                 | High         | Med    | Biggest DX improvement for consumers               |
+| 7   | Write migration guide for v0.2 breaking changes (#49)         | High         | Med    | Three breaking changes need documentation          |
+| 8   | Convert snapshot tests to golden files (#26)                  | Med          | Med    | Catches rendering regressions substring tests miss |
+| 9   | Extract shared form error/aria helper (#12)                   | Med          | Med    | ~30 lines deduped across 4 form components         |
+| 10  | Add `feedback/styles.go` package comment                      | Low          | Low    | Fixes lint warning                                 |
+| 11  | Fix `EmptyStateProps` icon mapping to use `icons.Name` keys   | Med          | Low    | Type-safe instead of stringly-typed                |
+| 12  | Add `TableCell` documentation (`Content` priority)            | Low          | Low    | API clarity                                        |
+| 13  | Add component composition tests (#29)                         | Med          | Med    | Verify nesting works                               |
+| 14  | Set up goreleaser (#40)                                       | Med          | Med    | Enables versioned releases                         |
+| 15  | Investigate nix flake migration (#41)                         | Med          | Med    | Reproducible builds                                |
+| 16  | Add integration test: full page render with Base + components | High         | Med    | Verify components compose in real HTML             |
+| 17  | Benchmark all component renders                               | Med          | Low    | Performance baseline                               |
+| 18  | Add automated a11y checking (axe-core or similar)             | High         | High   | Catch missing ARIA attributes automatically        |
+| 19  | Documentation site generation (#48)                           | Med          | High   | Auto-generated API docs                            |
+| 20  | Investigate visual regression testing                         | High         | High   | Catch CSS rendering regressions                    |
+| 21  | Deduplicate test clone groups (#51)                           | Low          | Med    | Structural duplication in test files               |
+| 22  | Document icon multi-path `                                    | ` convention | Low    | Low                                                | Hidden convention in `icon_paths.go` |
+| 23  | Verify README examples compile                                | Med          | Low    | README may have stale imports                      |
+| 24  | Add `AGENTS.md` with project-specific instructions            | Med          | Low    | Helps future AI sessions understand conventions    |
+| 25  | Tag v0.2.0 release with breaking changes                      | High         | Low    | Formalize the API changes                          |
 
 ---
 

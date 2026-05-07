@@ -1,5 +1,12 @@
 package navigation
 
+// menuIconSVG renders a shared SVG icon for mobile menu buttons
+templ menuIconSVG(class string, pathData string) {
+	<svg class={ class } fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+		<path stroke-linecap="round" stroke-linejoin="round" d={ pathData }></path>
+	</svg>
+}
+
 // MobileMenuToggle renders the hamburger button for mobile menus
 //
 //	@navigation.MobileMenuToggle(true)
@@ -14,12 +21,8 @@ templ MobileMenuToggle(show bool) {
 				data-mobile-menu-toggle
 			>
 				<span class="sr-only">Open main menu</span>
-				<svg class="tc-menu-open block h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path>
-				</svg>
-				<svg class="tc-menu-close hidden h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
-					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-				</svg>
+				@menuIconSVG("tc-menu-open block h-6 w-6", "M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5")
+				@menuIconSVG("tc-menu-close hidden h-6 w-6", "M6 18L18 6M6 6l12 12")
 			</button>
 		</div>
 	}
