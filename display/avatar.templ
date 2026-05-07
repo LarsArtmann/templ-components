@@ -92,6 +92,7 @@ templ Avatar(props AvatarProps) {
 					class={ "absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-gray-900",
 						templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
 						templ.KV("bg-gray-400", props.Status == AvatarStatusOffline) }
+					aria-hidden="true"
 				></span>
 			}
 		</div>

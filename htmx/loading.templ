@@ -7,7 +7,7 @@ import "github.com/larsartmann/templ-components/feedback"
 //
 //	@htmx.LoadingIndicator()
 templ LoadingIndicator() {
-	<div id="tc-loading-indicator" class="htmx-indicator fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-200">
+	<div id="tc-loading-indicator" class="htmx-indicator fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-200" role="status" aria-live="polite">
 		<div class="flex flex-col items-center gap-3">
 			@feedback.Spinner(feedback.SpinnerLarge, "text-blue-600 dark:text-blue-400")
 		</div>

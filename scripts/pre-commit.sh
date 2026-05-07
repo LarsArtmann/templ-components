@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 # Pre-commit hook: ensure templ-generated files are in sync
 # Install: cp scripts/pre-commit.sh .git/hooks/pre-commit
 set -e

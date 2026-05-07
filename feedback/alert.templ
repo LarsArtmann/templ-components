@@ -49,7 +49,7 @@ func alertStyles(t AlertType) (border, bg, text, icon string) {
 //	@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong", Type: feedback.AlertError})
 templ Alert(props AlertProps) {
 	{{ border, bg, text, iconColor := alertStyles(props.Type) }}
-	<div class={ "rounded-md border p-4", border, bg } role="alert">
+	<div class={ utils.Class("rounded-md border p-4", border, bg, props.Class) } role="alert">
 		<div class="flex">
 			<div class="flex-shrink-0">
 				<svg class={ "h-5 w-5", iconColor } viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">

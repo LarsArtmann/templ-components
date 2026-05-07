@@ -139,7 +139,7 @@ templ ToastContainer(nonce string) {
 templ Toast(props ToastProps) {
 	{{ border, bg, text, iconColor := toastStyles(props.Type) }}
 	<div
-		class={ "max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300", border, bg }
+		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300", border, bg, props.Class) }
 		role="alert"
 		aria-live="polite"
 	>
