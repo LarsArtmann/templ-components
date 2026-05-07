@@ -55,7 +55,14 @@ templ emptyStateAction(text string, href string, attrs templ.Attributes) {
 //	   ActionHref: "/repos/connect",
 //	})
 templ EmptyState(props EmptyStateProps) {
-	<div class="text-center py-12 px-4 sm:py-16">
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("text-center py-12 px-4 sm:py-16", props.Class) }
+		role="status"
+		{ props.Attrs... }
+	>
 		<div class="mx-auto max-w-md">
 			<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
 				@emptyStateIcon(props.Icon)

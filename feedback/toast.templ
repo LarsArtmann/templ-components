@@ -142,6 +142,7 @@ templ Toast(props ToastProps) {
 		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300", border, bg, props.Class) }
 		role="alert"
 		aria-live="polite"
+		{ props.Attrs... }
 	>
 		<div class="flex items-start gap-3">
 			<svg class={ "h-5 w-5 flex-shrink-0 mt-0.5", iconColor } fill="none" viewBox="0 0 24 24" stroke="currentColor">

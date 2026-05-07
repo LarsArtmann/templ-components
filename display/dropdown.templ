@@ -67,7 +67,7 @@ templ dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) {
 //	   },
 //	})
 templ Dropdown(props DropdownProps) {
-	<div class="relative inline-block text-left" { props.Attrs... }>
+	<div class={ utils.Class("relative inline-block text-left", props.Class) } { props.Attrs... }>
 		<div>
 			<button
 				type="button"

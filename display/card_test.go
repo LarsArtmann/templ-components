@@ -4,6 +4,7 @@ package display
 import (
 	"testing"
 
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -52,7 +53,7 @@ func TestEmptyStateRender(t *testing.T) {
 			BaseProps:   utils.BaseProps{},
 			Title:       "No repos",
 			Description: "",
-			Icon:        "folder",
+			Icon:        icons.Folder,
 			ActionText:  "Add Repo",
 			ActionHref:  "/repos/new",
 			ActionAttrs: nil,
