@@ -46,7 +46,7 @@ templ Textarea(props TextareaProps) {
 		} else {
 			rows="3"
 		}
-		class={ baseInputClass(props.Error != ""), props.Class }
+		class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
 		if props.Required {
 			required
 		}
@@ -65,6 +65,6 @@ templ Textarea(props TextareaProps) {
 		@FieldError(props.ID, props.Error)
 	}
 	if props.HelpText != "" {
-		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+		<p id={ HelpTextID(props.ID) } class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
 	}
 }

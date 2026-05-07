@@ -67,7 +67,7 @@ templ Input(props InputProps) {
 			if props.Placeholder != "" {
 				placeholder={ props.Placeholder }
 			}
-			class={ baseInputClass(props.Error != ""), props.Class }
+			class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
 			if props.Required {
 				required
 			}
@@ -88,7 +88,7 @@ templ Input(props InputProps) {
 		@FieldError(props.ID, props.Error)
 	}
 	if props.HelpText != "" {
-		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+		<p id={ HelpTextID(props.ID) } class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
 	}
 }
 
@@ -114,7 +114,7 @@ templ Checkbox(props CheckboxProps) {
 				id={ props.ID }
 				name={ props.Name }
 				type="checkbox"
-				class="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-blue-600"
+				class={ utils.Class("h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-blue-600", props.Class) }
 				if props.Checked {
 					checked
 				}
@@ -133,7 +133,7 @@ templ Checkbox(props CheckboxProps) {
 				<label for={ props.ID } class="font-medium text-gray-900 dark:text-white">{ props.Label }</label>
 			}
 			if props.HelpText != "" {
-				<p class="text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+				<p id={ HelpTextID(props.ID) } class="text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
 			}
 		</div>
 	</div>

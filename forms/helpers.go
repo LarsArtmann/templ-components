@@ -16,6 +16,7 @@ func SanitizeID(s string) string {
 
 // ErrorAttrs returns templ attributes for aria-invalid and aria-describedby
 // when an error message is present. Returns nil if errMsg is empty.
+// If helpText is non-empty, the help text ID is appended to aria-describedby.
 func ErrorAttrs(id, errMsg string) templ.Attributes {
 	if errMsg == "" {
 		return nil
@@ -27,4 +28,12 @@ func ErrorAttrs(id, errMsg string) templ.Attributes {
 		attrs["aria-describedby"] = id + "-error"
 	}
 	return attrs
+}
+
+// HelpTextID returns the HTML ID for a help text element, or "" if id is empty.
+func HelpTextID(id string) string {
+	if id == "" {
+		return ""
+	}
+	return id + "-help"
 }

@@ -41,7 +41,7 @@ templ Select(props SelectProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ baseInputClass(props.Error != ""), props.Class }
+		class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
 		if props.Required {
 			required
 		}
@@ -69,6 +69,6 @@ templ Select(props SelectProps) {
 		@FieldError(props.ID, props.Error)
 	}
 	if props.HelpText != "" {
-		<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+		<p id={ HelpTextID(props.ID) } class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
 	}
 }
