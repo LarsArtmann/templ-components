@@ -90,7 +90,7 @@ func TestSpinnerUserSeesLoadingProgress(t *testing.T) {
 
 	t.Run("user sees animated spinner", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Spinner(SpinnerMedium, "text-blue-600"))
+		output := utils.Render(t, Spinner(SpinnerMD, "text-blue-600"))
 		utils.AssertContains(t, output, "animate-spin")
 		utils.AssertContains(t, output, "text-blue-600")
 	})

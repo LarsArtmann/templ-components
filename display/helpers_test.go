@@ -40,9 +40,9 @@ func TestBadgeSizeClass(t *testing.T) {
 		size BadgeSize
 		want string
 	}{
-		{BadgeSizeSm, "px-2 py-0.5 text-xs"},
-		{BadgeSizeMd, "px-2.5 py-0.5 text-xs"},
-		{BadgeSizeLg, "px-3 py-1 text-sm"},
+		{BadgeSizeSM, "px-2 py-0.5 text-xs"},
+		{BadgeSizeMD, "px-2.5 py-0.5 text-xs"},
+		{BadgeSizeLG, "px-3 py-1 text-sm"},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.size), func(t *testing.T) {

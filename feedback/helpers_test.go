@@ -14,9 +14,9 @@ func TestSpinnerSizeClass(t *testing.T) {
 		size SpinnerSize
 		want string
 	}{
-		{SpinnerSmall, "h-4 w-4"},
-		{SpinnerMedium, "h-6 w-6"},
-		{SpinnerLarge, "h-8 w-8"},
+		{SpinnerSM, "h-4 w-4"},
+		{SpinnerMD, "h-6 w-6"},
+		{SpinnerLG, "h-8 w-8"},
 		{SpinnerSize("unknown"), "h-6 w-6"},
 	}
 	for _, tt := range tests {

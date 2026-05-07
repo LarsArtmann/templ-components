@@ -9,7 +9,7 @@ import "github.com/larsartmann/templ-components/feedback"
 templ LoadingIndicator() {
 	<div id="tc-loading-indicator" class="htmx-indicator fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-gray-950/80 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-200" role="status" aria-live="polite">
 		<div class="flex flex-col items-center gap-3">
-			@feedback.Spinner(feedback.SpinnerLarge, "text-blue-600 dark:text-blue-400")
+			@feedback.Spinner(feedback.SpinnerLG, "text-blue-600 dark:text-blue-400")
 		</div>
 	</div>
 }
@@ -24,7 +24,7 @@ templ InlineLoadingOverlay(id string) {
 		class="htmx-indicator absolute inset-0 z-40 flex items-center justify-center bg-white/80 dark:bg-slate-900/80 backdrop-blur-sm rounded-lg"
 		aria-hidden="true"
 	>
-		@feedback.Spinner(feedback.SpinnerMedium, "text-blue-600 dark:text-blue-400")
+		@feedback.Spinner(feedback.SpinnerMD, "text-blue-600 dark:text-blue-400")
 	</div>
 }
 
@@ -37,7 +37,7 @@ templ InlineLoadingOverlay(id string) {
 templ LoadingButton(defaultText, loadingText string) {
 	<span class="tc-btn-loading">
 		<span class="inline-flex items-center gap-2">
-			@feedback.Spinner(feedback.SpinnerSmall, "htmx-indicator")
+			@feedback.Spinner(feedback.SpinnerSM, "htmx-indicator")
 			<span class="htmx-indicator">{ loadingText }</span>
 			<span>{ defaultText }</span>
 		</span>

@@ -19,9 +19,9 @@ const (
 type BadgeSize string
 
 const (
-	BadgeSizeSm BadgeSize = "sm"
-	BadgeSizeMd BadgeSize = "md"
-	BadgeSizeLg BadgeSize = "lg"
+	BadgeSizeSM BadgeSize = "sm"
+	BadgeSizeMD BadgeSize = "md"
+	BadgeSizeLG BadgeSize = "lg"
 )
 
 // BadgeProps configures a status badge
@@ -38,7 +38,7 @@ type BadgeProps struct {
 func DefaultBadgeProps() BadgeProps {
 	return BadgeProps{
 		Type: BadgeDefault,
-		Size: BadgeSizeMd,
+		Size: BadgeSizeMD,
 	}
 }
 
@@ -65,9 +65,9 @@ templ Badge(props BadgeProps) {
 
 func badgeSizeClass(s BadgeSize) string {
 	switch s {
-	case BadgeSizeSm:
+	case BadgeSizeSM:
 		return "px-2 py-0.5 text-xs"
-	case BadgeSizeLg:
+	case BadgeSizeLG:
 		return "px-3 py-1 text-sm"
 	default:
 		return "px-2.5 py-0.5 text-xs"
