@@ -78,7 +78,6 @@ func TestA11yAttributes(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `alt="Alice"`)
 	})
-
 }
 
 func TestDarkModeClasses(t *testing.T) {

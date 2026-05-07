@@ -1,0 +1,167 @@
+direction: down
+
+title: {
+  label: templ-components — Current Architecture (2026-05-07)
+  shape: text
+  near: top-center
+}
+
+# Layer 0: Foundation
+utils: {
+  shape: rectangle
+  style.fill: "#E8F5E9"
+
+  BaseProps: "BaseProps"
+  ClassFn: "Class()"
+  MergeAttrsFn: "MergeAttrs()"
+  TernaryFn: "Ternary()"
+  BoolStringFn: "BoolString()"
+  MapEnumFn: "MapEnum()"
+  TestHelpers: "Test Helpers"
+}
+
+internal_svg: {
+  shape: rectangle
+  label: "internal/svg"
+  style.fill: "#E8F5E9"
+
+  FillIconFn: "FillIcon()"
+  SpinnerSVGFN: "SpinnerSVG()"
+}
+
+# Layer 1: Core Building Blocks
+icons_pkg: {
+  shape: rectangle
+  label: icons
+  style.fill: "#E3F2FD"
+
+  IconComp: "Icon"
+  IconAttrsDead: "IconAttrs (unused!)"
+  iconPathData: "iconPathData map"
+}
+
+# Layer 2: Component Packages
+display: {
+  shape: rectangle
+  label: "display (14 components)"
+  style.fill: "#FFF3E0"
+
+  AccordionComp: "Accordion"
+  AvatarComp: "Avatar"
+  BadgeComp: "Badge"
+  CardComp: "Card"
+  DropdownComp: "Dropdown"
+  EmptyStateComp: "EmptyState"
+  ModalComp: "Modal"
+  TableComp: "Table"
+  TabsComp: "Tabs"
+  TooltipComp: "Tooltip"
+  StatusBadgeComp: "StatusBadge"
+  StatCardComp: "StatCard"
+}
+
+feedback: {
+  shape: rectangle
+  label: "feedback (12 components)"
+  style.fill: "#FFF3E0"
+
+  AlertComp: "Alert"
+  ToastComp: "Toast"
+  SpinnerComp: "Spinner"
+  LoadingOverlayComp: "LoadingOverlay"
+  SkeletonComp: "Skeleton"
+  ProgressBarComp: "ProgressBar"
+  StepIndicatorComp: "StepIndicator"
+  feedbackStyleSetComp: "feedbackStyleSet"
+}
+
+forms: {
+  shape: rectangle
+  label: "forms (6 components)"
+  style.fill: "#FFF3E0"
+
+  InputComp: "Input"
+  CheckboxComp: "Checkbox"
+  SelectComp: "Select"
+  TextareaComp: "Textarea"
+  LabelComp: "Label"
+  FieldErrorComp: "FieldError"
+}
+
+navigation: {
+  shape: rectangle
+  label: "navigation (9 components)"
+  style.fill: "#FFF3E0"
+
+  NavComp: "Nav"
+  NavLinkComp: "NavLink"
+  BreadcrumbsComp: "Breadcrumbs"
+  PaginationComp: "Pagination"
+  MobileMenuComp: "MobileMenu"
+  FooterComp: "Footer"
+}
+
+layout: {
+  shape: rectangle
+  label: "layout (4 components)"
+  style.fill: "#FFF3E0"
+
+  BaseComp: "Base"
+  MinimalComp: "Minimal"
+  ThemeScriptComp: "ThemeScript"
+  ThemeToggleComp: "ThemeToggle"
+}
+
+htmx_pkg: {
+  shape: rectangle
+  label: "htmx (7 components)"
+  style.fill: "#FFF3E0"
+
+  LoadingIndicatorComp: "LoadingIndicator"
+  GlobalErrorHandlingComp: "GlobalErrorHandling"
+  LoadingButtonComp: "LoadingButton"
+  ConfirmDeleteComp: "ConfirmDelete"
+}
+
+# Dependencies — Go imports
+utils -> display: {label: "BaseProps, Class()"}
+utils -> feedback: {label: "BaseProps, Class()"}
+utils -> forms: {label: "BaseProps, Class()"}
+utils -> navigation: {label: "BaseProps, Class()"}
+utils -> layout: {label: "Class(), CurrentYear()"}
+utils -> htmx_pkg: {label: "BaseProps, Class()"}
+utils -> icons_pkg: {label: "Class()"}
+
+internal_svg -> display: {label: "FillIcon()"}
+internal_svg -> feedback: {label: "SpinnerSVG()"}
+internal_svg -> icons_pkg: {label: "SpinnerSVG()"}
+
+icons_pkg -> display: {label: "Name (EmptyState, Dropdown)"}
+
+feedback -> htmx_pkg: {
+  label: "Spinner, SpinnerSize"
+  style.stroke-dash: 5
+}
+
+# Hidden JS coupling
+htmx_pkg -> feedback: {
+  label: "tcShowToast() via global JS ⚠"
+  style.stroke-dash: 3
+  style.stroke: "#E53935"
+}
+
+# Issues
+issues: {
+  shape: rectangle
+  near: bottom-right
+  style.fill: "#FFEBEE"
+
+  i1: "NavLinkProps.Attrs shadows BaseProps.Attrs (split brain)"
+  i2: "htmx imports feedback.Spinner (tight coupling)"
+  i3: "htmx calls feedback tcShowToast() in JS (hidden coupling)"
+  i4: "icons.IconAttrs exported but never used"
+  i5: "3 different JS attachment patterns"
+  i6: "Badge has 2 separate color maps (drift risk)"
+  i7: "Alert/Toast dismiss JS duplicated"
+  i8: "Toast SVG paths duplicated Go + JS"
+}

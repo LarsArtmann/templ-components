@@ -10,14 +10,14 @@
 
 Systematic deduplication pass across all production `.templ` files and test files. Net result: **-174 lines deleted**, 0 tests lost, 0 regressions, all green.
 
-| Metric | Before | After | Delta |
-|--------|--------|-------|-------|
-| Go clone groups (t≥15) | 32 | 21 | -11 |
-| Templ clone groups (t≥5) | 12 | 11 | -1 |
-| Total clone groups | **44** | **32** | **-12** |
-| Lines changed | — | 405+/579- | **-174 net** |
-| Tests passing | 10/10 | 10/10 | 0 |
-| Lint issues | 0 | 0 | 0 |
+| Metric                   | Before | After     | Delta        |
+| ------------------------ | ------ | --------- | ------------ |
+| Go clone groups (t≥15)   | 32     | 21        | -11          |
+| Templ clone groups (t≥5) | 12     | 11        | -1           |
+| Total clone groups       | **44** | **32**    | **-12**      |
+| Lines changed            | —      | 405+/579- | **-174 net** |
+| Tests passing            | 10/10  | 10/10     | 0            |
+| Lint issues              | 0      | 0         | 0            |
 
 Note: 14 of the 21 remaining Go clone groups involve new untracked `bdd_test.go` files from session 3 that weren't in the original scan. The original tracked files went from 32→7 meaningful groups.
 
@@ -123,6 +123,7 @@ Note: 14 of the 21 remaining Go clone groups involve new untracked `bdd_test.go`
 ## D) TOTALLY FUCKED UP
 
 Nothing. All changes verified:
+
 - `go build ./...` ✅
 - `go test ./...` — 10/10 packages pass ✅
 - `golangci-lint run` — 0 issues ✅
@@ -150,43 +151,43 @@ One pre-existing bug was found and fixed: `navigation/bdd_test.go:164-171` teste
 
 ### High Impact (architecture & quality)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 1 | Decide BDD test strategy: keep/slim/remove the 4 untracked bdd_test.go files | 2h | High |
-| 2 | Rewrite `examples/demo/main.go` to use `layout.Base` + actual components | 1h | Medium |
-| 3 | Add `art-dupl` threshold check to CI/lint workflow | 30min | High |
-| 4 | Extract shared close-X SVG to `internal/svg` (used by modal, toast, alert) | 30min | Medium |
-| 5 | Merge `feedback/helpers_test.go` toast/alert style tests into generic helper | 20min | Low |
-| 6 | Add godoc to all exported types/functions still missing it | 2h | High |
-| 7 | Complete the `templ QF1003` tagged switch fix in `card.templ:406` | 10min | Low |
-| 8 | Add `testify` or keep custom assertions? Decide and be consistent | 30min | Medium |
-| 9 | Snapshot testing: add golden file comparison for all components | 3h | High |
-| 10 | Dark mode test coverage audit — ensure every component has a dark mode test | 1h | Medium |
+| #   | Task                                                                         | Effort | Impact |
+| --- | ---------------------------------------------------------------------------- | ------ | ------ |
+| 1   | Decide BDD test strategy: keep/slim/remove the 4 untracked bdd_test.go files | 2h     | High   |
+| 2   | Rewrite `examples/demo/main.go` to use `layout.Base` + actual components     | 1h     | Medium |
+| 3   | Add `art-dupl` threshold check to CI/lint workflow                           | 30min  | High   |
+| 4   | Extract shared close-X SVG to `internal/svg` (used by modal, toast, alert)   | 30min  | Medium |
+| 5   | Merge `feedback/helpers_test.go` toast/alert style tests into generic helper | 20min  | Low    |
+| 6   | Add godoc to all exported types/functions still missing it                   | 2h     | High   |
+| 7   | Complete the `templ QF1003` tagged switch fix in `card.templ:406`            | 10min  | Low    |
+| 8   | Add `testify` or keep custom assertions? Decide and be consistent            | 30min  | Medium |
+| 9   | Snapshot testing: add golden file comparison for all components              | 3h     | High   |
+| 10  | Dark mode test coverage audit — ensure every component has a dark mode test  | 1h     | Medium |
 
 ### Medium Impact (developer experience)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 11 | Extract `renderAndAssert(t, component, contains...)` test helper | 20min | Medium |
-| 12 | Simplify `TestIconNames` to just iterate `allIconNames` | 10min | Low |
-| 13 | Add example tests (`func ExampleXxx()`) for each exported component | 2h | Medium |
-| 14 | Create `CONTRIBUTING.md` with coding conventions from AGENTS.md | 1h | Medium |
-| 15 | Add `go generate` based benchmarks for hot render paths | 1h | Medium |
-| 16 | Audit all components for missing `aria-*` attributes | 2h | High |
-| 17 | Add keyboard navigation tests for interactive components (dropdown, modal, tabs) | 2h | Medium |
-| 18 | Verify all components pass WCAG 2.1 AA automated checks | 3h | High |
+| #   | Task                                                                             | Effort | Impact |
+| --- | -------------------------------------------------------------------------------- | ------ | ------ |
+| 11  | Extract `renderAndAssert(t, component, contains...)` test helper                 | 20min  | Medium |
+| 12  | Simplify `TestIconNames` to just iterate `allIconNames`                          | 10min  | Low    |
+| 13  | Add example tests (`func ExampleXxx()`) for each exported component              | 2h     | Medium |
+| 14  | Create `CONTRIBUTING.md` with coding conventions from AGENTS.md                  | 1h     | Medium |
+| 15  | Add `go generate` based benchmarks for hot render paths                          | 1h     | Medium |
+| 16  | Audit all components for missing `aria-*` attributes                             | 2h     | High   |
+| 17  | Add keyboard navigation tests for interactive components (dropdown, modal, tabs) | 2h     | Medium |
+| 18  | Verify all components pass WCAG 2.1 AA automated checks                          | 3h     | High   |
 
 ### Lower Impact (polish & cleanup)
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 19 | Consolidate `navigation/snapshot_test.go` single-line test clones | 15min | Low |
-| 20 | Add integration test for full page render with all components | 1h | Medium |
-| 21 | Remove unused `props` variable in `examples/demo/main.go:25-27` | 5min | Low |
-| 22 | Add version badge and CI status to README | 30min | Medium |
-| 23 | Migrate `examples/demo` to use `layout.Base` properly | 1h | Medium |
-| 24 | Add changelog generation from conventional commits | 1h | Low |
-| 25 | Performance: profile render allocations for top 5 components | 2h | Medium |
+| #   | Task                                                              | Effort | Impact |
+| --- | ----------------------------------------------------------------- | ------ | ------ |
+| 19  | Consolidate `navigation/snapshot_test.go` single-line test clones | 15min  | Low    |
+| 20  | Add integration test for full page render with all components     | 1h     | Medium |
+| 21  | Remove unused `props` variable in `examples/demo/main.go:25-27`   | 5min   | Low    |
+| 22  | Add version badge and CI status to README                         | 30min  | Medium |
+| 23  | Migrate `examples/demo` to use `layout.Base` properly             | 1h     | Medium |
+| 24  | Add changelog generation from conventional commits                | 1h     | Low    |
+| 25  | Performance: profile render allocations for top 5 components      | 2h     | Medium |
 
 ---
 

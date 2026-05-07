@@ -1,0 +1,160 @@
+direction: down
+
+title: {
+  label: templ-components — Target Architecture (2026-05-07)
+  shape: text
+  near: top-center
+}
+
+# Layer 0: Foundation
+utils: {
+  shape: rectangle
+  style.fill: "#E8F5E9"
+
+  BaseProps: "BaseProps"
+  IDAttrFn: "IDAttr() ← NEW"
+  ClassFn: "Class()"
+  MergeAttrsFn: "MergeAttrs()"
+  InlineScriptFn: "InlineScript() ← NEW"
+  GenericHelpers: "Ternary, BoolString, MapEnum"
+}
+
+internal_svg: {
+  shape: rectangle
+  label: "internal/svg"
+  style.fill: "#E8F5E9"
+
+  FillIconFn: "FillIcon()"
+  SpinnerSVGFN: "SpinnerSVG()"
+}
+
+internal_testutil: {
+  shape: rectangle
+  label: "internal/testutil ← NEW"
+  style.fill: "#C8E6C9"
+
+  RenderFn: "Render()"
+  AssertContainsFn: "AssertContains()"
+  AssertEqualFn: "AssertEqual()"
+}
+
+# Layer 1: Core Building Blocks
+icons_pkg: {
+  shape: rectangle
+  label: icons
+  style.fill: "#E3F2FD"
+
+  IconComp: "Icon"
+  iconPathData: "iconPathData map"
+  IconAttrsRemoved: "IconAttrs removed"
+}
+
+# Layer 2: Component Packages
+display: {
+  shape: rectangle
+  label: "display (14 components)"
+  style.fill: "#FFF3E0"
+
+  AccordionComp: "Accordion (aria-expanded state)"
+  AvatarComp: "Avatar (with Alt field)"
+  BadgeComp: "Badge (unified style map)"
+  CardComp: "Card"
+  DropdownComp: "Dropdown (ID validated)"
+  ModalComp: "Modal (ID validated)"
+  TableComp: "Table (scope attrs)"
+  TabsComp: "Tabs (ActiveTabID)"
+  TooltipComp: "Tooltip (unified position fn)"
+}
+
+feedback: {
+  shape: rectangle
+  label: "feedback (12 components)"
+  style.fill: "#FFF3E0"
+
+  AlertComp: "Alert"
+  ToastComp: "Toast (single-source icons)"
+  SpinnerComp: "Spinner"
+  feedbackStyleSetComp: "shared FeedbackStyle"
+  dismissScriptComp: "shared dismissScript ← NEW"
+}
+
+forms: {
+  shape: rectangle
+  label: "forms (6 components)"
+  style.fill: "#FFF3E0"
+
+  InputComp: "Input (aria-required)"
+  SelectComp: "Select (aria-required)"
+  TextareaComp: "Textarea (aria-required)"
+  ErrorAttrsFn: "ErrorAttrs (dual ID linkage)"
+}
+
+navigation: {
+  shape: rectangle
+  label: "navigation (9 components)"
+  style.fill: "#FFF3E0"
+
+  NavComp: "Nav"
+  NavLinkComp: "NavLink (Attrs shadow fixed)"
+  PaginationComp: "Pagination"
+  BreadcrumbsComp: "Breadcrumbs"
+}
+
+layout: {
+  shape: rectangle
+  label: "layout (4 components)"
+  style.fill: "#FFF3E0"
+
+  BaseComp: "Base (Lang field)"
+  MinimalComp: "Minimal"
+  ThemeScriptComp: "ThemeScript"
+  ThemeToggleComp: "ThemeToggle"
+}
+
+htmx_pkg: {
+  shape: rectangle
+  label: "htmx (7 components)"
+  style.fill: "#FFF3E0"
+
+  LoadingIndicatorComp: "LoadingIndicator (accepts Component)"
+  GlobalErrorHandlingComp: "GlobalErrorHandling (configurable)"
+}
+
+# Clean Dependencies
+utils -> display: {label: "BaseProps, Class(), IDAttr()"}
+utils -> feedback: {label: "BaseProps, Class(), InlineScript()"}
+utils -> forms: {label: "BaseProps, Class()"}
+utils -> navigation: {label: "BaseProps, Class()"}
+utils -> layout: {label: "Class(), CurrentYear()"}
+utils -> htmx_pkg: {label: "BaseProps, Class()"}
+utils -> icons_pkg: {label: "Class()"}
+
+internal_svg -> display: {label: "FillIcon()"}
+internal_svg -> feedback: {label: "SpinnerSVG()"}
+internal_svg -> icons_pkg: {label: "SpinnerSVG()"}
+
+icons_pkg -> display: {label: "Name"}
+
+htmx_pkg -> feedback: {
+  label: "Spinner via templ.Component (decoupled)"
+  style.stroke: "#4CAF50"
+}
+
+# Improvements
+improvements: {
+  shape: rectangle
+  near: bottom-right
+  style.fill: "#E8F5E9"
+
+  p1: "✓ NavLinkProps.Attrs shadowing fixed"
+  p2: "✓ htmx accepts Component for spinner"
+  p3: "✓ Shared InlineScript helper for CSP"
+  p4: "✓ Unified Badge style map"
+  p5: "✓ Shared dismissScript for Alert/Toast"
+  p6: "✓ Test helpers → internal/testutil"
+  p7: "✓ Tabs uses ActiveTabID"
+  p8: "✓ ID validation on Modal/Dropdown"
+  p9: "✓ aria-required on form inputs"
+  p10: "✓ Dead code removed (IconAttrs)"
+  p11: "✓ GlobalErrorHandling configurable"
+}
