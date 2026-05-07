@@ -1,6 +1,6 @@
 # Context — templ-components
 
-**Updated:** 2026-05-03
+**Updated:** 2026-05-07
 
 ## What
 
@@ -22,13 +22,13 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 
 ```
 templ-components/
-├── utils/           # Base types, Tailwind class merging, generic helpers
+├── utils/           # Base types, Tailwind class merging, generic helpers (BoolString, MapEnum)
 ├── internal/svg/    # Shared SVG primitives (fillIcon, spinner)
 ├── display/         # UI: card, badge, modal, table, tabs, avatar, tooltip, accordion, dropdown
-├── feedback/        # User feedback: alert, toast, spinner, progress, skeleton
+├── feedback/        # User feedback: alert, toast, spinner, progress, skeleton (shared feedbackStyleSet)
 ├── forms/           # Form controls: input, select, textarea, checkbox, label
 ├── htmx/            # HTMX helpers: loading, error handling, CSRF, OOB swap
-├── icons/           # Named SVG icons (42 constants)
+├── icons/           # Named SVG icons (42 constants, map-driven rendering)
 ├── layout/          # Page layout: base HTML, theme toggle, dark mode
 └── navigation/      # Nav: navbar, breadcrumbs, pagination, mobile menu
 ```
@@ -68,6 +68,30 @@ var badgeColorMap = map[BadgeType]string{...}
 func badgeColorClass(t BadgeType) string { ... }
 ```
 
+Feedback styles share a common struct with a generic lookup:
+
+```go
+type feedbackStyleSet struct { Border, BG, Text, Icon string }
+func lookupFeedbackStyle[T ~string](m map[T]feedbackStyleSet, def feedbackStyleSet, t T) feedbackStyleSet
+```
+
+### Icon Rendering
+
+Icons use a map-driven approach instead of a switch:
+
+```go
+var iconPathData = map[Name]string{ Home: "M2.25 12l8.954...", ... }
+// Multi-path icons use "|" separator
+var iconPathData = map[Name]string{ Eye: "M2.036...|M15 12...", ... }
+```
+
+### Enum Types (Impossible States Unrepresentable)
+
+| Type              | Values                    | Replaces                     |
+| ----------------- | ------------------------- | ---------------------------- |
+| `AvatarStatus`    | Online, Offline, None     | Two bool fields (both true)  |
+| `TrendDirection`  | Up, Down, None            | `positive bool` on StatCard  |
+
 ### CSP Compliance
 
 All inline `<script>` tags use `nonce={ nonce }` or `nonce={ props.Nonce }`.
@@ -78,6 +102,7 @@ Complex components extract shared rendering logic into private sub-templates:
 
 ```go
 templ fillIcon(class, path string, rotate ...bool) { ... }  // display/
+templ strokeIcon(class string, paths []string) { ... }        // icons/
 templ paginationArrow(enabled, href, ...) { ... }             // navigation/
 templ inlineMessage(message, colorClass, ...) { ... }        // feedback/
 ```
@@ -97,6 +122,8 @@ No other runtime dependencies.
 | `XxxType`           | `AlertType`          | String enum for visual variants           |
 | `XxxSize`           | `BadgeSize`          | String enum for size variants             |
 | `XxxPosition`       | `TooltipPosition`    | String enum for positional variants       |
+| `XxxStatus`         | `AvatarStatus`       | String enum for state variants            |
+| `XxxDirection`      | `TrendDirection`     | String enum for directional variants      |
 | `DefaultXxxProps()` | `DefaultCardProps()` | Constructor with sensible defaults        |
 | `xxxClass()`        | `badgeColorClass()`  | Unexported: enum → Tailwind class mapping |
 
@@ -108,3 +135,7 @@ No other runtime dependencies.
 4. **`layout.PageProps` (not BaseProps)** — Different purpose, different name to avoid confusion
 5. **String enums** — Type-safe without code generation; `type XxxType string` + constants
 6. **No framework dependencies** — Pure Go + templ; Tailwind classes are strings
+7. **`feedbackStyleSet` + generic lookup** — Shared style struct with `lookupFeedbackStyle[T]()` eliminates per-component duplicate types
+8. **`iconPathData` map** — Data-driven icon rendering replaces switch statements; multi-path icons use `|` separator
+9. **`AvatarStatus` / `TrendDirection` enums** — Impossible states unrepresentable; boolean pairs eliminated
+10. **`utils.BoolString()`** — Standardized boolean-to-string conversion replacing local implementations

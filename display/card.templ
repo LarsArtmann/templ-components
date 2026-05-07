@@ -103,15 +103,18 @@ const (
 	TrendNone TrendDirection = ""
 )
 
-// StatCard renders a dashboard stat card with value, label, and optional change indicator
-//
-//	@display.StatCard(display.StatCardProps{Value: "1,234", Label: "Total Users", Change: "+12%", Trend: display.TrendUp})
+// StatCardProps configures a dashboard stat card
 type StatCardProps struct {
 	utils.BaseProps
 	Value  string
 	Label  string
 	Change string
 	Trend  TrendDirection
+}
+
+// DefaultStatCardProps returns sensible defaults
+func DefaultStatCardProps() StatCardProps {
+	return StatCardProps{}
 }
 
 // StatCard renders a dashboard stat card with value, label, and optional change indicator

@@ -48,12 +48,7 @@ templ Select(props SelectProps) {
 		if props.Disabled {
 			disabled
 		}
-		if props.Error != "" {
-			aria-invalid="true"
-			if props.ID != "" {
-				aria-describedby={ props.ID + "-error" }
-			}
-		}
+		{ ErrorAttrs(props.ID, props.Error)... }
 		{ props.Attrs... }
 	>
 		for _, opt := range props.Options {

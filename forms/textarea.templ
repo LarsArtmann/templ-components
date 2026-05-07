@@ -56,12 +56,7 @@ templ Textarea(props TextareaProps) {
 		if props.ReadOnly {
 			readonly
 		}
-		if props.Error != "" {
-			aria-invalid="true"
-			if props.ID != "" {
-				aria-describedby={ props.ID + "-error" }
-			}
-		}
+		{ ErrorAttrs(props.ID, props.Error)... }
 		{ props.Attrs... }
 	>
 		{ props.Value }

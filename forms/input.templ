@@ -80,12 +80,7 @@ templ Input(props InputProps) {
 			if props.AutoFocus {
 				autofocus
 			}
-			if props.Error != "" {
-				aria-invalid="true"
-				if props.ID != "" {
-					aria-describedby={ props.ID + "-error" }
-				}
-			}
+			{ ErrorAttrs(props.ID, props.Error)... }
 			{ props.Attrs... }
 		/>
 	</div>
@@ -129,12 +124,7 @@ templ Checkbox(props CheckboxProps) {
 				if props.Disabled {
 					disabled
 				}
-				if props.Error != "" {
-					aria-invalid="true"
-					if props.ID != "" {
-						aria-describedby={ props.ID + "-error" }
-					}
-				}
+				{ ErrorAttrs(props.ID, props.Error)... }
 				{ props.Attrs... }
 			/>
 		</div>

@@ -48,6 +48,7 @@ type BaseProps struct {
 | `Ptr`         | `[T any](v T) *T`                          | Pointer wrapper                               |
 | `Deref`       | `[T any](p *T) T`                          | Nil-safe deref                                |
 | `DerefOr`     | `[T any](p *T, fallback T) T`              | Nil-safe deref with fallback                  |
+| `BoolString`  | `(b bool) string`                          | Returns `"true"` or `"false"`                 |
 
 ---
 
@@ -58,12 +59,12 @@ type BaseProps struct {
 | Component          | Description                     | Key Features                                             |
 | ------------------ | ------------------------------- | -------------------------------------------------------- |
 | `Accordion`        | Collapsible accordion panels    | JS toggle, accessible `aria-expanded`, multiple items    |
-| `Avatar`           | User avatar with image/initials | Online/offline indicator, 5 sizes, circle/square         |
+| `Avatar`           | User avatar with image/initials | AvatarStatus enum (Online/Offline/None), 5 sizes, circle/square |
 | `Badge`            | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator        |
 | `StatusBadge`      | Auto-mapped status badge        | Maps ~20 status strings to badge types                   |
 | `Card`             | Bordered card container         | Header, subtitle, footer, header action, 4 padding sizes |
 | `SimpleCard`       | Minimal card                    | Children-only, no header/footer                          |
-| `StatCard`         | Dashboard metric card           | Value, label, change indicator with up/down arrow        |
+| `StatCard`         | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None) |
 | `Dropdown`         | Button-triggered menu           | External/internal links, buttons, left/right position    |
 | `EmptyState`       | Centered empty state            | Icon, title, description, action link/button             |
 | `SimpleEmptyState` | Minimal empty state             | Text-only                                                |
@@ -84,7 +85,8 @@ type BaseProps struct {
 | `DropdownPosition` | Left, Right                                              |
 | `ModalSize`        | SM, MD, LG, XL, Full                                     |
 | `TabsStyle`        | Default, Pills                                           |
-| `TooltipPosition`  | Top, Bottom, Left, Right                                 |
+| `AvatarStatus`      | Online, Offline, None                                       |
+| `TrendDirection`    | Up, Down, None                                              |
 
 ---
 

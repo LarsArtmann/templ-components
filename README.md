@@ -37,6 +37,7 @@ import (
     "github.com/larsartmann/templ-components/layout"
     "github.com/larsartmann/templ-components/feedback"
     "github.com/larsartmann/templ-components/display"
+    "github.com/larsartmann/templ-components/utils"
 )
 
 templ MyPage() {
@@ -107,7 +108,7 @@ templ MyPage() {
     <p>Card content</p>
 }
 
-@display.StatCard("1,234", "Total Users", "+12%", true)
+@display.StatCard(display.StatCardProps{Value: "1,234", Label: "Total Users", Change: "+12%", Trend: display.TrendUp})
 
 @display.EmptyState(display.EmptyStateProps{
     Title:       "No repositories",
@@ -141,6 +142,7 @@ templ MyPage() {
 })
 
 @display.Dropdown(display.DropdownProps{
+    BaseProps: utils.BaseProps{ID: "actions"},
     Label: "Actions",
     Items: []display.DropdownItem{
         {Text: "Edit", Href: "/edit"},
