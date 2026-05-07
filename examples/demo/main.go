@@ -15,7 +15,6 @@ import (
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 func main() {
@@ -106,51 +105,31 @@ func renderSection(ctx context.Context, w io.Writer, title string, content templ
 func navBar() templ.Component {
 	//nolint:exhaustruct // Demo code - only using a subset of NavProps
 	return navigation.Nav(navigation.NavProps{
-		BaseProps:   utils.BaseProps{},
 		Sticky:      true,
 		CurrentPath: "/",
 		Links: []navigation.NavLinkProps{
-			{BaseProps: utils.BaseProps{}, Href: "/", Text: "Home"},
-			{BaseProps: utils.BaseProps{}, Href: "/about", Text: "About"},
+			{Href: "/", Text: "Home"},
+			{Href: "/about", Text: "About"},
 		},
 	})
+}
+
+//nolint:exhaustruct // Demo code - only using a subset of AlertProps
+func alert(title, message string, alertType feedback.AlertType) feedback.AlertProps {
+	return feedback.AlertProps{
+		Title:   title,
+		Message: message,
+		Type:    alertType,
+	}
 }
 
 func alertSection() templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		alerts := []feedback.AlertProps{
-			//nolint:exhaustruct // Demo code - only using a subset of AlertProps
-			{
-				BaseProps:   utils.BaseProps{},
-				Title:       "Success",
-				Message:     "Operation completed.",
-				Type:        feedback.AlertSuccess,
-				Dismissible: false,
-			},
-			//nolint:exhaustruct // Demo code - only using a subset of AlertProps
-			{
-				BaseProps:   utils.BaseProps{},
-				Title:       "Error",
-				Message:     "Something went wrong.",
-				Type:        feedback.AlertError,
-				Dismissible: false,
-			},
-			//nolint:exhaustruct // Demo code - only using a subset of AlertProps
-			{
-				BaseProps:   utils.BaseProps{},
-				Title:       "Warning",
-				Message:     "Check your input.",
-				Type:        feedback.AlertWarning,
-				Dismissible: false,
-			},
-			//nolint:exhaustruct // Demo code - only using a subset of AlertProps
-			{
-				BaseProps:   utils.BaseProps{},
-				Title:       "Info",
-				Message:     "Here is some information.",
-				Type:        feedback.AlertInfo,
-				Dismissible: false,
-			},
+			alert("Success", "Operation completed.", feedback.AlertSuccess),
+			alert("Error", "Something went wrong.", feedback.AlertError),
+			alert("Warning", "Check your input.", feedback.AlertWarning),
+			alert("Info", "Here is some information.", feedback.AlertInfo),
 		}
 		for _, a := range alerts {
 			if err := feedback.Alert(a).Render(ctx, w); err != nil {
@@ -179,11 +158,10 @@ func statSection() templ.Component {
 		for _, s := range stats {
 			//nolint:exhaustruct // Demo code - only using a subset of StatCardProps
 			if err := display.StatCard(display.StatCardProps{
-				BaseProps: utils.BaseProps{},
-				Value:     s.Value,
-				Label:     s.Label,
-				Change:    s.Change,
-				Trend:     s.Trend,
+				Value:  s.Value,
+				Label:  s.Label,
+				Change: s.Change,
+				Trend:  s.Trend,
 			}).Render(ctx, w); err != nil {
 				return fmt.Errorf("render stat card: %w", err)
 			}

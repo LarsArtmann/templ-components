@@ -79,16 +79,6 @@ func TestA11yAttributes(t *testing.T) {
 		utils.AssertContains(t, output, `alt="Alice"`)
 	})
 
-	t.Run("table caption is sr-only accessible", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Table(TableProps{
-			Caption: "User list",
-			Headers: []string{"Name"},
-			Rows:    []TableRow{SimpleTableRow("Alice")},
-		}))
-		utils.AssertContains(t, output, "<caption")
-		utils.AssertContains(t, output, "User list")
-	})
 }
 
 func TestDarkModeClasses(t *testing.T) {

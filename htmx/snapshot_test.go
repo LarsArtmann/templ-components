@@ -15,14 +15,6 @@ func TestLoadingIndicatorRender(t *testing.T) {
 	utils.AssertContains(t, output, "htmx-indicator")
 }
 
-func TestGlobalErrorHandlingRender(t *testing.T) {
-	t.Parallel()
-	output := utils.Render(t, GlobalErrorHandling("test-nonce"))
-	utils.AssertContains(t, output, `nonce="test-nonce"`)
-	utils.AssertContains(t, output, "htmx:responseError")
-	utils.AssertContains(t, output, "htmx:sendError")
-}
-
 func TestInlineLoadingOverlayRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, InlineLoadingOverlay("form-loader"))

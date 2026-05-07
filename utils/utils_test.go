@@ -176,21 +176,15 @@ func TestMapEnum(t *testing.T) {
 		}
 	})
 
-	t.Run("missing key returns fallback", func(t *testing.T) {
-		t.Parallel()
-		got := MapEnum(lookup, testEnumC, "unknown")
-		if got != testEnumC {
-			t.Errorf("MapEnum() = %q, want %q (fallback)", got, testEnumC)
-		}
-	})
-
-	t.Run("empty key returns fallback", func(t *testing.T) {
-		t.Parallel()
-		got := MapEnum(lookup, testEnumC, "")
-		if got != testEnumC {
-			t.Errorf("MapEnum() = %q, want %q (fallback)", got, testEnumC)
-		}
-	})
+	for _, key := range []string{"unknown", ""} {
+		t.Run(key+" key returns fallback", func(t *testing.T) {
+			t.Parallel()
+			got := MapEnum(lookup, testEnumC, key)
+			if got != testEnumC {
+				t.Errorf("MapEnum() = %q, want %q (fallback)", got, testEnumC)
+			}
+		})
+	}
 }
 
 func TestMergeAttrs(t *testing.T) {

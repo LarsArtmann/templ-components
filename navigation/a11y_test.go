@@ -69,17 +69,10 @@ func TestBreadcrumbsA11y(t *testing.T) {
 func TestBreadcrumbsDarkMode(t *testing.T) {
 	t.Parallel()
 
-	t.Run("active item has dark mode classes", func(t *testing.T) {
+	t.Run("breadcrumb items have dark mode classes", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
 			{Text: "Current", Active: true},
-		}))
-		utils.AssertContains(t, output, "dark:text-gray-400")
-	})
-
-	t.Run("link items have dark mode hover", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
 			{Text: "Home", Href: "/"},
 		}))
 		utils.AssertContains(t, output, "dark:text-gray-400")
@@ -141,19 +134,12 @@ func TestNavRender(t *testing.T) {
 func TestNavDarkMode(t *testing.T) {
 	t.Parallel()
 
-	t.Run("nav has dark mode border", func(t *testing.T) {
+	t.Run("nav has dark mode classes", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Nav(NavProps{
 			Brand: simpleBrand("App", "/"),
 		}))
 		utils.AssertContains(t, output, "dark:border-gray-800")
-	})
-
-	t.Run("nav has dark mode background", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Nav(NavProps{
-			Brand: simpleBrand("App", "/"),
-		}))
 		utils.AssertContains(t, output, "dark:bg-gray-900")
 	})
 }

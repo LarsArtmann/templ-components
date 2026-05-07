@@ -43,6 +43,7 @@ func TestTableRender(t *testing.T) {
 			Rows:    []TableRow{SimpleTableRow("Alice")},
 		}))
 		utils.AssertContains(t, output, "User list")
+		utils.AssertContains(t, output, "<caption")
 	})
 
 	t.Run("with custom id", func(t *testing.T) {

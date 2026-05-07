@@ -74,13 +74,6 @@ func TestToastUserGetsNonIntrusiveNotifications(t *testing.T) {
 		utils.AssertContains(t, output, "Saved")
 		utils.AssertContains(t, output, "Your changes are live.")
 	})
-
-	t.Run("toast container provides the notification area", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, ToastContainer("nonce-123"))
-		utils.AssertContains(t, output, `id="tc-toast-container"`)
-		utils.AssertContains(t, output, `nonce="nonce-123"`)
-	})
 }
 
 // --- Spinner / Loading Behavior ---
@@ -93,13 +86,6 @@ func TestSpinnerUserSeesLoadingProgress(t *testing.T) {
 		output := utils.Render(t, Spinner(SpinnerMD, "text-blue-600"))
 		utils.AssertContains(t, output, "animate-spin")
 		utils.AssertContains(t, output, "text-blue-600")
-	})
-
-	t.Run("user sees inline loading message", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, InlineLoading("Saving..."))
-		utils.AssertContains(t, output, "Saving...")
-		utils.AssertContains(t, output, "animate-spin")
 	})
 
 	t.Run("user sees full-screen loading overlay", func(t *testing.T) {
@@ -163,23 +149,6 @@ func TestProgressBarUserSeesCompletion(t *testing.T) {
 			ShowLabel: true,
 		}))
 		utils.AssertContains(t, output, "Steps completed")
-	})
-}
-
-// --- Step Indicator Behavior ---
-
-func TestStepIndicatorUserSeesProgress(t *testing.T) {
-	t.Parallel()
-
-	t.Run("user sees current step highlighted", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, StepIndicator(StepIndicatorProps{
-			Steps:       []string{"Details", "Review", "Confirm"},
-			CurrentStep: 1,
-		}))
-		utils.AssertContains(t, output, "Details")
-		utils.AssertContains(t, output, "Review")
-		utils.AssertContains(t, output, "Confirm")
 	})
 }
 

@@ -35,23 +35,22 @@ func TestAvatarRender(t *testing.T) {
 		utils.AssertContains(t, output, "bg-blue-600")
 	})
 
-	t.Run("with online status", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Avatar(AvatarProps{
-			Src:    "/me.jpg",
-			Alt:    "Me",
-			Status: AvatarStatusOnline,
-		}))
-		utils.AssertContains(t, output, "bg-green-400")
-	})
-
-	t.Run("with offline status", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Avatar(AvatarProps{
-			Src:    "/me.jpg",
-			Alt:    "Me",
-			Status: AvatarStatusOffline,
-		}))
-		utils.AssertContains(t, output, "bg-gray-400")
-	})
+	for _, tc := range []struct {
+		name   string
+		status AvatarStatus
+		class  string
+	}{
+		{"online status", AvatarStatusOnline, "bg-green-400"},
+		{"offline status", AvatarStatusOffline, "bg-gray-400"},
+	} {
+		t.Run("with "+tc.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Avatar(AvatarProps{
+				Src:    "/me.jpg",
+				Alt:    "Me",
+				Status: tc.status,
+			}))
+			utils.AssertContains(t, output, tc.class)
+		})
+	}
 }

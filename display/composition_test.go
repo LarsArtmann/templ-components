@@ -80,30 +80,6 @@ func TestCompositionCardWithStatCards(t *testing.T) {
 	})
 }
 
-func TestCompositionAvatarWithStatus(t *testing.T) {
-	t.Parallel()
-	t.Run("avatar with online status renders dot", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Avatar(AvatarProps{
-			Src:    "/user.jpg",
-			Alt:    "User",
-			Status: AvatarStatusOnline,
-		}))
-		utils.AssertContains(t, output, "/user.jpg")
-		utils.AssertContains(t, output, "bg-green-400")
-	})
-
-	t.Run("avatar with offline status renders dot", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Avatar(AvatarProps{
-			Src:    "/user.jpg",
-			Alt:    "User",
-			Status: AvatarStatusOffline,
-		}))
-		utils.AssertContains(t, output, "bg-gray-400")
-	})
-}
-
 func TestCompositionAccordionWithMultipleItems(t *testing.T) {
 	t.Parallel()
 	t.Run("accordion items with proper aria controls", func(t *testing.T) {

@@ -20,20 +20,19 @@ func TestIntegrationFullPageRender(t *testing.T) {
 		if !strings.HasPrefix(strings.ToLower(output), "<!doctype html>") {
 			t.Error("output should start with <!DOCTYPE html>")
 		}
-		if !strings.Contains(output, `<html lang="en"`) {
-			t.Error("output should contain html element with lang")
-		}
-		if !strings.Contains(output, "<title>Test Page</title>") {
-			t.Error("output should contain title")
-		}
-		if !strings.Contains(output, `content="A test page"`) {
-			t.Error("output should contain description meta")
-		}
-		if !strings.Contains(output, `<main id="main-content"`) {
-			t.Error("output should contain main element")
-		}
-		if !strings.Contains(output, "Skip to main content") {
-			t.Error("output should contain skip link")
+		for _, check := range []struct {
+			contains string
+			message  string
+		}{
+			{`<html lang="en"`, "html element with lang"},
+			{"<title>Test Page</title>", "title"},
+			{`content="A test page"`, "description meta"},
+			{`<main id="main-content"`, "main element"},
+			{"Skip to main content", "skip link"},
+		} {
+			if !strings.Contains(output, check.contains) {
+				t.Errorf("output should contain %s", check.message)
+			}
 		}
 	})
 

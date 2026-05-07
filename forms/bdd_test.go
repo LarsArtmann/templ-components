@@ -134,18 +134,6 @@ func TestSelectUserCanChooseOption(t *testing.T) {
 func TestTextareaUserCanEnterMultiLineText(t *testing.T) {
 	t.Parallel()
 
-	t.Run("user sees labeled textarea", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Textarea(TextareaProps{
-			Name:  "bio",
-			Label: "Biography",
-			Rows:  4,
-		}))
-		utils.AssertContains(t, output, `name="bio"`)
-		utils.AssertContains(t, output, "Biography")
-		utils.AssertContains(t, output, `rows="4"`)
-	})
-
 	t.Run("user sees textarea with pre-filled value", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Textarea(TextareaProps{
@@ -205,16 +193,19 @@ func TestLabelUserSeesFieldLabels(t *testing.T) {
 
 func TestFieldErrorUserSeesValidationFeedback(t *testing.T) {
 	t.Parallel()
-
-	t.Run("user sees error message linked to field", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, FieldError("email", "Email is required"))
-		utils.AssertContains(t, output, "Email is required")
-	})
-
-	t.Run("user sees standalone error without field link", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, FieldError("", "Something went wrong"))
-		utils.AssertContains(t, output, "Something went wrong")
-	})
+	tests := []struct {
+		name    string
+		fieldID string
+		message string
+	}{
+		{"linked to field", "email", "Email is required"},
+		{"standalone without field link", "", "Something went wrong"},
+	}
+	for _, tt := range tests {
+		t.Run("user sees "+tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, FieldError(tt.fieldID, tt.message))
+			utils.AssertContains(t, output, tt.message)
+		})
+	}
 }

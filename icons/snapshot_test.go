@@ -37,41 +37,29 @@ func TestIconRender(t *testing.T) {
 
 func TestIconAttrs(t *testing.T) {
 	t.Parallel()
-
-	t.Run("with aria label returns aria-label", func(t *testing.T) {
-		t.Parallel()
-		attrs := IconAttrs("Menu")
-		if attrs["aria-label"] != "Menu" {
-			t.Errorf("aria-label = %v, want Menu", attrs["aria-label"])
-		}
-		if _, ok := attrs["aria-hidden"]; ok {
-			t.Error("should not have aria-hidden when aria-label is set")
-		}
-	})
-
-	t.Run("without aria label returns aria-hidden", func(t *testing.T) {
-		t.Parallel()
-		attrs := IconAttrs("")
-		if attrs["aria-hidden"] != "true" {
-			t.Errorf("aria-hidden = %v, want true", attrs["aria-hidden"])
-		}
-		if _, ok := attrs["aria-label"]; ok {
-			t.Error("should not have aria-label when empty")
-		}
-	})
+	tests := []struct {
+		name      string
+		label     string
+		wantKey   string
+		wantValue string
+	}{
+		{"with aria label returns aria-label", "Menu", "aria-label", "Menu"},
+		{"without aria label returns aria-hidden", "", "aria-hidden", "true"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			attrs := IconAttrs(tt.label)
+			if attrs[tt.wantKey] != tt.wantValue {
+				t.Errorf("%s = %v, want %v", tt.wantKey, attrs[tt.wantKey], tt.wantValue)
+			}
+		})
+	}
 }
 
 func TestAllIconsRender(t *testing.T) {
 	t.Parallel()
-	allIcons := []Name{
-		Home, Users, Folder, Document, Search, Settings, Chart, Inbox,
-		Check, X, Plus, Minus, ChevronRight, ChevronLeft, ChevronDown, ChevronUp,
-		ArrowRight, ArrowLeft, Refresh, ExternalLink, Download, Upload,
-		Trash, Edit, Eye, EyeOff, Lock, Unlock, Menu, Bell,
-		Calendar, Clock, Location, Phone, Mail, Globe, Sun, Moon,
-		Spinner, Exclamation, Information, Question,
-	}
-	for _, name := range allIcons {
+	for _, name := range allIconNames {
 		t.Run(string(name), func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Icon(name, "h-5 w-5"))

@@ -2,6 +2,16 @@ package icons
 
 import "testing"
 
+var allIconNames = []Name{
+	Home, Users, Folder, Document, Search, Settings, Chart, Inbox,
+	Check, X, Plus, Minus,
+	ChevronRight, ChevronLeft, ChevronDown, ChevronUp,
+	ArrowRight, ArrowLeft,
+	Refresh, ExternalLink, Download, Upload, Trash, Edit, Eye, EyeOff,
+	Lock, Unlock, Menu, Bell, Calendar, Clock, Location, Phone, Mail, Globe,
+	Sun, Moon, Spinner, Exclamation, Information, Question,
+}
+
 func TestIconNames(t *testing.T) {
 	t.Parallel()
 
@@ -65,16 +75,7 @@ func TestIconNames(t *testing.T) {
 
 func TestIconCount(t *testing.T) {
 	t.Parallel()
-	actual := len([]Name{
-		Home, Users, Folder, Document, Search, Settings, Chart, Inbox,
-		Check, X, Plus, Minus,
-		ChevronRight, ChevronLeft, ChevronDown, ChevronUp,
-		ArrowRight, ArrowLeft,
-		Refresh, ExternalLink, Download, Upload, Trash, Edit, Eye, EyeOff,
-		Lock, Unlock, Menu, Bell, Calendar, Clock, Location, Phone, Mail, Globe,
-		Sun, Moon, Spinner, Exclamation, Information, Question,
-	})
-	if actual != 42 {
-		t.Errorf("expected 42 icons, got %d", actual)
+	if len(allIconNames) != 42 {
+		t.Errorf("expected 42 icons, got %d", len(allIconNames))
 	}
 }

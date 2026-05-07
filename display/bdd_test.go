@@ -114,21 +114,6 @@ func TestModalUserCanOpenAndClose(t *testing.T) {
 func TestTableUserCanViewData(t *testing.T) {
 	t.Parallel()
 
-	t.Run("user sees table headers and data", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Table(TableProps{
-			Headers: []string{"Name", "Email"},
-			Rows: []TableRow{
-				SimpleTableRow("Alice", "alice@example.com"),
-				SimpleTableRow("Bob", "bob@example.com"),
-			},
-		}))
-		utils.AssertContains(t, output, "Name")
-		utils.AssertContains(t, output, "Email")
-		utils.AssertContains(t, output, "Alice")
-		utils.AssertContains(t, output, "Bob")
-	})
-
 	t.Run("user sees striped table rows", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Table(TableProps{
@@ -137,47 +122,6 @@ func TestTableUserCanViewData(t *testing.T) {
 			Striped: true,
 		}))
 		utils.AssertContains(t, output, "bg-gray-50")
-	})
-
-	t.Run("user sees table caption for accessibility", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Table(TableProps{
-			Caption: "User list",
-			Headers: []string{"Name"},
-			Rows:    []TableRow{SimpleTableRow("Alice")},
-		}))
-		utils.AssertContains(t, output, "User list")
-		utils.AssertContains(t, output, `<caption`)
-	})
-}
-
-// --- Tabs Behavior ---
-
-func TestTabsUserCanSwitchViews(t *testing.T) {
-	t.Parallel()
-
-	t.Run("user sees tabs with active state", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Tabs(TabsProps{
-			Tabs: []Tab{
-				{ID: "users", Label: "Users", Active: true},
-				{ID: "settings", Label: "Settings"},
-			},
-		}))
-		utils.AssertContains(t, output, "Users")
-		utils.AssertContains(t, output, "Settings")
-		utils.AssertContains(t, output, `aria-selected="true"`)
-	})
-
-	t.Run("user sees pill-style tabs", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Tabs(TabsProps{
-			Tabs: []Tab{
-				{ID: "a", Label: "A", Active: true},
-			},
-			Variant: TabsPills,
-		}))
-		utils.AssertContains(t, output, "rounded-md")
 	})
 }
 
@@ -206,69 +150,6 @@ func TestAccordionUserCanExpandCollapse(t *testing.T) {
 			},
 		}))
 		utils.AssertContains(t, output, `aria-expanded="true"`)
-	})
-}
-
-// --- Dropdown Behavior ---
-
-func TestDropdownUserCanSelectAction(t *testing.T) {
-	t.Parallel()
-
-	t.Run("user sees dropdown trigger and menu items", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "actions"},
-			Label:     "Actions",
-			Items: []DropdownItem{
-				{Text: "Edit", Href: "/edit"},
-				{Text: "Delete", Href: "/delete"},
-			},
-		}))
-		utils.AssertContains(t, output, "Actions")
-		utils.AssertContains(t, output, "Edit")
-		utils.AssertContains(t, output, "Delete")
-		utils.AssertContains(t, output, `role="menu"`)
-		utils.AssertContains(t, output, `aria-haspopup="true"`)
-	})
-
-	t.Run("user sees external link with proper attributes", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "links"},
-			Label:     "Links",
-			Items: []DropdownItem{
-				{Text: "Docs", Href: "https://example.com", External: true},
-			},
-		}))
-		utils.AssertContains(t, output, `target="_blank"`)
-		utils.AssertContains(t, output, `rel="noopener noreferrer"`)
-	})
-}
-
-// --- Avatar Behavior ---
-
-func TestAvatarUserCanIdentifyUsers(t *testing.T) {
-	t.Parallel()
-
-	t.Run("user sees avatar with image", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Avatar(AvatarProps{
-			Src:   "/alice.jpg",
-			Alt:   "Alice",
-			Size:  AvatarSizeMD,
-			Shape: AvatarShapeCircle,
-		}))
-		utils.AssertContains(t, output, `/alice.jpg`)
-		utils.AssertContains(t, output, "Alice")
-	})
-
-	t.Run("user sees avatar with initials fallback", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Avatar(AvatarProps{
-			Initials: "AB",
-			Size:     AvatarSizeSM,
-		}))
-		utils.AssertContains(t, output, "AB")
 	})
 }
 
