@@ -10,11 +10,11 @@ This is a different problem from "how do I make this popular." For personal use,
 
 ## Current State: Three Independent Libraries
 
-| Library | Role | What's Good | What's Missing |
-|---------|------|-------------|----------------|
-| `go-cqrs-lite` | Event sourcing | Clean CQRS core, stable v1.1.0 | No projection/read-model helpers |
-| `cqrs-htmx` | HTTP wiring | Fluent handler builder, HTMX response builder, Casbin auth | No validation, no request logging, no rate limiting |
-| `templ-components` | UI components | 53 components, Tailwind class merging, dark mode | No demo, no scaffolding, incomplete a11y |
+| Library            | Role           | What's Good                                                | What's Missing                                      |
+| ------------------ | -------------- | ---------------------------------------------------------- | --------------------------------------------------- |
+| `go-cqrs-lite`     | Event sourcing | Clean CQRS core, stable v1.1.0                             | No projection/read-model helpers                    |
+| `cqrs-htmx`        | HTTP wiring    | Fluent handler builder, HTMX response builder, Casbin auth | No validation, no request logging, no rate limiting |
+| `templ-components` | UI components  | 53 components, Tailwind class merging, dark mode           | No demo, no scaffolding, incomplete a11y            |
 
 **You still build every app from zero.** The three libs solve pieces of the puzzle, but you manually wire them, write authentication, set up Tailwind, write CRUD forms, and cobble together a deploy config every single time.
 
@@ -98,21 +98,21 @@ Every new project currently requires manually wiring: config, DB, migrations, au
 
 ## Priority Stack (Personal)
 
-| Priority | Action | Why |
-|----------|--------|-----|
-| **Now** | Build the reference starter app (auth, admin CRUD, settings, one resource, deploy) | Everything else depends on this |
-| **Now** | Unify error handling + validation across all 3 libs | Eliminates daily friction |
-| **Week 1** | Hot reload dev setup + one-command DB | Remove setup pain |
-| **Week 2** | Resource scaffolding script | Turns hours into minutes |
-| **Week 3** | E2E test + deploy automation | Confidence in shipping |
-| **Month 1** | Search/filter/sort pattern + file uploads | Most common missing pieces |
-| **Month 2** | Real-time updates + background jobs pattern | Advanced but recurring needs |
-| **Ongoing** | Cookbook docs | Personal knowledge preservation |
+| Priority    | Action                                                                             | Why                             |
+| ----------- | ---------------------------------------------------------------------------------- | ------------------------------- |
+| **Now**     | Build the reference starter app (auth, admin CRUD, settings, one resource, deploy) | Everything else depends on this |
+| **Now**     | Unify error handling + validation across all 3 libs                                | Eliminates daily friction       |
+| **Week 1**  | Hot reload dev setup + one-command DB                                              | Remove setup pain               |
+| **Week 2**  | Resource scaffolding script                                                        | Turns hours into minutes        |
+| **Week 3**  | E2E test + deploy automation                                                       | Confidence in shipping          |
+| **Month 1** | Search/filter/sort pattern + file uploads                                          | Most common missing pieces      |
+| **Month 2** | Real-time updates + background jobs pattern                                        | Advanced but recurring needs    |
+| **Ongoing** | Cookbook docs                                                                      | Personal knowledge preservation |
 
 ---
 
 ## The Core Insight
 
-The libraries are good. The gap is everything *above* the libraries: the bootstrapping, the patterns, the auth, the deploy, the "I need a new CRUD resource, give me the code." That's the difference between "I have nice libraries" and "I can spin up a new SaaS in an afternoon."
+The libraries are good. The gap is everything _above_ the libraries: the bootstrapping, the patterns, the auth, the deploy, the "I need a new CRUD resource, give me the code." That's the difference between "I have nice libraries" and "I can spin up a new SaaS in an afternoon."
 
 Build the starter app.
