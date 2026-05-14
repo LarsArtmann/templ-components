@@ -18,6 +18,7 @@ Ordered by dependency layer: leaves first, consumers last.
 ## Task List
 
 ### Task 1: Create `go.work` skeleton
+
 **Layer:** Foundation
 **Effort:** 5 min
 **Dependencies:** None
@@ -36,6 +37,7 @@ go 1.26.2
 ---
 
 ### Task 2: Extract `utils` module
+
 **Layer:** 0 — Leaf
 **Impact:** 1% → 51% (foundational — everything depends on utils)
 **Effort:** 10 min
@@ -57,6 +59,7 @@ go 1.26.2
 ---
 
 ### Task 3: Promote `internal/svg` → `svg` module
+
 **Layer:** 0 — Leaf
 **Impact:** 1% → 51% (foundational — 4 packages depend on svg)
 **Effort:** 20 min
@@ -70,7 +73,7 @@ go 1.26.2
    require github.com/a-h/templ v0.3.1001
    ```
 3. Update package declaration in `svg/*.go` from `package svg` (already correct — it's already `package svg`)
-4. Update all importers (4 .templ files + their generated _templ.go files):
+4. Update all importers (4 .templ files + their generated \_templ.go files):
    - `display/helpers.templ`: `internal/svg` → `svg`
    - `feedback/loading.templ`: `internal/svg` → `svg`
    - `navigation/pagination.templ`: `internal/svg` → `svg`
@@ -86,6 +89,7 @@ go 1.26.2
 ---
 
 ### Task 4: Extract `layout` module
+
 **Layer:** 0 — Leaf
 **Impact:** 4% → 64%
 **Effort:** 10 min
@@ -106,6 +110,7 @@ go 1.26.2
 ---
 
 ### Task 5: Extract `icons` module
+
 **Layer:** 1
 **Impact:** 4% → 64%
 **Effort:** 15 min
@@ -127,6 +132,7 @@ go 1.26.2
 ---
 
 ### Task 6: Extract `feedback` module
+
 **Layer:** 2
 **Impact:** 4% → 64%
 **Effort:** 15 min
@@ -149,6 +155,7 @@ go 1.26.2
 ---
 
 ### Task 7: Extract `forms` module
+
 **Layer:** 1
 **Impact:** 4% → 64%
 **Effort:** 10 min
@@ -170,6 +177,7 @@ go 1.26.2
 ---
 
 ### Task 8: Extract `display` module
+
 **Layer:** 2
 **Impact:** 20% → 80% (largest package, most consumers)
 **Effort:** 15 min
@@ -193,6 +201,7 @@ go 1.26.2
 ---
 
 ### Task 9: Extract `navigation` module
+
 **Layer:** 2
 **Impact:** 4% → 64%
 **Effort:** 10 min
@@ -215,6 +224,7 @@ go 1.26.2
 ---
 
 ### Task 10: Extract `htmx` module
+
 **Layer:** 3
 **Impact:** 4% → 64%
 **Effort:** 10 min
@@ -236,6 +246,7 @@ go 1.26.2
 ---
 
 ### Task 11: Extract `examples/demo` module
+
 **Layer:** 4 — Consumer
 **Impact:** Polish (examples only)
 **Effort:** 15 min
@@ -263,6 +274,7 @@ go 1.26.2
 ---
 
 ### Task 12: Update root go.mod
+
 **Layer:** Foundation
 **Impact:** 1% → 51%
 **Effort:** 10 min
@@ -283,6 +295,7 @@ go 1.26.2
 ---
 
 ### Task 13: Full regeneration and verification
+
 **Layer:** Validation
 **Impact:** Critical — ensures everything works end-to-end
 **Effort:** 15 min
@@ -302,6 +315,7 @@ go 1.26.2
 ---
 
 ### Task 14: Update documentation
+
 **Layer:** Polish
 **Impact:** 20% → 80% (developer experience)
 **Effort:** 20 min
@@ -343,12 +357,12 @@ Task 11 (examples/demo) ── Task 12 (root go.mod) ── Task 13 ── Task 
 
 ## Pareto Impact Summary
 
-| Tier | Tasks | Impact |
-|---|---|---|
-| **1% → 51%** | Tasks 1–3 (go.work, utils, svg) | Foundation — everything else depends on these |
-| **4% → 64%** | Tasks 4–7, 9–10 (layout, icons, feedback, forms, navigation, htmx) | High leverage — each unlocks a clean module boundary |
-| **20% → 80%** | Tasks 8, 12–13 (display, root go.mod, full verification) | Broad value — largest package + end-to-end validation |
-| **Polish** | Tasks 11, 14 (examples/demo, docs) | Developer experience |
+| Tier          | Tasks                                                              | Impact                                                |
+| ------------- | ------------------------------------------------------------------ | ----------------------------------------------------- |
+| **1% → 51%**  | Tasks 1–3 (go.work, utils, svg)                                    | Foundation — everything else depends on these         |
+| **4% → 64%**  | Tasks 4–7, 9–10 (layout, icons, feedback, forms, navigation, htmx) | High leverage — each unlocks a clean module boundary  |
+| **20% → 80%** | Tasks 8, 12–13 (display, root go.mod, full verification)           | Broad value — largest package + end-to-end validation |
+| **Polish**    | Tasks 11, 14 (examples/demo, docs)                                 | Developer experience                                  |
 
 ---
 
@@ -363,10 +377,10 @@ Task 11 (examples/demo) ── Task 12 (root go.mod) ── Task 13 ── Task 
 
 ## Risk Mitigations During Execution
 
-| Risk | Mitigation |
-|---|---|
-| `templ generate` fails with go.work | Run templ generate from root — it walks all sub-directories |
-| Import cycles appear | DAG verified in proposal — if cycles appear, boundaries are wrong |
-| `go mod tidy` removes needed deps | Run `go work sync` before `go mod tidy` |
-| Test failures after extraction | Fix immediately — don't proceed to next task |
-| `internal/` directory empty after svg promotion | Remove empty `internal/` directory |
+| Risk                                            | Mitigation                                                        |
+| ----------------------------------------------- | ----------------------------------------------------------------- |
+| `templ generate` fails with go.work             | Run templ generate from root — it walks all sub-directories       |
+| Import cycles appear                            | DAG verified in proposal — if cycles appear, boundaries are wrong |
+| `go mod tidy` removes needed deps               | Run `go work sync` before `go mod tidy`                           |
+| Test failures after extraction                  | Fix immediately — don't proceed to next task                      |
+| `internal/` directory empty after svg promotion | Remove empty `internal/` directory                                |
