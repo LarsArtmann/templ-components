@@ -1,122 +1,102 @@
 # templ-components
 
-A reusable component library for Go projects using [templ](https://templ.guide/) and [Tailwind CSS](https://tailwindcss.com/).
+Reusable UI components for Go web apps — built on [templ](https://templ.guide), [HTMX](https://htmx.org), and [Tailwind CSS](https://tailwindcss.com).
 
-Designed to be shared across all your Go projects. Import only the packages you need.
+[![CI](https://img.shields.io/github/actions/workflow/status/larsartmann/templ-components/ci.yaml?branch=master&style=flat-square)](https://github.com/larsartmann/templ-components/actions)
+[![Go Reference](https://img.shields.io/badge/go-pkg.go.dev-blue?style=flat-square)](https://pkg.go.dev/github.com/larsartmann/templ-components)
+[![Go Report Card](https://goreportcard.com/badge/github.com/larsartmann/templ-components?style=flat-square)](https://goreportcard.com/report/github.com/larsartmann/templ-components)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://github.com/larsartmann/templ-components/blob/master/LICENSE)
+[![Pre-release](https://img.shields.io/badge/status-pre--release-orange?style=flat-square)](https://github.com/larsartmann/templ-components)
 
-## Features
+**No DaisyUI. No Node.js. No framework lock-in.**
 
-- **Layout** - Base HTML layouts, theme toggle, dark mode support
-- **Feedback** - Toasts, alerts, loading spinners, skeletons, progress bars, inline errors/success
-- **Display** - Badges, cards, stat cards, empty states, tables, tabs, accordions, dropdowns, tooltips, avatars
-- **Forms** - Inputs, textareas, selects, labels, validation errors
-- **Navigation** - Navbars, breadcrumbs, mobile menus, pagination
-- **Icons** - 40+ common SVG icons
-- **HTMX** - Error handling, loading indicators, helpers
-- **Utils** - Common Go helpers
+templ-components is a pure Tailwind CSS component library for Go's templ engine, with first-class HTMX integration. Every component renders server-side, ships zero JavaScript by default, and uses only Tailwind utility classes — so you stay in full control of your CSS and build pipeline.
 
-## Installation
+> **Status:** Pre-release (v0.x). APIs may change before v1.0. Feedback and contributions welcome.
+
+---
+
+## Why templ-components?
+
+| | templ-components | goshipit (haatos) | templ_components (tego101) |
+|---|---|---|---|
+| **CSS approach** | Raw Tailwind only | Tailwind + DaisyUI | Tailwind + DaisyUI |
+| **Requires Node.js** | No | Yes | Yes |
+| **Go module** | Yes | Yes | No |
+| **Dark mode** | Built-in | Via DaisyUI | Via DaisyUI |
+| **CSP compliant** | Yes (nonce support) | — | — |
+| **Typed props** | 16+ string enums | — | — |
+
+If you want **Tailwind without DaisyUI**, this is the only option in the Go/templ ecosystem.
+
+---
+
+## Quick Start
+
+**1. Install**
 
 ```bash
 go get github.com/larsartmann/templ-components
 ```
 
-Requires [templ](https://templ.guide/) CLI for code generation:
+**2. Build a page**
 
-```bash
-go install github.com/a-h/templ/cmd/templ@latest
-```
-
-## Quick Start
-
-```go
+```templ
 package main
 
 import (
-    "github.com/a-h/templ"
     "github.com/larsartmann/templ-components/layout"
     "github.com/larsartmann/templ-components/feedback"
     "github.com/larsartmann/templ-components/display"
-    "github.com/larsartmann/templ-components/utils"
 )
 
-templ MyPage() {
-    @layout.Base(layout.PageProps{
-        Title:       "Dashboard",
-        Description: "My awesome dashboard",
-    }) {
+templ Page() {
+    @layout.Base(layout.DefaultPageProps()) {
+        @layout.ThemeScript("")
         @feedback.ToastContainer("")
-        @display.Card(display.CardProps{Title: "Welcome"}) {
-            <p>Hello, world!</p>
+        @display.Card(display.DefaultCardProps()) {
+            <h1>Hello, world</h1>
         }
     }
 }
 ```
 
-## Package Overview
+**3. Generate and run**
 
-### `layout` - Page Structure
+```bash
+templ generate && go run .
+```
+
+---
+
+## Component Catalog
+
+### `layout` — Page Structure
+
+Base HTML layouts, theme toggle, and dark mode support.
 
 ```templ
-@layout.Base(layout.PageProps{Title: "My Page"}) {
-    <h1>Content</h1>
-}
-
+@layout.Base(layout.DefaultPageProps()) { <main>Content</main> }
+@layout.Minimal("Title", "en") { <p>Static content</p> }
+@layout.ThemeScript("")
 @layout.ThemeToggle("Toggle theme", "")
-
-@layout.Minimal("Title", "en") {
-    <p>Static content</p>
-}
 ```
 
-### `feedback` - User Feedback
+### `display` — Data Display (14 components)
+
+Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, and more.
 
 ```templ
-// Toast notifications
-@feedback.ToastContainer("")
-
-@feedback.Toast(feedback.ToastProps{
-    Message: "Saved successfully!",
-    Type:    feedback.ToastSuccess,
-    Title:   "Success",
-})
-
-// Alerts
-@feedback.Alert(feedback.AlertProps{
-    Title:   "Warning",
-    Message: "This action cannot be undone.",
-    Type:    feedback.AlertWarning,
-})
-
-// Loading states
-@feedback.Spinner(feedback.SpinnerMedium, "text-blue-600")
-@feedback.InlineLoading("Saving...")
-@feedback.Skeleton("card")
-
-// Progress
-@feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100})
-@feedback.StepIndicator(feedback.StepIndicatorProps{Steps: []string{"Details", "Review", "Confirm"}, CurrentStep: 1})
-```
-
-### `display` - Data Display
-
-```templ
-@display.Badge(display.BadgeProps{Text: "Active", Type: display.BadgeSuccess, Dot: true})
-@display.StatusBadge("healthy")
-
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {
     <p>Card content</p>
 }
 
-@display.StatCard(display.StatCardProps{Value: "1,234", Label: "Total Users", Change: "+12%", Trend: display.TrendUp})
+@display.Badge(display.BadgeProps{Text: "Active", Type: display.BadgeSuccess, Dot: true})
+@display.StatusBadge("healthy")
 
-@display.EmptyState(display.EmptyStateProps{
-    Title:       "No repositories",
-    Description: "Connect your first repository.",
-    Icon:        "folder",
-    ActionText:  "Connect",
-    ActionHref:  "/connect",
-})
+@display.Modal(display.ModalProps{Title: "Confirm", Size: display.ModalSizeSM}) {
+    <p>Are you sure?</p>
+}
 
 @display.Table(display.TableProps{
     Headers: []string{"Name", "Email", "Role"},
@@ -141,125 +121,162 @@ templ MyPage() {
     },
 })
 
-@display.Dropdown(display.DropdownProps{
-    BaseProps: utils.BaseProps{ID: "actions"},
-    Label: "Actions",
-    Items: []display.DropdownItem{
-        {Text: "Edit", Href: "/edit"},
-        {Text: "Delete", Href: "/delete"},
-    },
-})
-
-@display.Tooltip(display.TooltipProps{Text: "More info"}) {
-    <button>Hover me</button>
-}
-
 @display.Avatar(display.AvatarProps{Src: "/avatar.jpg", Alt: "Alice"})
+@display.Tooltip(display.TooltipProps{Text: "More info"}) { <button>Hover me</button> }
+@display.Dropdown(display.DropdownProps{Label: "Actions", Items: []display.DropdownItem{
+    {Text: "Edit", Href: "/edit"},
+    {Text: "Delete", Href: "/delete"},
+}})
 ```
 
-### `forms` - Form Primitives
+### `feedback` — User Feedback (12 components)
+
+Alerts, toasts, spinners, progress bars, skeletons, and loading states.
 
 ```templ
-@forms.Input(forms.InputProps{
-    Name:  "email",
-    Type:  forms.InputEmail,
-    Label: "Email address",
+@feedback.ToastContainer("")
+@feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.ToastSuccess})
+
+@feedback.Alert(feedback.AlertProps{
+    Title: "Warning", Message: "This cannot be undone.", Type: feedback.AlertWarning,
 })
 
-@forms.Textarea(forms.TextareaProps{
-    Name:  "bio",
-    Label: "Bio",
-    Rows:  4,
-})
-
-@forms.Select(forms.SelectProps{
-    Name:    "country",
-    Label:   "Country",
-    Options: []forms.SelectOption{
-        {Value: "de", Label: "Germany"},
-        {Value: "at", Label: "Austria"},
-    },
-})
-
-@forms.Checkbox(forms.CheckboxProps{
-    Name:  "terms",
-    Label: "I agree to the terms",
+@feedback.Spinner(feedback.SpinnerMD, "text-blue-600")
+@feedback.Skeleton("card")
+@feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100})
+@feedback.StepIndicator(feedback.StepIndicatorProps{
+    Steps: []string{"Details", "Review", "Confirm"}, CurrentStep: 1,
 })
 ```
 
-### `navigation` - Navigation
+### `forms` — Form Controls (6 components)
+
+Inputs, selects, textareas, checkboxes, labels, and validation errors.
+
+```templ
+@forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email address"})
+@forms.Textarea(forms.TextareaProps{Name: "bio", Label: "Bio", Rows: 4})
+@forms.Select(forms.SelectProps{
+    Name: "country", Label: "Country",
+    Options: []forms.SelectOption{{Value: "de", Label: "Germany"}, {Value: "at", Label: "Austria"}},
+})
+@forms.Checkbox(forms.CheckboxProps{Name: "terms", Label: "I agree"})
+```
+
+### `navigation` — Navigation (9 components)
+
+Nav bars, breadcrumbs, pagination, and mobile menus.
 
 ```templ
 @navigation.SimpleNav("MyApp", "/", []navigation.NavLinkProps{
-    {Href: "/", Text: "Home"},
-    {Href: "/about", Text: "About"},
+    {Href: "/", Text: "Home"}, {Href: "/about", Text: "About"},
 }, "/")
 
 @navigation.Breadcrumbs([]navigation.BreadcrumbItem{
-    {Text: "Home", Href: "/"},
-    {Text: "Users", Active: true},
+    {Text: "Home", Href: "/"}, {Text: "Users", Active: true},
 })
 
+@navigation.Pagination(navigation.PaginationProps{CurrentPage: 2, TotalPages: 10, BaseURL: "/users"})
 @navigation.Footer("MyApp")
-
-@navigation.Pagination(navigation.PaginationProps{
-    CurrentPage: 2,
-    TotalPages:  10,
-    BaseURL:     "/users",
-})
 ```
 
-### `icons` - SVG Icons
+### `icons` — SVG Icons (42 icons)
+
+Typed icon constants, no icon library dependency.
 
 ```templ
 @icons.Icon(icons.Home, "h-5 w-5 text-gray-500")
 @icons.Icon(icons.Check, "h-6 w-6 text-green-500")
 ```
 
-### `htmx` - HTMX Utilities
+Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, Minus, ChevronRight, ChevronLeft, ChevronDown, ChevronUp, ArrowRight, ArrowLeft, Refresh, ExternalLink, Download, Upload, Trash, Edit, Eye, EyeOff, Lock, Unlock, Menu, Bell, Calendar, Clock, Location, Phone, Mail, Globe, Sun, Moon, Spinner, Exclamation, Information, Question.
+
+### `htmx` — HTMX Integration (7 components)
+
+Loading indicators, error handling, CSRF protection, and out-of-band swaps.
 
 ```templ
 @htmx.GlobalErrorHandling("")
 @htmx.LoadingIndicator()
 @htmx.InlineLoadingOverlay("form-loading")
+@htmx.CSRFToken("token-value")
 ```
+
+---
+
+## Design Principles
+
+**Type-safe.** 16+ typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+
+**Accessible.** ARIA attributes, roles, keyboard navigation (modal focus trap, dropdown arrows, tabs), and screen-reader text across all interactive components.
+
+**CSP-ready.** All inline scripts use `nonce` attributes. No `eval()`, no inline event handlers.
+
+**Dark mode.** Every component supports Tailwind's `dark:` variant. Include `@layout.ThemeScript("")` to prevent flash of unstyled content.
+
+**Server-rendered.** Zero client-side JavaScript by default. Interactive features (accordion, dropdown, modal, theme toggle) use minimal vanilla JS with nonce-based CSP.
+
+**Tree-shakeable.** Import only the packages you need. No monolithic bundle.
+
+```go
+import (
+    "github.com/larsartmann/templ-components/display"  // only if you use display components
+    "github.com/larsartmann/templ-components/feedback" // only if you use feedback components
+)
+```
+
+---
 
 ## Tailwind CSS Setup
 
-This library assumes you have Tailwind CSS configured with the `dark` class strategy:
+Configure Tailwind to scan this library's templates:
 
 ```js
 // tailwind.config.js
 module.exports = {
   darkMode: "class",
   content: [
-    "./templates/**/*.templ",
+    "./**/*.templ",
     "./node_modules/github.com/larsartmann/templ-components/**/*.templ",
   ],
-  // ...
 };
 ```
 
-## Dark Mode
+---
 
-All components support dark mode via Tailwind's `dark:` prefix. Include the theme script in your base layout:
+## By the Numbers
 
-```templ
-@layout.ThemeScript("")
-```
+| Metric | Value |
+|---|---|
+| Components | 53 |
+| SVG icons | 42 |
+| Typed enums | 16+ |
+| Packages | 8 |
+| Tests | 554 |
+| Dependencies | 2 (`templ` + `tailwind-merge-go`) |
 
-And add the toggle button:
+---
 
-```templ
-@layout.ThemeToggle("Toggle theme", "")
-```
+## Requirements
 
-## Browser Support
+- **Go** 1.26+
+- **templ** CLI ([install](https://templ.guide/quick-start/installation))
+- **Tailwind CSS** 3.x+
+- **HTMX** 2.x (optional, for `htmx` package)
 
-- Modern evergreen browsers (Chrome, Firefox, Safari, Edge)
-- Requires CSS custom properties support
-- HTMX 2.x recommended
+---
+
+## Contributing
+
+Contributions are welcome. This project is in early development — APIs may change.
+
+1. Fork the repository
+2. Create a feature branch
+3. Run `templ generate && go test ./...`
+4. Open a pull request
+
+---
 
 ## License
 
-MIT
+[MIT](https://github.com/larsartmann/templ-components/blob/master/LICENSE)
