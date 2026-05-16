@@ -23,6 +23,15 @@ func DefaultNavLinkProps() NavLinkProps {
 	return NavLinkProps{}
 }
 
+// activeSpanOrLink renders a span with aria-current when active, or a link when inactive
+templ activeSpanOrLink(isActive bool, href string, text string, activeClass string, inactiveClass string) {
+	if isActive {
+		<span aria-current="page" class={ activeClass }>{ text }</span>
+	} else {
+		<a href={ templ.SafeURL(href) } class={ inactiveClass }>{ text }</a>
+	}
+}
+
 // NavLink renders a single navigation link with active state styling
 //
 //	@navigation.NavLink(navigation.NavLinkProps{Href: "/", Text: "Home"}, "/")

@@ -3,6 +3,7 @@ package feedback
 import (
 	"strings"
 
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -159,9 +160,7 @@ templ Toast(props ToastProps) {
 				class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors"
 				aria-label="Dismiss"
 			>
-				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-					<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-				</svg>
+				@icons.Icon(icons.X, "h-4 w-4")
 			</button>
 		</div>
 	</div>

@@ -146,21 +146,13 @@ templ Pagination(props PaginationProps) {
 						{{ start, end := paginationRange(props.CurrentPage, props.TotalPages, props.MaxVisible) }}
 						for p := start; p <= end; p++ {
 							<li>
-								if p == props.CurrentPage {
-									<span
-										aria-current="page"
-										class="relative z-10 inline-flex items-center bg-blue-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
-									>
-										{ fmt.Sprintf("%d", p) }
-									</span>
-								} else {
-									<a
-										href={ templ.SafeURL(props.pageURL(p)) }
-										class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0"
-									>
-										{ fmt.Sprintf("%d", p) }
-									</a>
-								}
+								@activeSpanOrLink(
+									p == props.CurrentPage,
+									props.pageURL(p),
+									fmt.Sprintf("%d", p),
+									"relative z-10 inline-flex items-center bg-blue-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600",
+									"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0",
+								)
 							</li>
 						}
 						<li>

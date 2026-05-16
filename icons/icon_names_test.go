@@ -9,7 +9,7 @@ var allIconNames = []Name{
 	ArrowRight, ArrowLeft,
 	Refresh, ExternalLink, Download, Upload, Trash, Edit, Eye, EyeOff,
 	Lock, Unlock, Menu, Bell, Calendar, Clock, Location, Phone, Mail, Globe,
-	Sun, Moon, Spinner, Exclamation, Information, Question,
+	Sun, Moon, Spinner, Exclamation, ExclamationTriangle, Information, Question,
 }
 
 func TestIconNames(t *testing.T) {
@@ -59,6 +59,7 @@ func TestIconNames(t *testing.T) {
 		{name: "Moon", value: Moon},
 		{name: "Spinner", value: Spinner},
 		{name: "Exclamation", value: Exclamation},
+		{name: "ExclamationTriangle", value: ExclamationTriangle},
 		{name: "Information", value: Information},
 		{name: "Question", value: Question},
 	}
@@ -75,7 +76,7 @@ func TestIconNames(t *testing.T) {
 
 func TestIconCount(t *testing.T) {
 	t.Parallel()
-	if len(allIconNames) != 42 {
+	if len(allIconNames) != 43 {
 		t.Errorf("expected 42 icons, got %d", len(allIconNames))
 	}
 }
