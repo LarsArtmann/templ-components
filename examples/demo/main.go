@@ -92,7 +92,7 @@ func renderSection(ctx context.Context, w io.Writer, title string, content templ
 	if _, err := fmt.Fprintf(
 		w,
 		"<h2 class=\"text-xl font-semibold mt-8 mb-4\">%s</h2>",
-		title,
+		templ.EscapeString(title),
 	); err != nil {
 		return fmt.Errorf("write section header %q: %w", title, err)
 	}

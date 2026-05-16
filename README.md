@@ -18,17 +18,17 @@ templ-components is a pure Tailwind CSS component library for Go's templ engine,
 
 ## Why templ-components?
 
-| Feature | templ-components | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
-|---|---|---|---|
-| **CSS approach** | Raw Tailwind only | Tailwind + CSS vars | Tailwind + DaisyUI |
-| **JavaScript** | None (pure server-rendered) | Alpine.js | DaisyUI JS |
-| **Requires Node.js** | No | No | Yes |
-| **Go module** | Yes | Yes | Yes |
-| **Components** | 53 | 40+ | — |
-| **Dark mode** | Built-in (Tailwind `dark:`) | CSS custom properties | Via DaisyUI |
-| **CSP compliant** | Yes (nonce support) | Yes | — |
-| **Typed props** | 16+ string enums | — | — |
-| **HTMX integration** | Built-in package | — | — |
+| Feature              | templ-components            | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
+| -------------------- | --------------------------- | ----------------------------- | ---------------------------------------------- |
+| **CSS approach**     | Raw Tailwind only           | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
+| **JavaScript**       | None (pure server-rendered) | Alpine.js                     | DaisyUI JS                                     |
+| **Requires Node.js** | No                          | No                            | Yes                                            |
+| **Go module**        | Yes                         | Yes                           | Yes                                            |
+| **Components**       | 53                          | 40+                           | —                                              |
+| **Dark mode**        | Built-in (Tailwind `dark:`) | CSS custom properties         | Via DaisyUI                                    |
+| **CSP compliant**    | Yes (nonce support)         | Yes                           | —                                              |
+| **Typed props**      | 16+ string enums            | —                             | —                                              |
+| **HTMX integration** | Built-in package            | —                             | —                                              |
 
 **templ-components is for developers who want server-rendered HTML with zero client-side JavaScript — no Alpine.js, no DaisyUI, no build pipeline beyond `templ generate`.**
 
@@ -267,13 +267,13 @@ Tailwind extracts class names from any file content — including `.templ` files
 
 ## By the Numbers
 
-| Metric | Value |
-|---|---|
-| Components | 53 |
-| SVG icons | 42 |
-| Typed enums | 16+ |
-| Packages | 8 |
-| Tests | 554 |
+| Metric       | Value                             |
+| ------------ | --------------------------------- |
+| Components   | 53                                |
+| SVG icons    | 42                                |
+| Typed enums  | 16+                               |
+| Packages     | 8                                 |
+| Tests        | 554                               |
 | Dependencies | 2 (`templ` + `tailwind-merge-go`) |
 
 ---

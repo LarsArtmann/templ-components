@@ -19,60 +19,60 @@ templ-components is a pre-release Go UI component library (53 components, 42 SVG
 
 ### Core Library (Production Quality)
 
-| Area | Status | Details |
-|---|---|---|
-| Component library | ✅ | 53 components across 8 packages |
-| SVG icons | ✅ | 42 named icons with typed constants |
-| Typed enums | ✅ | 16+ string enums, impossible states unrepresentable |
-| Props system | ✅ | All components embed `utils.BaseProps` (exception: `PageProps`) |
-| Tailwind class merging | ✅ | `utils.Class()` via tailwind-merge-go |
-| Dark mode | ✅ | All components support `dark:` variant |
-| CSP compliance | ✅ | All inline scripts use nonces |
-| Accessibility | ✅ | ARIA attributes, roles, keyboard nav on Modal/Dropdown/Tabs/Tooltip |
-| Map-based style lookups | ✅ | No switches — data-driven, extensible |
-| `DefaultXxxProps()` constructors | ✅ | 20 constructors across all packages |
-| Shared feedback style system | ✅ | `feedbackStyleSet` + `lookupFeedbackStyle[T]()` |
-| Icon rendering | ✅ | `iconPathData` map with `|` separator for multi-path icons |
-| `internal/svg` package | ✅ | Shared SVG primitives (fillIcon, spinnerSVG) |
-| Import graph | ✅ | Clean, no circular dependencies |
+| Area                             | Status | Details                                                             |
+| -------------------------------- | ------ | ------------------------------------------------------------------- | -------------------------------- |
+| Component library                | ✅     | 53 components across 8 packages                                     |
+| SVG icons                        | ✅     | 42 named icons with typed constants                                 |
+| Typed enums                      | ✅     | 16+ string enums, impossible states unrepresentable                 |
+| Props system                     | ✅     | All components embed `utils.BaseProps` (exception: `PageProps`)     |
+| Tailwind class merging           | ✅     | `utils.Class()` via tailwind-merge-go                               |
+| Dark mode                        | ✅     | All components support `dark:` variant                              |
+| CSP compliance                   | ✅     | All inline scripts use nonces                                       |
+| Accessibility                    | ✅     | ARIA attributes, roles, keyboard nav on Modal/Dropdown/Tabs/Tooltip |
+| Map-based style lookups          | ✅     | No switches — data-driven, extensible                               |
+| `DefaultXxxProps()` constructors | ✅     | 20 constructors across all packages                                 |
+| Shared feedback style system     | ✅     | `feedbackStyleSet` + `lookupFeedbackStyle[T]()`                     |
+| Icon rendering                   | ✅     | `iconPathData` map with `                                           | ` separator for multi-path icons |
+| `internal/svg` package           | ✅     | Shared SVG primitives (fillIcon, spinnerSVG)                        |
+| Import graph                     | ✅     | Clean, no circular dependencies                                     |
 
 ### Build & CI
 
-| Area | Status | Details |
-|---|---|---|
-| Build | ✅ | `go build ./...` — zero errors |
-| Tests | ✅ | 146 passing, 9 packages, 68% coverage |
-| Lint | ✅ | 0 issues on library packages (golangci-lint) |
-| GitHub Actions CI | ✅ | Go 1.26, lint + build + test + coverage upload |
+| Area              | Status | Details                                        |
+| ----------------- | ------ | ---------------------------------------------- |
+| Build             | ✅     | `go build ./...` — zero errors                 |
+| Tests             | ✅     | 146 passing, 9 packages, 68% coverage          |
+| Lint              | ✅     | 0 issues on library packages (golangci-lint)   |
+| GitHub Actions CI | ✅     | Go 1.26, lint + build + test + coverage upload |
 
 ### Testing
 
-| Area | Status | Details |
-|---|---|---|
-| BDD tests | ✅ | display, feedback, forms packages |
-| Snapshot tests | ✅ | All packages |
-| A11y attribute tests | ✅ | display, navigation, layout, htmx |
-| Dark mode verification | ✅ | All packages |
-| Benchmark tests | ✅ | `utils.Class()`, Badge rendering |
-| XSS safety tests | ✅ | Dropdown auto-escaping |
-| Security headers tests | ✅ | `layout.Base` |
-| Icon rendering tests | ✅ | All 42 icons verified |
-| Default constructor tests | ✅ | Card, Badge, Modal, ProgressBar |
+| Area                      | Status | Details                           |
+| ------------------------- | ------ | --------------------------------- |
+| BDD tests                 | ✅     | display, feedback, forms packages |
+| Snapshot tests            | ✅     | All packages                      |
+| A11y attribute tests      | ✅     | display, navigation, layout, htmx |
+| Dark mode verification    | ✅     | All packages                      |
+| Benchmark tests           | ✅     | `utils.Class()`, Badge rendering  |
+| XSS safety tests          | ✅     | Dropdown auto-escaping            |
+| Security headers tests    | ✅     | `layout.Base`                     |
+| Icon rendering tests      | ✅     | All 42 icons verified             |
+| Default constructor tests | ✅     | Card, Badge, Modal, ProgressBar   |
 
 ### Documentation & Public Release (This Session)
 
-| Area | Status | Details |
-|---|---|---|
-| README.md | ✅ | Rewritten with value prop, competitive comparison, badges, verified examples |
-| CONTRIBUTING.md | ✅ | Setup, conventions, workflow, commit format |
-| FEATURES.md | ✅ | Complete feature inventory with status per component |
-| TODO_LIST.md | ✅ | 76 items (32 done, 44 open) |
-| CONTEXT.md | ✅ | Architecture context, patterns, naming conventions |
-| CHANGELOG.md | ✅ | Full changelog with breaking changes documented |
-| Migration guide | ✅ | `docs/migration/v0.1-to-v0.2.md` |
-| GitHub metadata | ✅ | Description + 12 topics set |
-| Tailwind v4 docs | ✅ | CSS-first setup with `@source` vendor path |
-| Competitive analysis | ✅ | templUI, goshipit compared honestly |
+| Area                 | Status | Details                                                                      |
+| -------------------- | ------ | ---------------------------------------------------------------------------- |
+| README.md            | ✅     | Rewritten with value prop, competitive comparison, badges, verified examples |
+| CONTRIBUTING.md      | ✅     | Setup, conventions, workflow, commit format                                  |
+| FEATURES.md          | ✅     | Complete feature inventory with status per component                         |
+| TODO_LIST.md         | ✅     | 76 items (32 done, 44 open)                                                  |
+| CONTEXT.md           | ✅     | Architecture context, patterns, naming conventions                           |
+| CHANGELOG.md         | ✅     | Full changelog with breaking changes documented                              |
+| Migration guide      | ✅     | `docs/migration/v0.1-to-v0.2.md`                                             |
+| GitHub metadata      | ✅     | Description + 12 topics set                                                  |
+| Tailwind v4 docs     | ✅     | CSS-first setup with `@source` vendor path                                   |
+| Competitive analysis | ✅     | templUI, goshipit compared honestly                                          |
 
 ---
 
@@ -80,42 +80,42 @@ templ-components is a pre-release Go UI component library (53 components, 42 SVG
 
 ### Accessibility (Good Foundation, Gaps Remain)
 
-| Item | Status | Gap |
-|---|---|---|
-| Modal focus trap + Escape | ✅ | Done |
-| Dropdown keyboard nav | ✅ | Done |
-| Tabs ARIA linkage | ✅ | Done |
-| Tooltip aria-describedby | ✅ | Done |
-| Avatar `<img>` alt text | ❌ | Missing `Alt` field |
-| `aria-required` on form inputs | ❌ | WCAG requirement |
-| `<html lang>` in Base layout | ❌ | WCAG 3.1.1 |
-| Table header `scope` attributes | ❌ | Screen reader column association |
-| `aria-live` on HTMX loading | ❌ | Dynamic content announcements |
-| `ErrorAttrs` for simultaneous error + help | ❌ | `aria-describedby` links only one |
+| Item                                       | Status | Gap                               |
+| ------------------------------------------ | ------ | --------------------------------- |
+| Modal focus trap + Escape                  | ✅     | Done                              |
+| Dropdown keyboard nav                      | ✅     | Done                              |
+| Tabs ARIA linkage                          | ✅     | Done                              |
+| Tooltip aria-describedby                   | ✅     | Done                              |
+| Avatar `<img>` alt text                    | ❌     | Missing `Alt` field               |
+| `aria-required` on form inputs             | ❌     | WCAG requirement                  |
+| `<html lang>` in Base layout               | ❌     | WCAG 3.1.1                        |
+| Table header `scope` attributes            | ❌     | Screen reader column association  |
+| `aria-live` on HTMX loading                | ❌     | Dynamic content announcements     |
+| `ErrorAttrs` for simultaneous error + help | ❌     | `aria-describedby` links only one |
 
 ### Per-Package Test Coverage (68% Average)
 
-| Package | Coverage | Assessment |
-|---|---|---|
-| `internal/svg` | 79.0% | Good |
-| `htmx` | 77.3% | Good |
-| `icons` | 74.0% | Good |
-| `layout` | 73.0% | Good |
-| `navigation` | 72.0% | Good |
-| `feedback` | 71.7% | Good |
-| `display` | 66.2% | Acceptable |
-| `forms` | 61.5% | Below target |
-| `utils` | 56.4% | Below target |
+| Package        | Coverage | Assessment   |
+| -------------- | -------- | ------------ |
+| `internal/svg` | 79.0%    | Good         |
+| `htmx`         | 77.3%    | Good         |
+| `icons`        | 74.0%    | Good         |
+| `layout`       | 73.0%    | Good         |
+| `navigation`   | 72.0%    | Good         |
+| `feedback`     | 71.7%    | Good         |
+| `display`      | 66.2%    | Acceptable   |
+| `forms`        | 61.5%    | Below target |
+| `utils`        | 56.4%    | Below target |
 
 ### Demo / Example App (Broken)
 
-| Item | Status |
-|---|---|
-| `examples/demo/main.go` exists | ✅ |
-| Uses Tailwind v2 CDN (should be v4) | ❌ |
-| Doesn't use `layout.Base` (raw HTML string) | ❌ |
-| Doesn't showcase most components | ❌ |
-| Pre-commit hook requires `buildflow` (not installed) | ❌ |
+| Item                                                 | Status |
+| ---------------------------------------------------- | ------ |
+| `examples/demo/main.go` exists                       | ✅     |
+| Uses Tailwind v2 CDN (should be v4)                  | ❌     |
+| Doesn't use `layout.Base` (raw HTML string)          | ❌     |
+| Doesn't showcase most components                     | ❌     |
+| Pre-commit hook requires `buildflow` (not installed) | ❌     |
 
 ---
 
@@ -180,16 +180,20 @@ templ-components is a pre-release Go UI component library (53 components, 42 SVG
 ## d) TOTALLY FUCKED UP 💣
 
 ### Pre-Commit Hook
+
 The `.git/hooks/pre-commit` requires `buildflow` which is not installed anywhere. Every commit requires `--no-verify`. This silently bypasses ALL safety checks. The `scripts/pre-commit.sh` exists but is not installed as the git hook.
 
 ### Demo App
+
 `examples/demo/main.go` is a lie:
+
 - Uses **Tailwind v2 CDN** (library recommends v4)
 - Doesn't use `layout.Base` — writes raw HTML strings with `w.Write([]byte(...))`
 - Only showcases 4 components (Nav, Alert, StatCard, Icons) out of 53
 - The whole approach (raw string HTML in Go) contradicts the library's own philosophy
 
 ### Buildflow Dependency
+
 The project appears to depend on a tool called `buildflow` for pre-commit checks, but it's not documented in requirements, not in `go.mod`, and not installed. If it was ever set up, it's been forgotten.
 
 ---
@@ -238,33 +242,33 @@ The project appears to depend on a tool called `buildflow` for pre-commit checks
 
 Sorted by **impact × effort** (highest first):
 
-| # | Task | Impact | Effort | Category |
-|---|---|---|---|---|
-| 1 | **Tag v0.1.0-alpha and go public** | Unblocks everything | 10 min | Release |
-| 2 | **Fix pre-commit hook** (replace buildflow) | Trust/safety | 15 min | DevOps |
-| 3 | **Submit to awesome-templ** | Discovery | 15 min | Growth |
-| 4 | **Cross-link cqrs-htmx + go-cqrs-lite in README** | Ecosystem story | 15 min | Docs |
-| 5 | **Fix `NavLinkProps.Attrs` shadowing** | P0 bug fix | 20 min | Bug |
-| 6 | **Open PR on templ docs to get listed** | Discovery | 30 min | Growth |
-| 7 | **Add `<html lang>` to `layout.Base`** | WCAG 3.1.1 | 30 min | A11y |
-| 8 | **Fix Dropdown JS XSS** (`strconv.Quote`) | Security | 30 min | Bug |
-| 9 | **Fix or delete demo app** | Trust | 1 hr | DX |
-| 10 | **Validate required ID in Modal/Dropdown** | Prevents broken ARIA | 30 min | Bug |
-| 11 | **Add `aria-required` to form inputs** | WCAG | 30 min | A11y |
-| 12 | **Add `Alt` field to `AvatarProps`** | WCAG 1.1.1 | 30 min | A11y |
-| 13 | **BDD tests for navigation package** | Coverage + confidence | 2 hr | Testing |
-| 14 | **BDD tests for layout package** | Coverage + confidence | 2 hr | Testing |
-| 15 | **BDD tests for htmx package** | Coverage + confidence | 2 hr | Testing |
-| 16 | **Replace `Tab.Active` with `ActiveTabID`** | Impossible state fix | 1 hr | Architecture |
-| 17 | **Unify JS attachment pattern** (Accordion/Dropdown/Modal) | Consistency | 3 hr | Architecture |
-| 18 | **Build component showcase server** (`./cmd/demo`) | Adoption multiplier | 1 day | Growth |
-| 19 | **Add `ExampleXxx()` functions** | pkg.go.dev discoverability | 3 hr | DX |
-| 20 | **Consolidate badge color maps** | Eliminate drift risk | 1 hr | Architecture |
-| 21 | **Fix Accordion `max-h-96` state coupling** | Fragile coupling | 1 hr | Bug |
-| 22 | **Decouple `htmx/loading` from `feedback.Spinner`** | Loose coupling | 1 hr | Architecture |
-| 23 | **Extract shared dismiss JS** (Alert + Toast) | DRY | 1 hr | Architecture |
-| 24 | **Real-world example app** (full GOTH stack) | Converts evaluators | 3 days | Growth |
-| 25 | **Release automation** (goreleaser) | Professional releases | 2 hr | DevOps |
+| #   | Task                                                       | Impact                     | Effort | Category     |
+| --- | ---------------------------------------------------------- | -------------------------- | ------ | ------------ |
+| 1   | **Tag v0.1.0-alpha and go public**                         | Unblocks everything        | 10 min | Release      |
+| 2   | **Fix pre-commit hook** (replace buildflow)                | Trust/safety               | 15 min | DevOps       |
+| 3   | **Submit to awesome-templ**                                | Discovery                  | 15 min | Growth       |
+| 4   | **Cross-link cqrs-htmx + go-cqrs-lite in README**          | Ecosystem story            | 15 min | Docs         |
+| 5   | **Fix `NavLinkProps.Attrs` shadowing**                     | P0 bug fix                 | 20 min | Bug          |
+| 6   | **Open PR on templ docs to get listed**                    | Discovery                  | 30 min | Growth       |
+| 7   | **Add `<html lang>` to `layout.Base`**                     | WCAG 3.1.1                 | 30 min | A11y         |
+| 8   | **Fix Dropdown JS XSS** (`strconv.Quote`)                  | Security                   | 30 min | Bug          |
+| 9   | **Fix or delete demo app**                                 | Trust                      | 1 hr   | DX           |
+| 10  | **Validate required ID in Modal/Dropdown**                 | Prevents broken ARIA       | 30 min | Bug          |
+| 11  | **Add `aria-required` to form inputs**                     | WCAG                       | 30 min | A11y         |
+| 12  | **Add `Alt` field to `AvatarProps`**                       | WCAG 1.1.1                 | 30 min | A11y         |
+| 13  | **BDD tests for navigation package**                       | Coverage + confidence      | 2 hr   | Testing      |
+| 14  | **BDD tests for layout package**                           | Coverage + confidence      | 2 hr   | Testing      |
+| 15  | **BDD tests for htmx package**                             | Coverage + confidence      | 2 hr   | Testing      |
+| 16  | **Replace `Tab.Active` with `ActiveTabID`**                | Impossible state fix       | 1 hr   | Architecture |
+| 17  | **Unify JS attachment pattern** (Accordion/Dropdown/Modal) | Consistency                | 3 hr   | Architecture |
+| 18  | **Build component showcase server** (`./cmd/demo`)         | Adoption multiplier        | 1 day  | Growth       |
+| 19  | **Add `ExampleXxx()` functions**                           | pkg.go.dev discoverability | 3 hr   | DX           |
+| 20  | **Consolidate badge color maps**                           | Eliminate drift risk       | 1 hr   | Architecture |
+| 21  | **Fix Accordion `max-h-96` state coupling**                | Fragile coupling           | 1 hr   | Bug          |
+| 22  | **Decouple `htmx/loading` from `feedback.Spinner`**        | Loose coupling             | 1 hr   | Architecture |
+| 23  | **Extract shared dismiss JS** (Alert + Toast)              | DRY                        | 1 hr   | Architecture |
+| 24  | **Real-world example app** (full GOTH stack)               | Converts evaluators        | 3 days | Growth       |
+| 25  | **Release automation** (goreleaser)                        | Professional releases      | 2 hr   | DevOps       |
 
 ---
 
@@ -284,28 +288,28 @@ This affects whether we can honestly claim "Tailwind CSS 4.x+" in requirements, 
 
 ## Metrics Dashboard
 
-| Metric | Value | Trend |
-|---|---|---|
-| Components | 53 | Stable |
-| SVG icons | 42 | Stable |
-| Typed enums | 16+ | Stable |
-| `.templ` source files | 31 | Stable |
-| Source lines (templ) | 2,999 | Stable |
-| Source lines (Go) | 4,685 | Stable |
-| Test lines | 4,040 | Stable |
-| Test-to-code ratio | 53% | Good |
-| Tests passing | 146 | Stable |
-| Packages | 9 (8 lib + 1 demo) | Stable |
-| Test coverage | 68.0% | Stable |
-| Lint issues | 0 | Clean |
-| Runtime dependencies | 2 | Minimal |
-| Open TODOs | 44 | ↓ from 76 |
-| Closed TODOs | 32 | ↑ from 0 |
-| GitHub description | ✅ Set | New this session |
-| GitHub topics | 12 | New this session |
-| CONTRIBUTING.md | ✅ Created | New this session |
-| Pre-commit hook | 💣 Broken | Unchanged |
-| Demo app | 💣 Broken | Unchanged |
+| Metric                | Value              | Trend            |
+| --------------------- | ------------------ | ---------------- |
+| Components            | 53                 | Stable           |
+| SVG icons             | 42                 | Stable           |
+| Typed enums           | 16+                | Stable           |
+| `.templ` source files | 31                 | Stable           |
+| Source lines (templ)  | 2,999              | Stable           |
+| Source lines (Go)     | 4,685              | Stable           |
+| Test lines            | 4,040              | Stable           |
+| Test-to-code ratio    | 53%                | Good             |
+| Tests passing         | 146                | Stable           |
+| Packages              | 9 (8 lib + 1 demo) | Stable           |
+| Test coverage         | 68.0%              | Stable           |
+| Lint issues           | 0                  | Clean            |
+| Runtime dependencies  | 2                  | Minimal          |
+| Open TODOs            | 44                 | ↓ from 76        |
+| Closed TODOs          | 32                 | ↑ from 0         |
+| GitHub description    | ✅ Set             | New this session |
+| GitHub topics         | 12                 | New this session |
+| CONTRIBUTING.md       | ✅ Created         | New this session |
+| Pre-commit hook       | 💣 Broken          | Unchanged        |
+| Demo app              | 💣 Broken          | Unchanged        |
 
 ---
 
