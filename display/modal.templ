@@ -17,7 +17,7 @@ templ Modal(props ModalProps) {
 		aria-modal="true"
 		aria-labelledby={ props.ID + "-title" }
 	>
-		<div class="fixed inset-0 bg-black/50 backdrop-blur-sm" onclick={ modalCloseHandler(props.ID) }></div>
+		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" onclick={ modalCloseHandler(props.ID) }></div>
 		<div
 			class={ "relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200",
 			modalSizeClass(props.Size),
@@ -31,7 +31,7 @@ templ Modal(props ModalProps) {
 					<h2 id={ props.ID + "-title" } class="text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h2>
 					<button
 						type="button"
-						class="rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500"
+						class="rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
 						onclick={ modalCloseHandler(props.ID) }
 						aria-label="Close"
 					>
