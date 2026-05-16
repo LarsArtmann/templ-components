@@ -94,10 +94,10 @@ func renderSection(ctx context.Context, w io.Writer, title string, content templ
 		"<h2 class=\"text-xl font-semibold mt-8 mb-4\">%s</h2>",
 		title,
 	); err != nil {
-		return fmt.Errorf("write section header: %w", err)
+		return fmt.Errorf("write section header %q: %w", title, err)
 	}
 	if err := content.Render(ctx, w); err != nil {
-		return fmt.Errorf("render section %q: %w", title, err)
+		return fmt.Errorf("render section %q content: %w", title, err)
 	}
 	return nil
 }
