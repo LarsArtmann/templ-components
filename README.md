@@ -18,12 +18,12 @@ templ-components is a pure Tailwind CSS component library for Go's templ engine,
 
 ## Why templ-components?
 
-| | templ-components | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
+| Feature | templ-components | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
 |---|---|---|---|
 | **CSS approach** | Raw Tailwind only | Tailwind + CSS vars | Tailwind + DaisyUI |
 | **JavaScript** | None (pure server-rendered) | Alpine.js | DaisyUI JS |
 | **Requires Node.js** | No | No | Yes |
-| **Go module** | Yes (`go get`) | Yes (`go get`) | Yes (CLI copier) |
+| **Go module** | Yes | Yes | Yes |
 | **Components** | 53 | 40+ | — |
 | **Dark mode** | Built-in (Tailwind `dark:`) | CSS custom properties | Via DaisyUI |
 | **CSP compliant** | Yes (nonce support) | Yes | — |
@@ -229,7 +229,7 @@ Loading indicators, error handling, CSRF protection, and out-of-band swaps.
 
 **Server-rendered.** Zero client-side JavaScript by default. Interactive features (accordion, dropdown, modal, theme toggle) use minimal vanilla JS with nonce-based CSP.
 
-**Tree-shakeable.** Import only the packages you need. No monolithic bundle.
+**Pay for what you use.** Import only the packages you need. No monolithic bundle.
 
 ```go
 import (
@@ -289,12 +289,7 @@ Tailwind extracts class names from any file content — including `.templ` files
 
 ## Contributing
 
-Contributions are welcome. This project is in early development — APIs may change.
-
-1. Fork the repository
-2. Create a feature branch
-3. Run `templ generate && go test ./...`
-4. Open a pull request
+Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, conventions, and workflow.
 
 ---
 
