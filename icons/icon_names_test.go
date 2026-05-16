@@ -3,13 +3,51 @@ package icons
 import "testing"
 
 var allIconNames = []Name{
-	Home, Users, Folder, Document, Search, Settings, Chart, Inbox,
-	Check, X, Plus, Minus,
-	ChevronRight, ChevronLeft, ChevronDown, ChevronUp,
-	ArrowRight, ArrowLeft,
-	Refresh, ExternalLink, Download, Upload, Trash, Edit, Eye, EyeOff,
-	Lock, Unlock, Menu, Bell, Calendar, Clock, Location, Phone, Mail, Globe,
-	Sun, Moon, Spinner, Exclamation, ExclamationTriangle, Information, Question,
+	Home,
+	Users,
+	Folder,
+	Document,
+	Search,
+	Settings,
+	Chart,
+	Inbox,
+	Check,
+	X,
+	Plus,
+	Minus,
+	ChevronRight,
+	ChevronLeft,
+	ChevronDown,
+	ChevronUp,
+	ArrowRight,
+	ArrowLeft,
+	Refresh,
+	ExternalLink,
+	Download,
+	Upload,
+	Trash,
+	Edit,
+	Eye,
+	EyeOff,
+	Lock,
+	Unlock,
+	Menu,
+	Bell,
+	Calendar,
+	Clock,
+	Location,
+	Phone,
+	Mail,
+	Globe,
+	Sun,
+	Moon,
+	Spinner,
+	Exclamation,
+	ExclamationTriangle,
+	CheckCircle,
+	ExclamationCircle,
+	Information,
+	Question,
 }
 
 func TestIconNames(t *testing.T) {
@@ -60,6 +98,8 @@ func TestIconNames(t *testing.T) {
 		{name: "Spinner", value: Spinner},
 		{name: "Exclamation", value: Exclamation},
 		{name: "ExclamationTriangle", value: ExclamationTriangle},
+		{name: "CheckCircle", value: CheckCircle},
+		{name: "ExclamationCircle", value: ExclamationCircle},
 		{name: "Information", value: Information},
 		{name: "Question", value: Question},
 	}
@@ -76,7 +116,7 @@ func TestIconNames(t *testing.T) {
 
 func TestIconCount(t *testing.T) {
 	t.Parallel()
-	if len(allIconNames) != 43 {
-		t.Errorf("expected 42 icons, got %d", len(allIconNames))
+	if len(allIconNames) != 45 {
+		t.Errorf("expected 45 icons, got %d", len(allIconNames))
 	}
 }

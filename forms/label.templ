@@ -28,9 +28,7 @@ templ helpText(id, text string) {
 //
 //	@forms.FieldError("email", "This field is required")
 templ FieldError(fieldID, message string) {
-	if fieldID != "" {
-		<p class="mt-2 text-sm text-red-600 dark:text-red-400" id={ fieldID + "-error" }>{ message }</p>
-	} else {
-		<p class="mt-2 text-sm text-red-600 dark:text-red-400">{ message }</p>
-	}
+	<p class="mt-2 text-sm text-red-600 dark:text-red-400" if fieldID != "" {
+	id={ fieldID + "-error" }
+}>{ message }</p>
 }

@@ -47,6 +47,8 @@ const (
 	Spinner             Name = "spinner"
 	Exclamation         Name = "exclamation"
 	ExclamationTriangle Name = "exclamation-triangle"
+	CheckCircle         Name = "check-circle"
+	ExclamationCircle   Name = "exclamation-circle"
 	Information         Name = "information"
 	Question            Name = "question"
 )

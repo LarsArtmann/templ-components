@@ -37,28 +37,20 @@ templ activeSpanOrLink(isActive bool, href string, text string, activeClass stri
 //	@navigation.NavLink(navigation.NavLinkProps{Href: "/", Text: "Home"}, "/")
 templ NavLink(props NavLinkProps, currentPath string) {
 	{{ isActive := props.Href == currentPath }}
-	if props.External {
-		<a
-			href={ templ.SafeURL(props.Href) }
+	<a
+		href={ templ.SafeURL(props.Href) }
+		class={ navLinkClasses(isActive) }
+		if isActive {
+			aria-current="page"
+		}
+		if props.External {
 			target="_blank"
 			rel="noopener noreferrer"
-			class={ navLinkClasses(isActive) }
-			{ props.Attrs... }
-		>
-			{ props.Text }
-		</a>
-	} else {
-		<a
-			href={ templ.SafeURL(props.Href) }
-			class={ navLinkClasses(isActive) }
-			if isActive {
-				aria-current="page"
-			}
-			{ props.Attrs... }
-		>
-			{ props.Text }
-		</a>
-	}
+		}
+		{ props.Attrs... }
+	>
+		{ props.Text }
+	</a>
 }
 
 // MobileNavLink renders a mobile-friendly navigation link
