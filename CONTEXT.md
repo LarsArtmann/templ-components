@@ -12,7 +12,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 | ------------- | ------------------------------------ |
 | Language      | Go 1.26                              |
 | Templates     | templ v0.3.1001                      |
-| Styling       | Tailwind CSS (via class strings)     |
+| Styling       | Tailwind CSS v4 (via class strings)  |
 | Class merging | tailwind-merge-go v0.2.1             |
 | Interactivity | HTMX 2.0.6 + vanilla JS              |
 | Build         | `templ generate` + `go build`        |
@@ -110,7 +110,7 @@ templ inlineMessage(message, colorClass, ...) { ... }        // feedback/
 ## Dependencies
 
 - `github.com/a-h/templ` — template engine
-- `github.com/Oudwins/tailwind-merge-go` — Tailwind class conflict resolution
+- `github.com/Oudwins/tailwind-merge-go` — Tailwind class conflict resolution (v4 classes supported via `IsTshirtSize` validator; unknown classes pass through)
 
 No other runtime dependencies.
 

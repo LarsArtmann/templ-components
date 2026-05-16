@@ -22,7 +22,7 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 
 - **Module:** `github.com/larsartmann/templ-components`
 - **Go:** 1.26, **templ:** v0.3.1001
-- **No framework deps** — pure Go + templ + Tailwind class strings
+- **No framework deps** — pure Go + templ + Tailwind v4 class strings
 - **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display`
 - **No circular imports** allowed
 

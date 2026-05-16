@@ -2,7 +2,7 @@
 
 **Updated:** 2026-05-07 | **Version:** 0.x (pre-release)
 
-A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](https://tailwindcss.com) for building server-rendered web applications.
+A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 
 ---
 

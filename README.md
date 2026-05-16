@@ -10,7 +10,7 @@ Reusable UI components for Go web apps — built on [templ](https://templ.guide)
 
 **No DaisyUI. No Node.js. No framework lock-in.**
 
-templ-components is a pure Tailwind CSS component library for Go's templ engine, with first-class HTMX integration. Every component renders server-side, ships zero JavaScript by default, and uses only Tailwind utility classes — so you stay in full control of your CSS and build pipeline.
+templ-components is a pure Tailwind CSS v4 component library for Go's templ engine, with first-class HTMX integration. Every component renders server-side, ships zero JavaScript by default, and uses only Tailwind utility classes — so you stay in full control of your CSS and build pipeline.
 
 > **Status:** Pre-release (v0.x). APIs may change before v1.0. Feedback and contributions welcome.
 
