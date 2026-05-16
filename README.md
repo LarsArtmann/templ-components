@@ -18,16 +18,19 @@ templ-components is a pure Tailwind CSS component library for Go's templ engine,
 
 ## Why templ-components?
 
-| | templ-components | goshipit (haatos) | templ_components (tego101) |
+| | templ-components | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
 |---|---|---|---|
-| **CSS approach** | Raw Tailwind only | Tailwind + DaisyUI | Tailwind + DaisyUI |
-| **Requires Node.js** | No | Yes | Yes |
-| **Go module** | Yes | Yes | No |
-| **Dark mode** | Built-in | Via DaisyUI | Via DaisyUI |
-| **CSP compliant** | Yes (nonce support) | — | — |
+| **CSS approach** | Raw Tailwind only | Tailwind + CSS vars | Tailwind + DaisyUI |
+| **JavaScript** | None (pure server-rendered) | Alpine.js | DaisyUI JS |
+| **Requires Node.js** | No | No | Yes |
+| **Go module** | Yes (`go get`) | Yes (`go get`) | Yes (CLI copier) |
+| **Components** | 53 | 40+ | — |
+| **Dark mode** | Built-in (Tailwind `dark:`) | CSS custom properties | Via DaisyUI |
+| **CSP compliant** | Yes (nonce support) | Yes | — |
 | **Typed props** | 16+ string enums | — | — |
+| **HTMX integration** | Built-in package | — | — |
 
-If you want **Tailwind without DaisyUI**, this is the only option in the Go/templ ecosystem.
+**templ-components is for developers who want server-rendered HTML with zero client-side JavaScript — no Alpine.js, no DaisyUI, no build pipeline beyond `templ generate`.**
 
 ---
 
@@ -70,6 +73,16 @@ templ generate && go run .
 ---
 
 ## Component Catalog
+
+### `utils` — Shared Types & Helpers
+
+All component props embed `utils.BaseProps` for consistent `ID`, `Class`, `Attrs`, `AriaLabel`, and `Nonce` propagation. Key helpers:
+
+```go
+utils.Class("bg-white dark:bg-gray-800", props.Class)  // Tailwind class merging
+utils.MergeAttrs(attrs1, attrs2)                         // Merge templ attribute maps
+utils.Ternary(condition, "yes", "no")                    // Generic ternary
+```
 
 ### `layout` — Page Structure
 
@@ -142,7 +155,7 @@ Alerts, toasts, spinners, progress bars, skeletons, and loading states.
 })
 
 @feedback.Spinner(feedback.SpinnerMD, "text-blue-600")
-@feedback.Skeleton("card")
+@feedback.Skeleton(feedback.SkeletonCard)
 @feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100})
 @feedback.StepIndicator(feedback.StepIndicatorProps{
     Steps: []string{"Details", "Review", "Confirm"}, CurrentStep: 1,
@@ -229,18 +242,26 @@ import (
 
 ## Tailwind CSS Setup
 
-Configure Tailwind to scan this library's templates:
+Tailwind v4 uses CSS-first configuration. Since this is a Go module (not an npm package), you need to vendor the dependency so Tailwind can scan the `.templ` source files for class names:
 
-```js
-// tailwind.config.js
-module.exports = {
-  darkMode: "class",
-  content: [
-    "./**/*.templ",
-    "./node_modules/github.com/larsartmann/templ-components/**/*.templ",
-  ],
-};
+```bash
+go mod vendor
 ```
+
+Then in your CSS:
+
+```css
+/* app.css */
+@import "tailwindcss";
+
+/* Scan templ-components for class names */
+@source "../vendor/github.com/larsartmann/templ-components";
+
+/* Enable class-based dark mode toggle */
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+Tailwind extracts class names from any file content — including `.templ` files — so no additional configuration is needed beyond the `@source` path.
 
 ---
 
@@ -261,7 +282,7 @@ module.exports = {
 
 - **Go** 1.26+
 - **templ** CLI ([install](https://templ.guide/quick-start/installation))
-- **Tailwind CSS** 3.x+
+- **Tailwind CSS** 4.x+
 - **HTMX** 2.x (optional, for `htmx` package)
 
 ---
