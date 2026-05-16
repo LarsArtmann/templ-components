@@ -16,12 +16,12 @@ Ran `art-dupl -t 7 . --semantic --sort total-tokens --only templ` which found **
 
 ### 1. Clone Group Elimination (6 → 2)
 
-| # | Clone Group | Files | Fix Applied |
-|---|-------------|-------|-------------|
-| 1 | 3× inline stroke SVGs (24×24) | `display/modal.templ`, `layout/theme.templ` (×2) | Replaced with `icons.Icon(icons.X)`, `icons.Icon(icons.Moon)`, `icons.Icon(icons.Sun)` |
-| 2 | `menuIconSVG` + SpinnerSVG | `navigation/mobile_menu.templ`, `internal/svg/svg.templ` | Removed `menuIconSVG` helper entirely; replaced with `icons.Icon(icons.Menu)` and `icons.Icon(icons.X)` |
-| 3 | Active/inactive link pattern | `navigation/breadcrumbs.templ`, `navigation/pagination.templ` | Extracted `activeSpanOrLink` helper to `nav_link.templ` |
-| 4 | Inline feedback SVGs (4-way) | `feedback/alert.templ` (×2), `feedback/progress.templ`, `feedback/toast.templ` | Replaced `inlineErrorIcon()` with `icons.Icon(icons.ExclamationTriangle)`, `inlineSuccessIcon()` with `icons.Icon(icons.Check)`, toast dismiss X with `icons.Icon(icons.X)` |
+| #   | Clone Group                   | Files                                                                          | Fix Applied                                                                                                                                                                 |
+| --- | ----------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | 3× inline stroke SVGs (24×24) | `display/modal.templ`, `layout/theme.templ` (×2)                               | Replaced with `icons.Icon(icons.X)`, `icons.Icon(icons.Moon)`, `icons.Icon(icons.Sun)`                                                                                      |
+| 2   | `menuIconSVG` + SpinnerSVG    | `navigation/mobile_menu.templ`, `internal/svg/svg.templ`                       | Removed `menuIconSVG` helper entirely; replaced with `icons.Icon(icons.Menu)` and `icons.Icon(icons.X)`                                                                     |
+| 3   | Active/inactive link pattern  | `navigation/breadcrumbs.templ`, `navigation/pagination.templ`                  | Extracted `activeSpanOrLink` helper to `nav_link.templ`                                                                                                                     |
+| 4   | Inline feedback SVGs (4-way)  | `feedback/alert.templ` (×2), `feedback/progress.templ`, `feedback/toast.templ` | Replaced `inlineErrorIcon()` with `icons.Icon(icons.ExclamationTriangle)`, `inlineSuccessIcon()` with `icons.Icon(icons.Check)`, toast dismiss X with `icons.Icon(icons.X)` |
 
 ### 2. New Icon Added
 
@@ -37,16 +37,16 @@ Ran `art-dupl -t 7 . --semantic --sort total-tokens --only templ` which found **
 
 ### 4. Files Changed (8 files, +119/-122 lines)
 
-| File | Change |
-|------|--------|
-| `feedback/alert.templ` | Removed `inlineErrorIcon()` + `inlineSuccessIcon()`, replaced with `icons.Icon()` calls |
-| `feedback/toast.templ` | Replaced inline X SVG with `icons.Icon(icons.X)` |
-| `icons/icon_names.go` | Added `ExclamationTriangle` constant, reformatted by gci |
-| `icons/icon_paths.go` | Added triangle path data, reformatted by gci |
-| `icons/icon_names_test.go` | Updated count 42→43, added ExclamationTriangle test case |
-| `navigation/breadcrumbs.templ` | Uses `activeSpanOrLink` |
-| `navigation/nav_link.templ` | Added `activeSpanOrLink` helper |
-| `navigation/pagination.templ` | Uses `activeSpanOrLink` for page numbers |
+| File                           | Change                                                                                  |
+| ------------------------------ | --------------------------------------------------------------------------------------- |
+| `feedback/alert.templ`         | Removed `inlineErrorIcon()` + `inlineSuccessIcon()`, replaced with `icons.Icon()` calls |
+| `feedback/toast.templ`         | Replaced inline X SVG with `icons.Icon(icons.X)`                                        |
+| `icons/icon_names.go`          | Added `ExclamationTriangle` constant, reformatted by gci                                |
+| `icons/icon_paths.go`          | Added triangle path data, reformatted by gci                                            |
+| `icons/icon_names_test.go`     | Updated count 42→43, added ExclamationTriangle test case                                |
+| `navigation/breadcrumbs.templ` | Uses `activeSpanOrLink`                                                                 |
+| `navigation/nav_link.templ`    | Added `activeSpanOrLink` helper                                                         |
+| `navigation/pagination.templ`  | Uses `activeSpanOrLink` for page numbers                                                |
 
 ### 5. Quality Gates
 
@@ -170,14 +170,14 @@ This decision blocks items #1-3 in the "Top 25" list above.
 
 ## Project Metrics
 
-| Metric | Value |
-|--------|-------|
-| `.templ` files (excl examples) | 31 |
-| `.go` files (excl examples/generated) | 52 |
-| Total `.templ` lines | 2,986 |
-| Icon count | 43 |
-| Component packages | 8 (display, feedback, forms, htmx, icons, layout, navigation, utils) |
-| art-dupl clone groups | 2 (both false positives) |
-| Test packages | 9/9 passing |
-| Lint issues | 0 |
-| Build status | ✅ Clean |
+| Metric                                | Value                                                                |
+| ------------------------------------- | -------------------------------------------------------------------- |
+| `.templ` files (excl examples)        | 31                                                                   |
+| `.go` files (excl examples/generated) | 52                                                                   |
+| Total `.templ` lines                  | 2,986                                                                |
+| Icon count                            | 43                                                                   |
+| Component packages                    | 8 (display, feedback, forms, htmx, icons, layout, navigation, utils) |
+| art-dupl clone groups                 | 2 (both false positives)                                             |
+| Test packages                         | 9/9 passing                                                          |
+| Lint issues                           | 0                                                                    |
+| Build status                          | ✅ Clean                                                             |

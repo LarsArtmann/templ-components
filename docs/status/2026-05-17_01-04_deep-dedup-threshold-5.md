@@ -16,22 +16,22 @@ Continued deduplication at a lower threshold (5 vs previous 7). Reduced clone gr
 
 ### 1. Clone Group Elimination at Threshold 5 (7 → 3)
 
-| # | Clone Group | Lines | Verdict | Fix |
-|---|-------------|-------|---------|-----|
-| 1 | modal/alert/toast icon SVGs (3-way) | modal:32-40, alert:58-61, toast:149-152 | **ELIMINATED** | Converted alert to `icons.Icon(alertIconName(...))`, toast to `icons.Icon(toastIconName(...))`. Removed `alertIconPath` and `toastIconPath` templ templates entirely. |
-| 2 | htmx/loading vs pagination disabled (2-way) | loading:22-29, pagination:98-101 | **FALSE POSITIVE** | `<div>` overlay vs `<span>` disabled — completely different semantics |
-| 3 | empty_state a/button self-clone (2-way) | empty_state:30-37, 38-45 | **FALSE POSITIVE** | `<a>` vs `<button>` — inherent HTML limitation, shared class constant already in place |
-| 4 | nav_link external/internal branch (2-way) | nav_link:51-61, 69-81 | **ELIMINATED** | Unified into single `<a>` with conditional `target="_blank" rel="noopener noreferrer"` |
-| 5 | forms/input label/helpText (2-way) | input:146-148, label:22-24 | **ELIMINATED** | Extracted `checkboxLabel` helper that reuses `helpText()` template |
-| 6 | forms/FieldError vs pagination mobilePageButton (2-way) | label:30-36, pagination:68-79 | **ELIMINATED** | Collapsed FieldError from if/else to single `<p>` with conditional `id` attribute |
-| 7 | progress/htmx helpers (2-way) | progress:55-63, htmx/helpers:7-17 | **FALSE POSITIVE** | progressbar div vs delete button — no semantic overlap |
+| #   | Clone Group                                             | Lines                                   | Verdict            | Fix                                                                                                                                                                   |
+| --- | ------------------------------------------------------- | --------------------------------------- | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | modal/alert/toast icon SVGs (3-way)                     | modal:32-40, alert:58-61, toast:149-152 | **ELIMINATED**     | Converted alert to `icons.Icon(alertIconName(...))`, toast to `icons.Icon(toastIconName(...))`. Removed `alertIconPath` and `toastIconPath` templ templates entirely. |
+| 2   | htmx/loading vs pagination disabled (2-way)             | loading:22-29, pagination:98-101        | **FALSE POSITIVE** | `<div>` overlay vs `<span>` disabled — completely different semantics                                                                                                 |
+| 3   | empty_state a/button self-clone (2-way)                 | empty_state:30-37, 38-45                | **FALSE POSITIVE** | `<a>` vs `<button>` — inherent HTML limitation, shared class constant already in place                                                                                |
+| 4   | nav_link external/internal branch (2-way)               | nav_link:51-61, 69-81                   | **ELIMINATED**     | Unified into single `<a>` with conditional `target="_blank" rel="noopener noreferrer"`                                                                                |
+| 5   | forms/input label/helpText (2-way)                      | input:146-148, label:22-24              | **ELIMINATED**     | Extracted `checkboxLabel` helper that reuses `helpText()` template                                                                                                    |
+| 6   | forms/FieldError vs pagination mobilePageButton (2-way) | label:30-36, pagination:68-79           | **ELIMINATED**     | Collapsed FieldError from if/else to single `<p>` with conditional `id` attribute                                                                                     |
+| 7   | progress/htmx helpers (2-way)                           | progress:55-63, htmx/helpers:7-17       | **FALSE POSITIVE** | progressbar div vs delete button — no semantic overlap                                                                                                                |
 
 ### 2. New Icons Added (43 → 45)
 
-| Icon | Path | Used By |
-|------|------|---------|
-| `CheckCircle` | `M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z` | Toast success |
-| `ExclamationCircle` | `M12 9v3.75m9-.75a9 9 0 11-18 0...` | Same as `Exclamation` (alias for clarity) |
+| Icon                | Path                                            | Used By                                   |
+| ------------------- | ----------------------------------------------- | ----------------------------------------- |
+| `CheckCircle`       | `M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z` | Toast success                             |
+| `ExclamationCircle` | `M12 9v3.75m9-.75a9 9 0 11-18 0...`             | Same as `Exclamation` (alias for clarity) |
 
 ### 3. Templates Removed (−30 lines of inline SVG)
 
@@ -42,25 +42,25 @@ Replaced with Go functions `alertIconName()` and `toastIconName()` that map type
 
 ### 4. Files Changed (8 files, net reduction)
 
-| File | Change |
-|------|--------|
-| `feedback/alert.templ` | Replaced SVG wrapper + `alertIconPath` with `icons.Icon(alertIconName(...))`. Added `alertIconName` Go func. |
-| `feedback/toast.templ` | Replaced SVG wrapper + `toastIconPath` with `icons.Icon(toastIconName(...))`. Added `toastIconName` Go func. |
-| `icons/icon_names.go` | Added `CheckCircle`, `ExclamationCircle` |
-| `icons/icon_paths.go` | Added path data for `CheckCircle`, `ExclamationCircle` |
-| `icons/icon_names_test.go` | Updated count 43→45, added test cases, reformatted by gci |
-| `forms/label.templ` | Collapsed `FieldError` from if/else to single `<p>` with conditional id |
-| `forms/input.templ` | Extracted `checkboxLabel` helper that calls `helpText()` |
-| `navigation/nav_link.templ` | Unified `NavLink` external/internal into single `<a>` element |
+| File                        | Change                                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `feedback/alert.templ`      | Replaced SVG wrapper + `alertIconPath` with `icons.Icon(alertIconName(...))`. Added `alertIconName` Go func. |
+| `feedback/toast.templ`      | Replaced SVG wrapper + `toastIconPath` with `icons.Icon(toastIconName(...))`. Added `toastIconName` Go func. |
+| `icons/icon_names.go`       | Added `CheckCircle`, `ExclamationCircle`                                                                     |
+| `icons/icon_paths.go`       | Added path data for `CheckCircle`, `ExclamationCircle`                                                       |
+| `icons/icon_names_test.go`  | Updated count 43→45, added test cases, reformatted by gci                                                    |
+| `forms/label.templ`         | Collapsed `FieldError` from if/else to single `<p>` with conditional id                                      |
+| `forms/input.templ`         | Extracted `checkboxLabel` helper that calls `helpText()`                                                     |
+| `navigation/nav_link.templ` | Unified `NavLink` external/internal into single `<a>` element                                                |
 
 ### 5. Cumulative Session Deduplication Progress
 
-| Run | Threshold | Clone Groups | Actionable | Eliminated |
-|-----|-----------|-------------|------------|------------|
-| Session 7 start (t=7) | 7 | 6 | 4 | — |
-| Session 7 end (t=7) | 7 | 2 | 0 | 4 |
-| Session 7b start (t=5) | 5 | 7 | 4 | — |
-| Session 7b end (t=5) | 5 | 3 | 0 | 4 more |
+| Run                    | Threshold | Clone Groups | Actionable | Eliminated |
+| ---------------------- | --------- | ------------ | ---------- | ---------- |
+| Session 7 start (t=7)  | 7         | 6            | 4          | —          |
+| Session 7 end (t=7)    | 7         | 2            | 0          | 4          |
+| Session 7b start (t=5) | 5         | 7            | 4          | —          |
+| Session 7b end (t=5)   | 5         | 3            | 0          | 4 more     |
 
 **Total eliminated across both runs: 8 clone groups.**
 
@@ -162,6 +162,7 @@ One minor issue: `icon_names_test.go` error message says `expected 42` but count
 In this session I converted alert icons from 20×20 filled SVGs to 24×24 stroke-based `icons.Icon()`. This is a **visual change** — the icons look slightly different (outline vs solid). The toast icons were already stroke-based, so now alert and toast are consistent. But the original Heroicons design for alerts uses filled/solid icons for emphasis.
 
 Options:
+
 1. **Keep stroke (current)** — Consistent with toast and the rest of the icon system
 2. **Revert to filled** — Add a filled icon variant to the system for alerts only
 3. **Add both variants** — Support `icons.IconFilled()` alongside `icons.Icon()`
@@ -172,14 +173,14 @@ This is a design decision that affects the component library's visual identity.
 
 ## Project Metrics
 
-| Metric | Value |
-|--------|-------|
-| `.templ` files (excl examples) | 31 |
-| `.go` files (excl examples/generated) | 52 |
-| Icon count | 45 |
-| art-dupl clone groups (t=5) | 3 (all false positives) |
-| art-dupl clone groups (t=7) | 1 (false positive) |
-| Test packages | 9/9 passing |
-| Lint issues | 0 |
-| Build status | ✅ Clean |
-| Commits ahead of origin | 4 |
+| Metric                                | Value                   |
+| ------------------------------------- | ----------------------- |
+| `.templ` files (excl examples)        | 31                      |
+| `.go` files (excl examples/generated) | 52                      |
+| Icon count                            | 45                      |
+| art-dupl clone groups (t=5)           | 3 (all false positives) |
+| art-dupl clone groups (t=7)           | 1 (false positive)      |
+| Test packages                         | 9/9 passing             |
+| Lint issues                           | 0                       |
+| Build status                          | ✅ Clean                |
+| Commits ahead of origin               | 4                       |
