@@ -1,5 +1,7 @@
 package display
 
+import "github.com/larsartmann/templ-components/icons"
+
 // Modal renders an accessible modal dialog with backdrop
 //
 //	@display.Modal(display.ModalProps{Title: "Confirm", ID: "confirm-modal", Nonce: nonce}) {
@@ -33,9 +35,7 @@ templ Modal(props ModalProps) {
 						onclick={ modalCloseHandler(props.ID) }
 						aria-label="Close"
 					>
-						<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
-							<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
-						</svg>
+						@icons.Icon(icons.X, "h-5 w-5")
 					</button>
 				</div>
 			}
