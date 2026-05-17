@@ -51,16 +51,11 @@ var tooltipPositionMap = map[TooltipPosition]tooltipPositionStyles{
 	},
 }
 
-var tooltipPositionDefault = tooltipPositionStyles{
-	Tooltip: "bottom-full left-1/2 -translate-x-1/2 mb-2",
-	Arrow:   "top-full left-1/2 -translate-x-1/2 border-t-gray-900 dark:border-t-gray-700",
-}
-
 func tooltipLookupPosition(pos TooltipPosition) tooltipPositionStyles {
 	if s, ok := tooltipPositionMap[pos]; ok {
 		return s
 	}
-	return tooltipPositionDefault
+	return tooltipPositionMap[TooltipPositionTop]
 }
 
 // Tooltip wraps content in a hover-activated tooltip
@@ -69,6 +64,7 @@ func tooltipLookupPosition(pos TooltipPosition) tooltipPositionStyles {
 //	   <button>Hover me</button>
 //	 }
 templ Tooltip(props TooltipProps) {
+	{{ pos := tooltipLookupPosition(props.Position) }}
 	<div
 		class={ utils.Class("group relative inline-flex", props.Class) }
 		if props.ID != "" {
@@ -82,11 +78,11 @@ templ Tooltip(props TooltipProps) {
 				id={ props.ID + "-tooltip" }
 			}
 			class={ "absolute z-20 hidden group-hover:block group-focus-within:block whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-white shadow-xs",
-				tooltipLookupPosition(props.Position).Tooltip }
+				pos.Tooltip }
 			role="tooltip"
 		>
 			{ props.Text }
-			<div class={ "absolute h-0 w-0 border-4 border-transparent", tooltipLookupPosition(props.Position).Arrow }></div>
+			<div class={ "absolute h-0 w-0 border-4 border-transparent", pos.Arrow }></div>
 		</div>
 	</div>
 }
