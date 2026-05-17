@@ -67,8 +67,8 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | #   | Status | Task                                                     | Priority | Notes                                                          |
 | --- | ------ | -------------------------------------------------------- | -------- | -------------------------------------------------------------- |
 | 30  | ⬜     | Add `alt` text to Avatar `<img>`                         | P1       | WCAG 1.1.1. Add `Alt` field to AvatarProps.                    |
-| 31  | ⬜     | Add `aria-required` to form inputs when `Required: true` | P1       | WCAG requirement. Input, Select, Textarea.                     |
-| 32  | ⬜     | Add `<html lang>` to Base layout                         | P1       | WCAG 3.1.1. Add `Lang` field to PageProps, default "en".       |
+| 31  | ✅     | Add `aria-required` to form inputs when `Required: true` | —        | Done. Input, Select, Textarea all set `aria-required="true"`.    |
+| 32  | ✅     | Add `<html lang>` to Base layout                         | —        | Done. `PageProps.Locale` maps to `<html lang>`, default "en".       |
 | 33  | ⬜     | Add Table header `scope` attributes                      | P2       | `<th scope="col">` for screen reader column association.       |
 | 34  | ⬜     | Add `aria-live="polite"` to HTMX loading indicators      | P2       | Screen reader announcements for dynamic loading.               |
 | 35  | ⬜     | Add `aria-live="polite"` to HTMX error handling          | P2       | Dynamic error announcements for screen readers.                |
