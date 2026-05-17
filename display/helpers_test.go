@@ -20,6 +20,9 @@ func TestMapStatusToBadgeType(t *testing.T) {
 		{"info", BadgeInfo},
 		{"primary", BadgePrimary},
 		{"default", BadgeNeutral},
+		{"Active", BadgeSuccess},
+		{"ERROR", BadgeError},
+		{"In_Progress", BadgeWarning},
 		{"unknown-random", BadgeNeutral},
 	}
 	for _, tt := range tests {

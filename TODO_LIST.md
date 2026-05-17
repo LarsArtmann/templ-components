@@ -85,9 +85,9 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 
 | #   | Status | Task                                               | Priority | Notes                                                                      |
 | --- | ------ | -------------------------------------------------- | -------- | -------------------------------------------------------------------------- |
-| 42  | ⬜     | Add BDD tests for navigation package               | P1       | No BDD tests exist for Nav, Pagination, Breadcrumbs.                       |
-| 43  | ⬜     | Add BDD tests for htmx package                     | P1       | No BDD tests exist for loading indicators, error handling.                 |
-| 44  | ⬜     | Add BDD tests for layout package                   | P1       | No BDD tests exist for Base, Minimal, Theme.                               |
+| 42  | ✅     | Add BDD tests for navigation package               | —        | Done. Nav, SimpleNav, NavLink, Breadcrumbs, Pagination, Footer. |
+| 43  | ✅     | Add BDD tests for htmx package                     | —        | Done. Loading indicators, error handling, CSRF, swap.          |
+| 44  | ✅     | Add BDD tests for layout package                   | —        | Done. Base, Minimal, Theme, lang, security headers.           |
 | 45  | ⬜     | Add BDD tests for icons package                    | P2       | No BDD tests exist for Icon rendering.                                     |
 | 46  | ⬜     | Add tests for Table mismatched header/row lengths  | P2       | No validation exists.                                                      |
 | 47  | ⬜     | Add tests for Modal/Dropdown with empty ID         | P2       | Should fail/panic gracefully.                                              |

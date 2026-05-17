@@ -1,6 +1,10 @@
 package display
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"strings"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // BadgeType defines the visual style of a badge
 type BadgeType string
@@ -117,20 +121,16 @@ templ StatusBadge(status string) {
 }
 
 func mapStatusToBadgeType(status string) BadgeType {
-	switch status {
-	case "active", "healthy", "success", "completed", "done", "passed", "green":
-		return BadgeSuccess
-	case "pending", "warning", "degraded", "yellow", "in_progress":
-		return BadgeWarning
-	case "error", "failed", "critical", "unhealthy", "red", "down":
-		return BadgeError
-	case "info", "blue", "running":
-		return BadgeInfo
-	case "primary":
-		return BadgePrimary
-	case "default":
-		return BadgeNeutral
-	default:
-		return BadgeNeutral
-	}
+	return utils.MapEnum(statusToBadgeMap, BadgeNeutral, strings.ToLower(status))
+}
+
+var statusToBadgeMap = map[string]BadgeType{
+	"active": BadgeSuccess, "healthy": BadgeSuccess, "success": BadgeSuccess,
+	"completed": BadgeSuccess, "done": BadgeSuccess, "passed": BadgeSuccess, "green": BadgeSuccess,
+	"pending": BadgeWarning, "warning": BadgeWarning, "degraded": BadgeWarning,
+	"yellow": BadgeWarning, "in_progress": BadgeWarning,
+	"error": BadgeError, "failed": BadgeError, "critical": BadgeError,
+	"unhealthy": BadgeError, "red": BadgeError, "down": BadgeError,
+	"info": BadgeInfo, "blue": BadgeInfo, "running": BadgeInfo,
+	"primary": BadgePrimary, "default": BadgeNeutral,
 }
