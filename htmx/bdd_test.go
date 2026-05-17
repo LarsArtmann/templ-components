@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -17,14 +18,14 @@ func TestLoadingIndicatorUserSeesLoadingFeedback(t *testing.T) {
 
 	t.Run("user sees loading overlay when HTMX request starts", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, LoadingIndicator())
+		output := utils.Render(t, LoadingIndicator(feedback.Spinner(feedback.SpinnerLG, "text-blue-600 dark:text-blue-400")))
 		utils.AssertContains(t, output, `id="tc-loading-indicator"`)
 		utils.AssertContains(t, output, "htmx-indicator")
 	})
 
 	t.Run("loading indicator is accessible to screen readers", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, LoadingIndicator())
+		output := utils.Render(t, LoadingIndicator(feedback.Spinner(feedback.SpinnerLG, "text-blue-600 dark:text-blue-400")))
 		utils.AssertContains(t, output, `role="status"`)
 		utils.AssertContains(t, output, `aria-live="polite"`)
 	})
@@ -37,7 +38,7 @@ func TestInlineLoadingOverlayUserSeesLocalLoadingState(t *testing.T) {
 
 	t.Run("user sees loading overlay on specific form area", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, InlineLoadingOverlay("my-form-loading"))
+		output := utils.Render(t, InlineLoadingOverlay("my-form-loading", feedback.Spinner(feedback.SpinnerMD, "text-blue-600 dark:text-blue-400")))
 		utils.AssertContains(t, output, `id="my-form-loading"`)
 		utils.AssertContains(t, output, "htmx-indicator")
 	})
@@ -50,7 +51,7 @@ func TestLoadingButtonUserSeesButtonStateChange(t *testing.T) {
 
 	t.Run("user sees button with default and loading text", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, LoadingButton("Save", "Saving..."))
+		output := utils.Render(t, LoadingButton("Save", "Saving...", feedback.Spinner(feedback.SpinnerSM, "htmx-indicator")))
 		utils.AssertContains(t, output, "Save")
 		utils.AssertContains(t, output, "Saving...")
 	})
@@ -130,12 +131,12 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 			name string
 			comp func() templ.Component
 		}{
-			{"LoadingIndicator", func() templ.Component { return LoadingIndicator() }},
+			{"LoadingIndicator", func() templ.Component { return LoadingIndicator(feedback.Spinner(feedback.SpinnerLG, "text-blue-600")) }},
 			{
 				"InlineLoadingOverlay",
-				func() templ.Component { return InlineLoadingOverlay("test") },
+				func() templ.Component { return InlineLoadingOverlay("test", feedback.Spinner(feedback.SpinnerMD, "text-blue-600")) },
 			},
-			{"LoadingButton", func() templ.Component { return LoadingButton("Go", "Going...") }},
+			{"LoadingButton", func() templ.Component { return LoadingButton("Go", "Going...", feedback.Spinner(feedback.SpinnerSM, "htmx-indicator")) }},
 			{
 				"ConfirmDelete",
 				func() templ.Component { return ConfirmDelete("/del", "#t", "Sure?") },

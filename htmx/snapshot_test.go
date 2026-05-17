@@ -4,12 +4,13 @@ package htmx
 import (
 	"testing"
 
+	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/utils"
 )
 
 func TestLoadingIndicatorRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, LoadingIndicator())
+	output := utils.Render(t, LoadingIndicator(feedback.Spinner(feedback.SpinnerLG, "text-blue-600 dark:text-blue-400")))
 	utils.AssertContains(t, output, "tc-loading-indicator")
 	utils.AssertContains(t, output, "animate-spin")
 	utils.AssertContains(t, output, "htmx-indicator")
@@ -17,7 +18,7 @@ func TestLoadingIndicatorRender(t *testing.T) {
 
 func TestInlineLoadingOverlayRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, InlineLoadingOverlay("form-loader"))
+	output := utils.Render(t, InlineLoadingOverlay("form-loader", feedback.Spinner(feedback.SpinnerMD, "text-blue-600 dark:text-blue-400")))
 	utils.AssertContains(t, output, `id="form-loader"`)
 	utils.AssertContains(t, output, "htmx-indicator")
 	utils.AssertContains(t, output, "animate-spin")
@@ -25,7 +26,7 @@ func TestInlineLoadingOverlayRender(t *testing.T) {
 
 func TestLoadingButtonRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, LoadingButton("Save", "Saving..."))
+	output := utils.Render(t, LoadingButton("Save", "Saving...", feedback.Spinner(feedback.SpinnerSM, "htmx-indicator")))
 	utils.AssertContains(t, output, "Save")
 	utils.AssertContains(t, output, "Saving...")
 	utils.AssertContains(t, output, "animate-spin")

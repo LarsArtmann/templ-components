@@ -6,41 +6,48 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-### Added
-
-- Shared `feedbackStyleSet` type and `lookupFeedbackStyle[T]()` generic helper for alert/toast style unification
-- `AvatarStatus` enum (`AvatarStatusOnline`, `AvatarStatusOffline`, `AvatarStatusNone`) replacing boolean fields
-- `TrendDirection` enum (`TrendUp`, `TrendDown`, `TrendNone`) for `StatCardProps`
-- `TableCell.Content` field for rendering custom `templ.Component` in table cells
-- `utils.BoolString()` helper replacing local `boolString()` in accordion
-- `icon_paths.go` with map-driven icon rendering (187-line switch → `map[Name]string` + `strokeIcon`)
-- `icons.IconAttrs()` tests for accessibility attribute generation
-- `TestAllIconsRender` verifying all 42 icons render correctly
-- Pre-commit hook script (`scripts/pre-commit.sh`) for auto-running `templ generate`
-- Comprehensive a11y tests for navigation, display, htmx, and layout components
-- Dark mode class verification tests across all component packages
-- `Default*Props()` constructor tests for Card, Badge, Modal, and ProgressBar
-- Dropdown XSS safety test verifying templ auto-escaping
-- Benchmark tests for `utils.Class()` and Badge rendering
-- Security headers test for `layout.Base`
-- Layout `DefaultPageProps()` constructor test
-
 ### Changed
 
-- **BREAKING**: `AvatarProps.Online`/`AvatarProps.Offline` bool fields → `AvatarProps.Status AvatarStatus`
-- **BREAKING**: `StatCard(value, label, change, positive)` → `StatCardProps` struct with `Trend` field
-- **BREAKING**: `PageProps.HTMXSRI string` → `PageProps.HTMXUseSRI bool`
-- ProgressBar percent calculation now uses float64 division instead of integer truncation
-- `TableProps.Bordered` now renders cell border styling (was dead code)
-- Alert/toast style types unified into shared `feedbackStyleSet` with generic lookup
-- Icon rendering switched from 187-line switch to map-based path data lookup
-- `layout/sri.go` package comment added for `revive:package-comments` compliance
-- CHANGELOG updated from generic v0.1.0 to comprehensive entries
+- **BREAKING**: `Tab.Active bool` removed from `Tab` struct → `TabsProps.ActiveTabID string` on parent. Prevents zero/multiple active tabs
+- **BREAKING**: `BadgeDefault` constant removed → use `BadgeNeutral`. `DefaultBadgeProps()` now returns `BadgeNeutral`
+- **BREAKING**: `ErrorAttrs(id, errMsg)` → `ErrorAttrs(id, errMsg, helpTextID)` — now links both error and help text IDs in `aria-describedby`
+- **BREAKING**: `Minimal(title, locale string)` → `Minimal(MinimalProps)` for consistency with `Base`
+- **BREAKING**: `LoadingIndicator()` → `LoadingIndicator(spinner templ.Component)` — decoupled from feedback package
+- **BREAKING**: `InlineLoadingOverlay(id)` → `InlineLoadingOverlay(id, spinner templ.Component)`
+- **BREAKING**: `LoadingButton(default, loading)` → `LoadingButton(default, loading, spinner templ.Component)`
+- Badge color/dot maps consolidated into single `badgeStyleMap` with `badgeStyle` struct
+- Tooltip position functions consolidated into `tooltipPositionMap` with `tooltipPositionStyles` struct
+- Card shell CSS (`bg-white dark:bg-slate-800 border...`) extracted to `cardShellClass` constant
+- HTMX CDN URL construction extracted to `htmxCDNURL()` helper
+- Error handling JS magic numbers extracted to named constants (`MAX_ERROR_HISTORY`, `MAX_RETRIES`, `RETRY_DELAY_MS`)
+- Toast icon paths now generated from Go `iconPathData` via `icons.IconPathJS()` — fixes copy-paste bug where error and warning had identical paths
+- Avatar status dot now scales with avatar size (XS→1.5, SM→2, MD→2.5, LG→3, XL→3.5)
+- `Exclamation` icon constant deprecated — use `ExclamationCircle` instead
+- `icons.IconAttrs()` removed (was dead code — never called outside tests)
+- ProgressBar a11y test moved from display to feedback package
+- `TestIconCount` now dynamically checks `allIconNames` count matches `iconPathData` (+1 Spinner)
 
 ### Fixed
 
-- Integer division truncation in ProgressBar percent display (e.g., 1/3 now shows 33% not 0%)
-- `TableProps.Bordered` field was defined but never rendered — now applies cell borders
+- NavLinkProps `Attrs` field shadowing `BaseProps.Attrs` — consumer attrs were silently dropped
+- Dropdown JS XSS vulnerability — raw `props.ID` interpolated into JS. Now uses `strconv.Quote()`
+- Accordion state coupling — `hidden` attribute prevented JS toggle from working on server-closed items. Now uses `data-open` attribute
+- Modal/Dropdown empty ID produces broken ARIA attributes — now panics with clear error message
+- Dropdown `sanitizeJSIdent` and `dropdownInitScript` unused functions removed
+- Toast JS `error` and `warning` had identical SVG path data (copy-paste bug)
+
+### Added
+
+- `validateDropdownID()` and `validateModalID()` for required ID validation at render time
+- Pre-commit hook replaced with project's own script
+- `.golangci.yml` excludes examples from lint
+- `icons.IconPathJS()` exported helper for JS icon path generation
+- `toastJSIconPaths()` generates toast icon map from Go icon data (single source of truth)
+- `htmxCDNURL()` helper for HTMX CDN URL construction
+- `MinimalProps` struct and `DefaultMinimalProps()` for minimal layout
+- ADR 0001: Two Icon Systems documentation
+- `ErrorAttrs` now supports `helpTextID` parameter for dual `aria-describedby` references
+- `avatarDotSizeClass()` for proportional status dot sizing
 
 ## [0.1.0] - 2026-01-01
 
