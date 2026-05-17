@@ -1,4 +1,3 @@
-// Package display provides tests for display components.
 package display
 
 import (
@@ -13,8 +12,9 @@ func TestTabsRender(t *testing.T) {
 	t.Run("basic tabs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tabs(TabsProps{
+			ActiveTabID: "tab1",
 			Tabs: []Tab{
-				{ID: "tab1", Label: "First", Active: true},
+				{ID: "tab1", Label: "First"},
 				{ID: "tab2", Label: "Second"},
 			},
 		}))
@@ -28,11 +28,11 @@ func TestTabsRender(t *testing.T) {
 	t.Run("tab with content", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tabs(TabsProps{
+			ActiveTabID: "panel1",
 			Tabs: []Tab{
 				{
 					ID:      "panel1",
 					Label:   "Panel",
-					Active:  true,
 					Content: templ.Raw("<p>Hello</p>"),
 				},
 			},
@@ -44,9 +44,10 @@ func TestTabsRender(t *testing.T) {
 	t.Run("pills style", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tabs(TabsProps{
-			Variant: TabsPills,
+			ActiveTabID: "a",
+			Variant:     TabsPills,
 			Tabs: []Tab{
-				{ID: "a", Label: "A", Active: true},
+				{ID: "a", Label: "A"},
 			},
 		}))
 		utils.AssertContains(t, output, "bg-blue-600")

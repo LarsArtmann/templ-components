@@ -40,8 +40,9 @@ func TestA11yAttributes(t *testing.T) {
 	t.Run("tabs have proper ARIA", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tabs(TabsProps{
+			ActiveTabID: "a",
 			Tabs: []Tab{
-				{ID: "a", Label: "Active", Active: true},
+				{ID: "a", Label: "Active"},
 				{ID: "b", Label: "Inactive"},
 			},
 		}))

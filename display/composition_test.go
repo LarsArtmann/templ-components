@@ -102,8 +102,9 @@ func TestCompositionTabsWithActiveState(t *testing.T) {
 	t.Run("tabs render with correct active tab", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tabs(TabsProps{
+			ActiveTabID: "overview",
 			Tabs: []Tab{
-				{ID: "overview", Label: "Overview", Active: true},
+				{ID: "overview", Label: "Overview"},
 				{ID: "settings", Label: "Settings"},
 			},
 		}))
