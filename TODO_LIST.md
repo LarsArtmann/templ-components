@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-05-07
+**Updated:** 2026-05-17
 
 Legend: ✅ Done | 🔨 In Progress | ⬜ Not Started | ❌ Blocked
 
@@ -54,7 +54,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 24  | ⬜     | Extract shared dismiss JS for Alert and Toast                        | P2       | Nearly identical event delegation pattern duplicated.                                                |
 | 25  | ⬜     | Make toast icon SVG paths single-source                              | P2       | Paths duplicated in Go (`toastIconPath`) and JS (`tcToastIcons`).                                    |
 | 26  | ✅     | Decouple `htmx/loading` from `feedback.Spinner`                      | —        | Done. Accepts `templ.Component` for spinner parameter.                                               |
-| 26a | ⬜     | Extract tooltip position/arrow into single struct-returning function | P3       | Already uses struct map but calls lookup twice — cache result.                                       |
+| 26a | ✅     | Extract tooltip position/arrow into single struct-returning function | —        | Done. Cached lookup in local variable, removed redundant `tooltipPositionDefault`.                  |
 | 26b | ⬜     | Extract card shell CSS into `cardShellClass()`                       | P3       | Repeated 3× in Card, StatCard, SimpleCard.                                                           |
 | 27  | ✅     | Replace `AvatarProps.Online/Offline bool` with `AvatarStatus` enum   | —        | Done.                                                                                                |
 | 28  | ✅     | Replace `StatCard.positive bool` with `TrendDirection` enum          | —        | Done.                                                                                                |
@@ -110,7 +110,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 57  | ⬜     | Remove no-op `DefaultXxxProps()` functions   | P3       | Several return zero-value structs (Accordion, Table, Dropdown).    |
 | 58  | ⬜     | Move test helpers out of `utils/`            | P3       | `Render`, `AssertContains` etc. should be in `internal/testutil/`. |
 | 59  | ⬜     | Move `display/a11y_test.go` ProgressBar test | P3       | Tests `feedback.ProgressBar` from display package.                 |
-| 60  | ⬜     | Fix `examples/demo/main.go` syntax error     | P3       | Line 115: `expected operand, found '{'`.                           |
+| 60  | ✅     | Fix `examples/demo/main.go` syntax error     | —        | Done. Builds successfully. (Was already fixed in earlier session.)  |
 
 ---
 
