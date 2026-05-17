@@ -126,8 +126,10 @@ func mapStatusToBadgeType(status string) BadgeType {
 		return BadgeError
 	case "info", "blue", "running":
 		return BadgeInfo
-	case "primary", "default":
+	case "primary":
 		return BadgePrimary
+	case "default":
+		return BadgeNeutral
 	default:
 		return BadgeNeutral
 	}
