@@ -105,7 +105,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 
 | #   | Status | Task                                         | Priority | Notes                                                              |
 | --- | ------ | -------------------------------------------- | -------- | ------------------------------------------------------------------ |
-| 55  | ⬜     | Remove or use `icons.IconAttrs`              | P2       | Exported but never called anywhere. Dead code.                     |
+| 55  | ✅     | Remove or use `icons.IconAttrs`              | —        | Done. Removed in commit 2fc8ada. Dead code eliminated.                     |
 | 56  | ⬜     | Remove or use `internal/svg.FillIcon`        | P2       | Only referenced by `display/helpers.templ` proxy.                  |
 | 57  | ⬜     | Remove no-op `DefaultXxxProps()` functions   | P3       | Several return zero-value structs (Accordion, Table, Dropdown).    |
 | 58  | ⬜     | Move test helpers out of `utils/`            | P3       | `Render`, `AssertContains` etc. should be in `internal/testutil/`. |
