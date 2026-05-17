@@ -46,6 +46,7 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 - Toast icons: generated from Go `iconPathData` via `icons.IconPathJS()` (single source of truth)
 - Avatar dot: scales with avatar size via `avatarDotSizeClass()`
 - Layout: `Minimal(MinimalProps)` uses props struct like `Base(PageProps)`
+- SimpleCard: now uses `SimpleCardProps` with `BaseProps` + `CardPadding` (was zero-arg)
 
 ## Breaking Changes (v0.1 → v0.2)
 
@@ -65,6 +66,7 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 - `LoadingIndicator()` → `LoadingIndicator(spinner templ.Component)` (decoupled from feedback)
 - `InlineLoadingOverlay(id)` → `InlineLoadingOverlay(id, spinner templ.Component)`
 - `LoadingButton(default, loading)` → `LoadingButton(default, loading, spinner templ.Component)`
+- `SimpleCard()` → `SimpleCard(SimpleCardProps)` (now has BaseProps + CardPadding)
 
 ## Lint Command
 
