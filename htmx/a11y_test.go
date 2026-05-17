@@ -42,7 +42,12 @@ func TestHTMXDarkMode(t *testing.T) {
 
 	t.Run("loading indicator has dark classes", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, LoadingIndicator(feedback.Spinner(feedback.SpinnerLG, "text-blue-600 dark:text-blue-400")))
+		output := utils.Render(
+			t,
+			LoadingIndicator(
+				feedback.Spinner(feedback.SpinnerLG, "text-blue-600 dark:text-blue-400"),
+			),
+		)
 		utils.AssertContains(t, output, "dark:")
 	})
 }

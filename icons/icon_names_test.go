@@ -118,7 +118,10 @@ func TestIconCount(t *testing.T) {
 	t.Parallel()
 	// allIconNames includes Spinner which is handled specially (not in iconPathData)
 	if len(allIconNames) != len(iconPathData)+1 {
-		t.Errorf("allIconNames has %d entries, iconPathData has %d (+1 Spinner) — they must stay in sync",
-			len(allIconNames), len(iconPathData))
+		t.Errorf(
+			"allIconNames has %d entries, iconPathData has %d (+1 Spinner) — they must stay in sync",
+			len(allIconNames),
+			len(iconPathData),
+		)
 	}
 }

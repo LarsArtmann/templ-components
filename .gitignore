@@ -24,3 +24,5 @@ node_modules/
 # Build artifacts
 /templ-components
 /demo
+# Sensitive files
+*.db
