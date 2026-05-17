@@ -102,10 +102,8 @@ type BaseProps struct {
 ### Known Issues
 
 - **Accordion** uses `max-h-96` CSS class as JS state indicator — fragile coupling
-- **Badge** has two separate color maps (`badgeColorMap` + `badgeDotColorMap`) that could drift
 - **Dropdown/Modal** require `ID` but don't validate — empty ID produces broken ARIA
-- **Tabs** uses per-tab `Active bool` — allows zero or multiple active tabs
-- **Tooltip** has two switch statements on same `TooltipPosition` type
+- **Tooltip** calls `tooltipLookupPosition()` twice per render instead of caching
 
 ---
 
@@ -214,7 +212,7 @@ Used by both Alert and Toast for consistent visual styling.
 
 - **Hidden coupling**: `GlobalErrorHandling` calls `tcShowToast()` — requires `ToastContainer` on page, silently fails otherwise
 - **Magic numbers**: Retry count (2), delay (1000ms), error history (10) are hardcoded
-- **Package coupling**: `htmx/loading.templ` imports `feedback.Spinner` directly
+- **Package coupling**: `htmx/loading.templ` accepts `templ.Component` for spinner (decoupled)
 
 ---
 
