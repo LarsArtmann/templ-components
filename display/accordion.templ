@@ -58,9 +58,9 @@ templ Accordion(props AccordionProps) {
 					id={ item.ID + "-panel" }
 					role="region"
 					aria-labelledby={ item.ID + "-trigger" }
-					class={ "overflow-hidden transition-all duration-200", templ.KV("max-h-0", !item.Open), templ.KV("max-h-96", item.Open) }
-					if !item.Open {
-						hidden
+					class={ "overflow-hidden transition-all duration-200", templ.KV("max-h-96", item.Open), templ.KV("max-h-0", !item.Open) }
+					if item.Open {
+						data-open
 					}
 				>
 					<div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">
@@ -82,13 +82,15 @@ templ Accordion(props AccordionProps) {
 				var panel = document.getElementById(id + '-panel');
 				var icon = btn.querySelector('svg');
 				if (!panel) return;
-				var isOpen = panel.classList.contains('max-h-96');
+				var isOpen = panel.hasAttribute('data-open');
 				if (isOpen) {
+					panel.removeAttribute('data-open');
 					panel.classList.remove('max-h-96');
 					panel.classList.add('max-h-0');
 					btn.setAttribute('aria-expanded', 'false');
 					if (icon) icon.classList.remove('rotate-180');
 				} else {
+					panel.setAttribute('data-open', '');
 					panel.classList.remove('max-h-0');
 					panel.classList.add('max-h-96');
 					btn.setAttribute('aria-expanded', 'true');

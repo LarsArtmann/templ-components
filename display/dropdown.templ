@@ -67,6 +67,7 @@ templ dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) {
 //	   },
 //	})
 templ Dropdown(props DropdownProps) {
+	{{ if err := validateDropdownID(props.ID); err != nil { panic(err.Error()) } }}
 	<div class={ utils.Class("relative inline-block text-left", props.Class) } { props.Attrs... }>
 		<div>
 			<button
@@ -146,6 +147,6 @@ templ Dropdown(props DropdownProps) {
 				else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); items[(idx + 1) % items.length].focus(); }
 				else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); items[(idx - 1 + items.length) % items.length].focus(); }
 			});
-		})('{{ props.ID }}');
+		})({{ dropdownSafeID(props.ID) }});
 	</script>
 }

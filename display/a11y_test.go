@@ -15,6 +15,7 @@ func TestA11yAttributes(t *testing.T) {
 	t.Run("modal has role=dialog", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultModalProps()
+		props.ID = "test-modal"
 		props.Title = "Test"
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, `role="dialog"`)

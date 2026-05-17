@@ -93,6 +93,7 @@ func TestModalUserCanOpenAndClose(t *testing.T) {
 	t.Run("modal renders with accessible attributes", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultModalProps()
+		props.ID = "bdd-modal"
 		props.Title = "Confirm Action"
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, "Confirm Action")
@@ -103,6 +104,7 @@ func TestModalUserCanOpenAndClose(t *testing.T) {
 	t.Run("modal renders in open state", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultModalProps()
+		props.ID = "bdd-modal-open"
 		props.Open = true
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, "opacity-100")

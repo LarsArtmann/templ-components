@@ -2,6 +2,7 @@
 package display
 
 import (
+	"errors"
 	"strconv"
 
 	"github.com/a-h/templ"
@@ -55,7 +56,6 @@ func modalSizeClass(size ModalSize) string {
 func modalCloseHandler(id string) templ.ComponentScript {
 	name := "tcCloseModal_" + id
 	fn := "function tcCloseModal_" + id + "(id){tcCloseModal(id)}"
-	// Use JSON string escaping to safely embed id in JavaScript
 	escapedID := strconv.Quote(id)
 	call := "tcCloseModal(" + escapedID + ")"
 	return templ.ComponentScript{
@@ -64,4 +64,13 @@ func modalCloseHandler(id string) templ.ComponentScript {
 		Call:       call,
 		CallInline: "",
 	}
+}
+
+func validateModalID(id string) error {
+	if id == "" {
+		return errors.New(
+			"Modal requires a non-empty ID for ARIA attributes and JavaScript functionality",
+		)
+	}
+	return nil
 }

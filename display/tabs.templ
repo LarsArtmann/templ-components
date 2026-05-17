@@ -10,7 +10,6 @@ import (
 type Tab struct {
 	ID      string
 	Label   string
-	Active  bool
 	Content templ.Component
 }
 
@@ -25,8 +24,9 @@ const (
 // TabsProps configures a tab component
 type TabsProps struct {
 	utils.BaseProps
-	Tabs    []Tab
-	Variant TabsVariant
+	Tabs         []Tab
+	ActiveTabID  string
+	Variant      TabsVariant
 }
 
 // DefaultTabsProps returns sensible defaults
@@ -36,21 +36,21 @@ func DefaultTabsProps() TabsProps {
 	}
 }
 
+// isActiveTab returns true if the given tab ID matches the active tab
+func isActiveTab(tabID, activeTabID string) bool {
+	return tabID == activeTabID && tabID != ""
+}
+
 // tabLink renders a single tab link with the given class based on active state
-templ tabLink(tab Tab, activeClass, inactiveClass string) {
+templ tabLink(tab Tab, isActive bool, activeClass, inactiveClass string) {
 	<a
 		id={ tab.ID + "-tab" }
 		href={ templ.SafeURL("#" + tab.ID) }
 		role="tab"
-		aria-selected={ fmt.Sprintf("%t", tab.Active) }
+		aria-selected={ fmt.Sprintf("%t", isActive) }
 		aria-controls={ tab.ID }
-		tabindex={ fmt.Sprintf("%d", func() int {
-	if tab.Active {
-		return 0
-	}
-	return -1
-}()) }
-		class={ utils.Ternary(tab.Active, activeClass, inactiveClass) }
+		tabindex={ utils.Ternary(isActive, 0, -1) }
+		class={ utils.Ternary(isActive, activeClass, inactiveClass) }
 	>
 		{ tab.Label }
 	</a>
@@ -59,8 +59,9 @@ templ tabLink(tab Tab, activeClass, inactiveClass string) {
 // Tabs renders a tabbed interface with accessible markup
 //
 //	@display.Tabs(display.TabsProps{
+//	   ActiveTabID: "users",
 //	   Tabs: []display.Tab{
-//	     {ID: "users", Label: "Users", Active: true},
+//	     {ID: "users", Label: "Users"},
 //	     {ID: "settings", Label: "Settings"},
 //	   },
 //	})
@@ -78,13 +79,14 @@ templ Tabs(props TabsProps) {
 				aria-label="Tabs"
 			>
 				for _, tab := range props.Tabs {
+					{{ active := isActiveTab(tab.ID, props.ActiveTabID) }}
 					if props.Variant == TabsPills {
-						@tabLink(tab,
+						@tabLink(tab, active,
 							"rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white",
 							"rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
 						)
 					} else {
-						@tabLink(tab,
+						@tabLink(tab, active,
 							"whitespace-nowrap border-b-2 border-blue-500 px-1 py-4 text-sm font-medium text-blue-600 dark:text-blue-400",
 							"whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200",
 						)
@@ -98,7 +100,7 @@ templ Tabs(props TabsProps) {
 					id={ tab.ID }
 					role="tabpanel"
 					aria-labelledby={ tab.ID + "-tab" }
-					if !tab.Active {
+					if !isActiveTab(tab.ID, props.ActiveTabID) {
 						hidden
 					}
 					class="mt-4"
