@@ -134,7 +134,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 67  | ✅     | Create CONTEXT.md                              | —        | Architecture context.                      |
 | 68  | ✅     | Update CHANGELOG.md                            | —        | Full changelog with breaking changes.      |
 | 69  | ✅     | Migration guide (v0.1→v0.2)                    | —        | `docs/migration/v0.1-to-v0.2.md`.          |
-| 70  | ⬜     | Fix example/demo app                           | P2       | Has syntax error. Showcase all components. |
+| 70  | ✅     | Fix example/demo app                           | —        | Builds successfully. Showcases Nav, Alert, StatCard, Icons. |
 | 71  | ⬜     | Documentation site generation                  | P3       | Auto-generated from source.                |
 | 72  | ⬜     | Document `PageProps` not embedding `BaseProps` | P3       | Only Props struct that breaks convention.  |
 

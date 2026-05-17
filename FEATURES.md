@@ -307,5 +307,5 @@ Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, M
 | File input      | `forms`     | Not present                   |
 | Toggle/Switch   | `forms`     | Not present                   |
 | Docs site       | —           | Auto-generated from source    |
-| Demo app        | `examples/` | In progress, has syntax error |
+| Demo app        | `examples/` | Working — Nav, Alert, StatCard, Icons |
 | Release tooling | —           | goreleaser, tag-based         |
