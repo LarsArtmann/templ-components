@@ -65,6 +65,21 @@ func avatarSizeClass(size AvatarSize) string {
 	}
 }
 
+func avatarDotSizeClass(size AvatarSize) string {
+	switch size {
+	case AvatarSizeXS:
+		return "h-1.5 w-1.5"
+	case AvatarSizeSM:
+		return "h-2 w-2"
+	case AvatarSizeLG:
+		return "h-3 w-3"
+	case AvatarSizeXL:
+		return "h-3.5 w-3.5"
+	default:
+		return "h-2.5 w-2.5"
+	}
+}
+
 func avatarShapeClass(shape AvatarShape) string {
 	if shape == AvatarShapeSquare {
 		return "rounded-lg"
@@ -89,7 +104,8 @@ templ Avatar(props AvatarProps) {
 			/>
 			if props.Status != AvatarStatusNone {
 				<span
-					class={ "absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full ring-2 ring-white dark:ring-gray-900",
+					class={ "absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
+						avatarDotSizeClass(props.Size),
 						templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
 						templ.KV("bg-gray-400", props.Status == AvatarStatusOffline) }
 					aria-hidden="true"

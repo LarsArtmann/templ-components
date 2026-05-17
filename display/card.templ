@@ -2,6 +2,8 @@ package display
 
 import "github.com/larsartmann/templ-components/utils"
 
+const cardShellClass = "bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-xs"
+
 // CardPadding defines the internal padding of a card
 type CardPadding string
 
@@ -39,7 +41,7 @@ templ Card(props CardProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class("bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-xs overflow-hidden", props.Class) }
+		class={ utils.Class(cardShellClass + " overflow-hidden", props.Class) }
 		{ props.Attrs... }
 	>
 		if props.Title != "" || props.HeaderAction != nil {
@@ -89,7 +91,7 @@ func cardPaddingClass(p CardPadding) string {
 //	   <p>Content</p>
 //	 }
 templ SimpleCard() {
-	<div class="bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-xs p-4">
+	<div class={ cardShellClass + " p-4" }>
 		{ children... }
 	</div>
 }
@@ -119,7 +121,7 @@ func DefaultStatCardProps() StatCardProps {
 
 // StatCard renders a dashboard stat card with value, label, and optional change indicator
 templ StatCard(props StatCardProps) {
-	<div class={ utils.Class("bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-xs p-5", props.Class) }>
+	<div class={ utils.Class(cardShellClass + " p-5", props.Class) }>
 		<dl>
 			<dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{ props.Label }</dt>
 			<div class="mt-1 flex items-baseline">

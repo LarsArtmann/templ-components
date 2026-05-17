@@ -15,6 +15,16 @@ var htmxSRIHashes = map[string]htmxSRIEntry{
 	},
 }
 
+const htmxCDNBase = "https://unpkg.com/htmx.org@"
+
+func htmxCDNURL(version, path string) string {
+	url := htmxCDNBase + version
+	if path != "" {
+		url += path
+	}
+	return url
+}
+
 // htmxSRI returns the SRI hash for the given version and extension.
 // ext should be "main" or "response-targets".
 func htmxSRI(version, ext string) string {

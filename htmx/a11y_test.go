@@ -26,7 +26,7 @@ func TestGlobalErrorHandlingA11y(t *testing.T) {
 	t.Run("has retry logic", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, GlobalErrorHandling("n"))
-		utils.AssertContains(t, output, "maxRetries")
+		utils.AssertContains(t, output, "MAX_RETRIES")
 	})
 
 	t.Run("exposes error history", func(t *testing.T) {

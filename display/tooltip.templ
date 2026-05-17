@@ -82,11 +82,11 @@ templ Tooltip(props TooltipProps) {
 				id={ props.ID + "-tooltip" }
 			}
 			class={ "absolute z-20 hidden group-hover:block group-focus-within:block whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-white shadow-xs",
-				tooltipPositionClass(props.Position) }
+				tooltipLookupPosition(props.Position).Tooltip }
 			role="tooltip"
 		>
 			{ props.Text }
-			<div class={ "absolute h-0 w-0 border-4 border-transparent", tooltipArrowClass(props.Position) }></div>
+			<div class={ "absolute h-0 w-0 border-4 border-transparent", tooltipLookupPosition(props.Position).Arrow }></div>
 		</div>
 	</div>
 }

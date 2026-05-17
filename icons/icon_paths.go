@@ -64,3 +64,16 @@ func iconPaths(name Name) []string {
 	}
 	return strings.Split(d, "|")
 }
+
+// IconPathJS returns the inner HTML for an SVG icon path element,
+// suitable for use in JavaScript-generated icons.
+func IconPathJS(name Name) string {
+	paths := iconPaths(name)
+	var b strings.Builder
+	for _, p := range paths {
+		b.WriteString(`<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="`)
+		b.WriteString(p)
+		b.WriteString(`"/>`)
+	}
+	return b.String()
+}

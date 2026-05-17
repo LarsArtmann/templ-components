@@ -1,7 +1,9 @@
 package htmx
 
-// GlobalErrorHandling renders a comprehensive global HTMX error handling script
-// Include this once in your base layout, ideally at the end of the body
+// GlobalErrorHandling renders a comprehensive global HTMX error handling script.
+// Include this once in your base layout, ideally at the end of the body.
+// Requires feedback.ToastContainer on the page for accessible error announcements (aria-live).
+// If ToastContainer is not present, errors are only logged to the console.
 //
 //	@htmx.GlobalErrorHandling()
 templ GlobalErrorHandling(nonce string) {
@@ -9,10 +11,12 @@ templ GlobalErrorHandling(nonce string) {
 		(function() {
 			'use strict';
 
+			var MAX_ERROR_HISTORY = 10;
+			var MAX_RETRIES = 2;
+			var RETRY_DELAY_MS = 1000;
+
 			const errorHistory = [];
-			const maxErrorHistory = 10;
 			let retryCount = 0;
-			const maxRetries = 2;
 
 			function tcHandleHTMXError(event, type) {
 				var xhr = event.detail.xhr;
@@ -32,8 +36,8 @@ templ GlobalErrorHandling(nonce string) {
 					url: xhr ? xhr.responseURL : '',
 					timestamp: Date.now()
 				});
-				if (errorHistory.length > maxErrorHistory) {
-					errorHistory.length = maxErrorHistory;
+				if (errorHistory.length > MAX_ERROR_HISTORY) {
+					errorHistory.length = MAX_ERROR_HISTORY;
 				}
 
 				// Show toast if available
@@ -80,12 +84,12 @@ templ GlobalErrorHandling(nonce string) {
 
 			document.addEventListener('htmx:responseError', function(event) {
 				var xhr = event.detail.xhr;
-				if ((xhr.status >= 500 || xhr.status === 0) && retryCount < maxRetries) {
+				if ((xhr.status >= 500 || xhr.status === 0) && retryCount < MAX_RETRIES) {
 					retryCount++;
 					setTimeout(function() {
 						var elt = event.detail.elt;
 						if (elt && elt.click) elt.click();
-					}, 1000 * retryCount);
+					}, RETRY_DELAY_MS * retryCount);
 				} else {
 					retryCount = 0;
 					tcHandleHTMXError(event, 'response');
