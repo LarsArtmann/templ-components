@@ -19,6 +19,27 @@ func TestCurrentYear(t *testing.T) {
 	}
 }
 
+func TestBoolString(t *testing.T) {
+	t.Parallel()
+	t.Run("true", func(t *testing.T) {
+		t.Parallel()
+		got := BoolString(true)
+		AssertEqual(t, "BoolString(true)", got, "true")
+	})
+	t.Run("false", func(t *testing.T) {
+		t.Parallel()
+		got := BoolString(false)
+		AssertEqual(t, "BoolString(false)", got, "false")
+	})
+}
+
+func TestPtr(t *testing.T) {
+	t.Parallel()
+	v := "hello"
+	p := new(v)
+	AssertEqual(t, "*new(v)", *p, v)
+}
+
 func TestTernary(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -38,18 +59,6 @@ func TestTernary(t *testing.T) {
 				t.Errorf("Ternary() = %q, want %q", got, tt.want)
 			}
 		})
-	}
-}
-
-func TestPtr(t *testing.T) {
-	t.Parallel()
-	v := "hello"
-	p := new(v)
-	if p == nil {
-		t.Fatal("Ptr() returned nil")
-	}
-	if *p != v {
-		t.Errorf("*Ptr() = %q, want %q", *p, v)
 	}
 }
 
@@ -214,4 +223,29 @@ func TestMergeAttrs(t *testing.T) {
 			t.Errorf("MergeAttrs() len = %d, want 0", len(got))
 		}
 	})
+}
+
+func TestRender(t *testing.T) {
+	t.Parallel()
+	t.Run("renders component to string", func(t *testing.T) {
+		t.Parallel()
+		c := templ.Raw("<div>hello</div>")
+		got := Render(t, c)
+		AssertContains(t, got, "<div>hello</div>")
+	})
+}
+
+func TestAssertContains(t *testing.T) {
+	t.Parallel()
+	AssertContains(t, "hello world", "hello")
+}
+
+func TestAssertNotContains(t *testing.T) {
+	t.Parallel()
+	AssertNotContains(t, "hello world", "xyz")
+}
+
+func TestAssertEqual(t *testing.T) {
+	t.Parallel()
+	AssertEqual(t, "matching values", 42, 42)
 }
