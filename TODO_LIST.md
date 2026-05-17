@@ -29,10 +29,10 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 6   | ✅     | Fix `class="emptyStateActionClass"` rendering literal string | P0       | Fixed in session 1.                                                                         |
 | 7   | ✅     | Fix `.golangci.yml` Go version mismatch                      | P0       | Fixed: `1.23` → `1.26`.                                                                     |
 | 8   | ✅     | Fix README.md stale `layout.BaseProps` → `PageProps`         | P0       | Fixed in session 1.                                                                         |
-| 9   | ⬜     | Fix `NavLinkProps.Attrs` shadowing `BaseProps.Attrs`         | P0       | **Split brain bug.** Consumer `BaseProps.Attrs` silently ignored on NavLink. Remove shadow. |
-| 10  | ⬜     | Validate required `ID` in Modal and Dropdown                 | P1       | Empty ID produces broken `aria-labelledby="-title"`. Panic or validate.                     |
-| 11  | ⬜     | Fix Dropdown JS XSS vector                                   | P1       | IIFE interpolates `props.ID` via Go template — use `strconv.Quote` like `modal_go.go`.      |
-| 12  | ⬜     | Fix Accordion state coupling with `max-h-96`                 | P1       | Use `aria-expanded` or `data-open` as JS state, not CSS class.                              |
+| 9   | ✅     | Fix `NavLinkProps.Attrs` shadowing `BaseProps.Attrs`         | —        | Done. Removed shadowing `Attrs` field from `NavLinkProps`. Consumer attributes propagate correctly. |
+| 10  | ✅     | Validate required `ID` in Modal and Dropdown                 | —        | Done. `validateModalID()` and `validateDropdownID()` panic on empty ID.                             |
+| 11  | ✅     | Fix Dropdown JS XSS vector                                   | —        | Done. `dropdownSafeID()` uses `strconv.Quote` for JS string escaping.                               |
+| 12  | ✅     | Fix Accordion state coupling with `max-h-96`                 | —        | Done. Uses `data-open` attribute as single source of truth.                                          |
 
 ---
 

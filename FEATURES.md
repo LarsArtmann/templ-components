@@ -101,8 +101,6 @@ type BaseProps struct {
 
 ### Known Issues
 
-- **Accordion** uses `max-h-96` CSS class as JS state indicator — fragile coupling
-- **Dropdown/Modal** require `ID` but don't validate — empty ID produces broken ARIA
 - **Tooltip** calls `tooltipLookupPosition()` twice per render instead of caching
 
 ---
