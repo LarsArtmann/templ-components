@@ -39,9 +39,22 @@ func TestCardRender(t *testing.T) {
 
 	t.Run("simple card", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, SimpleCard())
+		output := utils.Render(t, SimpleCard(DefaultSimpleCardProps()))
 		utils.AssertContains(t, output, "bg-white")
 		utils.AssertContains(t, output, "rounded-lg")
+	})
+
+	t.Run("simple card with custom class and id", func(t *testing.T) {
+		t.Parallel()
+		props := SimpleCardProps{
+			BaseProps: utils.BaseProps{
+				ID:    "simple-card",
+				Class: "mt-4",
+			},
+		}
+		output := utils.Render(t, SimpleCard(props))
+		utils.AssertContains(t, output, `id="simple-card"`)
+		utils.AssertContains(t, output, "mt-4")
 	})
 }
 

@@ -85,13 +85,32 @@ func cardPaddingClass(p CardPadding) string {
 	}
 }
 
+// SimpleCardProps configures a simple card without header/footer
+type SimpleCardProps struct {
+	utils.BaseProps
+	Padding CardPadding
+}
+
+// DefaultSimpleCardProps returns sensible defaults
+func DefaultSimpleCardProps() SimpleCardProps {
+	return SimpleCardProps{
+		Padding: CardPaddingSM,
+	}
+}
+
 // SimpleCard renders a card without header/footer for quick use
 //
-//	@display.SimpleCard() {
+//	@display.SimpleCard(display.SimpleCardProps{}) {
 //	   <p>Content</p>
 //	 }
-templ SimpleCard() {
-	<div class={ cardShellClass + " p-4" }>
+templ SimpleCard(props SimpleCardProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class(cardShellClass, cardPaddingClass(props.Padding), props.Class) }
+		{ props.Attrs... }
+	>
 		{ children... }
 	</div>
 }
