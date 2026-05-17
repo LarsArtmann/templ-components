@@ -67,7 +67,9 @@ templ dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) {
 //	   },
 //	})
 templ Dropdown(props DropdownProps) {
-	{{ if err := validateDropdownID(props.ID); err != nil { panic(err.Error()) } }}
+	{{ if err := validateDropdownID(props.ID); err != nil {
+	panic(err.Error())
+} }}
 	<div class={ utils.Class("relative inline-block text-left", props.Class) } { props.Attrs... }>
 		<div>
 			<button

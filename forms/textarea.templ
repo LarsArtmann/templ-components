@@ -64,7 +64,7 @@ templ Textarea(props TextareaProps) {
 		if props.ReadOnly {
 			readonly
 		}
-		{ ErrorAttrs(props.ID, props.Error)... }
+		{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 		{ props.Attrs... }
 	>
 		{ props.Value }

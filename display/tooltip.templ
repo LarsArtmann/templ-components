@@ -26,30 +26,41 @@ func DefaultTooltipProps() TooltipProps {
 	}
 }
 
-func tooltipPositionClass(pos TooltipPosition) string {
-	switch pos {
-	case TooltipPositionBottom:
-		return "top-full left-1/2 -translate-x-1/2 mt-2"
-	case TooltipPositionLeft:
-		return "right-full top-1/2 -translate-y-1/2 mr-2"
-	case TooltipPositionRight:
-		return "left-full top-1/2 -translate-y-1/2 ml-2"
-	default:
-		return "bottom-full left-1/2 -translate-x-1/2 mb-2"
-	}
+type tooltipPositionStyles struct {
+	Tooltip string
+	Arrow   string
 }
 
-func tooltipArrowClass(pos TooltipPosition) string {
-	switch pos {
-	case TooltipPositionBottom:
-		return "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 dark:border-b-gray-700"
-	case TooltipPositionLeft:
-		return "left-full top-1/2 -translate-y-1/2 border-l-gray-900 dark:border-l-gray-700"
-	case TooltipPositionRight:
-		return "right-full top-1/2 -translate-y-1/2 border-r-gray-900 dark:border-r-gray-700"
-	default:
-		return "top-full left-1/2 -translate-x-1/2 border-t-gray-900 dark:border-t-gray-700"
+//nolint:gochecknoglobals // Package-level lookup table for tooltip position styles
+var tooltipPositionMap = map[TooltipPosition]tooltipPositionStyles{
+	TooltipPositionTop: {
+		Tooltip: "bottom-full left-1/2 -translate-x-1/2 mb-2",
+		Arrow:   "top-full left-1/2 -translate-x-1/2 border-t-gray-900 dark:border-t-gray-700",
+	},
+	TooltipPositionBottom: {
+		Tooltip: "top-full left-1/2 -translate-x-1/2 mt-2",
+		Arrow:   "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 dark:border-b-gray-700",
+	},
+	TooltipPositionLeft: {
+		Tooltip: "right-full top-1/2 -translate-y-1/2 mr-2",
+		Arrow:   "left-full top-1/2 -translate-y-1/2 border-l-gray-900 dark:border-l-gray-700",
+	},
+	TooltipPositionRight: {
+		Tooltip: "left-full top-1/2 -translate-y-1/2 ml-2",
+		Arrow:   "right-full top-1/2 -translate-y-1/2 border-r-gray-900 dark:border-r-gray-700",
+	},
+}
+
+var tooltipPositionDefault = tooltipPositionStyles{
+	Tooltip: "bottom-full left-1/2 -translate-x-1/2 mb-2",
+	Arrow:   "top-full left-1/2 -translate-x-1/2 border-t-gray-900 dark:border-t-gray-700",
+}
+
+func tooltipLookupPosition(pos TooltipPosition) tooltipPositionStyles {
+	if s, ok := tooltipPositionMap[pos]; ok {
+		return s
 	}
+	return tooltipPositionDefault
 }
 
 // Tooltip wraps content in a hover-activated tooltip

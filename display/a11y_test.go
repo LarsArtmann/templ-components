@@ -144,8 +144,8 @@ func TestDefaultPropsConstructors(t *testing.T) {
 	t.Run("DefaultBadgeProps returns valid props", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultBadgeProps()
-		if props.Type != BadgeDefault {
-			t.Errorf("Type = %q, want %q", props.Type, BadgeDefault)
+		if props.Type != BadgeNeutral {
+			t.Errorf("Type = %q, want %q", props.Type, BadgeNeutral)
 		}
 		output := utils.Render(t, Badge(props))
 		utils.AssertContains(t, output, "<span")

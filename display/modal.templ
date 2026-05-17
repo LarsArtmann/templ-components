@@ -8,7 +8,9 @@ import "github.com/larsartmann/templ-components/icons"
 //	   <p>Are you sure?</p>
 //	}
 templ Modal(props ModalProps) {
-	{{ if err := validateModalID(props.ID); err != nil { panic(err.Error()) } }}
+	{{ if err := validateModalID(props.ID); err != nil {
+	panic(err.Error())
+} }}
 	<div
 		id={ props.ID }
 		class={ "fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-200",

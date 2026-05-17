@@ -88,7 +88,7 @@ templ Input(props InputProps) {
 			if props.AutoFocus {
 				autofocus
 			}
-			{ ErrorAttrs(props.ID, props.Error)... }
+			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 			{ props.Attrs... }
 		/>
 	</div>
@@ -148,7 +148,7 @@ templ Checkbox(props CheckboxProps) {
 				if props.Disabled {
 					disabled
 				}
-				{ ErrorAttrs(props.ID, props.Error)... }
+				{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 				{ props.Attrs... }
 			/>
 		</div>
