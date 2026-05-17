@@ -32,7 +32,7 @@ func TestSanitizeID(t *testing.T) {
 
 func TestErrorAttrs(t *testing.T) {
 	t.Parallel()
-	t.Run("returns nil when no error", func(t *testing.T) {
+	t.Run("returns nil when no error and no help text", func(t *testing.T) {
 		t.Parallel()
 		got := ErrorAttrs("email", "", "")
 		if got != nil {
@@ -79,6 +79,19 @@ func TestErrorAttrs(t *testing.T) {
 			if got[k] != v {
 				t.Errorf("attrs[%q] = %v, want %v", k, got[k], v)
 			}
+		}
+	})
+	t.Run("returns aria-describedby for help text only (no error)", func(t *testing.T) {
+		t.Parallel()
+		got := ErrorAttrs("email", "", "email-help")
+		if got == nil {
+			t.Fatal("ErrorAttrs with helpTextID should not return nil")
+		}
+		if got["aria-describedby"] != "email-help" {
+			t.Errorf("aria-describedby = %v, want %q", got["aria-describedby"], "email-help")
+		}
+		if _, ok := got["aria-invalid"]; ok {
+			t.Error("should not have aria-invalid when there is no error")
 		}
 	})
 }
