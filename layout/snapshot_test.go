@@ -82,7 +82,7 @@ func TestBaseRenderFullProps(t *testing.T) {
 
 func TestMinimalRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, Minimal("Simple", "en"))
+	output := utils.Render(t, Minimal(MinimalProps{Title: "Simple"}))
 	utils.AssertContains(t, output, "<title>Simple</title>")
 	utils.AssertContains(t, output, `lang="en"`)
 	utils.AssertNotContains(t, output, "htmx")

@@ -45,7 +45,7 @@ const (
 	Sun                 Name = "sun"
 	Moon                Name = "moon"
 	Spinner             Name = "spinner"
-	Exclamation         Name = "exclamation"
+	Exclamation         Name = "exclamation" // Deprecated: use ExclamationCircle instead
 	ExclamationTriangle Name = "exclamation-triangle"
 	CheckCircle         Name = "check-circle"
 	ExclamationCircle   Name = "exclamation-circle"

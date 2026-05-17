@@ -96,7 +96,7 @@ func TestIntegrationFullPageRender(t *testing.T) {
 
 	t.Run("minimal renders stripped HTML", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Minimal("Simple", "de"))
+		output := utils.Render(t, Minimal(MinimalProps{Title: "Simple", Locale: "de"}))
 
 		utils.AssertContains(t, strings.ToLower(output), "<!doctype html>")
 		utils.AssertContains(t, output, `<html lang="de">`)

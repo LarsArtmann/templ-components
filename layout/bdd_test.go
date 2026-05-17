@@ -88,7 +88,7 @@ func TestMinimalUserGetsCleanHTMLDocument(t *testing.T) {
 
 	t.Run("user sees minimal HTML without external dependencies", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Minimal("Test Page", "en"))
+		output := utils.Render(t, Minimal(MinimalProps{Title: "Test Page"}))
 		utils.AssertContains(t, output, "<title>Test Page</title>")
 		utils.AssertContains(t, output, `lang="en"`)
 	})

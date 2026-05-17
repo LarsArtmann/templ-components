@@ -100,19 +100,32 @@ templ Base(props PageProps) {
 	</html>
 }
 
+// MinimalProps configures a minimal HTML5 document without HTMX or external dependencies
+type MinimalProps struct {
+	Title   string
+	Locale  string
+}
+
+// DefaultMinimalProps returns sensible defaults for MinimalProps
+func DefaultMinimalProps() MinimalProps {
+	return MinimalProps{
+		Locale: "en",
+	}
+}
+
 // Minimal renders a minimal HTML5 document without HTMX or external dependencies
 // Useful for static pages, emails, or PDF generation
 //
-//	@layout.Minimal("My Title", "en") {
+//	@layout.Minimal(layout.MinimalProps{Title: "My Title"}) {
 //	  <h1>Hello</h1>
 //	}
-templ Minimal(title, locale string) {
+templ Minimal(props MinimalProps) {
 	<!DOCTYPE html>
-	<html lang={ locale }>
+	<html lang={ props.Locale }>
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-			<title>{ title }</title>
+			<title>{ props.Title }</title>
 		</head>
 		<body>
 			{ children... }
