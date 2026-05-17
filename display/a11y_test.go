@@ -5,7 +5,6 @@ import (
 	"context"
 	"testing"
 
-	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -156,17 +155,6 @@ func TestDefaultPropsConstructors(t *testing.T) {
 		props := DefaultModalProps()
 		if props.Size != ModalSizeMD {
 			t.Errorf("Size = %q, want %q", props.Size, ModalSizeMD)
-		}
-	})
-
-	t.Run("DefaultProgressBarProps returns valid props", func(t *testing.T) {
-		t.Parallel()
-		props := feedback.DefaultProgressBarProps()
-		if props.Size != feedback.ProgressBarSizeMD {
-			t.Errorf("Size = %q, want %q", props.Size, feedback.ProgressBarSizeMD)
-		}
-		if props.Color == "" {
-			t.Error("Color should not be empty")
 		}
 	})
 }

@@ -145,3 +145,14 @@ func TestStepIndicatorRender(t *testing.T) {
 	utils.AssertContains(t, output, "Confirm")
 	utils.AssertContains(t, output, `aria-current="step"`)
 }
+
+func TestDefaultProgressBarProps(t *testing.T) {
+	t.Parallel()
+	props := DefaultProgressBarProps()
+	if props.Size != ProgressBarSizeMD {
+		t.Errorf("Size = %q, want %q", props.Size, ProgressBarSizeMD)
+	}
+	if props.Color == "" {
+		t.Error("Color should not be empty")
+	}
+}

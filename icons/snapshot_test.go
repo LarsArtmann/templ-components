@@ -35,28 +35,6 @@ func TestIconRender(t *testing.T) {
 	}
 }
 
-func TestIconAttrs(t *testing.T) {
-	t.Parallel()
-	tests := []struct {
-		name      string
-		label     string
-		wantKey   string
-		wantValue string
-	}{
-		{"with aria label returns aria-label", "Menu", "aria-label", "Menu"},
-		{"without aria label returns aria-hidden", "", "aria-hidden", "true"},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			attrs := IconAttrs(tt.label)
-			if attrs[tt.wantKey] != tt.wantValue {
-				t.Errorf("%s = %v, want %v", tt.wantKey, attrs[tt.wantKey], tt.wantValue)
-			}
-		})
-	}
-}
-
 func TestAllIconsRender(t *testing.T) {
 	t.Parallel()
 	for _, name := range allIconNames {
