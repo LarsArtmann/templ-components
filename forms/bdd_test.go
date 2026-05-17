@@ -15,6 +15,12 @@ func TestInputUserCanEnterData(t *testing.T) {
 
 	t.Run("user sees labeled text input", func(t *testing.T) {
 		t.Parallel()
+		output := utils.Render(t, Input(DefaultInputProps()))
+		utils.AssertContains(t, output, `type="text"`)
+	})
+
+	t.Run("user sees labeled text input with custom props", func(t *testing.T) {
+		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
 			Name:  "username",
 			Type:  InputText,
@@ -80,6 +86,41 @@ func TestInputUserCanEnterData(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `disabled`)
 	})
+
+	t.Run("user sees input with placeholder", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Input(InputProps{
+			Name:        "search",
+			Type:        InputSearch,
+			Label:       "Search",
+			Placeholder: "Search...",
+		}))
+		utils.AssertContains(t, output, `placeholder="Search..."`)
+	})
+
+	t.Run("user sees input with autofocus", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Input(InputProps{
+			Name:      "first",
+			Type:      InputText,
+			Label:     "First Name",
+			AutoFocus: true,
+		}))
+		utils.AssertContains(t, output, `autofocus`)
+	})
+
+	t.Run("user sees input with both error and help text", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Input(InputProps{
+			Name:     "email",
+			Type:     InputEmail,
+			Label:    "Email",
+			Error:    "Invalid email",
+			HelpText: "Use your work email.",
+		}))
+		utils.AssertContains(t, output, "Invalid email")
+		utils.AssertContains(t, output, "Use your work email.")
+	})
 }
 
 // --- Select Behavior ---
@@ -88,6 +129,12 @@ func TestSelectUserCanChooseOption(t *testing.T) {
 	t.Parallel()
 
 	t.Run("user sees labeled select with options", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Select(DefaultSelectProps()))
+		utils.AssertContains(t, output, "<select")
+	})
+
+	t.Run("user sees labeled select with custom options", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Select(SelectProps{
 			Name:  "country",
@@ -127,12 +174,59 @@ func TestSelectUserCanChooseOption(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `disabled`)
 	})
+
+	t.Run("user sees select with error", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Select(SelectProps{
+			Name:  "role",
+			Label: "Role",
+			Error: "Please select a role",
+			Options: []SelectOption{
+				{Value: "admin", Label: "Admin"},
+				{Value: "user", Label: "User"},
+			},
+		}))
+		utils.AssertContains(t, output, "Please select a role")
+		utils.AssertContains(t, output, `aria-invalid="true"`)
+	})
+
+	t.Run("user sees required select", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Select(SelectProps{
+			Name:     "country",
+			Label:    "Country",
+			Required: true,
+			Options: []SelectOption{
+				{Value: "de", Label: "Germany"},
+			},
+		}))
+		utils.AssertContains(t, output, `required`)
+	})
+
+	t.Run("user sees select with help text", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Select(SelectProps{
+			Name:     "timezone",
+			Label:    "Timezone",
+			HelpText: "Select your local timezone.",
+			Options: []SelectOption{
+				{Value: "utc", Label: "UTC"},
+			},
+		}))
+		utils.AssertContains(t, output, "Select your local timezone.")
+	})
 }
 
 // --- Textarea Behavior ---
 
 func TestTextareaUserCanEnterMultiLineText(t *testing.T) {
 	t.Parallel()
+
+	t.Run("user sees default textarea", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(DefaultTextareaProps()))
+		utils.AssertContains(t, output, "<textarea")
+	})
 
 	t.Run("user sees textarea with pre-filled value", func(t *testing.T) {
 		t.Parallel()
@@ -143,6 +237,41 @@ func TestTextareaUserCanEnterMultiLineText(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "Existing note content")
 	})
+
+	t.Run("user sees textarea with error and required", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:     "bio",
+			Label:    "Biography",
+			Error:    "Biography is required",
+			Required: true,
+			Rows:     8,
+		}))
+		utils.AssertContains(t, output, "Biography is required")
+		utils.AssertContains(t, output, `aria-invalid="true"`)
+		utils.AssertContains(t, output, `required`)
+		utils.AssertContains(t, output, `rows="8"`)
+	})
+
+	t.Run("user sees textarea with help text", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:     "feedback",
+			Label:    "Feedback",
+			HelpText: "Tell us what you think.",
+		}))
+		utils.AssertContains(t, output, "Tell us what you think.")
+	})
+
+	t.Run("user sees disabled textarea", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:     "locked",
+			Label:    "Locked",
+			Disabled: true,
+		}))
+		utils.AssertContains(t, output, `disabled`)
+	})
 }
 
 // --- Checkbox Behavior ---
@@ -151,6 +280,12 @@ func TestCheckboxUserCanToggle(t *testing.T) {
 	t.Parallel()
 
 	t.Run("user sees labeled checkbox", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Checkbox(DefaultCheckboxProps()))
+		utils.AssertContains(t, output, `type="checkbox"`)
+	})
+
+	t.Run("user sees labeled checkbox with custom props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Checkbox(CheckboxProps{
 			Name:  "terms",
