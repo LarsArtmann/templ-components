@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-17
+**Updated:** 2026-05-18
 
 ## Build & Test Commands
 
@@ -31,7 +31,7 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 - All component props embed `utils.BaseProps` (exception: `layout.PageProps`)
 - All root elements propagate `props.Class`, `props.Attrs`, and `props.ID` from BaseProps
 - Class attributes use `utils.Class()` for Tailwind conflict resolution (exception: `templ.KV` conditionals where comma-join is required)
-- Style lookups use maps/structs, not switches (e.g., `badgeStyleMap`, `tooltipPositionMap`, `iconPathData`)
+- Style lookups use maps/structs, not switches (e.g., `badgeStyleMap`, `badgeSizeLookup`, `cardPaddingLookup`, `iconPathData`)
 - String enums: `type XxxType string` + `const XxxDefault XxxType = "default"`
 - Size constants: uppercase suffix pattern `[Component]Size[SM|MD|LG]` (e.g., `AvatarSizeSM`, `BadgeSizeSM`, `SpinnerSM`)
 - Default constructors: `DefaultXxxProps()` for every component with non-zero defaults
@@ -44,9 +44,10 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 - Card shell CSS: shared `cardShellClass` constant for consistent card styling
 - HTMX loading: accepts `templ.Component` spinner parameter (decoupled from feedback package)
 - Toast icons: generated from Go `iconPathData` via `icons.IconPathJS()` (single source of truth)
-- Avatar dot: scales with avatar size via `avatarDotSizeClass()`
+- TrendDirection: `TrendNone = "none"` (non-empty sentinel, not "")
 - Layout: `Minimal(MinimalProps)` uses props struct like `Base(PageProps)`
-- SimpleCard: now uses `SimpleCardProps` with `BaseProps` + `CardPadding` (was zero-arg)
+- Modal/Dropdown: JS IDs escaped via `strconv.Quote()` (XSS prevention)
+- Table: row cells auto-padded/truncated to match header count
 
 ## Breaking Changes (v0.1 → v0.2)
 
@@ -67,6 +68,8 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 - `InlineLoadingOverlay(id)` → `InlineLoadingOverlay(id, spinner templ.Component)`
 - `LoadingButton(default, loading)` → `LoadingButton(default, loading, spinner templ.Component)`
 - `SimpleCard()` → `SimpleCard(SimpleCardProps)` (now has BaseProps + CardPadding)
+- `TrendNone` = `""` → `"none"` (non-empty sentinel)
+- `DefaultStatCardProps()` now sets `Trend: TrendNone`
 
 ## Lint Command
 

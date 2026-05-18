@@ -132,7 +132,7 @@ No other runtime dependencies.
 1. **`utils.BaseProps` over per-component fields** — Shared ID/Class/Attrs/AriaLabel/Nonce across all components
 2. **`internal/svg` package** — Centralized SVG primitives to avoid cross-package import issues
 3. **Map-based style lookups** — Data-driven, extensible, consistent across packages
-4. **`layout.PageProps` (not BaseProps)** — Different purpose, different name to avoid confusion
+4. **`layout.PageProps` (not BaseProps)** — Different purpose, different name to avoid confusion. `PageProps` does NOT embed `utils.BaseProps` because it represents a full HTML page (with Title, Description, HTMX config, security headers) rather than an inline component. It has its own `ID`, `Class`, `Attrs`, and `Nonce` fields directly.
 5. **String enums** — Type-safe without code generation; `type XxxType string` + constants
 6. **No framework dependencies** — Pure Go + templ; Tailwind classes are strings
 7. **`feedbackStyleSet` + generic lookup** — Shared style struct with `lookupFeedbackStyle[T]()` eliminates per-component duplicate types
