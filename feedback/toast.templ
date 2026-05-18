@@ -167,13 +167,13 @@ templ Toast(props ToastProps) {
 		</div>
 	</div>
 	<script nonce={ props.Nonce }>
-		if (!window.tcToastDismissAttached) {
-			window.tcToastDismissAttached = true;
+		if (!window.tcDismissAttached) {
+			window.tcDismissAttached = true;
 			document.addEventListener('click', function(e) {
-				var btn = e.target.closest('[data-dismiss="toast"]');
+				var btn = e.target.closest('[data-dismiss]');
 				if (btn) {
-					var toast = btn.closest('[role="alert"]');
-					if (toast) toast.remove();
+					var el = btn.closest('[role="alert"]');
+					if (el) el.remove();
 				}
 			});
 		}

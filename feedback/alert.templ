@@ -98,13 +98,13 @@ templ Alert(props AlertProps) {
 		</div>
 		if props.Dismissible {
 			<script nonce={ props.Nonce }>
-				if (!window.tcAlertDismissAttached) {
-					window.tcAlertDismissAttached = true;
+				if (!window.tcDismissAttached) {
+					window.tcDismissAttached = true;
 					document.addEventListener('click', function(e) {
-						var btn = e.target.closest('[data-dismiss="alert"]');
+						var btn = e.target.closest('[data-dismiss]');
 						if (btn) {
-							var alert = btn.closest('[role="alert"]');
-							if (alert) alert.remove();
+							var el = btn.closest('[role="alert"]');
+							if (el) el.remove();
 						}
 					});
 				}
