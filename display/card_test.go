@@ -183,6 +183,19 @@ func TestEmptyStateRender(t *testing.T) {
 		utils.AssertContains(t, output, "No data")
 	})
 
+	t.Run("empty state with button action (no href)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, EmptyState(EmptyStateProps{
+			Title:      "No items",
+			Icon:       icons.Folder,
+			ActionText: "Add Item",
+		}))
+		utils.AssertContains(t, output, "Add Item")
+		utils.AssertContains(t, output, "<button")
+		utils.AssertContains(t, output, `type="button"`)
+		utils.AssertNotContains(t, output, "<a ")
+	})
+
 	t.Run("without action", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, EmptyState(EmptyStateProps{

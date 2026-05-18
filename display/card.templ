@@ -75,9 +75,9 @@ templ Card(props CardProps) {
 //nolint:gochecknoglobals // Package-level lookup table for card padding
 var cardPaddingLookup = map[string]string{
 	string(CardPaddingNone): "",
-	string(CardPaddingSM):  "px-3 py-3",
-	string(CardPaddingMD):  "px-4 py-5 sm:p-6",
-	string(CardPaddingLG):  "px-6 py-6",
+	string(CardPaddingSM):   "px-3 py-3",
+	string(CardPaddingMD):   "px-4 py-5 sm:p-6",
+	string(CardPaddingLG):   "px-6 py-6",
 }
 
 func cardPaddingClass(p CardPadding) string {

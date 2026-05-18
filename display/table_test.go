@@ -105,4 +105,12 @@ func TestTableRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "hover:bg-gray-100")
 	})
+
+	t.Run("default props", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultTableProps()
+		if props.Striped != true {
+			t.Error("DefaultTableProps().Striped should be true")
+		}
+	})
 }

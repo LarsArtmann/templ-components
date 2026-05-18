@@ -26,3 +26,14 @@ func TestNavLinkClasses(t *testing.T) {
 		t.Errorf("inactive link should contain border-transparent, got %q", inactive)
 	}
 }
+
+func TestDefaultNavLinkProps(t *testing.T) {
+	t.Parallel()
+	props := DefaultNavLinkProps()
+	if props.Href != "" {
+		t.Errorf("DefaultNavLinkProps().Href = %q, want empty", props.Href)
+	}
+	if props.Text != "" {
+		t.Errorf("DefaultNavLinkProps().Text = %q, want empty", props.Text)
+	}
+}

@@ -71,4 +71,10 @@ func TestTabsRender(t *testing.T) {
 			t.Errorf("DefaultTabsProps().Variant = %q, want %q", props.Variant, TabsDefault)
 		}
 	})
+
+	t.Run("tabs with empty tabs list", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tabs(TabsProps{}))
+		utils.AssertContains(t, output, `role="tablist"`)
+	})
 }

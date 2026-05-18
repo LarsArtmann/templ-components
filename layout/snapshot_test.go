@@ -86,3 +86,11 @@ func TestMinimalRender(t *testing.T) {
 	utils.AssertContains(t, output, "<title>Simple</title>")
 	utils.AssertNotContains(t, output, "htmx")
 }
+
+func TestDefaultMinimalProps(t *testing.T) {
+	t.Parallel()
+	props := DefaultMinimalProps()
+	if props.Locale != "en" {
+		t.Errorf("DefaultMinimalProps().Locale = %q, want %q", props.Locale, "en")
+	}
+}

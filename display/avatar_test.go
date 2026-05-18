@@ -85,4 +85,25 @@ func TestAvatarRender(t *testing.T) {
 			t.Errorf("DefaultAvatarProps().Size = %q, want %q", props.Size, AvatarSizeMD)
 		}
 	})
+
+	t.Run("fallback SVG when no src or initials", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Avatar(AvatarProps{}))
+		utils.AssertContains(t, output, "<svg")
+		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertNotContains(t, output, "<img")
+	})
+
+	t.Run("with custom class and id", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Avatar(AvatarProps{
+			BaseProps: utils.BaseProps{
+				ID:    "my-avatar",
+				Class: "ring-2",
+			},
+			Src: "/me.jpg",
+		}))
+		utils.AssertContains(t, output, `id="my-avatar"`)
+		utils.AssertContains(t, output, "ring-2")
+	})
 }

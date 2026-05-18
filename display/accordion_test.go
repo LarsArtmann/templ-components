@@ -73,4 +73,12 @@ func TestAccordionRender(t *testing.T) {
 		utils.AssertContains(t, output, `id="faq"`)
 		utils.AssertContains(t, output, "mt-4")
 	})
+
+	t.Run("default props", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultAccordionProps()
+		if props.Items != nil {
+			t.Error("DefaultAccordionProps().Items should be nil")
+		}
+	})
 }

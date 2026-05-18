@@ -163,16 +163,37 @@ func TestSkeletonVariants(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Skeleton(SkeletonAvatar))
 		utils.AssertContains(t, output, "animate-pulse")
+		utils.AssertContains(t, output, "rounded-full")
 	})
 	t.Run("text-short skeleton", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Skeleton(SkeletonTextShort))
 		utils.AssertContains(t, output, "animate-pulse")
+		utils.AssertContains(t, output, "w-1/2")
 	})
 	t.Run("title skeleton", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Skeleton(SkeletonTitle))
 		utils.AssertContains(t, output, "animate-pulse")
+		utils.AssertContains(t, output, "h-6")
+	})
+	t.Run("image skeleton", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Skeleton(SkeletonImage))
+		utils.AssertContains(t, output, "animate-pulse")
+		utils.AssertContains(t, output, "h-48")
+	})
+	t.Run("table-row skeleton", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Skeleton(SkeletonTableRow))
+		utils.AssertContains(t, output, "animate-pulse")
+		utils.AssertContains(t, output, "grid-cols-4")
+	})
+	t.Run("unknown variant uses default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Skeleton(SkeletonVariant("unknown")))
+		utils.AssertContains(t, output, "animate-pulse")
+		utils.AssertContains(t, output, "w-full")
 	})
 }
 
@@ -203,5 +224,30 @@ func TestAlertDismissScript(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `data-dismiss="alert"`)
 		utils.AssertContains(t, output, `nonce="test-nonce"`)
+	})
+}
+
+func TestDefaultPropsConstructors(t *testing.T) {
+	t.Parallel()
+	t.Run("DefaultAlertProps", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultAlertProps()
+		if props.Type != AlertInfo {
+			t.Errorf("DefaultAlertProps().Type = %q, want %q", props.Type, AlertInfo)
+		}
+	})
+	t.Run("DefaultToastProps", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultToastProps()
+		if props.Type != ToastInfo {
+			t.Errorf("DefaultToastProps().Type = %q, want %q", props.Type, ToastInfo)
+		}
+	})
+	t.Run("DefaultStepIndicatorProps", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultStepIndicatorProps()
+		if props.Steps != nil {
+			t.Error("DefaultStepIndicatorProps().Steps should be nil")
+		}
 	})
 }

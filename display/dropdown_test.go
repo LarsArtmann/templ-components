@@ -92,4 +92,27 @@ func TestDropdownRender(t *testing.T) {
 		utils.AssertContains(t, output, "Edit")
 		utils.AssertContains(t, output, "Delete")
 	})
+
+	t.Run("default props", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultDropdownProps()
+		if props.Label != "" {
+			t.Errorf("DefaultDropdownProps().Label = %q, want empty", props.Label)
+		}
+	})
+
+	t.Run("with divider items", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Dropdown(DropdownProps{
+			BaseProps: utils.BaseProps{ID: "dmenu"},
+			Label:     "Menu",
+			Items: []DropdownItem{
+				{Text: "Edit", Href: "/edit"},
+				{Text: "Delete", Href: "/del", Attrs: map[string]any{"class": "text-red-600"}},
+			},
+		}))
+		utils.AssertContains(t, output, "Edit")
+		utils.AssertContains(t, output, "Delete")
+		utils.AssertContains(t, output, "text-red-600")
+	})
 }

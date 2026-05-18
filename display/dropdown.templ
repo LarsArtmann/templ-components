@@ -122,37 +122,52 @@ templ Dropdown(props DropdownProps) {
 		</div>
 	</div>
 	<script nonce={ props.Nonce }>
-		(function(id) {
-			var btn = document.querySelector('[data-dropdown-trigger="' + id + '"]');
-			var menu = document.getElementById(id + '-menu');
-			if (!btn || !menu) return;
-			function open() {
+		if (!window.tcDropdownAttached) {
+			window.tcDropdownAttached = true;
+			function tcCloseDropdown(menu, btn) {
+				menu.classList.add('hidden');
+				btn.setAttribute('aria-expanded', 'false');
+				btn.focus();
+			}
+			function tcOpenDropdown(menu, btn) {
 				menu.classList.remove('hidden');
 				btn.setAttribute('aria-expanded', 'true');
 				var first = menu.querySelector('[role="menuitem"]');
 				if (first) first.focus();
 			}
-			function close() {
-				menu.classList.add('hidden');
-				btn.setAttribute('aria-expanded', 'false');
-				btn.focus();
-			}
-			btn.addEventListener('click', function(e) {
-				e.stopPropagation();
-				if (btn.getAttribute('aria-expanded') === 'true') close();
-				else open();
-			});
 			document.addEventListener('click', function(e) {
-				if (!btn.contains(e.target) && !menu.contains(e.target)) close();
+				var btn = e.target.closest('[data-dropdown-trigger]');
+				if (btn) {
+					e.stopPropagation();
+					var id = btn.getAttribute('data-dropdown-trigger');
+					var menu = document.getElementById(id + '-menu');
+					if (!menu) return;
+					if (btn.getAttribute('aria-expanded') === 'true') tcCloseDropdown(menu, btn);
+					else tcOpenDropdown(menu, btn);
+					return;
+				}
+				document.querySelectorAll('[data-dropdown-trigger][aria-expanded="true"]').forEach(function(b) {
+					var mid = b.getAttribute('data-dropdown-trigger');
+					var m = document.getElementById(mid + '-menu');
+					if (m && !m.contains(e.target)) tcCloseDropdown(m, b);
+				});
 			});
-			menu.addEventListener('keydown', function(e) {
+			document.addEventListener('keydown', function(e) {
+				var menu = e.target.closest('[role="menu"]');
+				if (!menu) return;
 				var items = Array.from(menu.querySelectorAll('[role="menuitem"]'));
 				if (items.length === 0) return;
 				var idx = items.indexOf(document.activeElement);
-				if (e.key === 'Escape') { close(); }
-				else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); items[(idx + 1) % items.length].focus(); }
-				else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); items[(idx - 1 + items.length) % items.length].focus(); }
+				if (e.key === 'Escape') {
+					var btnId = menu.getAttribute('aria-labelledby');
+					var b = document.getElementById(btnId);
+					if (b) tcCloseDropdown(menu, b);
+				} else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+					e.preventDefault(); items[(idx + 1) % items.length].focus();
+				} else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+					e.preventDefault(); items[(idx - 1 + items.length) % items.length].focus();
+				}
 			});
-		})({{ dropdownSafeID(props.ID) }});
+		}
 	</script>
 }
