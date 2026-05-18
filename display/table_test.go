@@ -85,4 +85,24 @@ func TestTableRender(t *testing.T) {
 		utils.AssertContains(t, output, "y")
 		utils.AssertContains(t, output, "z")
 	})
+
+	t.Run("bordered table", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers:  []string{"A"},
+			Rows:     []TableRow{SimpleTableRow("1")},
+			Bordered: true,
+		}))
+		utils.AssertContains(t, output, "border border-gray-200")
+	})
+
+	t.Run("hover table", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A"},
+			Rows:    []TableRow{SimpleTableRow("1")},
+			Hover:   true,
+		}))
+		utils.AssertContains(t, output, "hover:bg-gray-100")
+	})
 }
