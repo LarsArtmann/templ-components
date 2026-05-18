@@ -70,9 +70,9 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 31  | ✅     | Add `aria-required` to form inputs when `Required: true` | —        | Done. Input, Select, Textarea all set `aria-required="true"`.    |
 | 32  | ✅     | Add `<html lang>` to Base layout                         | —        | Done. `PageProps.Locale` maps to `<html lang>`, default "en".       |
 | 33  | ✅     | Add Table header `scope` attributes                      | —        | Done. `<th scope="col">` already rendered.                        |
-| 34  | ⬜     | Add `aria-live="polite"` to HTMX loading indicators      | P2       | Screen reader announcements for dynamic loading.               |
+| 34  | ✅     | Add `aria-live="polite"` to loading indicators           | —        | Done. HTMX LoadingIndicator + feedback InlineLoading.          |
 | 35  | ⬜     | Add `aria-live="polite"` to HTMX error handling          | P2       | Dynamic error announcements for screen readers.                |
-| 36  | ⬜     | Fix `ErrorAttrs` for simultaneous error + help text      | P2       | `aria-describedby` should reference both error and help IDs.   |
+| 36  | ✅     | Fix `ErrorAttrs` for simultaneous error + help text      | —        | Done. aria-describedby now set for help-text-only case too.    |
 | 37  | ✅     | Scale avatar status dot with avatar size                 | —        | Done. `avatarDotSizeClass()` scales from h-1.5 (XS) to h-3.5 (XL).  |
 | 38  | ✅     | Modal focus trap and Escape key handler                  | —        | Done in session 3.                                             |
 | 39  | ✅     | Dropdown keyboard navigation                             | —        | Done in session 3.                                             |
