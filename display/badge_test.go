@@ -7,7 +7,6 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-//nolint:exhaustruct
 func testBadgeProps(text string, badgeType BadgeType) BadgeProps {
 	return BadgeProps{
 		BaseProps: utils.BaseProps{},
@@ -33,7 +32,7 @@ func TestBadgeRender(t *testing.T) {
 		},
 		{
 			name: "error badge with dot",
-			//nolint:exhaustruct
+
 			props: BadgeProps{
 				BaseProps: utils.BaseProps{},
 				Text:      "Failed",
@@ -46,7 +45,7 @@ func TestBadgeRender(t *testing.T) {
 		},
 		{
 			name: "pill badge",
-			//nolint:exhaustruct
+
 			props: BadgeProps{
 				BaseProps: utils.BaseProps{},
 				Text:      "Beta",

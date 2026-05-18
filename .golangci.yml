@@ -82,10 +82,8 @@ linters:
       exclude:
         - os/exec.Cmd
     funlen:
-      flags:
-        - --max-func-length=60
-        - --max-package-func-length=1
-        - --max-file-func-length=1
+      lines: 60
+      statements: 50
     gocritic:
       disabled-checks:
         - dupImport
@@ -93,9 +91,13 @@ linters:
         - octalLiteral
         - whyNoLint
   exclusions:
-    generated: lax
+    rules:
+      - path: "_test\\.go$"
+        linters:
+          - exhaustruct
+          - funlen
     paths:
-      - _templ\.go$
+      - "_templ\\.go$"
 formatters:
   enable:
     - gci
@@ -105,16 +107,7 @@ formatters:
   exclusions:
     generated: lax
     paths:
-      - _templ\.go$
+      - _templ\\.go$
 issues:
   max-issues-per-linter: 50
   max-same-issues: 10
-  exclude-rules:
-    - path: "_test.go$"
-      linters:
-        - exhaustruct
-        - funlen
-    - path: "_test.go$"
-      linters:
-        - exhaustruct
-      text: " is missing fields"
