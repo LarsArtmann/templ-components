@@ -8,6 +8,8 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const activeBadgeText = "Active"
+
 func TestA11yAttributes(t *testing.T) {
 	t.Parallel()
 
@@ -41,7 +43,7 @@ func TestA11yAttributes(t *testing.T) {
 		output := utils.Render(t, Tabs(TabsProps{
 			ActiveTabID: "a",
 			Tabs: []Tab{
-				{ID: "a", Label: "Active"},
+				{ID: "a", Label: activeBadgeText},
 				{ID: "b", Label: "Inactive"},
 			},
 		}))
@@ -94,7 +96,7 @@ func TestDarkModeClasses(t *testing.T) {
 	t.Run("badge has dark mode classes", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultBadgeProps()
-		props.Text = "Active"
+		props.Text = activeBadgeText
 		output := utils.Render(t, Badge(props))
 		utils.AssertContains(t, output, "dark:")
 	})
@@ -184,11 +186,11 @@ func BenchmarkHotPaths(b *testing.B) {
 
 	b.Run("Badge render", func(b *testing.B) {
 		props := DefaultBadgeProps()
-		props.Text = "Active"
+		props.Text = activeBadgeText
 		b.ResetTimer()
 		for b.Loop() {
 			var buf bytes.Buffer
-			Badge(props).Render(context.Background(), &buf)
+			_ = Badge(props).Render(context.Background(), &buf)
 		}
 	})
 }

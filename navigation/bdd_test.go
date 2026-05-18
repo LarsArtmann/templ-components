@@ -8,6 +8,8 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const testItemsPath = "/items"
+
 // --- Nav Behavior ---
 
 func TestNavUserCanNavigateBetweenPages(t *testing.T) {
@@ -146,9 +148,9 @@ func TestPaginationUserCanBrowsePages(t *testing.T) {
 		props := DefaultPaginationProps()
 		props.CurrentPage = 1
 		props.TotalPages = 5
-		props.BaseURL = "/items"
+		props.BaseURL = testItemsPath
 		output := utils.Render(t, Pagination(props))
-		utils.AssertContains(t, output, "/items")
+		utils.AssertContains(t, output, testItemsPath)
 	})
 
 	t.Run("user sees previous and next navigation", func(t *testing.T) {
@@ -156,7 +158,7 @@ func TestPaginationUserCanBrowsePages(t *testing.T) {
 		props := DefaultPaginationProps()
 		props.CurrentPage = 2
 		props.TotalPages = 5
-		props.BaseURL = "/items"
+		props.BaseURL = testItemsPath
 		output := utils.Render(t, Pagination(props))
 		utils.AssertContains(t, output, `aria-label="`)
 	})
@@ -166,7 +168,7 @@ func TestPaginationUserCanBrowsePages(t *testing.T) {
 		props := DefaultPaginationProps()
 		props.CurrentPage = 1
 		props.TotalPages = 1
-		props.BaseURL = "/items"
+		props.BaseURL = testItemsPath
 		output := utils.Render(t, Pagination(props))
 		utils.AssertNotContains(t, output, "<nav")
 	})

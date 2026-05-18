@@ -30,68 +30,69 @@ func TestSanitizeID(t *testing.T) {
 	}
 }
 
-func TestErrorAttrs(t *testing.T) {
+func TestErrorAttrs_NoErrorNoHelpText(t *testing.T) {
 	t.Parallel()
-	t.Run("returns nil when no error and no help text", func(t *testing.T) {
-		t.Parallel()
-		got := ErrorAttrs("email", "", "")
-		if got != nil {
-			t.Errorf("ErrorAttrs(%q, %q, %q) = %v, want nil", "email", "", "", got)
+	got := ErrorAttrs("email", "", "")
+	if got != nil {
+		t.Errorf("ErrorAttrs(%q, %q, %q) = %v, want nil", "email", "", "", got)
+	}
+}
+
+func TestErrorAttrs_AriaAttrsWithID(t *testing.T) {
+	t.Parallel()
+	got := ErrorAttrs("email", "required", "")
+	want := templ.Attributes{
+		"aria-invalid":     "true",
+		"aria-describedby": "email-error",
+	}
+	if len(got) != len(want) {
+		t.Fatalf("ErrorAttrs returned %d attrs, want %d", len(got), len(want))
+	}
+	for k, v := range want {
+		if got[k] != v {
+			t.Errorf("attrs[%q] = %v, want %v", k, got[k], v)
 		}
-	})
-	t.Run("returns aria attrs with id", func(t *testing.T) {
-		t.Parallel()
-		got := ErrorAttrs("email", "required", "")
-		want := templ.Attributes{
-			"aria-invalid":     "true",
-			"aria-describedby": "email-error",
+	}
+}
+
+func TestErrorAttrs_AriaAttrsWithoutID(t *testing.T) {
+	t.Parallel()
+	got := ErrorAttrs("", "required", "")
+	if _, ok := got["aria-describedby"]; ok {
+		t.Error("should not have aria-describedby when id is empty")
+	}
+	if got["aria-invalid"] != "true" {
+		t.Error("should have aria-invalid=true")
+	}
+}
+
+func TestErrorAttrs_HelpTextIDIncluded(t *testing.T) {
+	t.Parallel()
+	got := ErrorAttrs("email", "required", "email-help")
+	want := templ.Attributes{
+		"aria-invalid":     "true",
+		"aria-describedby": "email-error email-help",
+	}
+	if len(got) != len(want) {
+		t.Fatalf("ErrorAttrs returned %d attrs, want %d", len(got), len(want))
+	}
+	for k, v := range want {
+		if got[k] != v {
+			t.Errorf("attrs[%q] = %v, want %v", k, got[k], v)
 		}
-		if len(got) != len(want) {
-			t.Fatalf("ErrorAttrs returned %d attrs, want %d", len(got), len(want))
-		}
-		for k, v := range want {
-			if got[k] != v {
-				t.Errorf("attrs[%q] = %v, want %v", k, got[k], v)
-			}
-		}
-	})
-	t.Run("returns aria attrs without id", func(t *testing.T) {
-		t.Parallel()
-		got := ErrorAttrs("", "required", "")
-		if _, ok := got["aria-describedby"]; ok {
-			t.Error("should not have aria-describedby when id is empty")
-		}
-		if got["aria-invalid"] != "true" {
-			t.Error("should have aria-invalid=true")
-		}
-	})
-	t.Run("includes helpTextID in aria-describedby", func(t *testing.T) {
-		t.Parallel()
-		got := ErrorAttrs("email", "required", "email-help")
-		want := templ.Attributes{
-			"aria-invalid":     "true",
-			"aria-describedby": "email-error email-help",
-		}
-		if len(got) != len(want) {
-			t.Fatalf("ErrorAttrs returned %d attrs, want %d", len(got), len(want))
-		}
-		for k, v := range want {
-			if got[k] != v {
-				t.Errorf("attrs[%q] = %v, want %v", k, got[k], v)
-			}
-		}
-	})
-	t.Run("returns aria-describedby for help text only (no error)", func(t *testing.T) {
-		t.Parallel()
-		got := ErrorAttrs("email", "", "email-help")
-		if got == nil {
-			t.Fatal("ErrorAttrs with helpTextID should not return nil")
-		}
-		if got["aria-describedby"] != "email-help" {
-			t.Errorf("aria-describedby = %v, want %q", got["aria-describedby"], "email-help")
-		}
-		if _, ok := got["aria-invalid"]; ok {
-			t.Error("should not have aria-invalid when there is no error")
-		}
-	})
+	}
+}
+
+func TestErrorAttrs_HelpTextOnlyNoError(t *testing.T) {
+	t.Parallel()
+	got := ErrorAttrs("email", "", "email-help")
+	if got == nil {
+		t.Fatal("ErrorAttrs with helpTextID should not return nil")
+	}
+	if got["aria-describedby"] != "email-help" {
+		t.Errorf("aria-describedby = %v, want %q", got["aria-describedby"], "email-help")
+	}
+	if _, ok := got["aria-invalid"]; ok {
+		t.Error("should not have aria-invalid when there is no error")
+	}
 }

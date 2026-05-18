@@ -37,7 +37,7 @@ func TestIconRender(t *testing.T) {
 
 func TestAllIconsRender(t *testing.T) {
 	t.Parallel()
-	for _, name := range allIconNames {
+	for _, name := range allIconNames() {
 		t.Run(string(name), func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Icon(name, "h-5 w-5"))
