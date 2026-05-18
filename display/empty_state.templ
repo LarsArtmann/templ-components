@@ -18,7 +18,9 @@ type EmptyStateProps struct {
 
 // DefaultEmptyStateProps returns sensible defaults
 func DefaultEmptyStateProps() EmptyStateProps {
-	return EmptyStateProps{}
+	return EmptyStateProps{
+		Icon: icons.Inbox,
+	}
 }
 
 // emptyStateActionClass is the shared class for empty state action buttons/links

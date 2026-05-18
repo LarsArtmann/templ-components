@@ -14,7 +14,9 @@ type NavProps struct {
 
 // DefaultNavProps returns sensible defaults
 func DefaultNavProps() NavProps {
-	return NavProps{}
+	return NavProps{
+		Sticky: true,
+	}
 }
 
 // Nav renders a responsive navigation bar

@@ -32,7 +32,9 @@ type DropdownProps struct {
 
 // DefaultDropdownProps returns sensible defaults
 func DefaultDropdownProps() DropdownProps {
-	return DropdownProps{}
+	return DropdownProps{
+		Position: DropdownPositionLeft,
+	}
 }
 
 // dropdownItemClass returns the shared class for all dropdown items
