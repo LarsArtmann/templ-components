@@ -86,7 +86,7 @@ templ LoadingOverlay(message string, showProgress bool, progress int) {
 //
 //	@feedback.InlineLoading("Saving...")
 templ InlineLoading(message string) {
-	<div class="inline-flex items-center gap-2">
+	<div class="inline-flex items-center gap-2" aria-live="polite">
 		@Spinner(SpinnerSM, "text-blue-600 dark:text-blue-400")
 		<span class="text-sm text-gray-600 dark:text-gray-400">{ message }</span>
 	</div>
