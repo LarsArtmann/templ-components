@@ -1,5 +1,5 @@
-# Generated templ files
-*_templ.go
+# Generated templ files — MUST be committed for Go module proxy compatibility
+!*_templ.go
 
 # Build artifacts
 /server

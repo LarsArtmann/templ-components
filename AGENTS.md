@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-18 | **Coverage:** 71.8% | **Tests:** ~700 | **Packages:** 9
+**Updated:** 2026-05-18 | **Coverage:** 71.8% | **Tests:** ~700 | **Packages:** 9 | **Generated files:** 31 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -17,6 +17,22 @@ golangci-lint run ./...
 # All-in-one verification
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./...
 ```
+
+## CRITICAL: Generated `*_templ.go` Files MUST Be Committed
+
+This is a **templ library**, not an application. The Go module proxy (proxy.golang.org) fetches
+source from the Git tag — it does **not** run `templ generate`. Without committed `*_templ.go`
+files, consumers get uncompilable code (`undefined` errors on every component function).
+
+- The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
+- After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
+- Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
+- 31 generated files across 8 packages (display, feedback, forms, htmx, icons, internal/svg, layout, navigation)
+
+**Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
+will have their Go toolchain download the tagged commit. If `*_templ.go` is missing from that
+commit, the package won't compile. Unlike applications (where you generate at build time), a
+**library's generated code is part of its distributable artifact**.
 
 ## Architecture
 
