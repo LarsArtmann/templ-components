@@ -81,6 +81,11 @@ linters:
     exhaustruct:
       exclude:
         - os/exec.Cmd
+    funlen:
+      flags:
+        - --max-func-length=60
+        - --max-package-func-length=1
+        - --max-file-func-length=1
     gocritic:
       disabled-checks:
         - dupImport
