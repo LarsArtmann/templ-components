@@ -52,4 +52,23 @@ func TestTabsRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "bg-blue-600")
 	})
+
+	t.Run("no active tab renders all inactive", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tabs(TabsProps{
+			Tabs: []Tab{
+				{ID: "x", Label: "X"},
+				{ID: "y", Label: "Y"},
+			},
+		}))
+		utils.AssertNotContains(t, output, `aria-selected="true"`)
+	})
+
+	t.Run("default props has TabsDefault variant", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultTabsProps()
+		if props.Variant != TabsDefault {
+			t.Errorf("DefaultTabsProps().Variant = %q, want %q", props.Variant, TabsDefault)
+		}
+	})
 }

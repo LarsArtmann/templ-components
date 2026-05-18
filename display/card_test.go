@@ -174,4 +174,67 @@ func TestEmptyStateRender(t *testing.T) {
 			t.Errorf("DefaultEmptyStateProps().Icon = %q, want %q", props.Icon, icons.Inbox)
 		}
 	})
+
+	t.Run("without icon", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, EmptyState(EmptyStateProps{
+			Title: "No data",
+		}))
+		utils.AssertContains(t, output, "No data")
+	})
+
+	t.Run("without action", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, EmptyState(EmptyStateProps{
+			Title:       "Empty",
+			Description: "Nothing here yet",
+			Icon:        icons.Folder,
+		}))
+		utils.AssertContains(t, output, "Nothing here yet")
+		utils.AssertNotContains(t, output, "<a ")
+	})
+}
+
+func TestCardFeatures(t *testing.T) {
+	t.Parallel()
+
+	t.Run("card with subtitle", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Card(CardProps{
+			Title:    "Users",
+			Subtitle: "Manage your team",
+			Padding:  CardPaddingMD,
+		}))
+		utils.AssertContains(t, output, "Users")
+		utils.AssertContains(t, output, "Manage your team")
+	})
+
+	t.Run("card with footer", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Card(CardProps{
+			Title:   "Settings",
+			Padding: CardPaddingMD,
+			Footer:  templ.Raw("<div>Footer content</div>"),
+		}))
+		utils.AssertContains(t, output, "Footer content")
+	})
+
+	t.Run("card with header action", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Card(CardProps{
+			Title:        "Projects",
+			Padding:      CardPaddingMD,
+			HeaderAction: templ.Raw("<button>Add</button>"),
+		}))
+		utils.AssertContains(t, output, "Add")
+	})
+
+	t.Run("card without title", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Card(CardProps{
+			Padding: CardPaddingMD,
+		}))
+		utils.AssertContains(t, output, "bg-white")
+		utils.AssertNotContains(t, output, "font-semibold")
+	})
 }

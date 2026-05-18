@@ -106,3 +106,48 @@ func TestStatusBadgeRender(t *testing.T) {
 		})
 	}
 }
+
+func TestBadgeFeatures(t *testing.T) {
+	t.Parallel()
+
+	t.Run("pill badge renders rounded-full", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Badge(BadgeProps{
+			Text: "Tag",
+			Pill: true,
+		}))
+		utils.AssertContains(t, output, "rounded-full")
+	})
+
+	t.Run("badge with dot", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Badge(BadgeProps{
+			Text: "Active",
+			Dot:  true,
+			Type: BadgeSuccess,
+		}))
+		utils.AssertContains(t, output, "Active")
+		utils.AssertContains(t, output, "rounded-full")
+	})
+
+	t.Run("all badge types render", func(t *testing.T) {
+		t.Parallel()
+		for _, bt := range []BadgeType{BadgePrimary, BadgeSuccess, BadgeWarning, BadgeError, BadgeInfo, BadgeNeutral} {
+			output := utils.Render(t, Badge(BadgeProps{
+				Text: string(bt),
+				Type: bt,
+			}))
+			utils.AssertContains(t, output, string(bt))
+		}
+	})
+
+	t.Run("badge with custom class and id", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Badge(BadgeProps{
+			BaseProps: utils.BaseProps{ID: "my-badge", Class: "mt-2"},
+			Text:      "Custom",
+		}))
+		utils.AssertContains(t, output, `id="my-badge"`)
+		utils.AssertContains(t, output, "mt-2")
+	})
+}

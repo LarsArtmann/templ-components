@@ -74,4 +74,15 @@ func TestTooltipA11yLinkage(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `role="tooltip"`)
 	})
+
+	t.Run("tooltip with custom class and ID", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tooltip(TooltipProps{
+			BaseProps: utils.BaseProps{ID: "tip-1", Class: "ml-2"},
+			Text:     "Hint",
+			Position: TooltipPositionTop,
+		}))
+		utils.AssertContains(t, output, `id="tip-1"`)
+		utils.AssertContains(t, output, "ml-2")
+	})
 }

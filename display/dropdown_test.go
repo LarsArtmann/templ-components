@@ -4,6 +4,7 @@ package display
 import (
 	"testing"
 
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -65,5 +66,30 @@ func TestDropdownRender(t *testing.T) {
 			}
 		}()
 		utils.Render(t, Dropdown(DropdownProps{Label: "No ID"}))
+	})
+
+	t.Run("right position", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Dropdown(DropdownProps{
+			BaseProps: utils.BaseProps{ID: "rmenu"},
+			Label:     "Menu",
+			Position:  DropdownPositionRight,
+			Items:     []DropdownItem{{Text: "Item", Href: "/x"}},
+		}))
+		utils.AssertContains(t, output, `data-dropdown-align="right"`)
+	})
+
+	t.Run("with icon items", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Dropdown(DropdownProps{
+			BaseProps: utils.BaseProps{ID: "imenu"},
+			Label:     "Actions",
+			Items: []DropdownItem{
+				{Text: "Edit", Href: "/edit", Icon: icons.Edit},
+				{Text: "Delete", Href: "/del", Icon: icons.Trash},
+			},
+		}))
+		utils.AssertContains(t, output, "Edit")
+		utils.AssertContains(t, output, "Delete")
 	})
 }

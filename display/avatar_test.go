@@ -53,4 +53,36 @@ func TestAvatarRender(t *testing.T) {
 			utils.AssertContains(t, output, tc.class)
 		})
 	}
+
+	t.Run("all size variants render", func(t *testing.T) {
+		t.Parallel()
+		for _, size := range []AvatarSize{AvatarSizeXS, AvatarSizeSM, AvatarSizeMD, AvatarSizeLG, AvatarSizeXL} {
+			output := utils.Render(t, Avatar(AvatarProps{
+				Src:   "/a.jpg",
+				Alt:   "A",
+				Size:  size,
+				Shape: AvatarShapeCircle,
+			}))
+			utils.AssertContains(t, output, `src="/a.jpg"`)
+		}
+	})
+
+	t.Run("with online status dot scales", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Avatar(AvatarProps{
+			Src:    "/b.jpg",
+			Alt:    "B",
+			Size:   AvatarSizeXL,
+			Status: AvatarStatusOnline,
+		}))
+		utils.AssertContains(t, output, "bg-green-400")
+	})
+
+	t.Run("default props", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultAvatarProps()
+		if props.Size != AvatarSizeMD {
+			t.Errorf("DefaultAvatarProps().Size = %q, want %q", props.Size, AvatarSizeMD)
+		}
+	})
 }
