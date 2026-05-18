@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-18
+**Updated:** 2026-05-18 | **Coverage:** 71.8% | **Tests:** ~700 | **Packages:** 9
 
 ## Build & Test Commands
 
@@ -21,7 +21,7 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 ## Architecture
 
 - **Module:** `github.com/larsartmann/templ-components`
-- **Go:** 1.26, **templ:** v0.3.1001
+- **Go:** 1.26, **templ:** v0.3.x
 - **No framework deps** — pure Go + templ + Tailwind v4 class strings
 - **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display,feedback`, `feedback ← none (htmx decoupled)`
 - **No circular imports** allowed
@@ -46,7 +46,9 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 - Toast icons: generated from Go `iconPathData` via `icons.IconPathJS()` (single source of truth)
 - TrendDirection: `TrendNone = "none"` (non-empty sentinel, not "")
 - Layout: `Minimal(MinimalProps)` uses props struct like `Base(PageProps)`
-- Modal/Dropdown: JS IDs escaped via `strconv.Quote()` (XSS prevention)
+- Modal/Dropdown: ID validation at render time (`validateDropdownID`, `validateModalID`) panic on empty
+- JS patterns: Accordion + Dropdown use global singleton (`window.tc*Attached`), Modal uses per-instance IIFE (focus trap)
+- Dismiss JS: Alert + Toast share `tcDismissAttached` handler using `[data-dismiss]` selector
 - Table: row cells auto-padded/truncated to match header count
 
 ## Breaking Changes (v0.1 → v0.2)
