@@ -47,6 +47,7 @@ func TestBadgeSizeClass(t *testing.T) {
 		{BadgeSizeSM, "px-2 py-0.5 text-xs"},
 		{BadgeSizeMD, "px-2.5 py-0.5 text-xs"},
 		{BadgeSizeLG, "px-3 py-1 text-sm"},
+		{"unknown", "px-2.5 py-0.5 text-xs"},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.size), func(t *testing.T) {
@@ -71,6 +72,7 @@ func TestCardPaddingClass(t *testing.T) {
 		{CardPaddingSM, "px-3 py-3"},
 		{CardPaddingMD, "px-4 py-5 sm:p-6"},
 		{CardPaddingLG, "px-6 py-6"},
+		{"unknown", "px-4 py-5 sm:p-6"},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.padding), func(t *testing.T) {
