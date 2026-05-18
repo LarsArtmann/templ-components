@@ -109,3 +109,12 @@ formatters:
 issues:
   max-issues-per-linter: 50
   max-same-issues: 10
+  exclude-rules:
+    - path: "_test.go$"
+      linters:
+        - exhaustruct
+        - funlen
+    - path: "_test.go$"
+      linters:
+        - exhaustruct
+      text: " is missing fields"
