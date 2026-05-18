@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-05-17
+**Updated:** 2026-05-18
 
 Legend: ✅ Done | 🔨 In Progress | ⬜ Not Started | ❌ Blocked
 
@@ -55,7 +55,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 25  | ⬜     | Make toast icon SVG paths single-source                              | P2       | Paths duplicated in Go (`toastIconPath`) and JS (`tcToastIcons`).                                    |
 | 26  | ✅     | Decouple `htmx/loading` from `feedback.Spinner`                      | —        | Done. Accepts `templ.Component` for spinner parameter.                                               |
 | 26a | ✅     | Extract tooltip position/arrow into single struct-returning function | —        | Done. Cached lookup in local variable, removed redundant `tooltipPositionDefault`.                  |
-| 26b | ⬜     | Extract card shell CSS into `cardShellClass()`                       | P3       | Repeated 3× in Card, StatCard, SimpleCard.                                                           |
+| 26b | ✅     | Extract card shell CSS into `cardShellClass()`                       | —        | Done. `const cardShellClass` in card_templ.go:13, used 3×.    |
 | 27  | ✅     | Replace `AvatarProps.Online/Offline bool` with `AvatarStatus` enum   | —        | Done.                                                                                                |
 | 28  | ✅     | Replace `StatCard.positive bool` with `TrendDirection` enum          | —        | Done.                                                                                                |
 | 29  | ✅     | Fix `HTMXSRI string` → `HTMXUseSRI bool`                             | —        | Done.                                                                                                |
@@ -88,12 +88,12 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 42  | ✅     | Add BDD tests for navigation package               | —        | Done. Nav, SimpleNav, NavLink, Breadcrumbs, Pagination, Footer. |
 | 43  | ✅     | Add BDD tests for htmx package                     | —        | Done. Loading indicators, error handling, CSRF, swap.          |
 | 44  | ✅     | Add BDD tests for layout package                   | —        | Done. Base, Minimal, Theme, lang, security headers.           |
-| 45  | ⬜     | Add BDD tests for icons package                    | P2       | No BDD tests exist for Icon rendering.                                     |
+| 45  | ✅     | Add BDD tests for icons package                    | —        | Done. icons/bdd_test.go with 5 test functions, 47 subtests (all 42 icons).     |
 | 46  | ⬜     | Add tests for Table mismatched header/row lengths  | P2       | No validation exists.                                                      |
 | 47  | ⬜     | Add tests for Modal/Dropdown with empty ID         | P2       | Should fail/panic gracefully.                                              |
-| 48  | ⬜     | Add test for `mapStatusToBadgeType` boundary cases | P2       | Case sensitivity, whitespace, unknown values.                              |
+| 48  | ✅     | Add test for `mapStatusToBadgeType` boundary cases | —        | Done. Case-insensitive tests in helpers_test.go (Active, ERROR, In_Progress).  |
 | 49  | ⬜     | Improve forms test coverage (58% → 75%+)           | P2       | Lowest package coverage.                                                   |
-| 50  | ⬜     | Improve utils test coverage (56% → 75%+)           | P2       | MergeAttrs, CurrentYear, Deref undertested.                                |
+| 50  | ✅     | Improve utils test coverage (56% → 89.5%)          | —        | Done. utils at 89.5%, well above 75% target.                                |
 | 51  | ⬜     | Convert snapshot tests to golden file comparison   | P2       | Current substring assertions work but golden files would be more thorough. |
 | 52  | ✅     | Add a11y attribute validation tests                | —        | Done.                                                                      |
 | 53  | ✅     | Add dark mode output verification tests            | —        | Done.                                                                      |
@@ -107,7 +107,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | --- | ------ | -------------------------------------------- | -------- | ------------------------------------------------------------------ |
 | 55  | ✅     | Remove or use `icons.IconAttrs`              | —        | Done. Removed in commit 2fc8ada. Dead code eliminated.                     |
 | 56  | ⬜     | Remove or use `internal/svg.FillIcon`        | P2       | Only referenced by `display/helpers.templ` proxy.                  |
-| 57  | ⬜     | Remove no-op `DefaultXxxProps()` functions   | P3       | Several return zero-value structs (Accordion, Table, Dropdown).    |
+| 57  | 🔨     | Remove no-op `DefaultXxxProps()` functions         | P3       | 6/8 have meaningful defaults. Accordion and StatCard still zero-value.    |
 | 58  | ⬜     | Move test helpers out of `utils/`            | P3       | `Render`, `AssertContains` etc. should be in `internal/testutil/`. |
 | 59  | ⬜     | Move `display/a11y_test.go` ProgressBar test | P3       | Tests `feedback.ProgressBar` from display package.                 |
 | 60  | ✅     | Fix `examples/demo/main.go` syntax error     | —        | Done. Builds successfully. (Was already fixed in earlier session.)  |
@@ -120,8 +120,8 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | --- | ------ | ------------------------------------ | -------- | -------------------------------------------------------------- |
 | 61  | ✅     | Set up GitHub Actions CI             | —        | Done. Go 1.26, lint+build+test.                                |
 | 62  | ⬜     | Release automation (goreleaser)      | P3       | Tag-based releases.                                            |
-| 63  | ⬜     | Fix pre-commit hook to be executable | P3       | `chmod +x scripts/pre-commit.sh` — every commit shows warning. |
-| 64  | ⬜     | Exclude `examples/` from lint        | P3       | 23 issues in demo/main.go.                                     |
+| 63  | ✅     | Fix pre-commit hook to be executable | —        | Already executable: -rwx--x--x permissions.                            |
+| 64  | ✅     | Exclude `examples/` from lint        | —        | 0 issues now. Already clean.                                        |
 
 ---
 
