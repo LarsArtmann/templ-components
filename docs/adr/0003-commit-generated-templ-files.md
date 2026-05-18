@@ -35,16 +35,16 @@ The local entry was straightforward to remove. The global entry required a negat
 
 All generated files committed as-is. No manual edits — these are pure `templ generate` output:
 
-| Package            | Files                                                                  |
-| ------------------ | ---------------------------------------------------------------------- |
-| `display/`         | accordion, avatar, badge, card, dropdown, empty_state, helpers, modal, table, tabs, tooltip |
-| `feedback/`        | alert, loading, progress, toast                                        |
-| `forms/`           | input, label, select, textarea                                         |
-| `htmx/`            | error_handling, helpers, loading                                       |
-| `icons/`           | icon                                                                   |
-| `internal/svg/`    | svg                                                                    |
-| `layout/`          | base, theme                                                            |
-| `navigation/`      | breadcrumbs, mobile_menu, nav_link, nav, pagination                     |
+| Package         | Files                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------- |
+| `display/`      | accordion, avatar, badge, card, dropdown, empty_state, helpers, modal, table, tabs, tooltip |
+| `feedback/`     | alert, loading, progress, toast                                                             |
+| `forms/`        | input, label, select, textarea                                                              |
+| `htmx/`         | error_handling, helpers, loading                                                            |
+| `icons/`        | icon                                                                                        |
+| `internal/svg/` | svg                                                                                         |
+| `layout/`       | base, theme                                                                                 |
+| `navigation/`   | breadcrumbs, mobile_menu, nav_link, nav, pagination                                         |
 
 ### `AGENTS.md`
 

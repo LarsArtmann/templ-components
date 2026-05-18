@@ -5,10 +5,11 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
-import "github.com/larsartmann/templ-components/internal/svg"
+import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
+	"github.com/larsartmann/templ-components/internal/svg"
+)
 
 // fillIcon renders a 20x20 filled SVG icon — delegates to shared svg.FillIcon
 func fillIcon(class string, path string, rotate ...bool) templ.Component {

@@ -69,7 +69,7 @@ func TestIconPathJS(t *testing.T) {
 func splitClasses(s string) []string {
 	var result []string
 	start := 0
-	for i := 0; i < len(s); i++ {
+	for i := range len(s) {
 		if s[i] == ' ' {
 			if i > start {
 				result = append(result, s[start:i])
