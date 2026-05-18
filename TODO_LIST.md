@@ -50,9 +50,9 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 20  | ✅     | Consolidate badge color maps into single struct map                  | —        | Done. `badgeStyleMap` with `badgeStyle{BG, Dot}` struct.                                            |
 | 21  | ✅     | Merge `BadgeDefault` with `BadgeNeutral`                             | —        | Done. `BadgeDefault` removed, only `BadgeNeutral` remains.                                           |
 | 22  | ✅     | Replace `Tab.Active` with `TabsProps.ActiveTabID`                    | —        | Done. Single `ActiveTabID string` on `TabsProps`, impossible state unrepresentable.                  |
-| 23  | ⬜     | Unify JS attachment pattern across Accordion/Dropdown/Modal          | P2       | Three different patterns (global flag, IIFE, global functions). Standardize on IIFE-per-instance.    |
+| 23  | ⬜     | Unify JS attachment pattern across Accordion/Dropdown/Modal          | P2       | Three different patterns. Standardize on IIFE-per-instance. Defer — high risk, low customer value.    |
 | 24  | ⬜     | Extract shared dismiss JS for Alert and Toast                        | P2       | Nearly identical event delegation pattern duplicated.                                                |
-| 25  | ⬜     | Make toast icon SVG paths single-source                              | P2       | Paths duplicated in Go (`toastIconPath`) and JS (`tcToastIcons`).                                    |
+| 25  | ✅     | Make toast icon SVG paths single-source                              | —        | Done. Toast icons generated from Go `iconPathData` via `icons.IconPathJS()`. Single source of truth.                                    |
 | 26  | ✅     | Decouple `htmx/loading` from `feedback.Spinner`                      | —        | Done. Accepts `templ.Component` for spinner parameter.                                               |
 | 26a | ✅     | Extract tooltip position/arrow into single struct-returning function | —        | Done. Cached lookup in local variable, removed redundant `tooltipPositionDefault`.                  |
 | 26b | ✅     | Extract card shell CSS into `cardShellClass()`                       | —        | Done. `const cardShellClass` in card_templ.go:13, used 3×.    |
@@ -90,7 +90,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 44  | ✅     | Add BDD tests for layout package                   | —        | Done. Base, Minimal, Theme, lang, security headers.           |
 | 45  | ✅     | Add BDD tests for icons package                    | —        | Done. icons/bdd_test.go with 5 test functions, 47 subtests (all 42 icons).     |
 | 46  | ✅     | Table header/row cell count mismatch guard  | —        | Done. `tableRowCells()` pads/truncates to match header count.  |
-| 47  | ⬜     | Add tests for Modal/Dropdown with empty ID         | P2       | Should fail/panic gracefully.                                              |
+| 47  | ✅     | Tests for Modal/Dropdown with empty ID         | —        | Done. Both panic on render when ID is missing. Test added.  |
 | 48  | ✅     | Add test for `mapStatusToBadgeType` boundary cases | —        | Done. Case-insensitive tests in helpers_test.go (Active, ERROR, In_Progress).  |
 | 49  | ⬜     | Improve forms test coverage (58% → 75%+)           | P2       | Lowest package coverage.                                                   |
 | 50  | ✅     | Improve utils test coverage (56% → 89.5%)          | —        | Done. utils at 89.5%, well above 75% target.                                |
