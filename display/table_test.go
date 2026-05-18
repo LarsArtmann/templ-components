@@ -55,4 +55,34 @@ func TestTableRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `id="users-table"`)
 	})
+
+	t.Run("row with fewer cells than headers is padded", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A", "B", "C"},
+			Rows:    []TableRow{SimpleTableRow("only-one")},
+		}))
+		utils.AssertContains(t, output, "only-one")
+	})
+
+	t.Run("row with more cells than headers is truncated", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A"},
+			Rows:    []TableRow{SimpleTableRow("1", "2", "3")},
+		}))
+		utils.AssertContains(t, output, "1")
+		utils.AssertNotContains(t, output, ">2<")
+		utils.AssertNotContains(t, output, ">3<")
+	})
+
+	t.Run("no headers renders all cells", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Rows: []TableRow{SimpleTableRow("x", "y", "z")},
+		}))
+		utils.AssertContains(t, output, "x")
+		utils.AssertContains(t, output, "y")
+		utils.AssertContains(t, output, "z")
+	})
 }

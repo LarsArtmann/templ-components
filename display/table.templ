@@ -30,6 +30,21 @@ func SimpleTableRow(values ...string) TableRow {
 	return r
 }
 
+// tableRowCells returns cells for a row, padded or truncated to match
+// the header count. If headers is 0, returns cells as-is.
+func tableRowCells(row TableRow, headerCount int) []TableCell {
+	if headerCount == 0 {
+		return row.Cells
+	}
+	cells := row.Cells
+	if len(cells) >= headerCount {
+		return cells[:headerCount]
+	}
+	padded := make([]TableCell, headerCount)
+	copy(padded, cells)
+	return padded
+}
+
 // TableProps configures a data table
 type TableProps struct {
 	utils.BaseProps
@@ -91,7 +106,7 @@ templ Table(props TableProps) {
 							templ.KV("hover:bg-gray-100 dark:hover:bg-slate-800", props.Hover),
 						}
 					>
-						for _, cell := range row.Cells {
+						for _, cell := range tableRowCells(row, len(props.Headers)) {
 							<td class="px-4 py-3 text-gray-700 dark:text-gray-300">
 								if cell.Content != nil {
 									@cell.Content

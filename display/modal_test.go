@@ -83,4 +83,15 @@ func TestModalRender(t *testing.T) {
 		utils.AssertNotContains(t, output, "('modal-with-'quotes'')")
 		utils.AssertContains(t, output, `"modal-with-'quotes'"`)
 	})
+
+	t.Run("empty ID panics on render", func(t *testing.T) {
+		t.Parallel()
+		defer func() {
+			r := recover()
+			if r == nil {
+				t.Error("expected panic for empty ID, got none")
+			}
+		}()
+		utils.Render(t, Modal(ModalProps{Title: "No ID"}))
+	})
 }
