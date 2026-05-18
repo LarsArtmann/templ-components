@@ -156,3 +156,51 @@ func TestDefaultProgressBarProps(t *testing.T) {
 		t.Error("Color should not be empty")
 	}
 }
+
+func TestSkeletonVariants(t *testing.T) {
+	t.Parallel()
+	t.Run("avatar skeleton", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Skeleton(SkeletonAvatar))
+		utils.AssertContains(t, output, "animate-pulse")
+	})
+	t.Run("text-short skeleton", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Skeleton(SkeletonTextShort))
+		utils.AssertContains(t, output, "animate-pulse")
+	})
+	t.Run("title skeleton", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Skeleton(SkeletonTitle))
+		utils.AssertContains(t, output, "animate-pulse")
+	})
+}
+
+func TestToastAllTypes(t *testing.T) {
+	t.Parallel()
+	for _, tt := range []ToastType{ToastSuccess, ToastError, ToastWarning, ToastInfo} {
+		t.Run("toast type "+string(tt), func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Toast(ToastProps{
+				Type:    tt,
+				Message: "Test message",
+			}))
+			utils.AssertContains(t, output, "Test message")
+			utils.AssertContains(t, output, `role="alert"`)
+		})
+	}
+}
+
+func TestAlertDismissScript(t *testing.T) {
+	t.Parallel()
+	t.Run("alert has dismiss script", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Alert(AlertProps{
+			Title: "Dismiss me",
+			Type:  AlertInfo,
+			Nonce: "test-nonce",
+		}))
+		utils.AssertContains(t, output, `data-dismiss="alert"`)
+		utils.AssertContains(t, output, `nonce="test-nonce"`)
+	})
+}
