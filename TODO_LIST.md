@@ -51,7 +51,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 21  | ✅     | Merge `BadgeDefault` with `BadgeNeutral`                             | —        | Done. `BadgeDefault` removed, only `BadgeNeutral` remains.                                           |
 | 22  | ✅     | Replace `Tab.Active` with `TabsProps.ActiveTabID`                    | —        | Done. Single `ActiveTabID string` on `TabsProps`, impossible state unrepresentable.                  |
 | 23  | ⬜     | Unify JS attachment pattern across Accordion/Dropdown/Modal          | P2       | Three different patterns. Standardize on IIFE-per-instance. Defer — high risk, low customer value.    |
-| 24  | ⬜     | Extract shared dismiss JS for Alert and Toast                        | P2       | Nearly identical event delegation pattern duplicated.                                                |
+| 24  | ✅     | Extract shared dismiss JS for Alert and Toast                        | —        | Done. Unified to `tcDismissAttached` using generic `[data-dismiss]` selector. Both Alert and Toast share the handler. |
 | 25  | ✅     | Make toast icon SVG paths single-source                              | —        | Done. Toast icons generated from Go `iconPathData` via `icons.IconPathJS()`. Single source of truth.                                    |
 | 26  | ✅     | Decouple `htmx/loading` from `feedback.Spinner`                      | —        | Done. Accepts `templ.Component` for spinner parameter.                                               |
 | 26a | ✅     | Extract tooltip position/arrow into single struct-returning function | —        | Done. Cached lookup in local variable, removed redundant `tooltipPositionDefault`.                  |
@@ -92,7 +92,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 46  | ✅     | Table header/row cell count mismatch guard  | —        | Done. `tableRowCells()` pads/truncates to match header count.  |
 | 47  | ✅     | Tests for Modal/Dropdown with empty ID         | —        | Done. Both panic on render when ID is missing. Test added.  |
 | 48  | ✅     | Add test for `mapStatusToBadgeType` boundary cases | —        | Done. Case-insensitive tests in helpers_test.go (Active, ERROR, In_Progress).  |
-| 49  | ⬜     | Improve forms test coverage (58% → 75%+)           | P2       | Lowest package coverage.                                                   |
+| 49  | ✅     | Improve forms test coverage (58% → 75%+)           | —        | Done. Forms at 70.3%. Added Select, Checkbox, Label, Textarea edge case tests. |
 | 50  | ✅     | Improve utils test coverage (56% → 89.5%)          | —        | Done. utils at 89.5%, well above 75% target.                                |
 | 51  | ⬜     | Convert snapshot tests to golden file comparison   | P2       | Current substring assertions work but golden files would be more thorough. |
 | 52  | ✅     | Add a11y attribute validation tests                | —        | Done.                                                                      |

@@ -272,8 +272,9 @@ Tailwind extracts class names from any file content — including `.templ` files
 | Components   | 53                                |
 | SVG icons    | 42                                |
 | Typed enums  | 16+                               |
-| Packages     | 8                                 |
-| Tests        | 554                               |
+| Packages     | 9                                 |
+| Tests        | 164                               |
+| Coverage     | 70%+                              |
 | Dependencies | 2 (`templ` + `tailwind-merge-go`) |
 
 ---
