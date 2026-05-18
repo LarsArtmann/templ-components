@@ -50,4 +50,27 @@ func TestAccordionRender(t *testing.T) {
 			`class="overflow-hidden transition-all duration-200 max-h-0"`,
 		)
 	})
+
+	t.Run("with nonce", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Accordion(AccordionProps{
+			BaseProps: utils.BaseProps{Nonce: "test-nonce"},
+			Items: []AccordionItem{
+				{ID: "n1", Title: "Q", Content: templ.Raw("A")},
+			},
+		}))
+		utils.AssertContains(t, output, `nonce="test-nonce"`)
+	})
+
+	t.Run("custom class and id", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Accordion(AccordionProps{
+			BaseProps: utils.BaseProps{ID: "faq", Class: "mt-4"},
+			Items: []AccordionItem{
+				{ID: "n1", Title: "Q", Content: templ.Raw("A")},
+			},
+		}))
+		utils.AssertContains(t, output, `id="faq"`)
+		utils.AssertContains(t, output, "mt-4")
+	})
 }

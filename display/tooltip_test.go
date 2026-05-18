@@ -35,6 +35,12 @@ func TestTooltipRender(t *testing.T) {
 			position: TooltipPositionRight,
 			wantAll:  []string{"left-full"},
 		},
+		{
+			name:     "left tooltip",
+			text:     "Sidebar",
+			position: TooltipPositionLeft,
+			wantAll:  []string{"right-full"},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -48,4 +54,24 @@ func TestTooltipRender(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestDefaultTooltipProps(t *testing.T) {
+	t.Parallel()
+	props := DefaultTooltipProps()
+	if props.Position != TooltipPositionTop {
+		t.Errorf("DefaultTooltipProps().Position = %q, want %q", props.Position, TooltipPositionTop)
+	}
+}
+
+func TestTooltipA11yLinkage(t *testing.T) {
+	t.Parallel()
+	t.Run("tooltip has role=tooltip", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tooltip(TooltipProps{
+			Text:     "Help text",
+			Position: TooltipPositionTop,
+		}))
+		utils.AssertContains(t, output, `role="tooltip"`)
+	})
 }

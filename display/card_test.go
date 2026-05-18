@@ -4,6 +4,7 @@ package display
 import (
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -127,21 +128,50 @@ func TestEmptyStateRender(t *testing.T) {
 		props := EmptyStateProps{
 			BaseProps:   utils.BaseProps{},
 			Title:       "No repos",
-			Description: "",
+			Description: "Create your first repo",
 			Icon:        icons.Folder,
 			ActionText:  "Add Repo",
 			ActionHref:  "/repos/new",
-			ActionAttrs: nil,
 		}
 		output := utils.Render(t, EmptyState(props))
 		utils.AssertContains(t, output, "No repos")
+		utils.AssertContains(t, output, "Create your first repo")
 		utils.AssertContains(t, output, "Add Repo")
 		utils.AssertContains(t, output, `href="/repos/new"`)
+	})
+
+	t.Run("with custom icon", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, EmptyState(EmptyStateProps{
+			Title: "Inbox empty",
+			Icon:  icons.Inbox,
+		}))
+		utils.AssertContains(t, output, "Inbox empty")
+	})
+
+	t.Run("with action attrs", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, EmptyState(EmptyStateProps{
+			Title:       "No data",
+			Icon:        icons.Folder,
+			ActionText:  "Add",
+			ActionHref:  "/add",
+			ActionAttrs: templ.Attributes{"data-testid": "add-btn"},
+		}))
+		utils.AssertContains(t, output, `data-testid="add-btn"`)
 	})
 
 	t.Run("simple empty state", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SimpleEmptyState("Nothing here"))
 		utils.AssertContains(t, output, "Nothing here")
+	})
+
+	t.Run("default props", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultEmptyStateProps()
+		if props.Icon != icons.Inbox {
+			t.Errorf("DefaultEmptyStateProps().Icon = %q, want %q", props.Icon, icons.Inbox)
+		}
 	})
 }
