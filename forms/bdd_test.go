@@ -344,3 +344,157 @@ func TestFieldErrorUserSeesValidationFeedback(t *testing.T) {
 		})
 	}
 }
+
+func TestSelectEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	t.Run("disabled select", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Select(SelectProps{
+			Name:     "role",
+			Label:    "Role",
+			Disabled: true,
+			Options:  []SelectOption{{Value: "admin", Label: "Admin"}},
+		}))
+		utils.AssertContains(t, output, "disabled")
+	})
+
+	t.Run("select with disabled option", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Select(SelectProps{
+			Name:  "color",
+			Label: "Color",
+			Options: []SelectOption{
+				{Value: "red", Label: "Red"},
+				{Value: "blue", Label: "Blue", Disabled: true},
+			},
+		}))
+		utils.AssertContains(t, output, "Red")
+		utils.AssertContains(t, output, "Blue")
+	})
+
+	t.Run("select with pre-selected option", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Select(SelectProps{
+			Name:  "size",
+			Label: "Size",
+			Options: []SelectOption{
+				{Value: "sm", Label: "Small"},
+				{Value: "md", Label: "Medium", Selected: true},
+			},
+		}))
+		utils.AssertContains(t, output, "selected")
+	})
+
+	t.Run("select with error and help text", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Select(SelectProps{
+			Name:     "country",
+			Label:    "Country",
+			Error:    "Required",
+			HelpText: "Select your country",
+			Options:  []SelectOption{{Value: "us", Label: "US"}},
+		}))
+		utils.AssertContains(t, output, "Required")
+		utils.AssertContains(t, output, "Select your country")
+		utils.AssertContains(t, output, "aria-invalid")
+	})
+
+	t.Run("select with no options", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Select(SelectProps{
+			Name:    "empty",
+			Label:   "Empty",
+			Options: []SelectOption{},
+		}))
+		utils.AssertContains(t, output, `<select`)
+	})
+}
+
+func TestCheckboxEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	t.Run("checked checkbox", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Checkbox(CheckboxProps{
+			Name:    "agree",
+			Label:   "I agree",
+			Checked: true,
+		}))
+		utils.AssertContains(t, output, "checked")
+	})
+
+	t.Run("checkbox with help text", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Checkbox(CheckboxProps{
+			Name:     "newsletter",
+			Label:    "Newsletter",
+			HelpText: "We send weekly updates",
+		}))
+		utils.AssertContains(t, output, "We send weekly updates")
+	})
+
+	t.Run("checkbox with error", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Checkbox(CheckboxProps{
+			Name:  "terms",
+			Label: "Terms",
+			Error: "You must accept",
+		}))
+		utils.AssertContains(t, output, "You must accept")
+		utils.AssertContains(t, output, "aria-invalid")
+	})
+}
+
+func TestLabelEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	t.Run("label with help text only", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Label("username", "Username", false))
+		utils.AssertContains(t, output, "Username")
+		utils.AssertNotContains(t, output, "text-red")
+	})
+
+	t.Run("label without for ID", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Label("", "Standalone", false))
+		utils.AssertContains(t, output, "Standalone")
+		utils.AssertNotContains(t, output, `for=""`)
+	})
+}
+
+func TestTextareaEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	t.Run("textarea with custom rows", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:  "bio",
+			Label: "Bio",
+			Rows:  8,
+		}))
+		utils.AssertContains(t, output, `rows="8"`)
+	})
+
+	t.Run("textarea readonly", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:     "terms",
+			Label:    "Terms",
+			ReadOnly: true,
+			Value:    "Read-only content",
+		}))
+		utils.AssertContains(t, output, "readonly")
+	})
+
+	t.Run("textarea with placeholder", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:        "note",
+			Label:       "Note",
+			Placeholder: "Type here...",
+		}))
+		utils.AssertContains(t, output, "Type here...")
+	})
+}
