@@ -48,6 +48,24 @@ func TestAllIconsRender(t *testing.T) {
 	}
 }
 
+func TestIconPathJS(t *testing.T) {
+	t.Parallel()
+	t.Run("known icon produces path elements", func(t *testing.T) {
+		t.Parallel()
+		result := IconPathJS(Home)
+		if result == "" {
+			t.Error("IconPathJS(Home) returned empty string")
+		}
+	})
+	t.Run("multi-path icon produces multiple paths", func(t *testing.T) {
+		t.Parallel()
+		result := IconPathJS(ChevronDown)
+		if result == "" {
+			t.Error("IconPathJS(ChevronDown) returned empty string")
+		}
+	})
+}
+
 func splitClasses(s string) []string {
 	var result []string
 	start := 0

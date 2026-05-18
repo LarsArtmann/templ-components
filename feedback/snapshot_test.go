@@ -196,9 +196,10 @@ func TestAlertDismissScript(t *testing.T) {
 	t.Run("alert has dismiss script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Alert(AlertProps{
-			Title: "Dismiss me",
-			Type:  AlertInfo,
-			Nonce: "test-nonce",
+			BaseProps:   utils.BaseProps{Nonce: "test-nonce"},
+			Title:       "Dismiss me",
+			Type:        AlertInfo,
+			Dismissible: true,
 		}))
 		utils.AssertContains(t, output, `data-dismiss="alert"`)
 		utils.AssertContains(t, output, `nonce="test-nonce"`)
