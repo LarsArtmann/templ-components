@@ -31,11 +31,15 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 
 ## Code Conventions
 
-- All component props embed `utils.BaseProps`
+- All component props embed `utils.BaseProps` (exception: `layout.PageProps`)
+- All root elements propagate `props.Class`, `props.Attrs`, and `props.ID`
 - Style lookups use maps, not switches
-- String enums: `type XxxType string` + `const XxxDefault XxxType = "default"`
-- Default constructors: `DefaultXxxProps()` for every component
+- String enums: `type XxxType string` + constants
+- Size constants: uppercase suffix `[Component]Size[SM|MD|LG]`
+- Default constructors: `DefaultXxxProps()` with meaningful non-zero defaults
+- Class merging: always use `utils.Class()` for Tailwind conflict resolution
 - CSP: all inline scripts use `nonce={ props.Nonce }`
+- JS IDs: escape with `strconv.Quote()` to prevent XSS (see `dropdownSafeID`)
 - No external dependencies beyond `templ` and `tailwind-merge-go`
 
 ## Commit Messages

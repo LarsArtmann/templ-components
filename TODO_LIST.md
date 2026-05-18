@@ -89,7 +89,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 43  | ✅     | Add BDD tests for htmx package                     | —        | Done. Loading indicators, error handling, CSRF, swap.          |
 | 44  | ✅     | Add BDD tests for layout package                   | —        | Done. Base, Minimal, Theme, lang, security headers.           |
 | 45  | ✅     | Add BDD tests for icons package                    | —        | Done. icons/bdd_test.go with 5 test functions, 47 subtests (all 42 icons).     |
-| 46  | ⬜     | Add tests for Table mismatched header/row lengths  | P2       | No validation exists.                                                      |
+| 46  | ✅     | Table header/row cell count mismatch guard  | —        | Done. `tableRowCells()` pads/truncates to match header count.  |
 | 47  | ⬜     | Add tests for Modal/Dropdown with empty ID         | P2       | Should fail/panic gracefully.                                              |
 | 48  | ✅     | Add test for `mapStatusToBadgeType` boundary cases | —        | Done. Case-insensitive tests in helpers_test.go (Active, ERROR, In_Progress).  |
 | 49  | ⬜     | Improve forms test coverage (58% → 75%+)           | P2       | Lowest package coverage.                                                   |
@@ -106,9 +106,9 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | #   | Status | Task                                         | Priority | Notes                                                              |
 | --- | ------ | -------------------------------------------- | -------- | ------------------------------------------------------------------ |
 | 55  | ✅     | Remove or use `icons.IconAttrs`              | —        | Done. Removed in commit 2fc8ada. Dead code eliminated.                     |
-| 56  | ⬜     | Remove or use `internal/svg.FillIcon`        | P2       | Only referenced by `display/helpers.templ` proxy.                  |
+| 56  | ✅     | Remove or use `internal/svg.FillIcon`        | —        | Not dead code. Used by 4 components via display/helpers.templ proxy. Icon paths already single-source via `toastJSIconPaths()`. |
 | 57  | ✅     | All `DefaultXxxProps()` have meaningful defaults    | —        | Done. StatCard now sets Trend: TrendNone. Remaining zero-value constructors (Accordion, Checkbox, Select) have no fields needing defaults. |
-| 58  | ⬜     | Move test helpers out of `utils/`            | P3       | `Render`, `AssertContains` etc. should be in `internal/testutil/`. |
+| 58  | ⬜     | Move test helpers out of `utils/`            | P3       | Breaking API change for consumers. Defer to v1.0. |
 | 59  | ⬜     | Move `display/a11y_test.go` ProgressBar test | P3       | Tests `feedback.ProgressBar` from display package.                 |
 | 60  | ✅     | Fix `examples/demo/main.go` syntax error     | —        | Done. Builds successfully. (Was already fixed in earlier session.)  |
 
@@ -119,7 +119,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | #   | Status | Task                                 | Priority | Notes                                                          |
 | --- | ------ | ------------------------------------ | -------- | -------------------------------------------------------------- |
 | 61  | ✅     | Set up GitHub Actions CI             | —        | Done. Go 1.26, lint+build+test.                                |
-| 62  | ⬜     | Release automation (goreleaser)      | P3       | Tag-based releases.                                            |
+| 62  | ✅     | Release automation (goreleaser)      | —        | Done. `.goreleaser.yml` for tag-based GitHub releases. |
 | 63  | ✅     | Fix pre-commit hook to be executable | —        | Already executable: -rwx--x--x permissions.                            |
 | 64  | ✅     | Exclude `examples/` from lint        | —        | 0 issues now. Already clean.                                        |
 
@@ -136,7 +136,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 69  | ✅     | Migration guide (v0.1→v0.2)                    | —        | `docs/migration/v0.1-to-v0.2.md`.          |
 | 70  | ✅     | Fix example/demo app                           | —        | Builds successfully. Showcases Nav, Alert, StatCard, Icons. |
 | 71  | ⬜     | Documentation site generation                  | P3       | Auto-generated from source.                |
-| 72  | ⬜     | Document `PageProps` not embedding `BaseProps` | P3       | Only Props struct that breaks convention.  |
+| 72  | ✅     | Document `PageProps` not embedding `BaseProps` | —        | Done. CONTEXT.md explains why PageProps has its own fields. |
 
 ---
 

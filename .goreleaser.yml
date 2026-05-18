@@ -1,0 +1,30 @@
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+    - find . -name '*_templ.go' -print0 | xargs -0 rm
+    - templ generate ./...
+
+build:
+  skip: true
+
+release:
+  github:
+    owner: larsartmann
+    name: templ-components
+  draft: false
+  prerelease: auto
+  mode: replace
+
+changelog:
+  sort: asc
+  use: github
+  filters:
+    exclude:
+      - "^docs:"
+      - "^test:"
+      - "^chore:"
+      - "Merge pull request"
+      - "Generated with Crush"
+      - "Assisted-by"
