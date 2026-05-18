@@ -1,13 +1,6 @@
 package display
 
-import (
-	"errors"
-	"strconv"
-)
-
-func dropdownSafeID(id string) string {
-	return strconv.Quote(id)
-}
+import "errors"
 
 func validateDropdownID(id string) error {
 	if id == "" {
