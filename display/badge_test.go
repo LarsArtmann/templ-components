@@ -150,4 +150,26 @@ func TestBadgeFeatures(t *testing.T) {
 		utils.AssertContains(t, output, `id="my-badge"`)
 		utils.AssertContains(t, output, "mt-2")
 	})
+
+	t.Run("badge with aria-label", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Badge(BadgeProps{
+			BaseProps: utils.BaseProps{AriaLabel: "Status indicator"},
+			Text:      "OK",
+		}))
+		utils.AssertContains(t, output, `aria-label="Status indicator"`)
+	})
+
+	t.Run("badge with pill and dot", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Badge(BadgeProps{
+			Text: "Beta",
+			Type: BadgePrimary,
+			Pill: true,
+			Dot:  true,
+		}))
+		utils.AssertContains(t, output, "rounded-full")
+		utils.AssertContains(t, output, "bg-blue-500")
+		utils.AssertContains(t, output, "Beta")
+	})
 }

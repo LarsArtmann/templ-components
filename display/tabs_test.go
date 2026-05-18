@@ -77,4 +77,29 @@ func TestTabsRender(t *testing.T) {
 		output := utils.Render(t, Tabs(TabsProps{}))
 		utils.AssertContains(t, output, `role="tablist"`)
 	})
+
+	t.Run("default underline variant", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tabs(TabsProps{
+			ActiveTabID: "a",
+			Variant:     TabsDefault,
+			Tabs: []Tab{
+				{ID: "a", Label: "A"},
+				{ID: "b", Label: "B"},
+			},
+		}))
+		utils.AssertContains(t, output, "border-blue-500")
+		utils.AssertContains(t, output, "border-transparent")
+	})
+
+	t.Run("tab without content", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tabs(TabsProps{
+			ActiveTabID: "a",
+			Tabs: []Tab{
+				{ID: "a", Label: "A"},
+			},
+		}))
+		utils.AssertNotContains(t, output, `role="tabpanel"`)
+	})
 }

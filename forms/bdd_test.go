@@ -444,6 +444,29 @@ func TestCheckboxEdgeCases(t *testing.T) {
 		utils.AssertContains(t, output, "You must accept")
 		utils.AssertContains(t, output, "aria-invalid")
 	})
+
+	t.Run("disabled checkbox", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Checkbox(CheckboxProps{
+			Name:     "locked",
+			Label:    "Locked",
+			Disabled: true,
+		}))
+		utils.AssertContains(t, output, "disabled")
+	})
+
+	t.Run("checkbox with error and help text", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Checkbox(CheckboxProps{
+			Name:     "terms",
+			Label:    "Terms",
+			Error:    "You must accept",
+			HelpText: "Check to agree",
+		}))
+		utils.AssertContains(t, output, "You must accept")
+		utils.AssertContains(t, output, "Check to agree")
+		utils.AssertContains(t, output, "aria-invalid")
+	})
 }
 
 func TestLabelEdgeCases(t *testing.T) {
@@ -496,5 +519,18 @@ func TestTextareaEdgeCases(t *testing.T) {
 			Placeholder: "Type here...",
 		}))
 		utils.AssertContains(t, output, "Type here...")
+	})
+
+	t.Run("textarea with error and help text", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:     "bio",
+			Label:    "Bio",
+			Error:    "Too short",
+			HelpText: "50 chars minimum",
+		}))
+		utils.AssertContains(t, output, "Too short")
+		utils.AssertContains(t, output, "50 chars minimum")
+		utils.AssertContains(t, output, "aria-invalid")
 	})
 }

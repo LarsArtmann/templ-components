@@ -94,16 +94,15 @@ func TestAvatarRender(t *testing.T) {
 		utils.AssertNotContains(t, output, "<img")
 	})
 
-	t.Run("with custom class and id", func(t *testing.T) {
+	t.Run("all size variants with status dot", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Avatar(AvatarProps{
-			BaseProps: utils.BaseProps{
-				ID:    "my-avatar",
-				Class: "ring-2",
-			},
-			Src: "/me.jpg",
-		}))
-		utils.AssertContains(t, output, `id="my-avatar"`)
-		utils.AssertContains(t, output, "ring-2")
+		for _, size := range []AvatarSize{AvatarSizeXS, AvatarSizeSM, AvatarSizeMD, AvatarSizeLG, AvatarSizeXL} {
+			output := utils.Render(t, Avatar(AvatarProps{
+				Src:    "/a.jpg",
+				Status: AvatarStatusOnline,
+				Size:   size,
+			}))
+			utils.AssertContains(t, output, "bg-green-400")
+		}
 	})
 }

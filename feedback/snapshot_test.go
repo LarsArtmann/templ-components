@@ -251,3 +251,29 @@ func TestDefaultPropsConstructors(t *testing.T) {
 		}
 	})
 }
+
+func TestLoadingOverlayNoProgress(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, LoadingOverlay("Loading...", false, 0))
+	utils.AssertContains(t, output, "Loading...")
+	utils.AssertContains(t, output, "Please wait...")
+	utils.AssertNotContains(t, output, "width:")
+}
+
+func TestInlineLoadingEmptyMessage(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, InlineLoading(""))
+	utils.AssertContains(t, output, "animate-spin")
+}
+
+func TestInlineErrorEmptyMessage(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, InlineError(""))
+	utils.AssertContains(t, output, "text-red-600")
+}
+
+func TestInlineSuccessEmptyMessage(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, InlineSuccess(""))
+	utils.AssertContains(t, output, "text-green-600")
+}
