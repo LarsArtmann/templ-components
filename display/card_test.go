@@ -58,6 +58,68 @@ func TestCardRender(t *testing.T) {
 	})
 }
 
+func TestStatCardRender(t *testing.T) {
+	t.Parallel()
+
+	t.Run("trend up shows Increased by", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Value:  "1234",
+			Label:  "Users",
+			Change: "12%",
+			Trend:  TrendUp,
+		}))
+		utils.AssertContains(t, output, "1234")
+		utils.AssertContains(t, output, "text-green-600")
+		utils.AssertContains(t, output, "Increased by")
+		utils.AssertNotContains(t, output, "Decreased by")
+	})
+
+	t.Run("trend down shows Decreased by", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Value:  "500",
+			Label:  "Errors",
+			Change: "5%",
+			Trend:  TrendDown,
+		}))
+		utils.AssertContains(t, output, "text-red-600")
+		utils.AssertContains(t, output, "Decreased by")
+		utils.AssertNotContains(t, output, "Increased by")
+	})
+
+	t.Run("trend none shows no direction text", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Value:  "99.9%",
+			Label:  "Uptime",
+			Change: "stats",
+			Trend:  TrendNone,
+		}))
+		utils.AssertNotContains(t, output, "Increased by")
+		utils.AssertNotContains(t, output, "Decreased by")
+		utils.AssertContains(t, output, "99.9%")
+	})
+
+	t.Run("no change hides trend indicator", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Value: "100",
+			Label: "Total",
+		}))
+		utils.AssertContains(t, output, "100")
+		utils.AssertNotContains(t, output, "sr-only")
+	})
+
+	t.Run("default props has TrendNone", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultStatCardProps()
+		if props.Trend != TrendNone {
+			t.Errorf("DefaultStatCardProps().Trend = %q, want %q", props.Trend, TrendNone)
+		}
+	})
+}
+
 func TestEmptyStateRender(t *testing.T) {
 	t.Parallel()
 	t.Run("with action link", func(t *testing.T) {

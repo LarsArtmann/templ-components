@@ -121,7 +121,7 @@ type TrendDirection string
 const (
 	TrendUp   TrendDirection = "up"
 	TrendDown TrendDirection = "down"
-	TrendNone TrendDirection = ""
+	TrendNone TrendDirection = "none"
 )
 
 // StatCardProps configures a dashboard stat card
@@ -135,7 +135,9 @@ type StatCardProps struct {
 
 // DefaultStatCardProps returns sensible defaults
 func DefaultStatCardProps() StatCardProps {
-	return StatCardProps{}
+	return StatCardProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Trend: TrendNone,
+	}
 }
 
 // StatCard renders a dashboard stat card with value, label, and optional change indicator
@@ -159,7 +161,7 @@ templ StatCard(props StatCardProps) {
 						<span class="sr-only">
 							if props.Trend == TrendUp {
 								Increased by
-							} else {
+							} else if props.Trend == TrendDown {
 								Decreased by
 							}
 						</span>
