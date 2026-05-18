@@ -73,7 +73,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 34  | ⬜     | Add `aria-live="polite"` to HTMX loading indicators      | P2       | Screen reader announcements for dynamic loading.               |
 | 35  | ⬜     | Add `aria-live="polite"` to HTMX error handling          | P2       | Dynamic error announcements for screen readers.                |
 | 36  | ⬜     | Fix `ErrorAttrs` for simultaneous error + help text      | P2       | `aria-describedby` should reference both error and help IDs.   |
-| 37  | ⬜     | Scale avatar status dot with avatar size                 | P3       | Dot is fixed `h-2.5 w-2.5`, proportionally huge on XS avatars. |
+| 37  | ✅     | Scale avatar status dot with avatar size                 | —        | Done. `avatarDotSizeClass()` scales from h-1.5 (XS) to h-3.5 (XL).  |
 | 38  | ✅     | Modal focus trap and Escape key handler                  | —        | Done in session 3.                                             |
 | 39  | ✅     | Dropdown keyboard navigation                             | —        | Done in session 3.                                             |
 | 40  | ✅     | Tabs ARIA linkage                                        | —        | Done in session 3.                                             |
