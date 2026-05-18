@@ -68,4 +68,19 @@ func TestModalRender(t *testing.T) {
 			})
 		}
 	})
+
+	t.Run("special chars in ID are JS-escaped", func(t *testing.T) {
+		t.Parallel()
+		props := ModalProps{
+			BaseProps: utils.BaseProps{
+				ID:    "modal-with-'quotes'",
+				Nonce: "test-nonce",
+			},
+			Title: "Escape Test",
+			Open:  false,
+		}
+		output := utils.Render(t, Modal(props))
+		utils.AssertNotContains(t, output, "('modal-with-'quotes'')")
+		utils.AssertContains(t, output, `"modal-with-'quotes'"`)
+	})
 }

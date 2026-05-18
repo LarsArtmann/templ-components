@@ -74,3 +74,7 @@ func validateModalID(id string) error {
 	}
 	return nil
 }
+
+func modalSafeID(id string) string {
+	return strconv.Quote(id)
+}
