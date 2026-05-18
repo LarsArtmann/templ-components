@@ -12,7 +12,7 @@ Reusable UI components for Go web apps — built on [templ](https://templ.guide)
 
 templ-components is a pure Tailwind CSS v4 component library for Go's templ engine, with first-class HTMX integration. Every component renders server-side, ships zero JavaScript by default, and uses only Tailwind utility classes — so you stay in full control of your CSS and build pipeline.
 
-> **Status:** Pre-release (v0.x). APIs may change before v1.0. Feedback and contributions welcome.
+> **Status:** Work in progress. No stability is guaranteed — APIs may change without notice at any time.
 
 ---
 
@@ -273,8 +273,8 @@ Tailwind extracts class names from any file content — including `.templ` files
 | SVG icons    | 42                                |
 | Typed enums  | 16+                               |
 | Packages     | 9                                 |
-| Tests        | 164                               |
-| Coverage     | 70%+                              |
+| Tests        | 710                               |
+| Coverage     | 71.8%                             |
 | Dependencies | 2 (`templ` + `tailwind-merge-go`) |
 
 ---
