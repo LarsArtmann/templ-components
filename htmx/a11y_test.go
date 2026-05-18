@@ -35,6 +35,16 @@ func TestGlobalErrorHandlingA11y(t *testing.T) {
 		output := utils.Render(t, GlobalErrorHandling("n"))
 		utils.AssertContains(t, output, "htmxErrorHistory")
 	})
+
+	t.Run("uses toast container for aria-live announcements", func(t *testing.T) {
+		t.Parallel()
+		toastOutput := utils.Render(t, feedback.ToastContainer("n"))
+		utils.AssertContains(t, toastOutput, `aria-live="polite"`)
+		utils.AssertContains(t, toastOutput, "tc-toast-container")
+
+		errorOutput := utils.Render(t, GlobalErrorHandling("n"))
+		utils.AssertContains(t, errorOutput, "tcShowToast")
+	})
 }
 
 func TestHTMXDarkMode(t *testing.T) {

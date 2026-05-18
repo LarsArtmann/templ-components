@@ -71,7 +71,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 32  | ✅     | Add `<html lang>` to Base layout                         | —        | Done. `PageProps.Locale` maps to `<html lang>`, default "en".       |
 | 33  | ✅     | Add Table header `scope` attributes                      | —        | Done. `<th scope="col">` already rendered.                        |
 | 34  | ✅     | Add `aria-live="polite"` to loading indicators           | —        | Done. HTMX LoadingIndicator + feedback InlineLoading.          |
-| 35  | ⬜     | Add `aria-live="polite"` to HTMX error handling          | P2       | Dynamic error announcements for screen readers.                |
+| 35  | ✅     | Add `aria-live="polite"` to HTMX error handling          | —        | Done. ToastContainer has aria-live, GlobalErrorHandling uses tcShowToast.  |
 | 36  | ✅     | Fix `ErrorAttrs` for simultaneous error + help text      | —        | Done. aria-describedby now set for help-text-only case too.    |
 | 37  | ✅     | Scale avatar status dot with avatar size                 | —        | Done. `avatarDotSizeClass()` scales from h-1.5 (XS) to h-3.5 (XL).  |
 | 38  | ✅     | Modal focus trap and Escape key handler                  | —        | Done in session 3.                                             |
@@ -107,7 +107,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | --- | ------ | -------------------------------------------- | -------- | ------------------------------------------------------------------ |
 | 55  | ✅     | Remove or use `icons.IconAttrs`              | —        | Done. Removed in commit 2fc8ada. Dead code eliminated.                     |
 | 56  | ⬜     | Remove or use `internal/svg.FillIcon`        | P2       | Only referenced by `display/helpers.templ` proxy.                  |
-| 57  | 🔨     | Remove no-op `DefaultXxxProps()` functions         | P3       | 6/8 have meaningful defaults. Accordion and StatCard still zero-value.    |
+| 57  | ✅     | All `DefaultXxxProps()` have meaningful defaults    | —        | Done. StatCard now sets Trend: TrendNone. Remaining zero-value constructors (Accordion, Checkbox, Select) have no fields needing defaults. |
 | 58  | ⬜     | Move test helpers out of `utils/`            | P3       | `Render`, `AssertContains` etc. should be in `internal/testutil/`. |
 | 59  | ⬜     | Move `display/a11y_test.go` ProgressBar test | P3       | Tests `feedback.ProgressBar` from display package.                 |
 | 60  | ✅     | Fix `examples/demo/main.go` syntax error     | —        | Done. Builds successfully. (Was already fixed in earlier session.)  |
