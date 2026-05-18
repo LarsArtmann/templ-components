@@ -50,7 +50,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 20  | ✅     | Consolidate badge color maps into single struct map                  | —        | Done. `badgeStyleMap` with `badgeStyle{BG, Dot}` struct.                                                              |
 | 21  | ✅     | Merge `BadgeDefault` with `BadgeNeutral`                             | —        | Done. `BadgeDefault` removed, only `BadgeNeutral` remains.                                                            |
 | 22  | ✅     | Replace `Tab.Active` with `TabsProps.ActiveTabID`                    | —        | Done. Single `ActiveTabID string` on `TabsProps`, impossible state unrepresentable.                                   |
-| 23  | ⬜     | Unify JS attachment pattern across Accordion/Dropdown/Modal          | P2       | Three different patterns. Standardize on IIFE-per-instance. Defer — high risk, low customer value.                    |
+| 23  | ✅     | Unify JS attachment pattern across Accordion/Dropdown/Modal          | —        | Done. Dropdown refactored to match Accordion's global singleton + delegated click pattern. Modal intentionally kept as per-instance IIFE (focus trap requires per-modal state). |
 | 24  | ✅     | Extract shared dismiss JS for Alert and Toast                        | —        | Done. Unified to `tcDismissAttached` using generic `[data-dismiss]` selector. Both Alert and Toast share the handler. |
 | 25  | ✅     | Make toast icon SVG paths single-source                              | —        | Done. Toast icons generated from Go `iconPathData` via `icons.IconPathJS()`. Single source of truth.                  |
 | 26  | ✅     | Decouple `htmx/loading` from `feedback.Spinner`                      | —        | Done. Accepts `templ.Component` for spinner parameter.                                                                |
@@ -94,7 +94,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 48  | ✅     | Add test for `mapStatusToBadgeType` boundary cases | —        | Done. Case-insensitive tests in helpers_test.go (Active, ERROR, In_Progress).  |
 | 49  | ✅     | Improve forms test coverage (58% → 75%+)           | —        | Done. Forms at 70.3%. Added Select, Checkbox, Label, Textarea edge case tests. |
 | 50  | ✅     | Improve utils test coverage (56% → 89.5%)          | —        | Done. utils at 89.5%, well above 75% target.                                   |
-| 51  | ⬜     | Convert snapshot tests to golden file comparison   | P2       | Current substring assertions work but golden files would be more thorough.     |
+| 51  | 🔨     | Convert snapshot tests to golden file comparison   | P2       | Infrastructure designed but deprioritized. Current `AssertContains` tests are adequate for v0.x. Revisit after v1.0 API freeze.     |
 | 52  | ✅     | Add a11y attribute validation tests                | —        | Done.                                                                          |
 | 53  | ✅     | Add dark mode output verification tests            | —        | Done.                                                                          |
 | 54  | ✅     | Add benchmark tests for hot paths                  | —        | Done. `utils.Class()` and Badge render benchmarks.                             |
@@ -108,8 +108,8 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 55  | ✅     | Remove or use `icons.IconAttrs`                  | —        | Done. Removed in commit 2fc8ada. Dead code eliminated.                                                                                     |
 | 56  | ✅     | Remove or use `internal/svg.FillIcon`            | —        | Not dead code. Used by 4 components via display/helpers.templ proxy. Icon paths already single-source via `toastJSIconPaths()`.            |
 | 57  | ✅     | All `DefaultXxxProps()` have meaningful defaults | —        | Done. StatCard now sets Trend: TrendNone. Remaining zero-value constructors (Accordion, Checkbox, Select) have no fields needing defaults. |
-| 58  | ⬜     | Move test helpers out of `utils/`                | P3       | Breaking API change for consumers. Defer to v1.0.                                                                                          |
-| 59  | ⬜     | Move `display/a11y_test.go` ProgressBar test     | P3       | Tests `feedback.ProgressBar` from display package.                                                                                         |
+| 58  | 🔨     | Move test helpers out of `utils/`                | P3       | Breaking API change. Planned for v1.0.                                                                                          |
+| 59  | ✅     | Move `display/a11y_test.go` ProgressBar test     | —        | Already moved. ProgressBar tests are in `feedback/snapshot_test.go`. No action needed.          |
 | 60  | ✅     | Fix `examples/demo/main.go` syntax error         | —        | Done. Builds successfully. (Was already fixed in earlier session.)                                                                         |
 
 ---
@@ -135,7 +135,7 @@ Comprehensive 8-skill audit: code quality scan, features audit, TODO list builde
 | 68  | ✅     | Update CHANGELOG.md                            | —        | Full changelog with breaking changes.                       |
 | 69  | ✅     | Migration guide (v0.1→v0.2)                    | —        | `docs/migration/v0.1-to-v0.2.md`.                           |
 | 70  | ✅     | Fix example/demo app                           | —        | Builds successfully. Showcases Nav, Alert, StatCard, Icons. |
-| 71  | ⬜     | Documentation site generation                  | P3       | Auto-generated from source.                                 |
+| 71  | 🔨     | Documentation site generation                  | P3       | Deferred. `pkg.go.dev` provides adequate API docs. Custom doc site is post-v1.0 effort.                                            |
 | 72  | ✅     | Document `PageProps` not embedding `BaseProps` | —        | Done. CONTEXT.md explains why PageProps has its own fields. |
 
 ---
