@@ -36,21 +36,20 @@ func DefaultModalProps() ModalProps {
 	}
 }
 
+//nolint:gochecknoglobals // Package-level lookup table for modal sizes
+var modalSizeLookup = map[string]string{
+	string(ModalSizeSM):   "max-w-sm",
+	string(ModalSizeMD):   "max-w-md",
+	string(ModalSizeLG):   "max-w-lg",
+	string(ModalSizeXL):   "max-w-xl",
+	string(ModalSizeFull): "max-w-4xl",
+}
+
 func modalSizeClass(size ModalSize) string {
-	switch size {
-	case ModalSizeSM:
-		return "max-w-sm"
-	case ModalSizeMD:
-		return "max-w-md"
-	case ModalSizeLG:
-		return "max-w-lg"
-	case ModalSizeXL:
-		return "max-w-xl"
-	case ModalSizeFull:
-		return "max-w-4xl"
-	default:
-		return "max-w-md"
+	if v, ok := modalSizeLookup[string(size)]; ok {
+		return v
 	}
+	return modalSizeLookup[string(ModalSizeMD)]
 }
 
 func modalCloseHandler(id string) templ.ComponentScript {
