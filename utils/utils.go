@@ -10,7 +10,7 @@ import (
 	"github.com/a-h/templ"
 )
 
-// classMu protects twmerge.Merge calls — the library's internal cache is not thread-safe.
+//nolint:gochecknoglobals // Required to protect twmerge.Merge — the library's internal cache is not thread-safe
 var classMu sync.Mutex
 
 // BaseProps provides common configurable attributes for all components

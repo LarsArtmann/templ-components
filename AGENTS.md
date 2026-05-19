@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-19 | **Coverage:** 71.8% | **Tests:** ~700 | **Packages:** 9 | **Generated files:** 31 `*_templ.go` committed
+**Updated:** 2026-05-19 | **Coverage:** 68.0% | **Tests:** ~700 | **Packages:** 9+demo | **Generated files:** 32 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -27,7 +27,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 31 generated files across 8 packages (display, feedback, forms, htmx, icons, internal/svg, layout, navigation)
+- 32 generated files across 8 packages + examples/demo (display, feedback, forms, htmx, icons, internal/svg, layout, navigation)
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
 will have their Go toolchain download the tagged commit. If `*_templ.go` is missing from that
@@ -55,6 +55,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - CSP: all inline scripts use `nonce={ props.Nonce }`
 - Sub-templates: extract shared rendering to private `templ` functions
 - Feedback styles: shared `feedbackStyleSet` struct + `lookupFeedbackStyle[T]()` generic
+- FeedbackType: canonical `FeedbackType` enum (`FeedbackSuccess/Error/Warning/Info`); `AlertType` and `ToastType` are type aliases for backward compat
 - Icons: `iconPathData` map with `|` separator for multi-path icons
 - Form errors: `ErrorAttrs(id, errMsg, helpTextID)` helper returns `templ.Attributes` for aria-invalid/aria-describedby
 - Card shell CSS: shared `cardShellClass` constant for consistent card styling
@@ -63,7 +64,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - TrendDirection: `TrendNone = "none"` (non-empty sentinel, not "")
 - Layout: `Minimal(MinimalProps)` uses props struct like `Base(PageProps)`
 - Modal/Dropdown: ID validation at render time (`validateDropdownID`, `validateModalID`) panic on empty
-- JS patterns: Accordion + Dropdown use global singleton (`window.tc*Attached`), Modal uses per-instance IIFE (focus trap)
+- JS patterns: Accordion + Dropdown use global singleton (`window.tc*Attached`), Modal uses per-instance IIFE (focus trap), ThemeToggle uses IIFE-wrapped global guard
 - Dismiss JS: Alert + Toast share `tcDismissAttached` handler using `[data-dismiss]` selector
 - Table: row cells auto-padded/truncated to match header count
 
@@ -86,8 +87,11 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - `InlineLoadingOverlay(id)` → `InlineLoadingOverlay(id, spinner templ.Component)`
 - `LoadingButton(default, loading)` → `LoadingButton(default, loading, spinner templ.Component)`
 - `SimpleCard()` → `SimpleCard(SimpleCardProps)` (now has BaseProps + CardPadding)
+- `LoadingOverlay(message, showProgress, progress)` → `LoadingOverlay(LoadingOverlayProps)` (now has BaseProps + Message + ShowProgress + Progress)
 - `TrendNone` = `""` → `"none"` (non-empty sentinel)
 - `DefaultStatCardProps()` now sets `Trend: TrendNone`
+- `FillIcon(class, path)` → `FillIcon(class, path, rotate bool)` (no longer variadic)
+- `AlertType`/`ToastType` → type aliases for `FeedbackType` (deprecated, use FeedbackType directly)
 
 ## Lint Command
 
