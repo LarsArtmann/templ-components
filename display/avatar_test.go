@@ -14,12 +14,12 @@ func TestAvatarRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
 			Src:   "/avatar.jpg",
-			Alt:   "Alice",
+			Alt:   avatarAltAlice,
 			Size:  AvatarSizeMD,
 			Shape: AvatarShapeCircle,
 		}))
 		utils.AssertContains(t, output, `src="/avatar.jpg"`)
-		utils.AssertContains(t, output, `alt="Alice"`)
+		utils.AssertContains(t, output, `alt="`+avatarAltAlice+`"`)
 		utils.AssertContains(t, output, "rounded-full")
 	})
 

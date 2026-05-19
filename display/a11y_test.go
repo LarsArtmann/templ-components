@@ -8,7 +8,17 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-const activeBadgeText = "Active"
+const (
+	activeBadgeText       = "Active"
+	dropdownLabelActions  = "Actions"
+	dropdownHrefEdit     = "/edit"
+	avatarAltAlice       = "Alice"
+	tableHeaderName      = "Name"
+	dropdownLabelMenu    = "Menu"
+	accordionIDFAQ1      = "faq1"
+	testNonce            = "test-nonce"
+	cssClassMt4          = "mt-4"
+)
 
 func TestA11yAttributes(t *testing.T) {
 	t.Parallel()
@@ -27,9 +37,9 @@ func TestA11yAttributes(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
 			BaseProps: utils.BaseProps{ID: "dd"},
-			Label:     "Actions",
+			Label:     dropdownLabelActions,
 			Items: []DropdownItem{
-				{Text: "Edit", Href: "/edit"},
+				{Text: "Edit", Href: dropdownHrefEdit},
 			},
 		}))
 		utils.AssertContains(t, output, `aria-expanded="false"`)
@@ -77,7 +87,7 @@ func TestA11yAttributes(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
 			Src: "/avatar.jpg",
-			Alt: "Alice",
+			Alt: avatarAltAlice,
 		}))
 		utils.AssertContains(t, output, `alt="Alice"`)
 	})
@@ -104,7 +114,7 @@ func TestDarkModeClasses(t *testing.T) {
 	t.Run("table has dark mode classes", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Table(TableProps{
-			Headers: []string{"Name"},
+			Headers: []string{tableHeaderName},
 			Rows:    []TableRow{SimpleTableRow("Alice")},
 		}))
 		utils.AssertContains(t, output, "dark:divide-slate-700")
@@ -115,7 +125,7 @@ func TestDarkModeClasses(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
 			BaseProps: utils.BaseProps{ID: "dd"},
-			Label:     "Menu",
+			Label:     dropdownLabelMenu,
 		}))
 		utils.AssertContains(t, output, "dark:bg-slate-800")
 	})

@@ -7,6 +7,24 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const (
+	badgeTextActive      = activeBadgeText // reuse existing
+	badgeTextFailed     = "Failed"
+	badgeTextBeta       = "Beta"
+	badgeTextRunning    = "Running"
+	badgeTextTag        = "Tag"
+	badgeTextLive       = "Live"
+	badgeTextCustom     = "Custom"
+	badgeTextOK         = "OK"
+	cssClassRoundedFull = "rounded-full"
+	cssClassMl2         = "ml-2"
+	cssClassMt2         = "mt-2"
+	statusActive        = "active"
+	statusError         = "error"
+	statusWarning       = "warning"
+	statusUnknown       = "unknown"
+)
+
 func testBadgeProps(text string, badgeType BadgeType) BadgeProps {
 	return BadgeProps{
 		BaseProps: utils.BaseProps{},
@@ -27,51 +45,51 @@ func TestBadgeRender(t *testing.T) {
 	}{
 		{
 			name:        "basic success badge",
-			props:       testBadgeProps("Active", BadgeSuccess),
-			wantContain: []string{"Active", "bg-green-100", "text-green-800"},
+			props:       testBadgeProps(badgeTextActive, BadgeSuccess),
+			wantContain: []string{badgeTextActive, "bg-green-100", "text-green-800"},
 		},
 		{
 			name: "error badge with dot",
 
 			props: BadgeProps{
 				BaseProps: utils.BaseProps{},
-				Text:      "Failed",
+				Text:      badgeTextFailed,
 				Type:      BadgeError,
 				Size:      BadgeSizeMD,
 				Pill:      false,
 				Dot:       true,
 			},
-			wantContain: []string{"Failed", "bg-red-100", "rounded-full", "bg-red-500"},
+			wantContain: []string{badgeTextFailed, "bg-red-100", cssClassRoundedFull, "bg-red-500"},
 		},
 		{
 			name: "pill badge",
 
 			props: BadgeProps{
 				BaseProps: utils.BaseProps{},
-				Text:      "Beta",
+				Text:      badgeTextBeta,
 				Type:      BadgeInfo,
 				Size:      BadgeSizeMD,
 				Pill:      true,
 				Dot:       false,
 			},
-			wantContain: []string{"Beta", "rounded-full", "bg-indigo-100"},
+			wantContain: []string{badgeTextBeta, cssClassRoundedFull, "bg-indigo-100"},
 		},
 		{
 			name: "with custom id and class",
 			props: BadgeProps{
 				BaseProps: utils.BaseProps{
 					ID:        "status-badge",
-					Class:     "ml-2",
+					Class:     cssClassMl2,
 					Attrs:     nil,
 					AriaLabel: "",
 				},
-				Text: "Running",
+				Text: badgeTextRunning,
 				Type: BadgePrimary,
 				Size: BadgeSizeMD,
 				Pill: false,
 				Dot:  false,
 			},
-			wantContain: []string{`id="status-badge"`, "ml-2", "bg-blue-100"},
+			wantContain: []string{`id="status-badge"`, cssClassMl2, "bg-blue-100"},
 		},
 	}
 	for _, tt := range tests {
@@ -92,10 +110,10 @@ func TestStatusBadgeRender(t *testing.T) {
 		status string
 		want   string
 	}{
-		{name: "active maps to success", status: "active", want: "bg-green-100"},
-		{name: "error maps to error", status: "error", want: "bg-red-100"},
-		{name: "warning maps to warning", status: "warning", want: "bg-yellow-100"},
-		{name: "unknown maps to neutral", status: "unknown", want: "bg-gray-100"},
+		{name: "active maps to success", status: statusActive, want: "bg-green-100"},
+		{name: "error maps to error", status: statusError, want: "bg-red-100"},
+		{name: "warning maps to warning", status: statusWarning, want: "bg-yellow-100"},
+		{name: "unknown maps to neutral", status: statusUnknown, want: "bg-gray-100"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -112,21 +130,21 @@ func TestBadgeFeatures(t *testing.T) {
 	t.Run("pill badge renders rounded-full", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
-			Text: "Tag",
+			Text: badgeTextTag,
 			Pill: true,
 		}))
-		utils.AssertContains(t, output, "rounded-full")
+		utils.AssertContains(t, output, cssClassRoundedFull)
 	})
 
 	t.Run("badge with dot", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
-			Text: "Active",
+			Text: badgeTextActive,
 			Dot:  true,
 			Type: BadgeSuccess,
 		}))
-		utils.AssertContains(t, output, "Active")
-		utils.AssertContains(t, output, "rounded-full")
+		utils.AssertContains(t, output, badgeTextActive)
+		utils.AssertContains(t, output, cssClassRoundedFull)
 	})
 
 	t.Run("all badge types render", func(t *testing.T) {
@@ -143,18 +161,18 @@ func TestBadgeFeatures(t *testing.T) {
 	t.Run("badge with custom class and id", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
-			BaseProps: utils.BaseProps{ID: "my-badge", Class: "mt-2"},
-			Text:      "Custom",
+			BaseProps: utils.BaseProps{ID: "my-badge", Class: cssClassMt2},
+			Text:      badgeTextCustom,
 		}))
 		utils.AssertContains(t, output, `id="my-badge"`)
-		utils.AssertContains(t, output, "mt-2")
+		utils.AssertContains(t, output, cssClassMt2)
 	})
 
 	t.Run("badge with aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
 			BaseProps: utils.BaseProps{AriaLabel: "Status indicator"},
-			Text:      "OK",
+			Text:      badgeTextOK,
 		}))
 		utils.AssertContains(t, output, `aria-label="Status indicator"`)
 	})
@@ -162,13 +180,13 @@ func TestBadgeFeatures(t *testing.T) {
 	t.Run("badge with pill and dot", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Badge(BadgeProps{
-			Text: "Beta",
+			Text: badgeTextBeta,
 			Type: BadgePrimary,
 			Pill: true,
 			Dot:  true,
 		}))
-		utils.AssertContains(t, output, "rounded-full")
+		utils.AssertContains(t, output, cssClassRoundedFull)
 		utils.AssertContains(t, output, "bg-blue-500")
-		utils.AssertContains(t, output, "Beta")
+		utils.AssertContains(t, output, badgeTextBeta)
 	})
 }

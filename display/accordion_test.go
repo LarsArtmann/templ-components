@@ -16,7 +16,7 @@ func TestAccordionRender(t *testing.T) {
 		output := utils.Render(t, Accordion(AccordionProps{
 			Items: []AccordionItem{
 				{
-					ID:      "faq1",
+					ID:      accordionIDFAQ1,
 					Title:   "What is this?",
 					Open:    true,
 					Content: templ.Raw("\u003cp\u003eAnswer 1\u003c/p\u003e"),
@@ -34,7 +34,7 @@ func TestAccordionRender(t *testing.T) {
 		utils.AssertContains(t, output, `role="region"`)
 		utils.AssertContains(t, output, `aria-expanded="true"`)
 		utils.AssertContains(t, output, `aria-expanded="false"`)
-		utils.AssertContains(t, output, `data-accordion-trigger="faq1"`)
+		utils.AssertContains(t, output, `data-accordion-trigger="`+accordionIDFAQ1+`"`)
 	})
 
 	t.Run("closed accordion item", func(t *testing.T) {
@@ -54,24 +54,24 @@ func TestAccordionRender(t *testing.T) {
 	t.Run("with nonce", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Accordion(AccordionProps{
-			BaseProps: utils.BaseProps{Nonce: "test-nonce"},
+			BaseProps: utils.BaseProps{Nonce: testNonce},
 			Items: []AccordionItem{
 				{ID: "n1", Title: "Q", Content: templ.Raw("A")},
 			},
 		}))
-		utils.AssertContains(t, output, `nonce="test-nonce"`)
+		utils.AssertContains(t, output, `nonce="`+testNonce+`"`)
 	})
 
 	t.Run("custom class and id", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Accordion(AccordionProps{
-			BaseProps: utils.BaseProps{ID: "faq", Class: "mt-4"},
+			BaseProps: utils.BaseProps{ID: "faq", Class: cssClassMt4},
 			Items: []AccordionItem{
 				{ID: "n1", Title: "Q", Content: templ.Raw("A")},
 			},
 		}))
 		utils.AssertContains(t, output, `id="faq"`)
-		utils.AssertContains(t, output, "mt-4")
+		utils.AssertContains(t, output, cssClassMt4)
 	})
 
 	t.Run("default props", func(t *testing.T) {
