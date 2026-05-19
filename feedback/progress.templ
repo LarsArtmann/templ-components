@@ -84,6 +84,7 @@ func progressHeightClass(size ProgressBarSize) string {
 
 // StepIndicatorProps configures a step/progress indicator
 type StepIndicatorProps struct {
+	utils.BaseProps
 	Steps       []string
 	CurrentStep int
 }
@@ -97,7 +98,14 @@ func DefaultStepIndicatorProps() StepIndicatorProps {
 //
 //	@feedback.StepIndicator(feedback.StepIndicatorProps{Steps: []string{"Details", "Review", "Confirm"}, CurrentStep: 1})
 templ StepIndicator(props StepIndicatorProps) {
-	<nav aria-label="Progress">
+	<nav
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		aria-label="Progress"
+		class={ utils.Class("", props.Class) }
+		{ props.Attrs... }
+	>
 		<ol class="flex items-center w-full">
 			for i, step := range props.Steps {
 				<li class={ "flex-1 flex items-center", templ.KV("", i == len(props.Steps)-1) }>

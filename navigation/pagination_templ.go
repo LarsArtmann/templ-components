@@ -229,7 +229,7 @@ func paginationArrowIcon(srText string, svgPath string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = svg.FillIcon("h-5 w-5", svgPath).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = svg.FillIcon("h-5 w-5", svgPath, false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

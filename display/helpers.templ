@@ -3,6 +3,6 @@ package display
 import "github.com/larsartmann/templ-components/internal/svg"
 
 // fillIcon renders a 20x20 filled SVG icon — delegates to shared svg.FillIcon
-templ fillIcon(class string, path string, rotate ...bool) {
-	@svg.FillIcon(class, path, rotate...)
+templ fillIcon(class string, path string, rotate bool) {
+	@svg.FillIcon(class, path, rotate)
 }

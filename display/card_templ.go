@@ -476,12 +476,12 @@ func StatCard(props StatCardProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.Trend == TrendUp {
-				templ_7745c5c3_Err = fillIcon("self-center flex-shrink-0 h-4 w-4 text-green-500", "M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = fillIcon("self-center flex-shrink-0 h-4 w-4 text-green-500", "M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z", false).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			} else if props.Trend == TrendDown {
-				templ_7745c5c3_Err = fillIcon("self-center flex-shrink-0 h-4 w-4 text-red-500", "M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = fillIcon("self-center flex-shrink-0 h-4 w-4 text-red-500", "M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z", false).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

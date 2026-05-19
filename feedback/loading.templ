@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 // SpinnerSize defines the size of a loading spinner
@@ -55,25 +56,47 @@ templ Spinner(size SpinnerSize, colorClass string) {
 	</svg>
 }
 
+// LoadingOverlayProps configures a full-screen loading overlay
+type LoadingOverlayProps struct {
+	utils.BaseProps
+	Message      string
+	ShowProgress bool
+	Progress     int
+}
+
+// DefaultLoadingOverlayProps returns sensible defaults
+func DefaultLoadingOverlayProps() LoadingOverlayProps {
+	return LoadingOverlayProps{}
+}
+
 // LoadingOverlay renders a full-screen loading overlay
 //
-//	@feedback.LoadingOverlay("Loading...", true, 45)
-templ LoadingOverlay(message string, showProgress bool, progress int) {
-	<div class="fixed inset-0 bg-black/50 z-50 flex items-center justify-center" role="dialog" aria-modal="true" aria-label={ message }>
+//	@feedback.LoadingOverlay(feedback.LoadingOverlayProps{Message: "Loading...", ShowProgress: true, Progress: 45})
+templ LoadingOverlay(props LoadingOverlayProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("fixed inset-0 bg-black/50 z-50 flex items-center justify-center", props.Class) }
+		{ props.Attrs... }
+		role="dialog"
+		aria-modal="true"
+		aria-label={ props.Message }
+	>
 		<div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl p-8 max-w-sm w-full mx-4">
 			<div class="text-center">
 				<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
 					@Spinner(SpinnerMD, "text-blue-600 dark:text-blue-400")
 				</div>
-				<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{ message }</h3>
-				if showProgress {
+				<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{ props.Message }</h3>
+				if props.ShowProgress {
 					<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
 						<div
 							class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out"
-							style={ fmt.Sprintf("width: %d%%", progress) }
+							style={ fmt.Sprintf("width: %d%%", props.Progress) }
 						></div>
 					</div>
-					<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", progress) }</p>
+					<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", props.Progress) }</p>
 				} else {
 					<p class="text-sm text-gray-500 dark:text-gray-400">Please wait...</p>
 				}

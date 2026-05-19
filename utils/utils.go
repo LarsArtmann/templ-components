@@ -2,15 +2,12 @@ package utils
 
 import (
 	"maps"
-	"sync"
+	"strconv"
 	"time"
 
 	twmerge "github.com/Oudwins/tailwind-merge-go"
 	"github.com/a-h/templ"
 )
-
-//nolint:gochecknoglobals // Required because tailwind-merge-go is not thread-safe
-var mergeMutex sync.Mutex
 
 // BaseProps provides common configurable attributes for all components
 type BaseProps struct {
@@ -24,9 +21,6 @@ type BaseProps struct {
 // Class merges Tailwind classes intelligently using tailwind-merge-go.
 // Conflicting classes are resolved with later arguments overriding earlier ones.
 func Class(classes ...string) string {
-	mergeMutex.Lock()
-	defer mergeMutex.Unlock()
-
 	return twmerge.Merge(classes...)
 }
 
@@ -71,10 +65,7 @@ func DerefOr[T any](p *T, fallback T) T {
 
 // BoolString returns "true" or "false" for a boolean value
 func BoolString(b bool) string {
-	if b {
-		return "true"
-	}
-	return "false"
+	return strconv.FormatBool(b)
 }
 
 // MapEnum looks up a string key in a map and returns the corresponding enum value,

@@ -12,7 +12,11 @@ func TestFillIconRender(t *testing.T) {
 
 	t.Run("renders SVG with correct path", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, FillIcon("h-5 w-5", "M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10"))
+		output := utils.Render(t, FillIcon(
+			"h-5 w-5",
+			"M10 0C4.48 0 0 4.48 0 10s4.48 10 10 10",
+			false,
+		))
 		utils.AssertContains(t, output, `viewBox="0 0 20 20"`)
 		utils.AssertContains(t, output, "M10 0C4.48")
 		utils.AssertContains(t, output, `aria-hidden="true"`)
@@ -33,7 +37,7 @@ func TestFillIconRender(t *testing.T) {
 
 	t.Run("renders without rotation by default", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, FillIcon("h-4 w-4", "M10 0"))
+		output := utils.Render(t, FillIcon("h-4 w-4", "M10 0", false))
 		utils.AssertNotContains(t, output, "rotate-180")
 	})
 }

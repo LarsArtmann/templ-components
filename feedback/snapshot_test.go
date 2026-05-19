@@ -81,9 +81,14 @@ func TestSpinnerRender(t *testing.T) {
 
 func TestLoadingOverlayRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, LoadingOverlay("Loading...", true, 45))
+	output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
+		Message:      "Loading...",
+		ShowProgress: true,
+		Progress:     45,
+	}))
 	utils.AssertContains(t, output, "Loading...")
-	utils.AssertContains(t, output, "fixed inset-0")
+	utils.AssertContains(t, output, "fixed")
+	utils.AssertContains(t, output, "inset-0")
 	utils.AssertContains(t, output, "width: 45%")
 }
 
@@ -254,7 +259,7 @@ func TestDefaultPropsConstructors(t *testing.T) {
 
 func TestLoadingOverlayNoProgress(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, LoadingOverlay("Loading...", false, 0))
+	output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{Message: "Loading..."}))
 	utils.AssertContains(t, output, "Loading...")
 	utils.AssertContains(t, output, "Please wait...")
 	utils.AssertNotContains(t, output, "width:")

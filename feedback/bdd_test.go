@@ -90,14 +90,18 @@ func TestSpinnerUserSeesLoadingProgress(t *testing.T) {
 
 	t.Run("user sees full-screen loading overlay", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, LoadingOverlay("Loading data...", false, 0))
+		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{Message: "Loading data..."}))
 		utils.AssertContains(t, output, "Loading data...")
 		utils.AssertContains(t, output, "animate-spin")
 	})
 
 	t.Run("user sees loading overlay with progress", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, LoadingOverlay("Uploading...", true, 65))
+		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
+			Message:      "Uploading...",
+			ShowProgress: true,
+			Progress:     65,
+		}))
 		utils.AssertContains(t, output, "Uploading...")
 		utils.AssertContains(t, output, "65%")
 	})

@@ -8,13 +8,14 @@ import (
 )
 
 // ToastType represents the visual style of a toast
-type ToastType string
+// Deprecated: Use FeedbackType instead. Will be removed in v1.0.
+type ToastType = FeedbackType
 
 const (
-	ToastSuccess ToastType = "success"
-	ToastError   ToastType = "error"
-	ToastWarning ToastType = "warning"
-	ToastInfo    ToastType = "info"
+	ToastSuccess = FeedbackSuccess
+	ToastError   = FeedbackError
+	ToastWarning = FeedbackWarning
+	ToastInfo    = FeedbackInfo
 )
 
 // ToastProps configures a toast notification
@@ -34,17 +35,17 @@ const (
 )
 
 // toastStyleMap is the single source of truth for toast styles
-var toastStyleMap = map[ToastType]feedbackStyleSet{
-	ToastSuccess: {"border-green-200 dark:border-green-800", "bg-green-50 dark:bg-green-900/30", "text-green-800 dark:text-green-200", "text-green-600 dark:text-green-400"},
-	ToastError:   {"border-red-200 dark:border-red-800", "bg-red-50 dark:bg-red-900/30", "text-red-800 dark:text-red-200", "text-red-600 dark:text-red-400"},
-	ToastWarning: {"border-yellow-200 dark:border-yellow-800", "bg-yellow-50 dark:bg-yellow-900/30", "text-yellow-800 dark:text-yellow-200", "text-yellow-600 dark:text-yellow-400"},
-	ToastInfo:    {"border-blue-200 dark:border-blue-800", "bg-blue-50 dark:bg-blue-900/30", "text-blue-800 dark:text-blue-200", "text-blue-600 dark:text-blue-400"},
+var toastStyleMap = map[FeedbackType]feedbackStyleSet{
+	FeedbackSuccess: {"border-green-200 dark:border-green-800", "bg-green-50 dark:bg-green-900/30", "text-green-800 dark:text-green-200", "text-green-600 dark:text-green-400"},
+	FeedbackError:   {"border-red-200 dark:border-red-800", "bg-red-50 dark:bg-red-900/30", "text-red-800 dark:text-red-200", "text-red-600 dark:text-red-400"},
+	FeedbackWarning: {"border-yellow-200 dark:border-yellow-800", "bg-yellow-50 dark:bg-yellow-900/30", "text-yellow-800 dark:text-yellow-200", "text-yellow-600 dark:text-yellow-400"},
+	FeedbackInfo:    {"border-blue-200 dark:border-blue-800", "bg-blue-50 dark:bg-blue-900/30", "text-blue-800 dark:text-blue-200", "text-blue-600 dark:text-blue-400"},
 }
 
 var toastStyleDefault = feedbackStyleSet{"border-gray-200 dark:border-gray-700", "bg-gray-50 dark:bg-gray-800", "text-gray-800 dark:text-gray-200", "text-gray-600 dark:text-gray-400"}
 
 // toastStyles returns Tailwind classes for each toast type
-func toastStyles(t ToastType) (border, bg, text, icon string) {
+func toastStyles(t FeedbackType) (border, bg, text, icon string) {
 	s := lookupFeedbackStyle(toastStyleMap, toastStyleDefault, t)
 	return s.Border, s.BG, s.Text, s.Icon
 }
@@ -53,7 +54,7 @@ func toastStyles(t ToastType) (border, bg, text, icon string) {
 func toastJSStyles() string {
 	var b strings.Builder
 	b.WriteString("var tcToastColors = {")
-	for _, t := range []ToastType{ToastSuccess, ToastError, ToastWarning, ToastInfo} {
+	for _, t := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
 		s := toastStyleMap[t]
 		b.WriteString("'" + string(t) + "': {border:'" + s.Border + "',bg:'" + s.BG + "',text:'" + s.Text + "',icon:'" + s.Icon + "'},")
 	}

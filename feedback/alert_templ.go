@@ -14,13 +14,14 @@ import (
 )
 
 // AlertType represents the visual style of an alert
-type AlertType string
+// Deprecated: Use FeedbackType instead. Will be removed in v1.0.
+type AlertType = FeedbackType
 
 const (
-	AlertSuccess AlertType = "success"
-	AlertError   AlertType = "error"
-	AlertWarning AlertType = "warning"
-	AlertInfo    AlertType = "info"
+	AlertSuccess = FeedbackSuccess
+	AlertError   = FeedbackError
+	AlertWarning = FeedbackWarning
+	AlertInfo    = FeedbackInfo
 )
 
 // AlertProps configures an alert banner
@@ -40,23 +41,23 @@ func DefaultAlertProps() AlertProps {
 }
 
 //nolint:gochecknoglobals // Package-level lookup table for alert styles
-var alertStyleMap = map[AlertType]feedbackStyleSet{
-	AlertSuccess: {"border-green-200 dark:border-green-800", "bg-green-50 dark:bg-green-900/20", "text-green-800 dark:text-green-200", "text-green-400"},
-	AlertError:   {"border-red-200 dark:border-red-800", "bg-red-50 dark:bg-red-900/20", "text-red-800 dark:text-red-200", "text-red-400"},
-	AlertWarning: {"border-yellow-200 dark:border-yellow-800", "bg-yellow-50 dark:bg-yellow-900/20", "text-yellow-800 dark:text-yellow-200", "text-yellow-400"},
-	AlertInfo:    {"border-blue-200 dark:border-blue-800", "bg-blue-50 dark:bg-blue-900/20", "text-blue-800 dark:text-blue-200", "text-blue-400"},
+var alertStyleMap = map[FeedbackType]feedbackStyleSet{
+	FeedbackSuccess: {"border-green-200 dark:border-green-800", "bg-green-50 dark:bg-green-900/20", "text-green-800 dark:text-green-200", "text-green-400"},
+	FeedbackError:   {"border-red-200 dark:border-red-800", "bg-red-50 dark:bg-red-900/20", "text-red-800 dark:text-red-200", "text-red-400"},
+	FeedbackWarning: {"border-yellow-200 dark:border-yellow-800", "bg-yellow-50 dark:bg-yellow-900/20", "text-yellow-800 dark:text-yellow-200", "text-yellow-400"},
+	FeedbackInfo:    {"border-blue-200 dark:border-blue-800", "bg-blue-50 dark:bg-blue-900/20", "text-blue-800 dark:text-blue-200", "text-blue-400"},
 }
 
 var alertStyleDefault = feedbackStyleSet{"border-gray-200 dark:border-gray-700", "bg-gray-50 dark:bg-gray-800/50", "text-gray-800 dark:text-gray-200", "text-gray-400"}
 
 // alertStyles returns Tailwind classes for each alert type
-func alertStyles(t AlertType) (border, bg, text, icon string) {
+func alertStyles(t FeedbackType) (border, bg, text, icon string) {
 	s := lookupFeedbackStyle(alertStyleMap, alertStyleDefault, t)
 	return s.Border, s.BG, s.Text, s.Icon
 }
 
 // alertIconName maps alert types to icon names
-func alertIconName(t AlertType) icons.Name {
+func alertIconName(t FeedbackType) icons.Name {
 	switch t {
 	case AlertSuccess:
 		return icons.Check
@@ -158,7 +159,7 @@ func Alert(props AlertProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 76, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 77, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -194,7 +195,7 @@ func Alert(props AlertProps) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(props.Message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 79, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 80, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -244,7 +245,7 @@ func Alert(props AlertProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(props.Nonce)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 100, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 101, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -310,7 +311,7 @@ func inlineMessage(message string, colorClass string, role string, icon templ.Co
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(role)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 118, Col: 80}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 119, Col: 80}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
@@ -331,7 +332,7 @@ func inlineMessage(message string, colorClass string, role string, icon templ.Co
 		var templ_7745c5c3_Var17 string
 		templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 120, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 121, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 		if templ_7745c5c3_Err != nil {

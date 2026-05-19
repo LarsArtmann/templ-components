@@ -2,10 +2,9 @@
 package svg
 
 // FillIcon renders a 20×20 filled SVG icon with the given class and path.
-// Optional rotate parameter adds a rotate-180 class when true.
-templ FillIcon(class string, path string, rotate ...bool) {
+templ FillIcon(class string, path string, rotate bool) {
 	<svg
-		class={ class, templ.KV("rotate-180", len(rotate) > 0 && rotate[0]) }
+		class={ class, templ.KV("rotate-180", rotate) }
 		viewBox="0 0 20 20"
 		fill="currentColor"
 		aria-hidden="true"
