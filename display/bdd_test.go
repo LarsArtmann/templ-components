@@ -8,6 +8,12 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const (
+	cardTitleUsers    = "Users"
+	statusActiveText = "active"
+	accordionFAQ1     = "faq1"
+)
+
 // --- Badge Behavior ---
 
 func TestBadgeUserSeesCorrectVisualFeedback(t *testing.T) {
@@ -22,7 +28,7 @@ func TestBadgeUserSeesCorrectVisualFeedback(t *testing.T) {
 	t.Run("user sees pill-shaped badge when pill is enabled", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultBadgeProps()
-		props.Text = "Active"
+		props.Text = activeBadgeText
 		props.Pill = true
 		output := utils.Render(t, Badge(props))
 		utils.AssertContains(t, output, "Active")
@@ -45,7 +51,7 @@ func TestBadgeUserSeesCorrectVisualFeedback(t *testing.T) {
 func TestStatusBadgeMapsKnownStatusesCorrectly(t *testing.T) {
 	t.Parallel()
 
-	knownStatuses := []string{"healthy", "running", "active", "success", "error", "warning"}
+	knownStatuses := []string{"healthy", "running", statusActiveText, "success", "error", "warning"}
 	for _, status := range knownStatuses {
 		t.Run("status "+status+" renders a badge", func(t *testing.T) {
 			t.Parallel()
@@ -77,7 +83,7 @@ func TestCardUserCanComposeContent(t *testing.T) {
 	t.Run("user sees card with subtitle", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultCardProps()
-		props.Title = "Users"
+		props.Title = cardTitleUsers
 		props.Subtitle = "Manage your team"
 		output := utils.Render(t, Card(props))
 		utils.AssertContains(t, output, "Users")
@@ -136,7 +142,7 @@ func TestAccordionUserCanExpandCollapse(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Accordion(AccordionProps{
 			Items: []AccordionItem{
-				{ID: "faq1", Title: "What is this?"},
+				{ID: accordionFAQ1, Title: "What is this?"},
 				{ID: "faq2", Title: "How does it work?"},
 			},
 		}))

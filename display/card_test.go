@@ -14,7 +14,7 @@ func TestCardRender(t *testing.T) {
 	t.Run("basic card with title", func(t *testing.T) {
 		t.Parallel()
 		props := CardProps{
-			Title:   "Users",
+			Title:   cardTitleUsers,
 			Padding: CardPaddingMD,
 		}
 		output := utils.Render(t, Card(props))
