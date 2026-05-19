@@ -8,6 +8,13 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const (
+	badgeStatusError       = "error"
+	badgeStatusWarning     = "warning"
+	badgeSizeMDClass      = "px-2.5 py-0.5 text-xs"
+	cardPaddingMDClass    = "px-4 py-5 sm:p-6"
+)
+
 func TestMapStatusToBadgeType(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -15,8 +22,8 @@ func TestMapStatusToBadgeType(t *testing.T) {
 		want   BadgeType
 	}{
 		{"active", BadgeSuccess},
-		{"error", BadgeError},
-		{"warning", BadgeWarning},
+		{badgeStatusError, BadgeError},
+		{badgeStatusWarning, BadgeWarning},
 		{"info", BadgeInfo},
 		{"primary", BadgePrimary},
 		{"default", BadgeNeutral},
@@ -45,9 +52,9 @@ func TestBadgeSizeClass(t *testing.T) {
 		want string
 	}{
 		{BadgeSizeSM, "px-2 py-0.5 text-xs"},
-		{BadgeSizeMD, "px-2.5 py-0.5 text-xs"},
+		{BadgeSizeMD, badgeSizeMDClass},
 		{BadgeSizeLG, "px-3 py-1 text-sm"},
-		{"unknown", "px-2.5 py-0.5 text-xs"},
+		{"unknown", badgeSizeMDClass},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.size), func(t *testing.T) {
@@ -70,9 +77,9 @@ func TestCardPaddingClass(t *testing.T) {
 	}{
 		{CardPaddingNone, ""},
 		{CardPaddingSM, "px-3 py-3"},
-		{CardPaddingMD, "px-4 py-5 sm:p-6"},
+		{CardPaddingMD, cardPaddingMDClass},
 		{CardPaddingLG, "px-6 py-6"},
-		{"unknown", "px-4 py-5 sm:p-6"},
+		{"unknown", cardPaddingMDClass},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.padding), func(t *testing.T) {

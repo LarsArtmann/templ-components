@@ -12,13 +12,13 @@ func TestTableRender(t *testing.T) {
 	t.Run("basic table", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Table(TableProps{
-			Headers: []string{"Name", "Email"},
+			Headers: []string{tableHeaderName, "Email"},
 			Rows: []TableRow{
 				SimpleTableRow("Alice", "alice@example.com"),
 				SimpleTableRow("Bob", "bob@example.com"),
 			},
 		}))
-		utils.AssertContains(t, output, "Name")
+		utils.AssertContains(t, output, tableHeaderName)
 		utils.AssertContains(t, output, "Email")
 		utils.AssertContains(t, output, "Alice")
 		utils.AssertContains(t, output, "bob@example.com")
@@ -39,7 +39,7 @@ func TestTableRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Table(TableProps{
 			Caption: "User list",
-			Headers: []string{"Name"},
+			Headers: []string{tableHeaderName},
 			Rows:    []TableRow{SimpleTableRow("Alice")},
 		}))
 		utils.AssertContains(t, output, "User list")

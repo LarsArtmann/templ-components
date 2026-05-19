@@ -7,6 +7,9 @@ import (
 	"github.com/a-h/templ"
 )
 
+const ariaDescribedBy = "aria-describedby"
+const ariaInvalid    = "aria-invalid"
+
 var nonAlphaNum = regexp.MustCompile(`[^a-zA-Z0-9-]`)
 
 // SanitizeID returns a safe HTML ID from arbitrary text
@@ -21,20 +24,20 @@ func ErrorAttrs(id, errMsg, helpTextID string) templ.Attributes {
 	if errMsg == "" {
 		if helpTextID != "" && id != "" {
 			return templ.Attributes{
-				"aria-describedby": helpTextID,
+				ariaDescribedBy: helpTextID,
 			}
 		}
 		return nil
 	}
 	attrs := templ.Attributes{
-		"aria-invalid": "true",
+		ariaInvalid: "true",
 	}
 	if id != "" {
 		describedBy := id + "-error"
 		if helpTextID != "" {
 			describedBy += " " + helpTextID
 		}
-		attrs["aria-describedby"] = describedBy
+		attrs[ariaDescribedBy] = describedBy
 	}
 	return attrs
 }

@@ -8,6 +8,8 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const dropdownItemDelete = "Delete"
+
 func TestDropdownRender(t *testing.T) {
 	t.Parallel()
 
@@ -15,17 +17,17 @@ func TestDropdownRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
 			BaseProps: utils.BaseProps{ID: "actions"},
-			Label:     "Actions",
+			Label:     dropdownLabelActions,
 			Items: []DropdownItem{
-				{Text: "Edit", Href: "/edit"},
-				{Text: "Delete", Href: "/delete"},
+				{Text: dropdownItemEdit, Href: dropdownHrefEdit},
+				{Text: dropdownItemDelete, Href: "/delete"},
 			},
 		}))
-		utils.AssertContains(t, output, "Actions")
+		utils.AssertContains(t, output, dropdownLabelActions)
 		utils.AssertContains(t, output, `id="actions-button"`)
 		utils.AssertContains(t, output, `id="actions-menu"`)
-		utils.AssertContains(t, output, "Edit")
-		utils.AssertContains(t, output, "Delete")
+		utils.AssertContains(t, output, dropdownItemEdit)
+		utils.AssertContains(t, output, dropdownItemDelete)
 		utils.AssertContains(t, output, `role="menu"`)
 		utils.AssertContains(t, output, `aria-haspopup="true"`)
 		utils.AssertContains(t, output, `data-dropdown-trigger="actions"`)
@@ -72,7 +74,7 @@ func TestDropdownRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
 			BaseProps: utils.BaseProps{ID: "rmenu"},
-			Label:     "Menu",
+			Label:     dropdownLabelMenu,
 			Position:  DropdownPositionRight,
 			Items:     []DropdownItem{{Text: "Item", Href: "/x"}},
 		}))
@@ -85,8 +87,8 @@ func TestDropdownRender(t *testing.T) {
 			BaseProps: utils.BaseProps{ID: "imenu"},
 			Label:     "Actions",
 			Items: []DropdownItem{
-				{Text: "Edit", Href: "/edit", Icon: icons.Edit},
-				{Text: "Delete", Href: "/del", Icon: icons.Trash},
+				{Text: dropdownItemEdit, Href: "/edit", Icon: icons.Edit},
+				{Text: dropdownItemDelete, Href: "/del", Icon: icons.Trash},
 			},
 		}))
 		utils.AssertContains(t, output, "Edit")
@@ -105,14 +107,14 @@ func TestDropdownRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
 			BaseProps: utils.BaseProps{ID: "dmenu"},
-			Label:     "Menu",
+			Label:     dropdownLabelMenu,
 			Items: []DropdownItem{
-				{Text: "Edit", Href: "/edit"},
-				{Text: "Delete", Href: "/del", Attrs: map[string]any{"class": "text-red-600"}},
+				{Text: dropdownItemEdit, Href: "/edit"},
+				{Text: dropdownItemDelete, Href: "/del", Attrs: map[string]any{"class": "text-red-600"}},
 			},
 		}))
-		utils.AssertContains(t, output, "Edit")
-		utils.AssertContains(t, output, "Delete")
+		utils.AssertContains(t, output, dropdownItemEdit)
+		utils.AssertContains(t, output, dropdownItemDelete)
 		utils.AssertContains(t, output, "text-red-600")
 	})
 }

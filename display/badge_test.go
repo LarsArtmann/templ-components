@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	badgeTextActive      = activeBadgeText // reuse existing
+	badgeTextActive     = activeBadgeText // reuse existing
 	badgeTextFailed     = "Failed"
 	badgeTextBeta       = "Beta"
 	badgeTextRunning    = "Running"

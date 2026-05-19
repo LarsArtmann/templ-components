@@ -9,12 +9,13 @@ import (
 )
 
 const (
-	activeBadgeText       = "Active"
-	dropdownLabelActions  = "Actions"
+	activeBadgeText      = "Active"
+	dropdownLabelActions = "Actions"
 	dropdownHrefEdit     = "/edit"
 	avatarAltAlice       = "Alice"
 	tableHeaderName      = "Name"
 	dropdownLabelMenu    = "Menu"
+	dropdownItemEdit     = "Edit"
 	accordionIDFAQ1      = "faq1"
 	testNonce            = "test-nonce"
 	cssClassMt4          = "mt-4"
@@ -39,7 +40,7 @@ func TestA11yAttributes(t *testing.T) {
 			BaseProps: utils.BaseProps{ID: "dd"},
 			Label:     dropdownLabelActions,
 			Items: []DropdownItem{
-				{Text: "Edit", Href: dropdownHrefEdit},
+				{Text: dropdownItemEdit, Href: dropdownHrefEdit},
 			},
 		}))
 		utils.AssertContains(t, output, `aria-expanded="false"`)
@@ -179,7 +180,7 @@ func TestDropdownXSSSafety(t *testing.T) {
 		maliciousID := `<script>alert('xss')</script>`
 		output := utils.Render(t, Dropdown(DropdownProps{
 			BaseProps: utils.BaseProps{ID: maliciousID},
-			Label:     "Menu",
+			Label:     dropdownLabelMenu,
 		}))
 		utils.AssertNotContains(t, output, `<script>alert('xss')</script>`)
 		utils.AssertContains(t, output, `&lt;script&gt;`)

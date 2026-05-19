@@ -12,7 +12,7 @@ func TestCompositionCardWithBadge(t *testing.T) {
 	t.Run("card header action renders badge", func(t *testing.T) {
 		t.Parallel()
 		badge := Badge(BadgeProps{
-			Text: "Active",
+			Text: activeBadgeText,
 			Type: BadgeSuccess,
 		})
 		props := CardProps{
@@ -32,11 +32,11 @@ func TestCompositionTableWithContent(t *testing.T) {
 	t.Run("table renders templ components in cells", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Table(TableProps{
-			Headers: []string{"Name", "Status"},
+			Headers: []string{tableHeaderName, "Status"},
 			Rows: []TableRow{
 				{
 					Cells: []TableCell{
-						{Text: "Alice"},
+						{Text: avatarAltAlice},
 						{Content: templ.Component(nil)},
 					},
 				},
@@ -49,7 +49,7 @@ func TestCompositionTableWithContent(t *testing.T) {
 	t.Run("table with SimpleTableRow renders all cells", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Table(TableProps{
-			Headers: []string{"Name", "Role"},
+			Headers: []string{tableHeaderName, "Role"},
 			Rows: []TableRow{
 				SimpleTableRow("Alice", "Admin"),
 				SimpleTableRow("Bob", "User"),
@@ -120,7 +120,7 @@ func TestCompositionDropdownWithMixedItems(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Dropdown(DropdownProps{
 			BaseProps: utils.BaseProps{ID: "mixed-menu"},
-			Label:     "Menu",
+			Label:     dropdownLabelMenu,
 			Items: []DropdownItem{
 				{Text: "Internal", Href: "/page"},
 				{Text: "External", Href: "https://example.com", External: true},

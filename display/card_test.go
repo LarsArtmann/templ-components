@@ -18,7 +18,7 @@ func TestCardRender(t *testing.T) {
 			Padding: CardPaddingMD,
 		}
 		output := utils.Render(t, Card(props))
-		utils.AssertContains(t, output, "Users")
+		utils.AssertContains(t, output, cardTitleUsers)
 		utils.AssertContains(t, output, "bg-white")
 		utils.AssertContains(t, output, "rounded-lg")
 	})
@@ -28,14 +28,14 @@ func TestCardRender(t *testing.T) {
 		props := CardProps{
 			BaseProps: utils.BaseProps{
 				ID:    "my-card",
-				Class: "mt-4",
+				Class: cssClassMt4,
 			},
 			Title:   "Test",
 			Padding: CardPaddingMD,
 		}
 		output := utils.Render(t, Card(props))
 		utils.AssertContains(t, output, `id="my-card"`)
-		utils.AssertContains(t, output, "mt-4")
+		utils.AssertContains(t, output, cssClassMt4)
 	})
 
 	t.Run("simple card", func(t *testing.T) {
@@ -50,12 +50,12 @@ func TestCardRender(t *testing.T) {
 		props := SimpleCardProps{
 			BaseProps: utils.BaseProps{
 				ID:    "simple-card",
-				Class: "mt-4",
+				Class: cssClassMt4,
 			},
 		}
 		output := utils.Render(t, SimpleCard(props))
 		utils.AssertContains(t, output, `id="simple-card"`)
-		utils.AssertContains(t, output, "mt-4")
+		utils.AssertContains(t, output, cssClassMt4)
 	})
 }
 
