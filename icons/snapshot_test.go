@@ -2,6 +2,7 @@
 package icons
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -27,7 +28,7 @@ func TestIconRender(t *testing.T) {
 			utils.AssertContains(t, output, "<svg")
 			utils.AssertContains(t, output, "</svg>")
 			if tt.class != "" {
-				for _, c := range splitClasses(tt.class) {
+				for _, c := range strings.Fields(tt.class) {
 					utils.AssertContains(t, output, c)
 				}
 			}
@@ -64,21 +65,4 @@ func TestIconPathJS(t *testing.T) {
 			t.Error("IconPathJS(ChevronDown) returned empty string")
 		}
 	})
-}
-
-func splitClasses(s string) []string {
-	var result []string
-	start := 0
-	for i := range len(s) {
-		if s[i] == ' ' {
-			if i > start {
-				result = append(result, s[start:i])
-			}
-			start = i + 1
-		}
-	}
-	if start < len(s) {
-		result = append(result, s[start:])
-	}
-	return result
 }

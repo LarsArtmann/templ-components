@@ -152,11 +152,7 @@ func TestClass(t *testing.T) {
 }
 
 func containsWord(s, word string) bool {
-	return slices.Contains(splitSpace(s), word)
-}
-
-func splitSpace(s string) []string {
-	return strings.Fields(s)
+	return slices.Contains(strings.Fields(s), word)
 }
 
 type testEnum string
