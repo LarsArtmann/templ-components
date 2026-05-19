@@ -28,7 +28,7 @@ func TestIconRender(t *testing.T) {
 			utils.AssertContains(t, output, "<svg")
 			utils.AssertContains(t, output, "</svg>")
 			if tt.class != "" {
-				for _, c := range strings.Fields(tt.class) {
+				for c := range strings.FieldsSeq(tt.class) {
 					utils.AssertContains(t, output, c)
 				}
 			}

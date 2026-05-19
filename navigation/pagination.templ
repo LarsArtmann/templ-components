@@ -117,9 +117,7 @@ templ paginationArrow(enabled bool, href string, roundedSide string, ariaLabel s
 //	   BaseURL: "/users",
 //	})
 templ Pagination(props PaginationProps) {
-	{{
-		props.normalize()
-	}}
+	{{ props.normalize() }}
 	if props.TotalPages > 1 {
 		<nav
 			if props.ID != "" {

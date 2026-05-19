@@ -4,18 +4,18 @@
 
 ## Repository Metrics
 
-| Metric | Value |
-|--------|-------|
-| `.templ` files | 32 files, 3,272 lines |
-| Hand-written `.go` | 18 files, 562 lines |
-| Test files | 38 files, 5,350 lines |
-| Generated `*_templ.go` | 32 files |
-| Packages | 9 (display, feedback, forms, htmx, icons, layout, navigation, utils, internal/svg) |
-| Dependencies | 2 (templ v0.3.1001, tailwind-merge-go v0.2.1) |
-| **Build** | Clean |
-| **Tests** | 9/9 pass (with `-race` flag, no data races) |
-| **Lint** | 0 issues |
-| **Coverage** | 68.0% total |
+| Metric                 | Value                                                                              |
+| ---------------------- | ---------------------------------------------------------------------------------- |
+| `.templ` files         | 32 files, 3,272 lines                                                              |
+| Hand-written `.go`     | 18 files, 562 lines                                                                |
+| Test files             | 38 files, 5,350 lines                                                              |
+| Generated `*_templ.go` | 32 files                                                                           |
+| Packages               | 9 (display, feedback, forms, htmx, icons, layout, navigation, utils, internal/svg) |
+| Dependencies           | 2 (templ v0.3.1001, tailwind-merge-go v0.2.1)                                      |
+| **Build**              | Clean                                                                              |
+| **Tests**              | 9/9 pass (with `-race` flag, no data races)                                        |
+| **Lint**               | 0 issues                                                                           |
+| **Coverage**           | 68.0% total                                                                        |
 
 ---
 
@@ -23,37 +23,37 @@
 
 ### Session 11 (This Session)
 
-| # | Task | Commit |
-|---|------|--------|
-| 1 | C2: Unify FeedbackType — canonical type with AlertType/ToastType aliases | `712be15` |
-| 2 | C3: Convert LoadingOverlay to props struct with BaseProps | `712be15` |
-| 3 | C3: StepIndicatorProps embeds BaseProps | `712be15` |
-| 4 | C4: FillIcon `rotate ...bool` → `rotate bool` (variadic anti-pattern) | `712be15` |
-| 5 | C4: Fix all 6 FillIcon call sites (accordion, card, dropdown, helpers, pagination) | `712be15` |
-| 6 | C4: ThemeToggle multi-instance fix (IIFE + global guard) | `9cc6d10` |
-| 7 | C4: Modal stable IDs (`id="{props.ID}-panel"` + getElementById) | `9cc6d10` |
-| 8 | C4: Tooltip aria-describedby | `9cc6d10` |
-| 9 | C1: Rewrite demo app with layout.Base, Tailwind v4 CDN | `0a2d754` |
-| 10 | C5: Breadcrumbs hardcoded SVG → icons.Icon(icons.ChevronRight) | `f19dd42` |
-| 11 | C6: Pagination pageURL → net/url | `f19dd42` |
-| 12 | C6: Restore sync.Mutex in utils.Class() for thread safety | `f19dd42` |
-| 13 | C7: Replace splitClasses with strings.Fields | `a23b17f` |
-| 14 | C7: Inline splitSpace wrapper | `a23b17f` |
-| 15 | C7: Extract BenchmarkHotPaths to benchmark_test.go | `a23b17f` |
-| 16 | C8: Fix stale dropdownSafeID in CONTRIBUTING.md | `e37a36d` |
-| 17 | AGENTS.md updated with breaking changes + conventions | `c883235` |
-| 18 | Session 10 audit artifacts (9 skills, plan, architecture diagrams) | `ee61026`, `fc91940` |
+| #   | Task                                                                               | Commit               |
+| --- | ---------------------------------------------------------------------------------- | -------------------- |
+| 1   | C2: Unify FeedbackType — canonical type with AlertType/ToastType aliases           | `712be15`            |
+| 2   | C3: Convert LoadingOverlay to props struct with BaseProps                          | `712be15`            |
+| 3   | C3: StepIndicatorProps embeds BaseProps                                            | `712be15`            |
+| 4   | C4: FillIcon `rotate ...bool` → `rotate bool` (variadic anti-pattern)              | `712be15`            |
+| 5   | C4: Fix all 6 FillIcon call sites (accordion, card, dropdown, helpers, pagination) | `712be15`            |
+| 6   | C4: ThemeToggle multi-instance fix (IIFE + global guard)                           | `9cc6d10`            |
+| 7   | C4: Modal stable IDs (`id="{props.ID}-panel"` + getElementById)                    | `9cc6d10`            |
+| 8   | C4: Tooltip aria-describedby                                                       | `9cc6d10`            |
+| 9   | C1: Rewrite demo app with layout.Base, Tailwind v4 CDN                             | `0a2d754`            |
+| 10  | C5: Breadcrumbs hardcoded SVG → icons.Icon(icons.ChevronRight)                     | `f19dd42`            |
+| 11  | C6: Pagination pageURL → net/url                                                   | `f19dd42`            |
+| 12  | C6: Restore sync.Mutex in utils.Class() for thread safety                          | `f19dd42`            |
+| 13  | C7: Replace splitClasses with strings.Fields                                       | `a23b17f`            |
+| 14  | C7: Inline splitSpace wrapper                                                      | `a23b17f`            |
+| 15  | C7: Extract BenchmarkHotPaths to benchmark_test.go                                 | `a23b17f`            |
+| 16  | C8: Fix stale dropdownSafeID in CONTRIBUTING.md                                    | `e37a36d`            |
+| 17  | AGENTS.md updated with breaking changes + conventions                              | `c883235`            |
+| 18  | Session 10 audit artifacts (9 skills, plan, architecture diagrams)                 | `ee61026`, `fc91940` |
 
 ### Session 10 (Previous Session)
 
-| # | Task | Commit |
-|---|------|--------|
-| 19 | Remove deprecated Exclamation icon | `3847355` |
-| 20 | Icon unknown name → panic (no silent fallback) | `3847355` |
-| 21 | ProgressBar percent clamp [0,100] | `3847355` |
-| 22 | Pagination CurrentPage < 1 → clamp to 1 | `3847355` |
-| 23 | EmptyStateProps.Icon → icons.Name | `3847355` |
-| 24 | Extract inline strings to package constants (3 commits) | `08f84c0`, `568bd62`, `7a9ec9e` |
+| #   | Task                                                    | Commit                          |
+| --- | ------------------------------------------------------- | ------------------------------- |
+| 19  | Remove deprecated Exclamation icon                      | `3847355`                       |
+| 20  | Icon unknown name → panic (no silent fallback)          | `3847355`                       |
+| 21  | ProgressBar percent clamp [0,100]                       | `3847355`                       |
+| 22  | Pagination CurrentPage < 1 → clamp to 1                 | `3847355`                       |
+| 23  | EmptyStateProps.Icon → icons.Name                       | `3847355`                       |
+| 24  | Extract inline strings to package constants (3 commits) | `08f84c0`, `568bd62`, `7a9ec9e` |
 
 ---
 
@@ -63,26 +63,26 @@
 
 These components have `utils.BaseProps` but don't render `id={ props.ID }` on their root element. Users who set `ID` on these get nothing:
 
-| Component | File | Missing |
-|-----------|------|---------|
-| Alert | `feedback/alert.templ:70` | ID |
-| Toast | `feedback/toast.templ:147` | ID |
-| StatCard | `display/card.templ:147` | ID + Attrs |
-| Nav | `navigation/nav.templ:33` | ID + Attrs |
-| Dropdown | `display/dropdown.templ:77` | ID |
-| ProgressBar | `feedback/progress.templ:50` | ID |
+| Component   | File                              | Missing             |
+| ----------- | --------------------------------- | ------------------- |
+| Alert       | `feedback/alert.templ:70`         | ID                  |
+| Toast       | `feedback/toast.templ:147`        | ID                  |
+| StatCard    | `display/card.templ:147`          | ID + Attrs          |
+| Nav         | `navigation/nav.templ:33`         | ID + Attrs          |
+| Dropdown    | `display/dropdown.templ:77`       | ID                  |
+| ProgressBar | `feedback/progress.templ:50`      | ID                  |
 | Breadcrumbs | `navigation/breadcrumbs.templ:17` | No BaseProps at all |
 
 ### Components Without BaseProps
 
-| Component | File | Impact |
-|-----------|------|--------|
-| Spinner | `feedback/loading.templ:47` | No ID/Class/Attrs |
-| SimpleNav | `navigation/nav.templ:69` | No ID/Class/Attrs |
-| Breadcrumbs | `navigation/breadcrumbs.templ:17` | No ID/Class/Attrs/Nonce |
-| Accordion | `display/accordion.templ:30` | No BaseProps (has AccordionProps) |
-| Table | `display/table.templ:49` | No BaseProps (has TableProps) |
-| Tabs | `display/tabs.templ:31` | No BaseProps (has TabsProps) |
+| Component   | File                              | Impact                            |
+| ----------- | --------------------------------- | --------------------------------- |
+| Spinner     | `feedback/loading.templ:47`       | No ID/Class/Attrs                 |
+| SimpleNav   | `navigation/nav.templ:69`         | No ID/Class/Attrs                 |
+| Breadcrumbs | `navigation/breadcrumbs.templ:17` | No ID/Class/Attrs/Nonce           |
+| Accordion   | `display/accordion.templ:30`      | No BaseProps (has AccordionProps) |
+| Table       | `display/table.templ:49`          | No BaseProps (has TableProps)     |
+| Tabs        | `display/tabs.templ:31`           | No BaseProps (has TabsProps)      |
 
 ### Modal Focus Restore
 
@@ -98,46 +98,46 @@ These components have `utils.BaseProps` but don't render `id={ props.ID }` on th
 
 ### Architecture Improvements
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 1 | Add Radio component (forms/radio.templ) | Medium | High — gap in form library |
-| 2 | Extract shared `LookupStyle[T]` generic helper | Low | Medium — eliminates 5 duplicate lookup functions |
-| 3 | Add `utils.AssertContainsClass` test helper | Low | Medium — eliminates fragile class-string tests |
-| 4 | Extract shared dismiss JS (Alert + Toast duplication) | Low | Medium — DRY |
-| 5 | Add `DefaultXxxProps()` for all enums without one | Low | Low — completeness |
-| 6 | Add Radio group component | Medium | Medium |
-| 7 | Extract shared panic assertion test helper | Low | Low — test DRY |
-| 8 | Add `t.Parallel()` to layout/a11y_test.go TestSecurityHeaders | Trivial | Low |
+| #   | Task                                                          | Effort  | Impact                                           |
+| --- | ------------------------------------------------------------- | ------- | ------------------------------------------------ |
+| 1   | Add Radio component (forms/radio.templ)                       | Medium  | High — gap in form library                       |
+| 2   | Extract shared `LookupStyle[T]` generic helper                | Low     | Medium — eliminates 5 duplicate lookup functions |
+| 3   | Add `utils.AssertContainsClass` test helper                   | Low     | Medium — eliminates fragile class-string tests   |
+| 4   | Extract shared dismiss JS (Alert + Toast duplication)         | Low     | Medium — DRY                                     |
+| 5   | Add `DefaultXxxProps()` for all enums without one             | Low     | Low — completeness                               |
+| 6   | Add Radio group component                                     | Medium  | Medium                                           |
+| 7   | Extract shared panic assertion test helper                    | Low     | Low — test DRY                                   |
+| 8   | Add `t.Parallel()` to layout/a11y_test.go TestSecurityHeaders | Trivial | Low                                              |
 
 ### Type Safety Improvements
 
-| # | Task | Effort | Impact |
-|---|------|--------|--------|
-| 9 | Add `ComponentProps` interface with `GetBaseProps() BaseProps` | Medium | Medium — enables generic component wrapping |
-| 10 | Refactor BadgeType to use shared FeedbackType | Low | Low — semantic consistency |
-| 11 | Add `DefaultTooltipPosition()` etc. for missing enum defaults | Low | Low |
+| #   | Task                                                           | Effort | Impact                                      |
+| --- | -------------------------------------------------------------- | ------ | ------------------------------------------- |
+| 9   | Add `ComponentProps` interface with `GetBaseProps() BaseProps` | Medium | Medium — enables generic component wrapping |
+| 10  | Refactor BadgeType to use shared FeedbackType                  | Low    | Low — semantic consistency                  |
+| 11  | Add `DefaultTooltipPosition()` etc. for missing enum defaults  | Low    | Low                                         |
 
 ### Test Coverage Gaps
 
-| # | Missing Coverage | Component |
-|---|------------------|-----------|
-| 12 | Empty `Title`, empty `Message`, unknown `AlertType` | Alert |
-| 13 | Empty `Message`, unknown `ToastType` | Toast |
-| 14 | `Total=0`, negative `Current` | ProgressBar |
-| 15 | Empty `Steps`, `CurrentStep` out of bounds | StepIndicator |
-| 16 | Empty `Links` array, empty `Href` | Nav |
-| 17 | Empty `Items` list, item with both Href and action | Dropdown |
-| 18 | Modal without `Title` | Modal |
-| 19 | Empty token string | CSRFToken |
-| 20 | `CurrentPage > TotalPages`, `TotalPages=0` | Pagination |
+| #   | Missing Coverage                                    | Component     |
+| --- | --------------------------------------------------- | ------------- |
+| 12  | Empty `Title`, empty `Message`, unknown `AlertType` | Alert         |
+| 13  | Empty `Message`, unknown `ToastType`                | Toast         |
+| 14  | `Total=0`, negative `Current`                       | ProgressBar   |
+| 15  | Empty `Steps`, `CurrentStep` out of bounds          | StepIndicator |
+| 16  | Empty `Links` array, empty `Href`                   | Nav           |
+| 17  | Empty `Items` list, item with both Href and action  | Dropdown      |
+| 18  | Modal without `Title`                               | Modal         |
+| 19  | Empty token string                                  | CSRFToken     |
+| 20  | `CurrentPage > TotalPages`, `TotalPages=0`          | Pagination    |
 
 ### Documentation
 
-| # | Task | Effort |
-|---|------|--------|
-| 21 | Add `CONTRIBUTING.md` section on thread-safety (`classMu`) | Low |
-| 22 | Document why `*_templ.go` must be committed | Done ✅ |
-| 23 | Add architecture decision record for `FeedbackType` unification | Low |
+| #   | Task                                                            | Effort  |
+| --- | --------------------------------------------------------------- | ------- |
+| 21  | Add `CONTRIBUTING.md` section on thread-safety (`classMu`)      | Low     |
+| 22  | Document why `*_templ.go` must be committed                     | Done ✅ |
+| 23  | Add architecture decision record for `FeedbackType` unification | Low     |
 
 ---
 
@@ -162,6 +162,7 @@ These components have `utils.BaseProps` but don't render `id={ props.ID }` on th
 ### 3. Test Fragility — Exact Class String Matching
 
 38 test files assert on exact CSS class strings. Any change to Tailwind class ordering (from tailwind-merge-go updates) or addition of new classes breaks tests. Examples:
+
 - `display/accordion_test.go:47` — exact `"overflow-hidden transition-all duration-200 max-h-0"`
 - `display/table_test.go:96` — `"border border-gray-200"`
 - `icons/snapshot_test.go:47` — `"h-5 w-5"`
@@ -171,6 +172,7 @@ These are implementation tests, not behavior tests. Should use `AssertContainsCl
 ### 4. Dead Code in utils.go
 
 Three exported functions with zero references:
+
 - `Deref[T](p *T) T` — Go 1.22 has `cmp.Or`, but this is still unused
 - `DerefOr[T](p *T, fallback T) T` — zero references
 - `MergeAttrs(m ...templ.Attributes) templ.Attributes` — zero references
@@ -180,6 +182,7 @@ They increase API surface without value. Should be removed or at least documente
 ### 5. fillIcon Wrapper is Pointless
 
 `display/helpers.templ` contains a 3-line wrapper:
+
 ```templ
 templ fillIcon(class string, path string, rotate bool) {
     @svg.FillIcon(class, path, rotate)
@@ -191,6 +194,7 @@ This adds zero value — just calls through. Every caller could `@svg.FillIcon` 
 ### 6. Hardcoded Inline SVGs (3 Remaining)
 
 After fixing breadcrumbs, 3 components still have hardcoded inline SVGs instead of using `icons.Icon`:
+
 - **Alert dismiss button** (`feedback/alert.templ:92`) — X icon, should use `icons.X`
 - **Toast dismiss button** (`feedback/toast.templ:126`) — X icon in JS string, should use `icons.IconPathJS(icons.X)`
 - **StepIndicator checkmark** (`feedback/progress.templ:123`) — Check icon, should use `icons.Check`
@@ -198,6 +202,7 @@ After fixing breadcrumbs, 3 components still have hardcoded inline SVGs instead 
 ### 7. Duplicate Map-Lookup-With-Fallback Pattern (5x)
 
 Identical logic copy-pasted across 5 files:
+
 ```go
 func xxxLookup(t T) V {
     if v, ok := xxxMap[t]; ok { return v }
@@ -206,6 +211,7 @@ func xxxLookup(t T) V {
 ```
 
 Locations:
+
 - `display/badge.templ:107` (badgeLookupStyle)
 - `display/tooltip.templ:54` (tooltipLookupPosition)
 - `display/card.templ:83` (cardPaddingClass)
@@ -249,33 +255,33 @@ Locations:
 
 Sorted by impact / effort ratio (Pareto):
 
-| # | Task | Effort | Impact | Priority |
-|---|------|--------|--------|----------|
-| 1 | Fix Modal focus restore (store/restore activeElement) | 15min | High (a11y) | 🔴 |
-| 2 | Add `id={ props.ID }` to components missing it (6 components) | 30min | High (API consistency) | 🔴 |
-| 3 | Extract shared `LookupStyle` generic (replaces 5 copies) | 20min | Medium (DRY) | 🔴 |
-| 4 | Extract shared dismiss JS (Alert + Toast) | 20min | Medium (DRY) | 🔴 |
-| 5 | Add `utils.AssertContainsClass` + refactor fragile tests | 30min | High (test reliability) | 🔴 |
-| 6 | Add Radio component | 45min | High (feature gap) | 🟡 |
-| 7 | Replace hardcoded SVGs with icons.Icon (3 remaining) | 20min | Low-Medium (SSOT) | 🟡 |
-| 8 | Remove dead code (Deref, DerefOr, MergeAttrs) | 10min | Low (cleanliness) | 🟡 |
-| 9 | Inline `fillIcon` wrapper (call svg.FillIcon directly) | 15min | Low (simplicity) | 🟡 |
-| 10 | Add test coverage for error paths (empty inputs, out-of-bounds) | 60min | Medium (reliability) | 🟡 |
-| 11 | Extract shared panic assertion test helper | 10min | Low (test DRY) | 🟡 |
-| 12 | Add `t.Parallel()` to TestSecurityHeaders | 2min | Trivial | 🟡 |
-| 13 | Add `DefaultXxxProps()` for enums missing them | 20min | Low (completeness) | 🟢 |
-| 14 | DropdownItem typed variant | 45min | Medium (type safety) | 🟢 |
-| 15 | SimpleNav → SimpleNavProps | 30min | Medium (API consistency) | 🟢 |
-| 16 | Add dark mode toggle to demo app | 30min | Low (demo polish) | 🟢 |
-| 17 | Add Button with loading state | 30min | Medium (feature) | 🟢 |
-| 18 | Extract shared JS init pattern | 60min | Medium (maintainability) | 🟢 |
-| 19 | Add Radio group component | 30min | Medium (feature) | 🟢 |
-| 20 | BadgeType → FeedbackType unification | 30min | Low (consistency) | 🔵 |
-| 21 | Add `ComponentProps` interface | 60min | Medium (architecture) | 🔵 |
-| 22 | Document thread-safety in CONTRIBUTING.md | 10min | Low (docs) | 🔵 |
-| 23 | Add ADR for FeedbackType unification | 15min | Low (docs) | 🔵 |
-| 24 | Generate static CSS instead of Tailwind CDN | 120min | High (production) | 🔵 |
-| 25 | Add form validation JS | 90min | Medium (feature) | 🔵 |
+| #   | Task                                                            | Effort | Impact                   | Priority |
+| --- | --------------------------------------------------------------- | ------ | ------------------------ | -------- |
+| 1   | Fix Modal focus restore (store/restore activeElement)           | 15min  | High (a11y)              | 🔴       |
+| 2   | Add `id={ props.ID }` to components missing it (6 components)   | 30min  | High (API consistency)   | 🔴       |
+| 3   | Extract shared `LookupStyle` generic (replaces 5 copies)        | 20min  | Medium (DRY)             | 🔴       |
+| 4   | Extract shared dismiss JS (Alert + Toast)                       | 20min  | Medium (DRY)             | 🔴       |
+| 5   | Add `utils.AssertContainsClass` + refactor fragile tests        | 30min  | High (test reliability)  | 🔴       |
+| 6   | Add Radio component                                             | 45min  | High (feature gap)       | 🟡       |
+| 7   | Replace hardcoded SVGs with icons.Icon (3 remaining)            | 20min  | Low-Medium (SSOT)        | 🟡       |
+| 8   | Remove dead code (Deref, DerefOr, MergeAttrs)                   | 10min  | Low (cleanliness)        | 🟡       |
+| 9   | Inline `fillIcon` wrapper (call svg.FillIcon directly)          | 15min  | Low (simplicity)         | 🟡       |
+| 10  | Add test coverage for error paths (empty inputs, out-of-bounds) | 60min  | Medium (reliability)     | 🟡       |
+| 11  | Extract shared panic assertion test helper                      | 10min  | Low (test DRY)           | 🟡       |
+| 12  | Add `t.Parallel()` to TestSecurityHeaders                       | 2min   | Trivial                  | 🟡       |
+| 13  | Add `DefaultXxxProps()` for enums missing them                  | 20min  | Low (completeness)       | 🟢       |
+| 14  | DropdownItem typed variant                                      | 45min  | Medium (type safety)     | 🟢       |
+| 15  | SimpleNav → SimpleNavProps                                      | 30min  | Medium (API consistency) | 🟢       |
+| 16  | Add dark mode toggle to demo app                                | 30min  | Low (demo polish)        | 🟢       |
+| 17  | Add Button with loading state                                   | 30min  | Medium (feature)         | 🟢       |
+| 18  | Extract shared JS init pattern                                  | 60min  | Medium (maintainability) | 🟢       |
+| 19  | Add Radio group component                                       | 30min  | Medium (feature)         | 🟢       |
+| 20  | BadgeType → FeedbackType unification                            | 30min  | Low (consistency)        | 🔵       |
+| 21  | Add `ComponentProps` interface                                  | 60min  | Medium (architecture)    | 🔵       |
+| 22  | Document thread-safety in CONTRIBUTING.md                       | 10min  | Low (docs)               | 🔵       |
+| 23  | Add ADR for FeedbackType unification                            | 15min  | Low (docs)               | 🔵       |
+| 24  | Generate static CSS instead of Tailwind CDN                     | 120min | High (production)        | 🔵       |
+| 25  | Add form validation JS                                          | 90min  | Medium (feature)         | 🔵       |
 
 ---
 
@@ -284,6 +290,7 @@ Sorted by impact / effort ratio (Pareto):
 **Question: Should `Breadcrumbs` accept `BaseProps` (ID/Class/Attrs) or stay as a simple `[]BreadcrumbItem` parameter?**
 
 The current signature is:
+
 ```go
 templ Breadcrumbs(items []BreadcrumbItem)
 ```
@@ -291,11 +298,13 @@ templ Breadcrumbs(items []BreadcrumbItem)
 Every other navigation component (Nav, NavLink, Pagination) uses props structs with `BaseProps`. Breadcrumbs is the outlier.
 
 **Arguments for adding BaseProps:**
+
 - Consistency with every other component in the library
 - Users might want `aria-label`, custom `class`, or `id` on the `<nav>`
 - The `navigation` package would have uniform API shape
 
 **Arguments against:**
+
 - Breadcrumbs is conceptually simpler than other components — just a list of items
 - Adding `BreadcrumbProps` with `BaseProps` means callers write `Breadcrumbs(BreadcrumbProps{Items: [...]})` instead of `Breadcrumbs([...])`
 - The current API is more ergonomic for the common case
