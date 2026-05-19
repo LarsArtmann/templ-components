@@ -1,146 +1,140 @@
 # TODO List — templ-components
 
-**Updated:** 2026-05-18
+**Updated:** 2026-05-19
 
 Legend: ✅ Done | 🔨 In Progress | ⬜ Not Started | ❌ Blocked
 
 ---
 
-## Session 4 (2026-05-07) — Comprehensive Audit
+## Session 10 (2026-05-19) — Comprehensive 9-Skill Audit
 
-Comprehensive 8-skill audit: code quality scan, features audit, TODO list builder, architecture review, architecture improvement, architecture visualization, full code review, BDD testing.
+Full audit: code quality scan, features audit, TODO list builder, architecture review, architecture improvement, architecture visualization, full code review, BDD testing, go-modularize analysis.
 
-### Build & Quality
+### Code Quality Baseline
 
-| #   | Status | Task                              | Priority | Notes                                                |
-| --- | ------ | --------------------------------- | -------- | ---------------------------------------------------- |
-| 1   | ✅     | Build passes (`go build ./...`)   | —        | Clean. Zero issues.                                  |
-| 2   | ✅     | All tests pass (`go test ./...`)  | —        | 9 packages, all green.                               |
-| 3   | ✅     | Lint passes (`golangci-lint run`) | —        | 0 issues on library packages.                        |
-| 4   | ✅     | Features audit completed          | —        | FEATURES.md updated with status for every component. |
-
----
-
-## Critical Bugs & Type Safety
-
-| #   | Status | Task                                                         | Priority | Notes                                                                                               |
-| --- | ------ | ------------------------------------------------------------ | -------- | --------------------------------------------------------------------------------------------------- |
-| 5   | ✅     | Fix `class="dropdownItemClass"` rendering literal string     | P0       | Fixed in session 1.                                                                                 |
-| 6   | ✅     | Fix `class="emptyStateActionClass"` rendering literal string | P0       | Fixed in session 1.                                                                                 |
-| 7   | ✅     | Fix `.golangci.yml` Go version mismatch                      | P0       | Fixed: `1.23` → `1.26`.                                                                             |
-| 8   | ✅     | Fix README.md stale `layout.BaseProps` → `PageProps`         | P0       | Fixed in session 1.                                                                                 |
-| 9   | ✅     | Fix `NavLinkProps.Attrs` shadowing `BaseProps.Attrs`         | —        | Done. Removed shadowing `Attrs` field from `NavLinkProps`. Consumer attributes propagate correctly. |
-| 10  | ✅     | Validate required `ID` in Modal and Dropdown                 | —        | Done. `validateModalID()` and `validateDropdownID()` panic on empty ID.                             |
-| 11  | ✅     | Fix Dropdown JS XSS vector                                   | —        | Done. `dropdownSafeID()` uses `strconv.Quote` for JS string escaping.                               |
-| 12  | ✅     | Fix Accordion state coupling with `max-h-96`                 | —        | Done. Uses `data-open` attribute as single source of truth.                                         |
+|| #   | Status | Task                              | Notes                          |
+| --- | ------ | --------------------------------- | ------------------------------ |
+| 1   | ✅     | Build passes (`go build ./...`)   | Clean. Zero issues.            |
+| 2   | ✅     | All tests pass (`go test ./...`)  | 9 packages, all green.         |
+| 3   | ✅     | Lint passes (`golangci-lint run`) | 0 issues on library packages.  |
+| 4   | ✅     | Coverage: 71.8%                   | Range: 70.5%–89.5% per package. |
 
 ---
 
-## Architecture
+## Critical Issues (P0)
 
-| #   | Status | Task                                                                 | Priority | Notes                                                                                                                                                                           |
-| --- | ------ | -------------------------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 13  | ✅     | Extract shared SVG helpers to `internal/svg/`                        | —        | Done. FillIcon, SpinnerSVG.                                                                                                                                                     |
-| 14  | ✅     | Unify alert/toast styles into shared `feedbackStyleSet`              | —        | Done. Shared struct + `lookupFeedbackStyle[T]()`.                                                                                                                               |
-| 15  | ✅     | Generic `utils.MapEnum[T ~string]`                                   | —        | Done.                                                                                                                                                                           |
-| 16  | ✅     | All Props structs embed `utils.BaseProps`                            | —        | Done.                                                                                                                                                                           |
-| 17  | ✅     | Map-based style lookups (not switches)                               | —        | Done.                                                                                                                                                                           |
-| 18  | ✅     | Rename `layout.BaseProps` → `PageProps`                              | —        | Done.                                                                                                                                                                           |
-| 19  | ✅     | Deepen icon rendering: path-data map                                 | —        | Done. `iconPathData` map + `strokeIcon()`.                                                                                                                                      |
-| 20  | ✅     | Consolidate badge color maps into single struct map                  | —        | Done. `badgeStyleMap` with `badgeStyle{BG, Dot}` struct.                                                                                                                        |
-| 21  | ✅     | Merge `BadgeDefault` with `BadgeNeutral`                             | —        | Done. `BadgeDefault` removed, only `BadgeNeutral` remains.                                                                                                                      |
-| 22  | ✅     | Replace `Tab.Active` with `TabsProps.ActiveTabID`                    | —        | Done. Single `ActiveTabID string` on `TabsProps`, impossible state unrepresentable.                                                                                             |
-| 23  | ✅     | Unify JS attachment pattern across Accordion/Dropdown/Modal          | —        | Done. Dropdown refactored to match Accordion's global singleton + delegated click pattern. Modal intentionally kept as per-instance IIFE (focus trap requires per-modal state). |
-| 24  | ✅     | Extract shared dismiss JS for Alert and Toast                        | —        | Done. Unified to `tcDismissAttached` using generic `[data-dismiss]` selector. Both Alert and Toast share the handler.                                                           |
-| 25  | ✅     | Make toast icon SVG paths single-source                              | —        | Done. Toast icons generated from Go `iconPathData` via `icons.IconPathJS()`. Single source of truth.                                                                            |
-| 26  | ✅     | Decouple `htmx/loading` from `feedback.Spinner`                      | —        | Done. Accepts `templ.Component` for spinner parameter.                                                                                                                          |
-| 26a | ✅     | Extract tooltip position/arrow into single struct-returning function | —        | Done. Cached lookup in local variable, removed redundant `tooltipPositionDefault`.                                                                                              |
-| 26b | ✅     | Extract card shell CSS into `cardShellClass()`                       | —        | Done. `const cardShellClass` in card_templ.go:13, used 3×.                                                                                                                      |
-| 27  | ✅     | Replace `AvatarProps.Online/Offline bool` with `AvatarStatus` enum   | —        | Done.                                                                                                                                                                           |
-| 28  | ✅     | Replace `StatCard.positive bool` with `TrendDirection` enum          | —        | Done.                                                                                                                                                                           |
-| 29  | ✅     | Fix `HTMXSRI string` → `HTMXUseSRI bool`                             | —        | Done.                                                                                                                                                                           |
+|| #   | Status | Task                                                  | Package    | Notes                                                        |
+| --- | ------ | ----------------------------------------------------- | ---------- | ------------------------------------------------------------ |
+| 5   | ⬜     | Fix demo app to use `layout.Base`                    | examples/  | Currently uses raw HTML, wrong Tailwind version (v2 vs v4), no HTMX. Anti-advertisement for the library. |
+| 6   | ⬜     | Remove or validate unknown icon names                | icons/     | `iconPaths()` silently falls back to clock icon. `Name("typo")` renders wrong icon. Error or panic instead. |
+| 7   | ⬜     | Fix `IconPathJS` stroke-width mismatch               | icons/     | JS version uses `stroke-width="2"` vs templ `stroke-width="1.5"`. Split brain: same icon renders differently. |
+| 8   | ⬜     | Delete deprecated `Exclamation` icon                 | icons/     | Identical SVG path to `ExclamationCircle`. Dead code walking. Remove from constants, path map, test lists. |
 
 ---
 
-## Accessibility
+## Architecture (P1)
 
-| #   | Status | Task                                                     | Priority | Notes                                                                     |
-| --- | ------ | -------------------------------------------------------- | -------- | ------------------------------------------------------------------------- |
-| 30  | ✅     | Add `alt` text to Avatar `<img>`                         | —        | Done. `AvatarProps.Alt` field + `alt={ props.Alt }` on img.               |
-| 31  | ✅     | Add `aria-required` to form inputs when `Required: true` | —        | Done. Input, Select, Textarea all set `aria-required="true"`.             |
-| 32  | ✅     | Add `<html lang>` to Base layout                         | —        | Done. `PageProps.Locale` maps to `<html lang>`, default "en".             |
-| 33  | ✅     | Add Table header `scope` attributes                      | —        | Done. `<th scope="col">` already rendered.                                |
-| 34  | ✅     | Add `aria-live="polite"` to loading indicators           | —        | Done. HTMX LoadingIndicator + feedback InlineLoading.                     |
-| 35  | ✅     | Add `aria-live="polite"` to HTMX error handling          | —        | Done. ToastContainer has aria-live, GlobalErrorHandling uses tcShowToast. |
-| 36  | ✅     | Fix `ErrorAttrs` for simultaneous error + help text      | —        | Done. aria-describedby now set for help-text-only case too.               |
-| 37  | ✅     | Scale avatar status dot with avatar size                 | —        | Done. `avatarDotSizeClass()` scales from h-1.5 (XS) to h-3.5 (XL).        |
-| 38  | ✅     | Modal focus trap and Escape key handler                  | —        | Done in session 3.                                                        |
-| 39  | ✅     | Dropdown keyboard navigation                             | —        | Done in session 3.                                                        |
-| 40  | ✅     | Tabs ARIA linkage                                        | —        | Done in session 3.                                                        |
-| 41  | ✅     | Tooltip `aria-describedby` linkage                       | —        | Done in session 3.                                                        |
-
----
-
-## Testing
-
-| #   | Status | Task                                               | Priority | Notes                                                                                                                           |
-| --- | ------ | -------------------------------------------------- | -------- | ------------------------------------------------------------------------------------------------------------------------------- |
-| 42  | ✅     | Add BDD tests for navigation package               | —        | Done. Nav, SimpleNav, NavLink, Breadcrumbs, Pagination, Footer.                                                                 |
-| 43  | ✅     | Add BDD tests for htmx package                     | —        | Done. Loading indicators, error handling, CSRF, swap.                                                                           |
-| 44  | ✅     | Add BDD tests for layout package                   | —        | Done. Base, Minimal, Theme, lang, security headers.                                                                             |
-| 45  | ✅     | Add BDD tests for icons package                    | —        | Done. icons/bdd_test.go with 5 test functions, 47 subtests (all 42 icons).                                                      |
-| 46  | ✅     | Table header/row cell count mismatch guard         | —        | Done. `tableRowCells()` pads/truncates to match header count.                                                                   |
-| 47  | ✅     | Tests for Modal/Dropdown with empty ID             | —        | Done. Both panic on render when ID is missing. Test added.                                                                      |
-| 48  | ✅     | Add test for `mapStatusToBadgeType` boundary cases | —        | Done. Case-insensitive tests in helpers_test.go (Active, ERROR, In_Progress).                                                   |
-| 49  | ✅     | Improve forms test coverage (58% → 75%+)           | —        | Done. Forms at 70.3%. Added Select, Checkbox, Label, Textarea edge case tests.                                                  |
-| 50  | ✅     | Improve utils test coverage (56% → 89.5%)          | —        | Done. utils at 89.5%, well above 75% target.                                                                                    |
-| 51  | 🔨     | Convert snapshot tests to golden file comparison   | P2       | Infrastructure designed but deprioritized. Current `AssertContains` tests are adequate for v0.x. Revisit after v1.0 API freeze. |
-| 52  | ✅     | Add a11y attribute validation tests                | —        | Done.                                                                                                                           |
-| 53  | ✅     | Add dark mode output verification tests            | —        | Done.                                                                                                                           |
-| 54  | ✅     | Add benchmark tests for hot paths                  | —        | Done. `utils.Class()` and Badge render benchmarks.                                                                              |
+|| #   | Status | Task                                                    | Package    | Notes                                                              |
+| --- | ------ | ------------------------------------------------------- | ---------- | ------------------------------------------------------------------ |
+| 9   | ⬜     | Unify `AlertType`/`ToastType` into shared type          | feedback/  | Same 4 values (Success, Error, Warning, Info). Merge into `FeedbackLevel` or keep one type. |
+| 10  | ⬜     | Merge `alertStyleMap`/`toastStyleMap`                   | feedback/  | Near-identical maps. Icon color difference (400 vs 600) may be intentional — verify. |
+| 11  | ⬜     | Make `SimpleCard` compose through `Card`                | display/   | Currently duplicates shell rendering. `SimpleCard` should call `Card` with no title/footer. |
+| 12  | ⬜     | Add `ComponentProps` interface to `utils.BaseProps`     | utils/     | `GetBaseProps() BaseProps` method enables generic component handling. 29 props structs share BaseProps but no common interface. |
+| 13  | ⬜     | Use stable IDs in modal JS instead of CSS selectors     | display/   | `[role="dialog"] > div:last-child` breaks if extra div added. Use `props.ID + "-panel"`. |
+| 14  | ⬜     | Fix ThemeToggle multi-instance bug                      | layout/    | `tcThemeToggleAttached` prevents second toggle from working. Remove global guard or use per-ID. |
+| 15  | ⬜     | Use `icons.Icon`/`svg.FillIcon` in Breadcrumbs chevron  | navigation/| Currently hardcoded raw SVG instead of using icon system.           |
+| 16  | ⬜     | Add `BaseProps` to `StepIndicatorProps`                 | feedback/  | Only feedback component without BaseProps. Can't add ID/class/attrs. |
+| 17  | ⬜     | Convert `LoadingOverlay` from positional params to props struct | feedback/ | Only component in feedback not using props struct. Inconsistent API. |
+| 18  | ⬜     | Validate `SwapOOB` swapStyle parameter                  | htmx/      | Accepts any string. HTMX expects specific values. Typo = silent failure. |
+| 19  | ⬜     | Validate `Pagination` CurrentPage > 0                   | navigation/| `CurrentPage: 0` renders page-0 link. Should validate or clamp.    |
+| 20  | ⬜     | Clamp `ProgressBar` percent to [0, 100]                 | feedback/  | `Current > Total` produces `width: 105%+`, overflows.              |
 
 ---
 
-## Dead Code & Cleanup
+## JS Architecture (P1)
 
-| #   | Status | Task                                             | Priority | Notes                                                                                                                                      |
-| --- | ------ | ------------------------------------------------ | -------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| 55  | ✅     | Remove or use `icons.IconAttrs`                  | —        | Done. Removed in commit 2fc8ada. Dead code eliminated.                                                                                     |
-| 56  | ✅     | Remove or use `internal/svg.FillIcon`            | —        | Not dead code. Used by 4 components via display/helpers.templ proxy. Icon paths already single-source via `toastJSIconPaths()`.            |
-| 57  | ✅     | All `DefaultXxxProps()` have meaningful defaults | —        | Done. StatCard now sets Trend: TrendNone. Remaining zero-value constructors (Accordion, Checkbox, Select) have no fields needing defaults. |
-| 58  | 🔨     | Move test helpers out of `utils/`                | P3       | Breaking API change. Planned for v1.0.                                                                                                     |
-| 59  | ✅     | Move `display/a11y_test.go` ProgressBar test     | —        | Already moved. ProgressBar tests are in `feedback/snapshot_test.go`. No action needed.                                                     |
-| 60  | ✅     | Fix `examples/demo/main.go` syntax error         | —        | Done. Builds successfully. (Was already fixed in earlier session.)                                                                         |
-
----
-
-## DevOps & Tooling
-
-| #   | Status | Task                                 | Priority | Notes                                                  |
-| --- | ------ | ------------------------------------ | -------- | ------------------------------------------------------ |
-| 61  | ✅     | Set up GitHub Actions CI             | —        | Done. Go 1.26, lint+build+test.                        |
-| 62  | ✅     | Release automation (goreleaser)      | —        | Done. `.goreleaser.yml` for tag-based GitHub releases. |
-| 63  | ✅     | Fix pre-commit hook to be executable | —        | Already executable: -rwx--x--x permissions.            |
-| 64  | ✅     | Exclude `examples/` from lint        | —        | 0 issues now. Already clean.                           |
+|| #   | Status | Task                                                      | Package    | Notes                                                            |
+| --- | ------ | --------------------------------------------------------- | ---------- | ---------------------------------------------------------------- |
+| 21  | ⬜     | Consolidate inline JS into shared init strategy           | multi      | 222 lines across 7 files. Create `tc-init.js` pattern loaded by `layout.Base`. |
+| 22  | ⬜     | Fix HTMX swap event listener re-attachment                | multi      | Global `tc*Attached` guards prevent re-attachment after HTMX DOM swaps. |
+| 23  | ⬜     | Fix `GlobalErrorHandling` shared retry counter            | htmx/      | `retryCount` is shared across concurrent requests. Race condition. |
+| 24  | ⬜     | Make `GlobalErrorHandling` retry/config values configurable | htmx/    | MAX_RETRIES, RETRY_DELAY_MS, MAX_ERROR_HISTORY are hardcoded.     |
+| 25  | ⬜     | Consolidate modal per-instance JS into single function    | display/   | Each modal emits identical `tcCloseModal_<id>` function. Use `tcCloseModal(id)`. |
 
 ---
 
-## Documentation
+## Type Safety & Code Quality (P2)
 
-| #   | Status | Task                                           | Priority | Notes                                                                                   |
-| --- | ------ | ---------------------------------------------- | -------- | --------------------------------------------------------------------------------------- |
-| 65  | ✅     | Create FEATURES.md                             | —        | Comprehensive feature inventory.                                                        |
-| 66  | ✅     | Create TODO_LIST.md                            | —        | This file.                                                                              |
-| 67  | ✅     | Create CONTEXT.md                              | —        | Architecture context.                                                                   |
-| 68  | ✅     | Update CHANGELOG.md                            | —        | Full changelog with breaking changes.                                                   |
-| 69  | ✅     | Migration guide (v0.1→v0.2)                    | —        | `docs/migration/v0.1-to-v0.2.md`.                                                       |
-| 70  | ✅     | Fix example/demo app                           | —        | Builds successfully. Showcases Nav, Alert, StatCard, Icons.                             |
-| 71  | 🔨     | Documentation site generation                  | P3       | Deferred. `pkg.go.dev` provides adequate API docs. Custom doc site is post-v1.0 effort. |
-| 72  | ✅     | Document `PageProps` not embedding `BaseProps` | —        | Done. CONTEXT.md explains why PageProps has its own fields.                             |
+|| #   | Status | Task                                                    | Package    | Notes                                                              |
+| --- | ------ | ------------------------------------------------------- | ---------- | ------------------------------------------------------------------ |
+| 26  | ⬜     | Replace `DropdownItem` empty-Href discrimination         | display/   | `Href=""` = button, `Href="url"` = link. Use typed enum or separate structs. |
+| 27  | ⬜     | Change `FillIcon` variadic `rotate ...bool` to `rotate bool` | internal/svg/ | Variadic allows nonsensical multi-bool. Every call site passes 0 or 1. |
+| 28  | ⬜     | Audit `tailwind-merge-go` thread safety, remove mutex    | utils/     | `utils.Class()` has global `sync.Mutex`. If twmerge is stateless (pure func), delete the lock. |
+| 29  | ⬜     | Replace `BoolString()` with `strconv.FormatBool`         | utils/     | Duplicates stdlib. Only one consumer (accordion).                  |
+| 30  | ⬜     | Validate `SelectOption` contradiction (Disabled+Selected) | forms/     | Disabled+Selected is impossible state per HTML spec.               |
+| 31  | ⬜     | Use `net/url` for pagination URL construction             | navigation/| Current `pageURL` doesn't handle URL fragments correctly.          |
+| 32  | ⬜     | Add `uint` type for `Pagination.CurrentPage/TotalPages`   | navigation/| Currently `int` allows negative values.                            |
 
 ---
 
-## Completed (Previous Sessions)
+## Icon System Cleanup (P2)
+
+|| #   | Status | Task                                                      | Package  | Notes                                                              |
+| --- | ------ | --------------------------------------------------------- | -------- | ------------------------------------------------------------------ |
+| 33  | ⬜     | Eliminate 4-way icon list split brain                     | icons/   | Same data in: constants, path map keys, `allIconNames()`, BDD test inline list. Auto-generate from map. |
+| 34  | ⬜     | Validate `|` separator doesn't appear in SVG paths        | icons/   | Multi-path icons use `|` delimiter with no validation.             |
+| 35  | ⬜     | Document 20×20 fill vs 24×24 stroke convention            | icons/   | `FillIcon` and `strokeIcon` use different viewBox/fill paradigms.  |
+
+---
+
+## Test Suite Cleanup (P2)
+
+|| #   | Status | Task                                                    | Package    | Notes                                                              |
+| --- | ------ | ------------------------------------------------------- | ---------- | ------------------------------------------------------------------ |
+| 36  | ⬜     | Consolidate test files: 1-2 per package                  | all        | 37 test files with 60-80% assertion overlap across bdd/snapshot/a11y. |
+| 37  | ⬜     | Remove unused `badgeTextLive` constant                   | display/   | Linter warning: `display/badge_test.go:16`.                        |
+| 38  | ⬜     | Delete `TestPtr` in `utils_test.go`                      | utils/     | Tests Go's built-in `new()`, not library code. Leftover from Ptr removal. |
+| 39  | ⬜     | Replace `splitSpace`/`splitClasses` with `strings.Fields` | utils/, icons/ | Cross-package duplication of trivial string splitter.              |
+| 40  | ⬜     | Move `BenchmarkHotPaths` out of `a11y_test.go`            | display/   | Benchmark test in wrong file. Should be in benchmark_test.go or component_test.go. |
+| 41  | ⬜     | Remove duplicate test data declarations in navigation/    | navigation/| `testNavLinks` declared 3 times in snapshot_test.go.               |
+
+---
+
+## Documentation (P2)
+
+|| #   | Status | Task                                                    | Package    | Notes                                                              |
+| --- | ------ | ------------------------------------------------------- | ---------- | ------------------------------------------------------------------ |
+| 42  | ⬜     | Update TODO #11 note: `dropdownSafeID` was removed       | TODO_LIST  | The function was removed in later refactor. Note is stale.          |
+| 43  | ⬜     | Update CONTRIBUTING.md: remove `dropdownSafeID` reference | docs/      | Line 42 references removed function.                               |
+| 44  | ⬜     | Document `htmx` → `feedback` runtime JS dependency        | htmx/      | `GlobalErrorHandling` requires `ToastContainer` on page.            |
+| 45  | ⬜     | Fix Tooltip `aria-describedby` linkage                    | display/   | Tooltip has `role="tooltip"` + ID but trigger element lacks `aria-describedby`. |
+
+---
+
+## Deferred (P3 — Post v1.0)
+
+|| #   | Status | Task                                                    | Notes                                                              |
+| --- | ------ | ------------------------------------------------------- | ------------------------------------------------------------------ |
+| 46  | 🔨     | Convert snapshot tests to golden file comparison         | Infrastructure designed. Deprioritized until v1.0 API freeze.      |
+| 47  | 🔨     | Move test helpers out of `utils/`                        | Breaking API change. Planned for v1.0.                              |
+| 48  | 🔨     | Documentation site generation                            | `pkg.go.dev` provides adequate API docs. Custom site is post-v1.0. |
+| 49  | ⬜     | Add Radio, File input, Toggle/Switch form components     | Not yet implemented.                                                |
+| 50  | ⬜     | Add client-side JS tab switching                         | Tabs currently server-rendered only. Inconsistent with other interactive components. |
+| 51  | ⬜     | Make `PageProps` zero-value safe                         | `PageProps{}` produces broken page. `DefaultPageProps()` is opt-in. |
+
+---
+
+## Completed (Sessions 1-9)
+
+### Session 9 (2026-05-18) — String Literal Extraction
+
+- Extracted all inline string literals to package constants across all packages
+- Display: 12 constants across badge, card, accordion, dropdown, tabs, tooltip tests
+- Feedback: 7 constants across alert, toast, loading, progress tests
+- Forms: 5 constants across input, helpers tests
+- Icons: 2 constants in snapshot tests
+- Navigation: 4 constants across nav, pagination tests
+- Lint: 0 issues, all tests pass
 
 ### Session 3 (2026-05-07)
 

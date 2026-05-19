@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-18 | **Coverage:** 71.8% | **Tests:** ~700 | **Packages:** 9 | **Generated files:** 31 `*_templ.go` committed
+**Updated:** 2026-05-19 | **Coverage:** 71.8% | **Tests:** ~700 | **Packages:** 9 | **Generated files:** 31 `*_templ.go` committed
 
 ## Build & Test Commands
 

@@ -7,10 +7,8 @@ package svg
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import (
-	"github.com/a-h/templ"
-	templruntime "github.com/a-h/templ/runtime"
-)
+import "github.com/a-h/templ"
+import templruntime "github.com/a-h/templ/runtime"
 
 // FillIcon renders a 20×20 filled SVG icon with the given class and path.
 // Optional rotate parameter adds a rotate-180 class when true.

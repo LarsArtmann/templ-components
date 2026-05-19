@@ -1,6 +1,6 @@
 # Features — templ-components
 
-**Updated:** 2026-05-07 | **Version:** 0.x (pre-release)
+**Updated:** 2026-05-19 | **Version:** 0.x (pre-release)
 
 A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 
@@ -19,7 +19,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `layout`     | 4            | Page layout: base HTML, theme toggle, dark mode                                           |
 | `navigation` | 9            | Navigation: nav bars, breadcrumbs, pagination, mobile menus                               |
 
-**Totals:** 53 templ components, 42 icon names, 16+ typed enums, 30 `.templ` files, ~3,400 lines of Go/templ source
+**Totals:** 53 templ components, 44 icon names, 17 typed enums, 30 `.templ` files, ~3,400 lines of Go/templ source
 
 ---
 
@@ -45,7 +45,6 @@ type BaseProps struct {
 | `MergeAttrs`  | `(m ...templ.Attributes) templ.Attributes` | Merges attribute maps                         |
 | `CurrentYear` | `() string`                                | Current year string                           |
 | `Ternary`     | `[T any](bool, a, b T) T`                  | Generic ternary                               |
-| `Ptr`         | `[T any](v T) *T`                          | Pointer wrapper                               |
 | `Deref`       | `[T any](p *T) T`                          | Nil-safe deref                                |
 | `DerefOr`     | `[T any](p *T, fallback T) T`              | Nil-safe deref with fallback                  |
 | `BoolString`  | `(b bool) string`                          | Returns `"true"` or `"false"`                 |
@@ -220,11 +219,11 @@ Used by both Alert and Toast for consistent visual styling.
 
 | Component | Status           | Description      | Key Features                                       |
 | --------- | ---------------- | ---------------- | -------------------------------------------------- |
-| `Icon`    | FULLY_FUNCTIONAL | SVG icon by name | 42 named icons, custom class, currentColor theming |
+| `Icon`    | FULLY_FUNCTIONAL | SVG icon by name | 44 named icons, custom class, currentColor theming |
 
-### Icon Names (42)
+### Icon Names (44)
 
-Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, Minus, ChevronRight, ChevronLeft, ChevronDown, ChevronUp, ArrowRight, ArrowLeft, Refresh, ExternalLink, Download, Upload, Trash, Edit, Eye, EyeOff, Lock, Unlock, Menu, Bell, Calendar, Clock, Location, Phone, Mail, Globe, Sun, Moon, Spinner, Exclamation, Information, Question
+Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, Minus, ChevronRight, ChevronLeft, ChevronDown, ChevronUp, ArrowRight, ArrowLeft, Refresh, ExternalLink, Download, Upload, Trash, Edit, Eye, EyeOff, Lock, Unlock, Menu, Bell, Calendar, Clock, Location, Phone, Mail, Globe, Sun, Moon, Spinner, Exclamation *(deprecated)*, ExclamationTriangle, ExclamationCircle, CheckCircle, Information, Question
 
 ### Functions
 
@@ -295,7 +294,7 @@ Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, M
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first designs with `sm:` breakpoints
 - **Type Safety:** 16+ typed string enums, `utils.BaseProps` embedded in all Props structs
-- **Test Coverage:** 69.7% average across packages, BDD + snapshot + a11y + benchmark tests
+- **Test Coverage:** 71.8% average across packages, BDD + snapshot + a11y + benchmark tests
 
 ---
 

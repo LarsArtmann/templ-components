@@ -1,0 +1,133 @@
+direction: down
+
+title: templ-components — Current Architecture (2026-05-19)
+
+# Package structure
+utils: {
+  shape: package
+  style.fill: "#E8F5E9"
+  "BaseProps"
+  "Class()"
+  "MapEnum[T]"
+  "BoolString()"
+  "Deref/DerefOr"
+  "MergeAttrs"
+  "Test Helpers"
+}
+
+"internal/svg": {
+  shape: package
+  style.fill: "#FFF3E0"
+  "FillIcon"
+  "SpinnerSVG"
+}
+
+icons: {
+  shape: package
+  style.fill: "#E3F2FD"
+  "Icon (44 names)"
+  "iconPathData map"
+  "IconPathJS()"
+}
+
+display: {
+  shape: package
+  style.fill: "#FCE4EC"
+  "Accordion"
+  "Avatar"
+  "Badge / StatusBadge"
+  "Card / SimpleCard / StatCard"
+  "Dropdown"
+  "EmptyState"
+  "Modal"
+  "Table"
+  "Tabs"
+  "Tooltip"
+}
+
+feedback: {
+  shape: package
+  style.fill: "#F3E5F5"
+  "Alert (AlertType)"
+  "Toast (ToastType)"
+  "Spinner"
+  "ProgressBar / StepIndicator"
+  "Skeleton / SkeletonGroup"
+  "LoadingOverlay"
+  "feedbackStyleSet"
+}
+
+forms: {
+  shape: package
+  style.fill: "#E0F7FA"
+  "Input / Checkbox"
+  "Select / Textarea"
+  "Label / FieldError"
+  "ErrorAttrs()"
+}
+
+htmx: {
+  shape: package
+  style.fill: "#FFF8E1"
+  "LoadingIndicator"
+  "LoadingButton"
+  "ConfirmDelete"
+  "SwapOOB"
+  "CSRFToken"
+  "GlobalErrorHandling"
+}
+
+layout: {
+  shape: package
+  style.fill: "#ECEFF1"
+  "Base (PageProps)"
+  "Minimal (MinimalProps)"
+  "ThemeScript"
+  "ThemeToggle"
+  "SRI management"
+}
+
+navigation: {
+  shape: package
+  style.fill: "#EFEBE9"
+  "Nav / SimpleNav"
+  "NavLink / MobileNavLink"
+  "Breadcrumbs"
+  "Pagination"
+  "MobileMenu"
+  "Footer"
+}
+
+# Compile-time dependencies (solid arrows)
+icons -> utils: "imports"
+"internal/svg" -> utils: "imports"
+display -> utils: "imports"
+display -> "internal/svg": "imports"
+display -> icons: "imports"
+feedback -> utils: "imports"
+feedback -> "internal/svg": "imports"
+feedback -> icons: "imports"
+forms -> utils: "imports"
+htmx -> utils: "imports"
+htmx -> feedback: "imports (compile)"
+layout -> utils: "imports"
+layout -> icons: "imports"
+navigation -> utils: "imports"
+navigation -> icons: "imports"
+navigation -> "internal/svg": "imports"
+
+# Runtime JS coupling (dashed red)
+htmx -> feedback: "tcShowToast() JS\ncoupling" {
+  style.stroke: "#F44336"
+  style.stroke-dash: 3
+}
+
+# External dependencies
+utils -> "tailwind-merge-go": {
+  style.stroke: "#9E9E9E"
+  style.stroke-dash: 5
+}
+utils -> "a-h/templ": {
+  style.stroke: "#9E9E9E"
+  style.stroke-dash: 5
+}
