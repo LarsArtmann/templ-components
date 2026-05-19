@@ -1,0 +1,133 @@
+package main
+
+import (
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/feedback"
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/navigation"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+templ demoPage(props layout.PageProps) {
+	@layout.Base(props) {
+		@demoContent()
+	}
+}
+
+templ tailwindV4CDN(nonce string) {
+	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" nonce={ nonce }></script>
+}
+
+templ demoContent() {
+	<div class="max-w-5xl mx-auto px-4 py-8">
+		<div class="flex items-center justify-between mb-8">
+			<h1 class="text-3xl font-bold text-gray-900 dark:text-white">templ-components Demo</h1>
+		</div>
+		@demoSection("Navigation")
+			@navigation.Nav(navigation.NavProps{
+				Sticky:      false,
+				CurrentPath: "/",
+				Links: []navigation.NavLinkProps{
+					{Href: "/", Text: "Home"},
+					{Href: "/about", Text: "About"},
+					{Href: "/contact", Text: "Contact"},
+				},
+			})
+		@demoSection("Alerts")
+			<div class="space-y-4">
+				@feedback.Alert(feedback.AlertProps{Title: "Success", Message: "Operation completed.", Type: feedback.FeedbackSuccess})
+				@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong.", Type: feedback.FeedbackError})
+				@feedback.Alert(feedback.AlertProps{Title: "Warning", Message: "Check your input.", Type: feedback.FeedbackWarning})
+				@feedback.Alert(feedback.AlertProps{Title: "Info", Message: "Here is some information.", Type: feedback.FeedbackInfo})
+			</div>
+		@demoSection("Stat Cards")
+			<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+				@display.StatCard(display.DefaultStatCardProps())
+				@display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Change: "-3%", Trend: display.TrendDown})
+				@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Trend: display.TrendNone})
+			</div>
+		@demoSection("Badges")
+			<div class="flex flex-wrap gap-2">
+				@display.Badge(display.BadgeProps{Text: "Default"})
+				@display.Badge(display.BadgeProps{Text: "Success", Type: display.BadgeSuccess})
+				@display.Badge(display.BadgeProps{Text: "Error", Type: display.BadgeError})
+				@display.Badge(display.BadgeProps{Text: "Warning", Type: display.BadgeWarning})
+				@display.Badge(display.BadgeProps{Text: "Info", Type: display.BadgeInfo})
+			</div>
+		@demoSection("Icons")
+			<div class="flex flex-wrap gap-4">
+				for _, name := range []icons.Name{
+					icons.Home, icons.Users, icons.Folder, icons.Document,
+					icons.Search, icons.Settings, icons.Mail, icons.Bell,
+					icons.Plus, icons.Refresh, icons.Check, icons.X,
+				} {
+					<div class="flex flex-col items-center gap-1">
+						@icons.Icon(name, "h-6 w-6 text-gray-600 dark:text-gray-400")
+						<span class="text-xs text-gray-500">{ string(name) }</span>
+					</div>
+				}
+			</div>
+		@demoSection("Avatar")
+			<div class="flex items-center gap-4">
+				@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=JD", Alt: "John Doe", Size: display.AvatarSizeSM})
+				@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=AB", Alt: "Alice Brown", Size: display.AvatarSizeMD, Status: display.AvatarStatusOnline})
+				@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=CD", Alt: "Charlie Day", Size: display.AvatarSizeLG, Status: display.AvatarStatusOffline})
+			</div>
+		@demoSection("Loading")
+			<div class="flex items-center gap-8">
+				@feedback.Spinner(feedback.SpinnerSM, "text-blue-600")
+				@feedback.Spinner(feedback.SpinnerMD, "text-gray-600")
+				@feedback.Spinner(feedback.SpinnerLG, "text-red-600")
+				@feedback.InlineLoading("Saving...")
+			</div>
+		@demoSection("Accordion")
+			@display.Accordion(display.AccordionProps{
+				Items: []display.AccordionItem{
+					{ID: "demo-1", Title: "What is templ-components?", Open: true},
+					{ID: "demo-2", Title: "How do I install it?"},
+					{ID: "demo-3", Title: "Is it production-ready?"},
+				},
+			}) {
+				<template data-content="demo-1">
+					<p class="text-gray-600 dark:text-gray-400">A Go library of reusable UI components built with templ and Tailwind CSS.</p>
+				</template>
+				<template data-content="demo-2">
+					<p class="text-gray-600 dark:text-gray-400">Run <code>go get github.com/larsartmann/templ-components</code> to add it to your project.</p>
+				</template>
+				<template data-content="demo-3">
+					<p class="text-gray-600 dark:text-gray-400">It's in active development (v0.x). The API may change before v1.0.</p>
+				</template>
+			}
+		@demoSection("Pagination")
+			@navigation.Pagination(navigation.PaginationProps{
+				CurrentPage: 3,
+				TotalPages:  10,
+				BaseURL:     "/users",
+			})
+		@demoSection("Breadcrumbs")
+			@navigation.Breadcrumbs([]navigation.BreadcrumbItem{
+				{Text: "Home", Href: "/"},
+				{Text: "Users", Href: "/users"},
+				{Text: "John Doe"},
+			})
+		@demoSection("Tooltip")
+			<div class="flex items-center gap-4 pt-2">
+				@display.Tooltip(display.TooltipProps{BaseProps: utils.BaseProps{ID: "tooltip-1"}, Text: "Edit this item"}) {
+					<button class="px-3 py-1.5 text-sm bg-blue-600 text-white rounded-md hover:bg-blue-700">Edit</button>
+				}
+				@display.Tooltip(display.TooltipProps{Text: "Delete permanently", Position: display.TooltipPositionBottom, BaseProps: utils.BaseProps{ID: "tooltip-2"}}) {
+					<button class="px-3 py-1.5 text-sm bg-red-600 text-white rounded-md hover:bg-red-700">Delete</button>
+				}
+			</div>
+	</div>
+}
+
+templ demoSection(title string) {
+	<section class="mt-12">
+		<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
+			{ title }
+		</h2>
+		{ children... }
+	</section>
+}
