@@ -10,7 +10,8 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"fmt"
-	"strings"
+	"net/url"
+	"strconv"
 
 	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
@@ -45,13 +46,14 @@ func (p PaginationProps) pageURL(page int) string {
 	if param == "" {
 		param = "page"
 	}
-	sep := "?"
-	if len(p.BaseURL) > 0 && p.BaseURL[len(p.BaseURL)-1] == '?' {
-		sep = ""
-	} else if strings.Contains(p.BaseURL, "?") {
-		sep = "&"
+	u, err := url.Parse(p.BaseURL)
+	if err != nil {
+		return fmt.Sprintf("%s?%s=%d", p.BaseURL, param, page)
 	}
-	return fmt.Sprintf("%s%s%s=%d", p.BaseURL, sep, param, page)
+	q := u.Query()
+	q.Set(param, strconv.Itoa(page))
+	u.RawQuery = q.Encode()
+	return u.String()
 }
 
 func paginationRange(current, total, maxVisible int) (start, end int) {
@@ -113,7 +115,7 @@ func mobilePageButton(enabled bool, href string, marginClass string, text string
 			var templ_7745c5c3_Var3 templ.SafeURL
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(href))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 77, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 79, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 			if templ_7745c5c3_Err != nil {
@@ -139,7 +141,7 @@ func mobilePageButton(enabled bool, href string, marginClass string, text string
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 80, Col: 9}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 82, Col: 9}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -175,7 +177,7 @@ func mobilePageButton(enabled bool, href string, marginClass string, text string
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 83, Col: 239}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 85, Col: 239}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -219,7 +221,7 @@ func paginationArrowIcon(srText string, svgPath string) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(srText)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 89, Col: 31}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 91, Col: 31}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -272,7 +274,7 @@ func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel st
 			var templ_7745c5c3_Var13 templ.SafeURL
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(href))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 97, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 99, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -298,7 +300,7 @@ func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel st
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(ariaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 99, Col: 25}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 101, Col: 25}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 			if templ_7745c5c3_Err != nil {
@@ -399,7 +401,7 @@ func Pagination(props PaginationProps) templ.Component {
 				var templ_7745c5c3_Var20 string
 				templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 124, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 126, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 				if templ_7745c5c3_Err != nil {
@@ -450,7 +452,7 @@ func Pagination(props PaginationProps) templ.Component {
 			var templ_7745c5c3_Var22 string
 			templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", props.CurrentPage))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 138, Col: 70}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 140, Col: 70}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 			if templ_7745c5c3_Err != nil {
@@ -463,7 +465,7 @@ func Pagination(props PaginationProps) templ.Component {
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", props.TotalPages))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 140, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 142, Col: 69}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 			if templ_7745c5c3_Err != nil {

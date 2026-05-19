@@ -3,11 +3,15 @@ package utils
 import (
 	"maps"
 	"strconv"
+	"sync"
 	"time"
 
 	twmerge "github.com/Oudwins/tailwind-merge-go"
 	"github.com/a-h/templ"
 )
+
+// classMu protects twmerge.Merge calls — the library's internal cache is not thread-safe.
+var classMu sync.Mutex
 
 // BaseProps provides common configurable attributes for all components
 type BaseProps struct {
@@ -21,6 +25,8 @@ type BaseProps struct {
 // Class merges Tailwind classes intelligently using tailwind-merge-go.
 // Conflicting classes are resolved with later arguments overriding earlier ones.
 func Class(classes ...string) string {
+	classMu.Lock()
+	defer classMu.Unlock()
 	return twmerge.Merge(classes...)
 }
 

@@ -2,7 +2,8 @@ package navigation
 
 import (
 	"fmt"
-	"strings"
+	"net/url"
+	"strconv"
 
 	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
@@ -37,13 +38,14 @@ func (p PaginationProps) pageURL(page int) string {
 	if param == "" {
 		param = "page"
 	}
-	sep := "?"
-	if len(p.BaseURL) > 0 && p.BaseURL[len(p.BaseURL)-1] == '?' {
-		sep = ""
-	} else if strings.Contains(p.BaseURL, "?") {
-		sep = "&"
+	u, err := url.Parse(p.BaseURL)
+	if err != nil {
+		return fmt.Sprintf("%s?%s=%d", p.BaseURL, param, page)
 	}
-	return fmt.Sprintf("%s%s%s=%d", p.BaseURL, sep, param, page)
+	q := u.Query()
+	q.Set(param, strconv.Itoa(page))
+	u.RawQuery = q.Encode()
+	return u.String()
 }
 
 func paginationRange(current, total, maxVisible int) (start, end int) {

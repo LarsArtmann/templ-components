@@ -79,7 +79,7 @@ func TestPaginationRender(t *testing.T) {
 			BaseURL:     "/search?q=test",
 			QueryParam:  "p",
 		}))
-		utils.AssertContains(t, output, `href="/search?q=test&amp;p=1"`)
+		utils.AssertContains(t, output, `href="/search?p=1&amp;q=test"`)
 	})
 
 	t.Run("zero CurrentPage clamped to 1", func(t *testing.T) {
