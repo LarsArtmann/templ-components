@@ -39,7 +39,7 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 - Default constructors: `DefaultXxxProps()` with meaningful non-zero defaults
 - Class merging: always use `utils.Class()` for Tailwind conflict resolution
 - CSP: all inline scripts use `nonce={ props.Nonce }`
-- JS IDs: escape with `strconv.Quote()` to prevent XSS (see `dropdownSafeID`)
+- JS IDs: escape with `strconv.Quote()` to prevent XSS (see `validateDropdownID`)
 - No external dependencies beyond `templ` and `tailwind-merge-go`
 
 ## Commit Messages
