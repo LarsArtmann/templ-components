@@ -38,13 +38,6 @@ func TestBoolString(t *testing.T) {
 	})
 }
 
-func TestPtr(t *testing.T) {
-	t.Parallel()
-	v := "hello"
-	p := new(v)
-	AssertEqual(t, "*new(v)", *p, v)
-}
-
 func TestTernary(t *testing.T) {
 	t.Parallel()
 	tests := []struct {

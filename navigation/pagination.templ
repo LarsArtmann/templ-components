@@ -26,6 +26,12 @@ func DefaultPaginationProps() PaginationProps {
 	}
 }
 
+func (p *PaginationProps) normalize() {
+	if p.CurrentPage < 1 {
+		p.CurrentPage = 1
+	}
+}
+
 func (p PaginationProps) pageURL(page int) string {
 	param := p.QueryParam
 	if param == "" {
@@ -109,6 +115,9 @@ templ paginationArrow(enabled bool, href string, roundedSide string, ariaLabel s
 //	   BaseURL: "/users",
 //	})
 templ Pagination(props PaginationProps) {
+	{{
+		props.normalize()
+	}}
 	if props.TotalPages > 1 {
 		<nav
 			if props.ID != "" {

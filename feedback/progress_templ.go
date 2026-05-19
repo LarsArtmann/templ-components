@@ -70,6 +70,9 @@ func ProgressBar(props ProgressBarProps) templ.Component {
 		if props.Total > 0 {
 			percent = float64(props.Current) * 100.0 / float64(props.Total)
 		}
+		if percent > 100 {
+			percent = 100
+		}
 		var templ_7745c5c3_Var2 = []any{utils.Class("w-full", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
@@ -108,7 +111,7 @@ func ProgressBar(props ProgressBarProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(props.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 50, Col: 23}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 53, Col: 23}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -121,7 +124,7 @@ func ProgressBar(props ProgressBarProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%.0f%%", percent))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 51, Col: 42}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 54, Col: 42}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -179,7 +182,7 @@ func ProgressBar(props ProgressBarProps) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(fmt.Sprintf("width: %.0f%%;", percent))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 57, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 60, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -192,7 +195,7 @@ func ProgressBar(props ProgressBarProps) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", props.Current))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 59, Col: 52}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 62, Col: 52}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -205,7 +208,7 @@ func ProgressBar(props ProgressBarProps) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", props.Total))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 61, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 64, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
@@ -365,7 +368,7 @@ func StepIndicator(props StepIndicatorProps) templ.Component {
 				var templ_7745c5c3_Var20 string
 				templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", i+1))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 116, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 119, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 				if templ_7745c5c3_Err != nil {
@@ -401,7 +404,7 @@ func StepIndicator(props StepIndicatorProps) templ.Component {
 			var templ_7745c5c3_Var23 string
 			templ_7745c5c3_Var23, templ_7745c5c3_Err = templ.JoinStringErrs(step)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 119, Col: 93}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/progress.templ`, Line: 122, Col: 93}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var23))
 			if templ_7745c5c3_Err != nil {

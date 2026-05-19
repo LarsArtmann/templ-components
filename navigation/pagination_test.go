@@ -81,6 +81,17 @@ func TestPaginationRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `href="/search?q=test&amp;p=1"`)
 	})
+
+	t.Run("zero CurrentPage clamped to 1", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Pagination(PaginationProps{
+			CurrentPage: 0,
+			TotalPages:  3,
+			BaseURL:     "/items",
+		}))
+		utils.AssertContains(t, output, `aria-current="page"`)
+		utils.AssertContains(t, output, "1")
+	})
 }
 
 func renderPagination(t *testing.T, currentPage, totalPages int, baseURL string) string {

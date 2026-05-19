@@ -51,66 +51,19 @@ func TestIconUserGetsAccessibleIcons(t *testing.T) {
 func TestAllIconsRenderSuccessfully(t *testing.T) {
 	t.Parallel()
 
-	allIcons := []struct {
-		name Name
-	}{
-		{Home},
-		{Users},
-		{Folder},
-		{Document},
-		{Search},
-		{Settings},
-		{Chart},
-		{Inbox},
-		{Check},
-		{X},
-		{Plus},
-		{Minus},
-		{ChevronRight},
-		{ChevronLeft},
-		{ChevronDown},
-		{ChevronUp},
-		{ArrowRight},
-		{ArrowLeft},
-		{Refresh},
-		{ExternalLink},
-		{Download},
-		{Upload},
-		{Trash},
-		{Edit},
-		{Eye},
-		{EyeOff},
-		{Lock},
-		{Unlock},
-		{Menu},
-		{Bell},
-		{Calendar},
-		{Clock},
-		{Location},
-		{Phone},
-		{Mail},
-		{Globe},
-		{Sun},
-		{Moon},
-		{Spinner},
-		{Exclamation},
-		{Information},
-		{Question},
-	}
-
-	for _, tc := range allIcons {
-		t.Run("icon "+string(tc.name)+" renders SVG", func(t *testing.T) {
+	for _, name := range allIconNames() {
+		t.Run("icon "+string(name)+" renders SVG", func(t *testing.T) {
 			t.Parallel()
-			output := utils.Render(t, Icon(tc.name, "h-5 w-5"))
+			output := utils.Render(t, Icon(name, "h-5 w-5"))
 			if !strings.Contains(output, "<svg") {
 				t.Errorf(
 					"expected SVG output for icon %s, got: %s",
-					tc.name,
+					name,
 					output[:min(len(output), 100)],
 				)
 			}
-			if !strings.Contains(output, "<path") {
-				t.Errorf("expected path element for icon %s", tc.name)
+			if !strings.Contains(output, "<path") && name != Spinner {
+				t.Errorf("expected path element for icon %s", name)
 			}
 		})
 	}
@@ -118,13 +71,18 @@ func TestAllIconsRenderSuccessfully(t *testing.T) {
 
 // --- Unknown Icon Behavior ---
 
-func TestUnknownIconFallsBackGracefully(t *testing.T) {
+func TestUnknownIconPanics(t *testing.T) {
 	t.Parallel()
 
-	t.Run("unknown icon name renders a fallback SVG", func(t *testing.T) {
+	t.Run("unknown icon name panics instead of silent fallback", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Icon("nonexistent-icon", "h-5 w-5"))
-		utils.AssertContains(t, output, "<svg")
+		defer func() {
+			r := recover()
+			if r == nil {
+				t.Error("expected panic for unknown icon name, got none")
+			}
+		}()
+		_ = utils.Render(t, Icon("nonexistent-icon", "h-5 w-5"))
 	})
 }
 

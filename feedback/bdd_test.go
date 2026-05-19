@@ -150,6 +150,16 @@ func TestProgressBarUserSeesCompletion(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "Steps completed")
 	})
+
+	t.Run("progress bar clamps overflow to 100 percent", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ProgressBar(ProgressBarProps{
+			Current: 150,
+			Total:   100,
+		}))
+		utils.AssertContains(t, output, "100%")
+		utils.AssertNotContains(t, output, "150%")
+	})
 }
 
 // --- Inline Messages Behavior ---

@@ -13,7 +13,6 @@ const (
 	badgeTextBeta       = "Beta"
 	badgeTextRunning    = "Running"
 	badgeTextTag        = "Tag"
-	badgeTextLive       = "Live"
 	badgeTextCustom     = "Custom"
 	badgeTextOK         = "OK"
 	cssClassRoundedFull = "rounded-full"

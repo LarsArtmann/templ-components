@@ -66,9 +66,11 @@ templ EmptyState(props EmptyStateProps) {
 		{ props.Attrs... }
 	>
 		<div class="mx-auto max-w-md">
-			<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
-				@emptyStateIcon(props.Icon)
-			</div>
+			if props.Icon != "" {
+				<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
+					@emptyStateIcon(props.Icon)
+				</div>
+			}
 			<h3 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h3>
 			if props.Description != "" {
 				<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{ props.Description }</p>
