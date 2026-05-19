@@ -24,6 +24,7 @@ templ Modal(props ModalProps) {
 	>
 		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" onclick={ modalCloseHandler(props.ID) }></div>
 		<div
+			id={ props.ID + "-panel" }
 			class={ "relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200",
 			modalSizeClass(props.Size),
 			props.Class,
@@ -55,7 +56,7 @@ templ Modal(props ModalProps) {
 			if (modal) {
 				modal.classList.remove('opacity-100', 'pointer-events-auto');
 				modal.classList.add('opacity-0', 'pointer-events-none');
-				var inner = modal.querySelector('[role="dialog"] > div:last-child');
+				var inner = document.getElementById(id + '-panel');
 				if (inner) {
 					inner.classList.remove('scale-100', 'opacity-100');
 					inner.classList.add('scale-95', 'opacity-0');
@@ -69,7 +70,7 @@ templ Modal(props ModalProps) {
 			if (modal) {
 				modal.classList.remove('opacity-0', 'pointer-events-none');
 				modal.classList.add('opacity-100', 'pointer-events-auto');
-				var inner = modal.querySelector('[role="dialog"] > div:last-child');
+				var inner = document.getElementById(id + '-panel');
 				if (inner) {
 					inner.classList.remove('scale-95', 'opacity-0');
 					inner.classList.add('scale-100', 'opacity-100');
@@ -84,7 +85,7 @@ templ Modal(props ModalProps) {
 			modal.addEventListener('keydown', function(e) {
 				if (e.key === 'Escape') { tcCloseModal(id); return; }
 				if (e.key !== 'Tab') return;
-				var inner = modal.querySelector('[role="dialog"] > div:last-child');
+			var inner = document.getElementById(id + '-panel');
 				if (!inner) return;
 				var focusable = inner.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
 				if (focusable.length === 0) { e.preventDefault(); return; }

@@ -115,20 +115,33 @@ func Modal(props ModalProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div id=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var8 string
-		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(templ.CSSClasses(templ_7745c5c3_Var7).String())
+		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID + "-panel")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 1, Col: 0}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 27, Col: 27}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\" class=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var9 string
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(templ.CSSClasses(templ_7745c5c3_Var7).String())
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 1, Col: 0}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -136,38 +149,38 @@ func Modal(props ModalProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, ">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, ">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if props.Title != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<div class=\"flex items-center justify-between px-4 py-3 sm:px-6 border-b border-gray-200 dark:border-gray-700\"><h2 id=\"")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var9 string
-			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID + "-title")
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 36, Col: 33}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\" class=\"text-base font-semibold text-gray-900 dark:text-white\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"flex items-center justify-between px-4 py-3 sm:px-6 border-b border-gray-200 dark:border-gray-700\"><h2 id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var10 string
-			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID + "-title")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 36, Col: 111}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 37, Col: 33}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</h2>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\" class=\"text-base font-semibold text-gray-900 dark:text-white\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var11 string
+			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 37, Col: 111}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</h2>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -175,16 +188,16 @@ func Modal(props ModalProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<button type=\"button\" class=\"rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500\" onclick=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<button type=\"button\" class=\"rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500\" onclick=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var11 templ.ComponentScript = modalCloseHandler(props.ID)
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11.Call)
+			var templ_7745c5c3_Var12 templ.ComponentScript = modalCloseHandler(props.ID)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12.Call)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\" aria-label=\"Close\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\" aria-label=\"Close\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -192,12 +205,12 @@ func Modal(props ModalProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</button></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</button></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<div class=\"px-4 py-4 sm:px-6\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<div class=\"px-4 py-4 sm:px-6\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -205,32 +218,32 @@ func Modal(props ModalProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "</div></div></div><script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "</div></div></div><script nonce=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var12 string
-		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(props.Nonce)
+		var templ_7745c5c3_Var13 string
+		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(props.Nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 52, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 53, Col: 28}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "\">\n\t\tfunction tcCloseModal(id) {\n\t\t\tvar modal = document.getElementById(id);\n\t\t\tif (modal) {\n\t\t\t\tmodal.classList.remove('opacity-100', 'pointer-events-auto');\n\t\t\t\tmodal.classList.add('opacity-0', 'pointer-events-none');\n\t\t\t\tvar inner = modal.querySelector('[role=\"dialog\"] > div:last-child');\n\t\t\t\tif (inner) {\n\t\t\t\t\tinner.classList.remove('scale-100', 'opacity-100');\n\t\t\t\t\tinner.classList.add('scale-95', 'opacity-0');\n\t\t\t\t}\n\t\t\t\tvar prev = document.getElementById(id + '-prev-focus');\n\t\t\t\tif (prev) prev.focus();\n\t\t\t}\n\t\t}\n\t\tfunction tcOpenModal(id) {\n\t\t\tvar modal = document.getElementById(id);\n\t\t\tif (modal) {\n\t\t\t\tmodal.classList.remove('opacity-0', 'pointer-events-none');\n\t\t\t\tmodal.classList.add('opacity-100', 'pointer-events-auto');\n\t\t\t\tvar inner = modal.querySelector('[role=\"dialog\"] > div:last-child');\n\t\t\t\tif (inner) {\n\t\t\t\t\tinner.classList.remove('scale-95', 'opacity-0');\n\t\t\t\t\tinner.classList.add('scale-100', 'opacity-100');\n\t\t\t\t\tvar focusable = inner.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex=\"-1\"])');\n\t\t\t\t\tif (focusable.length) focusable[0].focus();\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\t(function(id) {\n\t\t\tvar modal = document.getElementById(id);\n\t\t\tif (!modal) return;\n\t\t\tmodal.addEventListener('keydown', function(e) {\n\t\t\t\tif (e.key === 'Escape') { tcCloseModal(id); return; }\n\t\t\t\tif (e.key !== 'Tab') return;\n\t\t\t\tvar inner = modal.querySelector('[role=\"dialog\"] > div:last-child');\n\t\t\t\tif (!inner) return;\n\t\t\t\tvar focusable = inner.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex=\"-1\"])');\n\t\t\t\tif (focusable.length === 0) { e.preventDefault(); return; }\n\t\t\t\tvar first = focusable[0];\n\t\t\t\tvar last = focusable[focusable.length - 1];\n\t\t\t\tif (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }\n\t\t\t\telse if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }\n\t\t\t});\n\t\t})(")
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var13, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(modalSafeID(props.ID))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 96, Col: 29}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\">\n\t\tfunction tcCloseModal(id) {\n\t\t\tvar modal = document.getElementById(id);\n\t\t\tif (modal) {\n\t\t\t\tmodal.classList.remove('opacity-100', 'pointer-events-auto');\n\t\t\t\tmodal.classList.add('opacity-0', 'pointer-events-none');\n\t\t\t\tvar inner = document.getElementById(id + '-panel');\n\t\t\t\tif (inner) {\n\t\t\t\t\tinner.classList.remove('scale-100', 'opacity-100');\n\t\t\t\t\tinner.classList.add('scale-95', 'opacity-0');\n\t\t\t\t}\n\t\t\t\tvar prev = document.getElementById(id + '-prev-focus');\n\t\t\t\tif (prev) prev.focus();\n\t\t\t}\n\t\t}\n\t\tfunction tcOpenModal(id) {\n\t\t\tvar modal = document.getElementById(id);\n\t\t\tif (modal) {\n\t\t\t\tmodal.classList.remove('opacity-0', 'pointer-events-none');\n\t\t\t\tmodal.classList.add('opacity-100', 'pointer-events-auto');\n\t\t\t\tvar inner = document.getElementById(id + '-panel');\n\t\t\t\tif (inner) {\n\t\t\t\t\tinner.classList.remove('scale-95', 'opacity-0');\n\t\t\t\t\tinner.classList.add('scale-100', 'opacity-100');\n\t\t\t\t\tvar focusable = inner.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex=\"-1\"])');\n\t\t\t\t\tif (focusable.length) focusable[0].focus();\n\t\t\t\t}\n\t\t\t}\n\t\t}\n\t\t(function(id) {\n\t\t\tvar modal = document.getElementById(id);\n\t\t\tif (!modal) return;\n\t\t\tmodal.addEventListener('keydown', function(e) {\n\t\t\t\tif (e.key === 'Escape') { tcCloseModal(id); return; }\n\t\t\t\tif (e.key !== 'Tab') return;\n\t\t\tvar inner = document.getElementById(id + '-panel');\n\t\t\t\tif (!inner) return;\n\t\t\t\tvar focusable = inner.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex=\"-1\"])');\n\t\t\t\tif (focusable.length === 0) { e.preventDefault(); return; }\n\t\t\t\tvar first = focusable[0];\n\t\t\t\tvar last = focusable[focusable.length - 1];\n\t\t\t\tif (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }\n\t\t\t\telse if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }\n\t\t\t});\n\t\t})(")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, ");\n\t</script>")
+		templ_7745c5c3_Var14, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(modalSafeID(props.ID))
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 97, Col: 29}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, ");\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

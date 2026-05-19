@@ -117,7 +117,7 @@ func ThemeToggle(ariaLabel string, nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\">\n\t\tif (!window.tcThemeToggleAttached) {\n\t\t\twindow.tcThemeToggleAttached = true;\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar btn = e.target.closest('[data-theme-toggle]');\n\t\t\t\tif (!btn) return;\n\t\t\t\tvar html = document.documentElement;\n\t\t\t\tvar isDark = html.classList.contains('dark');\n\t\t\t\tif (isDark) {\n\t\t\t\t\thtml.classList.remove('dark');\n\t\t\t\t\tlocalStorage.setItem('theme', 'light');\n\t\t\t\t} else {\n\t\t\t\t\thtml.classList.add('dark');\n\t\t\t\t\tlocalStorage.setItem('theme', 'dark');\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\">\n\t\t(function() {\n\t\t\tif (window.tcThemeToggleAttached) return;\n\t\t\twindow.tcThemeToggleAttached = true;\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar btn = e.target.closest('[data-theme-toggle]');\n\t\t\t\tif (!btn) return;\n\t\t\t\tvar html = document.documentElement;\n\t\t\t\tvar isDark = html.classList.contains('dark');\n\t\t\t\tif (isDark) {\n\t\t\t\t\thtml.classList.remove('dark');\n\t\t\t\t\tlocalStorage.setItem('theme', 'light');\n\t\t\t\t} else {\n\t\t\t\t\thtml.classList.add('dark');\n\t\t\t\t\tlocalStorage.setItem('theme', 'dark');\n\t\t\t\t}\n\t\t\t});\n\t\t})();\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

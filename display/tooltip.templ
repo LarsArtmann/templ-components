@@ -69,6 +69,7 @@ templ Tooltip(props TooltipProps) {
 		class={ utils.Class("group relative inline-flex", props.Class) }
 		if props.ID != "" {
 			id={ props.ID }
+			aria-describedby={ props.ID + "-tooltip" }
 		}
 		{ props.Attrs... }
 	>
