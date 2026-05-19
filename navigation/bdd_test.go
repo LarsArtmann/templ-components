@@ -8,7 +8,10 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-const testItemsPath = "/items"
+const (
+	testItemsPath = "/items"
+	navItemAbout  = "/about"
+)
 
 // --- Nav Behavior ---
 
@@ -19,23 +22,23 @@ func TestNavUserCanNavigateBetweenPages(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Nav(NavProps{
 			Links: []NavLinkProps{
-				{Href: "/", Text: "Home"},
-				{Href: "/about", Text: "About"},
+				{Href: "/", Text: navItemHome},
+				{Href: navItemAbout, Text: navItemAbout},
 			},
 			CurrentPath: "/",
 		}))
-		utils.AssertContains(t, output, "Home")
-		utils.AssertContains(t, output, "/about")
+		utils.AssertContains(t, output, navItemHome)
+		utils.AssertContains(t, output, navItemAbout)
 	})
 
 	t.Run("user sees active link styling on current page", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Nav(NavProps{
 			Links: []NavLinkProps{
-				{Href: "/", Text: "Home"},
-				{Href: "/about", Text: "About"},
+				{Href: "/", Text: navItemHome},
+				{Href: navItemAbout, Text: navItemAbout},
 			},
-			CurrentPath: "/about",
+			CurrentPath: navItemAbout,
 		}))
 		utils.AssertContains(t, output, "border-blue-500")
 	})
@@ -44,7 +47,7 @@ func TestNavUserCanNavigateBetweenPages(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Nav(NavProps{
 			Sticky: true,
-			Links:  []NavLinkProps{{Href: "/", Text: "Home"}},
+			Links:  []NavLinkProps{{Href: "/", Text: navItemHome}},
 		}))
 		utils.AssertContains(t, output, "sticky")
 	})
@@ -64,7 +67,7 @@ func TestSimpleNavUserGetsQuickNavigation(t *testing.T) {
 	t.Run("user sees brand text and links", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SimpleNav("MyApp", "/", []NavLinkProps{
-			{Href: "/", Text: "Home"},
+			{Href: "/", Text: navItemHome},
 			{Href: "/settings", Text: "Settings"},
 		}, "/"))
 		utils.AssertContains(t, output, "MyApp")
@@ -102,11 +105,11 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 	t.Run("user sees breadcrumb trail from home to current page", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
-			{Text: "Home", Href: "/"},
+			{Text: navItemHome, Href: "/"},
 			{Text: "Users", Href: "/users"},
 			{Text: "Edit", Active: true},
 		}))
-		utils.AssertContains(t, output, "Home")
+		utils.AssertContains(t, output, navItemHome)
 		utils.AssertContains(t, output, "Users")
 		utils.AssertContains(t, output, "Edit")
 	})
@@ -114,7 +117,7 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 	t.Run("user sees current page as aria-current", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
-			{Text: "Home", Href: "/"},
+			{Text: navItemHome, Href: "/"},
 			{Text: "Current", Active: true},
 		}))
 		utils.AssertContains(t, output, `aria-current="page"`)
@@ -123,7 +126,7 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 	t.Run("user sees breadcrumb navigation landmark", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
-			{Text: "Home", Href: "/"},
+			{Text: navItemHome, Href: "/"},
 		}))
 		utils.AssertContains(t, output, `aria-label="Breadcrumb"`)
 	})
@@ -131,7 +134,7 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 	t.Run("user sees clickable parent breadcrumbs", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
-			{Text: "Home", Href: "/"},
+			{Text: navItemHome, Href: "/"},
 			{Text: "Current", Active: true},
 		}))
 		utils.AssertContains(t, output, `href="/"`)

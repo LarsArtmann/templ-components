@@ -7,12 +7,22 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const (
+	snapshotInputNameEmail      = "email"
+	snapshotCheckboxFieldTerms  = "terms"
+	snapshotSelectFieldCountry  = "country"
+	snapshotSelectLabelCountry  = "Country"
+	snapshotSelectOptionGermany = "Germany"
+	snapshotTextareaFieldBio    = "bio"
+	snapshotTextareaLabelBio    = "Bio"
+)
+
 func TestInputRender(t *testing.T) {
 	t.Parallel()
 	t.Run("basic input", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			Name:  "email",
+			Name:  snapshotInputNameEmail,
 			Type:  InputEmail,
 			Label: "Email address",
 		}))
@@ -24,8 +34,8 @@ func TestInputRender(t *testing.T) {
 	t.Run("input with error", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			BaseProps: utils.BaseProps{ID: "email"},
-			Name:      "email",
+			BaseProps: utils.BaseProps{ID: snapshotInputNameEmail},
+			Name:      snapshotInputNameEmail,
 			Label:     "Email address",
 			Error:     "Invalid email",
 		}))
@@ -47,8 +57,8 @@ func TestInputRender(t *testing.T) {
 func TestCheckboxRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Checkbox(CheckboxProps{
-		BaseProps: utils.BaseProps{ID: "terms"},
-		Name:      "terms",
+		BaseProps: utils.BaseProps{ID: snapshotCheckboxFieldTerms},
+		Name:      snapshotCheckboxFieldTerms,
 		Label:     "I agree",
 	}))
 	utils.AssertContains(t, output, `name="terms"`)
@@ -59,10 +69,10 @@ func TestCheckboxRender(t *testing.T) {
 func TestSelectRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Select(SelectProps{
-		Name:  "country",
-		Label: "Country",
+		Name:  snapshotSelectFieldCountry,
+		Label: snapshotSelectLabelCountry,
 		Options: []SelectOption{
-			{Value: "de", Label: "Germany"},
+			{Value: "de", Label: snapshotSelectOptionGermany},
 			{Value: "at", Label: "Austria"},
 		},
 	}))
@@ -75,8 +85,8 @@ func TestSelectRender(t *testing.T) {
 func TestTextareaRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Textarea(TextareaProps{
-		Name:  "bio",
-		Label: "Bio",
+		Name:  snapshotTextareaFieldBio,
+		Label: snapshotTextareaLabelBio,
 		Rows:  4,
 	}))
 	utils.AssertContains(t, output, `name="bio"`)

@@ -10,6 +10,11 @@ import (
 	"github.com/a-h/templ"
 )
 
+const (
+	dataFooAttr = "data-foo"
+	textYes     = "yes"
+)
+
 func TestCurrentYear(t *testing.T) {
 	t.Parallel()
 	got := CurrentYear()
@@ -48,7 +53,7 @@ func TestTernary(t *testing.T) {
 		a, b      string
 		want      string
 	}{
-		{name: "true returns a", condition: true, a: "yes", b: "no", want: "yes"},
+		{name: "true returns a", condition: true, a: textYes, b: "no", want: textYes},
 		{name: "false returns b", condition: false, a: "yes", b: "no", want: "no"},
 	}
 	for _, tt := range tests {
@@ -200,10 +205,10 @@ func TestMergeAttrs(t *testing.T) {
 	t.Parallel()
 	t.Run("merge two maps", func(t *testing.T) {
 		t.Parallel()
-		a := templ.Attributes{"data-foo": "1"}
+		a := templ.Attributes{dataFooAttr: "1"}
 		b := templ.Attributes{"data-bar": "2"}
 		got := MergeAttrs(a, b)
-		if got["data-foo"] != "1" || got["data-bar"] != "2" {
+		if got[dataFooAttr] != "1" || got["data-bar"] != "2" {
 			t.Errorf("MergeAttrs() = %v", got)
 		}
 	})

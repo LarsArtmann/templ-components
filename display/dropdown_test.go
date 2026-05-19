@@ -110,7 +110,11 @@ func TestDropdownRender(t *testing.T) {
 			Label:     dropdownLabelMenu,
 			Items: []DropdownItem{
 				{Text: dropdownItemEdit, Href: "/edit"},
-				{Text: dropdownItemDelete, Href: "/del", Attrs: map[string]any{"class": "text-red-600"}},
+				{
+					Text:  dropdownItemDelete,
+					Href:  "/del",
+					Attrs: map[string]any{"class": "text-red-600"},
+				},
 			},
 		}))
 		utils.AssertContains(t, output, dropdownItemEdit)

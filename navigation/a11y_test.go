@@ -6,13 +6,20 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const (
+	navItemHome           = "Home"
+	navItemUsers          = "Users"
+	navPathUsers          = "/users"
+	breadcrumbItemCurrent = "Current"
+)
+
 func TestBreadcrumbsA11y(t *testing.T) {
 	t.Parallel()
 
 	t.Run("nav has aria-label", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
-			{Text: "Home", Href: "/"},
+			{Text: navItemHome, Href: "/"},
 		}))
 		utils.AssertContains(t, output, `aria-label="Breadcrumb"`)
 	})
@@ -20,8 +27,8 @@ func TestBreadcrumbsA11y(t *testing.T) {
 	t.Run("active item has aria-current", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
-			{Text: "Home", Href: "/"},
-			{Text: "Users", Active: true},
+			{Text: navItemHome, Href: "/"},
+			{Text: navItemUsers, Active: true},
 		}))
 		utils.AssertContains(t, output, `aria-current="page"`)
 	})
@@ -29,8 +36,8 @@ func TestBreadcrumbsA11y(t *testing.T) {
 	t.Run("inactive items are links", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
-			{Text: "Home", Href: "/"},
-			{Text: "Users", Active: true},
+			{Text: navItemHome, Href: "/"},
+			{Text: navItemUsers, Active: true},
 		}))
 		utils.AssertContains(t, output, `<a href="/"`)
 	})
@@ -45,9 +52,9 @@ func TestBreadcrumbsA11y(t *testing.T) {
 	t.Run("single item with no href renders span", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
-			{Text: "Home"},
+			{Text: navItemHome},
 		}))
-		utils.AssertContains(t, output, "Home")
+		utils.AssertContains(t, output, navItemHome)
 		utils.AssertContains(t, output, `aria-current="page"`)
 		utils.AssertNotContains(t, output, `<a`)
 	})
@@ -55,11 +62,11 @@ func TestBreadcrumbsA11y(t *testing.T) {
 	t.Run("three levels with separators", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
-			{Text: "Home", Href: "/"},
-			{Text: "Users", Href: "/users"},
+			{Text: navItemHome, Href: "/"},
+			{Text: navItemUsers, Href: navPathUsers},
 			{Text: "Edit", Active: true},
 		}))
-		utils.AssertContains(t, output, "Home")
+		utils.AssertContains(t, output, navItemHome)
 		utils.AssertContains(t, output, "Users")
 		utils.AssertContains(t, output, "Edit")
 		utils.AssertContains(t, output, "text-gray-400")
@@ -72,8 +79,8 @@ func TestBreadcrumbsDarkMode(t *testing.T) {
 	t.Run("breadcrumb items have dark mode classes", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
-			{Text: "Current", Active: true},
-			{Text: "Home", Href: "/"},
+			{Text: breadcrumbItemCurrent, Active: true},
+			{Text: navItemHome, Href: "/"},
 		}))
 		utils.AssertContains(t, output, "dark:text-gray-400")
 	})
@@ -91,8 +98,8 @@ func TestNavRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `aria-label="Main navigation"`)
 		utils.AssertContains(t, output, "App")
-		utils.AssertContains(t, output, "Home")
-		utils.AssertContains(t, output, "About")
+		utils.AssertContains(t, output, navItemHome)
+		utils.AssertContains(t, output, navItemAbout)
 	})
 
 	t.Run("sticky nav has sticky class", func(t *testing.T) {
@@ -126,7 +133,7 @@ func TestNavRender(t *testing.T) {
 		output := utils.Render(t, Nav(NavProps{
 			Links: testNavLinks,
 		}))
-		utils.AssertContains(t, output, "Home")
+		utils.AssertContains(t, output, navItemHome)
 		utils.AssertNotContains(t, output, "text-xl font-bold")
 	})
 }

@@ -27,18 +27,18 @@ func TestThemeToggleRender(t *testing.T) {
 func TestBaseRender(t *testing.T) {
 	t.Parallel()
 	props := PageProps{
-		Title:          "Test Page",
+		Title:          testPage,
 		Description:    "",
 		Locale:         "en",
 		OGImage:        "",
 		ThemeColor:     "",
 		DarkThemeColor: "",
-		CSSPath:        "/app.css",
+		CSSPath:        testCSSPath,
 		Favicon:        "",
 		HTMXVersion:    "",
 		HTMXUseSRI:     false,
 		BodyClass:      "bg-white",
-		Nonce:          "test-nonce",
+		Nonce:          testNonce,
 		HeadContent:    nil,
 	}
 	output := utils.Render(t, Base(props))
@@ -61,7 +61,7 @@ func TestBaseRenderFullProps(t *testing.T) {
 		DarkThemeColor: "#000000",
 		CSSPath:        "/style.css",
 		Favicon:        "/fav.ico",
-		HTMXVersion:    "2.0.6",
+		HTMXVersion:    htmxVersion206,
 		HTMXUseSRI:     true,
 		BodyClass:      "bg-gray-50",
 		Nonce:          "abc",

@@ -52,7 +52,14 @@ func TestBadgeUserSeesCorrectVisualFeedback(t *testing.T) {
 func TestStatusBadgeMapsKnownStatusesCorrectly(t *testing.T) {
 	t.Parallel()
 
-	knownStatuses := []string{"healthy", "running", statusActiveText, "success", statusErrorText, "warning"}
+	knownStatuses := []string{
+		"healthy",
+		"running",
+		statusActiveText,
+		"success",
+		statusErrorText,
+		"warning",
+	}
 	for _, status := range knownStatuses {
 		t.Run("status "+status+" renders a badge", func(t *testing.T) {
 			t.Parallel()

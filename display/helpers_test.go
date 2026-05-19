@@ -9,10 +9,10 @@ import (
 )
 
 const (
-	badgeStatusError       = "error"
-	badgeStatusWarning     = "warning"
-	badgeSizeMDClass      = "px-2.5 py-0.5 text-xs"
-	cardPaddingMDClass    = "px-4 py-5 sm:p-6"
+	badgeStatusError   = "error"
+	badgeStatusWarning = "warning"
+	badgeSizeMDClass   = "px-2.5 py-0.5 text-xs"
+	cardPaddingMDClass = "px-4 py-5 sm:p-6"
 )
 
 func TestMapStatusToBadgeType(t *testing.T) {

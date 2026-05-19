@@ -7,15 +7,22 @@ type htmxSRIEntry struct {
 	ResponseTargets string
 }
 
+const htmxVersion206 = "2.0.6"
+
 //nolint:gochecknoglobals // Package-level lookup table for HTMX SRI hashes
 var htmxSRIHashes = map[string]htmxSRIEntry{
-	"2.0.6": {
-		Main:            "sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm",
-		ResponseTargets: "sha384-FcXXcaqsB+SLXujBqU9KJ7E84XV/wxvVAMAGam/W56Y4g0mE9pgh4HG+A4IlfbNd",
+	htmxVersion206: {
+		Main:            sriMain206,
+		ResponseTargets: sriResponseTargets206,
 	},
 }
 
 const htmxCDNBase = "https://unpkg.com/htmx.org@"
+
+const (
+	sriMain206            = "sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm"
+	sriResponseTargets206 = "sha384-FcXXcaqsB+SLXujBqU9KJ7E84XV/wxvVAMAGam/W56Y4g0mE9pgh4HG+A4IlfbNd"
+)
 
 func htmxCDNURL(version, path string) string {
 	url := htmxCDNBase + version

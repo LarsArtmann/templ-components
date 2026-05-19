@@ -6,14 +6,18 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-func TestSecurityHeaders(t *testing.T) {
-	t.Parallel()
+const (
+	testNonce   = "test-nonce"
+	testCSSPath = "/app.css"
+	testPage    = "Test Page"
+)
 
+func TestSecurityHeaders(t *testing.T) {
 	t.Run("security headers rendered when enabled", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultPageProps()
 		props.SecurityHeaders = true
-		props.Nonce = "test-nonce"
+		props.Nonce = testNonce
 		output := utils.Render(t, Base(props))
 		utils.AssertContains(t, output, `http-equiv="X-Content-Type-Options"`)
 		utils.AssertContains(t, output, `content="nosniff"`)
@@ -25,7 +29,7 @@ func TestSecurityHeaders(t *testing.T) {
 		t.Parallel()
 		props := DefaultPageProps()
 		props.SecurityHeaders = false
-		props.Nonce = "test-nonce"
+		props.Nonce = testNonce
 		output := utils.Render(t, Base(props))
 		utils.AssertNotContains(t, output, `http-equiv="X-Content-Type-Options"`)
 	})
@@ -61,8 +65,8 @@ func TestDefaultPageProps(t *testing.T) {
 		if props.HTMXUseSRI != true {
 			t.Error("HTMXUseSRI should be true by default")
 		}
-		if props.CSSPath != "/app.css" {
-			t.Errorf("CSSPath = %q, want %q", props.CSSPath, "/app.css")
+		if props.CSSPath != testCSSPath {
+			t.Errorf("CSSPath = %q, want %q", props.CSSPath, testCSSPath)
 		}
 		if props.BodyClass == "" {
 			t.Error("BodyClass should not be empty")
@@ -75,7 +79,7 @@ func TestHTMXSRI(t *testing.T) {
 
 	t.Run("known version returns SRI hash", func(t *testing.T) {
 		t.Parallel()
-		hash := htmxSRI("2.0.6", "main")
+		hash := htmxSRI(htmxVersion206, "main")
 		if hash == "" {
 			t.Error("expected non-empty SRI hash for known version")
 		}
@@ -92,7 +96,7 @@ func TestHTMXSRI(t *testing.T) {
 
 	t.Run("response-targets extension returns hash", func(t *testing.T) {
 		t.Parallel()
-		hash := htmxSRI("2.0.6", "response-targets")
+		hash := htmxSRI(htmxVersion206, "response-targets")
 		if hash == "" {
 			t.Error("expected non-empty SRI hash for response-targets")
 		}

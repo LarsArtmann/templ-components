@@ -8,6 +8,18 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const (
+	inputNameEmail      = "email"
+	inputLabelEmail     = "Email"
+	selectFieldCountry  = "country"
+	selectLabelCountry  = "Country"
+	selectOptionGermany = "Germany"
+	textareaFieldBio    = "bio"
+	textareaLabelBio    = "Bio"
+	checkboxFieldTerms  = "terms"
+	checkboxLabelTerms  = "Terms"
+)
+
 // --- Input Behavior ---
 
 func TestInputUserCanEnterData(t *testing.T) {
@@ -34,9 +46,9 @@ func TestInputUserCanEnterData(t *testing.T) {
 	t.Run("user sees required field indicator", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			Name:     "email",
+			Name:     inputNameEmail,
 			Type:     InputEmail,
-			Label:    "Email",
+			Label:    inputLabelEmail,
 			Required: true,
 		}))
 		utils.AssertContains(t, output, `required`)
@@ -67,7 +79,7 @@ func TestInputUserCanEnterData(t *testing.T) {
 	t.Run("user sees field error with accessible attributes", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			Name:  "email",
+			Name:  inputNameEmail,
 			Type:  InputEmail,
 			Label: "Email",
 			Error: "Email is required",
@@ -112,9 +124,9 @@ func TestInputUserCanEnterData(t *testing.T) {
 	t.Run("user sees input with both error and help text", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			Name:     "email",
+			Name:     inputNameEmail,
 			Type:     InputEmail,
-			Label:    "Email",
+			Label:    inputLabelEmail,
 			Error:    "Invalid email",
 			HelpText: "Use your work email.",
 		}))
@@ -137,10 +149,10 @@ func TestSelectUserCanChooseOption(t *testing.T) {
 	t.Run("user sees labeled select with custom options", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Select(SelectProps{
-			Name:  "country",
-			Label: "Country",
+			Name:  selectFieldCountry,
+			Label: selectLabelCountry,
 			Options: []SelectOption{
-				{Value: "de", Label: "Germany"},
+				{Value: "de", Label: selectOptionGermany},
 				{Value: "at", Label: "Austria"},
 			},
 		}))
@@ -197,7 +209,7 @@ func TestSelectUserCanChooseOption(t *testing.T) {
 			Label:    "Country",
 			Required: true,
 			Options: []SelectOption{
-				{Value: "de", Label: "Germany"},
+				{Value: "de", Label: selectOptionGermany},
 			},
 		}))
 		utils.AssertContains(t, output, `required`)
@@ -241,8 +253,8 @@ func TestTextareaUserCanEnterMultiLineText(t *testing.T) {
 	t.Run("user sees textarea with error and required", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Textarea(TextareaProps{
-			Name:     "bio",
-			Label:    "Biography",
+			Name:     textareaFieldBio,
+			Label:    textareaLabelBio,
 			Error:    "Biography is required",
 			Required: true,
 			Rows:     8,
@@ -288,11 +300,11 @@ func TestCheckboxUserCanToggle(t *testing.T) {
 	t.Run("user sees labeled checkbox with custom props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Checkbox(CheckboxProps{
-			Name:  "terms",
-			Label: "I agree to the terms",
+			Name:  checkboxFieldTerms,
+			Label: checkboxLabelTerms,
 		}))
 		utils.AssertContains(t, output, `name="terms"`)
-		utils.AssertContains(t, output, "I agree to the terms")
+		utils.AssertContains(t, output, checkboxLabelTerms)
 		utils.AssertContains(t, output, `type="checkbox"`)
 	})
 
@@ -314,8 +326,8 @@ func TestLabelUserSeesFieldLabels(t *testing.T) {
 
 	t.Run("user sees label linked to input", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Label("email", "Email address", false))
-		utils.AssertContains(t, output, `for="email"`)
+		output := utils.Render(t, Label(inputNameEmail, "Email address", false))
+		utils.AssertContains(t, output, `for="`+inputNameEmail+`"`)
 		utils.AssertContains(t, output, "Email address")
 	})
 
@@ -333,7 +345,7 @@ func TestFieldErrorUserSeesValidationFeedback(t *testing.T) {
 		fieldID string
 		message string
 	}{
-		{"linked to field", "email", "Email is required"},
+		{"linked to field", inputNameEmail, "Email is required"},
 		{"standalone without field link", "", "Something went wrong"},
 	}
 	for _, tt := range tests {
@@ -437,8 +449,8 @@ func TestCheckboxEdgeCases(t *testing.T) {
 	t.Run("checkbox with error", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Checkbox(CheckboxProps{
-			Name:  "terms",
-			Label: "Terms",
+			Name:  checkboxFieldTerms,
+			Label: checkboxLabelTerms,
 			Error: "You must accept",
 		}))
 		utils.AssertContains(t, output, "You must accept")
@@ -458,8 +470,8 @@ func TestCheckboxEdgeCases(t *testing.T) {
 	t.Run("checkbox with error and help text", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Checkbox(CheckboxProps{
-			Name:     "terms",
-			Label:    "Terms",
+			Name:     checkboxFieldTerms,
+			Label:    checkboxLabelTerms,
 			Error:    "You must accept",
 			HelpText: "Check to agree",
 		}))

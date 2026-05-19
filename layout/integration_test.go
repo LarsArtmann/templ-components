@@ -13,7 +13,7 @@ func TestIntegrationFullPageRender(t *testing.T) {
 	t.Run("base renders complete HTML document", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultPageProps()
-		props.Title = "Test Page"
+		props.Title = testPage
 		props.Description = "A test page"
 		output := utils.Render(t, Base(props))
 

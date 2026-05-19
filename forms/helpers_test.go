@@ -44,8 +44,8 @@ func TestErrorAttrs_AriaAttrsWithID(t *testing.T) {
 	t.Parallel()
 	got := ErrorAttrs("email", "required", "")
 	want := templ.Attributes{
-		ariaInvalid:      "true",
-		ariaDescribedBy:  "email-error",
+		ariaInvalid:     "true",
+		ariaDescribedBy: "email-error",
 	}
 	if len(got) != len(want) {
 		t.Fatalf("ErrorAttrs returned %d attrs, want %d", len(got), len(want))
@@ -63,7 +63,7 @@ func TestErrorAttrs_AriaAttrsWithoutID(t *testing.T) {
 	if _, ok := got[ariaDescribedBy]; ok {
 		t.Error("should not have aria-describedby when id is empty")
 	}
-	if got[ariaInvalid] != "true" {
+	if got[ariaInvalid] != ariaTrue {
 		t.Error("should have aria-invalid=true")
 	}
 }
@@ -72,8 +72,8 @@ func TestErrorAttrs_HelpTextIDIncluded(t *testing.T) {
 	t.Parallel()
 	got := ErrorAttrs("email", "required", "email-help")
 	want := templ.Attributes{
-		ariaInvalid:      "true",
-		ariaDescribedBy:  "email-error email-help",
+		ariaInvalid:     "true",
+		ariaDescribedBy: "email-error email-help",
 	}
 	if len(got) != len(want) {
 		t.Fatalf("ErrorAttrs returned %d attrs, want %d", len(got), len(want))

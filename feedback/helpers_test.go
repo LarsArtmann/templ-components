@@ -8,6 +8,16 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const (
+	spinnerMDClass      = "h-6 w-6"
+	borderGreenClass    = "border-green-200 dark:border-green-800"
+	borderRedClass      = "border-red-200 dark:border-red-800"
+	borderYellowClass   = "border-yellow-200 dark:border-yellow-800"
+	borderBlueClass     = "border-blue-200 dark:border-blue-800"
+	stepLineActiveClass = "bg-blue-600 dark:bg-blue-500"
+	textBlueInfoClass   = "text-blue-600 dark:text-blue-400"
+)
+
 func TestSpinnerSizeClass(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
@@ -15,9 +25,9 @@ func TestSpinnerSizeClass(t *testing.T) {
 		want string
 	}{
 		{SpinnerSM, "h-4 w-4"},
-		{SpinnerMD, "h-6 w-6"},
+		{SpinnerMD, spinnerMDClass},
 		{SpinnerLG, "h-8 w-8"},
-		{SpinnerSize("unknown"), "h-6 w-6"},
+		{SpinnerSize("unknown"), spinnerMDClass},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.size), func(t *testing.T) {
@@ -64,16 +74,16 @@ func TestToastStyles(t *testing.T) {
 	}{
 		{
 			ToastSuccess,
-			"border-green-200 dark:border-green-800",
+			borderGreenClass,
 			"text-green-600 dark:text-green-400",
 		},
-		{ToastError, "border-red-200 dark:border-red-800", "text-red-600 dark:text-red-400"},
+		{ToastError, borderRedClass, "text-red-600 dark:text-red-400"},
 		{
 			ToastWarning,
-			"border-yellow-200 dark:border-yellow-800",
+			borderYellowClass,
 			"text-yellow-600 dark:text-yellow-400",
 		},
-		{ToastInfo, "border-blue-200 dark:border-blue-800", "text-blue-600 dark:text-blue-400"},
+		{ToastInfo, borderBlueClass, textBlueInfoClass},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.typ), func(t *testing.T) {
@@ -106,10 +116,10 @@ func TestAlertStyles(t *testing.T) {
 		wantBorder    string
 		wantIconColor string
 	}{
-		{AlertSuccess, "border-green-200 dark:border-green-800", "text-green-400"},
-		{AlertError, "border-red-200 dark:border-red-800", "text-red-400"},
-		{AlertWarning, "border-yellow-200 dark:border-yellow-800", "text-yellow-400"},
-		{AlertInfo, "border-blue-200 dark:border-blue-800", "text-blue-400"},
+		{AlertSuccess, borderGreenClass, "text-green-400"},
+		{AlertError, borderRedClass, "text-red-400"},
+		{AlertWarning, borderYellowClass, "text-yellow-400"},
+		{AlertInfo, borderBlueClass, "text-blue-400"},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.typ), func(t *testing.T) {
@@ -158,7 +168,7 @@ func TestStepLineClass(t *testing.T) {
 		step, current int
 		want          string
 	}{
-		{0, 2, "bg-blue-600 dark:bg-blue-500"},
+		{0, 2, stepLineActiveClass},
 		{3, 2, "bg-gray-200 dark:bg-gray-700"},
 	}
 	for _, tt := range tests {

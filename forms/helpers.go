@@ -7,8 +7,11 @@ import (
 	"github.com/a-h/templ"
 )
 
-const ariaDescribedBy = "aria-describedby"
-const ariaInvalid    = "aria-invalid"
+const (
+	ariaDescribedBy = "aria-describedby"
+	ariaInvalid     = "aria-invalid"
+	ariaTrue        = "true"
+)
 
 var nonAlphaNum = regexp.MustCompile(`[^a-zA-Z0-9-]`)
 
@@ -30,7 +33,7 @@ func ErrorAttrs(id, errMsg, helpTextID string) templ.Attributes {
 		return nil
 	}
 	attrs := templ.Attributes{
-		ariaInvalid: "true",
+		ariaInvalid: ariaTrue,
 	}
 	if id != "" {
 		describedBy := id + "-error"

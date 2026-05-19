@@ -33,7 +33,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 	t.Run("user sees HTMX script with correct version", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultPageProps()
-		props.HTMXVersion = "2.0.6"
+		props.HTMXVersion = htmxVersion206
 		output := utils.Render(t, Base(props))
 		utils.AssertContains(t, output, "htmx.org@2.0.6")
 	})
@@ -88,7 +88,7 @@ func TestMinimalUserGetsCleanHTMLDocument(t *testing.T) {
 
 	t.Run("user sees minimal HTML without external dependencies", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Minimal(MinimalProps{Title: "Test Page", Locale: "en"}))
+		output := utils.Render(t, Minimal(MinimalProps{Title: testPage, Locale: "en"}))
 		utils.AssertContains(t, output, "<title>Test Page</title>")
 		utils.AssertContains(t, output, `lang="en"`)
 	})
@@ -148,8 +148,8 @@ func TestDefaultPagePropsProvidesSensibleDefaults(t *testing.T) {
 		if props.Locale != "en" {
 			t.Errorf("expected Locale 'en', got %q", props.Locale)
 		}
-		if props.HTMXVersion != "2.0.6" {
-			t.Errorf("expected HTMXVersion '2.0.6', got %q", props.HTMXVersion)
+		if props.HTMXVersion != htmxVersion206 {
+			t.Errorf("expected HTMXVersion %q, got %q", htmxVersion206, props.HTMXVersion)
 		}
 		if !props.SecurityHeaders {
 			t.Error("expected SecurityHeaders to be true")
