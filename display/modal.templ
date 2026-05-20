@@ -61,13 +61,20 @@ templ Modal(props ModalProps) {
 					inner.classList.remove('scale-100', 'opacity-100');
 					inner.classList.add('scale-95', 'opacity-0');
 				}
-				var prev = document.getElementById(id + '-prev-focus');
-				if (prev) prev.focus();
+				var prevId = modal.getAttribute('data-tc-prev-focus');
+				if (prevId) {
+					var prev = document.getElementById(prevId);
+					if (prev) prev.focus();
+					modal.removeAttribute('data-tc-prev-focus');
+				}
 			}
 		}
 		function tcOpenModal(id) {
 			var modal = document.getElementById(id);
 			if (modal) {
+				if (document.activeElement && document.activeElement.id) {
+					modal.setAttribute('data-tc-prev-focus', document.activeElement.id);
+				}
 				modal.classList.remove('opacity-0', 'pointer-events-none');
 				modal.classList.add('opacity-100', 'pointer-events-auto');
 				var inner = document.getElementById(id + '-panel');

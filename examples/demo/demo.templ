@@ -106,11 +106,11 @@ templ demoContent() {
 			BaseURL:     "/users",
 		})
 		@demoSection("Breadcrumbs")
-		@navigation.Breadcrumbs([]navigation.BreadcrumbItem{
+		@navigation.Breadcrumbs(navigation.BreadcrumbsProps{Items: []navigation.BreadcrumbItem{
 			{Text: "Home", Href: "/"},
 			{Text: "Users", Href: "/users"},
 			{Text: "John Doe"},
-		})
+		}})
 		@demoSection("Tooltip")
 		<div class="flex items-center gap-4 pt-2">
 			@display.Tooltip(display.TooltipProps{BaseProps: utils.BaseProps{ID: "tooltip-1"}, Text: "Edit this item"}) {

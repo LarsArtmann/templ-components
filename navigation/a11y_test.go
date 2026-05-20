@@ -18,42 +18,42 @@ func TestBreadcrumbsA11y(t *testing.T) {
 
 	t.Run("nav has aria-label", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome, Href: "/"},
-		}))
+		}}))
 		utils.AssertContains(t, output, `aria-label="Breadcrumb"`)
 	})
 
 	t.Run("active item has aria-current", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome, Href: "/"},
 			{Text: navItemUsers, Active: true},
-		}))
+		}}))
 		utils.AssertContains(t, output, `aria-current="page"`)
 	})
 
 	t.Run("inactive items are links", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome, Href: "/"},
 			{Text: navItemUsers, Active: true},
-		}))
+		}}))
 		utils.AssertContains(t, output, `<a href="/"`)
 	})
 
 	t.Run("empty list renders nav", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{}))
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{}}))
 		utils.AssertContains(t, output, "<nav")
 		utils.AssertContains(t, output, `aria-label="Breadcrumb"`)
 	})
 
 	t.Run("single item with no href renders span", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome},
-		}))
+		}}))
 		utils.AssertContains(t, output, navItemHome)
 		utils.AssertContains(t, output, `aria-current="page"`)
 		utils.AssertNotContains(t, output, `<a`)
@@ -61,11 +61,11 @@ func TestBreadcrumbsA11y(t *testing.T) {
 
 	t.Run("three levels with separators", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome, Href: "/"},
 			{Text: navItemUsers, Href: navPathUsers},
 			{Text: "Edit", Active: true},
-		}))
+		}}))
 		utils.AssertContains(t, output, navItemHome)
 		utils.AssertContains(t, output, "Users")
 		utils.AssertContains(t, output, "Edit")
@@ -78,10 +78,10 @@ func TestBreadcrumbsDarkMode(t *testing.T) {
 
 	t.Run("breadcrumb items have dark mode classes", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: breadcrumbItemCurrent, Active: true},
 			{Text: navItemHome, Href: "/"},
-		}))
+		}}))
 		utils.AssertContains(t, output, "dark:text-gray-400")
 	})
 }

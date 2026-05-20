@@ -6,6 +6,8 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+const modalTestNonce = "test-nonce"
+
 func TestModalRender(t *testing.T) {
 	t.Parallel()
 	t.Run("closed modal", func(t *testing.T) {
@@ -13,7 +15,7 @@ func TestModalRender(t *testing.T) {
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
 				ID:    "test-modal",
-				Nonce: "test-nonce",
+				Nonce: modalTestNonce,
 			},
 			Title: "Confirm",
 			Open:  false,
@@ -24,7 +26,7 @@ func TestModalRender(t *testing.T) {
 		utils.AssertContains(t, output, "Confirm")
 		utils.AssertContains(t, output, `role="dialog"`)
 		utils.AssertContains(t, output, `aria-modal="true"`)
-		utils.AssertContains(t, output, `nonce="test-nonce"`)
+		utils.AssertContains(t, output, `nonce="`+modalTestNonce+`"`)
 		utils.AssertContains(t, output, "tcCloseModal")
 		utils.AssertContains(t, output, "opacity-0")
 	})
@@ -74,7 +76,7 @@ func TestModalRender(t *testing.T) {
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
 				ID:    "modal-with-'quotes'",
-				Nonce: "test-nonce",
+				Nonce: modalTestNonce,
 			},
 			Title: "Escape Test",
 			Open:  false,
@@ -82,6 +84,22 @@ func TestModalRender(t *testing.T) {
 		output := utils.Render(t, Modal(props))
 		utils.AssertNotContains(t, output, "('modal-with-'quotes'')")
 		utils.AssertContains(t, output, `"modal-with-'quotes'"`)
+	})
+
+	t.Run("focus restore JS saves activeElement", func(t *testing.T) {
+		t.Parallel()
+		props := ModalProps{
+			BaseProps: utils.BaseProps{
+				ID:    "focus-modal",
+				Nonce: modalTestNonce,
+			},
+			Title: "Focus Test",
+			Open:  false,
+		}
+		output := utils.Render(t, Modal(props))
+		utils.AssertContains(t, output, "data-tc-prev-focus")
+		utils.AssertContains(t, output, "document.activeElement")
+		utils.AssertContains(t, output, "removeAttribute")
 	})
 
 	t.Run("empty ID panics on render", func(t *testing.T) {

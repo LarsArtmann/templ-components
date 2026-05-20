@@ -104,11 +104,11 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 
 	t.Run("user sees breadcrumb trail from home to current page", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome, Href: "/"},
 			{Text: "Users", Href: "/users"},
 			{Text: "Edit", Active: true},
-		}))
+		}}))
 		utils.AssertContains(t, output, navItemHome)
 		utils.AssertContains(t, output, "Users")
 		utils.AssertContains(t, output, "Edit")
@@ -116,27 +116,27 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 
 	t.Run("user sees current page as aria-current", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome, Href: "/"},
 			{Text: "Current", Active: true},
-		}))
+		}}))
 		utils.AssertContains(t, output, `aria-current="page"`)
 	})
 
 	t.Run("user sees breadcrumb navigation landmark", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome, Href: "/"},
-		}))
+		}}))
 		utils.AssertContains(t, output, `aria-label="Breadcrumb"`)
 	})
 
 	t.Run("user sees clickable parent breadcrumbs", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome, Href: "/"},
 			{Text: "Current", Active: true},
-		}))
+		}}))
 		utils.AssertContains(t, output, `href="/"`)
 	})
 }

@@ -74,7 +74,13 @@ templ Dropdown(props DropdownProps) {
 			panic(err.Error())
 		}
 	}}
-	<div class={ utils.Class("relative inline-block text-left", props.Class) } { props.Attrs... }>
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("relative inline-block text-left", props.Class) }
+		{ props.Attrs... }
+	>
 		<div>
 			<button
 				type="button"

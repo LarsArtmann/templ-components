@@ -1,6 +1,9 @@
 package navigation
 
-import "github.com/larsartmann/templ-components/icons"
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // BreadcrumbItem represents a single breadcrumb segment
 type BreadcrumbItem struct {
@@ -9,17 +12,37 @@ type BreadcrumbItem struct {
 	Active bool
 }
 
+// BreadcrumbsProps configures a breadcrumb navigation component
+type BreadcrumbsProps struct {
+	utils.BaseProps
+	Items []BreadcrumbItem
+}
+
+// DefaultBreadcrumbsProps returns sensible defaults
+func DefaultBreadcrumbsProps() BreadcrumbsProps {
+	return BreadcrumbsProps{}
+}
+
 // Breadcrumbs renders a horizontal breadcrumb navigation
 //
-//	@navigation.Breadcrumbs([]navigation.BreadcrumbItem{
-//	   {Text: "Home", Href: "/"},
-//	   {Text: "Users", Href: "/users"},
-//	   {Text: "Edit", Active: true},
+//	@navigation.Breadcrumbs(navigation.BreadcrumbsProps{
+//	   Items: []navigation.BreadcrumbItem{
+//	     {Text: "Home", Href: "/"},
+//	     {Text: "Users", Href: "/users"},
+//	     {Text: "Edit", Active: true},
+//	   },
 //	})
-templ Breadcrumbs(items []BreadcrumbItem) {
-	<nav class="flex" aria-label="Breadcrumb">
+templ Breadcrumbs(props BreadcrumbsProps) {
+	<nav
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("flex", props.Class) }
+		aria-label="Breadcrumb"
+		{ props.Attrs... }
+	>
 		<ol class="inline-flex items-center space-x-1 md:space-x-3">
-			for i, item := range items {
+			for i, item := range props.Items {
 				<li class="inline-flex items-center">
 					if i > 0 {
 						@icons.Icon(icons.ChevronRight, "mr-2 h-4 w-4 text-gray-400")

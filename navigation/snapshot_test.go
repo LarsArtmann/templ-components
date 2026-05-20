@@ -51,10 +51,10 @@ func TestMobileNavLinkRender(t *testing.T) {
 
 func TestBreadcrumbsRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, Breadcrumbs([]BreadcrumbItem{
+	output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 		{Text: navItemHome, Href: "/"},
 		{Text: "Users", Active: true},
-	}))
+	}}))
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, "Users")
 	utils.AssertContains(t, output, `href="/"`)

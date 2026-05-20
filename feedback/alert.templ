@@ -67,7 +67,14 @@ func alertIconName(t FeedbackType) icons.Name {
 //	@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong", Type: feedback.AlertError})
 templ Alert(props AlertProps) {
 	{{ border, bg, text, iconColor := alertStyles(props.Type) }}
-	<div class={ utils.Class("rounded-md border p-4", border, bg, props.Class) } role="alert" { props.Attrs... }>
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("rounded-md border p-4", border, bg, props.Class) }
+		role="alert"
+		{ props.Attrs... }
+	>
 		<div class="flex">
 			<div class="flex-shrink-0">
 				@icons.Icon(alertIconName(props.Type), utils.Class("h-5 w-5", iconColor))

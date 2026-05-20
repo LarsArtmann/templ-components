@@ -373,11 +373,11 @@ func demoContent() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = navigation.Breadcrumbs([]navigation.BreadcrumbItem{
+		templ_7745c5c3_Err = navigation.Breadcrumbs(navigation.BreadcrumbsProps{Items: []navigation.BreadcrumbItem{
 			{Text: "Home", Href: "/"},
 			{Text: "Users", Href: "/users"},
 			{Text: "John Doe"},
-		}).Render(ctx, templ_7745c5c3_Buffer)
+		}}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

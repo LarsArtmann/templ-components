@@ -47,7 +47,13 @@ templ ProgressBar(props ProgressBarProps) {
 			percent = 100
 		}
 	}}
-	<div class={ utils.Class("w-full", props.Class) } { props.Attrs... }>
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("w-full", props.Class) }
+		{ props.Attrs... }
+	>
 		if props.ShowLabel || props.Label != "" {
 			<div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
 				<span>{ props.Label }</span>
