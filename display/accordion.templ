@@ -47,7 +47,11 @@ func DefaultAccordionProps() AccordionProps {
 //	   },
 //	})
 templ Accordion(props AccordionProps) {
-	{{ if err := validateAccordionItems(props.Items); err != nil { panic(err.Error()) } }}
+	{{
+		if err := validateAccordionItems(props.Items); err != nil {
+			panic(err.Error())
+		}
+	}}
 	<div
 		if props.ID != "" {
 			id={ props.ID }

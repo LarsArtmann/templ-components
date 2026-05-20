@@ -39,7 +39,7 @@ func DefaultProgressBarProps() ProgressBarProps {
 //
 //	@feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100, Label: "Uploading"})
 templ ProgressBar(props ProgressBarProps) {
-	{{ 
+	{{
 		percent := 0.0
 		if props.Total > 0 {
 			percent = float64(props.Current) * 100.0 / float64(props.Total)

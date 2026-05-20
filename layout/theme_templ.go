@@ -5,10 +5,11 @@ package layout
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
-import "github.com/larsartmann/templ-components/icons"
+import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
+	"github.com/larsartmann/templ-components/icons"
+)
 
 // ThemeScript renders the inline script that sets the dark mode class before paint
 // Include this in your base template head to prevent FOUC

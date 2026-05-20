@@ -16,35 +16,35 @@ Session 12 executed the comprehensive plan from `docs/planning/2026-05-20_compre
 
 ## Metrics
 
-| Metric | Value |
-|--------|-------|
-| Packages | 9 + demo |
-| Build | ✅ Clean |
-| Tests | ✅ 9/9 pass |
-| Lint | ✅ 0 issues |
-| Coverage | 67.0% total |
-| Go source files | 56 |
-| Templ files | 32 |
-| Generated files | 32 `*_templ.go` |
-| Test files | 38 |
-| Hand-written Go lines | ~5,800 |
-| Templ lines | ~3,300 |
-| Components with BaseProps | 25 |
+| Metric                    | Value                                      |
+| ------------------------- | ------------------------------------------ |
+| Packages                  | 9 + demo                                   |
+| Build                     | ✅ Clean                                   |
+| Tests                     | ✅ 9/9 pass                                |
+| Lint                      | ✅ 0 issues                                |
+| Coverage                  | 67.0% total                                |
+| Go source files           | 56                                         |
+| Templ files               | 32                                         |
+| Generated files           | 32 `*_templ.go`                            |
+| Test files                | 38                                         |
+| Hand-written Go lines     | ~5,800                                     |
+| Templ lines               | ~3,300                                     |
+| Components with BaseProps | 25                                         |
 | Components propagating ID | 23 of 25 (NavLink + MobileNavLink missing) |
 
 ### Coverage by Package
 
-| Package | Coverage |
-|---------|----------|
-| utils | 83.3% |
-| internal/svg | 79.0% |
-| htmx | 77.3% |
-| icons | 75.0% |
-| layout | 73.2% |
-| forms | 70.5% |
-| display | 70.4% |
-| feedback | 70.2% |
-| navigation | 70.1% |
+| Package      | Coverage |
+| ------------ | -------- |
+| utils        | 83.3%    |
+| internal/svg | 79.0%    |
+| htmx         | 77.3%    |
+| icons        | 75.0%    |
+| layout       | 73.2%    |
+| forms        | 70.5%    |
+| display      | 70.4%    |
+| feedback     | 70.2%    |
+| navigation   | 70.1%    |
 
 ---
 
@@ -52,51 +52,51 @@ Session 12 executed the comprehensive plan from `docs/planning/2026-05-20_compre
 
 ### Session 12 (this session)
 
-| # | Task | Impact | Commit |
-|---|------|--------|--------|
-| T1 | Modal focus restore (WCAG fix) | 🔴 Critical | `8c5a0ea` |
-| T2 | ID propagation on 6 components (Alert, Toast, StatCard, Nav, Dropdown, ProgressBar) | 🟡 High | `8c5a0ea` |
-| T4 | Breadcrumbs BaseProps + DefaultBreadcrumbsProps() | 🟡 High | `8c5a0ea` |
-| T7 | Remove dead code (Deref, DerefOr, MergeAttrs, BoolString) | 🟢 Cleanup | `81bec84` |
-| T8 | Replace 3 hardcoded SVGs with icon system | 🟡 Consistency | `81bec84` |
-| T9 | ProgressBar negative percent clamp | 🟢 Safety | `81bec84` |
-| T10 | BoolString → strconv.FormatBool | 🟢 Dedup | `81bec84` |
-| T14 | Deduplicate test data (testNavLinks) | 🟢 Cleanup | `da31c6f` |
-| T17 | Fix retry counter race (per-element data-tc-retry) | 🔴 Race fix | `da31c6f` |
-| T18 | Update TODO_LIST.md | 🟢 Docs | `b3fb29d` |
-| T22 | Update AGENTS.md | 🟢 Docs | `b3fb29d` |
+| #   | Task                                                                                | Impact         | Commit    |
+| --- | ----------------------------------------------------------------------------------- | -------------- | --------- |
+| T1  | Modal focus restore (WCAG fix)                                                      | 🔴 Critical    | `8c5a0ea` |
+| T2  | ID propagation on 6 components (Alert, Toast, StatCard, Nav, Dropdown, ProgressBar) | 🟡 High        | `8c5a0ea` |
+| T4  | Breadcrumbs BaseProps + DefaultBreadcrumbsProps()                                   | 🟡 High        | `8c5a0ea` |
+| T7  | Remove dead code (Deref, DerefOr, MergeAttrs, BoolString)                           | 🟢 Cleanup     | `81bec84` |
+| T8  | Replace 3 hardcoded SVGs with icon system                                           | 🟡 Consistency | `81bec84` |
+| T9  | ProgressBar negative percent clamp                                                  | 🟢 Safety      | `81bec84` |
+| T10 | BoolString → strconv.FormatBool                                                     | 🟢 Dedup       | `81bec84` |
+| T14 | Deduplicate test data (testNavLinks)                                                | 🟢 Cleanup     | `da31c6f` |
+| T17 | Fix retry counter race (per-element data-tc-retry)                                  | 🔴 Race fix    | `da31c6f` |
+| T18 | Update TODO_LIST.md                                                                 | 🟢 Docs        | `b3fb29d` |
+| T22 | Update AGENTS.md                                                                    | 🟢 Docs        | `b3fb29d` |
 
 ### Sessions 10-11 (already done, was marked ⬜)
 
-| # | Task |
-|---|------|
-| Demo app rewrite with layout.Base + Tailwind v4 |
+| #                                                        | Task |
+| -------------------------------------------------------- | ---- |
+| Demo app rewrite with layout.Base + Tailwind v4          |
 | FeedbackType unification (AlertType/ToastType → aliases) |
-| LoadingOverlay → props struct |
-| StepIndicator BaseProps |
-| FillIcon variadic → bool |
-| ThemeToggle multi-instance fix |
-| Modal stable IDs |
-| Tooltip aria-describedby |
-| Breadcrumbs icon system |
-| Pagination URL builder (net/url) |
-| Test cleanup (splitClasses, benchmarks) |
-| CONTRIBUTING.md fix |
-| Icon validation (unknown names → panic) |
-| IconPathJS stroke-width fix (1.5 to match templ) |
-| Exclamation icon removal |
+| LoadingOverlay → props struct                            |
+| StepIndicator BaseProps                                  |
+| FillIcon variadic → bool                                 |
+| ThemeToggle multi-instance fix                           |
+| Modal stable IDs                                         |
+| Tooltip aria-describedby                                 |
+| Breadcrumbs icon system                                  |
+| Pagination URL builder (net/url)                         |
+| Test cleanup (splitClasses, benchmarks)                  |
+| CONTRIBUTING.md fix                                      |
+| Icon validation (unknown names → panic)                  |
+| IconPathJS stroke-width fix (1.5 to match templ)         |
+| Exclamation icon removal                                 |
 
 ---
 
 ## B) PARTIALLY DONE 🔨
 
-| Task | What's Done | What's Left |
-|------|-------------|-------------|
-| Icon list split brain | `allIconNames()` function exists, `TestIconCount` cross-checks | 4-way definition still manual (constants, path map keys, allIconNames, BDD test list). Auto-gen from path map would eliminate. |
-| Toast JS dismiss SVG | Path data from `icons.IconPathJS()`, `tcToastIcons.dismiss` added | SVG wrapper element still hardcoded in JS string (unavoidable for dynamic creation) |
-| Avatar fallback SVG | Not touched — decorative placeholder, not icon-system material | Could use `icons.Icon(icons.User, ...)` for consistency but it's a different visual style |
-| JS consolidation | Alert + Toast share `tcDismissAttached` handler | Accordion, Dropdown, Modal, ThemeToggle, MobileMenu all have independent init patterns |
-| Lookup helpers | `MapEnum` generic in utils, `lookupFeedbackStyle` generic in feedback | `badgeSizeClass`, `cardPaddingClass`, `progressHeightClass`, `spinnerSizeClass` still use switch/map+fallback manually (appropriate — they're trivial) |
+| Task                  | What's Done                                                           | What's Left                                                                                                                                            |
+| --------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Icon list split brain | `allIconNames()` function exists, `TestIconCount` cross-checks        | 4-way definition still manual (constants, path map keys, allIconNames, BDD test list). Auto-gen from path map would eliminate.                         |
+| Toast JS dismiss SVG  | Path data from `icons.IconPathJS()`, `tcToastIcons.dismiss` added     | SVG wrapper element still hardcoded in JS string (unavoidable for dynamic creation)                                                                    |
+| Avatar fallback SVG   | Not touched — decorative placeholder, not icon-system material        | Could use `icons.Icon(icons.User, ...)` for consistency but it's a different visual style                                                              |
+| JS consolidation      | Alert + Toast share `tcDismissAttached` handler                       | Accordion, Dropdown, Modal, ThemeToggle, MobileMenu all have independent init patterns                                                                 |
+| Lookup helpers        | `MapEnum` generic in utils, `lookupFeedbackStyle` generic in feedback | `badgeSizeClass`, `cardPaddingClass`, `progressHeightClass`, `spinnerSizeClass` still use switch/map+fallback manually (appropriate — they're trivial) |
 
 ---
 
@@ -104,30 +104,30 @@ Session 12 executed the comprehensive plan from `docs/planning/2026-05-20_compre
 
 ### Code Tasks
 
-| # | Task | Priority | Effort | Why Not Started |
-|---|------|----------|--------|-----------------|
-| 1 | Fix JS re-attachment after HTMX DOM swaps | P1 | 46m | Risky runtime behavior change across 7 components. Requires per-element `data-tc-initialized` replacing global `window.tc*Attached` guards. One mistake = broken interactivity. |
-| 2 | Add test coverage gaps (10 areas) | P1 | 58m | Pure quantity work. Edge cases: Alert empty Title, Toast unknown type, ProgressBar Total=0, StepIndicator empty Steps, Nav empty Links, Dropdown empty Items, Modal no Title, CSRFToken empty, Pagination CurrentPage>TotalPages. |
-| 3 | Validate SelectOption Disabled+Selected | P2 | 8m | Impossible HTML state. Minor. |
-| 4 | Validate Pagination CurrentPage > 0 | P2 | 5m | Minor. |
-| 5 | Add NavLink + MobileNavLink ID propagation | P2 | 10m | Found in audit — only 2 components with BaseProps missing ID. |
-| 6 | Add go doc examples (ExampleXxx functions) | P3 | 36m | pkg.go.dev discoverability. 5 key components. |
-| 7 | Document htmx→feedback JS dependency | P3 | 5m | Code comment. |
-| 8 | Document fill vs stroke convention | P3 | 5m | Code comment. |
-| 9 | Document thread-safety in CONTRIBUTING.md | P3 | 5m | Why mutex is required. |
-| 10 | Add ADR for FeedbackType unification | P3 | 8m | Decision record. |
+| #   | Task                                       | Priority | Effort | Why Not Started                                                                                                                                                                                                                   |
+| --- | ------------------------------------------ | -------- | ------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Fix JS re-attachment after HTMX DOM swaps  | P1       | 46m    | Risky runtime behavior change across 7 components. Requires per-element `data-tc-initialized` replacing global `window.tc*Attached` guards. One mistake = broken interactivity.                                                   |
+| 2   | Add test coverage gaps (10 areas)          | P1       | 58m    | Pure quantity work. Edge cases: Alert empty Title, Toast unknown type, ProgressBar Total=0, StepIndicator empty Steps, Nav empty Links, Dropdown empty Items, Modal no Title, CSRFToken empty, Pagination CurrentPage>TotalPages. |
+| 3   | Validate SelectOption Disabled+Selected    | P2       | 8m     | Impossible HTML state. Minor.                                                                                                                                                                                                     |
+| 4   | Validate Pagination CurrentPage > 0        | P2       | 5m     | Minor.                                                                                                                                                                                                                            |
+| 5   | Add NavLink + MobileNavLink ID propagation | P2       | 10m    | Found in audit — only 2 components with BaseProps missing ID.                                                                                                                                                                     |
+| 6   | Add go doc examples (ExampleXxx functions) | P3       | 36m    | pkg.go.dev discoverability. 5 key components.                                                                                                                                                                                     |
+| 7   | Document htmx→feedback JS dependency       | P3       | 5m     | Code comment.                                                                                                                                                                                                                     |
+| 8   | Document fill vs stroke convention         | P3       | 5m     | Code comment.                                                                                                                                                                                                                     |
+| 9   | Document thread-safety in CONTRIBUTING.md  | P3       | 5m     | Why mutex is required.                                                                                                                                                                                                            |
+| 10  | Add ADR for FeedbackType unification       | P3       | 8m     | Decision record.                                                                                                                                                                                                                  |
 
 ### Ecosystem Tasks
 
-| # | Task | Priority |
-|---|------|----------|
-| 11 | Tag v0.1.0-alpha | P4 |
-| 12 | Cross-link READMEs with cqrs-htmx | P4 |
-| 13 | Get listed on templ.guide | P4 |
-| 14 | Deploy demo site | P4 |
-| 15 | Unify error handling across libs | P5 |
-| 16 | Reference starter app | P5 |
-| 17 | Hot reload dev environment | P5 |
+| #   | Task                              | Priority |
+| --- | --------------------------------- | -------- |
+| 11  | Tag v0.1.0-alpha                  | P4       |
+| 12  | Cross-link READMEs with cqrs-htmx | P4       |
+| 13  | Get listed on templ.guide         | P4       |
+| 14  | Deploy demo site                  | P4       |
+| 15  | Unify error handling across libs  | P5       |
+| 16  | Reference starter app             | P5       |
+| 17  | Hot reload dev environment        | P5       |
 
 ---
 
@@ -148,6 +148,7 @@ Both `NavLink` and `MobileNavLink` have `utils.BaseProps` embedding but their ro
 **Location:** All 7 components using `window.tc*Attached` global guards
 
 When HTMX replaces DOM content (e.g., after a swap), the global `window.tc*Attached` guards prevent event listeners from being re-attached. This means:
+
 - Accordion: panels won't toggle after HTMX swap
 - Dropdown: menu won't open after HTMX swap
 - Modal: focus trap won't work after HTMX swap
@@ -200,33 +201,33 @@ Despite all the refactoring, coverage hasn't moved. The 10 identified edge-case 
 
 Sorted by impact × effort × customer-value:
 
-| # | Task | Impact | Effort | Package | Type |
-|---|------|--------|--------|---------|------|
-| 1 | Fix JS re-attachment after HTMX swaps | 🔴 | 46m | multi | Bug fix |
-| 2 | Add NavLink + MobileNavLink ID propagation | 🟡 | 10m | navigation | Bug fix |
-| 3 | Test coverage: Alert empty Title/Message/unknown type | 🟡 | 8m | feedback | Quality |
-| 4 | Test coverage: Toast empty Message/unknown type | 🟡 | 8m | feedback | Quality |
-| 5 | Test coverage: ProgressBar Total=0, negative Current | 🟡 | 5m | feedback | Quality |
-| 6 | Test coverage: StepIndicator empty Steps, out-of-bounds | 🟡 | 8m | feedback | Quality |
-| 7 | Test coverage: Nav empty Links, empty Href | 🟡 | 5m | navigation | Quality |
-| 8 | Test coverage: Dropdown empty Items, Href+action conflict | 🟡 | 8m | display | Quality |
-| 9 | Test coverage: Modal without Title | 🟡 | 5m | display | Quality |
-| 10 | Test coverage: CSRFToken empty string | 🟢 | 3m | forms | Quality |
-| 11 | Test coverage: Pagination edge cases | 🟡 | 5m | navigation | Quality |
-| 12 | Validate SelectOption Disabled+Selected | 🟡 | 8m | forms | Safety |
-| 13 | Validate Pagination CurrentPage > 0 | 🟡 | 5m | navigation | Safety |
-| 14 | Use tagged switch for StatCard Trend | 🟢 | 5m | display | Lint |
-| 15 | Add go doc ExampleAlert() | 🟡 | 8m | feedback | Discoverability |
-| 16 | Add go doc ExampleBadge() | 🟡 | 5m | display | Discoverability |
-| 17 | Add go doc ExampleCard() | 🟡 | 5m | display | Discoverability |
-| 18 | Add go doc ExamplePagination() | 🟡 | 8m | navigation | Discoverability |
-| 19 | Add go doc ExampleIcon() | 🟡 | 5m | icons | Discoverability |
-| 20 | Document thread-safety in CONTRIBUTING.md | 🟢 | 5m | docs | Knowledge |
-| 21 | Document htmx→feedback JS dependency | 🟢 | 5m | docs | Knowledge |
-| 22 | Document fill vs stroke icon convention | 🟢 | 5m | docs | Knowledge |
-| 23 | Tag v0.1.0-alpha | 🔴 | 18m | — | Release |
-| 24 | Deploy demo site to Fly.io | 🟡 | 23m | demo | Visibility |
-| 25 | Get listed on templ.guide | 🟡 | 18m | — | Distribution |
+| #   | Task                                                      | Impact | Effort | Package    | Type            |
+| --- | --------------------------------------------------------- | ------ | ------ | ---------- | --------------- |
+| 1   | Fix JS re-attachment after HTMX swaps                     | 🔴     | 46m    | multi      | Bug fix         |
+| 2   | Add NavLink + MobileNavLink ID propagation                | 🟡     | 10m    | navigation | Bug fix         |
+| 3   | Test coverage: Alert empty Title/Message/unknown type     | 🟡     | 8m     | feedback   | Quality         |
+| 4   | Test coverage: Toast empty Message/unknown type           | 🟡     | 8m     | feedback   | Quality         |
+| 5   | Test coverage: ProgressBar Total=0, negative Current      | 🟡     | 5m     | feedback   | Quality         |
+| 6   | Test coverage: StepIndicator empty Steps, out-of-bounds   | 🟡     | 8m     | feedback   | Quality         |
+| 7   | Test coverage: Nav empty Links, empty Href                | 🟡     | 5m     | navigation | Quality         |
+| 8   | Test coverage: Dropdown empty Items, Href+action conflict | 🟡     | 8m     | display    | Quality         |
+| 9   | Test coverage: Modal without Title                        | 🟡     | 5m     | display    | Quality         |
+| 10  | Test coverage: CSRFToken empty string                     | 🟢     | 3m     | forms      | Quality         |
+| 11  | Test coverage: Pagination edge cases                      | 🟡     | 5m     | navigation | Quality         |
+| 12  | Validate SelectOption Disabled+Selected                   | 🟡     | 8m     | forms      | Safety          |
+| 13  | Validate Pagination CurrentPage > 0                       | 🟡     | 5m     | navigation | Safety          |
+| 14  | Use tagged switch for StatCard Trend                      | 🟢     | 5m     | display    | Lint            |
+| 15  | Add go doc ExampleAlert()                                 | 🟡     | 8m     | feedback   | Discoverability |
+| 16  | Add go doc ExampleBadge()                                 | 🟡     | 5m     | display    | Discoverability |
+| 17  | Add go doc ExampleCard()                                  | 🟡     | 5m     | display    | Discoverability |
+| 18  | Add go doc ExamplePagination()                            | 🟡     | 8m     | navigation | Discoverability |
+| 19  | Add go doc ExampleIcon()                                  | 🟡     | 5m     | icons      | Discoverability |
+| 20  | Document thread-safety in CONTRIBUTING.md                 | 🟢     | 5m     | docs       | Knowledge       |
+| 21  | Document htmx→feedback JS dependency                      | 🟢     | 5m     | docs       | Knowledge       |
+| 22  | Document fill vs stroke icon convention                   | 🟢     | 5m     | docs       | Knowledge       |
+| 23  | Tag v0.1.0-alpha                                          | 🔴     | 18m    | —          | Release         |
+| 24  | Deploy demo site to Fly.io                                | 🟡     | 23m    | demo       | Visibility      |
+| 25  | Get listed on templ.guide                                 | 🟡     | 18m    | —          | Distribution    |
 
 ---
 
@@ -235,12 +236,14 @@ Sorted by impact × effort × customer-value:
 **Should we commit to v0.1.0-alpha NOW, or wait for JS re-attachment fix + test coverage push?**
 
 Arguments for shipping now:
+
 - All P0/P1 code bugs are fixed
 - The JS re-attachment issue only affects HTMX-heavy users who swap DOM regions containing interactive components
 - 67% coverage is respectable for a UI component library
 - Shipping unlocks real user feedback
 
 Arguments for waiting:
+
 - JS re-attachment is a **silently broken** behavior — users won't know their components stop working after HTMX swaps until they test it
 - Test coverage gaps mean untested edge cases could be broken
 - First impressions matter — v0.1.0-alpha sets expectations
@@ -263,11 +266,11 @@ b3fb29d docs: update TODO_LIST.md and AGENTS.md for session 12
 
 ## Verification
 
-| Check | Result |
-|-------|--------|
-| `go build ./...` | ✅ Clean |
-| `go test ./...` | ✅ 9/9 pass |
-| `golangci-lint run ./...` | ✅ 0 issues |
-| `templ generate ./...` | ✅ 0 updates needed |
-| Coverage | 67.0% |
-| Race detector | Not run this session (clean in session 11) |
+| Check                     | Result                                     |
+| ------------------------- | ------------------------------------------ |
+| `go build ./...`          | ✅ Clean                                   |
+| `go test ./...`           | ✅ 9/9 pass                                |
+| `golangci-lint run ./...` | ✅ 0 issues                                |
+| `templ generate ./...`    | ✅ 0 updates needed                        |
+| Coverage                  | 67.0%                                      |
+| Race detector             | Not run this session (clean in session 11) |
