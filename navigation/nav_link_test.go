@@ -37,3 +37,11 @@ func TestDefaultNavLinkProps(t *testing.T) {
 		t.Errorf("DefaultNavLinkProps().Text = %q, want empty", props.Text)
 	}
 }
+
+func TestDefaultBreadcrumbsProps(t *testing.T) {
+	t.Parallel()
+	props := DefaultBreadcrumbsProps()
+	if props.Items != nil {
+		t.Error("DefaultBreadcrumbsProps().Items should be nil")
+	}
+}

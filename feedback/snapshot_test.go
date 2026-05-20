@@ -255,6 +255,27 @@ func TestDefaultPropsConstructors(t *testing.T) {
 			t.Error("DefaultStepIndicatorProps().Steps should be nil")
 		}
 	})
+	t.Run("DefaultLoadingOverlayProps", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultLoadingOverlayProps()
+		if props.Message != "" {
+			t.Errorf("DefaultLoadingOverlayProps().Message = %q, want empty", props.Message)
+		}
+		if props.ShowProgress {
+			t.Error("DefaultLoadingOverlayProps().ShowProgress = true, want false")
+		}
+	})
+	t.Run("DefaultProgressBarProps", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultProgressBarProps()
+		if props.Current != 0 || props.Total != 0 {
+			t.Errorf(
+				"DefaultProgressBarProps() = {Current: %d, Total: %d}, want zeros",
+				props.Current,
+				props.Total,
+			)
+		}
+	})
 }
 
 func TestLoadingOverlayNoProgress(t *testing.T) {
