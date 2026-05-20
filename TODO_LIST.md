@@ -1,107 +1,242 @@
-# TODO List — templ-components
+# TODO List
 
-**Updated:** 2026-05-20
+**Generated:** 2026-05-20
+**Files Processed:** 226
 
-Legend: ✅ Done | 🔨 In Progress | ⬜ Not Started | ❌ Blocked | ⏭️ Deferred
+## 🔴 HIGH Priority
 
----
+- [ ] Validate required ID in Modal/Dropdown — empty ID produces broken `aria-labelledby` and JS (source: display/modal.templ, display/dropdown.templ)
+- [ ] Fix hidden coupling: `GlobalErrorHandling` calls `tcShowToast()` — requires `ToastContainer`, silently fails otherwise (source: htmx/error_handling.templ)
+- [ ] Add unknown icon name validation → panic with clear message (source: icons/icon_paths.go)
+- [ ] Default `PageProps.SecurityHeaders` to `true` — security-by-default (source: layout/base.templ)
+- [ ] Write migration guide for v0.2 breaking changes (source: docs/)
+- [ ] Version migration guides for breaking changes (source: docs/migration/)
+- [ ] Move test helpers to `internal/testutil/` (breaking change — defer to v1.0) (source: utils/utils_test.go)
+- [ ] Spinner/SimpleNav BaseProps conversion — breaking API change, defer (source: feedback/loading.templ, navigation/nav.templ)
 
-## Session 12 (2026-05-20) — Wave 1-2 Execution
+## 🟡 MEDIUM Priority
 
-### Completed This Session
+- [ ] Fix Modal focus restore — save `document.activeElement` on open, restore on close (WCAG failure) (source: display/modal.templ)
+- [ ] Fix Tooltip `aria-describedby` linkage on trigger element (source: display/tooltip.templ)
+- [ ] Fix Accordion state coupling — two independent state mechanisms (`hidden` attr vs `max-h-*` classes), JS never removes `hidden` (source: display/accordion.templ:62-64,85)
+- [ ] Fix Dropdown JS XSS — use `strconv.Quote()` instead of raw string interpolation (source: display/dropdown.templ:149)
+- [ ] Fix Modal IIFE XSS — add `modalSafeID()` using `strconv.Quote` (source: display/modal.templ)
+- [ ] Fix Dropdown `strconv.Quote` for ID safety in IIFE (source: display/dropdown.templ)
+- [ ] Fix JS re-attachment after HTMX DOM swaps — replace global `window.tc*Attached` guards with per-element `data-tc-initialized` (source: navigation/nav_link.templ, display/dropdown.templ, display/accordion.templ, 7 components)
+- [ ] Fix ThemeToggle multi-instance bug — `tcThemeToggleAttached` prevents second toggle from working (source: layout/theme.templ)
+- [ ] Fix GlobalErrorHandling shared retry counter — race condition on shared `retryCount` (source: htmx/error_handling.templ)
+- [ ] Fix NavLinkProps.Attrs shadowing BaseProps.Attrs — consumer attrs silently dropped (source: navigation/nav_link.templ:18)
+- [ ] Fix ID propagation on 6 components — Alert, Toast, StatCard, Nav, Dropdown, ProgressBar embed BaseProps but never render `id={props.ID}` (source: feedback/, display/, navigation/)
+- [ ] Fix NavLink + MobileNavLink ID propagation (source: navigation/nav_link.templ)
+- [ ] Fix Checkbox unconditional `id=""` → conditional rendering (source: forms/checkbox.templ)
+- [ ] Fix StatCard TrendNone semantics — 3-way `if/else if/else` for Up/Down/None instead of wrong "Decreased by" (source: display/card.templ)
+- [ ] Fix Modal panel `props.Class` → `utils.Class()` for Tailwind merge (source: display/modal.templ)
+- [ ] Fix IconPathJS stroke-width mismatch — use 1.5 to match templ rendering (source: icons/)
+- [ ] Fix ErrorAttrs dual reference — when both error AND help text exist, `aria-describedby` should reference both IDs (source: forms/helpers.go:20-31)
+- [ ] Fix `utils/utils_test.go:48` dead code — `p := new(v)` followed by impossible `if p == nil` (source: utils/utils_test.go:48)
+- [ ] Fix pre-commit hook — replace buildflow dependency with scripts/pre-commit.sh (source: .git/hooks/pre-commit)
+- [ ] Run `golangci-lint` full pass and fix all issues (source: project root)
+- [ ] Fix gci formatting on 2 edge-case test files (source: display/edge_cases_test.go:29, feedback/edge_cases_test.go:60)
+- [ ] Commit uncommitted edge-case tests + `t.Parallel()` fix (source: multiple)
+- [ ] Fix demo app to use `layout.Base` + Tailwind v4 + HTMX + proper nonce (source: examples/demo/main.go)
+- [ ] Refactor Accordion JS to IIFE-per-instance pattern (source: display/accordion.templ:76-98)
+- [ ] Refactor Modal JS to IIFE-per-instance with `strconv.Quote` for ID safety (source: display/modal.templ:48-92)
+- [ ] Fix TestIconCount hardcoded 45 — use dynamic `len(iconPathData)` check (source: icons/icon_names_test.go:119)
+- [ ] Improve coverage for functions below 70%: Avatar (60.6%), Pagination (64.3%), EmptyState (63.6%), Tabs (64.3%), fillIcon (63.2%), Select (66.1%), Textarea (66.4%) (source: multiple files)
+- [ ] Update CONTEXT.md with new architecture (source: CONTEXT.md)
+- [ ] Update CONTRIBUTING.md for new API patterns (source: CONTRIBUTING.md)
+- [ ] Tag v0.2.0 release and update CHANGELOG.md (source: project root)
+- [ ] Update FEATURES.md with accurate current status (source: FEATURES.md)
+- [ ] Update AGENTS.md with current coverage, test count, conventions (source: AGENTS.md)
+- [ ] Update stale TODO_LIST.md — mark completed items, remove stale notes (source: TODO_LIST.md)
+- [ ] Update CONTEXT.md with JS pattern decision documentation (source: CONTEXT.md)
+- [ ] Update README.md for new API (AvatarStatus, StatCardProps) (source: README.md)
+- [ ] Define HTTP error envelope for go-error-family — `{family, code, message, fix, retryable}` (source: go-error-family)
+- [ ] Improve go-error-family `diagnose` package coverage (60.6% → 75%+) (source: go-error-family/diagnose)
 
-| #   | Status | Task                                    | Notes                                                          |
-| --- | ------ | --------------------------------------- | -------------------------------------------------------------- |
-| 1   | ✅     | Fix Modal focus restore (WCAG)          | Save/restore activeElement via data-tc-prev-focus              |
-| 2   | ✅     | Fix ID propagation (6 components)       | Alert, Toast, StatCard, Nav, Dropdown, ProgressBar             |
-| 3   | ✅     | Add BaseProps to Breadcrumbs            | BreadcrumbsProps struct with Items + DefaultBreadcrumbsProps() |
-| 4   | ✅     | Remove dead code                        | Deref, DerefOr, MergeAttrs, BoolString + tests                 |
-| 5   | ✅     | Replace hardcoded SVGs with icon system | Alert dismiss, Toast JS dismiss, StepIndicator checkmark       |
-| 6   | ✅     | ProgressBar negative clamp              | percent < 0 → 0                                                |
-| 7   | ✅     | BoolString → strconv.FormatBool         | Accordion uses strconv directly                                |
-| 8   | ✅     | Fix retry counter race                  | Per-element data-tc-retry attribute                            |
-| 9   | ✅     | Deduplicate test data                   | testNavLinks in navigation tests                               |
+## 🟢 LOW Priority
 
-### Explicitly Skipped (Low Value)
+- [ ] Document htmx→feedback runtime JS coupling in code comments (source: htmx/error_handling.templ)
+- [ ] Document thread-safety requirement on `utils.Class()` in CONTRIBUTING.md (source: utils/utils.go)
+- [ ] Document 20×20 fill vs 24×24 stroke icon convention (source: internal/svg/svg.templ)
+- [ ] Investigate gopls QF1003 suppression for generated `*_templ.go` files (source: display/card_templ.go:479,494)
+- [ ] Document icon multi-path `|` separator convention (source: icons/icon_paths.go)
+- [ ] Document PageProps convention — why it doesn't embed BaseProps (source: CONTEXT.md)
+- [ ] Investigate visual regression testing (source: docs/status/)
+- [ ] Investigate nix flake for reproducible builds (source: flake.nix)
+- [ ] Consider `go:generate stringer` for enums (source: docs/status/)
+- [ ] Consider `Validate() error` method on props structs (source: docs/status/)
+- [ ] Investigate tooltip JS-based `aria-describedby` injection for full a11y compliance (source: display/tooltip.templ)
+- [ ] Investigate `display/empty_state.go` hand-written file for templ generation conflicts (source: display/empty_state.go)
 
-| #   | Task                                 | Reason                                                    |
-| --- | ------------------------------------ | --------------------------------------------------------- |
-| —   | Add BaseProps to Spinner             | Building block primitive, 12+ call sites, rarely needs ID |
-| —   | Add BaseProps to SimpleNav           | Convenience wrapper, delegates to Nav                     |
-| —   | Add BaseProps to SimpleEmptyState    | Trivial one-liner component                               |
-| —   | SimpleCard compose through Card      | Current implementation is cleaner                         |
-| —   | JS consolidation (shared tc-init.js) | Risky runtime behavior change                             |
-| —   | ComponentProps interface             | Significant boilerplate, low current ROI                  |
+## ⚪ Unknown Priority
 
----
-
-## Session 10-11 (2026-05-19) — Previously Completed
-
-| #   | Status                                                   | Task |
-| --- | -------------------------------------------------------- | ---- |
-| ✅  | Demo app rewrite with layout.Base + Tailwind v4          |
-| ✅  | FeedbackType unification (AlertType/ToastType → aliases) |
-| ✅  | LoadingOverlay → props struct                            |
-| ✅  | StepIndicator BaseProps                                  |
-| ✅  | FillIcon variadic → bool                                 |
-| ✅  | ThemeToggle multi-instance fix                           |
-| ✅  | Modal stable IDs                                         |
-| ✅  | Tooltip aria-describedby                                 |
-| ✅  | Breadcrumbs icon system                                  |
-| ✅  | Pagination URL builder (net/url)                         |
-| ✅  | Test cleanup (splitClasses, benchmarks)                  |
-| ✅  | CONTRIBUTING.md fix                                      |
-| ✅  | Icon validation (unknown names panic)                    |
-| ✅  | IconPathJS stroke-width fix                              |
-| ✅  | Exclamation icon removal                                 |
-
----
-
-## Code Quality Baseline
-
-|     | #   | Status                            | Notes                         |
-| --- | --- | --------------------------------- | ----------------------------- |
-| 1   | ✅  | Build passes (`go build ./...`)   | Clean. Zero issues.           |
-| 2   | ✅  | All tests pass (`go test ./...`)  | 9 packages, all green.        |
-| 3   | ✅  | Lint passes (`golangci-lint run`) | 0 issues on library packages. |
-| 4   | ✅  | Coverage: ~68%                    | Range per package.            |
-
----
-
-## Remaining Work (Prioritized)
-
-### P1 — Should Do Soon
-
-| #   | Status | Task                                       | Package    | Notes                                                                                           |
-| --- | ------ | ------------------------------------------ | ---------- | ----------------------------------------------------------------------------------------------- |
-| 1   | ⬜     | Fix JS re-attachment after HTMX swaps      | multi      | Global tc\*Attached guards prevent re-init after DOM swap. Use per-element data-tc-initialized. |
-| 2   | ⬜     | Add test coverage gaps (10 areas)          | multi      | Alert/Toast/ProgressBar/StepIndicator/Nav/Dropdown/Modal/CSRF/Pagination edge cases             |
-| 3   | ⬜     | Validate SelectOption Disabled+Selected    | forms      | Impossible state per HTML spec                                                                  |
-| 4   | ⬜     | Validate Pagination CurrentPage > 0        | navigation | CurrentPage: 0 renders page-0 link                                                              |
-| 5   | ⬜     | Extract shared test panic assertion helper | multi      | Repeated recover()+nil check pattern                                                            |
-
-### P2 — Nice to Have
-
-| #   | Status | Task                                                  | Package  | Notes                                             |
-| --- | ------ | ----------------------------------------------------- | -------- | ------------------------------------------------- |
-| 6   | ⬜     | Extract shared dismiss JS (Alert + Toast)             | feedback | Already partially shared via tcDismissAttached    |
-| 7   | ⬜     | Document htmx→feedback runtime JS dependency          | htmx     | GlobalErrorHandling requires ToastContainer       |
-| 8   | ⬜     | Document fill vs stroke 20×20/24×24 convention        | icons    | Code comment                                      |
-| 9   | ⬜     | Add go doc examples (ExampleXxx functions)            | all      | For pkg.go.dev discoverability                    |
-| 10  | ⬜     | Document thread-safety requirement in CONTRIBUTING.md | docs     | tailwind-merge-go NOT thread-safe, mutex required |
-
-### P3 — Deferred (Post v1.0)
-
-| #   | Status | Task                                            | Notes                              |
-| --- | ------ | ----------------------------------------------- | ---------------------------------- |
-| 11  | ⏭️     | Consolidate test files (37→15)                  | Post-v1.0                          |
-| 12  | ⏭️     | Convert snapshot tests to golden files          | Post-v1.0                          |
-| 13  | ⏭️     | Move test helpers out of utils/                 | Post-v1.0                          |
-| 14  | ⏭️     | Add Radio, File input, Toggle/Switch components | New features                       |
-| 15  | ⏭️     | Client-side JS tab switching                    | Enhancement                        |
-| 16  | ⏭️     | PageProps zero-value safety                     | API change                         |
-| 17  | ⏭️     | uint for Pagination fields                      | API change                         |
-| 18  | ⏭️     | Icon list auto-gen from path map                | Build tooling                      |
-| 19  | ⏭️     | ComponentProps interface                        | Significant boilerplate            |
-| 20  | ⏭️     | DropdownItem typed variant                      | Breaking API change                |
-| 21  | ⏭️     | Modularization (go.work)                        | Analysis concluded NOT recommended |
+- [ ] Add `aria-required` to form inputs — WCAG requirement (source: forms/)
+- [ ] Add `<html lang>` to Base layout — WCAG 3.1.1 (source: layout/base.templ)
+- [ ] Add `Alt` field to `AvatarProps` — WCAG 1.1.1 (source: display/avatar.templ)
+- [ ] Add `aria-live="polite"` to HTMX error handling — dynamic errors invisible to screen readers (source: htmx/error_handling.templ)
+- [ ] Validate InputType to prevent XSS via unknown type values (source: forms/input.templ)
+- [ ] Consolidate inline JS into shared init strategy — 222 lines across 7 files with no shared init (source: layout/base.templ, display/accordion.templ, display/dropdown.templ, display/modal.templ, feedback/alert.templ, feedback/toast.templ)
+- [ ] Change `TrendNone` from `""` to `"none"` — non-empty sentinel (source: display/card.templ)
+- [ ] Use stable IDs in modal JS (`props.ID + "-panel"`) instead of CSS selectors (source: display/modal.templ)
+- [ ] Add Table header/row cell count mismatch guard (source: display/table.templ)
+- [ ] Clamp ProgressBar percent to [0, 100] range (source: feedback/progressbar.templ)
+- [ ] Validate Pagination.CurrentPage > 0 (source: navigation/pagination.templ)
+- [ ] Delete deprecated `Exclamation` icon — identical SVG path to `ExclamationCircle` (source: icons/icon_names.go:48,52)
+- [ ] Use icon system in Breadcrumbs chevron instead of raw SVG (source: navigation/breadcrumbs.templ)
+- [ ] Tag v0.1.0-alpha — repo is public with no tag, every `go get` is a floating commit (source: git)
+- [ ] Set up GitHub Actions CI — build + test + lint on push/PR (source: .github/workflows/)
+- [ ] Verify `go get` works from clean project (source: docs/status/)
+- [ ] Replace Tab.Active bool with ActiveTabID string — prevents impossible zero/multiple active tabs state (source: display/tabs.templ)
+- [ ] Merge BadgeDefault into BadgeNeutral — identical CSS, BadgeDefault not in color map (source: display/badge.templ:9,91)
+- [ ] Consolidate badge color maps — badgeColorMap + badgeDotColorMap → single badgeStyle struct map (source: display/badge.templ:85-120)
+- [ ] Convert `badgeSizeClass` switch → map lookup (source: display/badge.templ)
+- [ ] Convert `cardPaddingClass` switch → map (source: display/card.templ)
+- [ ] Convert `modalSizeClass` switch → map (source: display/modal.templ)
+- [ ] Convert `alertIconName` switch → map lookup (source: feedback/alert.templ)
+- [ ] Convert `toastIconName` switch → map lookup (source: feedback/toast.templ)
+- [ ] Convert `spinnerSizeClass` switch → map lookup (source: feedback/loading.templ)
+- [ ] Convert `progressHeightClass` switch → map lookup (source: feedback/progressbar.templ)
+- [ ] Convert `avatarSizeClass` + `avatarDotSizeClass` → map lookups (source: display/avatar.templ)
+- [ ] Extract card shell CSS — repeated 3× in Card/StatCard/SimpleCard (source: display/card.templ:42,92,122)
+- [ ] Make `SimpleCard` compose through `Card` internally instead of duplicating shell (source: display/card.templ)
+- [ ] Extract tooltip position struct — two switch statements on same TooltipPosition type (source: display/tooltip.templ:29-53)
+- [ ] Extract shared `LookupStyle[T]` generic helper — replaces 5 duplicate lookup functions (source: display/badge.templ, display/tooltip.templ, display/card.templ, display/modal_go.go)
+- [ ] Extract shared form error/aria helper — ~30 lines duplicated across 4 form components (source: forms/input.templ, forms/select.templ, forms/textarea.templ, forms/checkbox.templ)
+- [ ] Add BaseProps to Breadcrumbs — currently takes only `[]BreadcrumbItem`, no ID/Class/Attrs support (source: navigation/breadcrumbs.templ)
+- [ ] Add BaseProps to SimpleNav — currently takes individual string args (source: navigation/nav.templ)
+- [ ] Add BaseProps to Spinner — currently takes `(size, colorClass)` positional args (source: feedback/)
+- [ ] Add BaseProps to StepIndicatorProps (source: feedback/step_indicator.templ)
+- [ ] Convert LoadingOverlay from positional params to props struct with BaseProps (source: feedback/loading.templ)
+- [ ] Add `ComponentProps` interface with `GetBaseProps() BaseProps` to all 29 props structs (source: utils/base_props.go)
+- [ ] Add `DefaultStatCardProps()` constructor — consistency with other components (source: display/card.templ)
+- [ ] Convert `Minimal(title, locale)` to `MinimalProps` struct for consistency (source: layout/base.templ:109)
+- [ ] Unify `AlertType`/`ToastType` into shared `FeedbackLevel` type (source: feedback/alert.templ, feedback/toast.templ)
+- [ ] Merge `alertStyleMap`/`toastStyleMap` into shared `feedbackStyleMap` (source: feedback/styles.go)
+- [ ] Extract shared dismiss JS for Alert + Toast — nearly identical `data-dismiss` event delegation (source: feedback/alert.templ:100-111, feedback/toast.templ:166-176)
+- [ ] Single-source toast icon SVG paths — JS `tcToastIcons` duplicates Go `iconPathData` map (source: feedback/toast.templ:82-86)
+- [ ] Consolidate modal per-instance JS into single function (source: display/modal.templ)
+- [ ] Make GlobalErrorHandling config values configurable instead of hardcoded (source: htmx/error_handling.templ)
+- [ ] Decouple htmx/loading from feedback.Spinner — accept `templ.Component` parameter instead (source: htmx/loading.templ:3)
+- [ ] Eliminate 4-way icon list split brain — auto-generate from `iconPathData` map (source: icons/icon_paths.go)
+- [ ] Validate `|` separator doesn't appear in SVG paths (source: icons/icon_paths.go)
+- [ ] Move avatar fallback SVG to icons package (source: display/avatar.templ:126)
+- [ ] Replace hardcoded SVGs with icon system — Alert dismiss X, Toast JS dismiss, StepIndicator checkmark (source: feedback/, feedback/, feedback/)
+- [ ] Validate SelectOption contradiction (Disabled + Selected simultaneously) (source: forms/select.templ)
+- [ ] Validate SwapOOB swapStyle parameter (source: htmx/swap_oob.templ)
+- [ ] Add `DropdownPosition` map lookup with fallback validation (source: display/dropdown.templ)
+- [ ] Add `TabsVariant` map lookup with fallback validation (source: display/tabs.templ)
+- [ ] Add `TrendDirection` consistent validation (source: display/card.templ)
+- [ ] Make `mapStatusToBadgeType` case-insensitive — "Active", "SUCCESS" fall through to BadgeNeutral (source: display/badge.templ)
+- [ ] HTMX CDN URL constant — repeated 4× in base.templ (source: layout/base.templ:80-84, layout/sri.go)
+- [ ] Magic theme colors `#4f46e5` and `#1e1b4b` hardcoded in `PageProps` defaults (source: layout/base.templ)
+- [ ] Replace `BoolString()` with `strconv.FormatBool()` (source: utils/utils.go)
+- [ ] Replace `splitSpace`/`splitClasses` with `strings.Fields` (source: icons/snapshot_test.go, utils/utils_test.go)
+- [ ] Audit `tailwind-merge-go` thread safety — remove `sync.Mutex` in `utils.Class()` if stateless (source: utils/utils.go)
+- [ ] Remove dead code: icons.IconAttrs, utils.Deref, utils.DerefOr, utils.MergeAttrs (source: icons/icon_helpers.go, utils/)
+- [ ] Remove no-op DefaultXxxProps — 7+ functions return zero-value structs (source: 7 files)
+- [ ] Replace `DropdownItem` empty-Href discrimination with typed `DropdownItemKind` enum (LinkItem, ButtonItem) (source: display/dropdown.templ)
+- [ ] Add `DropdownItem.Disabled` field (source: display/dropdown.templ)
+- [ ] Add `InputProps.MaxLength` field (source: forms/input.templ)
+- [ ] Add `TextareaProps.MaxLength` field (source: forms/textarea.templ)
+- [ ] Add `CheckboxProps.Value` field (source: forms/checkbox.templ)
+- [ ] Add Radio button component (source: forms/)
+- [ ] Add Tabs active tab keyboard navigation (arrow keys) (source: display/tabs.templ)
+- [ ] Add ProgressBar indeterminate state (source: feedback/progressbar.templ)
+- [ ] Make toast duration configurable per-toast instead of global 5s (source: feedback/toast.templ)
+- [ ] Add Pagination ellipsis rendering for large page ranges (source: navigation/pagination.templ)
+- [ ] Add Table caption support — Caption field + render `<caption>` element (source: display/table.templ)
+- [ ] Avatar status dot scaling — fixed h-2.5 w-2.5 regardless of avatar size (source: display/avatar.templ:92)
+- [ ] Breadcrumb separator customization (currently hardcoded `/`) (source: navigation/breadcrumbs.templ)
+- [ ] Use `net/url` for pagination URL construction instead of string concatenation (source: navigation/pagination.templ)
+- [ ] Extract error handling magic numbers — maxErrorHistory=10, maxRetries=2, delay=1000*retryCount (source: htmx/error_handling.templ:13-15)
+- [ ] Change `FillIcon` variadic `rotate ...bool` to `rotate bool` (source: internal/svg/svg.templ)
+- [ ] Add `DefaultLoadingOverlayProps` test — currently 0% coverage (source: feedback/loading.templ)
+- [ ] Add `DefaultBreadcrumbsProps` test — currently 0% coverage (source: navigation/breadcrumbs.templ)
+- [ ] Add Nav empty `Links` test (source: navigation/nav.templ)
+- [ ] Add CSRFToken empty string test (source: htmx/csrf.templ)
+- [ ] Add tooltip position edge case test (66.7%) (source: display/tooltip.templ)
+- [ ] Test Table mismatched header/row lengths (source: display/table_test.go)
+- [ ] Test Modal/Dropdown with empty ID after validation added (source: display/modal_test.go)
+- [ ] BDD tests for navigation package — Nav, Pagination, Breadcrumbs (source: navigation/)
+- [ ] BDD tests for htmx package — Loading, ErrorHandling (source: htmx/)
+- [ ] BDD tests for layout package — Base, Minimal, Theme (source: layout/)
+- [ ] BDD tests for icons package — all icons render, unknown fallback (source: icons/)
+- [ ] Consolidate test files from 37 to ~15 per package — eliminate 60%+ duplication (source: multiple test files)
+- [ ] Convert snapshot tests to golden file comparison with infrastructure (source: all packages)
+- [ ] Add `utils.AssertContainsClass` test helper — replace fragile exact-string class tests (source: display/accordion_test.go:47, display/table_test.go:96)
+- [ ] Remove duplicate test data — extract shared testNavLinks helper (source: navigation/)
+- [ ] Remove unused `badgeTextLive` constant (source: display/badge_test.go)
+- [ ] Delete `TestPtr` in utils_test.go (source: utils/utils_test.go)
+- [ ] Move `BenchmarkHotPaths` out of `display/a11y_test.go` into `display/benchmark_test.go` (source: display/a11y_test.go)
+- [ ] Add `t.Parallel()` to TestSecurityHeaders (source: layout/)
+- [ ] Add `TableCell` documentation — `Content` takes priority over `Text` (source: display/table.templ)
+- [ ] Set up goreleaser for tag-based releases with cross-compilation and checksums (source: .goreleaser.yml)
+- [ ] Verify goreleaser config and dry-run works (source: .goreleaser.yml)
+- [ ] Add `go vet` / staticcheck to CI pipeline (source: docs/status/)
+- [ ] Set coverage threshold in CI (e.g., 60%) (source: docs/status/)
+- [ ] Add build test for `examples/` in CI (source: examples/demo/)
+- [ ] Clean up golangci-lint cache corruption (source: docs/status/)
+- [ ] Pre-commit hook needs `chmod +x` (source: scripts/pre-commit.sh)
+- [ ] Exclude examples/ from lint in `.golangci.yml` — 23 lint issues block `golangci-lint run ./...` (source: .golangci.yml)
+- [ ] Write ADR for filled vs stroke icon convention (source: docs/adr/)
+- [ ] Write ADR for JS attachment patterns — singleton vs IIFE (source: docs/adr/)
+- [ ] Add ADR for FeedbackType unification decision (source: docs/adr/)
+- [ ] Add `docs/adr/` directory for architecture decision records (source: docs/)
+- [ ] Add `go doc` ExampleXxx() functions — ExampleAlert, ExampleBadge, ExampleCard, ExamplePagination, ExampleIcon (source: feedback/, display/, navigation/, icons/)
+- [ ] Add `ExampleXxx()` functions for pkg.go.dev discoverability (source: docs/status/)
+- [ ] Fill in placeholder terms in DOMAIN_LANGUAGE.md (source: docs/DOMAIN_LANGUAGE.md)
+- [ ] Documentation site generation — pkgsite, doc2go, or custom (source: project root)
+- [ ] Evaluate doc2go or pkgsite for API docs (source: docs/status/)
+- [ ] Submit to awesome-templ for discoverability (source: GitHub PR)
+- [ ] Open PR on templ.guide to get listed (source: GitHub PR)
+- [ ] Cross-link ecosystem in README — cqrs-htmx, go-cqrs-lite (GOTH stack story) (source: README.md)
+- [ ] Add pre-release badge to README (source: README.md)
+- [ ] Rewrite READMEs to lead with ecosystem story + HTMX integration (source: README.md)
+- [ ] Build real-world example app using all three libs (clone-and-run) (source: docs/STANDOUT-IDEAS.md)
+- [ ] Build and deploy live component showcase site (source: docs/STANDOUT-IDEAS.md)
+- [ ] Add benchmark tests for Icon, Card, Table, Nav renders (source: multiple test files)
+- [ ] Add benchmark tests for hot render paths — `Class()`, `Spinner()`, `Badge()` (source: all packages)
+- [ ] Add component composition integration tests — Card+Badge, Nav+Avatar, Table+Dropdown, Modal+Form (source: display/composition_test.go)
+- [ ] Add integration test: full page render with Base + Nav + Content + Footer (source: layout/integration_test.go) [TEST]
+- [ ] Dark mode `dark:` class output verification tests (source: all packages)
+- [ ] Consistent nonce propagation audit across all components (source: all packages)
+- [ ] Add circular import guard test (source: docs/status/)
+- [ ] Add E2E/integration tests with browser automation (source: docs/status/)
+- [ ] Add accessibility audit automation — axe-core/pa11y (source: docs/status/)
+- [ ] Move ProgressBar a11y test from `display/` to `feedback/` package (source: display/a11y_test.go)
+- [ ] Deploy demo site — add cmd/demo/main.go with HTTP server + Fly.io/Railway config (source: cmd/demo/)
+- [ ] Modularize into Go workspace (10-module `go.work`) (source: docs/modularization/)
+- [ ] Add Toggle/Switch component (source: forms/)
+- [ ] Add File input component (source: forms/)
+- [ ] Add Date Picker component (source: docs/status/)
+- [ ] Add Combobox/Autocomplete component (source: docs/status/)
+- [ ] Add Dialog/Drawer component variants (source: docs/status/)
+- [ ] Add Form component wrapping inputs + validation (source: forms/)
+- [ ] Add skeleton component variants (card, table, list) (source: docs/status/)
+- [ ] Step indicator vertical variant (source: feedback/step_indicator.templ)
+- [ ] Badge click/href support (source: display/badge.templ)
+- [ ] Add more Heroicons (currently 45 of ~300) (source: icons/)
+- [ ] `ComponentProps` interface — `GetBaseProps() BaseProps` for 29 structs (source: docs/status/)
+- [ ] Make `PageProps` zero-value safe (source: layout/page_props.go)
+- [ ] Add stroke-width option to `icons.Icon` (source: docs/status/)
+- [ ] Extract shared Tailwind preset/theme configuration file (source: project root)
+- [ ] Add Table header `scope` attributes — screen reader column association (source: display/table.templ)
+- [ ] Add EmptyState landmark role (`role="region"`) for screen reader navigation (source: display/empty_state.templ)
+- [ ] Add Breadcrumb structured data (JSON-LD) (source: navigation/breadcrumbs.templ)
+- [ ] Add Pagination SEO `rel=prev/next` (source: navigation/pagination.templ)
+- [ ] Add MarshalJSON/UnmarshalJSON to go-error-family types (source: go-error-family)
+- [ ] Decide go-error-family integration architecture — thin adapter vs deep protocol (source: docs/status/)
+- [ ] Add `uint` type for Pagination fields (source: navigation/pagination.templ)
+- [ ] Cross-package circular import audit — icons ↔ feedback full analysis (source: icons/, feedback/)
+- [ ] Plan v1.0 API freeze scope and timeline (source: docs/status/)
+- [ ] Unify error handling + validation across go-cqrs-lite, cqrs-htmx, templ-components (source: docs/SUPERB-FOR-PERSONAL-USE.md)
+- [ ] Build reference starter app with auth, admin CRUD, settings, deploy (source: docs/SUPERB-FOR-PERSONAL-USE.md)
+- [ ] Resource scaffolding script for CRUD generation (source: docs/SUPERB-FOR-PERSONAL-USE.md)
+- [ ] Prune old status reports — keep last 2, archive rest (source: docs/status/)
+- [ ] Add client-side JS tab switching (source: display/tabs.templ)
+- [ ] Build interactive copy-paste component playground (source: docs/STANDOUT-IDEAS.md)
+- [ ] Build CLI tool (`templ-components add`) (source: docs/STANDOUT-IDEAS.md)
+- [ ] Add form validation integration system (source: docs/STANDOUT-IDEAS.md)
+- [ ] Add composition examples / pattern recipes (source: docs/STANDOUT-IDEAS.md)
+- [ ] Ensure Tailwind v4 migration readiness (source: docs/STANDOUT-IDEAS.md)
