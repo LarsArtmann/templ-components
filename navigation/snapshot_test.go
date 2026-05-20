@@ -40,6 +40,39 @@ func TestNavLinkRender(t *testing.T) {
 		utils.AssertContains(t, output, `target="_blank"`)
 		utils.AssertContains(t, output, `rel="noopener noreferrer"`)
 	})
+
+	t.Run("custom class propagated via utils.Class merge", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(
+			t,
+			NavLink(
+				NavLinkProps{
+					BaseProps: utils.BaseProps{Class: "my-custom-link"},
+					Href:      "/",
+					Text:      navItemHome,
+				},
+				"/",
+			),
+		)
+		utils.AssertContains(t, output, "my-custom-link")
+		utils.AssertContains(t, output, "inline-flex")
+	})
+
+	t.Run("custom ID propagated", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(
+			t,
+			NavLink(
+				NavLinkProps{
+					BaseProps: utils.BaseProps{ID: "nav-home"},
+					Href:      "/",
+					Text:      navItemHome,
+				},
+				"/",
+			),
+		)
+		utils.AssertContains(t, output, `id="nav-home"`)
+	})
 }
 
 func TestMobileNavLinkRender(t *testing.T) {
@@ -47,6 +80,23 @@ func TestMobileNavLinkRender(t *testing.T) {
 	output := utils.Render(t, MobileNavLink(NavLinkProps{Href: "/", Text: navItemHome}, "/"))
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, `aria-current="page"`)
+}
+
+func TestMobileNavLinkClassPropagation(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(
+		t,
+		MobileNavLink(
+			NavLinkProps{
+				BaseProps: utils.BaseProps{Class: "my-mobile-link"},
+				Href:      "/",
+				Text:      navItemHome,
+			},
+			"/",
+		),
+	)
+	utils.AssertContains(t, output, "my-mobile-link")
+	utils.AssertContains(t, output, "block border-l-4")
 }
 
 func TestBreadcrumbsRender(t *testing.T) {

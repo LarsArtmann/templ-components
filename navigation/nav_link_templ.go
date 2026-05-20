@@ -167,7 +167,7 @@ func NavLink(props NavLinkProps, currentPath string) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		isActive := props.Href == currentPath
-		var templ_7745c5c3_Var10 = []any{navLinkClasses(isActive)}
+		var templ_7745c5c3_Var10 = []any{utils.Class(navLinkClasses(isActive), props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -289,7 +289,8 @@ func MobileNavLink(props NavLinkProps, currentPath string) templ.Component {
 		isActive := props.Href == currentPath
 		var templ_7745c5c3_Var16 = []any{"block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors",
 			templ.KV("border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300", isActive),
-			templ.KV("border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-200", !isActive)}
+			templ.KV("border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-200", !isActive),
+			props.Class}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var16...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -364,7 +365,7 @@ func MobileNavLink(props NavLinkProps, currentPath string) templ.Component {
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(props.Text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav_link.templ`, Line: 76, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav_link.templ`, Line: 77, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {
