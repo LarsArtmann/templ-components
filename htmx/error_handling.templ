@@ -16,7 +16,6 @@ templ GlobalErrorHandling(nonce string) {
 			var RETRY_DELAY_MS = 1000;
 
 			const errorHistory = [];
-			let retryCount = 0;
 
 			function tcHandleHTMXError(event, type) {
 				var xhr = event.detail.xhr;
@@ -84,16 +83,19 @@ templ GlobalErrorHandling(nonce string) {
 
 			document.addEventListener('htmx:responseError', function(event) {
 				var xhr = event.detail.xhr;
-				if ((xhr.status >= 500 || xhr.status === 0) && retryCount < MAX_RETRIES) {
-					retryCount++;
-					setTimeout(function() {
-						var elt = event.detail.elt;
-						if (elt && elt.click) elt.click();
-					}, RETRY_DELAY_MS * retryCount);
-				} else {
-					retryCount = 0;
-					tcHandleHTMXError(event, 'response');
+				var elt = event.detail.elt;
+				if ((xhr.status >= 500 || xhr.status === 0) && elt) {
+					var retries = parseInt(elt.getAttribute('data-tc-retry') || '0');
+					if (retries < MAX_RETRIES) {
+						elt.setAttribute('data-tc-retry', String(retries + 1));
+						setTimeout(function() {
+							if (elt && elt.click) elt.click();
+						}, RETRY_DELAY_MS * (retries + 1));
+						return;
+					}
+					elt.removeAttribute('data-tc-retry');
 				}
+				tcHandleHTMXError(event, 'response');
 			});
 
 			document.addEventListener('htmx:afterRequest', function(event) {

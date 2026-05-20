@@ -91,10 +91,6 @@ var testNavLinks = []NavLinkProps{
 
 func TestMobileMenuRender(t *testing.T) {
 	t.Parallel()
-	testNavLinks := []NavLinkProps{
-		{Href: "/", Text: navItemHome},
-		{Href: navItemAbout, Text: navItemAbout},
-	}
 	output := utils.Render(t, MobileMenu(testNavLinks, "/", "test-nonce"))
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, navItemAbout)
@@ -104,10 +100,6 @@ func TestMobileMenuRender(t *testing.T) {
 
 func TestSimpleNavRender(t *testing.T) {
 	t.Parallel()
-	testNavLinks := []NavLinkProps{
-		{Href: "/", Text: navItemHome},
-		{Href: navItemAbout, Text: navItemAbout},
-	}
 	output := utils.Render(t, SimpleNav("MyApp", "/", testNavLinks, "/"))
 	utils.AssertContains(t, output, "MyApp")
 	utils.AssertContains(t, output, "Home")
