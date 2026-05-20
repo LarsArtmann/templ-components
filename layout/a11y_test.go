@@ -13,6 +13,7 @@ const (
 )
 
 func TestSecurityHeaders(t *testing.T) {
+	t.Parallel()
 	t.Run("security headers rendered when enabled", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultPageProps()

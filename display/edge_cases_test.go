@@ -1,0 +1,47 @@
+package display
+
+import (
+	"testing"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+func TestModalEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	t.Run("modal without title renders no header", func(t *testing.T) {
+		t.Parallel()
+		props := ModalProps{
+			BaseProps: utils.BaseProps{ID: "no-title-modal"},
+			Open:      true,
+			Size:      ModalSizeMD,
+		}
+		output := utils.Render(t, Modal(props))
+		utils.AssertContains(t, output, `id="no-title-modal"`)
+		utils.AssertNotContains(t, output, `id="no-title-modal-title"`)
+		utils.AssertNotContains(t, output, "aria-label=\"Close\"")
+	})
+
+	t.Run("dropdown with empty items list renders button only", func(t *testing.T) {
+		t.Parallel()
+		props := DropdownProps{
+			BaseProps: utils.BaseProps{ID: "empty-dd"},
+			Items:     []DropdownItem{},
+		}
+		output := utils.Render(t, Dropdown(props))
+		utils.AssertContains(t, output, `id="empty-dd"`)
+		utils.AssertContains(t, output, `id="empty-dd-button"`)
+	})
+
+	t.Run("dropdown item with both Href and action renders link", func(t *testing.T) {
+		t.Parallel()
+		props := DropdownProps{
+			BaseProps: utils.BaseProps{ID: "both-dd"},
+			Items: []DropdownItem{
+				{Text: "Link", Href: "/link"},
+			},
+		}
+		output := utils.Render(t, Dropdown(props))
+		utils.AssertContains(t, output, "/link")
+	})
+}
