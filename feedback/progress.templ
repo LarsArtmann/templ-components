@@ -81,15 +81,17 @@ func progressTrackClass(size ProgressBarSize) string {
 	return "w-full bg-gray-200 dark:bg-gray-700 rounded-full " + progressHeightClass(size)
 }
 
+//nolint:gochecknoglobals // Package-level lookup table for progress bar heights
+var progressHeightLookup = map[string]string{
+	string(ProgressBarSizeSM): "h-1.5",
+	string(ProgressBarSizeLG): "h-4",
+}
+
 func progressHeightClass(size ProgressBarSize) string {
-	switch size {
-	case ProgressBarSizeSM:
-		return "h-1.5"
-	case ProgressBarSizeLG:
-		return "h-4"
-	default:
-		return "h-2.5"
+	if v, ok := progressHeightLookup[string(size)]; ok {
+		return v
 	}
+	return "h-2.5"
 }
 
 // StepIndicatorProps configures a step/progress indicator

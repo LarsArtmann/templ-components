@@ -48,18 +48,19 @@ func alertStyles(t FeedbackType) (border, bg, text, icon string) {
 	return s.Border, s.BG, s.Text, s.Icon
 }
 
-// alertIconName maps alert types to icon names
+//nolint:gochecknoglobals // Package-level lookup table for alert icons
+var alertIconMap = map[FeedbackType]icons.Name{
+	FeedbackSuccess: icons.Check,
+	FeedbackError:   icons.X,
+	FeedbackWarning: icons.ExclamationTriangle,
+	FeedbackInfo:    icons.Information,
+}
+
 func alertIconName(t FeedbackType) icons.Name {
-	switch t {
-	case AlertSuccess:
-		return icons.Check
-	case AlertError:
-		return icons.X
-	case AlertWarning:
-		return icons.ExclamationTriangle
-	default:
-		return icons.Information
+	if n, ok := alertIconMap[t]; ok {
+		return n
 	}
+	return icons.Information
 }
 
 // Alert renders a full-width alert banner

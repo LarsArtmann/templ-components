@@ -58,34 +58,33 @@ func DefaultAvatarProps() AvatarProps {
 	}
 }
 
+//nolint:gochecknoglobals // Package-level lookup tables for avatar sizes
+var avatarSizeLookup = map[string]string{
+	string(AvatarSizeXS): "h-6 w-6 text-xs",
+	string(AvatarSizeSM): "h-8 w-8 text-sm",
+	string(AvatarSizeLG): "h-12 w-12 text-lg",
+	string(AvatarSizeXL): "h-14 w-14 text-xl",
+}
+
+var avatarDotSizeLookup = map[string]string{
+	string(AvatarSizeXS): "h-1.5 w-1.5",
+	string(AvatarSizeSM): "h-2 w-2",
+	string(AvatarSizeLG): "h-3 w-3",
+	string(AvatarSizeXL): "h-3.5 w-3.5",
+}
+
 func avatarSizeClass(size AvatarSize) string {
-	switch size {
-	case AvatarSizeXS:
-		return "h-6 w-6 text-xs"
-	case AvatarSizeSM:
-		return "h-8 w-8 text-sm"
-	case AvatarSizeLG:
-		return "h-12 w-12 text-lg"
-	case AvatarSizeXL:
-		return "h-14 w-14 text-xl"
-	default:
-		return "h-10 w-10 text-base"
+	if v, ok := avatarSizeLookup[string(size)]; ok {
+		return v
 	}
+	return "h-10 w-10 text-base"
 }
 
 func avatarDotSizeClass(size AvatarSize) string {
-	switch size {
-	case AvatarSizeXS:
-		return "h-1.5 w-1.5"
-	case AvatarSizeSM:
-		return "h-2 w-2"
-	case AvatarSizeLG:
-		return "h-3 w-3"
-	case AvatarSizeXL:
-		return "h-3.5 w-3.5"
-	default:
-		return "h-2.5 w-2.5"
+	if v, ok := avatarDotSizeLookup[string(size)]; ok {
+		return v
 	}
+	return "h-2.5 w-2.5"
 }
 
 func avatarShapeClass(shape AvatarShape) string {
@@ -141,7 +140,7 @@ func Avatar(props AvatarProps) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 98, Col: 18}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 97, Col: 18}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 				if templ_7745c5c3_Err != nil {
@@ -159,7 +158,7 @@ func Avatar(props AvatarProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(props.Src)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 100, Col: 19}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 99, Col: 19}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 			if templ_7745c5c3_Err != nil {
@@ -172,7 +171,7 @@ func Avatar(props AvatarProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(props.Alt)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 101, Col: 19}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 100, Col: 19}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 			if templ_7745c5c3_Err != nil {
@@ -252,7 +251,7 @@ func Avatar(props AvatarProps) templ.Component {
 				var templ_7745c5c3_Var10 string
 				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 118, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 117, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 				if templ_7745c5c3_Err != nil {
@@ -292,7 +291,7 @@ func Avatar(props AvatarProps) templ.Component {
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(props.Initials)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 124, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 123, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 				if templ_7745c5c3_Err != nil {

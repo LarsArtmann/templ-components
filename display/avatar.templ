@@ -50,34 +50,33 @@ func DefaultAvatarProps() AvatarProps {
 	}
 }
 
+//nolint:gochecknoglobals // Package-level lookup tables for avatar sizes
+var avatarSizeLookup = map[string]string{
+	string(AvatarSizeXS): "h-6 w-6 text-xs",
+	string(AvatarSizeSM): "h-8 w-8 text-sm",
+	string(AvatarSizeLG): "h-12 w-12 text-lg",
+	string(AvatarSizeXL): "h-14 w-14 text-xl",
+}
+
+var avatarDotSizeLookup = map[string]string{
+	string(AvatarSizeXS): "h-1.5 w-1.5",
+	string(AvatarSizeSM): "h-2 w-2",
+	string(AvatarSizeLG): "h-3 w-3",
+	string(AvatarSizeXL): "h-3.5 w-3.5",
+}
+
 func avatarSizeClass(size AvatarSize) string {
-	switch size {
-	case AvatarSizeXS:
-		return "h-6 w-6 text-xs"
-	case AvatarSizeSM:
-		return "h-8 w-8 text-sm"
-	case AvatarSizeLG:
-		return "h-12 w-12 text-lg"
-	case AvatarSizeXL:
-		return "h-14 w-14 text-xl"
-	default:
-		return "h-10 w-10 text-base"
+	if v, ok := avatarSizeLookup[string(size)]; ok {
+		return v
 	}
+	return "h-10 w-10 text-base"
 }
 
 func avatarDotSizeClass(size AvatarSize) string {
-	switch size {
-	case AvatarSizeXS:
-		return "h-1.5 w-1.5"
-	case AvatarSizeSM:
-		return "h-2 w-2"
-	case AvatarSizeLG:
-		return "h-3 w-3"
-	case AvatarSizeXL:
-		return "h-3.5 w-3.5"
-	default:
-		return "h-2.5 w-2.5"
+	if v, ok := avatarDotSizeLookup[string(size)]; ok {
+		return v
 	}
+	return "h-2.5 w-2.5"
 }
 
 func avatarShapeClass(shape AvatarShape) string {

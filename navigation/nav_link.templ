@@ -37,6 +37,9 @@ templ activeSpanOrLink(isActive bool, href string, text string, activeClass stri
 templ NavLink(props NavLinkProps, currentPath string) {
 	{{ isActive := props.Href == currentPath }}
 	<a
+		if props.ID != "" {
+			id={ props.ID }
+		}
 		href={ templ.SafeURL(props.Href) }
 		class={ navLinkClasses(isActive) }
 		if isActive {
@@ -58,6 +61,9 @@ templ NavLink(props NavLinkProps, currentPath string) {
 templ MobileNavLink(props NavLinkProps, currentPath string) {
 	{{ isActive := props.Href == currentPath }}
 	<a
+		if props.ID != "" {
+			id={ props.ID }
+		}
 		href={ templ.SafeURL(props.Href) }
 		class={ "block border-l-4 py-2 pl-3 pr-4 text-base font-medium transition-colors",
 			templ.KV("border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300", isActive),

@@ -186,13 +186,17 @@ templ Toast(props ToastProps) {
 }
 
 // toastIconName maps toast types to icon names
-func toastIconName(t ToastType) icons.Name {
-	switch t {
-	case ToastSuccess:
-		return icons.CheckCircle
-	case ToastError, ToastWarning:
-		return icons.ExclamationTriangle
-	default:
-		return icons.Information
+//nolint:gochecknoglobals // Package-level lookup table for toast icons
+var toastIconMap = map[FeedbackType]icons.Name{
+	FeedbackSuccess: icons.CheckCircle,
+	FeedbackError:   icons.ExclamationTriangle,
+	FeedbackWarning: icons.ExclamationTriangle,
+	FeedbackInfo:    icons.Information,
+}
+
+func toastIconName(t FeedbackType) icons.Name {
+	if n, ok := toastIconMap[t]; ok {
+		return n
 	}
+	return icons.Information
 }

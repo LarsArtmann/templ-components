@@ -24,16 +24,17 @@ const (
 	SpinnerLG SpinnerSize = "lg"
 )
 
-// spinnerSizeClass returns Tailwind size classes
+//nolint:gochecknoglobals // Package-level lookup table for spinner sizes
+var spinnerSizeLookup = map[string]string{
+	string(SpinnerSM): "h-4 w-4",
+	string(SpinnerLG): "h-8 w-8",
+}
+
 func spinnerSizeClass(s SpinnerSize) string {
-	switch s {
-	case SpinnerSM:
-		return "h-4 w-4"
-	case SpinnerLG:
-		return "h-8 w-8"
-	default:
-		return "h-6 w-6"
+	if v, ok := spinnerSizeLookup[string(s)]; ok {
+		return v
 	}
+	return "h-6 w-6"
 }
 
 // SkeletonVariant defines the shape of a skeleton placeholder
@@ -161,7 +162,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 78, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 79, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -200,7 +201,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(props.Message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 84, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 85, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -221,7 +222,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(props.Message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 91, Col: 86}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 92, Col: 86}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -239,7 +240,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(fmt.Sprintf("width: %d%%", props.Progress))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 96, Col: 57}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 97, Col: 57}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -252,7 +253,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d%%", props.Progress))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 99, Col: 94}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 100, Col: 94}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -315,7 +316,7 @@ func InlineLoading(message string) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 114, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 115, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {

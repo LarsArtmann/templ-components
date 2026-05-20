@@ -16,16 +16,17 @@ const (
 	SpinnerLG SpinnerSize = "lg"
 )
 
-// spinnerSizeClass returns Tailwind size classes
+//nolint:gochecknoglobals // Package-level lookup table for spinner sizes
+var spinnerSizeLookup = map[string]string{
+	string(SpinnerSM): "h-4 w-4",
+	string(SpinnerLG): "h-8 w-8",
+}
+
 func spinnerSizeClass(s SpinnerSize) string {
-	switch s {
-	case SpinnerSM:
-		return "h-4 w-4"
-	case SpinnerLG:
-		return "h-8 w-8"
-	default:
-		return "h-6 w-6"
+	if v, ok := spinnerSizeLookup[string(s)]; ok {
+		return v
 	}
+	return "h-6 w-6"
 }
 
 // SkeletonVariant defines the shape of a skeleton placeholder

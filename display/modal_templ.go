@@ -8,7 +8,10 @@ package display
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/larsartmann/templ-components/icons"
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // Modal renders an accessible modal dialog with backdrop
 //
@@ -53,7 +56,7 @@ func Modal(props ModalProps) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 17, Col: 15}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 20, Col: 15}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var3))
 		if templ_7745c5c3_Err != nil {
@@ -79,7 +82,7 @@ func Modal(props ModalProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID + "-title")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 23, Col: 39}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 26, Col: 39}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -106,9 +109,7 @@ func Modal(props ModalProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var7 = []any{"relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200",
-			modalSizeClass(props.Size),
-			props.Class,
+		var templ_7745c5c3_Var7 = []any{utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200", modalSizeClass(props.Size), props.Class),
 			templ.KV("scale-100 opacity-100", props.Open),
 			templ.KV("scale-95 opacity-0", !props.Open)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
@@ -122,7 +123,7 @@ func Modal(props ModalProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID + "-panel")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 27, Col: 27}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 30, Col: 27}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -161,7 +162,7 @@ func Modal(props ModalProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(props.ID + "-title")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 37, Col: 33}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 38, Col: 33}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -174,7 +175,7 @@ func Modal(props ModalProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 37, Col: 111}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 38, Col: 111}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -225,7 +226,7 @@ func Modal(props ModalProps) templ.Component {
 		var templ_7745c5c3_Var13 string
 		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(props.Nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 53, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 54, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 		if templ_7745c5c3_Err != nil {
@@ -237,7 +238,7 @@ func Modal(props ModalProps) templ.Component {
 		}
 		templ_7745c5c3_Var14, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(modalSafeID(props.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 104, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 105, Col: 29}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 		if templ_7745c5c3_Err != nil {
