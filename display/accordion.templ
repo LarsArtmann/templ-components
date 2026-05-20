@@ -1,10 +1,23 @@
 package display
 
 import (
+	"fmt"
 	"strconv"
 
 	"github.com/larsartmann/templ-components/utils"
 )
+
+func validateAccordionItems(items []AccordionItem) error {
+	for i, item := range items {
+		if item.ID == "" {
+			return fmt.Errorf(
+				"Accordion item[%d] requires a non-empty ID for ARIA attributes and JavaScript functionality",
+				i,
+			)
+		}
+	}
+	return nil
+}
 
 // AccordionItem represents a single collapsible panel
 type AccordionItem struct {
@@ -34,6 +47,7 @@ func DefaultAccordionProps() AccordionProps {
 //	   },
 //	})
 templ Accordion(props AccordionProps) {
+	{{ if err := validateAccordionItems(props.Items); err != nil { panic(err.Error()) } }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }

@@ -45,3 +45,32 @@ func TestModalEdgeCases(t *testing.T) {
 		utils.AssertContains(t, output, "/link")
 	})
 }
+
+func TestAccordionEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	t.Run("empty item ID panics", func(t *testing.T) {
+		t.Parallel()
+		defer func() {
+			r := recover()
+			if r == nil {
+				t.Error("expected panic for Accordion item with empty ID")
+			}
+		}()
+		props := AccordionProps{
+			Items: []AccordionItem{
+				{ID: "", Title: "Missing"},
+			},
+		}
+		utils.Render(t, Accordion(props))
+	})
+
+	t.Run("empty items list renders container only", func(t *testing.T) {
+		t.Parallel()
+		props := AccordionProps{
+			Items: []AccordionItem{},
+		}
+		output := utils.Render(t, Accordion(props))
+		utils.AssertContains(t, output, "divide-y")
+	})
+}
