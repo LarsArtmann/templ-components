@@ -28,23 +28,23 @@ const emptyStateActionClass = "inline-flex items-center rounded-md bg-blue-600 p
 
 // emptyStateAction renders an action link or button for the empty state
 templ emptyStateAction(text string, href string, attrs templ.Attributes) {
-	if href != "" {
-		<a
-			href={ templ.SafeURL(href) }
-			class={ emptyStateActionClass }
-			{ attrs... }
-		>
-			{ text }
-		</a>
-	} else {
-		<button
-			type="button"
-			class={ emptyStateActionClass }
-			{ attrs... }
-		>
-			{ text }
-		</button>
-	}
+	<a
+		href={ templ.SafeURL(href) }
+		class={ emptyStateActionClass }
+		{ attrs... }
+	>
+		{ text }
+	</a>
+}
+
+templ emptyStateActionButton(text string, attrs templ.Attributes) {
+	<button
+		type="button"
+		class={ emptyStateActionClass }
+		{ attrs... }
+	>
+		{ text }
+	</button>
 }
 
 // EmptyState renders a centered empty state with icon, title, description, and optional action
@@ -77,7 +77,11 @@ templ EmptyState(props EmptyStateProps) {
 			}
 			if props.ActionText != "" {
 				<div class="mt-6">
-					@emptyStateAction(props.ActionText, props.ActionHref, props.ActionAttrs)
+					if props.ActionHref != "" {
+						@emptyStateAction(props.ActionText, props.ActionHref, props.ActionAttrs)
+					} else {
+						@emptyStateActionButton(props.ActionText, props.ActionAttrs)
+					}
 				</div>
 			}
 		</div>
