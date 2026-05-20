@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-20 | **Coverage:** 68.0% | **Tests:** ~700 | **Packages:** 9+demo | **Generated files:** 32 `*_templ.go` committed
+**Updated:** 2026-05-20 | **Coverage:** 67.2% | **Tests:** 178 | **Packages:** 9+demo | **Generated files:** 32 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -45,9 +45,9 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 ## Code Conventions
 
 - All component props embed `utils.BaseProps` (exception: `layout.PageProps`)
-- All root elements propagate `props.Class`, `props.Attrs`, and `props.ID` from BaseProps
+- All root elements propagate `props.Class`, `props.Attrs`, and `props.ID` from BaseProps (25/25 components, including NavLink/MobileNavLink)
 - Class attributes use `utils.Class()` for Tailwind conflict resolution (exception: `templ.KV` conditionals where comma-join is required)
-- Style lookups use maps/structs, not switches (e.g., `badgeStyleMap`, `badgeSizeLookup`, `cardPaddingLookup`, `iconPathData`)
+- Style lookups use maps/structs, not switches (e.g., `badgeStyleMap`, `badgeSizeLookup`, `cardPaddingLookup`, `iconPathData`, `alertIconMap`, `toastIconMap`, `spinnerSizeLookup`, `progressHeightLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`)
 - String enums: `type XxxType string` + `const XxxDefault XxxType = "default"`
 - Size constants: uppercase suffix pattern `[Component]Size[SM|MD|LG]` (e.g., `AvatarSizeSM`, `BadgeSizeSM`, `SpinnerSM`)
 - Default constructors: `DefaultXxxProps()` for every component with non-zero defaults
@@ -64,6 +64,11 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - TrendDirection: `TrendNone = "none"` (non-empty sentinel, not "")
 - Layout: `Minimal(MinimalProps)` uses props struct like `Base(PageProps)`
 - Modal: focus save/restore via `data-tc-prev-focus` attribute on open, restored on close
+- NavLink/MobileNavLink: `NavLink` uses `utils.Class()` for merge; `MobileNavLink` appends `props.Class` to `templ.KV` chain
+- InputType: validates via `inputType()` with `validInputTypes` map; panics on unknown, defaults empty to `"text"`
+- Structural variants (TabsVariant, DropdownPosition, TrendDirection): use `if`-branch for DOM structure, not map lookup — map pattern is for pure class lookups only
+- `forms.SanitizeID`: exported utility for library consumers, not used internally
+- Enum validation: 2 panic-on-unknown (InputType, icons.Name), 10 map+fallback, structural variants use if-branch
 - Modal/Dropdown: ID validation at render time (`validateDropdownID`, `validateModalID`) panic on empty
 - JS patterns: Accordion + Dropdown use global singleton (`window.tc*Attached`), Modal uses per-instance IIFE (focus trap + focus restore), ThemeToggle uses IIFE-wrapped global guard
 - Dismiss JS: Alert + Toast share `tcDismissAttached` handler using `[data-dismiss]` selector
