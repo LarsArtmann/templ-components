@@ -105,4 +105,46 @@ func TestAvatarRender(t *testing.T) {
 			utils.AssertContains(t, output, "bg-green-400")
 		}
 	})
+
+	t.Run("image with custom ID and class", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Avatar(AvatarProps{
+			BaseProps: utils.BaseProps{ID: "user-avatar", Class: "ring-2"},
+			Src:       "/me.jpg",
+			Alt:       "Me",
+		}))
+		utils.AssertContains(t, output, `id="user-avatar"`)
+		utils.AssertContains(t, output, "ring-2")
+	})
+
+	t.Run("initials with custom ID and class", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Avatar(AvatarProps{
+			BaseProps: utils.BaseProps{ID: "initials-avatar", Class: "shadow-md"},
+			Initials:  "CD",
+		}))
+		utils.AssertContains(t, output, `id="initials-avatar"`)
+		utils.AssertContains(t, output, "shadow-md")
+		utils.AssertContains(t, output, "CD")
+	})
+
+	t.Run("fallback SVG with square shape", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Avatar(AvatarProps{
+			Shape: AvatarShapeSquare,
+		}))
+		utils.AssertContains(t, output, "rounded-lg")
+		utils.AssertContains(t, output, "<svg")
+	})
+
+	t.Run("initials without status dot (status only for image)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Avatar(AvatarProps{
+			Initials: "EF",
+			Status:   AvatarStatusOffline,
+		}))
+		utils.AssertContains(t, output, "EF")
+		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertNotContains(t, output, "bg-gray-400")
+	})
 }

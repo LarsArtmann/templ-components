@@ -33,7 +33,7 @@ func TestNavLinkRender(t *testing.T) {
 		output := utils.Render(
 			t,
 			NavLink(
-				NavLinkProps{Href: "https://example.com", Text: "External", External: true},
+				NavLinkProps{Href: navHrefExternal, Text: navItemExternal, External: true},
 				"/",
 			),
 		)
@@ -99,6 +99,34 @@ func TestMobileNavLinkClassPropagation(t *testing.T) {
 	utils.AssertContains(t, output, "block border-l-4")
 }
 
+func TestMobileNavLinkVariants(t *testing.T) {
+	t.Parallel()
+
+	t.Run("inactive link has no aria-current", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, MobileNavLink(
+			NavLinkProps{Href: "/about", Text: navItemAbout},
+			"/",
+		))
+		utils.AssertContains(t, output, navItemAbout)
+		utils.AssertNotContains(t, output, `aria-current="page"`)
+		utils.AssertContains(t, output, "border-transparent")
+	})
+
+	t.Run("link with custom href", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, MobileNavLink(
+			NavLinkProps{
+				Href: navHrefExternal,
+				Text: navItemExternal,
+			},
+			"/",
+		))
+		utils.AssertContains(t, output, `href="https://example.com"`)
+		utils.AssertContains(t, output, "External")
+	})
+}
+
 func TestBreadcrumbsRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
@@ -108,6 +136,47 @@ func TestBreadcrumbsRender(t *testing.T) {
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, "Users")
 	utils.AssertContains(t, output, `href="/"`)
+}
+
+func TestBreadcrumbsCoverage(t *testing.T) {
+	t.Parallel()
+
+	t.Run("custom ID and class propagated", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{
+			BaseProps: utils.BaseProps{ID: "trail", Class: "my-crumbs"},
+			Items: []BreadcrumbItem{
+				{Text: navItemHome, Href: "/"},
+			},
+		}))
+		utils.AssertContains(t, output, `id="trail"`)
+		utils.AssertContains(t, output, "my-crumbs")
+	})
+
+	t.Run("separator icon between items", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
+			{Text: navItemHome, Href: "/"},
+			{Text: navItemUsers, Href: navPathUsers},
+			{Text: breadcrumbItemEdit, Active: true},
+		}}))
+		utils.AssertContains(t, output, "stroke-linecap")
+	})
+
+	t.Run("empty items renders nav", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{}}))
+		utils.AssertContains(t, output, `aria-label="Breadcrumb"`)
+	})
+
+	t.Run("item with empty Href renders as span", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
+			{Text: "Root"},
+		}}))
+		utils.AssertContains(t, output, "Root")
+		utils.AssertNotContains(t, output, "<a ")
+	})
 }
 
 func TestFooterRender(t *testing.T) {

@@ -92,6 +92,39 @@ func TestLoadingOverlayRender(t *testing.T) {
 	utils.AssertContains(t, output, "width: 45%")
 }
 
+func TestLoadingOverlayCoverage(t *testing.T) {
+	t.Parallel()
+
+	t.Run("custom ID and class", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
+			BaseProps: utils.BaseProps{ID: "overlay", Class: "bg-opacity-75"},
+			Message:   "Wait",
+		}))
+		utils.AssertContains(t, output, `id="overlay"`)
+		utils.AssertContains(t, output, "bg-opacity-75")
+	})
+
+	t.Run("progress bar shows percentage text", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
+			Message:      "Processing",
+			ShowProgress: true,
+			Progress:     75,
+		}))
+		utils.AssertContains(t, output, "75%")
+		utils.AssertContains(t, output, "width: 75%")
+	})
+
+	t.Run("aria-label uses message", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
+			Message: "Uploading files",
+		}))
+		utils.AssertContains(t, output, `aria-label="Uploading files"`)
+	})
+}
+
 func TestInlineLoadingRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, InlineLoading("Saving..."))

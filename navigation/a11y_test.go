@@ -11,6 +11,9 @@ const (
 	navItemUsers          = "Users"
 	navPathUsers          = "/users"
 	breadcrumbItemCurrent = "Current"
+	breadcrumbItemEdit    = "Edit"
+	navItemExternal       = "External"
+	navHrefExternal       = "https://example.com"
 )
 
 func TestBreadcrumbsA11y(t *testing.T) {
@@ -64,7 +67,7 @@ func TestBreadcrumbsA11y(t *testing.T) {
 		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome, Href: "/"},
 			{Text: navItemUsers, Href: navPathUsers},
-			{Text: "Edit", Active: true},
+			{Text: breadcrumbItemEdit, Active: true},
 		}}))
 		utils.AssertContains(t, output, navItemHome)
 		utils.AssertContains(t, output, "Users")

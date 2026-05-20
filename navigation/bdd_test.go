@@ -90,7 +90,7 @@ func TestNavLinkUserSeesLinkStates(t *testing.T) {
 
 	t.Run("user sees external link with security attributes", func(t *testing.T) {
 		t.Parallel()
-		props := NavLinkProps{Href: "https://example.com", Text: "External", External: true}
+		props := NavLinkProps{Href: navHrefExternal, Text: navItemExternal, External: true}
 		output := utils.Render(t, NavLink(props, ""))
 		utils.AssertContains(t, output, `target="_blank"`)
 		utils.AssertContains(t, output, `rel="noopener noreferrer"`)
@@ -107,7 +107,7 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
 			{Text: navItemHome, Href: "/"},
 			{Text: "Users", Href: "/users"},
-			{Text: "Edit", Active: true},
+			{Text: breadcrumbItemEdit, Active: true},
 		}}))
 		utils.AssertContains(t, output, navItemHome)
 		utils.AssertContains(t, output, "Users")

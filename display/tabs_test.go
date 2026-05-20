@@ -102,4 +102,42 @@ func TestTabsRender(t *testing.T) {
 		}))
 		utils.AssertNotContains(t, output, `role="tabpanel"`)
 	})
+
+	t.Run("pills variant with content", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tabs(TabsProps{
+			ActiveTabID: "p1",
+			Variant:     TabsPills,
+			Tabs: []Tab{
+				{ID: "p1", Label: "One", Content: templ.Raw("<p>Pill content</p>")},
+				{ID: "p2", Label: "Two"},
+			},
+		}))
+		utils.AssertContains(t, output, "bg-blue-600")
+		utils.AssertContains(t, output, "Pill content")
+		utils.AssertContains(t, output, `space-x-2`)
+	})
+
+	t.Run("custom ID and class propagated", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tabs(TabsProps{
+			BaseProps:   utils.BaseProps{ID: "my-tabs", Class: "max-w-2xl"},
+			ActiveTabID: "a",
+			Tabs:        []Tab{{ID: "a", Label: "A"}},
+		}))
+		utils.AssertContains(t, output, `id="my-tabs"`)
+		utils.AssertContains(t, output, "max-w-2xl")
+	})
+
+	t.Run("inactive tab panel has hidden attribute", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tabs(TabsProps{
+			ActiveTabID: "a",
+			Tabs: []Tab{
+				{ID: "a", Label: "Active", Content: templ.Raw("<p>Visible</p>")},
+				{ID: "b", Label: "Hidden", Content: templ.Raw("<p>Hidden content</p>")},
+			},
+		}))
+		utils.AssertContains(t, output, "Hidden content")
+	})
 }
