@@ -136,6 +136,29 @@ func TestNavRender(t *testing.T) {
 		utils.AssertContains(t, output, navItemHome)
 		utils.AssertNotContains(t, output, "text-xl font-bold")
 	})
+
+	t.Run("nav with custom ID and class", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Nav(NavProps{
+			BaseProps: utils.BaseProps{
+				ID:    "main-nav",
+				Class: "shadow-lg",
+			},
+			Links: testNavLinks,
+		}))
+		utils.AssertContains(t, output, `id="main-nav"`)
+		utils.AssertContains(t, output, "shadow-lg")
+	})
+
+	t.Run("nav with nonce passes to mobile menu script", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Nav(NavProps{
+			Links:       testNavLinks,
+			CurrentPath: "/",
+			BaseProps:   utils.BaseProps{Nonce: "test-nonce-123"},
+		}))
+		utils.AssertContains(t, output, `nonce="test-nonce-123"`)
+	})
 }
 
 func TestNavDarkMode(t *testing.T) {

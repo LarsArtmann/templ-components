@@ -92,6 +92,40 @@ func TestPaginationRender(t *testing.T) {
 		utils.AssertContains(t, output, `aria-current="page"`)
 		utils.AssertContains(t, output, "1")
 	})
+
+	t.Run("negative TotalPages renders nothing", func(t *testing.T) {
+		t.Parallel()
+		output := renderPagination(t, 1, -5, "/items")
+		if output != "" {
+			t.Errorf("expected empty output for negative TotalPages, got: %s", output)
+		}
+	})
+
+	t.Run("zero TotalPages renders nothing", func(t *testing.T) {
+		t.Parallel()
+		output := renderPagination(t, 1, 0, "/items")
+		if output != "" {
+			t.Errorf("expected empty output for zero TotalPages, got: %s", output)
+		}
+	})
+
+	t.Run("negative CurrentPage clamped to 1", func(t *testing.T) {
+		t.Parallel()
+		output := renderPagination(t, -3, 5, "/items")
+		utils.AssertContains(t, output, `aria-current="page"`)
+		utils.AssertContains(t, output, "1")
+	})
+
+	t.Run("custom ID propagated", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Pagination(PaginationProps{
+			BaseProps:   utils.BaseProps{ID: "my-pager"},
+			CurrentPage: 2,
+			TotalPages:  3,
+			BaseURL:     "/items",
+		}))
+		utils.AssertContains(t, output, `id="my-pager"`)
+	})
 }
 
 func renderPagination(t *testing.T, currentPage, totalPages int, baseURL string) string {
