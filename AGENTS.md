@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-19 | **Coverage:** 68.0% | **Tests:** ~700 | **Packages:** 9+demo | **Generated files:** 32 `*_templ.go` committed
+**Updated:** 2026-05-20 | **Coverage:** 68.0% | **Tests:** ~700 | **Packages:** 9+demo | **Generated files:** 32 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -63,10 +63,13 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - Toast icons: generated from Go `iconPathData` via `icons.IconPathJS()` (single source of truth)
 - TrendDirection: `TrendNone = "none"` (non-empty sentinel, not "")
 - Layout: `Minimal(MinimalProps)` uses props struct like `Base(PageProps)`
+- Modal: focus save/restore via `data-tc-prev-focus` attribute on open, restored on close
 - Modal/Dropdown: ID validation at render time (`validateDropdownID`, `validateModalID`) panic on empty
-- JS patterns: Accordion + Dropdown use global singleton (`window.tc*Attached`), Modal uses per-instance IIFE (focus trap), ThemeToggle uses IIFE-wrapped global guard
+- JS patterns: Accordion + Dropdown use global singleton (`window.tc*Attached`), Modal uses per-instance IIFE (focus trap + focus restore), ThemeToggle uses IIFE-wrapped global guard
 - Dismiss JS: Alert + Toast share `tcDismissAttached` handler using `[data-dismiss]` selector
+- Toast JS: dismiss icon from `icons.IconPathJS()` via `tcToastIcons.dismiss`
 - Table: row cells auto-padded/truncated to match header count
+- HTMX retry: per-element `data-tc-retry` attribute (no shared counter)
 
 ## Breaking Changes (v0.1 → v0.2)
 
@@ -92,6 +95,9 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - `DefaultStatCardProps()` now sets `Trend: TrendNone`
 - `FillIcon(class, path)` → `FillIcon(class, path, rotate bool)` (no longer variadic)
 - `AlertType`/`ToastType` → type aliases for `FeedbackType` (deprecated, use FeedbackType directly)
+- `Breadcrumbs(items []BreadcrumbItem)` → `Breadcrumbs(BreadcrumbsProps)` (now has BaseProps)
+- `utils.BoolString()` → removed, use `strconv.FormatBool` directly
+- `utils.Deref/DerefOr/MergeAttrs` → removed (zero production callers)
 
 ## Lint Command
 
