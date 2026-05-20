@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-20 | **Coverage:** 67.2% | **Tests:** 178 | **Packages:** 9+demo | **Generated files:** 32 `*_templ.go` committed
+**Updated:** 2026-05-20 | **Coverage:** 67.5% | **Tests:** 179 | **Packages:** 9+demo | **Generated files:** 32 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -69,7 +69,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - Structural variants (TabsVariant, DropdownPosition, TrendDirection): use `if`-branch for DOM structure, not map lookup — map pattern is for pure class lookups only
 - `forms.SanitizeID`: exported utility for library consumers, not used internally
 - Enum validation: 2 panic-on-unknown (InputType, icons.Name), 10 map+fallback, structural variants use if-branch
-- Modal/Dropdown: ID validation at render time (`validateDropdownID`, `validateModalID`) panic on empty
+- Modal/Dropdown/Accordion: ID validation at render time (`validateDropdownID`, `validateModalID`, `validateAccordionItems`) panic on empty
 - JS patterns: Accordion + Dropdown use global singleton (`window.tc*Attached`), Modal uses per-instance IIFE (focus trap + focus restore), ThemeToggle uses IIFE-wrapped global guard
 - Dismiss JS: Alert + Toast share `tcDismissAttached` handler using `[data-dismiss]` selector
 - Toast JS: dismiss icon from `icons.IconPathJS()` via `tcToastIcons.dismiss`
