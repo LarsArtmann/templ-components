@@ -1,8 +1,6 @@
 package utils
 
 import (
-	"maps"
-	"strconv"
 	"sync"
 	"time"
 
@@ -30,16 +28,7 @@ func Class(classes ...string) string {
 	return twmerge.Merge(classes...)
 }
 
-// MergeAttrs merges multiple attribute maps, with later maps overriding earlier ones
-func MergeAttrs(m ...templ.Attributes) templ.Attributes {
-	result := make(templ.Attributes)
-	for _, attrs := range m {
-		maps.Copy(result, attrs)
-	}
-	return result
-}
-
-// CurrentYear returns the current year as a string
+// MapEnum returns the current year as a string
 func CurrentYear() string {
 	return time.Now().Format("2006")
 }
@@ -50,28 +39,6 @@ func Ternary[T any](condition bool, a, b T) T {
 		return a
 	}
 	return b
-}
-
-// Deref returns the value pointed to by p, or the zero value if p is nil
-func Deref[T any](p *T) T {
-	if p == nil {
-		var zero T
-		return zero
-	}
-	return *p
-}
-
-// DerefOr returns the value pointed to by p, or fallback if p is nil
-func DerefOr[T any](p *T, fallback T) T {
-	if p == nil {
-		return fallback
-	}
-	return *p
-}
-
-// BoolString returns "true" or "false" for a boolean value
-func BoolString(b bool) string {
-	return strconv.FormatBool(b)
 }
 
 // MapEnum looks up a string key in a map and returns the corresponding enum value,

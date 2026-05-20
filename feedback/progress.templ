@@ -3,6 +3,7 @@ package feedback
 import (
 	"fmt"
 
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -38,13 +39,16 @@ func DefaultProgressBarProps() ProgressBarProps {
 //
 //	@feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100, Label: "Uploading"})
 templ ProgressBar(props ProgressBarProps) {
-	{{
+	{{ 
 		percent := 0.0
 		if props.Total > 0 {
 			percent = float64(props.Current) * 100.0 / float64(props.Total)
 		}
 		if percent > 100 {
 			percent = 100
+		}
+		if percent < 0 {
+			percent = 0
 		}
 	}}
 	<div
@@ -126,9 +130,7 @@ templ StepIndicator(props StepIndicatorProps) {
 							}
 						>
 							if i < props.CurrentStep {
-								<svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-									<path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-								</svg>
+								@icons.Icon(icons.Check, "w-4 h-4")
 							} else {
 								{ fmt.Sprintf("%d", i+1) }
 							}

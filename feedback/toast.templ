@@ -67,7 +67,8 @@ func toastJSIconPaths() string {
 		"success:'" + icons.IconPathJS(icons.CheckCircle) + "'," +
 		"error:'" + icons.IconPathJS(icons.ExclamationTriangle) + "'," +
 		"warning:'" + icons.IconPathJS(icons.ExclamationTriangle) + "'," +
-		"info:'" + icons.IconPathJS(icons.Information) + "'" +
+		"info:'" + icons.IconPathJS(icons.Information) + "'," +
+		"dismiss:'" + icons.IconPathJS(icons.X) + "'" +
 		"};"
 }
 
@@ -123,7 +124,7 @@ templ ToastContainer(nonce string) {
 			btn.className = 'flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors';
 			btn.setAttribute('aria-label', 'Dismiss');
 			btn.addEventListener('click', function() { this.closest('.pointer-events-auto').remove(); });
-			btn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>';
+			btn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (tcToastIcons.dismiss || '') + '</svg>';
 			inner.appendChild(btn);
 			toast.appendChild(inner);
 			container.appendChild(toast);

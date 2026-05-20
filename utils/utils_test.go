@@ -11,8 +11,7 @@ import (
 )
 
 const (
-	dataFooAttr = "data-foo"
-	textYes     = "yes"
+	textYes = "yes"
 )
 
 func TestCurrentYear(t *testing.T) {
@@ -22,20 +21,6 @@ func TestCurrentYear(t *testing.T) {
 	if got != want {
 		t.Errorf("CurrentYear() = %q, want %q", got, want)
 	}
-}
-
-func TestBoolString(t *testing.T) {
-	t.Parallel()
-	t.Run("true", func(t *testing.T) {
-		t.Parallel()
-		got := BoolString(true)
-		AssertEqual(t, "BoolString(true)", got, "true")
-	})
-	t.Run("false", func(t *testing.T) {
-		t.Parallel()
-		got := BoolString(false)
-		AssertEqual(t, "BoolString(false)", got, "false")
-	})
 }
 
 func TestTernary(t *testing.T) {
@@ -58,46 +43,6 @@ func TestTernary(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestDeref(t *testing.T) {
-	t.Parallel()
-	t.Run("non-nil", func(t *testing.T) {
-		t.Parallel()
-		v := 42
-		got := Deref(&v)
-		if got != 42 {
-			t.Errorf("Deref() = %d, want 42", got)
-		}
-	})
-	t.Run("nil", func(t *testing.T) {
-		t.Parallel()
-		var p *int
-		got := Deref(p)
-		if got != 0 {
-			t.Errorf("Deref() = %d, want 0", got)
-		}
-	})
-}
-
-func TestDerefOr(t *testing.T) {
-	t.Parallel()
-	t.Run("non-nil", func(t *testing.T) {
-		t.Parallel()
-		v := 42
-		got := DerefOr(&v, 99)
-		if got != 42 {
-			t.Errorf("DerefOr() = %d, want 42", got)
-		}
-	})
-	t.Run("nil", func(t *testing.T) {
-		t.Parallel()
-		var p *int
-		got := DerefOr(p, 99)
-		if got != 99 {
-			t.Errorf("DerefOr() = %d, want 99", got)
-		}
-	})
 }
 
 func TestClass(t *testing.T) {
@@ -188,35 +133,6 @@ func TestMapEnum(t *testing.T) {
 			}
 		})
 	}
-}
-
-func TestMergeAttrs(t *testing.T) {
-	t.Parallel()
-	t.Run("merge two maps", func(t *testing.T) {
-		t.Parallel()
-		a := templ.Attributes{dataFooAttr: "1"}
-		b := templ.Attributes{"data-bar": "2"}
-		got := MergeAttrs(a, b)
-		if got[dataFooAttr] != "1" || got["data-bar"] != "2" {
-			t.Errorf("MergeAttrs() = %v", got)
-		}
-	})
-	t.Run("later overrides earlier", func(t *testing.T) {
-		t.Parallel()
-		a := templ.Attributes{"data-foo": "1"}
-		b := templ.Attributes{"data-foo": "2"}
-		got := MergeAttrs(a, b)
-		if got["data-foo"] != "2" {
-			t.Errorf("MergeAttrs() data-foo = %q, want 2", got["data-foo"])
-		}
-	})
-	t.Run("empty maps", func(t *testing.T) {
-		t.Parallel()
-		got := MergeAttrs()
-		if len(got) != 0 {
-			t.Errorf("MergeAttrs() len = %d, want 0", len(got))
-		}
-	})
 }
 
 func TestRender(t *testing.T) {
