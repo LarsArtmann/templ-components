@@ -10,22 +10,26 @@
 ## a) FULLY DONE
 
 ### TODO Cleanup (~70 items removed)
+
 - Reviewed entire TODO_LIST.md (243 items → 112 remaining)
 - Marked ~70 items as completed based on code verification
 - Reorganized into 7 priority categories: Bugs, Breaking Changes, Enhancements, Testing, Infrastructure, Documentation, Release
 - Removed stale items (e.g., BoolString removal, Deref removal, BadgeDefault removal — all already done)
 
 ### Bug Fixes
+
 1. **Demo app HTMX** — Removed `props.HTMXVersion = ""` override in `examples/demo/main.go` so demo now uses default HTMX 2.0.6
 2. **Checkbox conditional ID** — Added `if props.ID != ""` guard before `id={ props.ID }` in `forms/input.templ` (matches Input component pattern)
 3. **ThemeToggle IIFE removal** — Removed unnecessary IIFE wrapper from `layout/theme.templ` for consistency with other components' JS patterns
 4. **JS re-attachment research** — Verified that document-level event delegation correctly handles HTMX-swapped elements. Global singleton guards are the correct pattern for delegation; marked 3 related TODO items as "by design"
 
 ### Infrastructure
+
 - **Pre-commit hook** — Replaced `buildflow` dependency with `scripts/pre-commit.sh` that runs: `templ generate → go build → go test → golangci-lint`
 - **AGENTS.md** — Updated coverage from 68.3% → 71.8%
 
 ### Documentation
+
 - **Example functions** — Added `ExampleXxx()` functions for pkg.go.dev discoverability:
   - `display`: ExampleBadge, ExampleCard, ExampleStatCard
   - `feedback`: ExampleAlert, ExampleToast, ExampleSpinner
@@ -43,6 +47,7 @@
 ## c) NOT STARTED
 
 112 items remaining in TODO_LIST.md. Top categories:
+
 - **New Components** (14): Radio, Toggle/Switch, File input, Date Picker, Combobox, Dialog/Drawer, Form wrapper, Skeleton, Step indicator vertical, Badge click/href, more Heroicons, ProgressBar indeterminate, client-side tab switching, tab keyboard nav
 - **Testing** (20): BDD tests for navigation/htmx/layout/icons, coverage improvements, golden file tests, composition tests, integration tests, nonce audit
 - **Infrastructure** (10): GitHub Actions CI, goreleaser, coverage threshold, Go workspace modularization, demo deployment, nix flake
