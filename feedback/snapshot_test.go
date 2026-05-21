@@ -107,13 +107,8 @@ func TestLoadingOverlayCoverage(t *testing.T) {
 
 	t.Run("progress bar shows percentage text", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
-			Message:      "Processing",
-			ShowProgress: true,
-			Progress:     75,
-		}))
-		utils.AssertContains(t, output, "75%")
-		utils.AssertContains(t, output, "width: 75%")
+		assertLoadingOverlayProgress(t, "Processing", 75, "75%")
+		utils.AssertContains(t, renderLoadingOverlayWithProgress(t, "Processing", 75), "width: 75%")
 	})
 
 	t.Run("aria-label uses message", func(t *testing.T) {

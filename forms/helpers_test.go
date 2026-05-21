@@ -32,6 +32,18 @@ func TestSanitizeID(t *testing.T) {
 	}
 }
 
+func assertErrorAttrsMatch(t *testing.T, got, want templ.Attributes) {
+	t.Helper()
+	if len(got) != len(want) {
+		t.Fatalf("ErrorAttrs returned %d attrs, want %d", len(got), len(want))
+	}
+	for k, v := range want {
+		if got[k] != v {
+			t.Errorf("attrs[%q] = %v, want %v", k, got[k], v)
+		}
+	}
+}
+
 func TestErrorAttrs_NoErrorNoHelpText(t *testing.T) {
 	t.Parallel()
 	got := ErrorAttrs("email", "", "")
@@ -43,18 +55,10 @@ func TestErrorAttrs_NoErrorNoHelpText(t *testing.T) {
 func TestErrorAttrs_AriaAttrsWithID(t *testing.T) {
 	t.Parallel()
 	got := ErrorAttrs("email", "required", "")
-	want := templ.Attributes{
+	assertErrorAttrsMatch(t, got, templ.Attributes{
 		ariaInvalid:     "true",
 		ariaDescribedBy: "email-error",
-	}
-	if len(got) != len(want) {
-		t.Fatalf("ErrorAttrs returned %d attrs, want %d", len(got), len(want))
-	}
-	for k, v := range want {
-		if got[k] != v {
-			t.Errorf("attrs[%q] = %v, want %v", k, got[k], v)
-		}
-	}
+	})
 }
 
 func TestErrorAttrs_AriaAttrsWithoutID(t *testing.T) {
@@ -71,18 +75,10 @@ func TestErrorAttrs_AriaAttrsWithoutID(t *testing.T) {
 func TestErrorAttrs_HelpTextIDIncluded(t *testing.T) {
 	t.Parallel()
 	got := ErrorAttrs("email", "required", "email-help")
-	want := templ.Attributes{
+	assertErrorAttrsMatch(t, got, templ.Attributes{
 		ariaInvalid:     "true",
 		ariaDescribedBy: "email-error email-help",
-	}
-	if len(got) != len(want) {
-		t.Fatalf("ErrorAttrs returned %d attrs, want %d", len(got), len(want))
-	}
-	for k, v := range want {
-		if got[k] != v {
-			t.Errorf("attrs[%q] = %v, want %v", k, got[k], v)
-		}
-	}
+	})
 }
 
 func TestErrorAttrs_HelpTextOnlyNoError(t *testing.T) {

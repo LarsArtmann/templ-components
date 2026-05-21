@@ -11,34 +11,36 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+func renderLoadingIndicator(t *testing.T) string {
+	t.Helper()
+	return utils.Render(
+		t,
+		LoadingIndicator(
+			feedback.Spinner(feedback.SpinnerLG, "text-blue-600 dark:text-blue-400"),
+		),
+	)
+}
+
 // --- LoadingIndicator Behavior ---
 
 func TestLoadingIndicatorUserSeesLoadingFeedback(t *testing.T) {
 	t.Parallel()
 
-	t.Run("user sees loading overlay when HTMX request starts", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(
-			t,
-			LoadingIndicator(
-				feedback.Spinner(feedback.SpinnerLG, "text-blue-600 dark:text-blue-400"),
-			),
-		)
-		utils.AssertContains(t, output, `id="tc-loading-indicator"`)
-		utils.AssertContains(t, output, "htmx-indicator")
-	})
-
-	t.Run("loading indicator is accessible to screen readers", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(
-			t,
-			LoadingIndicator(
-				feedback.Spinner(feedback.SpinnerLG, "text-blue-600 dark:text-blue-400"),
-			),
-		)
-		utils.AssertContains(t, output, `role="status"`)
-		utils.AssertContains(t, output, `aria-live="polite"`)
-	})
+	output := renderLoadingIndicator(t)
+	for _, tt := range []struct {
+		name string
+		want string
+	}{
+		{"has indicator id", `id="tc-loading-indicator"`},
+		{"has htmx-indicator class", "htmx-indicator"},
+		{"has role=status", `role="status"`},
+		{"has aria-live", `aria-live="polite"`},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			utils.AssertContains(t, output, tt.want)
+		})
+	}
 }
 
 // --- InlineLoadingOverlay Behavior ---
@@ -80,6 +82,27 @@ func TestLoadingButtonUserSeesButtonStateChange(t *testing.T) {
 	})
 }
 
+func renderConfirmDelete(t *testing.T, endpoint, target, confirmMsg string) string {
+	t.Helper()
+	return utils.Render(t, ConfirmDelete(endpoint, target, confirmMsg))
+}
+
+func assertConfirmDeleteContains(
+	t *testing.T,
+	endpoint, target, confirmMsg string,
+	extraContains ...string,
+) {
+	t.Helper()
+	output := renderConfirmDelete(t, endpoint, target, confirmMsg)
+	utils.AssertContains(t, output, `hx-delete="`+endpoint+`"`)
+	utils.AssertContains(t, output, `hx-target="`+target+`"`)
+	utils.AssertContains(t, output, confirmMsg)
+	utils.AssertContains(t, output, "Delete")
+	for _, s := range extraContains {
+		utils.AssertContains(t, output, s)
+	}
+}
+
 // --- ConfirmDelete Behavior ---
 
 func TestConfirmDeleteUserGetsConfirmationDialog(t *testing.T) {
@@ -87,15 +110,18 @@ func TestConfirmDeleteUserGetsConfirmationDialog(t *testing.T) {
 
 	t.Run("user sees delete button with confirmation", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(
+		assertConfirmDeleteContains(
 			t,
-			ConfirmDelete("/api/items/1", "#item-1", "Are you sure you want to delete?"),
+			"/api/items/1",
+			"#item-1",
+			"Are you sure you want to delete?",
 		)
-		utils.AssertContains(t, output, `hx-delete="/api/items/1"`)
-		utils.AssertContains(t, output, `hx-target="#item-1"`)
-		utils.AssertContains(t, output, `hx-confirm="Are you sure you want to delete?"`)
-		utils.AssertContains(t, output, "Delete")
 	})
+}
+
+func renderCSRFToken(t *testing.T, token string) string {
+	t.Helper()
+	return utils.Render(t, CSRFToken(token))
 }
 
 // --- CSRFToken Behavior ---
@@ -105,7 +131,7 @@ func TestCSRFTokenProtectsFormSubmissions(t *testing.T) {
 
 	t.Run("form includes hidden CSRF token input", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, CSRFToken("secret-token-123"))
+		output := renderCSRFToken(t, "secret-token-123")
 		utils.AssertContains(t, output, `type="hidden"`)
 		utils.AssertContains(t, output, `name="csrf_token"`)
 		utils.AssertContains(t, output, `value="secret-token-123"`)

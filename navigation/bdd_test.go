@@ -97,7 +97,19 @@ func TestNavLinkUserSeesLinkStates(t *testing.T) {
 	})
 }
 
+func breadcrumbHomeAndCurrent() []BreadcrumbItem {
+	return []BreadcrumbItem{
+		{Text: navItemHome, Href: "/"},
+		{Text: "Current", Active: true},
+	}
+}
+
 // --- Breadcrumbs Behavior ---
+
+func renderBreadcrumbs(t *testing.T, items []BreadcrumbItem) string {
+	t.Helper()
+	return utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: items}))
+}
 
 func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 	t.Parallel()
@@ -116,29 +128,30 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 
 	t.Run("user sees current page as aria-current", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
-			{Text: navItemHome, Href: "/"},
-			{Text: "Current", Active: true},
-		}}))
+		output := renderBreadcrumbs(t, breadcrumbHomeAndCurrent())
 		utils.AssertContains(t, output, `aria-current="page"`)
 	})
 
 	t.Run("user sees breadcrumb navigation landmark", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
-			{Text: navItemHome, Href: "/"},
-		}}))
+		output := renderBreadcrumbs(t, breadcrumbHomeAndCurrent())
 		utils.AssertContains(t, output, `aria-label="Breadcrumb"`)
 	})
 
 	t.Run("user sees clickable parent breadcrumbs", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
-			{Text: navItemHome, Href: "/"},
-			{Text: "Current", Active: true},
-		}}))
+		output := renderBreadcrumbs(t, breadcrumbHomeAndCurrent())
 		utils.AssertContains(t, output, `href="/"`)
 	})
+}
+
+func renderDefaultPagination(t *testing.T, currentPage, totalPages int) string {
+	t.Helper()
+	props := DefaultPaginationProps()
+	props.CurrentPage = currentPage
+	props.TotalPages = totalPages
+	props.BaseURL = testItemsPath
+	return utils.Render(t, Pagination(props))
 }
 
 // --- Pagination Behavior ---
@@ -148,31 +161,19 @@ func TestPaginationUserCanBrowsePages(t *testing.T) {
 
 	t.Run("user sees page numbers for multiple pages", func(t *testing.T) {
 		t.Parallel()
-		props := DefaultPaginationProps()
-		props.CurrentPage = 1
-		props.TotalPages = 5
-		props.BaseURL = testItemsPath
-		output := utils.Render(t, Pagination(props))
+		output := renderDefaultPagination(t, 1, 5)
 		utils.AssertContains(t, output, testItemsPath)
 	})
 
 	t.Run("user sees previous and next navigation", func(t *testing.T) {
 		t.Parallel()
-		props := DefaultPaginationProps()
-		props.CurrentPage = 2
-		props.TotalPages = 5
-		props.BaseURL = testItemsPath
-		output := utils.Render(t, Pagination(props))
+		output := renderDefaultPagination(t, 2, 5)
 		utils.AssertContains(t, output, `aria-label="`)
 	})
 
 	t.Run("user sees nothing when only one page exists", func(t *testing.T) {
 		t.Parallel()
-		props := DefaultPaginationProps()
-		props.CurrentPage = 1
-		props.TotalPages = 1
-		props.BaseURL = testItemsPath
-		output := utils.Render(t, Pagination(props))
+		output := renderDefaultPagination(t, 1, 1)
 		utils.AssertNotContains(t, output, "<nav")
 	})
 
@@ -195,9 +196,6 @@ func TestFooterUserSeesCopyright(t *testing.T) {
 
 	t.Run("user sees brand name and copyright year", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Footer("MyApp"))
-		utils.AssertContains(t, output, "MyApp")
-		utils.AssertContains(t, output, "All rights reserved")
-		utils.AssertContains(t, output, "<footer")
+		assertFooterContainsAll(t, "MyApp", "All rights reserved", "<footer")
 	})
 }

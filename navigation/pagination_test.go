@@ -65,10 +65,7 @@ func TestPaginationRender(t *testing.T) {
 
 	t.Run("hidden when single page", func(t *testing.T) {
 		t.Parallel()
-		output := renderPagination(t, 1, 1, "/users")
-		if output != "" {
-			t.Errorf("expected empty output for single page, got: %s", output)
-		}
+		assertEmptyPaginationOutput(t, 1, 1, "/users")
 	})
 
 	t.Run("custom query param", func(t *testing.T) {
@@ -103,10 +100,7 @@ func TestPaginationRender(t *testing.T) {
 
 	t.Run("zero TotalPages renders nothing", func(t *testing.T) {
 		t.Parallel()
-		output := renderPagination(t, 1, 0, "/items")
-		if output != "" {
-			t.Errorf("expected empty output for zero TotalPages, got: %s", output)
-		}
+		assertEmptyPaginationOutput(t, 1, 0, "/items")
 	})
 
 	t.Run("negative CurrentPage clamped to 1", func(t *testing.T) {
@@ -135,4 +129,12 @@ func renderPagination(t *testing.T, currentPage, totalPages int, baseURL string)
 		TotalPages:  totalPages,
 		BaseURL:     baseURL,
 	}))
+}
+
+func assertEmptyPaginationOutput(t *testing.T, currentPage, totalPages int, baseURL string) {
+	t.Helper()
+	output := renderPagination(t, currentPage, totalPages, baseURL)
+	if output != "" {
+		t.Errorf("expected empty output, got: %s", output)
+	}
 }

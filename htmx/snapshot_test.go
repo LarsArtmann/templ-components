@@ -47,11 +47,7 @@ func TestLoadingButtonRender(t *testing.T) {
 
 func TestConfirmDeleteRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, ConfirmDelete("/api/items/1", "#list", "Delete this item?"))
-	utils.AssertContains(t, output, `hx-delete="/api/items/1"`)
-	utils.AssertContains(t, output, `hx-target="#list"`)
-	utils.AssertContains(t, output, "Delete this item?")
-	utils.AssertContains(t, output, "Delete")
+	assertConfirmDeleteContains(t, "/api/items/1", "#list", "Delete this item?")
 }
 
 func TestSwapOOBRender(t *testing.T) {
@@ -62,7 +58,7 @@ func TestSwapOOBRender(t *testing.T) {
 
 func TestCSRFTokenRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, CSRFToken("abc123"))
+	output := renderCSRFToken(t, "abc123")
 	utils.AssertContains(t, output, `name="csrf_token"`)
 	utils.AssertContains(t, output, `value="abc123"`)
 	utils.AssertContains(t, output, "hidden")

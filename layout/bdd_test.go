@@ -8,6 +8,32 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+func renderBaseWithSecurity(t *testing.T, enabled bool) string {
+	t.Helper()
+	props := DefaultPageProps()
+	props.SecurityHeaders = enabled
+	return utils.Render(t, Base(props))
+}
+
+func assertSecurityHeadersPresent(t *testing.T, enabled bool) {
+	t.Helper()
+	output := renderBaseWithSecurity(t, enabled)
+	if enabled {
+		utils.AssertContains(t, output, `http-equiv="X-Content-Type-Options"`)
+		utils.AssertContains(t, output, `http-equiv="Referrer-Policy"`)
+	} else {
+		utils.AssertNotContains(t, output, `http-equiv="X-Content-Type-Options"`)
+		utils.AssertNotContains(t, output, `http-equiv="Referrer-Policy"`)
+	}
+}
+
+func renderBaseWithNonce(t *testing.T, nonce string) string {
+	t.Helper()
+	props := DefaultPageProps()
+	props.Nonce = nonce
+	return utils.Render(t, Base(props))
+}
+
 // --- Base Layout Behavior ---
 
 func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
@@ -48,11 +74,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 
 	t.Run("user gets security headers when enabled", func(t *testing.T) {
 		t.Parallel()
-		props := DefaultPageProps()
-		props.SecurityHeaders = true
-		output := utils.Render(t, Base(props))
-		utils.AssertContains(t, output, "X-Content-Type-Options")
-		utils.AssertContains(t, output, "Referrer-Policy")
+		assertSecurityHeadersPresent(t, true)
 	})
 
 	t.Run("user sees OG meta tags when OG image is set", func(t *testing.T) {
@@ -74,9 +96,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 
 	t.Run("user sees CSP nonce on inline scripts", func(t *testing.T) {
 		t.Parallel()
-		props := DefaultPageProps()
-		props.Nonce = "my-nonce-123"
-		output := utils.Render(t, Base(props))
+		output := renderBaseWithNonce(t, "my-nonce-123")
 		utils.AssertContains(t, output, `nonce="my-nonce-123"`)
 	})
 }

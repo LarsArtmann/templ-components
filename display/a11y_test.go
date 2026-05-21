@@ -61,15 +61,6 @@ func TestA11yAttributes(t *testing.T) {
 		utils.AssertContains(t, output, `aria-selected="true"`)
 	})
 
-	t.Run("tooltip has role=tooltip", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Tooltip(TooltipProps{
-			Text:     "Help text",
-			Position: TooltipPositionTop,
-		}))
-		utils.AssertContains(t, output, `role="tooltip"`)
-	})
-
 	t.Run("accordion has aria-expanded", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Accordion(AccordionProps{

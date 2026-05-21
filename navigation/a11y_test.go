@@ -16,32 +16,35 @@ const (
 	navHrefExternal       = "https://example.com"
 )
 
+func breadcrumbHomeOnly() []BreadcrumbItem {
+	return []BreadcrumbItem{{Text: navItemHome, Href: "/"}}
+}
+
+func breadcrumbHomeAndActive() []BreadcrumbItem {
+	return []BreadcrumbItem{
+		{Text: navItemHome, Href: "/"},
+		{Text: navItemUsers, Active: true},
+	}
+}
+
 func TestBreadcrumbsA11y(t *testing.T) {
 	t.Parallel()
 
 	t.Run("nav has aria-label", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
-			{Text: navItemHome, Href: "/"},
-		}}))
+		output := renderBreadcrumbs(t, breadcrumbHomeOnly())
 		utils.AssertContains(t, output, `aria-label="Breadcrumb"`)
 	})
 
 	t.Run("active item has aria-current", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
-			{Text: navItemHome, Href: "/"},
-			{Text: navItemUsers, Active: true},
-		}}))
+		output := renderBreadcrumbs(t, breadcrumbHomeAndActive())
 		utils.AssertContains(t, output, `aria-current="page"`)
 	})
 
 	t.Run("inactive items are links", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: []BreadcrumbItem{
-			{Text: navItemHome, Href: "/"},
-			{Text: navItemUsers, Active: true},
-		}}))
+		output := renderBreadcrumbs(t, breadcrumbHomeAndActive())
 		utils.AssertContains(t, output, `<a href="/"`)
 	})
 
@@ -177,14 +180,24 @@ func TestNavDarkMode(t *testing.T) {
 	})
 }
 
+func renderFooter(t *testing.T) string {
+	t.Helper()
+	return utils.Render(t, Footer("MyApp"))
+}
+
+func assertFooterContainsAll(t *testing.T, contains ...string) {
+	t.Helper()
+	output := renderFooter(t)
+	for _, s := range contains {
+		utils.AssertContains(t, output, s)
+	}
+}
+
 func TestFooterDarkMode(t *testing.T) {
 	t.Parallel()
 
 	t.Run("footer has dark mode classes", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Footer("MyApp"))
-		utils.AssertContains(t, output, "dark:border-gray-800")
-		utils.AssertContains(t, output, "dark:bg-gray-900")
-		utils.AssertContains(t, output, "dark:text-gray-400")
+		assertFooterContainsAll(t, "dark:border-gray-800", "dark:bg-gray-900", "dark:text-gray-400")
 	})
 }

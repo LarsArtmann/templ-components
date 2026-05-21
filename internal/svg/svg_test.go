@@ -29,12 +29,6 @@ func TestFillIconRender(t *testing.T) {
 		utils.AssertContains(t, output, "rotate-180")
 	})
 
-	t.Run("renders without rotation when rotate is false", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, FillIcon("h-4 w-4", "M10 0", false))
-		utils.AssertNotContains(t, output, "rotate-180")
-	})
-
 	t.Run("renders without rotation by default", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, FillIcon("h-4 w-4", "M10 0", false))

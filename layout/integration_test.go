@@ -38,22 +38,12 @@ func TestIntegrationFullPageRender(t *testing.T) {
 
 	t.Run("base with security headers renders meta tags", func(t *testing.T) {
 		t.Parallel()
-		props := DefaultPageProps()
-		props.SecurityHeaders = true
-		output := utils.Render(t, Base(props))
-
-		utils.AssertContains(t, output, `http-equiv="X-Content-Type-Options"`)
-		utils.AssertContains(t, output, `http-equiv="Referrer-Policy"`)
+		assertSecurityHeadersPresent(t, true)
 	})
 
 	t.Run("base without security headers omits meta tags", func(t *testing.T) {
 		t.Parallel()
-		props := DefaultPageProps()
-		props.SecurityHeaders = false
-		output := utils.Render(t, Base(props))
-
-		utils.AssertNotContains(t, output, `http-equiv="X-Content-Type-Options"`)
-		utils.AssertNotContains(t, output, `http-equiv="Referrer-Policy"`)
+		assertSecurityHeadersPresent(t, false)
 	})
 
 	t.Run("base with HTMX SRI renders integrity attributes", func(t *testing.T) {

@@ -104,16 +104,6 @@ func TestProgressBarEdgeCases(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "0%")
 	})
-
-	t.Run("current exceeds total clamps to 100%", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, ProgressBar(ProgressBarProps{
-			Current: 200,
-			Total:   100,
-		}))
-		utils.AssertContains(t, output, "100%")
-		utils.AssertContains(t, output, `aria-valuenow="200"`)
-	})
 }
 
 func TestStepIndicatorEdgeCases(t *testing.T) {

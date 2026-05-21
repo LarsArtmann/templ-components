@@ -8,6 +8,22 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+func renderLoadingOverlayWithProgress(t *testing.T, message string, progress int) string {
+	t.Helper()
+	return utils.Render(t, LoadingOverlay(LoadingOverlayProps{
+		Message:      message,
+		ShowProgress: true,
+		Progress:     progress,
+	}))
+}
+
+func assertLoadingOverlayProgress(t *testing.T, message string, progress int, wantPercent string) {
+	t.Helper()
+	output := renderLoadingOverlayWithProgress(t, message, progress)
+	utils.AssertContains(t, output, message)
+	utils.AssertContains(t, output, wantPercent)
+}
+
 // --- Alert Behavior ---
 
 func TestAlertUserReceivesImportantMessages(t *testing.T) {
@@ -97,13 +113,7 @@ func TestSpinnerUserSeesLoadingProgress(t *testing.T) {
 
 	t.Run("user sees loading overlay with progress", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, LoadingOverlay(LoadingOverlayProps{
-			Message:      "Uploading...",
-			ShowProgress: true,
-			Progress:     65,
-		}))
-		utils.AssertContains(t, output, "Uploading...")
-		utils.AssertContains(t, output, "65%")
+		assertLoadingOverlayProgress(t, "Uploading...", 65, "65%")
 	})
 }
 
@@ -157,12 +167,28 @@ func TestProgressBarUserSeesCompletion(t *testing.T) {
 
 	t.Run("progress bar clamps overflow to 100 percent", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, ProgressBar(ProgressBarProps{
-			Current: 150,
-			Total:   100,
-		}))
-		utils.AssertContains(t, output, "100%")
-		utils.AssertNotContains(t, output, "150%")
+		for _, tt := range []struct {
+			name    string
+			current int
+			total   int
+			extra   string
+		}{
+			{"150/100", 150, 100, ""},
+			{"200/100 with aria-valuenow", 200, 100, `aria-valuenow="200"`},
+		} {
+			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
+				output := utils.Render(t, ProgressBar(ProgressBarProps{
+					Current: tt.current,
+					Total:   tt.total,
+				}))
+				utils.AssertContains(t, output, "100%")
+				utils.AssertNotContains(t, output, "150%")
+				if tt.extra != "" {
+					utils.AssertContains(t, output, tt.extra)
+				}
+			})
+		}
 	})
 }
 

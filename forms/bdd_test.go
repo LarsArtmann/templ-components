@@ -11,13 +11,18 @@ import (
 const (
 	inputNameEmail      = "email"
 	inputLabelEmail     = "Email"
+	inputNameUsername   = "username"
+	inputLabelUsername  = "Username"
 	selectFieldCountry  = "country"
 	selectLabelCountry  = "Country"
 	selectOptionGermany = "Germany"
+	selectOptionRed     = "Red"
+	selectOptionBlue    = "Blue"
 	textareaFieldBio    = "bio"
 	textareaLabelBio    = "Bio"
 	checkboxFieldTerms  = "terms"
 	checkboxLabelTerms  = "Terms"
+	checkboxErrorAccept = "You must accept"
 )
 
 // --- Input Behavior ---
@@ -34,12 +39,12 @@ func TestInputUserCanEnterData(t *testing.T) {
 	t.Run("user sees labeled text input with custom props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
-			Name:  "username",
+			Name:  inputNameUsername,
 			Type:  InputText,
-			Label: "Username",
+			Label: inputLabelUsername,
 		}))
 		utils.AssertContains(t, output, `name="username"`)
-		utils.AssertContains(t, output, "Username")
+		utils.AssertContains(t, output, inputLabelUsername)
 		utils.AssertContains(t, output, `type="text"`)
 	})
 
@@ -167,8 +172,8 @@ func TestSelectUserCanChooseOption(t *testing.T) {
 			Name:  "color",
 			Label: "Color",
 			Options: []SelectOption{
-				{Value: "red", Label: "Red"},
-				{Value: "blue", Label: "Blue", Selected: true},
+				{Value: "red", Label: selectOptionRed},
+				{Value: "blue", Label: selectOptionBlue, Selected: true},
 			},
 		}))
 		utils.AssertContains(t, output, `selected`)
@@ -326,9 +331,9 @@ func TestLabelUserSeesFieldLabels(t *testing.T) {
 
 	t.Run("user sees label linked to input", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Label(inputNameEmail, "Email address", false))
-		utils.AssertContains(t, output, `for="`+inputNameEmail+`"`)
-		utils.AssertContains(t, output, "Email address")
+		output := utils.Render(t, Label(inputNameUsername, inputLabelUsername, false))
+		utils.AssertContains(t, output, `for="`+inputNameUsername+`"`)
+		utils.AssertContains(t, output, inputLabelUsername)
 	})
 
 	t.Run("user sees required indicator on label", func(t *testing.T) {
@@ -360,143 +365,110 @@ func TestFieldErrorUserSeesValidationFeedback(t *testing.T) {
 func TestSelectEdgeCases(t *testing.T) {
 	t.Parallel()
 
-	t.Run("disabled select", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Select(SelectProps{
-			Name:     "role",
-			Label:    "Role",
-			Disabled: true,
-			Options:  []SelectOption{{Value: "admin", Label: "Admin"}},
-		}))
-		utils.AssertContains(t, output, "disabled")
-	})
-
-	t.Run("select with disabled option", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Select(SelectProps{
-			Name:  "color",
-			Label: "Color",
-			Options: []SelectOption{
-				{Value: "red", Label: "Red"},
-				{Value: "blue", Label: "Blue", Disabled: true},
-			},
-		}))
-		utils.AssertContains(t, output, "Red")
-		utils.AssertContains(t, output, "Blue")
-	})
-
-	t.Run("select with pre-selected option", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Select(SelectProps{
-			Name:  "size",
-			Label: "Size",
-			Options: []SelectOption{
-				{Value: "sm", Label: "Small"},
-				{Value: "md", Label: "Medium", Selected: true},
-			},
-		}))
-		utils.AssertContains(t, output, "selected")
-	})
-
-	t.Run("select with error and help text", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Select(SelectProps{
-			Name:     "country",
-			Label:    "Country",
-			Error:    "Required",
-			HelpText: "Select your country",
-			Options:  []SelectOption{{Value: "us", Label: "US"}},
-		}))
-		utils.AssertContains(t, output, "Required")
-		utils.AssertContains(t, output, "Select your country")
-		utils.AssertContains(t, output, "aria-invalid")
-	})
-
-	t.Run("select with no options", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Select(SelectProps{
-			Name:    "empty",
-			Label:   "Empty",
-			Options: []SelectOption{},
-		}))
-		utils.AssertContains(t, output, `<select`)
-	})
+	for _, tt := range []struct {
+		name     string
+		props    SelectProps
+		contains []string
+	}{
+		{
+			"disabled select",
+			SelectProps{Name: "role", Label: "Role", Disabled: true, Options: []SelectOption{{Value: "admin", Label: "Admin"}}},
+			[]string{"disabled"},
+		},
+		{
+			"select with disabled option",
+			SelectProps{Name: "color", Label: "Color", Options: []SelectOption{{Value: "red", Label: selectOptionRed}, {Value: "blue", Label: selectOptionBlue, Disabled: true}}},
+			[]string{selectOptionRed, selectOptionBlue},
+		},
+		{
+			"select with pre-selected option",
+			SelectProps{Name: "size", Label: "Size", Options: []SelectOption{{Value: "sm", Label: "Small"}, {Value: "md", Label: "Medium", Selected: true}}},
+			[]string{"selected"},
+		},
+		{
+			"select with error and help text",
+			SelectProps{Name: "country", Label: "Country", Error: "Required", HelpText: "Select your country", Options: []SelectOption{{Value: "us", Label: "US"}}},
+			[]string{"Required", "Select your country", ariaInvalid},
+		},
+		{
+			"select with no options",
+			SelectProps{Name: "empty", Label: "Empty", Options: []SelectOption{}},
+			[]string{`<select`},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Select(tt.props))
+			for _, want := range tt.contains {
+				utils.AssertContains(t, output, want)
+			}
+		})
+	}
 }
 
 func TestCheckboxEdgeCases(t *testing.T) {
 	t.Parallel()
 
-	t.Run("checked checkbox", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Checkbox(CheckboxProps{
-			Name:    "agree",
-			Label:   "I agree",
-			Checked: true,
-		}))
-		utils.AssertContains(t, output, "checked")
-	})
-
-	t.Run("checkbox with help text", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Checkbox(CheckboxProps{
-			Name:     "newsletter",
-			Label:    "Newsletter",
-			HelpText: "We send weekly updates",
-		}))
-		utils.AssertContains(t, output, "We send weekly updates")
-	})
-
-	t.Run("checkbox with error", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Checkbox(CheckboxProps{
-			Name:  checkboxFieldTerms,
-			Label: checkboxLabelTerms,
-			Error: "You must accept",
-		}))
-		utils.AssertContains(t, output, "You must accept")
-		utils.AssertContains(t, output, "aria-invalid")
-	})
-
-	t.Run("disabled checkbox", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Checkbox(CheckboxProps{
-			Name:     "locked",
-			Label:    "Locked",
-			Disabled: true,
-		}))
-		utils.AssertContains(t, output, "disabled")
-	})
-
-	t.Run("checkbox with error and help text", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Checkbox(CheckboxProps{
-			Name:     checkboxFieldTerms,
-			Label:    checkboxLabelTerms,
-			Error:    "You must accept",
-			HelpText: "Check to agree",
-		}))
-		utils.AssertContains(t, output, "You must accept")
-		utils.AssertContains(t, output, "Check to agree")
-		utils.AssertContains(t, output, "aria-invalid")
-	})
+	for _, tt := range []struct {
+		name     string
+		props    CheckboxProps
+		contains []string
+	}{
+		{
+			"checked checkbox",
+			CheckboxProps{Name: "agree", Label: "I agree", Checked: true},
+			[]string{"checked"},
+		},
+		{
+			"checkbox with help text",
+			CheckboxProps{Name: "newsletter", Label: "Newsletter", HelpText: "We send weekly updates"},
+			[]string{"We send weekly updates"},
+		},
+		{
+			"checkbox with error",
+			CheckboxProps{Name: checkboxFieldTerms, Label: checkboxLabelTerms, Error: checkboxErrorAccept},
+			[]string{checkboxErrorAccept, ariaInvalid},
+		},
+		{
+			"disabled checkbox",
+			CheckboxProps{Name: "locked", Label: "Locked", Disabled: true},
+			[]string{"disabled"},
+		},
+		{
+			"checkbox with error and help text",
+			CheckboxProps{Name: checkboxFieldTerms, Label: checkboxLabelTerms, Error: checkboxErrorAccept, HelpText: "Check to agree"},
+			[]string{checkboxErrorAccept, "Check to agree", ariaInvalid},
+		},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Checkbox(tt.props))
+			for _, want := range tt.contains {
+				utils.AssertContains(t, output, want)
+			}
+		})
+	}
 }
 
 func TestLabelEdgeCases(t *testing.T) {
 	t.Parallel()
-
-	t.Run("label with help text only", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Label("username", "Username", false))
-		utils.AssertContains(t, output, "Username")
-		utils.AssertNotContains(t, output, "text-red")
-	})
-
-	t.Run("label without for ID", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Label("", "Standalone", false))
-		utils.AssertContains(t, output, "Standalone")
-		utils.AssertNotContains(t, output, `for=""`)
-	})
+	for _, tt := range []struct {
+		name        string
+		id          string
+		text        string
+		contains    string
+		notContains string
+	}{
+		{"label with help text only", "username", "Username", "Username", "text-red"},
+		{"label without for ID", "", "Standalone", "Standalone", `for=""`},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Label(tt.id, tt.text, false))
+			utils.AssertContains(t, output, tt.contains)
+			utils.AssertNotContains(t, output, tt.notContains)
+		})
+	}
 }
 
 func TestTextareaEdgeCases(t *testing.T) {
@@ -543,6 +515,6 @@ func TestTextareaEdgeCases(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "Too short")
 		utils.AssertContains(t, output, "50 chars minimum")
-		utils.AssertContains(t, output, "aria-invalid")
+		utils.AssertContains(t, output, ariaInvalid)
 	})
 }
