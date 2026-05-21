@@ -9,10 +9,10 @@
 
 ## 🔴 Bugs & Security
 
-- [ ] Fix JS re-attachment after HTMX DOM swaps — replace global `window.tc*Attached` guards with per-element `data-tc-initialized` (7 components: Accordion, Dropdown, Alert, Toast, ThemeToggle) (source: display/, feedback/, layout/)
-- [ ] Fix ThemeToggle multi-instance bug — `tcThemeToggleAttached` prevents second toggle from working (source: layout/theme.templ)
-- [ ] Fix Accordion JS to IIFE-per-instance pattern — currently global singleton, breaks with multiple accordions after HTMX swap (source: display/accordion.templ)
-- [ ] Fix Checkbox unconditional `id=""` → conditional `if props.ID != ""` rendering (source: forms/input.templ:160)
+- [x] Fix JS re-attachment after HTMX DOM swaps — **by design**: all components use document-level event delegation; dynamically added elements are handled automatically. Global singleton guards prevent duplicate listeners. (source: display/, feedback/, layout/)
+- [x] Fix ThemeToggle multi-instance bug — **not a bug**: event delegation on `document` catches clicks on ALL `[data-theme-toggle]` elements regardless of when they're added. Removed unnecessary IIFE for consistency. (source: layout/theme.templ)
+- [x] Fix Accordion JS to IIFE-per-instance pattern — **not needed**: event delegation handles dynamically added accordions; IIFE-per-instance would create redundant listeners. (source: display/accordion.templ)
+- [x] Fix Checkbox unconditional `id=""` → conditional `if props.ID != ""` rendering (source: forms/input.templ:160)
 - [ ] Fix pre-commit hook — replace buildflow dependency with scripts/pre-commit.sh (source: .git/hooks/pre-commit)
 
 ## 🟡 Breaking Changes (defer to v1.0)

@@ -21,7 +21,6 @@ func main() {
 		props.Nonce = nonce
 		props.CSSPath = ""
 		props.HeadContent = tailwindV4CDN(nonce)
-		props.HTMXVersion = ""
 		if err := demoPage(props).Render(r.Context(), w); err != nil {
 			http.Error(w, err.Error(), 500)
 		}

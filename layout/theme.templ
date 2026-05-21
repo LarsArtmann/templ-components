@@ -31,8 +31,7 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 		@icons.Icon(icons.Sun, "hidden h-5 w-5 dark:block")
 	</button>
 	<script nonce={ nonce }>
-		(function() {
-			if (window.tcThemeToggleAttached) return;
+		if (!window.tcThemeToggleAttached) {
 			window.tcThemeToggleAttached = true;
 			document.addEventListener('click', function(e) {
 				var btn = e.target.closest('[data-theme-toggle]');
@@ -47,6 +46,6 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 					localStorage.setItem('theme', 'dark');
 				}
 			});
-		})();
+		}
 	</script>
 }
