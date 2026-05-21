@@ -2,7 +2,7 @@
 package display
 
 import (
-	"errors"
+	"fmt"
 	"strconv"
 
 	"github.com/a-h/templ"
@@ -67,9 +67,7 @@ func modalCloseHandler(id string) templ.ComponentScript {
 
 func validateModalID(id string) error {
 	if id == "" {
-		return errors.New(
-			"Modal requires a non-empty ID for ARIA attributes and JavaScript functionality",
-		)
+		return fmt.Errorf("modal: id=%q cannot be empty", id)
 	}
 	return nil
 }

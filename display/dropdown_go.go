@@ -1,12 +1,10 @@
 package display
 
-import "errors"
+import "fmt"
 
 func validateDropdownID(id string) error {
 	if id == "" {
-		return errors.New(
-			"Dropdown requires a non-empty ID for ARIA attributes and JavaScript functionality",
-		)
+		return fmt.Errorf("dropdown: id=%q cannot be empty", id)
 	}
 	return nil
 }
