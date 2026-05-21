@@ -94,6 +94,7 @@ linters:
         linters:
           - exhaustruct
           - funlen
+          - goconst
     paths:
       - _templ\.go$
 formatters:

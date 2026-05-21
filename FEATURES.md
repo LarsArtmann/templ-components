@@ -39,16 +39,12 @@ type BaseProps struct {
 
 ### Functions
 
-| Function      | Signature                                  | Purpose                                       |
-| ------------- | ------------------------------------------ | --------------------------------------------- |
-| `Class`       | `(classes ...string) string`               | Merges Tailwind classes via tailwind-merge-go |
-| `MergeAttrs`  | `(m ...templ.Attributes) templ.Attributes` | Merges attribute maps                         |
-| `CurrentYear` | `() string`                                | Current year string                           |
-| `Ternary`     | `[T any](bool, a, b T) T`                  | Generic ternary                               |
-| `Deref`       | `[T any](p *T) T`                          | Nil-safe deref                                |
-| `DerefOr`     | `[T any](p *T, fallback T) T`              | Nil-safe deref with fallback                  |
-| `BoolString`  | `(b bool) string`                          | Returns `"true"` or `"false"`                 |
-| `MapEnum`     | `[T ~string](m map[T]U, key T) U`          | Generic map lookup with fallback              |
+| Function      | Signature                                        | Purpose                                       |
+| ------------- | ------------------------------------------------ | --------------------------------------------- |
+| `Class`       | `(classes ...string) string`                     | Merges Tailwind classes via tailwind-merge-go |
+| `CurrentYear` | `() string`                                      | Current year string                           |
+| `Ternary`     | `[T any](bool, a, b T) T`                        | Generic ternary                               |
+| `MapEnum`     | `[T ~string](m map[string]T, fallback T, key string) T` | Generic map lookup with fallback              |
 
 ### Test Helpers (exported)
 

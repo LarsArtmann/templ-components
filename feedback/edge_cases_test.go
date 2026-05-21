@@ -127,3 +127,50 @@ func TestStepIndicatorEdgeCases(t *testing.T) {
 		utils.AssertContains(t, output, "Step 2")
 	})
 }
+
+func TestLoadingOverlayEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	for _, tt := range []struct {
+		name  string
+		props LoadingOverlayProps
+		want  []string
+	}{
+		{"no message", LoadingOverlayProps{}, []string{"Please wait..."}},
+		{"custom id/class", LoadingOverlayProps{BaseProps: utils.BaseProps{ID: "lo", Class: "mt-2"}, Message: "Loading"}, []string{`id="lo"`, "mt-2"}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, LoadingOverlay(tt.props))
+			for _, w := range tt.want {
+				utils.AssertContains(t, output, w)
+			}
+		})
+	}
+}
+
+func TestSkeletonEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	for _, tt := range []struct {
+		name    string
+		variant SkeletonVariant
+		want    []string
+	}{
+		{"card variant", SkeletonCard, []string{"space-y-4"}},
+		{"avatar variant", SkeletonAvatar, []string{"rounded-full"}},
+		{"text-short variant", SkeletonTextShort, []string{"w-1/2"}},
+		{"title variant", SkeletonTitle, []string{"h-6"}},
+		{"image variant", SkeletonImage, []string{"h-48"}},
+		{"table-row variant", SkeletonTableRow, []string{"grid-cols-4"}},
+		{"unknown variant", SkeletonVariant("unknown"), []string{"animate-pulse"}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Skeleton(tt.variant))
+			for _, w := range tt.want {
+				utils.AssertContains(t, output, w)
+			}
+		})
+	}
+}
