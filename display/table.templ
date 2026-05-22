@@ -79,6 +79,9 @@ templ Table(props TableProps) {
 				id={ props.ID }
 			}
 			class={ utils.Class("min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-sm", tableBorderedClass(props.Bordered), props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
 			{ props.Attrs... }
 		>
 			if props.Caption != "" {

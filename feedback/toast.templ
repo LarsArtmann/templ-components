@@ -1,6 +1,7 @@
 package feedback
 
 import (
+	"fmt"
 	"strings"
 
 	"github.com/larsartmann/templ-components/icons"
@@ -56,7 +57,7 @@ func toastJSStyles() string {
 	b.WriteString("var tcToastColors = {")
 	for _, t := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
 		s := toastStyleMap[t]
-		b.WriteString("'" + string(t) + "': {border:'" + s.Border + "',bg:'" + s.BG + "',text:'" + s.Text + "',icon:'" + s.Icon + "'},")
+		fmt.Fprintf(&b, "'%s': {border:'%s',bg:'%s',text:'%s',icon:'%s'},", t, s.Border, s.BG, s.Text, s.Icon)
 	}
 	b.WriteString("};")
 	return b.String()
@@ -152,6 +153,9 @@ templ Toast(props ToastProps) {
 		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300", border, bg, props.Class) }
 		role="alert"
 		aria-live="polite"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		<div class="flex items-start gap-3">
@@ -172,16 +176,7 @@ templ Toast(props ToastProps) {
 		</div>
 	</div>
 	<script nonce={ props.Nonce }>
-		if (!window.tcDismissAttached) {
-			window.tcDismissAttached = true;
-			document.addEventListener('click', function(e) {
-				var btn = e.target.closest('[data-dismiss]');
-				if (btn) {
-					var el = btn.closest('[role="alert"]');
-					if (el) el.remove();
-				}
-			});
-		}
+		{{ dismissScript() }}
 	</script>
 }
 
@@ -195,8 +190,5 @@ var toastIconMap = map[FeedbackType]icons.Name{
 }
 
 func toastIconName(t FeedbackType) icons.Name {
-	if n, ok := toastIconMap[t]; ok {
-		return n
-	}
-	return icons.Information
+	return feedbackIconName(toastIconMap, t)
 }

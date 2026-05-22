@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"testing"
 
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -182,6 +183,55 @@ func TestStepLineClass(t *testing.T) {
 			)
 		})
 	}
+}
+
+func TestDismissScript(t *testing.T) {
+	t.Parallel()
+	s := dismissScript()
+	if s == "" {
+		t.Error("dismissScript() returned empty string")
+	}
+	if !contains(s, "tcDismissAttached") {
+		t.Error("dismissScript() missing tcDismissAttached guard")
+	}
+	if !contains(s, "data-dismiss") {
+		t.Error("dismissScript() missing data-dismiss selector")
+	}
+}
+
+func TestFeedbackIconName(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name string
+		typ  FeedbackType
+		want icons.Name
+	}{
+		{"success maps to Check for alert", FeedbackSuccess, icons.Check},
+		{"error maps to X for alert", FeedbackError, icons.X},
+		{"unknown falls back to Information", "unknown", icons.Information},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			got := feedbackIconName(alertIconMap, tt.typ)
+			if got != tt.want {
+				t.Errorf("feedbackIconName(alertIconMap, %q) = %q, want %q", tt.typ, got, tt.want)
+			}
+		})
+	}
+}
+
+func contains(s, substr string) bool {
+	return len(s) >= len(substr) && (s == substr || len(s) > 0 && containsSubstr(s, substr))
+}
+
+func containsSubstr(s, substr string) bool {
+	for i := 0; i <= len(s)-len(substr); i++ {
+		if s[i:i+len(substr)] == substr {
+			return true
+		}
+	}
+	return false
 }
 
 func TestStepCircleClass(t *testing.T) {

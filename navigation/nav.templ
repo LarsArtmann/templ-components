@@ -34,7 +34,7 @@ templ Nav(props NavProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		aria-label="Main navigation"
+		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Main navigation") }
 		class={ utils.Class("z-40 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900", props.Class),
 			templ.KV("sticky top-0", props.Sticky) }
 		{ props.Attrs... }

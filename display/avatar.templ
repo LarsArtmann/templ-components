@@ -1,6 +1,9 @@
 package display
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // AvatarSize defines the size of an avatar
 type AvatarSize string
@@ -117,13 +120,16 @@ templ Avatar(props AvatarProps) {
 				id={ props.ID }
 			}
 			class={ utils.Class("inline-flex items-center justify-center bg-blue-600 text-white font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
 			{ props.Attrs... }
 		>
 			if props.Initials != "" {
 				{ props.Initials }
 			} else {
 				<svg class="h-1/2 w-1/2 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
-					<path d="M24 20.993V24H0v-2.996A14.977 14.977 0 0112.004 15c4.904 0 9.26 2.354 11.996 5.993zM16.002 8.999a4 4 0 11-8 0 4 4 0 018 0z"></path>
+					<path d={ svg.PathAvatarFill }></path>
 				</svg>
 			}
 		</div>

@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-21 | **Coverage:** 68.9% | **Tests:** 182+ | **Packages:** 9+demo | **Generated files:** 32 `*_templ.go` committed
+**Updated:** 2026-05-22 | **Coverage:** 66.2% | **Tests:** 190+ | **Packages:** 9+demo | **Generated files:** 32 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -41,11 +41,14 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **No framework deps** — pure Go + templ + Tailwind v4 class strings
 - **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display,feedback`, `feedback ← none (htmx decoupled)`
 - **No circular imports** allowed
+- **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
+- **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
+- **Feedback shared:** `dismissScript()`, `feedbackIconName()`, `lookupFeedbackStyle[T]()` in `feedback/styles.go` eliminate duplication between Alert and Toast
 
 ## Code Conventions
 
 - All component props embed `utils.BaseProps` (exception: `layout.PageProps`)
-- All root elements propagate `props.Class`, `props.Attrs`, and `props.ID` from BaseProps (25/25 components, including NavLink/MobileNavLink)
+- All root elements propagate `props.Class`, `props.Attrs`, `props.ID`, and `props.AriaLabel` from BaseProps (25/25 components, including NavLink/MobileNavLink)
 - Class attributes use `utils.Class()` for Tailwind conflict resolution (exception: `templ.KV` conditionals where comma-join is required)
 - Style lookups use maps/structs, not switches (e.g., `badgeStyleMap`, `badgeSizeLookup`, `cardPaddingLookup`, `iconPathData`, `alertIconMap`, `toastIconMap`, `spinnerSizeLookup`, `progressHeightLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`)
 - String enums: `type XxxType string` + `const XxxDefault XxxType = "default"`
@@ -54,8 +57,9 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - Private helpers: `xxxClass()` for Tailwind class mapping
 - CSP: all inline scripts use `nonce={ props.Nonce }`
 - Sub-templates: extract shared rendering to private `templ` functions
-- Feedback styles: shared `feedbackStyleSet` struct + `lookupFeedbackStyle[T]()` generic
+- Feedback styles: shared `feedbackStyleSet` struct + `lookupFeedbackStyle[T]()` generic + `feedbackIconName()` + `dismissScript()` in `feedback/styles.go`
 - FeedbackType: canonical `FeedbackType` enum (`FeedbackSuccess/Error/Warning/Info`); `AlertType` and `ToastType` are type aliases for backward compat
+- SVG paths: constants in `internal/svg` (`PathChevronDown`, `PathChevronSmall`, `PathArrowUp/Down/Left/Right`, `PathAvatarFill`) — single source of truth for inline SVG paths
 - Icons: `iconPathData` map with `|` separator for multi-path icons
 - Form errors: `ErrorAttrs(id, errMsg, helpTextID)` helper returns `templ.Attributes` for aria-invalid/aria-describedby
 - Card shell CSS: shared `cardShellClass` constant for consistent card styling

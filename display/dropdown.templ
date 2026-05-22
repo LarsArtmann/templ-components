@@ -2,6 +2,7 @@ package display
 
 import (
 	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -79,6 +80,9 @@ templ Dropdown(props DropdownProps) {
 			id={ props.ID }
 		}
 		class={ utils.Class("relative inline-block text-left", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		<div>
@@ -92,7 +96,7 @@ templ Dropdown(props DropdownProps) {
 				aria-label={ props.Label }
 			>
 				{ props.Label }
-				@fillIcon("-mr-1 h-5 w-5 text-gray-400", "M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z", false)
+				@fillIcon("-mr-1 h-5 w-5 text-gray-400", svg.PathChevronSmall, false)
 			</button>
 		</div>
 		<div

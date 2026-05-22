@@ -1,7 +1,7 @@
 # TODO List
 
-**Updated:** 2026-05-21
-**Coverage:** 71.8% | **Tests:** 182 | **Packages:** 9+demo | **Lint:** 0 issues
+**Updated:** 2026-05-22
+**Coverage:** 66.2% | **Tests:** 190+ | **Packages:** 9+demo | **Lint:** 0 issues
 
 > Reviewed 2026-05-21: ~70 items removed as completed. See git history for previous state.
 
@@ -26,7 +26,12 @@
 
 ### Validation & Robustness
 
-- [ ] Add TrendDirection consistent validation — invalid values silently ignored in StatCard (source: display/card.templ:164-176)
+- [x] Add TrendDirection consistent validation — `normalizeTrend()` in display/card.templ normalizes invalid values to TrendNone (source: display/card.templ)
+- [x] Extract hardcoded SVG path strings to named constants — `internal/svg` now has PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill (source: internal/svg/svg.templ)
+- [x] Propagate AriaLabel from BaseProps in all 25 components — conditional `aria-label` on root elements; hardcoded labels use AriaLabel override via `utils.Ternary` (source: all packages)
+- [x] Extract shared dismiss JS — `dismissScript()` in feedback/styles.go eliminates duplicate between Alert and Toast (source: feedback/alert.templ, feedback/toast.templ)
+- [x] Unify alertIconName/toastIconName — shared `feedbackIconName()` in feedback/styles.go (source: feedback/styles.go)
+- [x] Fix toast JS string builder — `fmt.Fprintf` replaces string concatenation in `toastJSStyles()` (source: feedback/toast.templ)
 - [ ] Validate SelectOption contradiction (Disabled + Selected simultaneously) (source: forms/select.templ)
 - [ ] Validate SwapOOB swapStyle parameter (source: htmx/swap_oob.templ)
 - [ ] Validate `|` separator doesn't appear in SVG paths (source: icons/icon_paths.go)
@@ -50,8 +55,8 @@
 - [ ] Make `PageProps` zero-value safe (source: layout/page_props.go)
 - [ ] Magic theme colors — extract `#4f46e5` and `#1e1b4b` to named constants (source: layout/base.templ)
 - [ ] Eliminate 4-way icon list split brain — auto-generate `allIconNames()` from `iconPathData` map (source: icons/icon_paths.go)
-- [ ] Move avatar fallback SVG to icons package (source: display/avatar.templ)
-- [ ] Replace hardcoded SVGs with icon system — Alert dismiss X, StepIndicator checkmark (source: feedback/)
+- [ ] Move avatar fallback SVG to icons package — partially done, avatar fallback path extracted to `svg.PathAvatarFill` constant (source: display/avatar.templ)
+- [ ] Replace hardcoded SVGs with icon system — remaining: StepIndicator checkmark (source: feedback/)
 - [ ] `ComponentProps` interface with `GetBaseProps() BaseProps` for all props structs (source: utils/base_props.go)
 - [ ] Add stroke-width option to `icons.Icon` (source: icons/)
 

@@ -1,6 +1,9 @@
 package display
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 const cardShellClass = "bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-xs"
 
@@ -42,6 +45,9 @@ templ Card(props CardProps) {
 			id={ props.ID }
 		}
 		class={ utils.Class(cardShellClass+" overflow-hidden", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		if props.Title != "" || props.HeaderAction != nil {
@@ -111,6 +117,9 @@ templ SimpleCard(props SimpleCardProps) {
 			id={ props.ID }
 		}
 		class={ utils.Class(cardShellClass, cardPaddingClass(props.Padding), props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		{ children... }
@@ -142,13 +151,32 @@ func DefaultStatCardProps() StatCardProps {
 	}
 }
 
+// validTrendDirections is the set of allowed TrendDirection values.
+var validTrendDirections = map[TrendDirection]bool{
+	TrendUp:   true,
+	TrendDown: true,
+	TrendNone: true,
+}
+
+// normalizeTrend returns the trend if valid, or TrendNone for invalid values.
+func normalizeTrend(t TrendDirection) TrendDirection {
+	if validTrendDirections[t] {
+		return t
+	}
+	return TrendNone
+}
+
 // StatCard renders a dashboard stat card with value, label, and optional change indicator
 templ StatCard(props StatCardProps) {
+	{{ trend := normalizeTrend(props.Trend) }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
 		}
 		class={ utils.Class(cardShellClass+" p-5", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		<dl>
@@ -158,17 +186,17 @@ templ StatCard(props StatCardProps) {
 				if props.Change != "" {
 					<div
 						class={ "ml-2 flex items-baseline text-sm font-semibold",
-						templ.KV("text-green-600 dark:text-green-400", props.Trend == TrendUp),
-						templ.KV("text-red-600 dark:text-red-400", props.Trend == TrendDown) }
+						templ.KV("text-green-600 dark:text-green-400", trend == TrendUp),
+						templ.KV("text-red-600 dark:text-red-400", trend == TrendDown) }
 					>
-						switch props.Trend {
+						switch trend {
 							case TrendUp:
-								@fillIcon("self-center flex-shrink-0 h-4 w-4 text-green-500", "M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z", false)
+								@fillIcon("self-center flex-shrink-0 h-4 w-4 text-green-500", svg.PathArrowUp, false)
 							case TrendDown:
-								@fillIcon("self-center flex-shrink-0 h-4 w-4 text-red-500", "M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z", false)
+								@fillIcon("self-center flex-shrink-0 h-4 w-4 text-red-500", svg.PathArrowDown, false)
 						}
 						<span class="sr-only">
-							switch props.Trend {
+							switch trend {
 								case TrendUp:
 									Increased by
 								case TrendDown:

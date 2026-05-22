@@ -45,3 +45,33 @@ func TestSpinnerSVGRender(t *testing.T) {
 	utils.AssertContains(t, output, `stroke="currentColor"`)
 	utils.AssertContains(t, output, `stroke-width="4"`)
 }
+
+func TestPathConstants(t *testing.T) {
+	t.Parallel()
+	paths := []struct {
+		name string
+		path string
+	}{
+		{"PathChevronDown", PathChevronDown},
+		{"PathChevronSmall", PathChevronSmall},
+		{"PathArrowUp", PathArrowUp},
+		{"PathArrowDown", PathArrowDown},
+		{"PathArrowLeft", PathArrowLeft},
+		{"PathArrowRight", PathArrowRight},
+		{"PathAvatarFill", PathAvatarFill},
+	}
+	for _, p := range paths {
+		t.Run(p.name+" is non-empty", func(t *testing.T) {
+			t.Parallel()
+			if p.path == "" {
+				t.Errorf("%s is empty", p.name)
+			}
+		})
+	}
+}
+
+func TestFillIconUsesPathConstants(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, FillIcon("h-5 w-5", PathChevronDown, false))
+	utils.AssertContains(t, output, PathChevronDown)
+}

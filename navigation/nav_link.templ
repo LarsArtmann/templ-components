@@ -49,6 +49,9 @@ templ NavLink(props NavLinkProps, currentPath string) {
 			target="_blank"
 			rel="noopener noreferrer"
 		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		{ props.Text }
@@ -71,6 +74,9 @@ templ MobileNavLink(props NavLinkProps, currentPath string) {
 			props.Class }
 		if isActive {
 			aria-current="page"
+		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
 		}
 		{ props.Attrs... }
 	>

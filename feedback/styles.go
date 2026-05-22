@@ -1,6 +1,8 @@
 // Package feedback provides user feedback components such as alerts, toasts, and loading indicators.
 package feedback
 
+import "github.com/larsartmann/templ-components/icons"
+
 // FeedbackType represents the severity/visual style of a feedback component.
 // Shared by Alert and Toast components.
 //
@@ -20,6 +22,12 @@ type feedbackStyleSet struct {
 	Border, BG, Text, Icon string
 }
 
+// dismissScript returns the shared JavaScript for dismissing feedback elements
+// (alerts and toasts) via [data-dismiss] click delegation.
+func dismissScript() string {
+	return `if(!window.tcDismissAttached){window.tcDismissAttached=true;document.addEventListener('click',function(e){var btn=e.target.closest('[data-dismiss]');if(btn){var el=btn.closest('[role="alert"]');if(el)el.remove();}});}`
+}
+
 // lookupFeedbackStyle returns the style set for key t from map m,
 // or def if not found.
 func lookupFeedbackStyle[T ~string](
@@ -31,4 +39,13 @@ func lookupFeedbackStyle[T ~string](
 		return s
 	}
 	return def
+}
+
+// feedbackIconName maps a FeedbackType to its canonical icon name.
+// Shared by Alert and Toast components.
+func feedbackIconName(m map[FeedbackType]icons.Name, t FeedbackType) icons.Name {
+	if n, ok := m[t]; ok {
+		return n
+	}
+	return icons.Information
 }

@@ -71,6 +71,9 @@ templ Tabs(props TabsProps) {
 			id={ props.ID }
 		}
 		class={ utils.Class("w-full", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		<div role="tablist" aria-label="Tabs" class="border-b border-gray-200 dark:border-slate-700">

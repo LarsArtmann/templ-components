@@ -55,6 +55,9 @@ templ Select(props SelectProps) {
 			disabled
 		}
 		{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		for _, opt := range props.Options {

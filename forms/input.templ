@@ -112,6 +112,9 @@ templ Input(props InputProps) {
 				autofocus
 			}
 			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
 			{ props.Attrs... }
 		/>
 	</div>
@@ -174,6 +177,9 @@ templ Checkbox(props CheckboxProps) {
 					disabled
 				}
 				{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+				if props.AriaLabel != "" {
+					aria-label={ props.AriaLabel }
+				}
 				{ props.Attrs... }
 			/>
 		</div>

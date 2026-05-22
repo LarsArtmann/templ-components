@@ -24,6 +24,9 @@ templ Modal(props ModalProps) {
 		role="dialog"
 		aria-modal="true"
 		aria-labelledby={ props.ID + "-title" }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 	>
 		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" onclick={ modalCloseHandler(props.ID) }></div>
 		<div

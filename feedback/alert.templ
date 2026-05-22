@@ -57,10 +57,7 @@ var alertIconMap = map[FeedbackType]icons.Name{
 }
 
 func alertIconName(t FeedbackType) icons.Name {
-	if n, ok := alertIconMap[t]; ok {
-		return n
-	}
-	return icons.Information
+	return feedbackIconName(alertIconMap, t)
 }
 
 // Alert renders a full-width alert banner
@@ -74,6 +71,9 @@ templ Alert(props AlertProps) {
 		}
 		class={ utils.Class("rounded-md border p-4", border, bg, props.Class) }
 		role="alert"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		<div class="flex">
@@ -105,16 +105,7 @@ templ Alert(props AlertProps) {
 		</div>
 		if props.Dismissible {
 			<script nonce={ props.Nonce }>
-				if (!window.tcDismissAttached) {
-					window.tcDismissAttached = true;
-					document.addEventListener('click', function(e) {
-						var btn = e.target.closest('[data-dismiss]');
-						if (btn) {
-							var el = btn.closest('[role="alert"]');
-							if (el) el.remove();
-						}
-					});
-				}
+				{{ dismissScript() }}
 			</script>
 		}
 	</div>

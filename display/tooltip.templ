@@ -71,6 +71,9 @@ templ Tooltip(props TooltipProps) {
 			id={ props.ID }
 			aria-describedby={ props.ID + "-tooltip" }
 		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		{ children... }

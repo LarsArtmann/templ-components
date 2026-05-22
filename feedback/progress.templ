@@ -56,6 +56,9 @@ templ ProgressBar(props ProgressBarProps) {
 			id={ props.ID }
 		}
 		class={ utils.Class("w-full", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		{ props.Attrs... }
 	>
 		if props.ShowLabel || props.Label != "" {
@@ -114,7 +117,7 @@ templ StepIndicator(props StepIndicatorProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		aria-label="Progress"
+		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Progress") }
 		class={ utils.Class("", props.Class) }
 		{ props.Attrs... }
 	>

@@ -208,6 +208,29 @@ func TestEmptyStateRender(t *testing.T) {
 	})
 }
 
+func TestNormalizeTrend(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		input TrendDirection
+		want  TrendDirection
+	}{
+		{TrendUp, TrendUp},
+		{TrendDown, TrendDown},
+		{TrendNone, TrendNone},
+		{TrendDirection("invalid"), TrendNone},
+		{TrendDirection(""), TrendNone},
+	}
+	for _, tt := range tests {
+		t.Run(string(tt.input), func(t *testing.T) {
+			t.Parallel()
+			got := normalizeTrend(tt.input)
+			if got != tt.want {
+				t.Errorf("normalizeTrend(%q) = %q, want %q", tt.input, got, tt.want)
+			}
+		})
+	}
+}
+
 func TestCardFeatures(t *testing.T) {
 	t.Parallel()
 
