@@ -191,9 +191,9 @@ templ StatCard(props StatCardProps) {
 					>
 						switch trend {
 							case TrendUp:
-								@fillIcon("self-center flex-shrink-0 h-4 w-4 text-green-500", svg.PathArrowUp, false)
+								@svg.FillIcon("self-center flex-shrink-0 h-4 w-4 text-green-500", svg.PathArrowUp, false)
 							case TrendDown:
-								@fillIcon("self-center flex-shrink-0 h-4 w-4 text-red-500", svg.PathArrowDown, false)
+								@svg.FillIcon("self-center flex-shrink-0 h-4 w-4 text-red-500", svg.PathArrowDown, false)
 						}
 						<span class="sr-only">
 							switch trend {

@@ -221,7 +221,7 @@ func Accordion(props AccordionProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = fillIcon(
+			templ_7745c5c3_Err = svg.FillIcon(
 				"h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-200",
 				svg.PathChevronDown,
 				item.Open,

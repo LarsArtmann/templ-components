@@ -304,7 +304,7 @@ func Dropdown(props DropdownProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = fillIcon("-mr-1 h-5 w-5 text-gray-400", svg.PathChevronSmall, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = svg.FillIcon("-mr-1 h-5 w-5 text-gray-400", svg.PathChevronSmall, false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
