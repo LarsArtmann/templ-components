@@ -341,3 +341,92 @@ func TestTooltipEdgeCases(t *testing.T) {
 		})
 	}
 }
+
+func TestAriaLabelPropagation(t *testing.T) {
+	t.Parallel()
+	label := "Custom aria label"
+
+	tests := []struct {
+		name  string
+		props any
+	}{
+		{
+			"Card",
+			CardProps{
+				Title:     "T",
+				Padding:   CardPaddingMD,
+				BaseProps: utils.BaseProps{AriaLabel: label},
+			},
+		},
+		{
+			"SimpleCard",
+			SimpleCardProps{
+				Padding:   CardPaddingSM,
+				BaseProps: utils.BaseProps{AriaLabel: label},
+			},
+		},
+		{
+			"StatCard",
+			StatCardProps{
+				Value:     "42",
+				Label:     "L",
+				Trend:     TrendNone,
+				BaseProps: utils.BaseProps{AriaLabel: label},
+			},
+		},
+		{
+			"Accordion",
+			AccordionProps{
+				Items:     []AccordionItem{{ID: "a", Title: "A"}},
+				BaseProps: utils.BaseProps{AriaLabel: label},
+			},
+		},
+		{
+			"Table",
+			TableProps{
+				Headers:   []string{"H"},
+				BaseProps: utils.BaseProps{AriaLabel: label},
+			},
+		},
+		{
+			"Dropdown",
+			DropdownProps{
+				Label:     "Menu",
+				Items:     []DropdownItem{{Text: "I"}},
+				BaseProps: utils.BaseProps{ID: "dd", AriaLabel: label},
+			},
+		},
+		{
+			"Tabs",
+			TabsProps{
+				ActiveTabID: "t1",
+				Tabs:        []Tab{{ID: "t1", Label: "T"}},
+				BaseProps:   utils.BaseProps{AriaLabel: label},
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			var output string
+			switch p := tt.props.(type) {
+			case CardProps:
+				output = utils.Render(t, Card(p))
+			case SimpleCardProps:
+				output = utils.Render(t, SimpleCard(p))
+			case StatCardProps:
+				output = utils.Render(t, StatCard(p))
+			case AccordionProps:
+				output = utils.Render(t, Accordion(p))
+			case TableProps:
+				output = utils.Render(t, Table(p))
+			case DropdownProps:
+				output = utils.Render(t, Dropdown(p))
+			case TabsProps:
+				output = utils.Render(t, Tabs(p))
+			}
+			utils.AssertContains(t, output, `aria-label="`+label+`"`)
+		})
+	}
+}

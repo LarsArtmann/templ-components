@@ -201,3 +201,53 @@ func TestFooterDarkMode(t *testing.T) {
 		assertFooterContainsAll(t, "dark:border-gray-800", "dark:bg-gray-900", "dark:text-gray-400")
 	})
 }
+
+func TestAriaLabelOverride(t *testing.T) {
+	t.Parallel()
+	customLabel := "Custom navigation label"
+
+	t.Run("Nav AriaLabel overrides default", func(t *testing.T) {
+		t.Parallel()
+		props := NavProps{
+			Links:     testNavLinks,
+			BaseProps: utils.BaseProps{AriaLabel: customLabel},
+		}
+		output := utils.Render(t, Nav(props))
+		utils.AssertContains(t, output, `aria-label="`+customLabel+`"`)
+		utils.AssertNotContains(t, output, `aria-label="Main navigation"`)
+	})
+
+	t.Run("Breadcrumbs AriaLabel overrides default", func(t *testing.T) {
+		t.Parallel()
+		props := BreadcrumbsProps{
+			Items:     breadcrumbHomeOnly(),
+			BaseProps: utils.BaseProps{AriaLabel: customLabel},
+		}
+		output := utils.Render(t, Breadcrumbs(props))
+		utils.AssertContains(t, output, `aria-label="`+customLabel+`"`)
+		utils.AssertNotContains(t, output, `aria-label="Breadcrumb"`)
+	})
+
+	t.Run("Pagination AriaLabel overrides default", func(t *testing.T) {
+		t.Parallel()
+		props := PaginationProps{
+			CurrentPage: 1,
+			TotalPages:  5,
+			QueryParam:  "page",
+			BaseProps:   utils.BaseProps{AriaLabel: customLabel},
+		}
+		output := utils.Render(t, Pagination(props))
+		utils.AssertContains(t, output, `aria-label="`+customLabel+`"`)
+	})
+
+	t.Run("NavLink AriaLabel renders", func(t *testing.T) {
+		t.Parallel()
+		props := NavLinkProps{
+			Href:      "/",
+			Text:      "Home",
+			BaseProps: utils.BaseProps{AriaLabel: customLabel},
+		}
+		output := utils.Render(t, NavLink(props, "/other"))
+		utils.AssertContains(t, output, `aria-label="`+customLabel+`"`)
+	})
+}
