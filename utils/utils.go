@@ -8,7 +8,7 @@ import (
 	"github.com/a-h/templ"
 )
 
-//nolint:gochecknoglobals // Required to protect twmerge.Merge — the library's internal cache is not thread-safe
+//nolint:gochecknoglobals // Required to protect tailwind-merge-go's lazy init on first call to twmerge.Merge
 var classMu sync.Mutex
 
 // BaseProps provides common configurable attributes for all components
