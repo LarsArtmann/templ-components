@@ -35,3 +35,23 @@ templ FieldError(fieldID, message string) {
 		}
 	>{ message }</p>
 }
+
+// FormFieldWrapper renders the standard form field structure:
+// optional Label, children (input/select/textarea), optional Error, optional HelpText.
+// Use this to DRY up all form control components.
+//
+//	@forms.FormFieldWrapper("email", "Email", true, "Invalid", "Use work email") {
+//	   <input type="email" name="email" />
+//	}
+templ FormFieldWrapper(id, label string, required bool, errMsg, helpMsg string) {
+	if label != "" {
+		@Label(id, label, required)
+	}
+	{ children... }
+	if errMsg != "" {
+		@FieldError(id, errMsg)
+	}
+	if helpMsg != "" {
+		@helpText(id, helpMsg)
+	}
+}
