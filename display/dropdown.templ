@@ -12,6 +12,7 @@ type DropdownItem struct {
 	Href     string
 	Icon     icons.Name
 	External bool
+	Disabled bool
 	Attrs    templ.Attributes
 }
 
@@ -41,23 +42,41 @@ func DefaultDropdownProps() DropdownProps {
 // dropdownItemClass returns the shared class for all dropdown items
 const dropdownItemClass = "block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
 
+// dropdownItemDisabledClass appends disabled styling
+const dropdownItemDisabledClass = " opacity-50 cursor-not-allowed pointer-events-none"
+
 // dropdownItemLink renders an anchor dropdown item
 templ dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) {
-	<a
-		href={ templ.SafeURL(item.Href) }
-		if item.External {
-			target="_blank"
-			rel="noopener noreferrer"
-		}
-		class={ dropdownItemClass }
-		role="menuitem"
-		{ item.Attrs... }
-	>
-		if item.Icon != "" {
-			@icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500")
-		}
-		{ item.Text }
-	</a>
+	if item.Disabled {
+		<span
+			class={ dropdownItemClass + dropdownItemDisabledClass }
+			role="menuitem"
+			aria-disabled="true"
+			tabindex="-1"
+			{ item.Attrs... }
+		>
+			if item.Icon != "" {
+				@icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500")
+			}
+			{ item.Text }
+		</span>
+	} else {
+		<a
+			href={ templ.SafeURL(item.Href) }
+			if item.External {
+				target="_blank"
+				rel="noopener noreferrer"
+			}
+			class={ dropdownItemClass }
+			role="menuitem"
+			{ item.Attrs... }
+		>
+			if item.Icon != "" {
+				@icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500")
+			}
+			{ item.Text }
+		</a>
+	}
 }
 
 // Dropdown renders a button-triggered action menu
@@ -117,8 +136,12 @@ templ Dropdown(props DropdownProps) {
 					} else {
 						<button
 							type="button"
-							class={ "block w-full text-left", dropdownItemClass }
+							class={ utils.Class("block w-full text-left", dropdownItemClass, utils.Ternary(item.Disabled, dropdownItemDisabledClass, "")) }
 							role="menuitem"
+							if item.Disabled {
+								disabled
+								aria-disabled="true"
+							}
 							{ item.Attrs... }
 						>
 							if item.Icon != "" {

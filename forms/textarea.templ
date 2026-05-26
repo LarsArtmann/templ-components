@@ -17,6 +17,7 @@ type TextareaProps struct {
 	Required    bool
 	Disabled    bool
 	ReadOnly    bool
+	MaxLength   int
 	Error       string
 	HelpText    string
 }
@@ -63,6 +64,9 @@ templ Textarea(props TextareaProps) {
 		}
 		if props.ReadOnly {
 			readonly
+		}
+		if props.MaxLength > 0 {
+			maxlength={ fmt.Sprintf("%d", props.MaxLength) }
 		}
 		{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 		if props.AriaLabel != "" {
