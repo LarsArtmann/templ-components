@@ -45,10 +45,9 @@ func toggleSizeClasses(size ToggleSize) (track, thumb, translate string) {
 //
 //	@forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications", Checked: true})
 templ Toggle(props ToggleProps) {
-	{{
-		trackClass, thumbClass, translateClass := toggleSizeClasses(props.Size)
-	}}
-	<label class={ utils.Class("inline-flex cursor-pointer items-center", props.Class) }
+	{{ trackClass, thumbClass, translateClass := toggleSizeClasses(props.Size) }}
+	<label
+		class={ utils.Class("inline-flex cursor-pointer items-center", props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}

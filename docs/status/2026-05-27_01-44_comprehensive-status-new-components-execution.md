@@ -3,7 +3,7 @@
 **Date:** 2026-05-27 01:44 CEST  
 **Branch:** master  
 **Commits since last status:** 8 new commits (a82a258)  
-**Current HEAD:** a82a258 feat(forms,display,demo): add new components, missing props, and lint fixes  
+**Current HEAD:** a82a258 feat(forms,display,demo): add new components, missing props, and lint fixes
 
 ---
 
@@ -11,32 +11,32 @@
 
 ### Components Implemented (9 new components)
 
-| Component | Package | Files | Tests | Description |
-|-----------|---------|-------|-------|-------------|
-| **Button** | `display` | `button.templ`, `button_go.go` | `button_test.go` | 5 variants (Primary/Secondary/Danger/Ghost/Link), 3 sizes, renders as `<a>` or `<button>` |
-| **Radio** | `forms` | `radio.templ`, `radio_go.go` | `snapshot_test.go` | Standalone radio with label |
-| **RadioGroup** | `forms` | `radio.templ`, `radio_go.go` | `snapshot_test.go` | Fieldset with legend, auto-generated IDs, inline/vertical layout |
-| **Toggle** | `forms` | `toggle.templ` | `snapshot_test.go` | Accessible switch with sr-only checkbox, 3 sizes (SM/MD/LG), zero JS |
-| **FileInput** | `forms` | `file_input.templ` | `snapshot_test.go` | File upload with styled native button, Accept, Multiple support |
-| **InputGroup** | `forms` | `input_group.templ` | `snapshot_test.go` | Left/right addon slots, children pattern for flexible composition |
-| **FormFieldWrapper** | `forms` | `label.templ` | (implicit via callers) | Shared Label + error + help text sub-template |
+| Component            | Package   | Files                          | Tests                  | Description                                                                               |
+| -------------------- | --------- | ------------------------------ | ---------------------- | ----------------------------------------------------------------------------------------- |
+| **Button**           | `display` | `button.templ`, `button_go.go` | `button_test.go`       | 5 variants (Primary/Secondary/Danger/Ghost/Link), 3 sizes, renders as `<a>` or `<button>` |
+| **Radio**            | `forms`   | `radio.templ`, `radio_go.go`   | `snapshot_test.go`     | Standalone radio with label                                                               |
+| **RadioGroup**       | `forms`   | `radio.templ`, `radio_go.go`   | `snapshot_test.go`     | Fieldset with legend, auto-generated IDs, inline/vertical layout                          |
+| **Toggle**           | `forms`   | `toggle.templ`                 | `snapshot_test.go`     | Accessible switch with sr-only checkbox, 3 sizes (SM/MD/LG), zero JS                      |
+| **FileInput**        | `forms`   | `file_input.templ`             | `snapshot_test.go`     | File upload with styled native button, Accept, Multiple support                           |
+| **InputGroup**       | `forms`   | `input_group.templ`            | `snapshot_test.go`     | Left/right addon slots, children pattern for flexible composition                         |
+| **FormFieldWrapper** | `forms`   | `label.templ`                  | (implicit via callers) | Shared Label + error + help text sub-template                                             |
 
 ### Architecture Improvements
 
-| Improvement | Status | Notes |
-|-------------|--------|-------|
-| Move `baseInputClass` to `helpers.go` | ✅ | Shared by Input, Select, Textarea, FileInput |
-| Extract `FormFieldWrapper` sub-template | ✅ | DRYs up label/error/help pattern across all form controls |
-| Add `Button` component | ✅ | Eliminates button style duplication in EmptyState, Modal, Pagination, Tabs, demo app |
+| Improvement                             | Status | Notes                                                                                |
+| --------------------------------------- | ------ | ------------------------------------------------------------------------------------ |
+| Move `baseInputClass` to `helpers.go`   | ✅     | Shared by Input, Select, Textarea, FileInput                                         |
+| Extract `FormFieldWrapper` sub-template | ✅     | DRYs up label/error/help pattern across all form controls                            |
+| Add `Button` component                  | ✅     | Eliminates button style duplication in EmptyState, Modal, Pagination, Tabs, demo app |
 
 ### Missing Props Added
 
-| Prop | Component | Status |
-|------|-----------|--------|
-| `MaxLength` | `InputProps` | ✅ |
-| `MaxLength` | `TextareaProps` | ✅ |
-| `Value` | `CheckboxProps` | ✅ |
-| `Disabled` | `DropdownItem` | ✅ (renders as `<span>` for links, disabled `<button>` for actions) |
+| Prop        | Component       | Status                                                              |
+| ----------- | --------------- | ------------------------------------------------------------------- |
+| `MaxLength` | `InputProps`    | ✅                                                                  |
+| `MaxLength` | `TextareaProps` | ✅                                                                  |
+| `Value`     | `CheckboxProps` | ✅                                                                  |
+| `Disabled`  | `DropdownItem`  | ✅ (renders as `<span>` for links, disabled `<button>` for actions) |
 
 ### Demo App Updated
 
@@ -46,13 +46,13 @@
 
 ### Quality Gates
 
-| Gate | Status | Details |
-|------|--------|---------|
-| All tests passing | ✅ | 221 test functions across 48 test files |
-| Lint clean | ✅ | 0 issues (golangci-lint) |
-| Build compiles | ✅ | `go build ./...` passes |
-| Demo compiles | ✅ | `go build ./examples/demo/...` passes |
-| No TODOs in source | ✅ | Verified: 0 TODO/FIXME/HACK/XXX in .go/.templ source |
+| Gate               | Status | Details                                              |
+| ------------------ | ------ | ---------------------------------------------------- |
+| All tests passing  | ✅     | 221 test functions across 48 test files              |
+| Lint clean         | ✅     | 0 issues (golangci-lint)                             |
+| Build compiles     | ✅     | `go build ./...` passes                              |
+| Demo compiles      | ✅     | `go build ./examples/demo/...` passes                |
+| No TODOs in source | ✅     | Verified: 0 TODO/FIXME/HACK/XXX in .go/.templ source |
 
 ---
 
@@ -60,32 +60,32 @@
 
 ### Test Coverage
 
-| Package | Coverage | Target | Gap |
-|---------|----------|--------|-----|
-| `display` | 68.6% | 75% | Missing: Button edge cases (icon rendering, variant exhaustive), some helpers |
-| `forms` | 64.3% | 75% | Missing: FormFieldWrapper direct test, FileInput error/help text, InputGroup edge cases |
-| `feedback` | 70.3% | 75% | Close — just needs a few more edge cases |
-| `htmx` | 77.3% | 75% | ✅ Above target |
-| `icons` | 75.0% | 75% | ✅ At target |
-| `layout` | 73.2% | 75% | Close |
-| `navigation` | 72.1% | 75% | Close |
-| `utils` | 83.3% | 75% | ✅ Above target |
-| `internal/svg` | 79.0% | 75% | ✅ Above target |
+| Package        | Coverage | Target | Gap                                                                                     |
+| -------------- | -------- | ------ | --------------------------------------------------------------------------------------- |
+| `display`      | 68.6%    | 75%    | Missing: Button edge cases (icon rendering, variant exhaustive), some helpers           |
+| `forms`        | 64.3%    | 75%    | Missing: FormFieldWrapper direct test, FileInput error/help text, InputGroup edge cases |
+| `feedback`     | 70.3%    | 75%    | Close — just needs a few more edge cases                                                |
+| `htmx`         | 77.3%    | 75%    | ✅ Above target                                                                         |
+| `icons`        | 75.0%    | 75%    | ✅ At target                                                                            |
+| `layout`       | 73.2%    | 75%    | Close                                                                                   |
+| `navigation`   | 72.1%    | 75%    | Close                                                                                   |
+| `utils`        | 83.3%    | 75%    | ✅ Above target                                                                         |
+| `internal/svg` | 79.0%    | 75%    | ✅ Above target                                                                         |
 
 ### Documentation
 
-| Item | Status | Notes |
-|------|--------|-------|
-| README.md updated for new APIs | 🟡 | Button, Radio, RadioGroup, Toggle, FileInput, InputGroup mentioned but no code examples |
-| FEATURES.md updated | 🟡 | Component counts updated but no detailed feature entries for new components |
-| Component godoc examples | 🟡 | Only display has `example_test.go`; forms, feedback, htmx, icons, layout, navigation lack `ExampleXxx()` functions |
+| Item                           | Status | Notes                                                                                                              |
+| ------------------------------ | ------ | ------------------------------------------------------------------------------------------------------------------ |
+| README.md updated for new APIs | 🟡     | Button, Radio, RadioGroup, Toggle, FileInput, InputGroup mentioned but no code examples                            |
+| FEATURES.md updated            | 🟡     | Component counts updated but no detailed feature entries for new components                                        |
+| Component godoc examples       | 🟡     | Only display has `example_test.go`; forms, feedback, htmx, icons, layout, navigation lack `ExampleXxx()` functions |
 
 ### Generated Files
 
-| Item | Status | Notes |
-|------|--------|-------|
-| All `*_templ.go` files committed | ✅ | 34 generated files (was 31, now 34 with new components) |
-| Import grouping normalized | ✅ | All generated files use consistent import grouping |
+| Item                             | Status | Notes                                                   |
+| -------------------------------- | ------ | ------------------------------------------------------- |
+| All `*_templ.go` files committed | ✅     | 34 generated files (was 31, now 34 with new components) |
+| Import grouping normalized       | ✅     | All generated files use consistent import grouping      |
 
 ---
 
@@ -93,51 +93,51 @@
 
 ### High-Impact Missing Components
 
-| Component | Package | Consumer Impact | Why Missing |
-|-----------|---------|-----------------|-------------|
-| **Drawer / Sidebar** | `display` | Critical | Admin dashboards, mobile menus — positioned overlay sliding from edge |
-| **Sidebar Navigation** | `navigation` | Critical | Vertical nav for dashboard layouts — only horizontal nav exists |
-| **DescriptionList (`<dl>`)** | `display` | High | Key-value pairs (settings pages, product details, metadata) |
-| **ListGroup** | `display` | High | Vertical list of clickable items with hover states |
-| **Popover** | `display` | High | Rich overlay with buttons/forms (Tooltip is text-only) |
-| **Combobox / Searchable Select** | `forms` | High | Native `<select>` unusable for 50+ options |
-| **Multi-select / Tag Input** | `forms` | Medium | Select multiple values with removable chips |
-| **Date Picker** | `forms` | Medium | Calendar UI for date selection |
-| **Range / Slider** | `forms` | Medium | Numeric range selection |
-| **ButtonGroup** | `display` | Medium | Cluster of related action buttons |
-| **Divider / Separator** | `display` | Low | Visual separation between content sections |
-| **KBD (Keyboard shortcut)** | `display` | Low | Inline keyboard key styling |
+| Component                        | Package      | Consumer Impact | Why Missing                                                           |
+| -------------------------------- | ------------ | --------------- | --------------------------------------------------------------------- |
+| **Drawer / Sidebar**             | `display`    | Critical        | Admin dashboards, mobile menus — positioned overlay sliding from edge |
+| **Sidebar Navigation**           | `navigation` | Critical        | Vertical nav for dashboard layouts — only horizontal nav exists       |
+| **DescriptionList (`<dl>`)**     | `display`    | High            | Key-value pairs (settings pages, product details, metadata)           |
+| **ListGroup**                    | `display`    | High            | Vertical list of clickable items with hover states                    |
+| **Popover**                      | `display`    | High            | Rich overlay with buttons/forms (Tooltip is text-only)                |
+| **Combobox / Searchable Select** | `forms`      | High            | Native `<select>` unusable for 50+ options                            |
+| **Multi-select / Tag Input**     | `forms`      | Medium          | Select multiple values with removable chips                           |
+| **Date Picker**                  | `forms`      | Medium          | Calendar UI for date selection                                        |
+| **Range / Slider**               | `forms`      | Medium          | Numeric range selection                                               |
+| **ButtonGroup**                  | `display`    | Medium          | Cluster of related action buttons                                     |
+| **Divider / Separator**          | `display`    | Low             | Visual separation between content sections                            |
+| **KBD (Keyboard shortcut)**      | `display`    | Low             | Inline keyboard key styling                                           |
 
 ### Architecture Gaps
 
-| Gap | Impact | Description |
-|-----|--------|-------------|
-| `NavLinkProps.Attrs` shadows `BaseProps.Attrs` | Medium | Consumer attributes on BaseProps are silently ignored in NavLink/MobileNavLink |
-| No `InlineWarning` / `InlineInfo` | Low | `feedback.InlineError` and `InlineSuccess` exist but no Warning/Info variants |
-| `SimpleCard` duplicates `cardShellClass` | Low | Should compose through `Card` internally per TODO_LIST.md |
-| `Spinner` uses positional args | Low | Breaking change deferred to v1.0: `Spinner(size, color)` → `SpinnerProps` struct |
-| `SimpleNav` uses positional args | Low | Breaking change deferred: `(brandText, brandHref, links, currentPath)` → `SimpleNavProps` |
-| No shared overlay JS | Medium | Modal and future Drawer each have independent focus trap logic |
-| `DropdownItem` empty-Href discrimination | Medium | Should use typed `DropdownItemKind` enum instead of empty string check |
-| `IconAttrs` is dead code | Low | Exported but never called anywhere |
-| `StepIndicator` missing BaseProps | Low | Breaking change deferred to v1.0 |
-| `Spinner` SVG rendered 3 different ways | Low | `feedback.Spinner`, `icons.Icon(Spinner)`, `internal/svg.SpinnerSVG` — 3 paths for same visual |
+| Gap                                            | Impact | Description                                                                                    |
+| ---------------------------------------------- | ------ | ---------------------------------------------------------------------------------------------- |
+| `NavLinkProps.Attrs` shadows `BaseProps.Attrs` | Medium | Consumer attributes on BaseProps are silently ignored in NavLink/MobileNavLink                 |
+| No `InlineWarning` / `InlineInfo`              | Low    | `feedback.InlineError` and `InlineSuccess` exist but no Warning/Info variants                  |
+| `SimpleCard` duplicates `cardShellClass`       | Low    | Should compose through `Card` internally per TODO_LIST.md                                      |
+| `Spinner` uses positional args                 | Low    | Breaking change deferred to v1.0: `Spinner(size, color)` → `SpinnerProps` struct               |
+| `SimpleNav` uses positional args               | Low    | Breaking change deferred: `(brandText, brandHref, links, currentPath)` → `SimpleNavProps`      |
+| No shared overlay JS                           | Medium | Modal and future Drawer each have independent focus trap logic                                 |
+| `DropdownItem` empty-Href discrimination       | Medium | Should use typed `DropdownItemKind` enum instead of empty string check                         |
+| `IconAttrs` is dead code                       | Low    | Exported but never called anywhere                                                             |
+| `StepIndicator` missing BaseProps              | Low    | Breaking change deferred to v1.0                                                               |
+| `Spinner` SVG rendered 3 different ways        | Low    | `feedback.Spinner`, `icons.Icon(Spinner)`, `internal/svg.SpinnerSVG` — 3 paths for same visual |
 
 ### Documentation & Infrastructure
 
-| Item | Status | Notes |
-|------|--------|-------|
-| Demo app still has raw `<button>` in some places | 🔴 | Tooltip section uses raw buttons — should use `display.Button()` |
-| Demo app HTMX disabled | 🔴 | `props.HTMXVersion = ""` — demo doesn't showcase HTMX integration |
-| No live demo site deployed | 🔴 | README says "deployed" but no actual deployment |
-| CI not set up | 🔴 | `.github/workflows/` exists but may not be active |
-| No goreleaser release | 🔴 | `.goreleaser.yml` exists but no tagged releases |
-| `go vet` / staticcheck not in CI | 🔴 | Listed in TODO_LIST.md |
-| Coverage threshold not enforced | 🔴 | Listed in TODO_LIST.md |
-| BDD tests incomplete for 4 packages | 🔴 | `navigation`, `htmx`, `layout`, `icons` missing BDD tests |
-| No accessibility audit automation | 🔴 | axe-core/pa11y not set up |
-| Dark mode class output tests | 🔴 | No automated verification of `dark:` classes |
-| No circular import guard test | 🔴 | Listed in TODO_LIST.md |
+| Item                                             | Status | Notes                                                             |
+| ------------------------------------------------ | ------ | ----------------------------------------------------------------- |
+| Demo app still has raw `<button>` in some places | 🔴     | Tooltip section uses raw buttons — should use `display.Button()`  |
+| Demo app HTMX disabled                           | 🔴     | `props.HTMXVersion = ""` — demo doesn't showcase HTMX integration |
+| No live demo site deployed                       | 🔴     | README says "deployed" but no actual deployment                   |
+| CI not set up                                    | 🔴     | `.github/workflows/` exists but may not be active                 |
+| No goreleaser release                            | 🔴     | `.goreleaser.yml` exists but no tagged releases                   |
+| `go vet` / staticcheck not in CI                 | 🔴     | Listed in TODO_LIST.md                                            |
+| Coverage threshold not enforced                  | 🔴     | Listed in TODO_LIST.md                                            |
+| BDD tests incomplete for 4 packages              | 🔴     | `navigation`, `htmx`, `layout`, `icons` missing BDD tests         |
+| No accessibility audit automation                | 🔴     | axe-core/pa11y not set up                                         |
+| Dark mode class output tests                     | 🔴     | No automated verification of `dark:` classes                      |
+| No circular import guard test                    | 🔴     | Listed in TODO_LIST.md                                            |
 
 ---
 
@@ -199,33 +199,33 @@ However, there are **architectural concerns** that will bite us later if not add
 
 Sorted by **Impact ÷ Effort** (highest leverage first):
 
-| # | Task | Effort | Impact | Package |
-|---|------|--------|--------|---------|
-| 1 | Fix pre-commit hook (add `GOWORK=off`) | 5m | High | scripts/ |
-| 2 | Bump templ version in go.mod | 2m | Low | root |
-| 3 | Update AGENTS.md component counts | 5m | Medium | root |
-| 4 | Add BDD tests for Radio, Toggle, FileInput, InputGroup, Button | 30m | High | forms/, display/ |
-| 5 | Add godoc `ExampleXxx()` for all new components | 20m | Medium | forms/, display/ |
-| 6 | **Implement Drawer / Sidebar** | 45m | **Critical** | display/ |
-| 7 | Add Sidebar Navigation (vertical nav) | 30m | Critical | navigation/ |
-| 8 | Extract shared overlay JS (Modal + Drawer) | 20m | High | display/ |
-| 9 | Add DescriptionList component | 20m | High | display/ |
-| 10 | Add ListGroup component | 20m | High | display/ |
-| 11 | Add `InlineWarning` + `InlineInfo` | 15m | Medium | feedback/ |
-| 12 | Fix `NavLinkProps.Attrs` shadowing | 15m | Medium | navigation/ |
-| 13 | Add Combobox / Searchable Select | 60m | High | forms/ |
-| 14 | Add Date Picker | 45m | Medium | forms/ |
-| 15 | Add Multi-select / Tag Input | 45m | Medium | forms/ |
-| 16 | Add ButtonGroup component | 20m | Medium | display/ |
-| 17 | Add Popover component | 45m | High | display/ |
-| 18 | Fix `DropdownItem` typed enum | 20m | Medium | display/ |
-| 19 | Add Range / Slider input | 30m | Medium | forms/ |
-| 20 | Deploy demo site (Fly.io/Railway) | 30m | **Critical** | examples/ |
-| 21 | Set up GitHub Actions CI | 30m | High | .github/ |
-| 22 | Tag v0.2.0 + CHANGELOG update | 15m | Medium | root |
-| 23 | Submit to awesome-templ | 10m | Medium | external |
-| 24 | Add accessibility audit automation (axe-core) | 45m | Medium | tests/ |
-| 25 | Cross-link ecosystem (cqrs-htmx, go-cqrs-lite) | 10m | Medium | README.md |
+| #   | Task                                                           | Effort | Impact       | Package          |
+| --- | -------------------------------------------------------------- | ------ | ------------ | ---------------- |
+| 1   | Fix pre-commit hook (add `GOWORK=off`)                         | 5m     | High         | scripts/         |
+| 2   | Bump templ version in go.mod                                   | 2m     | Low          | root             |
+| 3   | Update AGENTS.md component counts                              | 5m     | Medium       | root             |
+| 4   | Add BDD tests for Radio, Toggle, FileInput, InputGroup, Button | 30m    | High         | forms/, display/ |
+| 5   | Add godoc `ExampleXxx()` for all new components                | 20m    | Medium       | forms/, display/ |
+| 6   | **Implement Drawer / Sidebar**                                 | 45m    | **Critical** | display/         |
+| 7   | Add Sidebar Navigation (vertical nav)                          | 30m    | Critical     | navigation/      |
+| 8   | Extract shared overlay JS (Modal + Drawer)                     | 20m    | High         | display/         |
+| 9   | Add DescriptionList component                                  | 20m    | High         | display/         |
+| 10  | Add ListGroup component                                        | 20m    | High         | display/         |
+| 11  | Add `InlineWarning` + `InlineInfo`                             | 15m    | Medium       | feedback/        |
+| 12  | Fix `NavLinkProps.Attrs` shadowing                             | 15m    | Medium       | navigation/      |
+| 13  | Add Combobox / Searchable Select                               | 60m    | High         | forms/           |
+| 14  | Add Date Picker                                                | 45m    | Medium       | forms/           |
+| 15  | Add Multi-select / Tag Input                                   | 45m    | Medium       | forms/           |
+| 16  | Add ButtonGroup component                                      | 20m    | Medium       | display/         |
+| 17  | Add Popover component                                          | 45m    | High         | display/         |
+| 18  | Fix `DropdownItem` typed enum                                  | 20m    | Medium       | display/         |
+| 19  | Add Range / Slider input                                       | 30m    | Medium       | forms/           |
+| 20  | Deploy demo site (Fly.io/Railway)                              | 30m    | **Critical** | examples/        |
+| 21  | Set up GitHub Actions CI                                       | 30m    | High         | .github/         |
+| 22  | Tag v0.2.0 + CHANGELOG update                                  | 15m    | Medium       | root             |
+| 23  | Submit to awesome-templ                                        | 10m    | Medium       | external         |
+| 24  | Add accessibility audit automation (axe-core)                  | 45m    | Medium       | tests/           |
+| 25  | Cross-link ecosystem (cqrs-htmx, go-cqrs-lite)                 | 10m    | Medium       | README.md        |
 
 ---
 
@@ -256,18 +256,18 @@ pattern ./...: directory prefix . does not contain modules listed in go.work or 
 
 ## Metrics Snapshot
 
-| Metric | Before | After | Change |
-|--------|--------|-------|--------|
-| Components | 53 | 60+ | +7 |
-| Form components | 6 | 11 | +5 |
-| Display components | 14 | 15 | +1 |
-| Test functions | ~190 | 221 | +31 |
-| Test files | 45 | 48 | +3 |
-| Source lines (.go + .templ) | ~3,400 | ~4,600 | +1,200 |
-| Generated `*_templ.go` files | 31 | 34 | +3 |
-| Avg coverage | 71.8% | ~71.5% | -0.3% (new untested code) |
-| Lint issues | 0 | 0 | — |
-| Build status | ✅ | ✅ | — |
+| Metric                       | Before | After  | Change                    |
+| ---------------------------- | ------ | ------ | ------------------------- |
+| Components                   | 53     | 60+    | +7                        |
+| Form components              | 6      | 11     | +5                        |
+| Display components           | 14     | 15     | +1                        |
+| Test functions               | ~190   | 221    | +31                       |
+| Test files                   | 45     | 48     | +3                        |
+| Source lines (.go + .templ)  | ~3,400 | ~4,600 | +1,200                    |
+| Generated `*_templ.go` files | 31     | 34     | +3                        |
+| Avg coverage                 | 71.8%  | ~71.5% | -0.3% (new untested code) |
+| Lint issues                  | 0      | 0      | —                         |
+| Build status                 | ✅     | ✅     | —                         |
 
 ---
 
@@ -276,6 +276,7 @@ pattern ./...: directory prefix . does not contain modules listed in go.work or 
 This sprint delivered **7 new components** (Button, Radio, RadioGroup, Toggle, FileInput, InputGroup, FormFieldWrapper), **4 missing props**, and **2 architectural refactors** (baseInputClass move, FormFieldWrapper extraction). All quality gates pass. The library now covers the essential form primitives that consumers expect.
 
 **The next highest-impact work is:**
+
 1. Drawer/Sidebar (critical gap for dashboards)
 2. Sidebar Navigation (vertical layout)
 3. Deploying a live demo site (discoverability)
