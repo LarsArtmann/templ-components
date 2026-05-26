@@ -122,3 +122,66 @@ func TestFieldErrorWithoutID(t *testing.T) {
 	utils.AssertContains(t, output, "Generic error")
 	utils.AssertNotContains(t, output, `id="-error"`)
 }
+
+func TestRadioRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Radio(RadioProps{
+		BaseProps: utils.BaseProps{ID: "plan-pro"},
+		Name:      "plan",
+		Value:     "pro",
+		Label:     "Pro Plan",
+	}))
+	utils.AssertContains(t, output, `type="radio"`)
+	utils.AssertContains(t, output, `name="plan"`)
+	utils.AssertContains(t, output, `value="pro"`)
+	utils.AssertContains(t, output, `id="plan-pro"`)
+	utils.AssertContains(t, output, "Pro Plan")
+}
+
+func TestRadioGroupRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, RadioGroup(RadioGroupProps{
+		BaseProps: utils.BaseProps{ID: "plan"},
+		Name:      "plan",
+		Label:     "Select a plan",
+		Options: []RadioOption{
+			{Value: "free", Label: "Free"},
+			{Value: "pro", Label: "Pro"},
+		},
+	}))
+	utils.AssertContains(t, output, `<fieldset`)
+	utils.AssertContains(t, output, "Select a plan")
+	utils.AssertContains(t, output, `id="plan-free"`)
+	utils.AssertContains(t, output, `id="plan-pro"`)
+	utils.AssertContains(t, output, "Free")
+	utils.AssertContains(t, output, "Pro")
+}
+
+func TestRadioGroupInlineRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, RadioGroup(RadioGroupProps{
+		BaseProps: utils.BaseProps{ID: "plan"},
+		Name:      "plan",
+		Label:     "Select a plan",
+		Inline:    true,
+		Options: []RadioOption{
+			{Value: "free", Label: "Free"},
+		},
+	}))
+	utils.AssertContains(t, output, `flex space-x-6`)
+}
+
+func TestRadioGroupWithErrorRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, RadioGroup(RadioGroupProps{
+		BaseProps: utils.BaseProps{ID: "plan"},
+		Name:      "plan",
+		Label:     "Select a plan",
+		Error:     "Please select a plan",
+		Options: []RadioOption{
+			{Value: "free", Label: "Free"},
+		},
+	}))
+	utils.AssertContains(t, output, `aria-invalid="true"`)
+	utils.AssertContains(t, output, "Please select a plan")
+}
