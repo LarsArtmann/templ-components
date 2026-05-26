@@ -1,0 +1,68 @@
+package forms
+
+import "github.com/larsartmann/templ-components/utils"
+
+// InputGroupProps configures an input group with optional left/right addons
+//
+// Use with Input, Select, or Textarea. When using an addon, add padding
+// to the input so the content doesn't overlap:
+//   - Left addon  → add "pl-10" to input Class
+//   - Right addon → add "pr-10" to input Class
+//   - Both        → add "pl-10 pr-10"
+type InputGroupProps struct {
+	utils.BaseProps
+	LeftAddon  templ.Component
+	RightAddon templ.Component
+}
+
+// DefaultInputGroupProps returns sensible defaults
+func DefaultInputGroupProps() InputGroupProps {
+	return InputGroupProps{}
+}
+
+// InputGroupPaddingClass returns the appropriate padding class for an input
+// that lives inside an InputGroup with the given addons.
+func InputGroupPaddingClass(left, right bool) string {
+	switch {
+	case left && right:
+		return "pl-10 pr-10"
+	case left:
+		return "pl-10"
+	case right:
+		return "pr-10"
+	default:
+		return ""
+	}
+}
+
+// InputGroup renders a form control with optional left/right addons.
+// Addons are absolutely positioned inside the input area.
+//
+//	@forms.InputGroup(forms.InputGroupProps{
+//	   LeftAddon: icons.Icon(icons.Search, "h-5 w-5 text-gray-400"),
+//	}) {
+//	   @forms.Input(forms.InputProps{Class: "pl-10"})
+//	}
+templ InputGroup(props InputGroupProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("relative flex items-center", props.Class) }
+		{ props.Attrs... }
+	>
+		if props.LeftAddon != nil {
+			<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+				@props.LeftAddon
+			</div>
+		}
+		<div class="w-full">
+			{ children... }
+		</div>
+		if props.RightAddon != nil {
+			<div class="absolute inset-y-0 right-0 flex items-center pr-3">
+				@props.RightAddon
+			</div>
+		}
+	</div>
+}

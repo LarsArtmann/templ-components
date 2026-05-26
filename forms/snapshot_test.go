@@ -255,3 +255,29 @@ func TestFileInputMultipleRender(t *testing.T) {
 	}))
 	utils.AssertContains(t, output, `multiple`)
 }
+
+func TestInputGroupRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, InputGroup(InputGroupProps{
+		BaseProps: utils.BaseProps{ID: "search-group"},
+		LeftAddon: Input(InputProps{BaseProps: utils.BaseProps{Class: "pl-10"}}),
+	}))
+	utils.AssertContains(t, output, `id="search-group"`)
+	utils.AssertContains(t, output, `pointer-events-none`)
+}
+
+func TestInputGroupPaddingClass(t *testing.T) {
+	t.Parallel()
+	if got := InputGroupPaddingClass(true, false); got != "pl-10" {
+		t.Errorf("InputGroupPaddingClass(true,false) = %q, want pl-10", got)
+	}
+	if got := InputGroupPaddingClass(false, true); got != "pr-10" {
+		t.Errorf("InputGroupPaddingClass(false,true) = %q, want pr-10", got)
+	}
+	if got := InputGroupPaddingClass(true, true); got != "pl-10 pr-10" {
+		t.Errorf("InputGroupPaddingClass(true,true) = %q, want pl-10 pr-10", got)
+	}
+	if got := InputGroupPaddingClass(false, false); got != "" {
+		t.Errorf("InputGroupPaddingClass(false,false) = %q, want empty", got)
+	}
+}
