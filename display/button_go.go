@@ -9,6 +9,7 @@ import (
 // ButtonType defines the visual style of a button
 type ButtonType string
 
+// Button variant constants
 const (
 	ButtonPrimary   ButtonType = "primary"
 	ButtonSecondary ButtonType = "secondary"
@@ -20,6 +21,7 @@ const (
 // ButtonSize defines the size of a button
 type ButtonSize string
 
+// Button size constants
 const (
 	ButtonSizeSM ButtonSize = "sm"
 	ButtonSizeMD ButtonSize = "md"
@@ -41,7 +43,7 @@ type ButtonProps struct {
 
 // DefaultButtonProps returns sensible defaults
 func DefaultButtonProps() ButtonProps {
-	return ButtonProps{
+	return ButtonProps{ //nolint:exhaustruct // intentionally minimal defaults
 		Type:    "button",
 		Variant: ButtonPrimary,
 		Size:    ButtonSizeMD,
@@ -51,6 +53,8 @@ func DefaultButtonProps() ButtonProps {
 // buttonVariantClasses returns the color classes for each button variant
 func buttonVariantClasses(v ButtonType) string {
 	switch v {
+	case ButtonPrimary:
+		return "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
 	case ButtonSecondary:
 		return "bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-slate-800 dark:text-white dark:ring-slate-600 dark:hover:bg-slate-700"
 	case ButtonDanger:
@@ -69,6 +73,8 @@ func buttonSizeClasses(s ButtonSize) string {
 	switch s {
 	case ButtonSizeSM:
 		return "px-2.5 py-1.5 text-xs"
+	case ButtonSizeMD:
+		return "px-3 py-2 text-sm"
 	case ButtonSizeLG:
 		return "px-4 py-2.5 text-base"
 	default:
