@@ -185,3 +185,47 @@ func TestRadioGroupWithErrorRender(t *testing.T) {
 	utils.AssertContains(t, output, `aria-invalid="true"`)
 	utils.AssertContains(t, output, "Please select a plan")
 }
+
+func TestToggleRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Toggle(ToggleProps{
+		BaseProps: utils.BaseProps{ID: "notifications"},
+		Name:      "notifications",
+		Label:     "Enable notifications",
+		Checked:   true,
+	}))
+	utils.AssertContains(t, output, `type="checkbox"`)
+	utils.AssertContains(t, output, `name="notifications"`)
+	utils.AssertContains(t, output, `id="notifications"`)
+	utils.AssertContains(t, output, "Enable notifications")
+	utils.AssertContains(t, output, `checked`)
+	utils.AssertContains(t, output, `sr-only`)
+}
+
+func TestToggleSizesRender(t *testing.T) {
+	t.Parallel()
+	t.Run("small toggle", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Toggle(ToggleProps{
+			Name: "sm",
+			Size: ToggleSizeSM,
+		}))
+		utils.AssertContains(t, output, `w-9`)
+	})
+	t.Run("medium toggle", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Toggle(ToggleProps{
+			Name: "md",
+			Size: ToggleSizeMD,
+		}))
+		utils.AssertContains(t, output, `w-11`)
+	})
+	t.Run("large toggle", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Toggle(ToggleProps{
+			Name: "lg",
+			Size: ToggleSizeLG,
+		}))
+		utils.AssertContains(t, output, `w-14`)
+	})
+}

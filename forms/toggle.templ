@@ -1,0 +1,78 @@
+package forms
+
+import "github.com/larsartmann/templ-components/utils"
+
+// ToggleSize defines the size of a toggle switch
+type ToggleSize string
+
+const (
+	ToggleSizeSM ToggleSize = "sm"
+	ToggleSizeMD ToggleSize = "md"
+	ToggleSizeLG ToggleSize = "lg"
+)
+
+// ToggleProps configures a toggle/switch input
+type ToggleProps struct {
+	utils.BaseProps
+	Name     string
+	Label    string
+	Checked  bool
+	Disabled bool
+	Size     ToggleSize
+}
+
+// DefaultToggleProps returns sensible defaults
+func DefaultToggleProps() ToggleProps {
+	return ToggleProps{
+		Size: ToggleSizeMD,
+	}
+}
+
+// toggleSizeClasses returns the track and thumb classes for each size
+func toggleSizeClasses(size ToggleSize) (track, thumb, translate string) {
+	switch size {
+	case ToggleSizeSM:
+		return "w-9 h-5", "w-4 h-4", "translate-x-4"
+	case ToggleSizeLG:
+		return "w-14 h-8", "w-7 h-7", "translate-x-6"
+	default:
+		return "w-11 h-6", "w-5 h-5", "translate-x-5"
+	}
+}
+
+// Toggle renders an accessible toggle switch
+// Uses a visually-hidden checkbox for native form submission and accessibility.
+//
+//	@forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications", Checked: true})
+templ Toggle(props ToggleProps) {
+	{{
+		trackClass, thumbClass, translateClass := toggleSizeClasses(props.Size)
+	}}
+	<label class={ utils.Class("inline-flex cursor-pointer items-center", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<input
+			type="checkbox"
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class="peer sr-only"
+			if props.Checked {
+				checked
+			}
+			if props.Disabled {
+				disabled
+			}
+		/>
+		<div class={ utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700", trackClass) }>
+			<div class={ utils.Class("absolute top-0.5 left-0.5 rounded-full bg-white shadow transition-transform peer-checked:"+translateClass, thumbClass) }></div>
+		</div>
+		if props.Label != "" {
+			<span class="ml-3 text-sm font-medium text-gray-900 dark:text-white">{ props.Label }</span>
+		}
+	</label>
+}
