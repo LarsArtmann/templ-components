@@ -1,0 +1,68 @@
+package forms
+
+import "github.com/larsartmann/templ-components/utils"
+
+// FileInputProps configures a file input
+type FileInputProps struct {
+	utils.BaseProps
+	Name     string
+	Label    string
+	Required bool
+	Disabled bool
+	Error    string
+	HelpText string
+	Accept   string  // e.g. ".jpg,.png" or "image/*"
+	Multiple bool
+}
+
+// DefaultFileInputProps returns sensible defaults
+func DefaultFileInputProps() FileInputProps {
+	return FileInputProps{}
+}
+
+// fileInputClass returns the shared Tailwind classes for file inputs,
+// using the file: modifier to style the native button.
+func fileInputClass(hasError bool) string {
+	base := "block w-full text-sm text-gray-900 dark:text-gray-300 file:mr-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 transition-colors cursor-pointer"
+	if hasError {
+		return base + " ring-1 ring-inset ring-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500 rounded-md dark:ring-red-700 dark:focus:ring-red-500"
+	}
+	return base + " ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 rounded-md dark:ring-gray-700 dark:focus:ring-blue-500"
+}
+
+// FileInput renders a labeled file input with styled native button
+//
+//	@forms.FileInput(forms.FileInputProps{
+//	   Name: "avatar",
+//	   Label: "Upload avatar",
+//	   Accept: "image/*",
+//	})
+templ FileInput(props FileInputProps) {
+	@FormFieldWrapper(props.ID, props.Label, props.Required, props.Error, props.HelpText) {
+		<input
+			type="file"
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class(fileInputClass(props.Error != ""), props.Class) }
+			if props.Required {
+				required
+				aria-required="true"
+			}
+			if props.Disabled {
+				disabled
+			}
+			if props.Accept != "" {
+				accept={ props.Accept }
+			}
+			if props.Multiple {
+				multiple
+			}
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		/>
+	}
+}

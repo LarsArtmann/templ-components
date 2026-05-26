@@ -229,3 +229,29 @@ func TestToggleSizesRender(t *testing.T) {
 		utils.AssertContains(t, output, `w-14`)
 	})
 }
+
+func TestFileInputRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, FileInput(FileInputProps{
+		BaseProps: utils.BaseProps{ID: "avatar"},
+		Name:      "avatar",
+		Label:     "Upload avatar",
+		Accept:    "image/*",
+	}))
+	utils.AssertContains(t, output, `type="file"`)
+	utils.AssertContains(t, output, `name="avatar"`)
+	utils.AssertContains(t, output, `id="avatar"`)
+	utils.AssertContains(t, output, "Upload avatar")
+	utils.AssertContains(t, output, `accept="image/*"`)
+	utils.AssertContains(t, output, `file:bg-blue-600`)
+}
+
+func TestFileInputMultipleRender(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, FileInput(FileInputProps{
+		Name:     "docs",
+		Label:    "Upload documents",
+		Multiple: true,
+	}))
+	utils.AssertContains(t, output, `multiple`)
+}
