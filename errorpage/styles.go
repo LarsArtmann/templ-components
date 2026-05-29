@@ -114,6 +114,16 @@ func FamilyIsValid(f Family) bool {
 	return ok
 }
 
+// ParseFamily parses a family string (case-insensitive) into a Family.
+// Returns FamilyTransient for unrecognized values.
+func ParseFamily(s string) Family {
+	f := Family(s)
+	if FamilyIsValid(f) {
+		return f
+	}
+	return FamilyTransient
+}
+
 // ContextPair is a key-value pair from an error's context map.
 type ContextPair struct {
 	Key   string

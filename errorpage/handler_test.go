@@ -136,7 +136,7 @@ func TestPreBuiltConstructors(t *testing.T) {
 
 	t.Run("ConflictError has conflict family", func(t *testing.T) {
 		t.Parallel()
-		props := ConflictError("Version mismatch")
+		props := Conflict("Version mismatch")
 		if props.Family != FamilyConflict {
 			t.Errorf("Family = %q", props.Family)
 		}
@@ -178,7 +178,7 @@ func TestPreBuiltConstructorsRender(t *testing.T) {
 		{"NotFound", NotFound()},
 		{"Forbidden", Forbidden()},
 		{"BadRequest", BadRequest("bad input")},
-		{"ConflictError", ConflictError("version clash")},
+		{"Conflict", Conflict("version clash")},
 		{"ServiceUnavailable", ServiceUnavailable()},
 		{"InternalError", InternalError()},
 	}

@@ -1,8 +1,17 @@
 package errorpage
 
 import (
+	"context"
+	"encoding/json"
+	"errors"
+	"fmt"
+	"io"
+	"log/slog"
 	"net/http"
 	"time"
+
+	"github.com/a-h/templ"
+	errorfamily "github.com/larsartmann/go-error-family"
 )
 
 // Pre-built HTTP error page code constants.
@@ -17,24 +26,34 @@ const (
 	msgGoHome = "Go home"
 )
 
+// FamilyFromErrorFamily converts a go-error-family Family to an errorpage Family.
+// Returns FamilyTransient for unrecognized values.
+func FamilyFromErrorFamily(f errorfamily.Family) Family {
+	return ParseFamily(f.String())
+}
+
 // FromError converts any error into ErrorPageProps.
 // Extracts code, family, context, and cause chain from structured errors.
+// For go-error-family errors, also extracts Why/Fix defaults.
 // Falls back to Transient family for unknown errors.
 func FromError(err error) ErrorPageProps {
 	if err == nil {
 		return ErrorPageProps{Family: FamilyTransient} //nolint:exhaustruct // minimal nil response
 	}
 
-	family := FamilyTransient
-	if c, ok := err.(interface{ ErrorFamily() Family }); ok {
-		family = c.ErrorFamily()
-	}
+	family := familyFromError(err)
 
 	props := ErrorPageProps{ //nolint:exhaustruct // filled incrementally
 		Family:     family,
 		Message:    err.Error(),
 		CauseChain: ExtractCauseChain(err, 5),
 		Timestamp:  time.Now().UTC().Format(time.RFC3339),
+	}
+
+	if classified, ok := errors.AsType[errorfamily.Classified](err); ok {
+		ef := classified.ErrorFamily()
+		props.Why = ef.DefaultWhy()
+		props.Fix = ef.DefaultFix()
 	}
 
 	if coded, ok := err.(interface{ ErrorCode() string }); ok {
@@ -46,6 +65,31 @@ func FromError(err error) ErrorPageProps {
 	}
 
 	return props
+}
+
+// familyFromError extracts the family from any error, trying go-error-family first.
+func familyFromError(err error) Family {
+	if classified, ok := errors.AsType[errorfamily.Classified](err); ok {
+		return FamilyFromErrorFamily(classified.ErrorFamily())
+	}
+	if c, ok := err.(interface{ ErrorFamily() Family }); ok {
+		return c.ErrorFamily()
+	}
+	if c, ok := err.(interface{ ErrorFamily() string }); ok {
+		return ParseFamily(c.ErrorFamily())
+	}
+	return FamilyTransient
+}
+
+// errorResponse is the JSON structure returned when ErrorHandlerConfig.JSON is true.
+type errorResponse struct {
+	Family  string `json:"family"`
+	Code    string `json:"code,omitempty"`
+	Message string `json:"message"`
+	Title   string `json:"title,omitempty"`
+	Why     string `json:"why,omitempty"`
+	Fix     string `json:"fix,omitempty"`
+	Context any    `json:"context,omitempty"`
 }
 
 // NotFound returns a 404-style error page.
@@ -92,8 +136,8 @@ func BadRequest(message string) ErrorPageProps {
 	}
 }
 
-// ConflictError returns a 409-style error page.
-func ConflictError(message string) ErrorPageProps {
+// Conflict returns a 409-style error page.
+func Conflict(message string) ErrorPageProps {
 	if message == "" {
 		message = "A conflict was detected with the current state of the resource."
 	}
@@ -145,6 +189,16 @@ type ErrorHandlerConfig struct {
 	// Override allows per-error customization of the ErrorPageProps
 	// before rendering. Return nil to skip rendering (e.g., for custom handling).
 	Override func(err error, props ErrorPageProps) *ErrorPageProps
+
+	// HTMLShell wraps the error page in a minimal HTML document with
+	// DOCTYPE, html, head, title, and body tags. Use when the error page
+	// is served as a standalone HTTP response (not embedded in an existing layout).
+	HTMLShell bool
+
+	// JSON renders a JSON error response instead of HTML.
+	// The response includes family, code, message, title, why, and fix fields.
+	// Use for API endpoints or HTMX error handling.
+	JSON bool
 }
 
 // ErrorHandler returns an http.Handler that renders a go-error-family
@@ -176,9 +230,31 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 		}
 
 		statusCode := FamilyStatusCode(props.Family)
+
+		if cfg.JSON {
+			writeJSONError(w, statusCode, props)
+			return
+		}
+
+		if cfg.HTMLShell {
+			title := props.Title
+			if title == "" {
+				title = fmt.Sprintf("Error %d", statusCode)
+			}
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			w.WriteHeader(statusCode)
+			if renderErr := renderWithShell(r.Context(), w, title, props); renderErr != nil {
+				slog.Error("error page render failed", "error", renderErr, "original_error", err)
+			}
+			return
+		}
+
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(statusCode)
-		_ = ErrorPage(props).Render(r.Context(), w) //nolint:contextcheck // templ.Render requires context.Context
+		renderErr := ErrorPage(props).Render(r.Context(), w) //nolint:contextcheck
+		if renderErr != nil {
+			slog.Error("error page render failed", "error", renderErr, "original_error", err)
+		}
 	})
 }
 
@@ -198,7 +274,77 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(statusCode)
-	_ = ErrorPage(props).Render(r.Context(), w) //nolint:contextcheck // templ.Render requires context.Context
+	renderErr := ErrorPage(props).Render(r.Context(), w) //nolint:contextcheck
+	if renderErr != nil {
+		slog.Error("error page render failed", "error", renderErr, "status_code", statusCode)
+	}
+}
+
+// writeJSONError writes a JSON error response.
+func writeJSONError(w http.ResponseWriter, statusCode int, props ErrorPageProps) {
+	resp := errorResponse{ //nolint:exhaustruct // Context set conditionally below
+		Family:  string(props.Family),
+		Code:    props.Code,
+		Message: props.Message,
+		Title:   props.Title,
+		Why:     props.Why,
+		Fix:     props.Fix,
+	}
+	if len(props.Context) > 0 {
+		ctx := make(map[string]string, len(props.Context))
+		for _, p := range props.Context {
+			ctx[p.Key] = p.Value
+		}
+		resp.Context = ctx
+	}
+
+	w.Header().Set("Content-Type", "application/json; charset=utf-8")
+	w.WriteHeader(statusCode)
+	enc := json.NewEncoder(w)
+	enc.SetEscapeHTML(true)
+	if err := enc.Encode(resp); err != nil {
+		slog.Error("JSON error response encode failed", "error", err)
+	}
+}
+
+// renderWithShell wraps ErrorPage in a minimal HTML document.
+func renderWithShell(ctx context.Context, w io.Writer, title string, props ErrorPageProps) error {
+	shell := templ.ComponentFunc(func(_ context.Context, bw io.Writer) error {
+		_, _ = fmt.Fprint(bw, `<!DOCTYPE html><html lang="en"><head>`)
+		_, _ = fmt.Fprint(bw, `<meta charset="UTF-8">`)
+		_, _ = fmt.Fprintf(bw, `<meta name="viewport" content="width=device-width, initial-scale=1.0">`)
+		_, _ = fmt.Fprintf(bw, `<title>%s</title>`, htmlEscape(title))
+		_, _ = fmt.Fprint(bw, `</head><body>`)
+		renderErr := ErrorPage(props).Render(ctx, bw) //nolint:contextcheck // intentional passthrough
+		if renderErr != nil {
+			return fmt.Errorf("render error page in shell: %w", renderErr)
+		}
+		_, _ = fmt.Fprint(bw, `</body></html>`)
+		return nil
+	})
+	return fmt.Errorf("render error page shell: %w", shell.Render(ctx, w))
+}
+
+// htmlEscape escapes a string for safe inclusion in HTML.
+func htmlEscape(s string) string {
+	var buf []byte
+	for _, r := range s {
+		switch r {
+		case '&':
+			buf = append(buf, "&amp;"...)
+		case '<':
+			buf = append(buf, "&lt;"...)
+		case '>':
+			buf = append(buf, "&gt;"...)
+		case '"':
+			buf = append(buf, "&quot;"...)
+		case '\'':
+			buf = append(buf, "&#39;"...)
+		default:
+			buf = append(buf, string(r)...)
+		}
+	}
+	return string(buf)
 }
 
 // Verify interface compliance.

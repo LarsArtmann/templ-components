@@ -5,3 +5,5 @@ go 1.26.3
 require github.com/a-h/templ v0.3.1020
 
 require github.com/Oudwins/tailwind-merge-go v0.2.1
+
+require github.com/larsartmann/go-error-family v0.2.0 // indirect
