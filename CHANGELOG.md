@@ -18,6 +18,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - `ExtractCauseChain()`: walks Unwrap() chain to build CauseItem slice
   - Zero dependency on go-error-family — bridge via string constants
 - `utils.DismissScript()`: shared dismiss JS extracted from feedback package (single source of truth)
+- `errorpage/handler.go`: `http.Handler` integration for serving error pages
+  - `ErrorHandler(err, cfg)`: returns `http.Handler` with correct HTTP status, Content-Type, and family-aware rendering
+  - `FromError(err)`: converts any `error` to `ErrorPageProps`, extracting code/family/context/cause chain from structured errors
+  - 6 pre-built constructors: `NotFound()`, `Forbidden()`, `BadRequest(msg)`, `ConflictError(msg)`, `ServiceUnavailable()`, `InternalError()` with code constants
+  - `WriteError()` and `WriteErrorPage()` convenience wrappers for `http.ResponseWriter`
+  - `ErrorHandlerConfig.Override` callback for per-error customization
+- `errorpage/shared.templ`: 6 shared sub-templates extracted (familyIcon, fixCard, causeList, contextTable, timestampFooter, familyBadge) — eliminated 9 duplicated HTML patterns
+- HTMX `GlobalErrorHandling`: family-aware error parsing — structured JSON responses with `family` field now map to appropriate toast types instead of generic status-code logic
 
 ### Changed
 

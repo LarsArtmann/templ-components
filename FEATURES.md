@@ -125,6 +125,21 @@ type BaseProps struct {
 | `FamilyStatusCode`   | Maps Family → HTTP status code (400/409/503/500/503)        |
 | `ContextMap`         | Converts map[string]string → []ContextPair                  |
 | `ExtractCauseChain`  | Walks Unwrap() chain → []CauseItem with ErrorCode() support |
+| `FromError`          | Converts any `error` → `ErrorPageProps` (family/code/cause) |
+
+### HTTP Handler
+
+|| Function             | Signature                        | Purpose                                          |
+| -------------------- | -------------------------------- | ------------------------------------------------ |
+| `ErrorHandler`       | `(err, cfg) http.Handler`        | Serves error page with correct HTTP status       |
+| `WriteError`         | `(w, r, err, nonce)`             | Convenience wrapper for ErrorHandler             |
+| `WriteErrorPage`     | `(w, r, status, props, nonce)`   | Renders pre-configured ErrorPageProps            |
+| `NotFound`           | `() ErrorPageProps`              | Pre-built 404 (Rejection)                        |
+| `Forbidden`          | `() ErrorPageProps`              | Pre-built 403 (Rejection)                        |
+| `BadRequest`         | `(msg) ErrorPageProps`           | Pre-built 400 (Rejection)                        |
+| `ConflictError`      | `(msg) ErrorPageProps`           | Pre-built 409 (Conflict)                         |
+| `ServiceUnavailable` | `() ErrorPageProps`              | Pre-built 503 (Transient)                        |
+| `InternalError`      | `() ErrorPageProps`              | Pre-built 500 (Infrastructure)                   |
 
 ### Family Visual Mapping
 
@@ -236,12 +251,12 @@ Used by both Alert and Toast for consistent visual styling.
 | `ConfirmDelete`        | FULLY_FUNCTIONAL | Delete button with confirm | `hx-delete`, `hx-target`, `hx-confirm`, `hx-swap`              |
 | `SwapOOB`              | FULLY_FUNCTIONAL | Out-of-band swap wrapper   | For updating multiple elements per response                    |
 | `CSRFToken`            | FULLY_FUNCTIONAL | Hidden CSRF input          | Standard `csrf_token` name                                     |
-| `GlobalErrorHandling`  | FULLY_FUNCTIONAL | HTMX error handler         | Network errors, response errors, auto-retry, toast integration |
+| `GlobalErrorHandling`  | FULLY_FUNCTIONAL | HTMX error handler         | Network errors, response errors, auto-retry, toast integration, family-aware error parsing |
 
 ### Known Issues
 
 - **Hidden coupling**: `GlobalErrorHandling` calls `tcShowToast()` — requires `ToastContainer` on page, silently fails otherwise
-- **Magic numbers**: Retry count (2), delay (1000ms), error history (10) are hardcoded
+- **Magic numbers**: Error history (10) is hardcoded; retry count and delay extracted to named constants (`MAX_RETRIES`, `RETRY_DELAY_MS`)
 - **Package coupling**: `htmx/loading.templ` accepts `templ.Component` for spinner (decoupled)
 
 ---

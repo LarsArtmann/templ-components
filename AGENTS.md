@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-29 | **Tests:** 215+ | **Packages:** 10+demo | **Generated files:** 35 `*_templ.go` committed
+**Updated:** 2026-05-29 | **Tests:** 1027+ | **Packages:** 10+demo | **Generated files:** 40 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -27,7 +27,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 35 generated files across 9 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/svg, layout, navigation)
+- 40 generated files across 9 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/svg, layout, navigation)
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
 will have their Go toolchain download the tagged commit. If `*_templ.go` is missing from that
@@ -78,9 +78,12 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - Dismiss JS: Alert + Toast share `tcDismissAttached` handler using `[data-dismiss]` selector
 - Toast JS: dismiss icon from `icons.IconPathJS()` via `tcToastIcons.dismiss`
 - Table: row cells auto-padded/truncated to match header count
+- **Error handler:** `errorpage/handler.go` provides `ErrorHandler(err, cfg)` returning `http.Handler`, `FromError(err)` for ad-hoc conversion, 6 pre-built constructors (`NotFound`, `Forbidden`, `BadRequest`, `ConflictError`, `ServiceUnavailable`, `InternalError`), and `WriteError`/`WriteErrorPage` convenience wrappers. Maps Family → HTTP status automatically
 - **Error families:** `errorpage` package mirrors go-error-family's 5 families (Rejection/Conflict/Transient/Corruption/Infrastructure) with distinct visual styles — zero dependency on go-error-family
 - **Error components:** `ErrorPage` (full-page), `ErrorDetail` (inline card), `ErrorAlert` (family-aware alert) in `errorpage/`
+- **Error sub-templates:** 6 shared private sub-templates in `errorpage/shared.templ` (familyIcon, fixCard, causeList, contextTable, timestampFooter, familyBadge)
 - HTMX retry: per-element `data-tc-retry` attribute (no shared counter)
+- HTMX error handling: family-aware — when server returns structured JSON with `family` field, toast type is mapped (rejection→warning, conflict→warning, transient→info, corruption→error, infrastructure→error)
 
 ## Breaking Changes (v0.1 → v0.2)
 
