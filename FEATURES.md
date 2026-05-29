@@ -40,11 +40,11 @@ type BaseProps struct {
 
 ### Functions
 
-| Function      | Signature                                               | Purpose                                       |
-| ------------- | ------------------------------------------------------- | --------------------------------------------- |
-| `Class`       | `(classes ...string) string`                            | Merges Tailwind classes via tailwind-merge-go |
-| `CurrentYear` | `() string`                                             | Current year string                           |
-| `Ternary`     | `[T any](bool, a, b T) T`                               | Generic ternary                               |
+| Function        | Signature                                               | Purpose                                       |
+| --------------- | ------------------------------------------------------- | --------------------------------------------- |
+| `Class`         | `(classes ...string) string`                            | Merges Tailwind classes via tailwind-merge-go |
+| `CurrentYear`   | `() string`                                             | Current year string                           |
+| `Ternary`       | `[T any](bool, a, b T) T`                               | Generic ternary                               |
 | `MapEnum`       | `[T ~string](m map[string]T, fallback T, key string) T` | Generic map lookup with fallback              |
 | `DismissScript` | `() string`                                             | Shared JS for [data-dismiss] click delegation |
 
@@ -106,50 +106,50 @@ type BaseProps struct {
 
 ### Components
 
-| Component    | Status           | Description              | Key Features                                                              |
-| ------------ | ---------------- | ------------------------ | ------------------------------------------------------------------------- |
-| `ErrorPage`  | FULLY_FUNCTIONAL | Full-page error view     | Wix-style What/Why/Fix/WayOut, 5 families, context, cause chain, action   |
-| `ErrorDetail`| FULLY_FUNCTIONAL | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix       |
-| `ErrorAlert` | FULLY_FUNCTIONAL | Family-aware alert       | 5 distinct color schemes, dismiss, fix suggestion, family badge           |
+| Component     | Status           | Description              | Key Features                                                            |
+| ------------- | ---------------- | ------------------------ | ----------------------------------------------------------------------- |
+| `ErrorPage`   | FULLY_FUNCTIONAL | Full-page error view     | Wix-style What/Why/Fix/WayOut, 5 families, context, cause chain, action |
+| `ErrorDetail` | FULLY_FUNCTIONAL | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix     |
+| `ErrorAlert`  | FULLY_FUNCTIONAL | Family-aware alert       | 5 distinct color schemes, dismiss, fix suggestion, family badge         |
 
 ### Enums
 
-| Type     | Values                                                 |
-| -------- | ------------------------------------------------------ |
+| Type     | Values                                                     |
+| -------- | ---------------------------------------------------------- |
 | `Family` | Rejection, Conflict, Transient, Corruption, Infrastructure |
 
 ### Bridge Helpers
 
-| Function             | Purpose                                                     |
-| -------------------- | ----------------------------------------------------------- |
-| `FamilyStatusCode`   | Maps Family → HTTP status code (400/409/503/500/503)        |
-| `ContextMap`         | Converts map[string]string → []ContextPair                  |
-| `ExtractCauseChain`  | Walks Unwrap() chain → []CauseItem with ErrorCode() support |
-| `FromError`          | Converts any `error` → `ErrorPageProps` (family/code/cause) |
+| Function            | Purpose                                                     |
+| ------------------- | ----------------------------------------------------------- |
+| `FamilyStatusCode`  | Maps Family → HTTP status code (400/409/503/500/503)        |
+| `ContextMap`        | Converts map[string]string → []ContextPair                  |
+| `ExtractCauseChain` | Walks Unwrap() chain → []CauseItem with ErrorCode() support |
+| `FromError`         | Converts any `error` → `ErrorPageProps` (family/code/cause) |
 
 ### HTTP Handler
 
-|| Function             | Signature                        | Purpose                                          |
-| -------------------- | -------------------------------- | ------------------------------------------------ |
-| `ErrorHandler`       | `(err, cfg) http.Handler`        | Serves error page with correct HTTP status       |
-| `WriteError`         | `(w, r, err, nonce)`             | Convenience wrapper for ErrorHandler             |
-| `WriteErrorPage`     | `(w, r, status, props, nonce)`   | Renders pre-configured ErrorPageProps            |
-| `NotFound`           | `() ErrorPageProps`              | Pre-built 404 (Rejection)                        |
-| `Forbidden`          | `() ErrorPageProps`              | Pre-built 403 (Rejection)                        |
-| `BadRequest`         | `(msg) ErrorPageProps`           | Pre-built 400 (Rejection)                        |
-| `Conflict`           | `(msg) ErrorPageProps`           | Pre-built 409 (Conflict)                         |
-| `ServiceUnavailable` | `() ErrorPageProps`              | Pre-built 503 (Transient)                        |
-| `InternalError`      | `() ErrorPageProps`              | Pre-built 500 (Infrastructure)                   |
+|                      | Function                       | Signature                                  | Purpose |
+| -------------------- | ------------------------------ | ------------------------------------------ | ------- |
+| `ErrorHandler`       | `(err, cfg) http.Handler`      | Serves error page with correct HTTP status |
+| `WriteError`         | `(w, r, err, nonce)`           | Convenience wrapper for ErrorHandler       |
+| `WriteErrorPage`     | `(w, r, status, props, nonce)` | Renders pre-configured ErrorPageProps      |
+| `NotFound`           | `() ErrorPageProps`            | Pre-built 404 (Rejection)                  |
+| `Forbidden`          | `() ErrorPageProps`            | Pre-built 403 (Rejection)                  |
+| `BadRequest`         | `(msg) ErrorPageProps`         | Pre-built 400 (Rejection)                  |
+| `Conflict`           | `(msg) ErrorPageProps`         | Pre-built 409 (Conflict)                   |
+| `ServiceUnavailable` | `() ErrorPageProps`            | Pre-built 503 (Transient)                  |
+| `InternalError`      | `() ErrorPageProps`            | Pre-built 500 (Infrastructure)             |
 
 ### Family Visual Mapping
 
-| Family          | Color   | Icon                | Tone           | HTTP Status |
-| --------------- | ------- | ------------------- | -------------- | ----------- |
-| Rejection       | Amber   | ExclamationTriangle | Instructional  | 400         |
-| Conflict        | Orange  | ExclamationCircle   | Explanatory    | 409         |
-| Transient       | Blue    | Refresh             | Reassuring     | 503         |
-| Corruption      | Red     | ExclamationTriangle | Urgent         | 500         |
-| Infrastructure  | Slate   | Globe               | Apologetic     | 503         |
+| Family         | Color  | Icon                | Tone          | HTTP Status |
+| -------------- | ------ | ------------------- | ------------- | ----------- |
+| Rejection      | Amber  | ExclamationTriangle | Instructional | 400         |
+| Conflict       | Orange | ExclamationCircle   | Explanatory   | 409         |
+| Transient      | Blue   | Refresh             | Reassuring    | 503         |
+| Corruption     | Red    | ExclamationTriangle | Urgent        | 500         |
+| Infrastructure | Slate  | Globe               | Apologetic    | 503         |
 
 ---
 
@@ -243,14 +243,14 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component              | Status           | Description                | Key Features                                                   |
-| ---------------------- | ---------------- | -------------------------- | -------------------------------------------------------------- |
-| `LoadingIndicator`     | FULLY_FUNCTIONAL | Fixed full-screen loading  | Uses `htmx-indicator`, blur backdrop                           |
-| `InlineLoadingOverlay` | FULLY_FUNCTIONAL | Localized loading overlay  | Absolute positioned, for form targets                          |
-| `LoadingButton`        | FULLY_FUNCTIONAL | Button with loading state  | Text swaps to spinner during HTMX requests                     |
-| `ConfirmDelete`        | FULLY_FUNCTIONAL | Delete button with confirm | `hx-delete`, `hx-target`, `hx-confirm`, `hx-swap`              |
-| `SwapOOB`              | FULLY_FUNCTIONAL | Out-of-band swap wrapper   | For updating multiple elements per response                    |
-| `CSRFToken`            | FULLY_FUNCTIONAL | Hidden CSRF input          | Standard `csrf_token` name                                     |
+| Component              | Status           | Description                | Key Features                                                                               |
+| ---------------------- | ---------------- | -------------------------- | ------------------------------------------------------------------------------------------ |
+| `LoadingIndicator`     | FULLY_FUNCTIONAL | Fixed full-screen loading  | Uses `htmx-indicator`, blur backdrop                                                       |
+| `InlineLoadingOverlay` | FULLY_FUNCTIONAL | Localized loading overlay  | Absolute positioned, for form targets                                                      |
+| `LoadingButton`        | FULLY_FUNCTIONAL | Button with loading state  | Text swaps to spinner during HTMX requests                                                 |
+| `ConfirmDelete`        | FULLY_FUNCTIONAL | Delete button with confirm | `hx-delete`, `hx-target`, `hx-confirm`, `hx-swap`                                          |
+| `SwapOOB`              | FULLY_FUNCTIONAL | Out-of-band swap wrapper   | For updating multiple elements per response                                                |
+| `CSRFToken`            | FULLY_FUNCTIONAL | Hidden CSRF input          | Standard `csrf_token` name                                                                 |
 | `GlobalErrorHandling`  | FULLY_FUNCTIONAL | HTMX error handler         | Network errors, response errors, auto-retry, toast integration, family-aware error parsing |
 
 ### Known Issues

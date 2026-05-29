@@ -8,39 +8,39 @@
 
 ### Errorpage Package (3 sessions of work)
 
-| Item | Status | Details |
-|---|---|---|
-| `ErrorPage` component | DONE | Full-page error view with What/Why/Fix/WayOut |
-| `ErrorDetail` component | DONE | Inline error card with context table, cause chain |
-| `ErrorAlert` component | DONE | Family-aware alert banner with dismiss |
-| 5 Family enum constants | DONE | Rejection/Conflict/Transient/Corruption/Infrastructure |
-| Visual style maps | DONE | Colors, icons, tones per family |
-| Bridge helpers | DONE | `FamilyStatusCode()`, `ContextMap()`, `ExtractCauseChain()` |
-| Shared sub-templates | DONE | 6 private templates in `shared.templ` |
-| `http.Handler` integration | DONE | `ErrorHandler`, `WriteError`, `WriteErrorPage` |
-| Pre-built constructors | DONE | 6 constructors with code constants |
-| `FromError()` bridge | DONE | Extracts code/family/context/cause from any error |
-| HTMX family-aware errors | DONE | `GlobalErrorHandling` parses structured JSON errors |
-| BDD tests (25) | DONE | Behavior-driven test coverage |
-| A11y tests (8) | DONE | Accessibility assertions |
-| Edge case tests (17) | DONE | Nil/empty/invalid inputs |
-| Example tests (6) | DONE | GoDoc examples |
-| Handler tests (21) | DONE | HTTP handler, constructors, FromError |
-| Demo page integration | DONE | ErrorAlert (all 5 families) + ErrorDetail (2 examples) |
-| Documentation | DONE | AGENTS.md, CHANGELOG.md, FEATURES.md, doc.go |
-| DismissScript extraction | DONE | Moved from feedback to `utils.DismissScript()` |
-| Build/Test/Lint | DONE | 1027+ tests, 0 lint issues, clean build |
+| Item                       | Status | Details                                                     |
+| -------------------------- | ------ | ----------------------------------------------------------- |
+| `ErrorPage` component      | DONE   | Full-page error view with What/Why/Fix/WayOut               |
+| `ErrorDetail` component    | DONE   | Inline error card with context table, cause chain           |
+| `ErrorAlert` component     | DONE   | Family-aware alert banner with dismiss                      |
+| 5 Family enum constants    | DONE   | Rejection/Conflict/Transient/Corruption/Infrastructure      |
+| Visual style maps          | DONE   | Colors, icons, tones per family                             |
+| Bridge helpers             | DONE   | `FamilyStatusCode()`, `ContextMap()`, `ExtractCauseChain()` |
+| Shared sub-templates       | DONE   | 6 private templates in `shared.templ`                       |
+| `http.Handler` integration | DONE   | `ErrorHandler`, `WriteError`, `WriteErrorPage`              |
+| Pre-built constructors     | DONE   | 6 constructors with code constants                          |
+| `FromError()` bridge       | DONE   | Extracts code/family/context/cause from any error           |
+| HTMX family-aware errors   | DONE   | `GlobalErrorHandling` parses structured JSON errors         |
+| BDD tests (25)             | DONE   | Behavior-driven test coverage                               |
+| A11y tests (8)             | DONE   | Accessibility assertions                                    |
+| Edge case tests (17)       | DONE   | Nil/empty/invalid inputs                                    |
+| Example tests (6)          | DONE   | GoDoc examples                                              |
+| Handler tests (21)         | DONE   | HTTP handler, constructors, FromError                       |
+| Demo page integration      | DONE   | ErrorAlert (all 5 families) + ErrorDetail (2 examples)      |
+| Documentation              | DONE   | AGENTS.md, CHANGELOG.md, FEATURES.md, doc.go                |
+| DismissScript extraction   | DONE   | Moved from feedback to `utils.DismissScript()`              |
+| Build/Test/Lint            | DONE   | 1027+ tests, 0 lint issues, clean build                     |
 
 ### Overall Project Health
 
-| Metric | Value |
-|---|---|
-| Total tests | 1027+ |
-| Packages | 10 + demo |
-| Generated `*_templ.go` | 40 files |
-| Lint issues | 0 |
-| Build | GREEN |
-| Dependencies | 2 direct (templ, tailwind-merge-go) |
+| Metric                 | Value                               |
+| ---------------------- | ----------------------------------- |
+| Total tests            | 1027+                               |
+| Packages               | 10 + demo                           |
+| Generated `*_templ.go` | 40 files                            |
+| Lint issues            | 0                                   |
+| Build                  | GREEN                               |
+| Dependencies           | 2 direct (templ, tailwind-merge-go) |
 
 ---
 
@@ -66,26 +66,26 @@ Errorpage uses mixed `gray-*` and `slate-*` in dark mode. The `familyStyleDefaul
 
 ## c) NOT STARTED
 
-| Item | Impact | Effort |
-|---|---|---|
-| Fix `FromError()` to work with go-error-family's `int` Family | CRITICAL | Medium |
-| Add `ParseFamily(string)` for string-based bridge | HIGH | Small |
-| Add JSON error endpoint option to `ErrorHandler` | HIGH | Medium |
-| HTML shell for standalone HTTP handler responses | HIGH | Small |
-| Rename `ConflictError()` → `Conflict()` | LOW | Tiny |
-| Test `DefaultErrorAlertProps()` | LOW | Tiny |
-| Test `ConflictError("")` empty message default | LOW | Tiny |
-| Test `ErrorHandler` with nil error | LOW | Tiny |
-| Test nonce propagation in `ErrorHandler`/`WriteErrorPage` | LOW | Tiny |
-| Test `Override` returning nil in `ErrorHandler` | LOW | Tiny |
-| Add `FromError`/`ErrorHandler` examples to `doc.go` | MEDIUM | Small |
-| Unify DismissScript call pattern (wrapper vs direct) | LOW | Tiny |
-| Standardize `gray-*` vs `slate-*` dark mode palette | MEDIUM | Small |
-| Log render errors in `ErrorHandler`/`WriteErrorPage` | MEDIUM | Tiny |
-| Extract errorHeader shared sub-template from ErrorPage/ErrorDetail | LOW | Small |
-| Consider `FamilyIsValid`/`FamilyIcon` unexporting | LOW | Tiny |
-| `ExtractCauseChain` depth-capping test | LOW | Tiny |
-| Combined-interface `FromError` test (all 3 interfaces on one error) | LOW | Tiny |
+| Item                                                                | Impact   | Effort |
+| ------------------------------------------------------------------- | -------- | ------ |
+| Fix `FromError()` to work with go-error-family's `int` Family       | CRITICAL | Medium |
+| Add `ParseFamily(string)` for string-based bridge                   | HIGH     | Small  |
+| Add JSON error endpoint option to `ErrorHandler`                    | HIGH     | Medium |
+| HTML shell for standalone HTTP handler responses                    | HIGH     | Small  |
+| Rename `ConflictError()` → `Conflict()`                             | LOW      | Tiny   |
+| Test `DefaultErrorAlertProps()`                                     | LOW      | Tiny   |
+| Test `ConflictError("")` empty message default                      | LOW      | Tiny   |
+| Test `ErrorHandler` with nil error                                  | LOW      | Tiny   |
+| Test nonce propagation in `ErrorHandler`/`WriteErrorPage`           | LOW      | Tiny   |
+| Test `Override` returning nil in `ErrorHandler`                     | LOW      | Tiny   |
+| Add `FromError`/`ErrorHandler` examples to `doc.go`                 | MEDIUM   | Small  |
+| Unify DismissScript call pattern (wrapper vs direct)                | LOW      | Tiny   |
+| Standardize `gray-*` vs `slate-*` dark mode palette                 | MEDIUM   | Small  |
+| Log render errors in `ErrorHandler`/`WriteErrorPage`                | MEDIUM   | Tiny   |
+| Extract errorHeader shared sub-template from ErrorPage/ErrorDetail  | LOW      | Small  |
+| Consider `FamilyIsValid`/`FamilyIcon` unexporting                   | LOW      | Tiny   |
+| `ExtractCauseChain` depth-capping test                              | LOW      | Tiny   |
+| Combined-interface `FromError` test (all 3 interfaces on one error) | LOW      | Tiny   |
 
 ---
 
@@ -154,33 +154,33 @@ The JS code in `htmx/error_handling.templ` parses JSON error responses, but `err
 
 Sorted by **Impact × Ease** (Pareto ordering):
 
-| # | Task | Impact | Effort | Category |
-|---|---|---|---|---|
-| 1 | Fix `FromError()` to detect go-error-family's string-based `ErrorFamily()` | CRITICAL | S | Bug fix |
-| 2 | Add `ParseFamily(string) Family` for robust string→Family conversion | HIGH | S | API |
-| 3 | Add test: `FromError` with go-error-family-style error | HIGH | S | Test |
-| 4 | Rename `ConflictError()` → `Conflict()` | MED | XS | Naming |
-| 5 | Test `DefaultErrorAlertProps()` returns `FamilyTransient` | LOW | XS | Test |
-| 6 | Test `ConflictError("")` empty message default | LOW | XS | Test |
-| 7 | Test `ErrorHandler` with nil error | LOW | XS | Test |
-| 8 | Add HTML shell option to `ErrorHandlerConfig` | HIGH | S | Feature |
-| 9 | Log render errors in handler instead of discarding | MED | XS | Fix |
-| 10 | Add JSON error response mode to `ErrorHandlerConfig` | HIGH | M | Feature |
-| 11 | Test nonce propagation in `ErrorHandler`/`WriteErrorPage` | LOW | XS | Test |
-| 12 | Test `Override` returning nil in `ErrorHandler` | LOW | XS | Test |
-| 13 | Update `doc.go` with `FromError`/`ErrorHandler` examples | MED | S | Docs |
-| 14 | Unify DismissScript call pattern across feedback/errorpage | LOW | XS | Consistency |
-| 15 | Standardize dark mode palette (`gray-*` → `slate-*` where appropriate) | MED | S | Polish |
-| 16 | Extract errorHeader shared sub-template | LOW | S | Refactor |
-| 17 | Consider unexporting `FamilyIsValid`/`FamilyIcon` if not consumer-facing | LOW | XS | API review |
-| 18 | Test `ExtractCauseChain` depth capping | LOW | XS | Test |
-| 19 | Test combined-interface `FromError` (all 3 on one error) | LOW | XS | Test |
-| 20 | Consider optional go-error-family import in sub-package | MED | M | Architecture |
-| 21 | Consider splitting `ErrorPageProps` into display + data layers | MED | M | Architecture |
-| 22 | Verify `tailwind-merge-go` v0.2.1 concurrent safety (remove mutex?) | LOW | S | Perf |
-| 23 | Consider `colorRoot` pattern for familyVisualStyle dedup | LOW | M | Refactor |
-| 24 | Add `TestFromErrorWithRealGoErrorFamily` integration test | HIGH | S | Test |
-| 25 | Wire HTMX JSON error response from handler to actual usage | HIGH | M | Integration |
+| #   | Task                                                                       | Impact   | Effort | Category     |
+| --- | -------------------------------------------------------------------------- | -------- | ------ | ------------ |
+| 1   | Fix `FromError()` to detect go-error-family's string-based `ErrorFamily()` | CRITICAL | S      | Bug fix      |
+| 2   | Add `ParseFamily(string) Family` for robust string→Family conversion       | HIGH     | S      | API          |
+| 3   | Add test: `FromError` with go-error-family-style error                     | HIGH     | S      | Test         |
+| 4   | Rename `ConflictError()` → `Conflict()`                                    | MED      | XS     | Naming       |
+| 5   | Test `DefaultErrorAlertProps()` returns `FamilyTransient`                  | LOW      | XS     | Test         |
+| 6   | Test `ConflictError("")` empty message default                             | LOW      | XS     | Test         |
+| 7   | Test `ErrorHandler` with nil error                                         | LOW      | XS     | Test         |
+| 8   | Add HTML shell option to `ErrorHandlerConfig`                              | HIGH     | S      | Feature      |
+| 9   | Log render errors in handler instead of discarding                         | MED      | XS     | Fix          |
+| 10  | Add JSON error response mode to `ErrorHandlerConfig`                       | HIGH     | M      | Feature      |
+| 11  | Test nonce propagation in `ErrorHandler`/`WriteErrorPage`                  | LOW      | XS     | Test         |
+| 12  | Test `Override` returning nil in `ErrorHandler`                            | LOW      | XS     | Test         |
+| 13  | Update `doc.go` with `FromError`/`ErrorHandler` examples                   | MED      | S      | Docs         |
+| 14  | Unify DismissScript call pattern across feedback/errorpage                 | LOW      | XS     | Consistency  |
+| 15  | Standardize dark mode palette (`gray-*` → `slate-*` where appropriate)     | MED      | S      | Polish       |
+| 16  | Extract errorHeader shared sub-template                                    | LOW      | S      | Refactor     |
+| 17  | Consider unexporting `FamilyIsValid`/`FamilyIcon` if not consumer-facing   | LOW      | XS     | API review   |
+| 18  | Test `ExtractCauseChain` depth capping                                     | LOW      | XS     | Test         |
+| 19  | Test combined-interface `FromError` (all 3 on one error)                   | LOW      | XS     | Test         |
+| 20  | Consider optional go-error-family import in sub-package                    | MED      | M      | Architecture |
+| 21  | Consider splitting `ErrorPageProps` into display + data layers             | MED      | M      | Architecture |
+| 22  | Verify `tailwind-merge-go` v0.2.1 concurrent safety (remove mutex?)        | LOW      | S      | Perf         |
+| 23  | Consider `colorRoot` pattern for familyVisualStyle dedup                   | LOW      | M      | Refactor     |
+| 24  | Add `TestFromErrorWithRealGoErrorFamily` integration test                  | HIGH     | S      | Test         |
+| 25  | Wire HTMX JSON error response from handler to actual usage                 | HIGH     | M      | Integration  |
 
 ---
 
@@ -189,12 +189,14 @@ Sorted by **Impact × Ease** (Pareto ordering):
 **Should `templ-components` import `go-error-family` as a dependency?**
 
 Arguments FOR:
+
 - The broken `FromError()` bridge is caused by type mismatch — importing go-error-family would give us compile-time type safety
 - We could use `errorfamily.Classified` interface directly instead of duck-typing
 - `Family.String()` → `ParseFamily()` gives us the string bridge for free
 - Both projects are by the same author (Lars)
 
 Arguments AGAINST:
+
 - `templ-components` currently has only 2 dependencies (templ, tailwind-merge-go) — adding go-error-family would break the "zero framework deps" principle
 - Component library consumers who don't use go-error-family get an unnecessary dependency
 - The current string-based approach is theoretically more flexible (works with any error classification system that returns "rejection"/"conflict"/etc strings)

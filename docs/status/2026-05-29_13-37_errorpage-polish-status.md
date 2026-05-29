@@ -16,30 +16,31 @@ structured errors on the web. 7 commits, 52 files touched, 3,088 lines added, 12
 
 ### New `errorpage` Package (2,605 lines)
 
-| File | Purpose |
-|---|---|
-| `errorpage/styles.go` | Family enum (5), visual style maps, props structs, bridge helpers |
-| `errorpage/errorpage.templ` | Full-page error view with Wix-style What/Why/Fix/WayOut layout |
-| `errorpage/errordetail.templ` | Inline error detail card with context table, cause chain, fix |
-| `errorpage/erroralert.templ` | Family-aware alert banner with dismiss support |
-| `errorpage/doc.go` | Package documentation |
-| `errorpage/bdd_test.go` | 25 BDD-style behavior tests |
-| `errorpage/a11y_test.go` | 8 accessibility tests (ARIA roles, labels, nonce) |
+| File                           | Purpose                                                           |
+| ------------------------------ | ----------------------------------------------------------------- |
+| `errorpage/styles.go`          | Family enum (5), visual style maps, props structs, bridge helpers |
+| `errorpage/errorpage.templ`    | Full-page error view with Wix-style What/Why/Fix/WayOut layout    |
+| `errorpage/errordetail.templ`  | Inline error detail card with context table, cause chain, fix     |
+| `errorpage/erroralert.templ`   | Family-aware alert banner with dismiss support                    |
+| `errorpage/doc.go`             | Package documentation                                             |
+| `errorpage/bdd_test.go`        | 25 BDD-style behavior tests                                       |
+| `errorpage/a11y_test.go`       | 8 accessibility tests (ARIA roles, labels, nonce)                 |
 | `errorpage/edge_cases_test.go` | 17 edge case tests (unknown families, nil inputs, bridge helpers) |
-| `errorpage/example_test.go` | 6 GoDoc examples |
-| `errorpage/*_templ.go` (3) | Generated templ output (committed) |
+| `errorpage/example_test.go`    | 6 GoDoc examples                                                  |
+| `errorpage/*_templ.go` (3)     | Generated templ output (committed)                                |
 
 **3 components × 5 families = 15 distinct visual treatments**
 
-| Family | Color | Icon | Tone | HTTP |
-|---|---|---|---|---|
-| Rejection | Amber | ExclamationTriangle | Instructional | 400 |
-| Conflict | Orange | ExclamationCircle | Explanatory | 409 |
-| Transient | Blue | Refresh | Reassuring | 503 |
-| Corruption | Red | ExclamationTriangle | Urgent | 500 |
-| Infrastructure | Slate | Globe | Apologetic | 503 |
+| Family         | Color  | Icon                | Tone          | HTTP |
+| -------------- | ------ | ------------------- | ------------- | ---- |
+| Rejection      | Amber  | ExclamationTriangle | Instructional | 400  |
+| Conflict       | Orange | ExclamationCircle   | Explanatory   | 409  |
+| Transient      | Blue   | Refresh             | Reassuring    | 503  |
+| Corruption     | Red    | ExclamationTriangle | Urgent        | 500  |
+| Infrastructure | Slate  | Globe               | Apologetic    | 503  |
 
 **Bridge helpers for go-error-family integration:**
+
 - `FamilyStatusCode(f)` — Family → HTTP status code
 - `ContextMap(m)` — map[string]string → []ContextPair
 - `ExtractCauseChain(err, maxDepth)` — walks Unwrap() chain → []CauseItem
@@ -70,24 +71,29 @@ Nothing — all planned work for this session is complete.
 ## C) NOT STARTED
 
 ### ErrorPage Demo
+
 - The `ErrorPage` component (full-page view) is NOT in the demo page because it takes over the
   entire viewport. Would need a separate route or iframe in the demo app.
 
 ### Snapshot Tests
+
 - No `snapshot_test.go` for errorpage — other packages (feedback, navigation, forms, icons) have these.
   Snapshot tests lock down exact HTML output to catch unintended changes.
 
 ### Type Architecture Improvements
+
 - `feedbackStyleSet` (4 fields) and `familyVisualStyle` (8 fields) share the same pattern but
   aren't unified. Could extract a base style interface or use composition.
 - `feedback.FeedbackType` has 4 levels (Success/Error/Warning/Info), `errorpage.Family` has 5 families.
   These are orthogonal axes — no overlap expected, but no explicit type relationship either.
 
 ### ErrorPage + layout.Base Integration
+
 - ErrorPage renders its own full-screen container. It doesn't integrate with `layout.Base` for
   consistent `<head>` management. Consumers must choose one or the other.
 
 ### CI Pipeline
+
 - `.github/workflows/ci.yaml` not updated to include `GOWORK=off` — may fail in CI if the workspace
   issue exists there too.
 
@@ -181,6 +187,7 @@ Nothing — all planned work for this session is complete.
 **Should `errorpage` import `go-error-family` directly, or remain zero-dependency forever?**
 
 Current state: Zero dependency. Consumers bridge with:
+
 ```go
 errorpage.Family(myError.ErrorFamily().String())
 ```
@@ -189,6 +196,7 @@ The gap: No type-safety guarantee that the string constants match. If go-error-f
 a 6th family, errorpage won't know about it until manually updated.
 
 Options I see:
+
 1. **Stay zero-dep** — Mirror types, accept the drift risk. Library stays minimal.
 2. **Add optional bridge sub-module** — `errorpage/bridge/go.mod` imports go-error-family, provides `FromError()`. Core stays zero-dep.
 3. **Import directly** — Tighter coupling, version drift headaches, but type safety.
@@ -199,34 +207,34 @@ This is a product decision about the library's identity: is it "UI components fo
 
 ## Metrics
 
-| Metric | Value |
-|---|---|
-| Packages | 10 + demo |
-| Source `.templ` files | 38 |
-| Generated `*_templ.go` files | 38 |
-| Test files | 52 |
-| Total test cases (PASS) | 984 |
-| Lint issues | 0 |
-| Build status | GREEN |
-| Commits this session | 7 |
-| Lines added this session | +3,088 |
-| Lines removed this session | -120 |
-| Files touched | 52 |
+| Metric                       | Value     |
+| ---------------------------- | --------- |
+| Packages                     | 10 + demo |
+| Source `.templ` files        | 38        |
+| Generated `*_templ.go` files | 38        |
+| Test files                   | 52        |
+| Total test cases (PASS)      | 984       |
+| Lint issues                  | 0         |
+| Build status                 | GREEN     |
+| Commits this session         | 7         |
+| Lines added this session     | +3,088    |
+| Lines removed this session   | -120      |
+| Files touched                | 52        |
 
 ## Test Coverage Per Package
 
-| Package | Coverage | Delta vs Last Report |
-|---|---|---|
-| utils | 80.0% | ↓ 3.3% (added DismissScript, not yet heavily tested directly) |
-| internal/svg | 79.0% | — |
-| htmx | 77.3% | — |
-| icons | 75.0% | — |
-| layout | 73.2% | — |
-| navigation | 72.1% | — |
-| feedback | 70.3% | — |
-| **errorpage** | **69.6%** | **NEW** |
-| display | 68.6% | — |
-| forms | 64.3% | — |
+| Package       | Coverage  | Delta vs Last Report                                          |
+| ------------- | --------- | ------------------------------------------------------------- |
+| utils         | 80.0%     | ↓ 3.3% (added DismissScript, not yet heavily tested directly) |
+| internal/svg  | 79.0%     | —                                                             |
+| htmx          | 77.3%     | —                                                             |
+| icons         | 75.0%     | —                                                             |
+| layout        | 73.2%     | —                                                             |
+| navigation    | 72.1%     | —                                                             |
+| feedback      | 70.3%     | —                                                             |
+| **errorpage** | **69.6%** | **NEW**                                                       |
+| display       | 68.6%     | —                                                             |
+| forms         | 64.3%     | —                                                             |
 
 ## Commit History This Session
 
