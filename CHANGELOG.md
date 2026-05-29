@@ -16,19 +16,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - `FamilyStatusCode()`: maps Family → HTTP status code (400/409/503/500/503)
   - `ContextMap()`: converts map[string]string → []ContextPair
   - `ExtractCauseChain()`: walks Unwrap() chain to build CauseItem slice
-  - Zero dependency on go-error-family — bridge via string constants
+  - `ParseFamily(string) Family`: case-insensitive string→Family conversion
+  - `FamilyFromErrorFamily(errorfamily.Family) Family`: converts go-error-family int enum to errorpage string
+  - `FamilyIsValid(Family) bool`, `FamilyIcon(Family) icons.Name`: validation and icon lookup
 - `utils.DismissScript()`: shared dismiss JS extracted from feedback package (single source of truth)
+- DismissScript call pattern unified: both feedback and errorpage call `utils.DismissScript()` directly (removed `feedback.dismissScript()` private wrapper)
 - `errorpage/handler.go`: `http.Handler` integration for serving error pages
   - `ErrorHandler(err, cfg)`: returns `http.Handler` with correct HTTP status, Content-Type, and family-aware rendering
-  - `FromError(err)`: converts any `error` to `ErrorPageProps`, extracting code/family/context/cause chain from structured errors
-  - 6 pre-built constructors: `NotFound()`, `Forbidden()`, `BadRequest(msg)`, `ConflictError(msg)`, `ServiceUnavailable()`, `InternalError()` with code constants
+  - `FromError(err)`: type-safe conversion — uses `errors.AsType[errorfamily.Classified]()` for go-error-family, falls back to string-based interface, extracts Why/Fix from `Family.DefaultWhy()`/`DefaultFix()`
+  - 6 pre-built constructors: `NotFound()`, `Forbidden()`, `BadRequest(msg)`, `Conflict(msg)`, `ServiceUnavailable()`, `InternalError()` with code constants
   - `WriteError()` and `WriteErrorPage()` convenience wrappers for `http.ResponseWriter`
   - `ErrorHandlerConfig.Override` callback for per-error customization
+  - `ErrorHandlerConfig.HTMLShell`: wraps error page in valid HTML document (DOCTYPE/html/head/title/body)
+  - `ErrorHandlerConfig.JSON`: renders JSON error response (family/code/message/title/why/fix) for API/HTMX endpoints
+  - Render errors logged via `slog.Error` instead of silently discarded
 - `errorpage/shared.templ`: 6 shared sub-templates extracted (familyIcon, fixCard, causeList, contextTable, timestampFooter, familyBadge) — eliminated 9 duplicated HTML patterns
 - HTMX `GlobalErrorHandling`: family-aware error parsing — structured JSON responses with `family` field now map to appropriate toast types instead of generic status-code logic
 
 ### Changed
 
+- **BREAKING**: `ConflictError(msg)` renamed to `Conflict(msg)` for naming consistency with other constructors
+- **BREAKING**: `FromError()` now uses `errors.AsType[errorfamily.Classified]()` — requires `github.com/larsartmann/go-error-family` v0.2.0
+- Added `github.com/larsartmann/go-error-family` v0.2.0 as dependency for type-safe error family bridging
+- Render errors in `ErrorHandler`/`WriteErrorPage` now logged via `slog.Error` instead of silently discarded
+- DismissScript call pattern unified: removed `feedback.dismissScript()` wrapper, all callers use `utils.DismissScript()` directly
 - **BREAKING**: `Tab.Active bool` removed from `Tab` struct → `TabsProps.ActiveTabID string` on parent. Prevents zero/multiple active tabs
 - Test deduplication: eliminated all 19 clone groups across 7 packages using extracted helpers, table-driven tests, and merged duplicates
 - Coverage improvements: display 71.8%→72.7%, forms 70.8%→72.0%, navigation 72.2%→73.2%

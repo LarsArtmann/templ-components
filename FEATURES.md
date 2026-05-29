@@ -137,7 +137,7 @@ type BaseProps struct {
 | `NotFound`           | `() ErrorPageProps`              | Pre-built 404 (Rejection)                        |
 | `Forbidden`          | `() ErrorPageProps`              | Pre-built 403 (Rejection)                        |
 | `BadRequest`         | `(msg) ErrorPageProps`           | Pre-built 400 (Rejection)                        |
-| `ConflictError`      | `(msg) ErrorPageProps`           | Pre-built 409 (Conflict)                         |
+| `Conflict`           | `(msg) ErrorPageProps`           | Pre-built 409 (Conflict)                         |
 | `ServiceUnavailable` | `() ErrorPageProps`              | Pre-built 503 (Transient)                        |
 | `InternalError`      | `() ErrorPageProps`              | Pre-built 500 (Infrastructure)                   |
 

@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-29 | **Tests:** 1027+ | **Packages:** 10+demo | **Generated files:** 40 `*_templ.go` committed
+**Updated:** 2026-05-29 | **Tests:** 1056+ | **Packages:** 10+demo | **Generated files:** 40 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -39,11 +39,11 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **Module:** `github.com/larsartmann/templ-components`
 - **Go:** 1.26, **templ:** v0.3.x
 - **No framework deps** — pure Go + templ + Tailwind v4 class strings
-- **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display,feedback,errorpage`, `feedback ← none (htmx decoupled)`, `errorpage ← icons,utils (no feedback dep)`
+- **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display,feedback,errorpage`, `feedback ← none (htmx decoupled)`, `errorpage ← icons,utils,go-error-family (no feedback dep)`
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
 - **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
-- **Feedback shared:** `utils.DismissScript()` (single source of truth), `feedbackIconName()`, `lookupFeedbackStyle[T]()` in `feedback/styles.go` eliminate duplication between Alert, Toast, and ErrorAlert
+- **Feedback shared:** `utils.DismissScript()` (single source of truth), `feedbackIconName()`, `lookupFeedbackStyle[T]()` in `feedback/styles.go` eliminate duplication between Alert, Toast, and ErrorAlert. All call `utils.DismissScript()` directly — no private wrappers.
 
 ## Code Conventions
 
@@ -78,12 +78,12 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - Dismiss JS: Alert + Toast share `tcDismissAttached` handler using `[data-dismiss]` selector
 - Toast JS: dismiss icon from `icons.IconPathJS()` via `tcToastIcons.dismiss`
 - Table: row cells auto-padded/truncated to match header count
-- **Error handler:** `errorpage/handler.go` provides `ErrorHandler(err, cfg)` returning `http.Handler`, `FromError(err)` for ad-hoc conversion, 6 pre-built constructors (`NotFound`, `Forbidden`, `BadRequest`, `ConflictError`, `ServiceUnavailable`, `InternalError`), and `WriteError`/`WriteErrorPage` convenience wrappers. Maps Family → HTTP status automatically
-- **Error families:** `errorpage` package mirrors go-error-family's 5 families (Rejection/Conflict/Transient/Corruption/Infrastructure) with distinct visual styles — zero dependency on go-error-family
+- **Error handler:** `errorpage/handler.go` provides `ErrorHandler(err, cfg)` returning `http.Handler`, `FromError(err)` for type-safe conversion from go-error-family errors, 6 pre-built constructors (`NotFound`, `Forbidden`, `BadRequest`, `Conflict`, `ServiceUnavailable`, `InternalError`), `WriteError`/`WriteErrorPage` convenience wrappers, `HTMLShell` mode for valid HTML documents, `JSON` mode for API/HTMX responses. Uses `errors.AsType[errorfamily.Classified]()` for go-error-family integration.
+- **Error families:** `errorpage` package integrates with go-error-family via `FamilyFromErrorFamily()` converter + `ParseFamily()` for string-based lookup. `FromError()` extracts Why/Fix defaults from go-error-family's `Family.DefaultWhy()`/`DefaultFix()` methods.
 - **Error components:** `ErrorPage` (full-page), `ErrorDetail` (inline card), `ErrorAlert` (family-aware alert) in `errorpage/`
 - **Error sub-templates:** 6 shared private sub-templates in `errorpage/shared.templ` (familyIcon, fixCard, causeList, contextTable, timestampFooter, familyBadge)
 - HTMX retry: per-element `data-tc-retry` attribute (no shared counter)
-- HTMX error handling: family-aware — when server returns structured JSON with `family` field, toast type is mapped (rejection→warning, conflict→warning, transient→info, corruption→error, infrastructure→error)
+- HTMX error handling: family-aware — when server returns structured JSON with `family` field, toast type is mapped. `ErrorHandlerConfig{JSON: true}` produces the JSON format that HTMX consumes.
 
 ## Breaking Changes (v0.1 → v0.2)
 
@@ -112,6 +112,8 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - `Breadcrumbs(items []BreadcrumbItem)` → `Breadcrumbs(BreadcrumbsProps)` (now has BaseProps)
 - `utils.BoolString()` → removed, use `strconv.FormatBool` directly
 - `utils.Deref/DerefOr/MergeAttrs` → removed (zero production callers)
+- `ConflictError(msg)` → renamed to `Conflict(msg)` for naming consistency
+- `FromError()` now checks `errorfamily.Classified` interface first (requires go-error-family v0.2.0)
 
 ## Lint Command
 
