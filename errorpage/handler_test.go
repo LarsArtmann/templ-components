@@ -2,11 +2,13 @@ package errorpage
 
 import (
 	"context"
+	"encoding/json"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
 
+	errorfamily "github.com/larsartmann/go-error-family"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -323,3 +325,306 @@ type testContextualError struct {
 
 func (e *testContextualError) Error() string                   { return e.msg }
 func (e *testContextualError) ErrorContext() map[string]string { return e.ctx }
+
+func TestFromErrorWithGoErrorFamily(t *testing.T) {
+	t.Parallel()
+
+	t.Run("detects go-error-family rejection", func(t *testing.T) {
+		t.Parallel()
+		err := errorfamily.NewRejection("config.invalid", "missing config")
+		props := FromError(err)
+		if props.Family != FamilyRejection {
+			t.Errorf("Family = %q, want %q", props.Family, FamilyRejection)
+		}
+		if props.Code != "config.invalid" {
+			t.Errorf("Code = %q, want %q", props.Code, "config.invalid")
+		}
+	})
+
+	t.Run("detects go-error-family conflict", func(t *testing.T) {
+		t.Parallel()
+		err := errorfamily.NewConflict("resource.conflict", "version clash")
+		props := FromError(err)
+		if props.Family != FamilyConflict {
+			t.Errorf("Family = %q, want %q", props.Family, FamilyConflict)
+		}
+	})
+
+	t.Run("detects go-error-family transient", func(t *testing.T) {
+		t.Parallel()
+		err := errorfamily.NewTransient("db.timeout", "query took too long")
+		props := FromError(err)
+		if props.Family != FamilyTransient {
+			t.Errorf("Family = %q, want %q", props.Family, FamilyTransient)
+		}
+	})
+
+	t.Run("detects go-error-family corruption", func(t *testing.T) {
+		t.Parallel()
+		err := errorfamily.NewCorruption("data.invalid", "parse failed")
+		props := FromError(err)
+		if props.Family != FamilyCorruption {
+			t.Errorf("Family = %q, want %q", props.Family, FamilyCorruption)
+		}
+	})
+
+	t.Run("detects go-error-family infrastructure", func(t *testing.T) {
+		t.Parallel()
+		err := errorfamily.NewInfrastructure("service.down", "no connections")
+		props := FromError(err)
+		if props.Family != FamilyInfrastructure {
+			t.Errorf("Family = %q, want %q", props.Family, FamilyInfrastructure)
+		}
+	})
+
+	t.Run("extracts Why/Fix from go-error-family defaults", func(t *testing.T) {
+		t.Parallel()
+		err := errorfamily.NewCorruption("data.invalid", "parse failed")
+		props := FromError(err)
+		if props.Why == "" {
+			t.Error("expected non-empty Why from go-error-family defaults")
+		}
+		if props.Fix == "" {
+			t.Error("expected non-empty Fix from go-error-family defaults")
+		}
+	})
+
+	t.Run("extracts context from go-error-family", func(t *testing.T) {
+		t.Parallel()
+		err := errorfamily.NewTransient("db.timeout", "slow").
+			WithContext("host", "db.internal").
+			WithContext("port", "5432")
+		props := FromError(err)
+		if len(props.Context) != 2 {
+			t.Fatalf("expected 2 context pairs, got %d", len(props.Context))
+		}
+	})
+
+	t.Run("extracts cause chain from go-error-family wrapped error", func(t *testing.T) {
+		t.Parallel()
+		inner := errorfamily.NewTransient("db.timeout", "slow")
+		outer := errorfamily.Wrap(inner, errorfamily.Infrastructure, "api.down", "api failed")
+		props := FromError(outer)
+		if len(props.CauseChain) == 0 {
+			t.Fatal("expected non-empty cause chain")
+		}
+		if props.CauseChain[0].Code != "db.timeout" {
+			t.Errorf("CauseChain[0].Code = %q, want %q", props.CauseChain[0].Code, "db.timeout")
+		}
+	})
+}
+
+func TestFamilyFromErrorFamily(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		input errorfamily.Family
+		want  Family
+	}{
+		{errorfamily.Rejection, FamilyRejection},
+		{errorfamily.Conflict, FamilyConflict},
+		{errorfamily.Transient, FamilyTransient},
+		{errorfamily.Corruption, FamilyCorruption},
+		{errorfamily.Infrastructure, FamilyInfrastructure},
+	}
+	for _, tc := range tests {
+		t.Run(tc.input.String(), func(t *testing.T) {
+			t.Parallel()
+			got := FamilyFromErrorFamily(tc.input)
+			if got != tc.want {
+				t.Errorf("FamilyFromErrorFamily(%v) = %q, want %q", tc.input, got, tc.want)
+			}
+		})
+	}
+}
+
+func TestParseFamily(t *testing.T) {
+	t.Parallel()
+
+	t.Run("valid families", func(t *testing.T) {
+		t.Parallel()
+		tests := []struct {
+			input string
+			want  Family
+		}{
+			{"rejection", FamilyRejection},
+			{"conflict", FamilyConflict},
+			{"transient", FamilyTransient},
+			{"corruption", FamilyCorruption},
+			{"infrastructure", FamilyInfrastructure},
+		}
+		for _, tc := range tests {
+			got := ParseFamily(tc.input)
+			if got != tc.want {
+				t.Errorf("ParseFamily(%q) = %q, want %q", tc.input, got, tc.want)
+			}
+		}
+	})
+
+	t.Run("unknown returns transient", func(t *testing.T) {
+		t.Parallel()
+		got := ParseFamily("unknown")
+		if got != FamilyTransient {
+			t.Errorf("ParseFamily(%q) = %q, want %q", "unknown", got, FamilyTransient)
+		}
+	})
+}
+
+func TestConflictEmptyMessage(t *testing.T) {
+	t.Parallel()
+
+	props := Conflict("")
+	if props.Message == "" {
+		t.Error("expected default message for empty Conflict input")
+	}
+}
+
+func TestDefaultErrorAlertProps(t *testing.T) {
+	t.Parallel()
+
+	props := DefaultErrorAlertProps()
+	if props.Family != FamilyTransient {
+		t.Errorf("Family = %q, want %q", props.Family, FamilyTransient)
+	}
+}
+
+func TestErrorHandlerHTMLShell(t *testing.T) {
+	t.Parallel()
+
+	t.Run("HTMLShell wraps in valid HTML", func(t *testing.T) {
+		t.Parallel()
+		handler := ErrorHandler(
+			&testError{msg: "test"},
+			ErrorHandlerConfig{HTMLShell: true},
+		)
+		req := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		body := rec.Body.String()
+		if !strings.Contains(body, "<!DOCTYPE html>") {
+			t.Error("expected DOCTYPE in HTML shell")
+		}
+		if !strings.Contains(body, "<html") {
+			t.Error("expected <html> tag in HTML shell")
+		}
+		if !strings.Contains(body, "<title>") {
+			t.Error("expected <title> in HTML shell")
+		}
+		if !strings.Contains(body, "</html>") {
+			t.Error("expected closing </html> in HTML shell")
+		}
+	})
+}
+
+func TestErrorHandlerJSON(t *testing.T) {
+	t.Parallel()
+
+	t.Run("JSON renders JSON error response", func(t *testing.T) {
+		t.Parallel()
+		handler := ErrorHandler(
+			errorfamily.NewRejection("config.invalid", "missing config"),
+			ErrorHandlerConfig{JSON: true},
+		)
+		req := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		ct := rec.Header().Get("Content-Type")
+		if !strings.Contains(ct, "application/json") {
+			t.Errorf("Content-Type = %q, want application/json", ct)
+		}
+		if rec.Code != http.StatusBadRequest {
+			t.Errorf("status = %d, want %d", rec.Code, http.StatusBadRequest)
+		}
+
+		var resp errorResponse
+		if err := json.NewDecoder(rec.Body).Decode(&resp); err != nil {
+			t.Fatalf("failed to decode JSON: %v", err)
+		}
+		if resp.Family != "rejection" {
+			t.Errorf("Family = %q, want %q", resp.Family, "rejection")
+		}
+		if resp.Code != "config.invalid" {
+			t.Errorf("Code = %q, want %q", resp.Code, "config.invalid")
+		}
+		if resp.Message == "" {
+			t.Error("expected non-empty message")
+		}
+	})
+
+	t.Run("JSON includes why and fix from go-error-family", func(t *testing.T) {
+		t.Parallel()
+		handler := ErrorHandler(
+			errorfamily.NewCorruption("data.invalid", "broken"),
+			ErrorHandlerConfig{JSON: true},
+		)
+		req := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		var resp errorResponse
+		if err := json.NewDecoder(rec.Body).Decode(&resp); err != nil {
+			t.Fatalf("failed to decode JSON: %v", err)
+		}
+		if resp.Why == "" {
+			t.Error("expected non-empty why from go-error-family defaults")
+		}
+		if resp.Fix == "" {
+			t.Error("expected non-empty fix from go-error-family defaults")
+		}
+	})
+}
+
+func TestErrorHandlerEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Override customizes props", func(t *testing.T) {
+		t.Parallel()
+		handler := ErrorHandler(
+			&testError{msg: "test"},
+			ErrorHandlerConfig{
+				Override: func(_ error, props ErrorPageProps) *ErrorPageProps {
+					props.Title = "Overridden"
+					return &props
+				},
+			},
+		)
+		req := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		body := rec.Body.String()
+		if !strings.Contains(body, "Overridden") {
+			t.Error("expected overridden title in response")
+		}
+	})
+
+	t.Run("nil error returns 503 transient", func(t *testing.T) {
+		t.Parallel()
+		handler := ErrorHandler(nil, ErrorHandlerConfig{})
+		req := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
+		rec := httptest.NewRecorder()
+		handler.ServeHTTP(rec, req)
+
+		if rec.Code != http.StatusServiceUnavailable {
+			t.Errorf("status = %d, want %d", rec.Code, http.StatusServiceUnavailable)
+		}
+	})
+
+	t.Run("WriteErrorPage with nonce propagates to props", func(t *testing.T) {
+		t.Parallel()
+		req := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
+		rec := httptest.NewRecorder()
+		props := ErrorPageProps{
+			Family:        FamilyRejection,
+			Code:          "test",
+			Title:         "Test Error",
+			ShowTimestamp: false,
+		}
+		WriteErrorPage(rec, req, http.StatusBadRequest, props, "test-nonce-abc")
+		if rec.Code != http.StatusBadRequest {
+			t.Errorf("status = %d, want %d", rec.Code, http.StatusBadRequest)
+		}
+	})
+}
