@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `errorpage` package: 3 components for presenting structured errors on the web
+  - `ErrorPage`: full-page error view with Wix-style What/Why/Fix/WayOut layout
+  - `ErrorDetail`: inline error detail card with context table, cause chain, and suggested fix
+  - `ErrorAlert`: family-aware alert banner with dismiss support
+  - 5 error families (Rejection, Conflict, Transient, Corruption, Infrastructure) with distinct color/icon/tone
+  - `FamilyStatusCode()`: maps Family → HTTP status code (400/409/503/500/503)
+  - `ContextMap()`: converts map[string]string → []ContextPair
+  - `ExtractCauseChain()`: walks Unwrap() chain to build CauseItem slice
+  - Zero dependency on go-error-family — bridge via string constants
+- `utils.DismissScript()`: shared dismiss JS extracted from feedback package (single source of truth)
+
 ### Changed
 
 - **BREAKING**: `Tab.Active bool` removed from `Tab` struct → `TabsProps.ActiveTabID string` on parent. Prevents zero/multiple active tabs

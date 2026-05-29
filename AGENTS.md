@@ -43,7 +43,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
 - **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
-- **Feedback shared:** `dismissScript()`, `feedbackIconName()`, `lookupFeedbackStyle[T]()` in `feedback/styles.go` eliminate duplication between Alert and Toast
+- **Feedback shared:** `utils.DismissScript()` (single source of truth), `feedbackIconName()`, `lookupFeedbackStyle[T]()` in `feedback/styles.go` eliminate duplication between Alert, Toast, and ErrorAlert
 
 ## Code Conventions
 

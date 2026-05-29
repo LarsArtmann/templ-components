@@ -1,6 +1,6 @@
 # Features — templ-components
 
-**Updated:** 2026-05-19 | **Version:** 0.x (pre-release)
+**Updated:** 2026-05-29 | **Version:** 0.x (pre-release)
 
 A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 
@@ -12,6 +12,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | ------------ | ------------ | ----------------------------------------------------------------------------------------- |
 | `utils`      | 0            | Shared types, Tailwind class merging, generic helpers                                     |
 | `display`    | 14           | UI display: cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns |
+| `errorpage`  | 3            | Error presentation: full-page errors, error detail cards, family-aware alerts             |
 | `feedback`   | 12           | User feedback: alerts, toasts, spinners, progress bars, skeletons                         |
 | `forms`      | 6            | Form controls: inputs, selects, textareas, checkboxes, labels, errors                     |
 | `htmx`       | 7            | HTMX integration: loading indicators, error handling, helpers                             |
@@ -19,7 +20,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `layout`     | 4            | Page layout: base HTML, theme toggle, dark mode                                           |
 | `navigation` | 9            | Navigation: nav bars, breadcrumbs, pagination, mobile menus                               |
 
-**Totals:** 53 templ components, 44 icon names, 17 typed enums, 30 `.templ` files, ~3,400 lines of Go/templ source
+**Totals:** 56 templ components, 44 icon names, 18 typed enums, 33 `.templ` files, ~4,000 lines of Go/templ source
 
 ---
 
@@ -44,7 +45,8 @@ type BaseProps struct {
 | `Class`       | `(classes ...string) string`                            | Merges Tailwind classes via tailwind-merge-go |
 | `CurrentYear` | `() string`                                             | Current year string                           |
 | `Ternary`     | `[T any](bool, a, b T) T`                               | Generic ternary                               |
-| `MapEnum`     | `[T ~string](m map[string]T, fallback T, key string) T` | Generic map lookup with fallback              |
+| `MapEnum`       | `[T ~string](m map[string]T, fallback T, key string) T` | Generic map lookup with fallback              |
+| `DismissScript` | `() string`                                             | Shared JS for [data-dismiss] click delegation |
 
 ### Test Helpers (exported)
 
@@ -100,6 +102,42 @@ type BaseProps struct {
 
 ---
 
+## Package: `errorpage`
+
+### Components
+
+| Component    | Status           | Description              | Key Features                                                              |
+| ------------ | ---------------- | ------------------------ | ------------------------------------------------------------------------- |
+| `ErrorPage`  | FULLY_FUNCTIONAL | Full-page error view     | Wix-style What/Why/Fix/WayOut, 5 families, context, cause chain, action   |
+| `ErrorDetail`| FULLY_FUNCTIONAL | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix       |
+| `ErrorAlert` | FULLY_FUNCTIONAL | Family-aware alert       | 5 distinct color schemes, dismiss, fix suggestion, family badge           |
+
+### Enums
+
+| Type     | Values                                                 |
+| -------- | ------------------------------------------------------ |
+| `Family` | Rejection, Conflict, Transient, Corruption, Infrastructure |
+
+### Bridge Helpers
+
+| Function             | Purpose                                                     |
+| -------------------- | ----------------------------------------------------------- |
+| `FamilyStatusCode`   | Maps Family → HTTP status code (400/409/503/500/503)        |
+| `ContextMap`         | Converts map[string]string → []ContextPair                  |
+| `ExtractCauseChain`  | Walks Unwrap() chain → []CauseItem with ErrorCode() support |
+
+### Family Visual Mapping
+
+| Family          | Color   | Icon                | Tone           | HTTP Status |
+| --------------- | ------- | ------------------- | -------------- | ----------- |
+| Rejection       | Amber   | ExclamationTriangle | Instructional  | 400         |
+| Conflict        | Orange  | ExclamationCircle   | Explanatory    | 409         |
+| Transient       | Blue    | Refresh             | Reassuring     | 503         |
+| Corruption      | Red     | ExclamationTriangle | Urgent         | 500         |
+| Infrastructure  | Slate   | Globe               | Apologetic     | 503         |
+
+---
+
 ## Package: `feedback`
 
 ### Components
@@ -149,7 +187,6 @@ Used by both Alert and Toast for consistent visual styling.
 ### Known Issues
 
 - **Toast icon SVG paths duplicated** across Go and JS — single source of truth missing
-- **Dismiss JS** pattern duplicated between Alert and Toast
 - **Spinner SVG** rendered 3 different ways across packages
 
 ---
