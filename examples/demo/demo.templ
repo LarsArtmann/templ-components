@@ -2,6 +2,7 @@ package main
 
 import (
 	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/icons"
@@ -163,6 +164,32 @@ templ demoContent() {
 			})
 			@forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications", Checked: true})
 			@forms.FileInput(forms.FileInputProps{Name: "avatar", Label: "Upload avatar", Accept: "image/*"})
+		</div>
+		@demoSection("Error Alerts")
+		<div class="space-y-4">
+			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyRejection, Title: "Invalid Input", Message: "The email address format is invalid.", Fix: "Enter a valid email address."})
+			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyConflict, Title: "Version Conflict", Message: "Someone else modified this resource.", Fix: "Refresh and try again."})
+			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyTransient, Title: "Temporary Error", Message: "A temporary error occurred. Please try again.", Fix: "Wait a moment and retry.", Dismissible: true})
+			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyCorruption, Title: "Data Corrupted", Message: "Configuration file is unreadable.", Fix: "Check the file format."})
+			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyInfrastructure, Title: "Service Unavailable", Message: "The service is currently down."})
+		</div>
+		@demoSection("Error Details")
+		<div class="space-y-4">
+			@errorpage.ErrorDetail(errorpage.ErrorDetailProps{
+				Family:  errorpage.FamilyCorruption,
+				Code:    "data.parse_failed",
+				Title:   "Parse Failed",
+				Message: "config.yaml contains invalid syntax at line 42.",
+				Fix:     "Check the YAML syntax and fix the indentation.",
+				Context: []errorpage.ContextPair{{Key: "file", Value: "config.yaml"}, {Key: "line", Value: "42"}},
+			})
+			@errorpage.ErrorDetail(errorpage.ErrorDetailProps{
+				Family:     errorpage.FamilyTransient,
+				Code:       "db.timeout",
+				Title:      "Database Timeout",
+				Message:    "Query took too long.",
+				CauseChain: []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}, {Message: "timeout after 30s", Code: "db.timeout"}},
+			})
 		</div>
 	</div>
 }
