@@ -68,7 +68,7 @@ templ ErrorAlert(props ErrorAlertProps) {
 		</div>
 		if props.Dismissible {
 			<script nonce={ props.Nonce }>
-				if(!window.tcDismissAttached){window.tcDismissAttached=true;document.addEventListener('click',function(e){var btn=e.target.closest('[data-dismiss]');if(btn){var el=btn.closest('[role="alert"]');if(el)el.remove();}});}
+				{{ utils.DismissScript() }}
 			</script>
 		}
 	</div>

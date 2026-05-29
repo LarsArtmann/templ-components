@@ -1,7 +1,10 @@
 // Package feedback provides user feedback components such as alerts, toasts, and loading indicators.
 package feedback
 
-import "github.com/larsartmann/templ-components/icons"
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // FeedbackType represents the severity/visual style of a feedback component.
 // Shared by Alert and Toast components.
@@ -23,7 +26,7 @@ type feedbackStyleSet struct {
 // dismissScript returns the shared JavaScript for dismissing feedback elements
 // (alerts and toasts) via [data-dismiss] click delegation.
 func dismissScript() string {
-	return `if(!window.tcDismissAttached){window.tcDismissAttached=true;document.addEventListener('click',function(e){var btn=e.target.closest('[data-dismiss]');if(btn){var el=btn.closest('[role="alert"]');if(el)el.remove();}});}`
+	return utils.DismissScript()
 }
 
 // lookupFeedbackStyle returns the style set for key t from map m,

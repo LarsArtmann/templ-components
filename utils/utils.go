@@ -49,3 +49,9 @@ func MapEnum[T ~string](m map[string]T, fallback T, key string) T {
 	}
 	return fallback
 }
+
+// DismissScript returns shared JavaScript for dismissing elements via [data-dismiss]
+// click delegation. Used by Alert, Toast, and ErrorAlert components.
+func DismissScript() string {
+	return `if(!window.tcDismissAttached){window.tcDismissAttached=true;document.addEventListener('click',function(e){var btn=e.target.closest('[data-dismiss]');if(btn){var el=btn.closest('[role="alert"]');if(el)el.remove();}});}`
+}
