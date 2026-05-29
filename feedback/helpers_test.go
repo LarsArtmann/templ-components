@@ -187,15 +187,15 @@ func TestStepLineClass(t *testing.T) {
 
 func TestDismissScript(t *testing.T) {
 	t.Parallel()
-	s := dismissScript()
+	s := utils.DismissScript()
 	if s == "" {
-		t.Error("dismissScript() returned empty string")
+		t.Error("utils.DismissScript() returned empty string")
 	}
 	if !contains(s, "tcDismissAttached") {
-		t.Error("dismissScript() missing tcDismissAttached guard")
+		t.Error("utils.DismissScript() missing tcDismissAttached guard")
 	}
 	if !contains(s, "data-dismiss") {
-		t.Error("dismissScript() missing data-dismiss selector")
+		t.Error("utils.DismissScript() missing data-dismiss selector")
 	}
 }
 

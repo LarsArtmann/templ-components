@@ -3,7 +3,6 @@ package feedback
 
 import (
 	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 // FeedbackType represents the severity/visual style of a feedback component.
@@ -21,12 +20,6 @@ const (
 // feedbackStyleSet holds the CSS classes for a feedback component variant.
 type feedbackStyleSet struct {
 	Border, BG, Text, Icon string
-}
-
-// dismissScript returns the shared JavaScript for dismissing feedback elements
-// (alerts and toasts) via [data-dismiss] click delegation.
-func dismissScript() string {
-	return utils.DismissScript()
 }
 
 // lookupFeedbackStyle returns the style set for key t from map m,
