@@ -17,9 +17,26 @@ templ GlobalErrorHandling(nonce string) {
 
 			const errorHistory = [];
 
+			// Family-aware toast type mapping
+			var tcFamilyToastMap = {
+				'rejection': 'warning',
+				'conflict': 'warning',
+				'transient': 'info',
+				'corruption': 'error',
+				'infrastructure': 'error'
+			};
+
+			function tcParseErrorBody(xhr) {
+				if (!xhr || !xhr.responseText) return null;
+				try {
+					var body = JSON.parse(xhr.responseText);
+					if (body && (body.family || body.code || body.message)) return body;
+				} catch (e) {}
+				return null;
+			}
+
 			function tcHandleHTMXError(event, type) {
 				var xhr = event.detail.xhr;
-				var target = event.detail.target;
 
 				console.error('HTMX Error:', {
 					type: type,
@@ -39,13 +56,19 @@ templ GlobalErrorHandling(nonce string) {
 					errorHistory.length = MAX_ERROR_HISTORY;
 				}
 
-				// Show toast if available
 				if (typeof tcShowToast === 'function') {
 					var message, toastType, title;
+					var structured = tcParseErrorBody(xhr);
+
 					if (type === 'network' || !xhr || xhr.status === 0) {
 						message = 'Network error. Check your connection.';
 						toastType = 'error';
 						title = 'Connection Lost';
+					} else if (structured && structured.family) {
+						message = structured.message || 'An error occurred.';
+						toastType = tcFamilyToastMap[structured.family] || 'error';
+						title = structured.title || (structured.code || 'Error');
+						if (structured.fix) message += ' ' + structured.fix;
 					} else if (xhr.status >= 500) {
 						message = 'Server error. Please try again.';
 						toastType = 'error';
@@ -65,13 +88,9 @@ templ GlobalErrorHandling(nonce string) {
 						setTimeout(function() { window.location.reload(); }, 3000);
 					} else if (xhr.status >= 400) {
 						message = 'Request failed. Please try again.';
-						try {
-							var response = JSON.parse(xhr.responseText);
-							if (response.error) message = response.error;
-							else if (response.message) message = response.message;
-						} catch (e) {}
+						if (structured && structured.message) message = structured.message;
 						toastType = 'error';
-						title = 'Request Failed';
+						title = structured && structured.code ? structured.code : 'Request Failed';
 					}
 					tcShowToast(message, toastType, title, 5000);
 				}
