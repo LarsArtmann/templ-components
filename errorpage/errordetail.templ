@@ -1,0 +1,109 @@
+package errorpage
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// ErrorDetail renders an inline error detail card for embedding in pages, modals, or sidebars.
+// Shows code, message, context key-value pairs, cause chain, and suggested fix.
+//
+//	@errorpage.ErrorDetail(errorpage.ErrorDetailProps{
+//	   Family:  errorpage.FamilyCorruption,
+//	   Code:    "data.parse_failed",
+//	   Title:   "Failed to parse configuration",
+//	   Message: "config.yaml contains invalid syntax at line 42.",
+//	   Fix:     "Check the YAML syntax and fix the indentation.",
+//	   Context: []errorpage.ContextPair{{Key: "file", Value: "config.yaml"}, {Key: "line", Value: "42"}},
+//	})
+templ ErrorDetail(props ErrorDetailProps) {
+	{{ style := lookupFamilyStyle(props.Family) }}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("rounded-lg border overflow-hidden", style.Border, style.BG, props.Class) }
+		role="alert"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<div class="px-4 py-3 sm:px-5">
+			<div class="flex items-start gap-3">
+				<div class="flex-shrink-0 mt-0.5">
+					@icons.Icon(style.Icon, utils.Class("h-5 w-5", style.IconColor))
+				</div>
+				<div class="flex-1 min-w-0">
+					<div class="flex items-center gap-2 flex-wrap">
+						if props.Code != "" {
+							<code class={ "inline-flex items-center rounded px-1.5 py-0.5 text-xs font-mono font-medium", style.AccentBG, style.AccentText }>
+								{ props.Code }
+							</code>
+						}
+						<span class={ "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium", style.AccentBG, style.AccentText }>
+							{ string(props.Family) }
+						</span>
+					</div>
+					if props.Title != "" {
+						<h3 class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">{ props.Title }</h3>
+					}
+					if props.Message != "" {
+						<p class={ "mt-1 text-sm", style.Text }>{ props.Message }</p>
+					}
+				</div>
+			</div>
+
+			if props.Fix != "" || len(props.Context) > 0 || len(props.CauseChain) > 0 {
+				<div class="mt-3 ml-8">
+					if props.Fix != "" {
+						<div class="rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2">
+							<p class="text-xs text-gray-600 dark:text-gray-400">
+								<span class="font-medium text-gray-500 dark:text-gray-500">Suggested fix:</span>
+								<span class="ml-1">{ props.Fix }</span>
+							</p>
+						</div>
+					}
+
+					if len(props.Context) > 0 {
+						<div class="mt-3 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden">
+							<table class="min-w-full text-xs">
+								<tbody class="divide-y divide-gray-100 dark:divide-gray-700">
+									for _, pair := range props.Context {
+										<tr>
+											<td class="px-3 py-1.5 font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap w-1/4">{ pair.Key }</td>
+											<td class="px-3 py-1.5 font-mono text-gray-700 dark:text-gray-300 break-all">{ pair.Value }</td>
+										</tr>
+									}
+								</tbody>
+							</table>
+						</div>
+					}
+
+					if len(props.CauseChain) > 0 {
+						<div class="mt-3 space-y-1">
+							<p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Caused by</p>
+							for i, cause := range props.CauseChain {
+								<div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
+									<span class="h-1 w-1 rounded-full bg-gray-300 dark:bg-gray-600 flex-shrink-0"></span>
+									<span class="font-mono">{ cause.Message }</span>
+									if cause.Code != "" {
+										<span class="text-gray-400 dark:text-gray-500">({ cause.Code })</span>
+									}
+								</div>
+								if i == len(props.CauseChain)-1 {
+								}
+							}
+						</div>
+					}
+				</div>
+			}
+		</div>
+
+		if props.Timestamp != "" {
+			<div class="px-4 py-2 sm:px-5 border-t border-gray-100 dark:border-gray-800">
+				<p class="text-xs text-gray-400 dark:text-gray-500">{ props.Timestamp }</p>
+			</div>
+		}
+	</div>
+}

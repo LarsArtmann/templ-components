@@ -1,0 +1,128 @@
+package errorpage
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// ErrorPage renders a full-page error view suitable for 4xx/5xx HTTP responses.
+// Presents a Wix-quality What/Why/Fix/WayOut layout with family-appropriate styling.
+//
+//	@errorpage.ErrorPage(errorpage.ErrorPageProps{
+//	   Family:  errorpage.FamilyRejection,
+//	   Code:    "page.not_found",
+//	   Title:   "Page not found",
+//	   Message: "The page you're looking for doesn't exist.",
+//	   Fix:     "Check the URL or navigate back to the homepage.",
+//	   WayOut:  "Go home",
+//	   WayOutHref: "/",
+//	})
+templ ErrorPage(props ErrorPageProps) {
+	{{ style := lookupFamilyStyle(props.Family) }}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<div class="w-full max-w-lg">
+			<div class={ "rounded-xl border shadow-sm overflow-hidden", style.Border, style.BG }>
+				<div class="px-6 py-8 sm:px-10">
+					<div class="flex items-start gap-4">
+						<div class={ "flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg", style.AccentBG }>
+							@icons.Icon(style.Icon, utils.Class("h-5 w-5", style.IconColor))
+						</div>
+						<div class="flex-1 min-w-0">
+							if props.Code != "" {
+								<span class={ "inline-flex items-center rounded-md px-2 py-0.5 text-xs font-mono font-medium", style.AccentBG, style.AccentText }>
+									{ props.Code }
+								</span>
+							}
+							if props.Title != "" {
+								<h1 class="mt-2 text-lg font-semibold text-gray-900 dark:text-white">{ props.Title }</h1>
+							}
+							if props.Message != "" {
+								<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{ props.Message }</p>
+							}
+						</div>
+					</div>
+
+					if props.Why != "" {
+						<div class="mt-5 ml-14">
+							<p class="text-sm text-gray-500 dark:text-gray-400">{ props.Why }</p>
+						</div>
+					}
+
+					if props.Fix != "" {
+						<div class="mt-4 ml-14 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-4 py-3">
+							<p class="text-sm font-medium text-gray-700 dark:text-gray-300">
+								<span class="text-gray-400 dark:text-gray-500 mr-1">Fix:</span>
+								{ props.Fix }
+							</p>
+						</div>
+					}
+
+					if len(props.Context) > 0 {
+						<dl class="mt-5 ml-14 space-y-2">
+							for _, pair := range props.Context {
+								<div class="flex gap-2 text-sm">
+									<dt class="font-medium text-gray-500 dark:text-gray-400 flex-shrink-0">{ pair.Key }:</dt>
+									<dd class="text-gray-700 dark:text-gray-300 font-mono text-xs break-all">{ pair.Value }</dd>
+								</div>
+							}
+						</dl>
+					}
+
+					if len(props.CauseChain) > 0 {
+						<div class="mt-5 ml-14">
+							<p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider mb-2">Cause chain</p>
+							<div class="space-y-1">
+								for _, cause := range props.CauseChain {
+									<div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
+										<span class="h-1.5 w-1.5 rounded-full bg-gray-300 dark:bg-gray-600 flex-shrink-0"></span>
+										<span class="font-mono text-xs">{ cause.Message }</span>
+										if cause.Code != "" {
+											<span class="text-xs text-gray-400 dark:text-gray-500">({ cause.Code })</span>
+										}
+									</div>
+								}
+							</div>
+						</div>
+					}
+
+					if props.WayOut != "" || props.WayOutHref != "" {
+						<div class="mt-6 ml-14">
+							if props.WayOutHref != "" {
+								<a
+									href={ templ.SafeURL(props.WayOutHref) }
+									class={ "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+								>
+									<span>{ utils.Ternary(props.WayOut != "", props.WayOut, "Go back") }</span>
+									@icons.Icon(icons.ArrowRight, "h-4 w-4")
+								</a>
+							} else if props.WayOut != "" {
+								<button
+									type="button"
+									onclick="history.back()"
+									class={ "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+								>
+									{ props.WayOut }
+								</button>
+							}
+						</div>
+					}
+				</div>
+
+				if props.ShowTimestamp && props.Timestamp != "" {
+					<div class="px-6 py-3 sm:px-10 border-t border-gray-100 dark:border-gray-800 bg-gray-50/50 dark:bg-gray-900/50">
+						<p class="text-xs text-gray-400 dark:text-gray-500">{ props.Timestamp }</p>
+					</div>
+				}
+			</div>
+		</div>
+	</div>
+}

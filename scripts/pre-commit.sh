@@ -4,6 +4,8 @@
 
 set -euo pipefail
 
+export GOWORK=off
+
 echo "Running templ-components pre-commit checks..."
 
 # Remove stale generated files and regenerate
@@ -17,6 +19,6 @@ go build ./...
 go test ./...
 
 # Lint (exclude examples/ per .golangci.yml)
-golangci-lint run ./display/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
 
 echo "All checks passed."

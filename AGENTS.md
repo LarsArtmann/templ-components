@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-22 | **Coverage:** 66.2% | **Tests:** 190+ | **Packages:** 9+demo | **Generated files:** 32 `*_templ.go` committed
+**Updated:** 2026-05-29 | **Tests:** 215+ | **Packages:** 10+demo | **Generated files:** 35 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -27,7 +27,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 32 generated files across 8 packages + examples/demo (display, feedback, forms, htmx, icons, internal/svg, layout, navigation)
+- 35 generated files across 9 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/svg, layout, navigation)
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
 will have their Go toolchain download the tagged commit. If `*_templ.go` is missing from that
@@ -39,7 +39,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **Module:** `github.com/larsartmann/templ-components`
 - **Go:** 1.26, **templ:** v0.3.x
 - **No framework deps** — pure Go + templ + Tailwind v4 class strings
-- **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display,feedback`, `feedback ← none (htmx decoupled)`
+- **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display,feedback,errorpage`, `feedback ← none (htmx decoupled)`, `errorpage ← icons,utils (no feedback dep)`
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
 - **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
@@ -78,6 +78,8 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - Dismiss JS: Alert + Toast share `tcDismissAttached` handler using `[data-dismiss]` selector
 - Toast JS: dismiss icon from `icons.IconPathJS()` via `tcToastIcons.dismiss`
 - Table: row cells auto-padded/truncated to match header count
+- **Error families:** `errorpage` package mirrors go-error-family's 5 families (Rejection/Conflict/Transient/Corruption/Infrastructure) with distinct visual styles — zero dependency on go-error-family
+- **Error components:** `ErrorPage` (full-page), `ErrorDetail` (inline card), `ErrorAlert` (family-aware alert) in `errorpage/`
 - HTMX retry: per-element `data-tc-retry` attribute (no shared counter)
 
 ## Breaking Changes (v0.1 → v0.2)
@@ -112,5 +114,5 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 
 ```bash
 # Must lint specific packages — examples/ excluded via .golangci.yml
-golangci-lint run ./display/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
 ```

@@ -5,8 +5,6 @@ import "github.com/larsartmann/templ-components/icons"
 
 // FeedbackType represents the severity/visual style of a feedback component.
 // Shared by Alert and Toast components.
-//
-//nolint:revive // stutter is acceptable: feedback.Type is too vague
 type FeedbackType string
 
 // Feedback severity levels shared by Alert and Toast components.

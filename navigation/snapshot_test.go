@@ -202,7 +202,6 @@ func TestMobileMenuToggleRender(t *testing.T) {
 	})
 }
 
-//nolint:gochecknoglobals
 var testNavLinks = []NavLinkProps{
 	{Href: "/", Text: navItemHome},
 	{Href: navItemAbout, Text: navItemAbout},
