@@ -136,7 +136,7 @@ func TestPreBuiltConstructors(t *testing.T) {
 		}
 	})
 
-	t.Run("ConflictError has conflict family", func(t *testing.T) {
+	t.Run("Conflict has conflict family", func(t *testing.T) {
 		t.Parallel()
 		props := Conflict("Version mismatch")
 		if props.Family != FamilyConflict {
@@ -466,6 +466,34 @@ func TestParseFamily(t *testing.T) {
 		got := ParseFamily("unknown")
 		if got != FamilyTransient {
 			t.Errorf("ParseFamily(%q) = %q, want %q", "unknown", got, FamilyTransient)
+		}
+	})
+
+	t.Run("case insensitive", func(t *testing.T) {
+		t.Parallel()
+		tests := []struct {
+			input string
+			want  Family
+		}{
+			{"REJECTION", FamilyRejection},
+			{"Conflict", FamilyConflict},
+			{"TRANSIENT", FamilyTransient},
+			{"Corruption", FamilyCorruption},
+			{"INFRASTRUCTURE", FamilyInfrastructure},
+		}
+		for _, tc := range tests {
+			got := ParseFamily(tc.input)
+			if got != tc.want {
+				t.Errorf("ParseFamily(%q) = %q, want %q", tc.input, got, tc.want)
+			}
+		}
+	})
+
+	t.Run("trims whitespace", func(t *testing.T) {
+		t.Parallel()
+		got := ParseFamily("  rejection  ")
+		if got != FamilyRejection {
+			t.Errorf("ParseFamily(%q) = %q, want %q", "  rejection  ", got, FamilyRejection)
 		}
 	})
 }

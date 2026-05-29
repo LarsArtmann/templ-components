@@ -2,6 +2,7 @@ package errorpage
 
 import (
 	"errors"
+	"strings"
 
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
@@ -117,7 +118,7 @@ func FamilyIsValid(f Family) bool {
 // ParseFamily parses a family string (case-insensitive) into a Family.
 // Returns FamilyTransient for unrecognized values.
 func ParseFamily(s string) Family {
-	f := Family(s)
+	f := Family(strings.ToLower(strings.TrimSpace(s)))
 	if FamilyIsValid(f) {
 		return f
 	}

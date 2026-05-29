@@ -45,9 +45,9 @@ func FromError(err error) ErrorPageProps {
 
 	props := ErrorPageProps{ //nolint:exhaustruct // filled incrementally
 		Family:     family,
-		Message:    err.Error(),
+		Message:    cleanMessage(err),
 		CauseChain: ExtractCauseChain(err, 5),
-		Timestamp:  time.Now().UTC().Format(time.RFC3339),
+		Timestamp:  errorTimestamp(err),
 	}
 
 	if classified, ok := errors.AsType[errorfamily.Classified](err); ok {
@@ -79,6 +79,26 @@ func familyFromError(err error) Family {
 		return ParseFamily(c.ErrorFamily())
 	}
 	return FamilyTransient
+}
+
+// cleanMessage returns the clean message from a go-error-family error
+// (without the [family:code] prefix), or falls back to err.Error().
+func cleanMessage(err error) string {
+	type messenger interface{ Message() string }
+	if m, ok := err.(messenger); ok {
+		return m.Message()
+	}
+	return err.Error()
+}
+
+// errorTimestamp returns the error's own timestamp if available,
+// otherwise generates one from time.Now().
+func errorTimestamp(err error) string {
+	type timestamper interface{ Timestamp() time.Time }
+	if ts, ok := err.(timestamper); ok {
+		return ts.Timestamp().UTC().Format(time.RFC3339)
+	}
+	return time.Now().UTC().Format(time.RFC3339)
 }
 
 // errorResponse is the JSON structure returned when ErrorHandlerConfig.JSON is true.
