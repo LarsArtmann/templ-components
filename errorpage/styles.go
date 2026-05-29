@@ -1,6 +1,8 @@
 package errorpage
 
 import (
+	"errors"
+
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -159,14 +161,12 @@ type ErrorDetailProps struct {
 	Context    []ContextPair
 	CauseChain []CauseItem
 	Timestamp  string
-	Expanded   bool
 }
 
 // DefaultErrorDetailProps returns sensible defaults.
 func DefaultErrorDetailProps() ErrorDetailProps {
 	return ErrorDetailProps{ //nolint:exhaustruct // intentionally minimal defaults
-		Family:   FamilyTransient,
-		Expanded: false,
+		Family: FamilyTransient,
 	}
 }
 
@@ -185,4 +185,59 @@ func DefaultErrorAlertProps() ErrorAlertProps {
 	return ErrorAlertProps{ //nolint:exhaustruct // intentionally minimal defaults
 		Family: FamilyTransient,
 	}
+}
+
+// FamilyStatusCode returns the HTTP status code for a family.
+// Useful for HTTP handlers that need to set the correct response status.
+func FamilyStatusCode(f Family) int {
+	if code, ok := familyStatusCodeMap[f]; ok {
+		return code
+	}
+	return 500
+}
+
+//nolint:gochecknoglobals // Package-level lookup table
+var familyStatusCodeMap = map[Family]int{
+	FamilyRejection:      400,
+	FamilyConflict:       409,
+	FamilyTransient:      503,
+	FamilyCorruption:     500,
+	FamilyInfrastructure: 503,
+}
+
+// ContextMap converts a map[string]string to a []ContextPair slice.
+// Useful for bridging go-error-family's ErrorContext() to errorpage props.
+func ContextMap(m map[string]string) []ContextPair {
+	if len(m) == 0 {
+		return nil
+	}
+	pairs := make([]ContextPair, 0, len(m))
+	for k, v := range m {
+		pairs = append(pairs, ContextPair{Key: k, Value: v})
+	}
+	return pairs
+}
+
+// ExtractCauseChain walks an error's Unwrap() chain and returns CauseItems.
+// Useful for bridging go-error-family errors to errorpage props.
+// Stops after maxDepth levels to prevent infinite chains.
+func ExtractCauseChain(err error, maxDepth int) []CauseItem {
+	if err == nil || maxDepth <= 0 {
+		return nil
+	}
+	var chain []CauseItem
+	current := err
+	for range maxDepth {
+		unwrapped := errors.Unwrap(current)
+		if unwrapped == nil {
+			break
+		}
+		item := CauseItem{Message: unwrapped.Error()} //nolint:exhaustruct // Code set conditionally below
+		if c, ok := unwrapped.(interface{ ErrorCode() string }); ok {
+			item.Code = c.ErrorCode()
+		}
+		chain = append(chain, item)
+		current = unwrapped
+	}
+	return chain
 }

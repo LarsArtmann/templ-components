@@ -83,7 +83,7 @@ templ ErrorDetail(props ErrorDetailProps) {
 					if len(props.CauseChain) > 0 {
 						<div class="mt-3 space-y-1">
 							<p class="text-xs font-medium text-gray-400 dark:text-gray-500 uppercase tracking-wider">Caused by</p>
-							for i, cause := range props.CauseChain {
+							for _, cause := range props.CauseChain {
 								<div class="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
 									<span class="h-1 w-1 rounded-full bg-gray-300 dark:bg-gray-600 flex-shrink-0"></span>
 									<span class="font-mono">{ cause.Message }</span>
@@ -91,8 +91,6 @@ templ ErrorDetail(props ErrorDetailProps) {
 										<span class="text-gray-400 dark:text-gray-500">({ cause.Code })</span>
 									}
 								</div>
-								if i == len(props.CauseChain)-1 {
-								}
 							}
 						</div>
 					}
