@@ -322,7 +322,10 @@ func renderWithShell(ctx context.Context, w io.Writer, title string, props Error
 		_, _ = fmt.Fprint(bw, `</body></html>`)
 		return nil
 	})
-	return fmt.Errorf("render error page shell: %w", shell.Render(ctx, w))
+	if err := shell.Render(ctx, w); err != nil {
+		return fmt.Errorf("render error page shell: %w", err)
+	}
+	return nil
 }
 
 // htmlEscape escapes a string for safe inclusion in HTML.
