@@ -5,15 +5,6 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-// ErrorAlert renders an alert banner derived from an error family.
-// Maps each family to a distinct visual treatment with family-appropriate icon and styling.
-//
-//	@errorpage.ErrorAlert(errorpage.ErrorAlertProps{
-//	   Family:  errorpage.FamilyTransient,
-//	   Title:   "Temporary Error",
-//	   Message: "A temporary error occurred. Please try again in a few moments.",
-//	   Fix:     "Wait a moment and try again.",
-//	})
 templ ErrorAlert(props ErrorAlertProps) {
 	{{ style := lookupFamilyStyle(props.Family) }}
 	<div
@@ -29,16 +20,14 @@ templ ErrorAlert(props ErrorAlertProps) {
 	>
 		<div class="flex">
 			<div class="flex-shrink-0">
-				@icons.Icon(style.Icon, utils.Class("h-5 w-5", style.IconColor))
+				@familyIcon(style)
 			</div>
 			<div class="ml-3 flex-1">
 				<div class="flex items-center gap-2">
 					if props.Title != "" {
 						<h3 class={ "text-sm font-medium", style.Text }>{ props.Title }</h3>
 					}
-					<span class={ "inline-flex items-center rounded-md px-1.5 py-0.5 text-xs font-medium", style.AccentBG, style.AccentText }>
-						{ string(props.Family) }
-					</span>
+					@familyBadge(props.Family, style)
 				</div>
 				<div class={ "mt-1 text-sm", style.Text }>
 					<p>{ props.Message }</p>

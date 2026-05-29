@@ -46,7 +46,7 @@ func TestErrorPageUserSeesFullPageError(t *testing.T) {
 			Fix:     "Check the YAML syntax and fix the indentation.",
 		}))
 		utils.AssertContains(t, output, "Some data appears to be damaged")
-		utils.AssertContains(t, output, "Fix:")
+		utils.AssertContains(t, output, "Suggested fix:")
 		utils.AssertContains(t, output, "Check the YAML syntax")
 		utils.AssertContains(t, output, "red")
 	})
@@ -77,9 +77,9 @@ func TestErrorPageUserSeesFullPageError(t *testing.T) {
 				{Key: "actual_version", Value: "5"},
 			},
 		}))
-		utils.AssertContains(t, output, "resource:")
+		utils.AssertContains(t, output, "resource")
 		utils.AssertContains(t, output, "user/42")
-		utils.AssertContains(t, output, "expected_version:")
+		utils.AssertContains(t, output, "expected_version")
 		utils.AssertContains(t, output, "3")
 		utils.AssertContains(t, output, "orange")
 	})
