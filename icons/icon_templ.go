@@ -5,11 +5,10 @@ package icons
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import (
-	"github.com/a-h/templ"
-	templruntime "github.com/a-h/templ/runtime"
-	"github.com/larsartmann/templ-components/internal/svg"
-)
+import "github.com/a-h/templ"
+import templruntime "github.com/a-h/templ/runtime"
+
+import "github.com/larsartmann/templ-components/internal/svg"
 
 // Icon renders an SVG icon by name with customizable class and size
 // All icons are 24x24 with currentColor fill/stroke for easy theming

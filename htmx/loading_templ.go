@@ -5,10 +5,8 @@ package htmx
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import (
-	"github.com/a-h/templ"
-	templruntime "github.com/a-h/templ/runtime"
-)
+import "github.com/a-h/templ"
+import templruntime "github.com/a-h/templ/runtime"
 
 // LoadingIndicator renders a fixed-position HTMX loading indicator.
 // Accepts a spinner component for decoupled loading animation.
