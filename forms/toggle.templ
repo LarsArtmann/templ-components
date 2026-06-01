@@ -47,7 +47,7 @@ func toggleSizeClasses(size ToggleSize) (track, thumb, translate string) {
 templ Toggle(props ToggleProps) {
 	{{ trackClass, thumbClass, translateClass := toggleSizeClasses(props.Size) }}
 	<label
-		class={ utils.Class("inline-flex cursor-pointer items-center", props.Class) }
+		class={ utils.Class("inline-flex cursor-pointer items-center", utils.Ternary(props.Disabled, "opacity-50 cursor-not-allowed", "cursor-pointer"), props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
