@@ -11,17 +11,17 @@
 
 ### Component Library (56 templ components across 9 packages)
 
-| Package | Components | Status |
-|---------|-----------|--------|
-| `utils` | BaseProps, Class(), Ternary(), DismissScript(), CurrentYear() | ✅ Complete |
-| `display` | Card, SimpleCard, StatCard, Badge, Avatar, Button, Modal, Dropdown, Accordion, Tabs, Tooltip, Table, EmptyState | ✅ Complete |
-| `errorpage` | ErrorPage, ErrorDetail, ErrorAlert, ErrorHandler, 5 family styles | ✅ Complete |
-| `feedback` | Alert, Toast, ToastContainer, Spinner, LoadingOverlay, InlineLoading, Skeleton, SkeletonGroup, ProgressBar, StepIndicator | ✅ Complete |
-| `forms` | Input, Select, Textarea, Checkbox, Toggle, FileInput, Label, FieldError, InputGroup, Radio, RadioGroup | ✅ Complete |
-| `htmx` | LoadingIndicator, InlineLoadingOverlay, LoadingButton, ConfirmDelete, SwapOOB, CSRFToken, ErrorHandler | ✅ Complete |
-| `icons` | 45 typed icon names, Icon(), IconPathJS(), FillIcon() | ✅ Complete |
-| `layout` | Base(), Minimal(), ThemeToggle(), ThemeScript() | ✅ Complete |
-| `navigation` | Nav, SimpleNav, NavLink, MobileNavLink, MobileMenu, MobileMenuToggle, Breadcrumbs, Pagination, Footer | ✅ Complete |
+| Package      | Components                                                                                                                | Status      |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------- | ----------- |
+| `utils`      | BaseProps, Class(), Ternary(), DismissScript(), CurrentYear()                                                             | ✅ Complete |
+| `display`    | Card, SimpleCard, StatCard, Badge, Avatar, Button, Modal, Dropdown, Accordion, Tabs, Tooltip, Table, EmptyState           | ✅ Complete |
+| `errorpage`  | ErrorPage, ErrorDetail, ErrorAlert, ErrorHandler, 5 family styles                                                         | ✅ Complete |
+| `feedback`   | Alert, Toast, ToastContainer, Spinner, LoadingOverlay, InlineLoading, Skeleton, SkeletonGroup, ProgressBar, StepIndicator | ✅ Complete |
+| `forms`      | Input, Select, Textarea, Checkbox, Toggle, FileInput, Label, FieldError, InputGroup, Radio, RadioGroup                    | ✅ Complete |
+| `htmx`       | LoadingIndicator, InlineLoadingOverlay, LoadingButton, ConfirmDelete, SwapOOB, CSRFToken, ErrorHandler                    | ✅ Complete |
+| `icons`      | 45 typed icon names, Icon(), IconPathJS(), FillIcon()                                                                     | ✅ Complete |
+| `layout`     | Base(), Minimal(), ThemeToggle(), ThemeScript()                                                                           | ✅ Complete |
+| `navigation` | Nav, SimpleNav, NavLink, MobileNavLink, MobileMenu, MobileMenuToggle, Breadcrumbs, Pagination, Footer                     | ✅ Complete |
 
 ### Quality Infrastructure
 
@@ -115,6 +115,7 @@
 ### 1. Design Token System (High Impact, Medium Effort)
 
 **Problem:** Colors, shadows, and borders are hardcoded as Tailwind strings in 30+ places. `bg-blue-600`, `text-gray-900`, `border-gray-200` appear scattered. This makes:
+
 - Theming impossible (can't swap blue for indigo)
 - Dark mode maintenance fragile (we just fixed slate→gray inconsistency)
 - Brand customization requires forking
@@ -142,6 +143,7 @@ func PrimaryButton() string { return "bg-" + ColorPrimary + " text-white" }
 **Problem:** Can't write generic utilities like `WrapWithAria(component, label)` because props structs don't share an interface.
 
 **Solution:**
+
 ```go
 type ComponentProps interface {
     GetBaseProps() BaseProps
@@ -174,15 +176,16 @@ Then components use `bg-tc-primary` instead of `bg-blue-600`. This makes theming
 
 ### 4. Well-Established Libraries We Could Adopt (Medium Impact, Low Effort)
 
-| Library | Purpose | How We'd Use It |
-|---------|---------|-----------------|
-| `github.com/alecthomas/chroma` | Syntax highlighting | For code blocks in error pages / docs |
-| `github.com/yosssi/gcss` | CSS preprocessing | For the theme CSS file |
-| `github.com/nicksnyder/go-i18n` | Internationalization | For error messages, form labels |
-| `github.com/invopop/validation` | Struct validation | For `Validate() error` on props |
-| `github.com/stretchr/testify` | Test assertions | Already standard; ensure full adoption |
+| Library                         | Purpose              | How We'd Use It                        |
+| ------------------------------- | -------------------- | -------------------------------------- |
+| `github.com/alecthomas/chroma`  | Syntax highlighting  | For code blocks in error pages / docs  |
+| `github.com/yosssi/gcss`        | CSS preprocessing    | For the theme CSS file                 |
+| `github.com/nicksnyder/go-i18n` | Internationalization | For error messages, form labels        |
+| `github.com/invopop/validation` | Struct validation    | For `Validate() error` on props        |
+| `github.com/stretchr/testify`   | Test assertions      | Already standard; ensure full adoption |
 
 **What NOT to adopt:**
+
 - **React/Vue/Angular** — defeats the purpose of server-rendered templ
 - **Bootstrap/Bulma** — we already use Tailwind
 - **Alpine.js** — adds JS dependency; our vanilla JS pattern is lighter
@@ -190,6 +193,7 @@ Then components use `bg-tc-primary` instead of `bg-blue-600`. This makes theming
 ### 5. Consolidate JS Pattern (Medium Impact, Medium Effort)
 
 **Problem:** 10 script blocks across 7 files use 3 different patterns:
+
 - Global singleton: `window.tcDropdownAttached`, `window.tcAccordionAttached`
 - Per-instance IIFE: Modal focus trap
 - IIFE-wrapped global guard: ThemeToggle
@@ -198,7 +202,7 @@ Then components use `bg-tc-primary` instead of `bg-blue-600`. This makes theming
 
 ```javascript
 // One script, all components
-document.addEventListener('click', function(e) {
+document.addEventListener("click", function (e) {
   // Dropdown: [data-dropdown-trigger]
   // Accordion: [data-accordion-trigger]
   // Dismiss: [data-dismiss]
@@ -214,33 +218,33 @@ document.addEventListener('click', function(e) {
 
 Sorted by **Impact / Effort** ratio (highest first):
 
-| # | Task | Impact | Effort | Package |
-|---|------|--------|--------|---------|
-| 1 | **Add `ComponentProps` interface + `GetBaseProps()`** | 🔥 High | 🟢 Low | `utils/` |
-| 2 | **Extract design tokens (colors, shadows, radii) to named constants** | 🔥 High | 🟡 Medium | `utils/` or `design/` |
-| 3 | **Fix test coverage gaps (<70%: fillIcon, Select, Textarea)** | 🔥 High | 🟢 Low | `display/`, `forms/` |
-| 4 | **Add BDD tests for navigation, htmx, layout, icons** | 🔥 High | 🟡 Medium | multiple |
-| 5 | **Standardize all JS to single `tcInit()` pattern** | 🔥 High | 🟡 Medium | `utils/`, multiple |
-| 6 | **Add `Validate() error` to all props structs** | 🔥 High | 🟡 Medium | all packages |
-| 7 | **Ship `tc-theme.css` with CSS custom properties** | 🔥 High | 🟡 Medium | new file |
-| 8 | **Fix demo app: enable HTMX + add more component showcases** | 🔥 High | 🟢 Low | `examples/demo/` |
-| 9 | **Add dark mode class verification tests to all packages** | 🔥 High | 🟢 Low | all test files |
-| 10 | **Add `Disabled` to Toggle, FileInput, DropdownItem** | 🔥 High | 🟢 Low | `forms/`, `display/` |
-| 11 | **Implement Table `<caption>` rendering** | 🟡 Medium | 🟢 Low | `display/` |
-| 12 | **Add Badge `Href` / click support** | 🟡 Medium | 🟢 Low | `display/` |
-| 13 | **Add StepIndicator vertical variant** | 🟡 Medium | 🟡 Medium | `feedback/` |
-| 14 | **Add ProgressBar indeterminate state** | 🟡 Medium | 🟡 Medium | `feedback/` |
-| 15 | **Add client-side JS tab switching** | 🟡 Medium | 🟡 Medium | `display/` |
-| 16 | **Replace hardcoded `blue-600` with `Primary` token** | 🟡 Medium | 🟢 Low | all packages |
-| 17 | **Set up GitHub Actions CI properly** | 🟡 Medium | 🟢 Low | `.github/workflows/` |
-| 18 | **Tag v0.2.0 release + update CHANGELOG** | 🟡 Medium | 🟢 Low | root |
-| 19 | **Deploy live demo site** | 🟡 Medium | 🟡 Medium | `cmd/demo/` |
-| 20 | **Add Date Picker component** | 🟡 Medium | 🔴 High | `forms/` |
-| 21 | **Add Combobox/Autocomplete component** | 🟡 Medium | 🔴 High | `forms/` |
-| 22 | **Add more Heroicons (45→100)** | 🟡 Medium | 🟢 Low | `icons/` |
-| 23 | **Modularize into Go workspace** | 🟡 Medium | 🔴 High | root |
-| 24 | **Add `uint` type to Pagination fields** | 🟢 Low | 🟢 Low | `navigation/` |
-| 25 | **Write ADR for JS attachment patterns** | 🟢 Low | 🟢 Low | `docs/adr/` |
+| #   | Task                                                                  | Impact    | Effort    | Package               |
+| --- | --------------------------------------------------------------------- | --------- | --------- | --------------------- |
+| 1   | **Add `ComponentProps` interface + `GetBaseProps()`**                 | 🔥 High   | 🟢 Low    | `utils/`              |
+| 2   | **Extract design tokens (colors, shadows, radii) to named constants** | 🔥 High   | 🟡 Medium | `utils/` or `design/` |
+| 3   | **Fix test coverage gaps (<70%: fillIcon, Select, Textarea)**         | 🔥 High   | 🟢 Low    | `display/`, `forms/`  |
+| 4   | **Add BDD tests for navigation, htmx, layout, icons**                 | 🔥 High   | 🟡 Medium | multiple              |
+| 5   | **Standardize all JS to single `tcInit()` pattern**                   | 🔥 High   | 🟡 Medium | `utils/`, multiple    |
+| 6   | **Add `Validate() error` to all props structs**                       | 🔥 High   | 🟡 Medium | all packages          |
+| 7   | **Ship `tc-theme.css` with CSS custom properties**                    | 🔥 High   | 🟡 Medium | new file              |
+| 8   | **Fix demo app: enable HTMX + add more component showcases**          | 🔥 High   | 🟢 Low    | `examples/demo/`      |
+| 9   | **Add dark mode class verification tests to all packages**            | 🔥 High   | 🟢 Low    | all test files        |
+| 10  | **Add `Disabled` to Toggle, FileInput, DropdownItem**                 | 🔥 High   | 🟢 Low    | `forms/`, `display/`  |
+| 11  | **Implement Table `<caption>` rendering**                             | 🟡 Medium | 🟢 Low    | `display/`            |
+| 12  | **Add Badge `Href` / click support**                                  | 🟡 Medium | 🟢 Low    | `display/`            |
+| 13  | **Add StepIndicator vertical variant**                                | 🟡 Medium | 🟡 Medium | `feedback/`           |
+| 14  | **Add ProgressBar indeterminate state**                               | 🟡 Medium | 🟡 Medium | `feedback/`           |
+| 15  | **Add client-side JS tab switching**                                  | 🟡 Medium | 🟡 Medium | `display/`            |
+| 16  | **Replace hardcoded `blue-600` with `Primary` token**                 | 🟡 Medium | 🟢 Low    | all packages          |
+| 17  | **Set up GitHub Actions CI properly**                                 | 🟡 Medium | 🟢 Low    | `.github/workflows/`  |
+| 18  | **Tag v0.2.0 release + update CHANGELOG**                             | 🟡 Medium | 🟢 Low    | root                  |
+| 19  | **Deploy live demo site**                                             | 🟡 Medium | 🟡 Medium | `cmd/demo/`           |
+| 20  | **Add Date Picker component**                                         | 🟡 Medium | 🔴 High   | `forms/`              |
+| 21  | **Add Combobox/Autocomplete component**                               | 🟡 Medium | 🔴 High   | `forms/`              |
+| 22  | **Add more Heroicons (45→100)**                                       | 🟡 Medium | 🟢 Low    | `icons/`              |
+| 23  | **Modularize into Go workspace**                                      | 🟡 Medium | 🔴 High   | root                  |
+| 24  | **Add `uint` type to Pagination fields**                              | 🟢 Low    | 🟢 Low    | `navigation/`         |
+| 25  | **Write ADR for JS attachment patterns**                              | 🟢 Low    | 🟢 Low    | `docs/adr/`           |
 
 ---
 
@@ -249,21 +253,25 @@ Sorted by **Impact / Effort** ratio (highest first):
 **"Should we extract all Tailwind class strings into a Go-based design token system (compile-time), or should we ship a CSS custom properties file + Tailwind v4 `@theme` (runtime)?"**
 
 **Why this matters:**
+
 - **Go tokens** (compile-time): Type-safe, autocomplete in IDE, no CSS file needed, consumers just `go get`. But theming requires recompiling Go code.
 - **CSS tokens** (runtime): True runtime theming, consumers can override with CSS. But we need a CSS file, and Tailwind v4 `@theme` is still stabilizing.
 
 **What I can't figure out:**
+
 - Does Tailwind v4's `@theme` work reliably enough to depend on it? (It shipped in v4.0 in Jan 2025)
 - If we ship CSS, how do consumers import it? Go modules don't serve CSS well.
 - Should we do BOTH: Go constants for internal use + CSS file for consumer theming?
 
 **What I tried:**
+
 - Searched Tailwind v4 docs — `@theme` is the official approach but requires a build step
 - The demo uses CDN (`@tailwindcss/browser@4`) which supports `@theme`
 - Our consumers are Go developers who may not have a CSS build pipeline
 
 **What I need from you:**
 A decision on the theming strategy that balances:
+
 1. Ease of use for Go developers (`go get` + it works)
 2. Customizability (change primary color without forking)
 3. Future-proofing (Tailwind v4 compatibility)
@@ -273,32 +281,32 @@ A decision on the theming strategy that balances:
 
 ## Metrics Snapshot
 
-| Metric | Value |
-|--------|-------|
-| Hand-written Go lines | 9,818 |
-| Generated templ Go lines | 13,308 |
-| Templ source files | 40 |
-| Test files | 53 |
-| Go packages | 11 |
-| Test cases | 1,049+ |
-| Lint issues | 0 |
-| TODOs in source | 0 |
-| Open items in TODO_LIST.md | ~80 |
-| Completed items (git history) | ~200+ |
-| Days since last release | ~14 (v0.1.x) |
-| Commits since last tag | 100+ |
+| Metric                        | Value        |
+| ----------------------------- | ------------ |
+| Hand-written Go lines         | 9,818        |
+| Generated templ Go lines      | 13,308       |
+| Templ source files            | 40           |
+| Test files                    | 53           |
+| Go packages                   | 11           |
+| Test cases                    | 1,049+       |
+| Lint issues                   | 0            |
+| TODOs in source               | 0            |
+| Open items in TODO_LIST.md    | ~80          |
+| Completed items (git history) | ~200+        |
+| Days since last release       | ~14 (v0.1.x) |
+| Commits since last tag        | 100+         |
 
 ---
 
 ## Risk Assessment
 
-| Risk | Likelihood | Impact | Mitigation |
-|------|-----------|--------|------------|
-| Tailwind v4 breaking changes | Medium | High | Pin `@tailwindcss/browser@4` in demo; avoid v4-specific features in core |
-| API churn before v1.0 | High | Medium | Document breaking changes; maintain CHANGELOG; semantic versioning |
-| Consumer theming demands | High | Medium | **Need decision on theming strategy (see question above)** |
-| Test coverage regression | Low | Medium | CI threshold; pre-commit hook |
-| Dependency drift (templ version) | Medium | Low | Monthly dep updates; test before bump |
+| Risk                             | Likelihood | Impact | Mitigation                                                               |
+| -------------------------------- | ---------- | ------ | ------------------------------------------------------------------------ |
+| Tailwind v4 breaking changes     | Medium     | High   | Pin `@tailwindcss/browser@4` in demo; avoid v4-specific features in core |
+| API churn before v1.0            | High       | Medium | Document breaking changes; maintain CHANGELOG; semantic versioning       |
+| Consumer theming demands         | High       | Medium | **Need decision on theming strategy (see question above)**               |
+| Test coverage regression         | Low        | Medium | CI threshold; pre-commit hook                                            |
+| Dependency drift (templ version) | Medium     | Low    | Monthly dep updates; test before bump                                    |
 
 ---
 
@@ -311,6 +319,6 @@ A decision on the theming strategy that balances:
 
 ---
 
-*Generated: 2026-06-01 18:35 CEST*  
-*Commit: f4f2b4d*  
-*All tests passing. Lint clean. Working tree clean.*
+_Generated: 2026-06-01 18:35 CEST_  
+_Commit: f4f2b4d_  
+_All tests passing. Lint clean. Working tree clean._

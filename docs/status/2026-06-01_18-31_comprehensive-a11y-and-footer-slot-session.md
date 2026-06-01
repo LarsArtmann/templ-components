@@ -19,6 +19,7 @@ Added `motion-reduce:transition-none motion-reduce:duration-0` to all animated/t
 - **htmx/loading.templ**: HTMX loading indicator opacity transitions
 
 Added `motion-reduce:animate-none` to:
+
 - **feedback/loading.templ**: Spinner (`animate-spin`) + all 8 Skeleton variants (`animate-pulse`)
 
 ### 2. Accessibility: Cursor Pointer on Buttons
@@ -88,6 +89,7 @@ All `*_templ.go` files regenerated across affected packages (display, feedback, 
 ### From TODO_LIST.md (111 pending items)
 
 Selected high-impact items:
+
 - Fix pre-commit hook (replace buildflow with scripts/pre-commit.sh)
 - Add Radio, Toggle/Switch, File input components (forms/)
 - Add Date Picker, Combobox/Autocomplete (forms/)
@@ -136,6 +138,7 @@ const MotionReduceAnimation = "motion-reduce:animate-none"
 ### 3. Color Token Drift
 
 The `slate` → `gray` migration is good, but we still have inconsistent patterns:
+
 - `dark:bg-gray-800` vs `dark:bg-gray-900` — no documented rule for when to use which
 - Some components use `dark:bg-gray-950` (layout body) while others use `dark:bg-gray-900` (tables, modals)
 - Consider a documented color token convention or even a small design token helper
@@ -143,6 +146,7 @@ The `slate` → `gray` migration is good, but we still have inconsistent pattern
 ### 4. Test Coverage for Accessibility
 
 We updated `a11y_test.go` assertions but didn't add NEW tests for:
+
 - Motion-reduce classes presence (could be a single test per component)
 - Cursor-pointer on buttons
 - Caret color on inputs
@@ -160,33 +164,33 @@ The `.git/hooks/pre-commit` still references `buildflow` which was removed. This
 
 ## f) Top #25 Things We Should Get Done Next
 
-| # | Priority | Item | Package | Impact |
-|---|----------|------|---------|--------|
-| 1 | 🔴 HIGH | Fix pre-commit hook (replace buildflow) | `.git/hooks/` | Developer experience |
-| 2 | 🔴 HIGH | Update TODO_LIST.md / FEATURES.md / CHANGELOG.md | `docs/` | Documentation accuracy |
-| 3 | 🟡 MED | Add motion-reduce test coverage across components | all | Accessibility compliance |
-| 4 | 🟡 MED | Extract motion-reduce constants to `utils/a11y.go` | `utils/` | Maintainability |
-| 5 | 🟡 MED | Document dark mode color token convention | `docs/` | Design consistency |
-| 6 | 🟡 MED | Add `DropdownItem.Disabled` field | `display/` | Feature completeness |
-| 7 | 🟡 MED | Add `InputProps.MaxLength` / `TextareaProps.MaxLength` | `forms/` | Feature completeness |
-| 8 | 🟡 MED | Add `CheckboxProps.Value` field | `forms/` | Feature completeness |
-| 9 | 🟡 MED | Replace DropdownItem empty-Href with typed enum | `display/` | Type safety |
-| 10 | 🟡 MED | Add Radio button component | `forms/` | New component |
-| 11 | 🟡 MED | Add Toggle/Switch component | `forms/` | New component |
-| 12 | 🟡 MED | Add File input component | `forms/` | New component |
-| 13 | 🟡 MED | Toast duration configurable per-toast | `feedback/` | Flexibility |
-| 14 | 🟡 MED | Pagination ellipsis for large ranges | `navigation/` | UX improvement |
-| 15 | 🟡 MED | Table caption support | `display/` | Accessibility |
-| 16 | 🟡 MED | Badge click/href support | `display/` | Feature completeness |
-| 17 | 🟡 MED | Step indicator vertical variant | `feedback/` | New variant |
-| 18 | 🟡 MED | ProgressBar indeterminate state | `feedback/` | Feature completeness |
-| 19 | 🟢 LOW | Add Date Picker component | `forms/` | New component |
-| 20 | 🟢 LOW | Add Combobox/Autocomplete component | `forms/` | New component |
-| 21 | 🟢 LOW | Client-side JS tab switching | `display/` | Interactivity |
-| 22 | 🟢 LOW | Make GlobalErrorHandling configurable | `htmx/` | Flexibility |
-| 23 | 🟢 LOW | Add 200+ more Heroicons | `icons/` | Icon coverage |
-| 24 | 🟢 LOW | Extract error handling magic numbers | `htmx/` | Maintainability |
-| 25 | 🟢 LOW | Make `PageProps` zero-value safe | `layout/` | Robustness |
+| #   | Priority | Item                                                   | Package       | Impact                   |
+| --- | -------- | ------------------------------------------------------ | ------------- | ------------------------ |
+| 1   | 🔴 HIGH  | Fix pre-commit hook (replace buildflow)                | `.git/hooks/` | Developer experience     |
+| 2   | 🔴 HIGH  | Update TODO_LIST.md / FEATURES.md / CHANGELOG.md       | `docs/`       | Documentation accuracy   |
+| 3   | 🟡 MED   | Add motion-reduce test coverage across components      | all           | Accessibility compliance |
+| 4   | 🟡 MED   | Extract motion-reduce constants to `utils/a11y.go`     | `utils/`      | Maintainability          |
+| 5   | 🟡 MED   | Document dark mode color token convention              | `docs/`       | Design consistency       |
+| 6   | 🟡 MED   | Add `DropdownItem.Disabled` field                      | `display/`    | Feature completeness     |
+| 7   | 🟡 MED   | Add `InputProps.MaxLength` / `TextareaProps.MaxLength` | `forms/`      | Feature completeness     |
+| 8   | 🟡 MED   | Add `CheckboxProps.Value` field                        | `forms/`      | Feature completeness     |
+| 9   | 🟡 MED   | Replace DropdownItem empty-Href with typed enum        | `display/`    | Type safety              |
+| 10  | 🟡 MED   | Add Radio button component                             | `forms/`      | New component            |
+| 11  | 🟡 MED   | Add Toggle/Switch component                            | `forms/`      | New component            |
+| 12  | 🟡 MED   | Add File input component                               | `forms/`      | New component            |
+| 13  | 🟡 MED   | Toast duration configurable per-toast                  | `feedback/`   | Flexibility              |
+| 14  | 🟡 MED   | Pagination ellipsis for large ranges                   | `navigation/` | UX improvement           |
+| 15  | 🟡 MED   | Table caption support                                  | `display/`    | Accessibility            |
+| 16  | 🟡 MED   | Badge click/href support                               | `display/`    | Feature completeness     |
+| 17  | 🟡 MED   | Step indicator vertical variant                        | `feedback/`   | New variant              |
+| 18  | 🟡 MED   | ProgressBar indeterminate state                        | `feedback/`   | Feature completeness     |
+| 19  | 🟢 LOW   | Add Date Picker component                              | `forms/`      | New component            |
+| 20  | 🟢 LOW   | Add Combobox/Autocomplete component                    | `forms/`      | New component            |
+| 21  | 🟢 LOW   | Client-side JS tab switching                           | `display/`    | Interactivity            |
+| 22  | 🟢 LOW   | Make GlobalErrorHandling configurable                  | `htmx/`       | Flexibility              |
+| 23  | 🟢 LOW   | Add 200+ more Heroicons                                | `icons/`      | Icon coverage            |
+| 24  | 🟢 LOW   | Extract error handling magic numbers                   | `htmx/`       | Maintainability          |
+| 25  | 🟢 LOW   | Make `PageProps` zero-value safe                       | `layout/`     | Robustness               |
 
 ---
 
@@ -208,30 +212,31 @@ Is this a `gopls` cache invalidation issue? Should we restart the LSP? Or is the
 
 ## Metrics Summary
 
-| Metric | Value |
-|--------|-------|
-| Date | 2026-06-01 18:31 CEST |
-| Branch | master |
-| Packages | 11 (10 + examples/demo) |
-| `.templ` files | 40 |
-| Go source files | 23 |
-| Test files | 53 |
-| Tests | 190+ |
-| Test coverage | 66.2%–80.0% (package range) |
-| Lint issues | 0 |
-| Build status | ✅ Clean |
-| Test status | ✅ All pass |
-| Generated files | 40 `*_templ.go` committed |
-| Uncommitted changes | 25 files (this session's work) |
-| TODOs completed (session) | 5 |
-| TODOs pending (total) | 111 |
-| Last TODO update | 2026-05-22 (10 days ago) |
+| Metric                    | Value                          |
+| ------------------------- | ------------------------------ |
+| Date                      | 2026-06-01 18:31 CEST          |
+| Branch                    | master                         |
+| Packages                  | 11 (10 + examples/demo)        |
+| `.templ` files            | 40                             |
+| Go source files           | 23                             |
+| Test files                | 53                             |
+| Tests                     | 190+                           |
+| Test coverage             | 66.2%–80.0% (package range)    |
+| Lint issues               | 0                              |
+| Build status              | ✅ Clean                       |
+| Test status               | ✅ All pass                    |
+| Generated files           | 40 `*_templ.go` committed      |
+| Uncommitted changes       | 25 files (this session's work) |
+| TODOs completed (session) | 5                              |
+| TODOs pending (total)     | 111                            |
+| Last TODO update          | 2026-05-22 (10 days ago)       |
 
 ---
 
 ## Files Changed This Session
 
 ### Source files (`.templ` and `.go`)
+
 - `display/accordion.templ`
 - `display/button_go.go`
 - `display/card.templ`
@@ -249,6 +254,7 @@ Is this a `gopls` cache invalidation issue? Should we restart the LSP? Or is the
 - `layout/snapshot_test.go`
 
 ### Generated files (`*_templ.go`)
+
 - `display/accordion_templ.go`
 - `display/card_templ.go`
 - `display/dropdown_templ.go`

@@ -276,7 +276,7 @@ Components emit standard Tailwind utility classes (`bg-blue-600`, `text-gray-900
 
 /* Override the primary brand color globally */
 @theme {
-  --color-blue-600: #4f46e5;  /* changes ALL bg-blue-600, text-blue-600, etc. */
+  --color-blue-600: #4f46e5; /* changes ALL bg-blue-600, text-blue-600, etc. */
   --color-blue-500: #6366f1;
 }
 ```

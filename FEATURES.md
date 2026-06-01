@@ -349,11 +349,11 @@ Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, M
 
 ## Planned / Not Yet Implemented
 
-| Component       | Package     | Notes                                 |
-| --------------- | ----------- | ------------------------------------- |
-| Date picker     | `forms`     | Not present                           |
-| Combobox        | `forms`     | Not present                           |
-| Drawer          | `display`   | Slide-out panel variant of Modal      |
-| Form wrapper    | `forms`     | High-level form + validation          |
-| Docs site       | —           | Auto-generated from source            |
-| Release tooling | —           | goreleaser, tag-based                 |
+| Component       | Package   | Notes                            |
+| --------------- | --------- | -------------------------------- |
+| Date picker     | `forms`   | Not present                      |
+| Combobox        | `forms`   | Not present                      |
+| Drawer          | `display` | Slide-out panel variant of Modal |
+| Form wrapper    | `forms`   | High-level form + validation     |
+| Docs site       | —         | Auto-generated from source       |
+| Release tooling | —         | goreleaser, tag-based            |

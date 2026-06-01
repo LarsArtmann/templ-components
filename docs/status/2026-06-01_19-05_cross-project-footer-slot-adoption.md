@@ -25,9 +25,11 @@ This session extended the `layout.PageProps.Footer` slot work across both `templ
 - **`internal/server/page.templ`**: Moved `@navigation.Footer("Overview")` from manual `<footer>` wrapper in page body to the new `Footer` field on `layout.PageProps`
 - **Fixed nested `<footer>` bug**: Previously produced invalid HTML:
   ```html
-  <footer class="border-t ...">         <!-- overview wrapper -->
+  <footer class="border-t ...">
+    <!-- overview wrapper -->
     <div class="max-w-7xl ...">
-      <footer class="border-t ...">     <!-- navigation.Footer -->
+      <footer class="border-t ...">
+        <!-- navigation.Footer -->
         ...
       </footer>
     </div>
@@ -40,10 +42,10 @@ This session extended the `layout.PageProps.Footer` slot work across both `templ
 
 ### 3. Verification (Both Projects)
 
-| Project | Tests | Lint | Build |
-|---------|-------|------|-------|
-| templ-components | ✅ 11/11 pass | ✅ 0 issues | ✅ clean |
-| overview | ✅ 2/2 pass | ⚠️ 93 pre-existing issues | ✅ clean |
+| Project          | Tests         | Lint                      | Build    |
+| ---------------- | ------------- | ------------------------- | -------- |
+| templ-components | ✅ 11/11 pass | ✅ 0 issues               | ✅ clean |
+| overview         | ✅ 2/2 pass   | ⚠️ 93 pre-existing issues | ✅ clean |
 
 ---
 
@@ -79,6 +81,7 @@ This session extended the `layout.PageProps.Footer` slot work across both `templ
 ### From templ-components TODO_LIST.md (111 pending items)
 
 Selected high-impact items still pending:
+
 - Fix pre-commit hook (replace buildflow with scripts/pre-commit.sh)
 - Add Radio, Toggle/Switch, File input components (forms/)
 - Add Date Picker, Combobox/Autocomplete (forms/)
@@ -119,6 +122,7 @@ Selected high-impact items still pending:
 ### 1. Cross-Project Dependency Management
 
 The `replace` directive in overview's `go.mod` is a development convenience but is dangerous:
+
 - It will break for anyone cloning overview without the sibling `templ-components` directory
 - It prevents `go get -u` from working properly for the replaced module
 - Before releasing overview (or templ-components), this must be removed and a proper version pinned
@@ -128,6 +132,7 @@ The `replace` directive in overview's `go.mod` is a development convenience but 
 ### 2. Consumer Documentation Gap
 
 The new `Footer` field on `PageProps` is discoverable by reading the struct definition, but there's no:
+
 - Usage example in `layout/base.templ` doc comments
 - Mention in FEATURES.md or CHANGELOG.md
 - Migration guide for consumers upgrading from manual footer wrapping
@@ -139,6 +144,7 @@ We tested `layout.Base` with a footer in templ-components, but we don't have int
 ### 4. overview Linter Configuration
 
 The 93 lint issues in overview suggest either:
+
 - The `.golangci.yml` is too strict for the project's current maturity
 - Or the project has accumulated significant debt that needs addressing
 
@@ -147,6 +153,7 @@ Many issues are from rules like `varnamelen` (short variable names), `mnd` (magi
 ### 5. Generated File Handling in overview
 
 Unlike templ-components, overview's `.gitignore` excludes `*_templ.go` files (confirmed: `git add` warned about ignored file). This is correct for applications (generate at build time), but it means:
+
 - The `page_templ.go` change we triggered won't be committed
 - CI must run `templ generate` before build
 - The `replace` directive + local build means overview works for local dev but CI may differ
@@ -154,6 +161,7 @@ Unlike templ-components, overview's `.gitignore` excludes `*_templ.go` files (co
 ### 6. Session Status Report Accumulation
 
 We've now written 3 status reports in docs/status/ for templ-components within the past 24 hours:
+
 - `2026-05-29_15-08_post-fix-verification-and-audit.md`
 - `2026-06-01_18-31_comprehensive-a11y-and-footer-slot-session.md`
 - `2026-06-01_19-05_cross-project-footer-slot-adoption.md` (this one)
@@ -164,33 +172,33 @@ These are valuable but will accumulate. Consider a periodic cleanup or archiving
 
 ## f) Top #25 Things We Should Get Done Next
 
-| # | Priority | Item | Project | Impact |
-|---|----------|------|---------|--------|
-| 1 | 🔴 HIGH | Fix pre-commit hook (replace buildflow) | templ-components | Dev experience |
-| 2 | 🔴 HIGH | Update TODO_LIST.md / FEATURES.md / CHANGELOG.md | templ-components | Documentation |
-| 3 | 🔴 HIGH | Commit or discard overview AGENTS.md changes | overview | Documentation |
-| 4 | 🟡 MED | Add Footer usage example to `layout/base.templ` doc comments | templ-components | Discoverability |
-| 5 | 🟡 MED | Add motion-reduce test coverage across components | templ-components | Accessibility |
-| 6 | 🟡 MED | Extract motion-reduce constants to `utils/a11y.go` | templ-components | Maintainability |
-| 7 | 🟡 MED | Document dark mode color token convention | templ-components | Design consistency |
-| 8 | 🟡 MED | Add `DropdownItem.Disabled` field | templ-components | Feature completeness |
-| 9 | 🟡 MED | Add `InputProps.MaxLength` / `TextareaProps.MaxLength` | templ-components | Feature completeness |
-| 10 | 🟡 MED | Add Radio button component | templ-components | New component |
-| 11 | 🟡 MED | Add Toggle/Switch component | templ-components | New component |
-| 12 | 🟡 MED | Add File input component | templ-components | New component |
-| 13 | 🟡 MED | Toast duration configurable per-toast | templ-components | Flexibility |
-| 14 | 🟡 MED | Pagination ellipsis for large ranges | templ-components | UX improvement |
-| 15 | 🟡 MED | Table caption support | templ-components | Accessibility |
-| 16 | 🟡 MED | Badge click/href support | templ-components | Feature completeness |
-| 17 | 🟡 MED | Remove `replace` directive from overview go.mod before release | overview | Release readiness |
-| 18 | 🟡 MED | Address overview linter config (too strict?) | overview | Dev experience |
-| 19 | 🟢 LOW | Add Date Picker component | templ-components | New component |
-| 20 | 🟢 LOW | Add Combobox/Autocomplete component | templ-components | New component |
-| 21 | 🟢 LOW | Client-side JS tab switching | templ-components | Interactivity |
-| 22 | 🟢 LOW | Make GlobalErrorHandling configurable | templ-components | Flexibility |
-| 23 | 🟢 LOW | Add 200+ more Heroicons | templ-components | Icon coverage |
-| 24 | 🟢 LOW | Extract error handling magic numbers | templ-components | Maintainability |
-| 25 | 🟢 LOW | Make `PageProps` zero-value safe | templ-components | Robustness |
+| #   | Priority | Item                                                           | Project          | Impact               |
+| --- | -------- | -------------------------------------------------------------- | ---------------- | -------------------- |
+| 1   | 🔴 HIGH  | Fix pre-commit hook (replace buildflow)                        | templ-components | Dev experience       |
+| 2   | 🔴 HIGH  | Update TODO_LIST.md / FEATURES.md / CHANGELOG.md               | templ-components | Documentation        |
+| 3   | 🔴 HIGH  | Commit or discard overview AGENTS.md changes                   | overview         | Documentation        |
+| 4   | 🟡 MED   | Add Footer usage example to `layout/base.templ` doc comments   | templ-components | Discoverability      |
+| 5   | 🟡 MED   | Add motion-reduce test coverage across components              | templ-components | Accessibility        |
+| 6   | 🟡 MED   | Extract motion-reduce constants to `utils/a11y.go`             | templ-components | Maintainability      |
+| 7   | 🟡 MED   | Document dark mode color token convention                      | templ-components | Design consistency   |
+| 8   | 🟡 MED   | Add `DropdownItem.Disabled` field                              | templ-components | Feature completeness |
+| 9   | 🟡 MED   | Add `InputProps.MaxLength` / `TextareaProps.MaxLength`         | templ-components | Feature completeness |
+| 10  | 🟡 MED   | Add Radio button component                                     | templ-components | New component        |
+| 11  | 🟡 MED   | Add Toggle/Switch component                                    | templ-components | New component        |
+| 12  | 🟡 MED   | Add File input component                                       | templ-components | New component        |
+| 13  | 🟡 MED   | Toast duration configurable per-toast                          | templ-components | Flexibility          |
+| 14  | 🟡 MED   | Pagination ellipsis for large ranges                           | templ-components | UX improvement       |
+| 15  | 🟡 MED   | Table caption support                                          | templ-components | Accessibility        |
+| 16  | 🟡 MED   | Badge click/href support                                       | templ-components | Feature completeness |
+| 17  | 🟡 MED   | Remove `replace` directive from overview go.mod before release | overview         | Release readiness    |
+| 18  | 🟡 MED   | Address overview linter config (too strict?)                   | overview         | Dev experience       |
+| 19  | 🟢 LOW   | Add Date Picker component                                      | templ-components | New component        |
+| 20  | 🟢 LOW   | Add Combobox/Autocomplete component                            | templ-components | New component        |
+| 21  | 🟢 LOW   | Client-side JS tab switching                                   | templ-components | Interactivity        |
+| 22  | 🟢 LOW   | Make GlobalErrorHandling configurable                          | templ-components | Flexibility          |
+| 23  | 🟢 LOW   | Add 200+ more Heroicons                                        | templ-components | Icon coverage        |
+| 24  | 🟢 LOW   | Extract error handling magic numbers                           | templ-components | Maintainability      |
+| 25  | 🟢 LOW   | Make `PageProps` zero-value safe                               | templ-components | Robustness           |
 
 ---
 
@@ -207,6 +215,7 @@ These are valuable but will accumulate. Consider a periodic cleanup or archiving
 - **The dilemma:** If we keep it, we break portability. If we remove it now, we'd need to publish a new templ-components version first, then update the pin. But templ-components hasn't been version-tagged since the Footer change.
 
 **What is the intended release workflow?** Should we:
+
 1. Tag a new templ-components release, then update overview to use it and remove the replace directive?
 2. Keep the replace directive in a development branch only?
 3. Use a different mechanism (like `go.work` workspace) for sibling project development?
@@ -218,38 +227,42 @@ This is a workflow/policy question that depends on the project's release cadence
 ## Metrics Summary
 
 ### templ-components
-| Metric | Value |
-|--------|-------|
-| Branch | master |
+
+| Metric        | Value                          |
+| ------------- | ------------------------------ |
+| Branch        | master                         |
 | Latest commit | `f4f2b4d` (a11y + Footer slot) |
-| Working tree | Clean |
-| Packages | 11 (10 + examples/demo) |
-| Tests | 190+ |
-| Coverage | 66.2%–80.0% |
-| Lint | 0 issues |
-| Build | ✅ Clean |
+| Working tree  | Clean                          |
+| Packages      | 11 (10 + examples/demo)        |
+| Tests         | 190+                           |
+| Coverage      | 66.2%–80.0%                    |
+| Lint          | 0 issues                       |
+| Build         | ✅ Clean                       |
 
 ### overview
-| Metric | Value |
-|--------|-------|
-| Branch | master |
-| Latest commit | `6106c98` (adopt Footer slot) |
-| Working tree | 1 uncommitted file (AGENTS.md) |
-| Packages | 4 (cmd, internal/build, internal/infrastructure/config, internal/server) |
-| Tests | Pass (2 packages with tests) |
-| Lint | 93 pre-existing issues |
-| Build | ✅ Clean |
-| Replace directive | ✅ Active (templ-components → local path) |
+
+| Metric            | Value                                                                    |
+| ----------------- | ------------------------------------------------------------------------ |
+| Branch            | master                                                                   |
+| Latest commit     | `6106c98` (adopt Footer slot)                                            |
+| Working tree      | 1 uncommitted file (AGENTS.md)                                           |
+| Packages          | 4 (cmd, internal/build, internal/infrastructure/config, internal/server) |
+| Tests             | Pass (2 packages with tests)                                             |
+| Lint              | 93 pre-existing issues                                                   |
+| Build             | ✅ Clean                                                                 |
+| Replace directive | ✅ Active (templ-components → local path)                                |
 
 ---
 
 ## Files Changed This Session
 
 ### templ-components
+
 - No new source changes (previous session's `f4f2b4d` already committed)
 - Status report added: `docs/status/2026-06-01_19-05_cross-project-footer-slot-adoption.md`
 
 ### overview
+
 - `go.mod` — Added `replace` directive for templ-components
 - `go.sum` — Updated by `go mod tidy`
 - `internal/server/page.templ` — Adopted `Footer` slot, removed manual footer wrapper
