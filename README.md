@@ -265,15 +265,47 @@ Tailwind extracts class names from any file content — including `.templ` files
 
 ---
 
+## Theming
+
+Components emit standard Tailwind utility classes (`bg-blue-600`, `text-gray-900`). To customize colors **without touching component code**, override the underlying CSS variables in your `@theme` block:
+
+```css
+/* app.css */
+@import "tailwindcss";
+@source "../vendor/github.com/larsartmann/templ-components";
+
+/* Override the primary brand color globally */
+@theme {
+  --color-blue-600: #4f46e5;  /* changes ALL bg-blue-600, text-blue-600, etc. */
+  --color-blue-500: #6366f1;
+}
+```
+
+For a ready-made configuration with semantic aliases (`bg-tc-primary`, `text-tc-danger`, etc.), copy the included theme file into your project:
+
+```css
+@import "./templ-components-theme.css";
+```
+
+Or grab it from the repo root and customize:
+
+```bash
+curl -O https://raw.githubusercontent.com/larsartmann/templ-components/master/templ-components-theme.css
+```
+
+The theme file provides `@custom-variant dark` (required for `ThemeScript`/`ThemeToggle`) and semantic tokens like `--color-tc-primary`, `--color-tc-surface`, `--color-tc-danger` that you can use in your own CSS or Tailwind arbitrary values.
+
+---
+
 ## By the Numbers
 
 | Metric       | Value                             |
 | ------------ | --------------------------------- |
-| Components   | 53                                |
-| SVG icons    | 42                                |
-| Typed enums  | 16+                               |
-| Packages     | 9                                 |
-| Tests        | 710                               |
+| Components   | 56                                |
+| SVG icons    | 45                                |
+| Typed enums  | 18+                               |
+| Packages     | 11                                |
+| Tests        | 1,049+                            |
 | Coverage     | 71.8%                             |
 | Dependencies | 2 (`templ` + `tailwind-merge-go`) |
 
