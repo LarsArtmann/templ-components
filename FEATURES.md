@@ -341,8 +341,9 @@ Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, M
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first designs with `sm:` breakpoints
-- **Type Safety:** 16+ typed string enums, `utils.BaseProps` embedded in all Props structs
+- **Type Safety:** 18+ typed string enums, `utils.BaseProps` embedded in all Props structs
 - **Test Coverage:** 71.8% average across packages, BDD + snapshot + a11y + benchmark tests
+- **Theming:** Tailwind v4 `@theme` override support via `templ-components-theme.css`. Components emit standard utility classes (`bg-blue-600`, `text-gray-900`) — consumers override `--color-*` variables to theme globally without touching component code.
 
 ---
 
@@ -350,9 +351,9 @@ Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, M
 
 | Component       | Package     | Notes                                 |
 | --------------- | ----------- | ------------------------------------- |
-| Radio button    | `forms`     | Not present                           |
-| File input      | `forms`     | Not present                           |
-| Toggle/Switch   | `forms`     | Not present                           |
+| Date picker     | `forms`     | Not present                           |
+| Combobox        | `forms`     | Not present                           |
+| Drawer          | `display`   | Slide-out panel variant of Modal      |
+| Form wrapper    | `forms`     | High-level form + validation          |
 | Docs site       | —           | Auto-generated from source            |
-| Demo app        | `examples/` | Working — Nav, Alert, StatCard, Icons |
 | Release tooling | —           | goreleaser, tag-based                 |
