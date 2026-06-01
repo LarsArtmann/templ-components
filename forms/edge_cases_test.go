@@ -3,6 +3,7 @@ package forms
 import (
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -78,4 +79,96 @@ func TestCheckboxMoreEdgeCases(t *testing.T) {
 			}
 		})
 	}
+}
+
+func TestSelectMoreEdgeCases(t *testing.T) {
+	t.Parallel()
+
+	for _, tt := range []struct {
+		name  string
+		props SelectProps
+		want  []string
+	}{
+		{"disabled select", SelectProps{Name: "s", Label: "S", Disabled: true}, []string{`disabled`}},
+		{"select with id", SelectProps{BaseProps: utils.BaseProps{ID: "sel"}, Name: "s"}, []string{`id="sel"`}},
+		{"select with aria-label", SelectProps{BaseProps: utils.BaseProps{AriaLabel: "Choose"}, Name: "s"}, []string{`aria-label="Choose"`}},
+		{"select with custom class", SelectProps{BaseProps: utils.BaseProps{Class: "custom"}, Name: "s"}, []string{"custom"}},
+		{"select with attrs", SelectProps{BaseProps: utils.BaseProps{Attrs: templ.Attributes{"data-test": "yes"}}, Name: "s"}, []string{`data-test="yes"`}},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Select(tt.props))
+			for _, w := range tt.want {
+				utils.AssertContains(t, output, w)
+			}
+		})
+	}
+}
+
+func TestTextareaFullCoverage(t *testing.T) {
+	t.Parallel()
+
+	t.Run("readonly textarea", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:     "t",
+			Label:    "T",
+			ReadOnly: true,
+		}))
+		utils.AssertContains(t, output, `readonly`)
+	})
+
+	t.Run("textarea with placeholder", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:        "t",
+			Label:       "T",
+			Placeholder: "Enter text...",
+		}))
+		utils.AssertContains(t, output, `placeholder="Enter text..."`)
+	})
+
+	t.Run("textarea with maxlength", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:      "t",
+			Label:     "T",
+			MaxLength: 500,
+		}))
+		utils.AssertContains(t, output, `maxlength="500"`)
+	})
+
+	t.Run("textarea with aria-label", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name: "t",
+			BaseProps: utils.BaseProps{
+				AriaLabel: "Description",
+			},
+		}))
+		utils.AssertContains(t, output, `aria-label="Description"`)
+	})
+
+	t.Run("textarea with attrs", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name: "t",
+			BaseProps: utils.BaseProps{
+				Attrs: templ.Attributes{"data-test": "yes"},
+			},
+		}))
+		utils.AssertContains(t, output, `data-test="yes"`)
+	})
+
+	t.Run("textarea with disabled and value", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Textarea(TextareaProps{
+			Name:     "t",
+			Label:    "T",
+			Value:    "pre-filled",
+			Disabled: true,
+		}))
+		utils.AssertContains(t, output, "pre-filled")
+		utils.AssertContains(t, output, `disabled`)
+	})
 }
