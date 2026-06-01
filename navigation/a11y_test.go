@@ -251,3 +251,16 @@ func TestAriaLabelOverride(t *testing.T) {
 		utils.AssertContains(t, output, `aria-label="`+customLabel+`"`)
 	})
 }
+
+func TestPaginationDarkMode(t *testing.T) {
+	t.Parallel()
+
+	t.Run("pagination has dark mode classes", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultPaginationProps()
+		props.CurrentPage = 1
+		props.TotalPages = 5
+		output := utils.Render(t, Pagination(props))
+		utils.AssertContains(t, output, "dark:")
+	})
+}

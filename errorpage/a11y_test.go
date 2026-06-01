@@ -108,3 +108,34 @@ func TestErrorAlertA11y(t *testing.T) {
 		utils.AssertNotContains(t, output, "<script")
 	})
 }
+
+func TestDarkModeClasses(t *testing.T) {
+	t.Parallel()
+
+	t.Run("errorpage has dark mode classes", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultErrorPageProps()
+		props.Code = "ERR_001"
+		props.Title = "Error"
+		output := utils.Render(t, ErrorPage(props))
+		utils.AssertContains(t, output, "dark:")
+	})
+
+	t.Run("errordetail has dark mode classes", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultErrorDetailProps()
+		props.Code = "ERR_002"
+		props.Title = "Detail"
+		output := utils.Render(t, ErrorDetail(props))
+		utils.AssertContains(t, output, "dark:")
+	})
+
+	t.Run("erroralert has dark mode classes", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultErrorAlertProps()
+		props.Title = "Alert"
+		props.Message = "Something happened"
+		output := utils.Render(t, ErrorAlert(props))
+		utils.AssertContains(t, output, "dark:")
+	})
+}
