@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-05-29 | **Tests:** 1056+ | **Packages:** 10+demo | **Generated files:** 40 `*_templ.go` committed
+**Updated:** 2026-06-01 | **Tests:** 1049+ | **Packages:** 10+demo | **Generated files:** 40 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -39,6 +39,11 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **Module:** `github.com/larsartmann/templ-components`
 - **Go:** 1.26, **templ:** v0.3.x
 - **No framework deps** — pure Go + templ + Tailwind v4 class strings
+- **Theming:** Components emit standard Tailwind classes (`bg-blue-600`). Consumers override via `@theme { --color-blue-600: #custom; }` in their CSS. No Go code changes needed. See `templ-components-theme.css` for semantic alias examples.
+- **ComponentProps interface:** `utils.ComponentProps` with `GetBaseProps()`/`SetBaseProps()` on `*BaseProps` (pointer receivers for `recvcheck`). All 25+ props structs auto-satisfy via method promotion.
+- **Accessibility — motion-reduce:** `motion-reduce:transition-none motion-reduce:duration-0` on all transitions, `motion-reduce:animate-none` on all animations (spinner, skeletons, toast enter/exit, modal, accordion)
+- **Dark mode colors:** All components use `gray-*` exclusively (no mixed `slate-*`/`gray-*`). Dark mode via class strategy: `@custom-variant dark (&:where(.dark, .dark *))` toggled by `layout.ThemeScript()` + `layout.ThemeToggle()`
+- **CI:** `.github/workflows/ci.yaml` — lint (golangci-lint), build+test with `templ generate`, coverage artifact. Pre-commit: `.git/hooks/pre-commit` → `scripts/pre-commit.sh`
 - **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display,feedback,errorpage`, `feedback ← none (htmx decoupled)`, `errorpage ← icons,utils,go-error-family (no feedback dep)`
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
@@ -47,7 +52,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 
 ## Code Conventions
 
-- All component props embed `utils.BaseProps` (exception: `layout.PageProps`)
+- All component props embed `utils.BaseProps` (exception: `layout.PageProps`) — all auto-satisfy `utils.ComponentProps` interface
 - All root elements propagate `props.Class`, `props.Attrs`, `props.ID`, and `props.AriaLabel` from BaseProps (25/25 components, including NavLink/MobileNavLink)
 - Class attributes use `utils.Class()` for Tailwind conflict resolution (exception: `templ.KV` conditionals where comma-join is required)
 - Style lookups use maps/structs, not switches (e.g., `badgeStyleMap`, `badgeSizeLookup`, `cardPaddingLookup`, `iconPathData`, `alertIconMap`, `toastIconMap`, `spinnerSizeLookup`, `progressHeightLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`)
@@ -67,6 +72,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - Toast icons: generated from Go `iconPathData` via `icons.IconPathJS()` (single source of truth)
 - TrendDirection: `TrendNone = "none"` (non-empty sentinel, not "")
 - Layout: `Minimal(MinimalProps)` uses props struct like `Base(PageProps)`
+- Interactive: `cursor-pointer` on buttons, `caret-blue-600 dark:caret-blue-400` on inputs, `scroll-smooth` + selection colors on body, `shadow-sm` on card shell
 - Modal: focus save/restore via `data-tc-prev-focus` attribute on open, restored on close
 - NavLink/MobileNavLink: `NavLink` uses `utils.Class()` for merge; `MobileNavLink` appends `props.Class` to `templ.KV` chain
 - InputType: validates via `inputType()` with `validInputTypes` map; panics on unknown, defaults empty to `"text"`
