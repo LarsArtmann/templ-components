@@ -47,7 +47,7 @@ const (
 //	@feedback.Spinner(feedback.SpinnerMD, "text-blue-600")
 templ Spinner(size SpinnerSize, colorClass string) {
 	<svg
-		class={ "animate-spin", spinnerSizeClass(size), colorClass }
+		class={ "animate-spin motion-reduce:animate-none", spinnerSizeClass(size), colorClass }
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"
 		viewBox="0 0 24 24"
@@ -84,7 +84,7 @@ templ LoadingOverlay(props LoadingOverlayProps) {
 		aria-modal="true"
 		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, props.Message) }
 	>
-		<div class="bg-white dark:bg-slate-800 rounded-lg shadow-xl p-8 max-w-sm w-full mx-4">
+		<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-sm w-full mx-4">
 			<div class="text-center">
 				<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
 					@Spinner(SpinnerMD, "text-blue-600 dark:text-blue-400")
@@ -93,7 +93,7 @@ templ LoadingOverlay(props LoadingOverlayProps) {
 				if props.ShowProgress {
 					<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
 						<div
-							class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out"
+							class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
 							style={ fmt.Sprintf("width: %d%%", props.Progress) }
 						></div>
 					</div>
@@ -123,17 +123,17 @@ templ Skeleton(variant SkeletonVariant) {
 	<div aria-busy="true" role="status" aria-label="Loading" class="contents">
 		switch variant {
 			case SkeletonText:
-				<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+				<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
 			case SkeletonTextShort:
-				<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+				<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
 			case SkeletonTitle:
-				<div class="animate-pulse h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+				<div class="animate-pulse motion-reduce:animate-none h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
 			case SkeletonAvatar:
-				<div class="animate-pulse h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+				<div class="animate-pulse motion-reduce:animate-none h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
 			case SkeletonImage:
-				<div class="animate-pulse h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+				<div class="animate-pulse motion-reduce:animate-none h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
 			case SkeletonCard:
-				<div class="animate-pulse space-y-4">
+				<div class="animate-pulse motion-reduce:animate-none space-y-4">
 					<div class="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
 					<div class="space-y-3">
 						<div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
@@ -141,13 +141,13 @@ templ Skeleton(variant SkeletonVariant) {
 					</div>
 				</div>
 			case SkeletonTableRow:
-				<div class="animate-pulse grid grid-cols-4 gap-4 mb-3">
+				<div class="animate-pulse motion-reduce:animate-none grid grid-cols-4 gap-4 mb-3">
 					for range 4 {
 						<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
 					}
 				</div>
 			default:
-				<div class="animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+				<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
 		}
 	</div>
 }

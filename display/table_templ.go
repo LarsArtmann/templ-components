@@ -20,7 +20,7 @@ type TableCell struct {
 
 func tableBorderedClass(bordered bool) string {
 	if bordered {
-		return "border border-gray-200 dark:border-slate-700"
+		return "border border-gray-200 dark:border-gray-700"
 	}
 	return ""
 }
@@ -102,11 +102,11 @@ func Table(props TableProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"overflow-x-auto rounded-lg border border-gray-200 dark:border-slate-700\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var2 = []any{utils.Class("min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-sm", tableBorderedClass(props.Bordered), props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm", tableBorderedClass(props.Bordered), props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -198,7 +198,7 @@ func Table(props TableProps) templ.Component {
 			}
 		}
 		if len(props.Headers) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<thead class=\"bg-gray-50 dark:bg-slate-800\"><tr>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<thead class=\"bg-gray-50 dark:bg-gray-800\"><tr>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -226,13 +226,13 @@ func Table(props TableProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<tbody class=\"divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-900\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<tbody class=\"divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for i, row := range props.Rows {
-			var templ_7745c5c3_Var8 = []any{templ.KV("bg-gray-50 dark:bg-slate-800/50", props.Striped && i%2 == 1),
-				templ.KV("hover:bg-gray-100 dark:hover:bg-slate-800", props.Hover),
+			var templ_7745c5c3_Var8 = []any{templ.KV("bg-gray-50 dark:bg-gray-800/50", props.Striped && i%2 == 1),
+				templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover),
 			}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var8...)
 			if templ_7745c5c3_Err != nil {

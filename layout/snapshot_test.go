@@ -4,6 +4,7 @@ package layout
 import (
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -85,6 +86,22 @@ func TestMinimalRender(t *testing.T) {
 	output := utils.Render(t, Minimal(MinimalProps{Title: "Simple", Locale: "en"}))
 	utils.AssertContains(t, output, "<title>Simple</title>")
 	utils.AssertNotContains(t, output, "htmx")
+}
+
+func TestBaseWithFooter(t *testing.T) {
+	t.Parallel()
+	props := PageProps{
+		Title:     testPage,
+		BodyClass: "bg-white",
+		Footer:    footerTestComponent(),
+	}
+	output := utils.Render(t, Base(props))
+	utils.AssertContains(t, output, "<footer")
+	utils.AssertContains(t, output, "Test Footer")
+}
+
+func footerTestComponent() templ.Component {
+	return templ.Raw(`<footer>Test Footer</footer>`)
 }
 
 func TestDefaultMinimalProps(t *testing.T) {

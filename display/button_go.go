@@ -56,11 +56,11 @@ func buttonVariantClasses(v ButtonType) string {
 	case ButtonPrimary:
 		return "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
 	case ButtonSecondary:
-		return "bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-slate-800 dark:text-white dark:ring-slate-600 dark:hover:bg-slate-700"
+		return "bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
 	case ButtonDanger:
 		return "bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600"
 	case ButtonGhost:
-		return "bg-transparent text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-slate-700"
+		return "bg-transparent text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
 	case ButtonLink:
 		return "bg-transparent text-blue-600 hover:text-blue-500 underline-offset-2 hover:underline"
 	default:
@@ -83,4 +83,4 @@ func buttonSizeClasses(s ButtonSize) string {
 }
 
 // buttonBaseClass returns the shared base classes for all buttons
-const buttonBaseClass = "inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed"
+const buttonBaseClass = "inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"

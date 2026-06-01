@@ -98,7 +98,7 @@ templ ToastContainer(nonce string) {
 			var toast = document.createElement('div');
 			var typeKey = type || 'info';
 			var style = tcToastColors[typeKey] || tcToastColors.info;
-			toast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;
+			toast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;
 			var inner = document.createElement('div');
 			inner.className = 'flex items-start gap-3';
 			var svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -150,7 +150,7 @@ templ Toast(props ToastProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300", border, bg, props.Class) }
+		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0", border, bg, props.Class) }
 		role="alert"
 		aria-live="polite"
 		if props.AriaLabel != "" {

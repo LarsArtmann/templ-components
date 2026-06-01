@@ -47,7 +47,7 @@ func TestAccordionRender(t *testing.T) {
 		utils.AssertContains(
 			t,
 			output,
-			`class="overflow-hidden transition-all duration-200 max-h-0"`,
+			`class="overflow-hidden transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0 max-h-0"`,
 		)
 	})
 

@@ -5,7 +5,7 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-const cardShellClass = "bg-white dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-lg shadow-xs"
+const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"
 
 // CardPadding defines the internal padding of a card
 type CardPadding string
@@ -51,7 +51,7 @@ templ Card(props CardProps) {
 		{ props.Attrs... }
 	>
 		if props.Title != "" || props.HeaderAction != nil {
-			<div class="flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-slate-700">
+			<div class="flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700">
 				<div>
 					if props.Title != "" {
 						<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">{ props.Title }</h3>
@@ -71,7 +71,7 @@ templ Card(props CardProps) {
 			{ children... }
 		</div>
 		if props.Footer != nil {
-			<div class="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-slate-900/50 border-t border-gray-200 dark:border-slate-700">
+			<div class="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
 				@props.Footer
 			</div>
 		}

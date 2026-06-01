@@ -89,8 +89,8 @@ func TestDarkModeClasses(t *testing.T) {
 	t.Run("card has dark mode classes", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Card(DefaultCardProps()))
-		utils.AssertContains(t, output, "dark:bg-slate-800")
-		utils.AssertContains(t, output, "dark:border-slate-700")
+		utils.AssertContains(t, output, "dark:bg-gray-800")
+		utils.AssertContains(t, output, "dark:border-gray-700")
 	})
 
 	t.Run("badge has dark mode classes", func(t *testing.T) {
@@ -107,7 +107,7 @@ func TestDarkModeClasses(t *testing.T) {
 			Headers: []string{tableHeaderName},
 			Rows:    []TableRow{SimpleTableRow("Alice")},
 		}))
-		utils.AssertContains(t, output, "dark:divide-slate-700")
+		utils.AssertContains(t, output, "dark:divide-gray-700")
 		utils.AssertContains(t, output, "dark:text-gray-300")
 	})
 
@@ -117,7 +117,7 @@ func TestDarkModeClasses(t *testing.T) {
 			BaseProps: utils.BaseProps{ID: "dd"},
 			Label:     dropdownLabelMenu,
 		}))
-		utils.AssertContains(t, output, "dark:bg-slate-800")
+		utils.AssertContains(t, output, "dark:bg-gray-800")
 	})
 
 	t.Run("avatar initials have dark mode background", func(t *testing.T) {

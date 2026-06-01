@@ -42,7 +42,7 @@ func Modal(props ModalProps) templ.Component {
 		if err := validateModalID(props.ID); err != nil {
 			panic(err.Error())
 		}
-		var templ_7745c5c3_Var2 = []any{"fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-200",
+		var templ_7745c5c3_Var2 = []any{"fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0",
 			templ.KV("opacity-100 pointer-events-auto", props.Open),
 			templ.KV("opacity-0 pointer-events-none", !props.Open)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
@@ -132,7 +132,7 @@ func Modal(props ModalProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var8 = []any{utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200", modalSizeClass(props.Size), props.Class),
+		var templ_7745c5c3_Var8 = []any{utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", modalSizeClass(props.Size), props.Class),
 			templ.KV("scale-100 opacity-100", props.Open),
 			templ.KV("scale-95 opacity-0", !props.Open)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var8...)

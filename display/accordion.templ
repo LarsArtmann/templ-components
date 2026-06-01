@@ -57,17 +57,17 @@ templ Accordion(props AccordionProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class("divide-y divide-gray-200 dark:divide-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden", props.Class) }
+		class={ utils.Class("divide-y divide-gray-200 dark:divide-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden", props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
 		{ props.Attrs... }
 	>
 		for _, item := range props.Items {
-			<div class="bg-white dark:bg-slate-900">
+			<div class="bg-white dark:bg-gray-900">
 				<button
 					type="button"
-					class="flex w-full items-center justify-between px-4 py-4 text-left text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+					class="flex w-full items-center justify-between px-4 py-4 text-left text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-inset"
 					aria-expanded={ strconv.FormatBool(item.Open) }
 					aria-controls={ item.ID + "-panel" }
 					id={ item.ID + "-trigger" }
@@ -75,7 +75,7 @@ templ Accordion(props AccordionProps) {
 				>
 					<span>{ item.Title }</span>
 					@svg.FillIcon(
-						"h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-200",
+						"h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0",
 						svg.PathChevronDown,
 						item.Open,
 					)
@@ -84,7 +84,7 @@ templ Accordion(props AccordionProps) {
 					id={ item.ID + "-panel" }
 					role="region"
 					aria-labelledby={ item.ID + "-trigger" }
-					class={ "overflow-hidden transition-all duration-200", templ.KV("max-h-96", item.Open), templ.KV("max-h-0", !item.Open) }
+					class={ "overflow-hidden transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", templ.KV("max-h-96", item.Open), templ.KV("max-h-0", !item.Open) }
 					if item.Open {
 						data-open
 					}

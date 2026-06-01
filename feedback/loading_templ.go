@@ -74,7 +74,7 @@ func Spinner(size SpinnerSize, colorClass string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{"animate-spin", spinnerSizeClass(size), colorClass}
+		var templ_7745c5c3_Var2 = []any{"animate-spin motion-reduce:animate-none", spinnerSizeClass(size), colorClass}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -207,7 +207,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\"><div class=\"bg-white dark:bg-slate-800 rounded-lg shadow-xl p-8 max-w-sm w-full mx-4\"><div class=\"text-center\"><div class=\"mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\"><div class=\"bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-sm w-full mx-4\"><div class=\"text-center\"><div class=\"mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -233,7 +233,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.ShowProgress {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2\"><div class=\"bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out\" style=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2\"><div class=\"bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0\" style=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -360,37 +360,37 @@ func Skeleton(variant SkeletonVariant) templ.Component {
 		}
 		switch variant {
 		case SkeletonText:
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<div class=\"animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4\"></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "<div class=\"animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		case SkeletonTextShort:
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2\"></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		case SkeletonTitle:
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<div class=\"animate-pulse h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2\"></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<div class=\"animate-pulse motion-reduce:animate-none h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		case SkeletonAvatar:
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"animate-pulse h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full\"></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "<div class=\"animate-pulse motion-reduce:animate-none h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		case SkeletonImage:
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<div class=\"animate-pulse h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full\"></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<div class=\"animate-pulse motion-reduce:animate-none h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		case SkeletonCard:
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<div class=\"animate-pulse space-y-4\"><div class=\"h-48 bg-gray-200 dark:bg-gray-700 rounded-lg\"></div><div class=\"space-y-3\"><div class=\"h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4\"></div><div class=\"h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2\"></div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<div class=\"animate-pulse motion-reduce:animate-none space-y-4\"><div class=\"h-48 bg-gray-200 dark:bg-gray-700 rounded-lg\"></div><div class=\"space-y-3\"><div class=\"h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4\"></div><div class=\"h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2\"></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		case SkeletonTableRow:
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "<div class=\"animate-pulse grid grid-cols-4 gap-4 mb-3\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "<div class=\"animate-pulse motion-reduce:animate-none grid grid-cols-4 gap-4 mb-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -405,7 +405,7 @@ func Skeleton(variant SkeletonVariant) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		default:
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "<div class=\"animate-pulse h-4 bg-gray-200 dark:bg-gray-700 rounded w-full\"></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "<div class=\"animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-full\"></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

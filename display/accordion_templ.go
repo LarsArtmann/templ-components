@@ -79,7 +79,7 @@ func Accordion(props AccordionProps) templ.Component {
 		if err := validateAccordionItems(props.Items); err != nil {
 			panic(err.Error())
 		}
-		var templ_7745c5c3_Var2 = []any{utils.Class("divide-y divide-gray-200 dark:divide-slate-700 border border-gray-200 dark:border-slate-700 rounded-lg overflow-hidden", props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("divide-y divide-gray-200 dark:divide-gray-700 border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -152,7 +152,7 @@ func Accordion(props AccordionProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, item := range props.Items {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"bg-white dark:bg-slate-900\"><button type=\"button\" class=\"flex w-full items-center justify-between px-4 py-4 text-left text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-slate-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-inset\" aria-expanded=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"bg-white dark:bg-gray-900\"><button type=\"button\" class=\"flex w-full items-center justify-between px-4 py-4 text-left text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-inset\" aria-expanded=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -222,7 +222,7 @@ func Accordion(props AccordionProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = svg.FillIcon(
-				"h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-200",
+				"h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0",
 				svg.PathChevronDown,
 				item.Open,
 			).Render(ctx, templ_7745c5c3_Buffer)
@@ -233,7 +233,7 @@ func Accordion(props AccordionProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var11 = []any{"overflow-hidden transition-all duration-200", templ.KV("max-h-96", item.Open), templ.KV("max-h-0", !item.Open)}
+			var templ_7745c5c3_Var11 = []any{"overflow-hidden transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", templ.KV("max-h-96", item.Open), templ.KV("max-h-0", !item.Open)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

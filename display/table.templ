@@ -11,7 +11,7 @@ type TableCell struct {
 
 func tableBorderedClass(bordered bool) string {
 	if bordered {
-		return "border border-gray-200 dark:border-slate-700"
+		return "border border-gray-200 dark:border-gray-700"
 	}
 	return ""
 }
@@ -73,12 +73,12 @@ func DefaultTableProps() TableProps {
 //	   },
 //	})
 templ Table(props TableProps) {
-	<div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-slate-700">
+	<div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
 		<table
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class("min-w-full divide-y divide-gray-200 dark:divide-slate-700 text-sm", tableBorderedClass(props.Bordered), props.Class) }
+			class={ utils.Class("min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm", tableBorderedClass(props.Bordered), props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
@@ -88,7 +88,7 @@ templ Table(props TableProps) {
 				<caption class="sr-only">{ props.Caption }</caption>
 			}
 			if len(props.Headers) > 0 {
-				<thead class="bg-gray-50 dark:bg-slate-800">
+				<thead class="bg-gray-50 dark:bg-gray-800">
 					<tr>
 						for _, h := range props.Headers {
 							<th
@@ -101,12 +101,12 @@ templ Table(props TableProps) {
 					</tr>
 				</thead>
 			}
-			<tbody class="divide-y divide-gray-200 dark:divide-slate-700 bg-white dark:bg-slate-900">
+			<tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
 				for i, row := range props.Rows {
 					<tr
 						class={
-							templ.KV("bg-gray-50 dark:bg-slate-800/50", props.Striped && i%2 == 1),
-							templ.KV("hover:bg-gray-100 dark:hover:bg-slate-800", props.Hover),
+							templ.KV("bg-gray-50 dark:bg-gray-800/50", props.Striped && i%2 == 1),
+							templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover),
 						}
 					>
 						for _, cell := range tableRowCells(row, len(props.Headers)) {
