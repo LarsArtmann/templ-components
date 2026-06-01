@@ -1,0 +1,90 @@
+/* templ-components-theme.css
+ *
+ * Optional theme configuration for templ-components.
+ *
+ * This file demonstrates how to customize the default color palette
+ * using Tailwind CSS v4's @theme directive. Include it alongside your
+ * main Tailwind CSS entry point:
+ *
+ *   @import "tailwindcss";
+ *   @import "./templ-components-theme.css";
+ *
+ * Components in templ-components emit standard Tailwind utility classes
+ * (e.g. bg-blue-600, text-gray-900). By overriding the underlying
+ * --color-* variables in @theme, you change every instance of that
+ * color throughout your application — including all components.
+ */
+
+/* ------------------------------------------------------------------
+ * Dark mode variant
+ * ------------------------------------------------------------------ */
+
+/* Class-based dark mode (required for ThemeScript + ThemeToggle).
+ * Remove this line if you prefer prefers-color-scheme media queries. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/* ------------------------------------------------------------------
+ * Color overrides (uncomment to customize)
+ * ------------------------------------------------------------------ */
+
+@theme {
+  /* Primary / brand color — buttons, links, focus rings, active states.
+   * Uncomment and change to match your brand: */
+  /* --color-blue-600: #4f46e5;   indigo-600 instead of blue-600 */
+  /* --color-blue-500: #6366f1;   indigo-500 instead of blue-500 */
+
+  /* Dark mode surface — card backgrounds, elevated surfaces.
+   * Uncomment to adjust dark palette: */
+  /* --color-gray-900: #0f172a;   slate-900 instead of gray-900 */
+  /* --color-gray-800: #1e293b;   slate-800 instead of gray-800 */
+  /* --color-gray-700: #334155;   slate-700 instead of gray-700 */
+
+  /* Text colors */
+  /* --color-gray-100: #f1f5f9;   slate-100 instead of gray-100 */
+  /* --color-gray-400: #94a3b8;   slate-400 instead of gray-400 */
+}
+
+/* ------------------------------------------------------------------
+ * Semantic aliases (use in your own CSS or arbitrary Tailwind values)
+ * ------------------------------------------------------------------ */
+
+@theme {
+  /* Semantic tokens for direct use in your app code.
+   * Access in CSS: var(--color-tc-primary)
+   * Access in HTML: bg-tc-primary, text-tc-primary, etc. */
+
+  --color-tc-primary: var(--color-blue-600);
+  --color-tc-primary-hover: var(--color-blue-500);
+  --color-tc-primary-focus: var(--color-blue-600);
+
+  --color-tc-danger: var(--color-red-600);
+  --color-tc-danger-hover: var(--color-red-500);
+
+  --color-tc-success: var(--color-green-600);
+  --color-tc-warning: var(--color-yellow-600);
+  --color-tc-info: var(--color-blue-600);
+
+  --color-tc-surface: var(--color-white);
+  --color-tc-surface-elevated: var(--color-gray-50);
+  --color-tc-surface-dark: var(--color-gray-900);
+  --color-tc-surface-elevated-dark: var(--color-gray-800);
+
+  --color-tc-text: var(--color-gray-900);
+  --color-tc-text-muted: var(--color-gray-500);
+  --color-tc-text-inverse: var(--color-gray-100);
+
+  --color-tc-border: var(--color-gray-200);
+  --color-tc-border-dark: var(--color-gray-700);
+}
+
+/* ------------------------------------------------------------------
+ * Dark mode semantic aliases
+ * ------------------------------------------------------------------ */
+
+.dark {
+  --color-tc-surface: var(--color-gray-900);
+  --color-tc-surface-elevated: var(--color-gray-800);
+  --color-tc-text: var(--color-gray-100);
+  --color-tc-text-muted: var(--color-gray-400);
+  --color-tc-border: var(--color-gray-700);
+}
