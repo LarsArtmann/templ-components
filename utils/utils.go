@@ -20,6 +20,26 @@ type BaseProps struct {
 	Nonce     string
 }
 
+// ComponentProps is the interface implemented by all component props structs
+// that embed BaseProps. It enables generic component composition, validation,
+// and wrapper functions across the entire component library.
+type ComponentProps interface {
+	GetBaseProps() BaseProps
+	SetBaseProps(BaseProps)
+}
+
+// GetBaseProps returns the embedded BaseProps. This method is promoted to all
+// structs that embed BaseProps, satisfying the ComponentProps interface.
+func (p *BaseProps) GetBaseProps() BaseProps {
+	return *p
+}
+
+// SetBaseProps updates the embedded BaseProps. This method is promoted to all
+// structs that embed BaseProps, satisfying the ComponentProps interface.
+func (p *BaseProps) SetBaseProps(bp BaseProps) {
+	*p = bp
+}
+
 // Class merges Tailwind classes intelligently using tailwind-merge-go.
 // Conflicting classes are resolved with later arguments overriding earlier ones.
 func Class(classes ...string) string {

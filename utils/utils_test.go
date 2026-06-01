@@ -159,3 +159,55 @@ func TestAssertEqual(t *testing.T) {
 	t.Parallel()
 	AssertEqual(t, "matching values", 42, 42)
 }
+
+// Verify that *BaseProps satisfies the ComponentProps interface.
+func TestBasePropsImplementsComponentProps(t *testing.T) {
+	t.Parallel()
+
+	var _ ComponentProps = &BaseProps{}
+
+	// Verify GetBaseProps returns the correct values.
+	bp := &BaseProps{ID: "test-id", Class: "test-class", AriaLabel: "test-label"}
+	got := bp.GetBaseProps()
+	if got.ID != "test-id" {
+		t.Errorf("GetBaseProps().ID = %q, want %q", got.ID, "test-id")
+	}
+	if got.Class != "test-class" {
+		t.Errorf("GetBaseProps().Class = %q, want %q", got.Class, "test-class")
+	}
+	if got.AriaLabel != "test-label" {
+		t.Errorf("GetBaseProps().AriaLabel = %q, want %q", got.AriaLabel, "test-label")
+	}
+
+	// Verify SetBaseProps updates the struct.
+	bp.SetBaseProps(BaseProps{ID: "new-id"})
+	if bp.ID != "new-id" {
+		t.Errorf("after SetBaseProps, ID = %q, want %q", bp.ID, "new-id")
+	}
+}
+
+// ComponentProps interface must be satisfied by any struct embedding BaseProps.
+// This test verifies the method-promotion mechanism.
+func TestComponentPropsInterfacePromoted(t *testing.T) {
+	t.Parallel()
+
+	type testComponentProps struct {
+		BaseProps
+		Text string
+	}
+
+	var cp ComponentProps = &testComponentProps{Text: "hello"}
+
+	// GetBaseProps returns the embedded BaseProps.
+	bp := cp.GetBaseProps()
+	if bp.Class != "" {
+		t.Errorf("expected empty class, got %q", bp.Class)
+	}
+
+	// SetBaseProps updates the embedded BaseProps.
+	cp.SetBaseProps(BaseProps{Class: "updated"})
+	updated := cp.GetBaseProps()
+	if updated.Class != "updated" {
+		t.Errorf("expected class %q, got %q", "updated", updated.Class)
+	}
+}
