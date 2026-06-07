@@ -1,6 +1,6 @@
 # Context — templ-components
 
-**Updated:** 2026-05-07
+**Updated:** 2026-06-08
 
 ## What
 
@@ -139,3 +139,26 @@ No other runtime dependencies.
 8. **`iconPathData` map** — Data-driven icon rendering replaces switch statements; multi-path icons use `|` separator
 9. **`AvatarStatus` / `TrendDirection` enums** — Impossible states unrepresentable; boolean pairs eliminated
 10. **`utils.BoolString()`** — Standardized boolean-to-string conversion replacing local implementations
+
+### JavaScript Patterns
+
+Interactive components use **document-level event delegation** with global singleton guards for HTMX compatibility:
+
+| Component | Pattern | Guard |
+|-----------|---------|-------|
+| Accordion | Global singleton | `window.tcAccordionAttached` |
+| Dropdown | Global singleton | `window.tcDropdownAttached` |
+| ThemeToggle | IIFE + global guard | (none, runs once) |
+| Modal | Per-instance IIFE | Needs focus trap state |
+| Alert/Toast dismiss | Shared singleton | `tcDismissAttached` |
+| Error handling | IIFE | No global state |
+
+**Why delegation:** After HTMX DOM swaps, dynamically added elements are handled automatically — no re-initialization needed.
+
+**Exception — Modal:** Requires per-instance state (focus trap, previous focus element), so uses IIFE-per-instance.
+
+See `docs/adr/0005-js-attachment-patterns.md` for full decision rationale.
+
+### Why PageProps Doesn't Embed BaseProps
+
+`layout.PageProps` represents a full HTML page (Title, Description, HTMX config, security headers) — not an inline component. It has its own `BodyClass` and `Nonce` fields but doesn't need `Class`/`Attrs`/`AriaLabel` since the `<html>` element doesn't use them the same way. Theme colors use constants `DefaultThemeColor` and `DefaultDarkThemeColor`.

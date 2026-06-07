@@ -37,7 +37,7 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 - String enums: `type XxxType string` + constants
 - Size constants: uppercase suffix `[Component]Size[SM|MD|LG]`
 - Default constructors: `DefaultXxxProps()` with meaningful non-zero defaults
-- Class merging: always use `utils.Class()` for Tailwind conflict resolution
+- Class merging: always use `utils.Class()` for Tailwind conflict resolution. Thread-safe (tailwind-merge-go's LRU cache handles its own locking).
 - CSP: all inline scripts use `nonce={ props.Nonce }`
 - JS IDs: escape with `strconv.Quote()` to prevent XSS (see `validateDropdownID`)
 - No external dependencies beyond `templ` and `tailwind-merge-go`

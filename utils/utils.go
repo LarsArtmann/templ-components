@@ -1,15 +1,11 @@
 package utils
 
 import (
-	"sync"
 	"time"
 
 	twmerge "github.com/Oudwins/tailwind-merge-go"
 	"github.com/a-h/templ"
 )
-
-//nolint:gochecknoglobals // Required to protect tailwind-merge-go's lazy init on first call to twmerge.Merge
-var classMu sync.Mutex
 
 // BaseProps provides common configurable attributes for all components
 type BaseProps struct {
@@ -42,9 +38,8 @@ func (p *BaseProps) SetBaseProps(bp BaseProps) {
 
 // Class merges Tailwind classes intelligently using tailwind-merge-go.
 // Conflicting classes are resolved with later arguments overriding earlier ones.
+// Thread-safe: tailwind-merge-go's internal LRU cache has its own mutex.
 func Class(classes ...string) string {
-	classMu.Lock()
-	defer classMu.Unlock()
 	return twmerge.Merge(classes...)
 }
 

@@ -2,8 +2,10 @@
 package utils
 
 import (
+	"fmt"
 	"slices"
 	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -210,4 +212,20 @@ func TestComponentPropsInterfacePromoted(t *testing.T) {
 	if updated.Class != "updated" {
 		t.Errorf("expected class %q, got %q", "updated", updated.Class)
 	}
+}
+
+func TestClassConcurrentAccess(t *testing.T) {
+	t.Parallel()
+	var wg sync.WaitGroup
+	for i := range 100 {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			result := Class("px-4 py-2", "px-6", fmt.Sprintf("bg-%d", i))
+			if !strings.Contains(result, "px-6") {
+				t.Errorf("Class merge failed: %s", result)
+			}
+		}()
+	}
+	wg.Wait()
 }
