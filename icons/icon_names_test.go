@@ -1,114 +1,19 @@
 package icons
 
-import "testing"
-
-func allIconNames() []Name {
-	return []Name{
-		Home,
-		Users,
-		Folder,
-		Document,
-		Search,
-		Settings,
-		Chart,
-		Inbox,
-		Check,
-		X,
-		Plus,
-		Minus,
-		ChevronRight,
-		ChevronLeft,
-		ChevronDown,
-		ChevronUp,
-		ArrowRight,
-		ArrowLeft,
-		Refresh,
-		ExternalLink,
-		Download,
-		Upload,
-		Trash,
-		Edit,
-		Eye,
-		EyeOff,
-		Lock,
-		Unlock,
-		Menu,
-		Bell,
-		Calendar,
-		Clock,
-		Location,
-		Phone,
-		Mail,
-		Globe,
-		Sun,
-		Moon,
-		Spinner,
-		ExclamationTriangle,
-		CheckCircle,
-		ExclamationCircle,
-		Information,
-		Question,
-	}
-}
+import (
+	"fmt"
+	"strings"
+	"testing"
+)
 
 func TestIconNames(t *testing.T) {
 	t.Parallel()
 
-	testCases := []struct {
-		name  string
-		value Name
-	}{
-		{name: "Home", value: Home},
-		{name: "Users", value: Users},
-		{name: "Folder", value: Folder},
-		{name: "Document", value: Document},
-		{name: "Search", value: Search},
-		{name: "Settings", value: Settings},
-		{name: "Chart", value: Chart},
-		{name: "Inbox", value: Inbox},
-		{name: "Check", value: Check},
-		{name: "X", value: X},
-		{name: "Plus", value: Plus},
-		{name: "Minus", value: Minus},
-		{name: "ChevronRight", value: ChevronRight},
-		{name: "ChevronLeft", value: ChevronLeft},
-		{name: "ChevronDown", value: ChevronDown},
-		{name: "ChevronUp", value: ChevronUp},
-		{name: "ArrowRight", value: ArrowRight},
-		{name: "ArrowLeft", value: ArrowLeft},
-		{name: "Refresh", value: Refresh},
-		{name: "ExternalLink", value: ExternalLink},
-		{name: "Download", value: Download},
-		{name: "Upload", value: Upload},
-		{name: "Trash", value: Trash},
-		{name: "Edit", value: Edit},
-		{name: "Eye", value: Eye},
-		{name: "EyeOff", value: EyeOff},
-		{name: "Lock", value: Lock},
-		{name: "Unlock", value: Unlock},
-		{name: "Menu", value: Menu},
-		{name: "Bell", value: Bell},
-		{name: "Calendar", value: Calendar},
-		{name: "Clock", value: Clock},
-		{name: "Location", value: Location},
-		{name: "Phone", value: Phone},
-		{name: "Mail", value: Mail},
-		{name: "Globe", value: Globe},
-		{name: "Sun", value: Sun},
-		{name: "Moon", value: Moon},
-		{name: "Spinner", value: Spinner},
-		{name: "ExclamationTriangle", value: ExclamationTriangle},
-		{name: "CheckCircle", value: CheckCircle},
-		{name: "ExclamationCircle", value: ExclamationCircle},
-		{name: "Information", value: Information},
-		{name: "Question", value: Question},
-	}
-
-	for _, tt := range testCases {
-		t.Run(tt.name, func(t *testing.T) {
+	for _, name := range allIconNames() {
+		t.Run(string(name), func(t *testing.T) {
 			t.Parallel()
-			if tt.value == "" {
-				t.Errorf("icon %s should not be empty", tt.name)
+			if name == "" {
+				t.Errorf("icon name should not be empty")
 			}
 		})
 	}
@@ -124,4 +29,69 @@ func TestIconCount(t *testing.T) {
 			len(iconPathData),
 		)
 	}
+}
+
+func TestAllIconNamesCoversIconPathData(t *testing.T) {
+	t.Parallel()
+	nameSet := make(map[Name]bool, len(allIconNames()))
+	for _, n := range allIconNames() {
+		nameSet[n] = true
+	}
+	for name := range iconPathData {
+		if !nameSet[name] {
+			t.Errorf("iconPathData has %q but allIconNames does not", name)
+		}
+	}
+}
+
+func TestIconPathsNoEmptySegments(t *testing.T) {
+	t.Parallel()
+	for name, data := range iconPathData {
+		parts := strings.Split(data, "|")
+		for _, p := range parts {
+			if p == "" {
+				t.Errorf("icon %q has empty path segment in iconPathData", name)
+			}
+		}
+	}
+}
+
+func TestIconPathDataNoPipeInSVGPaths(t *testing.T) {
+	t.Parallel()
+	for name, data := range iconPathData {
+		if strings.HasPrefix(data, "|") || strings.HasSuffix(data, "|") {
+			t.Errorf("icon %q has leading/trailing | separator: %q", name, data)
+		}
+		if strings.Contains(data, "||") {
+			t.Errorf("icon %q has double | separator: %q", name, data)
+		}
+	}
+}
+
+func TestIconPathJSProducesValidHTML(t *testing.T) {
+	t.Parallel()
+	for name := range iconPathData {
+		result := IconPathJS(name)
+		if !strings.HasPrefix(result, `<path`) {
+			t.Errorf("IconPathJS(%q) should start with <path, got: %s", name, result[:50])
+		}
+		if !strings.HasSuffix(result, `"/>`) {
+			t.Errorf("IconPathJS(%q) should end with \"/>, got: %s", name, result[len(result)-20:])
+		}
+	}
+}
+
+func TestIconPathsPanicsOnUnknown(t *testing.T) {
+	t.Parallel()
+	defer func() {
+		r := recover()
+		if r == nil {
+			t.Fatal("expected panic for unknown icon name")
+		}
+		msg := fmt.Sprintf("%v", r)
+		if !strings.Contains(msg, "unknown icon name") {
+			t.Errorf("panic message should mention unknown icon name, got: %s", msg)
+		}
+	}()
+	iconPaths(Name("nonexistent"))
 }

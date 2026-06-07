@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-06-01 | **Tests:** 1049+ | **Packages:** 10+demo | **Generated files:** 40 `*_templ.go` committed
+**Updated:** 2026-06-08 | **Tests:** 1049+ | **Packages:** 10+demo | **Generated files:** 40 `*_templ.go` committed
 
 ## Build & Test Commands
 
@@ -65,9 +65,9 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - Feedback styles: shared `feedbackStyleSet` struct + `lookupFeedbackStyle[T]()` generic + `feedbackIconName()` + `dismissScript()` in `feedback/styles.go`
 - FeedbackType: canonical `FeedbackType` enum (`FeedbackSuccess/Error/Warning/Info`); `AlertType` and `ToastType` are type aliases for backward compat
 - SVG paths: constants in `internal/svg` (`PathChevronDown`, `PathChevronSmall`, `PathArrowUp/Down/Left/Right`, `PathAvatarFill`) — single source of truth for inline SVG paths
-- Icons: `iconPathData` map with `|` separator for multi-path icons
+- Icons: `iconPathData` map with `|` separator for multi-path icons. `iconPaths()` validates no empty segments (panics on stray `|`). `allIconNames()` auto-generated from `iconPathData` + Spinner — no manual list to maintain.
 - Form errors: `ErrorAttrs(id, errMsg, helpTextID)` helper returns `templ.Attributes` for aria-invalid/aria-describedby
-- Card shell CSS: shared `cardShellClass` constant for consistent card styling
+- Card shell CSS: shared `cardShellClass` constant for consistent card styling. `SimpleCard` composes through `Card` internally.
 - HTMX loading: accepts `templ.Component` spinner parameter (decoupled from feedback package)
 - Toast icons: generated from Go `iconPathData` via `icons.IconPathJS()` (single source of truth)
 - TrendDirection: `TrendNone = "none"` (non-empty sentinel, not "")
@@ -90,6 +90,13 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **Error sub-templates:** 6 shared private sub-templates in `errorpage/shared.templ` (familyIcon, fixCard, causeList, contextTable, timestampFooter, familyBadge)
 - HTMX retry: per-element `data-tc-retry` attribute (no shared counter)
 - HTMX error handling: family-aware — when server returns structured JSON with `family` field, toast type is mapped. `ErrorHandlerConfig{JSON: true}` produces the JSON format that HTMX consumes.
+- GlobalErrorHandling: configurable via `ErrorHandlingConfig` struct (MaxErrorHistory, MaxRetries, RetryDelayMS). Includes `tc-error-announcer` div with `aria-live="polite"` for screen reader announcements.
+- Pagination: `rel="prev"`/`rel="next"` on arrow links for SEO. Ellipsis rendering when visible range is truncated. Uses `net/url` for URL construction.
+- Breadcrumbs: optional `Separator` field for custom separators. `JSONLD` field enables JSON-LD structured data (`application/ld+json`).
+- Theme colors: `DefaultThemeColor` and `DefaultDarkThemeColor` constants in layout package.
+- Icon stroke-width: `IconWithStrokeWidth(name, class, strokeWidth)` for custom stroke widths (default Icon uses 1.5).
+- Select validation: `normalizeSelectOptions()` resolves Disabled+Selected contradiction (clears Selected).
+- DropdownItemKind: typed enum (`DropdownItemLink`, `DropdownItemButton`) with backward compat via `IsLink()` fallback to Href-based discrimination.
 
 ## Breaking Changes (v0.1 → v0.2)
 
@@ -120,6 +127,8 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - `utils.Deref/DerefOr/MergeAttrs` → removed (zero production callers)
 - `ConflictError(msg)` → renamed to `Conflict(msg)` for naming consistency
 - `FromError()` now checks `errorfamily.Classified` interface first (requires go-error-family v0.2.0)
+- `GlobalErrorHandling(nonce string)` → `GlobalErrorHandling(cfg ErrorHandlingConfig)` — configurable error handling
+- `DropdownItem` now has `Kind DropdownItemKind` field; use `DropdownItemLink`/`DropdownItemButton` (backward compat: empty Kind falls back to Href discrimination)
 
 ## Lint Command
 

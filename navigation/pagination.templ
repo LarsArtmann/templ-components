@@ -93,12 +93,15 @@ templ paginationArrowIcon(srText string, svgPath string) {
 }
 
 // paginationArrow renders a previous/next arrow button for desktop pagination
-templ paginationArrow(enabled bool, href string, roundedSide string, ariaLabel string, srText string, svgPath string) {
+templ paginationArrow(enabled bool, href string, roundedSide string, ariaLabel string, srText string, svgPath string, rel string) {
 	if enabled {
 		<a
 			href={ templ.SafeURL(href) }
 			class={ "relative inline-flex items-center px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0", "rounded-" + roundedSide + "-md" }
 			aria-label={ ariaLabel }
+			if rel != "" {
+				rel={ rel }
+			}
 		>
 			@paginationArrowIcon(srText, svgPath)
 		</a>
@@ -107,6 +110,13 @@ templ paginationArrow(enabled bool, href string, roundedSide string, ariaLabel s
 			@paginationArrowIcon(srText, svgPath)
 		</span>
 	}
+}
+
+// paginationEllipsis renders a "..." indicator for truncated page ranges
+templ paginationEllipsis() {
+	<span class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-600">
+		&hellip;
+	</span>
 }
 
 // Pagination renders a page navigation bar
@@ -150,9 +160,24 @@ templ Pagination(props PaginationProps) {
 								"Previous page",
 								"Previous",
 								svg.PathArrowLeft,
+								"prev",
 							)
 						</li>
 						{{ start, end := paginationRange(props.CurrentPage, props.TotalPages, props.MaxVisible) }}
+						if start > 1 {
+							<li>
+								@activeSpanOrLink(
+									false,
+									props.pageURL(1),
+									"1",
+									"",
+									"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0",
+								)
+							</li>
+							<li>
+								@paginationEllipsis()
+							</li>
+						}
 						for p := start; p <= end; p++ {
 							<li>
 								@activeSpanOrLink(
@@ -160,6 +185,20 @@ templ Pagination(props PaginationProps) {
 									props.pageURL(p),
 									fmt.Sprintf("%d", p),
 									"relative z-10 inline-flex items-center bg-blue-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600",
+									"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0",
+								)
+							</li>
+						}
+						if end < props.TotalPages {
+							<li>
+								@paginationEllipsis()
+							</li>
+							<li>
+								@activeSpanOrLink(
+									false,
+									props.pageURL(props.TotalPages),
+									fmt.Sprintf("%d", props.TotalPages),
+									"",
 									"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0",
 								)
 							</li>
@@ -172,6 +211,7 @@ templ Pagination(props PaginationProps) {
 								"Next page",
 								"Next",
 								svg.PathArrowRight,
+								"next",
 							)
 						</li>
 					</ol>

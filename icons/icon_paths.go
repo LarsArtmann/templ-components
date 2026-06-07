@@ -57,12 +57,19 @@ var iconPathData = map[Name]string{
 
 // iconPaths returns the path data for the given icon name, split into individual paths.
 // Panics for unknown icon names — use only validated Name constants.
+// Panics if path data contains empty segments (consecutive or trailing "|" separators).
 func iconPaths(name Name) []string {
 	d, ok := iconPathData[name]
 	if !ok {
 		panic(fmt.Sprintf("icons: unknown icon name %q — use a valid Name constant", name))
 	}
-	return strings.Split(d, "|")
+	parts := strings.Split(d, "|")
+	for _, p := range parts {
+		if p == "" {
+			panic(fmt.Sprintf("icons: icon %q has empty path segment — check for stray | separator", name))
+		}
+	}
+	return parts
 }
 
 // IconPathJS returns the inner HTML for an SVG icon path element,

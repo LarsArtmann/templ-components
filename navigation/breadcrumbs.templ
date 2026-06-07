@@ -1,6 +1,9 @@
 package navigation
 
 import (
+	"encoding/json"
+	"fmt"
+
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -15,12 +18,61 @@ type BreadcrumbItem struct {
 // BreadcrumbsProps configures a breadcrumb navigation component
 type BreadcrumbsProps struct {
 	utils.BaseProps
-	Items []BreadcrumbItem
+	Items     []BreadcrumbItem
+	Separator string
+	JSONLD    bool
 }
 
 // DefaultBreadcrumbsProps returns sensible defaults
 func DefaultBreadcrumbsProps() BreadcrumbsProps {
 	return BreadcrumbsProps{}
+}
+
+// breadcrumbJSONLD generates JSON-LD structured data for breadcrumbs
+func breadcrumbJSONLD(items []BreadcrumbItem) string {
+	type ListItem struct {
+		Type string `json:"@type"`
+		Position int `json:"position"`
+		Name     string `json:"name"`
+		Item     string `json:"item,omitempty"`
+	}
+	type BreadcrumbList struct {
+		Type           string     `json:"@context"`
+		Context        string     `json:"@type"`
+		Items          []ListItem `json:"itemListElement"`
+	}
+
+	list := BreadcrumbList{
+		Type:    "https://schema.org",
+		Context: "BreadcrumbList",
+		Items:   make([]ListItem, 0, len(items)),
+	}
+	for i, item := range items {
+		entry := ListItem{
+			Type:     "ListItem",
+			Position: i + 1,
+			Name:     item.Text,
+		}
+		if item.Href != "" {
+			entry.Item = item.Href
+		}
+		list.Items = append(list.Items, entry)
+	}
+
+	data, err := json.Marshal(list)
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+// breadcrumbSeparator renders the separator between breadcrumb items
+templ breadcrumbSeparator(custom string) {
+	if custom != "" {
+		<span class="mx-2 text-gray-400" aria-hidden="true">{ custom }</span>
+	} else {
+		@icons.Icon(icons.ChevronRight, "h-4 w-4 text-gray-400")
+	}
 }
 
 // Breadcrumbs renders a horizontal breadcrumb navigation
@@ -45,7 +97,7 @@ templ Breadcrumbs(props BreadcrumbsProps) {
 			for i, item := range props.Items {
 				<li class="inline-flex items-center">
 					if i > 0 {
-						@icons.Icon(icons.ChevronRight, "mr-2 h-4 w-4 text-gray-400")
+						@breadcrumbSeparator(props.Separator)
 					}
 					@activeSpanOrLink(
 						item.Active || item.Href == "",
@@ -58,4 +110,7 @@ templ Breadcrumbs(props BreadcrumbsProps) {
 			}
 		</ol>
 	</nav>
+	if props.JSONLD && len(props.Items) > 0 {
+		@templ.Raw(fmt.Sprintf(`<script type="application/ld+json">%s</script>`, breadcrumbJSONLD(props.Items)))
+	}
 }

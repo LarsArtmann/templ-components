@@ -6,14 +6,34 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+// DropdownItemKind determines how a dropdown item is rendered
+ type DropdownItemKind string
+
+const (
+	// DropdownItemLink renders the item as an anchor (<a>) element
+	DropdownItemLink DropdownItemKind = "link"
+	// DropdownItemButton renders the item as a <button> element
+	DropdownItemButton DropdownItemKind = "button"
+)
+
 // DropdownItem represents a single action in a dropdown menu
 type DropdownItem struct {
 	Text     string
 	Href     string
 	Icon     icons.Name
+	Kind     DropdownItemKind
 	External bool
 	Disabled bool
 	Attrs    templ.Attributes
+}
+
+// IsLink returns true if the item should render as a link.
+// When Kind is unset, falls back to Href-based discrimination for backward compat.
+func (item DropdownItem) IsLink() bool {
+	if item.Kind != "" {
+		return item.Kind == DropdownItemLink
+	}
+	return item.Href != ""
 }
 
 // DropdownPosition defines where the dropdown menu appears
@@ -131,7 +151,7 @@ templ Dropdown(props DropdownProps) {
 		>
 			<div class="py-1" role="none">
 				for _, item := range props.Items {
-					if item.Href != "" {
+					if item.IsLink() {
 						@dropdownItemLink(item)
 					} else {
 						<button

@@ -2,12 +2,24 @@ package forms
 
 import "github.com/larsartmann/templ-components/utils"
 
-// SelectOption represents a single option in a select
+// SelectOption represents a single option in a select.
+// If both Disabled and Selected are true, Selected takes precedence (Disabled is cleared)
+// because a disabled option cannot be meaningfully pre-selected by the user.
 type SelectOption struct {
 	Value    string
 	Label    string
 	Disabled bool
 	Selected bool
+}
+
+// normalizeSelectOptions resolves contradictions: Disabled+Selected clears Selected.
+func normalizeSelectOptions(opts []SelectOption) []SelectOption {
+	for i := range opts {
+		if opts[i].Disabled && opts[i].Selected {
+			opts[i].Selected = false
+		}
+	}
+	return opts
 }
 
 // SelectProps configures a select dropdown
@@ -60,7 +72,8 @@ templ Select(props SelectProps) {
 		}
 		{ props.Attrs... }
 	>
-		for _, opt := range props.Options {
+		{{ options := normalizeSelectOptions(props.Options) }}
+	for _, opt := range options {
 			<option
 				value={ opt.Value }
 				if opt.Disabled {

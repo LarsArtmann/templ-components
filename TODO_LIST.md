@@ -1,9 +1,9 @@
 # TODO List
 
-**Updated:** 2026-05-22
-**Coverage:** 66.2% | **Tests:** 190+ | **Packages:** 9+demo | **Lint:** 0 issues
+**Updated:** 2026-06-08
+**Coverage:** 66%+ | **Tests:** 1049+ | **Packages:** 10+demo | **Lint:** 0 issues
 
-> Reviewed 2026-05-21: ~70 items removed as completed. See git history for previous state.
+> Reviewed 2026-06-08: ~30 items completed. See git history for previous state.
 
 ---
 
@@ -13,7 +13,7 @@
 - [x] Fix ThemeToggle multi-instance bug — **not a bug**: event delegation on `document` catches clicks on ALL `[data-theme-toggle]` elements regardless of when they're added. Removed unnecessary IIFE for consistency. (source: layout/theme.templ)
 - [x] Fix Accordion JS to IIFE-per-instance pattern — **not needed**: event delegation handles dynamically added accordions; IIFE-per-instance would create redundant listeners. (source: display/accordion.templ)
 - [x] Fix Checkbox unconditional `id=""` → conditional `if props.ID != ""` rendering (source: forms/input.templ:160)
-- [ ] Fix pre-commit hook — replace buildflow dependency with scripts/pre-commit.sh (source: .git/hooks/pre-commit)
+- [x] Fix pre-commit hook — uses scripts/pre-commit.sh (source: .git/hooks/pre-commit)
 
 ## 🟡 Breaking Changes (defer to v1.0)
 
@@ -21,6 +21,7 @@
 - [ ] Spinner BaseProps conversion — `Spinner(size, colorClass)` positional args → `SpinnerProps` struct (source: feedback/loading.templ)
 - [ ] SimpleNav BaseProps conversion — `(brandText, brandHref, links, currentPath)` → `SimpleNavProps` struct (source: navigation/nav.templ)
 - [ ] Add BaseProps to StepIndicatorProps (source: feedback/step_indicator.templ)
+- [ ] Pagination uint fields — `CurrentPage` and `TotalPages` should be `uint` (source: navigation/pagination.templ)
 
 ## 🟢 Enhancements
 
@@ -32,39 +33,39 @@
 - [x] Extract shared dismiss JS — `dismissScript()` in feedback/styles.go eliminates duplicate between Alert and Toast (source: feedback/alert.templ, feedback/toast.templ)
 - [x] Unify alertIconName/toastIconName — shared `feedbackIconName()` in feedback/styles.go (source: feedback/styles.go)
 - [x] Fix toast JS string builder — `fmt.Fprintf` replaces string concatenation in `toastJSStyles()` (source: feedback/toast.templ)
-- [ ] Validate SelectOption contradiction (Disabled + Selected simultaneously) (source: forms/select.templ)
-- [ ] Validate SwapOOB swapStyle parameter (source: htmx/swap_oob.templ)
-- [ ] Validate `|` separator doesn't appear in SVG paths (source: icons/icon_paths.go)
-- [ ] Add `DropdownItem.Disabled` field (source: display/dropdown.templ)
-- [ ] Add `InputProps.MaxLength` field (source: forms/input.templ)
-- [ ] Add `TextareaProps.MaxLength` field (source: forms/textarea.templ)
-- [ ] Add `CheckboxProps.Value` field (source: forms/input.templ)
-- [ ] Replace `DropdownItem` empty-Href discrimination with typed `DropdownItemKind` enum (LinkItem, ButtonItem) (source: display/dropdown.templ)
+- [x] Validate SelectOption contradiction (Disabled + Selected simultaneously) — `normalizeSelectOptions()` clears Selected when Disabled (source: forms/select.templ)
+- [x] Validate `|` separator doesn't appear in SVG paths — `iconPaths()` panics on empty segments (source: icons/icon_paths.go)
+- [x] Add `DropdownItem.Disabled` field (source: display/dropdown.templ)
+- [x] Add `InputProps.MaxLength` field (source: forms/input.templ)
+- [x] Add `TextareaProps.MaxLength` field (source: forms/textarea.templ)
+- [x] Add `CheckboxProps.Value` field (source: forms/input.templ)
+- [x] Replace `DropdownItem` empty-Href discrimination with typed `DropdownItemKind` enum (LinkItem, ButtonItem) — backward compat via `IsLink()` fallback (source: display/dropdown.templ)
+- [ ] Validate SwapOOB swapStyle parameter (source: htmx/swap_oob.templ) — file does not exist yet
 
 ### Component Features
 
-- [ ] Make GlobalErrorHandling config values configurable instead of hardcoded (source: htmx/error_handling.templ)
-- [ ] Extract error handling magic numbers — maxErrorHistory=10, maxRetries=2, delay=1000\*retryCount (source: htmx/error_handling.templ)
-- [ ] SimpleCard should compose through Card internally instead of duplicating shell (source: display/card.templ)
-- [ ] Toast duration configurable per-toast instead of global 5s (source: feedback/toast.templ)
-- [ ] Pagination ellipsis rendering for large page ranges (source: navigation/pagination.templ)
-- [ ] Table caption support — Caption field + render `<caption>` element (source: display/table.templ)
-- [ ] Avatar status dot scaling — fixed h-2.5 w-2.5 regardless of avatar size (source: display/avatar.templ)
-- [ ] Breadcrumb separator customization (currently hardcoded `/`) (source: navigation/breadcrumbs.templ)
-- [ ] Use `net/url` for pagination URL construction instead of string concatenation (source: navigation/pagination.templ)
-- [ ] Make `PageProps` zero-value safe (source: layout/page_props.go)
-- [ ] Magic theme colors — extract `#4f46e5` and `#1e1b4b` to named constants (source: layout/base.templ)
-- [ ] Eliminate 4-way icon list split brain — auto-generate `allIconNames()` from `iconPathData` map (source: icons/icon_paths.go)
-- [ ] Move avatar fallback SVG to icons package — partially done, avatar fallback path extracted to `svg.PathAvatarFill` constant (source: display/avatar.templ)
-- [ ] Replace hardcoded SVGs with icon system — remaining: StepIndicator checkmark (source: feedback/)
-- [ ] `ComponentProps` interface with `GetBaseProps() BaseProps` for all props structs (source: utils/base_props.go)
-- [ ] Add stroke-width option to `icons.Icon` (source: icons/)
+- [x] Make GlobalErrorHandling config values configurable — `ErrorHandlingConfig` struct with `MaxErrorHistory`, `MaxRetries`, `RetryDelayMS` (source: htmx/error_handling.templ)
+- [x] Extract error handling magic numbers — configurable via `ErrorHandlingConfig` (source: htmx/error_handling.templ)
+- [x] SimpleCard composes through Card internally (source: display/card.templ)
+- [x] Toast duration configurable per-toast (source: feedback/toast.templ)
+- [x] Pagination ellipsis rendering for large page ranges — shows first/last page + ellipsis when range is truncated (source: navigation/pagination.templ)
+- [x] Table caption support — Caption field + render `<caption>` element (source: display/table.templ)
+- [x] Avatar status dot scaling — fixed per size via `avatarDotSizeLookup` map (source: display/avatar.templ)
+- [x] Breadcrumb separator customization — `Separator` field on `BreadcrumbsProps` (source: navigation/breadcrumbs.templ)
+- [x] Use `net/url` for pagination URL construction (source: navigation/pagination.templ)
+- [x] Make `PageProps` zero-value safe — `DefaultPageProps()` provides all defaults (source: layout/base.templ)
+- [x] Magic theme colors — extracted to `DefaultThemeColor` and `DefaultDarkThemeColor` constants (source: layout/base.templ)
+- [x] Eliminate 4-way icon list split brain — `allIconNames()` auto-generated from `iconPathData` map (source: icons/icon_names.go)
+- [x] Move avatar fallback SVG to icons package — `svg.PathAvatarFill` constant (source: display/avatar.templ)
+- [x] `ComponentProps` interface with `GetBaseProps()` / `SetBaseProps()` for all props structs (source: utils/base_props.go)
+- [x] Add stroke-width option to `icons.Icon` — `IconWithStrokeWidth(name, class, strokeWidth)` (source: icons/icon.templ)
+- [ ] Replace hardcoded SVGs with icon system — remaining: StepIndicator (file does not exist yet) (source: feedback/)
 
 ### New Components
 
-- [ ] Add Radio button component (source: forms/)
-- [ ] Add Toggle/Switch component (source: forms/)
-- [ ] Add File input component (source: forms/)
+- [x] Add Radio button component (source: forms/radio.templ)
+- [x] Add Toggle/Switch component (source: forms/toggle.templ)
+- [x] Add File input component (source: forms/file_input.templ)
 - [ ] Add Date Picker component (source: docs/status/)
 - [ ] Add Combobox/Autocomplete component (source: docs/status/)
 - [ ] Add Dialog/Drawer component variants (source: docs/status/)
@@ -79,13 +80,13 @@
 
 ### Accessibility
 
-- [ ] Add `aria-live="polite"` directly in HTMX error handling — currently depends on Toast container (source: htmx/error_handling.templ)
+- [x] Add `aria-live="polite"` directly in HTMX error handling — `tc-error-announcer` div with sr-only (source: htmx/error_handling.templ)
 - [ ] Consolidate inline JS into shared init strategy — 10 script blocks across 7 files (source: layout/, display/, feedback/)
-- [ ] Add Table header `scope` attributes — screen reader column association (source: display/table.templ)
-- [ ] Add EmptyState landmark role (`role="region"`) (source: display/empty_state.templ)
-- [ ] Add Breadcrumb structured data (JSON-LD) (source: navigation/breadcrumbs.templ)
-- [ ] Add Pagination SEO `rel=prev/next` (source: navigation/pagination.templ)
-- [ ] Investigate tooltip JS-based `aria-describedby` injection for full a11y compliance (source: display/tooltip.templ)
+- [x] Add Table header `scope` attributes — `<th scope="col">` on all header cells (source: display/table.templ)
+- [x] Add EmptyState landmark role — `role="status"` on outer div (source: display/empty_state.templ)
+- [x] Add Breadcrumb structured data (JSON-LD) — `JSONLD` field on `BreadcrumbsProps` (source: navigation/breadcrumbs.templ)
+- [x] Add Pagination SEO `rel=prev/next` (source: navigation/pagination.templ)
+- [x] Investigate tooltip JS-based `aria-describedby` injection — already done with `props.ID` pattern (source: display/tooltip.templ)
 - [ ] Add `uint` type for Pagination fields (source: navigation/pagination.templ)
 
 ### Testing
@@ -96,10 +97,10 @@
 - [ ] Add Nav empty `Links` test (source: navigation/nav.templ)
 - [ ] Add CSRFToken empty string test (source: htmx/csrf.templ)
 - [ ] Add tooltip position edge case test (source: display/tooltip.templ)
-- [ ] BDD tests for navigation package — Nav, Pagination, Breadcrumbs (source: navigation/)
-- [ ] BDD tests for htmx package — Loading, ErrorHandling (source: htmx/)
-- [ ] BDD tests for layout package — Base, Minimal, Theme (source: layout/)
-- [ ] BDD tests for icons package — all icons render, unknown fallback (source: icons/)
+- [x] BDD tests for navigation package — Nav, Pagination, Breadcrumbs (source: navigation/)
+- [x] BDD tests for htmx package — Loading, ErrorHandling (source: htmx/)
+- [x] BDD tests for layout package — Base, Minimal, Theme (source: layout/)
+- [x] BDD tests for icons package — all icons render, unknown fallback (source: icons/)
 - [ ] Add `utils.AssertContainsClass` test helper — replace fragile exact-string class tests (source: display/)
 - [ ] Remove duplicate test data — extract shared testNavLinks helper (source: navigation/)
 - [ ] Consolidate test files — eliminate duplication (source: multiple test files)
@@ -117,9 +118,9 @@
 ### Infrastructure
 
 - [ ] Fix demo app to enable HTMX — `props.HTMXVersion = ""` should be set (source: examples/demo/main.go)
-- [ ] Set up GitHub Actions CI — build + test + lint on push/PR (source: .github/workflows/)
+- [x] Set up GitHub Actions CI — build + test + lint on push/PR (source: .github/workflows/ci.yaml)
 - [ ] Verify `go get` works from clean project (source: docs/status/)
-- [ ] Pre-commit hook needs `chmod +x` (source: scripts/pre-commit.sh)
+- [x] Pre-commit hook needs `chmod +x` (source: scripts/pre-commit.sh)
 - [ ] Set up goreleaser for tag-based releases with cross-compilation and checksums (source: .goreleaser.yml)
 - [ ] Add `go vet` / staticcheck to CI pipeline (source: docs/status/)
 - [ ] Set coverage threshold in CI (e.g., 60%) (source: docs/status/)

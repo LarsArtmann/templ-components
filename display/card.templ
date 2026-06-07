@@ -106,24 +106,19 @@ func DefaultSimpleCardProps() SimpleCardProps {
 	}
 }
 
-// SimpleCard renders a card without header/footer for quick use
+// SimpleCard renders a card without header/footer for quick use.
+// Internally composes through Card for consistent shell styling.
 //
 //	@display.SimpleCard(display.SimpleCardProps{}) {
 //	   <p>Content</p>
 //	 }
 templ SimpleCard(props SimpleCardProps) {
-	<div
-		if props.ID != "" {
-			id={ props.ID }
-		}
-		class={ utils.Class(cardShellClass, cardPaddingClass(props.Padding), props.Class) }
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
-		}
-		{ props.Attrs... }
-	>
+	@Card(CardProps{
+		BaseProps: props.BaseProps,
+		Padding:   props.Padding,
+	}) {
 		{ children... }
-	</div>
+	}
 }
 
 // TrendDirection represents the direction of a stat change

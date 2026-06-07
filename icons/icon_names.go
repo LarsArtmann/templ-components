@@ -1,6 +1,8 @@
 // Package icons provides constants for predefined icon names used throughout the component library.
 package icons
 
+import "sort"
+
 // Name represents a named icon from the library
 type Name string
 
@@ -51,3 +53,17 @@ const (
 	Information         Name = "information"
 	Question            Name = "question"
 )
+
+// allIconNames returns all icon names, auto-generated from iconPathData + Spinner.
+// This eliminates the need to manually maintain a separate list.
+func allIconNames() []Name {
+	names := make([]Name, 0, len(iconPathData)+1)
+	for name := range iconPathData {
+		names = append(names, name)
+	}
+	sort.Slice(names, func(i, j int) bool {
+		return string(names[i]) < string(names[j])
+	})
+	names = append(names, Spinner)
+	return names
+}

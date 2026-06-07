@@ -1,19 +1,54 @@
 package htmx
 
+// ErrorHandlingConfig configures the global HTMX error handling behavior
+type ErrorHandlingConfig struct {
+	// Nonce is the CSP nonce for inline scripts
+	Nonce string
+	// MaxErrorHistory is the maximum number of errors to track (default: 10)
+	MaxErrorHistory int
+	// MaxRetries is the maximum number of retry attempts for server errors (default: 2)
+	MaxRetries int
+	// RetryDelayMS is the base delay in milliseconds between retries, multiplied by retry count (default: 1000)
+	RetryDelayMS int
+}
+
+// DefaultErrorHandlingConfig returns sensible defaults for error handling
+func DefaultErrorHandlingConfig() ErrorHandlingConfig {
+	return ErrorHandlingConfig{
+		MaxErrorHistory: 10,
+		MaxRetries:      2,
+		RetryDelayMS:    1000,
+	}
+}
+
+func (c *ErrorHandlingConfig) normalize() {
+	if c.MaxErrorHistory <= 0 {
+		c.MaxErrorHistory = 10
+	}
+	if c.MaxRetries <= 0 {
+		c.MaxRetries = 2
+	}
+	if c.RetryDelayMS <= 0 {
+		c.RetryDelayMS = 1000
+	}
+}
+
 // GlobalErrorHandling renders a comprehensive global HTMX error handling script.
 // Include this once in your base layout, ideally at the end of the body.
 // Requires feedback.ToastContainer on the page for accessible error announcements (aria-live).
 // If ToastContainer is not present, errors are only logged to the console.
 //
-//	@htmx.GlobalErrorHandling()
-templ GlobalErrorHandling(nonce string) {
-	<script nonce={ nonce }>
+//	@htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
+templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
+	{{ cfg.normalize() }}
+	<div id="tc-error-announcer" aria-live="polite" class="sr-only"></div>
+	<script nonce={ cfg.Nonce }>
 		(function() {
 			'use strict';
 
-			var MAX_ERROR_HISTORY = 10;
-			var MAX_RETRIES = 2;
-			var RETRY_DELAY_MS = 1000;
+			var MAX_ERROR_HISTORY = {{ cfg.MaxErrorHistory }};
+			var MAX_RETRIES = {{ cfg.MaxRetries }};
+			var RETRY_DELAY_MS = {{ cfg.RetryDelayMS }};
 
 			const errorHistory = [];
 

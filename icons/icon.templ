@@ -1,9 +1,13 @@
 package icons
 
-import "github.com/larsartmann/templ-components/internal/svg"
+import (
+	"fmt"
 
-// Icon renders an SVG icon by name with customizable class and size
-// All icons are 24x24 with currentColor fill/stroke for easy theming
+	"github.com/larsartmann/templ-components/internal/svg"
+)
+
+// Icon renders an SVG icon by name with customizable class and size.
+// All icons are 24x24 with currentColor fill/stroke for easy theming.
 //
 //	@icons.Icon(icons.Home, "h-5 w-5 text-gray-500")
 templ Icon(name Name, class string) {
@@ -12,13 +16,27 @@ templ Icon(name Name, class string) {
 			@svg.SpinnerSVG()
 		</svg>
 	} else {
-		@strokeIcon(class, iconPaths(name))
+		@strokeIcon(class, 1.5, iconPaths(name))
+	}
+}
+
+// IconWithStrokeWidth renders an SVG icon with a custom stroke-width.
+// The default Icon uses 1.5; use this for thicker or thinner strokes.
+//
+//	@icons.IconWithStrokeWidth(icons.Home, "h-5 w-5 text-gray-500", 2.0)
+templ IconWithStrokeWidth(name Name, class string, strokeWidth float64) {
+	if name == Spinner {
+		<svg class={ class, "animate-spin" } fill="none" viewBox="0 0 24 24" aria-hidden="true">
+			@svg.SpinnerSVG()
+		</svg>
+	} else {
+		@strokeIcon(class, strokeWidth, iconPaths(name))
 	}
 }
 
 // strokeIcon renders a standard stroke-based SVG icon with the given paths
-templ strokeIcon(class string, paths []string) {
-	<svg class={ class } fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+templ strokeIcon(class string, strokeWidth float64, paths []string) {
+	<svg class={ class } fill="none" viewBox="0 0 24 24" stroke-width={ fmt.Sprintf("%g", strokeWidth) } stroke="currentColor" aria-hidden="true">
 		for _, p := range paths {
 			<path stroke-linecap="round" stroke-linejoin="round" d={ p }></path>
 		}

@@ -157,13 +157,15 @@ func TestGlobalErrorHandlingUserGetsErrorFeedback(t *testing.T) {
 
 	t.Run("error handling script is included with CSP nonce", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, GlobalErrorHandling("test-nonce-abc"))
+		cfg := ErrorHandlingConfig{Nonce: "test-nonce-abc"}
+		output := utils.Render(t, GlobalErrorHandling(cfg))
 		utils.AssertContains(t, output, `<script nonce="test-nonce-abc"`)
 	})
 
 	t.Run("error handler registers HTMX event listeners", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, GlobalErrorHandling("nonce"))
+		cfg := ErrorHandlingConfig{Nonce: "nonce"}
+		output := utils.Render(t, GlobalErrorHandling(cfg))
 		utils.AssertContains(t, output, "htmx:responseError")
 		utils.AssertContains(t, output, "htmx:sendError")
 	})
@@ -205,7 +207,10 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 				func() templ.Component { return ConfirmDelete("/del", "#t", "Sure?") },
 			},
 			{"CSRFToken", func() templ.Component { return CSRFToken("tok") }},
-			{"GlobalErrorHandling", func() templ.Component { return GlobalErrorHandling("n") }},
+			{
+				"GlobalErrorHandling",
+				func() templ.Component { return GlobalErrorHandling(ErrorHandlingConfig{Nonce: "n"}) },
+			},
 		}
 		for _, tc := range components {
 			t.Run(tc.name, func(t *testing.T) {

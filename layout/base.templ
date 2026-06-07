@@ -1,5 +1,12 @@
 package layout
 
+const (
+	// DefaultThemeColor is the default light-mode theme color (indigo-600)
+	DefaultThemeColor = "#4f46e5"
+	// DefaultDarkThemeColor is the default dark-mode theme color (indigo-950)
+	DefaultDarkThemeColor = "#1e1b4b"
+)
+
 // PageProps configures the base page layout
 type PageProps struct {
 	Title          string
@@ -24,8 +31,8 @@ type PageProps struct {
 func DefaultPageProps() PageProps {
 	return PageProps{
 		Locale:          "en",
-		ThemeColor:      "#4f46e5",
-		DarkThemeColor:  "#1e1b4b",
+		ThemeColor:      DefaultThemeColor,
+		DarkThemeColor:  DefaultDarkThemeColor,
 		CSSPath:         "/app.css",
 		Favicon:         "/favicon.svg",
 		HTMXVersion:     "2.0.6",
