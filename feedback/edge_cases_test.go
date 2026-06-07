@@ -174,3 +174,17 @@ func TestSkeletonEdgeCases(t *testing.T) {
 		})
 	}
 }
+
+func TestDefaultLoadingOverlayProps(t *testing.T) {
+	t.Parallel()
+	props := DefaultLoadingOverlayProps()
+	if props.ShowProgress {
+		t.Error("DefaultLoadingOverlayProps ShowProgress should be false")
+	}
+	if props.Message != "" {
+		t.Error("DefaultLoadingOverlayProps Message should be empty")
+	}
+	output := utils.Render(t, LoadingOverlay(props))
+	utils.AssertContains(t, output, "fixed")
+	utils.AssertContains(t, output, `role="dialog"`)
+}

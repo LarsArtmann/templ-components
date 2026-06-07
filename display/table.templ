@@ -3,7 +3,8 @@ package display
 
 import "github.com/larsartmann/templ-components/utils"
 
-// TableCell represents a single cell in a table row
+// TableCell represents a single cell in a table row.
+// When Content is set, it takes priority over Text for rendering.
 type TableCell struct {
 	Text    string
 	Content templ.Component

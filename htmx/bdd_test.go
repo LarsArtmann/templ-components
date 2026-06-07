@@ -227,3 +227,23 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 		}
 	})
 }
+
+func TestCSRFTokenEmptyString(t *testing.T) {
+	t.Parallel()
+	t.Run("empty token still renders hidden input", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CSRFToken(""))
+		utils.AssertContains(t, output, `type="hidden"`)
+		utils.AssertContains(t, output, `name="csrf_token"`)
+		utils.AssertContains(t, output, `value=""`)
+	})
+}
+
+func TestSwapOOBValidatesSwapStyle(t *testing.T) {
+	t.Parallel()
+	t.Run("valid swapStyle renders", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SwapOOB("#target", "beforeend"))
+		utils.AssertContains(t, output, `hx-swap-oob="beforeend:#target"`)
+	})
+}

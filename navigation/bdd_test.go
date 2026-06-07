@@ -224,3 +224,13 @@ func TestFooterUserSeesCopyright(t *testing.T) {
 		assertFooterContainsAll(t, "MyApp", "All rights reserved", "<footer")
 	})
 }
+
+func TestNavEmptyLinks(t *testing.T) {
+	t.Parallel()
+	t.Run("nav with no links renders brand only", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SimpleNav("App", "/", nil, "/"))
+		utils.AssertContains(t, output, "App")
+		utils.AssertNotContains(t, output, `aria-current="page"`)
+	})
+}
