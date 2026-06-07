@@ -19,12 +19,13 @@ const (
 // ProgressBarProps configures a progress bar
 type ProgressBarProps struct {
 	utils.BaseProps
-	Current   int
-	Total     int
-	Label     string
-	Size      ProgressBarSize
-	Color     string
-	ShowLabel bool
+	Current       int
+	Total         int
+	Label         string
+	Size          ProgressBarSize
+	Color         string
+	ShowLabel     bool
+	Indeterminate bool
 }
 
 // DefaultProgressBarProps returns sensible defaults
@@ -64,18 +65,28 @@ templ ProgressBar(props ProgressBarProps) {
 		if props.ShowLabel || props.Label != "" {
 			<div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
 				<span>{ props.Label }</span>
-				<span>{ fmt.Sprintf("%.0f%%", percent) }</span>
+				if !props.Indeterminate {
+					<span>{ fmt.Sprintf("%.0f%%", percent) }</span>
+				}
 			</div>
 		}
 		<div class={ progressTrackClass(props.Size) }>
-			<div
-				class={ "rounded-full transition-all duration-300 ease-out", progressHeightClass(props.Size), props.Color }
-				style={ fmt.Sprintf("width: %.0f%%;", percent) }
-				role="progressbar"
-				aria-valuenow={ fmt.Sprintf("%d", props.Current) }
-				aria-valuemin="0"
-				aria-valuemax={ fmt.Sprintf("%d", props.Total) }
-			></div>
+			if props.Indeterminate {
+				<div
+					class={ "rounded-full animate-indeterminate-progress", progressHeightClass(props.Size), props.Color }
+					role="progressbar"
+					aria-busy="true"
+				></div>
+			} else {
+				<div
+					class={ "rounded-full transition-all duration-300 ease-out", progressHeightClass(props.Size), props.Color }
+					style={ fmt.Sprintf("width: %.0f%%;", percent) }
+					role="progressbar"
+					aria-valuenow={ fmt.Sprintf("%d", props.Current) }
+					aria-valuemin="0"
+					aria-valuemax={ fmt.Sprintf("%d", props.Total) }
+				></div>
+			}
 		</div>
 	</div>
 }
@@ -97,11 +108,20 @@ func progressHeightClass(size ProgressBarSize) string {
 	return "h-2.5"
 }
 
+// StepIndicatorOrientation defines the layout direction of a step indicator
+type StepIndicatorOrientation string
+
+const (
+	StepHorizontal StepIndicatorOrientation = "horizontal"
+	StepVertical   StepIndicatorOrientation = "vertical"
+)
+
 // StepIndicatorProps configures a step/progress indicator
 type StepIndicatorProps struct {
 	utils.BaseProps
 	Steps       []string
 	CurrentStep int
+	Orientation StepIndicatorOrientation
 }
 
 // DefaultStepIndicatorProps returns sensible defaults
@@ -109,7 +129,7 @@ func DefaultStepIndicatorProps() StepIndicatorProps {
 	return StepIndicatorProps{}
 }
 
-// StepIndicator renders a horizontal step indicator
+// StepIndicator renders a step indicator (horizontal or vertical)
 //
 //	@feedback.StepIndicator(feedback.StepIndicatorProps{Steps: []string{"Details", "Review", "Confirm"}, CurrentStep: 1})
 templ StepIndicator(props StepIndicatorProps) {
@@ -121,30 +141,57 @@ templ StepIndicator(props StepIndicatorProps) {
 		class={ utils.Class("", props.Class) }
 		{ props.Attrs... }
 	>
-		<ol class="flex items-center w-full">
-			for i, step := range props.Steps {
-				<li class={ "flex-1 flex items-center", templ.KV("", i == len(props.Steps)-1) }>
-					if i > 0 {
-						<div class={ "flex-1 h-0.5 mx-2", stepLineClass(i, props.CurrentStep) }></div>
-					}
-					<div class="flex flex-col items-center">
-						<div
-							class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(i, props.CurrentStep) }
-							if i == props.CurrentStep {
-								aria-current="step"
-							}
-						>
-							if i < props.CurrentStep {
-								@icons.Icon(icons.Check, "w-4 h-4")
-							} else {
-								{ fmt.Sprintf("%d", i+1) }
+		if props.Orientation == StepVertical {
+			<ol class="flex flex-col space-y-4">
+				for i, step := range props.Steps {
+					<li class="flex items-start">
+						<div class="flex flex-col items-center">
+							<div
+								class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(i, props.CurrentStep) }
+								if i == props.CurrentStep {
+									aria-current="step"
+								}
+							>
+								if i < props.CurrentStep {
+									@icons.Icon(icons.Check, "w-4 h-4")
+								} else {
+									{ fmt.Sprintf("%d", i+1) }
+								}
+							</div>
+							if i < len(props.Steps)-1 {
+								<div class={ "w-0.5 h-8", stepLineClass(i+1, props.CurrentStep) }></div>
 							}
 						</div>
-						<span class={ "mt-2 text-xs font-medium", stepLabelClass(i, props.CurrentStep) }>{ step }</span>
-					</div>
-				</li>
-			}
-		</ol>
+						<span class={ "ml-3 text-sm font-medium mt-1", stepLabelClass(i, props.CurrentStep) }>{ step }</span>
+					</li>
+				}
+			</ol>
+		} else {
+			<ol class="flex items-center w-full">
+				for i, step := range props.Steps {
+					<li class={ "flex-1 flex items-center", templ.KV("", i == len(props.Steps)-1) }>
+						if i > 0 {
+							<div class={ "flex-1 h-0.5 mx-2", stepLineClass(i, props.CurrentStep) }></div>
+						}
+						<div class="flex flex-col items-center">
+							<div
+								class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(i, props.CurrentStep) }
+								if i == props.CurrentStep {
+									aria-current="step"
+								}
+							>
+								if i < props.CurrentStep {
+									@icons.Icon(icons.Check, "w-4 h-4")
+								} else {
+									{ fmt.Sprintf("%d", i+1) }
+								}
+							</div>
+							<span class={ "mt-2 text-xs font-medium", stepLabelClass(i, props.CurrentStep) }>{ step }</span>
+						</div>
+					</li>
+				}
+			</ol>
+		}
 	</nav>
 }
 

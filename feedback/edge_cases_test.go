@@ -175,6 +175,68 @@ func TestSkeletonEdgeCases(t *testing.T) {
 	}
 }
 
+func TestProgressBarIndeterminate(t *testing.T) {
+	t.Parallel()
+
+	t.Run("indeterminate renders aria-busy", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ProgressBar(ProgressBarProps{
+			Indeterminate: true,
+		}))
+		utils.AssertContains(t, output, `aria-busy="true"`)
+		utils.AssertContains(t, output, "animate-indeterminate-progress")
+		utils.AssertNotContains(t, output, "aria-valuenow")
+	})
+
+	t.Run("indeterminate with label hides percentage", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ProgressBar(ProgressBarProps{
+			Label:         "Loading...",
+			ShowLabel:     true,
+			Indeterminate: true,
+		}))
+		utils.AssertContains(t, output, "Loading...")
+		utils.AssertNotContains(t, output, "%")
+	})
+
+	t.Run("determinate shows percentage", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ProgressBar(ProgressBarProps{
+			Current:   50,
+			Total:     100,
+			ShowLabel: true,
+		}))
+		utils.AssertContains(t, output, "50%")
+		utils.AssertContains(t, output, `aria-valuenow="50"`)
+	})
+}
+
+func TestStepIndicatorVertical(t *testing.T) {
+	t.Parallel()
+
+	t.Run("vertical layout uses flex-col", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StepIndicator(StepIndicatorProps{
+			Steps:       []string{"Details", "Review", "Confirm"},
+			CurrentStep: 1,
+			Orientation: StepVertical,
+		}))
+		utils.AssertContains(t, output, "flex-col")
+		utils.AssertContains(t, output, "Details")
+		utils.AssertContains(t, output, `aria-current="step"`)
+		utils.AssertNotContains(t, output, "flex-1 flex items-center")
+	})
+
+	t.Run("horizontal is default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StepIndicator(StepIndicatorProps{
+			Steps: []string{"A", "B"},
+		}))
+		utils.AssertContains(t, output, "flex-1")
+		utils.AssertNotContains(t, output, "space-y-4")
+	})
+}
+
 func TestDefaultLoadingOverlayProps(t *testing.T) {
 	t.Parallel()
 	props := DefaultLoadingOverlayProps()
