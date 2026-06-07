@@ -80,7 +80,6 @@ All component props embed `utils.BaseProps` for consistent `ID`, `Class`, `Attrs
 
 ```go
 utils.Class("bg-white dark:bg-gray-800", props.Class)  // Tailwind class merging
-utils.MergeAttrs(attrs1, attrs2)                         // Merge templ attribute maps
 utils.Ternary(condition, "yes", "no")                    // Generic ternary
 ```
 
@@ -90,12 +89,12 @@ Base HTML layouts, theme toggle, and dark mode support.
 
 ```templ
 @layout.Base(layout.DefaultPageProps()) { <main>Content</main> }
-@layout.Minimal("Title", "en") { <p>Static content</p> }
+@layout.Minimal(layout.DefaultMinimalProps()) { <p>Static content</p> }
 @layout.ThemeScript("")
 @layout.ThemeToggle("Toggle theme", "")
 ```
 
-### `display` — Data Display (14 components)
+### `display` — Data Display (15 components)
 
 Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, and more.
 
@@ -162,9 +161,9 @@ Alerts, toasts, spinners, progress bars, skeletons, and loading states.
 })
 ```
 
-### `forms` — Form Controls (6 components)
+### `forms` — Form Controls (12 components)
 
-Inputs, selects, textareas, checkboxes, labels, and validation errors.
+Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, labels, and validation errors.
 
 ```templ
 @forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email address"})
@@ -174,6 +173,11 @@ Inputs, selects, textareas, checkboxes, labels, and validation errors.
     Options: []forms.SelectOption{{Value: "de", Label: "Germany"}, {Value: "at", Label: "Austria"}},
 })
 @forms.Checkbox(forms.CheckboxProps{Name: "terms", Label: "I agree"})
+@forms.RadioGroup(forms.RadioGroupProps{Name: "plan", Options: []forms.RadioOption{
+    {Value: "free", Label: "Free"}, {Value: "pro", Label: "Pro"},
+}})
+@forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications"})
+@forms.FileInput(forms.FileInputProps{Name: "avatar", Label: "Upload photo", Accept: "image/*"})
 ```
 
 ### `navigation` — Navigation (9 components)
@@ -185,15 +189,17 @@ Nav bars, breadcrumbs, pagination, and mobile menus.
     {Href: "/", Text: "Home"}, {Href: "/about", Text: "About"},
 }, "/")
 
-@navigation.Breadcrumbs([]navigation.BreadcrumbItem{
-    {Text: "Home", Href: "/"}, {Text: "Users", Active: true},
+@navigation.Breadcrumbs(navigation.BreadcrumbsProps{
+    Items: []navigation.BreadcrumbItem{
+        {Text: "Home", Href: "/"}, {Text: "Users", Active: true},
+    },
 })
 
 @navigation.Pagination(navigation.PaginationProps{CurrentPage: 2, TotalPages: 10, BaseURL: "/users"})
 @navigation.Footer("MyApp")
 ```
 
-### `icons` — SVG Icons (42 icons)
+### `icons` — SVG Icons (45 icons)
 
 Typed icon constants, no icon library dependency.
 
@@ -202,16 +208,16 @@ Typed icon constants, no icon library dependency.
 @icons.Icon(icons.Check, "h-6 w-6 text-green-500")
 ```
 
-Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, Minus, ChevronRight, ChevronLeft, ChevronDown, ChevronUp, ArrowRight, ArrowLeft, Refresh, ExternalLink, Download, Upload, Trash, Edit, Eye, EyeOff, Lock, Unlock, Menu, Bell, Calendar, Clock, Location, Phone, Mail, Globe, Sun, Moon, Spinner, Exclamation, Information, Question.
+Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, Minus, ChevronRight, ChevronLeft, ChevronDown, ChevronUp, ArrowRight, ArrowLeft, Refresh, ExternalLink, Download, Upload, Trash, Edit, Eye, EyeOff, Lock, Unlock, Menu, Bell, Calendar, Clock, Location, Phone, Mail, Globe, Sun, Moon, Spinner, ExclamationTriangle, ExclamationCircle, CheckCircle, Information, Question.
 
 ### `htmx` — HTMX Integration (7 components)
 
 Loading indicators, error handling, CSRF protection, and out-of-band swaps.
 
 ```templ
-@htmx.GlobalErrorHandling("")
-@htmx.LoadingIndicator()
-@htmx.InlineLoadingOverlay("form-loading")
+@htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
+@htmx.LoadingIndicator(feedback.Spinner(feedback.SpinnerMD, "text-blue-600"))
+@htmx.InlineLoadingOverlay("form-loading", feedback.Spinner(feedback.SpinnerSM, "text-white"))
 @htmx.CSRFToken("token-value")
 ```
 
@@ -317,6 +323,25 @@ The theme file provides `@custom-variant dark` (required for `ThemeScript`/`Them
 - **templ** CLI ([install](https://templ.guide/quick-start/installation))
 - **Tailwind CSS** 4.x+
 - **HTMX** 2.x (optional, for `htmx` package)
+
+---
+
+### `errorpage` — Error Pages (3 components)
+
+Structured error pages with family-aware styling, HTTP handler integration, and pre-built constructors.
+
+```templ
+@errorpage.ErrorPage(errorpage.ErrorPageProps{Family: errorpage.FamilyNotFound, Why: "Page not found"})
+@errorpage.ErrorDetail(errorpage.ErrorDetailProps{Family: errorpage.FamilyConflict, Why: "Conflict", Fix: "Refresh and retry"})
+@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyTransient, Why: "Temporary issue"})
+```
+
+HTTP handler integration:
+
+```go
+http.Handle("/error", errorpage.ErrorHandler(err, errorpage.ErrorHandlerConfig{HTMLShell: true}))
+http.Error(w, "not found", http.StatusNotFound) // use errorpage.NotFound() instead
+```
 
 ---
 
