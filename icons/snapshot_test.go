@@ -49,6 +49,30 @@ func TestAllIconsRender(t *testing.T) {
 	}
 }
 
+func TestIconWithStrokeWidth(t *testing.T) {
+	t.Parallel()
+
+	t.Run("custom stroke-width renders", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, IconWithStrokeWidth(Home, "h-5 w-5", 2.5))
+		utils.AssertContains(t, output, `<svg`)
+		utils.AssertContains(t, output, `stroke-width="2.5"`)
+	})
+
+	t.Run("default Icon uses 1.5 stroke-width", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Icon(Home, "h-5 w-5"))
+		utils.AssertContains(t, output, `stroke-width="1.5"`)
+	})
+
+	t.Run("spinner ignores custom stroke-width", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, IconWithStrokeWidth(Spinner, "h-5 w-5", 3.0))
+		utils.AssertContains(t, output, "animate-spin")
+		utils.AssertNotContains(t, output, `stroke-width="3"`)
+	})
+}
+
 func TestIconPathJS(t *testing.T) {
 	t.Parallel()
 	t.Run("known icon produces path elements", func(t *testing.T) {

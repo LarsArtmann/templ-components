@@ -40,7 +40,7 @@
 - [x] Add `TextareaProps.MaxLength` field (source: forms/textarea.templ)
 - [x] Add `CheckboxProps.Value` field (source: forms/input.templ)
 - [x] Replace `DropdownItem` empty-Href discrimination with typed `DropdownItemKind` enum (LinkItem, ButtonItem) — backward compat via `IsLink()` fallback (source: display/dropdown.templ)
-- [ ] Validate SwapOOB swapStyle parameter (source: htmx/swap_oob.templ) — file does not exist yet
+- [ ] Validate SwapOOB swapStyle parameter (source: htmx/helpers.templ)
 
 ### Component Features
 
@@ -117,7 +117,7 @@
 
 ### Infrastructure
 
-- [ ] Fix demo app to enable HTMX — `props.HTMXVersion = ""` should be set (source: examples/demo/main.go)
+- [x] Fix demo app to enable HTMX — DefaultPageProps already sets HTMXVersion:"2.0.6" (source: examples/demo/main.go)
 - [x] Set up GitHub Actions CI — build + test + lint on push/PR (source: .github/workflows/ci.yaml)
 - [ ] Verify `go get` works from clean project (source: docs/status/)
 - [x] Pre-commit hook needs `chmod +x` (source: scripts/pre-commit.sh)

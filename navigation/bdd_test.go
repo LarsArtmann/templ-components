@@ -143,6 +143,31 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 		output := renderBreadcrumbs(t, breadcrumbHomeAndCurrent())
 		utils.AssertContains(t, output, `href="/"`)
 	})
+
+	t.Run("user sees JSON-LD structured data when enabled", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{
+			Items: []BreadcrumbItem{
+				{Text: navItemHome, Href: "https://example.com/"},
+				{Text: "Users", Href: "https://example.com/users"},
+			},
+			JSONLD: true,
+		}))
+		utils.AssertContains(t, output, `<script type="application/ld+json">`)
+		utils.AssertContains(t, output, `"@context":"https://schema.org"`)
+		utils.AssertContains(t, output, `"@type":"BreadcrumbList"`)
+		utils.AssertContains(t, output, `"name":"Home"`)
+		utils.AssertContains(t, output, `"name":"Users"`)
+	})
+
+	t.Run("user sees custom separator when set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Breadcrumbs(BreadcrumbsProps{
+			Items:     breadcrumbHomeAndCurrent(),
+			Separator: "/",
+		}))
+		utils.AssertContains(t, output, "/")
+	})
 }
 
 func renderDefaultPagination(t *testing.T, currentPage, totalPages int) string {
