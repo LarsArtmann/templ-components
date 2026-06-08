@@ -28,7 +28,7 @@ var classRe = regexp.MustCompile(`class="([^"]*)"`)
 // If the -update flag is set, it writes got to the golden file instead.
 // Golden files are stored in testdata/<name>.golden relative to the test file.
 // CSS class attribute order is normalized before comparison.
-func Assert(t *testing.T, name string, got string) {
+func Assert(t *testing.T, name, got string) {
 	t.Helper()
 
 	goldenPath := filepath.Join("testdata", name+".golden")
@@ -82,10 +82,7 @@ func diff(want, got string) string {
 	wantLines := strings.SplitAfter(want, "\n")
 	gotLines := strings.SplitAfter(got, "\n")
 
-	maxLen := len(wantLines)
-	if len(gotLines) > maxLen {
-		maxLen = len(gotLines)
-	}
+	maxLen := max(len(gotLines), len(wantLines))
 
 	var b strings.Builder
 	for i := range maxLen {
