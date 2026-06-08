@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-06-08 | **Tests:** 1049+ | **Packages:** 10+demo | **Generated files:** 40 `*_templ.go` committed
+**Updated:** 2026-06-08 | **Tests:** 1100+ | **Packages:** 10+demo | **Generated files:** 41 `*_templ.go` committed | **Icons:** 75
 
 ## Build & Test Commands
 
@@ -27,7 +27,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 40 generated files across 9 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/svg, layout, navigation)
+- 41 generated files across 9 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/svg, layout, navigation)
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
 will have their Go toolchain download the tagged commit. If `*_templ.go` is missing from that
@@ -96,6 +96,13 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - Theme colors: `DefaultThemeColor` and `DefaultDarkThemeColor` constants in layout package.
 - Icon stroke-width: `IconWithStrokeWidth(name, class, strokeWidth)` for custom stroke widths (default Icon uses 1.5).
 - Select validation: `normalizeSelectOptions()` resolves Disabled+Selected contradiction (clears Selected).
+- Badge href: `BadgeProps.Href` renders `<a>` instead of `<span>` when set, enabling badge-based navigation.
+- ProgressBar indeterminate: `ProgressBarProps.Indeterminate bool` renders animated bar with `aria-busy="true"` instead of percentage-based width.
+- StepIndicator orientation: `StepIndicatorProps.Orientation` with `StepHorizontal`/`StepVertical` constants for vertical progress tracking.
+- Tabs client-side: `TabsProps.ClientSide bool` adds `data-tc-tabs` attribute and inline JS for click-to-activate and keyboard nav (ArrowLeft/Right, Home, End). Uses global singleton guard (`tcTabsAttached`).
+- Form component: `forms.Form(FormProps)` with `Action`, `Method` (GET/POST), `CSRFToken` hidden input, and `Content` for composing form fields.
+- Icons: 75 total (was 45). New: ArrowUp/Down, Bookmark, Clipboard, Cloud, CodeBracket, DocumentDuplicate/Text, EllipsisHorizontal/Vertical, Filter, Heart, Link, ListBullet, MapPin, Microphone, PaperAirplane, Photo, Printer, QueueList, Share, ShieldCheck, Star, Tag, ThumbUp, UserCircle, UserPlus, Wrench, XCircle.
+- Thread safety: `utils.Class()` uses `sync.Mutex` to protect tailwind-merge-go's shared LRU cache from concurrent access. Required even though the LRU has internal mutexes — they don't protect the full Merge() call sequence.
 - DropdownItemKind: typed enum (`DropdownItemLink`, `DropdownItemButton`) with backward compat via `IsLink()` fallback to Href-based discrimination.
 
 ## Breaking Changes (v0.1 → v0.2)
@@ -129,6 +136,12 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - `FromError()` now checks `errorfamily.Classified` interface first (requires go-error-family v0.2.0)
 - `GlobalErrorHandling(nonce string)` → `GlobalErrorHandling(cfg ErrorHandlingConfig)` — configurable error handling
 - `DropdownItem` now has `Kind DropdownItemKind` field; use `DropdownItemLink`/`DropdownItemButton` (backward compat: empty Kind falls back to Href discrimination)
+- `ProgressBarProps` now has `Indeterminate bool` field
+- `StepIndicatorProps` now has `Orientation StepIndicatorOrientation` field (StepHorizontal/StepVertical)
+- `TabsProps` now has `ClientSide bool` field
+- `BadgeProps` now has `Href string` field (renders `<a>` when set)
+- New `forms.Form(FormProps)` component with Action, Method, CSRFToken, Content fields
+- New icon constants: ArrowUp, ArrowDown, Bookmark, Clipboard, Cloud, CodeBracket, DocumentDuplicate, DocumentText, EllipsisHorizontal, EllipsisVertical, Filter, Heart, Link, ListBullet, MapPin, Microphone, PaperAirplane, Photo, Printer, QueueList, Share, ShieldCheck, Star, Tag, ThumbUp, UserCircle, UserPlus, Wrench, XCircle
 
 ## Lint Command
 
