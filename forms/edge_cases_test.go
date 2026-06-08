@@ -172,3 +172,55 @@ func TestTextareaFullCoverage(t *testing.T) {
 		utils.AssertContains(t, output, `disabled`)
 	})
 }
+
+func TestFormRender(t *testing.T) {
+	t.Parallel()
+
+	t.Run("form with action and method", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Action:  "/submit",
+			Method:  FormPost,
+			Content: templ.Raw("<input type=\"text\" name=\"foo\"/>"),
+		}))
+		utils.AssertContains(t, output, `action="/submit"`)
+		utils.AssertContains(t, output, `method="POST"`)
+		utils.AssertContains(t, output, `name="foo"`)
+	})
+
+	t.Run("form with CSRF token", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			CSRFToken: "secret-token",
+			Content:   templ.Raw("<button>Submit</button>"),
+		}))
+		utils.AssertContains(t, output, `name="csrf_token"`)
+		utils.AssertContains(t, output, `value="secret-token"`)
+	})
+
+	t.Run("form without CSRF omits hidden input", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Content: templ.Raw("<button>Go</button>"),
+		}))
+		utils.AssertNotContains(t, output, `csrf_token`)
+	})
+
+	t.Run("form with custom ID and class", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			BaseProps: utils.BaseProps{ID: "my-form", Class: "max-w-md"},
+			Content:   templ.Raw("<button>Go</button>"),
+		}))
+		utils.AssertContains(t, output, `id="my-form"`)
+		utils.AssertContains(t, output, "max-w-md")
+	})
+
+	t.Run("default props uses POST", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultFormProps()
+		if props.Method != FormPost {
+			t.Errorf("DefaultFormProps().Method = %q, want %q", props.Method, FormPost)
+		}
+	})
+}

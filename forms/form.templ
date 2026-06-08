@@ -1,0 +1,54 @@
+package forms
+
+import (
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// FormMethod defines the HTTP method for a form
+type FormMethod string
+
+const (
+	FormGet  FormMethod = "GET"
+	FormPost FormMethod = "POST"
+)
+
+// FormProps configures a form wrapper
+type FormProps struct {
+	utils.BaseProps
+	Action   string
+	Method   FormMethod
+	CSRFToken string
+	Content  templ.Component
+}
+
+// DefaultFormProps returns sensible defaults
+func DefaultFormProps() FormProps {
+	return FormProps{
+		Method: FormPost,
+	}
+}
+
+// Form renders a form element with optional CSRF token
+//
+//	@forms.Form(forms.FormProps{Action: "/submit", CSRFToken: "token123", Content: myContent})
+templ Form(props FormProps) {
+	<form
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		action={ props.Action }
+		method={ string(props.Method) }
+		class={ utils.Class("space-y-6", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if props.CSRFToken != "" {
+			<input type="hidden" name="csrf_token" value={ props.CSRFToken }/>
+		}
+		if props.Content != nil {
+			@props.Content
+		}
+	</form>
+}
