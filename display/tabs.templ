@@ -27,6 +27,7 @@ type TabsProps struct {
 	Tabs        []Tab
 	ActiveTabID string
 	Variant     TabsVariant
+	ClientSide  bool
 }
 
 // DefaultTabsProps returns sensible defaults
@@ -74,6 +75,9 @@ templ Tabs(props TabsProps) {
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
+		if props.ClientSide {
+			data-tc-tabs=""
+		}
 		{ props.Attrs... }
 	>
 		<div role="tablist" aria-label="Tabs" class="border-b border-gray-200 dark:border-gray-700">
@@ -111,6 +115,43 @@ templ Tabs(props TabsProps) {
 					@tab.Content
 				</div>
 			}
+		}
+		if props.ClientSide {
+			<script nonce={ props.Nonce }>
+				if (!window.tcTabsAttached) {
+					window.tcTabsAttached = true;
+					document.addEventListener('click', function(e) {
+						var link = e.target.closest('[data-tc-tabs] [role="tab"]');
+						if (!link) return;
+						e.preventDefault();
+						activateTab(link);
+					});
+					document.addEventListener('keydown', function(e) {
+						var tab = e.target.closest('[data-tc-tabs] [role="tab"]');
+						if (!tab) return;
+						var tabs = Array.from(tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]'));
+						var idx = tabs.indexOf(tab);
+						var next = -1;
+						if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { next = (idx + 1) % tabs.length; }
+						else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { next = (idx - 1 + tabs.length) % tabs.length; }
+						else if (e.key === 'Home') { next = 0; }
+						else if (e.key === 'End') { next = tabs.length - 1; }
+						if (next >= 0) { e.preventDefault(); tabs[next].focus(); activateTab(tabs[next]); }
+					});
+				}
+				function activateTab(link) {
+					var container = link.closest('[data-tc-tabs]');
+					container.querySelectorAll('[role="tab"]').forEach(function(t) {
+						t.setAttribute('aria-selected','false');
+						t.setAttribute('tabindex','-1');
+					});
+					link.setAttribute('aria-selected','true');
+					link.setAttribute('tabindex','0');
+					container.querySelectorAll('[role="tabpanel"]').forEach(function(p) { p.hidden = true; });
+					var panel = container.querySelector('#' + link.getAttribute('aria-controls'));
+					if (panel) panel.hidden = false;
+				}
+			</script>
 		}
 	</div>
 }

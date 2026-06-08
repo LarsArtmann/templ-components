@@ -140,4 +140,32 @@ func TestTabsRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "Hidden content")
 	})
+
+	t.Run("client-side tabs renders data-tc-tabs and script", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tabs(TabsProps{
+			ActiveTabID: "a",
+			ClientSide:  true,
+			Tabs: []Tab{
+				{ID: "a", Label: "A"},
+				{ID: "b", Label: "B"},
+			},
+		}))
+		utils.AssertContains(t, output, `data-tc-tabs`)
+		utils.AssertContains(t, output, "tcTabsAttached")
+		utils.AssertContains(t, output, "activateTab")
+		utils.AssertContains(t, output, "ArrowRight")
+	})
+
+	t.Run("non-client-side tabs omit script", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tabs(TabsProps{
+			ActiveTabID: "a",
+			Tabs: []Tab{
+				{ID: "a", Label: "A"},
+			},
+		}))
+		utils.AssertNotContains(t, output, `data-tc-tabs`)
+		utils.AssertNotContains(t, output, "tcTabsAttached")
+	})
 }
