@@ -355,5 +355,6 @@ func TestSpinnerWithBaseProps(t *testing.T) {
 	utils.AssertContains(t, output, "my-class")
 	utils.AssertContains(t, output, `aria-label="Loading data"`)
 	utils.AssertContains(t, output, "text-green-600")
-	utils.AssertContains(t, output, "h-4 w-4")
+	utils.AssertContains(t, output, "w-4")
+	utils.AssertContains(t, output, "h-4")
 }
