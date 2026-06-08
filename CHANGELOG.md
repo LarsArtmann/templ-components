@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- `display.Drawer`: accessible side panel component with left/right slide, focus trap, Escape key, backdrop click, configurable size (SM/MD/LG/XL/Full)
+- `forms.ValidationSummary`: accessible error summary with icon, error count, linked field errors, `role="alert"`
+- 25 new Heroicons (98 path icons + 1 Spinner = 99 total): ArchiveBox, ArrowPath, Bars3, Beaker, Bolt, BugAnt, Calculator, Cube, FaceSmile, Fire, FolderOpen, Gift, HandThumbUp, Hashtag, PuzzlePiece, RocketLaunch, Server, Signal, Squares2x2, AcademicCap, ArrowDownOnSquare, ArrowUpOnSquare, BellSlash, Camera, NoSymbol
+- `internal/golden`: golden file comparison package with CSS class normalization for deterministic snapshot testing
+- Coverage tests for display (Drawer) and forms (ValidationSummary) packages
+- CI coverage threshold raised from 60% to 70%
+- `feedback/progress.templ` split into `progressbar.templ` + `step_indicator.templ` for code organization
 - `errorpage` package: 3 components for presenting structured errors on the web
   - `ErrorPage`: full-page error view with Wix-style What/Why/Fix/WayOut layout
   - `ErrorDetail`: inline error detail card with context table, cause chain, and suggested fix
@@ -45,6 +52,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **BREAKING**: `Spinner(size SpinnerSize, colorClass string)` → `Spinner(SpinnerProps)` with BaseProps support (ID, Class, AriaLabel, Attrs), Size, Color fields
 - **BREAKING**: `ConflictError(msg)` renamed to `Conflict(msg)` for naming consistency with other constructors
 - **BREAKING**: `GlobalErrorHandling(nonce string)` → `GlobalErrorHandling(cfg ErrorHandlingConfig)` — configurable error handling with struct
 - **BREAKING**: `DropdownItem` now has `Kind DropdownItemKind` field; backward compat via `IsLink()` fallback to Href discrimination

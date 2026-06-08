@@ -1,9 +1,9 @@
 # TODO List
 
 **Updated:** 2026-06-08
-**Coverage:** 70%+ | **Tests:** 1100+ | **Packages:** 10+demo | **Lint:** 0 issues | **Icons:** 75
+**Coverage:** 72.5% | **Tests:** 1100+ | **Packages:** 10+demo | **Lint:** 0 issues | **Icons:** 99 (98 path + 1 Spinner)
 
-> Session 3: 8 commits — Badge href, ProgressBar indeterminate, StepIndicator vertical, 30 new icons, JS tab switching, Form component, benchmarks, thread-safety fix.
+> Session 4: 4 commits — Drawer, ValidationSummary, 25 new Heroicons (99 total), Spinner BaseProps conversion, golden file testing, coverage 72.5%.
 
 ---
 
@@ -19,7 +19,7 @@
 ## 🟡 Breaking Changes (defer to v1.0)
 
 - [ ] Move test helpers to `internal/testutil/` — breaking change for external consumers (source: utils/test_helpers.go)
-- [ ] Spinner BaseProps conversion — `Spinner(size, colorClass)` positional args → `SpinnerProps` struct (source: feedback/loading.templ)
+- [x] Spinner BaseProps conversion — `SpinnerProps` struct with BaseProps, Size, Color fields (source: feedback/loading.templ)
 - [ ] SimpleNav BaseProps conversion — `(brandText, brandHref, links, currentPath)` → `SimpleNavProps` struct (source: navigation/nav.templ)
 - [ ] Add BaseProps to StepIndicatorProps (source: feedback/progress.templ)
 - [ ] Pagination uint fields — `CurrentPage` and `TotalPages` should be `uint` (source: navigation/pagination.templ)
@@ -72,10 +72,10 @@
 - [x] Add Toggle/Switch component (source: forms/toggle.templ)
 - [x] Add File input component (source: forms/file_input.templ)
 - [x] Add Form component wrapping inputs + CSRF token (source: forms/form.templ)
-- [x] Add more Heroicons — 75 total (was 45), +30 navigation/action/utility icons (source: icons/)
+- [x] Add 25+ more Heroicons — 98 path icons + 1 Spinner = 99 total (was 75) (source: icons/)
 - [ ] Add Date Picker component (source: docs/status/)
 - [ ] Add Combobox/Autocomplete component (source: docs/status/)
-- [ ] Add Dialog/Drawer component variants (source: docs/status/)
+- [x] Add Dialog/Drawer component — accessible side panel with left/right slide, focus trap (source: display/drawer.templ)
 
 ### Accessibility
 
@@ -96,7 +96,7 @@
 - [x] Component composition integration tests — Card+Badge, Table+Content, StatCard (source: display/composition_test.go)
 - [x] Godoc ExampleXxx() functions for forms package — Form, Input, Select, Textarea (source: forms/example_test.go)
 - [ ] Improve coverage for functions below 70%: fillIcon, Select, Textarea
-- [ ] Convert snapshot tests to golden file comparison
+- [ ] Convert remaining snapshot tests to golden file comparison (feedback/ done, pattern in internal/golden)
 - [ ] Consistent nonce propagation audit across all components
 - [ ] Add accessibility audit automation — axe-core/pa11y
 
@@ -104,7 +104,7 @@
 
 - [x] Set up GitHub Actions CI — build + test + lint on push/PR
 - [x] Pre-commit hook with `chmod +x`
-- [x] Set coverage threshold in CI (60%)
+- [x] Set coverage threshold in CI (70%)
 - [x] Add build test for `examples/` in CI
 - [x] Audit `tailwind-merge-go` thread safety — `sync.Mutex` IS required (source: utils/utils.go)
 - [ ] Verify `go get` works from clean project
@@ -126,7 +126,8 @@
 
 ### Release & Discovery
 
-- [ ] Tag v0.2.0 release and update CHANGELOG.md
+- [x] Tag v0.2.0 release and update CHANGELOG.md
+- [ ] Tag v0.3.0 with Priority 2 features (Drawer, ValidationSummary, 25 icons, Spinner BaseProps)
 - [ ] Submit to awesome-templ for discoverability
 - [ ] Open PR on templ.guide to get listed
 - [ ] Cross-link ecosystem in README — cqrs-htmx, go-cqrs-lite (GOTH stack story)

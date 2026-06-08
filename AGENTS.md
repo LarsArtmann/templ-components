@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-06-08 | **Tests:** 1100+ | **Packages:** 10+demo | **Generated files:** 41 `*_templ.go` committed | **Icons:** 75
+**Updated:** 2026-06-08 | **Tests:** 1100+ | **Packages:** 10+demo | **Generated files:** 44 `*_templ.go` committed | **Icons:** 99
 
 ## Build & Test Commands
 
@@ -27,7 +27,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 41 generated files across 9 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/svg, layout, navigation)
+- 44 generated files across 10 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/golden, internal/svg, layout, navigation)
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
 will have their Go toolchain download the tagged commit. If `*_templ.go` is missing from that
@@ -87,6 +87,9 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **Error handler:** `errorpage/handler.go` provides `ErrorHandler(err, cfg)` returning `http.Handler`, `FromError(err)` for type-safe conversion from go-error-family errors, 6 pre-built constructors (`NotFound`, `Forbidden`, `BadRequest`, `Conflict`, `ServiceUnavailable`, `InternalError`), `WriteError`/`WriteErrorPage` convenience wrappers, `HTMLShell` mode for valid HTML documents, `JSON` mode for API/HTMX responses. Uses `errors.AsType[errorfamily.Classified]()` for go-error-family integration.
 - **Error families:** `errorpage` package integrates with go-error-family via `FamilyFromErrorFamily()` converter + `ParseFamily()` for string-based lookup. `FromError()` extracts Why/Fix defaults from go-error-family's `Family.DefaultWhy()`/`DefaultFix()` methods.
 - **Error components:** `ErrorPage` (full-page), `ErrorDetail` (inline card), `ErrorAlert` (family-aware alert) in `errorpage/`
+- **Drawer:** `display.Drawer` — accessible side panel with left/right slide, focus trap, Escape key, backdrop click. Follows same pattern as Modal but with translate-x transforms.
+- **ValidationSummary:** `forms.ValidationSummary` — accessible error summary with icon, error count, linked field errors, `role="alert"`.
+- **Golden testing:** `internal/golden.Assert(t, name, got)` — golden file comparison with CSS class normalization. Supports `-update` flag.
 - **Error sub-templates:** 6 shared private sub-templates in `errorpage/shared.templ` (familyIcon, fixCard, causeList, contextTable, timestampFooter, familyBadge)
 - HTMX retry: per-element `data-tc-retry` attribute (no shared counter)
 - HTMX error handling: family-aware — when server returns structured JSON with `family` field, toast type is mapped. `ErrorHandlerConfig{JSON: true}` produces the JSON format that HTMX consumes.
@@ -101,7 +104,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - StepIndicator orientation: `StepIndicatorProps.Orientation` with `StepHorizontal`/`StepVertical` constants for vertical progress tracking.
 - Tabs client-side: `TabsProps.ClientSide bool` adds `data-tc-tabs` attribute and inline JS for click-to-activate and keyboard nav (ArrowLeft/Right, Home, End). Uses global singleton guard (`tcTabsAttached`).
 - Form component: `forms.Form(FormProps)` with `Action`, `Method` (GET/POST), `CSRFToken` hidden input, and `Content` for composing form fields.
-- Icons: 75 total (was 45). New: ArrowUp/Down, Bookmark, Clipboard, Cloud, CodeBracket, DocumentDuplicate/Text, EllipsisHorizontal/Vertical, Filter, Heart, Link, ListBullet, MapPin, Microphone, PaperAirplane, Photo, Printer, QueueList, Share, ShieldCheck, Star, Tag, ThumbUp, UserCircle, UserPlus, Wrench, XCircle.
+- Icons: 99 total (98 path icons + Spinner). Path icons: ArchiveBox, ArrowPath, ArrowUp/Down/Left/Right, Bars3, Beaker, BellSlash, Bolt, Bookmark, BugAnt, Calculator, Camera, Clipboard, Cloud, CodeBracket, Cube, Document, DocumentDuplicate, DocumentText, EllipsisHorizontal, EllipsisVertical, ExclamationCircle, Eye, Filter, Fire, Folder, FolderOpen, Gift, HandThumbUp, Hashtag, Heart, Home, Inbox, Link, ListBullet, LockClosed, MagnifyingGlass, MapPin, Menu, Microphone, Minus, NoSymbol, PaperAirplane, Pencil, Phone, Photo, Plus, Printer, PuzzlePiece, QueueList, Refresh, RocketLaunch, Server, Settings, Share, ShieldCheck, Signal, Squares2x2, Star, Tag, ThumbUp, Trash, UserCircle, UserPlus, Users, Wrench, XCircle, AcademicCap, ArrowDownOnSquare, ArrowUpOnSquare.
 - Thread safety: `utils.Class()` uses `sync.Mutex` to protect tailwind-merge-go's shared LRU cache from concurrent access. Required even though the LRU has internal mutexes — they don't protect the full Merge() call sequence.
 - DropdownItemKind: typed enum (`DropdownItemLink`, `DropdownItemButton`) with backward compat via `IsLink()` fallback to Href-based discrimination.
 
@@ -136,12 +139,15 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - `FromError()` now checks `errorfamily.Classified` interface first (requires go-error-family v0.2.0)
 - `GlobalErrorHandling(nonce string)` → `GlobalErrorHandling(cfg ErrorHandlingConfig)` — configurable error handling
 - `DropdownItem` now has `Kind DropdownItemKind` field; use `DropdownItemLink`/`DropdownItemButton` (backward compat: empty Kind falls back to Href discrimination)
+- `Spinner(size, colorClass)` → `Spinner(SpinnerProps)` (now has BaseProps + Size + Color, DefaultSpinnerProps() constructor)
 - `ProgressBarProps` now has `Indeterminate bool` field
 - `StepIndicatorProps` now has `Orientation StepIndicatorOrientation` field (StepHorizontal/StepVertical)
 - `TabsProps` now has `ClientSide bool` field
 - `BadgeProps` now has `Href string` field (renders `<a>` when set)
 - New `forms.Form(FormProps)` component with Action, Method, CSRFToken, Content fields
+- `Spinner(size, colorClass)` → `Spinner(SpinnerProps)` (now has BaseProps + Size + Color)
 - New icon constants: ArrowUp, ArrowDown, Bookmark, Clipboard, Cloud, CodeBracket, DocumentDuplicate, DocumentText, EllipsisHorizontal, EllipsisVertical, Filter, Heart, Link, ListBullet, MapPin, Microphone, PaperAirplane, Photo, Printer, QueueList, Share, ShieldCheck, Star, Tag, ThumbUp, UserCircle, UserPlus, Wrench, XCircle
+- New icon constants (session 4): ArchiveBox, ArrowPath, Bars3, Beaker, Bolt, BugAnt, Calculator, Camera, Cube, FaceSmile, Fire, FolderOpen, Gift, HandThumbUp, Hashtag, NoSymbol, PuzzlePiece, RocketLaunch, Server, Signal, Squares2x2, AcademicCap, ArrowDownOnSquare, ArrowUpOnSquare, BellSlash
 
 ## Lint Command
 
