@@ -22,13 +22,15 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 
 ```
 templ-components/
-├── utils/           # Base types, Tailwind class merging, generic helpers (BoolString, MapEnum)
+├── utils/           # Base types, Tailwind class merging, generic helpers (MapEnum, Ternary)
 ├── internal/svg/    # Shared SVG primitives (fillIcon, spinner)
-├── display/         # UI: card, badge, modal, table, tabs, avatar, tooltip, accordion, dropdown
+├── display/         # UI: card, badge, modal, drawer, table, tabs, avatar, tooltip, accordion, dropdown
 ├── feedback/        # User feedback: alert, toast, spinner, progress, skeleton (shared feedbackStyleSet)
-├── forms/           # Form controls: input, select, textarea, checkbox, label
-├── htmx/            # HTMX helpers: loading, error handling, CSRF, OOB swap
-├── icons/           # Named SVG icons (42 constants, map-driven rendering)
+├── forms/           # Form controls: input, select, textarea, checkbox, radio, toggle, file input, label, validation
+├── errorpage/       # Error presentation: ErrorPage, ErrorDetail, ErrorAlert, http.Handler integration
+├── htmx/            # HTMX helpers: loading, error handling, CSRF, OOB swap, confirm delete
+├── internal/golden/ # Golden file comparison with CSS class normalization
+├── icons/           # Named SVG icons (98 path icons + Spinner, map-driven rendering)
 ├── layout/          # Page layout: base HTML, theme toggle, dark mode
 └── navigation/      # Nav: navbar, breadcrumbs, pagination, mobile menu
 ```
@@ -38,7 +40,8 @@ templ-components/
 ```
 utils          ← all packages
 internal/svg   ← display, feedback, icons
-icons          ← display (empty_state)
+icons          ← display, feedback, errorpage
+internal/golden ← test-only (feedback golden tests)
 ```
 
 No circular imports. `internal/svg` is not importable by consumers (Go `internal/` convention).
@@ -138,7 +141,7 @@ No other runtime dependencies.
 7. **`feedbackStyleSet` + generic lookup** — Shared style struct with `lookupFeedbackStyle[T]()` eliminates per-component duplicate types
 8. **`iconPathData` map** — Data-driven icon rendering replaces switch statements; multi-path icons use `|` separator
 9. **`AvatarStatus` / `TrendDirection` enums** — Impossible states unrepresentable; boolean pairs eliminated
-10. **`utils.BoolString()`** — Standardized boolean-to-string conversion replacing local implementations
+10. **`internal/golden`** — Golden file snapshot testing with CSS class normalization (sorts classes for deterministic comparison despite tailwind-merge-go non-deterministic ordering)
 
 ### JavaScript Patterns
 
@@ -150,6 +153,7 @@ Interactive components use **document-level event delegation** with global singl
 | Dropdown            | Global singleton    | `window.tcDropdownAttached`  |
 | ThemeToggle         | IIFE + global guard | (none, runs once)            |
 | Modal               | Per-instance IIFE   | Needs focus trap state       |
+| Drawer              | Per-instance IIFE   | Needs focus trap state       |
 | Alert/Toast dismiss | Shared singleton    | `tcDismissAttached`          |
 | Error handling      | IIFE                | No global state              |
 
