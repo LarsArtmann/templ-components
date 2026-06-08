@@ -73,7 +73,7 @@ func TestInlineSuccessRender(t *testing.T) {
 
 func TestSpinnerRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, Spinner(SpinnerMD, "text-blue-600"))
+	output := utils.Render(t, Spinner(SpinnerProps{Size: SpinnerMD, Color: "text-blue-600"}))
 	utils.AssertContains(t, output, "<svg")
 	utils.AssertContains(t, output, "animate-spin")
 	utils.AssertContains(t, output, "h-6 w-6")

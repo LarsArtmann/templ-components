@@ -16,7 +16,9 @@ func renderLoadingIndicator(t *testing.T) string {
 	return utils.Render(
 		t,
 		LoadingIndicator(
-			feedback.Spinner(feedback.SpinnerLG, "text-blue-600 dark:text-blue-400"),
+			feedback.Spinner(
+				feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-blue-600 dark:text-blue-400"},
+			),
 		),
 	)
 }
@@ -54,7 +56,9 @@ func TestInlineLoadingOverlayUserSeesLocalLoadingState(t *testing.T) {
 			t,
 			InlineLoadingOverlay(
 				"my-form-loading",
-				feedback.Spinner(feedback.SpinnerMD, "text-blue-600 dark:text-blue-400"),
+				feedback.Spinner(
+					feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"},
+				),
 			),
 		)
 		utils.AssertContains(t, output, `id="my-form-loading"`)
@@ -74,7 +78,7 @@ func TestLoadingButtonUserSeesButtonStateChange(t *testing.T) {
 			LoadingButton(
 				"Save",
 				"Saving...",
-				feedback.Spinner(feedback.SpinnerSM, "htmx-indicator"),
+				feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "htmx-indicator"}),
 			),
 		)
 		utils.AssertContains(t, output, "Save")
@@ -184,14 +188,18 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 		}{
 			{
 				"LoadingIndicator",
-				func() templ.Component { return LoadingIndicator(feedback.Spinner(feedback.SpinnerLG, "text-blue-600")) },
+				func() templ.Component {
+					return LoadingIndicator(
+						feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-blue-600"}),
+					)
+				},
 			},
 			{
 				"InlineLoadingOverlay",
 				func() templ.Component {
 					return InlineLoadingOverlay(
 						"test",
-						feedback.Spinner(feedback.SpinnerMD, "text-blue-600"),
+						feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600"}),
 					)
 				},
 			},
@@ -199,7 +207,7 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 				return LoadingButton(
 					"Go",
 					"Going...",
-					feedback.Spinner(feedback.SpinnerSM, "htmx-indicator"),
+					feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "htmx-indicator"}),
 				)
 			}},
 			{

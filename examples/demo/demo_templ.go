@@ -308,15 +308,15 @@ func demoContent() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = feedback.Spinner(feedback.SpinnerSM, "text-blue-600").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-blue-600"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = feedback.Spinner(feedback.SpinnerMD, "text-gray-600").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-gray-600"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = feedback.Spinner(feedback.SpinnerLG, "text-red-600").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-red-600"}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

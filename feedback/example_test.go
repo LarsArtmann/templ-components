@@ -32,6 +32,7 @@ func ExampleToast() {
 
 func ExampleSpinner() {
 	var buf bytes.Buffer
-	_ = feedback.Spinner(feedback.SpinnerMD, "text-blue-600").Render(context.Background(), &buf)
+	_ = feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600"}).
+		Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }

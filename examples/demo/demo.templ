@@ -78,9 +78,9 @@ templ demoContent() {
 		</div>
 		@demoSection("Loading")
 		<div class="flex items-center gap-8">
-			@feedback.Spinner(feedback.SpinnerSM, "text-blue-600")
-			@feedback.Spinner(feedback.SpinnerMD, "text-gray-600")
-			@feedback.Spinner(feedback.SpinnerLG, "text-red-600")
+			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-blue-600"})
+			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-gray-600"})
+			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-red-600"})
 			@feedback.InlineLoading("Saving...")
 		</div>
 		@demoSection("Accordion")

@@ -31,7 +31,7 @@ func BenchmarkFeedbackRenders(b *testing.B) {
 		b.ResetTimer()
 		for b.Loop() {
 			var buf bytes.Buffer
-			_ = Spinner(SpinnerMD, "text-blue-600").Render(context.Background(), &buf)
+			_ = Spinner(SpinnerProps{Size: SpinnerMD, Color: "text-blue-600"}).Render(context.Background(), &buf)
 		}
 	})
 
