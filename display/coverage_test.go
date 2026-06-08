@@ -640,3 +640,105 @@ func TestTableCaption(t *testing.T) {
 	utils.AssertContains(t, output, "<caption")
 	utils.AssertContains(t, output, "User list")
 }
+
+// --- Drawer ---
+
+func TestDrawerRender(t *testing.T) {
+	t.Parallel()
+	t.Run("right drawer with title", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Drawer(DrawerProps{
+			BaseProps: utils.BaseProps{ID: "test-drawer"},
+			Title:     "Settings",
+			Open:      true,
+			Side:      DrawerRight,
+		}))
+		utils.AssertContains(t, output, `id="test-drawer"`)
+		utils.AssertContains(t, output, "Settings")
+		utils.AssertContains(t, output, `role="dialog"`)
+		utils.AssertContains(t, output, `aria-modal="true"`)
+		utils.AssertContains(t, output, `translate-x-0`)
+	})
+
+	t.Run("left drawer", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Drawer(DrawerProps{
+			BaseProps: utils.BaseProps{ID: "left-drawer"},
+			Open:      true,
+			Side:      DrawerLeft,
+		}))
+		utils.AssertContains(t, output, `style="inset-y: 0; left: 0;"`)
+	})
+
+	t.Run("closed drawer", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Drawer(DrawerProps{
+			BaseProps: utils.BaseProps{ID: "closed-drawer"},
+			Open:      false,
+			Side:      DrawerRight,
+		}))
+		utils.AssertContains(t, output, "opacity-0")
+		utils.AssertContains(t, output, "translate-x-full")
+	})
+
+	t.Run("empty ID panics", func(t *testing.T) {
+		t.Parallel()
+		defer func() {
+			r := recover()
+			if r == nil {
+				t.Error("expected panic for Drawer with empty ID")
+			}
+		}()
+		utils.Render(t, Drawer(DrawerProps{}))
+	})
+
+	t.Run("all sizes", func(t *testing.T) {
+		t.Parallel()
+		for _, size := range []DrawerSize{DrawerSizeSM, DrawerSizeMD, DrawerSizeLG, DrawerSizeXL, DrawerFull} {
+			output := utils.Render(t, Drawer(DrawerProps{
+				BaseProps: utils.BaseProps{ID: "size-" + string(size)},
+				Open:      true,
+				Size:      size,
+			}))
+			utils.AssertContains(t, output, `id="size-`+string(size)+`"`)
+		}
+	})
+
+	t.Run("with aria-label", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Drawer(DrawerProps{
+			BaseProps: utils.BaseProps{ID: "aria-drawer", AriaLabel: "Navigation panel"},
+			Open:      true,
+		}))
+		utils.AssertContains(t, output, `aria-label="Navigation panel"`)
+	})
+
+	t.Run("with nonce", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Drawer(DrawerProps{
+			BaseProps: utils.BaseProps{ID: "nonce-drawer", Nonce: "test-nonce"},
+			Open:      true,
+		}))
+		utils.AssertContains(t, output, `nonce="test-nonce"`)
+	})
+
+	t.Run("without title", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Drawer(DrawerProps{
+			BaseProps: utils.BaseProps{ID: "no-title-drawer"},
+			Open:      true,
+		}))
+		utils.AssertNotContains(t, output, `id="no-title-drawer-title"`)
+	})
+
+	t.Run("default props", func(t *testing.T) {
+		t.Parallel()
+		props := DefaultDrawerProps()
+		if props.Side != DrawerRight {
+			t.Error("expected right side default")
+		}
+		if props.Size != DrawerSizeMD {
+			t.Error("expected MD size default")
+		}
+	})
+}

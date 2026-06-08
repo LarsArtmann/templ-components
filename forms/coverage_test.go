@@ -378,3 +378,59 @@ func TestFormFieldWrapperRequired(t *testing.T) {
 	output := utils.Render(t, FormFieldWrapper("name", "Name", true, "", ""))
 	utils.AssertContains(t, output, "Name")
 }
+
+// --- ValidationSummary ---
+
+func TestValidationSummaryWithErrors(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, ValidationSummary(ValidationSummaryProps{
+		Errors: []ValidationError{
+			{Field: "email", Message: "Email is required"},
+			{Field: "name", Message: "Name too short"},
+		},
+	}))
+	utils.AssertContains(t, output, `role="alert"`)
+	utils.AssertContains(t, output, "Email is required")
+	utils.AssertContains(t, output, "Name too short")
+	utils.AssertContains(t, output, `href="#email"`)
+	utils.AssertContains(t, output, "2 error(s) found")
+}
+
+func TestValidationSummaryEmpty(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, ValidationSummary(ValidationSummaryProps{
+		Errors: []ValidationError{},
+	}))
+	if output != "" {
+		t.Errorf("expected empty output, got: %s", output)
+	}
+}
+
+func TestValidationSummaryNoField(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, ValidationSummary(ValidationSummaryProps{
+		Errors: []ValidationError{
+			{Message: "Generic error"},
+		},
+	}))
+	utils.AssertContains(t, output, "Generic error")
+	utils.AssertNotContains(t, output, `href=`)
+}
+
+func TestValidationSummaryWithID(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, ValidationSummary(ValidationSummaryProps{
+		BaseProps: utils.BaseProps{ID: "val-summary"},
+		Errors:    []ValidationError{{Field: "x", Message: "err"}},
+	}))
+	utils.AssertContains(t, output, `id="val-summary"`)
+}
+
+func TestValidationSummaryWithAriaLabel(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, ValidationSummary(ValidationSummaryProps{
+		BaseProps: utils.BaseProps{AriaLabel: "Form errors"},
+		Errors:    []ValidationError{{Field: "x", Message: "err"}},
+	}))
+	utils.AssertContains(t, output, `aria-label="Form errors"`)
+}
