@@ -2,7 +2,6 @@
 package display
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/a-h/templ"
@@ -63,13 +62,6 @@ func modalCloseHandler(id string) templ.ComponentScript {
 		Call:       call,
 		CallInline: "",
 	}
-}
-
-func validateModalID(id string) error {
-	if id == "" {
-		return fmt.Errorf("modal: id=%q cannot be empty", id)
-	}
-	return nil
 }
 
 func modalSafeID(id string) string {

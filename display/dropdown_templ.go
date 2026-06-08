@@ -261,7 +261,7 @@ func Dropdown(props DropdownProps) templ.Component {
 			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		if err := validateDropdownID(props.ID); err != nil {
+		if err := utils.ValidateID("dropdown", props.ID); err != nil {
 			panic(err.Error())
 		}
 		var templ_7745c5c3_Var10 = []any{utils.Class("relative inline-block text-left", props.Class)}

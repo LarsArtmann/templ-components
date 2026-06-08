@@ -12,7 +12,7 @@ import (
 //	}
 templ Modal(props ModalProps) {
 	{{
-		if err := validateModalID(props.ID); err != nil {
+		if err := utils.ValidateID("modal", props.ID); err != nil {
 			panic(err.Error())
 		}
 	}}

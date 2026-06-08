@@ -12,7 +12,7 @@ import (
 //	}
 templ Drawer(props DrawerProps) {
 	{{
-		if err := validateDrawerID(props.ID); err != nil {
+		if err := utils.ValidateID("drawer", props.ID); err != nil {
 			panic(err.Error())
 		}
 	}}

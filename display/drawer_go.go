@@ -1,7 +1,6 @@
 package display
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/a-h/templ"
@@ -78,13 +77,6 @@ func drawerCloseHandler(id string) templ.ComponentScript {
 		Call:       call,
 		CallInline: "",
 	}
-}
-
-func validateDrawerID(id string) error {
-	if id == "" {
-		return fmt.Errorf("drawer: id=%q cannot be empty", id)
-	}
-	return nil
 }
 
 func drawerSafeID(id string) string {

@@ -110,7 +110,7 @@ templ dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) {
 //	})
 templ Dropdown(props DropdownProps) {
 	{{
-		if err := validateDropdownID(props.ID); err != nil {
+		if err := utils.ValidateID("dropdown", props.ID); err != nil {
 			panic(err.Error())
 		}
 	}}

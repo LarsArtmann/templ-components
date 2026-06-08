@@ -39,7 +39,7 @@ func Modal(props ModalProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		if err := validateModalID(props.ID); err != nil {
+		if err := utils.ValidateID("modal", props.ID); err != nil {
 			panic(err.Error())
 		}
 		var templ_7745c5c3_Var2 = []any{"fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0",
