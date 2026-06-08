@@ -144,14 +144,14 @@ No other runtime dependencies.
 
 Interactive components use **document-level event delegation** with global singleton guards for HTMX compatibility:
 
-| Component | Pattern | Guard |
-|-----------|---------|-------|
-| Accordion | Global singleton | `window.tcAccordionAttached` |
-| Dropdown | Global singleton | `window.tcDropdownAttached` |
-| ThemeToggle | IIFE + global guard | (none, runs once) |
-| Modal | Per-instance IIFE | Needs focus trap state |
-| Alert/Toast dismiss | Shared singleton | `tcDismissAttached` |
-| Error handling | IIFE | No global state |
+| Component           | Pattern             | Guard                        |
+| ------------------- | ------------------- | ---------------------------- |
+| Accordion           | Global singleton    | `window.tcAccordionAttached` |
+| Dropdown            | Global singleton    | `window.tcDropdownAttached`  |
+| ThemeToggle         | IIFE + global guard | (none, runs once)            |
+| Modal               | Per-instance IIFE   | Needs focus trap state       |
+| Alert/Toast dismiss | Shared singleton    | `tcDismissAttached`          |
+| Error handling      | IIFE                | No global state              |
 
 **Why delegation:** After HTMX DOM swaps, dynamically added elements are handled automatically — no re-initialization needed.
 

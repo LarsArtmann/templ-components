@@ -92,7 +92,7 @@
 
 - [x] BDD tests for navigation, htmx, layout, icons packages
 - [x] Dark mode `dark:` class output verification tests (source: display/a11y_test.go)
-- [x] Benchmark tests for display, feedback, navigation packages (source: */benchmark_test.go)
+- [x] Benchmark tests for display, feedback, navigation packages (source: \*/benchmark_test.go)
 - [x] Component composition integration tests — Card+Badge, Table+Content, StatCard (source: display/composition_test.go)
 - [x] Godoc ExampleXxx() functions for forms package — Form, Input, Select, Textarea (source: forms/example_test.go)
 - [ ] Improve coverage for functions below 70%: fillIcon, Select, Textarea

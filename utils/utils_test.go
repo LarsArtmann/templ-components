@@ -218,14 +218,12 @@ func TestClassConcurrentAccess(t *testing.T) {
 	t.Parallel()
 	var wg sync.WaitGroup
 	for i := range 100 {
-		wg.Add(1)
-		go func() {
-			defer wg.Done()
+		wg.Go(func() {
 			result := Class("px-4 py-2", "px-6", fmt.Sprintf("bg-%d", i))
 			if !strings.Contains(result, "px-6") {
 				t.Errorf("Class merge failed: %s", result)
 			}
-		}()
+		})
 	}
 	wg.Wait()
 }

@@ -31,6 +31,7 @@ type ToastType = FeedbackType
 ```
 
 Shared helpers in `feedback/styles.go`:
+
 - `feedbackIconName(FeedbackType)` — single source of truth for icon mapping
 - `lookupFeedbackStyle[T](FeedbackType, map[T]feedbackStyleSet)` — generic style lookup
 

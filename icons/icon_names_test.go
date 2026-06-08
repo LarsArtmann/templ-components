@@ -47,8 +47,8 @@ func TestAllIconNamesCoversIconPathData(t *testing.T) {
 func TestIconPathsNoEmptySegments(t *testing.T) {
 	t.Parallel()
 	for name, data := range iconPathData {
-		parts := strings.Split(data, "|")
-		for _, p := range parts {
+		parts := strings.SplitSeq(data, "|")
+		for p := range parts {
 			if p == "" {
 				t.Errorf("icon %q has empty path segment in iconPathData", name)
 			}

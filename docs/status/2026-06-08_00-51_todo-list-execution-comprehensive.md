@@ -10,13 +10,13 @@ Executed ~30 TODO items from `TODO_LIST.md`. 10 code changes implemented, 20+ it
 
 ### Metrics
 
-| Metric | Before | After |
-|--------|--------|-------|
-| Tests passing | 1049+ | 1049+ (all green) |
-| Lint issues | 0 | 0 |
-| Coverage (avg) | ~66% | ~68% |
-| TODO items open | ~90 | ~60 |
-| Packages | 10+demo | 10+demo |
+| Metric          | Before  | After             |
+| --------------- | ------- | ----------------- |
+| Tests passing   | 1049+   | 1049+ (all green) |
+| Lint issues     | 0       | 0                 |
+| Coverage (avg)  | ~66%    | ~68%              |
+| TODO items open | ~90     | ~60               |
+| Packages        | 10+demo | 10+demo           |
 
 ---
 
@@ -79,11 +79,13 @@ Executed ~30 TODO items from `TODO_LIST.md`. 10 code changes implemented, 20+ it
 ## C) NOT STARTED (remaining from TODO_LIST.md)
 
 ### High-impact components not started
+
 - Date Picker, Combobox/Autocomplete, Dialog/Drawer, Form wrapper
 - Skeleton variants, Step indicator vertical variant
 - Badge click/href, ProgressBar indeterminate, client-side tab switching
 
 ### Testing gaps
+
 - Breadcrumb JSON-LD test (now that it's fixed, needs coverage)
 - DefaultLoadingOverlayProps test, DefaultBreadcrumbsProps test
 - Nav empty Links test, CSRFToken empty string test
@@ -92,10 +94,12 @@ Executed ~30 TODO items from `TODO_LIST.md`. 10 code changes implemented, 20+ it
 - Dark mode class output verification, nonce propagation audit
 
 ### Infrastructure
+
 - Demo app HTMX enable, goreleaser, coverage threshold, nix flake
 - Visual regression testing, circular import guard test, accessibility audit automation
 
 ### Documentation
+
 - README update for new APIs, ADRs (icon convention, JS patterns, FeedbackType)
 - `go doc` Example functions, DOMAIN_LANGUAGE.md placeholders, documentation site
 
@@ -122,10 +126,12 @@ Executed ~30 TODO items from `TODO_LIST.md`. 10 code changes implemented, 20+ it
 **Problem:** Many components use `string` types for enums (FeedbackType, TrendDirection, CardPadding, TabsVariant, etc.) with map-based validation. This is inconsistent with Go best practices and allows invalid values at compile time.
 
 **Proposal:** Use typed enums with `Validate() error` methods consistently:
+
 ```go
 type FeedbackType string
 func (t FeedbackType) Validate() error { ... }
 ```
+
 Consider `go:generate stringer` for enums to eliminate manual string maps.
 
 **Impact:** Medium. Prevents runtime panics, improves IDE autocomplete.
@@ -152,33 +158,33 @@ Consider `go:generate stringer` for enums to eliminate manual string maps.
 
 Sorted by **impact × ease** (Pareto — high impact, low effort first):
 
-| # | Task | Impact | Effort | Package |
-|---|------|--------|--------|---------|
-| 1 | Add Breadcrumb JSON-LD render test | High | S | navigation |
-| 2 | Verify demo app HTMX enable (`HTMXVersion` default) | Medium | S | examples/demo |
-| 3 | Update README.md for v0.2 API changes | High | M | root |
-| 4 | Add DefaultLoadingOverlayProps test | Low | S | feedback |
-| 5 | Add DefaultBreadcrumbsProps test | Low | S | navigation |
-| 6 | Add Nav empty `Links` test | Low | S | navigation |
-| 7 | Add CSRFToken empty string test | Low | S | htmx |
-| 8 | Tag v0.2.0 release + CHANGELOG final | High | S | root |
-| 9 | Improve icons coverage (56.5% → 70%+) | Medium | M | icons |
-| 10 | Write ADR for filled vs stroke icon convention | Medium | S | docs/adr |
-| 11 | Write ADR for JS attachment patterns | Medium | S | docs/adr |
-| 12 | Add ADR for FeedbackType unification | Medium | S | docs/adr |
-| 13 | Badge click/href support | Medium | M | display |
-| 14 | ProgressBar indeterminate state | Medium | M | feedback |
-| 15 | Step indicator vertical variant | Medium | M | feedback |
-| 16 | Client-side JS tab switching | Medium | M | display |
-| 17 | Tabs keyboard navigation (arrow keys) | Medium | M | display |
-| 18 | Consolidate inline JS into shared init | High | L | layout/display/feedback |
-| 19 | Add Form component (inputs + validation) | High | L | forms |
-| 20 | Skeleton component variants | Medium | L | display |
-| 21 | Add Dialog/Drawer component variants | High | L | display |
-| 22 | Add Combobox/Autocomplete component | High | XL | forms |
-| 23 | Add Date Picker component | High | XL | forms |
-| 24 | Golden file test infrastructure | High | L | testing |
-| 25 | Accessibility audit automation (axe-core) | High | L | CI |
+| #   | Task                                                | Impact | Effort | Package                 |
+| --- | --------------------------------------------------- | ------ | ------ | ----------------------- |
+| 1   | Add Breadcrumb JSON-LD render test                  | High   | S      | navigation              |
+| 2   | Verify demo app HTMX enable (`HTMXVersion` default) | Medium | S      | examples/demo           |
+| 3   | Update README.md for v0.2 API changes               | High   | M      | root                    |
+| 4   | Add DefaultLoadingOverlayProps test                 | Low    | S      | feedback                |
+| 5   | Add DefaultBreadcrumbsProps test                    | Low    | S      | navigation              |
+| 6   | Add Nav empty `Links` test                          | Low    | S      | navigation              |
+| 7   | Add CSRFToken empty string test                     | Low    | S      | htmx                    |
+| 8   | Tag v0.2.0 release + CHANGELOG final                | High   | S      | root                    |
+| 9   | Improve icons coverage (56.5% → 70%+)               | Medium | M      | icons                   |
+| 10  | Write ADR for filled vs stroke icon convention      | Medium | S      | docs/adr                |
+| 11  | Write ADR for JS attachment patterns                | Medium | S      | docs/adr                |
+| 12  | Add ADR for FeedbackType unification                | Medium | S      | docs/adr                |
+| 13  | Badge click/href support                            | Medium | M      | display                 |
+| 14  | ProgressBar indeterminate state                     | Medium | M      | feedback                |
+| 15  | Step indicator vertical variant                     | Medium | M      | feedback                |
+| 16  | Client-side JS tab switching                        | Medium | M      | display                 |
+| 17  | Tabs keyboard navigation (arrow keys)               | Medium | M      | display                 |
+| 18  | Consolidate inline JS into shared init              | High   | L      | layout/display/feedback |
+| 19  | Add Form component (inputs + validation)            | High   | L      | forms                   |
+| 20  | Skeleton component variants                         | Medium | L      | display                 |
+| 21  | Add Dialog/Drawer component variants                | High   | L      | display                 |
+| 22  | Add Combobox/Autocomplete component                 | High   | XL     | forms                   |
+| 23  | Add Date Picker component                           | High   | XL     | forms                   |
+| 24  | Golden file test infrastructure                     | High   | L      | testing                 |
+| 25  | Accessibility audit automation (axe-core)           | High   | L      | CI                      |
 
 ---
 
@@ -198,18 +204,18 @@ Since the library hasn't tagged v0.2.0 yet (current consumers would be on v0.1.x
 
 ## Coverage by Package
 
-| Package | Coverage |
-|---------|----------|
-| utils | 81.5% |
-| internal/svg | 79.0% |
-| htmx | 77.0% |
-| layout | 73.1% |
-| feedback | 70.2% |
-| errorpage | 70.6% |
-| display | 68.5% |
-| navigation | 67.0% |
-| forms | 67.0% |
-| icons | 56.5% |
+| Package      | Coverage |
+| ------------ | -------- |
+| utils        | 81.5%    |
+| internal/svg | 79.0%    |
+| htmx         | 77.0%    |
+| layout       | 73.1%    |
+| feedback     | 70.2%    |
+| errorpage    | 70.6%    |
+| display      | 68.5%    |
+| navigation   | 67.0%    |
+| forms        | 67.0%    |
+| icons        | 56.5%    |
 
 ---
 
