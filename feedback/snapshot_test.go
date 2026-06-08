@@ -331,3 +331,29 @@ func TestInlineSuccessEmptyMessage(t *testing.T) {
 	output := utils.Render(t, InlineSuccess(""))
 	utils.AssertContains(t, output, "text-green-600")
 }
+
+func TestDefaultSpinnerProps(t *testing.T) {
+	t.Parallel()
+	props := DefaultSpinnerProps()
+	if props.Size != SpinnerMD {
+		t.Errorf("Size = %q, want %q", props.Size, SpinnerMD)
+	}
+}
+
+func TestSpinnerWithBaseProps(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Spinner(SpinnerProps{
+		Size:  SpinnerSM,
+		Color: "text-green-600",
+		BaseProps: utils.BaseProps{
+			ID:        "spin-1",
+			Class:     "my-class",
+			AriaLabel: "Loading data",
+		},
+	}))
+	utils.AssertContains(t, output, `id="spin-1"`)
+	utils.AssertContains(t, output, "my-class")
+	utils.AssertContains(t, output, `aria-label="Loading data"`)
+	utils.AssertContains(t, output, "text-green-600")
+	utils.AssertContains(t, output, "h-4 w-4")
+}

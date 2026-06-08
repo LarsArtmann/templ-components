@@ -281,3 +281,22 @@ func TestInputGroupPaddingClass(t *testing.T) {
 		t.Errorf("InputGroupPaddingClass(false,false) = %q, want empty", got)
 	}
 }
+
+func TestDefaultInputGroupProps(t *testing.T) {
+	t.Parallel()
+	props := DefaultInputGroupProps()
+	if props.LeftAddon != nil {
+		t.Error("LeftAddon should be nil")
+	}
+	if props.RightAddon != nil {
+		t.Error("RightAddon should be nil")
+	}
+}
+
+func TestDefaultValidationSummaryProps(t *testing.T) {
+	t.Parallel()
+	props := DefaultValidationSummaryProps()
+	if props.Errors != nil {
+		t.Error("Errors should be nil")
+	}
+}

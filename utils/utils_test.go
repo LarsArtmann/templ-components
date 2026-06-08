@@ -227,3 +227,21 @@ func TestClassConcurrentAccess(t *testing.T) {
 	}
 	wg.Wait()
 }
+
+func TestValidateID(t *testing.T) {
+	t.Parallel()
+	t.Run("empty ID returns error", func(t *testing.T) {
+		t.Parallel()
+		err := ValidateID("modal", "")
+		if err == nil {
+			t.Error("expected error for empty ID")
+		}
+	})
+	t.Run("non-empty ID returns nil", func(t *testing.T) {
+		t.Parallel()
+		err := ValidateID("modal", "my-modal")
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+	})
+}
