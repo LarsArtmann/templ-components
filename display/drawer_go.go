@@ -1,8 +1,6 @@
 package display
 
 import (
-	"strconv"
-
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -67,18 +65,9 @@ func drawerSizeClass(size DrawerSize) string {
 }
 
 func drawerCloseHandler(id string) templ.ComponentScript {
-	name := "tcCloseDrawer_" + id
-	fn := "function tcCloseDrawer_" + id + "(id){tcCloseDrawer(id)}"
-	escapedID := strconv.Quote(id)
-	call := "tcCloseDrawer(" + escapedID + ")"
-	return templ.ComponentScript{
-		Name:       name,
-		Function:   fn,
-		Call:       call,
-		CallInline: "",
-	}
+	return closeHandler("Drawer", id)
 }
 
 func drawerSafeID(id string) string {
-	return strconv.Quote(id)
+	return safeID(id)
 }

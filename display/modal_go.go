@@ -2,8 +2,6 @@
 package display
 
 import (
-	"strconv"
-
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -52,18 +50,9 @@ func modalSizeClass(size ModalSize) string {
 }
 
 func modalCloseHandler(id string) templ.ComponentScript {
-	name := "tcCloseModal_" + id
-	fn := "function tcCloseModal_" + id + "(id){tcCloseModal(id)}"
-	escapedID := strconv.Quote(id)
-	call := "tcCloseModal(" + escapedID + ")"
-	return templ.ComponentScript{
-		Name:       name,
-		Function:   fn,
-		Call:       call,
-		CallInline: "",
-	}
+	return closeHandler("Modal", id)
 }
 
 func modalSafeID(id string) string {
-	return strconv.Quote(id)
+	return safeID(id)
 }
