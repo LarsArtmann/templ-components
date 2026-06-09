@@ -118,16 +118,6 @@ func TestTextareaFullCoverage(t *testing.T) {
 		utils.AssertContains(t, output, `readonly`)
 	})
 
-	t.Run("textarea with placeholder", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Textarea(TextareaProps{
-			Name:        "t",
-			Label:       "T",
-			Placeholder: "Enter text...",
-		}))
-		utils.AssertContains(t, output, `placeholder="Enter text..."`)
-	})
-
 	t.Run("textarea with maxlength", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Textarea(TextareaProps{

@@ -42,12 +42,16 @@ func TestPaginationRender(t *testing.T) {
 		output := utils.Render(t, Pagination(PaginationProps{
 			CurrentPage: 2,
 			TotalPages:  5,
-			BaseURL:     "/users",
+			BaseURL:     "/items",
 		}))
-		utils.AssertContains(t, output, `href="/users?page=1"`)
-		utils.AssertContains(t, output, `href="/users?page=3"`)
+		utils.AssertContains(t, output, `href="/items?page=1"`)
+		utils.AssertContains(t, output, `href="/items?page=3"`)
 		utils.AssertContains(t, output, `aria-current="page"`)
 		utils.AssertContains(t, output, "2")
+		utils.AssertContains(t, output, "Previous")
+		utils.AssertContains(t, output, "Next")
+		utils.AssertContains(t, output, "Showing page")
+		utils.AssertContains(t, output, "of")
 	})
 
 	t.Run("first page disables previous", func(t *testing.T) {

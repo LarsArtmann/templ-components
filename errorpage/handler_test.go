@@ -441,7 +441,7 @@ func TestFamilyFromErrorFamily(t *testing.T) {
 func TestParseFamily(t *testing.T) {
 	t.Parallel()
 
-	t.Run("valid families", func(t *testing.T) {
+	t.Run("valid families including case variants", func(t *testing.T) {
 		t.Parallel()
 		tests := []struct {
 			input string
@@ -452,6 +452,11 @@ func TestParseFamily(t *testing.T) {
 			{"transient", FamilyTransient},
 			{"corruption", FamilyCorruption},
 			{"infrastructure", FamilyInfrastructure},
+			{"REJECTION", FamilyRejection},
+			{"Conflict", FamilyConflict},
+			{"TRANSIENT", FamilyTransient},
+			{"Corruption", FamilyCorruption},
+			{"INFRASTRUCTURE", FamilyInfrastructure},
 		}
 		for _, tc := range tests {
 			got := ParseFamily(tc.input)
@@ -466,26 +471,6 @@ func TestParseFamily(t *testing.T) {
 		got := ParseFamily("unknown")
 		if got != FamilyTransient {
 			t.Errorf("ParseFamily(%q) = %q, want %q", "unknown", got, FamilyTransient)
-		}
-	})
-
-	t.Run("case insensitive", func(t *testing.T) {
-		t.Parallel()
-		tests := []struct {
-			input string
-			want  Family
-		}{
-			{"REJECTION", FamilyRejection},
-			{"Conflict", FamilyConflict},
-			{"TRANSIENT", FamilyTransient},
-			{"Corruption", FamilyCorruption},
-			{"INFRASTRUCTURE", FamilyInfrastructure},
-		}
-		for _, tc := range tests {
-			got := ParseFamily(tc.input)
-			if got != tc.want {
-				t.Errorf("ParseFamily(%q) = %q, want %q", tc.input, got, tc.want)
-			}
 		}
 	})
 

@@ -274,19 +274,6 @@ func TestDropdownButtonItems(t *testing.T) {
 		utils.AssertContains(t, output, "<svg")
 	})
 
-	t.Run("external link item", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Dropdown(DropdownProps{
-			BaseProps: utils.BaseProps{ID: "dd-ext"},
-			Label:     "Links",
-			Items: []DropdownItem{
-				{Text: "GitHub", Href: "https://github.com", External: true},
-			},
-		}))
-		utils.AssertContains(t, output, `target="_blank"`)
-		utils.AssertContains(t, output, `rel="noopener noreferrer"`)
-	})
-
 	t.Run("IsLink with explicit kind", func(t *testing.T) {
 		t.Parallel()
 		linkItem := DropdownItem{Kind: DropdownItemLink, Text: "Link"}

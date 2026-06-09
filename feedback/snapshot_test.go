@@ -76,7 +76,8 @@ func TestSpinnerRender(t *testing.T) {
 	output := utils.Render(t, Spinner(SpinnerProps{Size: SpinnerMD, Color: "text-blue-600"}))
 	utils.AssertContains(t, output, "<svg")
 	utils.AssertContains(t, output, "animate-spin")
-	utils.AssertContains(t, output, "h-6 w-6")
+	utils.AssertContains(t, output, "w-6")
+	utils.AssertContains(t, output, "h-6")
 }
 
 func TestLoadingOverlayRender(t *testing.T) {

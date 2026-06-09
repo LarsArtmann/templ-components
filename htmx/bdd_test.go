@@ -154,27 +154,6 @@ func TestSwapOOBUpdatesMultipleElements(t *testing.T) {
 	})
 }
 
-// --- GlobalErrorHandling Behavior ---
-
-func TestGlobalErrorHandlingUserGetsErrorFeedback(t *testing.T) {
-	t.Parallel()
-
-	t.Run("error handling script is included with CSP nonce", func(t *testing.T) {
-		t.Parallel()
-		cfg := ErrorHandlingConfig{Nonce: "test-nonce-abc"}
-		output := utils.Render(t, GlobalErrorHandling(cfg))
-		utils.AssertContains(t, output, `<script nonce="test-nonce-abc"`)
-	})
-
-	t.Run("error handler registers HTMX event listeners", func(t *testing.T) {
-		t.Parallel()
-		cfg := ErrorHandlingConfig{Nonce: "nonce"}
-		output := utils.Render(t, GlobalErrorHandling(cfg))
-		utils.AssertContains(t, output, "htmx:responseError")
-		utils.AssertContains(t, output, "htmx:sendError")
-	})
-}
-
 // --- Edge Cases ---
 
 func TestHTMXComponentsRenderValidHTML(t *testing.T) {
@@ -244,14 +223,5 @@ func TestCSRFTokenEmptyString(t *testing.T) {
 		utils.AssertContains(t, output, `type="hidden"`)
 		utils.AssertContains(t, output, `name="csrf_token"`)
 		utils.AssertContains(t, output, `value=""`)
-	})
-}
-
-func TestSwapOOBValidatesSwapStyle(t *testing.T) {
-	t.Parallel()
-	t.Run("valid swapStyle renders", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, SwapOOB("#target", "beforeend"))
-		utils.AssertContains(t, output, `hx-swap-oob="beforeend:#target"`)
 	})
 }

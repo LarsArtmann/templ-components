@@ -76,18 +76,6 @@ func TestErrorAlertA11y(t *testing.T) {
 		utils.AssertContains(t, output, `role="alert"`)
 	})
 
-	t.Run("error alert has dismiss button with aria-label", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, ErrorAlert(ErrorAlertProps{
-			Family:      FamilyInfrastructure,
-			Title:       "Service Down",
-			Message:     "Try later.",
-			Dismissible: true,
-		}))
-		utils.AssertContains(t, output, `aria-label="Dismiss"`)
-		utils.AssertContains(t, output, `data-dismiss="alert"`)
-	})
-
 	t.Run("dismissible alert uses nonce on script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, ErrorAlert(ErrorAlertProps{

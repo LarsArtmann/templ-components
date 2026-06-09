@@ -11,48 +11,50 @@ import (
 
 func TestPaginationEllipsis(t *testing.T) {
 	t.Parallel()
-	t.Run("many pages shows ellipsis at start", func(t *testing.T) {
+	t.Run("ellipsis at start and end", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 8,
-			TotalPages:  20,
-			BaseURL:     "/items",
-			MaxVisible:  5,
-		}))
-		utils.AssertContains(t, output, "&hellip;")
-		utils.AssertContains(t, output, `href="/items?page=1"`)
+		for _, tc := range []struct {
+			name        string
+			currentPage int
+			wantHref    string
+		}{
+			{"start", 8, `href="/items?page=1"`},
+			{"end", 2, `href="/items?page=20"`},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				t.Parallel()
+				output := utils.Render(t, Pagination(PaginationProps{
+					CurrentPage: tc.currentPage,
+					TotalPages:  20,
+					BaseURL:     "/items",
+					MaxVisible:  5,
+				}))
+				utils.AssertContains(t, output, "&hellip;")
+				utils.AssertContains(t, output, tc.wantHref)
+			})
+		}
 	})
 
-	t.Run("many pages shows ellipsis at end", func(t *testing.T) {
+	t.Run("rel attributes on arrows", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 2,
-			TotalPages:  20,
-			BaseURL:     "/items",
-			MaxVisible:  5,
-		}))
-		utils.AssertContains(t, output, "&hellip;")
-		utils.AssertContains(t, output, `href="/items?page=20"`)
-	})
-
-	t.Run("previous arrow has rel=prev", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 3,
-			TotalPages:  5,
-			BaseURL:     "/items",
-		}))
-		utils.AssertContains(t, output, `rel="prev"`)
-	})
-
-	t.Run("next arrow has rel=next", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 2,
-			TotalPages:  5,
-			BaseURL:     "/items",
-		}))
-		utils.AssertContains(t, output, `rel="next"`)
+		for _, tc := range []struct {
+			name        string
+			currentPage int
+			wantRel     string
+		}{
+			{"previous", 3, `rel="prev"`},
+			{"next", 2, `rel="next"`},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				t.Parallel()
+				output := utils.Render(t, Pagination(PaginationProps{
+					CurrentPage: tc.currentPage,
+					TotalPages:  5,
+					BaseURL:     "/items",
+				}))
+				utils.AssertContains(t, output, tc.wantRel)
+			})
+		}
 	})
 
 	t.Run("custom aria-label", func(t *testing.T) {
@@ -88,56 +90,27 @@ func TestPaginationEllipsis(t *testing.T) {
 		utils.AssertContains(t, output, `data-testid="pager"`)
 	})
 
-	t.Run("mobile pagination shows previous and next", func(t *testing.T) {
+	t.Run("boundary pages disable arrows", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 2,
-			TotalPages:  5,
-			BaseURL:     "/items",
-		}))
-		utils.AssertContains(t, output, "Previous")
-		utils.AssertContains(t, output, "Next")
-	})
-
-	t.Run("first page mobile shows disabled previous", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 1,
-			TotalPages:  5,
-			BaseURL:     "/items",
-		}))
-		utils.AssertContains(t, output, "cursor-not-allowed")
-	})
-
-	t.Run("last page mobile shows disabled next", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 5,
-			TotalPages:  5,
-			BaseURL:     "/items",
-		}))
-		utils.AssertContains(t, output, "cursor-not-allowed")
-	})
-
-	t.Run("last page desktop disables next arrow", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 5,
-			TotalPages:  5,
-			BaseURL:     "/items",
-		}))
-		utils.AssertContains(t, output, "Next")
-	})
-
-	t.Run("page count text", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 2,
-			TotalPages:  5,
-			BaseURL:     "/items",
-		}))
-		utils.AssertContains(t, output, "Showing page")
-		utils.AssertContains(t, output, "of")
+		for _, tc := range []struct {
+			name        string
+			currentPage int
+			totalPages  int
+			wantText    string
+		}{
+			{"first page disables previous", 1, 5, "cursor-not-allowed"},
+			{"last page disables next", 5, 5, "cursor-not-allowed"},
+		} {
+			t.Run(tc.name, func(t *testing.T) {
+				t.Parallel()
+				output := utils.Render(t, Pagination(PaginationProps{
+					CurrentPage: tc.currentPage,
+					TotalPages:  tc.totalPages,
+					BaseURL:     "/items",
+				}))
+				utils.AssertContains(t, output, tc.wantText)
+			})
+		}
 	})
 }
 

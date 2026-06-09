@@ -245,8 +245,8 @@ func TestErrorAlertUserSeesFamilyAlert(t *testing.T) {
 			Message:     "Try again later.",
 			Dismissible: true,
 		}))
+		utils.AssertContains(t, output, `aria-label="Dismiss"`)
 		utils.AssertContains(t, output, `data-dismiss="alert"`)
-		utils.AssertContains(t, output, "Dismiss")
 	})
 
 	t.Run("each family has distinct styling", func(t *testing.T) {
