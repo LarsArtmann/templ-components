@@ -18,30 +18,30 @@ const (
 func TestNavUserCanNavigateBetweenPages(t *testing.T) {
 	t.Parallel()
 
-	t.Run("user sees brand and navigation links", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Nav(NavProps{
-			Links: []NavLinkProps{
-				{Href: "/", Text: navItemHome},
-				{Href: navItemAbout, Text: navItemAbout},
-			},
-			CurrentPath: "/",
-		}))
-		utils.AssertContains(t, output, navItemHome)
-		utils.AssertContains(t, output, navItemAbout)
-	})
-
-	t.Run("user sees active link styling on current page", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Nav(NavProps{
-			Links: []NavLinkProps{
-				{Href: "/", Text: navItemHome},
-				{Href: navItemAbout, Text: navItemAbout},
-			},
-			CurrentPath: navItemAbout,
-		}))
-		utils.AssertContains(t, output, "border-blue-500")
-	})
+	links := []NavLinkProps{
+		{Href: "/", Text: navItemHome},
+		{Href: navItemAbout, Text: navItemAbout},
+	}
+	for _, tt := range []struct {
+		name        string
+		currentPath string
+		want        string
+	}{
+		{"user sees brand and navigation links", "/", navItemHome},
+		{"user sees active link styling on current page", navItemAbout, "border-blue-500"},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Nav(NavProps{
+				Links:       links,
+				CurrentPath: tt.currentPath,
+			}))
+			utils.AssertContains(t, output, tt.want)
+			if tt.currentPath == "/" {
+				utils.AssertContains(t, output, navItemAbout)
+			}
+		})
+	}
 
 	t.Run("user sees sticky navigation when enabled", func(t *testing.T) {
 		t.Parallel()
@@ -126,21 +126,11 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 		utils.AssertContains(t, output, "Edit")
 	})
 
-	t.Run("user sees current page as aria-current", func(t *testing.T) {
+	t.Run("breadcrumb attributes: aria-current, landmark, and clickable parents", func(t *testing.T) {
 		t.Parallel()
 		output := renderBreadcrumbs(t, breadcrumbHomeAndCurrent())
 		utils.AssertContains(t, output, `aria-current="page"`)
-	})
-
-	t.Run("user sees breadcrumb navigation landmark", func(t *testing.T) {
-		t.Parallel()
-		output := renderBreadcrumbs(t, breadcrumbHomeAndCurrent())
 		utils.AssertContains(t, output, `aria-label="Breadcrumb"`)
-	})
-
-	t.Run("user sees clickable parent breadcrumbs", func(t *testing.T) {
-		t.Parallel()
-		output := renderBreadcrumbs(t, breadcrumbHomeAndCurrent())
 		utils.AssertContains(t, output, `href="/"`)
 	})
 
@@ -184,17 +174,21 @@ func renderDefaultPagination(t *testing.T, currentPage, totalPages int) string {
 func TestPaginationUserCanBrowsePages(t *testing.T) {
 	t.Parallel()
 
-	t.Run("user sees page numbers for multiple pages", func(t *testing.T) {
-		t.Parallel()
-		output := renderDefaultPagination(t, 1, 5)
-		utils.AssertContains(t, output, testItemsPath)
-	})
-
-	t.Run("user sees previous and next navigation", func(t *testing.T) {
-		t.Parallel()
-		output := renderDefaultPagination(t, 2, 5)
-		utils.AssertContains(t, output, `aria-label="`)
-	})
+	for _, tt := range []struct {
+		name        string
+		currentPage int
+		totalPages  int
+		want        string
+	}{
+		{"user sees page numbers for multiple pages", 1, 5, testItemsPath},
+		{"user sees previous and next navigation", 2, 5, `aria-label="`},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := renderDefaultPagination(t, tt.currentPage, tt.totalPages)
+			utils.AssertContains(t, output, tt.want)
+		})
+	}
 
 	t.Run("user sees nothing when only one page exists", func(t *testing.T) {
 		t.Parallel()
@@ -219,9 +213,10 @@ func TestPaginationUserCanBrowsePages(t *testing.T) {
 func TestFooterUserSeesCopyright(t *testing.T) {
 	t.Parallel()
 
-	t.Run("user sees brand name and copyright year", func(t *testing.T) {
+	t.Run("user sees brand name, copyright year, and dark mode classes", func(t *testing.T) {
 		t.Parallel()
-		assertFooterContainsAll(t, "MyApp", "All rights reserved", "<footer")
+		assertFooterContainsAll(t, "MyApp", "All rights reserved", "<footer",
+			"dark:border-gray-800", "dark:bg-gray-900", "dark:text-gray-400")
 	})
 }
 

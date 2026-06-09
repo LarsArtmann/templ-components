@@ -29,20 +29,10 @@ func TestLoadingIndicatorUserSeesLoadingFeedback(t *testing.T) {
 	t.Parallel()
 
 	output := renderLoadingIndicator(t)
-	for _, tt := range []struct {
-		name string
-		want string
-	}{
-		{"has indicator id", `id="tc-loading-indicator"`},
-		{"has htmx-indicator class", "htmx-indicator"},
-		{"has role=status", `role="status"`},
-		{"has aria-live", `aria-live="polite"`},
-	} {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-			utils.AssertContains(t, output, tt.want)
-		})
-	}
+	utils.AssertContains(t, output, `id="tc-loading-indicator"`)
+	utils.AssertContains(t, output, "htmx-indicator")
+	utils.AssertContains(t, output, `role="status"`)
+	utils.AssertContains(t, output, `aria-live="polite"`)
 }
 
 // --- InlineLoadingOverlay Behavior ---

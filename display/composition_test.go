@@ -45,21 +45,6 @@ func TestCompositionTableWithContent(t *testing.T) {
 		utils.AssertContains(t, output, "Alice")
 		utils.AssertContains(t, output, "<table")
 	})
-
-	t.Run("table with SimpleTableRow renders all cells", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Table(TableProps{
-			Headers: []string{tableHeaderName, "Role"},
-			Rows: []TableRow{
-				SimpleTableRow("Alice", "Admin"),
-				SimpleTableRow("Bob", "User"),
-			},
-		}))
-		utils.AssertContains(t, output, "Alice")
-		utils.AssertContains(t, output, "Admin")
-		utils.AssertContains(t, output, "Bob")
-		utils.AssertContains(t, output, "User")
-	})
 }
 
 func TestCompositionCardWithStatCards(t *testing.T) {

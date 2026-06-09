@@ -119,23 +119,20 @@ func TestMinimalUserGetsCleanHTMLDocument(t *testing.T) {
 func TestThemeScriptUserGetsDarkModeWithoutFOUC(t *testing.T) {
 	t.Parallel()
 
-	t.Run("theme script reads localStorage preference", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, ThemeScript("nonce-abc"))
-		utils.AssertContains(t, output, `localStorage.getItem('theme')`)
-	})
-
-	t.Run("theme script has CSP nonce", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, ThemeScript("nonce-abc"))
-		utils.AssertContains(t, output, `nonce="nonce-abc"`)
-	})
-
-	t.Run("theme script checks system preference", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, ThemeScript("n"))
-		utils.AssertContains(t, output, "prefers-color-scheme")
-	})
+	output := utils.Render(t, ThemeScript("nonce-abc"))
+	for _, tt := range []struct {
+		name string
+		want string
+	}{
+		{"reads localStorage preference", `localStorage.getItem('theme')`},
+		{"has CSP nonce", `nonce="nonce-abc"`},
+		{"checks system preference", "prefers-color-scheme"},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			utils.AssertContains(t, output, tt.want)
+		})
+	}
 }
 
 // --- ThemeToggle Behavior ---

@@ -57,13 +57,6 @@ func TestToastRender(t *testing.T) {
 	utils.AssertNotContains(t, output, `onclick=`)
 }
 
-func TestInlineErrorRender(t *testing.T) {
-	t.Parallel()
-	output := utils.Render(t, InlineError("Required"))
-	utils.AssertContains(t, output, "Required")
-	utils.AssertContains(t, output, "text-red-600")
-}
-
 func TestInlineSuccessRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, InlineSuccess("Done"))

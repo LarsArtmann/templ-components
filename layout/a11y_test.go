@@ -35,17 +35,12 @@ func TestSecurityHeaders(t *testing.T) {
 		utils.AssertNotContains(t, output, `http-equiv="X-Content-Type-Options"`)
 	})
 
-	t.Run("skip link is present for accessibility", func(t *testing.T) {
+	t.Run("skip link and main landmark present", func(t *testing.T) {
 		t.Parallel()
 		output := renderBaseWithNonce(t, "n")
 		utils.AssertContains(t, output, `href="#main-content"`)
 		utils.AssertContains(t, output, "Skip to main content")
 		utils.AssertContains(t, output, "sr-only")
-	})
-
-	t.Run("main landmark exists", func(t *testing.T) {
-		t.Parallel()
-		output := renderBaseWithNonce(t, "n")
 		utils.AssertContains(t, output, `id="main-content"`)
 	})
 }

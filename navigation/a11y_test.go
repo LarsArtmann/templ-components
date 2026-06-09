@@ -20,13 +20,6 @@ func breadcrumbHomeOnly() []BreadcrumbItem {
 	return []BreadcrumbItem{{Text: navItemHome, Href: "/"}}
 }
 
-func breadcrumbHomeAndActive() []BreadcrumbItem {
-	return []BreadcrumbItem{
-		{Text: navItemHome, Href: "/"},
-		{Text: navItemUsers, Active: true},
-	}
-}
-
 func TestBreadcrumbsA11y(t *testing.T) {
 	t.Parallel()
 
@@ -34,18 +27,6 @@ func TestBreadcrumbsA11y(t *testing.T) {
 		t.Parallel()
 		output := renderBreadcrumbs(t, breadcrumbHomeOnly())
 		utils.AssertContains(t, output, `aria-label="Breadcrumb"`)
-	})
-
-	t.Run("active item has aria-current", func(t *testing.T) {
-		t.Parallel()
-		output := renderBreadcrumbs(t, breadcrumbHomeAndActive())
-		utils.AssertContains(t, output, `aria-current="page"`)
-	})
-
-	t.Run("inactive items are links", func(t *testing.T) {
-		t.Parallel()
-		output := renderBreadcrumbs(t, breadcrumbHomeAndActive())
-		utils.AssertContains(t, output, `<a href="/"`)
 	})
 
 	t.Run("empty list renders nav", func(t *testing.T) {
@@ -191,15 +172,6 @@ func assertFooterContainsAll(t *testing.T, contains ...string) {
 	for _, s := range contains {
 		utils.AssertContains(t, output, s)
 	}
-}
-
-func TestFooterDarkMode(t *testing.T) {
-	t.Parallel()
-
-	t.Run("footer has dark mode classes", func(t *testing.T) {
-		t.Parallel()
-		assertFooterContainsAll(t, "dark:border-gray-800", "dark:bg-gray-900", "dark:text-gray-400")
-	})
 }
 
 func TestAriaLabelOverride(t *testing.T) {

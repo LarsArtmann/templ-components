@@ -202,6 +202,7 @@ func TestInlineMessagesUserSeesFieldFeedback(t *testing.T) {
 		output := utils.Render(t, InlineError("Email is required"))
 		utils.AssertContains(t, output, "Email is required")
 		utils.AssertContains(t, output, `role="alert"`)
+		utils.AssertContains(t, output, "text-red-600")
 	})
 
 	t.Run("user sees inline success message", func(t *testing.T) {

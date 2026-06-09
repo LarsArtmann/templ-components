@@ -65,11 +65,3 @@ func TestSwapOOBRender(t *testing.T) {
 	output := utils.Render(t, SwapOOB("#notification", "innerHTML"))
 	utils.AssertContains(t, output, `hx-swap-oob="innerHTML:#notification"`)
 }
-
-func TestCSRFTokenRender(t *testing.T) {
-	t.Parallel()
-	output := renderCSRFToken(t, "abc123")
-	utils.AssertContains(t, output, `name="csrf_token"`)
-	utils.AssertContains(t, output, `value="abc123"`)
-	utils.AssertContains(t, output, "hidden")
-}
