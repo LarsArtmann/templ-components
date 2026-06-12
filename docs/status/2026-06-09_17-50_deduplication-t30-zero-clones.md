@@ -8,40 +8,40 @@
 
 ## Project Snapshot
 
-| Metric | Value |
-|---|---|
-| Go version | 1.26.3 |
-| templ version (go.mod) | v0.3.1020 |
-| templ version (installed) | v0.3.1036 ⚠️ |
-| Packages | 10 + examples/demo |
-| Public templ components | 69 |
-| Icon constants | 98 path icons + Spinner = 99 |
-| `.templ` source files | 44 |
-| Generated `*_templ.go` | 44 (committed) |
-| Handwritten `.go` files | 26 |
-| Test files | 64 |
-| Test suites | 11/11 passing |
-| Lint issues | 0 |
-| Clone groups (t=45) | 0 |
-| Clone groups (t=30) | 0 |
-| Clone groups (t=22) | 19 (acceptable test patterns + 1 templ structural clone) |
-| Inline `<script>` blocks | 13 across 10 `.templ` files |
+| Metric                    | Value                                                    |
+| ------------------------- | -------------------------------------------------------- |
+| Go version                | 1.26.3                                                   |
+| templ version (go.mod)    | v0.3.1020                                                |
+| templ version (installed) | v0.3.1036 ⚠️                                             |
+| Packages                  | 10 + examples/demo                                       |
+| Public templ components   | 69                                                       |
+| Icon constants            | 98 path icons + Spinner = 99                             |
+| `.templ` source files     | 44                                                       |
+| Generated `*_templ.go`    | 44 (committed)                                           |
+| Handwritten `.go` files   | 26                                                       |
+| Test files                | 64                                                       |
+| Test suites               | 11/11 passing                                            |
+| Lint issues               | 0                                                        |
+| Clone groups (t=45)       | 0                                                        |
+| Clone groups (t=30)       | 0                                                        |
+| Clone groups (t=22)       | 19 (acceptable test patterns + 1 templ structural clone) |
+| Inline `<script>` blocks  | 13 across 10 `.templ` files                              |
 
 ### Per-Package Coverage
 
-| Package | Coverage |
-|---|---|
-| internal/svg | 79.0% |
-| internal/golden | 76.9% |
-| htmx | 76.8% |
-| icons | 76.2% |
-| utils | 75.8% |
-| forms | 73.5% |
-| layout | 73.1% |
-| navigation | 72.7% |
-| display | 72.5% |
-| errorpage | 70.6% |
-| feedback | 70.4% |
+| Package         | Coverage |
+| --------------- | -------- |
+| internal/svg    | 79.0%    |
+| internal/golden | 76.9%    |
+| htmx            | 76.8%    |
+| icons           | 76.2%    |
+| utils           | 75.8%    |
+| forms           | 73.5%    |
+| layout          | 73.1%    |
+| navigation      | 72.7%    |
+| display         | 72.5%    |
+| errorpage       | 70.6%    |
+| feedback        | 70.4%    |
 
 ---
 
@@ -177,48 +177,48 @@ The only "fucked up" thing is the templ version mismatch causing unnecessary reg
 
 ### Critical (Block v0.3.0 Release)
 
-| # | Task | Effort | Impact |
-|---|---|---|---|
-| 1 | Verify `go get` works from a clean project | 1h | 🔴 Critical — if this doesn't work, v0.3.0 is DOA |
-| 2 | Fix templ version mismatch (go.mod vs installed) | 5min | 🔴 Eliminates noise in every commit |
-| 3 | Tag v0.3.0 release | 5min | 🔴 Library is unversioned |
-| 4 | Write CHANGELOG.md for v0.1 → v0.2 → v0.3 | 2h | 🔴 Consumers need migration guide |
+| #   | Task                                             | Effort | Impact                                            |
+| --- | ------------------------------------------------ | ------ | ------------------------------------------------- |
+| 1   | Verify `go get` works from a clean project       | 1h     | 🔴 Critical — if this doesn't work, v0.3.0 is DOA |
+| 2   | Fix templ version mismatch (go.mod vs installed) | 5min   | 🔴 Eliminates noise in every commit               |
+| 3   | Tag v0.3.0 release                               | 5min   | 🔴 Library is unversioned                         |
+| 4   | Write CHANGELOG.md for v0.1 → v0.2 → v0.3        | 2h     | 🔴 Consumers need migration guide                 |
 
 ### High Priority
 
-| # | Task | Effort | Impact |
-|---|---|---|---|
-| 5 | Nonce propagation audit across all components | 1h | 🟡 Security correctness |
-| 6 | JS consolidation: shared init pattern for 13 script blocks | 4h | 🟡 Reduces attack surface, easier CSP audit |
-| 7 | Coverage: push all packages to 75%+ | 3h | 🟡 Quality gate |
-| 8 | Coverage: `writeJSONError` + `htmlEscape` in errorpage | 30min | 🟡 Currently 50-58% |
-| 9 | Coverage: `validateSwapStyle` in htmx | 15min | 🟡 Currently 50% |
-| 10 | Coverage: `Assert` golden test framework | 30min | 🟡 Currently 53% |
+| #   | Task                                                       | Effort | Impact                                      |
+| --- | ---------------------------------------------------------- | ------ | ------------------------------------------- |
+| 5   | Nonce propagation audit across all components              | 1h     | 🟡 Security correctness                     |
+| 6   | JS consolidation: shared init pattern for 13 script blocks | 4h     | 🟡 Reduces attack surface, easier CSP audit |
+| 7   | Coverage: push all packages to 75%+                        | 3h     | 🟡 Quality gate                             |
+| 8   | Coverage: `writeJSONError` + `htmlEscape` in errorpage     | 30min  | 🟡 Currently 50-58%                         |
+| 9   | Coverage: `validateSwapStyle` in htmx                      | 15min  | 🟡 Currently 50%                            |
+| 10  | Coverage: `Assert` golden test framework                   | 30min  | 🟡 Currently 53%                            |
 
 ### Medium Priority
 
-| # | Task | Effort | Impact |
-|---|---|---|---|
-| 11 | Add SimpleNav BaseProps conversion (breaking) | 1h | 🟠 API consistency |
-| 12 | Add Pagination uint fields (breaking) | 30min | 🟠 Type safety |
-| 13 | Golden test expansion to display, errorpage, navigation | 3h | 🟠 Visual regression safety |
-| 14 | Automated accessibility testing (axe-core/pa11y) | 4h | 🟠 Compliance |
-| 15 | Benchmark tests for all packages | 2h | 🟠 Performance regression detection |
+| #   | Task                                                    | Effort | Impact                              |
+| --- | ------------------------------------------------------- | ------ | ----------------------------------- |
+| 11  | Add SimpleNav BaseProps conversion (breaking)           | 1h     | 🟠 API consistency                  |
+| 12  | Add Pagination uint fields (breaking)                   | 30min  | 🟠 Type safety                      |
+| 13  | Golden test expansion to display, errorpage, navigation | 3h     | 🟠 Visual regression safety         |
+| 14  | Automated accessibility testing (axe-core/pa11y)        | 4h     | 🟠 Compliance                       |
+| 15  | Benchmark tests for all packages                        | 2h     | 🟠 Performance regression detection |
 
 ### Nice to Have
 
-| # | Task | Effort | Impact |
-|---|---|---|---|
-| 16 | Add getting-started guide (docs/) | 2h | 🟢 Consumer adoption |
-| 17 | Add theming guide (docs/) | 1h | 🟢 Consumer enablement |
-| 18 | Add HTMX integration guide (docs/) | 1h | 🟢 Consumer enablement |
-| 19 | Refresh examples/demo with all 69 components | 2h | 🟢 Discoverability |
-| 20 | Add errorpage handler integration example | 1h | 🟢 Real-world usage |
-| 21 | Cross-browser E2E testing | 4h | 🟢 Quality assurance |
-| 22 | Move test helpers to internal/testutil/ (v1.0 breaking) | 2h | 🟢 API hygiene |
-| 23 | Add contributing guide (CONTRIBUTING.md) | 1h | 🟢 Community readiness |
-| 24 | Add BaseProps to StepIndicatorProps (breaking) | 30min | 🟢 API consistency |
-| 25 | Add FillIcon rotation test (currently untested path) | 15min | 🟢 Coverage gap |
+| #   | Task                                                    | Effort | Impact                 |
+| --- | ------------------------------------------------------- | ------ | ---------------------- |
+| 16  | Add getting-started guide (docs/)                       | 2h     | 🟢 Consumer adoption   |
+| 17  | Add theming guide (docs/)                               | 1h     | 🟢 Consumer enablement |
+| 18  | Add HTMX integration guide (docs/)                      | 1h     | 🟢 Consumer enablement |
+| 19  | Refresh examples/demo with all 69 components            | 2h     | 🟢 Discoverability     |
+| 20  | Add errorpage handler integration example               | 1h     | 🟢 Real-world usage    |
+| 21  | Cross-browser E2E testing                               | 4h     | 🟢 Quality assurance   |
+| 22  | Move test helpers to internal/testutil/ (v1.0 breaking) | 2h     | 🟢 API hygiene         |
+| 23  | Add contributing guide (CONTRIBUTING.md)                | 1h     | 🟢 Community readiness |
+| 24  | Add BaseProps to StepIndicatorProps (breaking)          | 30min  | 🟢 API consistency     |
+| 25  | Add FillIcon rotation test (currently untested path)    | 15min  | 🟢 Coverage gap        |
 
 ---
 
@@ -227,12 +227,14 @@ The only "fucked up" thing is the templ version mismatch causing unnecessary reg
 **Should we ship v0.3.0 now, or wait for the JS consolidation (#6)?**
 
 Arguments for shipping now:
+
 - All tests pass, zero clones at t=30, lint clean
 - 69 components, 99 icons, comprehensive BDD coverage
 - The library is functional and usable today
 - JS consolidation is a large refactor that could introduce regressions
 
 Arguments for waiting:
+
 - 13 inline `<script>` blocks is a lot of attack surface
 - The nonce propagation audit hasn't been done — we might ship CSP violations
 - `go get` has never been verified (could be a dealbreaker)
