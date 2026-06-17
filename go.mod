@@ -6,4 +6,4 @@ require github.com/a-h/templ v0.3.1020
 
 require github.com/Oudwins/tailwind-merge-go v0.2.1
 
-require github.com/larsartmann/go-error-family v0.3.0
+require github.com/larsartmann/go-error-family v0.4.0
