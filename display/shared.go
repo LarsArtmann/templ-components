@@ -91,8 +91,8 @@ func overlayTrapJS(id, componentName string) string {
 	return "(function(id) {\n" +
 		"\tvar overlay = document.getElementById(id);\n" +
 		"\tif (!overlay) return;\n" +
-		"\toverlay.querySelectorAll('[data-tc-close]').forEach(function(el) {\n" +
-		"\t\tel.addEventListener('click', function() { " + closeFn + "(id); });\n" +
+		"\toverlay.addEventListener('click', function(e) {\n" +
+		"\t\tif (e.target.closest('[data-tc-close]')) { " + closeFn + "(id); }\n" +
 		"\t});\n" +
 		"\toverlay.addEventListener('keydown', function(e) {\n" +
 		"\t\tif (e.key === 'Escape') { " + closeFn + "(id); return; }\n" +
