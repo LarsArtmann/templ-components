@@ -2,7 +2,9 @@
 package utils
 
 import (
+	"context"
 	"fmt"
+	"io"
 	"slices"
 	"strings"
 	"sync"
@@ -271,6 +273,49 @@ func TestEnsureID(t *testing.T) {
 		b := EnsureID("modal", "")
 		if a == b {
 			t.Errorf("EnsureID() generated duplicate IDs: %q == %q", a, b)
+		}
+	})
+}
+
+func TestDismissScript(t *testing.T) {
+	t.Parallel()
+	s := DismissScript()
+	if s == "" {
+		t.Fatal("DismissScript() returned empty string")
+	}
+	if !strings.Contains(s, "tcDismissAttached") {
+		t.Error("DismissScript() must contain the global guard variable")
+	}
+	if !strings.Contains(s, "data-dismiss") {
+		t.Error("DismissScript() must contain the data-dismiss selector")
+	}
+	if !strings.Contains(s, "role=\"alert\"") {
+		t.Error("DismissScript() must target role=alert elements")
+	}
+}
+
+func TestRenderAll(t *testing.T) {
+	t.Parallel()
+	t.Run("renders multiple components", func(t *testing.T) {
+		t.Parallel()
+		c1 := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+			_, err := io.WriteString(w, "<div>first</div>")
+			return err
+		})
+		c2 := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+			_, err := io.WriteString(w, "<div>second</div>")
+			return err
+		})
+		got := RenderAll(t, c1, c2)
+		if !strings.Contains(got, "first") || !strings.Contains(got, "second") {
+			t.Errorf("RenderAll() = %q, expected both 'first' and 'second'", got)
+		}
+	})
+	t.Run("empty input returns empty string", func(t *testing.T) {
+		t.Parallel()
+		got := RenderAll(t)
+		if got != "" {
+			t.Errorf("RenderAll() with no components = %q, want empty", got)
 		}
 	})
 }
