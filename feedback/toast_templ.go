@@ -62,13 +62,14 @@ func toastJSStyles() string {
 }
 
 func toastJSIconPaths() string {
-	return "var tcToastIcons = {" +
-		"success:'" + icons.IconPathJS(icons.CheckCircle) + "'," +
-		"error:'" + icons.IconPathJS(icons.ExclamationTriangle) + "'," +
-		"warning:'" + icons.IconPathJS(icons.ExclamationTriangle) + "'," +
-		"info:'" + icons.IconPathJS(icons.Information) + "'," +
-		"dismiss:'" + icons.IconPathJS(icons.X) + "'" +
-		"};"
+	var b strings.Builder
+	b.WriteString("var tcToastIcons = {")
+	for _, t := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
+		fmt.Fprintf(&b, "'%s':'%s',", t, icons.IconPathJS(feedbackIconMap[t]))
+	}
+	b.WriteString("dismiss:'" + icons.IconPathJS(icons.X) + "'")
+	b.WriteString("};")
+	return b.String()
 }
 
 // DefaultToastProps returns sensible defaults
@@ -111,7 +112,7 @@ func ToastContainer(nonce string) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 82, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 83, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
@@ -123,7 +124,7 @@ func ToastContainer(nonce string) templ.Component {
 		}
 		templ_7745c5c3_Var3, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(toastJSStyles())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 83, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 84, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -135,7 +136,7 @@ func ToastContainer(nonce string) templ.Component {
 		}
 		templ_7745c5c3_Var4, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(toastJSIconPaths())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 84, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 85, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -192,7 +193,7 @@ func Toast(props ToastProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 141, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 142, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -228,7 +229,7 @@ func Toast(props ToastProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 147, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 148, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
@@ -281,7 +282,7 @@ func Toast(props ToastProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 155, Col: 63}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 156, Col: 63}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -317,7 +318,7 @@ func Toast(props ToastProps) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(props.Message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 157, Col: 50}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 158, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {
@@ -338,7 +339,7 @@ func Toast(props ToastProps) templ.Component {
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 168, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 169, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 		if templ_7745c5c3_Err != nil {
@@ -350,7 +351,7 @@ func Toast(props ToastProps) templ.Component {
 		}
 		templ_7745c5c3_Var17, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(utils.DismissScript())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 169, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 170, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 		if templ_7745c5c3_Err != nil {

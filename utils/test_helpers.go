@@ -44,12 +44,3 @@ func AssertEqual[T comparable](t *testing.T, context string, got, want T) {
 		t.Errorf("%s = %v, want %v", context, got, want)
 	}
 }
-
-// AssertContainsClass checks that the rendered output contains a CSS class
-// in a class attribute. Handles classes embedded in larger class strings.
-func AssertContainsClass(t *testing.T, output, class string) {
-	t.Helper()
-	if !strings.Contains(output, class) {
-		t.Errorf("output does not contain class %q:\n%s", class, output)
-	}
-}

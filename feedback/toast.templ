@@ -54,13 +54,14 @@ func toastJSStyles() string {
 }
 
 func toastJSIconPaths() string {
-	return "var tcToastIcons = {" +
-		"success:'" + icons.IconPathJS(icons.CheckCircle) + "'," +
-		"error:'" + icons.IconPathJS(icons.ExclamationTriangle) + "'," +
-		"warning:'" + icons.IconPathJS(icons.ExclamationTriangle) + "'," +
-		"info:'" + icons.IconPathJS(icons.Information) + "'," +
-		"dismiss:'" + icons.IconPathJS(icons.X) + "'" +
-		"};"
+	var b strings.Builder
+	b.WriteString("var tcToastIcons = {")
+	for _, t := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
+		fmt.Fprintf(&b, "'%s':'%s',", t, icons.IconPathJS(feedbackIconMap[t]))
+	}
+	b.WriteString("dismiss:'" + icons.IconPathJS(icons.X) + "'")
+	b.WriteString("};")
+	return b.String()
 }
 
 // DefaultToastProps returns sensible defaults
