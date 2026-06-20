@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io"
 	"strconv"
+	"strings"
 
 	"github.com/a-h/templ"
 )
@@ -14,30 +15,41 @@ import (
 const focusableSelector = `'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'`
 
 // overlayPanelConfig defines the CSS classes that animate the panel element
-// between open and closed states. The fields are comma-separated JS class
-// string arguments suitable for classList.add/remove.
+// between open and closed states. The fields are typed slices, converted to
+// JS-quoted classList.add/remove arguments via jsClassArgs at use site.
 type overlayPanelConfig struct {
-	openClasses  string // e.g. "'scale-100', 'opacity-100'"
-	closeClasses string // e.g. "'scale-95', 'opacity-0'"
+	openClasses  []string // e.g. {"scale-100", "opacity-100"}
+	closeClasses []string // e.g. {"scale-95", "opacity-0"}
+}
+
+// jsClassArgs converts a slice of CSS class names into comma-separated,
+// single-quoted JS string arguments suitable for classList.add/remove.
+// Example: []string{"scale-100", "opacity-100"} -> "'scale-100', 'opacity-100'"
+func jsClassArgs(classes []string) string {
+	quoted := make([]string, len(classes))
+	for i, c := range classes {
+		quoted[i] = "'" + c + "'"
+	}
+	return strings.Join(quoted, ", ")
 }
 
 func modalPanelConfig() overlayPanelConfig {
 	return overlayPanelConfig{
-		openClasses:  "'scale-100', 'opacity-100'",
-		closeClasses: "'scale-95', 'opacity-0'",
+		openClasses:  []string{"scale-100", "opacity-100"},
+		closeClasses: []string{"scale-95", "opacity-0"},
 	}
 }
 
 func drawerPanelConfig(side DrawerSide) overlayPanelConfig {
 	if side == DrawerLeft {
 		return overlayPanelConfig{
-			openClasses:  "'translate-x-0'",
-			closeClasses: "'-translate-x-full'",
+			openClasses:  []string{"translate-x-0"},
+			closeClasses: []string{"-translate-x-full"},
 		}
 	}
 	return overlayPanelConfig{
-		openClasses:  "'translate-x-0'",
-		closeClasses: "'translate-x-full'",
+		openClasses:  []string{"translate-x-0"},
+		closeClasses: []string{"translate-x-full"},
 	}
 }
 
@@ -50,8 +62,8 @@ func overlayCloseJS(componentName string, cfg overlayPanelConfig) string {
 		"\t\toverlay.classList.add('opacity-0', 'pointer-events-none');\n" +
 		"\t\tvar panel = document.getElementById(id + '-panel');\n" +
 		"\t\tif (panel) {\n" +
-		"\t\t\tpanel.classList.remove(" + cfg.openClasses + ");\n" +
-		"\t\t\tpanel.classList.add(" + cfg.closeClasses + ");\n" +
+		"\t\t\tpanel.classList.remove(" + jsClassArgs(cfg.openClasses) + ");\n" +
+		"\t\t\tpanel.classList.add(" + jsClassArgs(cfg.closeClasses) + ");\n" +
 		"\t\t}\n" +
 		"\t\tvar prevId = overlay.getAttribute('data-tc-prev-focus');\n" +
 		"\t\tif (prevId) {\n" +
@@ -75,8 +87,8 @@ func overlayOpenJS(componentName string, cfg overlayPanelConfig) string {
 		"\t\toverlay.classList.add('opacity-100', 'pointer-events-auto');\n" +
 		"\t\tvar panel = document.getElementById(id + '-panel');\n" +
 		"\t\tif (panel) {\n" +
-		"\t\t\tpanel.classList.remove(" + cfg.closeClasses + ");\n" +
-		"\t\t\tpanel.classList.add(" + cfg.openClasses + ");\n" +
+		"\t\t\tpanel.classList.remove(" + jsClassArgs(cfg.closeClasses) + ");\n" +
+		"\t\t\tpanel.classList.add(" + jsClassArgs(cfg.openClasses) + ");\n" +
 		"\t\t\tvar focusable = panel.querySelectorAll(" + focusableSelector + ");\n" +
 		"\t\t\tif (focusable.length) focusable[0].focus();\n" +
 		"\t\t}\n" +
