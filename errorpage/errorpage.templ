@@ -71,7 +71,7 @@ templ ErrorPage(props ErrorPageProps) {
 							} else if props.WayOut != "" {
 								<button
 									type="button"
-									onclick="history.back()"
+									data-tc-go-back
 									class={ "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 								>
 									{ props.WayOut }
@@ -87,4 +87,14 @@ templ ErrorPage(props ErrorPageProps) {
 			</div>
 		</div>
 	</div>
+	if props.WayOut != "" && props.WayOutHref == "" {
+		<script nonce={ props.Nonce }>
+			if (!window.tcGoBackAttached) {
+				window.tcGoBackAttached = true;
+				document.addEventListener('click', function(e) {
+					if (e.target.closest('[data-tc-go-back]')) history.back();
+				});
+			}
+		</script>
+	}
 }

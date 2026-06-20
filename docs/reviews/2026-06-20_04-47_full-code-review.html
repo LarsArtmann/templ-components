@@ -1,0 +1,859 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Full Code Review — templ-components</title>
+    <style>
+      :root {
+        --color-graphite: #0e0e10;
+        --color-graphite-2: #18181d;
+        --color-graphite-3: #16161a;
+        --color-bone: #f4f4f0;
+        --color-red: #ff6b6b;
+        --color-blue: #6eb5ff;
+        --color-yellow: #f4d35e;
+        --color-amber: #ffb347;
+
+        --surface: var(--color-graphite);
+        --surface-raised: var(--color-graphite-2);
+        --surface-sunken: var(--color-graphite-3);
+        --text: var(--color-bone);
+        --text-muted: #a0a0a8;
+        --text-faint: #6c6c75;
+        --border: #2a2a30;
+        --border-strong: #3a3a42;
+        --accent: var(--color-amber);
+        --problem: var(--color-red);
+        --solution: var(--color-blue);
+        --warning: var(--color-yellow);
+        --radius: 0px;
+        --font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --font-mono: "SF Mono", Monaco, Consolas, monospace;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        background: var(--surface);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 15px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .layout {
+        display: flex;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+      .sidebar {
+        position: sticky;
+        top: 0;
+        height: 100vh;
+        width: 240px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--border);
+        padding: 2rem 1.5rem;
+        overflow-y: auto;
+      }
+      .sidebar .label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-faint);
+        margin-bottom: 0.75rem;
+        font-weight: 700;
+      }
+      .sidebar nav a {
+        display: block;
+        padding: 0.35rem 0.5rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 13px;
+        border-radius: 2px;
+        border-left: 2px solid transparent;
+        transition: all 0.15s;
+      }
+      .sidebar nav a:hover {
+        color: var(--text);
+        border-left-color: var(--accent);
+      }
+      .main {
+        flex: 1;
+        padding: 2rem 3rem;
+        max-width: 1100px;
+      }
+      .hero {
+        margin-bottom: 3rem;
+        padding-bottom: 2rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .hero-badge {
+        display: inline-block;
+        padding: 4px 10px;
+        background: var(--accent);
+        color: var(--surface);
+        font-size: 11px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        margin-bottom: 1rem;
+      }
+      .hero h1 {
+        font-size: 2.2rem;
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        margin-bottom: 0.5rem;
+        line-height: 1.2;
+      }
+      .hero-subtitle {
+        color: var(--text-muted);
+        font-size: 1rem;
+        max-width: 60ch;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+      }
+      .stat-card {
+        background: var(--surface-raised);
+        padding: 1.25rem;
+        border: 1px solid var(--border);
+      }
+      .stat-value {
+        font-size: 1.8rem;
+        font-weight: 900;
+        line-height: 1;
+      }
+      .stat-label {
+        font-size: 11px;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: var(--text-faint);
+        margin-top: 0.5rem;
+        font-weight: 600;
+      }
+      .stat-good .stat-value {
+        color: var(--solution);
+      }
+      .stat-warn .stat-value {
+        color: var(--warning);
+      }
+      .stat-bad .stat-value {
+        color: var(--problem);
+      }
+      h2 {
+        font-size: 1.4rem;
+        font-weight: 800;
+        margin: 2.5rem 0 1rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      h2 .num {
+        font-size: 0.9rem;
+        color: var(--accent);
+        font-weight: 700;
+        font-variant-numeric: tabular-nums;
+      }
+      h3 {
+        font-size: 1.05rem;
+        font-weight: 700;
+        margin: 1.5rem 0 0.5rem;
+      }
+      p {
+        margin-bottom: 0.75rem;
+        color: var(--text-muted);
+      }
+      strong {
+        color: var(--text);
+      }
+      code {
+        font-family: var(--font-mono);
+        font-size: 0.85em;
+        background: var(--surface-sunken);
+        padding: 2px 6px;
+        color: var(--color-yellow);
+      }
+      pre {
+        background: var(--surface-sunken);
+        padding: 1rem;
+        overflow-x: auto;
+        border-left: 3px solid var(--border-strong);
+        margin: 0.75rem 0;
+        font-size: 13px;
+      }
+      pre code {
+        background: none;
+        padding: 0;
+        color: var(--text);
+      }
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.25rem 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .card-problem {
+        border-left: 3px solid var(--problem);
+      }
+      .card-solution {
+        border-left: 3px solid var(--solution);
+      }
+      .card-warning {
+        border-left: 3px solid var(--warning);
+      }
+      .issue {
+        margin-bottom: 1rem;
+        padding: 1rem 1.25rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+      }
+      .issue-critical {
+        border-left: 3px solid var(--problem);
+      }
+      .issue-important {
+        border-left: 3px solid var(--warning);
+      }
+      .issue-nice {
+        border-left: 3px solid var(--solution);
+      }
+      .severity {
+        display: inline-block;
+        padding: 2px 8px;
+        font-size: 11px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin-bottom: 0.5rem;
+      }
+      .severity-critical {
+        background: var(--problem);
+        color: var(--surface);
+      }
+      .severity-important {
+        background: var(--warning);
+        color: var(--surface);
+      }
+      .severity-nice {
+        background: var(--solution);
+        color: var(--surface);
+      }
+      .issue h3 {
+        margin: 0.5rem 0;
+        color: var(--text);
+        font-size: 1rem;
+      }
+      .where {
+        font-family: var(--font-mono);
+        font-size: 12px;
+        color: var(--text-faint);
+        margin-bottom: 0.5rem;
+      }
+      .badge {
+        display: inline-block;
+        padding: 2px 8px;
+        font-size: 11px;
+        font-weight: 600;
+        border-radius: 2px;
+        margin-right: 4px;
+      }
+      .badge-critical {
+        background: color-mix(in srgb, var(--problem) 20%, transparent);
+        color: var(--problem);
+      }
+      .badge-high {
+        background: color-mix(in srgb, var(--warning) 20%, transparent);
+        color: var(--warning);
+      }
+      .badge-medium {
+        background: color-mix(in srgb, var(--color-blue) 20%, transparent);
+        color: var(--color-blue);
+      }
+      .badge-fixed {
+        background: color-mix(in srgb, var(--solution) 20%, transparent);
+        color: var(--solution);
+      }
+      .badge-low {
+        background: color-mix(in srgb, var(--text-muted) 20%, transparent);
+        color: var(--text-muted);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+        font-size: 13px;
+      }
+      th {
+        text-align: left;
+        padding: 0.6rem 0.75rem;
+        border-bottom: 2px solid var(--border-strong);
+        font-weight: 700;
+        font-size: 12px;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: var(--text-faint);
+      }
+      td {
+        padding: 0.6rem 0.75rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      tr:hover td {
+        background: var(--surface-raised);
+      }
+      .callout {
+        padding: 1rem 1.25rem;
+        margin: 1rem 0;
+        border-left: 3px solid;
+        background: var(--surface-sunken);
+      }
+      .callout-solution {
+        border-left-color: var(--solution);
+      }
+      .callout-warning {
+        border-left-color: var(--warning);
+      }
+      .callout strong {
+        display: block;
+        margin-bottom: 0.25rem;
+      }
+      .strengths {
+        margin: 1rem 0;
+      }
+      .strength {
+        display: flex;
+        gap: 0.75rem;
+        padding: 0.75rem;
+        align-items: flex-start;
+      }
+      .strength .check {
+        flex-shrink: 0;
+        width: 20px;
+        height: 20px;
+        background: var(--solution);
+        color: var(--surface);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 900;
+        font-size: 13px;
+      }
+      .strength .text {
+        flex: 1;
+      }
+      .strength .text strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+      .strength .text span {
+        color: var(--text-muted);
+        font-size: 13px;
+      }
+      .footer {
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+        font-size: 12px;
+        color: var(--text-faint);
+        text-align: center;
+      }
+      .tok-keyword {
+        color: #c678dd;
+      }
+      .tok-type {
+        color: #e5c07b;
+      }
+      .tok-string {
+        color: #98c379;
+      }
+      .tok-comment {
+        color: #5c6370;
+        font-style: italic;
+      }
+      .tok-func {
+        color: #61afef;
+      }
+      @media (max-width: 1024px) {
+        .sidebar {
+          display: none;
+        }
+        .main {
+          padding: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <aside class="sidebar">
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#stats">Metrics</a>
+          <a href="#strengths">Strengths</a>
+          <a href="#fixed">Fixed On The Spot</a>
+          <a href="#findings">Open Findings</a>
+          <a href="#duplication">Duplication</a>
+          <a href="#architecture">Architecture Notes</a>
+        </nav>
+      </aside>
+      <main class="main">
+        <div class="hero">
+          <div class="hero-badge">Full Code Review</div>
+          <h1>templ-components Deep Review</h1>
+          <p class="hero-subtitle">
+            Point-in-time audit of every source file across 10 packages. Type safety, design system
+            consistency, CSP compliance, DRY violations, and naming reviewed against AGENTS.md
+            conventions.
+          </p>
+        </div>
+
+        <div class="stat-grid" id="stats">
+          <div class="stat-card">
+            <div class="stat-value">44</div>
+            <div class="stat-label">Files Reviewed</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">8</div>
+            <div class="stat-label">Fixed On Spot</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">7</div>
+            <div class="stat-label">Open Findings</div>
+          </div>
+          <div class="stat-card stat-bad">
+            <div class="stat-value">3</div>
+            <div class="stat-label">Split Brains</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">1100+</div>
+            <div class="stat-label">Tests Passing</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">0</div>
+            <div class="stat-label">Lint Issues</div>
+          </div>
+        </div>
+
+        <div class="callout callout-solution" id="summary">
+          <strong>Verdict: Production-quality with minor debt</strong>
+          The codebase is well-architected: strong type safety, consistent BaseProps pattern,
+          generic style lookups, comprehensive a11y (motion-reduce, aria, focus traps), and zero
+          external runtime deps beyond templ + tailwind-merge-go. The issues found are consistency
+          violations, not structural flaws. All safe fixes applied immediately.
+        </div>
+
+        <h2><span class="num">+</span>Strengths</h2>
+        <div class="strengths" id="strengths">
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Consistent ComponentProps interface</strong>
+              <span
+                >Every props struct embeds utils.BaseProps with pointer-receiver Get/SetBaseProps.
+                25/25 components auto-satisfy the interface via method promotion.
+                recvcheck-clean.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Generic style lookup pattern</strong>
+              <span
+                >lookupFeedbackStyle[T ~string]() eliminates duplication across Alert, Toast,
+                ErrorAlert. Map+fallback pattern used consistently for sizes, styles,
+                positions.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Comprehensive accessibility</strong>
+              <span
+                >motion-reduce on all transitions/animations, aria-live regions, focus traps in
+                Modal/Drawer, sr-only labels, skip-to-content, keyboard nav in
+                Tabs/Dropdown/Accordion.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Minimal dependencies</strong>
+              <span
+                >Only 3: templ (rendering), tailwind-merge-go (class conflict resolution),
+                go-error-family (error classification). No framework lock-in.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Thread-safe class merging</strong>
+              <span
+                >utils.Class() uses sync.Mutex to protect tailwind-merge-go's shared LRU cache.
+                Correctly documented reasoning.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>CSP nonce on all inline scripts</strong>
+              <span
+                >Every &lt;script&gt; tag accepts and propagates props.Nonce. DismissScript,
+                ThemeToggle, Dropdown, Accordion, Tabs, Modal, Drawer all nonce-compliant.</span
+              >
+            </div>
+          </div>
+        </div>
+
+        <h2><span class="num">&#10003;</span>Fixed On The Spot</h2>
+        <p>
+          8 issues fixed immediately during this review. All changes verified: build, 1100+ tests,
+          lint all clean.
+        </p>
+
+        <table id="fixed">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Severity</th>
+              <th>File</th>
+              <th>Issue</th>
+              <th>Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><code>errorpage/styles.go:83</code></td>
+              <td>
+                FamilyInfrastructure used <code>slate-*</code> colors, violating documented "gray-*
+                exclusively" rule. Split brain with the rest of the design system.
+              </td>
+              <td>
+                Changed all slate-* &#8594; gray-* (Border, BG, Text, IconColor, AccentBG,
+                AccentText, ActionButton)
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><code>display/dropdown.templ:63</code></td>
+              <td>
+                <code>dropdownItemClass</code> had <code>dark:hover:bg-slate-700</code> &#8212; same
+                gray-only violation.
+              </td>
+              <td>Changed to <code>dark:hover:bg-gray-700</code></td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><code>display/button_go.go:54-83</code></td>
+              <td>
+                Used <code>switch</code> for variant and size class lookups, violating AGENTS.md
+                "Style lookups use maps/structs, not switches".
+              </td>
+              <td>
+                Converted to <code>buttonVariantLookup</code> map +
+                <code>buttonSizeLookup</code> map with fallback constants
+              </td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><code>forms/toggle.templ:31</code></td>
+              <td>
+                Used <code>switch</code> for toggle size class lookup &#8212; same convention
+                violation (pure class lookup, not structural).
+              </td>
+              <td>
+                Converted to <code>toggleSizeMap</code> with <code>toggleSizeSet</code> struct +
+                <code>toggleSizeDefault</code> fallback
+              </td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><code>navigation/breadcrumbs.templ:39</code></td>
+              <td>
+                BreadcrumbList struct had field names backwards: <code>Type</code> tagged
+                <code>@context</code>, <code>Context</code> tagged <code>@type</code>. Naming lie.
+              </td>
+              <td>
+                Swapped field names to match JSON-LD semantics: <code>Context</code> &#8594;
+                <code>@context</code>, <code>Type</code> &#8594; <code>@type</code>
+              </td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><code>errorpage/errorpage.templ:74</code></td>
+              <td>
+                Inline <code>onclick="history.back()"</code> &#8212; CSP violation. Library's own
+                principle: "all inline scripts use nonce".
+              </td>
+              <td>
+                Replaced with <code>data-tc-go-back</code> attribute + nonce'd event listener script
+              </td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><code>layout/theme.templ:28</code></td>
+              <td>
+                ThemeToggle rendered <code>aria-label=""</code> when called with empty string
+                &#8212; worse than no aria-label for screen readers.
+              </td>
+              <td>
+                Added <code>utils.Ternary</code> default to "Toggle theme", matching Nav/Pagination
+                pattern
+              </td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><code>forms/validation.templ:54</code></td>
+              <td>Hardcoded English pluralization: <code>"%d error(s) found"</code>.</td>
+              <td>Proper pluralization: 1 error, N errors</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><code>display/dropdown.templ:10</code></td>
+              <td>
+                Leading space before <code>type DropdownItemKind</code> &#8212; stray whitespace.
+              </td>
+              <td>Removed leading space</td>
+            </tr>
+            <tr>
+              <td>10</td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><code>internal/svg/doc.go</code></td>
+              <td>
+                Placeholder comment "Package svg provides ..." &#8212; no actual documentation.
+              </td>
+              <td>Wrote proper package doc</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2><span class="num">!</span>Open Findings</h2>
+        <p>
+          Issues identified but NOT fixed &#8212; they require API changes, larger refactors, or
+          design decisions beyond a review pass.
+        </p>
+
+        <div class="issue issue-critical" id="findings">
+          <span class="severity severity-critical">High Impact</span>
+          <h3>FormFieldWrapper not used by Input, Select, Textarea, Radio</h3>
+          <div class="where">
+            forms/input.templ:78, forms/select.templ:54, forms/textarea.templ:41
+          </div>
+          <p>
+            <strong>FormFieldWrapper</strong> exists specifically to DRY up the Label + children +
+            FieldError + helpText pattern. Only <strong>FileInput</strong> uses it. Input, Select,
+            Textarea, and RadioGroup all manually repeat the same 3-line pattern. This is the exact
+            duplication the wrapper was created to prevent.
+          </p>
+          <div class="callout callout-warning">
+            <strong>Why not fixed here</strong>
+            Refactoring changes generated HTML structure for 4 components. Requires golden file
+            regeneration and may affect consumers who assert on specific markup order. Should be a
+            dedicated refactor PR.
+          </div>
+        </div>
+
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">High Impact</span>
+          <h3>Modal and Drawer JS is ~90% duplicated</h3>
+          <div class="where">display/modal.templ:57-109 vs display/drawer.templ:63-121</div>
+          <p>
+            The open/close functions, focus trap (Tab key handling), focus save/restore via
+            <code>data-tc-prev-focus</code>, and the focusable element selector string are nearly
+            identical between Modal and Drawer. The selector
+            <code
+              >'a[href], button:not([disabled]), textarea, input, select,
+              [tabindex]:not([tabindex="-1"])'</code
+            >
+            appears <strong>4 times</strong> across these two files.
+          </p>
+          <div class="callout callout-solution">
+            <strong>Recommended approach</strong>
+            Extract a shared
+            <code>overlayScript(componentName, id, transformDirection)</code> function that
+            generates the common JS. Or extract the focusable selector to a shared Go string
+            constant.
+          </div>
+        </div>
+
+        <div class="issue issue-important">
+          <span class="severity severity-important">Medium</span>
+          <h3>Modal/Drawer inline onclick handlers (CSP)</h3>
+          <div class="where">display/modal.templ:31,45 &#8212; display/drawer.templ:31,51</div>
+          <p>
+            The backdrop and close button use
+            <code>onclick={ modalCloseHandler(props.ID) }</code> which renders as an inline
+            <code>onclick="tcCloseModal('id')"</code> attribute. This violates strict CSP (which the
+            library otherwise enforces via nonce'd scripts).
+          </p>
+          <div class="callout callout-solution">
+            <strong>Fix pattern (already used by Alert/Accordion/Dropdown)</strong>
+            Replace with <code>data-close="modal"</code> attribute + global click listener in the
+            nonce'd script. The dismiss pattern in <code>utils.DismissScript()</code> shows the
+            exact approach.
+          </div>
+        </div>
+
+        <div class="issue issue-important">
+          <span class="severity severity-important">Medium</span>
+          <h3>Form.Content prop instead of children</h3>
+          <div class="where">forms/form.templ:21</div>
+          <p>
+            <code>FormProps.Content templ.Component</code> requires consumers to pass content as a
+            prop. Every other wrapper component (Card, Modal, Drawer, InputGroup, FormFieldWrapper)
+            uses <code>{ children... }</code>. This breaks the composition pattern and makes Form
+            harder to use than it should be.
+          </p>
+        </div>
+
+        <div class="issue issue-important">
+          <span class="severity severity-important">Medium</span>
+          <h3>Alert vs Toast: inconsistent icons and opacity for same severity</h3>
+          <div class="where">feedback/alert.templ:52-57 vs feedback/toast.templ:185-190</div>
+          <p>Same FeedbackType renders different icons in Alert vs Toast:</p>
+          <table>
+            <thead>
+              <tr>
+                <th>Severity</th>
+                <th>Alert Icon</th>
+                <th>Toast Icon</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Error</td>
+                <td>X</td>
+                <td>ExclamationTriangle</td>
+              </tr>
+              <tr>
+                <td>Success</td>
+                <td>Check</td>
+                <td>CheckCircle</td>
+              </tr>
+            </tbody>
+          </table>
+          <p>
+            Also: dark mode bg opacity differs (<code>/20</code> for Alert, <code>/30</code> for
+            Toast). Same severity should produce the same visual treatment.
+          </p>
+        </div>
+
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Low</span>
+          <h3>errorpage htmlEscape reimplements stdlib</h3>
+          <div class="where">errorpage/handler.go:352-371</div>
+          <p>
+            Hand-rolled HTML escaper duplicates <code>html.EscapeString()</code> from the stdlib.
+            The only difference is escaping <code>'</code> &#8594; <code>&#39;</code>, which stdlib
+            also does in modern Go. Could be replaced with <code>html.EscapeString(title)</code>.
+          </p>
+        </div>
+
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Low</span>
+          <h3>errorpage hand-rolled HTML shell via string concatenation</h3>
+          <div class="where">errorpage/handler.go:331-349</div>
+          <p>
+            <code>renderWithShell()</code> builds an HTML document via
+            <code>fmt.Fprint</code> string concatenation. Could be a templ component for consistency
+            and safer escaping. Acceptable for an error fallback path.
+          </p>
+        </div>
+
+        <h2><span class="num">&#8970;</span>Duplication Summary</h2>
+        <div class="card card-warning" id="duplication">
+          <p><strong>3 significant duplications identified:</strong></p>
+          <table>
+            <thead>
+              <tr>
+                <th>Pattern</th>
+                <th>Locations</th>
+                <th>Recommendation</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Label + FieldError + helpText sequence</td>
+                <td>Input, Select, Textarea, RadioGroup (4 components)</td>
+                <td>Use existing FormFieldWrapper</td>
+              </tr>
+              <tr>
+                <td>Focus trap + open/close + focusable selector</td>
+                <td>Modal, Drawer (2 components, ~50 lines each)</td>
+                <td>Extract shared overlay JS generator</td>
+              </tr>
+              <tr>
+                <td>Inline onclick close handlers</td>
+                <td>Modal backdrop+button, Drawer backdrop+button</td>
+                <td>Convert to data-attribute + global listener</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2><span class="num">&#9632;</span>Architecture Notes</h2>
+        <div class="card" id="architecture">
+          <h3>Import graph is clean</h3>
+          <p>
+            <code>utils &#8592; all</code>,
+            <code>internal/svg &#8592; display,feedback,icons</code>,
+            <code>icons &#8592; display,feedback,errorpage</code>. No circular imports.
+            <code>errorpage</code> correctly depends on <code>go-error-family</code> without pulling
+            in <code>feedback</code>.
+          </p>
+
+          <h3>Package boundaries are sound</h3>
+          <p>
+            display (UI primitives), feedback (user feedback), forms (input controls), navigation
+            (menus), layout (page shells), htmx (integration), errorpage (error rendering), icons
+            (svg system), utils (shared types), internal (svg + golden test helpers). Each package
+            has a clear single responsibility.
+          </p>
+
+          <h3>Test coverage is comprehensive</h3>
+          <p>
+            1100+ tests across BDD, coverage, snapshot (golden), a11y, edge cases, and integration
+            categories. Every package has multiple test dimensions. Golden file testing with CSS
+            class normalization is a strong pattern.
+          </p>
+
+          <h3>Generated files correctly committed</h3>
+          <p>
+            44 <code>*_templ.go</code> files committed &#8212; required for library consumers via Go
+            module proxy. <code>.gitignore</code> uses <code>!*_templ.go</code> override pattern.
+            This is correct and documented.
+          </p>
+        </div>
+
+        <footer class="footer">
+          Generated 2026-06-20 &middot; Reviewed against commit 7ea1619 (master) &middot; 12
+          packages, 44 source files, 1100+ tests
+        </footer>
+      </main>
+    </div>
+  </body>
+</html>

@@ -68,7 +68,7 @@ func DefaultDropdownProps() DropdownProps {
 }
 
 // dropdownItemClass returns the shared class for all dropdown items
-const dropdownItemClass = "block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-slate-700 hover:text-gray-900 dark:hover:text-white"
+const dropdownItemClass = "block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
 
 // dropdownItemDisabledClass appends disabled styling
 const dropdownItemDisabledClass = " opacity-50 cursor-not-allowed pointer-events-none"

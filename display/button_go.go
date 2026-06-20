@@ -51,35 +51,37 @@ func DefaultButtonProps() ButtonProps {
 }
 
 // buttonVariantClasses returns the color classes for each button variant
-func buttonVariantClasses(v ButtonType) string {
-	switch v {
-	case ButtonPrimary:
-		return "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
-	case ButtonSecondary:
-		return "bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700"
-	case ButtonDanger:
-		return "bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600"
-	case ButtonGhost:
-		return "bg-transparent text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700"
-	case ButtonLink:
-		return "bg-transparent text-blue-600 hover:text-blue-500 underline-offset-2 hover:underline"
-	default:
-		return "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
-	}
+//
+//nolint:gochecknoglobals // Package-level lookup table for button variants
+var buttonVariantLookup = map[ButtonType]string{
+	ButtonPrimary:   "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600",
+	ButtonSecondary: "bg-white text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 dark:bg-gray-800 dark:text-white dark:ring-gray-600 dark:hover:bg-gray-700",
+	ButtonDanger:    "bg-red-600 text-white hover:bg-red-500 focus-visible:outline-red-600",
+	ButtonGhost:     "bg-transparent text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700",
+	ButtonLink:      "bg-transparent text-blue-600 hover:text-blue-500 underline-offset-2 hover:underline",
 }
 
-// buttonSizeClasses returns the size classes for each button size
-func buttonSizeClasses(s ButtonSize) string {
-	switch s {
-	case ButtonSizeSM:
-		return "px-2.5 py-1.5 text-xs"
-	case ButtonSizeMD:
-		return "px-3 py-2 text-sm"
-	case ButtonSizeLG:
-		return "px-4 py-2.5 text-base"
-	default:
-		return "px-3 py-2 text-sm"
+const buttonVariantDefault = "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
+
+func buttonVariantClasses(v ButtonType) string {
+	if c, ok := buttonVariantLookup[v]; ok {
+		return c
 	}
+	return buttonVariantDefault
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for button sizes
+var buttonSizeLookup = map[ButtonSize]string{
+	ButtonSizeSM: "px-2.5 py-1.5 text-xs",
+	ButtonSizeMD: "px-3 py-2 text-sm",
+	ButtonSizeLG: "px-4 py-2.5 text-base",
+}
+
+func buttonSizeClasses(s ButtonSize) string {
+	if c, ok := buttonSizeLookup[s]; ok {
+		return c
+	}
+	return buttonSizeLookup[ButtonSizeMD]
 }
 
 // buttonBaseClass returns the shared base classes for all buttons

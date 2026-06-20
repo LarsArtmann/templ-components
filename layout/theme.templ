@@ -1,6 +1,9 @@
 package layout
 
-import "github.com/larsartmann/templ-components/icons"
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // ThemeScript renders the inline script that sets the dark mode class before paint
 // Include this in your base template head to prevent FOUC
@@ -25,7 +28,7 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 		type="button"
 		class="rounded-md p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 transition-colors"
 		data-theme-toggle
-		aria-label={ ariaLabel }
+		aria-label={ utils.Ternary(ariaLabel != "", ariaLabel, "Toggle theme") }
 	>
 		@icons.Icon(icons.Moon, "h-5 w-5 dark:hidden")
 		@icons.Icon(icons.Sun, "hidden h-5 w-5 dark:block")

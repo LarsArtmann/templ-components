@@ -51,7 +51,7 @@ templ ValidationSummary(props ValidationSummaryProps) {
 				</div>
 				<div class="ml-3">
 					<h3 class="text-sm font-medium text-red-800 dark:text-red-300">
-						{ fmt.Sprintf("%d error(s) found", len(props.Errors)) }
+						{ fmt.Sprintf("%d error%s found", len(props.Errors), utils.Ternary(len(props.Errors) == 1, "", "s")) }
 					</h3>
 					<div class="mt-2 text-sm text-red-700 dark:text-red-400">
 						<ul class="list-disc space-y-1 pl-5">

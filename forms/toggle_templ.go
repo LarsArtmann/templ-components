@@ -38,14 +38,27 @@ func DefaultToggleProps() ToggleProps {
 
 // toggleSizeClasses returns the track and thumb classes for each size
 func toggleSizeClasses(size ToggleSize) (track, thumb, translate string) {
-	switch size {
-	case ToggleSizeSM:
-		return "w-9 h-5", "w-4 h-4", "translate-x-4"
-	case ToggleSizeLG:
-		return "w-14 h-8", "w-7 h-7", "translate-x-6"
-	default:
-		return "w-11 h-6", "w-5 h-5", "translate-x-5"
+	s := toggleSizeLookup(size)
+	return s.Track, s.Thumb, s.Translate
+}
+
+type toggleSizeSet struct {
+	Track, Thumb, Translate string
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for toggle sizes
+var toggleSizeMap = map[ToggleSize]toggleSizeSet{
+	ToggleSizeSM: {"w-9 h-5", "w-4 h-4", "translate-x-4"},
+	ToggleSizeLG: {"w-14 h-8", "w-7 h-7", "translate-x-6"},
+}
+
+var toggleSizeDefault = toggleSizeSet{"w-11 h-6", "w-5 h-5", "translate-x-5"}
+
+func toggleSizeLookup(size ToggleSize) toggleSizeSet {
+	if s, ok := toggleSizeMap[size]; ok {
+		return s
 	}
+	return toggleSizeDefault
 }
 
 // Toggle renders an accessible toggle switch
@@ -104,7 +117,7 @@ func Toggle(props ToggleProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 52, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 65, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -126,7 +139,7 @@ func Toggle(props ToggleProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Name)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 58, Col: 20}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 71, Col: 20}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -144,7 +157,7 @@ func Toggle(props ToggleProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 60, Col: 17}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 73, Col: 17}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -227,7 +240,7 @@ func Toggle(props ToggleProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(props.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 74, Col: 85}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/toggle.templ`, Line: 87, Col: 85}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {

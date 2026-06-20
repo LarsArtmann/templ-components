@@ -393,7 +393,7 @@ func TestValidationSummaryWithErrors(t *testing.T) {
 	utils.AssertContains(t, output, "Email is required")
 	utils.AssertContains(t, output, "Name too short")
 	utils.AssertContains(t, output, `href="#email"`)
-	utils.AssertContains(t, output, "2 error(s) found")
+	utils.AssertContains(t, output, "2 errors found")
 }
 
 func TestValidationSummaryEmpty(t *testing.T) {

@@ -45,14 +45,14 @@ func breadcrumbJSONLD(items []BreadcrumbItem) string {
 		Item     string `json:"item,omitempty"`
 	}
 	type BreadcrumbList struct {
-		Type    string     `json:"@context"`
-		Context string     `json:"@type"`
+		Context string     `json:"@context"`
+		Type    string     `json:"@type"`
 		Items   []ListItem `json:"itemListElement"`
 	}
 
 	list := BreadcrumbList{
-		Type:    "https://schema.org",
-		Context: "BreadcrumbList",
+		Context: "https://schema.org",
+		Type:    "BreadcrumbList",
 		Items:   make([]ListItem, 0, len(items)),
 	}
 	for i, item := range items {

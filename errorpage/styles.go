@@ -33,7 +33,7 @@ const (
 	FamilyCorruption Family = "corruption"
 
 	// FamilyInfrastructure indicates the system cannot serve.
-	// Tone: apologetic. Visual: slate/gray.
+	// Tone: apologetic. Visual: gray.
 	FamilyInfrastructure Family = "infrastructure"
 )
 
@@ -80,11 +80,11 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		ActionButton: "bg-red-600 hover:bg-red-500 focus-visible:ring-red-500 text-white",
 	},
 	FamilyInfrastructure: {
-		Border: "border-slate-200 dark:border-slate-700", BG: "bg-slate-50 dark:bg-slate-800/50",
-		Text: "text-slate-800 dark:text-slate-200", IconColor: "text-slate-400",
+		Border: "border-gray-200 dark:border-gray-700", BG: "bg-gray-50 dark:bg-gray-800/50",
+		Text: "text-gray-800 dark:text-gray-200", IconColor: "text-gray-400",
 		Icon:     icons.Globe,
-		AccentBG: "bg-slate-100 dark:bg-slate-800", AccentText: "text-slate-700 dark:text-slate-300",
-		ActionButton: "bg-slate-600 hover:bg-slate-500 focus-visible:ring-slate-500 text-white",
+		AccentBG: "bg-gray-100 dark:bg-gray-800", AccentText: "text-gray-700 dark:text-gray-300",
+		ActionButton: "bg-gray-600 hover:bg-gray-500 focus-visible:ring-gray-500 text-white",
 	},
 }
 

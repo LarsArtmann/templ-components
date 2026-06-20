@@ -30,14 +30,27 @@ func DefaultToggleProps() ToggleProps {
 
 // toggleSizeClasses returns the track and thumb classes for each size
 func toggleSizeClasses(size ToggleSize) (track, thumb, translate string) {
-	switch size {
-	case ToggleSizeSM:
-		return "w-9 h-5", "w-4 h-4", "translate-x-4"
-	case ToggleSizeLG:
-		return "w-14 h-8", "w-7 h-7", "translate-x-6"
-	default:
-		return "w-11 h-6", "w-5 h-5", "translate-x-5"
+	s := toggleSizeLookup(size)
+	return s.Track, s.Thumb, s.Translate
+}
+
+type toggleSizeSet struct {
+	Track, Thumb, Translate string
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for toggle sizes
+var toggleSizeMap = map[ToggleSize]toggleSizeSet{
+	ToggleSizeSM: {"w-9 h-5", "w-4 h-4", "translate-x-4"},
+	ToggleSizeLG: {"w-14 h-8", "w-7 h-7", "translate-x-6"},
+}
+
+var toggleSizeDefault = toggleSizeSet{"w-11 h-6", "w-5 h-5", "translate-x-5"}
+
+func toggleSizeLookup(size ToggleSize) toggleSizeSet {
+	if s, ok := toggleSizeMap[size]; ok {
+		return s
 	}
+	return toggleSizeDefault
 }
 
 // Toggle renders an accessible toggle switch

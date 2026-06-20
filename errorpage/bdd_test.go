@@ -259,7 +259,7 @@ func TestErrorAlertUserSeesFamilyAlert(t *testing.T) {
 			{FamilyConflict, "orange"},
 			{FamilyTransient, "blue"},
 			{FamilyCorruption, "red"},
-			{FamilyInfrastructure, "slate"},
+			{FamilyInfrastructure, "gray"},
 		} {
 			t.Run(string(tt.family), func(t *testing.T) {
 				t.Parallel()
