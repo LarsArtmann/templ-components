@@ -2,7 +2,6 @@
 package display
 
 import (
-	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -47,12 +46,4 @@ func modalSizeClass(size ModalSize) string {
 		return v
 	}
 	return modalSizeLookup[string(ModalSizeMD)]
-}
-
-func modalCloseHandler(id string) templ.ComponentScript {
-	return closeHandler("Modal", id)
-}
-
-func modalSafeID(id string) string {
-	return safeID(id)
 }

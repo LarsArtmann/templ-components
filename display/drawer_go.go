@@ -1,7 +1,6 @@
 package display
 
 import (
-	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -62,12 +61,4 @@ func drawerSizeClass(size DrawerSize) string {
 		return v
 	}
 	return drawerSizeLookup[string(DrawerSizeMD)]
-}
-
-func drawerCloseHandler(id string) templ.ComponentScript {
-	return closeHandler("Drawer", id)
-}
-
-func drawerSafeID(id string) string {
-	return safeID(id)
 }

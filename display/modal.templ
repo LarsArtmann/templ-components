@@ -28,7 +28,7 @@ templ Modal(props ModalProps) {
 			aria-label={ props.AriaLabel }
 		}
 	>
-		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" onclick={ modalCloseHandler(props.ID) }></div>
+		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" data-tc-close="modal"></div>
 		<div
 			id={ props.ID + "-panel" }
 			class={ utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", modalSizeClass(props.Size), props.Class),
@@ -42,7 +42,7 @@ templ Modal(props ModalProps) {
 					<button
 						type="button"
 						class="rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-						onclick={ modalCloseHandler(props.ID) }
+						data-tc-close="modal"
 						aria-label="Close"
 					>
 						@icons.Icon(icons.X, "h-5 w-5")
@@ -54,57 +54,5 @@ templ Modal(props ModalProps) {
 			</div>
 		</div>
 	</div>
-	<script nonce={ props.Nonce }>
-		function tcCloseModal(id) {
-			var modal = document.getElementById(id);
-			if (modal) {
-				modal.classList.remove('opacity-100', 'pointer-events-auto');
-				modal.classList.add('opacity-0', 'pointer-events-none');
-				var inner = document.getElementById(id + '-panel');
-				if (inner) {
-					inner.classList.remove('scale-100', 'opacity-100');
-					inner.classList.add('scale-95', 'opacity-0');
-				}
-				var prevId = modal.getAttribute('data-tc-prev-focus');
-				if (prevId) {
-					var prev = document.getElementById(prevId);
-					if (prev) prev.focus();
-					modal.removeAttribute('data-tc-prev-focus');
-				}
-			}
-		}
-		function tcOpenModal(id) {
-			var modal = document.getElementById(id);
-			if (modal) {
-				if (document.activeElement && document.activeElement.id) {
-					modal.setAttribute('data-tc-prev-focus', document.activeElement.id);
-				}
-				modal.classList.remove('opacity-0', 'pointer-events-none');
-				modal.classList.add('opacity-100', 'pointer-events-auto');
-				var inner = document.getElementById(id + '-panel');
-				if (inner) {
-					inner.classList.remove('scale-95', 'opacity-0');
-					inner.classList.add('scale-100', 'opacity-100');
-					var focusable = inner.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
-					if (focusable.length) focusable[0].focus();
-				}
-			}
-		}
-		(function(id) {
-			var modal = document.getElementById(id);
-			if (!modal) return;
-			modal.addEventListener('keydown', function(e) {
-				if (e.key === 'Escape') { tcCloseModal(id); return; }
-				if (e.key !== 'Tab') return;
-			var inner = document.getElementById(id + '-panel');
-				if (!inner) return;
-				var focusable = inner.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
-				if (focusable.length === 0) { e.preventDefault(); return; }
-				var first = focusable[0];
-				var last = focusable[focusable.length - 1];
-				if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-				else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-			});
-		})({{ modalSafeID(props.ID) }});
-	</script>
+	@overlayScriptComponent(props.Nonce, props.ID, "Modal", modalPanelConfig())
 }

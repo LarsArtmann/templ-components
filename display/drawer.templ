@@ -28,7 +28,7 @@ templ Drawer(props DrawerProps) {
 			aria-label={ props.AriaLabel }
 		}
 	>
-		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" onclick={ drawerCloseHandler(props.ID) }></div>
+		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" data-tc-close="drawer"></div>
 		<div
 			id={ props.ID + "-panel" }
 			class={ utils.Class("fixed bg-white dark:bg-gray-900 shadow-xl w-full h-full overflow-y-auto transform transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0", drawerSizeClass(props.Size), props.Class),
@@ -48,7 +48,7 @@ templ Drawer(props DrawerProps) {
 					<button
 						type="button"
 						class="rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-						onclick={ drawerCloseHandler(props.ID) }
+						data-tc-close="drawer"
 						aria-label="Close"
 					>
 						@icons.Icon(icons.X, "h-5 w-5")
@@ -60,63 +60,5 @@ templ Drawer(props DrawerProps) {
 			</div>
 		</div>
 	</div>
-	<script nonce={ props.Nonce }>
-		function tcCloseDrawer(id) {
-			var drawer = document.getElementById(id);
-			if (drawer) {
-				drawer.classList.remove('opacity-100', 'pointer-events-auto');
-				drawer.classList.add('opacity-0', 'pointer-events-none');
-				var panel = document.getElementById(id + '-panel');
-				if (panel) {
-					var isLeft = panel.style.left === '0' || panel.style.left === '';
-					if (isLeft) {
-						panel.classList.remove('translate-x-0');
-						panel.classList.add('-translate-x-full');
-					} else {
-						panel.classList.remove('translate-x-0');
-						panel.classList.add('translate-x-full');
-					}
-				}
-				var prevId = drawer.getAttribute('data-tc-prev-focus');
-				if (prevId) {
-					var prev = document.getElementById(prevId);
-					if (prev) prev.focus();
-					drawer.removeAttribute('data-tc-prev-focus');
-				}
-			}
-		}
-		function tcOpenDrawer(id) {
-			var drawer = document.getElementById(id);
-			if (drawer) {
-				if (document.activeElement && document.activeElement.id) {
-					drawer.setAttribute('data-tc-prev-focus', document.activeElement.id);
-				}
-				drawer.classList.remove('opacity-0', 'pointer-events-none');
-				drawer.classList.add('opacity-100', 'pointer-events-auto');
-				var panel = document.getElementById(id + '-panel');
-				if (panel) {
-					panel.classList.remove('-translate-x-full', 'translate-x-full');
-					panel.classList.add('translate-x-0');
-					var focusable = panel.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
-					if (focusable.length) focusable[0].focus();
-				}
-			}
-		}
-		(function(id) {
-			var drawer = document.getElementById(id);
-			if (!drawer) return;
-			drawer.addEventListener('keydown', function(e) {
-				if (e.key === 'Escape') { tcCloseDrawer(id); return; }
-				if (e.key !== 'Tab') return;
-				var panel = document.getElementById(id + '-panel');
-				if (!panel) return;
-				var focusable = panel.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
-				if (focusable.length === 0) { e.preventDefault(); return; }
-				var first = focusable[0];
-				var last = focusable[focusable.length - 1];
-				if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-				else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-			});
-		})({{ drawerSafeID(props.ID) }});
-	</script>
+	@overlayScriptComponent(props.Nonce, props.ID, "Drawer", drawerPanelConfig(props.Side))
 }
