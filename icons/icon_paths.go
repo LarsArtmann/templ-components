@@ -110,12 +110,13 @@ var iconPathData = map[Name]string{
 }
 
 // iconPaths returns the path data for the given icon name, split into individual paths.
-// Panics for unknown icon names — use only validated Name constants.
+// Unknown names fall back to the Question icon — safe default that visually signals
+// "something is wrong" without crashing render.
 // Panics if path data contains empty segments (consecutive or trailing "|" separators).
 func iconPaths(name Name) []string {
 	d, ok := iconPathData[name]
 	if !ok {
-		panic(fmt.Sprintf("icons: unknown icon name %q — use a valid Name constant", name))
+		d = iconPathData[Question]
 	}
 	parts := strings.Split(d, "|")
 	for _, p := range parts {

@@ -25,14 +25,11 @@ func TestInputTypeValidation(t *testing.T) {
 		}
 	})
 
-	t.Run("unknown InputType panics", func(t *testing.T) {
+	t.Run("unknown InputType falls back to text", func(t *testing.T) {
 		t.Parallel()
-		defer func() {
-			r := recover()
-			if r == nil {
-				t.Error("expected panic for unknown InputType")
-			}
-		}()
-		inputType("javascript:alert(1)")
+		got := inputType("javascript:alert(1)")
+		if got != "text" {
+			t.Errorf("inputType('javascript:alert(1)') = %q, want %q", got, "text")
+		}
 	})
 }

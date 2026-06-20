@@ -71,18 +71,16 @@ func TestAllIconsRenderSuccessfully(t *testing.T) {
 
 // --- Unknown Icon Behavior ---
 
-func TestUnknownIconPanics(t *testing.T) {
+func TestUnknownIconFallback(t *testing.T) {
 	t.Parallel()
 
-	t.Run("unknown icon name panics instead of silent fallback", func(t *testing.T) {
+	t.Run("unknown icon name falls back to Question icon without panic", func(t *testing.T) {
 		t.Parallel()
-		defer func() {
-			r := recover()
-			if r == nil {
-				t.Error("expected panic for unknown icon name, got none")
-			}
-		}()
-		_ = utils.Render(t, Icon("nonexistent-icon", "h-5 w-5"))
+		output := utils.Render(t, Icon("nonexistent-icon", "h-5 w-5"))
+		questionOutput := utils.Render(t, Icon(Question, "h-5 w-5"))
+		if output != questionOutput {
+			t.Error("unknown icon should render the Question fallback icon")
+		}
 	})
 }
 

@@ -31,13 +31,16 @@ var validInputTypes = map[InputType]bool{
 	InputSearch: true, InputHidden: true,
 }
 
-// inputType validates the InputType and panics for unknown values
+// inputType returns the HTML input type string. Unknown values fall back
+// to "text" — matching the HTML spec behavior where unknown types default
+// to text. This aligns with the map+fallback convention used by all other
+// enums in the library.
 func inputType(t InputType) string {
 	if t == "" {
 		return string(InputText)
 	}
 	if !validInputTypes[t] {
-		panic(fmt.Sprintf("forms: unknown InputType %q — use a valid InputType constant", t))
+		return string(InputText)
 	}
 	return string(t)
 }

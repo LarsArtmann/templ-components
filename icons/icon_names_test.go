@@ -1,7 +1,6 @@
 package icons
 
 import (
-	"fmt"
 	"strings"
 	"testing"
 )
@@ -81,17 +80,11 @@ func TestIconPathJSProducesValidHTML(t *testing.T) {
 	}
 }
 
-func TestIconPathsPanicsOnUnknown(t *testing.T) {
+func TestIconPathsFallbackOnUnknown(t *testing.T) {
 	t.Parallel()
-	defer func() {
-		r := recover()
-		if r == nil {
-			t.Fatal("expected panic for unknown icon name")
-		}
-		msg := fmt.Sprintf("%v", r)
-		if !strings.Contains(msg, "unknown icon name") {
-			t.Errorf("panic message should mention unknown icon name, got: %s", msg)
-		}
-	}()
-	iconPaths(Name("nonexistent"))
+	paths := iconPaths(Name("nonexistent"))
+	questionPaths := iconPaths(Question)
+	if len(paths) != len(questionPaths) {
+		t.Errorf("unknown icon should fall back to Question, got %d paths, want %d", len(paths), len(questionPaths))
+	}
 }
