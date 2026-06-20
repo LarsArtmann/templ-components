@@ -11,13 +11,7 @@ import (
 //
 //	@icons.Icon(icons.Home, "h-5 w-5 text-gray-500")
 templ Icon(name Name, class string) {
-	if name == Spinner {
-		<svg class={ class, "animate-spin" } fill="none" viewBox="0 0 24 24" aria-hidden="true">
-			@svg.SpinnerSVG()
-		</svg>
-	} else {
-		@strokeIcon(class, 1.5, iconPaths(name))
-	}
+	@IconWithStrokeWidth(name, class, 1.5)
 }
 
 // IconWithStrokeWidth renders an SVG icon with a custom stroke-width.

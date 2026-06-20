@@ -25,14 +25,7 @@ templ ErrorPage(props ErrorPageProps) {
 							@familyIcon(style)
 						</div>
 						<div class="flex-1 min-w-0">
-							<div class="flex items-center gap-2 flex-wrap">
-								if props.Code != "" {
-									<code class={ "inline-flex items-center rounded px-1.5 py-0.5 text-xs font-mono font-medium", style.AccentBG, style.AccentText }>
-										{ props.Code }
-									</code>
-								}
-								@familyBadge(props.Family, style)
-							</div>
+							@codeAndFamilyBadge(props.Family, style, props.Code)
 							if props.Title != "" {
 								<h1 class="mt-2 text-lg font-semibold text-gray-900 dark:text-white">{ props.Title }</h1>
 							}
@@ -48,15 +41,7 @@ templ ErrorPage(props ErrorPageProps) {
 						</div>
 					}
 
-					if props.Fix != "" || len(props.Context) > 0 || len(props.CauseChain) > 0 {
-						<div class="mt-4 ml-14">
-							if props.Fix != "" {
-								@fixCard(props.Fix)
-							}
-							@contextTable(props.Context)
-							@causeList(props.CauseChain, "Cause chain")
-						</div>
-					}
+					@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-4 ml-14", "Cause chain")
 
 					if props.WayOut != "" || props.WayOutHref != "" {
 						<div class="mt-6 ml-14">

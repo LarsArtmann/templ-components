@@ -65,3 +65,26 @@ templ familyBadge(family Family, style familyVisualStyle) {
 		{ string(family) }
 	</span>
 }
+
+templ codeAndFamilyBadge(family Family, style familyVisualStyle, code string) {
+	<div class="flex items-center gap-2 flex-wrap">
+		if code != "" {
+			<code class={ "inline-flex items-center rounded px-1.5 py-0.5 text-xs font-mono font-medium", style.AccentBG, style.AccentText }>
+				{ code }
+			</code>
+		}
+		@familyBadge(family, style)
+	</div>
+}
+
+templ diagnosticSection(fix string, context []ContextPair, causes []CauseItem, containerClass string, causeLabel string) {
+	if fix != "" || len(context) > 0 || len(causes) > 0 {
+		<div class={ containerClass }>
+			if fix != "" {
+				@fixCard(fix)
+			}
+			@contextTable(context)
+			@causeList(causes, causeLabel)
+		</div>
+	}
+}

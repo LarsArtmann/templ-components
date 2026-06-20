@@ -1,0 +1,19 @@
+package display
+
+import "github.com/larsartmann/templ-components/icons"
+
+templ dialogHeader(title, titleID, closeKind string) {
+	if title != "" {
+		<div class="flex items-center justify-between px-4 py-3 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+			<h2 id={ titleID } class="text-base font-semibold text-gray-900 dark:text-white">{ title }</h2>
+			<button
+				type="button"
+				class="rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+				data-tc-close={ closeKind }
+				aria-label="Close"
+			>
+				@icons.Icon(icons.X, "h-5 w-5")
+			</button>
+		</div>
+	}
+}
