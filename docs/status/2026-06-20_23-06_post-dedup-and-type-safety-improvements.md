@@ -47,19 +47,19 @@
 
 ### Test coverage (75.1% avg, target: 80%)
 
-| Package | Coverage | Gap |
-|---------|----------|-----|
-| utils | 79.2% | Closest to target |
-| internal/svg | 79.0% | Closest to target |
-| internal/golden | 76.9% | — |
-| htmx | 77.3% | — |
-| icons | 77.1% | — |
-| layout | 73.6% | Theme toggle paths |
-| feedback | 73.2% | Toast JS generation |
-| errorpage | 73.4% | Handler error paths |
-| forms | 73.0% | Combobox/DatePicker edge cases |
-| display | 72.6% | Overlay JS, dropdown |
-| navigation | 72.6% | Mobile menu, pagination edge |
+| Package         | Coverage | Gap                            |
+| --------------- | -------- | ------------------------------ |
+| utils           | 79.2%    | Closest to target              |
+| internal/svg    | 79.0%    | Closest to target              |
+| internal/golden | 76.9%    | —                              |
+| htmx            | 77.3%    | —                              |
+| icons           | 77.1%    | —                              |
+| layout          | 73.6%    | Theme toggle paths             |
+| feedback        | 73.2%    | Toast JS generation            |
+| errorpage       | 73.4%    | Handler error paths            |
+| forms           | 73.0%    | Combobox/DatePicker edge cases |
+| display         | 72.6%    | Overlay JS, dropdown           |
+| navigation      | 72.6%    | Mobile menu, pagination edge   |
 
 **Problem:** Many tests are "coverage boosters" (`coverage_boost_test.go`, `coverage_extra_test.go`) that render components and assert `AssertContains` on single attributes. They verify "does it crash?" not "does it produce correct output?". The 75% number is inflated.
 
@@ -83,7 +83,7 @@ Empty — the 8 commits from this session haven't been logged yet.
 
 ### The `.gitignore` recurring regression
 
-**Root cause:** BuildFlow's `go-mod-ignore-check` step auto-appends `*_templ.go` to `.gitignore` on every pre-commit run. This is the standard Go gitignore pattern for *applications*, but for a *templ library* it's catastrophic — generated files MUST be committed.
+**Root cause:** BuildFlow's `go-mod-ignore-check` step auto-appends `*_templ.go` to `.gitignore` on every pre-commit run. This is the standard Go gitignore pattern for _applications_, but for a _templ library_ it's catastrophic — generated files MUST be committed.
 
 **Impact:** Three generated files (`combobox_templ.go`, `date_picker_templ.go`, `shared_templ.go`) were silently untracked. Any consumer running `go get` would get uncompilable code.
 
@@ -115,53 +115,53 @@ Sorted by impact (high) × effort (low = quick win).
 
 ### Critical / Quick Wins (do first)
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 1 | Update CHANGELOG `[Unreleased]` with this session's 8 commits | High | 10 min |
-| 2 | Configure BuildFlow to skip `go-mod-ignore-check` or add `.buildflow.toml` override | Critical | 15 min |
-| 3 | Update AGENTS.md with BuildFlow `*_templ.go` regression note + CI guard | High | 10 min |
-| 4 | Pin templ generator version OR upgrade go.mod to v0.3.1036 | High | 10 min |
+| #   | Task                                                                                | Impact   | Effort |
+| --- | ----------------------------------------------------------------------------------- | -------- | ------ |
+| 1   | Update CHANGELOG `[Unreleased]` with this session's 8 commits                       | High     | 10 min |
+| 2   | Configure BuildFlow to skip `go-mod-ignore-check` or add `.buildflow.toml` override | Critical | 15 min |
+| 3   | Update AGENTS.md with BuildFlow `*_templ.go` regression note + CI guard             | High     | 10 min |
+| 4   | Pin templ generator version OR upgrade go.mod to v0.3.1036                          | High     | 10 min |
 
 ### Type Safety & Architecture
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 5 | Audit remaining `map[string]string` lookups for typed-key conversion | Medium | 30 min |
-| 6 | Extract overlay JS generation to a templ template or embedded `.js` file | Medium | 1 hr |
-| 7 | Consolidate `feedbackStyleMap` + `familyStyleMap` — they encode the same 4 styles | Medium | 45 min |
+| #   | Task                                                                              | Impact | Effort |
+| --- | --------------------------------------------------------------------------------- | ------ | ------ |
+| 5   | Audit remaining `map[string]string` lookups for typed-key conversion              | Medium | 30 min |
+| 6   | Extract overlay JS generation to a templ template or embedded `.js` file          | Medium | 1 hr   |
+| 7   | Consolidate `feedbackStyleMap` + `familyStyleMap` — they encode the same 4 styles | Medium | 45 min |
 
 ### Test Quality (replace coverage-padding)
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 8 | Replace `display/coverage_boost_test.go` with golden tests | High | 2 hr |
-| 9 | Replace `feedback/coverage_boost_test.go` with golden tests | High | 1.5 hr |
-| 10 | Replace `forms/coverage_boost_test.go` with golden tests | High | 2 hr |
-| 11 | Replace `navigation/coverage_boost_test.go` with golden tests | High | 1.5 hr |
-| 12 | Replace `errorpage/coverage_boost_test.go` with golden tests | Medium | 1 hr |
-| 13 | Add golden tests for overlay JS output (Modal/Drawer open/close/trap) | Medium | 1 hr |
-| 14 | Raise coverage to 80% across all packages | High | 3 hr |
+| #   | Task                                                                  | Impact | Effort |
+| --- | --------------------------------------------------------------------- | ------ | ------ |
+| 8   | Replace `display/coverage_boost_test.go` with golden tests            | High   | 2 hr   |
+| 9   | Replace `feedback/coverage_boost_test.go` with golden tests           | High   | 1.5 hr |
+| 10  | Replace `forms/coverage_boost_test.go` with golden tests              | High   | 2 hr   |
+| 11  | Replace `navigation/coverage_boost_test.go` with golden tests         | High   | 1.5 hr |
+| 12  | Replace `errorpage/coverage_boost_test.go` with golden tests          | Medium | 1 hr   |
+| 13  | Add golden tests for overlay JS output (Modal/Drawer open/close/trap) | Medium | 1 hr   |
+| 14  | Raise coverage to 80% across all packages                             | High   | 3 hr   |
 
 ### Infrastructure
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 15 | Create `flake.nix` with devShell (templ, golangci-lint, go) | High | 1 hr |
-| 16 | Create `ROADMAP.md` with v1.0 milestone definition | Medium | 30 min |
-| 17 | Add `govulncheck` to CI (how-to-golang security requirement) | Medium | 20 min |
-| 18 | Add `gosec` to CI (how-to-golang security requirement) | Medium | 20 min |
+| #   | Task                                                         | Impact | Effort |
+| --- | ------------------------------------------------------------ | ------ | ------ |
+| 15  | Create `flake.nix` with devShell (templ, golangci-lint, go)  | High   | 1 hr   |
+| 16  | Create `ROADMAP.md` with v1.0 milestone definition           | Medium | 30 min |
+| 17  | Add `govulncheck` to CI (how-to-golang security requirement) | Medium | 20 min |
+| 18  | Add `gosec` to CI (how-to-golang security requirement)       | Medium | 20 min |
 
 ### Polish
 
-| # | Task | Impact | Effort |
-|---|------|--------|--------|
-| 19 | Document the `FeedbackType` unification in an ADR (0007) | Low | 20 min |
-| 20 | Add property-based tests for `utils.Lookup` and `utils.Class` | Medium | 1 hr |
-| 21 | Extract `dismissScript()` to a shared JS file (currently inline string) | Low | 30 min |
-| 22 | Add benchmarks for `utils.Class()` (tailwind-merge-go under mutex) | Low | 30 min |
-| 23 | Document overlay JS architecture in an ADR (0008) | Low | 30 min |
-| 24 | Add `go mod tidy` check to pre-commit (prevent phantom deps) | Low | 10 min |
-| 25 | Remove deprecated `AlertType` alias (v1.0 breaking change) | Low | 15 min |
+| #   | Task                                                                    | Impact | Effort |
+| --- | ----------------------------------------------------------------------- | ------ | ------ |
+| 19  | Document the `FeedbackType` unification in an ADR (0007)                | Low    | 20 min |
+| 20  | Add property-based tests for `utils.Lookup` and `utils.Class`           | Medium | 1 hr   |
+| 21  | Extract `dismissScript()` to a shared JS file (currently inline string) | Low    | 30 min |
+| 22  | Add benchmarks for `utils.Class()` (tailwind-merge-go under mutex)      | Low    | 30 min |
+| 23  | Document overlay JS architecture in an ADR (0008)                       | Low    | 30 min |
+| 24  | Add `go mod tidy` check to pre-commit (prevent phantom deps)            | Low    | 10 min |
+| 25  | Remove deprecated `AlertType` alias (v1.0 breaking change)              | Low    | 15 min |
 
 ---
 
@@ -169,7 +169,7 @@ Sorted by impact (high) × effort (low = quick win).
 
 **How do I stop BuildFlow from re-adding `*_templ.go` to `.gitignore`?**
 
-BuildFlow's `go-mod-ignore-check` step auto-appends `*_templ.go` to `.gitignore` on every pre-commit run. This is correct for Go *applications* (where you generate at build time), but **wrong for a templ *library*** where generated files MUST be committed for the Go module proxy.
+BuildFlow's `go-mod-ignore-check` step auto-appends `*_templ.go` to `.gitignore` on every pre-commit run. This is correct for Go _applications_ (where you generate at build time), but **wrong for a templ _library_** where generated files MUST be committed for the Go module proxy.
 
 I've fixed the symptom (CI guard catches untracked files), but BuildFlow will keep modifying the working tree. I need to know:
 

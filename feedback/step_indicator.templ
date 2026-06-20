@@ -45,18 +45,7 @@ templ StepIndicator(props StepIndicatorProps) {
 				for i, step := range props.Steps {
 					<li class="flex items-start">
 						<div class="flex flex-col items-center">
-							<div
-								class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(i, props.CurrentStep) }
-								if i == props.CurrentStep {
-									aria-current="step"
-								}
-							>
-								if i < props.CurrentStep {
-									@icons.Icon(icons.Check, "w-4 h-4")
-								} else {
-									{ fmt.Sprintf("%d", i+1) }
-								}
-							</div>
+							@stepCircle(i, props.CurrentStep)
 							if i < len(props.Steps)-1 {
 								<div class={ "w-0.5 h-8", stepLineClass(i+1, props.CurrentStep) }></div>
 							}
@@ -73,18 +62,7 @@ templ StepIndicator(props StepIndicatorProps) {
 							<div class={ "flex-1 h-0.5 mx-2", stepLineClass(i, props.CurrentStep) }></div>
 						}
 						<div class="flex flex-col items-center">
-							<div
-								class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(i, props.CurrentStep) }
-								if i == props.CurrentStep {
-									aria-current="step"
-								}
-							>
-								if i < props.CurrentStep {
-									@icons.Icon(icons.Check, "w-4 h-4")
-								} else {
-									{ fmt.Sprintf("%d", i+1) }
-								}
-							</div>
+							@stepCircle(i, props.CurrentStep)
 							<span class={ "mt-2 text-xs font-medium", stepLabelClass(i, props.CurrentStep) }>{ step }</span>
 						</div>
 					</li>
@@ -92,6 +70,23 @@ templ StepIndicator(props StepIndicatorProps) {
 			</ol>
 		}
 	</nav>
+}
+
+// stepCircle renders the numbered circle (or check icon when complete) shared by
+// both the vertical and horizontal step layouts.
+templ stepCircle(stepIndex, currentStep int) {
+	<div
+		class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(stepIndex, currentStep) }
+		if stepIndex == currentStep {
+			aria-current="step"
+		}
+	>
+		if stepIndex < currentStep {
+			@icons.Icon(icons.Check, "w-4 h-4")
+		} else {
+			{ fmt.Sprintf("%d", stepIndex+1) }
+		}
+	</div>
 }
 
 func stepLineClass(stepIndex, currentStep int) string {

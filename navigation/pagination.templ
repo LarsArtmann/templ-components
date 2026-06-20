@@ -9,6 +9,9 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+// inactivePageLinkClass is the shared class for a non-current pagination page link.
+const inactivePageLinkClass = "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0"
+
 // PaginationProps configures a pagination component
 type PaginationProps struct {
 	utils.BaseProps
@@ -172,7 +175,7 @@ templ Pagination(props PaginationProps) {
 									props.pageURL(1),
 									"1",
 									"",
-									"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0",
+									inactivePageLinkClass,
 								)
 							</li>
 							<li>
@@ -186,7 +189,7 @@ templ Pagination(props PaginationProps) {
 									props.pageURL(p),
 									fmt.Sprintf("%d", p),
 									"relative z-10 inline-flex items-center bg-blue-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600",
-									"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0",
+									inactivePageLinkClass,
 								)
 							</li>
 						}
@@ -200,7 +203,7 @@ templ Pagination(props PaginationProps) {
 									props.pageURL(props.TotalPages),
 									fmt.Sprintf("%d", props.TotalPages),
 									"",
-									"relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0",
+									inactivePageLinkClass,
 								)
 							</li>
 						}
