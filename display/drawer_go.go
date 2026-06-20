@@ -48,14 +48,14 @@ const (
 )
 
 //nolint:gochecknoglobals // Package-level lookup table for drawer sizes
-var drawerSizeLookup = map[string]string{
-	string(DrawerSizeSM): maxWSM,
-	string(DrawerSizeMD): maxWMD,
-	string(DrawerSizeLG): maxWLG,
-	string(DrawerSizeXL): maxWXL,
-	string(DrawerFull):   "max-w-2xl",
+var drawerSizeLookup = map[DrawerSize]string{
+	DrawerSizeSM: maxWSM,
+	DrawerSizeMD: maxWMD,
+	DrawerSizeLG: maxWLG,
+	DrawerSizeXL: maxWXL,
+	DrawerFull:   "max-w-2xl",
 }
 
 func drawerSizeClass(size DrawerSize) string {
-	return utils.Lookup(drawerSizeLookup, string(size), drawerSizeLookup[string(DrawerSizeMD)])
+	return utils.Lookup(drawerSizeLookup, size, drawerSizeLookup[DrawerSizeMD])
 }

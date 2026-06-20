@@ -33,14 +33,14 @@ func DefaultModalProps() ModalProps {
 }
 
 //nolint:gochecknoglobals // Package-level lookup table for modal sizes
-var modalSizeLookup = map[string]string{
-	string(ModalSizeSM):   "max-w-sm",
-	string(ModalSizeMD):   "max-w-md",
-	string(ModalSizeLG):   "max-w-lg",
-	string(ModalSizeXL):   "max-w-xl",
-	string(ModalSizeFull): "max-w-4xl",
+var modalSizeLookup = map[ModalSize]string{
+	ModalSizeSM:   "max-w-sm",
+	ModalSizeMD:   "max-w-md",
+	ModalSizeLG:   "max-w-lg",
+	ModalSizeXL:   "max-w-xl",
+	ModalSizeFull: "max-w-4xl",
 }
 
 func modalSizeClass(size ModalSize) string {
-	return utils.Lookup(modalSizeLookup, string(size), modalSizeLookup[string(ModalSizeMD)])
+	return utils.Lookup(modalSizeLookup, size, modalSizeLookup[ModalSizeMD])
 }
