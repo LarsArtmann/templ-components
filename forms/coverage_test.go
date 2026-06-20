@@ -433,3 +433,24 @@ func TestValidationSummaryWithAriaLabel(t *testing.T) {
 	}))
 	utils.AssertContains(t, output, `aria-label="Form errors"`)
 }
+
+func TestRadioGroupAriaLabel(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, RadioGroup(RadioGroupProps{
+		Name:      "plan",
+		Label:     "Select Plan",
+		BaseProps: utils.BaseProps{AriaLabel: "Plan selection group"},
+		Options:   []RadioOption{{Value: "free", Label: "Free"}},
+	}))
+	utils.AssertContains(t, output, `aria-label="Plan selection group"`)
+}
+
+func TestRadioGroupWithoutAriaLabel(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, RadioGroup(RadioGroupProps{
+		Name:    "plan",
+		Label:   "Select Plan",
+		Options: []RadioOption{{Value: "free", Label: "Free"}},
+	}))
+	utils.AssertNotContains(t, output, `aria-label=`)
+}

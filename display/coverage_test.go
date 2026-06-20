@@ -729,3 +729,25 @@ func TestDrawerRender(t *testing.T) {
 		}
 	})
 }
+
+func TestAvatarImageBaseProps(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Avatar(AvatarProps{
+		Src:       "/photo.jpg",
+		Alt:       "Profile photo",
+		BaseProps: utils.BaseProps{ID: "user-avatar", Class: "ring-2", AriaLabel: "Alice avatar"},
+	}))
+	utils.AssertContains(t, output, `id="user-avatar"`)
+	utils.AssertContains(t, output, "ring-2")
+	utils.AssertContains(t, output, `aria-label="Alice avatar"`)
+}
+
+func TestAvatarImageWithoutID(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Avatar(AvatarProps{
+		Src: "/photo.jpg",
+		Alt: "Profile photo",
+	}))
+	utils.AssertContains(t, output, `src="/photo.jpg"`)
+	utils.AssertNotContains(t, output, `id=""`)
+}
