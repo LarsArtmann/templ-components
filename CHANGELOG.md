@@ -35,6 +35,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `icons.Name`: unknown icon names now fall back to the Question icon instead of crashing render
 - `forms.RadioGroup`: `<fieldset>` now propagates `AriaLabel` from BaseProps (was silently dropped)
 - `display.Avatar`: image branch wrapper `<div>` now propagates all BaseProps (ID, Class, AriaLabel, Attrs) — was only on inner `<img>`
+- Modal, Drawer, Dropdown: empty `props.ID` now auto-generates a unique ID via `utils.EnsureID` instead of panicking
+- `display.Accordion`: items with empty ID now auto-generate IDs instead of panicking
+- `htmx.SwapOOB`: invalid swap styles now fall back to `outerHTML` instead of panicking
+- `display.BadgeInfo`: changed from `indigo-*` to `blue-*` to match the library's primary color and `FeedbackInfo`
 
 ### Fixed
 

@@ -71,7 +71,7 @@ func TestBadgeRender(t *testing.T) {
 				Pill:      true,
 				Dot:       false,
 			},
-			wantContain: []string{badgeTextBeta, cssClassRoundedFull, "bg-indigo-100"},
+			wantContain: []string{badgeTextBeta, cssClassRoundedFull, "bg-blue-50"},
 		},
 		{
 			name: "with custom id and class",
