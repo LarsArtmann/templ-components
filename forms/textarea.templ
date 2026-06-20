@@ -38,48 +38,41 @@ func DefaultTextareaProps() TextareaProps {
 //	   Placeholder: "Tell us about yourself...",
 //	})
 templ Textarea(props TextareaProps) {
-	if props.Label != "" {
-		@Label(props.ID, props.Label, props.Required)
-	}
-	<textarea
-		name={ props.Name }
-		if props.ID != "" {
-			id={ props.ID }
-		}
-		if props.Placeholder != "" {
-			placeholder={ props.Placeholder }
-		}
-		if props.Rows > 0 {
-			rows={ fmt.Sprintf("%d", props.Rows) }
-		} else {
-			rows="3"
-		}
-		class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
-		if props.Required {
-			required
-			aria-required="true"
-		}
-		if props.Disabled {
-			disabled
-		}
-		if props.ReadOnly {
-			readonly
-		}
-		if props.MaxLength > 0 {
-			maxlength={ fmt.Sprintf("%d", props.MaxLength) }
-		}
-		{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
-		}
-		{ props.Attrs... }
-	>
-		{ props.Value }
-	</textarea>
-	if props.Error != "" {
-		@FieldError(props.ID, props.Error)
-	}
-	if props.HelpText != "" {
-		@helpText(props.ID, props.HelpText)
+	@FormFieldWrapper(props.ID, props.Label, props.Required, props.Error, props.HelpText) {
+		<textarea
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			if props.Placeholder != "" {
+				placeholder={ props.Placeholder }
+			}
+			if props.Rows > 0 {
+				rows={ fmt.Sprintf("%d", props.Rows) }
+			} else {
+				rows="3"
+			}
+			class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
+			if props.Required {
+				required
+				aria-required="true"
+			}
+			if props.Disabled {
+				disabled
+			}
+			if props.ReadOnly {
+				readonly
+			}
+			if props.MaxLength > 0 {
+				maxlength={ fmt.Sprintf("%d", props.MaxLength) }
+			}
+			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			{ props.Value }
+		</textarea>
 	}
 }

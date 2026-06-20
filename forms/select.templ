@@ -50,47 +50,40 @@ func DefaultSelectProps() SelectProps {
 //	   },
 //	})
 templ Select(props SelectProps) {
-	if props.Label != "" {
-		@Label(props.ID, props.Label, props.Required)
-	}
-	<select
-		name={ props.Name }
-		if props.ID != "" {
-			id={ props.ID }
-		}
-		class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
-		if props.Required {
-			required
-			aria-required="true"
-		}
-		if props.Disabled {
-			disabled
-		}
-		{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
-		}
-		{ props.Attrs... }
-	>
-		{{ options := normalizeSelectOptions(props.Options) }}
-	for _, opt := range options {
-			<option
-				value={ opt.Value }
-				if opt.Disabled {
-					disabled
-				}
-				if opt.Selected {
-					selected
-				}
-			>
-				{ opt.Label }
-			</option>
-		}
-	</select>
-	if props.Error != "" {
-		@FieldError(props.ID, props.Error)
-	}
-	if props.HelpText != "" {
-		@helpText(props.ID, props.HelpText)
+	@FormFieldWrapper(props.ID, props.Label, props.Required, props.Error, props.HelpText) {
+		<select
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
+			if props.Required {
+				required
+				aria-required="true"
+			}
+			if props.Disabled {
+				disabled
+			}
+			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			{{ options := normalizeSelectOptions(props.Options) }}
+			for _, opt := range options {
+				<option
+					value={ opt.Value }
+					if opt.Disabled {
+						disabled
+					}
+					if opt.Selected {
+						selected
+					}
+				>
+					{ opt.Label }
+				</option>
+			}
+		</select>
 	}
 }
