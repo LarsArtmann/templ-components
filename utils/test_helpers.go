@@ -21,6 +21,21 @@ func Render(t *testing.T, c templ.Component) string {
 	return strings.TrimSpace(buf.String())
 }
 
+// RenderAll renders multiple templ components into a single concatenated string.
+// Useful for integration tests that verify component composition.
+func RenderAll(t *testing.T, components ...templ.Component) string {
+	t.Helper()
+	var sb strings.Builder
+	for _, c := range components {
+		var buf bytes.Buffer
+		if err := c.Render(context.Background(), &buf); err != nil {
+			t.Fatalf("failed to render component: %v", err)
+		}
+		sb.WriteString(buf.String())
+	}
+	return strings.TrimSpace(sb.String())
+}
+
 // AssertContains checks that the rendered output contains a substring
 func AssertContains(t *testing.T, output, want string) {
 	t.Helper()
