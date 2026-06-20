@@ -313,14 +313,14 @@ The theme file provides `@custom-variant dark` (required for `ThemeScript`/`Them
 
 ## By the Numbers
 
-| Metric       | Value                             |
-| ------------ | --------------------------------- |
-| Components   | 69                                                 |
-| SVG icons    | 99                                                 |
-| Typed enums  | 26                                                 |
-| Packages     | 11                                                 |
-| Tests        | 1,100+                                             |
-| Coverage     | 74%                                                |
+| Metric       | Value                                               |
+| ------------ | --------------------------------------------------- |
+| Components   | 69                                                  |
+| SVG icons    | 99                                                  |
+| Typed enums  | 26                                                  |
+| Packages     | 11                                                  |
+| Tests        | 1,100+                                              |
+| Coverage     | 74%                                                 |
 | Dependencies | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---

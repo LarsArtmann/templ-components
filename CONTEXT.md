@@ -11,7 +11,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 | Layer         | Technology                           |
 | ------------- | ------------------------------------ |
 | Language      | Go 1.26                              |
-| Templates     | templ v0.3.1020                     |
+| Templates     | templ v0.3.1020                      |
 | Styling       | Tailwind CSS v4 (via class strings)  |
 | Class merging | tailwind-merge-go v0.2.1             |
 | Interactivity | HTMX 2.0.6 + vanilla JS              |
@@ -147,16 +147,16 @@ No other runtime dependencies.
 
 Interactive components use **document-level event delegation** with global singleton guards for HTMX compatibility:
 
-| Component           | Pattern             | Guard                        |
-| ------------------- | ------------------- | ---------------------------- |
-| Accordion           | Global singleton    | `window.tcAccordionAttached` |
-| Dropdown            | Global singleton    | `window.tcDropdownAttached`  |
-| Tabs                | Global singleton    | `window.tcTabsAttached`      |
-| Combobox            | Global singleton    | `window.tcComboboxAttached`  |
-| ThemeToggle         | IIFE + global guard | (none, runs once)            |
+| Component           | Pattern             | Guard                             |
+| ------------------- | ------------------- | --------------------------------- |
+| Accordion           | Global singleton    | `window.tcAccordionAttached`      |
+| Dropdown            | Global singleton    | `window.tcDropdownAttached`       |
+| Tabs                | Global singleton    | `window.tcTabsAttached`           |
+| Combobox            | Global singleton    | `window.tcComboboxAttached`       |
+| ThemeToggle         | IIFE + global guard | (none, runs once)                 |
 | Modal/Drawer        | Per-instance IIFE   | Shared `overlayScriptComponent()` |
-| Alert/Toast dismiss | Shared singleton    | `tcDismissAttached`          |
-| Error handling      | IIFE                | No global state              |
+| Alert/Toast dismiss | Shared singleton    | `tcDismissAttached`               |
+| Error handling      | IIFE                | No global state                   |
 
 **Why delegation:** After HTMX DOM swaps, dynamically added elements are handled automatically — no re-initialization needed.
 

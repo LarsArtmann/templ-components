@@ -8,17 +8,17 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 
 ## Overview
 
-| Package      | Components   | Description                                                                               |
-| ------------ | ------------ | ----------------------------------------------------------------------------------------- |
-| `utils`      | 0            | Shared types, Tailwind class merging, generic helpers                                     |
+| Package      | Components   | Description                                                                                                               |
+| ------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| `utils`      | 0            | Shared types, Tailwind class merging, generic helpers                                                                     |
 | `display`    | 16           | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states |
-| `errorpage`  | 3            | Error presentation: full-page errors, error detail cards, family-aware alerts             |
-| `feedback`   | 12           | User feedback: alerts, toasts, spinners, progress bars, skeletons                         |
+| `errorpage`  | 3            | Error presentation: full-page errors, error detail cards, family-aware alerts                                             |
+| `feedback`   | 12           | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                         |
 | `forms`      | 16           | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation |
-| `htmx`       | 7            | HTMX integration: loading indicators, error handling, helpers                             |
-| `icons`      | 2 (99 icons) | SVG icon system with typed name constants                                                 |
-| `layout`     | 4            | Page layout: base HTML, theme toggle, dark mode                                           |
-| `navigation` | 9            | Navigation: nav bars, breadcrumbs, pagination, mobile menus                               |
+| `htmx`       | 7            | HTMX integration: loading indicators, error handling, helpers                                                             |
+| `icons`      | 2 (99 icons) | SVG icon system with typed name constants                                                                                 |
+| `layout`     | 4            | Page layout: base HTML, theme toggle, dark mode                                                                           |
+| `navigation` | 9            | Navigation: nav bars, breadcrumbs, pagination, mobile menus                                                               |
 
 **Totals:** 69 templ components, 99 icon names, 26 typed enums, 46 generated `*_templ.go` files, ~4,000 lines of Go/templ source
 
@@ -40,25 +40,25 @@ type BaseProps struct {
 
 ### Functions
 
-| Function        | Signature                                               | Purpose                                       |
-| --------------- | ------------------------------------------------------- | --------------------------------------------- |
-| `Class`         | `(classes ...string) string`                            | Merges Tailwind classes via tailwind-merge-go |
-| `CurrentYear`   | `() string`                                             | Current year string                           |
-| `Ternary`       | `[T any](bool, a, b T) T`                               | Generic ternary                               |
-| `Lookup`        | `[K comparable, V any](m map[K]V, key K, fallback V) V` | Generic map lookup with fallback              |
+| Function        | Signature                                               | Purpose                                           |
+| --------------- | ------------------------------------------------------- | ------------------------------------------------- |
+| `Class`         | `(classes ...string) string`                            | Merges Tailwind classes via tailwind-merge-go     |
+| `CurrentYear`   | `() string`                                             | Current year string                               |
+| `Ternary`       | `[T any](bool, a, b T) T`                               | Generic ternary                                   |
+| `Lookup`        | `[K comparable, V any](m map[K]V, key K, fallback V) V` | Generic map lookup with fallback                  |
 | `EnsureID`      | `(prefix, id string) string`                            | Auto-generates unique ID via crypto/rand if empty |
-| `DismissScript` | `() string`                                             | Shared JS for [data-dismiss] click delegation |
+| `DismissScript` | `() string`                                             | Shared JS for [data-dismiss] click delegation     |
 
 ### Test Helpers (exported)
 
-| Function            | Purpose                              |
-| ------------------- | ------------------------------------ |
-| `Render`            | Renders a templ.Component to string                  |
-| `RenderAll`         | Renders multiple components to concatenated string  |
-| `AssertContains`    | Asserts substring in rendered output                 |
-| `AssertNotContains` | Asserts substring absent from output                 |
-| `AssertContainsAll` | Asserts output contains every substring              |
-| `AssertEqual`       | Asserts two values are equal                         |
+| Function            | Purpose                                            |
+| ------------------- | -------------------------------------------------- |
+| `Render`            | Renders a templ.Component to string                |
+| `RenderAll`         | Renders multiple components to concatenated string |
+| `AssertContains`    | Asserts substring in rendered output               |
+| `AssertNotContains` | Asserts substring absent from output               |
+| `AssertContainsAll` | Asserts output contains every substring            |
+| `AssertEqual`       | Asserts two values are equal                       |
 
 ---
 
@@ -214,24 +214,24 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component    | Status           | Description            | Key Features                                                        |
-| ------------ | ---------------- | ---------------------- | ------------------------------------------------------------------- |
-| `Input`           | FULLY_FUNCTIONAL | Text input with label    | 11 types, error, help text, required, disabled, readonly, autofocus |
-| `Checkbox`        | FULLY_FUNCTIONAL | Checkbox with label      | Error, help text, required                                          |
-| `RadioGroup`      | FULLY_FUNCTIONAL | Radio button group       | Inline/stacked, AriaLabel propagation on fieldset                   |
-| `Select`          | FULLY_FUNCTIONAL | Select dropdown          | Options, disabled options, pre-selected, normalize contradiction    |
-| `Textarea`        | FULLY_FUNCTIONAL | Textarea with label      | Configurable rows, error, help text                                 |
-| `Toggle`          | FULLY_FUNCTIONAL | Toggle switch            | 3 sizes (SM/MD/LG), label, error, help text                         |
-| `FileInput`       | FULLY_FUNCTIONAL | File upload input        | Multiple, accept filter, error, help text                           |
-| `DatePicker`      | FULLY_FUNCTIONAL | Date input               | Native `<input type="date">`, min/max constraints                    |
-| `Combobox`        | FULLY_FUNCTIONAL | Autocomplete with filter | `role="combobox"`, client-side filtering, auto-generated IDs        |
-| `Label`           | FULLY_FUNCTIONAL | Form label               | Optional `for` attribute, required indicator                        |
-| `FieldError`      | FULLY_FUNCTIONAL | Field validation error   | Accessible with ID linking for aria-describedby                     |
-| `ValidationSummary` | FULLY_FUNCTIONAL | Accessible error summary | Icon, error count, linked fields, `role="alert"`                  |
-| `Form`            | FULLY_FUNCTIONAL | Form wrapper             | Action, Method (GET/POST), CSRF token, children pattern             |
-| `InputGroup`      | FULLY_FUNCTIONAL | Input group container    | Groups multiple inputs with shared styling                          |
-| `FormFieldWrapper`| FULLY_FUNCTIONAL | Shared field chrome      | Label + FieldError + helpText, used by Input/Select/Textarea        |
-| `Radio`           | FULLY_FUNCTIONAL | Single radio button      | Sub-component of RadioGroup                                         |
+| Component           | Status           | Description              | Key Features                                                        |
+| ------------------- | ---------------- | ------------------------ | ------------------------------------------------------------------- |
+| `Input`             | FULLY_FUNCTIONAL | Text input with label    | 11 types, error, help text, required, disabled, readonly, autofocus |
+| `Checkbox`          | FULLY_FUNCTIONAL | Checkbox with label      | Error, help text, required                                          |
+| `RadioGroup`        | FULLY_FUNCTIONAL | Radio button group       | Inline/stacked, AriaLabel propagation on fieldset                   |
+| `Select`            | FULLY_FUNCTIONAL | Select dropdown          | Options, disabled options, pre-selected, normalize contradiction    |
+| `Textarea`          | FULLY_FUNCTIONAL | Textarea with label      | Configurable rows, error, help text                                 |
+| `Toggle`            | FULLY_FUNCTIONAL | Toggle switch            | 3 sizes (SM/MD/LG), label, error, help text                         |
+| `FileInput`         | FULLY_FUNCTIONAL | File upload input        | Multiple, accept filter, error, help text                           |
+| `DatePicker`        | FULLY_FUNCTIONAL | Date input               | Native `<input type="date">`, min/max constraints                   |
+| `Combobox`          | FULLY_FUNCTIONAL | Autocomplete with filter | `role="combobox"`, client-side filtering, auto-generated IDs        |
+| `Label`             | FULLY_FUNCTIONAL | Form label               | Optional `for` attribute, required indicator                        |
+| `FieldError`        | FULLY_FUNCTIONAL | Field validation error   | Accessible with ID linking for aria-describedby                     |
+| `ValidationSummary` | FULLY_FUNCTIONAL | Accessible error summary | Icon, error count, linked fields, `role="alert"`                    |
+| `Form`              | FULLY_FUNCTIONAL | Form wrapper             | Action, Method (GET/POST), CSRF token, children pattern             |
+| `InputGroup`        | FULLY_FUNCTIONAL | Input group container    | Groups multiple inputs with shared styling                          |
+| `FormFieldWrapper`  | FULLY_FUNCTIONAL | Shared field chrome      | Label + FieldError + helpText, used by Input/Select/Textarea        |
+| `Radio`             | FULLY_FUNCTIONAL | Single radio button      | Sub-component of RadioGroup                                         |
 
 ### Enums
 
@@ -276,10 +276,10 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component              | Status           | Description      | Key Features                                       |
-| ---------------------- | ---------------- | ---------------- | -------------------------------------------------- |
-| `Icon`                 | FULLY_FUNCTIONAL | SVG icon by name | 99 named icons, custom class, currentColor theming |
-| `IconWithStrokeWidth`  | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)        |
+| Component             | Status           | Description      | Key Features                                       |
+| --------------------- | ---------------- | ---------------- | -------------------------------------------------- |
+| `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 99 named icons, custom class, currentColor theming |
+| `IconWithStrokeWidth` | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)        |
 
 ### Icon Names (99)
 
@@ -358,7 +358,7 @@ Used by both Alert and Toast for consistent visual styling.
 
 ## Planned / Not Yet Implemented
 
-| Component       | Package   | Notes                            |
-| --------------- | --------- | -------------------------------- |
-| Docs site       | —         | Auto-generated from source       |
-| Release tooling | —         | goreleaser, tag-based            |
+| Component       | Package | Notes                      |
+| --------------- | ------- | -------------------------- |
+| Docs site       | —       | Auto-generated from source |
+| Release tooling | —       | goreleaser, tag-based      |
