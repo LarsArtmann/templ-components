@@ -1,6 +1,6 @@
 # What Would Make templ-components Stand Out
 
-**Updated:** 2026-05-07
+**Updated:** 2026-06-20
 
 ---
 
@@ -10,7 +10,7 @@ This isn't one library — it's three that form a **complete GOTH stack framewor
 
 | Library                                                                 | Role                                                                                      | Maturity                                 |
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------- |
-| **[templ-components](https://github.com/larsartmann/templ-components)** | UI components (53 components, 42 icons, Tailwind + HTMX)                                  | 341 tests, pre-v1.0                      |
+| **[templ-components](https://github.com/larsartmann/templ-components)** | UI components (69 components, 99 icons, Tailwind + HTMX)                                  | 1,100+ tests, v0.3.0                     |
 | **[cqrs-htmx](https://github.com/larsartmann/cqrs-htmx)**               | HTTP → CQRS wiring (command/query dispatch, auth, HTMX response builder, templ rendering) | 137 specs, 92.6% coverage, 0 lint issues |
 | **[go-cqrs-lite](https://github.com/larsartmann/go-cqrs-lite)**         | Event sourcing core (aggregates, events, projections)                                     | Stable v1.1.0                            |
 

@@ -24,7 +24,7 @@ go test ./...
 3. Run the full verification:
 
 ```bash
-find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./display/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
 ```
 
 4. Open a pull request
@@ -37,10 +37,10 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 - String enums: `type XxxType string` + constants
 - Size constants: uppercase suffix `[Component]Size[SM|MD|LG]`
 - Default constructors: `DefaultXxxProps()` with meaningful non-zero defaults
-- Class merging: always use `utils.Class()` for Tailwind conflict resolution. Thread-safe (tailwind-merge-go's LRU cache handles its own locking).
+- Class merging: always use `utils.Class()` for Tailwind conflict resolution. Thread-safe via `sync.Mutex` protecting the full Merge() call sequence.
 - CSP: all inline scripts use `nonce={ props.Nonce }`
 - JS IDs: escape with `strconv.Quote()` to prevent XSS (see `validateDropdownID`)
-- No external dependencies beyond `templ` and `tailwind-merge-go`
+- No external dependencies beyond `templ`, `tailwind-merge-go`, and `go-error-family` (errorpage only)
 
 ## Commit Messages
 

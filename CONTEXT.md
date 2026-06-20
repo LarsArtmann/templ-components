@@ -1,6 +1,6 @@
 # Context — templ-components
 
-**Updated:** 2026-06-08
+**Updated:** 2026-06-20
 
 ## What
 
@@ -11,7 +11,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 | Layer         | Technology                           |
 | ------------- | ------------------------------------ |
 | Language      | Go 1.26                              |
-| Templates     | templ v0.3.1001                      |
+| Templates     | templ v0.3.1020                     |
 | Styling       | Tailwind CSS v4 (via class strings)  |
 | Class merging | tailwind-merge-go v0.2.1             |
 | Interactivity | HTMX 2.0.6 + vanilla JS              |
@@ -22,11 +22,11 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 
 ```
 templ-components/
-├── utils/           # Base types, Tailwind class merging, generic helpers (MapEnum, Ternary)
+├── utils/           # Base types, Tailwind class merging, generic helpers (Lookup, Ternary, EnsureID)
 ├── internal/svg/    # Shared SVG primitives (fillIcon, spinner)
 ├── display/         # UI: card, badge, modal, drawer, table, tabs, avatar, tooltip, accordion, dropdown
 ├── feedback/        # User feedback: alert, toast, spinner, progress, skeleton (shared feedbackStyleSet)
-├── forms/           # Form controls: input, select, textarea, checkbox, radio, toggle, file input, label, validation
+├── forms/           # Form controls: input, select, textarea, checkbox, radio, toggle, file input, date picker, combobox, label, validation
 ├── errorpage/       # Error presentation: ErrorPage, ErrorDetail, ErrorAlert, http.Handler integration
 ├── htmx/            # HTMX helpers: loading, error handling, CSRF, OOB swap, confirm delete
 ├── internal/golden/ # Golden file comparison with CSS class normalization
@@ -151,9 +151,10 @@ Interactive components use **document-level event delegation** with global singl
 | ------------------- | ------------------- | ---------------------------- |
 | Accordion           | Global singleton    | `window.tcAccordionAttached` |
 | Dropdown            | Global singleton    | `window.tcDropdownAttached`  |
+| Tabs                | Global singleton    | `window.tcTabsAttached`      |
+| Combobox            | Global singleton    | `window.tcComboboxAttached`  |
 | ThemeToggle         | IIFE + global guard | (none, runs once)            |
-| Modal               | Per-instance IIFE   | Needs focus trap state       |
-| Drawer              | Per-instance IIFE   | Needs focus trap state       |
+| Modal/Drawer        | Per-instance IIFE   | Shared `overlayScriptComponent()` |
 | Alert/Toast dismiss | Shared singleton    | `tcDismissAttached`          |
 | Error handling      | IIFE                | No global state              |
 

@@ -8,6 +8,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- _Nothing yet_
+
+### Changed
+
+- _Nothing yet_
+
+### Fixed
+
+- _Nothing yet_
+
+## [0.3.0] — 2026-06-20
+
+### Added
+
+- `forms.DatePicker`: native HTML `<input type="date">` wrapper with min/max constraints, follows FormFieldWrapper pattern
+- `forms.Combobox`: accessible autocomplete with client-side filtering, `role="combobox"` + `role="listbox"`, global singleton JS handler, auto-generated IDs via `utils.EnsureID`
+- `utils.Lookup[K, V]`: generic map lookup with fallback — replaces the narrower `MapEnum`. Handles all map types including struct values and typed keys. Adopted at all 15 call sites, eliminating ~42 lines of duplicated boilerplate
+- `utils.EnsureID(prefix, id)`: auto-generates unique IDs via `crypto/rand` (format `tc-<prefix>-<16hex>`) when a consumer omits `props.ID`
+- `utils.RenderAll(t, components...)`: test helper for rendering multiple components into a concatenated string — supports integration tests
+- `integration/composition_test.go`: cross-package composition tests verifying components render correctly together (full page, form with multiple inputs, modal with form content, CSP nonce consistency)
+- Coverage boosters across all 10 packages — display, errorpage, feedback, forms, navigation, layout each gained dedicated coverage test files
 - `display.overlayScriptComponent()`: shared overlay JS generator for Modal and Drawer — produces open/close functions, focus trap, focus save/restore, and CSP-safe `[data-tc-close]` click delegation from a single source of truth
 - `navigation.SimpleNavProps` struct with `DefaultSimpleNavProps()` — replaces positional parameters, adds BaseProps embedding
 - `forms.FormFieldWrapper()`: shared sub-template for Label + FieldError + helpText rendering, adopted by Input, Select, and Textarea
@@ -18,6 +39,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **BREAKING**: `utils.MapEnum[T ~string](m map[string]T, fallback T, key string) T` removed → replaced by `utils.Lookup[K, V](m map[K]V, key K, fallback V) V` — the old signature was too narrow, only handling string-keyed maps with string-like values. The new generic handles struct values and typed keys.
 - **BREAKING**: `SimpleNav(brandText, brandHref, links, currentPath)` → `SimpleNav(SimpleNavProps)` — positional params replaced with props struct + BaseProps
 - **BREAKING**: `forms.FormProps.Content templ.Component` removed — Form now uses `{ children... }` pattern matching Card, Modal, Drawer, InputGroup
 - **BREAKING**: `navigation.PaginationProps.CurrentPage`, `TotalPages`, `MaxVisible` changed from `int` to `uint` — negative page numbers made unrepresentable at the type level

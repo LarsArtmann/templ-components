@@ -24,10 +24,10 @@ templ-components is a pure Tailwind CSS v4 component library for Go's templ engi
 | **JavaScript**       | None (pure server-rendered) | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js** | No                          | No                            | Yes                                            |
 | **Go module**        | Yes                         | Yes                           | Yes                                            |
-| **Components**       | 55                          | 40+                           | —                                              |
+| **Components**       | 69                          | 40+                           | —                                              |
 | **Dark mode**        | Built-in (Tailwind `dark:`) | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**    | Yes (nonce support)         | Yes                           | —                                              |
-| **Typed props**      | 17+ string enums            | —                             | —                                              |
+| **Typed props**      | 26 string enums             | —                             | —                                              |
 | **HTMX integration** | Built-in package            | —                             | —                                              |
 
 **templ-components is for developers who want server-rendered HTML with zero client-side JavaScript — no Alpine.js, no DaisyUI, no build pipeline beyond `templ generate`.**
@@ -94,7 +94,7 @@ Base HTML layouts, theme toggle, and dark mode support.
 @layout.ThemeToggle("Toggle theme", "")
 ```
 
-### `display` — Data Display (15 components)
+### `display` — Data Display (16 components)
 
 Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, and more.
 
@@ -163,7 +163,7 @@ Alerts, toasts, spinners, progress bars, skeletons, and loading states.
 
 ### `forms` — Form Controls (12 components)
 
-Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, labels, and validation errors.
+Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, labels, and validation errors.
 
 ```templ
 @forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email address"})
@@ -178,6 +178,10 @@ Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, labels, an
 }})
 @forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications"})
 @forms.FileInput(forms.FileInputProps{Name: "avatar", Label: "Upload photo", Accept: "image/*"})
+@forms.DatePicker(forms.DatePickerProps{Name: "dob", Label: "Date of birth"})
+@forms.Combobox(forms.ComboboxProps{Name: "country", Label: "Country", Options: []forms.ComboboxOption{
+    {Value: "de", Label: "Germany"}, {Value: "at", Label: "Austria"},
+}})
 ```
 
 ### `navigation` — Navigation (9 components)
@@ -203,7 +207,7 @@ Nav bars, breadcrumbs, pagination, and mobile menus.
 @navigation.Footer("MyApp")
 ```
 
-### `icons` — SVG Icons (45 icons)
+### `icons` — SVG Icons (99 icons)
 
 Typed icon constants, no icon library dependency.
 
@@ -212,7 +216,7 @@ Typed icon constants, no icon library dependency.
 @icons.Icon(icons.Check, "h-6 w-6 text-green-500")
 ```
 
-Home, Users, Folder, Document, Search, Settings, Chart, Inbox, Check, X, Plus, Minus, ChevronRight, ChevronLeft, ChevronDown, ChevronUp, ArrowRight, ArrowLeft, Refresh, ExternalLink, Download, Upload, Trash, Edit, Eye, EyeOff, Lock, Unlock, Menu, Bell, Calendar, Clock, Location, Phone, Mail, Globe, Sun, Moon, Spinner, ExclamationTriangle, ExclamationCircle, CheckCircle, Information, Question.
+99 named icons (98 path icons + Spinner) covering navigation, UI actions, communication, media, and status. See `icons/icon_names.go` for the full list.
 
 ### `htmx` — HTMX Integration (7 components)
 
@@ -229,7 +233,7 @@ Loading indicators, error handling, CSRF protection, and out-of-band swaps.
 
 ## Design Principles
 
-**Type-safe.** 16+ typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 26 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation (modal focus trap, dropdown arrows, tabs), and screen-reader text across all interactive components.
 
@@ -311,13 +315,13 @@ The theme file provides `@custom-variant dark` (required for `ThemeScript`/`Them
 
 | Metric       | Value                             |
 | ------------ | --------------------------------- |
-| Components   | 56                                |
-| SVG icons    | 45                                |
-| Typed enums  | 18+                               |
-| Packages     | 11                                |
-| Tests        | 1,049+                            |
-| Coverage     | 71.8%                             |
-| Dependencies | 2 (`templ` + `tailwind-merge-go`) |
+| Components   | 69                                                 |
+| SVG icons    | 99                                                 |
+| Typed enums  | 26                                                 |
+| Packages     | 11                                                 |
+| Tests        | 1,100+                                             |
+| Coverage     | 74%                                                |
+| Dependencies | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---
 
