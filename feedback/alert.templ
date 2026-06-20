@@ -32,32 +32,14 @@ func DefaultAlertProps() AlertProps {
 	}
 }
 
-//nolint:gochecknoglobals // Package-level lookup table for alert styles
-var alertStyleMap = map[FeedbackType]feedbackStyleSet{
-	FeedbackSuccess: {"border-green-200 dark:border-green-800", "bg-green-50 dark:bg-green-900/20", "text-green-800 dark:text-green-200", "text-green-400"},
-	FeedbackError:   {"border-red-200 dark:border-red-800", "bg-red-50 dark:bg-red-900/20", "text-red-800 dark:text-red-200", "text-red-400"},
-	FeedbackWarning: {"border-yellow-200 dark:border-yellow-800", "bg-yellow-50 dark:bg-yellow-900/20", "text-yellow-800 dark:text-yellow-200", "text-yellow-400"},
-	FeedbackInfo:    {"border-blue-200 dark:border-blue-800", "bg-blue-50 dark:bg-blue-900/20", "text-blue-800 dark:text-blue-200", "text-blue-400"},
-}
-
-var alertStyleDefault = feedbackStyleSet{"border-gray-200 dark:border-gray-700", "bg-gray-50 dark:bg-gray-800/50", "text-gray-800 dark:text-gray-200", "text-gray-400"}
-
 // alertStyles returns Tailwind classes for each alert type
 func alertStyles(t FeedbackType) (border, bg, text, icon string) {
-	s := lookupFeedbackStyle(alertStyleMap, alertStyleDefault, t)
+	s := feedbackStyle(t)
 	return s.Border, s.BG, s.Text, s.Icon
 }
 
-//nolint:gochecknoglobals // Package-level lookup table for alert icons
-var alertIconMap = map[FeedbackType]icons.Name{
-	FeedbackSuccess: icons.Check,
-	FeedbackError:   icons.X,
-	FeedbackWarning: icons.ExclamationTriangle,
-	FeedbackInfo:    icons.Information,
-}
-
 func alertIconName(t FeedbackType) icons.Name {
-	return feedbackIconName(alertIconMap, t)
+	return feedbackIcon(t)
 }
 
 // Alert renders a full-width alert banner

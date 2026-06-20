@@ -117,10 +117,10 @@ func TestAlertStyles(t *testing.T) {
 		wantBorder    string
 		wantIconColor string
 	}{
-		{AlertSuccess, borderGreenClass, "text-green-400"},
-		{AlertError, borderRedClass, "text-red-400"},
-		{AlertWarning, borderYellowClass, "text-yellow-400"},
-		{AlertInfo, borderBlueClass, "text-blue-400"},
+		{AlertSuccess, borderGreenClass, "text-green-600 dark:text-green-400"},
+		{AlertError, borderRedClass, "text-red-600 dark:text-red-400"},
+		{AlertWarning, borderYellowClass, "text-yellow-600 dark:text-yellow-400"},
+		{AlertInfo, borderBlueClass, textBlueInfoClass},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.typ), func(t *testing.T) {
@@ -206,16 +206,16 @@ func TestFeedbackIconName(t *testing.T) {
 		typ  FeedbackType
 		want icons.Name
 	}{
-		{"success maps to Check for alert", FeedbackSuccess, icons.Check},
-		{"error maps to X for alert", FeedbackError, icons.X},
+		{"success maps to CheckCircle", FeedbackSuccess, icons.CheckCircle},
+		{"error maps to XCircle", FeedbackError, icons.XCircle},
 		{"unknown falls back to Information", "unknown", icons.Information},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			got := feedbackIconName(alertIconMap, tt.typ)
+			got := feedbackIconName(feedbackIconMap, tt.typ)
 			if got != tt.want {
-				t.Errorf("feedbackIconName(alertIconMap, %q) = %q, want %q", tt.typ, got, tt.want)
+				t.Errorf("feedbackIconName(feedbackIconMap, %q) = %q, want %q", tt.typ, got, tt.want)
 			}
 		})
 	}

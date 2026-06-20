@@ -15,10 +15,9 @@ const (
 // FormProps configures a form wrapper
 type FormProps struct {
 	utils.BaseProps
-	Action   string
-	Method   FormMethod
+	Action    string
+	Method    FormMethod
 	CSRFToken string
-	Content  templ.Component
 }
 
 // DefaultFormProps returns sensible defaults
@@ -30,7 +29,9 @@ func DefaultFormProps() FormProps {
 
 // Form renders a form element with optional CSRF token
 //
-//	@forms.Form(forms.FormProps{Action: "/submit", CSRFToken: "token123", Content: myContent})
+//	@forms.Form(forms.FormProps{Action: "/submit", CSRFToken: "token123"}) {
+//	   @forms.Input(forms.InputProps{Name: "email"})
+//	}
 templ Form(props FormProps) {
 	<form
 		if props.ID != "" {
@@ -47,8 +48,6 @@ templ Form(props FormProps) {
 		if props.CSRFToken != "" {
 			<input type="hidden" name="csrf_token" value={ props.CSRFToken }/>
 		}
-		if props.Content != nil {
-			@props.Content
-		}
+		{ children... }
 	</form>
 }

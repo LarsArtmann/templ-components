@@ -1,19 +1,10 @@
 package forms
 
-import (
-	"github.com/a-h/templ"
-)
-
 func ExampleForm() {
 	_ = Form(FormProps{
 		Action:    "/api/users",
 		Method:    FormPost,
 		CSRFToken: "example-token",
-		Content: templ.Join(
-			Input(InputProps{Name: "name", Type: InputText, Label: "Name"}),
-			Input(InputProps{Name: "email", Type: InputEmail, Label: "Email"}),
-			Checkbox(CheckboxProps{Name: "terms", Label: "I agree to the terms"}),
-		),
 	})
 	// Output:
 }

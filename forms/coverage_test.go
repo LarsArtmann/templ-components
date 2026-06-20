@@ -135,8 +135,7 @@ func TestFormWithAriaLabel(t *testing.T) {
 func TestFormWithNilContent(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Form(FormProps{
-		Action:  "/submit",
-		Content: nil,
+		Action: "/submit",
 	}))
 	utils.AssertContains(t, output, `<form`)
 }

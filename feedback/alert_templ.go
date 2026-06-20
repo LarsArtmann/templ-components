@@ -40,32 +40,14 @@ func DefaultAlertProps() AlertProps {
 	}
 }
 
-//nolint:gochecknoglobals // Package-level lookup table for alert styles
-var alertStyleMap = map[FeedbackType]feedbackStyleSet{
-	FeedbackSuccess: {"border-green-200 dark:border-green-800", "bg-green-50 dark:bg-green-900/20", "text-green-800 dark:text-green-200", "text-green-400"},
-	FeedbackError:   {"border-red-200 dark:border-red-800", "bg-red-50 dark:bg-red-900/20", "text-red-800 dark:text-red-200", "text-red-400"},
-	FeedbackWarning: {"border-yellow-200 dark:border-yellow-800", "bg-yellow-50 dark:bg-yellow-900/20", "text-yellow-800 dark:text-yellow-200", "text-yellow-400"},
-	FeedbackInfo:    {"border-blue-200 dark:border-blue-800", "bg-blue-50 dark:bg-blue-900/20", "text-blue-800 dark:text-blue-200", "text-blue-400"},
-}
-
-var alertStyleDefault = feedbackStyleSet{"border-gray-200 dark:border-gray-700", "bg-gray-50 dark:bg-gray-800/50", "text-gray-800 dark:text-gray-200", "text-gray-400"}
-
 // alertStyles returns Tailwind classes for each alert type
 func alertStyles(t FeedbackType) (border, bg, text, icon string) {
-	s := lookupFeedbackStyle(alertStyleMap, alertStyleDefault, t)
+	s := feedbackStyle(t)
 	return s.Border, s.BG, s.Text, s.Icon
 }
 
-//nolint:gochecknoglobals // Package-level lookup table for alert icons
-var alertIconMap = map[FeedbackType]icons.Name{
-	FeedbackSuccess: icons.Check,
-	FeedbackError:   icons.X,
-	FeedbackWarning: icons.ExclamationTriangle,
-	FeedbackInfo:    icons.Information,
-}
-
 func alertIconName(t FeedbackType) icons.Name {
-	return feedbackIconName(alertIconMap, t)
+	return feedbackIcon(t)
 }
 
 // Alert renders a full-width alert banner
@@ -110,7 +92,7 @@ func Alert(props AlertProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 70, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 52, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -146,7 +128,7 @@ func Alert(props AlertProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 75, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 57, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -199,7 +181,7 @@ func Alert(props AlertProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 85, Col: 60}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 67, Col: 60}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -235,7 +217,7 @@ func Alert(props AlertProps) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(props.Message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 88, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 70, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -293,7 +275,7 @@ func Alert(props AlertProps) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 107, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 89, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 			if templ_7745c5c3_Err != nil {
@@ -305,7 +287,7 @@ func Alert(props AlertProps) templ.Component {
 			}
 			templ_7745c5c3_Var15, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(utils.DismissScript())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 108, Col: 28}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 90, Col: 28}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 			if templ_7745c5c3_Err != nil {
@@ -371,7 +353,7 @@ func inlineMessage(message string, colorClass string, role string, icon templ.Co
 		var templ_7745c5c3_Var19 string
 		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(role)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 116, Col: 80}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 98, Col: 80}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
 		if templ_7745c5c3_Err != nil {
@@ -392,7 +374,7 @@ func inlineMessage(message string, colorClass string, role string, icon templ.Co
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 118, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 100, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var20))
 		if templ_7745c5c3_Err != nil {

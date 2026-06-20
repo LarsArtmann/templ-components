@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"html"
 	"io"
 	"log/slog"
 	"net/http"
@@ -333,7 +334,7 @@ func renderWithShell(ctx context.Context, w io.Writer, title string, props Error
 		_, _ = fmt.Fprint(bw, `<!DOCTYPE html><html lang="en"><head>`)
 		_, _ = fmt.Fprint(bw, `<meta charset="UTF-8">`)
 		_, _ = fmt.Fprintf(bw, `<meta name="viewport" content="width=device-width, initial-scale=1.0">`)
-		_, _ = fmt.Fprintf(bw, `<title>%s</title>`, htmlEscape(title))
+		_, _ = fmt.Fprintf(bw, `<title>%s</title>`, html.EscapeString(title))
 		_, _ = fmt.Fprint(bw, `</head><body>`)
 		renderErr := ErrorPage(props).Render(ctx, bw) //nolint:contextcheck // intentional passthrough
 		if renderErr != nil {
@@ -346,28 +347,6 @@ func renderWithShell(ctx context.Context, w io.Writer, title string, props Error
 		return fmt.Errorf("render error page shell: %w", err)
 	}
 	return nil
-}
-
-// htmlEscape escapes a string for safe inclusion in HTML.
-func htmlEscape(s string) string {
-	var buf []byte
-	for _, r := range s {
-		switch r {
-		case '&':
-			buf = append(buf, "&amp;"...)
-		case '<':
-			buf = append(buf, "&lt;"...)
-		case '>':
-			buf = append(buf, "&gt;"...)
-		case '"':
-			buf = append(buf, "&quot;"...)
-		case '\'':
-			buf = append(buf, "&#39;"...)
-		default:
-			buf = append(buf, string(r)...)
-		}
-	}
-	return string(buf)
 }
 
 // Verify interface compliance.

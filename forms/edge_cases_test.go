@@ -169,20 +169,17 @@ func TestFormRender(t *testing.T) {
 	t.Run("form with action and method", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Form(FormProps{
-			Action:  "/submit",
-			Method:  FormPost,
-			Content: templ.Raw("<input type=\"text\" name=\"foo\"/>"),
+			Action: "/submit",
+			Method: FormPost,
 		}))
 		utils.AssertContains(t, output, `action="/submit"`)
 		utils.AssertContains(t, output, `method="POST"`)
-		utils.AssertContains(t, output, `name="foo"`)
 	})
 
 	t.Run("form with CSRF token", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Form(FormProps{
 			CSRFToken: "secret-token",
-			Content:   templ.Raw("<button>Submit</button>"),
 		}))
 		utils.AssertContains(t, output, `name="csrf_token"`)
 		utils.AssertContains(t, output, `value="secret-token"`)
@@ -190,9 +187,7 @@ func TestFormRender(t *testing.T) {
 
 	t.Run("form without CSRF omits hidden input", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Form(FormProps{
-			Content: templ.Raw("<button>Go</button>"),
-		}))
+		output := utils.Render(t, Form(FormProps{}))
 		utils.AssertNotContains(t, output, `csrf_token`)
 	})
 
@@ -200,7 +195,6 @@ func TestFormRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Form(FormProps{
 			BaseProps: utils.BaseProps{ID: "my-form", Class: "max-w-md"},
-			Content:   templ.Raw("<button>Go</button>"),
 		}))
 		utils.AssertContains(t, output, `id="my-form"`)
 		utils.AssertContains(t, output, "max-w-md")
