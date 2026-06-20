@@ -312,15 +312,7 @@ func TestRenderAll(t *testing.T) {
 	t.Parallel()
 	t.Run("renders multiple components", func(t *testing.T) {
 		t.Parallel()
-		c1 := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-			_, err := io.WriteString(w, "<div>first</div>")
-			return err //nolint:wrapcheck // test helper, direct passthrough
-		})
-		c2 := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-			_, err := io.WriteString(w, "<div>second</div>")
-			return err //nolint:wrapcheck // test helper, direct passthrough
-		})
-		got := RenderAll(t, c1, c2)
+		got := RenderAll(t, testComponent("first"), testComponent("second"))
 		if !strings.Contains(got, "first") || !strings.Contains(got, "second") {
 			t.Errorf("RenderAll() = %q, expected both 'first' and 'second'", got)
 		}
@@ -331,5 +323,12 @@ func TestRenderAll(t *testing.T) {
 		if got != "" {
 			t.Errorf("RenderAll() with no components = %q, want empty", got)
 		}
+	})
+}
+
+func testComponent(content string) templ.Component {
+	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		_, err := io.WriteString(w, "<div>"+content+"</div>")
+		return err //nolint:wrapcheck // test helper, direct passthrough
 	})
 }
