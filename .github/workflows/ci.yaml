@@ -36,6 +36,16 @@ jobs:
       - name: Generate templ files
         run: templ generate
 
+      - name: Verify all *_templ.go files are tracked
+        run: |
+          UNTRACKED=$(git ls-files --others --exclude-standard | grep '_templ\.go$' || true)
+          if [ -n "$UNTRACKED" ]; then
+            echo "::error::Untracked *_templ.go files found. Generated files MUST be committed"
+            echo "::error::for the Go module proxy to serve compilable code."
+            echo "$UNTRACKED"
+            exit 1
+          fi
+
       - name: Go mod tidy
         run: go mod tidy
 
