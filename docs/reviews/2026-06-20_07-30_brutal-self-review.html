@@ -1,293 +1,566 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Brutal Self-Review — templ-components — 2026-06-20</title>
-<style>
-  :root {
-    --bg: #0f1117;
-    --card-bg: #1a1d28;
-    --border: #2a2e3d;
-    --text: #e2e8f0;
-    --text-dim: #94a3b8;
-    --red: #ef4444;
-    --amber: #f59e0b;
-    --green: #22c55e;
-    --blue: #3b82f6;
-    --purple: #a855f7;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: var(--bg);
-    color: var(--text);
-    line-height: 1.6;
-    padding: 2rem;
-    max-width: 1100px;
-    margin: 0 auto;
-  }
-  h1 { font-size: 2rem; margin-bottom: 0.5rem; }
-  h2 { font-size: 1.4rem; margin: 2rem 0 1rem; border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
-  h3 { font-size: 1.1rem; margin: 1.5rem 0 0.75rem; color: var(--text-dim); }
-  .meta { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 2rem; }
-  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 1rem; margin-bottom: 2rem; }
-  .stat {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 1.2rem;
-    text-align: center;
-  }
-  .stat .num { font-size: 2rem; font-weight: 700; }
-  .stat .label { font-size: 0.85rem; color: var(--text-dim); margin-top: 0.3rem; }
-  .stat.red .num { color: var(--red); }
-  .stat.amber .num { color: var(--amber); }
-  .stat.green .num { color: var(--green); }
-  .stat.blue .num { color: var(--blue); }
-  .card {
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-left: 4px solid var(--text-dim);
-    border-radius: 6px;
-    padding: 1rem 1.5rem;
-    margin-bottom: 1rem;
-  }
-  .card.problem { border-left-color: var(--red); }
-  .card.warning { border-left-color: var(--amber); }
-  .card.solution { border-left-color: var(--green); }
-  .card.skip { border-left-color: var(--blue); }
-  .card h4 { font-size: 1rem; margin-bottom: 0.5rem; }
-  .card .status {
-    display: inline-block;
-    font-size: 0.75rem;
-    padding: 0.15rem 0.5rem;
-    border-radius: 4px;
-    font-weight: 600;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-  }
-  .status.fixed { background: rgba(34,197,94,0.2); color: var(--green); }
-  .status.skipped { background: rgba(59,130,246,0.2); color: var(--blue); }
-  .status.deferred { background: rgba(245,158,11,0.2); color: var(--amber); }
-  .card code {
-    background: rgba(255,255,255,0.08);
-    padding: 0.15rem 0.4rem;
-    border-radius: 3px;
-    font-size: 0.9em;
-    font-family: 'JetBrains Mono', monospace;
-  }
-  .card pre {
-    background: rgba(0,0,0,0.3);
-    padding: 0.75rem;
-    border-radius: 4px;
-    overflow-x: auto;
-    margin: 0.5rem 0;
-    font-size: 0.85rem;
-  }
-  ol.steps { list-style: none; counter-reset: step; }
-  ol.steps > li {
-    counter-increment: step;
-    background: var(--card-bg);
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 1rem 1.5rem 1rem 3.5rem;
-    margin-bottom: 0.75rem;
-    position: relative;
-  }
-  ol.steps > li::before {
-    content: counter(step);
-    position: absolute;
-    left: 1rem;
-    top: 1rem;
-    width: 2rem;
-    height: 2rem;
-    background: var(--border);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-weight: 700;
-    font-size: 0.9rem;
-  }
-  .tag {
-    display: inline-block;
-    font-size: 0.7rem;
-    padding: 0.1rem 0.4rem;
-    border-radius: 3px;
-    font-weight: 600;
-    margin-left: 0.5rem;
-    vertical-align: middle;
-  }
-  .tag.done { background: rgba(34,197,94,0.2); color: var(--green); }
-  .tag.skip { background: rgba(59,130,246,0.2); color: var(--blue); }
-  .tag.deferred { background: rgba(245,158,11,0.2); color: var(--amber); }
-  table { width: 100%; border-collapse: collapse; margin: 1rem 0; }
-  th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
-  th { color: var(--text-dim); font-size: 0.85rem; }
-  td code { font-size: 0.85em; }
-</style>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Brutal Self-Review — templ-components — 2026-06-20</title>
+    <style>
+      :root {
+        --bg: #0f1117;
+        --card-bg: #1a1d28;
+        --border: #2a2e3d;
+        --text: #e2e8f0;
+        --text-dim: #94a3b8;
+        --red: #ef4444;
+        --amber: #f59e0b;
+        --green: #22c55e;
+        --blue: #3b82f6;
+        --purple: #a855f7;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        background: var(--bg);
+        color: var(--text);
+        line-height: 1.6;
+        padding: 2rem;
+        max-width: 1100px;
+        margin: 0 auto;
+      }
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+        margin: 2rem 0 1rem;
+        border-bottom: 1px solid var(--border);
+        padding-bottom: 0.5rem;
+      }
+      h3 {
+        font-size: 1.1rem;
+        margin: 1.5rem 0 0.75rem;
+        color: var(--text-dim);
+      }
+      .meta {
+        color: var(--text-dim);
+        font-size: 0.9rem;
+        margin-bottom: 2rem;
+      }
+      .stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+      }
+      .stat {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 1.2rem;
+        text-align: center;
+      }
+      .stat .num {
+        font-size: 2rem;
+        font-weight: 700;
+      }
+      .stat .label {
+        font-size: 0.85rem;
+        color: var(--text-dim);
+        margin-top: 0.3rem;
+      }
+      .stat.red .num {
+        color: var(--red);
+      }
+      .stat.amber .num {
+        color: var(--amber);
+      }
+      .stat.green .num {
+        color: var(--green);
+      }
+      .stat.blue .num {
+        color: var(--blue);
+      }
+      .card {
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--text-dim);
+        border-radius: 6px;
+        padding: 1rem 1.5rem;
+        margin-bottom: 1rem;
+      }
+      .card.problem {
+        border-left-color: var(--red);
+      }
+      .card.warning {
+        border-left-color: var(--amber);
+      }
+      .card.solution {
+        border-left-color: var(--green);
+      }
+      .card.skip {
+        border-left-color: var(--blue);
+      }
+      .card h4 {
+        font-size: 1rem;
+        margin-bottom: 0.5rem;
+      }
+      .card .status {
+        display: inline-block;
+        font-size: 0.75rem;
+        padding: 0.15rem 0.5rem;
+        border-radius: 4px;
+        font-weight: 600;
+        margin-left: 0.5rem;
+        vertical-align: middle;
+      }
+      .status.fixed {
+        background: rgba(34, 197, 94, 0.2);
+        color: var(--green);
+      }
+      .status.skipped {
+        background: rgba(59, 130, 246, 0.2);
+        color: var(--blue);
+      }
+      .status.deferred {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--amber);
+      }
+      .card code {
+        background: rgba(255, 255, 255, 0.08);
+        padding: 0.15rem 0.4rem;
+        border-radius: 3px;
+        font-size: 0.9em;
+        font-family: "JetBrains Mono", monospace;
+      }
+      .card pre {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.75rem;
+        border-radius: 4px;
+        overflow-x: auto;
+        margin: 0.5rem 0;
+        font-size: 0.85rem;
+      }
+      ol.steps {
+        list-style: none;
+        counter-reset: step;
+      }
+      ol.steps > li {
+        counter-increment: step;
+        background: var(--card-bg);
+        border: 1px solid var(--border);
+        border-radius: 6px;
+        padding: 1rem 1.5rem 1rem 3.5rem;
+        margin-bottom: 0.75rem;
+        position: relative;
+      }
+      ol.steps > li::before {
+        content: counter(step);
+        position: absolute;
+        left: 1rem;
+        top: 1rem;
+        width: 2rem;
+        height: 2rem;
+        background: var(--border);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.9rem;
+      }
+      .tag {
+        display: inline-block;
+        font-size: 0.7rem;
+        padding: 0.1rem 0.4rem;
+        border-radius: 3px;
+        font-weight: 600;
+        margin-left: 0.5rem;
+        vertical-align: middle;
+      }
+      .tag.done {
+        background: rgba(34, 197, 94, 0.2);
+        color: var(--green);
+      }
+      .tag.skip {
+        background: rgba(59, 130, 246, 0.2);
+        color: var(--blue);
+      }
+      .tag.deferred {
+        background: rgba(245, 158, 11, 0.2);
+        color: var(--amber);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.5rem 0.75rem;
+        border-bottom: 1px solid var(--border);
+      }
+      th {
+        color: var(--text-dim);
+        font-size: 0.85rem;
+      }
+      td code {
+        font-size: 0.85em;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Brutal Self-Review</h1>
+    <p class="meta">
+      <strong>Project:</strong> templ-components | <strong>Date:</strong> 2026-06-20 |
+      <strong>Session:</strong> Post-reflection after overlay JS extraction + coverage work |
+      <strong>Commits reviewed:</strong> <code>1e0def2</code> → <code>c97fa68</code>
+    </p>
 
-<h1>Brutal Self-Review</h1>
-<p class="meta">
-  <strong>Project:</strong> templ-components |
-  <strong>Date:</strong> 2026-06-20 |
-  <strong>Session:</strong> Post-reflection after overlay JS extraction + coverage work |
-  <strong>Commits reviewed:</strong> <code>1e0def2</code> → <code>c97fa68</code>
-</p>
+    <div class="stats">
+      <div class="stat red">
+        <div class="num">1</div>
+        <div class="label">Regression Bug (fixed)</div>
+      </div>
+      <div class="stat red">
+        <div class="num">1</div>
+        <div class="label">Split Brain (fixed)</div>
+      </div>
+      <div class="stat amber">
+        <div class="num">2</div>
+        <div class="label">BaseProps Gaps (fixed)</div>
+      </div>
+      <div class="stat amber">
+        <div class="num">1</div>
+        <div class="label">Dead Code (removed)</div>
+      </div>
+      <div class="stat blue">
+        <div class="num">1</div>
+        <div class="label">Skipped (justified)</div>
+      </div>
+      <div class="stat green">
+        <div class="num">6</div>
+        <div class="label">Issues Fixed</div>
+      </div>
+    </div>
 
-<div class="stats">
-  <div class="stat red"><div class="num">1</div><div class="label">Regression Bug (fixed)</div></div>
-  <div class="stat red"><div class="num">1</div><div class="label">Split Brain (fixed)</div></div>
-  <div class="stat amber"><div class="num">2</div><div class="label">BaseProps Gaps (fixed)</div></div>
-  <div class="stat amber"><div class="num">1</div><div class="label">Dead Code (removed)</div></div>
-  <div class="stat blue"><div class="num">1</div><div class="label">Skipped (justified)</div></div>
-  <div class="stat green"><div class="num">6</div><div class="label">Issues Fixed</div></div>
-</div>
+    <h2>1. What did I forget?</h2>
 
-<h2>1. What did I forget?</h2>
+    <div class="card problem">
+      <h4>HTMX delegation regression <span class="status fixed">FIXED</span></h4>
+      <p>
+        My <code>overlayTrapJS</code> used
+        <code>querySelectorAll('[data-tc-close]').forEach(addEventListener)</code> — per-element
+        binding that breaks when HTMX swaps content into the modal/drawer after render. Dynamically
+        added close buttons had no click handler.
+      </p>
+      <p>
+        <strong>Root cause:</strong> I didn't think about HTMX DOM swaps when designing the click
+        handler. The existing <code>utils.DismissScript()</code> already uses the correct delegated
+        pattern — I should have followed it.
+      </p>
+      <p>
+        <strong>Fix:</strong> Replaced with
+        <code
+          >overlay.addEventListener('click', function(e) { if (e.target.closest('[data-tc-close]'))
+          ... })</code
+        >
+        — delegated on the overlay container. <code>bbab95c</code>
+      </p>
+    </div>
 
-<div class="card problem">
-  <h4>HTMX delegation regression <span class="status fixed">FIXED</span></h4>
-  <p>My <code>overlayTrapJS</code> used <code>querySelectorAll('[data-tc-close]').forEach(addEventListener)</code> — per-element binding that breaks when HTMX swaps content into the modal/drawer after render. Dynamically added close buttons had no click handler.</p>
-  <p><strong>Root cause:</strong> I didn't think about HTMX DOM swaps when designing the click handler. The existing <code>utils.DismissScript()</code> already uses the correct delegated pattern — I should have followed it.</p>
-  <p><strong>Fix:</strong> Replaced with <code>overlay.addEventListener('click', function(e) { if (e.target.closest('[data-tc-close]')) ... })</code> — delegated on the overlay container. <code>bbab95c</code></p>
-</div>
+    <div class="card problem">
+      <h4>Toast icon split brain <span class="status fixed">FIXED</span></h4>
+      <p>
+        Server-rendered toasts showed <code>XCircle</code> for errors (from
+        <code>feedbackIconMap</code>), but client-side <code>tcShowToast()</code> showed
+        <code>ExclamationTriangle</code> (from <code>toastJSIconPaths()</code>). Same severity,
+        different icons depending on whether the toast was server-rendered or JS-injected.
+      </p>
+      <p>
+        <strong>Fix:</strong> <code>toastJSIconPaths()</code> now reads from
+        <code>feedbackIconMap</code> as single source of truth. <code>afa62b1</code>
+      </p>
+    </div>
 
-<div class="card problem">
-  <h4>Toast icon split brain <span class="status fixed">FIXED</span></h4>
-  <p>Server-rendered toasts showed <code>XCircle</code> for errors (from <code>feedbackIconMap</code>), but client-side <code>tcShowToast()</code> showed <code>ExclamationTriangle</code> (from <code>toastJSIconPaths()</code>). Same severity, different icons depending on whether the toast was server-rendered or JS-injected.</p>
-  <p><strong>Fix:</strong> <code>toastJSIconPaths()</code> now reads from <code>feedbackIconMap</code> as single source of truth. <code>afa62b1</code></p>
-</div>
+    <h2>2. What's stupid that we do anyway?</h2>
 
-<h2>2. What's stupid that we do anyway?</h2>
+    <div class="card warning">
+      <h4>6 panics in library code <span class="status deferred">PRE-V1.0 DEFERRED</span></h4>
+      <p>
+        The <code>how-to-golang</code> policy says <strong>"no panics in library code"</strong>. We
+        have 6:
+      </p>
+      <table>
+        <tr>
+          <th>Location</th>
+          <th>Reason</th>
+        </tr>
+        <tr>
+          <td><code>forms/input.templ:40</code></td>
+          <td>Unknown InputType</td>
+        </tr>
+        <tr>
+          <td><code>htmx/helpers.templ:20</code></td>
+          <td>Invalid SwapOOB style</td>
+        </tr>
+        <tr>
+          <td><code>display/dropdown.templ:114</code></td>
+          <td>Empty dropdown ID</td>
+        </tr>
+        <tr>
+          <td><code>display/drawer.templ:16</code></td>
+          <td>Empty drawer ID</td>
+        </tr>
+        <tr>
+          <td><code>display/modal.templ:16</code></td>
+          <td>Empty modal ID</td>
+        </tr>
+        <tr>
+          <td><code>display/accordion.templ:53</code></td>
+          <td>Empty accordion ID</td>
+        </tr>
+        <tr>
+          <td><code>icons/icon_paths.go:118,123</code></td>
+          <td>Unknown icon name / empty path</td>
+        </tr>
+      </table>
+      <p>
+        <strong>Why deferred:</strong> Changing panics to returned errors is a
+        <strong>BREAKING API change</strong> — templ components can't return errors from render. The
+        correct fix is <code>templ.Transform</code> or error-component rendering, which requires a
+        design decision. This is v1.0 scope.
+      </p>
+    </div>
 
-<div class="card warning">
-  <h4>6 panics in library code <span class="status deferred">PRE-V1.0 DEFERRED</span></h4>
-  <p>The <code>how-to-golang</code> policy says <strong>"no panics in library code"</strong>. We have 6:</p>
-  <table>
-    <tr><th>Location</th><th>Reason</th></tr>
-    <tr><td><code>forms/input.templ:40</code></td><td>Unknown InputType</td></tr>
-    <tr><td><code>htmx/helpers.templ:20</code></td><td>Invalid SwapOOB style</td></tr>
-    <tr><td><code>display/dropdown.templ:114</code></td><td>Empty dropdown ID</td></tr>
-    <tr><td><code>display/drawer.templ:16</code></td><td>Empty drawer ID</td></tr>
-    <tr><td><code>display/modal.templ:16</code></td><td>Empty modal ID</td></tr>
-    <tr><td><code>display/accordion.templ:53</code></td><td>Empty accordion ID</td></tr>
-    <tr><td><code>icons/icon_paths.go:118,123</code></td><td>Unknown icon name / empty path</td></tr>
-  </table>
-  <p><strong>Why deferred:</strong> Changing panics to returned errors is a <strong>BREAKING API change</strong> — templ components can't return errors from render. The correct fix is <code>templ.Transform</code> or error-component rendering, which requires a design decision. This is v1.0 scope.</p>
-</div>
+    <div class="card skip">
+      <h4>encoding/json v1 <span class="status skipped">SKIPPED (justified)</span></h4>
+      <p>
+        <code>how-to-golang</code> bans <code>encoding/json</code> v1 in favor of v2 for Go 1.25+.
+        However, <code>encoding/json/v2</code> in Go 1.26.3 is behind
+        <code>GOEXPERIMENT=jsonv2</code> — it's not production-ready and can't be required from a
+        publishable library. The single usage in <code>errorpage/handler.go</code> stays on v1 until
+        json/v2 is stable.
+      </p>
+    </div>
 
-<div class="card skip">
-  <h4>encoding/json v1 <span class="status skipped">SKIPPED (justified)</span></h4>
-  <p><code>how-to-golang</code> bans <code>encoding/json</code> v1 in favor of v2 for Go 1.25+. However, <code>encoding/json/v2</code> in Go 1.26.3 is behind <code>GOEXPERIMENT=jsonv2</code> — it's not production-ready and can't be required from a publishable library. The single usage in <code>errorpage/handler.go</code> stays on v1 until json/v2 is stable.</p>
-</div>
+    <h2>3. What could I have done better?</h2>
 
-<h2>3. What could I have done better?</h2>
+    <div class="card problem">
+      <h4>Wrote tests against wrong type names <span class="status fixed">FIXED</span></h4>
+      <p>
+        I wrote coverage tests using <code>icons.User</code> (doesn't exist, it's
+        <code>icons.Users</code>), <code>HrefPrefix</code> (doesn't exist, it's
+        <code>BaseURL + QueryParam</code>), <code>TableRow{Cells: []string{...}}</code> (Cells is
+        <code>[]TableCell</code>, use <code>SimpleTableRow()</code>). I should have read the source
+        types before writing tests — wasted 4 iterations fixing compilation errors.
+      </p>
+    </div>
 
-<div class="card problem">
-  <h4>Wrote tests against wrong type names <span class="status fixed">FIXED</span></h4>
-  <p>I wrote coverage tests using <code>icons.User</code> (doesn't exist, it's <code>icons.Users</code>), <code>HrefPrefix</code> (doesn't exist, it's <code>BaseURL + QueryParam</code>), <code>TableRow{Cells: []string{...}}</code> (Cells is <code>[]TableCell</code>, use <code>SimpleTableRow()</code>). I should have read the source types before writing tests — wasted 4 iterations fixing compilation errors.</p>
-</div>
+    <div class="card problem">
+      <h4>Left dead code <span class="status fixed">FIXED</span></h4>
+      <p>
+        <code>utils.AssertContainsClass</code> was identical to <code>AssertContains</code> with
+        zero callers. I should have caught this during the coverage analysis phase — it showed 0%
+        coverage but I didn't investigate why. <code>afa62b1</code>
+      </p>
+    </div>
 
-<div class="card problem">
-  <h4>Left dead code <span class="status fixed">FIXED</span></h4>
-  <p><code>utils.AssertContainsClass</code> was identical to <code>AssertContains</code> with zero callers. I should have caught this during the coverage analysis phase — it showed 0% coverage but I didn't investigate why. <code>afa62b1</code></p>
-</div>
+    <h2>4. What could I still improve?</h2>
 
-<h2>4. What could I still improve?</h2>
+    <div class="card problem">
+      <h4>RadioGroup missing AriaLabel <span class="status fixed">FIXED</span></h4>
+      <p>
+        <code>&lt;fieldset&gt;</code> root element silently dropped <code>props.AriaLabel</code>.
+        <code>c97fa68</code>
+      </p>
+    </div>
 
-<div class="card problem">
-  <h4>RadioGroup missing AriaLabel <span class="status fixed">FIXED</span></h4>
-  <p><code>&lt;fieldset&gt;</code> root element silently dropped <code>props.AriaLabel</code>. <code>c97fa68</code></p>
-</div>
+    <div class="card problem">
+      <h4>
+        Avatar image branch missing all BaseProps on root <span class="status fixed">FIXED</span>
+      </h4>
+      <p>
+        When <code>props.Src != ""</code>, the root wrapper <code>&lt;div&gt;</code> had zero
+        BaseProps — ID, Class, Attrs, and AriaLabel all went to the inner
+        <code>&lt;img&gt;</code> (and AriaLabel was dropped entirely in favor of <code>alt</code>).
+        Now BaseProps propagate to the wrapper div, matching the initials/fallback branch.
+        <code>c97fa68</code>
+      </p>
+    </div>
 
-<div class="card problem">
-  <h4>Avatar image branch missing all BaseProps on root <span class="status fixed">FIXED</span></h4>
-  <p>When <code>props.Src != ""</code>, the root wrapper <code>&lt;div&gt;</code> had zero BaseProps — ID, Class, Attrs, and AriaLabel all went to the inner <code>&lt;img&gt;</code> (and AriaLabel was dropped entirely in favor of <code>alt</code>). Now BaseProps propagate to the wrapper div, matching the initials/fallback branch. <code>c97fa68</code></p>
-</div>
+    <div class="card warning">
+      <h4>
+        6x duplicated "attach-once guard" boilerplate <span class="status deferred">DEFERRED</span>
+      </h4>
+      <p>
+        Accordion, Dropdown, Tabs, MobileMenu, ErrorPage go-back, and ThemeToggle all repeat the
+        identical <code>window.tc*Attached</code> guard +
+        <code>document.addEventListener('click', ...)</code> pattern. Could extract to a shared
+        helper, but each has unique handler logic. Low ROI — the boilerplate is 5 lines and the
+        handlers are different.
+      </p>
+    </div>
 
-<div class="card warning">
-  <h4>6x duplicated "attach-once guard" boilerplate <span class="status deferred">DEFERRED</span></h4>
-  <p>Accordion, Dropdown, Tabs, MobileMenu, ErrorPage go-back, and ThemeToggle all repeat the identical <code>window.tc*Attached</code> guard + <code>document.addEventListener('click', ...)</code> pattern. Could extract to a shared helper, but each has unique handler logic. Low ROI — the boilerplate is 5 lines and the handlers are different.</p>
-</div>
+    <div class="card warning">
+      <h4>Badge info=indigo vs Feedback info=blue <span class="status deferred">DEFERRED</span></h4>
+      <p>
+        Minor color inconsistency: <code>BadgeInfo → indigo</code> in <code>badgeStyleMap</code> vs
+        <code>FeedbackInfo → blue</code> in <code>feedbackStyleMap</code>. Not a bug — badges and
+        feedback alerts serve different visual purposes. But worth deciding deliberately.
+      </p>
+    </div>
 
-<div class="card warning">
-  <h4>Badge info=indigo vs Feedback info=blue <span class="status deferred">DEFERRED</span></h4>
-  <p>Minor color inconsistency: <code>BadgeInfo → indigo</code> in <code>badgeStyleMap</code> vs <code>FeedbackInfo → blue</code> in <code>feedbackStyleMap</code>. Not a bug — badges and feedback alerts serve different visual purposes. But worth deciding deliberately.</p>
-</div>
+    <h2>5. Did I lie to you?</h2>
 
-<h2>5. Did I lie to you?</h2>
+    <div class="card problem">
+      <h4>Misleading coverage table</h4>
+      <p>
+        In my previous report, I listed navigation coverage as <code>72.7% → 72.6%</code> and marked
+        it "completed". That's a <strong>decrease</strong>. The tests I wrote were valid but the
+        code changes (SimpleNav refactor, pagination uint) added more uncovered statements than the
+        tests covered. I should have been honest: "coverage stayed flat despite new tests".
+      </p>
+      <p>
+        Also, I listed "P3-7: Forms tests — completed" but I didn't actually write any forms tests.
+        I skipped it because forms was already at 73.2% (above threshold). The table implied work
+        was done.
+      </p>
+    </div>
 
-<div class="card problem">
-  <h4>Misleading coverage table</h4>
-  <p>In my previous report, I listed navigation coverage as <code>72.7% → 72.6%</code> and marked it "completed". That's a <strong>decrease</strong>. The tests I wrote were valid but the code changes (SimpleNav refactor, pagination uint) added more uncovered statements than the tests covered. I should have been honest: "coverage stayed flat despite new tests".</p>
-  <p>Also, I listed "P3-7: Forms tests — completed" but I didn't actually write any forms tests. I skipped it because forms was already at 73.2% (above threshold). The table implied work was done.</p>
-</div>
+    <h2>6. How can we be less stupid?</h2>
 
-<h2>6. How can we be less stupid?</h2>
+    <div class="card solution">
+      <h4>Lessons</h4>
+      <ul>
+        <li>
+          <strong>Read source types before writing tests.</strong> Every compilation error I hit was
+          from guessing type names instead of reading the struct definitions.
+        </li>
+        <li>
+          <strong>Investigate 0% coverage functions.</strong> <code>AssertContainsClass</code> at 0%
+          was dead code, not a coverage gap. <code>DismissScript</code> at 0% was a profiling
+          artifact (tested from another package).
+        </li>
+        <li>
+          <strong>Follow existing patterns for new JS.</strong> The dismiss pattern was already
+          event-delegated. My overlay JS should have been too from the start.
+        </li>
+        <li>
+          <strong>Single source of truth means everywhere.</strong> The toast icon split brain
+          existed because <code>toastJSIconPaths()</code> hardcoded icons instead of reading from
+          <code>feedbackIconMap</code>.
+        </li>
+      </ul>
+    </div>
 
-<div class="card solution">
-  <h4>Lessons</h4>
-  <ul>
-    <li><strong>Read source types before writing tests.</strong> Every compilation error I hit was from guessing type names instead of reading the struct definitions.</li>
-    <li><strong>Investigate 0% coverage functions.</strong> <code>AssertContainsClass</code> at 0% was dead code, not a coverage gap. <code>DismissScript</code> at 0% was a profiling artifact (tested from another package).</li>
-    <li><strong>Follow existing patterns for new JS.</strong> The dismiss pattern was already event-delegated. My overlay JS should have been too from the start.</li>
-    <li><strong>Single source of truth means everywhere.</strong> The toast icon split brain existed because <code>toastJSIconPaths()</code> hardcoded icons instead of reading from <code>feedbackIconMap</code>.</li>
-  </ul>
-</div>
+    <h2>7. Ghost Systems?</h2>
 
-<h2>7. Ghost Systems?</h2>
+    <div class="card warning">
+      <h4>No ghost systems found</h4>
+      <p>
+        <code>utils.DismissScript</code> appeared dead (0% coverage in <code>utils</code> package)
+        but is actually called from 3 <code>.templ</code> files and tested in the
+        <code>feedback</code> package. Coverage profiling artifact, not a ghost.
+      </p>
+      <p>
+        <code>icons.IconWithStrokeWidth</code> is exported but only used in tests. It's an
+        intentional public API for external consumers — not a ghost.
+      </p>
+    </div>
 
-<div class="card warning">
-  <h4>No ghost systems found</h4>
-  <p><code>utils.DismissScript</code> appeared dead (0% coverage in <code>utils</code> package) but is actually called from 3 <code>.templ</code> files and tested in the <code>feedback</code> package. Coverage profiling artifact, not a ghost.</p>
-  <p><code>icons.IconWithStrokeWidth</code> is exported but only used in tests. It's an intentional public API for external consumers — not a ghost.</p>
-</div>
+    <h2>8. Scope Creep?</h2>
 
-<h2>8. Scope Creep?</h2>
+    <div class="card warning">
+      <h4>Coverage tests were scattershot</h4>
+      <p>
+        I wrote coverage tests for 5 packages when only 2 (feedback at 70.4%, errorpage at 70.8%)
+        were near the CI threshold. The display/navigation/layout tests had low ROI — those packages
+        were already safely above 70%.
+      </p>
+    </div>
 
-<div class="card warning">
-  <h4>Coverage tests were scattershot</h4>
-  <p>I wrote coverage tests for 5 packages when only 2 (feedback at 70.4%, errorpage at 70.8%) were near the CI threshold. The display/navigation/layout tests had low ROI — those packages were already safely above 70%.</p>
-</div>
+    <h2>9. Did we remove something useful?</h2>
 
-<h2>9. Did we remove something useful?</h2>
+    <div class="card solution">
+      <h4>No</h4>
+      <p>
+        Only removed <code>AssertContainsClass</code> which was confirmed dead code (identical to
+        <code>AssertContains</code>, zero callers).
+      </p>
+    </div>
 
-<div class="card solution">
-  <h4>No</h4>
-  <p>Only removed <code>AssertContainsClass</code> which was confirmed dead code (identical to <code>AssertContains</code>, zero callers).</p>
-</div>
+    <h2>10. Split Brains Found</h2>
 
-<h2>10. Split Brains Found</h2>
+    <table>
+      <tr>
+        <th>Split Brain</th>
+        <th>Status</th>
+      </tr>
+      <tr>
+        <td>
+          Toast error icon: <code>XCircle</code> (server) vs <code>ExclamationTriangle</code> (JS
+          client)
+        </td>
+        <td><span class="tag done">FIXED</span></td>
+      </tr>
+      <tr>
+        <td>Badge info=<code>indigo</code> vs Feedback info=<code>blue</code></td>
+        <td><span class="tag deferred">DEFERRED</span></td>
+      </tr>
+    </table>
 
-<table>
-  <tr><th>Split Brain</th><th>Status</th></tr>
-  <tr><td>Toast error icon: <code>XCircle</code> (server) vs <code>ExclamationTriangle</code> (JS client)</td><td><span class="tag done">FIXED</span></td></tr>
-  <tr><td>Badge info=<code>indigo</code> vs Feedback info=<code>blue</code></td><td><span class="tag deferred">DEFERRED</span></td></tr>
-</table>
+    <h2>11. How are we doing on tests?</h2>
 
-<h2>11. How are we doing on tests?</h2>
+    <div class="card warning">
+      <h4>377 test functions, ~72.5% average coverage</h4>
+      <p>
+        Below the 80% minimum from <code>how-to-golang</code>. All packages are above the 70% CI
+        threshold. The main gaps are in generated <code>*_templ.go</code> render functions which are
+        hard to get to 100% because of conditional branches in HTML generation.
+      </p>
+    </div>
 
-<div class="card warning">
-  <h4>377 test functions, ~72.5% average coverage</h4>
-  <p>Below the 80% minimum from <code>how-to-golang</code>. All packages are above the 70% CI threshold. The main gaps are in generated <code>*_templ.go</code> render functions which are hard to get to 100% because of conditional branches in HTML generation.</p>
-</div>
+    <h2>Prioritized Action Plan (sorted by impact/effort)</h2>
 
-<h2>Prioritized Action Plan (sorted by impact/effort)</h2>
-
-<ol class="steps">
-  <li><strong>Fix HTMX delegation bug</strong> — overlayTrapJS per-element binding → event delegation. <span class="tag done">DONE (bbab95c)</span></li>
-  <li><strong>Fix toast icon split brain</strong> — toastJSIconPaths reads from feedbackIconMap. <span class="tag done">DONE (afa62b1)</span></li>
-  <li><strong>Remove dead code</strong> — AssertContainsClass with 0 callers. <span class="tag done">DONE (afa62b1)</span></li>
-  <li><strong>Fix RadioGroup AriaLabel</strong> — fieldset now propagates AriaLabel. <span class="tag done">DONE (c97fa68)</span></li>
-  <li><strong>Fix Avatar image branch BaseProps</strong> — wrapper div now gets all BaseProps. <span class="tag done">DONE (c97fa68)</span></li>
-  <li><strong>Migrate to encoding/json/v2</strong> — blocked behind GOEXPERIMENT=jsonv2. <span class="tag skip">SKIPPED</span></li>
-  <li><strong>Remove panics from library code</strong> — requires design decision for error-returning templ components. <span class="tag deferred">v1.0 SCOPE</span></li>
-  <li><strong>Extract shared delegation boilerplate</strong> — 6 sites with window.tc*Attached pattern. Low ROI. <span class="tag deferred">BACKLOG</span></li>
-</ol>
-
-</body>
+    <ol class="steps">
+      <li>
+        <strong>Fix HTMX delegation bug</strong> — overlayTrapJS per-element binding → event
+        delegation. <span class="tag done">DONE (bbab95c)</span>
+      </li>
+      <li>
+        <strong>Fix toast icon split brain</strong> — toastJSIconPaths reads from feedbackIconMap.
+        <span class="tag done">DONE (afa62b1)</span>
+      </li>
+      <li>
+        <strong>Remove dead code</strong> — AssertContainsClass with 0 callers.
+        <span class="tag done">DONE (afa62b1)</span>
+      </li>
+      <li>
+        <strong>Fix RadioGroup AriaLabel</strong> — fieldset now propagates AriaLabel.
+        <span class="tag done">DONE (c97fa68)</span>
+      </li>
+      <li>
+        <strong>Fix Avatar image branch BaseProps</strong> — wrapper div now gets all BaseProps.
+        <span class="tag done">DONE (c97fa68)</span>
+      </li>
+      <li>
+        <strong>Migrate to encoding/json/v2</strong> — blocked behind GOEXPERIMENT=jsonv2.
+        <span class="tag skip">SKIPPED</span>
+      </li>
+      <li>
+        <strong>Remove panics from library code</strong> — requires design decision for
+        error-returning templ components. <span class="tag deferred">v1.0 SCOPE</span>
+      </li>
+      <li>
+        <strong>Extract shared delegation boilerplate</strong> — 6 sites with window.tc*Attached
+        pattern. Low ROI. <span class="tag deferred">BACKLOG</span>
+      </li>
+    </ol>
+  </body>
 </html>

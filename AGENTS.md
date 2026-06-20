@@ -1,7 +1,5 @@
 # AGENTS.md — templ-components
 
-
-
 ## Build & Test Commands
 
 ```bash
@@ -48,7 +46,6 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
 - **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
-
 
 ## Code Conventions
 
