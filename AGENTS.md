@@ -1,6 +1,6 @@
 # AGENTS.md — templ-components
 
-**Updated:** 2026-06-08 | **Tests:** 1100+ | **Packages:** 10+demo | **Generated files:** 44 `*_templ.go` committed | **Icons:** 99
+
 
 ## Build & Test Commands
 
@@ -48,7 +48,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
 - **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
-- **Feedback shared:** `utils.DismissScript()` (single source of truth), `feedbackIconName()`, `lookupFeedbackStyle[T]()` in `feedback/styles.go` eliminate duplication between Alert, Toast, and ErrorAlert. All call `utils.DismissScript()` directly — no private wrappers.
+
 
 ## Code Conventions
 
@@ -80,8 +80,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - `forms.SanitizeID`: exported utility for library consumers, not used internally
 - Enum validation: 2 panic-on-unknown (InputType, icons.Name), 10 map+fallback, structural variants use if-branch
 - Modal/Dropdown/Accordion: ID validation at render time (`validateDropdownID`, `validateModalID`, `validateAccordionItems`) panic on empty
-- JS patterns: Accordion + Dropdown use global singleton (`window.tc*Attached`), Modal uses per-instance IIFE (focus trap + focus restore), ThemeToggle uses IIFE-wrapped global guard
-- Dismiss JS: Alert + Toast share `tcDismissAttached` handler using `[data-dismiss]` selector
+
 - Toast JS: dismiss icon from `icons.IconPathJS()` via `tcToastIcons.dismiss`
 - Table: row cells auto-padded/truncated to match header count
 - **Error handler:** `errorpage/handler.go` provides `ErrorHandler(err, cfg)` returning `http.Handler`, `FromError(err)` for type-safe conversion from go-error-family errors, 6 pre-built constructors (`NotFound`, `Forbidden`, `BadRequest`, `Conflict`, `ServiceUnavailable`, `InternalError`), `WriteError`/`WriteErrorPage` convenience wrappers, `HTMLShell` mode for valid HTML documents, `JSON` mode for API/HTMX responses. Uses `errors.AsType[errorfamily.Classified]()` for go-error-family integration.
