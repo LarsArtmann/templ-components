@@ -318,10 +318,7 @@ var progressHeightLookup = map[string]string{
 }
 
 func progressHeightClass(size ProgressBarSize) string {
-	if v, ok := progressHeightLookup[string(size)]; ok {
-		return v
-	}
-	return "h-2.5"
+	return utils.Lookup(progressHeightLookup, string(size), "h-2.5")
 }
 
 var _ = templruntime.GeneratedTemplate

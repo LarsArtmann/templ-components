@@ -142,9 +142,7 @@ func TestLoadingOverlayEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, LoadingOverlay(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -168,9 +166,7 @@ func TestSkeletonEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Skeleton(tt.variant))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }

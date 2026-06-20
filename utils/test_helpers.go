@@ -59,3 +59,14 @@ func AssertEqual[T comparable](t *testing.T, context string, got, want T) {
 		t.Errorf("%s = %v, want %v", context, got, want)
 	}
 }
+
+// AssertContainsAll checks that the rendered output contains every substring
+// in wants. Reports a single test error per missing substring.
+func AssertContainsAll(t *testing.T, output string, wants ...string) {
+	t.Helper()
+	for _, want := range wants {
+		if !strings.Contains(output, want) {
+			t.Errorf("output does not contain %q:\n%s", want, output)
+		}
+	}
+}

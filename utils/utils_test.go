@@ -112,31 +112,45 @@ const (
 	testEnumC testEnum = "c"
 )
 
-func TestMapEnum(t *testing.T) {
+func TestLookup(t *testing.T) {
 	t.Parallel()
 
-	lookup := map[string]testEnum{
-		"alpha": testEnumA,
-		"beta":  testEnumB,
-	}
-
-	t.Run("found key returns mapped value", func(t *testing.T) {
+	t.Run("string-keyed map with struct value", func(t *testing.T) {
 		t.Parallel()
-		got := MapEnum(lookup, testEnumC, "alpha")
-		if got != testEnumA {
-			t.Errorf("MapEnum() = %q, want %q", got, testEnumA)
+		type style struct{ Class string }
+		m := map[string]style{"a": {"bold"}, "b": {"italic"}}
+		got := Lookup(m, "a", style{"fallback"})
+		if got.Class != "bold" {
+			t.Errorf("Lookup() = %+v, want bold", got)
 		}
 	})
 
-	for _, key := range []string{"unknown", ""} {
-		t.Run(key+" key returns fallback", func(t *testing.T) {
-			t.Parallel()
-			got := MapEnum(lookup, testEnumC, key)
-			if got != testEnumC {
-				t.Errorf("MapEnum() = %q, want %q (fallback)", got, testEnumC)
-			}
-		})
-	}
+	t.Run("typed-key map with string value", func(t *testing.T) {
+		t.Parallel()
+		m := map[testEnum]string{testEnumA: "found"}
+		got := Lookup(m, testEnumA, "fallback")
+		if got != "found" {
+			t.Errorf("Lookup() = %q, want %q", got, "found")
+		}
+	})
+
+	t.Run("missing key returns fallback", func(t *testing.T) {
+		t.Parallel()
+		m := map[string]int{"a": 1}
+		got := Lookup(m, "z", 99)
+		if got != 99 {
+			t.Errorf("Lookup() = %d, want 99", got)
+		}
+	})
+
+	t.Run("empty map returns fallback", func(t *testing.T) {
+		t.Parallel()
+		m := map[string]string{}
+		got := Lookup(m, "anything", "default")
+		if got != "default" {
+			t.Errorf("Lookup() = %q, want %q", got, "default")
+		}
+	})
 }
 
 func TestRender(t *testing.T) {
@@ -300,11 +314,11 @@ func TestRenderAll(t *testing.T) {
 		t.Parallel()
 		c1 := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 			_, err := io.WriteString(w, "<div>first</div>")
-			return err
+			return err //nolint:wrapcheck // test helper, direct passthrough
 		})
 		c2 := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 			_, err := io.WriteString(w, "<div>second</div>")
-			return err
+			return err //nolint:wrapcheck // test helper, direct passthrough
 		})
 		got := RenderAll(t, c1, c2)
 		if !strings.Contains(got, "first") || !strings.Contains(got, "second") {

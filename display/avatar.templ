@@ -69,17 +69,11 @@ var avatarDotSizeLookup = map[string]string{
 }
 
 func avatarSizeClass(size AvatarSize) string {
-	if v, ok := avatarSizeLookup[string(size)]; ok {
-		return v
-	}
-	return "h-10 w-10 text-base"
+	return utils.Lookup(avatarSizeLookup, string(size), "h-10 w-10 text-base")
 }
 
 func avatarDotSizeClass(size AvatarSize) string {
-	if v, ok := avatarDotSizeLookup[string(size)]; ok {
-		return v
-	}
-	return "h-2.5 w-2.5"
+	return utils.Lookup(avatarDotSizeLookup, string(size), "h-2.5 w-2.5")
 }
 
 func avatarShapeClass(shape AvatarShape) string {

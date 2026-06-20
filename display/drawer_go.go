@@ -57,8 +57,5 @@ var drawerSizeLookup = map[string]string{
 }
 
 func drawerSizeClass(size DrawerSize) string {
-	if v, ok := drawerSizeLookup[string(size)]; ok {
-		return v
-	}
-	return drawerSizeLookup[string(DrawerSizeMD)]
+	return utils.Lookup(drawerSizeLookup, string(size), drawerSizeLookup[string(DrawerSizeMD)])
 }

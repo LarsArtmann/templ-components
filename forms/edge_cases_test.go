@@ -31,9 +31,7 @@ func TestInputEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Input(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -53,9 +51,7 @@ func TestTextareaMoreEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Textarea(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -74,9 +70,7 @@ func TestCheckboxMoreEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Checkbox(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -98,9 +92,7 @@ func TestSelectMoreEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Select(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }

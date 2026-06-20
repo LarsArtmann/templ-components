@@ -62,9 +62,9 @@ func Ternary[T any](condition bool, a, b T) T {
 	return b
 }
 
-// MapEnum looks up a string key in a map and returns the corresponding enum value,
-// or the fallback if the key is not found.
-func MapEnum[T ~string](m map[string]T, fallback T, key string) T {
+// Lookup returns the map value for key, or fallback if not found.
+// Replaces the repetitive if-ok-return pattern used across all enum lookups.
+func Lookup[K comparable, V any](m map[K]V, key K, fallback V) V {
 	if v, ok := m[key]; ok {
 		return v
 	}

@@ -64,10 +64,7 @@ var buttonVariantLookup = map[ButtonType]string{
 const buttonVariantDefault = "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
 
 func buttonVariantClasses(v ButtonType) string {
-	if c, ok := buttonVariantLookup[v]; ok {
-		return c
-	}
-	return buttonVariantDefault
+	return utils.Lookup(buttonVariantLookup, v, buttonVariantDefault)
 }
 
 //nolint:gochecknoglobals // Package-level lookup table for button sizes
@@ -78,10 +75,7 @@ var buttonSizeLookup = map[ButtonSize]string{
 }
 
 func buttonSizeClasses(s ButtonSize) string {
-	if c, ok := buttonSizeLookup[s]; ok {
-		return c
-	}
-	return buttonSizeLookup[ButtonSizeMD]
+	return utils.Lookup(buttonSizeLookup, s, buttonSizeLookup[ButtonSizeMD])
 }
 
 // buttonBaseClass returns the shared base classes for all buttons

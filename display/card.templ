@@ -87,10 +87,7 @@ var cardPaddingLookup = map[string]string{
 }
 
 func cardPaddingClass(p CardPadding) string {
-	if v, ok := cardPaddingLookup[string(p)]; ok {
-		return v
-	}
-	return cardPaddingLookup[string(CardPaddingMD)]
+	return utils.Lookup(cardPaddingLookup, string(p), cardPaddingLookup[string(CardPaddingMD)])
 }
 
 // SimpleCardProps configures a simple card without header/footer

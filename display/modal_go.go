@@ -42,8 +42,5 @@ var modalSizeLookup = map[string]string{
 }
 
 func modalSizeClass(size ModalSize) string {
-	if v, ok := modalSizeLookup[string(size)]; ok {
-		return v
-	}
-	return modalSizeLookup[string(ModalSizeMD)]
+	return utils.Lookup(modalSizeLookup, string(size), modalSizeLookup[string(ModalSizeMD)])
 }

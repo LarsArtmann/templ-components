@@ -77,17 +77,11 @@ var avatarDotSizeLookup = map[string]string{
 }
 
 func avatarSizeClass(size AvatarSize) string {
-	if v, ok := avatarSizeLookup[string(size)]; ok {
-		return v
-	}
-	return "h-10 w-10 text-base"
+	return utils.Lookup(avatarSizeLookup, string(size), "h-10 w-10 text-base")
 }
 
 func avatarDotSizeClass(size AvatarSize) string {
-	if v, ok := avatarDotSizeLookup[string(size)]; ok {
-		return v
-	}
-	return "h-2.5 w-2.5"
+	return utils.Lookup(avatarDotSizeLookup, string(size), "h-2.5 w-2.5")
 }
 
 func avatarShapeClass(shape AvatarShape) string {
@@ -139,7 +133,7 @@ func Avatar(props AvatarProps) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 99, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 93, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 				if templ_7745c5c3_Err != nil {
@@ -175,7 +169,7 @@ func Avatar(props AvatarProps) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 103, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 97, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
@@ -206,7 +200,7 @@ func Avatar(props AvatarProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Src)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 108, Col: 19}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 102, Col: 19}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -219,7 +213,7 @@ func Avatar(props AvatarProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Alt)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 109, Col: 19}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 103, Col: 19}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {
@@ -291,7 +285,7 @@ func Avatar(props AvatarProps) templ.Component {
 				var templ_7745c5c3_Var13 string
 				templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 125, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 119, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 				if templ_7745c5c3_Err != nil {
@@ -327,7 +321,7 @@ func Avatar(props AvatarProps) templ.Component {
 				var templ_7745c5c3_Var15 string
 				templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 129, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 123, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 				if templ_7745c5c3_Err != nil {
@@ -350,7 +344,7 @@ func Avatar(props AvatarProps) templ.Component {
 				var templ_7745c5c3_Var16 string
 				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(props.Initials)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 134, Col: 20}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 128, Col: 20}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 				if templ_7745c5c3_Err != nil {
@@ -364,7 +358,7 @@ func Avatar(props AvatarProps) templ.Component {
 				var templ_7745c5c3_Var17 string
 				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.ResolveAttributeValue(svg.PathAvatarFill)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 137, Col: 33}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/avatar.templ`, Line: 131, Col: 33}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 				if templ_7745c5c3_Err != nil {

@@ -106,9 +106,7 @@ func TestStatCardEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, StatCard(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -132,9 +130,7 @@ func TestEmptyStateEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, EmptyState(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 			for _, nw := range tt.notWant {
 				utils.AssertNotContains(t, output, nw)
 			}
@@ -159,9 +155,7 @@ func TestCardEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Card(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 			for _, nw := range tt.notWant {
 				utils.AssertNotContains(t, output, nw)
 			}
@@ -209,9 +203,7 @@ func TestBadgeEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Badge(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -234,9 +226,7 @@ func TestAvatarEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Avatar(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -257,9 +247,7 @@ func TestTableEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Table(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 			for _, nw := range tt.notWant {
 				utils.AssertNotContains(t, output, nw)
 			}
@@ -281,9 +269,7 @@ func TestTabsEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Tabs(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -304,9 +290,7 @@ func TestDropdownEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Dropdown(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -327,9 +311,7 @@ func TestTooltipEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Tooltip(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 			for _, nw := range tt.notWant {
 				utils.AssertNotContains(t, output, nw)
 			}

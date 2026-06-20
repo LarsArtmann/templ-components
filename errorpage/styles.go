@@ -98,10 +98,7 @@ var familyStyleDefault = familyVisualStyle{
 }
 
 func lookupFamilyStyle(f Family) familyVisualStyle {
-	if s, ok := familyStyleMap[f]; ok {
-		return s
-	}
-	return familyStyleDefault
+	return utils.Lookup(familyStyleMap, f, familyStyleDefault)
 }
 
 // FamilyIcon returns the icon name for a given family.

@@ -22,9 +22,7 @@ func TestNavLinkEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, NavLink(tt.props, tt.active))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -45,9 +43,7 @@ func TestMobileNavLinkEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, MobileNavLink(tt.props, tt.active))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -66,9 +62,7 @@ func TestPaginationEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Pagination(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }
@@ -88,9 +82,7 @@ func TestNavEdgeCases(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Nav(tt.props))
-			for _, w := range tt.want {
-				utils.AssertContains(t, output, w)
-			}
+			utils.AssertContainsAll(t, output, tt.want...)
 		})
 	}
 }

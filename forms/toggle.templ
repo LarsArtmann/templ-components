@@ -47,10 +47,7 @@ var toggleSizeMap = map[ToggleSize]toggleSizeSet{
 var toggleSizeDefault = toggleSizeSet{"w-11 h-6", "w-5 h-5", "translate-x-5"}
 
 func toggleSizeLookup(size ToggleSize) toggleSizeSet {
-	if s, ok := toggleSizeMap[size]; ok {
-		return s
-	}
-	return toggleSizeDefault
+	return utils.Lookup(toggleSizeMap, size, toggleSizeDefault)
 }
 
 // Toggle renders an accessible toggle switch

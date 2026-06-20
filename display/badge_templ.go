@@ -324,10 +324,7 @@ var badgeSizeLookup = map[string]string{
 }
 
 func badgeSizeClass(s BadgeSize) string {
-	if v, ok := badgeSizeLookup[string(s)]; ok {
-		return v
-	}
-	return badgeSizeLookup[string(BadgeSizeMD)]
+	return utils.Lookup(badgeSizeLookup, string(s), badgeSizeLookup[string(BadgeSizeMD)])
 }
 
 func badgeShapeClass(pill bool) string {
@@ -355,10 +352,7 @@ var badgeStyleMap = map[BadgeType]badgeStyle{
 var badgeStyleDefault = badgeStyle{"bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300", "bg-gray-500"}
 
 func badgeLookupStyle(t BadgeType) badgeStyle {
-	if s, ok := badgeStyleMap[t]; ok {
-		return s
-	}
-	return badgeStyleDefault
+	return utils.Lookup(badgeStyleMap, t, badgeStyleDefault)
 }
 
 func badgeColorClass(t BadgeType) string    { return badgeLookupStyle(t).BG }
@@ -399,7 +393,7 @@ func StatusBadge(status string) templ.Component {
 }
 
 func mapStatusToBadgeType(status string) BadgeType {
-	return utils.MapEnum(statusToBadgeMap, BadgeNeutral, strings.ToLower(status))
+	return utils.Lookup(statusToBadgeMap, strings.ToLower(status), BadgeNeutral)
 }
 
 var statusToBadgeMap = map[string]BadgeType{
