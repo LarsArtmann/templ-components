@@ -4,6 +4,41 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [Unreleased]
+
+### Added
+
+- `display.overlayScriptComponent()`: shared overlay JS generator for Modal and Drawer — produces open/close functions, focus trap, focus save/restore, and CSP-safe `[data-tc-close]` click delegation from a single source of truth
+- `navigation.SimpleNavProps` struct with `DefaultSimpleNavProps()` — replaces positional parameters, adds BaseProps embedding
+- `forms.FormFieldWrapper()`: shared sub-template for Label + FieldError + helpText rendering, adopted by Input, Select, and Textarea
+- `feedback.feedbackStyleMap` / `feedback.feedbackIconMap`: single source of truth for Alert and Toast styles — ensures identical appearance for the same severity
+- `display.buttonVariantLookup` / `display.buttonSizeLookup`: map-based class lookups replacing switch statements
+- `forms.toggleSizeMap` / `forms.toggleSizeSet`: map-based toggle size lookup replacing switch
+- `errorpage.handler.go`: CSP-safe `data-tc-go-back` attribute replacing inline `onclick="history.back()"`
+
+### Changed
+
+- **BREAKING**: `SimpleNav(brandText, brandHref, links, currentPath)` → `SimpleNav(SimpleNavProps)` — positional params replaced with props struct + BaseProps
+- **BREAKING**: `forms.FormProps.Content templ.Component` removed — Form now uses `{ children... }` pattern matching Card, Modal, Drawer, InputGroup
+- **BREAKING**: `navigation.PaginationProps.CurrentPage`, `TotalPages`, `MaxVisible` changed from `int` to `uint` — negative page numbers made unrepresentable at the type level
+- **BREAKING**: `errorpage.BreadcrumbList` struct fields `Type` and `Context` swapped to match their JSON tags (`@type` and `@context`)
+- Modal and Drawer: inline `onclick` handlers replaced with `data-tc-close` attribute + per-instance event delegation — CSP compliant (no `script-src-attr` needed)
+- Alert and Toast: duplicate `alertStyleMap`/`alertIconMap` and `toastStyleMap`/`toastIconMap` consolidated into shared `feedbackStyleMap`/`feedbackIconMap`
+- Input, Select, Textarea: now delegate field chrome rendering to `FormFieldWrapper` instead of manual Label+FieldError+helpText
+- `errorpage.htmlEscape()` replaced with `html.EscapeString()` from stdlib
+- `display.button_go.go`: two `switch` statements converted to map lookups with fallback constants
+- `forms.toggle.templ`: `switch` converted to `toggleSizeMap` with `toggleSizeSet` struct
+- `layout.ThemeToggle`: added `utils.Ternary` default for aria-label ("Toggle theme")
+- `errorpage/styles.go`: `FamilyInfrastructure` changed from `slate-*` to `gray-*` for design system consistency
+- `display/dropdown.templ`: stray leading whitespace on type declaration removed; `dark:hover:bg-slate-700` → `gray-700`
+
+### Fixed
+
+- Modal/Drawer CSP violations: 4 inline `onclick` handlers generated `script-src-attr 'unsafe-inline'` requirement — replaced with nonce'd event delegation
+- `navigation.BreadcrumbList` struct field naming lie: `Type`/`Context` were swapped relative to their JSON tags
+- `forms/validation.templ`: pluralization `"error(s)"` → proper `"%d error%s"` with Ternary
+
+
 ## [0.2.0] — 2026-06-08
 
 ### Added

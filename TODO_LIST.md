@@ -1,9 +1,9 @@
 # TODO List
 
-**Updated:** 2026-06-08
-**Coverage:** 72.5% | **Tests:** 1100+ | **Packages:** 10+demo | **Lint:** 0 issues | **Icons:** 99 (98 path + 1 Spinner)
+**Updated:** 2026-06-20
+**Coverage:** 73.2% | **Tests:** 1100+ | **Packages:** 10+demo | **Lint:** 0 issues | **Icons:** 99 (98 path + 1 Spinner)
 
-> Session 4: 4 commits — Drawer, ValidationSummary, 25 new Heroicons (99 total), Spinner BaseProps conversion, golden file testing, coverage 72.5%.
+> Session 5: Modal/Drawer overlay JS extraction + CSP fix, SimpleNav props conversion, Alert/Toast style unification, Form children pattern, Pagination uint, FormFieldWrapper adoption, button/select/toggle map lookups, stdlib htmlEscape.
 
 ---
 
@@ -20,9 +20,9 @@
 
 - [ ] Move test helpers to `internal/testutil/` — breaking change for external consumers (source: utils/test_helpers.go)
 - [x] Spinner BaseProps conversion — `SpinnerProps` struct with BaseProps, Size, Color fields (source: feedback/loading.templ)
-- [ ] SimpleNav BaseProps conversion — `(brandText, brandHref, links, currentPath)` → `SimpleNavProps` struct (source: navigation/nav.templ)
-- [ ] Add BaseProps to StepIndicatorProps (source: feedback/progress.templ)
-- [ ] Pagination uint fields — `CurrentPage` and `TotalPages` should be `uint` (source: navigation/pagination.templ)
+- [x] SimpleNav BaseProps conversion — `SimpleNav(SimpleNavProps)` with BaseProps embedding (source: navigation/nav.templ)
+- [x] Add BaseProps to StepIndicatorProps (source: feedback/step_indicator.templ)
+- [x] Pagination uint fields — `CurrentPage`, `TotalPages`, `MaxVisible` converted to `uint` (source: navigation/pagination.templ)
 
 ## 🟢 Enhancements
 
@@ -85,8 +85,8 @@
 - [x] Add Breadcrumb structured data (JSON-LD) — `JSONLD` field on `BreadcrumbsProps`
 - [x] Add Pagination SEO `rel=prev/next`
 - [x] Investigate tooltip JS-based `aria-describedby` injection — already done with `props.ID` pattern
-- [ ] Consolidate inline JS into shared init strategy — 10 script blocks across 7 files
-- [ ] Add `uint` type for Pagination fields (source: navigation/pagination.templ)
+- [x] Consolidate inline JS into shared init strategy — Modal/Drawer overlay JS extracted to shared.go (overlayCloseJS/overlayOpenJS/overlayTrapJS). CSP-safe data-tc-close delegation replaces inline onclick.
+- [x] Add `uint` type for Pagination fields (source: navigation/pagination.templ)
 
 ### Testing
 
