@@ -187,12 +187,33 @@ func Nav(props NavProps) templ.Component {
 	})
 }
 
+// SimpleNavProps configures a minimal navigation with a text brand
+type SimpleNavProps struct {
+	utils.BaseProps
+	BrandText   string
+	BrandHref   string
+	Links       []NavLinkProps
+	CurrentPath string
+}
+
+// DefaultSimpleNavProps returns sensible defaults
+func DefaultSimpleNavProps() SimpleNavProps {
+	return SimpleNavProps{ //nolint:exhaustruct // intentionally minimal defaults
+		BrandHref: "/",
+	}
+}
+
 // SimpleNav renders a minimal navigation with text brand
 //
-//	@navigation.SimpleNav("MyApp", "/", []navigation.NavLinkProps{
-//	   {Href: "/", Text: "Home"},
-//	}, "/")
-func SimpleNav(brandText, brandHref string, links []NavLinkProps, currentPath string) templ.Component {
+//	@navigation.SimpleNav(navigation.SimpleNavProps{
+//	   BrandText: "MyApp",
+//	   BrandHref: "/",
+//	   Links: []navigation.NavLinkProps{
+//	     {Href: "/", Text: "Home"},
+//	   },
+//	   CurrentPath: "/",
+//	})
+func SimpleNav(props SimpleNavProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -214,9 +235,10 @@ func SimpleNav(brandText, brandHref string, links []NavLinkProps, currentPath st
 		}
 		ctx = templ.ClearChildren(ctx)
 		templ_7745c5c3_Err = Nav(NavProps{
-			Brand:       simpleBrand(brandText, brandHref),
-			Links:       links,
-			CurrentPath: currentPath,
+			BaseProps:   props.GetBaseProps(),
+			Brand:       simpleBrand(props.BrandText, props.BrandHref),
+			Links:       props.Links,
+			CurrentPath: props.CurrentPath,
 			Sticky:      true,
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
@@ -254,7 +276,7 @@ func simpleBrand(text, href string) templ.Component {
 		var templ_7745c5c3_Var8 templ.SafeURL
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(href))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 83, Col: 30}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 105, Col: 30}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -267,7 +289,7 @@ func simpleBrand(text, href string) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 83, Col: 98}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 105, Col: 98}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -312,7 +334,7 @@ func Footer(brandText string) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(utils.CurrentYear())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 93, Col: 32}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 115, Col: 32}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -325,7 +347,7 @@ func Footer(brandText string) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(brandText)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 93, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 115, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {

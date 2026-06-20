@@ -66,10 +66,10 @@ func TestSimpleNavUserGetsQuickNavigation(t *testing.T) {
 
 	t.Run("user sees brand text and links", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, SimpleNav("MyApp", "/", []NavLinkProps{
+		output := utils.Render(t, SimpleNav(SimpleNavProps{BrandText: "MyApp", BrandHref: "/", Links: []NavLinkProps{
 			{Href: "/", Text: navItemHome},
 			{Href: "/settings", Text: "Settings"},
-		}, "/"))
+		}, CurrentPath: "/"}))
 		utils.AssertContains(t, output, "MyApp")
 		utils.AssertContains(t, output, "Settings")
 	})
@@ -224,7 +224,7 @@ func TestNavEmptyLinks(t *testing.T) {
 	t.Parallel()
 	t.Run("nav with no links renders brand only", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, SimpleNav("App", "/", nil, "/"))
+		output := utils.Render(t, SimpleNav(SimpleNavProps{BrandText: "App", BrandHref: "/", CurrentPath: "/"}))
 		utils.AssertContains(t, output, "App")
 		utils.AssertNotContains(t, output, `aria-current="page"`)
 	})

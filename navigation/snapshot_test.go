@@ -218,7 +218,9 @@ func TestMobileMenuRender(t *testing.T) {
 
 func TestSimpleNavRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, SimpleNav("MyApp", "/", testNavLinks, "/"))
+	output := utils.Render(t, SimpleNav(SimpleNavProps{
+		BrandText: "MyApp", BrandHref: "/", Links: testNavLinks, CurrentPath: "/",
+	}))
 	utils.AssertContains(t, output, "MyApp")
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, `aria-label="Main navigation"`)

@@ -213,16 +213,16 @@ func TestBreadcrumbsWithCustomSeparator(t *testing.T) {
 
 func TestSimpleNavMinimal(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, SimpleNav("App", "/", nil, "/"))
+	output := utils.Render(t, SimpleNav(SimpleNavProps{BrandText: "App", BrandHref: "/", CurrentPath: "/"}))
 	utils.AssertContains(t, output, "App")
 }
 
 func TestSimpleNavWithLinks(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, SimpleNav("App", "/", []NavLinkProps{
+	output := utils.Render(t, SimpleNav(SimpleNavProps{BrandText: "App", BrandHref: "/", Links: []NavLinkProps{
 		{Href: "/about", Text: "About"},
 		{Href: "/contact", Text: "Contact"},
-	}, "/about"))
+	}, CurrentPath: "/about"}))
 	utils.AssertContains(t, output, "About")
 	utils.AssertContains(t, output, "Contact")
 }

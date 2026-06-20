@@ -185,9 +185,13 @@ Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, labels, an
 Nav bars, breadcrumbs, pagination, and mobile menus.
 
 ```templ
-@navigation.SimpleNav("MyApp", "/", []navigation.NavLinkProps{
-    {Href: "/", Text: "Home"}, {Href: "/about", Text: "About"},
-}, "/")
+@navigation.SimpleNav(navigation.SimpleNavProps{
+    BrandText: "MyApp", BrandHref: "/",
+    Links: []navigation.NavLinkProps{
+        {Href: "/", Text: "Home"}, {Href: "/about", Text: "About"},
+    },
+    CurrentPath: "/",
+})
 
 @navigation.Breadcrumbs(navigation.BreadcrumbsProps{
     Items: []navigation.BreadcrumbItem{
