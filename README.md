@@ -24,10 +24,10 @@ templ-components is a pure Tailwind CSS v4 component library for Go's templ engi
 | **JavaScript**       | None (pure server-rendered) | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js** | No                          | No                            | Yes                                            |
 | **Go module**        | Yes                         | Yes                           | Yes                                            |
-| **Components**       | 53                          | 40+                           | —                                              |
+| **Components**       | 55                          | 40+                           | —                                              |
 | **Dark mode**        | Built-in (Tailwind `dark:`) | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**    | Yes (nonce support)         | Yes                           | —                                              |
-| **Typed props**      | 16+ string enums            | —                             | —                                              |
+| **Typed props**      | 17+ string enums            | —                             | —                                              |
 | **HTMX integration** | Built-in package            | —                             | —                                              |
 
 **templ-components is for developers who want server-rendered HTML with zero client-side JavaScript — no Alpine.js, no DaisyUI, no build pipeline beyond `templ generate`.**
