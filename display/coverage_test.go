@@ -668,15 +668,10 @@ func TestDrawerRender(t *testing.T) {
 		utils.AssertContains(t, output, "translate-x-full")
 	})
 
-	t.Run("empty ID panics", func(t *testing.T) {
+	t.Run("empty ID auto-generates", func(t *testing.T) {
 		t.Parallel()
-		defer func() {
-			r := recover()
-			if r == nil {
-				t.Error("expected panic for Drawer with empty ID")
-			}
-		}()
-		utils.Render(t, Drawer(DrawerProps{}))
+		output := utils.Render(t, Drawer(DrawerProps{}))
+		utils.AssertContains(t, output, `id="tc-drawer-`)
 	})
 
 	t.Run("all sizes", func(t *testing.T) {

@@ -1,7 +1,5 @@
 package htmx
 
-import "fmt"
-
 // validSwapStyles are the allowed HTMX swap styles for out-of-band updates
 var validSwapStyles = map[string]bool{
 	"innerHTML":   true,
@@ -14,11 +12,12 @@ var validSwapStyles = map[string]bool{
 	"none":        true,
 }
 
-// validateSwapStyle panics if the swap style is not a valid HTMX swap style
-func validateSwapStyle(style string) {
-	if !validSwapStyles[style] {
-		panic(fmt.Sprintf("htmx: invalid SwapOOB swapStyle %q — must be one of innerHTML, outerHTML, beforebegin, afterbegin, beforeend, afterend, delete, none", style))
+// normalizeSwapStyle returns style if valid, otherwise falls back to outerHTML.
+func normalizeSwapStyle(style string) string {
+	if validSwapStyles[style] {
+		return style
 	}
+	return "outerHTML"
 }
 
 // ConfirmDelete renders a button with a confirmation dialog for destructive actions
@@ -44,8 +43,8 @@ templ ConfirmDelete(hxDelete, hxTarget, confirmMessage string) {
 //	   @feedback.Toast(props)
 //	 }
 templ SwapOOB(selector, swapStyle string) {
-	{{ validateSwapStyle(swapStyle) }}
-	<div hx-swap-oob={ swapStyle + ":" + selector }>
+	{{ style := normalizeSwapStyle(swapStyle) }}
+	<div hx-swap-oob={ style + ":" + selector }>
 		{ children... }
 	</div>
 }

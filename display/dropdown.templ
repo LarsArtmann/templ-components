@@ -109,15 +109,9 @@ templ dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) {
 //	   },
 //	})
 templ Dropdown(props DropdownProps) {
-	{{
-		if err := utils.ValidateID("dropdown", props.ID); err != nil {
-			panic(err.Error())
-		}
-	}}
+	{{ id := utils.EnsureID("dropdown", props.ID) }}
 	<div
-		if props.ID != "" {
-			id={ props.ID }
-		}
+		id={ id }
 		class={ utils.Class("relative inline-block text-left", props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
@@ -127,11 +121,11 @@ templ Dropdown(props DropdownProps) {
 		<div>
 			<button
 				type="button"
-				id={ props.ID + "-button" }
+				id={ id + "-button" }
 				class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white shadow-xs ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
 				aria-expanded="false"
 				aria-haspopup="true"
-				data-dropdown-trigger={ props.ID }
+				data-dropdown-trigger={ id }
 				aria-label={ props.Label }
 			>
 				{ props.Label }
@@ -139,11 +133,11 @@ templ Dropdown(props DropdownProps) {
 			</button>
 		</div>
 		<div
-			id={ props.ID + "-menu" }
+			id={ id + "-menu" }
 			class="hidden absolute z-10 mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 focus:outline-hidden"
 			role="menu"
 			aria-orientation="vertical"
-			aria-labelledby={ props.ID + "-button" }
+			aria-labelledby={ id + "-button" }
 			tabindex="-1"
 			if props.Position == DropdownPositionRight {
 				data-dropdown-align="right"

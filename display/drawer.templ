@@ -11,26 +11,22 @@ import (
 //	   <p>Drawer content</p>
 //	}
 templ Drawer(props DrawerProps) {
-	{{
-		if err := utils.ValidateID("drawer", props.ID); err != nil {
-			panic(err.Error())
-		}
-	}}
+	{{ id := utils.EnsureID("drawer", props.ID) }}
 	<div
-		id={ props.ID }
+		id={ id }
 		class={ "fixed inset-0 z-50 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0",
 			templ.KV("opacity-100 pointer-events-auto", props.Open),
 			templ.KV("opacity-0 pointer-events-none", !props.Open) }
 		role="dialog"
 		aria-modal="true"
-		aria-labelledby={ props.ID + "-title" }
+		aria-labelledby={ id + "-title" }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
 	>
 		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" data-tc-close="drawer"></div>
 		<div
-			id={ props.ID + "-panel" }
+			id={ id + "-panel" }
 			class={ utils.Class("fixed bg-white dark:bg-gray-900 shadow-xl w-full h-full overflow-y-auto transform transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0", drawerSizeClass(props.Size), props.Class),
 			templ.KV("translate-x-0", props.Open),
 			templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
@@ -44,7 +40,7 @@ templ Drawer(props DrawerProps) {
 		>
 			if props.Title != "" {
 				<div class="flex items-center justify-between px-4 py-3 sm:px-6 border-b border-gray-200 dark:border-gray-700">
-					<h2 id={ props.ID + "-title" } class="text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h2>
+					<h2 id={ id + "-title" } class="text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h2>
 					<button
 						type="button"
 						class="rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
@@ -60,5 +56,5 @@ templ Drawer(props DrawerProps) {
 			</div>
 		</div>
 	</div>
-	@overlayScriptComponent(props.Nonce, props.ID, "Drawer", drawerPanelConfig(props.Side))
+	@overlayScriptComponent(props.Nonce, id, "Drawer", drawerPanelConfig(props.Side))
 }

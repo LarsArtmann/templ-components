@@ -1,23 +1,19 @@
 package display
 
 import (
-	"fmt"
 	"strconv"
 
 	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
 )
 
-func validateAccordionItems(items []AccordionItem) error {
-	for i, item := range items {
-		if item.ID == "" {
-			return fmt.Errorf(
-				"Accordion item[%d] requires a non-empty ID for ARIA attributes and JavaScript functionality",
-				i,
-			)
+func ensureAccordionItemIDs(items []AccordionItem) []AccordionItem {
+	for i := range items {
+		if items[i].ID == "" {
+			items[i].ID = utils.EnsureID("accordion", "")
 		}
 	}
-	return nil
+	return items
 }
 
 // AccordionItem represents a single collapsible panel
@@ -48,11 +44,7 @@ func DefaultAccordionProps() AccordionProps {
 //	   },
 //	})
 templ Accordion(props AccordionProps) {
-	{{
-		if err := validateAccordionItems(props.Items); err != nil {
-			panic(err.Error())
-		}
-	}}
+	{{ items := ensureAccordionItemIDs(props.Items) }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
@@ -63,7 +55,7 @@ templ Accordion(props AccordionProps) {
 		}
 		{ props.Attrs... }
 	>
-		for _, item := range props.Items {
+		for _, item := range items {
 			<div class="bg-white dark:bg-gray-900">
 				<button
 					type="button"

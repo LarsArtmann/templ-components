@@ -59,15 +59,10 @@ func TestDropdownRender(t *testing.T) {
 		utils.AssertContains(t, output, `type="button"`)
 	})
 
-	t.Run("empty ID panics on render", func(t *testing.T) {
+	t.Run("empty ID auto-generates on render", func(t *testing.T) {
 		t.Parallel()
-		defer func() {
-			r := recover()
-			if r == nil {
-				t.Error("expected panic for empty ID, got none")
-			}
-		}()
-		utils.Render(t, Dropdown(DropdownProps{Label: "No ID"}))
+		output := utils.Render(t, Dropdown(DropdownProps{Label: "No ID"}))
+		utils.AssertContains(t, output, `id="tc-dropdown-`)
 	})
 
 	t.Run("right position", func(t *testing.T) {

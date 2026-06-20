@@ -245,3 +245,32 @@ func TestValidateID(t *testing.T) {
 		}
 	})
 }
+
+func TestEnsureID(t *testing.T) {
+	t.Parallel()
+	t.Run("returns existing ID unchanged", func(t *testing.T) {
+		t.Parallel()
+		got := EnsureID("modal", "my-modal")
+		if got != "my-modal" {
+			t.Errorf("EnsureID() = %q, want %q", got, "my-modal")
+		}
+	})
+	t.Run("generates prefixed ID when empty", func(t *testing.T) {
+		t.Parallel()
+		got := EnsureID("drawer", "")
+		if !strings.HasPrefix(got, "tc-drawer-") {
+			t.Errorf("EnsureID() = %q, want prefix %q", got, "tc-drawer-")
+		}
+		if len(got) <= len("tc-drawer-") {
+			t.Errorf("EnsureID() = %q, expected non-empty hex suffix", got)
+		}
+	})
+	t.Run("generates unique IDs", func(t *testing.T) {
+		t.Parallel()
+		a := EnsureID("modal", "")
+		b := EnsureID("modal", "")
+		if a == b {
+			t.Errorf("EnsureID() generated duplicate IDs: %q == %q", a, b)
+		}
+	})
+}

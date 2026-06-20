@@ -142,6 +142,12 @@ func TestSwapOOBUpdatesMultipleElements(t *testing.T) {
 		output := utils.Render(t, SwapOOB("#toast-container", "beforeend"))
 		utils.AssertContains(t, output, `hx-swap-oob="beforeend:#toast-container"`)
 	})
+
+	t.Run("invalid swap style falls back to outerHTML", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SwapOOB("#target", "bogus-style"))
+		utils.AssertContains(t, output, `hx-swap-oob="outerHTML:#target"`)
+	})
 }
 
 // --- Edge Cases ---

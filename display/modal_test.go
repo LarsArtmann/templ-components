@@ -102,14 +102,9 @@ func TestModalRender(t *testing.T) {
 		utils.AssertContains(t, output, "removeAttribute")
 	})
 
-	t.Run("empty ID panics on render", func(t *testing.T) {
+	t.Run("empty ID auto-generates on render", func(t *testing.T) {
 		t.Parallel()
-		defer func() {
-			r := recover()
-			if r == nil {
-				t.Error("expected panic for empty ID, got none")
-			}
-		}()
-		utils.Render(t, Modal(ModalProps{Title: "No ID"}))
+		output := utils.Render(t, Modal(ModalProps{Title: "No ID"}))
+		utils.AssertContains(t, output, `id="tc-modal-`)
 	})
 }

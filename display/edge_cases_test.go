@@ -50,20 +50,15 @@ func TestModalEdgeCases(t *testing.T) {
 func TestAccordionEdgeCases(t *testing.T) {
 	t.Parallel()
 
-	t.Run("empty item ID panics", func(t *testing.T) {
+	t.Run("empty item ID auto-generates", func(t *testing.T) {
 		t.Parallel()
-		defer func() {
-			r := recover()
-			if r == nil {
-				t.Error("expected panic for Accordion item with empty ID")
-			}
-		}()
 		props := AccordionProps{
 			Items: []AccordionItem{
 				{ID: "", Title: "Missing"},
 			},
 		}
-		utils.Render(t, Accordion(props))
+		output := utils.Render(t, Accordion(props))
+		utils.AssertContains(t, output, `id="tc-accordion-`)
 	})
 
 	t.Run("empty items list renders container only", func(t *testing.T) {
