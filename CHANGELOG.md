@@ -31,12 +31,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `layout.ThemeToggle`: added `utils.Ternary` default for aria-label ("Toggle theme")
 - `errorpage/styles.go`: `FamilyInfrastructure` changed from `slate-*` to `gray-*` for design system consistency
 - `display/dropdown.templ`: stray leading whitespace on type declaration removed; `dark:hover:bg-slate-700` → `gray-700`
+- `forms.InputType`: unknown types now fall back to "text" instead of panicking — matches HTML spec
+- `icons.Name`: unknown icon names now fall back to the Question icon instead of crashing render
+- `forms.RadioGroup`: `<fieldset>` now propagates `AriaLabel` from BaseProps (was silently dropped)
+- `display.Avatar`: image branch wrapper `<div>` now propagates all BaseProps (ID, Class, AriaLabel, Attrs) — was only on inner `<img>`
 
 ### Fixed
 
 - Modal/Drawer CSP violations: 4 inline `onclick` handlers generated `script-src-attr 'unsafe-inline'` requirement — replaced with nonce'd event delegation
+- Modal/Drawer HTMX regression: `data-tc-close` click listeners used per-element binding that broke on HTMX DOM swaps — replaced with event delegation on overlay container
+- Toast icon split brain: server-rendered toasts showed XCircle for errors, client-side tcShowToast showed ExclamationTriangle — unified to use `feedbackIconMap` as single source of truth
 - `navigation.BreadcrumbList` struct field naming lie: `Type`/`Context` were swapped relative to their JSON tags
 - `forms/validation.templ`: pluralization `"error(s)"` → proper `"%d error%s"` with Ternary
+- Removed dead code: `utils.AssertContainsClass` — identical to `AssertContains`, zero callers
 
 
 ## [0.2.0] — 2026-06-08

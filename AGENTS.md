@@ -78,7 +78,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - InputType: validates via `inputType()` with `validInputTypes` map; panics on unknown, defaults empty to `"text"`
 - Structural variants (TabsVariant, DropdownPosition, TrendDirection): use `if`-branch for DOM structure, not map lookup — map pattern is for pure class lookups only
 - `forms.SanitizeID`: exported utility for library consumers, not used internally
-- Enum validation: 2 panic-on-unknown (InputType, icons.Name), 10 map+fallback, structural variants use if-branch
+- Enum validation: 0 panic-on-unknown, 12 map+fallback, structural variants use if-branch. InputType falls back to "text", icons.Name falls back to Question icon. Only remaining panic: icon path data integrity check (stray | separators).
 - Modal/Dropdown/Accordion: ID validation at render time (`validateDropdownID`, `validateModalID`, `validateAccordionItems`) panic on empty
 
 - Toast JS: dismiss icon from `icons.IconPathJS()` via `tcToastIcons.dismiss`
