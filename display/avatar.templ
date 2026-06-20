@@ -94,15 +94,20 @@ func avatarShapeClass(shape AvatarShape) string {
 //	@display.Avatar(display.AvatarProps{Src: "/avatar.jpg", Alt: "Alice"})
 templ Avatar(props AvatarProps) {
 	if props.Src != "" {
-		<div class="relative inline-block">
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("relative inline-block", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
 			<img
-				if props.ID != "" {
-					id={ props.ID }
-				}
 				src={ props.Src }
 				alt={ props.Alt }
-				class={ utils.Class("inline-block object-cover bg-gray-100 dark:bg-gray-800", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class) }
-				{ props.Attrs... }
+				class={ utils.Class("inline-block object-cover bg-gray-100 dark:bg-gray-800", avatarSizeClass(props.Size), avatarShapeClass(props.Shape)) }
 			/>
 			if props.Status != AvatarStatusNone {
 				<span

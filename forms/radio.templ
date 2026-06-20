@@ -66,6 +66,9 @@ templ RadioGroup(props RadioGroupProps) {
 			id={ props.ID }
 		}
 		class={ utils.Class("", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
 		if props.Required {
 			aria-required="true"
 		}
