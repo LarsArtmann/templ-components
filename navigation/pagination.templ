@@ -12,11 +12,11 @@ import (
 // PaginationProps configures a pagination component
 type PaginationProps struct {
 	utils.BaseProps
-	CurrentPage int
-	TotalPages  int
+	CurrentPage uint
+	TotalPages  uint
 	BaseURL     string
 	QueryParam  string
-	MaxVisible  int
+	MaxVisible  uint
 }
 
 // DefaultPaginationProps returns sensible defaults
@@ -28,12 +28,12 @@ func DefaultPaginationProps() PaginationProps {
 }
 
 func (p *PaginationProps) normalize() {
-	if p.CurrentPage < 1 {
+	if p.CurrentPage == 0 {
 		p.CurrentPage = 1
 	}
 }
 
-func (p PaginationProps) pageURL(page int) string {
+func (p PaginationProps) pageURL(page uint) string {
 	param := p.QueryParam
 	if param == "" {
 		param = "page"
@@ -43,25 +43,26 @@ func (p PaginationProps) pageURL(page int) string {
 		return fmt.Sprintf("%s?%s=%d", p.BaseURL, param, page)
 	}
 	q := u.Query()
-	q.Set(param, strconv.Itoa(page))
+	q.Set(param, strconv.FormatUint(uint64(page), 10))
 	u.RawQuery = q.Encode()
 	return u.String()
 }
 
-func paginationRange(current, total, maxVisible int) (start, end int) {
-	if maxVisible <= 0 {
+func paginationRange(current, total, maxVisible uint) (start, end uint) {
+	if maxVisible == 0 {
 		maxVisible = 5
 	}
 	if total <= maxVisible {
 		return 1, total
 	}
 	half := maxVisible / 2
-	start = current - half
-	end = current + half
-	if maxVisible%2 == 0 {
-		end--
-	}
-	if start < 1 {
+	if current > half {
+		start = current - half
+		end = current + half
+		if maxVisible%2 == 0 {
+			end--
+		}
+	} else {
 		start = 1
 		end = maxVisible
 	}

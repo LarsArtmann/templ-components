@@ -15,7 +15,7 @@ func TestPaginationEllipsis(t *testing.T) {
 		t.Parallel()
 		for _, tc := range []struct {
 			name        string
-			currentPage int
+			currentPage uint
 			wantHref    string
 		}{
 			{"start", 8, `href="/items?page=1"`},
@@ -39,7 +39,7 @@ func TestPaginationEllipsis(t *testing.T) {
 		t.Parallel()
 		for _, tc := range []struct {
 			name        string
-			currentPage int
+			currentPage uint
 			wantRel     string
 		}{
 			{"previous", 3, `rel="prev"`},
@@ -94,8 +94,8 @@ func TestPaginationEllipsis(t *testing.T) {
 		t.Parallel()
 		for _, tc := range []struct {
 			name        string
-			currentPage int
-			totalPages  int
+			currentPage uint
+			totalPages  uint
 			wantText    string
 		}{
 			{"first page disables previous", 1, 5, "cursor-not-allowed"},

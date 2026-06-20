@@ -160,7 +160,7 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 	})
 }
 
-func renderDefaultPagination(t *testing.T, currentPage, totalPages int) string {
+func renderDefaultPagination(t *testing.T, currentPage, totalPages uint) string {
 	t.Helper()
 	props := DefaultPaginationProps()
 	props.CurrentPage = currentPage
@@ -176,8 +176,8 @@ func TestPaginationUserCanBrowsePages(t *testing.T) {
 
 	for _, tt := range []struct {
 		name        string
-		currentPage int
-		totalPages  int
+		currentPage uint
+		totalPages  uint
 		want        string
 	}{
 		{"user sees page numbers for multiple pages", 1, 5, testItemsPath},

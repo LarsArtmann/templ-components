@@ -11,11 +11,11 @@ func TestPaginationRange(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name       string
-		current    int
-		total      int
-		maxVisible int
-		wantStart  int
-		wantEnd    int
+		current    uint
+		total      uint
+		maxVisible uint
+		wantStart  uint
+		wantEnd    uint
 	}{
 		{"small total", 2, 3, 5, 1, 3},
 		{"current in middle", 5, 10, 5, 3, 7},
@@ -94,24 +94,9 @@ func TestPaginationRender(t *testing.T) {
 		utils.AssertContains(t, output, "1")
 	})
 
-	t.Run("negative TotalPages renders nothing", func(t *testing.T) {
-		t.Parallel()
-		output := renderPagination(t, 1, -5, "/items")
-		if output != "" {
-			t.Errorf("expected empty output for negative TotalPages, got: %s", output)
-		}
-	})
-
 	t.Run("zero TotalPages renders nothing", func(t *testing.T) {
 		t.Parallel()
 		assertEmptyPaginationOutput(t, 1, 0, "/items")
-	})
-
-	t.Run("negative CurrentPage clamped to 1", func(t *testing.T) {
-		t.Parallel()
-		output := renderPagination(t, -3, 5, "/items")
-		utils.AssertContains(t, output, `aria-current="page"`)
-		utils.AssertContains(t, output, "1")
 	})
 
 	t.Run("custom ID propagated", func(t *testing.T) {
@@ -126,7 +111,7 @@ func TestPaginationRender(t *testing.T) {
 	})
 }
 
-func renderPagination(t *testing.T, currentPage, totalPages int, baseURL string) string {
+func renderPagination(t *testing.T, currentPage, totalPages uint, baseURL string) string {
 	t.Helper()
 	return utils.Render(t, Pagination(PaginationProps{
 		CurrentPage: currentPage,
@@ -135,7 +120,7 @@ func renderPagination(t *testing.T, currentPage, totalPages int, baseURL string)
 	}))
 }
 
-func assertEmptyPaginationOutput(t *testing.T, currentPage, totalPages int, baseURL string) {
+func assertEmptyPaginationOutput(t *testing.T, currentPage, totalPages uint, baseURL string) {
 	t.Helper()
 	output := renderPagination(t, currentPage, totalPages, baseURL)
 	if output != "" {
