@@ -67,7 +67,7 @@ func toastJSIconPaths() string {
 	for _, t := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
 		fmt.Fprintf(&b, "'%s':'%s',", t, icons.IconPathJS(feedbackIconMap[t]))
 	}
-	b.WriteString("dismiss:'" + icons.IconPathJS(icons.X) + "'")
+	fmt.Fprintf(&b, "dismiss:'%s'", icons.IconPathJS(icons.X))
 	b.WriteString("};")
 	return b.String()
 }
