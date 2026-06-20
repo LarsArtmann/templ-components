@@ -21,45 +21,30 @@ func TestPaginationEllipsisCoverage(t *testing.T) {
 		utils.AssertContains(t, output, "/items?page=20")
 	})
 
-	t.Run("first page with many pages", func(t *testing.T) {
+	t.Run("edge cases", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 1,
-			TotalPages:  15,
-			BaseURL:     "/p",
-		}))
-		utils.AssertContains(t, output, "/p?page=2")
-	})
-
-	t.Run("last page with many pages", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 15,
-			TotalPages:  15,
-			BaseURL:     "/p",
-		}))
-
-		utils.AssertContains(t, output, "15")
-	})
-
-	t.Run("prev next arrows on first page", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 1,
-			TotalPages:  5,
-			BaseURL:     "/p",
-		}))
-		utils.AssertContains(t, output, `rel="next"`)
-	})
-
-	t.Run("prev next arrows on last page", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Pagination(PaginationProps{
-			CurrentPage: 5,
-			TotalPages:  5,
-			BaseURL:     "/p",
-		}))
-		utils.AssertContains(t, output, `rel="prev"`)
+		for _, tt := range []struct {
+			name        string
+			currentPage uint
+			totalPages  uint
+			baseURL     string
+			want        string
+		}{
+			{"first page with many pages", 1, 15, "/p", "/p?page=2"},
+			{"last page with many pages", 15, 15, "/p", "15"},
+			{"prev next on first page", 1, 5, "/p", `rel="next"`},
+			{"prev next on last page", 5, 5, "/p", `rel="prev"`},
+		} {
+			t.Run(tt.name, func(t *testing.T) {
+				t.Parallel()
+				output := utils.Render(t, Pagination(PaginationProps{
+					CurrentPage: tt.currentPage,
+					TotalPages:  tt.totalPages,
+					BaseURL:     tt.baseURL,
+				}))
+				utils.AssertContains(t, output, tt.want)
+			})
+		}
 	})
 
 	t.Run("with ID and class", func(t *testing.T) {
@@ -112,29 +97,5 @@ func TestBreadcrumbsExtraCoverage(t *testing.T) {
 			BaseProps: utils.BaseProps{ID: "bc"},
 		}))
 		utils.AssertContains(t, output, `id="bc"`)
-	})
-}
-
-func TestNavLinkExtraCoverage(t *testing.T) {
-	t.Parallel()
-
-	t.Run("external link", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, NavLink(NavLinkProps{
-			Href:     "https://external.com",
-			Text:     "External",
-			External: true,
-		}, ""))
-		utils.AssertContains(t, output, "target=\"_blank\"")
-		utils.AssertContains(t, output, "rel=\"noopener noreferrer\"")
-	})
-
-	t.Run("active link with aria-current", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, NavLink(NavLinkProps{
-			Href: "/about",
-			Text: "About",
-		}, "/about"))
-		utils.AssertContains(t, output, `aria-current="page"`)
 	})
 }

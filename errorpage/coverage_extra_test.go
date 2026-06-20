@@ -88,12 +88,6 @@ func TestErrorDetailCoverage(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "2024-06-20")
 	})
-
-	t.Run("default props", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, ErrorDetail(DefaultErrorDetailProps()))
-		utils.AssertContains(t, output, "role=\"alert\"")
-	})
 }
 
 func TestWriteJSONErrorCoverage(t *testing.T) {

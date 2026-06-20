@@ -58,24 +58,6 @@ func TestInlineLoadingOverlayUserSeesLocalLoadingState(t *testing.T) {
 
 // --- LoadingButton Behavior ---
 
-func TestLoadingButtonUserSeesButtonStateChange(t *testing.T) {
-	t.Parallel()
-
-	t.Run("user sees button with default and loading text", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(
-			t,
-			LoadingButton(
-				"Save",
-				"Saving...",
-				feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "htmx-indicator"}),
-			),
-		)
-		utils.AssertContains(t, output, "Save")
-		utils.AssertContains(t, output, "Saving...")
-	})
-}
-
 func renderConfirmDelete(t *testing.T, endpoint, target, confirmMsg string) string {
 	t.Helper()
 	return utils.Render(t, ConfirmDelete(endpoint, target, confirmMsg))

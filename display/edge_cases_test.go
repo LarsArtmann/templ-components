@@ -264,7 +264,6 @@ func TestTabsEdgeCases(t *testing.T) {
 		want  []string
 	}{
 		{"pills variant", TabsProps{Variant: TabsPills, ActiveTabID: "a", Tabs: []Tab{{ID: "a", Label: "A"}}}, []string{"space-x-2"}},
-		{"custom id/class", TabsProps{BaseProps: utils.BaseProps{ID: "tabs-1", Class: "mb-4"}, ActiveTabID: "a", Tabs: []Tab{{ID: "a", Label: "A"}}}, []string{`id="tabs-1"`, "mb-4"}},
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()

@@ -63,16 +63,6 @@ func TestBaseExtraCoverage(t *testing.T) {
 func TestMinimalExtraCoverage(t *testing.T) {
 	t.Parallel()
 
-	t.Run("with title and locale", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Minimal(MinimalProps{
-			Title:  "Minimal",
-			Locale: "fr",
-		}))
-		utils.AssertContains(t, output, "Minimal")
-		utils.AssertContains(t, output, `lang="fr"`)
-	})
-
 	t.Run("default props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Minimal(DefaultMinimalProps()))

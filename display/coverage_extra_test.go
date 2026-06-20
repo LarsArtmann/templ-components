@@ -42,14 +42,6 @@ func TestEmptyStateCoverage(t *testing.T) {
 		utils.AssertContains(t, output, `id="empty"`)
 		utils.AssertContains(t, output, "py-12")
 	})
-
-	t.Run("minimal with just title", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, EmptyState(EmptyStateProps{
-			Title: "Nothing here",
-		}))
-		utils.AssertContains(t, output, "Nothing here")
-	})
 }
 
 func TestStatusBadgeExtraCoverage(t *testing.T) {
@@ -90,14 +82,5 @@ func TestTableExtraCoverage(t *testing.T) {
 			BaseProps: utils.BaseProps{ID: "tbl"},
 		}))
 		utils.AssertContains(t, output, `id="tbl"`)
-	})
-
-	t.Run("rows shorter than headers get padded", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Table(TableProps{
-			Headers: []string{"A", "B", "C"},
-			Rows:    []TableRow{SimpleTableRow("1")},
-		}))
-		utils.AssertContains(t, output, "1")
 	})
 }

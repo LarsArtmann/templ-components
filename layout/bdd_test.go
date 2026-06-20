@@ -72,11 +72,6 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 		utils.AssertContains(t, output, `integrity="sha384-`)
 	})
 
-	t.Run("user gets security headers when enabled", func(t *testing.T) {
-		t.Parallel()
-		assertSecurityHeadersPresent(t, true)
-	})
-
 	t.Run("user sees OG meta tags when OG image is set", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultPageProps()

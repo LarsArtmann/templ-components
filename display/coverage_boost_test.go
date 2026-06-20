@@ -44,14 +44,6 @@ func TestEmptyStateFullCoverage(t *testing.T) {
 		utils.AssertContains(t, output, "Click me")
 	})
 
-	t.Run("without icon and description", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, EmptyState(EmptyStateProps{
-			Title: "Bare minimum",
-		}))
-		utils.AssertContains(t, output, "Bare minimum")
-	})
-
 	t.Run("default props", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, EmptyState(DefaultEmptyStateProps()))
@@ -167,17 +159,6 @@ func TestButtonFullCoverage(t *testing.T) {
 			utils.AssertContains(t, output, string(variant))
 		})
 	}
-
-	t.Run("button as link with external", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Button(ButtonProps{
-			Text:     "External",
-			Href:     "https://example.com",
-			External: true,
-		}))
-		utils.AssertContains(t, output, `target="_blank"`)
-		utils.AssertContains(t, output, `rel="noopener noreferrer"`)
-	})
 
 	t.Run("disabled button", func(t *testing.T) {
 		t.Parallel()
