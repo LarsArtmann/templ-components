@@ -1,0 +1,175 @@
+package forms
+
+import "github.com/larsartmann/templ-components/utils"
+
+// ComboboxOption represents a single selectable option in a combobox.
+type ComboboxOption struct {
+	Value string
+	Label string
+}
+
+// ComboboxProps configures an autocomplete text input with a filterable
+// dropdown of options. The selected value is submitted via a hidden input
+// with the given Name, so it works in plain HTML forms and HTMX requests.
+type ComboboxProps struct {
+	utils.BaseProps
+	Name        string
+	Label       string
+	Placeholder string
+	Options     []ComboboxOption
+	Value       string
+	Required    bool
+	Disabled    bool
+	Error       string
+	HelpText    string
+}
+
+// DefaultComboboxProps returns sensible defaults
+func DefaultComboboxProps() ComboboxProps {
+	return ComboboxProps{}
+}
+
+// comboboxInputClass is the base class for the combobox text input
+const comboboxInputClass = "block w-full rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-base text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 border-0 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 caret-blue-600 dark:caret-blue-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm transition-shadow"
+
+// Combobox renders an accessible autocomplete input with a filterable dropdown.
+// As the user types, options are filtered client-side. Clicking an option fills
+// the input and sets the hidden value for form submission.
+//
+//	@forms.Combobox(forms.ComboboxProps{
+//	   Name: "country",
+//	   ID: "country",
+//	   Label: "Country",
+//	   Placeholder: "Search countries...",
+//	   Options: []forms.ComboboxOption{
+//	     {Value: "de", Label: "Germany"},
+//	     {Value: "at", Label: "Austria"},
+//	   },
+//	})
+templ Combobox(props ComboboxProps) {
+	{{ id := utils.EnsureID("combobox", props.ID) }}
+	@FormFieldWrapper(id, props.Label, props.Required, props.Error, props.HelpText) {
+		<div class="relative" data-combobox={ id }>
+			<input
+				type="text"
+				if props.Placeholder != "" {
+					placeholder={ props.Placeholder }
+				}
+				value={ props.Value }
+				class={ utils.Class(comboboxInputClass, props.Class) }
+				role="combobox"
+				aria-expanded="false"
+				aria-controls={ id + "-listbox" }
+				aria-autocomplete="list"
+				autocomplete="off"
+				data-combobox-input={ id }
+				if props.Required {
+					required
+					aria-required="true"
+				}
+				if props.Disabled {
+					disabled
+				}
+				if props.AriaLabel != "" {
+					aria-label={ props.AriaLabel }
+				}
+				{ props.Attrs... }
+			/>
+			<input type="hidden" name={ props.Name } value={ props.Value } data-combobox-value={ id }/>
+			<ul
+				id={ id + "-listbox" }
+				role="listbox"
+				class="hidden absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm"
+				data-combobox-list={ id }
+			>
+				for _, opt := range props.Options {
+					<li
+						role="option"
+						tabindex="-1"
+						class="relative cursor-pointer select-none py-2 pl-3 pr-9 text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-gray-700 data-[selected]:bg-blue-50 dark:data-[selected]:bg-gray-700"
+						data-combobox-option={ opt.Value }
+						data-combobox-label={ opt.Label }
+					>
+						{ opt.Label }
+					</li>
+				}
+			</ul>
+		</div>
+	}
+	<script nonce={ props.Nonce }>
+		if (!window.tcComboboxAttached) {
+			window.tcComboboxAttached = true;
+			document.addEventListener('input', function(e) {
+				var input = e.target.closest('[data-combobox-input]');
+				if (!input) return;
+				var id = input.getAttribute('data-combobox-input');
+				var list = document.querySelector('[data-combobox-list="' + id + '"]');
+				if (!list) return;
+				var query = input.value.toLowerCase();
+				var visible = 0;
+				list.querySelectorAll('[data-combobox-option]').forEach(function(opt) {
+					var label = opt.getAttribute('data-combobox-label').toLowerCase();
+					var match = label.includes(query);
+					opt.style.display = match ? '' : 'none';
+					if (match) visible++;
+				});
+				if (visible > 0) {
+					list.classList.remove('hidden');
+					input.setAttribute('aria-expanded', 'true');
+				} else {
+					list.classList.add('hidden');
+					input.setAttribute('aria-expanded', 'false');
+				}
+			});
+			document.addEventListener('click', function(e) {
+				var opt = e.target.closest('[data-combobox-option]');
+				if (opt) {
+					var list = opt.closest('[data-combobox-list]');
+					if (!list) return;
+					var id = list.getAttribute('data-combobox-list');
+					var input = document.querySelector('[data-combobox-input="' + id + '"]');
+					var hidden = document.querySelector('[data-combobox-value="' + id + '"]');
+					var label = opt.getAttribute('data-combobox-label');
+					var value = opt.getAttribute('data-combobox-option');
+					if (input) {
+						input.value = label;
+						input.setAttribute('aria-expanded', 'false');
+					}
+					if (hidden) hidden.value = value;
+					if (list) list.classList.add('hidden');
+				}
+			});
+			document.addEventListener('focusin', function(e) {
+				var input = e.target.closest('[data-combobox-input]');
+				if (!input) return;
+				var id = input.getAttribute('data-combobox-input');
+				var list = document.querySelector('[data-combobox-list="' + id + '"]');
+				if (list && list.querySelector('[data-combobox-option]')) {
+					list.classList.remove('hidden');
+					input.setAttribute('aria-expanded', 'true');
+				}
+			});
+			document.addEventListener('click', function(e) {
+				var input = e.target.closest('[data-combobox-input]');
+				var list = e.target.closest('[data-combobox-list]');
+				if (!input && !list) {
+					document.querySelectorAll('[data-combobox-list]').forEach(function(l) {
+						l.classList.add('hidden');
+					});
+					document.querySelectorAll('[data-combobox-input]').forEach(function(i) {
+						i.setAttribute('aria-expanded', 'false');
+					});
+				}
+			});
+			document.addEventListener('keydown', function(e) {
+				if (e.key !== 'Escape') return;
+				var input = e.target.closest('[data-combobox-input]');
+				if (!input) return;
+				var id = input.getAttribute('data-combobox-input');
+				var list = document.querySelector('[data-combobox-list="' + id + '"]');
+				if (list) list.classList.add('hidden');
+				input.setAttribute('aria-expanded', 'false');
+			});
+		}
+	</script>
+}
