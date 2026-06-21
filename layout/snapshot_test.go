@@ -62,7 +62,7 @@ func TestBaseRenderFullProps(t *testing.T) {
 		DarkThemeColor: "#000000",
 		CSSPath:        "/style.css",
 		Favicon:        "/fav.ico",
-		HTMXVersion:    htmxVersion206,
+		HTMXVersion:    defaultHTMXVersion,
 		HTMXUseSRI:     true,
 		BodyClass:      "bg-gray-50",
 		Nonce:          "abc",
@@ -77,8 +77,9 @@ func TestBaseRenderFullProps(t *testing.T) {
 	utils.AssertContains(t, output, `href="/style.css"`)
 	utils.AssertContains(t, output, `href="/fav.ico"`)
 	utils.AssertContains(t, output, `nonce="abc"`)
-	utils.AssertContains(t, output, "htmx.org@2.0.6")
-	utils.AssertContains(t, output, "response-targets.js")
+	utils.AssertContains(t, output, "htmx.org@2.0.10")
+	utils.AssertContains(t, output, "htmx-ext-response-targets@2.0.4")
+	utils.AssertContains(t, output, "response-targets.min.js")
 }
 
 func TestMinimalRender(t *testing.T) {

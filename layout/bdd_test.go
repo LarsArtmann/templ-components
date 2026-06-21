@@ -59,9 +59,9 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 	t.Run("user sees HTMX script with correct version", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultPageProps()
-		props.HTMXVersion = htmxVersion206
+		props.HTMXVersion = defaultHTMXVersion
 		output := utils.Render(t, Base(props))
-		utils.AssertContains(t, output, "htmx.org@2.0.6")
+		utils.AssertContains(t, output, "htmx.org@2.0.10")
 	})
 
 	t.Run("user sees HTMX loaded with SRI when enabled", func(t *testing.T) {
@@ -160,8 +160,8 @@ func TestDefaultPagePropsProvidesSensibleDefaults(t *testing.T) {
 		if props.Locale != "en" {
 			t.Errorf("expected Locale 'en', got %q", props.Locale)
 		}
-		if props.HTMXVersion != htmxVersion206 {
-			t.Errorf("expected HTMXVersion %q, got %q", htmxVersion206, props.HTMXVersion)
+		if props.HTMXVersion != defaultHTMXVersion {
+			t.Errorf("expected HTMXVersion %q, got %q", defaultHTMXVersion, props.HTMXVersion)
 		}
 		if !props.SecurityHeaders {
 			t.Error("expected SecurityHeaders to be true")

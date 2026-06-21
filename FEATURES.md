@@ -311,9 +311,9 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Functions
 
-| Function           | Purpose                                                        |
-| ------------------ | -------------------------------------------------------------- |
-| `DefaultPageProps` | Returns sensible defaults (locale=en, HTMX 2.0.6, SRI enabled) |
+| Function           | Purpose                                                         |
+| ------------------ | --------------------------------------------------------------- |
+| `DefaultPageProps` | Returns sensible defaults (locale=en, HTMX 2.0.10, SRI enabled) |
 
 ### Known Issues
 

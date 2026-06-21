@@ -7,43 +7,59 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-func TestHtmxSRI(t *testing.T) {
+func TestHtmxMainSRI(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
 		version string
-		ext     string
 		want    string
 	}{
 		{
-			name:    "main 2.0.6",
-			version: htmxVersion206,
-			ext:     "main",
-			want:    "sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm",
+			name:    "pinned 2.0.10 returns main SRI hash",
+			version: defaultHTMXVersion,
+			want:    "sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V",
 		},
-		{
-			name:    "response-targets 2.0.6",
-			version: htmxVersion206,
-			ext:     "response-targets",
-			want:    sriResponseTargets206,
-		},
-		{name: "unknown version", version: "99.99.99", ext: "main", want: ""},
-		{
-			name:    "unknown ext",
-			version: htmxVersion206,
-			ext:     "unknown",
-			want:    "sha384-Akqfrbj/HpNVo8k11SXBb6TlBWmXXlYQrCSqEWmyKJe+hDm3Z/B2WVG4smwBkRVm",
-		},
+		{name: "unknown version returns empty", version: "99.99.99", want: ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 			utils.AssertEqual(
 				t,
-				fmt.Sprintf("htmxSRI(%q, %q)", tt.version, tt.ext),
-				htmxSRI(tt.version, tt.ext),
+				fmt.Sprintf("htmxMainSRI(%q)", tt.version),
+				htmxMainSRI(tt.version),
 				tt.want,
 			)
 		})
 	}
+}
+
+func TestResponseTargetsSRI(t *testing.T) {
+	t.Parallel()
+	utils.AssertEqual(
+		t,
+		"sriResponseTargets",
+		sriResponseTargets,
+		"sha384-T41oglUPvXLGBVyRdZsVRxNWnOOqCynaPubjUVjxhsjFTKrFJGEMm3/0KGmNQ+Pg",
+	)
+}
+
+func TestHtmxScriptURL(t *testing.T) {
+	t.Parallel()
+	utils.AssertEqual(
+		t,
+		"htmxScriptURL(defaultHTMXVersion)",
+		htmxScriptURL(defaultHTMXVersion),
+		"https://unpkg.com/htmx.org@2.0.10",
+	)
+}
+
+func TestResponseTargetsCDNURL(t *testing.T) {
+	t.Parallel()
+	utils.AssertEqual(
+		t,
+		"responseTargetsCDNURL",
+		responseTargetsCDNURL,
+		"https://unpkg.com/htmx-ext-response-targets@2.0.4/dist/response-targets.min.js",
+	)
 }

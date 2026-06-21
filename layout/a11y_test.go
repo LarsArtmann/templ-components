@@ -66,12 +66,12 @@ func TestDefaultPageProps(t *testing.T) {
 	})
 }
 
-func TestHTMXSRI(t *testing.T) {
+func TestHTMXMainSRI(t *testing.T) {
 	t.Parallel()
 
 	t.Run("known version returns SRI hash", func(t *testing.T) {
 		t.Parallel()
-		hash := htmxSRI(htmxVersion206, "main")
+		hash := htmxMainSRI(defaultHTMXVersion)
 		if hash == "" {
 			t.Error("expected non-empty SRI hash for known version")
 		}
@@ -80,18 +80,18 @@ func TestHTMXSRI(t *testing.T) {
 
 	t.Run("unknown version returns empty string", func(t *testing.T) {
 		t.Parallel()
-		hash := htmxSRI("99.99.99", "main")
+		hash := htmxMainSRI("99.99.99")
 		if hash != "" {
 			t.Errorf("expected empty hash for unknown version, got %q", hash)
 		}
 	})
 
-	t.Run("response-targets extension returns hash", func(t *testing.T) {
+	t.Run("response-targets extension SRI is pinned", func(t *testing.T) {
 		t.Parallel()
-		hash := htmxSRI(htmxVersion206, "response-targets")
-		if hash == "" {
+		if sriResponseTargets == "" {
 			t.Error("expected non-empty SRI hash for response-targets")
 		}
+		utils.AssertContains(t, sriResponseTargets, "sha384-")
 	})
 }
 

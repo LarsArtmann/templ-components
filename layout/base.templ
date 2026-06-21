@@ -35,7 +35,7 @@ func DefaultPageProps() PageProps {
 		DarkThemeColor:  DefaultDarkThemeColor,
 		CSSPath:         "/app.css",
 		Favicon:         "/favicon.svg",
-		HTMXVersion:     "2.0.6",
+		HTMXVersion:     defaultHTMXVersion,
 		HTMXUseSRI:      true,
 		SecurityHeaders: true,
 		BodyClass:       "bg-white text-gray-900 antialiased min-h-dvh flex flex-col scroll-smooth selection:bg-blue-100 dark:selection:bg-blue-900 selection:text-blue-900 dark:selection:text-blue-100 dark:bg-gray-950 dark:text-gray-100",
@@ -84,12 +84,12 @@ templ Base(props PageProps) {
 			}
 			if props.HTMXVersion != "" {
 				if props.HTMXUseSRI {
-					{{ mainSRI := htmxSRI(props.HTMXVersion, "main") }}
-					<script src={ htmxCDNURL(props.HTMXVersion, "") } integrity={ mainSRI } crossorigin="anonymous"></script>
-					<script src={ htmxCDNURL(props.HTMXVersion, "/dist/ext/response-targets.js") } integrity={ htmxSRI(props.HTMXVersion, "response-targets") } crossorigin="anonymous"></script>
+					{{ mainSRI := htmxMainSRI(props.HTMXVersion) }}
+					<script src={ htmxScriptURL(props.HTMXVersion) } integrity={ mainSRI } crossorigin="anonymous"></script>
+					<script src={ responseTargetsCDNURL } integrity={ sriResponseTargets } crossorigin="anonymous"></script>
 				} else {
-					<script src={ htmxCDNURL(props.HTMXVersion, "") }></script>
-					<script src={ htmxCDNURL(props.HTMXVersion, "/dist/ext/response-targets.js") }></script>
+					<script src={ htmxScriptURL(props.HTMXVersion) }></script>
+					<script src={ responseTargetsCDNURL }></script>
 				}
 			}
 			@ThemeScript(props.Nonce)
