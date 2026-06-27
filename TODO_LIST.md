@@ -73,8 +73,8 @@
 - [x] Add File input component (source: forms/file_input.templ)
 - [x] Add Form component wrapping inputs + CSRF token (source: forms/form.templ)
 - [x] Add 25+ more Heroicons — 100 path icons + 1 Spinner = 101 total (was 75) (source: icons/)
-- [ ] Add Date Picker component (source: docs/status/)
-- [ ] Add Combobox/Autocomplete component (source: docs/status/)
+- [x] Add Date Picker component (source: forms/date_picker.templ)
+- [x] Add Combobox/Autocomplete component (source: forms/combobox.templ)
 - [x] Add Dialog/Drawer component — accessible side panel with left/right slide, focus trap (source: display/drawer.templ)
 
 ### Accessibility
@@ -127,7 +127,7 @@
 ### Release & Discovery
 
 - [x] Tag v0.2.0 release and update CHANGELOG.md
-- [ ] Tag v0.3.0 with Priority 2 features (Drawer, ValidationSummary, 25 icons, Spinner BaseProps)
+- [x] Tag v0.3.0 with Priority 2 features (Drawer, ValidationSummary, 25 icons, Spinner BaseProps) — also tagged v0.4.0
 - [ ] Submit to awesome-templ for discoverability
 - [ ] Open PR on templ.guide to get listed
 - [ ] Cross-link ecosystem in README — cqrs-htmx, go-cqrs-lite (GOTH stack story)

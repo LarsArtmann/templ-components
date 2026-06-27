@@ -1,0 +1,3398 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>templ-components — Remediation Plan</title>
+    <style>
+      /* =========================================================================
+         BAUHAUS DARK — Dashboard template
+         Design language: form follows function. Primary colors on graphite.
+         Zero external dependencies: system fonts, no CDN, no build step.
+         Token architecture: see references/bauhaus-tokens.md
+         ========================================================================= */
+
+      :root {
+        /* --- Primitive palette (Bauhaus Dark) --- */
+        --color-graphite: #0e0e10;
+        --color-graphite-2: #18181d;
+        --color-graphite-3: #16161a;
+        --color-bone: #f4f4f0;
+        --color-red: #ff6b6b;
+        --color-blue: #6eb5ff;
+        --color-yellow: #f4d35e;
+        --color-amber: #ffb347;
+        --color-hairline: rgba(244, 244, 240, 0.12);
+        --color-hairline-strong: rgba(244, 244, 240, 0.25);
+
+        /* --- Semantic layer (shared vocabulary with editorial template) --- */
+        --surface: var(--color-graphite);
+        --surface-raised: var(--color-graphite-2);
+        --surface-sunken: var(--color-graphite-3);
+        --text: var(--color-bone);
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: var(--color-hairline);
+        --border-strong: var(--color-hairline-strong);
+        --accent: var(--color-amber);
+        --problem: var(--color-red);
+        --solution: var(--color-blue);
+        --warning: var(--color-yellow);
+
+        /* --- Backward-compatible aliases (do not break consumer skills) --- */
+        --bg: var(--surface);
+        --bg-elevated: var(--surface-raised);
+        --bg-sunken: var(--surface-sunken);
+        --bg-card: var(--surface-raised);
+        --bg-code: var(--surface-sunken);
+        --ink: var(--text);
+        --ink-secondary: var(--text-muted);
+        --ink-muted: var(--text-faint);
+        --rose: var(--problem);
+        --rose-glow: color-mix(in srgb, var(--problem) 15%, transparent);
+        --emerald: var(--solution);
+        --emerald-glow: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber-glow: color-mix(in srgb, var(--warning) 15%, transparent);
+        --coral: var(--problem);
+        --coral-light: color-mix(in srgb, var(--problem) 15%, transparent);
+        --teal: var(--solution);
+        --teal-light: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber-light: color-mix(in srgb, var(--warning) 20%, transparent);
+
+        /* --- Shape --- */
+        --radius: 0px; /* Bauhaus default: sharp corners */
+        --radius-sm: 0px;
+
+        /* --- Type stacks (system only — zero external fonts) --- */
+        --font-heading:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        --font-body:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        --font-mono:
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
+          monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Sticky-header offset for anchor jumps */
+      section[id],
+      [id] {
+        scroll-margin-top: 60px;
+      }
+
+      body {
+        background: var(--surface);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 15px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* --- Full-bleed top bar --- */
+      .top-bar {
+        background: var(--text);
+        color: var(--surface);
+        padding: 0.6rem 2rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* --- Layout: optional sticky sidebar TOC --- */
+      .layout {
+        display: flex;
+        gap: 2.5rem;
+        padding: 2rem;
+      }
+      .sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
+        height: calc(100vh - 2rem);
+        overflow-y: auto;
+        display: none;
+      }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .sidebar .label {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .sidebar a {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 0.45rem 0.75rem;
+        border-left: 2px solid transparent;
+        transition: all 0.15s ease;
+        line-height: 1.4;
+        font-weight: 500;
+      }
+      .sidebar a:hover,
+      .sidebar a.active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+      }
+      .main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* --- Headings --- */
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      h1 {
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        line-height: 1.1;
+        margin: 0 0 0.6rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+        margin: 2.5rem 0 1rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+      }
+      h2 .num {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      h3 {
+        font-size: 1.1rem;
+        margin: 0 0 0.4rem;
+        font-weight: 700;
+      }
+      h4 {
+        font-size: 0.98rem;
+        margin: 0 0 0.3rem;
+        font-weight: 700;
+      }
+      p {
+        margin: 0 0 1rem;
+      }
+
+      /* --- Hero --- */
+      .hero {
+        padding: 1.5rem 0 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .hero-badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--surface);
+        background: var(--accent);
+        padding: 0.3rem 0.7rem;
+        margin-bottom: 0.9rem;
+      }
+      .hero-subtitle {
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        max-width: 70ch;
+        margin: 0;
+      }
+
+      /* Bauhaus signature: geometric shape cluster (optional) */
+      .hero-shapes {
+        position: relative;
+        height: 80px;
+        margin-bottom: 1rem;
+      }
+      .hero-shapes .circle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 56px;
+        height: 56px;
+        background: var(--problem);
+        border-radius: 50%;
+      }
+      .hero-shapes .square {
+        position: absolute;
+        top: 24px;
+        left: 72px;
+        width: 48px;
+        height: 48px;
+        background: var(--solution);
+      }
+      .hero-shapes .tri {
+        position: absolute;
+        top: 8px;
+        left: 140px;
+        width: 0;
+        height: 0;
+        border-left: 28px solid transparent;
+        border-right: 28px solid transparent;
+        border-bottom: 48px solid var(--warning);
+      }
+
+      /* --- General cards --- */
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .card-problem {
+        border-left-color: var(--problem);
+        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+      }
+      .card-solution {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+      }
+      .card-warning {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+      }
+
+      /* --- Issue cards --- */
+      .issue {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .issue-critical {
+        border-left-color: var(--problem);
+        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+      }
+      .issue-important {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+      }
+      .issue-nice {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+      }
+      .issue h3 {
+        margin-bottom: 0.3rem;
+      }
+      .issue .where {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--text-faint);
+        margin: 0.2rem 0 0.6rem;
+      }
+      .issue p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* --- Severity badges (used inside issue cards) --- */
+      .severity {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        margin-bottom: 0.6rem;
+        color: var(--surface);
+      }
+      .severity-critical {
+        background: var(--problem);
+      }
+      .severity-important {
+        background: var(--warning);
+      }
+      .severity-nice {
+        background: var(--solution);
+      }
+
+      /* --- Inline badges (used in tables) --- */
+      .badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.18rem 0.5rem;
+        border: 1px solid var(--border-strong);
+        color: var(--text-muted);
+      }
+      .badge-critical {
+        color: var(--problem);
+        border-color: var(--problem);
+      }
+      .badge-high {
+        color: var(--warning);
+        border-color: var(--warning);
+      }
+      .badge-medium {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .badge-low {
+        color: var(--text-muted);
+      }
+      .badge-fixed {
+        color: var(--solution);
+        border-color: var(--solution);
+      }
+
+      /* --- Callouts (used inside issues or standalone) --- */
+      .callout {
+        margin: 0.8rem 0 0;
+        padding: 0.7rem 0.9rem;
+        border-left: 3px solid var(--border-strong);
+        background: color-mix(in srgb, var(--text) 5%, transparent);
+        font-size: 0.9rem;
+      }
+      .callout strong {
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
+      .callout-solution {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 10%, transparent);
+      }
+      .callout-warning {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 10%, transparent);
+      }
+
+      /* --- Stat cards / scorecards (aliased vocabulary) --- */
+      .stat-grid,
+      .scorecard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.75rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .stat-card,
+      .score-card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1rem;
+        position: relative;
+      }
+      .stat-card::before,
+      .score-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--border-strong);
+      }
+      .stat-bad,
+      .score-bad {
+        /* default top bar already set */
+      }
+      .stat-bad::before,
+      .score-bad::before {
+        background: var(--problem);
+      }
+      .stat-good::before,
+      .score-good::before {
+        background: var(--solution);
+      }
+      .stat-warn::before,
+      .score-warn::before {
+        background: var(--warning);
+      }
+      .stat-value,
+      .score {
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: var(--text);
+      }
+      .stat-bad .stat-value,
+      .score-bad .score {
+        color: var(--problem);
+      }
+      .stat-good .stat-value,
+      .score-good .score {
+        color: var(--solution);
+      }
+      .stat-warn .stat-value,
+      .score-warn .score {
+        color: var(--warning);
+      }
+      .stat-label,
+      .score-card .label {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-faint);
+        margin-top: 0.5rem;
+      }
+
+      /* --- Strengths list --- */
+      .strengths {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .strength {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.8rem;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .strength .check {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: var(--solution);
+        font-size: 1.1rem;
+        line-height: 1.4;
+      }
+      .strength .text strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+      .strength .text span {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* --- Tables --- */
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.9rem;
+      }
+      th {
+        text-align: left;
+        padding: 0.6rem 0.9rem;
+        background: var(--surface-raised);
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-strong);
+      }
+      td {
+        padding: 0.6rem 0.9rem;
+        border-bottom: 1px solid var(--border);
+      }
+      tr:hover td {
+        background: var(--surface-raised);
+      }
+
+      /* --- Before/After comparison --- */
+      .compare-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin: 1rem 0 0.5rem;
+      }
+      .compare-before,
+      .compare-after {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.4rem 0.7rem;
+        color: var(--surface);
+      }
+      .compare-before {
+        background: var(--problem);
+      }
+      .compare-after {
+        background: var(--solution);
+      }
+      .compare-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .compare-row pre {
+        margin: 0;
+      }
+
+      /* --- Code blocks + syntax highlighting --- */
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.65;
+        overflow-x: auto;
+      }
+      code {
+        font-family: var(--font-mono);
+      }
+      .tok-keyword {
+        color: var(--accent);
+      } /* func, type, struct, if, return */
+      .tok-type {
+        color: var(--warning);
+      } /* int, string, bool, error */
+      .tok-string {
+        color: var(--solution);
+      } /* "quoted strings" */
+      .tok-comment {
+        color: var(--text-faint);
+        font-style: italic;
+      }
+      .tok-func {
+        color: #74a9ff;
+      } /* function names */
+      .tok-number {
+        color: var(--accent);
+      } /* 42, 3.14 */
+      .tok-generic {
+        color: var(--problem);
+      } /* T, ID in generics */
+      .tok-builtin {
+        color: #4dd9ff;
+      } /* make, len, append */
+      .tok-punct {
+        color: var(--text-muted);
+      } /* { } ( ) ; = : */
+      .tok-attr {
+        color: var(--accent);
+      } /* Nix attribute names */
+
+      /* --- Dependency tree / ASCII diagrams --- */
+      .dep-tree {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.7;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .dep-tree .root {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .dep-tree .ok {
+        color: var(--solution);
+      }
+      .dep-tree .unwanted {
+        color: var(--problem);
+      }
+
+      /* --- Inline node-and-arrow diagrams --- */
+      .diagram {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+      }
+      .node {
+        display: inline-block;
+        padding: 0.35rem 0.7rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: var(--surface-sunken);
+        border: 1px solid var(--border-strong);
+      }
+      .node-core {
+        background: var(--accent);
+        color: var(--surface);
+        border-color: var(--accent);
+      }
+      .node-problem {
+        background: var(--problem);
+        color: var(--surface);
+        border-color: var(--problem);
+      }
+      .node-good {
+        background: var(--solution);
+        color: var(--surface);
+        border-color: var(--solution);
+      }
+      .arrow {
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Grids (responsive) --- */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      /* --- Inline TOC (alternative to sidebar) --- */
+      .toc {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        padding: 1rem 1.3rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .toc h3 {
+        margin-bottom: 0.5rem;
+      }
+      .toc ul {
+        list-style: none;
+        padding: 0;
+      }
+      .toc li {
+        margin: 0.25rem 0;
+      }
+      .toc a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+      .toc a:hover {
+        color: var(--accent);
+      }
+
+      /* --- Migration / numbered steps --- */
+      .migration-step {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+        padding: 1rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+      }
+      .migration-num {
+        font-family: var(--font-mono);
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .migration-content h4 {
+        margin-bottom: 0.2rem;
+      }
+      .migration-content p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      /* --- Footer --- */
+      .footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.8rem;
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Responsive --- */
+      @media (min-width: 1024px) {
+        .sidebar {
+          display: block;
+        }
+      }
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+          padding: 1rem;
+        }
+        .top-bar {
+          padding: 0.6rem 1rem;
+          flex-wrap: wrap;
+          gap: 0.3rem;
+        }
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .compare-header,
+        .compare-row {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid,
+        .scorecard {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .migration-step {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <span>PARETO PLAN</span>
+      <span>2026-06-28_01-21</span>
+      <span>templ-components · full-code-review</span>
+    </div>
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#tier1">Tier 1 — Critical</a>
+          <a href="#tier2">Tier 2 — High</a>
+          <a href="#tier3">Tier 3 — Medium</a>
+          <a href="#tier4">Tier 4 — Polish</a>
+          <a href="#graph">Execution Graph</a>
+          <a href="#how">How to read</a>
+        </nav>
+      </aside>
+      <main class="main">
+        <div class="hero">
+          <div class="hero-shapes">
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="hero-badge">Pareto Plan · ≤12min tasks</div>
+          <h1>templ-components Remediation Plan</h1>
+          <p class="hero-subtitle">
+            123 actionable tasks across 4 Pareto tiers, each ≤12 minutes, sorted by impact / effort
+            / customer-value.
+          </p>
+        </div>
+        <h2 id="summary"><span class="num">00</span>Summary</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">123</div>
+            <div class="stat-label">Tasks</div>
+          </div>
+          <div class="stat-card stat-bad">
+            <div class="stat-value">39</div>
+            <div class="stat-label">Critical+High</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">1024</div>
+            <div class="stat-label">Est. Minutes</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">19</div>
+            <div class="stat-label">Tier-1 (1%→51%)</div>
+          </div>
+        </div>
+        <div class="callout callout-solution">
+          <strong>Method</strong> branching-flow (12 linters, 97.5/100) + per-package Sr-Architect
+          review of all 164 source files → deduplicated into 123 tasks. Tier 1 alone fixes the
+          correctness/a11y/security bugs users actually hit.
+        </div>
+        <h2 id="tier1"><span class="num">01</span>Tier 1 — Critical (1% → 51%)</h2>
+        <p class="hero-subtitle">19 tasks · ~164 min · correctness / a11y / security bugs</p>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tier</th>
+              <th>Sev</th>
+              <th>Impact</th>
+              <th>Epic</th>
+              <th>Task</th>
+              <th>Location</th>
+              <th>Est</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>P-002</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>Overlay A11y</strong></td>
+              <td>
+                MobileNavLink: add External target=_blank + rel=noopener (security regression vs
+                NavLink)
+              </td>
+              <td><code>navigation/nav_link.templ:64</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-001</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>Overlay A11y</strong></td>
+              <td>
+                Make Modal/Drawer aria-labelledby conditional on Title (fallback AriaLabel) —
+                currently dangles when title empty
+              </td>
+              <td><code>display/modal_templ.go:21</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-006</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>Forms A11y</strong></td>
+              <td>
+                Combobox text input: add ErrorAttrs (aria-invalid/aria-describedby) — errors
+                invisible to AT
+              </td>
+              <td><code>forms/combobox.templ:53</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-007</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>Forms Correctness</strong></td>
+              <td>
+                Combobox: separate display value from submission value (Value currently doubles as
+                Label)
+              </td>
+              <td><code>forms/combobox.templ:58</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-009</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>Overlay A11y</strong></td>
+              <td>
+                Modal/Drawer: add aria-hidden + inert to closed overlays (phantom dialog in a11y
+                tree)
+              </td>
+              <td><code>display/modal_templ.go:14</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-010</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>Overlay A11y</strong></td>
+              <td>
+                Modal/Drawer SSR-open: call tcOpen on load when props.Open (focus never moves,
+                restore broken)
+              </td>
+              <td><code>display/shared.go:100</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-014</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>Forms A11y</strong></td>
+              <td>
+                Combobox keyboard nav: ArrowUp/Down, Enter, Home/End + aria-activedescendant
+                (WAI-ARIA)
+              </td>
+              <td><code>forms/combobox.templ:99</code></td>
+              <td>12m</td>
+            </tr>
+            <tr>
+              <td><strong>P-003</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Feedback A11y</strong></td>
+              <td>
+                Spinner: emit aria-hidden=true ONLY when no AriaLabel (current contradicts
+                aria-label)
+              </td>
+              <td><code>feedback/loading.templ:65</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-012</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Forms A11y</strong></td>
+              <td>FileInput: add ErrorAttrs (errors/help text not linked via aria-describedby)</td>
+              <td><code>forms/file_input.templ:42</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-017</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Nav A11y</strong></td>
+              <td>
+                Navigation: add motion-reduce overrides to all transition-colors (violates lib
+                convention)
+              </td>
+              <td><code>navigation/*.templ</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-018</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Feedback A11y</strong></td>
+              <td>
+                Toast: use role=status for polite toasts (role=alert + aria-live=polite is
+                contradictory)
+              </td>
+              <td><code>feedback/toast.templ:145</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-011</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Overlay A11y Tests</strong></td>
+              <td>
+                Add tests: no-title omits aria-labelledby; closed overlay has aria-hidden; SSR-open
+                focus
+              </td>
+              <td><code>display/*_test.go</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-004</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Feedback A11y</strong></td>
+              <td>
+                ProgressBar: move aria-label + aria-value* onto the role=progressbar element
+                (currently nameless)
+              </td>
+              <td><code>feedback/progressbar.templ:59</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-013</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Forms Correctness</strong></td>
+              <td>
+                InputHidden: render bare &lt;input type=hidden&gt; without FormFieldWrapper
+                (label/error wrong)
+              </td>
+              <td><code>forms/input.templ:80</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-015</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Forms Correctness</strong></td>
+              <td>
+                Select: enforce single Selected option (multiple is invalid state,
+                browser-inconsistent)
+              </td>
+              <td><code>forms/select.templ:16</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-016</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Nav A11y</strong></td>
+              <td>
+                MobileMenu: derive unique ID via EnsureID (hardcoded tc-mobile-menu collides w/ 2
+                Navs)
+              </td>
+              <td><code>navigation/mobile_menu.templ:14</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-005</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Feedback Edge</strong></td>
+              <td>
+                LoadingOverlay: clamp Progress to [0,100] before width:% (negative/&gt;100 = invalid
+                CSS)
+              </td>
+              <td><code>feedback/loading.templ:115</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-008</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Feedback API</strong></td>
+              <td>
+                Toast Duration: emit per-toast setTimeout or document as tcShowToast-only (dead prop
+                = split-brain)
+              </td>
+              <td><code>feedback/toast.templ:28</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-019</strong></td>
+              <td><span class="badge badge-critical">T1</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Feedback A11y</strong></td>
+              <td>
+                SkeletonGroup: extract un-annotated internal skeleton; single role=status (N+1
+                announcements)
+              </td>
+              <td><code>feedback/loading.templ:141</code></td>
+              <td>10m</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="tier2"><span class="num">02</span>Tier 2 — High (4% → 64%)</h2>
+        <p class="hero-subtitle">22 tasks · ~192 min · HTMX / layout / icons / errorpage safety</p>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tier</th>
+              <th>Sev</th>
+              <th>Impact</th>
+              <th>Epic</th>
+              <th>Task</th>
+              <th>Location</th>
+              <th>Est</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>P-020</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>HTMX Correctness</strong></td>
+              <td>
+                afterRequest: clear data-tc-retry on success (stale counter skips future retries)
+              </td>
+              <td><code>htmx/error_handling.templ:155</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-022</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>HTMX Security</strong></td>
+              <td>
+                Empty Nonce: omit nonce attr when empty (strict CSP silently disables whole script)
+              </td>
+              <td><code>htmx/error_handling.templ:45</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-029</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>Icons Integrity</strong></td>
+              <td>
+                Alias the 4 duplicate icon pairs (Menu/Bars3, Refresh/ArrowPath, Location/MapPin,
+                ThumbUp/HandThumbUp)
+              </td>
+              <td><code>icons/icon_paths.go:41</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-026</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Layout A11y</strong></td>
+              <td>
+                Skip-link target: add tabindex=-1 to &lt;main id=main-content&gt; (focus doesn't
+                move)
+              </td>
+              <td><code>layout/base.templ:104</code></td>
+              <td>4m</td>
+            </tr>
+            <tr>
+              <td><strong>P-021</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>HTMX Correctness</strong></td>
+              <td>responseError: guard xhr null before xhr.status (TypeError on missing xhr)</td>
+              <td><code>htmx/error_handling.templ:141</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-030</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Icons Integrity</strong></td>
+              <td>
+                Guard Spinner in iconPaths (IconPathData(Spinner) wrongly returns Question path)
+              </td>
+              <td><code>icons/icon_paths.go:140</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-033</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>errorpage Safety</strong></td>
+              <td>
+                Override nil: implement documented skip-render OR fix doc+test (contract mismatch)
+              </td>
+              <td><code>errorpage/handler.go:243</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-031</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Icons Tests</strong></td>
+              <td>Add test: every exported Name const has iconPathData coverage (or is Spinner)</td>
+              <td><code>icons/icon_names.go</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-023</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>HTMX Correctness</strong></td>
+              <td>
+                LoadingButton: add inverse toggle so defaultText hides during request (both render
+                now)
+              </td>
+              <td><code>htmx/loading.templ:39</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-024</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Layout A11y</strong></td>
+              <td>
+                ThemeScript/ThemeToggle: set document.colorScheme (native controls stay light in
+                dark mode)
+              </td>
+              <td><code>layout/theme.templ:11</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-025</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Layout A11y</strong></td>
+              <td>
+                ThemeToggle: role=switch + aria-checked, synced in toggle script (no current state)
+              </td>
+              <td><code>layout/theme.templ:27</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-028</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Layout Security</strong></td>
+              <td>
+                SRI: fail loud / fallback when HTMXVersion not in SRI table (silently loses
+                integrity)
+              </td>
+              <td><code>layout/sri.go:51</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-032</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Icons Integrity</strong></td>
+              <td>
+                Move stray-| validation to init(); keep iconPaths panic-free (panic in render hot
+                path)
+              </td>
+              <td><code>icons/icon_paths.go:125</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-034</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>errorpage Safety</strong></td>
+              <td>
+                Map unknown errors to 500 not 503 (503 signals retry -&gt; CDN/LB retry storms)
+              </td>
+              <td><code>errorpage/handler.go:82</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-036</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>errorpage Safety</strong></td>
+              <td>
+                WriteErrorPage: derive status from props.Family (param + Family can disagree -&gt;
+                wrong code)
+              </td>
+              <td><code>errorpage/handler.go:292</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-041</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>errorpage Size</strong></td>
+              <td>
+                handler.go (354 lines): split into fromerror.go + constructors.go + handler.go
+              </td>
+              <td><code>errorpage/handler.go</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-037</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>errorpage Safety</strong></td>
+              <td>
+                renderWithShell: render to buffer before WriteHeader (templ error mid-stream =
+                truncated doc)
+              </td>
+              <td><code>errorpage/handler.go:266</code></td>
+              <td>12m</td>
+            </tr>
+            <tr>
+              <td><strong>P-027</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Layout A11y</strong></td>
+              <td>Layout: motion-reduce overrides for scroll-smooth + transition-colors</td>
+              <td><code>layout/base.templ:41</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-035</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>errorpage A11y</strong></td>
+              <td>
+                erroralert: replace dead hover:bg-opacity-80 with Tailwind v4 modifier bg-{color}/80
+              </td>
+              <td><code>errorpage/erroralert.templ:48</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-038</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>errorpage Correctness</strong></td>
+              <td>
+                FromError: add ErrorTitle() extraction + family-based default (every dynamic page
+                titleless)
+              </td>
+              <td><code>errorpage/handler.go:40</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-039</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>errorpage A11y</strong></td>
+              <td>
+                contextTable: use &lt;dl&gt; or add caption/th+scope (SR mis-announces definition
+                data as table)
+              </td>
+              <td><code>errorpage/shared.templ:38</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-040</strong></td>
+              <td><span class="badge badge-high">T2</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>errorpage Context</strong></td>
+              <td>
+                renderWithShell: wrap once, include title in error (branching-flow flagged context
+                loss)
+              </td>
+              <td><code>errorpage/handler.go:341</code></td>
+              <td>8m</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="tier3"><span class="num">03</span>Tier 3 — Medium (20% → 80%)</h2>
+        <p class="hero-subtitle">41 tasks · ~374 min · type-safety / architecture / systemic</p>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tier</th>
+              <th>Sev</th>
+              <th>Impact</th>
+              <th>Epic</th>
+              <th>Task</th>
+              <th>Location</th>
+              <th>Est</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>P-076</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-high">L</span></td>
+              <td><strong>Icons A11y</strong></td>
+              <td>
+                Icon a11y: add role=img + &lt;title&gt; variant (icons as sole button content
+                invisible to AT)
+              </td>
+              <td><code>icons/icon.templ:23</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-058</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Script Dedup</strong></td>
+              <td>
+                overlayScriptComponent: HTML-escape nonce before fmt.Sprintf (attribute boundary
+                break)
+              </td>
+              <td><code>display/shared.go:147</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-047</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Type Safety</strong></td>
+              <td>HTMXVersion: typed const set (typos silently drop SRI)</td>
+              <td><code>layout/sri.go:40</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-064</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Duplication</strong></td>
+              <td>errorpage familyStyleMap: builder to dedup 6 near-identical 8-field entries</td>
+              <td><code>errorpage/styles.go:53</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-077</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Display Edge</strong></td>
+              <td>
+                Button Disabled+Href: render aria-disabled/tabindex=-1/pointer-events-none (silently
+                clickable)
+              </td>
+              <td><code>display/button.templ:20</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-079</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Layout Arch</strong></td>
+              <td>
+                response-targets extension: opt-out prop (force-loaded w/ htmx, extra request+bytes)
+              </td>
+              <td><code>layout/base.templ:89</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-082</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Display Naming</strong></td>
+              <td>
+                ModalSizeFull/DrawerFull: rename (map to max-w-4xl/2xl, not full — misleading)
+              </td>
+              <td><code>display/modal_go.go:41</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-046</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Type Safety</strong></td>
+              <td>
+                DropdownItem: deprecate Href fallback, require Kind (dual discrimination drops href)
+              </td>
+              <td><code>display/dropdown.templ:20</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-049</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Architecture</strong></td>
+              <td>
+                Label/FormFieldWrapper: convert positional params to Props structs (3 &amp; 5
+                primitives)
+              </td>
+              <td><code>forms/label.templ:6</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-060</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Concurrency</strong></td>
+              <td>
+                utils EnsureID: panic/atomic-counter fallback (time.Now nanos = predictable,
+                collides)
+              </td>
+              <td><code>utils/validate.go:25</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-062</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Tests</strong></td>
+              <td>
+                version_test: t.Fatal not Skip; go:embed CHANGELOG (guard silently disabled in many
+                layouts)
+              </td>
+              <td><code>utils/version_test.go:17</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-069</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Architecture</strong></td>
+              <td>
+                Extract IsActive(href,currentPath) helper; unify NavLink/sidebar active detection
+              </td>
+              <td><code>navigation/nav_link.templ:38</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-070</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Forms API</strong></td>
+              <td>ToggleProps: add Required/Error/HelpText (inconsistent w/ every other field)</td>
+              <td><code>forms/toggle.templ:15</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-074</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Display A11y</strong></td>
+              <td>
+                Tooltip: auto-gen ID via EnsureID; always emit aria-describedby (unlinked when no
+                ID)
+              </td>
+              <td><code>display/tooltip.templ:67</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-075</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Display Edge</strong></td>
+              <td>
+                Avatar: render status dot in initials/fallback branches too (only img branch now)
+              </td>
+              <td><code>display/avatar.templ:106</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-050</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Architecture</strong></td>
+              <td>
+                htmx helpers (LoadingIndicator, ConfirmDelete, SwapOOB, CSRFToken): Props structs w/
+                BaseProps
+              </td>
+              <td><code>htmx/helpers.templ</code></td>
+              <td>12m</td>
+            </tr>
+            <tr>
+              <td><strong>P-057</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Script Dedup</strong></td>
+              <td>
+                Hoist Combobox/Accordion/Dropdown global scripts to one-shot helpers (emitted per
+                instance)
+              </td>
+              <td><code>forms/combobox.templ:99</code></td>
+              <td>12m</td>
+            </tr>
+            <tr>
+              <td><strong>P-063</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Error Family</strong></td>
+              <td>
+                errorpage: 4 fmt.Errorf -&gt; go-error-family constructors (branching-flow
+                errorfamily)
+              </td>
+              <td><code>errorpage/handler.go:284</code></td>
+              <td>12m</td>
+            </tr>
+            <tr>
+              <td><strong>P-073</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Display A11y</strong></td>
+              <td>
+                Tooltip: Escape-to-dismiss + touch fallback (hover/focus-only, invisible on touch)
+              </td>
+              <td><code>display/tooltip.templ:63</code></td>
+              <td>12m</td>
+            </tr>
+            <tr>
+              <td><strong>P-080</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Performance</strong></td>
+              <td>
+                utils Class(): per-shard mutex or result cache (coarse global lock serializes all
+                SSR merges)
+              </td>
+              <td><code>utils/utils.go:41</code></td>
+              <td>12m</td>
+            </tr>
+            <tr>
+              <td><strong>P-067</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Edge Case</strong></td>
+              <td>SimpleNav: add Sticky prop instead of hardcoded Sticky:true</td>
+              <td><code>navigation/nav.templ:100</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-068</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Edge Case</strong></td>
+              <td>Skip rendering MobileMenu when props.Links empty (emits empty div + script)</td>
+              <td><code>navigation/nav.templ:61</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-071</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Forms A11y</strong></td>
+              <td>
+                ErrorAttrs: emit aria-describedby when helpTextID set regardless of id (id-less
+                fields blind)
+              </td>
+              <td><code>forms/helpers.go:26</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-072</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Forms Edge</strong></td>
+              <td>validation: sanitize err.Field before href=# (broken fragment URLs)</td>
+              <td><code>forms/validation.templ:61</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-043</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Type Safety</strong></td>
+              <td>
+                FormMethod: add PUT/DELETE/PATCH or document Attrs path (silently -&gt; GET is
+                surprising)
+              </td>
+              <td><code>forms/form.templ:10</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-045</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Type Safety</strong></td>
+              <td>
+                paginationArrow roundedSide string param -&gt; typed enum/constants (typo = bad
+                class)
+              </td>
+              <td><code>navigation/pagination.templ:100</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-053</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Architecture</strong></td>
+              <td>
+                activeSpanOrLink (5 positional params, 2 empty sentinels) -&gt; struct or split
+              </td>
+              <td><code>navigation/nav_link.templ:26</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-055</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Architecture</strong></td>
+              <td>Ternary: document eager-eval caveat or deprecate for inline templ if/else</td>
+              <td><code>utils/utils.go:58</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-059</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Nil Safety</strong></td>
+              <td>htmx loading: guard nil spinner templ.Component (panics at render)</td>
+              <td><code>htmx/loading.templ:7</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-061</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Type Safety</strong></td>
+              <td>
+                utils ValidateID: reject invalid HTML-id chars (only checks emptiness; SanitizeID
+                lives in forms)
+              </td>
+              <td><code>utils/validate.go:10</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-066</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Edge Case</strong></td>
+              <td>ensureAccordionItemIDs: copy slice before mutating caller's []AccordionItem</td>
+              <td><code>display/accordion.templ:10</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-042</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Type Safety</strong></td>
+              <td>
+                StatusBadge: accept typed status alias w/ constants (raw string + magic map only
+                validation)
+              </td>
+              <td><code>display/badge.templ:135</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-044</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Type Safety</strong></td>
+              <td>htmx SwapStyle typed enum (validSwapStyles map[string]bool + bare strings)</td>
+              <td><code>htmx/helpers.templ:4</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-048</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Type Safety</strong></td>
+              <td>
+                ThemeColor/DarkThemeColor hex validation (^# hex, garbage renders into meta now)
+              </td>
+              <td><code>layout/base.templ:16</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-051</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Architecture</strong></td>
+              <td>
+                tabLink: pack active/inactive classes into struct (easily swapped positional params)
+              </td>
+              <td><code>display/tabs.templ:46</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-056</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Architecture</strong></td>
+              <td>Move DismissScript out of utils (foundation leaks DOM/JS concerns)</td>
+              <td><code>utils/utils.go:74</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-065</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Edge Case</strong></td>
+              <td>breadcrumbs: resolve relative Href for JSON-LD (spec requires absolute URL)</td>
+              <td><code>navigation/breadcrumbs.templ:32</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-078</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Layout Edge</strong></td>
+              <td>empty Locale: default 'en' (renders lang='' invalid) + guard og:locale</td>
+              <td><code>layout/base.templ:16</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-081</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Display Arch</strong></td>
+              <td>
+                card statCardFigures: replace switch with trendStyle map (convention = maps not
+                switches)
+              </td>
+              <td><code>display/card.templ:209</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-054</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Architecture</strong></td>
+              <td>
+                diagnosticSection (5 positional args mixing data+presentation) -&gt; props struct
+              </td>
+              <td><code>errorpage/shared.templ:80</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-052</strong></td>
+              <td><span class="badge badge-medium">T3</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Architecture</strong></td>
+              <td>paginationArrow (7 params) -&gt; props struct</td>
+              <td><code>navigation/pagination.templ:100</code></td>
+              <td>10m</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="tier4"><span class="num">04</span>Tier 4 — Polish &amp; cleanup</h2>
+        <p class="hero-subtitle">41 tasks · ~294 min · dead-code / duplication / test gaps</p>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Tier</th>
+              <th>Sev</th>
+              <th>Impact</th>
+              <th>Epic</th>
+              <th>Task</th>
+              <th>Location</th>
+              <th>Est</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>P-117</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Tests</strong></td>
+              <td>navigation: add MobileNavLink External test (security bug untested)</td>
+              <td><code>navigation/*_test.go</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-115</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Tests</strong></td>
+              <td>
+                integration: render components inside layout.Base test (head/body/nonce unverified)
+              </td>
+              <td><code>integration/composition_test.go:14</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-113</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-medium">M</span></td>
+              <td><strong>Tests</strong></td>
+              <td>layout: consolidate 7 overlapping test files into 2 (unit + behaviour)</td>
+              <td><code>layout/*_test.go</code></td>
+              <td>12m</td>
+            </tr>
+            <tr>
+              <td><strong>P-084</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>feedback: remove alertIconName/toastIconName pure-indirection wrappers</td>
+              <td><code>feedback/alert.templ:41</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-085</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>
+                feedback: inline feedbackStyle in alert/toast; delete alertStyles/toastStyles
+                duplicate unpackers
+              </td>
+              <td><code>feedback/alert.templ:36</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-086</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>feedback: standardize data-dismiss (value never inspected — dead info)</td>
+              <td><code>feedback/alert.templ:79</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-091</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>display: buttonVariantDefault/badgeStyleDefault use map fallback directly</td>
+              <td><code>display/button_go.go:89</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-094</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>navigation: remove sidebarItemActive dead '/' special-case</td>
+              <td><code>navigation/sidebar_nav.templ:43</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-098</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>forms: textarea rows default 3 -&gt; 4 to match DefaultTextareaProps</td>
+              <td><code>forms/textarea.templ:50</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-099</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>forms: comboboxInputClass const -&gt; func(hasError) for error-ring state</td>
+              <td><code>forms/combobox.templ:33</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-116</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Tests</strong></td>
+              <td>integration: add ThemeScript/ThemeToggle to CSPNonceConsistency</td>
+              <td><code>integration/composition_test.go:262</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-118</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-high">High</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Tests</strong></td>
+              <td>navigation: add duplicate-Nav ID collision test</td>
+              <td><code>navigation/*_test.go</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-119</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Tests</strong></td>
+              <td>navigation: paginationRange add current&gt;total case</td>
+              <td><code>navigation/*_test.go</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-093</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>display: tabs remove nested &lt;nav&gt; double aria-label on tablist</td>
+              <td><code>display/tabs.templ:83</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-100</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>
+                forms: InputGroupPaddingClass — wire into InputGroup or delete (split-brain API)
+              </td>
+              <td><code>forms/input_group.templ:25</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-107</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Security</strong></td>
+              <td>
+                internal/golden: Assert name path-escape guard (name w/ ../ escapes testdata/)
+              </td>
+              <td><code>internal/golden/golden.go:31</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-109</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>
+                icons: reword docs — svg fill constants vs icons stroke (not 'single source of
+                truth')
+              </td>
+              <td><code>internal/svg/svg.templ:6</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-111</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>icons: IconPathJS accept strokeWidth arg (hardcoded 1.5)</td>
+              <td><code>icons/icon_paths.go:150</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-110</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Architecture</strong></td>
+              <td>icons: centralize Spinner-is-special rule (special-cased in 3 places)</td>
+              <td><code>icons/icon_paths.go:120</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-112</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>
+                display: example_test add // Output directives or convert to Test* (zero regression
+                value)
+              </td>
+              <td><code>display/example_test.go:11</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-114</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Tests</strong></td>
+              <td>
+                feedback: add toastJSStyles/toastJSIconPaths table tests (non-trivial, untested)
+              </td>
+              <td><code>feedback/toast.templ:44</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-120</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>display: DefinitionItem/TableCell unify dual string+Component slot fields</td>
+              <td><code>display/definition_list.templ:8</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-121</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">S</span></td>
+              <td><strong>i18n</strong></td>
+              <td>errorpage: accept label strings via props for i18n (hardcoded English copy)</td>
+              <td><code>errorpage/shared.templ:15</code></td>
+              <td>10m</td>
+            </tr>
+            <tr>
+              <td><strong>P-088</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>feedback: add explicit MD entries to spinnerSizeLookup/progressHeightLookup</td>
+              <td><code>feedback/loading.templ:20</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-089</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>display: remove dropdownItemLink dead variadic extraAttrs param</td>
+              <td><code>display/dropdown.templ:69</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-090</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>display: inline emptyStateIcon one-line wrapper</td>
+              <td><code>display/empty_state.templ:104</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-092</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>display: drawer inline style -&gt; Tailwind classes (left-0 inset-y-0)</td>
+              <td><code>display/drawer.templ:31</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-095</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>navigation: navLinkClasses extract shared prefix const</td>
+              <td><code>navigation/nav_link.templ:5</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-096</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>navigation: pageURL preserve fragment across re-encode</td>
+              <td><code>navigation/pagination.templ:39</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-097</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>navigation: replace fmt.Sprintf('%d') with native templ interpolation</td>
+              <td><code>navigation/pagination.templ:152</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-101</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>forms: extract const errorIDSuffix='-error' (duplicated literal in 2 places)</td>
+              <td><code>forms/helpers.go:39</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-103</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>errorpage: remove unreachable props.Timestamp=='' branch</td>
+              <td><code>errorpage/handler.go:239</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-104</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>errorpage: FromError call errors.AsType once (currently twice)</td>
+              <td><code>errorpage/handler.go:54</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-106</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>
+                internal/golden: annotate golden.go:38 nil-deref false positive (flag.Bool never
+                nil)
+              </td>
+              <td><code>internal/golden/golden.go:38</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-108</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>internal/golden: replace hand-rolled contains with strings.Contains</td>
+              <td><code>internal/golden/golden_test.go:88</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-122</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>navigation: SidebarNavItem embed BaseProps (no per-item customization)</td>
+              <td><code>navigation/sidebar_nav.templ:9</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-123</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>navigation: normalize() consolidate all defaulting in one place</td>
+              <td><code>navigation/pagination.templ:33</code></td>
+              <td>6m</td>
+            </tr>
+            <tr>
+              <td><strong>P-083</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>feedback helpers_test: replace hand-rolled contains with strings.Contains</td>
+              <td><code>feedback/helpers_test.go:224</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-087</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>
+                feedback: feedbackStyleDefault use named-field struct literal (positional is
+                fragile)
+              </td>
+              <td><code>feedback/styles.go:79</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-102</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>errorpage: errorResponse.Context type any -&gt; map[string]string</td>
+              <td><code>errorpage/handler.go:113</code></td>
+              <td>8m</td>
+            </tr>
+            <tr>
+              <td><strong>P-105</strong></td>
+              <td><span class="badge badge-low">T4</span></td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td><span class="badge badge-low">XS</span></td>
+              <td><strong>Cleanup</strong></td>
+              <td>errorpage: ExtractCauseChain handle errors.Join siblings</td>
+              <td><code>errorpage/styles.go:229</code></td>
+              <td>10m</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="graph"><span class="num">05</span>Execution Graph</h2>
+        <div
+          style="
+            background: var(--surface-raised);
+            border: 1px solid var(--border);
+            padding: 1rem;
+            overflow-x: auto;
+          "
+        >
+          <?xml version="1.0" encoding="utf-8"?><svg
+            xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
+            data-d2-version="v0.7.1"
+            preserveAspectRatio="xMinYMin meet"
+            viewBox="0 0 2473 961"
+          >
+            <svg
+              class="d2-2110081499 d2-svg"
+              width="2473"
+              height="961"
+              viewBox="-101 -101 2473 961"
+            >
+              <rect
+                x="-101.000000"
+                y="-101.000000"
+                width="2473.000000"
+                height="961.000000"
+                rx="0.000000"
+                fill="#FFFFFF"
+                class="fill-N7"
+                stroke-width="0"
+              />
+              <style type="text/css">
+                <![CDATA[
+                .d2-2110081499 .text-bold {
+                	font-family: "d2-2110081499-font-bold";
+                }
+                @font-face {
+                	font-family: d2-2110081499-font-bold;
+                	src: url("data:application/font-woff;base64,d09GRgABAAAAABS4AAoAAAAAHtAAAguFAAAAAAAAAAAAAAAAAAAAAAAAAABPUy8yAAAA9AAAAGAAAABgXxHXrmNtYXAAAAFUAAAA3AAAAThGuujgZ2x5ZgAAAjAAAA1oAAASSMn0Lx9oZWFkAAAPmAAAADYAAAA2G38e1GhoZWEAAA/QAAAAJAAAACQKfwX+aG10eAAAD/QAAADbAAAA/Hy3Cehsb2NhAAAQ0AAAAIAAAACAkviXlG1heHAAABFQAAAAIAAAACAAVwD3bmFtZQAAEXAAAAMoAAAIKgjwVkFwb3N0AAAUmAAAAB0AAAAg/9EAMgADAioCvAAFAAACigJYAAAASwKKAlgAAAFeADIBKQAAAgsHAwMEAwICBGAAAvcAAAADAAAAAAAAAABBREJPACAAIP//Au7/BgAAA9gBESAAAZ8AAAAAAfAClAAAACAAA3icjM/LLqMBHMbh55t2Op1OO6d2zgefc1utsyoLiUiExELEoltLsRE7V4WlhOBOuAuHxV98EWvv+ln8XiRyEpTlkxaaUnklqWEjGtomdHQtWrJs1bpN23p27TtMaxE823pmJ1/sijUbtvTs2HPwZONGVU5FQTHu4y5u4yGu4jIu4jzO4jRO4jiOrtOs6LVLdDXM6Zgxr2lMS9t41jJl2oI3cvLeKnin6L2SD8oqPvrksy++qqr55rsffvrltz/++ue/Pql+AwYNZR9H1c3yCAAA//8BAAD//5mnL6R4nIRXa3Ab13U+9wLEiiD4ABaLBUA8CCyxC4AkQGCxWBJ8gBRB8CGCL5kPWyApc2xJFiVKlahSsig7M5Gsxoaq1FQcOmocVWNPG9fuxKNkxk2tdtpOnarRpD8cVzOdRrZcj+rGrc2kaOrYJNC5uyRFqj/6g1gMePace77zfeecCyUwDIBn8RXQQClUggkYANHoMfpEQeAoWZRljtXIAjJSw9hUeO1VIaANBLTBmhX30zMzKDONr6wf2ZeZnf3NTEtL4ZU//3HhEjr5YwBc/BIAd+EclIIRgKZEgecFTqfT0CLNCRx1v+qFyvLqcq3B9uXtt27/of8nftTf2hqZF2NHCxdwbn3h6lUAAAShYh434hWoBijx8rwUi8fFqIWleJ7z6nSM2SJG4zKrQ1Ojz+8duzSafMIzaJO5+r668V5/0jo4ahj41tEjL4+I3mnWGZ3e/cTxWlt2P2DIAOABnAO9mrEYtVgYs07HCWI0HpdiPM9xmbefeHFk+PL+BkfT3lBob5MD51KXjx9/sWfRnx0cfNSnnC8DgD7HOShTcGM8jMhwjIfJoJXCV3fvokqcW/r62ZeWtmw/UTDZZptBVwtffPQRzi19e2kdNu3w2KZPkREl0cgZOWNm+d6VK/dw7quv1hdQVWF10xY+xDnQKLbGzDIBbyPWRzgHJervHiazjDDOra8uPYjxJs6BW/k/bbGwYjwu06KRIxDLHEVxgsC5MMNk/ugpvUmv1Rv1B689R5VqtNLUyFRMq91F4VzhrqPd5Wp3IO/6wuc1Q8Puq7/97VX38FDN55sxCMa0GoMVeV4iuWgEzmJhmMy3X+/Qaity5FFSjnOFd74Z+1ri/voC6v79+FLi3wAAK/V/Bq9A5UMMUKolREmpOC/hARqfvLBnz4VJ9bNrcLCra3DQMPry4blvDQ29dPjwy6PPLszOzs/Pzi7ARv0bcQ4MYN5Rf44xilHilMt82HsqnV7oHuk93dGawjkhOzQwG/4FGj0kBgE2fezFOagAdpsPihCceImrbj7tPpFKSldeOzcykGhrSwzgnG9ysHeKLXz16adof6SxkSdYccU81uMVCCpZCrLFojoQhBDeSXrGbGFZ9bTI3PFs9BFu3B9qEOvGPK18y1OppuPBPTUdAt/QHHykJZ2YNzSGnnTxXqfbaaqtCKfD8clYfXDKVu12uFxGr/WR7ni2CRDYADCNc0CRTDjJw3DG2zfQlzdw1dLS+qrKmTIAXI9zxFakNSK7QRpZ1NDchr4pquxHr7/aXMaWa8sYfey73//hq50GtkJbZilrQ0Oo7awl5nbHLGcL7xTevmAXXS7RfkHBMljMo5+jNbABB8B6SZllJV1KUJJnjBzxL0fjsqTo/i9Tw+eXMRdwd9RK4bnEzIHTeq27Z5fNRw+2ug0TycHJSo9gZR531s6fKHwsOrgTLD2hr3NaWSVeZzGPLfgmmIkCCOIcxRlFhnqIXJyXYiwW1O3pcmoNJ5e1zpS3dTLcOjPJx8frA2a/wVMj4ZtvDNid7b8zMHYmeTo98FzDT00VCl61xTy6idbA/nDvUquodi4dsnUf6+z93VSox9HN1UjJZKM1RCd844a2U6N7F9pc7IxzoLMjw1Tur6lWeScU82gN3wQaajaxUhwLRFxbKG2S5dfZYy0zsUCTTbd8Wq+1p7FVMNF1Zi4eNrxwZuRUu8M68P31roidO222/dRU0dXT1w1YOfs9tAbWDXy2647yEHaSs2tERX7I3XNid9eRlp6psBYX7ujTESke4ae/c0Oo98YN7QujIwvJ5FyK9pXGRc+jdhdKBKSwyikrAFrAt8iT8E5+iOukRRof2727drjLHauqLrcbql2PPorOHS2plsZjBt2RkhIP7zpZ+DqABrzFBkyhNQhDC/QryPBSjABByCRtpsCKDLchdq+g1IHQy6zTabZ1E3pDvV5eMfl1Yrqph66usdoDiWmp3vOjIao0Nik73SZvYDj7eGqp3ykITqcgBKIdgk+0eQzVbe/Zm+pb/dpyv7s6WqU1pepah/yGuTKvubm/Vl9poU0tXeJICN0KBoSA3x8IFpZrbWyVRmO1OZwqNp2k2ApHlTlAbQrBqJySMnYuU4490ZG+ZWeNw2/FN9941FY3N1W4jTxxv40tvAXFIsgA8Av8HuYhAQAUtMDzW75d+CYY1PkgyiLpWxTTeVn73Wt/9hffO57ENwvzf3e78C9/3fM0sS/mkQnfhEqVcUbRuEXgvx9oWTaWllA6k8Fn2LcHc+t3WBNCR0soNY7GidbAo8Qh/YJUd0cm1Nazk2g4HZE6aU9/ZHjPsrPG10g+wmi1w91Q5/dGNtNrLLy18djECa1t4LQRYztOp/XamswWUGg16WrYgZPKd4U7//+csSSPpVLHksn5VGo+2RAKNYQaGja02rawd/RU22Kmo3OASFbtM73YgtaABhcA++B0Cv14gWXoB22GnNPZJzx2qHUmXtNqLxni4+N1QbP/bfwnETv3jZNjp5PVtqE/QLVbTUbJHV1Ga2Daga+qHjXz6gGeceit5bYqR5sZrU5EIyUlz2q1gWjhQ0DAFPPoe2gNBKWuD+YOr86dLWdk6rgwY9a9FznI7/Ym3R6XM2R3tfifGmuecO+2x+zNzXxNW+CQgXdnbdUsbbTQekNtc6B7XLBOmi2C1VZRxjWHuqZUbhuLeTSPF8jkLPHyksRJsiwqC9GDxgjZodSA8enFRc5psOlZWjYcHr91VHf+/MmfBH067ZzOoPpqLebRF2iV1H8HN40b7fCfRvqWXTUO3rJ8ukzj7jfMTaFY4QMpYHei3kJVt68eENEBKqJVKAcQd4y2G398pUNP67WltL7z0nW0+ktfRhAyvl8Wqjb7F15Fqwq/t7+3zcOD2Xhl6cVGnV6npcpL5WebSispLVVKhX9v8Y0GqpzSUmVUPVq97+vl+X7uvvLs9d0vVL3Lpf3+NPeuEo8UPY9W1RksbAtDsQ/iVKxcfqVeb9Frd5l2eVe++fIrjQbWoC01lwoIfzbM1DFMHTNc/NUoU88wdZZR4tdQbEfraJWw/wEPZHkHFBX4tMVTaadMu3x+PfVXV3rKTHrtLmNp66U32Kahv9Fpj6OSWqcd/ev73rSP6+HeL5S1jym7kgZsxTz+Bl6BMohBEoA2kyagiopW1SZvaY6Ig7IQA1lUv1E8L+h0AimrrHy9V6bnGi2szWvseTzS00gzdcPx/nF/u9fRVWvjDc+ZJN7dbOP8Y8HAgVy8LhDwdTtpG/rM5DczIQ/rENY/FseiqTE31+0OZ8LDqWCXxNa02WsGQy3zYhWjXdzltbq5v/WF7O5UrZFX5q6vmEef4otQttEjVH0wZtIf1DuDeiWxoF0Hzp07QP5sfpb126x+q9VveP369ddeu3799RO+6YmJrNebnZiY9hHs0wDon/FZpReTES6RxI0ik35+MdbrPbK4iI7t0zvM62uLKt9dAOhjfBEcxL4dqyhu7EkqePG4KDK+kXPpSMArW4fDs6nktNSSjVlbLV97JHPuqYZwRLAPRcXovjbp2LG4pmSJ+LUU8+gDfBECD/cCTtpsgJvbmFlHGhaJ9V+Zo1zKmfaHmxz93eMdft4ru/rrZxOzZ2RR7umcM0T9U45aodYRsBwK8x6fy/4YX7dvbyRt0VZl2lv21qk7DQ2AvsBnoZSomBYJHwiVackj0QQLjrn2XAnSGuwV0cJ/fvLDvj6066B7xGWPVxfmV55EzxQuHV8hObDFPPoQnyVby44clLPTHoajtlD6n8Ej/G5nyh9JNNU7fM7dJnTo38s8vLyvqfOwIeabsvuikcZohSmIOpcWK4MTqfQTMeWsgWIe/YfCAz8A8hKGqkE0//eGSm0xGtE20axv8njCYVfbfHffqa5k1pWpkh1cgtPY+pyjc4kZ5HN69zRH4tFg4R87Xzi2uNLX4J40Vfsm+mu4mSd3z8QULZFd+ROl/gLEtqbVgw1ne3k0D+80RD1kjFHJJxLJBl9jLNsycTjqCXU0PekQArXOYKvB1+ht9TOOhKF+SEz0W7WO3mh8KDgzFOqxaG2DyehwCD3T0OhrqPUJ9YX3Bb/D5zTSkjMYLhahrZiHz9GvsACtACgFOvIEBHVwC3lQhNxTZUlk6n5z69Ah9fef4f9G9ervHqYO/8PPpqcBQW8xg/z4A9KPWTU9Vjk3ezvZ3Z3MytGofOPg3fPn7x7kH78zd/jOLCBoLGZQ1cY7gqJIUn/GrMtlm6LRpmyyu/sGP3vn8Nydx3nlXUBQXtyP4vhdEp+lRU35rf23rmkOrH2H7E72Yl7TgVdAgDYApAMB2tE5ZYtqQ/dA1aIXDqHPcCO508uSLEuCIJUw3h9cvPgDdPvQmURYG06ceevA1j4HP0erm3f1zmW0WqgCVHwTN8Ne/B65Xxm3dRVfKOTzhUK4OchxQfJHfCj4wpvElt1m+xIvijwvigZJ8EuSX5AIT+3FPJpBL0IZmbLszn61xYp30tlsuieb7bFxnM3GcYb52dkjR2Zn50eb0ul4PJ1uImcvjhXziNxPNQAUEtGfov1jhWsG/Op6FgD+FwAA//8BAAD//+Ut1lAAAQAAAAILhUiJ0JFfDzz1AAED6AAAAADYXaCEAAAAAN1mLzb+N/7ECG0D8QABAAMAAgAAAAAAAAABAAAD2P7vAAAImP43/jcIbQABAAAAAAAAAAAAAAAAAAAAP3icHMoxSithFIbh93wD4V4y6i/GmKQIEkfEzBjsIpgpThMsPCBoIOls3INg4Q7sxc5aG1s3YO9u0oyQ/tEXN/yA6matORM9ESoI5YTeCTsj1CK0JvRK6IOJ7gg9EKo4UkVfU9raYawat18K1ZyoRWELeuoy0iVuHaYqcBvi2QrXDFe5sW4vuH2zb8/s6oKZ2uTZP3oS2/pPrjf6ShwrMVdiqERXiT0lDpQ4VWJsFbVdU2aHlLbkypac2y1b2YqBEiPr4NB8btwjA+6bxR8AAAD//wEAAP//w6khBgAAAAAsACwAUAB8AKAAtgDKAOAA7AD8AS4BUAF8AZ4BxAIEAhYCRAJ8Aq4C2gMMA0ADZgPOA/AD/AQUBDAEYgSEBLAE4AUABTwFYgWEBaAF2AYEBjQGlgbCBtoHBgdEB2gHmgfaCCgINAhACEwIZgiACI4IoAi2CMII2AjuCRQJJAABAAAAPwCQAAwAYwAHAAEAAAAAAAAAAAAAAAAABAADeJyclM9uG1UUxn9ObNMKwQJFVbqJ7oJFkejYVEnVNiuH1IpFFAePC0JCSBPP+I8ynhl5Jg7hCVjzFrxFVzwEz4FYo/l87NgF0SaKknx37vnznXO+c4Ed/mabSvUh8Ec9MVxhr35ueIsH9RPD27TrW4arPKn9abhGWJsbrvN5rWf4I95WfzP8gP3qT4YfslttG/6YZ9Udw59sO/4y/Cn7vF3gCrzgV8MVdskMb7HDj4a3eYTFrFR5RNNwjc/YM1xnD+gzoSBmQsIIx5AJI66YEZHjEzFjwpCIEEeHFjGFviYEQo7Rf34N8CmYESjimAJHjE9MQM7YIv4ir5RzZRzqNLO7FgVjAi7kcUlAgiNlREpCxKXiFBRkvKJBg5yB+GYU5HjkTIjxSJkxokGXNqf0GTMhx9FWpJKZT8qQgmsC5XdmUXZmQERCbqyuSAjF04lfJO8Opzi6ZLJdj3y6EeFLHN/Ju+SWyvYrPP26NWabeZdsAubqZ6yuxLq51gTHui3ztvhWuOAV7l792WTy/h6F+l8o8gVXmn+oSSVikuDcLi18Kch3j3Ec6dzBV0e+p0OfE7q8oa9zix49WpzRp8Nr+Xbp4fiaLmccy6MjvLhrSzFn/IDjGzqyKWNH1p/FxCJ+JjN15+I4Ux1TMvW8ZO6p1kgV3n3C5Q6lG+rI5TPQHpWWTvNLtGcBI1NFJoZT9XKpjdz6F5oipqqlnO3tfbkNc9u95RbfkGqHS7UuOJWTWzB631S9dzRzrR+PgJCUC1kMSJnSoOBGvM8JuCLGcazunWhLClornzLPjVQSMRWDDonizMj0NzDd+MZ9sKF7Z29JKP+S6eWqqvtkcerV7YzeqHvLO9+6HK1NoGFTTdfUNBDXxLQfaafW+fvyzfW6pTzliJSY8F8vwDM8muxzwCFjZRjoZm6vQ1MvRJOXHKr6SyJZDaXnyCIc4PGcAw54yfN3+rhk4oyLW3FZz93imCO6HH5QFQv7Lke8Xn37/6y/i2lTtTierk4v7j3FJ3dQ6xfas9v3sqeJlZOYW7TbrTgjYFpycbvrNbnHeP8AAAD//wEAAP//9LdPUXicYmBmAIP/5xiMGLAAAAAAAP//AQAA//8vAQIDAAAA");
+                }]]>
+              </style>
+              <style type="text/css">
+                <![CDATA[.shape {
+                  shape-rendering: geometricPrecision;
+                  stroke-linejoin: round;
+                }
+                .connection {
+                  stroke-linecap: round;
+                  stroke-linejoin: round;
+                }
+                .blend {
+                  mix-blend-mode: multiply;
+                  opacity: 0.5;
+                }
+
+                		.d2-2110081499 .fill-N1{fill:#0A0F25;}
+                		.d2-2110081499 .fill-N2{fill:#676C7E;}
+                		.d2-2110081499 .fill-N3{fill:#9499AB;}
+                		.d2-2110081499 .fill-N4{fill:#CFD2DD;}
+                		.d2-2110081499 .fill-N5{fill:#DEE1EB;}
+                		.d2-2110081499 .fill-N6{fill:#EEF1F8;}
+                		.d2-2110081499 .fill-N7{fill:#FFFFFF;}
+                		.d2-2110081499 .fill-B1{fill:#0D32B2;}
+                		.d2-2110081499 .fill-B2{fill:#0D32B2;}
+                		.d2-2110081499 .fill-B3{fill:#E3E9FD;}
+                		.d2-2110081499 .fill-B4{fill:#E3E9FD;}
+                		.d2-2110081499 .fill-B5{fill:#EDF0FD;}
+                		.d2-2110081499 .fill-B6{fill:#F7F8FE;}
+                		.d2-2110081499 .fill-AA2{fill:#4A6FF3;}
+                		.d2-2110081499 .fill-AA4{fill:#EDF0FD;}
+                		.d2-2110081499 .fill-AA5{fill:#F7F8FE;}
+                		.d2-2110081499 .fill-AB4{fill:#EDF0FD;}
+                		.d2-2110081499 .fill-AB5{fill:#F7F8FE;}
+                		.d2-2110081499 .stroke-N1{stroke:#0A0F25;}
+                		.d2-2110081499 .stroke-N2{stroke:#676C7E;}
+                		.d2-2110081499 .stroke-N3{stroke:#9499AB;}
+                		.d2-2110081499 .stroke-N4{stroke:#CFD2DD;}
+                		.d2-2110081499 .stroke-N5{stroke:#DEE1EB;}
+                		.d2-2110081499 .stroke-N6{stroke:#EEF1F8;}
+                		.d2-2110081499 .stroke-N7{stroke:#FFFFFF;}
+                		.d2-2110081499 .stroke-B1{stroke:#0D32B2;}
+                		.d2-2110081499 .stroke-B2{stroke:#0D32B2;}
+                		.d2-2110081499 .stroke-B3{stroke:#E3E9FD;}
+                		.d2-2110081499 .stroke-B4{stroke:#E3E9FD;}
+                		.d2-2110081499 .stroke-B5{stroke:#EDF0FD;}
+                		.d2-2110081499 .stroke-B6{stroke:#F7F8FE;}
+                		.d2-2110081499 .stroke-AA2{stroke:#4A6FF3;}
+                		.d2-2110081499 .stroke-AA4{stroke:#EDF0FD;}
+                		.d2-2110081499 .stroke-AA5{stroke:#F7F8FE;}
+                		.d2-2110081499 .stroke-AB4{stroke:#EDF0FD;}
+                		.d2-2110081499 .stroke-AB5{stroke:#F7F8FE;}
+                		.d2-2110081499 .background-color-N1{background-color:#0A0F25;}
+                		.d2-2110081499 .background-color-N2{background-color:#676C7E;}
+                		.d2-2110081499 .background-color-N3{background-color:#9499AB;}
+                		.d2-2110081499 .background-color-N4{background-color:#CFD2DD;}
+                		.d2-2110081499 .background-color-N5{background-color:#DEE1EB;}
+                		.d2-2110081499 .background-color-N6{background-color:#EEF1F8;}
+                		.d2-2110081499 .background-color-N7{background-color:#FFFFFF;}
+                		.d2-2110081499 .background-color-B1{background-color:#0D32B2;}
+                		.d2-2110081499 .background-color-B2{background-color:#0D32B2;}
+                		.d2-2110081499 .background-color-B3{background-color:#E3E9FD;}
+                		.d2-2110081499 .background-color-B4{background-color:#E3E9FD;}
+                		.d2-2110081499 .background-color-B5{background-color:#EDF0FD;}
+                		.d2-2110081499 .background-color-B6{background-color:#F7F8FE;}
+                		.d2-2110081499 .background-color-AA2{background-color:#4A6FF3;}
+                		.d2-2110081499 .background-color-AA4{background-color:#EDF0FD;}
+                		.d2-2110081499 .background-color-AA5{background-color:#F7F8FE;}
+                		.d2-2110081499 .background-color-AB4{background-color:#EDF0FD;}
+                		.d2-2110081499 .background-color-AB5{background-color:#F7F8FE;}
+                		.d2-2110081499 .color-N1{color:#0A0F25;}
+                		.d2-2110081499 .color-N2{color:#676C7E;}
+                		.d2-2110081499 .color-N3{color:#9499AB;}
+                		.d2-2110081499 .color-N4{color:#CFD2DD;}
+                		.d2-2110081499 .color-N5{color:#DEE1EB;}
+                		.d2-2110081499 .color-N6{color:#EEF1F8;}
+                		.d2-2110081499 .color-N7{color:#FFFFFF;}
+                		.d2-2110081499 .color-B1{color:#0D32B2;}
+                		.d2-2110081499 .color-B2{color:#0D32B2;}
+                		.d2-2110081499 .color-B3{color:#E3E9FD;}
+                		.d2-2110081499 .color-B4{color:#E3E9FD;}
+                		.d2-2110081499 .color-B5{color:#EDF0FD;}
+                		.d2-2110081499 .color-B6{color:#F7F8FE;}
+                		.d2-2110081499 .color-AA2{color:#4A6FF3;}
+                		.d2-2110081499 .color-AA4{color:#EDF0FD;}
+                		.d2-2110081499 .color-AA5{color:#F7F8FE;}
+                		.d2-2110081499 .color-AB4{color:#EDF0FD;}
+                		.d2-2110081499 .color-AB5{color:#F7F8FE;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.sketch-overlay-B1{fill:url(#streaks-darker-d2-2110081499);mix-blend-mode:lighten}.sketch-overlay-B2{fill:url(#streaks-darker-d2-2110081499);mix-blend-mode:lighten}.sketch-overlay-B3{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.sketch-overlay-B4{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.sketch-overlay-B5{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.sketch-overlay-B6{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.sketch-overlay-AA2{fill:url(#streaks-dark-d2-2110081499);mix-blend-mode:overlay}.sketch-overlay-AA4{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.sketch-overlay-AA5{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.sketch-overlay-AB4{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.sketch-overlay-AB5{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.sketch-overlay-N1{fill:url(#streaks-darker-d2-2110081499);mix-blend-mode:lighten}.sketch-overlay-N2{fill:url(#streaks-dark-d2-2110081499);mix-blend-mode:overlay}.sketch-overlay-N3{fill:url(#streaks-normal-d2-2110081499);mix-blend-mode:color-burn}.sketch-overlay-N4{fill:url(#streaks-normal-d2-2110081499);mix-blend-mode:color-burn}.sketch-overlay-N5{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.sketch-overlay-N6{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.sketch-overlay-N7{fill:url(#streaks-bright-d2-2110081499);mix-blend-mode:darken}.light-code{display: block}.dark-code{display: none}]]>
+              </style>
+              <g class="dGl0bGU=">
+                <g class="shape">
+                  <rect
+                    x="0.000000"
+                    y="0.000000"
+                    width="451.000000"
+                    height="66.000000"
+                    stroke="#0D32B2"
+                    fill="#F7F8FE"
+                    class="stroke-B1 fill-B6"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="225.500000"
+                  y="38.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  templ-components Remediation — Pareto Execution Flow
+                </text>
+              </g>
+              <g class="JiMzNDtUaWVyIDE6IENyaXRpY2FsXG4oMSUgLSZndDsgNTElKSYjMzQ7">
+                <g class="shape">
+                  <rect
+                    x="153.000000"
+                    y="126.000000"
+                    width="145.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#ff6b6b"
+                    class="stroke-B1"
+                    style="stroke-width: 0"
+                  />
+                </g>
+                <text
+                  x="225.500000"
+                  y="164.500000"
+                  fill="#0e0e10"
+                  class="text-bold"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="225.500000" dy="0.000000">Tier 1: Critical</tspan>
+                  <tspan x="225.500000" dy="18.500000">(1% -&gt; 51%)</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtPdmVybGF5IEExMXlcbk1vZGFsL0RyYXdlciYjMzQ7">
+                <g class="shape">
+                  <rect
+                    x="584.000000"
+                    y="106.000000"
+                    width="147.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="657.500000"
+                  y="144.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="657.500000" dy="0.000000">Overlay A11y</tspan>
+                  <tspan x="657.500000" dy="18.500000">Modal/Drawer</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtGb3JtcyBBMTF5XG4mYW1wOyBDb3JyZWN0bmVzcyYjMzQ7">
+                <g class="shape">
+                  <rect
+                    x="586.000000"
+                    y="248.000000"
+                    width="144.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="658.000000"
+                  y="286.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="658.000000" dy="0.000000">Forms A11y</tspan>
+                  <tspan x="658.000000" dy="18.500000">&amp; Correctness</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtOYXYgU2VjdXJpdHlcbk1vYmlsZU5hdkxpbmsvSUQmIzM0Ow==">
+                <g class="shape">
+                  <rect
+                    x="573.000000"
+                    y="390.000000"
+                    width="170.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="658.000000"
+                  y="428.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="658.000000" dy="0.000000">Nav Security</tspan>
+                  <tspan x="658.000000" dy="18.500000">MobileNavLink/ID</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtGZWVkYmFjayBBMTF5XG5TcGlubmVyL1Byb2dyZXNzL1RvYXN0JiMzNDs=">
+                <g class="shape">
+                  <rect
+                    x="551.000000"
+                    y="532.000000"
+                    width="213.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="657.500000"
+                  y="570.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="657.500000" dy="0.000000">Feedback A11y</tspan>
+                  <tspan x="657.500000" dy="18.500000">Spinner/Progress/Toast</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtUaWVyIDE6IENyaXRpY2FsJiMzNDs=">
+                <g class="shape">
+                  <rect
+                    x="153.000000"
+                    y="268.000000"
+                    width="145.000000"
+                    height="66.000000"
+                    stroke="#0D32B2"
+                    fill="#F7F8FE"
+                    class="stroke-B1 fill-B6"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="225.500000"
+                  y="306.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  Tier 1: Critical
+                </text>
+              </g>
+              <g class="JiMzNDtUaWVyIDI6IEhpZ2hcbig0JSAtJmd0OyA2NCUpJiMzNDs=">
+                <g class="shape">
+                  <rect
+                    x="161.000000"
+                    y="394.000000"
+                    width="129.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#ffb347"
+                    class="stroke-B1"
+                    style="stroke-width: 0"
+                  />
+                </g>
+                <text
+                  x="225.500000"
+                  y="432.500000"
+                  fill="#0e0e10"
+                  class="text-bold"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="225.500000" dy="0.000000">Tier 2: High</tspan>
+                  <tspan x="225.500000" dy="18.500000">(4% -&gt; 64%)</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtIVE1YXG5jb3JyZWN0bmVzcyYjMzQ7">
+                <g class="shape">
+                  <rect
+                    x="1105.000000"
+                    y="114.000000"
+                    width="128.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="1169.000000"
+                  y="152.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="1169.000000" dy="0.000000">HTMX</tspan>
+                  <tspan x="1169.000000" dy="18.500000">correctness</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtMYXlvdXRcbmExMXkvc2VjdXJpdHkmIzM0Ow==">
+                <g class="shape">
+                  <rect
+                    x="1098.000000"
+                    y="256.000000"
+                    width="142.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="1169.000000"
+                  y="294.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="1169.000000" dy="0.000000">Layout</tspan>
+                  <tspan x="1169.000000" dy="18.500000">a11y/security</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtJY29uc1xuZGVkdXAvaW50ZWdyaXR5JiMzNDs=">
+                <g class="shape">
+                  <rect
+                    x="1090.000000"
+                    y="398.000000"
+                    width="158.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="1169.000000"
+                  y="436.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="1169.000000" dy="0.000000">Icons</tspan>
+                  <tspan x="1169.000000" dy="18.500000">dedup/integrity</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtlcnJvcnBhZ2VcbnNhZmV0eSYjMzQ7">
+                <g class="shape">
+                  <rect
+                    x="1111.000000"
+                    y="540.000000"
+                    width="116.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="1169.000000"
+                  y="578.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="1169.000000" dy="0.000000">errorpage</tspan>
+                  <tspan x="1169.000000" dy="18.500000">safety</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtUaWVyIDI6IEhpZ2gmIzM0Ow==">
+                <g class="shape">
+                  <rect
+                    x="864.000000"
+                    y="327.000000"
+                    width="126.000000"
+                    height="66.000000"
+                    stroke="#0D32B2"
+                    fill="#F7F8FE"
+                    class="stroke-B1 fill-B6"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="927.000000"
+                  y="365.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  Tier 2: High
+                </text>
+              </g>
+              <g class="JiMzNDtUaWVyIDM6IE1lZGl1bVxuKDIwJSAtJmd0OyA4MCUpJiMzNDs=">
+                <g class="shape">
+                  <rect
+                    x="151.000000"
+                    y="536.000000"
+                    width="149.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#f4d35e"
+                    class="stroke-B1"
+                    style="stroke-width: 0"
+                  />
+                </g>
+                <text
+                  x="225.500000"
+                  y="574.500000"
+                  fill="#0e0e10"
+                  class="text-bold"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="225.500000" dy="0.000000">Tier 3: Medium</tspan>
+                  <tspan x="225.500000" dy="18.500000">(20% -&gt; 80%)</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtUeXBlIFNhZmV0eVxuZW51bXMvcGhhbnRvbSYjMzQ7">
+                <g class="shape">
+                  <rect
+                    x="1607.000000"
+                    y="185.000000"
+                    width="162.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="1688.000000"
+                  y="223.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="1688.000000" dy="0.000000">Type Safety</tspan>
+                  <tspan x="1688.000000" dy="18.500000">enums/phantom</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtBcmNoaXRlY3R1cmVcbnBvc2l0aW9uYWwtJmd0O3N0cnVjdHMmIzM0Ow==">
+                <g class="shape">
+                  <rect
+                    x="1597.000000"
+                    y="327.000000"
+                    width="181.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="1687.500000"
+                  y="365.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="1687.500000" dy="0.000000">Architecture</tspan>
+                  <tspan x="1687.500000" dy="18.500000">positional-&gt;structs</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtTY3JpcHQgZGVkdXBcbiZhbXA7IHN5c3RlbWljJiMzNDs=">
+                <g class="shape">
+                  <rect
+                    x="1620.000000"
+                    y="469.000000"
+                    width="136.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="1688.000000"
+                  y="507.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="1688.000000" dy="0.000000">Script dedup</tspan>
+                  <tspan x="1688.000000" dy="18.500000">&amp; systemic</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtUaWVyIDM6IE1lZGl1bSYjMzQ7">
+                <g class="shape">
+                  <rect
+                    x="1348.000000"
+                    y="327.000000"
+                    width="149.000000"
+                    height="66.000000"
+                    stroke="#0D32B2"
+                    fill="#F7F8FE"
+                    class="stroke-B1 fill-B6"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="1422.500000"
+                  y="365.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  Tier 3: Medium
+                </text>
+              </g>
+              <g class="JiMzNDtUaWVyIDQ6IFBvbGlzaFxuKGNsZWFudXAvdGVzdHMpJiMzNDs=">
+                <g class="shape">
+                  <rect
+                    x="150.000000"
+                    y="678.000000"
+                    width="152.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#6eb5ff"
+                    class="stroke-B1"
+                    style="stroke-width: 0"
+                  />
+                </g>
+                <text
+                  x="226.000000"
+                  y="716.500000"
+                  fill="#0e0e10"
+                  class="text-bold"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="226.000000" dy="0.000000">Tier 4: Polish</tspan>
+                  <tspan x="226.000000" dy="18.500000">(cleanup/tests)</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtEZWFkIGNvZGVcbiZhbXA7IGR1cGxpY2F0aW9uJiMzNDs=">
+                <g class="shape">
+                  <rect
+                    x="2123.000000"
+                    y="256.000000"
+                    width="140.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="2193.000000"
+                  y="294.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="2193.000000" dy="0.000000">Dead code</tspan>
+                  <tspan x="2193.000000" dy="18.500000">&amp; duplication</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtUZXN0IGdhcHNcbiZhbXA7IGNvbnNvbGlkYXRpb24mIzM0Ow==">
+                <g class="shape">
+                  <rect
+                    x="2115.000000"
+                    y="398.000000"
+                    width="156.000000"
+                    height="82.000000"
+                    stroke="#0D32B2"
+                    fill="#2a2a30"
+                    class="stroke-B1"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="2193.000000"
+                  y="436.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  <tspan x="2193.000000" dy="0.000000">Test gaps</tspan>
+                  <tspan x="2193.000000" dy="18.500000">&amp; consolidation</tspan>
+                </text>
+              </g>
+              <g class="JiMzNDtUaWVyIDQ6IFBvbGlzaCYjMzQ7">
+                <g class="shape">
+                  <rect
+                    x="1878.000000"
+                    y="327.000000"
+                    width="137.000000"
+                    height="66.000000"
+                    stroke="#0D32B2"
+                    fill="#F7F8FE"
+                    class="stroke-B1 fill-B6"
+                    style="stroke-width: 2"
+                  />
+                </g>
+                <text
+                  x="1946.500000"
+                  y="365.500000"
+                  fill="#0A0F25"
+                  class="text-bold fill-N1"
+                  style="text-anchor: middle; font-size: 16px"
+                >
+                  Tier 4: Polish
+                </text>
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAxOiBDcml0aWNhbCYjMzQ7IC0mZ3Q7ICYjMzQ7T3ZlcmxheSBBMTF5XG5Nb2RhbC9EcmF3ZXImIzM0OylbMF0="
+              >
+                <marker
+                  id="mk-d2-2110081499-3488378134"
+                  markerWidth="10.000000"
+                  markerHeight="12.000000"
+                  refX="7.000000"
+                  refY="6.000000"
+                  viewBox="0.000000 0.000000 10.000000 12.000000"
+                  orient="auto"
+                  markerUnits="userSpaceOnUse"
+                >
+                  <polygon
+                    points="0.000000,0.000000 10.000000,6.000000 0.000000,12.000000"
+                    fill="#0D32B2"
+                    class="connection fill-B1"
+                    stroke-width="2"
+                  />
+                </marker>
+                <path
+                  d="M 286.744874 267.022547 C 457.799988 171.199997 517.599976 147.000000 580.000000 147.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAxOiBDcml0aWNhbCYjMzQ7IC0mZ3Q7ICYjMzQ7Rm9ybXMgQTExeVxuJmFtcDsgQ29ycmVjdG5lc3MmIzM0OylbMF0="
+              >
+                <path
+                  d="M 299.998037 297.911417 C 460.399994 290.799988 517.900024 289.000000 581.500000 289.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAxOiBDcml0aWNhbCYjMzQ7IC0mZ3Q7ICYjMzQ7TmF2IFNlY3VyaXR5XG5Nb2JpbGVOYXZMaW5rL0lEJiMzNDspWzBd"
+              >
+                <path
+                  d="M 296.809438 334.852017 C 459.799988 411.600006 515.299011 431.000000 568.500000 431.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAxOiBDcml0aWNhbCYjMzQ7IC0mZ3Q7ICYjMzQ7RmVlZGJhY2sgQTExeVxuU3Bpbm5lci9Qcm9ncmVzcy9Ub2FzdCYjMzQ7KVswXQ=="
+              >
+                <path
+                  d="M 260.423006 335.405366 C 452.600006 525.200012 511.000000 573.000000 547.000000 573.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAyOiBIaWdoJiMzNDsgLSZndDsgJiMzNDtIVE1YXG5jb3JyZWN0bmVzcyYjMzQ7KVswXQ=="
+              >
+                <path
+                  d="M 945.966962 325.249290 C 1021.000000 189.399994 1053.000000 155.000000 1101.000000 155.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAyOiBIaWdoJiMzNDsgLSZndDsgJiMzNDtMYXlvdXRcbmExMXkvc2VjdXJpdHkmIzM0OylbMF0="
+              >
+                <path
+                  d="M 987.748314 326.028713 C 1029.199951 303.000000 1051.599976 297.000000 1094.000000 297.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAyOiBIaWdoJiMzNDsgLSZndDsgJiMzNDtJY29uc1xuZGVkdXAvaW50ZWdyaXR5JiMzNDspWzBd"
+              >
+                <path
+                  d="M 975.640797 394.143584 C 1026.800049 429.799988 1050.000000 439.000000 1086.000000 439.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAyOiBIaWdoJiMzNDsgLSZndDsgJiMzNDtlcnJvcnBhZ2VcbnNhZmV0eSYjMzQ7KVswXQ=="
+              >
+                <path
+                  d="M 944.909554 394.781211 C 1020.799988 543.400024 1054.199951 581.000000 1107.000000 581.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAzOiBNZWRpdW0mIzM0OyAtJmd0OyAmIzM0O1R5cGUgU2FmZXR5XG5lbnVtcy9waGFudG9tJiMzNDspWzBd"
+              >
+                <path
+                  d="M 1454.362569 325.535962 C 1528.199951 246.199997 1558.900024 226.000000 1602.500000 226.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAzOiBNZWRpdW0mIzM0OyAtJmd0OyAmIzM0O0FyY2hpdGVjdHVyZVxucG9zaXRpb25hbC0mZ3Q7c3RydWN0cyYjMzQ7KVswXQ=="
+              >
+                <path
+                  d="M 1498.996410 365.119784 C 1537.000000 367.399994 1557.000000 368.000000 1593.000000 368.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciAzOiBNZWRpdW0mIzM0OyAtJmd0OyAmIzM0O1NjcmlwdCBkZWR1cFxuJmFtcDsgc3lzdGVtaWMmIzM0OylbMF0="
+              >
+                <path
+                  d="M 1451.276481 394.539674 C 1527.599976 486.600006 1561.500000 510.000000 1615.500000 510.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciA0OiBQb2xpc2gmIzM0OyAtJmd0OyAmIzM0O0RlYWQgY29kZVxuJmFtcDsgZHVwbGljYXRpb24mIzM0OylbMF0="
+              >
+                <path
+                  d="M 2010.762960 326.055558 C 2053.800049 303.000000 2076.600098 297.000000 2119.000000 297.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VGllciA0OiBQb2xpc2gmIzM0OyAtJmd0OyAmIzM0O1Rlc3QgZ2Fwc1xuJmFtcDsgY29uc29saWRhdGlvbiYjMzQ7KVswXQ=="
+              >
+                <path
+                  d="M 1997.664091 394.109414 C 2051.198975 429.799988 2075.000000 439.000000 2111.000000 439.000000"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7T3ZlcmxheSBBMTF5XG5Nb2RhbC9EcmF3ZXImIzM0OyAtJmd0OyAmIzM0O1RpZXIgMjogSGlnaCYjMzQ7KVswXQ=="
+              >
+                <path
+                  d="M 733.000000 147.000000 C 797.400024 147.000000 833.000000 183.000000 907.132966 323.462461"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7Rm9ybXMgQTExeVxuJmFtcDsgQ29ycmVjdG5lc3MmIzM0OyAtJmd0OyAmIzM0O1RpZXIgMjogSGlnaCYjMzQ7KVswXQ=="
+              >
+                <path
+                  d="M 732.500000 289.000000 C 797.299988 289.000000 826.000000 296.600006 870.620724 324.859792"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7TmF2IFNlY3VyaXR5XG5Nb2JpbGVOYXZMaW5rL0lEJiMzNDsgLSZndDsgJiMzNDtUaWVyIDI6IEhpZ2gmIzM0OylbMF0="
+              >
+                <path
+                  d="M 745.500000 431.000000 C 799.900024 431.000000 826.000000 423.399994 870.620724 395.140208"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7RmVlZGJhY2sgQTExeVxuU3Bpbm5lci9Qcm9ncmVzcy9Ub2FzdCYjMzQ7IC0mZ3Q7ICYjMzQ7VGllciAyOiBIaWdoJiMzNDspWzBd"
+              >
+                <path
+                  d="M 766.000000 573.000000 C 804.000000 573.000000 833.000000 537.000000 907.132966 396.537539"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7SFRNWFxuY29ycmVjdG5lc3MmIzM0OyAtJmd0OyAmIzM0O1RpZXIgMzogTWVkaXVtJiMzNDspWzBd"
+              >
+                <path
+                  d="M 1235.000000 155.000000 C 1285.000000 155.000000 1318.800049 189.399994 1399.930324 323.577071"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7TGF5b3V0XG5hMTF5L3NlY3VyaXR5JiMzNDsgLSZndDsgJiMzNDtUaWVyIDM6IE1lZGl1bSYjMzQ7KVswXQ=="
+              >
+                <path
+                  d="M 1242.000000 297.000000 C 1286.400024 297.000000 1309.800049 303.000000 1353.434460 325.187012"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7SWNvbnNcbmRlZHVwL2ludGVncml0eSYjMzQ7IC0mZ3Q7ICYjMzQ7VGllciAzOiBNZWRpdW0mIzM0OylbMF0="
+              >
+                <path
+                  d="M 1250.000000 439.000000 C 1288.000000 439.000000 1312.400024 429.799988 1366.629215 395.153557"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7ZXJyb3JwYWdlXG5zYWZldHkmIzM0OyAtJmd0OyAmIzM0O1RpZXIgMzogTWVkaXVtJiMzNDspWzBd"
+              >
+                <path
+                  d="M 1229.000000 581.000000 C 1283.800049 581.000000 1319.199951 543.400024 1402.035436 396.484320"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7VHlwZSBTYWZldHlcbmVudW1zL3BoYW50b20mIzM0OyAtJmd0OyAmIzM0O1RpZXIgNDogUG9saXNoJiMzNDspWzBd"
+              >
+                <path
+                  d="M 1771.500000 226.000000 C 1816.300049 226.000000 1845.800049 246.199997 1914.355481 323.998914"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7QXJjaGl0ZWN0dXJlXG5wb3NpdGlvbmFsLSZndDtzdHJ1Y3RzJiMzNDsgLSZndDsgJiMzNDtUaWVyIDQ6IFBvbGlzaCYjMzQ7KVswXQ=="
+              >
+                <path
+                  d="M 1780.000000 368.000000 C 1818.000000 368.000000 1838.000000 367.399994 1874.007181 365.239569"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <g
+                class="KCYjMzQ7U2NyaXB0IGRlZHVwXG4mYW1wOyBzeXN0ZW1pYyYjMzQ7IC0mZ3Q7ICYjMzQ7VGllciA0OiBQb2xpc2gmIzM0OylbMF0="
+              >
+                <path
+                  d="M 1758.500000 510.000000 C 1813.699951 510.000000 1846.400024 486.600006 1917.527528 396.144341"
+                  stroke="#0D32B2"
+                  fill="none"
+                  class="connection stroke-B1"
+                  style="stroke-width: 2"
+                  marker-end="url(#mk-d2-2110081499-3488378134)"
+                  mask="url(#d2-2110081499)"
+                />
+              </g>
+              <mask
+                id="d2-2110081499"
+                maskUnits="userSpaceOnUse"
+                x="-101"
+                y="-101"
+                width="2473"
+                height="961"
+              >
+                <rect x="-101" y="-101" width="2473" height="961" fill="white"></rect>
+              </mask>
+            </svg>
+          </svg>
+        </div>
+        <div class="callout">
+          <strong>Order of operations</strong> Work top-to-bottom by tier. Tier 1 is independently
+          shippable and delivers the majority of user-visible quality. Each task is self-contained
+          (build+test after every cluster of 2–4).
+        </div>
+        <h2 id="how"><span class="num">06</span>How to read this plan</h2>
+        <div class="card">
+          <p>
+            <strong>Est (Estimate)</strong> is the per-task ceiling: every task is ≤12 minutes (most
+            are 6–10m). <strong>Impact</strong> rates effect on library quality / end-users (L/XL =
+            ship first). <strong>Sev</strong> is the original finding severity. Tasks within a tier
+            are sorted by Impact desc, then effort asc. Run
+            <code
+              >find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build
+              ./... && go test ./... && golangci-lint run ./display/... ./errorpage/...
+              ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/...
+              ./utils/... ./internal/...</code
+            >
+            to verify after each cluster.
+          </p>
+        </div>
+        <footer class="footer">
+          Generated 2026-06-28 01:21 &middot; 123 tasks · baseline: build OK · tests green · lint 0
+          issues · branching-flow 97.5/100
+        </footer>
+      </main>
+    </div>
+    <script>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        var nav = document.querySelector("[data-nav]");
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[href^="#"]');
+        var ids = Array.from(links).map(function (l) {
+          return l.getAttribute("href").slice(1);
+        });
+        var sections = ids
+          .map(function (id) {
+            return document.getElementById(id);
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                links.forEach(function (link) {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + entry.target.id,
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+        );
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
+      })();
+    </script>
+  </body>
+</html>
