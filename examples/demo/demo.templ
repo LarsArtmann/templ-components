@@ -45,9 +45,9 @@ templ demoContent() {
 		</div>
 		@demoSection("Stat Cards")
 		<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-			@display.StatCard(display.DefaultStatCardProps())
-			@display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Change: "-3%", Trend: display.TrendDown})
-			@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Trend: display.TrendNone})
+			@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp})
+			@display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Icon: icons.Chart, Change: "-3%", Trend: display.TrendDown})
+			@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Icon: icons.CheckCircle, Trend: display.TrendNone})
 		</div>
 		@demoSection("Badges")
 		<div class="flex flex-wrap gap-2">
@@ -63,6 +63,7 @@ templ demoContent() {
 					icons.Home, icons.Users, icons.Folder, icons.Document,
 					icons.Search, icons.Settings, icons.Mail, icons.Bell,
 					icons.Plus, icons.Refresh, icons.Check, icons.X,
+					icons.BuildingOffice2, icons.Key, icons.ArrowRightOnRectangle,
 				} {
 				<div class="flex flex-col items-center gap-1">
 					@icons.Icon(name, "h-6 w-6 text-gray-600 dark:text-gray-400")

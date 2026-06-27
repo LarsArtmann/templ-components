@@ -185,15 +185,15 @@ func demoContent() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = display.StatCard(display.DefaultStatCardProps()).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Change: "-3%", Trend: display.TrendDown}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Icon: icons.Chart, Change: "-3%", Trend: display.TrendDown}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Trend: display.TrendNone}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Icon: icons.CheckCircle, Trend: display.TrendNone}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -245,6 +245,7 @@ func demoContent() templ.Component {
 			icons.Home, icons.Users, icons.Folder, icons.Document,
 			icons.Search, icons.Settings, icons.Mail, icons.Bell,
 			icons.Plus, icons.Refresh, icons.Check, icons.X,
+			icons.BuildingOffice2, icons.Key, icons.ArrowRightOnRectangle,
 		} {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"flex flex-col items-center gap-1\">")
 			if templ_7745c5c3_Err != nil {
@@ -261,7 +262,7 @@ func demoContent() templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(string(name))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/demo.templ`, Line: 69, Col: 55}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/demo.templ`, Line: 70, Col: 55}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -730,7 +731,7 @@ func demoSection(title string) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/demo.templ`, Line: 229, Col: 10}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/demo.templ`, Line: 230, Col: 10}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {

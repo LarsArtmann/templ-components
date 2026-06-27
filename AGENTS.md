@@ -43,7 +43,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **Accessibility — motion-reduce:** `motion-reduce:transition-none motion-reduce:duration-0` on all transitions, `motion-reduce:animate-none` on all animations (spinner, skeletons, toast enter/exit, modal, accordion)
 - **Dark mode colors:** All components use `gray-*` exclusively (no mixed `slate-*`/`gray-*`). Dark mode via class strategy: `@custom-variant dark (&:where(.dark, .dark *))` toggled by `layout.ThemeScript()` + `layout.ThemeToggle()`
 - **CI:** `.github/workflows/ci.yaml` — lint (golangci-lint), build+test with `templ generate`, coverage artifact. Pre-commit: `.git/hooks/pre-commit` → `scripts/pre-commit.sh`
-- **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display,feedback,errorpage`, `feedback ← none (htmx decoupled)`, `errorpage ← icons,utils,go-error-family (no feedback dep)`
+- **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display,feedback,errorpage,navigation`, `feedback ← none (htmx decoupled)`, `errorpage ← icons,utils,go-error-family (no feedback dep)`, `navigation ← icons,utils`
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
 - **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
