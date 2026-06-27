@@ -135,6 +135,6 @@
 ### Housekeeping
 
 - [x] Prune old status reports — keep last 2, archive rest
-- [ ] Investigate gopls QF1003 suppression for generated `*_templ.go` files
-- [ ] Extract shared Tailwind preset/theme configuration file
+- [x] Investigate gopls QF1003 suppression for generated `*_templ.go` files — Decision: leave as-is. The lint rule is correct for handwritten code; generated files are excluded via `.golangci.yml`. Adding per-file suppressions would mask real issues in handwritten code.
+- [~] Extract shared Tailwind preset/theme configuration file — PARTIALLY DONE: tailwind.css in tailwind-v4-adoption-guide.md provides the pattern. A standalone preset file is deferred until multiple consumers exist.
 - [ ] Plan v1.0 API freeze scope and timeline
