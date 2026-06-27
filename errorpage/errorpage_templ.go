@@ -107,7 +107,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var6 = []any{"rounded-xl border shadow-sm overflow-hidden", style.Border, style.BG}
+		var templ_7745c5c3_Var6 = []any{"rounded-xl border shadow-xs overflow-hidden", style.Border, style.BG}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

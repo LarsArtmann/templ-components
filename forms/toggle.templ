@@ -78,7 +78,7 @@ templ Toggle(props ToggleProps) {
 			}
 		/>
 		<div class={ utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700", trackClass) }>
-			<div class={ utils.Class("absolute top-0.5 left-0.5 rounded-full bg-white shadow transition-transform peer-checked:"+translateClass, thumbClass) }></div>
+			<div class={ utils.Class("absolute top-0.5 left-0.5 rounded-full bg-white shadow-sm transition-transform peer-checked:"+translateClass, thumbClass) }></div>
 		</div>
 		if props.Label != "" {
 			<span class="ml-3 text-sm font-medium text-gray-900 dark:text-white">{ props.Label }</span>

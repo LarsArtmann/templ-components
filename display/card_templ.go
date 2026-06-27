@@ -14,7 +14,7 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-sm"
+const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs"
 
 // CardPadding defines the internal padding of a card
 type CardPadding string

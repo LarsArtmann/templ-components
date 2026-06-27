@@ -191,6 +191,35 @@ templ demoContent() {
 				CauseChain: []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}, {Message: "timeout after 30s", Code: "db.timeout"}},
 			})
 		</div>
+		@demoSection("PageHeader")
+		@display.PageHeader(display.PageHeaderProps{
+			Title:    "User Settings",
+			Subtitle: "Manage your account preferences and security options",
+		})
+		@demoSection("Definition List")
+		<div class="max-w-md">
+			@display.DefinitionList(display.DefinitionListProps{
+				Items: []display.DefinitionItem{
+					{Term: "User ID", Detail: "usr_01JXEXAMPLE"},
+					{Term: "Email", Detail: "admin@example.com"},
+					{Term: "Plan", Detail: "Enterprise"},
+				},
+			})
+		</div>
+		@demoSection("List Note")
+		@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
+		@demoSection("Sidebar Nav")
+		<div class="w-64 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+			@navigation.SidebarNav(navigation.SidebarNavProps{
+				Brand: templ.Raw(`<span class="font-bold text-white">Demo App</span>`),
+				Items: []navigation.SidebarNavItem{
+					{Label: "Dashboard", Href: "#", Icon: icons.Squares2x2, Active: true},
+					{Label: "Users", Href: "#", Icon: icons.Users},
+					{Label: "Settings", Href: "#", Icon: icons.Settings},
+				},
+				Footer: templ.Raw(`<span>v0.4.0</span>`),
+			})
+		</div>
 	</div>
 }
 
