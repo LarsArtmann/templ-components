@@ -690,7 +690,7 @@ func demoContent() templ.Component {
 				{Label: "Users", Href: "#", Icon: icons.Users},
 				{Label: "Settings", Href: "#", Icon: icons.Settings},
 			},
-			Footer: templ.Raw(`<span>v0.4.0</span>`),
+			Footer: templ.Raw(`<span>v` + utils.Version + `</span>`),
 		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
