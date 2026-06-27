@@ -1,5 +1,11 @@
 # Status Update — 2026-06-27 22:04
 
+> **CORRECTION (2026-06-27 23:45):** Items 8 and 9 below were **built then
+> rejected** — see ADR-001 (`docs/adr-001-tailwind-v4-standard.md`). The color
+> bridge CSS was deleted. Tailwind v4+ is the standard for all projects. Items
+> 12-13 were updated to reflect this. The analysis below is preserved as a
+> historical record of the session.
+
 ## Cross-Project Analysis: cqrs-htmx/adminui → templ-components
 
 **Session goal:** Analyze all `.templ` files in `cqrs-htmx/adminui/`, then
