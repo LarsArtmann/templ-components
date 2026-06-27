@@ -6,7 +6,7 @@ import "github.com/larsartmann/templ-components/utils"
 // When Href is set, renders as an anchor tag; otherwise renders as a button element.
 //
 //	@display.Button(display.DefaultButtonProps())
-//	@display.Button(display.ButtonProps{Text: "Save", Type: "submit"})
+//	@display.Button(display.ButtonProps{Text: "Save", Type: display.ButtonHTMLSubmit})
 //	@display.Button(display.ButtonProps{Text: "Docs", Href: "/docs", Variant: display.ButtonSecondary})
 templ Button(props ButtonProps) {
 	{{
@@ -43,7 +43,7 @@ templ Button(props ButtonProps) {
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			type={ props.Type }
+			type={ buttonHTMLType(props.Type) }
 			class={ classes }
 			if props.Disabled {
 				disabled

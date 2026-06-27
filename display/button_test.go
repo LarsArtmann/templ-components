@@ -22,7 +22,7 @@ func TestButtonRender(t *testing.T) {
 		output := utils.Render(t, Button(ButtonProps{
 			BaseProps: utils.BaseProps{ID: "save-btn"},
 			Text:      "Save",
-			Type:      "submit",
+			Type:      ButtonHTMLSubmit,
 		}))
 		utils.AssertContains(t, output, `id="save-btn"`)
 		utils.AssertContains(t, output, "Save")
@@ -61,6 +61,35 @@ func TestButtonRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `target="_blank"`)
 		utils.AssertContains(t, output, `rel="noopener noreferrer"`)
+	})
+}
+
+func TestButtonHTMLType(t *testing.T) {
+	t.Parallel()
+
+	t.Run("submit type passes through", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Button(ButtonProps{Text: "Save", Type: ButtonHTMLSubmit}))
+		utils.AssertContains(t, output, `type="submit"`)
+	})
+
+	t.Run("reset type passes through", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Button(ButtonProps{Text: "Clear", Type: ButtonHTMLReset}))
+		utils.AssertContains(t, output, `type="reset"`)
+	})
+
+	t.Run("empty falls back to button", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Button(ButtonProps{Text: "Go"}))
+		utils.AssertContains(t, output, `type="button"`)
+	})
+
+	t.Run("invalid type falls back to button", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Button(ButtonProps{Text: "Go", Type: ButtonHTMLType("destroy-everything")}))
+		utils.AssertContains(t, output, `type="button"`)
+		utils.AssertNotContains(t, output, `destroy-everything`)
 	})
 }
 

@@ -14,7 +14,7 @@ import "github.com/larsartmann/templ-components/utils"
 // When Href is set, renders as an anchor tag; otherwise renders as a button element.
 //
 //	@display.Button(display.DefaultButtonProps())
-//	@display.Button(display.ButtonProps{Text: "Save", Type: "submit"})
+//	@display.Button(display.ButtonProps{Text: "Save", Type: display.ButtonHTMLSubmit})
 //	@display.Button(display.ButtonProps{Text: "Docs", Href: "/docs", Variant: display.ButtonSecondary})
 func Button(props ButtonProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -192,9 +192,9 @@ func Button(props ButtonProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var10 string
-			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Type)
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(buttonHTMLType(props.Type))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/button.templ`, Line: 46, Col: 20}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/button.templ`, Line: 46, Col: 36}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 			if templ_7745c5c3_Err != nil {

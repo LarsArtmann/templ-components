@@ -28,14 +28,39 @@ const (
 	ButtonSizeLG ButtonSize = "lg"
 )
 
+// ButtonHTMLType is the HTML type attribute for a <button> element.
+type ButtonHTMLType string
+
+// Button HTML type constants
+const (
+	ButtonHTMLButton ButtonHTMLType = "button"
+	ButtonHTMLSubmit ButtonHTMLType = "submit"
+	ButtonHTMLReset  ButtonHTMLType = "reset"
+)
+
+//nolint:gochecknoglobals // Package-level validation set for button HTML types
+var validButtonHTMLTypes = map[ButtonHTMLType]bool{
+	ButtonHTMLButton: true, ButtonHTMLSubmit: true, ButtonHTMLReset: true,
+}
+
+// buttonHTMLType returns the validated HTML type attribute. Unknown or empty
+// values fall back to "button" — matching the map+fallback convention used by
+// all other enums in the library and the HTML spec default.
+func buttonHTMLType(t ButtonHTMLType) string {
+	if t == "" || !validButtonHTMLTypes[t] {
+		return string(ButtonHTMLButton)
+	}
+	return string(t)
+}
+
 // ButtonProps configures a button or link styled as a button
 type ButtonProps struct {
 	utils.BaseProps
 	Text     string
-	Type     string     // button, submit, reset (ignored when Href is set)
-	Href     string     // if set, renders as <a> instead of <button>
-	Variant  ButtonType // default: Primary
-	Size     ButtonSize // default: MD
+	Type     ButtonHTMLType // button, submit, reset (default: button; ignored when Href is set)
+	Href     string         // if set, renders as <a> instead of <button>
+	Variant  ButtonType     // default: Primary
+	Size     ButtonSize     // default: MD
 	Disabled bool
 	Icon     templ.Component
 	External bool // adds target="_blank" and rel="noopener noreferrer" for links
@@ -44,7 +69,7 @@ type ButtonProps struct {
 // DefaultButtonProps returns sensible defaults
 func DefaultButtonProps() ButtonProps {
 	return ButtonProps{ //nolint:exhaustruct // intentionally minimal defaults
-		Type:    "button",
+		Type:    ButtonHTMLButton,
 		Variant: ButtonPrimary,
 		Size:    ButtonSizeMD,
 	}
