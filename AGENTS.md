@@ -76,10 +76,12 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - InputType: validates via `inputType()` with `validInputTypes` map; panics on unknown, defaults empty to `"text"`
 - Structural variants (TabsVariant, DropdownPosition, TrendDirection): use `if`-branch for DOM structure, not map lookup — map pattern is for pure class lookups only
 - `forms.SanitizeID`: exported utility for library consumers; also used internally by `forms.RadioGroup` to derive per-option IDs from option values
-- Enum validation: 0 panic-on-unknown, 12 map+fallback, structural variants use if-branch. InputType falls back to "text", icons.Name falls back to Question icon. Only remaining panic: icon path data integrity check (stray `|` separators).
+- Enum validation: 0 panic-on-unknown, 14 map+fallback (InputType, ButtonHTMLType, FormMethod now included), structural variants use if-branch. InputType falls back to "text", ButtonHTMLType/FormMethod fall back to HTML-spec defaults ("button"/"GET"), icons.Name falls back to Question icon. Only remaining panic: icon path data integrity check (stray `|` separators).
+- AvatarStatus: only `online`/`offline` render a colored status dot; unknown values render no dot (graceful degradation, no invisible element).
 - ID auto-generation: `utils.EnsureID(prefix, id)` generates unique IDs via crypto/rand when consumer omits props.ID. Used by Modal, Drawer, Dropdown, Accordion, Combobox.
 - SwapOOB: invalid swap styles fall back to `outerHTML` instead of panicking.
 - Zero runtime panics in component code (only 1 developer data integrity check in icons package).
+- Version: `utils.Version` is the single source of truth for the library release; a drift-guard test (`utils.TestVersionMatchesChangelog`) asserts it matches the latest CHANGELOG heading. Bump in lockstep with the Git tag.
 - Modal/Dropdown/Accordion/Combobox: IDs auto-generated via `utils.EnsureID()` when consumer omits props.ID — no panics.
 - Combobox JS: global singleton `tcComboboxAttached` handler for input filtering, click-to-select, focus/blur dropdown management, Escape key dismissal. CSP-safe with `nonce={ props.Nonce }`.
 
