@@ -1,0 +1,1 @@
+<dl class="gap-x-6 gap-y-3 grid grid-cols-[auto_1fr] text-sm"><dt class="dark:text-gray-400 font-medium text-gray-500 whitespace-nowrap">Email</dt><dd class="break-words dark:text-white m-0 text-gray-900">alice@example.com</dd><dt class="dark:text-gray-400 font-medium text-gray-500 whitespace-nowrap">Plan</dt><dd class="break-words dark:text-white m-0 text-gray-900">Pro</dd></dl>

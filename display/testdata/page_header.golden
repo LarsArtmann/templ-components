@@ -1,0 +1,1 @@
+<div class="mb-6"><div class="flex flex-wrap gap-4 items-center justify-between"><div class="min-w-0"><h1 class="dark:text-white font-bold text-2xl text-gray-900 tracking-tight">Users</h1><p class="dark:text-gray-400 mt-1 text-gray-500 text-sm">Manage user accounts</p></div><div class="flex-shrink-0"><a href="/users/new">New user</a></div></div></div>

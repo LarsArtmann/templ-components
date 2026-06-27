@@ -30,7 +30,11 @@ chmod +x tailwindcss-linux-x64
 mv tailwindcss-linux-x64 ~/.local/bin/tailwindcss
 
 # Option B: npx (if you already have Node.js)
-npx @tailwindcss/cli --version
+# Replace `tailwindcss` with `npx @tailwindcss/cli` in all commands below:
+npx @tailwindcss/cli -i app.css -o static/app.css --minify
+
+# Option C: Nix flake (recommended for LarsArtmann projects)
+# Add pkgs.tailwindcss_4 to your devShell, then use `tailwindcss` directly.
 ```
 
 ### 2. Create your CSS entry point
