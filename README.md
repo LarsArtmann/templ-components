@@ -20,11 +20,11 @@ templ-components is a pure Tailwind CSS v4 component library for Go's templ engi
 
 | Feature              | templ-components            | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
 | -------------------- | --------------------------- | ----------------------------- | ---------------------------------------------- |
-| **CSS approach**     | Raw Tailwind only           | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
+| **CSS approach**     | Tailwind v4+ (CSS-first)    | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
 | **JavaScript**       | None (pure server-rendered) | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js** | No                          | No                            | Yes                                            |
 | **Go module**        | Yes                         | Yes                           | Yes                                            |
-| **Components**       | 69                          | 40+                           | —                                              |
+| **Components**       | 73                          | 40+                           | —                                              |
 | **Dark mode**        | Built-in (Tailwind `dark:`) | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**    | Yes (nonce support)         | Yes                           | —                                              |
 | **Typed props**      | 26 string enums             | —                             | —                                              |
@@ -342,8 +342,8 @@ The `icons` package is the only CSS-agnostic package (pure SVG path data). See [
 | SVG icons    | 101                                                 |
 | Typed enums  | 26                                                  |
 | Packages     | 11                                                  |
-| Tests        | 1,100+                                              |
-| Coverage     | 74%                                                 |
+| Tests        | 451 functions + ~650 subtests                       |
+| Coverage     | ~75% (72–79% per package)                           |
 | Dependencies | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---
