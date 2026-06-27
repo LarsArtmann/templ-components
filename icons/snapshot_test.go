@@ -90,3 +90,34 @@ func TestIconPathJS(t *testing.T) {
 		}
 	})
 }
+
+func TestIconPathData(t *testing.T) {
+	t.Parallel()
+	t.Run("known icon returns non-empty raw path data", func(t *testing.T) {
+		t.Parallel()
+		paths := IconPathData(Home)
+		if len(paths) == 0 || paths[0] == "" {
+			t.Error("IconPathData(Home) returned empty")
+		}
+	})
+	t.Run("unknown icon falls back to Question", func(t *testing.T) {
+		t.Parallel()
+		paths := IconPathData(Name("nonexistent"))
+		questionPaths := IconPathData(Question)
+		if len(paths) != len(questionPaths) || paths[0] != questionPaths[0] {
+			t.Error("IconPathData with unknown name should fall back to Question")
+		}
+	})
+	t.Run("returns raw d-strings without path wrapper", func(t *testing.T) {
+		t.Parallel()
+		paths := IconPathData(Users)
+		if len(paths) == 0 {
+			t.Fatal("IconPathData(Users) returned no paths")
+		}
+		for _, p := range paths {
+			if strings.Contains(p, "<path") {
+				t.Errorf("IconPathData should return raw d-strings, got markup: %q", p)
+			}
+		}
+	})
+}

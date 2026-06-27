@@ -94,15 +94,16 @@ Base HTML layouts, theme toggle, and dark mode support.
 @layout.ThemeToggle("Toggle theme", "")
 ```
 
-### `display` — Data Display (16 components)
+### `display` — Data Display (19 components)
 
-Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, and more.
+Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {
     <p>Card content</p>
 }
 
+@display.StatCard(display.StatCardProps{Label: "Users", Value: "1,204", Icon: icons.Users, Change: "12%", Trend: display.TrendUp})
 @display.Badge(display.BadgeProps{Text: "Active", Type: display.BadgeSuccess, Dot: true})
 @display.StatusBadge("healthy")
 
@@ -139,6 +140,13 @@ Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, a
     {Text: "Edit", Href: "/edit"},
     {Text: "Delete", Href: "/delete"},
 }})
+
+@display.PageHeader(display.PageHeaderProps{Title: "Users", Subtitle: "Manage accounts"})
+@display.DefinitionList(display.DefinitionListProps{Items: []display.DefinitionItem{
+    {Term: "Email", Detail: "alice@example.com"},
+    {Term: "Status", Detail: "Active"},
+}})
+@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
 ```
 
 ### `feedback` — User Feedback (12 components)
@@ -184,9 +192,9 @@ Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date picke
 }})
 ```
 
-### `navigation` — Navigation (9 components)
+### `navigation` — Navigation (10 components)
 
-Nav bars, breadcrumbs, pagination, and mobile menus.
+Nav bars, breadcrumbs, pagination, mobile menus, and sidebar navigation.
 
 ```templ
 @navigation.SimpleNav(navigation.SimpleNavProps{
@@ -205,9 +213,18 @@ Nav bars, breadcrumbs, pagination, and mobile menus.
 
 @navigation.Pagination(navigation.PaginationProps{CurrentPage: 2, TotalPages: 10, BaseURL: "/users"})
 @navigation.Footer("MyApp")
+
+@navigation.SidebarNav(navigation.SidebarNavProps{
+    Brand: templ.Raw(`<span class="font-bold text-white">MyApp</span>`),
+    Items: []navigation.SidebarNavItem{
+        {Label: "Dashboard", Href: "/", Icon: icons.Squares2x2},
+        {Label: "Users", Href: "/users", Icon: icons.Users},
+    },
+    CurrentPath: "/users",
+})
 ```
 
-### `icons` — SVG Icons (99 icons)
+### `icons` — SVG Icons (101 icons)
 
 Typed icon constants, no icon library dependency.
 
@@ -216,7 +233,7 @@ Typed icon constants, no icon library dependency.
 @icons.Icon(icons.Check, "h-6 w-6 text-green-500")
 ```
 
-99 named icons (98 path icons + Spinner) covering navigation, UI actions, communication, media, and status. See `icons/icon_names.go` for the full list.
+101 named icons (100 path icons + Spinner) covering navigation, UI actions, communication, media, status, and admin/security. See `icons/icon_names.go` for the full list.
 
 ### `htmx` — HTMX Integration (7 components)
 
@@ -309,14 +326,28 @@ curl -O https://raw.githubusercontent.com/larsartmann/templ-components/master/te
 
 The theme file provides `@custom-variant dark` (required for `ThemeScript`/`ThemeToggle`) and semantic tokens like `--color-tc-primary`, `--color-tc-surface`, `--color-tc-danger` that you can use in your own CSS or Tailwind arbitrary values.
 
+### Non-Tailwind projects (color bridge)
+
+If your project doesn't use Tailwind at all, include the standalone color bridge CSS to get correct light/dark colors from all components:
+
+```html
+<link rel="stylesheet" href="templ-components-colors.css" />
+```
+
+This file maps every color-related class (`bg-blue-600`, `text-gray-900`, `dark:bg-gray-800`, etc.) to CSS variables (`--tc-blue-600`, `--tc-gray-900`) with Tailwind's default palette. Override the variables to retheme — no Go code changes. Layout classes (flex, grid, padding) still require Tailwind or your own CSS. See `docs/adr-001-css-var-portability.md` for the full design.
+
+### Icons-only (no Tailwind, no CSS)
+
+The `icons` package is completely Tailwind-free — pure SVG path data. Non-Tailwind projects can `go get` just the icons. See `docs/icons-only-adoption.md`.
+
 ---
 
 ## By the Numbers
 
 | Metric       | Value                                               |
 | ------------ | --------------------------------------------------- |
-| Components   | 69                                                  |
-| SVG icons    | 99                                                  |
+| Components   | 73                                                  |
+| SVG icons    | 101                                                 |
 | Typed enums  | 26                                                  |
 | Packages     | 11                                                  |
 | Tests        | 1,100+                                              |

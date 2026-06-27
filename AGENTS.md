@@ -104,9 +104,16 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - StepIndicator orientation: `StepIndicatorProps.Orientation` with `StepHorizontal`/`StepVertical` constants for vertical progress tracking.
 - Tabs client-side: `TabsProps.ClientSide bool` adds `data-tc-tabs` attribute and inline JS for click-to-activate and keyboard nav (ArrowLeft/Right, Home, End). Uses global singleton guard (`tcTabsAttached`).
 - Form component: `forms.Form(FormProps)` with `Action`, `Method` (GET/POST), `CSRFToken` hidden input, and `Content` for composing form fields.
-- Icons: 99 total (98 path icons + Spinner).
+- Icons: 101 total (100 path icons + Spinner). Added BuildingOffice2 (tenants/orgs), Key (credentials), ArrowRightOnRectangle (logout) — gaps surfaced by cqrs-htmx/adminui.
 - Thread safety: `utils.Class()` uses `sync.Mutex` to protect tailwind-merge-go's shared LRU cache from concurrent access. Required even though the LRU has internal mutexes — they don't protect the full Merge() call sequence.
 - DropdownItemKind: typed enum (`DropdownItemLink`, `DropdownItemButton`) with backward compat via `IsLink()` fallback to Href-based discrimination.
+- PageHeader: `display.PageHeader(PageHeaderProps)` with Title, Subtitle, Breadcrumb slot, Action slot. No navigation import — uses `templ.Component` slots for compositional freedom.
+- DefinitionList: `display.DefinitionList(DefinitionListProps)` with `[]DefinitionItem{Term, Detail, DetailComponent}`. Two-column `<dl>` grid for metadata/key-value display.
+- ListNote: `display.ListNote(ListNoteProps{Shown, Total})` — renders "Showing N of M" truncation notice when Total > Shown. `role="status"` for a11y.
+- SidebarNav: `navigation.SidebarNav(SidebarNavProps)` — vertical sidebar with Brand/Footer slots, icon+label nav items, CurrentPath auto-active detection, `aria-current="page"` on active item.
+- icons.IconPathData: exported function returning raw SVG path d-strings for consumers needing full `<svg>` wrapper control (used by cqrs-htmx/adminui for icons-only adoption without Tailwind).
+- icons-only adoption: the `icons` and `utils` packages are Tailwind-free — embeddable modules can `go get` just the icon set. See `docs/icons-only-adoption.md`.
+- Color bridge: `templ-components-colors.css` maps all color-related Tailwind classes to `--tc-*` CSS variables — non-Tailwind projects can include it for correct colors. See `docs/adr-001-css-var-portability.md`.
 
 ## Lint Command
 

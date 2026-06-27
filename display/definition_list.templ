@@ -1,0 +1,59 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// DefinitionItem is one term-detail pair in a DefinitionList.
+type DefinitionItem struct {
+	Term   string
+	Detail string
+	// DetailComponent overrides Detail when set — use for badges, links, or
+	// any rich content instead of plain text.
+	DetailComponent templ.Component
+}
+
+// DefinitionListProps configures a two-column term/detail list.
+type DefinitionListProps struct {
+	utils.BaseProps
+	Items []DefinitionItem
+}
+
+// DefaultDefinitionListProps returns sensible defaults
+func DefaultDefinitionListProps() DefinitionListProps {
+	return DefinitionListProps{}
+}
+
+// DefinitionList renders a two-column <dl> with term labels on the left and
+// detail values on the right. Ideal for metadata tables, settings summaries,
+// and key-value display.
+//
+//	@display.DefinitionList(display.DefinitionListProps{
+//	   Items: []display.DefinitionItem{
+//	     {Term: "Email", Detail: "alice@example.com"},
+//	     {Term: "Status", DetailComponent: display.Badge(display.BadgeProps{Text: "Active", Type: display.BadgeSuccess})},
+//	   },
+//	})
+templ DefinitionList(props DefinitionListProps) {
+	<dl
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("grid grid-cols-[auto_1fr] gap-x-6 gap-y-3 text-sm", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		for _, item := range props.Items {
+			<dt class="font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">{ item.Term }</dt>
+			<dd class="text-gray-900 dark:text-white break-words m-0">
+				if item.DetailComponent != nil {
+					@item.DetailComponent
+				} else {
+					{ item.Detail }
+				}
+			</dd>
+		}
+	</dl>
+}

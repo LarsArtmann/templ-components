@@ -119,6 +119,29 @@ func TestStatCardRender(t *testing.T) {
 			t.Errorf("DefaultStatCardProps().Trend = %q, want %q", props.Trend, TrendNone)
 		}
 	})
+
+	t.Run("icon renders a leading icon tile", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Label: "Users",
+			Value: "1,204",
+			Icon:  icons.Users,
+		}))
+		utils.AssertContains(t, output, "1,204")
+		utils.AssertContains(t, output, "<svg")
+		utils.AssertContains(t, output, "bg-blue-50")
+		utils.AssertContains(t, output, "flex items-center gap-4")
+	})
+
+	t.Run("no icon keeps plain layout without icon tile", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Label: "Users",
+			Value: "10",
+		}))
+		utils.AssertNotContains(t, output, "bg-blue-50")
+		utils.AssertNotContains(t, output, "<svg")
+	})
 }
 
 func TestEmptyStateRender(t *testing.T) {
