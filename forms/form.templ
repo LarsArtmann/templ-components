@@ -12,6 +12,21 @@ const (
 	FormPost FormMethod = "POST"
 )
 
+//nolint:gochecknoglobals // Package-level validation set for form methods
+var validFormMethods = map[FormMethod]bool{
+	FormGet: true, FormPost: true,
+}
+
+// formMethod returns the validated HTTP method. Unknown or empty values fall
+// back to GET — matching the HTML spec default for forms and the map+fallback
+// convention used by all other enums in the library.
+func formMethod(m FormMethod) string {
+	if m == "" || !validFormMethods[m] {
+		return string(FormGet)
+	}
+	return string(m)
+}
+
 // FormProps configures a form wrapper
 type FormProps struct {
 	utils.BaseProps
@@ -38,7 +53,7 @@ templ Form(props FormProps) {
 			id={ props.ID }
 		}
 		action={ props.Action }
-		method={ string(props.Method) }
+		method={ formMethod(props.Method) }
 		class={ utils.Class("space-y-6", props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
