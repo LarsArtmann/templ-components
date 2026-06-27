@@ -169,7 +169,7 @@ Alerts, toasts, spinners, progress bars, skeletons, and loading states.
 })
 ```
 
-### `forms` — Form Controls (12 components)
+### `forms` — Form Controls (16 components)
 
 Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, labels, and validation errors.
 
