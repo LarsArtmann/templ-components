@@ -1,6 +1,6 @@
 # Features — templ-components
 
-**Updated:** 2026-06-20 | **Version:** 0.3.0
+**Updated:** 2026-06-27 | **Version:** 0.4.0
 
 A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 
@@ -11,16 +11,16 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | Package      | Components   | Description                                                                                                               |
 | ------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------- |
 | `utils`      | 0            | Shared types, Tailwind class merging, generic helpers                                                                     |
-| `display`    | 16           | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states |
+| `display`    | 19           | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states, page headers, definition lists |
 | `errorpage`  | 3            | Error presentation: full-page errors, error detail cards, family-aware alerts                                             |
 | `feedback`   | 12           | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                         |
 | `forms`      | 16           | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation |
 | `htmx`       | 7            | HTMX integration: loading indicators, error handling, helpers                                                             |
-| `icons`      | 2 (99 icons) | SVG icon system with typed name constants                                                                                 |
+| `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                 |
 | `layout`     | 4            | Page layout: base HTML, theme toggle, dark mode                                                                           |
-| `navigation` | 9            | Navigation: nav bars, breadcrumbs, pagination, mobile menus                                                               |
+| `navigation` | 10           | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav                                                  |
 
-**Totals:** 69 templ components, 99 icon names, 26 typed enums, 46 generated `*_templ.go` files, ~4,000 lines of Go/templ source
+**Totals:** 73 templ components, 101 icon names, 26 typed enums, 51 generated `*_templ.go` files, ~4,000 lines of Go/templ source
 
 ---
 
@@ -75,7 +75,7 @@ type BaseProps struct {
 | `StatusBadge`      | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                          |
 | `Card`             | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, 4 padding sizes        |
 | `SimpleCard`       | FULLY_FUNCTIONAL | Minimal card                    | Children-only, no header/footer                                 |
-| `StatCard`         | FULLY_FUNCTIONAL | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None)        |
+| `StatCard`         | FULLY_FUNCTIONAL | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None), optional `Icon` field |
 | `Dropdown`         | FULLY_FUNCTIONAL | Button-triggered menu           | External/internal links, buttons, keyboard nav, ARIA menu       |
 | `Drawer`           | FULLY_FUNCTIONAL | Side panel                      | Left/right slide, focus trap, Escape, backdrop, 5 sizes         |
 | `EmptyState`       | FULLY_FUNCTIONAL | Centered empty state            | Icon, title, description, action link/button                    |
@@ -84,6 +84,9 @@ type BaseProps struct {
 | `Table`            | FULLY_FUNCTIONAL | Responsive data table           | Headers, rows, striping, hover, caption, bordered, cell content |
 | `Tabs`             | FULLY_FUNCTIONAL | Tabbed interface                | Default underline or pills variant, ARIA tablist/tab/tabpanel   |
 | `Tooltip`          | FULLY_FUNCTIONAL | Hover tooltip                   | 4 positions, arrow, `role="tooltip"`, CSS-only                  |
+| `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots            |
+| `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup           |
+| `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                       |
 
 ### Enums
 
@@ -276,21 +279,22 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component             | Status           | Description      | Key Features                                       |
-| --------------------- | ---------------- | ---------------- | -------------------------------------------------- |
-| `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 99 named icons, custom class, currentColor theming |
-| `IconWithStrokeWidth` | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)        |
+| Component             | Status           | Description      | Key Features                                        |
+| --------------------- | ---------------- | ---------------- | --------------------------------------------------- |
+| `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 101 named icons, custom class, currentColor theming |
+| `IconWithStrokeWidth` | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)         |
 
-### Icon Names (99)
+### Icon Names (101)
 
-98 path icons + Spinner covering navigation, UI actions, chevrons/arrows, communication, media, and status. See `icons/icon_names.go` for the complete list.
+100 path icons + Spinner covering navigation, UI actions, chevrons/arrows, communication, media, and status. See `icons/icon_names.go` for the complete list.
 
 ### Functions
 
-| Function              | Purpose                                                   |
-| --------------------- | --------------------------------------------------------- |
-| `IconWithStrokeWidth` | Icon with custom stroke-width                             |
-| `allIconNames`        | Auto-generated list of all icon names from `iconPathData` |
+| Function              | Purpose                                                              |
+| --------------------- | -------------------------------------------------------------------- |
+| `IconWithStrokeWidth` | Icon with custom stroke-width                                        |
+| `IconPathData`        | Returns raw path data for a named icon (full `<svg>` wrapper control) |
+| `allIconNames`        | Auto-generated list of all icon names from `iconPathData` (unexported) |
 
 ### Known Issues
 
@@ -336,6 +340,7 @@ Used by both Alert and Toast for consistent visual styling.
 | `MobileMenu`       | FULLY_FUNCTIONAL | Collapsible mobile menu   | JS toggle, nonce-based CSP                                        |
 | `MobileMenuToggle` | FULLY_FUNCTIONAL | Hamburger button          | Conditional visibility                                            |
 | `Footer`           | FULLY_FUNCTIONAL | Simple footer             | Copyright with dynamic year                                       |
+| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav      | Brand/footer slots, icons, active-route detection                 |
 
 ### Known Issues
 
