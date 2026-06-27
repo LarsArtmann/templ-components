@@ -37,6 +37,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - **Module:** `github.com/larsartmann/templ-components`
 - **Go:** 1.26, **templ:** v0.3.x
 - **No framework deps** — pure Go + templ + Tailwind v4 class strings
+- **CSS standard:** Tailwind CSS v4+ (latest) for ALL LarsArtmann projects. CSS-first config, no Node.js runtime, no DaisyUI. Small custom CSS only where Tailwind doesn't cover something. See `docs/adr-001-tailwind-v4-standard.md` and `docs/tailwind-v4-adoption-guide.md`.
 - **Theming:** Components emit standard Tailwind classes (`bg-blue-600`). Consumers override via `@theme { --color-blue-600: #custom; }` in their CSS. No Go code changes needed. See `templ-components-theme.css` for semantic alias examples.
 - **ComponentProps interface:** `utils.ComponentProps` with `GetBaseProps()`/`SetBaseProps()` on `*BaseProps` (pointer receivers for `recvcheck`). All 25+ props structs auto-satisfy via method promotion.
 - **Accessibility — motion-reduce:** `motion-reduce:transition-none motion-reduce:duration-0` on all transitions, `motion-reduce:animate-none` on all animations (spinner, skeletons, toast enter/exit, modal, accordion)
@@ -112,8 +113,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - ListNote: `display.ListNote(ListNoteProps{Shown, Total})` — renders "Showing N of M" truncation notice when Total > Shown. `role="status"` for a11y.
 - SidebarNav: `navigation.SidebarNav(SidebarNavProps)` — vertical sidebar with Brand/Footer slots, icon+label nav items, CurrentPath auto-active detection, `aria-current="page"` on active item.
 - icons.IconPathData: exported function returning raw SVG path d-strings for consumers needing full `<svg>` wrapper control (used by cqrs-htmx/adminui for icons-only adoption without Tailwind).
-- icons-only adoption: the `icons` and `utils` packages are Tailwind-free — embeddable modules can `go get` just the icon set. See `docs/icons-only-adoption.md`.
-- Color bridge: `templ-components-colors.css` maps all color-related Tailwind classes to `--tc-*` CSS variables — non-Tailwind projects can include it for correct colors. See `docs/adr-001-css-var-portability.md`.
+- icons-only adoption: the `icons` and `utils` packages are CSS-agnostic (pure SVG data). This is a natural property of icons, not a portability strategy. See `docs/icons-only-adoption.md`.
 
 ## Lint Command
 

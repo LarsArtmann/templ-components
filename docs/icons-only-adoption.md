@@ -1,19 +1,13 @@
-# Icons-Only Adoption Guide
+# Icons Package — API Reference
 
-`templ-components` ships a **Tailwind-free** `icons` package that any Go project
-can use — even ones that don't use Tailwind CSS. This guide shows how embeddable
-modules and non-Tailwind apps can adopt the icon set without pulling in any
-CSS framework dependency.
+> **Note:** All LarsArtmann projects should use Tailwind CSS v4+ (see
+> `docs/tailwind-v4-adoption-guide.md`). The `icons` package happens to be
+> CSS-agnostic (pure SVG data), which makes it useful in any Go project — but
+> this is a natural property of icons, not a portability strategy.
 
-## Why icons-only?
-
-The `icons` package depends only on:
-
-- `github.com/a-h/templ` (you already have this)
-- `github.com/larsartmann/templ-components/internal/svg` (shared SVG path constants)
-
-No Tailwind, no CSS framework, no build step. The 101 SVG path sets are pure
-Go data — Heroicons v2 outline (24×24, `currentColor` stroke).
+The `icons` package provides 101 named SVG icons (100 Heroicons v2 outline paths
++ 1 animated Spinner). It depends only on `github.com/a-h/templ` and the internal
+SVG path constants — no Tailwind, no CSS framework.
 
 ## Three API levels
 
@@ -89,14 +83,7 @@ Icons use [Heroicons v2 outline](https://heroicons.com) path data. To add one:
 2. Add the path data in `icons/icon_paths.go` (use `|` to separate multiple paths)
 3. Run `go test ./icons/` — the auto-generated name list test verifies sync
 
-## Packages that are Tailwind-free
+## Package CSS dependencies
 
-| Package        | Tailwind-free? | Notes                                                                               |
-| -------------- | -------------- | ----------------------------------------------------------------------------------- |
-| `icons`        | **Yes**        | Pure SVG path data + templ component. Consumer controls all classes.                |
-| `utils`        | **Yes**        | `Class()` uses tailwind-merge-go but produces strings — no Tailwind runtime needed. |
-| `internal/svg` | **Yes**        | Shared SVG path constants.                                                          |
-
-All other packages (`display`, `feedback`, `forms`, `navigation`, `layout`,
-`htmx`, `errorpage`) emit **Tailwind utility classes** and require Tailwind CSS
-in the consumer's build.
+All packages emit Tailwind v4+ utility classes except `icons` (pure SVG data).
+Tailwind v4+ is the standard — see `docs/tailwind-v4-adoption-guide.md`.

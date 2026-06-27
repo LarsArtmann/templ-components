@@ -326,19 +326,11 @@ curl -O https://raw.githubusercontent.com/larsartmann/templ-components/master/te
 
 The theme file provides `@custom-variant dark` (required for `ThemeScript`/`ThemeToggle`) and semantic tokens like `--color-tc-primary`, `--color-tc-surface`, `--color-tc-danger` that you can use in your own CSS or Tailwind arbitrary values.
 
-### Non-Tailwind projects (color bridge)
+### Tailwind v4+ is the standard
 
-If your project doesn't use Tailwind at all, include the standalone color bridge CSS to get correct light/dark colors from all components:
+**All LarsArtmann projects use Tailwind CSS v4+ (latest).** CSS-first config, no Node.js runtime, no DaisyUI. Small custom CSS only where Tailwind doesn't cover something. New to Tailwind v4? See the [`docs/tailwind-v4-adoption-guide.md`](docs/tailwind-v4-adoption-guide.md) for setup, theming, and migration from custom CSS design systems.
 
-```html
-<link rel="stylesheet" href="templ-components-colors.css" />
-```
-
-This file maps every color-related class (`bg-blue-600`, `text-gray-900`, `dark:bg-gray-800`, etc.) to CSS variables (`--tc-blue-600`, `--tc-gray-900`) with Tailwind's default palette. Override the variables to retheme — no Go code changes. Layout classes (flex, grid, padding) still require Tailwind or your own CSS. See `docs/adr-001-css-var-portability.md` for the full design.
-
-### Icons-only (no Tailwind, no CSS)
-
-The `icons` package is completely Tailwind-free — pure SVG path data. Non-Tailwind projects can `go get` just the icons. See `docs/icons-only-adoption.md`.
+The `icons` package is the only CSS-agnostic package (pure SVG path data). See [`docs/icons-only-adoption.md`](docs/icons-only-adoption.md).
 
 ---
 

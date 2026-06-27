@@ -70,55 +70,49 @@ templ-components for adminui's needs).
 
 6. **Color bridge coverage test** — Add a test that extracts all color classes from `.templ` files and asserts each is defined in `templ-components-colors.css`. Prevents the bridge from going stale. Low effort, high safety.
 
-## f) TOP 25 THINGS TO DO NEXT
+## f) TOP 25 THINGS TO DO NEXT (updated post-ADR decision)
+
+> **Architecture decision:** Tailwind CSS v4+ everywhere. No portability layer.
+> See `docs/adr-001-tailwind-v4-standard.md`. Items 4-18 from the original list
+> (semantic class migration, color bridge) are **REJECTED** and removed.
 
 | Priority | Task | Impact | Effort |
 |----------|------|--------|--------|
 | 1 | Add PageHeader, DefinitionList, ListNote, SidebarNav to demo page | High | 30min |
 | 2 | Golden snapshot tests for all 4 new components | Medium | 45min |
-| 3 | Color bridge coverage test (auto-detect missing classes) | High | 30min |
-| 4 | Begin semantic class migration: start with `Card` (most-used component) | Very High | 1hr |
-| 5 | Semantic class migration: `Badge` | High | 30min |
-| 6 | Semantic class migration: `Button` | High | 30min |
-| 7 | Semantic class migration: `Table` | High | 45min |
-| 8 | Semantic class migration: `Input`/`Select`/`Textarea` | High | 1hr |
-| 9 | Semantic class migration: `Avatar` | Medium | 20min |
-| 10 | Semantic class migration: `Modal`/`Drawer` | Medium | 45min |
-| 11 | Semantic class migration: `Dropdown`/`Tooltip` | Medium | 45min |
-| 12 | Semantic class migration: `Accordion`/`Tabs` | Medium | 45min |
-| 13 | Semantic class migration: `SidebarNav`/`Nav`/`Pagination` | Medium | 1hr |
-| 14 | Semantic class migration: `feedback` package (Alert/Toast/Spinner/Skeleton) | Medium | 1hr |
-| 15 | Semantic class migration: `forms` package (Checkbox/Radio/Toggle/FileInput) | Medium | 1hr |
-| 16 | Semantic class migration: `errorpage` package | Low | 45min |
-| 17 | Semantic class migration: `htmx` package | Low | 30min |
-| 18 | Layout utility bridge CSS (flex/grid/padding) | High | 2hr |
-| 19 | Publish templ-components v0.4.0 with new components | High | 30min |
-| 20 | Re-evaluate adminui adoption after semantic migration | High | — |
-| 21 | Add `BuildingOffice2`, `Key`, `ArrowRightOnRectangle` to icon catalog demo | Low | 15min |
-| 22 | Write integration test: color bridge + component rendering in non-Tailwind HTML | Medium | 1hr |
-| 23 | Document semantic token taxonomy (`--tc-surface`, `--tc-primary`, etc.) | Medium | 45min |
-| 24 | Consider `class:` variant support for non-Tailwind consumers | Low | Research |
-| 25 | Add CI check: every new `.templ` color class must have a bridge entry | Medium | 30min |
+| 3 | **Migrate cqrs-htmx/adminui to Tailwind v4+** (Phase 1: wrap tokens in @theme) | Very High | 1hr |
+| 4 | adminui Phase 2: replace custom classes with tc components | Very High | ongoing |
+| 5 | adminui Phase 3: delete 706-line admin.css | High | when done |
+| 6 | Publish templ-components v0.4.0 with new components | High | 30min |
+| 7 | Add `BuildingOffice2`, `Key`, `ArrowRightOnRectangle` to icon catalog demo | Low | 15min |
+| 8 | Ensure all new components follow Tailwind v4+ best practices | Medium | 30min |
+| 9 | Audit all components for consistent Tailwind class patterns | Medium | 1hr |
+| 10 | Add dark mode test coverage for new components | Medium | 45min |
+| 11 | Create migration template: custom CSS → Tailwind v4+ | High | 45min |
+| 12 | Document recommended Tailwind CLI integration for Go projects | Medium | 30min |
+| 13 | Add flake.nix target for Tailwind CSS build | Medium | 30min |
+| 14 | Review all existing components for Tailwind v4 syntax upgrades | Low | 1hr |
+| 15 | Standardize motion-reduce patterns across new components | Low | 20min |
+| 16 | Add accessibility audit for new components (aria, keyboard nav) | Medium | 1hr |
+| 17 | Write integration tests: components render correctly in full page | Medium | 1hr |
+| 18 | Create "recommended stack" doc (templ + Tailwind v4 + HTMX + Go) | Medium | 45min |
+| 19 | Evaluate Tailwind v4 plugin for templ-specific class scanning | Low | Research |
+| 20 | Standardize button/link color variants across all components | Medium | 45min |
+| 21 | Review focus-visible patterns for WCAG 2.2 compliance | Medium | 45min |
+| 22 | Add prefers-color-scheme fallback for users without JS | Low | 30min |
+| 23 | Create component playground / interactive docs | Low | 2hr |
+| 24 | Audit icon set for missing common admin icons | Low | 30min |
+| 25 | Write contributing guide with Tailwind v4+ conventions | Medium | 45min |
 
-## g) TOP QUESTION I CANNOT FIGURE OUT MYSELF
+## g) ARCHITECTURE DECISION — RESOLVED
 
-**Should templ-components commit to the semantic class migration (ADR Option B)?**
+**Decision: Tailwind CSS v4+ (latest) for all projects. No CSS-variable
+portability layer.**
 
-This is a fundamental direction shift. Currently templ-components markets itself as
-"Raw Tailwind only — no framework lock-in." The semantic class migration would:
-
-- Make components work **without** Tailwind (huge new adoption surface)
-- But require touching **every component** (73 files, multi-day effort)
-- And add a maintenance burden (semantic tokens + Tailwind classes in parallel)
-
-The color bridge (Option D) is a pragmatic middle ground — it works NOW but only
-solves colors, not layout. The full semantic migration (Option B) is the real unlock
-but it's a big bet.
-
-**I cannot decide this alone** because it changes the library's identity. Should we:
-- (a) Stay "Tailwind-only" and let non-Tailwind projects use icons-only?
-- (b) Do the pragmatic color bridge only (current state)?
-- (c) Commit to full semantic class migration (Option B)?
+The user decided: full Tailwind v4+ everywhere, small custom CSS only where
+needed, strongly recommend this for all other projects. The color bridge CSS
+experiment was built and **rejected**. The path forward for cqrs-htmx/adminui is
+migration to Tailwind v4+, not accommodation of its custom CSS system.
 
 ---
 
