@@ -18,6 +18,33 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - _Nothing yet_
 
+## [0.4.0] — 2026-06-27
+
+### Added
+
+- `display.PageHeader`: page header with Title, Subtitle, Breadcrumb, and Action component slots
+- `display.DefinitionList`: two-column `<dl>` with typed `DefinitionItem` entries
+- `display.ListNote`: "Showing N of M" truncation notice for truncated lists
+- `navigation.SidebarNav`: vertical sidebar navigation with icons and active-route detection
+- `display.StatCard.Icon` field: optional `icons.Name` rendered alongside the stat value
+- `icons.IconPathData()`: exported function returning raw path data for consumers needing full `<svg>` wrapper control
+- `icons.ArrowRightOnRectangle`, `icons.BuildingOffice2`, `icons.Key`: three new named icons
+- `flake.nix`: reproducible devShell (go_1_26, gopls, golangci-lint, templ) and apps: `verify`, `test`, `lint`, `build`, `coverage`
+- Golden snapshot tests for the `display` and `navigation` packages (`internal/golden.Assert`)
+- `docs/adr-001-tailwind-v4-standard.md`, `docs/tailwind-v4-adoption-guide.md`, `docs/icons-only-adoption.md`: adoption and architecture docs
+
+### Changed
+
+- **Tailwind CSS v4+ adopted as the standard** for all LarsArtmann projects — no CSS-variable portability layer (see ADR-001)
+- `display.Card` shell shadow: `shadow-sm` → `shadow-xs` (Tailwind v4 rename)
+- `errorpage.ErrorPage` shadow: `shadow-sm` → `shadow-xs`
+- `forms.Toggle` shadow: `shadow` → `shadow-sm`
+- `display.Card` / `SimpleCard` share a `cardShellClass` constant for consistent styling
+
+### Fixed
+
+- README accuracy: corrected component count (69 → 73), icon count (99 → 101), CSS approach description ("Raw Tailwind only" → "Tailwind v4+ CSS-first"), test counts, and rewrote the theming section
+
 ## [0.3.0] — 2026-06-20
 
 ### Added
