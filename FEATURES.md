@@ -8,17 +8,17 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 
 ## Overview
 
-| Package      | Components   | Description                                                                                                               |
-| ------------ | ------------ | ------------------------------------------------------------------------------------------------------------------------- |
-| `utils`      | 0            | Shared types, Tailwind class merging, generic helpers                                                                     |
-| `display`    | 19           | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states, page headers, definition lists |
-| `errorpage`  | 3            | Error presentation: full-page errors, error detail cards, family-aware alerts                                             |
-| `feedback`   | 12           | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                         |
-| `forms`      | 16           | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation |
-| `htmx`       | 7            | HTMX integration: loading indicators, error handling, helpers                                                             |
-| `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                 |
-| `layout`     | 4            | Page layout: base HTML, theme toggle, dark mode                                                                           |
-| `navigation` | 10           | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav                                                  |
+| Package      | Components    | Description                                                                                                                                               |
+| ------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                     |
+| `display`    | 19            | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states, page headers, definition lists |
+| `errorpage`  | 3             | Error presentation: full-page errors, error detail cards, family-aware alerts                                                                             |
+| `feedback`   | 12            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                         |
+| `forms`      | 16            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation                                 |
+| `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                             |
+| `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                 |
+| `layout`     | 4             | Page layout: base HTML, theme toggle, dark mode                                                                                                           |
+| `navigation` | 10            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav                                                                                  |
 
 **Totals:** 73 templ components, 101 icon names, 26 typed enums, 51 generated `*_templ.go` files, ~4,000 lines of Go/templ source
 
@@ -66,27 +66,27 @@ type BaseProps struct {
 
 ### Components
 
-| Component          | Status           | Description                     | Key Features                                                    |
-| ------------------ | ---------------- | ------------------------------- | --------------------------------------------------------------- |
-| `Accordion`        | FULLY_FUNCTIONAL | Collapsible accordion panels    | JS toggle, `aria-expanded`, `aria-controls`, chevron rotation   |
-| `Avatar`           | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot   |
-| `Button`           | FULLY_FUNCTIONAL | Action button                   | 5 variants, 3 sizes, href (link mode), loading state            |
-| `Badge`            | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator               |
-| `StatusBadge`      | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                          |
-| `Card`             | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, 4 padding sizes        |
-| `SimpleCard`       | FULLY_FUNCTIONAL | Minimal card                    | Children-only, no header/footer                                 |
+| Component          | Status           | Description                     | Key Features                                                                    |
+| ------------------ | ---------------- | ------------------------------- | ------------------------------------------------------------------------------- |
+| `Accordion`        | FULLY_FUNCTIONAL | Collapsible accordion panels    | JS toggle, `aria-expanded`, `aria-controls`, chevron rotation                   |
+| `Avatar`           | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                   |
+| `Button`           | FULLY_FUNCTIONAL | Action button                   | 5 variants, 3 sizes, href (link mode), loading state                            |
+| `Badge`            | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                               |
+| `StatusBadge`      | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                                          |
+| `Card`             | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, 4 padding sizes                        |
+| `SimpleCard`       | FULLY_FUNCTIONAL | Minimal card                    | Children-only, no header/footer                                                 |
 | `StatCard`         | FULLY_FUNCTIONAL | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None), optional `Icon` field |
-| `Dropdown`         | FULLY_FUNCTIONAL | Button-triggered menu           | External/internal links, buttons, keyboard nav, ARIA menu       |
-| `Drawer`           | FULLY_FUNCTIONAL | Side panel                      | Left/right slide, focus trap, Escape, backdrop, 5 sizes         |
-| `EmptyState`       | FULLY_FUNCTIONAL | Centered empty state            | Icon, title, description, action link/button                    |
-| `SimpleEmptyState` | FULLY_FUNCTIONAL | Minimal empty state             | Text-only                                                       |
-| `Modal`            | FULLY_FUNCTIONAL | Accessible modal dialog         | Focus trap, Escape close, backdrop, 5 sizes, open/close API     |
-| `Table`            | FULLY_FUNCTIONAL | Responsive data table           | Headers, rows, striping, hover, caption, bordered, cell content |
-| `Tabs`             | FULLY_FUNCTIONAL | Tabbed interface                | Default underline or pills variant, ARIA tablist/tab/tabpanel   |
-| `Tooltip`          | FULLY_FUNCTIONAL | Hover tooltip                   | 4 positions, arrow, `role="tooltip"`, CSS-only                  |
-| `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots            |
-| `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup           |
-| `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                       |
+| `Dropdown`         | FULLY_FUNCTIONAL | Button-triggered menu           | External/internal links, buttons, keyboard nav, ARIA menu                       |
+| `Drawer`           | FULLY_FUNCTIONAL | Side panel                      | Left/right slide, focus trap, Escape, backdrop, 5 sizes                         |
+| `EmptyState`       | FULLY_FUNCTIONAL | Centered empty state            | Icon, title, description, action link/button                                    |
+| `SimpleEmptyState` | FULLY_FUNCTIONAL | Minimal empty state             | Text-only                                                                       |
+| `Modal`            | FULLY_FUNCTIONAL | Accessible modal dialog         | Focus trap, Escape close, backdrop, 5 sizes, open/close API                     |
+| `Table`            | FULLY_FUNCTIONAL | Responsive data table           | Headers, rows, striping, hover, caption, bordered, cell content                 |
+| `Tabs`             | FULLY_FUNCTIONAL | Tabbed interface                | Default underline or pills variant, ARIA tablist/tab/tabpanel                   |
+| `Tooltip`          | FULLY_FUNCTIONAL | Hover tooltip                   | 4 positions, arrow, `role="tooltip"`, CSS-only                                  |
+| `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots                            |
+| `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup                          |
+| `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                                       |
 
 ### Enums
 
@@ -290,10 +290,10 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Functions
 
-| Function              | Purpose                                                              |
-| --------------------- | -------------------------------------------------------------------- |
-| `IconWithStrokeWidth` | Icon with custom stroke-width                                        |
-| `IconPathData`        | Returns raw path data for a named icon (full `<svg>` wrapper control) |
+| Function              | Purpose                                                                |
+| --------------------- | ---------------------------------------------------------------------- |
+| `IconWithStrokeWidth` | Icon with custom stroke-width                                          |
+| `IconPathData`        | Returns raw path data for a named icon (full `<svg>` wrapper control)  |
 | `allIconNames`        | Auto-generated list of all icon names from `iconPathData` (unexported) |
 
 ### Known Issues

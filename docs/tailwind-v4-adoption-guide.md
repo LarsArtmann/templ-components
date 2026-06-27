@@ -8,14 +8,14 @@ doesn't cover something.
 
 ## Why Tailwind v4+?
 
-| Benefit | Details |
-|---------|---------|
-| **No Node.js required** | Build step is a single Go-callable or standalone binary (`@tailwindcss/cli`). No `package.json`, no `node_modules`. |
-| **CSS-first config** | No `tailwind.config.js`. Everything lives in CSS via `@import "tailwindcss"` and `@theme`. |
-| **`@source` scanning** | Point Tailwind at any directory — including vendored Go modules — and it extracts class names from `.templ`, `.go`, `.html` files automatically. |
-| **`@theme` overrides** | Recolor the entire design system by overriding `--color-*` variables. One line changes every `bg-blue-600` globally. |
-| **Class-based dark mode** | `@custom-variant dark (&:where(.dark, .dark *))` enables JS-toggled dark mode without `prefers-color-scheme`. |
-| **Zero runtime JS** | Pure CSS output. No Alpine.js, no DaisyUI JS, no hydration. Server-rendered HTML just works. |
+| Benefit                   | Details                                                                                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **No Node.js required**   | Build step is a single Go-callable or standalone binary (`@tailwindcss/cli`). No `package.json`, no `node_modules`.                              |
+| **CSS-first config**      | No `tailwind.config.js`. Everything lives in CSS via `@import "tailwindcss"` and `@theme`.                                                       |
+| **`@source` scanning**    | Point Tailwind at any directory — including vendored Go modules — and it extracts class names from `.templ`, `.go`, `.html` files automatically. |
+| **`@theme` overrides**    | Recolor the entire design system by overriding `--color-*` variables. One line changes every `bg-blue-600` globally.                             |
+| **Class-based dark mode** | `@custom-variant dark (&:where(.dark, .dark *))` enables JS-toggled dark mode without `prefers-color-scheme`.                                    |
+| **Zero runtime JS**       | Pure CSS output. No Alpine.js, no DaisyUI JS, no hydration. Server-rendered HTML just works.                                                     |
 
 ---
 
@@ -51,8 +51,8 @@ npx @tailwindcss/cli -i app.css -o static/app.css --minify
 
 /* Override the primary brand color */
 @theme {
-  --color-blue-600: #4f46e5;  /* indigo-600 instead of blue-600 */
-  --color-blue-500: #6366f1;  /* indigo-500 */
+  --color-blue-600: #4f46e5; /* indigo-600 instead of blue-600 */
+  --color-blue-500: #6366f1; /* indigo-500 */
 }
 
 /* Small custom CSS where Tailwind doesn't cover something */
@@ -77,7 +77,7 @@ tailwindcss -i app.css -o static/app.css --watch
 ### 4. Include in your HTML
 
 ```html
-<link rel="stylesheet" href="/static/app.css">
+<link rel="stylesheet" href="/static/app.css" />
 ```
 
 ---
@@ -102,12 +102,12 @@ Override colors globally via `@theme`:
 ```css
 @theme {
   /* Your brand color replaces blue everywhere */
-  --color-blue-600: #0ea5e9;  /* sky-500 */
-  --color-blue-500: #38bdf8;  /* sky-400 */
+  --color-blue-600: #0ea5e9; /* sky-500 */
+  --color-blue-500: #38bdf8; /* sky-400 */
 
   /* Dark mode surface adjustments */
-  --color-gray-900: #0f172a;  /* slate-900 */
-  --color-gray-800: #1e293b;  /* slate-800 */
+  --color-gray-900: #0f172a; /* slate-900 */
+  --color-gray-800: #1e293b; /* slate-800 */
 }
 ```
 

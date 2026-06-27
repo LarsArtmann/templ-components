@@ -31,14 +31,14 @@ experiment was built and **rejected** (see ADR-001).
 
 adminui hand-builds several patterns that templ-components now provides:
 
-| adminui hand-built | templ-components replacement | Status |
-|--------------------|------------------------------|--------|
-| `.admin-content__head` (title+action) | `display.PageHeader` | ✅ Added |
-| `.kv` (definition list) | `display.DefinitionList` | ✅ Added |
-| `statCardView` (icon+value tile) | `display.StatCard` (+ `Icon` field) | ✅ Enhanced |
-| `listNote()` ("Showing N of M") | `display.ListNote` | ✅ Added |
-| `.admin-sidebar` + `.admin-nav` | `navigation.SidebarNav` | ✅ Added |
-| `@icon()` (15 hardcoded SVGs) | `icons.Icon` (101 icons) | ✅ Available |
+| adminui hand-built                    | templ-components replacement        | Status       |
+| ------------------------------------- | ----------------------------------- | ------------ |
+| `.admin-content__head` (title+action) | `display.PageHeader`                | ✅ Added     |
+| `.kv` (definition list)               | `display.DefinitionList`            | ✅ Added     |
+| `statCardView` (icon+value tile)      | `display.StatCard` (+ `Icon` field) | ✅ Enhanced  |
+| `listNote()` ("Showing N of M")       | `display.ListNote`                  | ✅ Added     |
+| `.admin-sidebar` + `.admin-nav`       | `navigation.SidebarNav`             | ✅ Added     |
+| `@icon()` (15 hardcoded SVGs)         | `icons.Icon` (101 icons)            | ✅ Available |
 
 adminui can adopt all of these **once it migrates to Tailwind v4+**.
 
@@ -61,11 +61,11 @@ the standard tool.
 
 ### B1. Missing icons — DONE
 
-| Icon | adminui use case | Added as |
-|------|-----------------|----------|
-| Building/office | tenants nav + dashboard stat | `BuildingOffice2` |
-| Key | credentials/API keys | `Key` |
-| Logout (arrow-exit) | sign-out button | `ArrowRightOnRectangle` |
+| Icon                | adminui use case             | Added as                |
+| ------------------- | ---------------------------- | ----------------------- |
+| Building/office     | tenants nav + dashboard stat | `BuildingOffice2`       |
+| Key                 | credentials/API keys         | `Key`                   |
+| Logout (arrow-exit) | sign-out button              | `ArrowRightOnRectangle` |
 
 Total: 99 → **101 icons** (official Heroicons v2 outline paths).
 
@@ -105,27 +105,27 @@ needing full `<svg>` wrapper control. Useful for any project, not just adminui.
 
 ### templ-components repo
 
-| File | Change |
-|------|--------|
-| `icons/icon_names.go` | +3 icon constants (BuildingOffice2, Key, ArrowRightOnRectangle) |
-| `icons/icon_paths.go` | +3 path entries, +`IconPathData()` exported function |
-| `icons/snapshot_test.go` | +`TestIconPathData` (3 subtests) |
-| `display/card.templ` | StatCard enhanced with optional `Icon` field |
-| `display/card_test.go` | +2 StatCard icon tests |
-| `display/page_header.templ` | **NEW** — PageHeader component |
-| `display/page_header_test.go` | **NEW** — 7 tests |
-| `display/definition_list.templ` | **NEW** — DefinitionList component |
-| `display/definition_list_test.go` | **NEW** — 5 tests |
-| `display/list_note.templ` | **NEW** — ListNote component |
-| `display/list_note_test.go` | **NEW** — 5 tests |
-| `navigation/sidebar_nav.templ` | **NEW** — SidebarNav component |
-| `navigation/sidebar_nav_test.go` | **NEW** — 9 tests |
-| `docs/adr-001-tailwind-v4-standard.md` | **NEW** — Tailwind v4+ decision |
-| `docs/tailwind-v4-adoption-guide.md` | **NEW** — migration guide |
-| `docs/icons-only-adoption.md` | **NEW** — icons package docs |
-| `docs/cross-project-analysis.md` | **NEW** — this report |
-| `README.md` | Updated component counts, catalog, theming docs |
-| `AGENTS.md` | New components documented, Tailwind v4+ stance added |
+| File                                   | Change                                                          |
+| -------------------------------------- | --------------------------------------------------------------- |
+| `icons/icon_names.go`                  | +3 icon constants (BuildingOffice2, Key, ArrowRightOnRectangle) |
+| `icons/icon_paths.go`                  | +3 path entries, +`IconPathData()` exported function            |
+| `icons/snapshot_test.go`               | +`TestIconPathData` (3 subtests)                                |
+| `display/card.templ`                   | StatCard enhanced with optional `Icon` field                    |
+| `display/card_test.go`                 | +2 StatCard icon tests                                          |
+| `display/page_header.templ`            | **NEW** — PageHeader component                                  |
+| `display/page_header_test.go`          | **NEW** — 7 tests                                               |
+| `display/definition_list.templ`        | **NEW** — DefinitionList component                              |
+| `display/definition_list_test.go`      | **NEW** — 5 tests                                               |
+| `display/list_note.templ`              | **NEW** — ListNote component                                    |
+| `display/list_note_test.go`            | **NEW** — 5 tests                                               |
+| `navigation/sidebar_nav.templ`         | **NEW** — SidebarNav component                                  |
+| `navigation/sidebar_nav_test.go`       | **NEW** — 9 tests                                               |
+| `docs/adr-001-tailwind-v4-standard.md` | **NEW** — Tailwind v4+ decision                                 |
+| `docs/tailwind-v4-adoption-guide.md`   | **NEW** — migration guide                                       |
+| `docs/icons-only-adoption.md`          | **NEW** — icons package docs                                    |
+| `docs/cross-project-analysis.md`       | **NEW** — this report                                           |
+| `README.md`                            | Updated component counts, catalog, theming docs                 |
+| `AGENTS.md`                            | New components documented, Tailwind v4+ stance added            |
 
 ### cqrs-htmx/adminui repo
 
@@ -137,10 +137,10 @@ future session.
 
 ## Metrics
 
-| Metric | Before | After |
-|--------|--------|-------|
-| tc icons | 99 | **101** |
-| tc components | 69 | **73** (+PageHeader, DefinitionList, ListNote, SidebarNav) |
-| tc new tests | — | **+34** |
-| tc test packages passing | 12 | 12 |
-| tc lint issues | 0 | 0 |
+| Metric                   | Before | After                                                      |
+| ------------------------ | ------ | ---------------------------------------------------------- |
+| tc icons                 | 99     | **101**                                                    |
+| tc components            | 69     | **73** (+PageHeader, DefinitionList, ListNote, SidebarNav) |
+| tc new tests             | —      | **+34**                                                    |
+| tc test packages passing | 12     | 12                                                         |
+| tc lint issues           | 0      | 0                                                          |

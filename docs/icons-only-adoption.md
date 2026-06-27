@@ -6,8 +6,9 @@
 > this is a natural property of icons, not a portability strategy.
 
 The `icons` package provides 101 named SVG icons (100 Heroicons v2 outline paths
-+ 1 animated Spinner). It depends only on `github.com/a-h/templ` and the internal
-SVG path constants — no Tailwind, no CSS framework.
+
+- 1 animated Spinner). It depends only on `github.com/a-h/templ` and the internal
+  SVG path constants — no Tailwind, no CSS framework.
 
 ## Three API levels
 

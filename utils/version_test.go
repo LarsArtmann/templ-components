@@ -18,7 +18,7 @@ func TestVersionMatchesChangelog(t *testing.T) {
 		t.Skipf("CHANGELOG.md not found (running outside repo root?): %v", err)
 	}
 
-	for _, line := range strings.Split(string(data), "\n") {
+	for line := range strings.SplitSeq(string(data), "\n") {
 		line = strings.TrimSpace(line)
 		if !strings.HasPrefix(line, "## [") {
 			continue
