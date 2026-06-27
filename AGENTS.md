@@ -25,7 +25,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 46 generated files across 10 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/golden, internal/svg, layout, navigation)
+- 51 generated files across 10 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/golden, internal/svg, layout, navigation)
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
 will have their Go toolchain download the tagged commit. If `*_templ.go` is missing from that
@@ -75,7 +75,7 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - NavLink/MobileNavLink: `NavLink` uses `utils.Class()` for merge; `MobileNavLink` appends `props.Class` to `templ.KV` chain
 - InputType: validates via `inputType()` with `validInputTypes` map; panics on unknown, defaults empty to `"text"`
 - Structural variants (TabsVariant, DropdownPosition, TrendDirection): use `if`-branch for DOM structure, not map lookup — map pattern is for pure class lookups only
-- `forms.SanitizeID`: exported utility for library consumers, not used internally
+- `forms.SanitizeID`: exported utility for library consumers; also used internally by `forms.RadioGroup` to derive per-option IDs from option values
 - Enum validation: 0 panic-on-unknown, 12 map+fallback, structural variants use if-branch. InputType falls back to "text", icons.Name falls back to Question icon. Only remaining panic: icon path data integrity check (stray `|` separators).
 - ID auto-generation: `utils.EnsureID(prefix, id)` generates unique IDs via crypto/rand when consumer omits props.ID. Used by Modal, Drawer, Dropdown, Accordion, Combobox.
 - SwapOOB: invalid swap styles fall back to `outerHTML` instead of panicking.
