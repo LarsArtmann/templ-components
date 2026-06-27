@@ -1,7 +1,7 @@
 # TODO List
 
-**Updated:** 2026-06-20
-**Coverage:** 73.2% | **Tests:** 1100+ | **Packages:** 10+demo | **Lint:** 0 issues | **Icons:** 99 (98 path + 1 Spinner)
+**Updated:** 2026-06-27
+**Coverage:** ~75% | **Tests:** 456 functions + ~650 subtests | **Packages:** 10+demo | **Lint:** 0 issues | **Icons:** 101 (100 path + 1 Spinner)
 
 > Session 5: Modal/Drawer overlay JS extraction + CSP fix, SimpleNav props conversion, Alert/Toast style unification, Form children pattern, Pagination uint, FormFieldWrapper adoption, button/select/toggle map lookups, stdlib htmlEscape.
 
@@ -72,7 +72,7 @@
 - [x] Add Toggle/Switch component (source: forms/toggle.templ)
 - [x] Add File input component (source: forms/file_input.templ)
 - [x] Add Form component wrapping inputs + CSRF token (source: forms/form.templ)
-- [x] Add 25+ more Heroicons — 98 path icons + 1 Spinner = 99 total (was 75) (source: icons/)
+- [x] Add 25+ more Heroicons — 100 path icons + 1 Spinner = 101 total (was 75) (source: icons/)
 - [ ] Add Date Picker component (source: docs/status/)
 - [ ] Add Combobox/Autocomplete component (source: docs/status/)
 - [x] Add Dialog/Drawer component — accessible side panel with left/right slide, focus trap (source: display/drawer.templ)

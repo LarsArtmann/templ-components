@@ -1,6 +1,6 @@
 # Context — templ-components
 
-**Updated:** 2026-06-20
+**Updated:** 2026-06-27
 
 ## What
 
@@ -24,15 +24,15 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 templ-components/
 ├── utils/           # Base types, Tailwind class merging, generic helpers (Lookup, Ternary, EnsureID)
 ├── internal/svg/    # Shared SVG primitives (fillIcon, spinner)
-├── display/         # UI: card, badge, modal, drawer, table, tabs, avatar, tooltip, accordion, dropdown
+├── display/         # UI: card, badge, modal, drawer, table, tabs, avatar, tooltip, accordion, dropdown, page header, definition list
 ├── feedback/        # User feedback: alert, toast, spinner, progress, skeleton (shared feedbackStyleSet)
 ├── forms/           # Form controls: input, select, textarea, checkbox, radio, toggle, file input, date picker, combobox, label, validation
 ├── errorpage/       # Error presentation: ErrorPage, ErrorDetail, ErrorAlert, http.Handler integration
 ├── htmx/            # HTMX helpers: loading, error handling, CSRF, OOB swap, confirm delete
 ├── internal/golden/ # Golden file comparison with CSS class normalization
-├── icons/           # Named SVG icons (98 path icons + Spinner, map-driven rendering)
+├── icons/           # Named SVG icons (100 path icons + Spinner, map-driven rendering)
 ├── layout/          # Page layout: base HTML, theme toggle, dark mode
-└── navigation/      # Nav: navbar, breadcrumbs, pagination, mobile menu
+└── navigation/      # Nav: navbar, breadcrumbs, pagination, mobile menu, sidebar nav
 ```
 
 ### Import Graph
@@ -41,7 +41,7 @@ templ-components/
 utils          ← all packages
 internal/svg   ← display, feedback, icons
 icons          ← display, feedback, errorpage
-internal/golden ← test-only (feedback golden tests)
+internal/golden ← test-only (feedback, display, navigation golden tests)
 ```
 
 No circular imports. `internal/svg` is not importable by consumers (Go `internal/` convention).
