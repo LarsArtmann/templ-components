@@ -107,7 +107,7 @@
 - [x] Set coverage threshold in CI (70%)
 - [x] Add build test for `examples/` in CI
 - [x] Audit `tailwind-merge-go` thread safety — `sync.Mutex` IS required (source: utils/utils.go)
-- [ ] Verify `go get` works from clean project
+- [x] Verify `go get` works from clean project — verified 2026-06-28: `go get github.com/larsartmann/templ-components@v0.4.0` builds and runs from empty project. Post-v0.4.0 types (ButtonHTMLType, utils.Version) need v0.5.0 tag.
 - [ ] Set up goreleaser for tag-based releases
 - [ ] Modularize into Go workspace (10-module `go.work`)
 - [ ] Consider `go:generate stringer` for enums
