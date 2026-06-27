@@ -97,7 +97,7 @@
 - [x] Godoc ExampleXxx() functions for forms package — Form, Input, Select, Textarea (source: forms/example_test.go)
 - [ ] Improve coverage for functions below 70%: fillIcon, Select, Textarea
 - [ ] Convert remaining snapshot tests to golden file comparison (feedback/ done, pattern in internal/golden)
-- [ ] Consistent nonce propagation audit across all components
+- [x] Consistent nonce propagation audit across all components — verified 2026-06-28: all 13 components with inline executable scripts use nonce. base.templ (external src) and breadcrumbs.templ (JSON-LD) correctly don't need nonce.
 - [ ] Add accessibility audit automation — axe-core/pa11y
 
 ### Infrastructure
@@ -130,7 +130,7 @@
 - [x] Tag v0.3.0 with Priority 2 features (Drawer, ValidationSummary, 25 icons, Spinner BaseProps) — also tagged v0.4.0
 - [ ] Submit to awesome-templ for discoverability
 - [ ] Open PR on templ.guide to get listed
-- [ ] Cross-link ecosystem in README — cqrs-htmx, go-cqrs-lite (GOTH stack story)
+- [x] Cross-link ecosystem in README — cqrs-htmx, go-cqrs-lite, go-error-family (GOTH stack story)
 
 ### Housekeeping
 

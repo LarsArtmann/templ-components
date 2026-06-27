@@ -376,6 +376,18 @@ http.Error(w, "not found", http.StatusNotFound) // use errorpage.NotFound() inst
 
 ---
 
+## Ecosystem
+
+This library is part of the **GOTH stack** (Go + Templ + HTMX):
+
+| Project | What it does |
+|---------|-------------|
+| [cqrs-htmx](https://github.com/LarsArtmann/cqrs-htmx) | Production CQRS+ES framework with WebAuthn, RBAC, multi-tenancy, SSE. Uses templ-components in its admin panel. |
+| [go-cqrs-lite](https://github.com/LarsArtmann/go-cqrs-lite) | Minimal CQRS/ES building blocks (command bus, event store, projections, snapshots). |
+| [go-error-family](https://github.com/LarsArtmann/go-error-family) | Structured error families (classified, contextual, actionable). Used by templ-components' errorpage package. |
+
+---
+
 ## Contributing
 
 Contributions are welcome. See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, conventions, and workflow.
