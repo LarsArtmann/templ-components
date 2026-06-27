@@ -103,7 +103,7 @@ templ Avatar(props AvatarProps) {
 				alt={ props.Alt }
 				class={ utils.Class("inline-block object-cover bg-gray-100 dark:bg-gray-800", avatarSizeClass(props.Size), avatarShapeClass(props.Shape)) }
 			/>
-			if props.Status != AvatarStatusNone {
+			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
 				<span
 					class={ "absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
 						avatarDotSizeClass(props.Size),

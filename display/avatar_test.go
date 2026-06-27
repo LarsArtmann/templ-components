@@ -148,3 +148,30 @@ func TestAvatarRender(t *testing.T) {
 		utils.AssertNotContains(t, output, "bg-gray-400")
 	})
 }
+
+func TestAvatarUnknownStatusNoDot(t *testing.T) {
+	t.Parallel()
+
+	t.Run("unknown status renders no dot", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Avatar(AvatarProps{
+			Src:    "/me.jpg",
+			Alt:    "Me",
+			Status: AvatarStatus("busy"),
+		}))
+		utils.AssertNotContains(t, output, "bg-green-400")
+		utils.AssertNotContains(t, output, "bg-gray-400")
+		utils.AssertNotContains(t, output, `aria-hidden="true"></span>`)
+	})
+
+	t.Run("none status renders no dot", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Avatar(AvatarProps{
+			Src:    "/me.jpg",
+			Alt:    "Me",
+			Status: AvatarStatusNone,
+		}))
+		utils.AssertNotContains(t, output, "bg-green-400")
+		utils.AssertNotContains(t, output, "bg-gray-400")
+	})
+}

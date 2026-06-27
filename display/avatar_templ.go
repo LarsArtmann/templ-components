@@ -236,7 +236,7 @@ func Avatar(props AvatarProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			if props.Status != AvatarStatusNone {
+			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
 				var templ_7745c5c3_Var10 = []any{"absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
 					avatarDotSizeClass(props.Size),
 					templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
