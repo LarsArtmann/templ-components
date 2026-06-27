@@ -3,8 +3,10 @@
 > **CORRECTION (2026-06-27 23:45):** Items 8 and 9 below were **built then
 > rejected** — see ADR-001 (`docs/adr-001-tailwind-v4-standard.md`). The color
 > bridge CSS was deleted. Tailwind v4+ is the standard for all projects. Items
-> 12-13 were updated to reflect this. The analysis below is preserved as a
-> historical record of the session.
+> 12-13 were updated to reflect this. Any later reference to
+> `templ-components-colors.css` as a current artifact or deliverable (including
+> recommendation 6 and the deliverables list) is likewise obsolete. The analysis
+> below is preserved as a historical record of the session.
 
 ## Cross-Project Analysis: cqrs-htmx/adminui → templ-components
 
