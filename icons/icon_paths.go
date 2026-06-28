@@ -129,6 +129,7 @@ var specialIcons = map[Name]bool{
 	Spinner: true,
 }
 
+//nolint:gochecknoinits // Validates icon path data integrity at process start
 func init() {
 	for _, d := range iconPathData {
 		for _, p := range strings.Split(d, "|") {

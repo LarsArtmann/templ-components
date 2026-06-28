@@ -36,9 +36,12 @@ const sriResponseTargets = "sha384-T41oglUPvXLGBVyRdZsVRxNWnOOqCynaPubjUVjxhsjFT
 //
 //	curl -sL https://unpkg.com/htmx.org@<v> | openssl dgst -sha384 -binary | openssl base64 -A
 //
+// htmxMainSRIDefault is the sha384 SRI hash for the pinned default htmx version.
+const htmxMainSRIDefault = "sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
+
 //nolint:gochecknoglobals // Version-keyed SRI lookup table.
 var sriHTMXMainByVersion = map[string]string{
-	defaultHTMXVersion: "sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V",
+	defaultHTMXVersion: htmxMainSRIDefault,
 }
 
 // htmxScriptURL returns the CDN URL for the htmx main script at the given version.

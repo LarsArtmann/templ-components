@@ -18,6 +18,8 @@ func ValidateID(componentName, id string) error {
 // ensureIDCounter is a process-wide atomic counter used as a fallback when
 // crypto/rand fails (which should never happen on a healthy system). Combined
 // with time.Now().UnixNano() it provides uniqueness without predictability.
+//
+//nolint:gochecknoglobals // Atomic counter for EnsureID fallback (process-wide)
 var ensureIDCounter atomic.Uint64
 
 // EnsureID returns id if non-empty, otherwise generates a unique ID with the

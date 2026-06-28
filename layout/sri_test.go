@@ -17,12 +17,12 @@ func TestHtmxMainSRI(t *testing.T) {
 		{
 			name:    "pinned 2.0.10 returns main SRI hash",
 			version: defaultHTMXVersion,
-			want:    "sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V",
+			want:    htmxMainSRIDefault,
 		},
 		{
 			name:    "unknown version falls back to default SRI",
 			version: "99.99.99",
-			want:    "sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V",
+			want:    htmxMainSRIDefault,
 		},
 	}
 	for _, tt := range tests {
