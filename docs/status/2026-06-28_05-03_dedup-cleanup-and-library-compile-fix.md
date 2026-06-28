@@ -8,22 +8,22 @@
 
 ## Metrics Snapshot
 
-| Metric                          | Value                          |
-| ------------------------------- | ------------------------------ |
-| Packages                        | 13 (10 library + demo + integration + internal) |
-| Templ sources (excl. examples)  | 50                             |
-| Generated `*_templ.go` files    | 51 (all tracked ✅)            |
-| Test files                      | 87                             |
-| Templ LOC                       | ~5,300                         |
-| Handwritten Go LOC              | ~2,100                         |
-| Components                      | 73                             |
-| Icons                           | 101                            |
-| Test packages passing           | 12 / 12                        |
-| Lint issues                     | 0                              |
-| TODOs in source                 | 0                              |
-| Templ clone groups (t=4)        | 17 (down from 19)              |
-| Go clone groups (t=30)          | 0                              |
-| art-dupl baseline               | 17 groups recorded             |
+| Metric                         | Value                                           |
+| ------------------------------ | ----------------------------------------------- |
+| Packages                       | 13 (10 library + demo + integration + internal) |
+| Templ sources (excl. examples) | 50                                              |
+| Generated `*_templ.go` files   | 51 (all tracked ✅)                             |
+| Test files                     | 87                                              |
+| Templ LOC                      | ~5,300                                          |
+| Handwritten Go LOC             | ~2,100                                          |
+| Components                     | 73                                              |
+| Icons                          | 101                                             |
+| Test packages passing          | 12 / 12                                         |
+| Lint issues                    | 0                                               |
+| TODOs in source                | 0                                               |
+| Templ clone groups (t=4)       | 17 (down from 19)                               |
+| Go clone groups (t=30)         | 0                                               |
+| art-dupl baseline              | 17 groups recorded                              |
 
 ---
 
@@ -116,33 +116,33 @@
 
 ## f) Top 25 things to do next (sorted by impact × 1/work)
 
-| #  | Task                                                                                | Impact | Work   |
-| -- | ----------------------------------------------------------------------------------- | ------ | ------ |
-| 1  | **Tag v0.5.0 + write CHANGELOG entry** (library is unreleased)                      | Crit   | Trivial|
-| 2  | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)                 | High   | Low    |
-| 3  | Fix `internal/golden` test isolation (use `t.TempDir()`)                             | Med    | Low    |
-| 4  | Decide on `.buildflow.yml`: commit or gitignore                                     | Low    | Trivial|
-| 5  | Add rationale comments to accepted clones (Modal/Drawer, alert/erroralert)          | Low    | Trivial|
-| 6  | Submit awesome-templ PR (entry text ready)                                          | Med    | Low    |
-| 7  | Submit templ.guide listing (manual)                                                 | Med    | Low    |
-| 8  | Audit remaining templ clone groups at t=8+ for any drift-prone extractions          | Med    | Low    |
-| 9  | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6 candidate)       | High   | Med    |
-| 10 | Extract shared dismiss-button markup to `internal/dismiss` (unblock alert clone)    | Med    | Med    |
-| 11 | Run `art-dupl` on Go sources at t=15 (currently only templ was scanned)             | Med    | Low    |
-| 12 | Add `Validate() error` design spike for v1.0                                        | High   | High   |
-| 13 | Move test helpers to `internal/testutil/` (v1.0 breaking)                           | Med    | Med    |
-| 14 | Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)                   | Low    | Trivial|
-| 15 | Add integration test for `go get` from clean project (CI already does this)         | Low    | Low    |
-| 16 | Consider typed `ComponentName`/`IconName` branded types for stronger safety         | Med    | Med    |
-| 17 | Document the "slot vs flat strings" decision in an ADR                              | Med    | Low    |
-| 18 | Add file-size enforcement (BuildFlow has `file-size-check` at 350 lines)            | Low    | Trivial|
-| 19 | Audit `examples/demo` for staleness against current API                             | Low    | Low    |
-| 20 | Add a CONTRIBUTING note about the BuildFlow gitignore gotcha                        | Low    | Trivial|
-| 21 | Consider `internal/svg` → public `svg` (consumers ask for raw paths)                | Low    | Med    |
-| 22 | Add cross-package composition tests (Card+Badge+Table realistic layout)             | Low    | Low    |
-| 23 | Write ADR for the "silent fallback over panic" validation philosophy                | Med    | Low    |
-| 24 | Evaluate `go-error-family` v0.6+ for new error families                             | Low    | Low    |
-| 25 | Plan v0.6.0 scope (action slots, more composition tests, svg publicity)            | Med    | Med    |
+| #   | Task                                                                             | Impact | Work    |
+| --- | -------------------------------------------------------------------------------- | ------ | ------- |
+| 1   | **Tag v0.5.0 + write CHANGELOG entry** (library is unreleased)                   | Crit   | Trivial |
+| 2   | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)              | High   | Low     |
+| 3   | Fix `internal/golden` test isolation (use `t.TempDir()`)                         | Med    | Low     |
+| 4   | Decide on `.buildflow.yml`: commit or gitignore                                  | Low    | Trivial |
+| 5   | Add rationale comments to accepted clones (Modal/Drawer, alert/erroralert)       | Low    | Trivial |
+| 6   | Submit awesome-templ PR (entry text ready)                                       | Med    | Low     |
+| 7   | Submit templ.guide listing (manual)                                              | Med    | Low     |
+| 8   | Audit remaining templ clone groups at t=8+ for any drift-prone extractions       | Med    | Low     |
+| 9   | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6 candidate)    | High   | Med     |
+| 10  | Extract shared dismiss-button markup to `internal/dismiss` (unblock alert clone) | Med    | Med     |
+| 11  | Run `art-dupl` on Go sources at t=15 (currently only templ was scanned)          | Med    | Low     |
+| 12  | Add `Validate() error` design spike for v1.0                                     | High   | High    |
+| 13  | Move test helpers to `internal/testutil/` (v1.0 breaking)                        | Med    | Med     |
+| 14  | Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)                | Low    | Trivial |
+| 15  | Add integration test for `go get` from clean project (CI already does this)      | Low    | Low     |
+| 16  | Consider typed `ComponentName`/`IconName` branded types for stronger safety      | Med    | Med     |
+| 17  | Document the "slot vs flat strings" decision in an ADR                           | Med    | Low     |
+| 18  | Add file-size enforcement (BuildFlow has `file-size-check` at 350 lines)         | Low    | Trivial |
+| 19  | Audit `examples/demo` for staleness against current API                          | Low    | Low     |
+| 20  | Add a CONTRIBUTING note about the BuildFlow gitignore gotcha                     | Low    | Trivial |
+| 21  | Consider `internal/svg` → public `svg` (consumers ask for raw paths)             | Low    | Med     |
+| 22  | Add cross-package composition tests (Card+Badge+Table realistic layout)          | Low    | Low     |
+| 23  | Write ADR for the "silent fallback over panic" validation philosophy             | Med    | Low     |
+| 24  | Evaluate `go-error-family` v0.6+ for new error families                          | Low    | Low     |
+| 25  | Plan v0.6.0 scope (action slots, more composition tests, svg publicity)          | Med    | Med     |
 
 ---
 
@@ -153,6 +153,7 @@
 The 14-line dismiss-button block is identical between `feedback/alert.templ:63-76` and `errorpage/erroralert.templ:43-56`. The constraint is documented: `errorpage` must not depend on `feedback` (so that `errorpage` stays minimal for error-rendering paths). But the clone will drift — if the dismiss button's accessibility markup changes, someone has to remember to update both.
 
 Options I see, none clearly right:
+
 - **(a)** Extract to a new `internal/dismiss` package (both `feedback` and `errorpage` import it). Clean, but adds a package for ~15 lines.
 - **(b)** Extract to `utils` (already a shared dep). But `utils` is currently CSS/class helpers, not component markup — this would blur its purpose.
 - **(c)** Accept the clone, add a `// rationale:` comment in both files. Simplest, but doesn't solve the drift risk.
