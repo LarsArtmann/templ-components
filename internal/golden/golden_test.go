@@ -3,6 +3,7 @@ package golden
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 )
 
@@ -59,7 +60,7 @@ func TestDiffOutput(t *testing.T) {
 	if got == "" {
 		t.Error("expected non-empty diff for different inputs")
 	}
-	if !contains(got, "--- line2") || !contains(got, "+++ changed") {
+	if !strings.Contains(got, "--- line2") || !strings.Contains(got, "+++ changed") {
 		t.Errorf("unexpected diff output:\n%s", got)
 	}
 }
@@ -83,18 +84,4 @@ func TestNormalizeClassesMultiple(t *testing.T) {
 	if got != `<div class="flex items-center z-50">text</div>` {
 		t.Errorf("unexpected: %s", got)
 	}
-}
-
-func contains(s, sub string) bool {
-	return len(s) >= len(sub) && (s == sub || len(sub) == 0 ||
-		(len(s) > 0 && len(sub) > 0 && findSub(s, sub)))
-}
-
-func findSub(s, sub string) bool {
-	for i := 0; i <= len(s)-len(sub); i++ {
-		if s[i:i+len(sub)] == sub {
-			return true
-		}
-	}
-	return false
 }

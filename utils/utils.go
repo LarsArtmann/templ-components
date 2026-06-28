@@ -54,7 +54,10 @@ func CurrentYear() string {
 	return time.Now().Format("2006")
 }
 
-// Ternary returns a if condition is true, otherwise b
+// Ternary returns a if condition is true, otherwise b.
+// Note: both a and b are eagerly evaluated (this is a function, not a macro),
+// so callers passing function calls or side-effecting expressions should use
+// inline if/else in templ instead: { if cond }...{ else }...{ end }
 func Ternary[T any](condition bool, a, b T) T {
 	if condition {
 		return a

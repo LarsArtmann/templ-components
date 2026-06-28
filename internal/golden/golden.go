@@ -31,6 +31,12 @@ var classRe = regexp.MustCompile(`class="([^"]*)"`)
 func Assert(t *testing.T, name, got string) {
 	t.Helper()
 
+	// Guard against path traversal: name must be a base filename, not a path.
+	if strings.ContainsAny(name, `/\`) || filepath.Clean(name) != name {
+		t.Fatalf("golden: invalid name %q (must not contain path separators or ..)", name)
+		return
+	}
+
 	goldenPath := filepath.Join("testdata", name+".golden")
 
 	normalized := normalizeClasses(got)
