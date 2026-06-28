@@ -1,208 +1,17 @@
 package errorpage
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"html"
 	"io"
 	"log/slog"
 	"net/http"
-	"time"
 
 	"github.com/a-h/templ"
-	errorfamily "github.com/larsartmann/go-error-family"
 )
-
-// Pre-built HTTP error page code constants.
-const (
-	CodePageNotFound    = "page.not_found"
-	CodeAccessForbidden = "access.forbidden"
-	CodeBadRequest      = "request.bad_request"
-	CodeConflict        = "resource.conflict"
-	CodeUnavailable     = "service.unavailable"
-	CodeInternalError   = "internal.error"
-
-	msgGoHome = "Go home"
-)
-
-// FamilyFromErrorFamily converts a go-error-family Family to an errorpage Family.
-// Returns FamilyTransient for unrecognized values.
-func FamilyFromErrorFamily(f errorfamily.Family) Family {
-	return ParseFamily(f.String())
-}
-
-// FromError converts any error into ErrorPageProps.
-// Extracts code, family, context, and cause chain from structured errors.
-// For go-error-family errors, also extracts Why/Fix defaults.
-// Falls back to Transient family for unknown errors.
-func FromError(err error) ErrorPageProps {
-	if err == nil {
-		return ErrorPageProps{Family: FamilyTransient} //nolint:exhaustruct // minimal nil response
-	}
-
-	family := familyFromError(err)
-
-	props := ErrorPageProps{ //nolint:exhaustruct // filled incrementally
-		Family:     family,
-		Message:    cleanMessage(err),
-		CauseChain: ExtractCauseChain(err, 5),
-		Timestamp:  errorTimestamp(err),
-	}
-
-	// Reuse the classified error if familyFromError already resolved it,
-	// avoiding a second errors.AsType call.
-	if classified, ok := errors.AsType[errorfamily.Classified](err); ok {
-		ef := classified.ErrorFamily()
-		props.Why = ef.DefaultWhy()
-		props.Fix = ef.DefaultFix()
-	}
-
-	if coded, ok := err.(interface{ ErrorCode() string }); ok {
-		props.Code = coded.ErrorCode()
-	}
-
-	if ctx, ok := err.(interface{ ErrorContext() map[string]string }); ok {
-		props.Context = ContextMap(ctx.ErrorContext())
-	}
-
-	return props
-}
-
-// familyFromError extracts the family from any error, trying go-error-family first.
-func familyFromError(err error) Family {
-	if classified, ok := errors.AsType[errorfamily.Classified](err); ok {
-		return FamilyFromErrorFamily(classified.ErrorFamily())
-	}
-	if c, ok := err.(interface{ ErrorFamily() Family }); ok {
-		return c.ErrorFamily()
-	}
-	if c, ok := err.(interface{ ErrorFamily() string }); ok {
-		return ParseFamily(c.ErrorFamily())
-	}
-	return FamilyInfrastructure
-}
-
-// cleanMessage returns the clean message from a go-error-family error
-// (without the [family:code] prefix), or falls back to err.Error().
-func cleanMessage(err error) string {
-	type messenger interface{ Message() string }
-	if m, ok := err.(messenger); ok {
-		return m.Message()
-	}
-	return err.Error()
-}
-
-// errorTimestamp returns the error's own timestamp if available,
-// otherwise generates one from time.Now().
-func errorTimestamp(err error) string {
-	type timestamper interface{ Timestamp() time.Time }
-	if ts, ok := err.(timestamper); ok {
-		return ts.Timestamp().UTC().Format(time.RFC3339)
-	}
-	return time.Now().UTC().Format(time.RFC3339)
-}
-
-// errorResponse is the JSON structure returned when ErrorHandlerConfig.JSON is true.
-type errorResponse struct {
-	Family  string            `json:"family"`
-	Code    string            `json:"code,omitempty"`
-	Message string            `json:"message"`
-	Title   string            `json:"title,omitempty"`
-	Why     string            `json:"why,omitempty"`
-	Fix     string            `json:"fix,omitempty"`
-	Context map[string]string `json:"context,omitempty"`
-}
-
-// NotFound returns a 404-style error page.
-func NotFound() ErrorPageProps {
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
-		Family:        FamilyRejection,
-		Code:          CodePageNotFound,
-		Title:         "Page not found",
-		Message:       "The page you're looking for doesn't exist or has been moved.",
-		Fix:           "Check the URL for typos or navigate back to the homepage.",
-		WayOut:        msgGoHome,
-		WayOutHref:    "/",
-		ShowTimestamp: true,
-	}
-}
-
-// Forbidden returns a 403-style error page.
-func Forbidden() ErrorPageProps {
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
-		Family:        FamilyRejection,
-		Code:          CodeAccessForbidden,
-		Title:         "Access denied",
-		Message:       "You don't have permission to access this resource.",
-		Fix:           "Contact your administrator if you believe this is an error.",
-		WayOut:        msgGoHome,
-		WayOutHref:    "/",
-		ShowTimestamp: true,
-	}
-}
-
-// BadRequest returns a 400-style error page.
-func BadRequest(message string) ErrorPageProps {
-	if message == "" {
-		message = "The request was invalid or malformed."
-	}
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
-		Family:        FamilyRejection,
-		Code:          CodeBadRequest,
-		Title:         "Bad request",
-		Message:       message,
-		Fix:           "Check your input and try again.",
-		WayOut:        "Go back",
-		ShowTimestamp: true,
-	}
-}
-
-// Conflict returns a 409-style error page.
-func Conflict(message string) ErrorPageProps {
-	if message == "" {
-		message = "A conflict was detected with the current state of the resource."
-	}
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
-		Family:        FamilyConflict,
-		Code:          CodeConflict,
-		Title:         "Conflict detected",
-		Message:       message,
-		Fix:           "Refresh your data and try the operation again.",
-		WayOut:        "Go back",
-		ShowTimestamp: true,
-	}
-}
-
-// ServiceUnavailable returns a 503-style error page.
-func ServiceUnavailable() ErrorPageProps {
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
-		Family:        FamilyTransient,
-		Code:          CodeUnavailable,
-		Title:         "Service temporarily unavailable",
-		Message:       "We're performing maintenance or experiencing high traffic.",
-		Why:           "This is a temporary issue. No data was lost.",
-		Fix:           "Wait a moment and refresh the page.",
-		WayOut:        "Retry",
-		ShowTimestamp: true,
-	}
-}
-
-// InternalError returns a 500-style error page.
-func InternalError() ErrorPageProps {
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
-		Family:        FamilyInfrastructure,
-		Code:          CodeInternalError,
-		Title:         "Something went wrong",
-		Message:       "An unexpected error occurred. Our team has been notified.",
-		Why:           "This is a system issue, not something you caused.",
-		Fix:           "Try again in a few minutes. If the problem persists, contact support.",
-		WayOut:        msgGoHome,
-		WayOutHref:    "/",
-		ShowTimestamp: true,
-	}
-}
 
 // ErrorHandlerConfig controls how ErrorHandler renders errors.
 type ErrorHandlerConfig struct {
@@ -222,6 +31,10 @@ type ErrorHandlerConfig struct {
 	// The response includes family, code, message, title, why, and fix fields.
 	// Use for API endpoints or HTMX error handling.
 	JSON bool
+
+	// Lang sets the <html lang="..."> attribute when HTMLShell is true.
+	// Defaults to "en" when empty.
+	Lang string
 }
 
 // ErrorHandler returns an http.Handler that renders a go-error-family
@@ -238,9 +51,6 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		props := FromError(err)
 		props.ShowTimestamp = true
-		if props.Timestamp == "" {
-			props.Timestamp = time.Now().UTC().Format(time.RFC3339)
-		}
 
 		if cfg.Override != nil {
 			if overridden := cfg.Override(err, props); overridden != nil {
@@ -264,20 +74,31 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 			if title == "" {
 				title = fmt.Sprintf("Error %d", statusCode)
 			}
+			lang := cfg.Lang
+			if lang == "" {
+				lang = "en"
+			}
+			html, renderErr := renderShellToBuffer(r.Context(), title, lang, props)
+			if renderErr != nil {
+				slog.Error("error page render failed", "error", renderErr, "original_error", err)
+				writeFallbackError(w, statusCode)
+				return
+			}
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			w.WriteHeader(statusCode)
-			if renderErr := renderWithShell(r.Context(), w, title, props); renderErr != nil {
-				slog.Error("error page render failed", "error", renderErr, "original_error", err)
-			}
+			_, _ = w.Write(html)
 			return
 		}
 
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.WriteHeader(statusCode)
-		renderErr := ErrorPage(props).Render(r.Context(), w) //nolint:contextcheck
+		buf, renderErr := renderToBuffer(r.Context(), ErrorPage(props))
 		if renderErr != nil {
 			slog.Error("error page render failed", "error", renderErr, "original_error", err)
+			writeFallbackError(w, statusCode)
+			return
 		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(statusCode)
+		_, _ = w.Write(buf)
 	})
 }
 
@@ -288,19 +109,26 @@ func WriteError(w http.ResponseWriter, r *http.Request, err error, nonce string)
 }
 
 // WriteErrorPage writes a pre-configured error page with the given HTTP status code.
+// If statusCode is 0, the status code is derived from props.Family via FamilyStatusCode.
 // Use with the pre-built constructors:
 //
-//	errorpage.WriteErrorPage(w, r, 404, errorpage.NotFound(), "")
+//	errorpage.WriteErrorPage(w, r, 0, errorpage.NotFound(), "")
 func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, props ErrorPageProps, nonce string) {
+	if statusCode == 0 {
+		statusCode = FamilyStatusCode(props.Family)
+	}
 	if nonce != "" {
 		props.Nonce = nonce
 	}
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(statusCode)
-	renderErr := ErrorPage(props).Render(r.Context(), w) //nolint:contextcheck
+	buf, renderErr := renderToBuffer(r.Context(), ErrorPage(props))
 	if renderErr != nil {
 		slog.Error("error page render failed", "error", renderErr, "status_code", statusCode)
+		writeFallbackError(w, statusCode)
+		return
 	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(statusCode)
+	_, _ = w.Write(buf)
 }
 
 // writeJSONError writes a JSON error response.
@@ -330,12 +158,27 @@ func writeJSONError(w http.ResponseWriter, statusCode int, props ErrorPageProps)
 	}
 }
 
-// renderWithShell wraps ErrorPage in a minimal HTML document.
-func renderWithShell(ctx context.Context, w io.Writer, title string, props ErrorPageProps) error {
+// renderToBuffer renders a templ component to a byte slice.
+// This ensures the full document renders successfully before writing
+// any bytes to the http.ResponseWriter, preventing truncated HTML
+// at the wrong status code if rendering fails mid-stream.
+func renderToBuffer(ctx context.Context, comp templ.Component) ([]byte, error) {
+	var buf bytes.Buffer
+	if err := comp.Render(ctx, &buf); err != nil {
+		return nil, fmt.Errorf("render component: %w", err)
+	}
+	return buf.Bytes(), nil
+}
+
+// renderShellToBuffer renders the error page wrapped in a minimal HTML
+// document to a byte slice, ensuring the full document renders before
+// writing to the ResponseWriter.
+func renderShellToBuffer(ctx context.Context, title, lang string, props ErrorPageProps) ([]byte, error) {
 	shell := templ.ComponentFunc(func(_ context.Context, bw io.Writer) error {
-		_, _ = fmt.Fprint(bw, `<!DOCTYPE html><html lang="en"><head>`)
+		_, _ = fmt.Fprint(bw, `<!DOCTYPE html>`)
+		_, _ = fmt.Fprintf(bw, `<html lang="%s"><head>`, html.EscapeString(lang))
 		_, _ = fmt.Fprint(bw, `<meta charset="UTF-8">`)
-		_, _ = fmt.Fprintf(bw, `<meta name="viewport" content="width=device-width, initial-scale=1.0">`)
+		_, _ = fmt.Fprint(bw, `<meta name="viewport" content="width=device-width, initial-scale=1.0">`)
 		_, _ = fmt.Fprintf(bw, `<title>%s</title>`, html.EscapeString(title))
 		_, _ = fmt.Fprint(bw, `</head><body>`)
 		renderErr := ErrorPage(props).Render(ctx, bw) //nolint:contextcheck // intentional passthrough
@@ -345,10 +188,22 @@ func renderWithShell(ctx context.Context, w io.Writer, title string, props Error
 		_, _ = fmt.Fprint(bw, `</body></html>`)
 		return nil
 	})
-	if err := shell.Render(ctx, w); err != nil {
-		return fmt.Errorf("render error page shell (title=%q): %w", title, err)
+	var buf bytes.Buffer
+	if err := shell.Render(ctx, &buf); err != nil {
+		return nil, fmt.Errorf("render error page shell (title=%q): %w", title, err)
 	}
-	return nil
+	return buf.Bytes(), nil
+}
+
+// writeFallbackError writes a minimal plain-text error response when
+// the templ error page itself fails to render. This ensures the client
+// always receives a response with the correct status code.
+func writeFallbackError(w http.ResponseWriter, statusCode int) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	// If headers haven't been written yet, WriteHeader will succeed.
+	// If they have (e.g. superedge case), this is a no-op.
+	w.WriteHeader(statusCode)
+	_, _ = fmt.Fprintf(w, "Error %d\n", statusCode)
 }
 
 // Verify interface compliance.
