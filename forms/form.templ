@@ -1,10 +1,16 @@
 package forms
 
-import (
-	"github.com/larsartmann/templ-components/utils"
-)
+import "github.com/larsartmann/templ-components/utils"
 
-// FormMethod defines the HTTP method for a form
+// FormMethod defines the HTTP method for a form.
+// HTML forms only support GET and POST (per the HTML spec).
+// For HTMX requests using other verbs (PUT, DELETE, PATCH),
+// set Method to FormPost and add the appropriate hx-* attribute via Attrs:
+//
+//	forms.FormProps{
+//	    Method: forms.FormPost,
+//	    Attrs:  templ.Attributes{"hx-put": "/api/item/123"},
+//	}
 type FormMethod string
 
 const (
