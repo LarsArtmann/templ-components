@@ -86,10 +86,8 @@ var buttonVariantLookup = map[ButtonType]string{
 	ButtonLink:      "bg-transparent text-blue-600 hover:text-blue-500 underline-offset-2 hover:underline",
 }
 
-const buttonVariantDefault = "bg-blue-600 text-white hover:bg-blue-500 focus-visible:outline-blue-600"
-
 func buttonVariantClasses(v ButtonType) string {
-	return utils.Lookup(buttonVariantLookup, v, buttonVariantDefault)
+	return utils.Lookup(buttonVariantLookup, v, buttonVariantLookup[ButtonPrimary])
 }
 
 //nolint:gochecknoglobals // Package-level lookup table for button sizes

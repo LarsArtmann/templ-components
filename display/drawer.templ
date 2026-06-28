@@ -36,17 +36,14 @@ templ Drawer(props DrawerProps) {
 		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" data-tc-close="drawer"></div>
 		<div
 			id={ id + "-panel" }
-			class={ utils.Class("fixed bg-white dark:bg-gray-900 shadow-xl w-full h-full overflow-y-auto transform transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0", drawerSizeClass(props.Size), props.Class),
+			class={ utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0", drawerSizeClass(props.Size), props.Class),
+			templ.KV("left-0", props.Side == DrawerLeft),
+			templ.KV("right-0", props.Side == DrawerRight),
 			templ.KV("translate-x-0", props.Open),
 			templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
 			templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight) }
 			if !props.Open {
 				inert
-			}
-			if props.Side == DrawerLeft {
-				style="inset-y: 0; left: 0;"
-			} else {
-				style="inset-y: 0; right: 0;"
 			}
 			{ props.Attrs... }
 		>

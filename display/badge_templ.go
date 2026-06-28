@@ -349,10 +349,8 @@ var badgeStyleMap = map[BadgeType]badgeStyle{
 	BadgeNeutral: {"bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300", "bg-gray-500"},
 }
 
-var badgeStyleDefault = badgeStyle{"bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300", "bg-gray-500"}
-
 func badgeLookupStyle(t BadgeType) badgeStyle {
-	return utils.Lookup(badgeStyleMap, t, badgeStyleDefault)
+	return utils.Lookup(badgeStyleMap, t, badgeStyleMap[BadgeNeutral])
 }
 
 func badgeColorClass(t BadgeType) string    { return badgeLookupStyle(t).BG }

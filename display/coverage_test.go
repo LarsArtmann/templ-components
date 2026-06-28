@@ -654,7 +654,8 @@ func TestDrawerRender(t *testing.T) {
 			Open:      true,
 			Side:      DrawerLeft,
 		}))
-		utils.AssertContains(t, output, `style="inset-y: 0; left: 0;"`)
+		utils.AssertContains(t, output, "inset-y-0")
+		utils.AssertContains(t, output, "left-0")
 	})
 
 	t.Run("closed drawer", func(t *testing.T) {
