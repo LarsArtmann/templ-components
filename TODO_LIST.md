@@ -110,7 +110,7 @@
 - [x] Verify `go get` works from clean project — verified 2026-06-28: `go get github.com/larsartmann/templ-components@v0.4.0` builds and runs from empty project. Post-v0.4.0 types (ButtonHTMLType, utils.Version) need v0.5.0 tag.
 - [ ] Set up goreleaser for tag-based releases
 - [ ] Modularize into Go workspace (10-module `go.work`)
-- [ ] Consider `go:generate stringer` for enums
+- [x] Consider `go:generate stringer` for enums — **Not feasible**: Go's `stringer` tool only supports integer-backed constants. All 26 enums in this library are `type X string` (e.g., `type BadgeType string`), which stringer explicitly rejects ("can't handle non-integer constant type"). The enum values ARE already strings, so a String() method would be redundant (they already stringify naturally via `string(myEnum)`). No action needed.
 - [ ] Consider `Validate() error` method on props structs
 
 ### Documentation
