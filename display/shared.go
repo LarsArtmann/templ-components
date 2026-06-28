@@ -23,6 +23,21 @@ type overlayPanelConfig struct {
 	closeClasses []string // e.g. {"scale-95", "opacity-0"}
 }
 
+// overlayShellProps parameterizes the shared accessibility shell used by
+// Modal and Drawer. It centralizes the outer overlay div, backdrop, and
+// per-instance script so the two components stay consistent.
+type overlayShellProps struct {
+	id            string
+	open          bool
+	title         string
+	ariaLabel     string
+	closeKind     string
+	componentName string
+	outerClass    string
+	nonce         string
+	cfg           overlayPanelConfig
+}
+
 // jsClassArgs converts a slice of CSS class names into comma-separated,
 // single-quoted JS string arguments suitable for classList.add/remove.
 // Example: []string{"scale-100", "opacity-100"} -> "'scale-100', 'opacity-100'"

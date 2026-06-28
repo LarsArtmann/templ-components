@@ -9,39 +9,24 @@ import "github.com/larsartmann/templ-components/utils"
 //	}
 templ Drawer(props DrawerProps) {
 	{{ id := utils.EnsureID("drawer", props.ID) }}
-	{{ labelledBy := "" }}
-	{{
-		if props.Title != "" {
-			labelledBy = id + "-title"
-		}
-	}}
-	<div
-		id={ id }
-		class={ "fixed inset-0 z-50 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0",
-			templ.KV("opacity-100 pointer-events-auto", props.Open),
-			templ.KV("opacity-0 pointer-events-none", !props.Open) }
-		role="dialog"
-		aria-modal="true"
-		aria-hidden={ !props.Open }
-		if labelledBy != "" {
-			aria-labelledby={ labelledBy }
-		}
-		if props.Open {
-			data-tc-open-on-load="true"
-		}
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
-		}
-	>
-		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" data-tc-close="drawer"></div>
+	@overlayShell(overlayShellProps{
+		id:            id,
+		open:          props.Open,
+		title:         props.Title,
+		ariaLabel:     props.AriaLabel,
+		closeKind:     "drawer",
+		componentName: "Drawer",
+		nonce:         props.Nonce,
+		cfg:           drawerPanelConfig(props.Side),
+	}) {
 		<div
 			id={ id + "-panel" }
 			class={ utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0", drawerSizeClass(props.Size), props.Class),
-			templ.KV("left-0", props.Side == DrawerLeft),
-			templ.KV("right-0", props.Side == DrawerRight),
-			templ.KV("translate-x-0", props.Open),
-			templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
-			templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight) }
+				templ.KV("left-0", props.Side == DrawerLeft),
+				templ.KV("right-0", props.Side == DrawerRight),
+				templ.KV("translate-x-0", props.Open),
+				templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
+				templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight) }
 			if !props.Open {
 				inert
 			}
@@ -52,6 +37,5 @@ templ Drawer(props DrawerProps) {
 				{ children... }
 			</div>
 		</div>
-	</div>
-	@overlayScriptComponent(props.Nonce, id, "Drawer", drawerPanelConfig(props.Side))
+	}
 }

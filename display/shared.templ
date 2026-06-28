@@ -1,6 +1,38 @@
 package display
 
-import "github.com/larsartmann/templ-components/icons"
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+templ overlayShell(p overlayShellProps) {
+	{{ labelledBy := "" }}
+	{{ if p.title != "" {
+		labelledBy = p.id + "-title"
+	} }}
+	<div
+		id={ p.id }
+		class={ utils.Class("fixed inset-0 z-50 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", p.outerClass),
+			templ.KV("opacity-100 pointer-events-auto", p.open),
+			templ.KV("opacity-0 pointer-events-none", !p.open) }
+		role="dialog"
+		aria-modal="true"
+		aria-hidden={ !p.open }
+		if labelledBy != "" {
+			aria-labelledby={ labelledBy }
+		}
+		if p.open {
+			data-tc-open-on-load="true"
+		}
+		if p.ariaLabel != "" {
+			aria-label={ p.ariaLabel }
+		}
+	>
+		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" data-tc-close={ p.closeKind }></div>
+		{ children... }
+	</div>
+	@overlayScriptComponent(p.nonce, p.id, p.componentName, p.cfg)
+}
 
 templ dialogHeader(title, titleID, closeKind string) {
 	if title != "" {
