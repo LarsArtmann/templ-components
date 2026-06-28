@@ -18,6 +18,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - _Nothing yet_
 
+## [0.5.0] — 2026-06-28
+
+### Added
+
+- `display.ButtonHTMLType` enum: typed replacement for the raw `string` on `ButtonProps.Type` (button/submit/reset), with `buttonHTMLType()` normalizer that falls back to `"button"` for unknown values
+- `forms.formMethod()` normalizer: validates `FormMethod` and falls back to `GET` (HTML spec default) for unknown values
+- `utils.Version`: single source of truth for the library version string, with `TestVersionMatchesChangelog` drift-guard test
+- GOTH stack ecosystem section in README (cross-links cqrs-htmx, go-cqrs-lite, go-error-family)
+
+### Fixed
+
+- `display.AvatarStatus`: unknown status values no longer render an invisible (colorless) dot — only `online` and `offline` render the status indicator
+- `ButtonProps.Type`: previously a raw `string` emitted unvalidated to the DOM (`type="destroy-everything"` would render); now typed and validated
+- `forms.Form`: invalid HTTP methods no longer render verbatim to the DOM
+- CHANGELOG, FEATURES.md, CONTEXT.md, TODO_LIST.md: all metrics corrected to match actual code (73 components, 101 icons, 51 generated files)
+- AGENTS.md: corrected false claims (generated file count 46→51, SanitizeID usage)
+
+### Changed
+
+- `ButtonProps.Type` field type: `string` → `ButtonHTMLType` (backward-compatible — untyped string constants still assign)
+- `forms.FormProps.Method` rendering: now validated via `formMethod()` instead of raw `string()` cast
+- Demo footer version: hardcoded string → `utils.Version` reference
+- All 47 generated `*_templ.go` files: import grouping normalized by clean `templ generate` run
+
 ## [0.4.0] — 2026-06-27
 
 ### Added
