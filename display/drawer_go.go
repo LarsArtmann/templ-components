@@ -15,12 +15,15 @@ const (
 // DrawerSize defines the width of the drawer panel
 type DrawerSize string
 
+// Drawer size constants. DrawerSize2XL is the largest size (max-w-2xl);
+// DrawerFull is a deprecated alias kept for backward compatibility.
 const (
-	DrawerSizeSM DrawerSize = "sm"
-	DrawerSizeMD DrawerSize = "md"
-	DrawerSizeLG DrawerSize = "lg"
-	DrawerSizeXL DrawerSize = "xl"
-	DrawerFull   DrawerSize = "full"
+	DrawerSizeSM  DrawerSize = "sm"
+	DrawerSizeMD  DrawerSize = "md"
+	DrawerSizeLG  DrawerSize = "lg"
+	DrawerSizeXL  DrawerSize = "xl"
+	DrawerSize2XL DrawerSize = "full" // largest available width (max-w-2xl)
+	DrawerFull    DrawerSize = "full" // Deprecated: use DrawerSize2XL; "full" is a misnomer (capped at max-w-2xl)
 )
 
 // DrawerProps configures a drawer (side panel) component

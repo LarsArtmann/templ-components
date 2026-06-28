@@ -8,13 +8,15 @@ import (
 // ModalSize defines the width of a modal dialog
 type ModalSize string
 
-// Modal size constants
+// Modal size constants. ModalSize2XL is the largest size (max-w-4xl);
+// ModalSizeFull is a deprecated alias kept for backward compatibility.
 const (
 	ModalSizeSM   ModalSize = "sm"
 	ModalSizeMD   ModalSize = "md"
 	ModalSizeLG   ModalSize = "lg"
 	ModalSizeXL   ModalSize = "xl"
-	ModalSizeFull ModalSize = "full"
+	ModalSize2XL  ModalSize = "full" // largest available width (max-w-4xl)
+	ModalSizeFull ModalSize = "full" // Deprecated: use ModalSize2XL; "full" is a misnomer (capped at max-w-4xl)
 )
 
 // ModalProps configures a modal dialog

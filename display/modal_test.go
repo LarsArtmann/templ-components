@@ -107,4 +107,51 @@ func TestModalRender(t *testing.T) {
 		output := utils.Render(t, Modal(ModalProps{Title: "No ID"}))
 		utils.AssertContains(t, output, `id="tc-modal-`)
 	})
+
+	t.Run("no title omits aria-labelledby (no dangling ref)", func(t *testing.T) {
+		t.Parallel()
+		props := ModalProps{
+			BaseProps: utils.BaseProps{ID: "notitle-modal"},
+			Title:     "",
+			Open:      false,
+		}
+		output := utils.Render(t, Modal(props))
+		utils.AssertNotContains(t, output, "aria-labelledby")
+	})
+
+	t.Run("with title emits aria-labelledby", func(t *testing.T) {
+		t.Parallel()
+		props := ModalProps{
+			BaseProps: utils.BaseProps{ID: "titled-modal"},
+			Title:     "Titled",
+			Open:      false,
+		}
+		output := utils.Render(t, Modal(props))
+		utils.AssertContains(t, output, `aria-labelledby="titled-modal-title"`)
+	})
+
+	t.Run("closed overlay has aria-hidden and inert", func(t *testing.T) {
+		t.Parallel()
+		props := ModalProps{
+			BaseProps: utils.BaseProps{ID: "closed-modal"},
+			Title:     "Closed",
+			Open:      false,
+		}
+		output := utils.Render(t, Modal(props))
+		utils.AssertContains(t, output, `aria-hidden="true"`)
+		utils.AssertContains(t, output, " inert")
+	})
+
+	t.Run("open overlay has aria-hidden=false, no inert, open-on-load hook", func(t *testing.T) {
+		t.Parallel()
+		props := ModalProps{
+			BaseProps: utils.BaseProps{ID: "open-modal-a11y"},
+			Title:     "Open",
+			Open:      true,
+		}
+		output := utils.Render(t, Modal(props))
+		utils.AssertContains(t, output, `aria-hidden="false"`)
+		utils.AssertNotContains(t, output, " inert")
+		utils.AssertContains(t, output, `data-tc-open-on-load="true"`)
+	})
 }

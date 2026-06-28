@@ -58,7 +58,7 @@ templ ValidationSummary(props ValidationSummaryProps) {
 							for _, err := range props.Errors {
 								<li>
 									if err.Field != "" {
-										<a href={ "#" + err.Field } class="text-red-700 dark:text-red-400 underline hover:text-red-600 dark:hover:text-red-300">{ err.Message }</a>
+										<a href={ "#" + SanitizeID(err.Field) } class="text-red-700 dark:text-red-400 underline hover:text-red-600 dark:hover:text-red-300">{ err.Message }</a>
 									} else {
 										{ err.Message }
 									}

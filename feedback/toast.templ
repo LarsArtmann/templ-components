@@ -35,12 +35,6 @@ const (
 	ToastDurationLong   = 8000
 )
 
-// toastStyles returns Tailwind classes for each toast type
-func toastStyles(t FeedbackType) (border, bg, text, icon string) {
-	s := feedbackStyle(t)
-	return s.Border, s.BG, s.Text, s.Icon
-}
-
 // toastJSStyles generates the JS color map string from the Go style definitions
 func toastJSStyles() string {
 	var b strings.Builder
@@ -136,13 +130,13 @@ templ ToastContainer(nonce string) {
 //
 //	@feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.ToastSuccess})
 templ Toast(props ToastProps) {
-	{{ border, bg, text, iconColor := toastStyles(props.Type) }}
+	{{ s := feedbackStyle(props.Type) }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0", border, bg, props.Class) }
-		role="alert"
+		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0", s.Border, s.BG, props.Class) }
+		role="status"
 		aria-live="polite"
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
@@ -150,12 +144,12 @@ templ Toast(props ToastProps) {
 		{ props.Attrs... }
 	>
 		<div class="flex items-start gap-3">
-			@icons.Icon(toastIconName(props.Type), utils.Class("h-5 w-5 flex-shrink-0 mt-0.5", iconColor))
+			@icons.Icon(feedbackIcon(props.Type), utils.Class("h-5 w-5 flex-shrink-0 mt-0.5", s.Icon))
 			<div class="flex-1 min-w-0">
 				if props.Title != "" {
-					<div class={ "text-sm font-semibold", text }>{ props.Title }</div>
+					<div class={ "text-sm font-semibold", s.Text }>{ props.Title }</div>
 				}
-				<div class={ "text-sm", text }>{ props.Message }</div>
+				<div class={ "text-sm", s.Text }>{ props.Message }</div>
 			</div>
 			<button
 				data-dismiss="toast"
@@ -168,10 +162,11 @@ templ Toast(props ToastProps) {
 	</div>
 	<script nonce={ props.Nonce }>
 		{{ utils.DismissScript() }}
+		if props.Duration > 0 && props.ID != "" {
+			setTimeout(function() {
+				var toast = document.getElementById('{{ props.ID }}');
+				if (toast) toast.remove();
+			}, {{ fmt.Sprintf("%d", props.Duration) }});
+		}
 	</script>
-}
-
-// toastIconName maps toast types to icon names
-func toastIconName(t FeedbackType) icons.Name {
-	return feedbackIcon(t)
 }

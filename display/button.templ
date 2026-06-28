@@ -23,7 +23,11 @@ templ Button(props ButtonProps) {
 				id={ props.ID }
 			}
 			href={ templ.SafeURL(props.Href) }
-			class={ classes }
+			class={ utils.Class(classes, utils.Ternary(props.Disabled, "pointer-events-none opacity-50", "")) }
+			if props.Disabled {
+				aria-disabled="true"
+				tabindex="-1"
+			}
 			if props.External {
 				target="_blank"
 				rel="noopener noreferrer"

@@ -19,6 +19,7 @@ const (
 //nolint:gochecknoglobals // Package-level lookup table for spinner sizes
 var spinnerSizeLookup = map[string]string{
 	string(SpinnerSM): "h-4 w-4",
+	string(SpinnerMD): "h-6 w-6",
 	string(SpinnerLG): "h-8 w-8",
 }
 
@@ -62,7 +63,11 @@ templ Spinner(props SpinnerProps) {
 		xmlns="http://www.w3.org/2000/svg"
 		fill="none"
 		viewBox="0 0 24 24"
-		aria-hidden="true"
+		if props.AriaLabel == "" {
+			aria-hidden="true"
+		} else {
+			role="img"
+		}
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
@@ -109,13 +114,16 @@ templ LoadingOverlay(props LoadingOverlayProps) {
 				</div>
 				<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{ props.Message }</h3>
 				if props.ShowProgress {
+					{{ clamped := props.Progress
+					if clamped < 0 { clamped = 0 }
+					if clamped > 100 { clamped = 100 } }}
 					<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
 						<div
 							class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
-							style={ fmt.Sprintf("width: %d%%", props.Progress) }
+							style={ fmt.Sprintf("width: %d%%", clamped) }
 						></div>
 					</div>
-					<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", props.Progress) }</p>
+					<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", clamped) }</p>
 				} else {
 					<p class="text-sm text-gray-500 dark:text-gray-400">Please wait...</p>
 				}
@@ -139,44 +147,52 @@ templ InlineLoading(message string) {
 //	@feedback.Skeleton("text")
 templ Skeleton(variant SkeletonVariant) {
 	<div aria-busy="true" role="status" aria-label="Loading" class="contents">
-		switch variant {
-			case SkeletonText:
-				<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-			case SkeletonTextShort:
-				<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-			case SkeletonTitle:
-				<div class="animate-pulse motion-reduce:animate-none h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-			case SkeletonAvatar:
-				<div class="animate-pulse motion-reduce:animate-none h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
-			case SkeletonImage:
-				<div class="animate-pulse motion-reduce:animate-none h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
-			case SkeletonCard:
-				<div class="animate-pulse motion-reduce:animate-none space-y-4">
-					<div class="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
-					<div class="space-y-3">
-						<div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
-						<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-					</div>
-				</div>
-			case SkeletonTableRow:
-				<div class="animate-pulse motion-reduce:animate-none grid grid-cols-4 gap-4 mb-3">
-					for range 4 {
-						<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
-					}
-				</div>
-			default:
-				<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
-		}
+		@skeletonBody(variant)
 	</div>
 }
 
-// SkeletonGroup renders multiple skeleton placeholders
+// skeletonBody renders the visual placeholder without aria annotations, so
+// SkeletonGroup can compose many variants under a single role="status"
+// announcement instead of N+1 redundant "Loading" reads.
+templ skeletonBody(variant SkeletonVariant) {
+	switch variant {
+		case SkeletonText:
+			<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+		case SkeletonTextShort:
+			<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+		case SkeletonTitle:
+			<div class="animate-pulse motion-reduce:animate-none h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+		case SkeletonAvatar:
+			<div class="animate-pulse motion-reduce:animate-none h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+		case SkeletonImage:
+			<div class="animate-pulse motion-reduce:animate-none h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+		case SkeletonCard:
+			<div class="animate-pulse motion-reduce:animate-none space-y-4">
+				<div class="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+				<div class="space-y-3">
+					<div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+				</div>
+			</div>
+		case SkeletonTableRow:
+			<div class="animate-pulse motion-reduce:animate-none grid grid-cols-4 gap-4 mb-3">
+				for range 4 {
+					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+				}
+			</div>
+		default:
+			<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+	}
+}
+
+// SkeletonGroup renders multiple skeleton placeholders under a single
+// role="status" announcement to avoid redundant screen-reader reads.
 //
 //	@feedback.SkeletonGroup([]string{"title", "text", "text", "text"})
 templ SkeletonGroup(variants []SkeletonVariant) {
 	<div class="space-y-3 animate-pulse" aria-busy="true" role="status" aria-label="Loading content">
 		for _, v := range variants {
-			@Skeleton(v)
+			@skeletonBody(v)
 		}
 	</div>
 }

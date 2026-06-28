@@ -78,42 +78,54 @@ func DefaultInputProps() InputProps {
 //	   Required: true,
 //	})
 templ Input(props InputProps) {
-	@FormFieldWrapper(props.ID, props.Label, props.Required, props.Error, props.HelpText) {
-		<div class="relative">
-			<input
-				type={ inputType(props.Type) }
-				name={ props.Name }
-				if props.ID != "" {
-					id={ props.ID }
-				}
-				value={ props.Value }
-				if props.Placeholder != "" {
-					placeholder={ props.Placeholder }
-				}
-				class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
-				if props.Required {
-					required
-					aria-required="true"
-				}
-				if props.Disabled {
-					disabled
-				}
-				if props.ReadOnly {
-					readonly
-				}
-				if props.AutoFocus {
-					autofocus
-				}
-				if props.MaxLength > 0 {
-					maxlength={ fmt.Sprintf("%d", props.MaxLength) }
-				}
-				{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
-				if props.AriaLabel != "" {
-					aria-label={ props.AriaLabel }
-				}
-				{ props.Attrs... }
-			/>
-		</div>
+	if props.Type == InputHidden {
+		<input
+			type="hidden"
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			value={ props.Value }
+			{ props.Attrs... }
+		/>
+	} else {
+		@FormFieldWrapper(props.ID, props.Label, props.Required, props.Error, props.HelpText) {
+			<div class="relative">
+				<input
+					type={ inputType(props.Type) }
+					name={ props.Name }
+					if props.ID != "" {
+						id={ props.ID }
+					}
+					value={ props.Value }
+					if props.Placeholder != "" {
+						placeholder={ props.Placeholder }
+					}
+					class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
+					if props.Required {
+						required
+						aria-required="true"
+					}
+					if props.Disabled {
+						disabled
+					}
+					if props.ReadOnly {
+						readonly
+					}
+					if props.AutoFocus {
+						autofocus
+					}
+					if props.MaxLength > 0 {
+						maxlength={ fmt.Sprintf("%d", props.MaxLength) }
+					}
+					{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+					if props.AriaLabel != "" {
+						aria-label={ props.AriaLabel }
+					}
+					{ props.Attrs... }
+				/>
+			</div>
+		}
 	}
 }
 

@@ -62,6 +62,7 @@ templ FileInput(props FileInputProps) {
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
+			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 			{ props.Attrs... }
 		/>
 	}

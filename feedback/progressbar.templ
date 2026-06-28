@@ -56,9 +56,6 @@ templ ProgressBar(props ProgressBarProps) {
 			id={ props.ID }
 		}
 		class={ utils.Class("w-full", props.Class) }
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
-		}
 		{ props.Attrs... }
 	>
 		if props.ShowLabel || props.Label != "" {
@@ -75,15 +72,21 @@ templ ProgressBar(props ProgressBarProps) {
 					class={ "rounded-full animate-indeterminate-progress", progressHeightClass(props.Size), props.Color }
 					role="progressbar"
 					aria-busy="true"
+					if props.AriaLabel != "" {
+						aria-label={ props.AriaLabel }
+					}
 				></div>
 			} else {
 				<div
-					class={ "rounded-full transition-all duration-300 ease-out", progressHeightClass(props.Size), props.Color }
+					class={ "rounded-full transition-all duration-300 ease-out motion-reduce:transition-none", progressHeightClass(props.Size), props.Color }
 					style={ fmt.Sprintf("width: %.0f%%;", percent) }
 					role="progressbar"
 					aria-valuenow={ fmt.Sprintf("%d", props.Current) }
 					aria-valuemin="0"
 					aria-valuemax={ fmt.Sprintf("%d", props.Total) }
+					if props.AriaLabel != "" {
+						aria-label={ props.AriaLabel }
+					}
 				></div>
 			}
 		</div>
@@ -97,6 +100,7 @@ func progressTrackClass(size ProgressBarSize) string {
 //nolint:gochecknoglobals // Package-level lookup table for progress bar heights
 var progressHeightLookup = map[string]string{
 	string(ProgressBarSizeSM): "h-1.5",
+	string(ProgressBarSizeMD): "h-2.5",
 	string(ProgressBarSizeLG): "h-4",
 }
 

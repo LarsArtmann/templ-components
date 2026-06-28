@@ -50,7 +50,7 @@ templ Textarea(props TextareaProps) {
 			if props.Rows > 0 {
 				rows={ fmt.Sprintf("%d", props.Rows) }
 			} else {
-				rows="3"
+				rows="4"
 			}
 			class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
 			if props.Required {

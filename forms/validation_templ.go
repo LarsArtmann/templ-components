@@ -166,9 +166,9 @@ func ValidationSummary(props ValidationSummaryProps) templ.Component {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var7 templ.SafeURL
-					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs("#" + err.Field)
+					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs("#" + SanitizeID(err.Field))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/validation.templ`, Line: 61, Col: 35}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/validation.templ`, Line: 61, Col: 47}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 					if templ_7745c5c3_Err != nil {
@@ -181,7 +181,7 @@ func ValidationSummary(props ValidationSummaryProps) templ.Component {
 					var templ_7745c5c3_Var8 string
 					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(err.Message)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/validation.templ`, Line: 61, Col: 143}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/validation.templ`, Line: 61, Col: 155}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 					if templ_7745c5c3_Err != nil {

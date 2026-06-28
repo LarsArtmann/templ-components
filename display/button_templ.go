@@ -44,7 +44,7 @@ func Button(props ButtonProps) templ.Component {
 			props.Class,
 		)
 		if props.Href != "" {
-			var templ_7745c5c3_Var2 = []any{utils.Class(classes, utils.Ternary(props.Disabled, "aria-disabled:pointer-events-none aria-disabled:opacity-50", ""))}
+			var templ_7745c5c3_Var2 = []any{utils.Class(classes, utils.Ternary(props.Disabled, "pointer-events-none opacity-50", ""))}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

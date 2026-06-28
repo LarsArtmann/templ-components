@@ -37,8 +37,28 @@ func DefaultComboboxProps() ComboboxProps {
 	return ComboboxProps{}
 }
 
-// comboboxInputClass is the base class for the combobox text input
-const comboboxInputClass = "block w-full rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-base text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 border-0 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 caret-blue-600 dark:caret-blue-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm transition-shadow"
+// comboboxInputClass returns the base class for the combobox text input,
+// adding an error ring when the field is in an invalid state.
+func comboboxInputClass(hasError bool) string {
+	base := "block w-full rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-base text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 border-0 ring-1 ring-inset caret-blue-600 dark:caret-blue-400 focus:ring-2 focus:ring-inset sm:text-sm transition-shadow motion-reduce:transition-none"
+	if hasError {
+		return base + " ring-red-300 focus:ring-red-500 dark:ring-red-700 dark:focus:ring-red-500"
+	}
+	return base + " ring-gray-300 dark:ring-gray-600 focus:ring-blue-600"
+}
+
+// comboboxDisplayLabel resolves the human-readable label to show in the text
+// input. props.Value holds the submission value (the option Value); the
+// matching option's Label is shown for display so the submitted value stays
+// the machine value, not the human text.
+func comboboxDisplayLabel(props ComboboxProps) string {
+	for _, opt := range props.Options {
+		if opt.Value == props.Value {
+			return opt.Label
+		}
+	}
+	return props.Value
+}
 
 // Combobox renders an accessible autocomplete input with a filterable dropdown.
 // As the user types, options are filtered client-side. Clicking an option fills
@@ -76,6 +96,7 @@ func Combobox(props ComboboxProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		id := utils.EnsureID("combobox", props.ID)
+		displayValue := comboboxDisplayLabel(props)
 		templ_7745c5c3_Var2 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -95,7 +116,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 52, Col: 42}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 73, Col: 42}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -105,7 +126,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var4 = []any{utils.Class(comboboxInputClass, props.Class)}
+			var templ_7745c5c3_Var4 = []any{utils.Class(comboboxInputClass(props.Error != ""), props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var4...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -122,7 +143,7 @@ func Combobox(props ComboboxProps) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Placeholder)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 56, Col: 36}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 77, Col: 36}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
@@ -138,9 +159,9 @@ func Combobox(props ComboboxProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var6 string
-			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Value)
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(displayValue)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 58, Col: 23}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 79, Col: 24}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -166,7 +187,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(id + "-listbox")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 62, Col: 35}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 83, Col: 35}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {
@@ -179,7 +200,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 65, Col: 28}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 86, Col: 28}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
@@ -209,7 +230,7 @@ func Combobox(props ComboboxProps) templ.Component {
 				var templ_7745c5c3_Var10 string
 				templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 74, Col: 33}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 95, Col: 33}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 				if templ_7745c5c3_Err != nil {
@@ -219,6 +240,10 @@ func Combobox(props ComboboxProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
+			}
+			templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, ErrorAttrs(id, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(id), "")))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
 			}
 			templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, props.Attrs)
 			if templ_7745c5c3_Err != nil {
@@ -231,7 +256,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 78, Col: 41}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 100, Col: 41}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 			if templ_7745c5c3_Err != nil {
@@ -244,7 +269,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Value)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 78, Col: 63}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 100, Col: 63}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {
@@ -257,7 +282,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 78, Col: 90}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 100, Col: 90}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 			if templ_7745c5c3_Err != nil {
@@ -270,7 +295,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(id + "-listbox")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 80, Col: 24}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 102, Col: 24}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 			if templ_7745c5c3_Err != nil {
@@ -283,7 +308,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 83, Col: 27}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 105, Col: 27}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 			if templ_7745c5c3_Err != nil {
@@ -294,51 +319,64 @@ func Combobox(props ComboboxProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, opt := range props.Options {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<li role=\"option\" tabindex=\"-1\" class=\"relative cursor-pointer select-none py-2 pl-3 pr-9 text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-gray-700 data-[selected]:bg-blue-50 dark:data-[selected]:bg-gray-700\" data-combobox-option=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<li role=\"option\" id=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var16 string
-				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(opt.Value)
+				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(id + "-option-" + opt.Value)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 90, Col: 38}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 110, Col: 38}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" data-combobox-label=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" tabindex=\"-1\" class=\"relative cursor-pointer select-none py-2 pl-3 pr-9 text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-gray-700 data-[selected]:bg-blue-50 dark:data-[selected]:bg-gray-700\" data-combobox-option=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var17 string
-				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.ResolveAttributeValue(opt.Label)
+				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.ResolveAttributeValue(opt.Value)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 91, Col: 37}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 113, Col: 38}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\" data-combobox-label=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var18 string
-				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(opt.Label)
+				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(opt.Label)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 93, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 114, Col: 37}
 				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "</li>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var19 string
+				templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(opt.Label)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 116, Col: 17}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</li>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</ul></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</ul></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -348,20 +386,20 @@ func Combobox(props ComboboxProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<script nonce=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var19 string
-		templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
+		var templ_7745c5c3_Var20 string
+		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 99, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 122, Col: 28}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var20)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\">\n\t\tif (!window.tcComboboxAttached) {\n\t\t\twindow.tcComboboxAttached = true;\n\t\t\tdocument.addEventListener('input', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (!list) return;\n\t\t\t\tvar query = input.value.toLowerCase();\n\t\t\t\tvar visible = 0;\n\t\t\t\tlist.querySelectorAll('[data-combobox-option]').forEach(function(opt) {\n\t\t\t\t\tvar label = opt.getAttribute('data-combobox-label').toLowerCase();\n\t\t\t\t\tvar match = label.includes(query);\n\t\t\t\t\topt.style.display = match ? '' : 'none';\n\t\t\t\t\tif (match) visible++;\n\t\t\t\t});\n\t\t\t\tif (visible > 0) {\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t} else {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar opt = e.target.closest('[data-combobox-option]');\n\t\t\t\tif (opt) {\n\t\t\t\t\tvar list = opt.closest('[data-combobox-list]');\n\t\t\t\t\tif (!list) return;\n\t\t\t\t\tvar id = list.getAttribute('data-combobox-list');\n\t\t\t\t\tvar input = document.querySelector('[data-combobox-input=\"' + id + '\"]');\n\t\t\t\t\tvar hidden = document.querySelector('[data-combobox-value=\"' + id + '\"]');\n\t\t\t\t\tvar label = opt.getAttribute('data-combobox-label');\n\t\t\t\t\tvar value = opt.getAttribute('data-combobox-option');\n\t\t\t\t\tif (input) {\n\t\t\t\t\t\tinput.value = label;\n\t\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t}\n\t\t\t\t\tif (hidden) hidden.value = value;\n\t\t\t\t\tif (list) list.classList.add('hidden');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('focusin', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (list && list.querySelector('[data-combobox-option]')) {\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tvar list = e.target.closest('[data-combobox-list]');\n\t\t\t\tif (!input && !list) {\n\t\t\t\t\tdocument.querySelectorAll('[data-combobox-list]').forEach(function(l) {\n\t\t\t\t\t\tl.classList.add('hidden');\n\t\t\t\t\t});\n\t\t\t\t\tdocument.querySelectorAll('[data-combobox-input]').forEach(function(i) {\n\t\t\t\t\t\ti.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('keydown', function(e) {\n\t\t\t\tif (e.key !== 'Escape') return;\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (list) list.classList.add('hidden');\n\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t});\n\t\t}\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\">\n\t\tif (!window.tcComboboxAttached) {\n\t\t\twindow.tcComboboxAttached = true;\n\t\t\tdocument.addEventListener('input', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (!list) return;\n\t\t\t\tvar query = input.value.toLowerCase();\n\t\t\t\tvar visible = 0;\n\t\t\t\tlist.querySelectorAll('[data-combobox-option]').forEach(function(opt) {\n\t\t\t\t\tvar label = opt.getAttribute('data-combobox-label').toLowerCase();\n\t\t\t\t\tvar match = label.includes(query);\n\t\t\t\t\topt.style.display = match ? '' : 'none';\n\t\t\t\t\tif (match) visible++;\n\t\t\t\t});\n\t\t\t\tif (visible > 0) {\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t} else {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar opt = e.target.closest('[data-combobox-option]');\n\t\t\t\tif (opt) {\n\t\t\t\t\tvar list = opt.closest('[data-combobox-list]');\n\t\t\t\t\tif (!list) return;\n\t\t\t\t\tvar id = list.getAttribute('data-combobox-list');\n\t\t\t\t\tvar input = document.querySelector('[data-combobox-input=\"' + id + '\"]');\n\t\t\t\t\tvar hidden = document.querySelector('[data-combobox-value=\"' + id + '\"]');\n\t\t\t\t\tvar label = opt.getAttribute('data-combobox-label');\n\t\t\t\t\tvar value = opt.getAttribute('data-combobox-option');\n\t\t\t\t\tif (input) {\n\t\t\t\t\t\tinput.value = label;\n\t\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t}\n\t\t\t\t\tif (hidden) hidden.value = value;\n\t\t\t\t\tif (list) list.classList.add('hidden');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('focusin', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (list && list.querySelector('[data-combobox-option]')) {\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tvar list = e.target.closest('[data-combobox-list]');\n\t\t\t\tif (!input && !list) {\n\t\t\t\t\tdocument.querySelectorAll('[data-combobox-list]').forEach(function(l) {\n\t\t\t\t\t\tl.classList.add('hidden');\n\t\t\t\t\t});\n\t\t\t\t\tdocument.querySelectorAll('[data-combobox-input]').forEach(function(i) {\n\t\t\t\t\t\ti.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('keydown', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (!list) return;\n\t\t\t\tvar opts = Array.prototype.slice.call(list.querySelectorAll('[data-combobox-option]')).filter(function(o) {\n\t\t\t\t\treturn o.style.display !== 'none';\n\t\t\t\t});\n\t\t\t\tif (e.key === 'Escape') {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\topts.forEach(function(o) { o.removeAttribute('data-selected'); });\n\t\t\t\t\tinput.removeAttribute('aria-activedescendant');\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tif (opts.length === 0) return;\n\t\t\t\tif (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End' || e.key === 'Enter') {\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t}\n\t\t\t\tvar currentIdx = -1;\n\t\t\t\topts.forEach(function(o, i) {\n\t\t\t\t\tif (o.getAttribute('data-selected') === 'true') currentIdx = i;\n\t\t\t\t});\n\t\t\t\tvar nextIdx = currentIdx;\n\t\t\t\tswitch (e.key) {\n\t\t\t\t\tcase 'ArrowDown': nextIdx = currentIdx < opts.length - 1 ? currentIdx + 1 : 0; break;\n\t\t\t\t\tcase 'ArrowUp':   nextIdx = currentIdx > 0 ? currentIdx - 1 : opts.length - 1; break;\n\t\t\t\t\tcase 'Home':      nextIdx = 0; break;\n\t\t\t\t\tcase 'End':       nextIdx = opts.length - 1; break;\n\t\t\t\t\tcase 'Enter':\n\t\t\t\t\t\tif (currentIdx >= 0) {\n\t\t\t\t\t\t\tvar sel = opts[currentIdx];\n\t\t\t\t\t\t\tinput.value = sel.getAttribute('data-combobox-label');\n\t\t\t\t\t\t\tvar hidden = document.querySelector('[data-combobox-value=\"' + id + '\"]');\n\t\t\t\t\t\t\tif (hidden) hidden.value = sel.getAttribute('data-combobox-option');\n\t\t\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t\t\topts.forEach(function(o) { o.removeAttribute('data-selected'); });\n\t\t\t\t\t\t\tinput.removeAttribute('aria-activedescendant');\n\t\t\t\t\t\t}\n\t\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tif (nextIdx !== currentIdx) {\n\t\t\t\t\topts.forEach(function(o) { o.removeAttribute('data-selected'); });\n\t\t\t\t\tvar sel = opts[nextIdx];\n\t\t\t\t\tsel.setAttribute('data-selected', 'true');\n\t\t\t\t\tinput.setAttribute('aria-activedescendant', sel.getAttribute('id') || '');\n\t\t\t\t\tsel.scrollIntoView({ block: 'nearest' });\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

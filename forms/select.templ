@@ -12,11 +12,22 @@ type SelectOption struct {
 	Selected bool
 }
 
-// normalizeSelectOptions resolves contradictions: Disabled+Selected clears Selected.
+// normalizeSelectOptions resolves contradictions: Disabled+Selected clears
+// Selected, and only the first Selected option is kept (a single-value
+// <select> cannot have multiple pre-selected options — browsers resolve the
+// ambiguity inconsistently).
 func normalizeSelectOptions(opts []SelectOption) []SelectOption {
+	firstSelected := true
 	for i := range opts {
 		if opts[i].Disabled && opts[i].Selected {
 			opts[i].Selected = false
+			continue
+		}
+		if opts[i].Selected {
+			if !firstSelected {
+				opts[i].Selected = false
+			}
+			firstSelected = false
 		}
 	}
 	return opts
