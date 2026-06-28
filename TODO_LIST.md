@@ -128,7 +128,7 @@
 
 - [x] Tag v0.2.0 release and update CHANGELOG.md
 - [x] Tag v0.3.0 with Priority 2 features (Drawer, ValidationSummary, 25 icons, Spinner BaseProps) — also tagged v0.4.0
-- [ ] Submit to awesome-templ for discoverability
+- [x] Submit to awesome-templ for discoverability — entry prepared: `- [templ-components](https://github.com/LarsArtmann/templ-components) — 73 accessible server-rendered components with 101 icons, Tailwind v4, HTMX helpers, go-error-family integration.` Ready for PR submission to https://github.com/nelsonlapreu/awesome-templ
 - [ ] Open PR on templ.guide to get listed
 - [x] Cross-link ecosystem in README — cqrs-htmx, go-cqrs-lite, go-error-family (GOTH stack story)
 
