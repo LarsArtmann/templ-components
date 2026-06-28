@@ -18,7 +18,7 @@
 
 ## 🟡 Breaking Changes (defer to v1.0)
 
-- [ ] Move test helpers to `internal/testutil/` — breaking change for external consumers (source: utils/test_helpers.go)
+- [ ] Move test helpers to `internal/testutil/` — breaking change for external consumers (source: utils/test_helpers.go) — **DEFERRED TO v1.0**: 70 test files + external consumers depend on `utils.Render`, `utils.AssertContains`, etc. Moving now would break every consumer with no functional benefit.
 - [x] Spinner BaseProps conversion — `SpinnerProps` struct with BaseProps, Size, Color fields (source: feedback/loading.templ)
 - [x] SimpleNav BaseProps conversion — `SimpleNav(SimpleNavProps)` with BaseProps embedding (source: navigation/nav.templ)
 - [x] Add BaseProps to StepIndicatorProps (source: feedback/step_indicator.templ)
@@ -108,10 +108,10 @@
 - [x] Add build test for `examples/` in CI
 - [x] Audit `tailwind-merge-go` thread safety — `sync.Mutex` IS required (source: utils/utils.go)
 - [x] Verify `go get` works from clean project — verified 2026-06-28: `go get github.com/larsartmann/templ-components@v0.4.0` builds and runs from empty project. Post-v0.4.0 types (ButtonHTMLType, utils.Version) need v0.5.0 tag.
-- [ ] Set up goreleaser for tag-based releases
+- [x] Set up goreleaser for tag-based releases — **Not applicable**: This is a library, not a binary application. Go library versioning works via Git tags + the module proxy (`go get @v0.4.0`). No binary to release. CI pipeline already validates builds and runs tests on every push.
 - [ ] Modularize into Go workspace (10-module `go.work`)
 - [x] Consider `go:generate stringer` for enums — **Not feasible**: Go's `stringer` tool only supports integer-backed constants. All 26 enums in this library are `type X string` (e.g., `type BadgeType string`), which stringer explicitly rejects ("can't handle non-integer constant type"). The enum values ARE already strings, so a String() method would be redundant (they already stringify naturally via `string(myEnum)`). No action needed.
-- [ ] Consider `Validate() error` method on props structs
+- [ ] Consider `Validate() error` method on props structs — **DEFERRED TO v1.0**: The library's current design philosophy is silent fallback (invalid enum → safe default, never crash). Adding `Validate() error` that returns errors for what currently falls back would change this philosophy. Needs a design decision: should Validate() replace the fallback pattern, or supplement it as an opt-in check? Implementation requires per-component methods (73 components).
 
 ### Documentation
 
@@ -137,4 +137,4 @@
 - [x] Prune old status reports — keep last 2, archive rest
 - [x] Investigate gopls QF1003 suppression for generated `*_templ.go` files — Decision: leave as-is. The lint rule is correct for handwritten code; generated files are excluded via `.golangci.yml`. Adding per-file suppressions would mask real issues in handwritten code.
 - [~] Extract shared Tailwind preset/theme configuration file — PARTIALLY DONE: tailwind.css in tailwind-v4-adoption-guide.md provides the pattern. A standalone preset file is deferred until multiple consumers exist.
-- [ ] Plan v1.0 API freeze scope and timeline
+- [x] Plan v1.0 API freeze scope and timeline — **v1.0 scope**: (1) Move test helpers to `internal/testutil/` (breaking), (2) Add `Validate() error` to all props structs, (3) Freeze all type names and prop field names, (4) Remove deprecated aliases (AlertType, ToastType). **Timeline**: After cqrs-htmx adminui fully adopts templ-components (in progress) and at least one external consumer. Target: after v0.6.0.
