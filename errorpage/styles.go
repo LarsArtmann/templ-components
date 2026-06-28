@@ -240,26 +240,36 @@ func ExtractCauseChain(err error, maxDepth int) []CauseItem {
 	for range maxDepth {
 		unwrapped := errors.Unwrap(current)
 		if unwrapped == nil {
-			if joiner, ok := current.(interface{ Unwrap() []error }); ok {
-				for _, sibling := range joiner.Unwrap() {
-					if len(chain) >= maxDepth {
-						break
-					}
-					item := CauseItem{Message: sibling.Error()} //nolint:exhaustruct // Code set conditionally below
-					if c, ok := sibling.(interface{ ErrorCode() string }); ok {
-						item.Code = c.ErrorCode()
-					}
-					chain = append(chain, item)
-				}
-			}
+			chain = appendJoinSiblings(chain, current, maxDepth)
 			break
 		}
-		item := CauseItem{Message: unwrapped.Error()} //nolint:exhaustruct // Code set conditionally below
-		if c, ok := unwrapped.(interface{ ErrorCode() string }); ok {
-			item.Code = c.ErrorCode()
-		}
-		chain = append(chain, item)
+		chain = append(chain, causeItemFromError(unwrapped))
 		current = unwrapped
 	}
 	return chain
+}
+
+// appendJoinSiblings adds errors.Join siblings (Unwrap() []error) to the chain,
+// respecting maxDepth. No-op if current does not implement Unwrap() []error.
+func appendJoinSiblings(chain []CauseItem, current error, maxDepth int) []CauseItem {
+	joiner, ok := current.(interface{ Unwrap() []error })
+	if !ok {
+		return chain
+	}
+	for _, sibling := range joiner.Unwrap() {
+		if len(chain) >= maxDepth {
+			break
+		}
+		chain = append(chain, causeItemFromError(sibling))
+	}
+	return chain
+}
+
+// causeItemFromError builds a CauseItem from an error, extracting ErrorCode if available.
+func causeItemFromError(err error) CauseItem {
+	item := CauseItem{Message: err.Error()} //nolint:exhaustruct // Code set conditionally below
+	if c, ok := err.(interface{ ErrorCode() string }); ok {
+		item.Code = c.ErrorCode()
+	}
+	return item
 }

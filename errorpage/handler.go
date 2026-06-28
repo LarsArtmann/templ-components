@@ -90,7 +90,7 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 			return
 		}
 
-		buf, renderErr := renderToBuffer(r.Context(), ErrorPage(props))
+		buf, renderErr := renderToBuffer(r.Context(), ErrorPage(props)) //nolint:contextcheck // intentional passthrough
 		if renderErr != nil {
 			slog.Error("error page render failed", "error", renderErr, "original_error", err)
 			writeFallbackError(w, statusCode)
@@ -120,7 +120,7 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 	if nonce != "" {
 		props.Nonce = nonce
 	}
-	buf, renderErr := renderToBuffer(r.Context(), ErrorPage(props))
+	buf, renderErr := renderToBuffer(r.Context(), ErrorPage(props)) //nolint:contextcheck // intentional passthrough
 	if renderErr != nil {
 		slog.Error("error page render failed", "error", renderErr, "status_code", statusCode)
 		writeFallbackError(w, statusCode)
