@@ -69,7 +69,7 @@ func comboboxDisplayLabel(props ComboboxProps) string {
 templ Combobox(props ComboboxProps) {
 	{{ id := utils.EnsureID("combobox", props.ID) }}
 	{{ displayValue := comboboxDisplayLabel(props) }}
-	@FormFieldWrapper(id, props.Label, props.Required, props.Error, props.HelpText) {
+	@FormFieldWrapper(FormFieldProps{ID: id, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
 		<div class="relative" data-combobox={ id }>
 			<input
 				type="text"

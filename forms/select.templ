@@ -61,7 +61,7 @@ func DefaultSelectProps() SelectProps {
 //	   },
 //	})
 templ Select(props SelectProps) {
-	@FormFieldWrapper(props.ID, props.Label, props.Required, props.Error, props.HelpText) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
 		<select
 			name={ props.Name }
 			if props.ID != "" {

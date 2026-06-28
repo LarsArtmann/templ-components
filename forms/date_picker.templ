@@ -33,7 +33,7 @@ func DefaultDatePickerProps() DatePickerProps {
 //	   Required: true,
 //	})
 templ DatePicker(props DatePickerProps) {
-	@FormFieldWrapper(props.ID, props.Label, props.Required, props.Error, props.HelpText) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
 		<input
 			type="date"
 			name={ props.Name }

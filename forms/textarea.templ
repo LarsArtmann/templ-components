@@ -38,7 +38,7 @@ func DefaultTextareaProps() TextareaProps {
 //	   Placeholder: "Tell us about yourself...",
 //	})
 templ Textarea(props TextareaProps) {
-	@FormFieldWrapper(props.ID, props.Label, props.Required, props.Error, props.HelpText) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
 		<textarea
 			name={ props.Name }
 			if props.ID != "" {

@@ -36,22 +36,32 @@ templ FieldError(fieldID, message string) {
 	>{ message }</p>
 }
 
+// FormFieldProps configures the standard form field wrapper structure.
+// Used by FormFieldWrapper to DRY up all form control components.
+type FormFieldProps struct {
+	ID       string
+	Label    string
+	Required bool
+	Error    string
+	HelpText string
+}
+
 // FormFieldWrapper renders the standard form field structure:
 // optional Label, children (input/select/textarea), optional Error, optional HelpText.
 // Use this to DRY up all form control components.
 //
-//	@forms.FormFieldWrapper("email", "Email", true, "Invalid", "Use work email") {
+//	@forms.FormFieldWrapper(forms.FormFieldProps{ID: "email", Label: "Email", Required: true, Error: "Invalid", HelpText: "Use work email"}) {
 //	   <input type="email" name="email" />
 //	}
-templ FormFieldWrapper(id, label string, required bool, errMsg, helpMsg string) {
-	if label != "" {
-		@Label(id, label, required)
+templ FormFieldWrapper(props FormFieldProps) {
+	if props.Label != "" {
+		@Label(props.ID, props.Label, props.Required)
 	}
 	{ children... }
-	if errMsg != "" {
-		@FieldError(id, errMsg)
+	if props.Error != "" {
+		@FieldError(props.ID, props.Error)
 	}
-	if helpMsg != "" {
-		@helpText(id, helpMsg)
+	if props.HelpText != "" {
+		@helpText(props.ID, props.HelpText)
 	}
 }

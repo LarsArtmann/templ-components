@@ -348,7 +348,7 @@ func TestInputGroupWithBothAddons(t *testing.T) {
 
 func TestFormFieldWrapperEmptyLabel(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, FormFieldWrapper("", "", false, "", ""))
+	output := utils.Render(t, FormFieldWrapper(FormFieldProps{}))
 	if output != "" {
 		t.Errorf("expected empty output, got %q", output)
 	}
@@ -356,25 +356,28 @@ func TestFormFieldWrapperEmptyLabel(t *testing.T) {
 
 func TestFormFieldWrapperNoErrorNoHelp(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, FormFieldWrapper("name", "Name", false, "", ""))
+	output := utils.Render(t, FormFieldWrapper(FormFieldProps{ID: "name", Label: "Name"}))
 	utils.AssertContains(t, output, "Name")
 }
 
 func TestFormFieldWrapperWithError(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, FormFieldWrapper("email", "Email", false, "Required", ""))
+	output := utils.Render(t, FormFieldWrapper(FormFieldProps{ID: "email", Label: "Email", Error: "Required"}))
 	utils.AssertContains(t, output, "Required")
 }
 
 func TestFormFieldWrapperWithHelpText(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, FormFieldWrapper("email", "Email", false, "", "Enter your email"))
+	output := utils.Render(
+		t,
+		FormFieldWrapper(FormFieldProps{ID: "email", Label: "Email", HelpText: "Enter your email"}),
+	)
 	utils.AssertContains(t, output, "Enter your email")
 }
 
 func TestFormFieldWrapperRequired(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, FormFieldWrapper("name", "Name", true, "", ""))
+	output := utils.Render(t, FormFieldWrapper(FormFieldProps{ID: "name", Label: "Name", Required: true}))
 	utils.AssertContains(t, output, "Name")
 }
 

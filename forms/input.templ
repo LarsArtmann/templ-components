@@ -89,7 +89,7 @@ templ Input(props InputProps) {
 			{ props.Attrs... }
 		/>
 	} else {
-		@FormFieldWrapper(props.ID, props.Label, props.Required, props.Error, props.HelpText) {
+		@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
 			<div class="relative">
 				<input
 					type={ inputType(props.Type) }

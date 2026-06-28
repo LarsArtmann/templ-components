@@ -212,14 +212,24 @@ func FieldError(fieldID, message string) templ.Component {
 	})
 }
 
+// FormFieldProps configures the standard form field wrapper structure.
+// Used by FormFieldWrapper to DRY up all form control components.
+type FormFieldProps struct {
+	ID       string
+	Label    string
+	Required bool
+	Error    string
+	HelpText string
+}
+
 // FormFieldWrapper renders the standard form field structure:
 // optional Label, children (input/select/textarea), optional Error, optional HelpText.
 // Use this to DRY up all form control components.
 //
-//	@forms.FormFieldWrapper("email", "Email", true, "Invalid", "Use work email") {
+//	@forms.FormFieldWrapper(forms.FormFieldProps{ID: "email", Label: "Email", Required: true, Error: "Invalid", HelpText: "Use work email"}) {
 //	   <input type="email" name="email" />
 //	}
-func FormFieldWrapper(id, label string, required bool, errMsg, helpMsg string) templ.Component {
+func FormFieldWrapper(props FormFieldProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -240,8 +250,8 @@ func FormFieldWrapper(id, label string, required bool, errMsg, helpMsg string) t
 			templ_7745c5c3_Var10 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		if label != "" {
-			templ_7745c5c3_Err = Label(id, label, required).Render(ctx, templ_7745c5c3_Buffer)
+		if props.Label != "" {
+			templ_7745c5c3_Err = Label(props.ID, props.Label, props.Required).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -250,14 +260,14 @@ func FormFieldWrapper(id, label string, required bool, errMsg, helpMsg string) t
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if errMsg != "" {
-			templ_7745c5c3_Err = FieldError(id, errMsg).Render(ctx, templ_7745c5c3_Buffer)
+		if props.Error != "" {
+			templ_7745c5c3_Err = FieldError(props.ID, props.Error).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		if helpMsg != "" {
-			templ_7745c5c3_Err = helpText(id, helpMsg).Render(ctx, templ_7745c5c3_Buffer)
+		if props.HelpText != "" {
+			templ_7745c5c3_Err = helpText(props.ID, props.HelpText).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
