@@ -132,7 +132,7 @@ var specialIcons = map[Name]bool{
 //nolint:gochecknoinits // Validates icon path data integrity at process start
 func init() {
 	for _, d := range iconPathData {
-		for _, p := range strings.Split(d, "|") {
+		for p := range strings.SplitSeq(d, "|") {
 			if p == "" {
 				panic("icons: iconPathData contains an empty path segment — check for stray | separator")
 			}

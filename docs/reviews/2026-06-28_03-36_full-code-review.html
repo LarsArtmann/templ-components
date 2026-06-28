@@ -1,0 +1,1931 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>templ-components — Code Review</title>
+    <style>
+      /* =========================================================================
+         BAUHAUS DARK — Dashboard template
+         Design language: form follows function. Primary colors on graphite.
+         Zero external dependencies: system fonts, no CDN, no build step.
+         Token architecture: see references/bauhaus-tokens.md
+         ========================================================================= */
+
+      :root {
+        /* --- Primitive palette (Bauhaus Dark) --- */
+        --color-graphite: #0e0e10;
+        --color-graphite-2: #18181d;
+        --color-graphite-3: #16161a;
+        --color-bone: #f4f4f0;
+        --color-red: #ff6b6b;
+        --color-blue: #6eb5ff;
+        --color-yellow: #f4d35e;
+        --color-amber: #ffb347;
+        --color-hairline: rgba(244, 244, 240, 0.12);
+        --color-hairline-strong: rgba(244, 244, 240, 0.25);
+
+        /* --- Semantic layer (shared vocabulary with editorial template) --- */
+        --surface: var(--color-graphite);
+        --surface-raised: var(--color-graphite-2);
+        --surface-sunken: var(--color-graphite-3);
+        --text: var(--color-bone);
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: var(--color-hairline);
+        --border-strong: var(--color-hairline-strong);
+        --accent: var(--color-amber);
+        --problem: var(--color-red);
+        --solution: var(--color-blue);
+        --warning: var(--color-yellow);
+
+        /* --- Backward-compatible aliases (do not break consumer skills) --- */
+        --bg: var(--surface);
+        --bg-elevated: var(--surface-raised);
+        --bg-sunken: var(--surface-sunken);
+        --bg-card: var(--surface-raised);
+        --bg-code: var(--surface-sunken);
+        --ink: var(--text);
+        --ink-secondary: var(--text-muted);
+        --ink-muted: var(--text-faint);
+        --rose: var(--problem);
+        --rose-glow: color-mix(in srgb, var(--problem) 15%, transparent);
+        --emerald: var(--solution);
+        --emerald-glow: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber-glow: color-mix(in srgb, var(--warning) 15%, transparent);
+        --coral: var(--problem);
+        --coral-light: color-mix(in srgb, var(--problem) 15%, transparent);
+        --teal: var(--solution);
+        --teal-light: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber-light: color-mix(in srgb, var(--warning) 20%, transparent);
+
+        /* --- Shape --- */
+        --radius: 0px; /* Bauhaus default: sharp corners */
+        --radius-sm: 0px;
+
+        /* --- Type stacks (system only — zero external fonts) --- */
+        --font-heading:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        --font-body:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif;
+        --font-mono:
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
+          monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      /* Sticky-header offset for anchor jumps */
+      section[id],
+      [id] {
+        scroll-margin-top: 60px;
+      }
+
+      body {
+        background: var(--surface);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 15px;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* --- Accessibility: keyboard focus --- */
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      a:focus-visible {
+        outline-offset: -1px;
+      }
+
+      /* --- Full-bleed top bar --- */
+      .top-bar {
+        background: var(--text);
+        color: var(--surface);
+        padding: 0.6rem 2rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* --- Layout: optional sticky sidebar TOC --- */
+      .layout {
+        display: flex;
+        gap: 2.5rem;
+        padding: 2rem;
+      }
+      .sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
+        height: calc(100vh - 2rem);
+        overflow-y: auto;
+        display: none;
+      }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .sidebar .label {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .sidebar a {
+        font-size: 0.85rem;
+        color: var(--text-muted);
+        text-decoration: none;
+        padding: 0.45rem 0.75rem;
+        border-left: 2px solid transparent;
+        transition: all 0.15s ease;
+        line-height: 1.4;
+        font-weight: 500;
+      }
+      .sidebar a:hover,
+      .sidebar a.active {
+        color: var(--accent);
+        border-left-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+      }
+      .main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* --- Headings --- */
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-heading);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+      }
+      h1 {
+        font-size: clamp(1.8rem, 4vw, 2.6rem);
+        line-height: 1.1;
+        margin: 0 0 0.6rem;
+      }
+      h2 {
+        font-size: 1.4rem;
+        margin: 2.5rem 0 1rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--border-strong);
+        display: flex;
+        align-items: baseline;
+        gap: 0.6rem;
+      }
+      h2 .num {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.06em;
+      }
+      h3 {
+        font-size: 1.1rem;
+        margin: 0 0 0.4rem;
+        font-weight: 700;
+      }
+      h4 {
+        font-size: 0.98rem;
+        margin: 0 0 0.3rem;
+        font-weight: 700;
+      }
+      p {
+        margin: 0 0 1rem;
+      }
+
+      /* --- Hero --- */
+      .hero {
+        padding: 1.5rem 0 1.5rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid var(--border-strong);
+      }
+      .hero-badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--surface);
+        background: var(--accent);
+        padding: 0.3rem 0.7rem;
+        margin-bottom: 0.9rem;
+      }
+      .hero-subtitle {
+        font-size: 1.05rem;
+        color: var(--text-muted);
+        max-width: 70ch;
+        margin: 0;
+      }
+
+      /* Bauhaus signature: geometric shape cluster (optional) */
+      .hero-shapes {
+        position: relative;
+        height: 80px;
+        margin-bottom: 1rem;
+      }
+      .hero-shapes .circle {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 56px;
+        height: 56px;
+        background: var(--problem);
+        border-radius: 50%;
+      }
+      .hero-shapes .square {
+        position: absolute;
+        top: 24px;
+        left: 72px;
+        width: 48px;
+        height: 48px;
+        background: var(--solution);
+      }
+      .hero-shapes .tri {
+        position: absolute;
+        top: 8px;
+        left: 140px;
+        width: 0;
+        height: 0;
+        border-left: 28px solid transparent;
+        border-right: 28px solid transparent;
+        border-bottom: 48px solid var(--warning);
+      }
+
+      /* --- General cards --- */
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .card-problem {
+        border-left-color: var(--problem);
+        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+      }
+      .card-solution {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+      }
+      .card-warning {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+      }
+
+      /* --- Issue cards --- */
+      .issue {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1.3rem;
+        margin-bottom: 1rem;
+        border-left: 4px solid var(--border-strong);
+      }
+      .issue-critical {
+        border-left-color: var(--problem);
+        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+      }
+      .issue-important {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+      }
+      .issue-nice {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+      }
+      .issue h3 {
+        margin-bottom: 0.3rem;
+      }
+      .issue .where {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--text-faint);
+        margin: 0.2rem 0 0.6rem;
+      }
+      .issue p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* --- Severity badges (used inside issue cards) --- */
+      .severity {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        margin-bottom: 0.6rem;
+        color: var(--surface);
+      }
+      .severity-critical {
+        background: var(--problem);
+      }
+      .severity-important {
+        background: var(--warning);
+      }
+      .severity-nice {
+        background: var(--solution);
+      }
+
+      /* --- Inline badges (used in tables) --- */
+      .badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.18rem 0.5rem;
+        border: 1px solid var(--border-strong);
+        color: var(--text-muted);
+      }
+      .badge-critical {
+        color: var(--problem);
+        border-color: var(--problem);
+      }
+      .badge-high {
+        color: var(--warning);
+        border-color: var(--warning);
+      }
+      .badge-medium {
+        color: var(--accent);
+        border-color: var(--accent);
+      }
+      .badge-low {
+        color: var(--text-muted);
+      }
+      .badge-fixed {
+        color: var(--solution);
+        border-color: var(--solution);
+      }
+
+      /* --- Callouts (used inside issues or standalone) --- */
+      .callout {
+        margin: 0.8rem 0 0;
+        padding: 0.7rem 0.9rem;
+        border-left: 3px solid var(--border-strong);
+        background: color-mix(in srgb, var(--text) 5%, transparent);
+        font-size: 0.9rem;
+      }
+      .callout strong {
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
+      .callout-solution {
+        border-left-color: var(--solution);
+        background: color-mix(in srgb, var(--solution) 10%, transparent);
+      }
+      .callout-warning {
+        border-left-color: var(--warning);
+        background: color-mix(in srgb, var(--warning) 10%, transparent);
+      }
+
+      /* --- Stat cards / scorecards (aliased vocabulary) --- */
+      .stat-grid,
+      .scorecard {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 0.75rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .stat-card,
+      .score-card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        padding: 1.1rem 1rem;
+        position: relative;
+      }
+      .stat-card::before,
+      .score-card::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 2px;
+        background: var(--border-strong);
+      }
+      .stat-bad,
+      .score-bad {
+        /* default top bar already set */
+      }
+      .stat-bad::before,
+      .score-bad::before {
+        background: var(--problem);
+      }
+      .stat-good::before,
+      .score-good::before {
+        background: var(--solution);
+      }
+      .stat-warn::before,
+      .score-warn::before {
+        background: var(--warning);
+      }
+      .stat-value,
+      .score {
+        font-family: var(--font-heading);
+        font-size: 2rem;
+        font-weight: 800;
+        line-height: 1;
+        letter-spacing: -0.03em;
+        color: var(--text);
+      }
+      .stat-bad .stat-value,
+      .score-bad .score {
+        color: var(--problem);
+      }
+      .stat-good .stat-value,
+      .score-good .score {
+        color: var(--solution);
+      }
+      .stat-warn .stat-value,
+      .score-warn .score {
+        color: var(--warning);
+      }
+      .stat-label,
+      .score-card .label {
+        font-family: var(--font-mono);
+        font-size: 0.65rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        color: var(--text-faint);
+        margin-top: 0.5rem;
+      }
+
+      /* --- Strengths list --- */
+      .strengths {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .strength {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.8rem;
+        padding: 0.7rem 0;
+        border-bottom: 1px solid var(--border);
+      }
+      .strength .check {
+        font-family: var(--font-mono);
+        font-weight: 700;
+        color: var(--solution);
+        font-size: 1.1rem;
+        line-height: 1.4;
+      }
+      .strength .text strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+      .strength .text span {
+        color: var(--text-muted);
+        font-size: 0.9rem;
+      }
+
+      /* --- Tables --- */
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.9rem;
+      }
+      th {
+        text-align: left;
+        padding: 0.6rem 0.9rem;
+        background: var(--surface-raised);
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-bottom: 1px solid var(--border-strong);
+      }
+      td {
+        padding: 0.6rem 0.9rem;
+        border-bottom: 1px solid var(--border);
+      }
+      tr:hover td {
+        background: var(--surface-raised);
+      }
+
+      /* --- Before/After comparison --- */
+      .compare-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin: 1rem 0 0.5rem;
+      }
+      .compare-before,
+      .compare-after {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.4rem 0.7rem;
+        color: var(--surface);
+      }
+      .compare-before {
+        background: var(--problem);
+      }
+      .compare-after {
+        background: var(--solution);
+      }
+      .compare-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .compare-row pre {
+        margin: 0;
+      }
+
+      /* --- Code blocks + syntax highlighting --- */
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.65;
+        overflow-x: auto;
+      }
+      code {
+        font-family: var(--font-mono);
+      }
+      p code,
+      li code,
+      td code {
+        font-size: 0.88em;
+        background: var(--surface-sunken);
+        padding: 0.1rem 0.35rem;
+      }
+      .tok-keyword {
+        color: var(--accent);
+      } /* func, type, struct, if, return */
+      .tok-type {
+        color: var(--warning);
+      } /* int, string, bool, error */
+      .tok-string {
+        color: var(--solution);
+      } /* "quoted strings" */
+      .tok-comment {
+        color: var(--text-faint);
+        font-style: italic;
+      }
+      .tok-func {
+        color: #74a9ff;
+      } /* function names */
+      .tok-number {
+        color: var(--accent);
+      } /* 42, 3.14 */
+      .tok-generic {
+        color: var(--problem);
+      } /* T, ID in generics */
+      .tok-builtin {
+        color: #4dd9ff;
+      } /* make, len, append */
+      .tok-punct {
+        color: var(--text-muted);
+      } /* { } ( ) ; = : */
+      .tok-attr {
+        color: var(--accent);
+      } /* Nix attribute names */
+
+      /* --- Dependency tree / ASCII diagrams --- */
+      .dep-tree {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.7;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .dep-tree .root {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .dep-tree .ok {
+        color: var(--solution);
+      }
+      .dep-tree .unwanted {
+        color: var(--problem);
+      }
+
+      /* --- Inline node-and-arrow diagrams --- */
+      .diagram {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+      }
+      .node {
+        display: inline-block;
+        padding: 0.35rem 0.7rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 600;
+        background: var(--surface-sunken);
+        border: 1px solid var(--border-strong);
+      }
+      .node-core {
+        background: var(--accent);
+        color: var(--surface);
+        border-color: var(--accent);
+      }
+      .node-problem {
+        background: var(--problem);
+        color: var(--surface);
+        border-color: var(--problem);
+      }
+      .node-good {
+        background: var(--solution);
+        color: var(--surface);
+        border-color: var(--solution);
+      }
+      .arrow {
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Grids (responsive) --- */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      /* --- Inline TOC (alternative to sidebar) --- */
+      .toc {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        padding: 1rem 1.3rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .toc h3 {
+        margin-bottom: 0.5rem;
+      }
+      .toc ul {
+        list-style: none;
+        padding: 0;
+      }
+      .toc li {
+        margin: 0.25rem 0;
+      }
+      .toc a {
+        color: var(--text-muted);
+        text-decoration: none;
+        font-size: 0.9rem;
+      }
+      .toc a:hover {
+        color: var(--accent);
+      }
+
+      /* --- Migration / numbered steps --- */
+      .migration-step {
+        display: grid;
+        grid-template-columns: 48px 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+        padding: 1rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+      }
+      .migration-num {
+        font-family: var(--font-mono);
+        font-weight: 800;
+        font-size: 1.5rem;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .migration-content h4 {
+        margin-bottom: 0.2rem;
+      }
+      .migration-content p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      /* --- Footer --- */
+      .footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--border);
+        font-size: 0.8rem;
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Responsive --- */
+      @media (min-width: 1024px) {
+        .sidebar {
+          display: block;
+        }
+      }
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+          padding: 1rem;
+        }
+        .top-bar {
+          padding: 0.6rem 1rem;
+          flex-wrap: wrap;
+          gap: 0.3rem;
+        }
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .compare-header,
+        .compare-row {
+          grid-template-columns: 1fr;
+        }
+        .stat-grid,
+        .scorecard {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .migration-step {
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <span>CODE REVIEW</span>
+      <span>2026-06-28_03-36</span>
+      <span>templ-components · full-code-review</span>
+    </div>
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#strengths">Strengths</a>
+          <a href="#method">Method</a>
+          <a href="#critical">Critical</a>
+          <a href="#high">High</a>
+          <a href="#medium">Medium</a>
+          <a href="#low">Low</a>
+          <a href="#branching">branching-flow</a>
+        </nav>
+      </aside>
+      <main class="main">
+        <div class="hero">
+          <div class="hero-shapes">
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="hero-badge">Full Code Review · every package</div>
+          <h1>templ-components Code Review</h1>
+          <p class="hero-subtitle">
+            Per-package Senior-Architect review of all source + tests, cross-referenced with
+            branching-flow static analysis.
+          </p>
+        </div>
+        <h2 id="summary"><span class="num">00</span>Summary</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">123</div>
+            <div class="stat-label">Findings</div>
+          </div>
+          <div class="stat-card stat-bad">
+            <div class="stat-value">8</div>
+            <div class="stat-label">Critical</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">31</div>
+            <div class="stat-label">High</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">36</div>
+            <div class="stat-label">Medium</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">48</div>
+            <div class="stat-label">Low</div>
+          </div>
+        </div>
+        <div class="callout callout-warning">
+          <strong>Honest verdict</strong> The library is well-built — green build, green tests, zero
+          lint issues, no dupes/split-brains/bool-blindness. But the review surfaced real a11y bugs
+          (modal/drawer focus + aria, spinner/progressbar announcements, combobox field linking), a
+          security regression (MobileNavLink external), and correctness hazards (HTMX retry counter,
+          empty-nonce CSP, errorpage 503 retry-storm). Full remediation plan in
+          <code>docs/planning/</code>.
+        </div>
+        <h2 id="strengths"><span class="num">01</span>Strengths to preserve</h2>
+        <div class="strengths">
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Baseline is green</strong
+              ><span
+                >Build passes, all packages test green, golangci-lint reports 0 issues,
+                branching-flow scores 97.5/100 error quality.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>No structural rot</strong
+              ><span
+                >Zero duplicate types, zero split-brain interfaces, zero bool-blindness, correct
+                context propagation, no naked returns.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Consistent type-safety conventions</strong
+              ><span
+                >Typed string enums everywhere, map/struct lookups over switches, enum validation
+                with graceful fallback, single runtime panic (intentional integrity check).</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Solid a11y foundations</strong
+              ><span
+                >motion-reduce on transitions/animations, AriaLabel propagation to all 25 root
+                elements, CSP nonces on inline scripts, theme script is XSS-safe.</span
+              >
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Good composition</strong
+              ><span
+                >utils ← all, no circular imports, htmx decoupled from feedback, errorpage
+                integrates go-error-family cleanly.</span
+              >
+            </div>
+          </div>
+        </div>
+        <h2 id="method"><span class="num">02</span>Method</h2>
+        <div class="card">
+          <p>
+            8 parallel Sr-Architect sub-reviews visited every <code>.go</code>/<code>.templ</code>
+            source file across display, forms, navigation, feedback, errorpage, layout, icons, htmx,
+            utils, internal. Findings were cross-checked against
+            <code>branching-flow all .</code> (12 linters) and the project's own AGENTS.md
+            conventions. Each finding carries severity, file:line, concrete fix, effort, and impact
+            — mapped 1:1 to tasks in the companion plan.
+          </p>
+        </div>
+        <h2 id="critical"><span class="num">03</span>Critical findings</h2>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Blocking</span>
+          <h3>
+            P-002 · MobileNavLink: add External target=_blank + rel=noopener (security regression vs
+            NavLink)
+          </h3>
+          <div class="where">navigation/nav_link.templ:64 · impact L · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Blocking</span>
+          <h3>
+            P-001 · Make Modal/Drawer aria-labelledby conditional on Title (fallback AriaLabel) —
+            currently dangles when title empty
+          </h3>
+          <div class="where">display/modal_templ.go:21 · impact L · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Blocking</span>
+          <h3>
+            P-006 · Combobox text input: add ErrorAttrs (aria-invalid/aria-describedby) — errors
+            invisible to AT
+          </h3>
+          <div class="where">forms/combobox.templ:53 · impact L · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Blocking</span>
+          <h3>
+            P-007 · Combobox: separate display value from submission value (Value currently doubles
+            as Label)
+          </h3>
+          <div class="where">forms/combobox.templ:58 · impact L · effort S · type-safety</div>
+        </div>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Blocking</span>
+          <h3>
+            P-003 · Spinner: emit aria-hidden=true ONLY when no AriaLabel (current contradicts
+            aria-label)
+          </h3>
+          <div class="where">feedback/loading.templ:65 · impact M · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Blocking</span>
+          <h3>
+            P-004 · ProgressBar: move aria-label + aria-value* onto the role=progressbar element
+            (currently nameless)
+          </h3>
+          <div class="where">feedback/progressbar.templ:59 · impact M · effort S · a11y</div>
+        </div>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Blocking</span>
+          <h3>
+            P-005 · LoadingOverlay: clamp Progress to [0,100] before width:% (negative/&gt;100 =
+            invalid CSS)
+          </h3>
+          <div class="where">feedback/loading.templ:115 · impact S · effort XS · edge-case</div>
+        </div>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Blocking</span>
+          <h3>
+            P-008 · Toast Duration: emit per-toast setTimeout or document as tcShowToast-only (dead
+            prop = split-brain)
+          </h3>
+          <div class="where">feedback/toast.templ:28 · impact S · effort S · architecture</div>
+        </div>
+        <h2 id="high"><span class="num">04</span>High findings</h2>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-009 · Modal/Drawer: add aria-hidden + inert to closed overlays (phantom dialog in a11y
+            tree)
+          </h3>
+          <div class="where">display/modal_templ.go:14 · impact L · effort S · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-010 · Modal/Drawer SSR-open: call tcOpen on load when props.Open (focus never moves,
+            restore broken)
+          </h3>
+          <div class="where">display/shared.go:100 · impact L · effort S · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-014 · Combobox keyboard nav: ArrowUp/Down, Enter, Home/End + aria-activedescendant
+            (WAI-ARIA)
+          </h3>
+          <div class="where">forms/combobox.templ:99 · impact L · effort M · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-012 · FileInput: add ErrorAttrs (errors/help text not linked via aria-describedby)
+          </h3>
+          <div class="where">forms/file_input.templ:42 · impact M · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-017 · Navigation: add motion-reduce overrides to all transition-colors (violates lib
+            convention)
+          </h3>
+          <div class="where">navigation/*.templ · impact M · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-018 · Toast: use role=status for polite toasts (role=alert + aria-live=polite is
+            contradictory)
+          </h3>
+          <div class="where">feedback/toast.templ:145 · impact M · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-011 · Add tests: no-title omits aria-labelledby; closed overlay has aria-hidden;
+            SSR-open focus
+          </h3>
+          <div class="where">display/*_test.go · impact M · effort S · test-gap</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-013 · InputHidden: render bare &lt;input type=hidden&gt; without FormFieldWrapper
+            (label/error wrong)
+          </h3>
+          <div class="where">forms/input.templ:80 · impact M · effort S · edge-case</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-015 · Select: enforce single Selected option (multiple is invalid state,
+            browser-inconsistent)
+          </h3>
+          <div class="where">forms/select.templ:16 · impact M · effort S · type-safety</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-016 · MobileMenu: derive unique ID via EnsureID (hardcoded tc-mobile-menu collides w/
+            2 Navs)
+          </h3>
+          <div class="where">navigation/mobile_menu.templ:14 · impact M · effort S · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-019 · SkeletonGroup: extract un-annotated internal skeleton; single role=status (N+1
+            announcements)
+          </h3>
+          <div class="where">feedback/loading.templ:141 · impact S · effort S · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-020 · afterRequest: clear data-tc-retry on success (stale counter skips future
+            retries)
+          </h3>
+          <div class="where">htmx/error_handling.templ:155 · impact L · effort S · edge-case</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-022 · Empty Nonce: omit nonce attr when empty (strict CSP silently disables whole
+            script)
+          </h3>
+          <div class="where">htmx/error_handling.templ:45 · impact L · effort S · security</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-029 · Alias the 4 duplicate icon pairs (Menu/Bars3, Refresh/ArrowPath,
+            Location/MapPin, ThumbUp/HandThumbUp)
+          </h3>
+          <div class="where">icons/icon_paths.go:41 · impact L · effort S · duplication</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-026 · Skip-link target: add tabindex=-1 to &lt;main id=main-content&gt; (focus doesn't
+            move)
+          </h3>
+          <div class="where">layout/base.templ:104 · impact M · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-021 · responseError: guard xhr null before xhr.status (TypeError on missing xhr)
+          </h3>
+          <div class="where">htmx/error_handling.templ:141 · impact M · effort XS · nil-safety</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-030 · Guard Spinner in iconPaths (IconPathData(Spinner) wrongly returns Question path)
+          </h3>
+          <div class="where">icons/icon_paths.go:140 · impact M · effort XS · edge-case</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-033 · Override nil: implement documented skip-render OR fix doc+test (contract
+            mismatch)
+          </h3>
+          <div class="where">errorpage/handler.go:243 · impact M · effort XS · error-handling</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-031 · Add test: every exported Name const has iconPathData coverage (or is Spinner)
+          </h3>
+          <div class="where">icons/icon_names.go · impact M · effort S · test-gap</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-023 · LoadingButton: add inverse toggle so defaultText hides during request (both
+            render now)
+          </h3>
+          <div class="where">htmx/loading.templ:39 · impact M · effort S · edge-case</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-024 · ThemeScript/ThemeToggle: set document.colorScheme (native controls stay light in
+            dark mode)
+          </h3>
+          <div class="where">layout/theme.templ:11 · impact M · effort S · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-025 · ThemeToggle: role=switch + aria-checked, synced in toggle script (no current
+            state)
+          </h3>
+          <div class="where">layout/theme.templ:27 · impact M · effort S · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-028 · SRI: fail loud / fallback when HTMXVersion not in SRI table (silently loses
+            integrity)
+          </h3>
+          <div class="where">layout/sri.go:51 · impact M · effort S · security</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-032 · Move stray-| validation to init(); keep iconPaths panic-free (panic in render
+            hot path)
+          </h3>
+          <div class="where">icons/icon_paths.go:125 · impact M · effort S · architecture</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-034 · Map unknown errors to 500 not 503 (503 signals retry -&gt; CDN/LB retry storms)
+          </h3>
+          <div class="where">errorpage/handler.go:82 · impact M · effort S · error-handling</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>P-027 · Layout: motion-reduce overrides for scroll-smooth + transition-colors</h3>
+          <div class="where">layout/base.templ:41 · impact S · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-077 · Button Disabled+Href: render aria-disabled/tabindex=-1/pointer-events-none
+            (silently clickable)
+          </h3>
+          <div class="where">display/button.templ:20 · impact M · effort S · edge-case</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-049 · Label/FormFieldWrapper: convert positional params to Props structs (3 &amp; 5
+            primitives)
+          </h3>
+          <div class="where">forms/label.templ:6 · impact M · effort S · architecture</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>P-072 · validation: sanitize err.Field before href=# (broken fragment URLs)</h3>
+          <div class="where">forms/validation.templ:61 · impact S · effort XS · edge-case</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>P-117 · navigation: add MobileNavLink External test (security bug untested)</h3>
+          <div class="where">navigation/*_test.go · impact M · effort XS · test-gap</div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>P-118 · navigation: add duplicate-Nav ID collision test</h3>
+          <div class="where">navigation/*_test.go · impact S · effort XS · test-gap</div>
+        </div>
+        <h2 id="medium"><span class="num">05</span>Medium findings</h2>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-036 · WriteErrorPage: derive status from props.Family (param + Family can disagree
+            -&gt; wrong code)
+          </h3>
+          <div class="where">errorpage/handler.go:292 · impact M · effort S · type-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-041 · handler.go (354 lines): split into fromerror.go + constructors.go + handler.go
+          </h3>
+          <div class="where">errorpage/handler.go · impact M · effort S · size</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-037 · renderWithShell: render to buffer before WriteHeader (templ error mid-stream =
+            truncated doc)
+          </h3>
+          <div class="where">errorpage/handler.go:266 · impact M · effort M · edge-case</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-035 · erroralert: replace dead hover:bg-opacity-80 with Tailwind v4 modifier
+            bg-{color}/80
+          </h3>
+          <div class="where">errorpage/erroralert.templ:48 · impact S · effort XS · edge-case</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-038 · FromError: add ErrorTitle() extraction + family-based default (every dynamic
+            page titleless)
+          </h3>
+          <div class="where">errorpage/handler.go:40 · impact S · effort S · edge-case</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-039 · contextTable: use &lt;dl&gt; or add caption/th+scope (SR mis-announces
+            definition data as table)
+          </h3>
+          <div class="where">errorpage/shared.templ:38 · impact S · effort S · a11y</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-076 · Icon a11y: add role=img + &lt;title&gt; variant (icons as sole button content
+            invisible to AT)
+          </h3>
+          <div class="where">icons/icon.templ:23 · impact L · effort M · a11y</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-058 · overlayScriptComponent: HTML-escape nonce before fmt.Sprintf (attribute boundary
+            break)
+          </h3>
+          <div class="where">display/shared.go:147 · impact M · effort XS · security</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>P-047 · HTMXVersion: typed const set (typos silently drop SRI)</h3>
+          <div class="where">layout/sri.go:40 · impact M · effort S · type-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-064 · errorpage familyStyleMap: builder to dedup 6 near-identical 8-field entries
+          </h3>
+          <div class="where">errorpage/styles.go:53 · impact M · effort M · duplication</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-079 · response-targets extension: opt-out prop (force-loaded w/ htmx, extra
+            request+bytes)
+          </h3>
+          <div class="where">layout/base.templ:89 · impact M · effort S · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-082 · ModalSizeFull/DrawerFull: rename (map to max-w-4xl/2xl, not full — misleading)
+          </h3>
+          <div class="where">display/modal_go.go:41 · impact M · effort XS · naming</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-046 · DropdownItem: deprecate Href fallback, require Kind (dual discrimination drops
+            href)
+          </h3>
+          <div class="where">display/dropdown.templ:20 · impact M · effort S · type-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-060 · utils EnsureID: panic/atomic-counter fallback (time.Now nanos = predictable,
+            collides)
+          </h3>
+          <div class="where">utils/validate.go:25 · impact M · effort S · security</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-062 · version_test: t.Fatal not Skip; go:embed CHANGELOG (guard silently disabled in
+            many layouts)
+          </h3>
+          <div class="where">utils/version_test.go:17 · impact M · effort S · test-gap</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-069 · Extract IsActive(href,currentPath) helper; unify NavLink/sidebar active
+            detection
+          </h3>
+          <div class="where">navigation/nav_link.templ:38 · impact M · effort S · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-070 · ToggleProps: add Required/Error/HelpText (inconsistent w/ every other field)
+          </h3>
+          <div class="where">forms/toggle.templ:15 · impact M · effort S · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-074 · Tooltip: auto-gen ID via EnsureID; always emit aria-describedby (unlinked when
+            no ID)
+          </h3>
+          <div class="where">display/tooltip.templ:67 · impact M · effort S · a11y</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-075 · Avatar: render status dot in initials/fallback branches too (only img branch
+            now)
+          </h3>
+          <div class="where">display/avatar.templ:106 · impact M · effort S · edge-case</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-050 · htmx helpers (LoadingIndicator, ConfirmDelete, SwapOOB, CSRFToken): Props
+            structs w/ BaseProps
+          </h3>
+          <div class="where">htmx/helpers.templ · impact M · effort M · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-057 · Hoist Combobox/Accordion/Dropdown global scripts to one-shot helpers (emitted
+            per instance)
+          </h3>
+          <div class="where">forms/combobox.templ:99 · impact M · effort M · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-063 · errorpage: 4 fmt.Errorf -&gt; go-error-family constructors (branching-flow
+            errorfamily)
+          </h3>
+          <div class="where">errorpage/handler.go:284 · impact M · effort M · error-handling</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-073 · Tooltip: Escape-to-dismiss + touch fallback (hover/focus-only, invisible on
+            touch)
+          </h3>
+          <div class="where">display/tooltip.templ:63 · impact M · effort M · a11y</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>P-067 · SimpleNav: add Sticky prop instead of hardcoded Sticky:true</h3>
+          <div class="where">navigation/nav.templ:100 · impact S · effort XS · edge-case</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-068 · Skip rendering MobileMenu when props.Links empty (emits empty div + script)
+          </h3>
+          <div class="where">navigation/nav.templ:61 · impact S · effort XS · edge-case</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-071 · ErrorAttrs: emit aria-describedby when helpTextID set regardless of id (id-less
+            fields blind)
+          </h3>
+          <div class="where">forms/helpers.go:26 · impact S · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-043 · FormMethod: add PUT/DELETE/PATCH or document Attrs path (silently -&gt; GET is
+            surprising)
+          </h3>
+          <div class="where">forms/form.templ:10 · impact S · effort XS · type-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-045 · paginationArrow roundedSide string param -&gt; typed enum/constants (typo = bad
+            class)
+          </h3>
+          <div class="where">
+            navigation/pagination.templ:100 · impact S · effort S · type-safety
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-066 · ensureAccordionItemIDs: copy slice before mutating caller's []AccordionItem
+          </h3>
+          <div class="where">display/accordion.templ:10 · impact S · effort XS · edge-case</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-042 · StatusBadge: accept typed status alias w/ constants (raw string + magic map only
+            validation)
+          </h3>
+          <div class="where">display/badge.templ:135 · impact S · effort S · type-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-065 · breadcrumbs: resolve relative Href for JSON-LD (spec requires absolute URL)
+          </h3>
+          <div class="where">navigation/breadcrumbs.templ:32 · impact S · effort S · edge-case</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-115 · integration: render components inside layout.Base test (head/body/nonce
+            unverified)
+          </h3>
+          <div class="where">
+            integration/composition_test.go:14 · impact M · effort S · test-gap
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>P-113 · layout: consolidate 7 overlapping test files into 2 (unit + behaviour)</h3>
+          <div class="where">layout/*_test.go · impact M · effort M · duplication</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>P-098 · forms: textarea rows default 3 -&gt; 4 to match DefaultTextareaProps</h3>
+          <div class="where">forms/textarea.templ:50 · impact S · effort XS · edge-case</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-100 · forms: InputGroupPaddingClass — wire into InputGroup or delete (split-brain API)
+          </h3>
+          <div class="where">forms/input_group.templ:25 · impact S · effort S · dead-code</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-112 · display: example_test add // Output directives or convert to Test* (zero
+            regression value)
+          </h3>
+          <div class="where">display/example_test.go:11 · impact S · effort S · test-gap</div>
+        </div>
+        <h2 id="low"><span class="num">06</span>Low findings</h2>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-040 · renderWithShell: wrap once, include title in error (branching-flow flagged
+            context loss)
+          </h3>
+          <div class="where">errorpage/handler.go:341 · impact XS · effort XS · error-handling</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-080 · utils Class(): per-shard mutex or result cache (coarse global lock serializes
+            all SSR merges)
+          </h3>
+          <div class="where">utils/utils.go:41 · impact M · effort L · concurrency</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-053 · activeSpanOrLink (5 positional params, 2 empty sentinels) -&gt; struct or split
+          </h3>
+          <div class="where">navigation/nav_link.templ:26 · impact S · effort S · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-055 · Ternary: document eager-eval caveat or deprecate for inline templ if/else</h3>
+          <div class="where">utils/utils.go:58 · impact S · effort XS · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-059 · htmx loading: guard nil spinner templ.Component (panics at render)</h3>
+          <div class="where">htmx/loading.templ:7 · impact S · effort XS · nil-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-061 · utils ValidateID: reject invalid HTML-id chars (only checks emptiness;
+            SanitizeID lives in forms)
+          </h3>
+          <div class="where">utils/validate.go:10 · impact S · effort S · type-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-044 · htmx SwapStyle typed enum (validSwapStyles map[string]bool + bare strings)
+          </h3>
+          <div class="where">htmx/helpers.templ:4 · impact S · effort S · type-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-048 · ThemeColor/DarkThemeColor hex validation (^# hex, garbage renders into meta now)
+          </h3>
+          <div class="where">layout/base.templ:16 · impact S · effort S · type-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-051 · tabLink: pack active/inactive classes into struct (easily swapped positional
+            params)
+          </h3>
+          <div class="where">display/tabs.templ:46 · impact S · effort S · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-056 · Move DismissScript out of utils (foundation leaks DOM/JS concerns)</h3>
+          <div class="where">utils/utils.go:74 · impact S · effort S · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-078 · empty Locale: default 'en' (renders lang='' invalid) + guard og:locale</h3>
+          <div class="where">layout/base.templ:16 · impact S · effort XS · edge-case</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-081 · card statCardFigures: replace switch with trendStyle map (convention = maps not
+            switches)
+          </h3>
+          <div class="where">display/card.templ:209 · impact S · effort S · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-054 · diagnosticSection (5 positional args mixing data+presentation) -&gt; props
+            struct
+          </h3>
+          <div class="where">errorpage/shared.templ:80 · impact XS · effort S · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-052 · paginationArrow (7 params) -&gt; props struct</h3>
+          <div class="where">
+            navigation/pagination.templ:100 · impact XS · effort S · architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-084 · feedback: remove alertIconName/toastIconName pure-indirection wrappers</h3>
+          <div class="where">feedback/alert.templ:41 · impact S · effort XS · dead-code</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-085 · feedback: inline feedbackStyle in alert/toast; delete alertStyles/toastStyles
+            duplicate unpackers
+          </h3>
+          <div class="where">feedback/alert.templ:36 · impact S · effort XS · dead-code</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-086 · feedback: standardize data-dismiss (value never inspected — dead info)</h3>
+          <div class="where">feedback/alert.templ:79 · impact S · effort XS · dead-code</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-091 · display: buttonVariantDefault/badgeStyleDefault use map fallback directly</h3>
+          <div class="where">display/button_go.go:89 · impact S · effort XS · duplication</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-094 · navigation: remove sidebarItemActive dead '/' special-case</h3>
+          <div class="where">
+            navigation/sidebar_nav.templ:43 · impact S · effort XS · dead-code
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-099 · forms: comboboxInputClass const -&gt; func(hasError) for error-ring state</h3>
+          <div class="where">forms/combobox.templ:33 · impact S · effort XS · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-116 · integration: add ThemeScript/ThemeToggle to CSPNonceConsistency</h3>
+          <div class="where">
+            integration/composition_test.go:262 · impact S · effort XS · test-gap
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-119 · navigation: paginationRange add current&gt;total case</h3>
+          <div class="where">navigation/*_test.go · impact S · effort XS · test-gap</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-093 · display: tabs remove nested &lt;nav&gt; double aria-label on tablist</h3>
+          <div class="where">display/tabs.templ:83 · impact S · effort XS · a11y</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-107 · internal/golden: Assert name path-escape guard (name w/ ../ escapes testdata/)
+          </h3>
+          <div class="where">internal/golden/golden.go:31 · impact S · effort XS · security</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-109 · icons: reword docs — svg fill constants vs icons stroke (not 'single source of
+            truth')
+          </h3>
+          <div class="where">internal/svg/svg.templ:6 · impact S · effort XS · naming</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-111 · icons: IconPathJS accept strokeWidth arg (hardcoded 1.5)</h3>
+          <div class="where">icons/icon_paths.go:150 · impact S · effort XS · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-110 · icons: centralize Spinner-is-special rule (special-cased in 3 places)</h3>
+          <div class="where">icons/icon_paths.go:120 · impact S · effort S · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-114 · feedback: add toastJSStyles/toastJSIconPaths table tests (non-trivial, untested)
+          </h3>
+          <div class="where">feedback/toast.templ:44 · impact S · effort S · test-gap</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-120 · display: DefinitionItem/TableCell unify dual string+Component slot fields</h3>
+          <div class="where">
+            display/definition_list.templ:8 · impact S · effort S · architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-121 · errorpage: accept label strings via props for i18n (hardcoded English copy)
+          </h3>
+          <div class="where">errorpage/shared.templ:15 · impact S · effort M · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-088 · feedback: add explicit MD entries to spinnerSizeLookup/progressHeightLookup
+          </h3>
+          <div class="where">feedback/loading.templ:20 · impact XS · effort XS · naming</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-089 · display: remove dropdownItemLink dead variadic extraAttrs param</h3>
+          <div class="where">display/dropdown.templ:69 · impact XS · effort XS · dead-code</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-090 · display: inline emptyStateIcon one-line wrapper</h3>
+          <div class="where">display/empty_state.templ:104 · impact XS · effort XS · dead-code</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-092 · display: drawer inline style -&gt; Tailwind classes (left-0 inset-y-0)</h3>
+          <div class="where">display/drawer.templ:31 · impact XS · effort XS · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-095 · navigation: navLinkClasses extract shared prefix const</h3>
+          <div class="where">navigation/nav_link.templ:5 · impact XS · effort XS · duplication</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-096 · navigation: pageURL preserve fragment across re-encode</h3>
+          <div class="where">
+            navigation/pagination.templ:39 · impact XS · effort XS · edge-case
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-097 · navigation: replace fmt.Sprintf('%d') with native templ interpolation</h3>
+          <div class="where">navigation/pagination.templ:152 · impact XS · effort XS · cleanup</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-101 · forms: extract const errorIDSuffix='-error' (duplicated literal in 2 places)
+          </h3>
+          <div class="where">forms/helpers.go:39 · impact XS · effort XS · duplication</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-103 · errorpage: remove unreachable props.Timestamp=='' branch</h3>
+          <div class="where">errorpage/handler.go:239 · impact XS · effort XS · dead-code</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-104 · errorpage: FromError call errors.AsType once (currently twice)</h3>
+          <div class="where">errorpage/handler.go:54 · impact XS · effort XS · duplication</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-106 · internal/golden: annotate golden.go:38 nil-deref false positive (flag.Bool never
+            nil)
+          </h3>
+          <div class="where">internal/golden/golden.go:38 · impact XS · effort XS · nil-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-108 · internal/golden: replace hand-rolled contains with strings.Contains</h3>
+          <div class="where">
+            internal/golden/golden_test.go:88 · impact XS · effort XS · duplication
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-122 · navigation: SidebarNavItem embed BaseProps (no per-item customization)</h3>
+          <div class="where">
+            navigation/sidebar_nav.templ:9 · impact XS · effort XS · architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-123 · navigation: normalize() consolidate all defaulting in one place</h3>
+          <div class="where">
+            navigation/pagination.templ:33 · impact XS · effort XS · architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-083 · feedback helpers_test: replace hand-rolled contains with strings.Contains</h3>
+          <div class="where">
+            feedback/helpers_test.go:224 · impact XS · effort XS · duplication
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-087 · feedback: feedbackStyleDefault use named-field struct literal (positional is
+            fragile)
+          </h3>
+          <div class="where">feedback/styles.go:79 · impact XS · effort XS · architecture</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-102 · errorpage: errorResponse.Context type any -&gt; map[string]string</h3>
+          <div class="where">errorpage/handler.go:113 · impact XS · effort XS · type-safety</div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>P-105 · errorpage: ExtractCauseChain handle errors.Join siblings</h3>
+          <div class="where">errorpage/styles.go:229 · impact XS · effort S · edge-case</div>
+        </div>
+        <h2 id="branching"><span class="num">07</span>branching-flow results</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Linter</th>
+              <th>Result → mapped task(s)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><strong>CONTEXT — semantic error context</strong></td>
+              <td>
+                <span class="badge badge-medium"
+                  >2 medium (errorpage title lost in error wrap) → task P-040</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td><strong>DUPE — duplicate types</strong></td>
+              <td><span class="badge badge-fixed">0 issues ✅</span></td>
+            </tr>
+            <tr>
+              <td><strong>PHANTOM — primitive→phantom types</strong></td>
+              <td>
+                <span class="badge badge-medium"
+                  >54 (mostly intentional UI strings; genuine ones covered by P-042..P-048,
+                  P-061)</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td><strong>PANIC — panic conditions</strong></td>
+              <td>
+                <span class="badge badge-critical"
+                  >2 high: icon_paths.go:127 (P-032), golden.go:38 false positive (P-106)</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td><strong>STRONG-ID — id params</strong></td>
+              <td><span class="badge badge-medium">10 (covered by P-030, P-061, P-045)</span></td>
+            </tr>
+            <tr>
+              <td><strong>BOOLBLIND</strong></td>
+              <td><span class="badge badge-fixed">0 issues ✅</span></td>
+            </tr>
+            <tr>
+              <td><strong>ANTI-PATTERNS</strong></td>
+              <td>
+                <span class="badge badge-medium"
+                  >1: utils.BaseProps base-naming (deliberate interface backing — document, don't
+                  rename)</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td><strong>MIXINS — composition opportunities</strong></td>
+              <td>
+                <span class="badge badge-medium"
+                  >8 low/medium (optional; addressed selectively P-069, P-081)</span
+                >
+              </td>
+            </tr>
+            <tr>
+              <td><strong>SPLITBRAIN</strong></td>
+              <td><span class="badge badge-fixed">0 issues ✅</span></td>
+            </tr>
+            <tr>
+              <td><strong>ERRORFAMILY — go-error-family adoption</strong></td>
+              <td><span class="badge badge-medium">4 fmt.Errorf → P-063</span></td>
+            </tr>
+            <tr>
+              <td><strong>CONTEXTGUARD</strong></td>
+              <td><span class="badge badge-fixed">0 issues ✅</span></td>
+            </tr>
+            <tr>
+              <td><strong>NAKEDRETURN</strong></td>
+              <td><span class="badge badge-fixed">0 issues ✅</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <footer class="footer">
+          Generated 2026-06-28 03:36 &middot; Companion plan:
+          docs/planning/2026-06-28_03-36_full-code-review.html
+        </footer>
+      </main>
+    </div>
+    <script>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        var nav = document.querySelector("[data-nav]");
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[href^="#"]');
+        var ids = Array.from(links).map(function (l) {
+          return l.getAttribute("href").slice(1);
+        });
+        var sections = ids
+          .map(function (id) {
+            return document.getElementById(id);
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                links.forEach(function (link) {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + entry.target.id,
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+        );
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
+      })();
+    </script>
+  </body>
+</html>
