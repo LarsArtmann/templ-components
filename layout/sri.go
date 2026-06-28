@@ -1,6 +1,20 @@
 // Package layout pins the HTMX CDN scripts and their Sub-Resource Integrity hashes.
 package layout
 
+// HTMXVersion is a pinned HTMX main-script version. Use the exported constants
+// (e.g. HTMXVersion2_0_10) for compile-time safety; custom versions can be
+// constructed via HTMXVersion("x.y.z") but will fall back to the default SRI hash.
+type HTMXVersion string
+
+const (
+	// HTMXVersion2_0_10 is the htmx main-script version DefaultPageProps pins.
+	HTMXVersion2_0_10 HTMXVersion = "2.0.10"
+
+	// defaultHTMXVersion is the internal default; always equals the latest
+	// exported HTMXVersion constant.
+	defaultHTMXVersion HTMXVersion = HTMXVersion2_0_10
+)
+
 // HTMX 2.x split its extensions into standalone npm packages with independent
 // version numbers. The response-targets extension is no longer bundled inside
 // the htmx.org package: loading htmx.org@<v>/dist/ext/response-targets.js
@@ -8,8 +22,6 @@ package layout
 // because that file is the legacy htmx 1 build. The v2-compatible build ships
 // as the separate package htmx-ext-response-targets, pinned below.
 const (
-	// defaultHTMXVersion is the htmx main-script version DefaultPageProps pins.
-	defaultHTMXVersion = "2.0.10"
 	// responseTargetsVersion is the pinned version of the separate
 	// htmx-ext-response-targets package. It is independent of defaultHTMXVersion.
 	responseTargetsVersion = "2.0.4"
@@ -40,22 +52,22 @@ const sriResponseTargets = "sha384-T41oglUPvXLGBVyRdZsVRxNWnOOqCynaPubjUVjxhsjFT
 const htmxMainSRIDefault = "sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"
 
 //nolint:gochecknoglobals // Version-keyed SRI lookup table.
-var sriHTMXMainByVersion = map[string]string{
-	defaultHTMXVersion: htmxMainSRIDefault,
+var sriHTMXMainByVersion = map[HTMXVersion]string{
+	HTMXVersion2_0_10: htmxMainSRIDefault,
 }
 
 // htmxScriptURL returns the CDN URL for the htmx main script at the given version.
-func htmxScriptURL(version string) string {
-	return htmxCDNBase + version
+func htmxScriptURL(version HTMXVersion) string {
+	return htmxCDNBase + string(version)
 }
 
 // htmxMainSRI returns the SRI hash for the htmx main script at the given
 // version. If the version is not pinned, it falls back to the default version's
 // SRI so HTMXUseSRI never silently renders a script without an integrity hash
 // (an unknown version bump shouldn't silently drop SRI).
-func htmxMainSRI(version string) string {
+func htmxMainSRI(version HTMXVersion) string {
 	if sri, ok := sriHTMXMainByVersion[version]; ok {
 		return sri
 	}
-	return sriHTMXMainByVersion[defaultHTMXVersion]
+	return sriHTMXMainByVersion[HTMXVersion2_0_10]
 }

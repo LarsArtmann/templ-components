@@ -1,11 +1,43 @@
 package layout
 
+import "strings"
+
 const (
 	// DefaultThemeColor is the default light-mode theme color (indigo-600)
 	DefaultThemeColor = "#4f46e5"
 	// DefaultDarkThemeColor is the default dark-mode theme color (indigo-950)
 	DefaultDarkThemeColor = "#1e1b4b"
 )
+
+// validHexColor reports whether s is a valid CSS hex color (#rgb, #rgba, #rrggbb, #rrggbbaa).
+func validHexColor(s string) bool {
+	if len(s) < 4 || s[0] != '#' {
+		return false
+	}
+	hex := s[1:]
+	if len(hex) != 3 && len(hex) != 4 && len(hex) != 6 && len(hex) != 8 {
+		return false
+	}
+	return strings.IndexFunc(hex, func(r rune) bool {
+		return !strings.ContainsRune("0123456789abcdefABCDEF", r)
+	}) == -1
+}
+
+// themeColor returns props.ThemeColor if valid, otherwise the default.
+func themeColor(props PageProps) string {
+	if validHexColor(props.ThemeColor) {
+		return props.ThemeColor
+	}
+	return DefaultThemeColor
+}
+
+// darkThemeColor returns props.DarkThemeColor if valid, otherwise the default.
+func darkThemeColor(props PageProps) string {
+	if validHexColor(props.DarkThemeColor) {
+		return props.DarkThemeColor
+	}
+	return DefaultDarkThemeColor
+}
 
 // PageProps configures the base page layout
 type PageProps struct {
@@ -17,16 +49,16 @@ type PageProps struct {
 	DarkThemeColor string
 	CSSPath        string
 	Favicon        string
-	HTMXVersion    string
+	HTMXVersion    HTMXVersion
 	HTMXUseSRI     bool
 	// HTMXResponseTargets controls whether the htmx response-targets extension
 	// is loaded alongside htmx. Defaults to true for backward compatibility;
 	// set to false to skip the extra request when you don't use it.
 	HTMXResponseTargets bool
-	BodyClass      string
-	Nonce          string
-	HeadContent    templ.Component
-	Footer         templ.Component
+	BodyClass           string
+	Nonce               string
+	HeadContent         templ.Component
+	Footer              templ.Component
 	// SecurityHeaders controls whether security meta tags are included
 	SecurityHeaders bool
 }
@@ -35,15 +67,15 @@ type PageProps struct {
 func DefaultPageProps() PageProps {
 	return PageProps{
 		Locale:              "en",
-		ThemeColor:         DefaultThemeColor,
-		DarkThemeColor:     DefaultDarkThemeColor,
-		CSSPath:            "/app.css",
-		Favicon:            "/favicon.svg",
-		HTMXVersion:        defaultHTMXVersion,
-		HTMXUseSRI:         true,
+		ThemeColor:          DefaultThemeColor,
+		DarkThemeColor:      DefaultDarkThemeColor,
+		CSSPath:             "/app.css",
+		Favicon:             "/favicon.svg",
+		HTMXVersion:         HTMXVersion2_0_10,
+		HTMXUseSRI:          true,
 		HTMXResponseTargets: true,
-		SecurityHeaders:   true,
-		BodyClass:          "bg-white text-gray-900 antialiased min-h-dvh flex flex-col scroll-smooth motion-reduce:scroll-auto selection:bg-blue-100 dark:selection:bg-blue-900 selection:text-blue-900 dark:selection:text-blue-100 dark:bg-gray-950 dark:text-gray-100",
+		SecurityHeaders:     true,
+		BodyClass:           "bg-white text-gray-900 antialiased min-h-dvh flex flex-col scroll-smooth motion-reduce:scroll-auto selection:bg-blue-100 dark:selection:bg-blue-900 selection:text-blue-900 dark:selection:text-blue-100 dark:bg-gray-950 dark:text-gray-100",
 	}
 }
 
@@ -54,7 +86,10 @@ func DefaultPageProps() PageProps {
 //	  <h1>My Page</h1>
 //	}
 templ Base(props PageProps) {
-	{{ locale := props.Locale; if locale == "" { locale = "en" } }}
+	{{ locale := props.Locale
+if locale == "" {
+	locale = "en"
+} }}
 	<!DOCTYPE html>
 	<html lang={ locale } class="h-full">
 		<head>
@@ -69,8 +104,8 @@ templ Base(props PageProps) {
 				<meta name="description" content={ props.Description }/>
 			}
 			<link rel="icon" type="image/svg+xml" href={ props.Favicon }/>
-			<meta name="theme-color" content={ props.ThemeColor } media="(prefers-color-scheme: light)"/>
-			<meta name="theme-color" content={ props.DarkThemeColor } media="(prefers-color-scheme: dark)"/>
+			<meta name="theme-color" content={ themeColor(props) } media="(prefers-color-scheme: light)"/>
+			<meta name="theme-color" content={ darkThemeColor(props) } media="(prefers-color-scheme: dark)"/>
 			<meta property="og:title" content={ props.Title }/>
 			if props.Description != "" {
 				<meta property="og:description" content={ props.Description }/>
@@ -145,7 +180,10 @@ func DefaultMinimalProps() MinimalProps {
 //	  <h1>Hello</h1>
 //	}
 templ Minimal(props MinimalProps) {
-	{{ locale := props.Locale; if locale == "" { locale = "en" } }}
+	{{ locale := props.Locale
+if locale == "" {
+	locale = "en"
+} }}
 	<!DOCTYPE html>
 	<html lang={ locale }>
 		<head>

@@ -228,7 +228,9 @@ func ContextMap(m map[string]string) []ContextPair {
 
 // ExtractCauseChain walks an error's Unwrap() chain and returns CauseItems.
 // Useful for bridging go-error-family errors to errorpage props.
-// Stops after maxDepth levels to prevent infinite chains.
+// Handles both single-error Unwrap() chains and errors.Join siblings
+// (Unwrap() []error, Go 1.20+). Stops after maxDepth levels to prevent
+// infinite chains.
 func ExtractCauseChain(err error, maxDepth int) []CauseItem {
 	if err == nil || maxDepth <= 0 {
 		return nil
@@ -238,6 +240,18 @@ func ExtractCauseChain(err error, maxDepth int) []CauseItem {
 	for range maxDepth {
 		unwrapped := errors.Unwrap(current)
 		if unwrapped == nil {
+			if joiner, ok := current.(interface{ Unwrap() []error }); ok {
+				for _, sibling := range joiner.Unwrap() {
+					if len(chain) >= maxDepth {
+						break
+					}
+					item := CauseItem{Message: sibling.Error()} //nolint:exhaustruct // Code set conditionally below
+					if c, ok := sibling.(interface{ ErrorCode() string }); ok {
+						item.Code = c.ErrorCode()
+					}
+					chain = append(chain, item)
+				}
+			}
 			break
 		}
 		item := CauseItem{Message: unwrapped.Error()} //nolint:exhaustruct // Code set conditionally below

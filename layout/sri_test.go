@@ -11,7 +11,7 @@ func TestHtmxMainSRI(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name    string
-		version string
+		version HTMXVersion
 		want    string
 	}{
 		{
