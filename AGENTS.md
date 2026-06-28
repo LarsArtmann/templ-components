@@ -26,6 +26,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
 - 51 generated files across 10 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/golden, internal/svg, layout, navigation)
+- **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
 will have their Go toolchain download the tagged commit. If `*_templ.go` is missing from that
@@ -66,13 +67,16 @@ commit, the package won't compile. Unlike applications (where you generate at bu
 - Icons: `iconPathData` map with `|` separator for multi-path icons. `iconPaths()` validates no empty segments (panics on stray `|`). `allIconNames()` auto-generated from `iconPathData` + Spinner — no manual list to maintain.
 - Form errors: `ErrorAttrs(id, errMsg, helpTextID)` helper returns `templ.Attributes` for aria-invalid/aria-describedby
 - Card shell CSS: shared `cardShellClass` constant for consistent card styling. `SimpleCard` composes through `Card` internally.
+- Muted text: shared `mutedTextClass` constant (in `display/shared.go`) for the standard secondary-text pattern (`text-sm text-gray-500 dark:text-gray-400`); callers combine it with a margin via `utils.Class(mutedTextClass, "mt-N")`. Used by Card subtitle, PageHeader subtitle, EmptyState description.
+- Pagination: `paginationPageItem`/`paginationEllipsisItem` sub-templates wrap `activeSpanOrLink`/`paginationEllipsis` in `<li>` so the page-range loop body stays flat.
+- EmptyState: single `emptyStateAction(text, href, attrs)` helper renders an anchor when `href != ""`, else a button (replaces the former link/button pair).
 - HTMX loading: accepts `templ.Component` spinner parameter (decoupled from feedback package)
 - Toast icons: generated from Go `iconPathData` via `icons.IconPathJS()` (single source of truth)
 - TrendDirection: `TrendNone = "none"` (non-empty sentinel, not "")
 - Layout: `Minimal(MinimalProps)` uses props struct like `Base(PageProps)`
 - Interactive: `cursor-pointer` on buttons, `caret-blue-600 dark:caret-blue-400` on inputs, `scroll-smooth` + selection colors on body, `shadow-sm` on card shell
 - Modal: focus save/restore via `data-tc-prev-focus` attribute on open, restored on close
-- NavLink/MobileNavLink: `NavLink` uses `utils.Class()` for merge; `MobileNavLink` appends `props.Class` to `templ.KV` chain
+- NavLink/MobileNavLink: both render through the shared `navLinkAnchor` sub-template; each supplies an active/inactive base-class builder (`navLinkClasses`, `mobileNavLinkClass`) and `navLinkAnchor` merges `props.Class` via `utils.Class()` so consumer Tailwind overrides resolve correctly. Do NOT assert ordered class substrings in tests — `utils.Class`/tailwind-merge reorders classes; use `utils.AssertContainsAll` for multi-token checks.
 - InputType: validates via `inputType()` with `validInputTypes` map; panics on unknown, defaults empty to `"text"`
 - Structural variants (TabsVariant, DropdownPosition, TrendDirection): use `if`-branch for DOM structure, not map lookup — map pattern is for pure class lookups only
 - `forms.SanitizeID`: exported utility for library consumers; also used internally by `forms.RadioGroup` to derive per-option IDs from option values
