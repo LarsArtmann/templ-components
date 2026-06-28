@@ -89,13 +89,14 @@ func TestTooltipA11yLinkage(t *testing.T) {
 
 func TestTooltipPositionEdgeCases(t *testing.T) {
 	t.Parallel()
-	t.Run("tooltip without ID does not set aria-describedby", func(t *testing.T) {
+	t.Run("tooltip without ID auto-generates id and aria-describedby", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tooltip(TooltipProps{
 			Text:     "Tip",
 			Position: TooltipPositionTop,
 		}))
-		utils.AssertNotContains(t, output, "aria-describedby")
+		utils.AssertContains(t, output, "aria-describedby=")
+		utils.AssertContains(t, output, `role="tooltip"`)
 	})
 	t.Run("tooltip with ID sets aria-describedby linkage", func(t *testing.T) {
 		t.Parallel()

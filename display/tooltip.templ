@@ -61,13 +61,12 @@ func tooltipLookupPosition(pos TooltipPosition) tooltipPositionStyles {
 //	   <button>Hover me</button>
 //	 }
 templ Tooltip(props TooltipProps) {
+	{{ id := utils.EnsureID("tooltip", props.ID) }}
 	{{ pos := tooltipLookupPosition(props.Position) }}
 	<div
+		id={ id }
 		class={ utils.Class("group relative inline-flex", props.Class) }
-		if props.ID != "" {
-			id={ props.ID }
-			aria-describedby={ props.ID + "-tooltip" }
-		}
+		aria-describedby={ id + "-tooltip" }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
@@ -75,9 +74,7 @@ templ Tooltip(props TooltipProps) {
 	>
 		{ children... }
 		<div
-			if props.ID != "" {
-				id={ props.ID + "-tooltip" }
-			}
+			id={ id + "-tooltip" }
 			class={ "absolute z-20 hidden group-hover:block group-focus-within:block whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-white shadow-xs",
 				pos.Tooltip }
 			role="tooltip"
