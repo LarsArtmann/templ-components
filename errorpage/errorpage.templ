@@ -34,15 +34,12 @@ templ ErrorPage(props ErrorPageProps) {
 							}
 						</div>
 					</div>
-
 					if props.Why != "" {
 						<div class="mt-5 ml-14">
 							<p class="text-sm text-gray-500 dark:text-gray-400">{ props.Why }</p>
 						</div>
 					}
-
 					@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-4 ml-14", "Cause chain")
-
 					if props.WayOut != "" || props.WayOutHref != "" {
 						<div class="mt-6 ml-14">
 							if props.WayOutHref != "" {
@@ -65,7 +62,6 @@ templ ErrorPage(props ErrorPageProps) {
 						</div>
 					}
 				</div>
-
 				if props.ShowTimestamp {
 					@timestampFooter(props.Timestamp, "px-6 py-3 sm:px-10 bg-gray-50/50 dark:bg-gray-900/50")
 				}

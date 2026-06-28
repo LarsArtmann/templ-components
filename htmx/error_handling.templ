@@ -42,11 +42,9 @@ func (c *ErrorHandlingConfig) normalize() {
 templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
 	{{ cfg.normalize() }}
 	<div id="tc-error-announcer" aria-live="polite" class="sr-only"></div>
-	<script
-		if cfg.Nonce != "" {
-			nonce={ cfg.Nonce }
-		}
-	>
+	<script if cfg.Nonce != "" {
+	nonce={ cfg.Nonce }
+}>
 		(function() {
 			'use strict';
 

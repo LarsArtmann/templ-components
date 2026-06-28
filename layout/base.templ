@@ -86,10 +86,12 @@ func DefaultPageProps() PageProps {
 //	  <h1>My Page</h1>
 //	}
 templ Base(props PageProps) {
-	{{ locale := props.Locale
-if locale == "" {
-	locale = "en"
-} }}
+	{{
+		locale := props.Locale
+		if locale == "" {
+			locale = "en"
+		}
+	}}
 	<!DOCTYPE html>
 	<html lang={ locale } class="h-full">
 		<head>
@@ -180,10 +182,12 @@ func DefaultMinimalProps() MinimalProps {
 //	  <h1>Hello</h1>
 //	}
 templ Minimal(props MinimalProps) {
-	{{ locale := props.Locale
-if locale == "" {
-	locale = "en"
-} }}
+	{{
+		locale := props.Locale
+		if locale == "" {
+			locale = "en"
+		}
+	}}
 	<!DOCTYPE html>
 	<html lang={ locale }>
 		<head>

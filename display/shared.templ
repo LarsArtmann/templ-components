@@ -7,9 +7,11 @@ import (
 
 templ overlayShell(p overlayShellProps) {
 	{{ labelledBy := "" }}
-	{{ if p.title != "" {
-		labelledBy = p.id + "-title"
-	} }}
+	{{
+		if p.title != "" {
+			labelledBy = p.id + "-title"
+		}
+	}}
 	<div
 		id={ p.id }
 		class={ utils.Class("fixed inset-0 z-50 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", p.outerClass),
