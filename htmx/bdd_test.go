@@ -60,7 +60,7 @@ func TestInlineLoadingOverlayUserSeesLocalLoadingState(t *testing.T) {
 
 func renderConfirmDelete(t *testing.T, endpoint, target, confirmMsg string) string {
 	t.Helper()
-	return utils.Render(t, ConfirmDelete(endpoint, target, confirmMsg))
+	return utils.Render(t, ConfirmDelete(ConfirmDeleteProps{Delete: endpoint, Target: target, Confirm: confirmMsg}))
 }
 
 func assertConfirmDeleteContains(
@@ -121,13 +121,13 @@ func TestSwapOOBUpdatesMultipleElements(t *testing.T) {
 
 	t.Run("user gets out-of-band update for targeted element", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, SwapOOB("#toast-container", "beforeend"))
+		output := utils.Render(t, SwapOOB(SwapOOBProps{Selector: "#toast-container", SwapStyle: SwapBeforeEnd}))
 		utils.AssertContains(t, output, `hx-swap-oob="beforeend:#toast-container"`)
 	})
 
 	t.Run("invalid swap style falls back to outerHTML", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, SwapOOB("#target", "bogus-style"))
+		output := utils.Render(t, SwapOOB(SwapOOBProps{Selector: "#target", SwapStyle: "bogus-style"}))
 		utils.AssertContains(t, output, `hx-swap-oob="outerHTML:#target"`)
 	})
 }
@@ -169,7 +169,9 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 			}},
 			{
 				"ConfirmDelete",
-				func() templ.Component { return ConfirmDelete("/del", "#t", "Sure?") },
+				func() templ.Component {
+					return ConfirmDelete(ConfirmDeleteProps{Delete: "/del", Target: "#t", Confirm: "Sure?"})
+				},
 			},
 			{"CSRFToken", func() templ.Component { return CSRFToken("tok") }},
 			{

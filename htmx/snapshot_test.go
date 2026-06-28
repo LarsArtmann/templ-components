@@ -62,6 +62,6 @@ func TestConfirmDeleteRender(t *testing.T) {
 
 func TestSwapOOBRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, SwapOOB("#notification", "innerHTML"))
+	output := utils.Render(t, SwapOOB(SwapOOBProps{Selector: "#notification", SwapStyle: SwapInnerHTML}))
 	utils.AssertContains(t, output, `hx-swap-oob="innerHTML:#notification"`)
 }
