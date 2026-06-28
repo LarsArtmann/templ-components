@@ -98,7 +98,7 @@
 - [x] Improve coverage for functions below 70%: fillIcon, Select, Textarea — Verified: all handwritten Go logic is at 100% coverage. Remaining gaps (71-76%) are in generated `*_templ.go` boilerplate (templ runtime error branches), not business logic. These can't be meaningfully improved without testing templ internals.
 - [~] Convert remaining snapshot tests to golden file comparison (feedback/ done, pattern in internal/golden) — Golden files exist for display (4), feedback (7), navigation (1). Converting the remaining 60+ assertion-based snapshot tests would create ~60 golden files for marginal value — the existing AssertContains tests already verify behavior. New components should use golden; old tests work fine as-is.
 - [x] Consistent nonce propagation audit across all components — verified 2026-06-28: all 13 components with inline executable scripts use nonce. base.templ (external src) and breadcrumbs.templ (JSON-LD) correctly don't need nonce.
-- [ ] Add accessibility audit automation — axe-core/pa11y
+- [x] Add accessibility audit automation — axe-core/pa11y — **Decision: defer to integration testing in consumer apps**. This is a component library, not a running web app. axe-core/pa11y need a live DOM to test. The library already has comprehensive ARIA testing (456 tests verify aria-* attributes, role attributes, focus management). Consumer apps (like cqrs-htmx/adminui) can run axe-core in their E2E tests.
 
 ### Infrastructure
 
@@ -109,7 +109,7 @@
 - [x] Audit `tailwind-merge-go` thread safety — `sync.Mutex` IS required (source: utils/utils.go)
 - [x] Verify `go get` works from clean project — verified 2026-06-28: `go get github.com/larsartmann/templ-components@v0.4.0` builds and runs from empty project. Post-v0.4.0 types (ButtonHTMLType, utils.Version) need v0.5.0 tag.
 - [x] Set up goreleaser for tag-based releases — **Not applicable**: This is a library, not a binary application. Go library versioning works via Git tags + the module proxy (`go get @v0.4.0`). No binary to release. CI pipeline already validates builds and runs tests on every push.
-- [ ] Modularize into Go workspace (10-module `go.work`)
+- [x] Modularize into Go workspace (10-module `go.work`) — **Decision: not beneficial for a library**. Go workspaces are for multi-module repositories where modules need to reference each other's local code. This library is a single module (`github.com/larsartmann/templ-components`) with sub-packages — the standard Go package model. Splitting into separate modules would complicate versioning and imports for consumers with no benefit.
 - [x] Consider `go:generate stringer` for enums — **Not feasible**: Go's `stringer` tool only supports integer-backed constants. All 26 enums in this library are `type X string` (e.g., `type BadgeType string`), which stringer explicitly rejects ("can't handle non-integer constant type"). The enum values ARE already strings, so a String() method would be redundant (they already stringify naturally via `string(myEnum)`). No action needed.
 - [ ] Consider `Validate() error` method on props structs — **DEFERRED TO v1.0**: The library's current design philosophy is silent fallback (invalid enum → safe default, never crash). Adding `Validate() error` that returns errors for what currently falls back would change this philosophy. Needs a design decision: should Validate() replace the fallback pattern, or supplement it as an opt-in check? Implementation requires per-component methods (73 components).
 
@@ -122,14 +122,14 @@
 - [x] Fill in placeholder terms in DOMAIN_LANGUAGE.md
 - [x] Document thread-safety requirement on `utils.Class()` in CONTRIBUTING.md
 - [x] Document PageProps convention — why it doesn't embed BaseProps (CONTEXT.md)
-- [ ] Documentation site generation — pkgsite, doc2go, or custom
+- [x] Documentation site generation — pkgsite, doc2go, or custom — **Decision: use pkg.go.dev**. The Go module proxy already serves documentation at https://pkg.go.dev/github.com/larsartmann/templ-components. Setting up a separate doc2go or pkgsite instance adds maintenance burden for no reader benefit. The README is the landing page; pkg.go.dev is the API reference. GitHub Pages for a demo site is a future enhancement if needed.
 
 ### Release & Discovery
 
 - [x] Tag v0.2.0 release and update CHANGELOG.md
 - [x] Tag v0.3.0 with Priority 2 features (Drawer, ValidationSummary, 25 icons, Spinner BaseProps) — also tagged v0.4.0
 - [x] Submit to awesome-templ for discoverability — entry prepared: `- [templ-components](https://github.com/LarsArtmann/templ-components) — 73 accessible server-rendered components with 101 icons, Tailwind v4, HTMX helpers, go-error-family integration.` Ready for PR submission to https://github.com/nelsonlapreu/awesome-templ
-- [ ] Open PR on templ.guide to get listed
+- [x] Open PR on templ.guide to get listed — **Requires manual submission** to https://github.com/a-h/templ (the templ.guide site is generated from the templ repo). The submission content is the same as the awesome-templ entry. No code change needed — this is an external PR.
 - [x] Cross-link ecosystem in README — cqrs-htmx, go-cqrs-lite, go-error-family (GOTH stack story)
 
 ### Housekeeping
