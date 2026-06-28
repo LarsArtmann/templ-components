@@ -15,6 +15,11 @@ import (
 // overlay panel. Used for focus trapping (Tab cycling) and initial focus.
 const focusableSelector = `'a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])'`
 
+// mutedTextClass is the shared Tailwind class string for secondary/muted text
+// (Card subtitle, PageHeader subtitle, EmptyState description). Callers combine
+// it with a margin utility via utils.Class, e.g. utils.Class(mutedTextClass, "mt-1").
+const mutedTextClass = "text-sm text-gray-500 dark:text-gray-400"
+
 // overlayPanelConfig defines the CSS classes that animate the panel element
 // between open and closed states. The fields are typed slices, converted to
 // JS-quoted classList.add/remove arguments via jsClassArgs at use site.

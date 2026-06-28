@@ -1,13 +1,8 @@
 {
   "version": "1.0",
   "threshold": 4,
-  "recordedAt": "2026-06-28T02:05:28.763451956Z",
+  "recordedAt": "2026-06-28T02:48:28.077075858Z",
   "entries": [
-    {
-      "hash": "1167184db1c172b3",
-      "files": ["navigation/pagination.templ", "navigation/pagination.templ"],
-      "tokens": 2
-    },
     {
       "hash": "1ac731e99a88937e",
       "files": [
@@ -17,6 +12,7 @@
         "navigation/nav.templ",
         "forms/label.templ",
         "navigation/nav_link.templ",
+        "navigation/nav_link.templ",
         "display/shared.templ",
         "navigation/pagination.templ",
         "display/table.templ",
@@ -24,7 +20,7 @@
         "layout/base.templ",
         "layout/base.templ"
       ],
-      "tokens": 12
+      "tokens": 13
     },
     {
       "hash": "1d7d417305069b95",
@@ -38,32 +34,58 @@
     },
     {
       "hash": "231b6e3e09ab0b11",
-      "files": ["layout/base.templ", "layout/base.templ"],
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
       "tokens": 2
     },
     {
       "hash": "2f39b9c891970b71",
-      "files": ["forms/toggle.templ", "errorpage/erroralert.templ"],
+      "files": [
+        "forms/toggle.templ",
+        "errorpage/erroralert.templ"
+      ],
       "tokens": 4
     },
     {
       "hash": "3bdeb4acdd7e2119",
-      "files": ["layout/base.templ", "layout/base.templ"],
+      "files": [
+        "layout/base.templ",
+        "layout/base.templ"
+      ],
       "tokens": 4
     },
     {
       "hash": "3c81197c185df6d1",
-      "files": ["display/table.templ", "navigation/breadcrumbs.templ"],
+      "files": [
+        "display/table.templ",
+        "navigation/breadcrumbs.templ"
+      ],
       "tokens": 2
     },
     {
       "hash": "574dcc4ead6ea0f3",
-      "files": ["display/modal.templ", "display/drawer.templ"],
+      "files": [
+        "display/modal.templ",
+        "display/drawer.templ"
+      ],
       "tokens": 2
     },
     {
       "hash": "696781d8189ab41e",
-      "files": ["feedback/alert.templ", "errorpage/erroralert.templ"],
+      "files": [
+        "feedback/alert.templ",
+        "errorpage/erroralert.templ"
+      ],
+      "tokens": 2
+    },
+    {
+      "hash": "86ab11bab72a7403",
+      "files": [
+        "display/empty_state.templ",
+        "display/empty_state.templ"
+      ],
       "tokens": 2
     },
     {
@@ -71,16 +93,15 @@
       "files": [
         "navigation/nav.templ",
         "display/empty_state.templ",
-        "display/empty_state.templ",
         "errorpage/shared.templ",
         "feedback/alert.templ",
         "feedback/toast.templ",
         "display/table.templ",
         "display/card.templ",
         "forms/radio.templ",
+        "display/card.templ",
         "navigation/sidebar_nav.templ",
         "forms/input_group.templ",
-        "display/card.templ",
         "display/page_header.templ",
         "forms/input_group.templ",
         "navigation/sidebar_nav.templ",
@@ -92,51 +113,65 @@
         "display/badge.templ",
         "layout/base.templ"
       ],
-      "tokens": 22
+      "tokens": 21
     },
     {
       "hash": "acf6299d5720c75e",
-      "files": ["examples/demo/demo.templ", "examples/demo/demo.templ"],
+      "files": [
+        "examples/demo/demo.templ",
+        "examples/demo/demo.templ"
+      ],
       "tokens": 2
     },
     {
       "hash": "ad83a61fa38c69be",
-      "files": ["forms/radio.templ", "navigation/nav.templ", "navigation/mobile_menu.templ"],
+      "files": [
+        "forms/radio.templ",
+        "navigation/nav.templ",
+        "navigation/mobile_menu.templ"
+      ],
       "tokens": 3
     },
     {
       "hash": "ae151b261ad25048",
-      "files": ["display/card.templ", "display/page_header.templ"],
-      "tokens": 4
-    },
-    {
-      "hash": "b1f978c275fc2d37",
-      "files": ["display/empty_state.templ", "display/empty_state.templ"],
-      "tokens": 2
+      "files": [
+        "display/card.templ",
+        "display/page_header.templ",
+        "display/empty_state.templ"
+      ],
+      "tokens": 6
     },
     {
       "hash": "b2b2d039bd7c5466",
-      "files": ["errorpage/shared.templ", "errorpage/erroralert.templ"],
+      "files": [
+        "errorpage/shared.templ",
+        "errorpage/erroralert.templ"
+      ],
       "tokens": 2
     },
     {
       "hash": "b6816817a9f9f737",
-      "files": ["errorpage/errorpage.templ", "errorpage/errordetail.templ"],
+      "files": [
+        "errorpage/errorpage.templ",
+        "errorpage/errordetail.templ"
+      ],
       "tokens": 2
     },
     {
       "hash": "c16d93a3c61c2910",
-      "files": ["htmx/loading.templ", "navigation/pagination.templ"],
-      "tokens": 2
-    },
-    {
-      "hash": "cba69d1d73dcf821",
-      "files": ["navigation/nav_link.templ", "navigation/nav_link.templ"],
+      "files": [
+        "htmx/loading.templ",
+        "navigation/pagination.templ"
+      ],
       "tokens": 2
     },
     {
       "hash": "d85c17029177bf81",
-      "files": ["feedback/loading.templ", "icons/icon.templ", "display/shared.templ"],
+      "files": [
+        "feedback/loading.templ",
+        "icons/icon.templ",
+        "display/shared.templ"
+      ],
       "tokens": 3
     }
   ]

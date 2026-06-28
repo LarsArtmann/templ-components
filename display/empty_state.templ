@@ -26,25 +26,26 @@ func DefaultEmptyStateProps() EmptyStateProps {
 // emptyStateActionClass is the shared class for empty state action buttons/links
 const emptyStateActionClass = "inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 transition-colors"
 
-// emptyStateAction renders an action link or button for the empty state
+// emptyStateAction renders an action link or button for the empty state.
+// When href is non-empty it renders an anchor; otherwise it renders a button.
 templ emptyStateAction(text string, href string, attrs templ.Attributes) {
-	<a
-		href={ templ.SafeURL(href) }
-		class={ emptyStateActionClass }
-		{ attrs... }
-	>
-		{ text }
-	</a>
-}
-
-templ emptyStateActionButton(text string, attrs templ.Attributes) {
-	<button
-		type="button"
-		class={ emptyStateActionClass }
-		{ attrs... }
-	>
-		{ text }
-	</button>
+	if href != "" {
+		<a
+			href={ templ.SafeURL(href) }
+			class={ emptyStateActionClass }
+			{ attrs... }
+		>
+			{ text }
+		</a>
+	} else {
+		<button
+			type="button"
+			class={ emptyStateActionClass }
+			{ attrs... }
+		>
+			{ text }
+		</button>
+	}
 }
 
 // EmptyState renders a centered empty state with icon, title, description, and optional action
@@ -76,15 +77,11 @@ templ EmptyState(props EmptyStateProps) {
 			}
 			<h3 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h3>
 			if props.Description != "" {
-				<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{ props.Description }</p>
+				<p class={ utils.Class(mutedTextClass, "mt-2") }>{ props.Description }</p>
 			}
 			if props.ActionText != "" {
 				<div class="mt-6">
-					if props.ActionHref != "" {
-						@emptyStateAction(props.ActionText, props.ActionHref, props.ActionAttrs)
-					} else {
-						@emptyStateActionButton(props.ActionText, props.ActionAttrs)
-					}
+					@emptyStateAction(props.ActionText, props.ActionHref, props.ActionAttrs)
 				</div>
 			}
 		</div>

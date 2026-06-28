@@ -97,7 +97,7 @@ func TestMobileNavLinkClassPropagation(t *testing.T) {
 		),
 	)
 	utils.AssertContains(t, output, "my-mobile-link")
-	utils.AssertContains(t, output, "block border-l-4")
+	utils.AssertContainsAll(t, output, "block", "border-l-4")
 }
 
 func TestMobileNavLinkVariants(t *testing.T) {

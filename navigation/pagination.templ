@@ -125,6 +125,20 @@ templ paginationEllipsis() {
 	</span>
 }
 
+// paginationPageItem renders a single page number inside a list item.
+templ paginationPageItem(isActive bool, href string, text string, activeClass string) {
+	<li>
+		@activeSpanOrLink(isActive, href, text, activeClass, inactivePageLinkClass)
+	</li>
+}
+
+// paginationEllipsisItem renders an ellipsis indicator inside a list item.
+templ paginationEllipsisItem() {
+	<li>
+		@paginationEllipsis()
+	</li>
+}
+
 // Pagination renders a page navigation bar
 //
 //	@navigation.Pagination(navigation.PaginationProps{
@@ -171,43 +185,20 @@ templ Pagination(props PaginationProps) {
 						</li>
 						{{ start, end := paginationRange(props.CurrentPage, props.TotalPages, props.MaxVisible) }}
 						if start > 1 {
-							<li>
-								@activeSpanOrLink(
-									false,
-									props.pageURL(1),
-									"1",
-									"",
-									inactivePageLinkClass,
-								)
-							</li>
-							<li>
-								@paginationEllipsis()
-							</li>
+							@paginationPageItem(false, props.pageURL(1), "1", "")
+							@paginationEllipsisItem()
 						}
 						for p := start; p <= end; p++ {
-							<li>
-								@activeSpanOrLink(
-									p == props.CurrentPage,
-									props.pageURL(p),
-									fmt.Sprintf("%d", p),
-									"relative z-10 inline-flex items-center bg-blue-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600",
-									inactivePageLinkClass,
-								)
-							</li>
+							@paginationPageItem(
+								p == props.CurrentPage,
+								props.pageURL(p),
+								fmt.Sprintf("%d", p),
+								"relative z-10 inline-flex items-center bg-blue-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600",
+							)
 						}
 						if end < props.TotalPages {
-							<li>
-								@paginationEllipsis()
-							</li>
-							<li>
-								@activeSpanOrLink(
-									false,
-									props.pageURL(props.TotalPages),
-									fmt.Sprintf("%d", props.TotalPages),
-									"",
-									inactivePageLinkClass,
-								)
-							</li>
+							@paginationEllipsisItem()
+							@paginationPageItem(false, props.pageURL(props.TotalPages), fmt.Sprintf("%d", props.TotalPages), "")
 						}
 						<li>
 							@paginationArrow(

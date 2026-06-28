@@ -52,7 +52,7 @@ templ PageHeader(props PageHeaderProps) {
 			<div class="min-w-0">
 				<h1 class="text-2xl font-bold tracking-tight text-gray-900 dark:text-white">{ props.Title }</h1>
 				if props.Subtitle != "" {
-					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ props.Subtitle }</p>
+					<p class={ utils.Class(mutedTextClass, "mt-1") }>{ props.Subtitle }</p>
 				}
 			</div>
 			if props.Action != nil {
