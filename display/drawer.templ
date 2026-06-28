@@ -9,6 +9,12 @@ import "github.com/larsartmann/templ-components/utils"
 //	}
 templ Drawer(props DrawerProps) {
 	{{ id := utils.EnsureID("drawer", props.ID) }}
+	{{ labelledBy := "" }}
+	{{
+		if props.Title != "" {
+			labelledBy = id + "-title"
+		}
+	}}
 	<div
 		id={ id }
 		class={ "fixed inset-0 z-50 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0",
@@ -16,7 +22,13 @@ templ Drawer(props DrawerProps) {
 			templ.KV("opacity-0 pointer-events-none", !props.Open) }
 		role="dialog"
 		aria-modal="true"
-		aria-labelledby={ id + "-title" }
+		aria-hidden={ !props.Open }
+		if labelledBy != "" {
+			aria-labelledby={ labelledBy }
+		}
+		if props.Open {
+			data-tc-open-on-load="true"
+		}
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
@@ -28,6 +40,9 @@ templ Drawer(props DrawerProps) {
 			templ.KV("translate-x-0", props.Open),
 			templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
 			templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight) }
+			if !props.Open {
+				inert
+			}
 			if props.Side == DrawerLeft {
 				style="inset-y: 0; left: 0;"
 			} else {

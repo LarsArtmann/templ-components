@@ -3,6 +3,7 @@ package display
 import (
 	"context"
 	"fmt"
+	"html"
 	"io"
 	"strconv"
 	"strings"
@@ -99,6 +100,7 @@ func overlayOpenJS(componentName string, cfg overlayPanelConfig) string {
 // overlayTrapJS generates the per-instance IIFE for click delegation and focus trap.
 func overlayTrapJS(id, componentName string) string {
 	closeFn := "tcClose" + componentName
+	openFn := "tcOpen" + componentName
 	escapedID := strconv.Quote(id)
 	return "(function(id) {\n" +
 		"\tvar overlay = document.getElementById(id);\n" +
@@ -121,6 +123,7 @@ func overlayTrapJS(id, componentName string) string {
 		"\t\t\te.preventDefault(); first.focus();\n" +
 		"\t\t}\n" +
 		"\t});\n" +
+		"\tif (overlay.getAttribute('data-tc-open-on-load') === 'true') { " + openFn + "(id); }\n" +
 		"})(" + escapedID + ");\n"
 }
 
@@ -141,10 +144,13 @@ func overlayJS(id, componentName string, cfg overlayPanelConfig) string {
 // overlayScriptComponent renders a <script nonce="..."> tag containing the
 // overlay JS. It writes directly to the output buffer to bypass templ's
 // script-context sanitization (which would JSON-encode the JS string).
+// The nonce is HTML-attribute-escaped to prevent attribute-boundary breakage
+// from a caller-supplied value containing quotes or angle brackets.
 func overlayScriptComponent(nonce, id, componentName string, cfg overlayPanelConfig) templ.Component {
 	js := overlayJS(id, componentName, cfg)
+	escapedNonce := html.EscapeString(nonce)
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", nonce, js); err != nil {
+		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, js); err != nil {
 			return fmt.Errorf("write overlay script: %w", err)
 		}
 		return nil

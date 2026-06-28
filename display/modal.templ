@@ -11,6 +11,10 @@ import (
 //	}
 templ Modal(props ModalProps) {
 	{{ id := utils.EnsureID("modal", props.ID) }}
+	{{ labelledBy := "" }}
+	{{ if props.Title != "" {
+		labelledBy = id + "-title"
+	} }}
 	<div
 		id={ id }
 		class={ "fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0",
@@ -18,7 +22,13 @@ templ Modal(props ModalProps) {
 			templ.KV("opacity-0 pointer-events-none", !props.Open) }
 		role="dialog"
 		aria-modal="true"
-		aria-labelledby={ id + "-title" }
+		aria-hidden={ !props.Open }
+		if labelledBy != "" {
+			aria-labelledby={ labelledBy }
+		}
+		if props.Open {
+			data-tc-open-on-load="true"
+		}
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
@@ -29,6 +39,9 @@ templ Modal(props ModalProps) {
 			class={ utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", modalSizeClass(props.Size), props.Class),
 			templ.KV("scale-100 opacity-100", props.Open),
 			templ.KV("scale-95 opacity-0", !props.Open) }
+			if !props.Open {
+				inert
+			}
 			{ props.Attrs... }
 		>
 			@dialogHeader(props.Title, id+"-title", "modal")
