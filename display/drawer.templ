@@ -7,6 +7,10 @@ import "github.com/larsartmann/templ-components/utils"
 //	@display.Drawer(display.DrawerProps{Title: "Settings", ID: "settings-drawer", Side: display.DrawerRight, Open: true, Nonce: nonce}) {
 //	   <p>Drawer content</p>
 //	}
+//
+// The panel body is intentionally not shared with Modal: the transition
+// (translate-x) and positioning classes differ, with conditional templ.KV
+// classes inline. overlayShell already owns the shared a11y shell + JS.
 templ Drawer(props DrawerProps) {
 	{{ id := utils.EnsureID("drawer", props.ID) }}
 	@overlayShell(overlayShellProps{

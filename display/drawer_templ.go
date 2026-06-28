@@ -15,6 +15,10 @@ import "github.com/larsartmann/templ-components/utils"
 //	@display.Drawer(display.DrawerProps{Title: "Settings", ID: "settings-drawer", Side: display.DrawerRight, Open: true, Nonce: nonce}) {
 //	   <p>Drawer content</p>
 //	}
+//
+// The panel body is intentionally not shared with Modal: the transition
+// (translate-x) and positioning classes differ, with conditional templ.KV
+// classes inline. overlayShell already owns the shared a11y shell + JS.
 func Drawer(props DrawerProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -66,7 +70,7 @@ func Drawer(props DrawerProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(id + "-panel")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/drawer.templ`, Line: 23, Col: 21}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/drawer.templ`, Line: 27, Col: 21}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {

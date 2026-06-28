@@ -10,43 +10,31 @@ import (
 func TestAssertMatchesGoldenFile(t *testing.T) {
 	t.Parallel()
 
+	dir := t.TempDir()
 	content := "<div class=\"bg-blue-600\">Hello</div>\n"
 	name := "test_assert"
-	goldenPath := filepath.Join("testdata", name+".golden")
-
-	if err := os.MkdirAll("testdata", 0o750); err != nil {
-		t.Fatalf("setup: %v", err)
-	}
-	t.Cleanup(func() {
-		_ = os.RemoveAll("testdata")
-	})
+	goldenPath := filepath.Join(dir, name+".golden")
 
 	if err := os.WriteFile(goldenPath, []byte(content), 0o600); err != nil {
 		t.Fatalf("setup write: %v", err)
 	}
 
-	Assert(t, name, content)
+	assertInDir(t, dir, name, content)
 }
 
 func TestAssertRejectsMismatch(t *testing.T) {
 	t.Parallel()
 
+	dir := t.TempDir()
 	name := "test_mismatch"
-	goldenPath := filepath.Join("testdata", name+".golden")
-
-	if err := os.MkdirAll("testdata", 0o750); err != nil {
-		t.Fatalf("setup: %v", err)
-	}
-	t.Cleanup(func() {
-		_ = os.RemoveAll("testdata")
-	})
+	goldenPath := filepath.Join(dir, name+".golden")
 
 	if err := os.WriteFile(goldenPath, []byte("old content\n"), 0o600); err != nil {
 		t.Fatalf("setup write: %v", err)
 	}
 
 	mockT := &testing.T{}
-	Assert(mockT, name, "new content\n")
+	assertInDir(mockT, dir, name, "new content\n")
 
 	if !mockT.Failed() {
 		t.Error("expected Assert to fail on mismatch")

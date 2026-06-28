@@ -35,6 +35,10 @@ func DefaultAlertProps() AlertProps {
 // Alert renders a full-width alert banner
 //
 //	@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong", Type: feedback.AlertError})
+//
+// The dismiss-button markup is intentionally duplicated in errorpage.ErrorAlert:
+// errorpage must not import feedback (kept minimal for error paths) and no shared
+// markup package exists. JS behaviour is shared via utils.DismissScript().
 templ Alert(props AlertProps) {
 	{{ s := feedbackStyle(props.Type) }}
 	<div

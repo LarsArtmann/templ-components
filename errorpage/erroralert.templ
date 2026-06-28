@@ -6,6 +6,11 @@ import (
 )
 
 templ ErrorAlert(props ErrorAlertProps) {
+// ErrorAlert renders a family-aware inline alert for use on error-rendering paths.
+//
+// The dismiss-button markup is intentionally duplicated in feedback.Alert: errorpage
+// must not import feedback (kept minimal for error paths) and no shared markup
+// package exists. JS behaviour is shared via utils.DismissScript().
 	{{ style := lookupFamilyStyle(props.Family) }}
 	<div
 		if props.ID != "" {

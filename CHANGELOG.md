@@ -8,15 +8,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- _Nothing yet_
+- Tooltip touch-device support: click/tap toggles visibility, Escape and click-outside dismiss (singleton JS, CSP-safe with nonce)
+- Tooltip auto-generates an ID via `utils.EnsureID` when none is provided, so `aria-describedby` is always wired up
+- Typed `HTMXVersion` enum (`HTMXVersion2_0_10`) replacing the bare string, matching the library's typed-constant convention
+- `ThemeColor`/`DarkThemeColor` are now validated as CSS hex colors, falling back to `DefaultThemeColor`/`DefaultDarkThemeColor` for invalid values instead of emitting garbage into the `<meta>` tag
+- Size constants (`AvatarSizeSM`/`MD`/`LG`, `BadgeSizeSM`, `SpinnerSM`, …) for programmatic size selection
+- `Toggle`: `Required`, `Error`, and `HelpText` fields for form integration
+- `ConfirmDelete` and `SwapOOB` now embed `BaseProps`, gaining `Class`/`ID`/`Attrs`/`AriaLabel`
+- `ErrorHandlerConfig.Lang` to override the `<html lang>` attribute on error pages
 
 ### Changed
 
-- _Nothing yet_
+- **Breaking:** `forms.FormFieldWrapper` now takes a `FormFieldProps{ID, Label, Required, Error, HelpText}` struct instead of 5 positional parameters (affects `Input`, `Textarea`, `Select`, `FileInput`, `DatePicker`, `Combobox`)
+- **Breaking:** `feedback.ConfirmDelete` now takes a `ConfirmDeleteProps{Delete, Target, Confirm}` struct instead of 3 positional strings
+- **Breaking:** `htmx.SwapOOB` now takes a `SwapOOBProps{Selector, SwapStyle}` struct instead of positional parameters
+- `errorpage` handler split into focused files; `WriteErrorPage` now derives the HTTP status from `props.Family` when `statusCode` is 0 (prevents status/family mismatch)
+- `errorpage` renders to a buffer before writing the response, so a mid-stream templ failure can no longer emit a truncated HTML document at the wrong status code
+- `Drawer` replaced inline `style="inset-y:0;left:0"` with Tailwind classes (`inset-y-0 left-0` / `right-0`) via `templ.KV` conditionals
+- `PageProps.HTMXVersion` field type: `string` → `HTMXVersion`
 
 ### Fixed
 
-- _Nothing yet_
+- Library did not compile for consumers: four generated `*_templ.go` files (DefinitionList, ListNote, SidebarNav, PageHeader) were missing from the Git tag because a redundant `*_templ.go` line in `.gitignore` overrode the `!*_templ.go` unignore
+- `Button`: invalid `aria-disabled:pointer-events-none` arbitrary variant (not real Tailwind) replaced with `pointer-events-none opacity-50` plus explicit `aria-disabled="true"` and `tabindex="-1"` for disabled links
+- `Spinner`: now renders `role="img"` when `AriaLabel` is set, so the label is reachable (previously stayed `aria-hidden`)
+- `Avatar`: status dot now renders in the initials/fallback branches, not just the image branch
+- `errorpage.ExtractCauseChain` now handles `errors.Join` siblings (`Unwrap() []error`, Go 1.20+), not only single-error chains
+
+### Internal
+
+- Templ duplication reduced (19 → 17 clone groups at threshold 4) via shared `navLinkAnchor` sub-template, `emptyStateAction` helper, `mutedTextClass` constant, and `paginationPageItem`/`paginationEllipsisItem` sub-templates
+- Duplicate default constants removed; `buttonVariantDefault`/`badgeStyleDefault` now derive from their lookup maps
+- `internal/golden` test isolation fixed: package tests use `t.TempDir()` instead of a shared `testdata/` that raced under `t.Parallel`
+- Accepted clones (`feedback/alert` ↔ `errorpage/erroralert` dismiss button; `Modal` ↔ `Drawer` panel body) documented with rationale comments
 
 ## [0.5.0] — 2026-06-28
 

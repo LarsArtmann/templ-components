@@ -30,6 +30,15 @@ var classRe = regexp.MustCompile(`class="([^"]*)"`)
 // CSS class attribute order is normalized before comparison.
 func Assert(t *testing.T, name, got string) {
 	t.Helper()
+	assertInDir(t, "testdata", name, got)
+}
+
+// assertInDir is the directory-parameterized core of Assert. It exists so the
+// golden package's own tests can pass a per-test t.TempDir() instead of sharing
+// a single testdata/ directory (which raced under t.Parallel when tests created
+// and removed files concurrently).
+func assertInDir(t *testing.T, dir, name, got string) {
+	t.Helper()
 
 	// Guard against path traversal: name must be a base filename, not a path.
 	if strings.ContainsAny(name, `/\`) || filepath.Clean(name) != name {
@@ -37,13 +46,13 @@ func Assert(t *testing.T, name, got string) {
 		return
 	}
 
-	goldenPath := filepath.Join("testdata", name+".golden")
+	goldenPath := filepath.Join(dir, name+".golden")
 
 	normalized := normalizeClasses(got)
 
 	if *update {
 		if err := os.MkdirAll(filepath.Dir(goldenPath), 0o750); err != nil {
-			t.Fatalf("golden: create testdata dir: %v", err)
+			t.Fatalf("golden: create golden dir: %v", err)
 		}
 		if err := os.WriteFile(goldenPath, []byte(normalized), 0o600); err != nil {
 			t.Fatalf("golden: write %s: %v", goldenPath, err)

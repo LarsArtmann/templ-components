@@ -7,6 +7,10 @@ import "github.com/larsartmann/templ-components/utils"
 //	@display.Modal(display.ModalProps{Title: "Confirm", ID: "confirm-modal", Nonce: nonce}) {
 //	   <p>Are you sure?</p>
 //	}
+//
+// The panel body is intentionally not shared with Drawer: the transition
+// (scale/opacity) and sizing classes differ, with conditional templ.KV classes
+// inline. overlayShell already owns the shared a11y shell + JS.
 templ Modal(props ModalProps) {
 	{{ id := utils.EnsureID("modal", props.ID) }}
 	@overlayShell(overlayShellProps{
