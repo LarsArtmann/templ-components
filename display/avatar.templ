@@ -118,7 +118,7 @@ templ Avatar(props AvatarProps) {
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class("inline-flex items-center justify-center bg-blue-600 text-white font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class) }
+			class={ utils.Class("relative inline-flex items-center justify-center bg-blue-600 text-white font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
@@ -130,6 +130,15 @@ templ Avatar(props AvatarProps) {
 				<svg class="h-1/2 w-1/2 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
 					<path d={ svg.PathAvatarFill }></path>
 				</svg>
+			}
+			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
+				<span
+					class={ "absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
+						avatarDotSizeClass(props.Size),
+						templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
+						templ.KV("bg-gray-400", props.Status == AvatarStatusOffline) }
+					aria-hidden="true"
+				></span>
 			}
 		</div>
 	}

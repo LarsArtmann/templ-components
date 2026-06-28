@@ -137,7 +137,7 @@ func TestAvatarRender(t *testing.T) {
 		utils.AssertContains(t, output, "<svg")
 	})
 
-	t.Run("initials without status dot (status only for image)", func(t *testing.T) {
+	t.Run("initials with status dot (now renders in all branches)", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Avatar(AvatarProps{
 			Initials: "EF",
@@ -145,7 +145,7 @@ func TestAvatarRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "EF")
 		utils.AssertContains(t, output, "bg-blue-600")
-		utils.AssertNotContains(t, output, "bg-gray-400")
+		utils.AssertContains(t, output, "bg-gray-400")
 	})
 }
 

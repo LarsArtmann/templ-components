@@ -29,7 +29,12 @@ func DefaultInputGroupProps() InputGroupProps {
 }
 
 // InputGroupPaddingClass returns the appropriate padding class for an input
-// that lives inside an InputGroup with the given addons.
+// that lives inside an InputGroup with the given addons. Call this from your
+// input's Class field to avoid manual padding:
+//
+//	@forms.InputGroup(forms.InputGroupProps{LeftAddon: icon}) {
+//	   @forms.Input(forms.InputProps{Class: forms.InputGroupPaddingClass(true, false)})
+//	}
 func InputGroupPaddingClass(left, right bool) string {
 	switch {
 	case left && right:
@@ -89,7 +94,7 @@ func InputGroup(props InputGroupProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input_group.templ`, Line: 49, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/input_group.templ`, Line: 54, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {

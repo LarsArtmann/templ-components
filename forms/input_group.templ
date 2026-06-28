@@ -21,7 +21,12 @@ func DefaultInputGroupProps() InputGroupProps {
 }
 
 // InputGroupPaddingClass returns the appropriate padding class for an input
-// that lives inside an InputGroup with the given addons.
+// that lives inside an InputGroup with the given addons. Call this from your
+// input's Class field to avoid manual padding:
+//
+//	@forms.InputGroup(forms.InputGroupProps{LeftAddon: icon}) {
+//	   @forms.Input(forms.InputProps{Class: forms.InputGroupPaddingClass(true, false)})
+//	}
 func InputGroupPaddingClass(left, right bool) string {
 	switch {
 	case left && right:
