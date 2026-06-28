@@ -8,23 +8,23 @@
 
 ## Metrics Snapshot
 
-| Metric                         | Value                                                         |
-| ------------------------------ | ------------------------------------------------------------- |
-| Packages                       | 13 (10 library + demo + integration + internal)               |
-| Templ sources (excl. examples) | 50                                                            |
-| Generated `*_templ.go` files   | 51 (all tracked ✅)                                           |
-| Test files                     | 87                                                            |
-| Templ LOC                      | ~5,336                                                        |
-| Handwritten Go LOC             | ~2,119                                                        |
-| Components                     | 75                                                            |
-| Icons                          | 101 (100 path constants + Spinner)                            |
-| Test packages passing          | 12 / 12 (`-race -count=1`)                                    |
-| Lint issues                    | 0                                                             |
-| TODOs in source                | 0                                                             |
-| Templ clone groups (t=4)       | 17 (baseline — 0 new)                                         |
-| Go clone groups (t=15)         | 0                                                             |
-| Commits since v0.5.0           | 27 (unreleased)                                               |
-| Breaking changes unreleased    | 3 (FormFieldWrapper, ConfirmDelete, SwapOOB → Props structs)  |
+| Metric                         | Value                                                        |
+| ------------------------------ | ------------------------------------------------------------ |
+| Packages                       | 13 (10 library + demo + integration + internal)              |
+| Templ sources (excl. examples) | 50                                                           |
+| Generated `*_templ.go` files   | 51 (all tracked ✅)                                          |
+| Test files                     | 87                                                           |
+| Templ LOC                      | ~5,336                                                       |
+| Handwritten Go LOC             | ~2,119                                                       |
+| Components                     | 75                                                           |
+| Icons                          | 101 (100 path constants + Spinner)                           |
+| Test packages passing          | 12 / 12 (`-race -count=1`)                                   |
+| Lint issues                    | 0                                                            |
+| TODOs in source                | 0                                                            |
+| Templ clone groups (t=4)       | 17 (baseline — 0 new)                                        |
+| Go clone groups (t=15)         | 0                                                            |
+| Commits since v0.5.0           | 27 (unreleased)                                              |
+| Breaking changes unreleased    | 3 (FormFieldWrapper, ConfirmDelete, SwapOOB → Props structs) |
 
 ---
 
@@ -39,7 +39,7 @@
 
 2. **`docs:` accepted-clone rationale — resolves the "top question" from the last report**
    - Three accepted clone groups now carry explicit rationale in **doc comments** (not in-markup comments — see section d):
-     - **`feedback.Alert` ↔ `errorpage.ErrorAlert`** dismiss-button (13 lines). Decision: **accept.** `errorpage` must not import `feedback`; the shared *logic* (`utils.DismissScript()` JS) is already shared; only the *markup* is duplicated; no shared markup package exists; the project's own "3+ times" threshold isn't met (2×); a package for 13 lines is premature generalization.
+     - **`feedback.Alert` ↔ `errorpage.ErrorAlert`** dismiss-button (13 lines). Decision: **accept.** `errorpage` must not import `feedback`; the shared _logic_ (`utils.DismissScript()` JS) is already shared; only the _markup_ is duplicated; no shared markup package exists; the project's own "3+ times" threshold isn't met (2×); a package for 13 lines is premature generalization.
      - **`display.Modal` ↔ `display.Drawer`** panel body (~15 lines of scaffold). Decision: **accept.** The transition classes differ fundamentally (scale/opacity vs translate-x); sizing classes differ; `templ.KV` conditionals are inline; `overlayShell` already owns the shared a11y shell + JS.
      - **`errorpage.ErrorDetail` ↔ `errorpage.ErrorPage`** header scaffold (icon + badge + title + message). Decision: **accept.** Shared logic already extracted (`familyIcon`, `codeAndFamilyBadge`, `diagnosticSection`); the remaining layout differs by visual density (compact `h3` vs full-page `h1`).
 
@@ -98,7 +98,7 @@
 
 ## d) TOTALLY FUCKED UP 💥 (things I broke and fixed)
 
-1. **`//` comments inside templ markup leak whitespace into rendered HTML.** I initially placed the rationale comments *inside* the templ component body (between `if props.Dismissible {` and the `<div class="ml-auto pl-3">`). This is syntactically valid templ — `//` comments are allowed in Go blocks — but templ renders the surrounding whitespace/newlines into the output. The `TestGoldenAlertDismissible` golden test caught it immediately: the rendered HTML had extra whitespace before the dismiss button. **Fixed** by moving all rationale to **doc comments above the `templ` function declarations** (doc comments are stripped from output — this is why every existing `// Foo renders...` comment doesn't leak). This is a non-obvious gotcha that should be documented in AGENTS.md.
+1. **`//` comments inside templ markup leak whitespace into rendered HTML.** I initially placed the rationale comments _inside_ the templ component body (between `if props.Dismissible {` and the `<div class="ml-auto pl-3">`). This is syntactically valid templ — `//` comments are allowed in Go blocks — but templ renders the surrounding whitespace/newlines into the output. The `TestGoldenAlertDismissible` golden test caught it immediately: the rendered HTML had extra whitespace before the dismiss button. **Fixed** by moving all rationale to **doc comments above the `templ` function declarations** (doc comments are stripped from output — this is why every existing `// Foo renders...` comment doesn't leak). This is a non-obvious gotcha that should be documented in AGENTS.md.
 2. **The in-markup comment version was caught by a golden test — which is exactly why golden tests exist.** No user-facing damage; the failure was local and immediate. But it reinforces: when you have golden coverage, trust it. When you don't (like `erroralert.templ` and `errordetail.templ` which have no golden tests), a whitespace leak would have shipped silently. The doc-comment approach is correct for all 5 files regardless of test coverage.
 
 ---
@@ -109,7 +109,7 @@
 
 1. **Unify action/render slots.** `EmptyStateProps` uses flat strings (`ActionText`/`ActionHref`/`ActionAttrs`); `PageHeaderProps` uses `templ.Component` slots. Slots are more composable. v0.6 breaking-change candidate.
 2. **`ROADMAP.md` is missing.** AGENTS.md's "Project Documentation Files" table lists it as the home for "long-term direction and raw ideas not yet refined into actionable tasks." It doesn't exist. Either create it or remove the reference.
-3. **The accepted clones are now documented — but the "should we extract to `internal/dismiss`?" question will recur.** The rationale comments explain *why* we accepted, but there's no ADR encoding the decision. A short ADR (`docs/adr-002-accepted-clones.md`) would prevent the next reviewer from re-litigating.
+3. **The accepted clones are now documented — but the "should we extract to `internal/dismiss`?" question will recur.** The rationale comments explain _why_ we accepted, but there's no ADR encoding the decision. A short ADR (`docs/adr-002-accepted-clones.md`) would prevent the next reviewer from re-litigating.
 
 ### Process
 
@@ -126,33 +126,33 @@
 
 ## f) Top 25 things to do next (sorted by impact × 1/work)
 
-| #   | Task                                                                       | Impact | Work    |
-| --- | -------------------------------------------------------------------------- | ------ | ------- |
-| 1   | **Tag v0.6.0** (27 commits unreleased incl. CRITICAL compile fix; CHANGELOG ready) | Crit   | Trivial |
-| 2   | Document templ `//` comment whitespace gotcha in AGENTS.md                 | High   | Trivial |
-| 3   | Create `ROADMAP.md` (referenced in AGENTS.md but missing)                  | Med    | Trivial |
-| 4   | Update `TODO_LIST.md` (stale — last updated 2026-06-27)                    | Med    | Trivial |
-| 5   | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)        | High   | Low     |
-| 6   | Submit awesome-templ PR (entry text ready)                                 | Med    | Low     |
-| 7   | Submit templ.guide listing (manual)                                        | Med    | Low     |
-| 8   | Write ADR for accepted-clone decisions (`docs/adr-002-accepted-clones.md`) | Med    | Low     |
+| #   | Task                                                                                    | Impact | Work    |
+| --- | --------------------------------------------------------------------------------------- | ------ | ------- |
+| 1   | **Tag v0.6.0** (27 commits unreleased incl. CRITICAL compile fix; CHANGELOG ready)      | Crit   | Trivial |
+| 2   | Document templ `//` comment whitespace gotcha in AGENTS.md                              | High   | Trivial |
+| 3   | Create `ROADMAP.md` (referenced in AGENTS.md but missing)                               | Med    | Trivial |
+| 4   | Update `TODO_LIST.md` (stale — last updated 2026-06-27)                                 | Med    | Trivial |
+| 5   | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)                     | High   | Low     |
+| 6   | Submit awesome-templ PR (entry text ready)                                              | Med    | Low     |
+| 7   | Submit templ.guide listing (manual)                                                     | Med    | Low     |
+| 8   | Write ADR for accepted-clone decisions (`docs/adr-002-accepted-clones.md`)              | Med    | Low     |
 | 9   | Update `FEATURES.md` with post-v0.5.0 features (tooltip touch, typed HTMXVersion, etc.) | Med    | Low     |
-| 10  | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6)        | High   | Med     |
-| 11  | Write ADR for "slot vs flat strings" decision                              | Med    | Low     |
-| 12  | Add `Validate() error` design spike for v1.0                               | High   | High    |
-| 13  | Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)          | Low    | Trivial |
-| 14  | Move test helpers to `internal/testutil/` (v1.0 breaking)                  | Med    | Med     |
-| 15  | Consider typed `IconName`/`ComponentName` branded types for stronger safety | Med    | Med     |
-| 16  | Add file-size enforcement (BuildFlow `max_file_size: 350` already set)     | Low    | Trivial |
-| 17  | Audit `examples/demo` for staleness against current API                    | Low    | Low     |
-| 18  | Add CONTRIBUTING note about the BuildFlow gitignore gotcha                 | Low    | Trivial |
-| 19  | Consider `internal/svg` → public `svg` (consumers ask for raw paths)       | Low    | Med     |
-| 20  | Add cross-package composition tests (Card+Badge+Table realistic layout)    | Low    | Low     |
-| 21  | Write ADR for the "silent fallback over panic" validation philosophy       | Med    | Low     |
-| 22  | Evaluate `go-error-family` v0.6+ for new error families                    | Low    | Low     |
-| 23  | Run `art-dupl` on Go sources at t=10 (currently clean at t=15)             | Low    | Trivial |
-| 24  | Add integration test for `go get` from clean project (CI already does this) | Low    | Low     |
-| 25  | Plan v0.6.0 scope formally (action slots, composition tests, svg publicity) | Med    | Med     |
+| 10  | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6)                     | High   | Med     |
+| 11  | Write ADR for "slot vs flat strings" decision                                           | Med    | Low     |
+| 12  | Add `Validate() error` design spike for v1.0                                            | High   | High    |
+| 13  | Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)                       | Low    | Trivial |
+| 14  | Move test helpers to `internal/testutil/` (v1.0 breaking)                               | Med    | Med     |
+| 15  | Consider typed `IconName`/`ComponentName` branded types for stronger safety             | Med    | Med     |
+| 16  | Add file-size enforcement (BuildFlow `max_file_size: 350` already set)                  | Low    | Trivial |
+| 17  | Audit `examples/demo` for staleness against current API                                 | Low    | Low     |
+| 18  | Add CONTRIBUTING note about the BuildFlow gitignore gotcha                              | Low    | Trivial |
+| 19  | Consider `internal/svg` → public `svg` (consumers ask for raw paths)                    | Low    | Med     |
+| 20  | Add cross-package composition tests (Card+Badge+Table realistic layout)                 | Low    | Low     |
+| 21  | Write ADR for the "silent fallback over panic" validation philosophy                    | Med    | Low     |
+| 22  | Evaluate `go-error-family` v0.6+ for new error families                                 | Low    | Low     |
+| 23  | Run `art-dupl` on Go sources at t=10 (currently clean at t=15)                          | Low    | Trivial |
+| 24  | Add integration test for `go get` from clean project (CI already does this)             | Low    | Low     |
+| 25  | Plan v0.6.0 scope formally (action slots, composition tests, svg publicity)             | Med    | Med     |
 
 ---
 
