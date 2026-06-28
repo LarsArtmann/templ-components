@@ -30,6 +30,7 @@ func DefaultNavProps() NavProps {
 //	   CurrentPath: "/",
 //	})
 templ Nav(props NavProps) {
+	{{ menuID := utils.EnsureID("mobile-menu", props.ID) }}
 	<nav
 		if props.ID != "" {
 			id={ props.ID }
@@ -58,10 +59,10 @@ templ Nav(props NavProps) {
 						@props.RightItems
 					</div>
 				}
-				@MobileMenuToggle(len(props.Links) > 0)
+				@MobileMenuToggle(len(props.Links) > 0, menuID)
 			</div>
 		</div>
-		@MobileMenu(props.Links, props.CurrentPath, props.Nonce)
+		@MobileMenu(props.Links, props.CurrentPath, props.Nonce, menuID)
 	</nav>
 }
 
@@ -72,12 +73,14 @@ type SimpleNavProps struct {
 	BrandHref   string
 	Links       []NavLinkProps
 	CurrentPath string
+	Sticky      bool
 }
 
 // DefaultSimpleNavProps returns sensible defaults
 func DefaultSimpleNavProps() SimpleNavProps {
 	return SimpleNavProps{ //nolint:exhaustruct // intentionally minimal defaults
 		BrandHref: "/",
+		Sticky:    true,
 	}
 }
 
@@ -97,7 +100,7 @@ templ SimpleNav(props SimpleNavProps) {
 		Brand:       simpleBrand(props.BrandText, props.BrandHref),
 		Links:       props.Links,
 		CurrentPath: props.CurrentPath,
-		Sticky:      true,
+		Sticky:      props.Sticky,
 	})
 }
 

@@ -77,8 +77,10 @@ var feedbackStyleMap = map[FeedbackType]feedbackStyleSet{
 
 //nolint:gochecknoglobals // Package-level default fallback
 var feedbackStyleDefault = feedbackStyleSet{
-	"border-gray-200 dark:border-gray-700", "bg-gray-50 dark:bg-gray-800/50",
-	"text-gray-800 dark:text-gray-200", "text-gray-600 dark:text-gray-400",
+	Border: "border-gray-200 dark:border-gray-700",
+	BG:     "bg-gray-50 dark:bg-gray-800/50",
+	Text:   "text-gray-800 dark:text-gray-200",
+	Icon:   "text-gray-600 dark:text-gray-400",
 }
 
 // feedbackIconMap is the single source of truth for feedback icons.

@@ -8,6 +8,15 @@ package htmx
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
+// defaultSpinner returns the provided spinner, or a no-op component when nil,
+// so callers can safely pass a zero-value templ.Component without a render panic.
+func defaultSpinner(spinner templ.Component) templ.Component {
+	if spinner != nil {
+		return spinner
+	}
+	return templ.NopComponent
+}
+
 // LoadingIndicator renders a fixed-position HTMX loading indicator.
 // Accepts a spinner component for decoupled loading animation.
 //
@@ -37,7 +46,7 @@ func LoadingIndicator(spinner templ.Component) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = spinner.Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = defaultSpinner(spinner).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -81,7 +90,7 @@ func InlineLoadingOverlay(id string, spinner templ.Component) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/loading.templ`, Line: 21, Col: 9}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/loading.templ`, Line: 30, Col: 9}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -91,7 +100,7 @@ func InlineLoadingOverlay(id string, spinner templ.Component) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = spinner.Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = defaultSpinner(spinner).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -104,7 +113,8 @@ func InlineLoadingOverlay(id string, spinner templ.Component) templ.Component {
 }
 
 // LoadingButton renders a button with built-in loading state.
-// Accepts a spinner component for decoupled loading animation.
+// The default text hides during an HTMX request (htmx-request on the form
+// toggles htmx-indicator visibility); loadingText is the htmx-indicator.
 //
 //	<button class="btn-primary" hx-post="/save" hx-indicator=".tc-btn-loading">
 //	   @htmx.LoadingButton("Save", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "htmx-indicator"}))
@@ -134,7 +144,7 @@ func LoadingButton(defaultText, loadingText string, spinner templ.Component) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = spinner.Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = defaultSpinner(spinner).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -145,20 +155,20 @@ func LoadingButton(defaultText, loadingText string, spinner templ.Component) tem
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(loadingText)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/loading.templ`, Line: 39, Col: 45}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/loading.templ`, Line: 49, Col: 45}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</span> <span>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</span> <span class=\"htmx-hide-during-request\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(defaultText)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/loading.templ`, Line: 40, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/loading.templ`, Line: 50, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {

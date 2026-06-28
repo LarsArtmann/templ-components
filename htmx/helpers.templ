@@ -1,23 +1,34 @@
 package htmx
 
-// validSwapStyles are the allowed HTMX swap styles for out-of-band updates
-var validSwapStyles = map[string]bool{
-	"innerHTML":   true,
-	"outerHTML":   true,
-	"beforebegin": true,
-	"afterbegin":  true,
-	"beforeend":   true,
-	"afterend":    true,
-	"delete":      true,
-	"none":        true,
+// SwapStyle is an HTMX swap style for out-of-band updates.
+type SwapStyle string
+
+// HTMX swap styles (https://htmx.org/attributes/hx-swap/).
+const (
+	SwapInnerHTML   SwapStyle = "innerHTML"
+	SwapOuterHTML   SwapStyle = "outerHTML"
+	SwapBeforeBegin SwapStyle = "beforebegin"
+	SwapAfterBegin  SwapStyle = "afterbegin"
+	SwapBeforeEnd   SwapStyle = "beforeend"
+	SwapAfterEnd    SwapStyle = "afterend"
+	SwapDelete      SwapStyle = "delete"
+	SwapNone        SwapStyle = "none"
+)
+
+// validSwapStyles are the allowed HTMX swap styles for out-of-band updates.
+//nolint:gochecknoglobals // Package-level validation set
+var validSwapStyles = map[SwapStyle]bool{
+	SwapInnerHTML: true, SwapOuterHTML: true, SwapBeforeBegin: true,
+	SwapAfterBegin: true, SwapBeforeEnd: true, SwapAfterEnd: true,
+	SwapDelete: true, SwapNone: true,
 }
 
 // normalizeSwapStyle returns style if valid, otherwise falls back to outerHTML.
-func normalizeSwapStyle(style string) string {
+func normalizeSwapStyle(style SwapStyle) SwapStyle {
 	if validSwapStyles[style] {
 		return style
 	}
-	return "outerHTML"
+	return SwapOuterHTML
 }
 
 // ConfirmDelete renders a button with a confirmation dialog for destructive actions
@@ -36,15 +47,16 @@ templ ConfirmDelete(hxDelete, hxTarget, confirmMessage string) {
 	</button>
 }
 
-// SwapOOB renders an out-of-band swap wrapper for HTMX responses
-// Use this to update multiple elements in a single response
+// SwapOOB renders an out-of-band swap wrapper for HTMX responses.
+// Use this to update multiple elements in a single response. Invalid swap
+// styles fall back to outerHTML.
 //
-//	@htmx.SwapOOB("#toast-container", "beforeend") {
+//	@htmx.SwapOOB("#toast-container", htmx.SwapBeforeEnd) {
 //	   @feedback.Toast(props)
 //	 }
-templ SwapOOB(selector, swapStyle string) {
+templ SwapOOB(selector string, swapStyle SwapStyle) {
 	{{ style := normalizeSwapStyle(swapStyle) }}
-	<div hx-swap-oob={ style + ":" + selector }>
+	<div hx-swap-oob={ string(style) + ":" + selector }>
 		{ children... }
 	</div>
 }

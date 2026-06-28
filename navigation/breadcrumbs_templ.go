@@ -11,6 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
@@ -29,6 +30,9 @@ type BreadcrumbsProps struct {
 	Items     []BreadcrumbItem
 	Separator string
 	JSONLD    bool
+	// BaseURL is used to resolve relative Hrefs into absolute URLs for
+	// JSON-LD structured data (schema.org requires absolute URLs).
+	BaseURL string
 }
 
 // DefaultBreadcrumbsProps returns sensible defaults
@@ -36,8 +40,9 @@ func DefaultBreadcrumbsProps() BreadcrumbsProps {
 	return BreadcrumbsProps{}
 }
 
-// breadcrumbJSONLD generates JSON-LD structured data for breadcrumbs
-func breadcrumbJSONLD(items []BreadcrumbItem) string {
+// breadcrumbJSONLD generates JSON-LD structured data for breadcrumbs.
+// Relative Hrefs are resolved against baseURL (schema.org requires absolute URLs).
+func breadcrumbJSONLD(items []BreadcrumbItem, baseURL string) string {
 	type ListItem struct {
 		Type     string `json:"@type"`
 		Position int    `json:"position"`
@@ -62,7 +67,7 @@ func breadcrumbJSONLD(items []BreadcrumbItem) string {
 			Name:     item.Text,
 		}
 		if item.Href != "" {
-			entry.Item = item.Href
+			entry.Item = resolveBreadcrumbURL(item.Href, baseURL)
 		}
 		list.Items = append(list.Items, entry)
 	}
@@ -72,6 +77,21 @@ func breadcrumbJSONLD(items []BreadcrumbItem) string {
 		return ""
 	}
 	return string(data)
+}
+
+// resolveBreadcrumbURL joins a relative Href to baseURL for JSON-LD output.
+// Absolute Hrefs (already containing a scheme) are returned unchanged.
+func resolveBreadcrumbURL(href, baseURL string) string {
+	if href == "" {
+		return ""
+	}
+	if strings.Contains(href, "://") {
+		return href
+	}
+	if baseURL == "" {
+		return href
+	}
+	return strings.TrimRight(baseURL, "/") + "/" + strings.TrimLeft(href, "/")
 }
 
 // breadcrumbSeparator renders the separator between breadcrumb items
@@ -104,7 +124,7 @@ func breadcrumbSeparator(custom string) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(custom)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 72, Col: 62}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 92, Col: 62}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -171,7 +191,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 90, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 110, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -202,7 +222,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Breadcrumb"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 93, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 113, Col: 82}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {
@@ -251,7 +271,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.JSONLD && len(props.Items) > 0 {
-			templ_7745c5c3_Err = templ.Raw(fmt.Sprintf(`<script type="application/ld+json">%s</script>`, breadcrumbJSONLD(props.Items))).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = templ.Raw(fmt.Sprintf(`<script type="application/ld+json">%s</script>`, breadcrumbJSONLD(props.Items, props.BaseURL))).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -3,6 +3,7 @@ package feedback
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/icons"
@@ -89,14 +90,14 @@ func TestToastStyles(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(string(tt.typ), func(t *testing.T) {
 			t.Parallel()
-			border, bg, text, icon := toastStyles(tt.typ)
+			s := feedbackStyle(tt.typ)
 			assertStyleFunc4(
 				t,
-				fmt.Sprintf("toastStyles(%q)", tt.typ),
-				border,
-				bg,
-				text,
-				icon,
+				fmt.Sprintf("feedbackStyle(%q)", tt.typ),
+				s.Border,
+				s.BG,
+				s.Text,
+				s.Icon,
 				tt.wantBorder,
 				tt.wantIconColor,
 			)
@@ -106,8 +107,8 @@ func TestToastStyles(t *testing.T) {
 
 func TestToastStylesDefault(t *testing.T) {
 	t.Parallel()
-	border, bg, text, icon := toastStyles("unknown")
-	assertStyleFunc4(t, "toastStyles(unknown)", border, bg, text, icon, "", "")
+	s := feedbackStyle("unknown")
+	assertStyleFunc4(t, "feedbackStyle(unknown)", s.Border, s.BG, s.Text, s.Icon, "", "")
 }
 
 func TestAlertStyles(t *testing.T) {
@@ -125,14 +126,14 @@ func TestAlertStyles(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(string(tt.typ), func(t *testing.T) {
 			t.Parallel()
-			border, bg, text, icon := alertStyles(tt.typ)
+			s := feedbackStyle(tt.typ)
 			assertStyleFunc4(
 				t,
-				fmt.Sprintf("alertStyles(%q)", tt.typ),
-				border,
-				bg,
-				text,
-				icon,
+				fmt.Sprintf("feedbackStyle(%q)", tt.typ),
+				s.Border,
+				s.BG,
+				s.Text,
+				s.Icon,
 				tt.wantBorder,
 				tt.wantIconColor,
 			)
@@ -191,10 +192,10 @@ func TestDismissScript(t *testing.T) {
 	if s == "" {
 		t.Error("utils.DismissScript() returned empty string")
 	}
-	if !contains(s, "tcDismissAttached") {
+	if !strings.Contains(s, "tcDismissAttached") {
 		t.Error("utils.DismissScript() missing tcDismissAttached guard")
 	}
-	if !contains(s, "data-dismiss") {
+	if !strings.Contains(s, "data-dismiss") {
 		t.Error("utils.DismissScript() missing data-dismiss selector")
 	}
 }
@@ -219,19 +220,6 @@ func TestFeedbackIconName(t *testing.T) {
 			}
 		})
 	}
-}
-
-func contains(s, substr string) bool {
-	return len(s) >= len(substr) && (s == substr || len(s) > 0 && containsSubstr(s, substr))
-}
-
-func containsSubstr(s, substr string) bool {
-	for i := 0; i <= len(s)-len(substr); i++ {
-		if s[i:i+len(substr)] == substr {
-			return true
-		}
-	}
-	return false
 }
 
 func TestStepCircleClass(t *testing.T) {

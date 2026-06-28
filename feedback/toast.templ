@@ -160,13 +160,17 @@ templ Toast(props ToastProps) {
 			</button>
 		</div>
 	</div>
-	<script nonce={ props.Nonce }>
-		{{ utils.DismissScript() }}
-		if props.Duration > 0 && props.ID != "" {
+	if props.Duration > 0 && props.ID != "" {
+		<script nonce={ props.Nonce }>
+			{{ utils.DismissScript() }}
 			setTimeout(function() {
 				var toast = document.getElementById('{{ props.ID }}');
 				if (toast) toast.remove();
 			}, {{ fmt.Sprintf("%d", props.Duration) }});
-		}
-	</script>
+		</script>
+	} else {
+		<script nonce={ props.Nonce }>
+			{{ utils.DismissScript() }}
+		</script>
+	}
 }

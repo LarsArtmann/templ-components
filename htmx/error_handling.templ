@@ -42,7 +42,11 @@ func (c *ErrorHandlingConfig) normalize() {
 templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
 	{{ cfg.normalize() }}
 	<div id="tc-error-announcer" aria-live="polite" class="sr-only"></div>
-	<script nonce={ cfg.Nonce }>
+	<script
+		if cfg.Nonce != "" {
+			nonce={ cfg.Nonce }
+		}
+	>
 		(function() {
 			'use strict';
 
@@ -138,7 +142,7 @@ templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
 			document.addEventListener('htmx:responseError', function(event) {
 				var xhr = event.detail.xhr;
 				var elt = event.detail.elt;
-				if ((xhr.status >= 500 || xhr.status === 0) && elt) {
+				if (xhr && (xhr.status >= 500 || xhr.status === 0) && elt) {
 					var retries = parseInt(elt.getAttribute('data-tc-retry') || '0');
 					if (retries < MAX_RETRIES) {
 						elt.setAttribute('data-tc-retry', String(retries + 1));
@@ -160,6 +164,10 @@ templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
 					if (timer) {
 						clearTimeout(parseInt(timer));
 						target.removeAttribute('data-loading-timer');
+					}
+					var xhr = event.detail.xhr;
+					if (xhr && xhr.status >= 200 && xhr.status < 300) {
+						target.removeAttribute('data-tc-retry');
 					}
 				}
 			});

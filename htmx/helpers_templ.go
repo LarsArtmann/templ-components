@@ -8,24 +8,36 @@ package htmx
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-// validSwapStyles are the allowed HTMX swap styles for out-of-band updates
-var validSwapStyles = map[string]bool{
-	"innerHTML":   true,
-	"outerHTML":   true,
-	"beforebegin": true,
-	"afterbegin":  true,
-	"beforeend":   true,
-	"afterend":    true,
-	"delete":      true,
-	"none":        true,
+// SwapStyle is an HTMX swap style for out-of-band updates.
+type SwapStyle string
+
+// HTMX swap styles (https://htmx.org/attributes/hx-swap/).
+const (
+	SwapInnerHTML   SwapStyle = "innerHTML"
+	SwapOuterHTML   SwapStyle = "outerHTML"
+	SwapBeforeBegin SwapStyle = "beforebegin"
+	SwapAfterBegin  SwapStyle = "afterbegin"
+	SwapBeforeEnd   SwapStyle = "beforeend"
+	SwapAfterEnd    SwapStyle = "afterend"
+	SwapDelete      SwapStyle = "delete"
+	SwapNone        SwapStyle = "none"
+)
+
+// validSwapStyles are the allowed HTMX swap styles for out-of-band updates.
+//
+//nolint:gochecknoglobals // Package-level validation set
+var validSwapStyles = map[SwapStyle]bool{
+	SwapInnerHTML: true, SwapOuterHTML: true, SwapBeforeBegin: true,
+	SwapAfterBegin: true, SwapBeforeEnd: true, SwapAfterEnd: true,
+	SwapDelete: true, SwapNone: true,
 }
 
 // normalizeSwapStyle returns style if valid, otherwise falls back to outerHTML.
-func normalizeSwapStyle(style string) string {
+func normalizeSwapStyle(style SwapStyle) SwapStyle {
 	if validSwapStyles[style] {
 		return style
 	}
-	return "outerHTML"
+	return SwapOuterHTML
 }
 
 // ConfirmDelete renders a button with a confirmation dialog for destructive actions
@@ -59,7 +71,7 @@ func ConfirmDelete(hxDelete, hxTarget, confirmMessage string) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(hxDelete)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/helpers.templ`, Line: 30, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/helpers.templ`, Line: 41, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
@@ -72,7 +84,7 @@ func ConfirmDelete(hxDelete, hxTarget, confirmMessage string) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(hxTarget)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/helpers.templ`, Line: 31, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/helpers.templ`, Line: 42, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -85,7 +97,7 @@ func ConfirmDelete(hxDelete, hxTarget, confirmMessage string) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(confirmMessage)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/helpers.templ`, Line: 33, Col: 29}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/helpers.templ`, Line: 44, Col: 29}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -99,13 +111,14 @@ func ConfirmDelete(hxDelete, hxTarget, confirmMessage string) templ.Component {
 	})
 }
 
-// SwapOOB renders an out-of-band swap wrapper for HTMX responses
-// Use this to update multiple elements in a single response
+// SwapOOB renders an out-of-band swap wrapper for HTMX responses.
+// Use this to update multiple elements in a single response. Invalid swap
+// styles fall back to outerHTML.
 //
-//	@htmx.SwapOOB("#toast-container", "beforeend") {
+//	@htmx.SwapOOB("#toast-container", htmx.SwapBeforeEnd) {
 //	   @feedback.Toast(props)
 //	 }
-func SwapOOB(selector, swapStyle string) templ.Component {
+func SwapOOB(selector string, swapStyle SwapStyle) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -132,9 +145,9 @@ func SwapOOB(selector, swapStyle string) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(style + ":" + selector)
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(style) + ":" + selector)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/helpers.templ`, Line: 47, Col: 42}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/helpers.templ`, Line: 59, Col: 50}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
@@ -187,7 +200,7 @@ func CSRFToken(token string) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(token)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/helpers.templ`, Line: 56, Col: 53}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/helpers.templ`, Line: 68, Col: 53}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {

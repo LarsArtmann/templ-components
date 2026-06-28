@@ -52,7 +52,7 @@ func TestToastRender(t *testing.T) {
 	}
 	output := utils.Render(t, Toast(props))
 	utils.AssertContains(t, output, "Saved!")
-	utils.AssertContains(t, output, `role="alert"`)
+	utils.AssertContains(t, output, `role="status"`)
 	utils.AssertContains(t, output, `data-dismiss="toast"`)
 	utils.AssertNotContains(t, output, `onclick=`)
 }
@@ -234,7 +234,7 @@ func TestToastAllTypes(t *testing.T) {
 				Message: "Test message",
 			}))
 			utils.AssertContains(t, output, "Test message")
-			utils.AssertContains(t, output, `role="alert"`)
+			utils.AssertContains(t, output, `role="status"`)
 		})
 	}
 }

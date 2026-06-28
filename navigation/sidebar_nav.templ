@@ -33,6 +33,8 @@ func DefaultSidebarNavProps() SidebarNavProps {
 }
 
 // sidebarItemActive returns true when the item should be highlighted.
+// Explicit Active=true takes priority; otherwise the item is active when its
+// Href exactly matches CurrentPath (unified with NavLink via IsActive).
 func sidebarItemActive(item SidebarNavItem, currentPath string) bool {
 	if item.Active {
 		return true
@@ -40,10 +42,7 @@ func sidebarItemActive(item SidebarNavItem, currentPath string) bool {
 	if currentPath == "" || item.Href == "" {
 		return false
 	}
-	if item.Href == "/" {
-		return currentPath == "/"
-	}
-	return currentPath == item.Href
+	return IsActive(item.Href, currentPath)
 }
 
 // SidebarNav renders a vertical sidebar with brand, nav links (each with an
@@ -80,7 +79,7 @@ templ SidebarNav(props SidebarNavProps) {
 				{{ active := sidebarItemActive(item, props.CurrentPath) }}
 				<a
 					href={ templ.SafeURL(item.Href) }
-					class={ "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+					class={ "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0",
 						templ.KV("bg-blue-600 text-white", active),
 						templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active) }
 					if active {

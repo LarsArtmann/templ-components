@@ -69,56 +69,66 @@ func GlobalErrorHandling(cfg ErrorHandlingConfig) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		cfg.normalize()
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"tc-error-announcer\" aria-live=\"polite\" class=\"sr-only\"></div><script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"tc-error-announcer\" aria-live=\"polite\" class=\"sr-only\"></div><script")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Nonce)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/error_handling.templ`, Line: 45, Col: 26}
+		if cfg.Nonce != "" {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, " nonce=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var2 string
+			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Nonce)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/error_handling.templ`, Line: 47, Col: 20}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\">\n\t\t(function() {\n\t\t\t'use strict';\n\n\t\t\tvar MAX_ERROR_HISTORY = ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, ">\n\t\t(function() {\n\t\t\t'use strict';\n\n\t\t\tvar MAX_ERROR_HISTORY = ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Var3, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(cfg.MaxErrorHistory)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/error_handling.templ`, Line: 49, Col: 49}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/error_handling.templ`, Line: 53, Col: 49}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, ";\n\t\t\tvar MAX_RETRIES = ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, ";\n\t\t\tvar MAX_RETRIES = ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Var4, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(cfg.MaxRetries)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/error_handling.templ`, Line: 50, Col: 38}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/error_handling.templ`, Line: 54, Col: 38}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, ";\n\t\t\tvar RETRY_DELAY_MS = ")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, ";\n\t\t\tvar RETRY_DELAY_MS = ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Var5, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(cfg.RetryDelayMS)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/error_handling.templ`, Line: 51, Col: 43}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/error_handling.templ`, Line: 55, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, ";\n\n\t\t\tconst errorHistory = [];\n\n\t\t\t// Family-aware toast type mapping\n\t\t\tvar tcFamilyToastMap = {\n\t\t\t\t'rejection': 'warning',\n\t\t\t\t'conflict': 'warning',\n\t\t\t\t'transient': 'info',\n\t\t\t\t'corruption': 'error',\n\t\t\t\t'infrastructure': 'error'\n\t\t\t};\n\n\t\t\tfunction tcParseErrorBody(xhr) {\n\t\t\t\tif (!xhr || !xhr.responseText) return null;\n\t\t\t\ttry {\n\t\t\t\t\tvar body = JSON.parse(xhr.responseText);\n\t\t\t\t\tif (body && (body.family || body.code || body.message)) return body;\n\t\t\t\t} catch (e) {}\n\t\t\t\treturn null;\n\t\t\t}\n\n\t\t\tfunction tcHandleHTMXError(event, type) {\n\t\t\t\tvar xhr = event.detail.xhr;\n\n\t\t\t\tconsole.error('HTMX Error:', {\n\t\t\t\t\ttype: type,\n\t\t\t\t\tstatus: xhr ? xhr.status : 0,\n\t\t\t\t\tstatusText: xhr ? xhr.statusText : '',\n\t\t\t\t\turl: xhr ? xhr.responseURL : 'unknown',\n\t\t\t\t\ttimestamp: new Date().toISOString()\n\t\t\t\t});\n\n\t\t\t\terrorHistory.unshift({\n\t\t\t\t\ttype: type,\n\t\t\t\t\tstatus: xhr ? xhr.status : 0,\n\t\t\t\t\turl: xhr ? xhr.responseURL : '',\n\t\t\t\t\ttimestamp: Date.now()\n\t\t\t\t});\n\t\t\t\tif (errorHistory.length > MAX_ERROR_HISTORY) {\n\t\t\t\t\terrorHistory.length = MAX_ERROR_HISTORY;\n\t\t\t\t}\n\n\t\t\t\tif (typeof tcShowToast === 'function') {\n\t\t\t\t\tvar message, toastType, title;\n\t\t\t\t\tvar structured = tcParseErrorBody(xhr);\n\n\t\t\t\t\tif (type === 'network' || !xhr || xhr.status === 0) {\n\t\t\t\t\t\tmessage = 'Network error. Check your connection.';\n\t\t\t\t\t\ttoastType = 'error';\n\t\t\t\t\t\ttitle = 'Connection Lost';\n\t\t\t\t\t} else if (structured && structured.family) {\n\t\t\t\t\t\tmessage = structured.message || 'An error occurred.';\n\t\t\t\t\t\ttoastType = tcFamilyToastMap[structured.family] || 'error';\n\t\t\t\t\t\ttitle = structured.title || (structured.code || 'Error');\n\t\t\t\t\t\tif (structured.fix) message += ' ' + structured.fix;\n\t\t\t\t\t} else if (xhr.status >= 500) {\n\t\t\t\t\t\tmessage = 'Server error. Please try again.';\n\t\t\t\t\t\ttoastType = 'error';\n\t\t\t\t\t\ttitle = 'Server Error';\n\t\t\t\t\t} else if (xhr.status === 404) {\n\t\t\t\t\t\tmessage = 'Requested resource not found.';\n\t\t\t\t\t\ttoastType = 'warning';\n\t\t\t\t\t\ttitle = 'Not Found';\n\t\t\t\t\t} else if (xhr.status === 403) {\n\t\t\t\t\t\tmessage = 'You do not have permission to perform this action.';\n\t\t\t\t\t\ttoastType = 'warning';\n\t\t\t\t\t\ttitle = 'Access Denied';\n\t\t\t\t\t} else if (xhr.status === 401) {\n\t\t\t\t\t\tmessage = 'Your session has expired. Please refresh the page.';\n\t\t\t\t\t\ttoastType = 'error';\n\t\t\t\t\t\ttitle = 'Authentication Required';\n\t\t\t\t\t\tsetTimeout(function() { window.location.reload(); }, 3000);\n\t\t\t\t\t} else if (xhr.status >= 400) {\n\t\t\t\t\t\tmessage = 'Request failed. Please try again.';\n\t\t\t\t\t\tif (structured && structured.message) message = structured.message;\n\t\t\t\t\t\ttoastType = 'error';\n\t\t\t\t\t\ttitle = structured && structured.code ? structured.code : 'Request Failed';\n\t\t\t\t\t}\n\t\t\t\t\ttcShowToast(message, toastType, title, 5000);\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tdocument.addEventListener('htmx:sendError', function(event) {\n\t\t\t\ttcHandleHTMXError(event, 'network');\n\t\t\t});\n\n\t\t\tdocument.addEventListener('htmx:responseError', function(event) {\n\t\t\t\tvar xhr = event.detail.xhr;\n\t\t\t\tvar elt = event.detail.elt;\n\t\t\t\tif ((xhr.status >= 500 || xhr.status === 0) && elt) {\n\t\t\t\t\tvar retries = parseInt(elt.getAttribute('data-tc-retry') || '0');\n\t\t\t\t\tif (retries < MAX_RETRIES) {\n\t\t\t\t\t\telt.setAttribute('data-tc-retry', String(retries + 1));\n\t\t\t\t\t\tsetTimeout(function() {\n\t\t\t\t\t\t\tif (elt && elt.click) elt.click();\n\t\t\t\t\t\t}, RETRY_DELAY_MS * (retries + 1));\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\t\t\t\t\telt.removeAttribute('data-tc-retry');\n\t\t\t\t}\n\t\t\t\ttcHandleHTMXError(event, 'response');\n\t\t\t});\n\n\t\t\tdocument.addEventListener('htmx:afterRequest', function(event) {\n\t\t\t\tvar target = event.detail.target;\n\t\t\t\tif (target) {\n\t\t\t\t\ttarget.classList.remove('htmx-loading');\n\t\t\t\t\tvar timer = target.getAttribute('data-loading-timer');\n\t\t\t\t\tif (timer) {\n\t\t\t\t\t\tclearTimeout(parseInt(timer));\n\t\t\t\t\t\ttarget.removeAttribute('data-loading-timer');\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\n\t\t\twindow.htmxErrorHistory = function() { return errorHistory; };\n\t\t})();\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, ";\n\n\t\t\tconst errorHistory = [];\n\n\t\t\t// Family-aware toast type mapping\n\t\t\tvar tcFamilyToastMap = {\n\t\t\t\t'rejection': 'warning',\n\t\t\t\t'conflict': 'warning',\n\t\t\t\t'transient': 'info',\n\t\t\t\t'corruption': 'error',\n\t\t\t\t'infrastructure': 'error'\n\t\t\t};\n\n\t\t\tfunction tcParseErrorBody(xhr) {\n\t\t\t\tif (!xhr || !xhr.responseText) return null;\n\t\t\t\ttry {\n\t\t\t\t\tvar body = JSON.parse(xhr.responseText);\n\t\t\t\t\tif (body && (body.family || body.code || body.message)) return body;\n\t\t\t\t} catch (e) {}\n\t\t\t\treturn null;\n\t\t\t}\n\n\t\t\tfunction tcHandleHTMXError(event, type) {\n\t\t\t\tvar xhr = event.detail.xhr;\n\n\t\t\t\tconsole.error('HTMX Error:', {\n\t\t\t\t\ttype: type,\n\t\t\t\t\tstatus: xhr ? xhr.status : 0,\n\t\t\t\t\tstatusText: xhr ? xhr.statusText : '',\n\t\t\t\t\turl: xhr ? xhr.responseURL : 'unknown',\n\t\t\t\t\ttimestamp: new Date().toISOString()\n\t\t\t\t});\n\n\t\t\t\terrorHistory.unshift({\n\t\t\t\t\ttype: type,\n\t\t\t\t\tstatus: xhr ? xhr.status : 0,\n\t\t\t\t\turl: xhr ? xhr.responseURL : '',\n\t\t\t\t\ttimestamp: Date.now()\n\t\t\t\t});\n\t\t\t\tif (errorHistory.length > MAX_ERROR_HISTORY) {\n\t\t\t\t\terrorHistory.length = MAX_ERROR_HISTORY;\n\t\t\t\t}\n\n\t\t\t\tif (typeof tcShowToast === 'function') {\n\t\t\t\t\tvar message, toastType, title;\n\t\t\t\t\tvar structured = tcParseErrorBody(xhr);\n\n\t\t\t\t\tif (type === 'network' || !xhr || xhr.status === 0) {\n\t\t\t\t\t\tmessage = 'Network error. Check your connection.';\n\t\t\t\t\t\ttoastType = 'error';\n\t\t\t\t\t\ttitle = 'Connection Lost';\n\t\t\t\t\t} else if (structured && structured.family) {\n\t\t\t\t\t\tmessage = structured.message || 'An error occurred.';\n\t\t\t\t\t\ttoastType = tcFamilyToastMap[structured.family] || 'error';\n\t\t\t\t\t\ttitle = structured.title || (structured.code || 'Error');\n\t\t\t\t\t\tif (structured.fix) message += ' ' + structured.fix;\n\t\t\t\t\t} else if (xhr.status >= 500) {\n\t\t\t\t\t\tmessage = 'Server error. Please try again.';\n\t\t\t\t\t\ttoastType = 'error';\n\t\t\t\t\t\ttitle = 'Server Error';\n\t\t\t\t\t} else if (xhr.status === 404) {\n\t\t\t\t\t\tmessage = 'Requested resource not found.';\n\t\t\t\t\t\ttoastType = 'warning';\n\t\t\t\t\t\ttitle = 'Not Found';\n\t\t\t\t\t} else if (xhr.status === 403) {\n\t\t\t\t\t\tmessage = 'You do not have permission to perform this action.';\n\t\t\t\t\t\ttoastType = 'warning';\n\t\t\t\t\t\ttitle = 'Access Denied';\n\t\t\t\t\t} else if (xhr.status === 401) {\n\t\t\t\t\t\tmessage = 'Your session has expired. Please refresh the page.';\n\t\t\t\t\t\ttoastType = 'error';\n\t\t\t\t\t\ttitle = 'Authentication Required';\n\t\t\t\t\t\tsetTimeout(function() { window.location.reload(); }, 3000);\n\t\t\t\t\t} else if (xhr.status >= 400) {\n\t\t\t\t\t\tmessage = 'Request failed. Please try again.';\n\t\t\t\t\t\tif (structured && structured.message) message = structured.message;\n\t\t\t\t\t\ttoastType = 'error';\n\t\t\t\t\t\ttitle = structured && structured.code ? structured.code : 'Request Failed';\n\t\t\t\t\t}\n\t\t\t\t\ttcShowToast(message, toastType, title, 5000);\n\t\t\t\t}\n\t\t\t}\n\n\t\t\tdocument.addEventListener('htmx:sendError', function(event) {\n\t\t\t\ttcHandleHTMXError(event, 'network');\n\t\t\t});\n\n\t\t\tdocument.addEventListener('htmx:responseError', function(event) {\n\t\t\t\tvar xhr = event.detail.xhr;\n\t\t\t\tvar elt = event.detail.elt;\n\t\t\t\tif (xhr && (xhr.status >= 500 || xhr.status === 0) && elt) {\n\t\t\t\t\tvar retries = parseInt(elt.getAttribute('data-tc-retry') || '0');\n\t\t\t\t\tif (retries < MAX_RETRIES) {\n\t\t\t\t\t\telt.setAttribute('data-tc-retry', String(retries + 1));\n\t\t\t\t\t\tsetTimeout(function() {\n\t\t\t\t\t\t\tif (elt && elt.click) elt.click();\n\t\t\t\t\t\t}, RETRY_DELAY_MS * (retries + 1));\n\t\t\t\t\t\treturn;\n\t\t\t\t\t}\n\t\t\t\t\telt.removeAttribute('data-tc-retry');\n\t\t\t\t}\n\t\t\t\ttcHandleHTMXError(event, 'response');\n\t\t\t});\n\n\t\t\tdocument.addEventListener('htmx:afterRequest', function(event) {\n\t\t\t\tvar target = event.detail.target;\n\t\t\t\tif (target) {\n\t\t\t\t\ttarget.classList.remove('htmx-loading');\n\t\t\t\t\tvar timer = target.getAttribute('data-loading-timer');\n\t\t\t\t\tif (timer) {\n\t\t\t\t\t\tclearTimeout(parseInt(timer));\n\t\t\t\t\t\ttarget.removeAttribute('data-loading-timer');\n\t\t\t\t\t}\n\t\t\t\t\tvar xhr = event.detail.xhr;\n\t\t\t\t\tif (xhr && xhr.status >= 200 && xhr.status < 300) {\n\t\t\t\t\t\ttarget.removeAttribute('data-tc-retry');\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t});\n\n\t\t\twindow.htmxErrorHistory = function() { return errorHistory; };\n\t\t})();\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

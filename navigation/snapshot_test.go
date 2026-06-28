@@ -2,6 +2,7 @@
 package navigation
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -190,14 +191,14 @@ func TestMobileMenuToggleRender(t *testing.T) {
 	t.Parallel()
 	t.Run("shown", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, MobileMenuToggle(true))
-		utils.AssertContains(t, output, `data-mobile-menu-toggle`)
-		utils.AssertContains(t, output, `aria-controls="tc-mobile-menu"`)
+		output := utils.Render(t, MobileMenuToggle(true, "test-menu"))
+		utils.AssertContains(t, output, `data-mobile-menu-toggle="test-menu"`)
+		utils.AssertContains(t, output, `aria-controls="tc-mobile-menu-test-menu"`)
 		utils.AssertContains(t, output, `aria-expanded="false"`)
 	})
 	t.Run("hidden", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, MobileMenuToggle(false))
+		output := utils.Render(t, MobileMenuToggle(false, "test-menu"))
 		utils.AssertNotContains(t, output, "button")
 	})
 }
@@ -209,10 +210,10 @@ var testNavLinks = []NavLinkProps{
 
 func TestMobileMenuRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, MobileMenu(testNavLinks, "/", "test-nonce"))
+	output := utils.Render(t, MobileMenu(testNavLinks, "/", "test-nonce", "test-menu"))
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, navItemAbout)
-	utils.AssertContains(t, output, `id="tc-mobile-menu"`)
+	utils.AssertContains(t, output, `id="tc-mobile-menu-test-menu"`)
 	utils.AssertContains(t, output, `nonce="test-nonce"`)
 }
 
@@ -224,4 +225,30 @@ func TestSimpleNavRender(t *testing.T) {
 	utils.AssertContains(t, output, "MyApp")
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, `aria-label="Main navigation"`)
+}
+
+func TestMobileNavLinkExternalAddsSecurityAttrs(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, MobileNavLink(NavLinkProps{
+		Href: "https://example.com", Text: "External", External: true,
+	}, "/"))
+	utils.AssertContains(t, output, `target="_blank"`)
+	utils.AssertContains(t, output, `rel="noopener noreferrer"`)
+}
+
+func TestTwoNavsProduceUniqueMenuIDs(t *testing.T) {
+	t.Parallel()
+	out1 := utils.Render(t, Nav(NavProps{Links: testNavLinks, CurrentPath: "/"}))
+	out2 := utils.Render(t, Nav(NavProps{Links: testNavLinks, CurrentPath: "/"}))
+	idCount1 := strings.Count(out1, `id="tc-mobile-menu-`)
+	idCount2 := strings.Count(out2, `id="tc-mobile-menu-`)
+	if idCount1 != 2 {
+		t.Errorf("expected 2 mobile-menu ids (toggle + menu) in first Nav, got %d", idCount1)
+	}
+	if idCount2 != 2 {
+		t.Errorf("expected 2 mobile-menu ids (toggle + menu) in second Nav, got %d", idCount2)
+	}
+	// Both should have valid (non-empty, non-hardcoded) IDs
+	utils.AssertContains(t, out1, `data-mobile-menu-id="tc-mobile-menu-`)
+	utils.AssertContains(t, out2, `data-mobile-menu-id="tc-mobile-menu-`)
 }

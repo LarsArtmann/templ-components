@@ -7,6 +7,7 @@ import (
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
+	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -280,6 +281,8 @@ func TestCSPNonceConsistency(t *testing.T) {
 			BaseProps: utils.BaseProps{ID: "cb1", Nonce: nonce},
 			Name:      "x",
 		})),
+		utils.Render(t, layout.ThemeScript(nonce)),
+		utils.Render(t, layout.ThemeToggle("", nonce)),
 	}
 
 	for i, output := range outputs {

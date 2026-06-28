@@ -54,19 +54,20 @@ func TestBaseRender(t *testing.T) {
 func TestBaseRenderFullProps(t *testing.T) {
 	t.Parallel()
 	props := PageProps{
-		Title:          "Full Page",
-		Description:    "A test page",
-		Locale:         "de",
-		OGImage:        "/og.png",
-		ThemeColor:     "#ffffff",
-		DarkThemeColor: "#000000",
-		CSSPath:        "/style.css",
-		Favicon:        "/fav.ico",
-		HTMXVersion:    defaultHTMXVersion,
-		HTMXUseSRI:     true,
-		BodyClass:      "bg-gray-50",
-		Nonce:          "abc",
-		HeadContent:    nil,
+		Title:               "Full Page",
+		Description:         "A test page",
+		Locale:              "de",
+		OGImage:             "/og.png",
+		ThemeColor:          "#ffffff",
+		DarkThemeColor:      "#000000",
+		CSSPath:             "/style.css",
+		Favicon:             "/fav.ico",
+		HTMXVersion:         defaultHTMXVersion,
+		HTMXUseSRI:          true,
+		HTMXResponseTargets: true,
+		BodyClass:           "bg-gray-50",
+		Nonce:               "abc",
+		HeadContent:         nil,
 	}
 	output := utils.Render(t, Base(props))
 	utils.AssertContains(t, output, "<title>Full Page</title>")

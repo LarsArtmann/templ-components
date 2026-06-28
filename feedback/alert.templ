@@ -32,26 +32,16 @@ func DefaultAlertProps() AlertProps {
 	}
 }
 
-// alertStyles returns Tailwind classes for each alert type
-func alertStyles(t FeedbackType) (border, bg, text, icon string) {
-	s := feedbackStyle(t)
-	return s.Border, s.BG, s.Text, s.Icon
-}
-
-func alertIconName(t FeedbackType) icons.Name {
-	return feedbackIcon(t)
-}
-
 // Alert renders a full-width alert banner
 //
 //	@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong", Type: feedback.AlertError})
 templ Alert(props AlertProps) {
-	{{ border, bg, text, iconColor := alertStyles(props.Type) }}
+	{{ s := feedbackStyle(props.Type) }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class("rounded-md border p-4", border, bg, props.Class) }
+		class={ utils.Class("rounded-md border p-4", s.Border, s.BG, props.Class) }
 		role="alert"
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
@@ -60,13 +50,13 @@ templ Alert(props AlertProps) {
 	>
 		<div class="flex">
 			<div class="flex-shrink-0">
-				@icons.Icon(alertIconName(props.Type), utils.Class("h-5 w-5", iconColor))
+				@icons.Icon(feedbackIcon(props.Type), utils.Class("h-5 w-5", s.Icon))
 			</div>
 			<div class="ml-3 flex-1">
 				if props.Title != "" {
-					<h3 class={ "text-sm font-medium", text }>{ props.Title }</h3>
+					<h3 class={ "text-sm font-medium", s.Text }>{ props.Title }</h3>
 				}
-				<div class={ "text-sm", text }>
+				<div class={ "text-sm", s.Text }>
 					<p>{ props.Message }</p>
 				</div>
 			</div>
@@ -75,7 +65,7 @@ templ Alert(props AlertProps) {
 					<div class="-mx-1.5 -my-1.5">
 						<button
 							type="button"
-							class={ "inline-flex rounded-md p-1.5 hover:bg-opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2", bg, text }
+							class={ "inline-flex rounded-md p-1.5 hover:opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2", s.BG, s.Text }
 							data-dismiss="alert"
 							aria-label="Dismiss"
 						>

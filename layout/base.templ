@@ -19,6 +19,10 @@ type PageProps struct {
 	Favicon        string
 	HTMXVersion    string
 	HTMXUseSRI     bool
+	// HTMXResponseTargets controls whether the htmx response-targets extension
+	// is loaded alongside htmx. Defaults to true for backward compatibility;
+	// set to false to skip the extra request when you don't use it.
+	HTMXResponseTargets bool
 	BodyClass      string
 	Nonce          string
 	HeadContent    templ.Component
@@ -30,15 +34,16 @@ type PageProps struct {
 // DefaultPageProps returns sensible defaults for PageProps
 func DefaultPageProps() PageProps {
 	return PageProps{
-		Locale:          "en",
-		ThemeColor:      DefaultThemeColor,
-		DarkThemeColor:  DefaultDarkThemeColor,
-		CSSPath:         "/app.css",
-		Favicon:         "/favicon.svg",
-		HTMXVersion:     defaultHTMXVersion,
-		HTMXUseSRI:      true,
-		SecurityHeaders: true,
-		BodyClass:       "bg-white text-gray-900 antialiased min-h-dvh flex flex-col scroll-smooth selection:bg-blue-100 dark:selection:bg-blue-900 selection:text-blue-900 dark:selection:text-blue-100 dark:bg-gray-950 dark:text-gray-100",
+		Locale:              "en",
+		ThemeColor:         DefaultThemeColor,
+		DarkThemeColor:     DefaultDarkThemeColor,
+		CSSPath:            "/app.css",
+		Favicon:            "/favicon.svg",
+		HTMXVersion:        defaultHTMXVersion,
+		HTMXUseSRI:         true,
+		HTMXResponseTargets: true,
+		SecurityHeaders:   true,
+		BodyClass:          "bg-white text-gray-900 antialiased min-h-dvh flex flex-col scroll-smooth motion-reduce:scroll-auto selection:bg-blue-100 dark:selection:bg-blue-900 selection:text-blue-900 dark:selection:text-blue-100 dark:bg-gray-950 dark:text-gray-100",
 	}
 }
 
@@ -49,8 +54,9 @@ func DefaultPageProps() PageProps {
 //	  <h1>My Page</h1>
 //	}
 templ Base(props PageProps) {
+	{{ locale := props.Locale; if locale == "" { locale = "en" } }}
 	<!DOCTYPE html>
-	<html lang={ props.Locale } class="h-full">
+	<html lang={ locale } class="h-full">
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -73,7 +79,9 @@ templ Base(props PageProps) {
 			if props.OGImage != "" {
 				<meta property="og:image" content={ props.OGImage }/>
 			}
-			<meta property="og:locale" content={ props.Locale }/>
+			if props.Locale != "" {
+				<meta property="og:locale" content={ props.Locale }/>
+			}
 			<meta name="twitter:card" content="summary_large_image"/>
 			<meta name="twitter:title" content={ props.Title }/>
 			if props.Description != "" {
@@ -86,10 +94,15 @@ templ Base(props PageProps) {
 				if props.HTMXUseSRI {
 					{{ mainSRI := htmxMainSRI(props.HTMXVersion) }}
 					<script src={ htmxScriptURL(props.HTMXVersion) } integrity={ mainSRI } crossorigin="anonymous"></script>
-					<script src={ responseTargetsCDNURL } integrity={ sriResponseTargets } crossorigin="anonymous"></script>
 				} else {
 					<script src={ htmxScriptURL(props.HTMXVersion) }></script>
-					<script src={ responseTargetsCDNURL }></script>
+				}
+				if props.HTMXResponseTargets {
+					if props.HTMXUseSRI {
+						<script src={ responseTargetsCDNURL } integrity={ sriResponseTargets } crossorigin="anonymous"></script>
+					} else {
+						<script src={ responseTargetsCDNURL }></script>
+					}
 				}
 			}
 			@ThemeScript(props.Nonce)
@@ -101,7 +114,7 @@ templ Base(props PageProps) {
 			<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 focus:bg-blue-600 focus:text-white focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg focus:outline-hidden focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
 				Skip to main content
 			</a>
-			<main id="main-content" class="flex-1">
+			<main id="main-content" tabindex="-1" class="flex-1">
 				{ children... }
 			</main>
 			if props.Footer != nil {
@@ -124,15 +137,17 @@ func DefaultMinimalProps() MinimalProps {
 	}
 }
 
-// Minimal renders a minimal HTML5 document without HTMX or external dependencies
+// Minimal renders a minimal HTML5 document without HTMX or external dependencies.
+// Defaults Locale to "en" when empty (valid HTML lang attribute).
 // Useful for static pages, emails, or PDF generation
 //
 //	@layout.Minimal(layout.MinimalProps{Title: "My Title"}) {
 //	  <h1>Hello</h1>
 //	}
 templ Minimal(props MinimalProps) {
+	{{ locale := props.Locale; if locale == "" { locale = "en" } }}
 	<!DOCTYPE html>
-	<html lang={ props.Locale }>
+	<html lang={ locale }>
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>

@@ -2,18 +2,20 @@ package navigation
 
 import "github.com/larsartmann/templ-components/icons"
 
-// MobileMenuToggle renders the hamburger button for mobile menus
+// MobileMenuToggle renders the hamburger button for mobile menus.
+// menuID uniquely identifies the menu this toggle controls, so multiple Nav
+// instances on one page don't collide on a hardcoded ID.
 //
-//	@navigation.MobileMenuToggle(true)
-templ MobileMenuToggle(show bool) {
+//	@navigation.MobileMenuToggle(true, "abc123")
+templ MobileMenuToggle(show bool, menuID string) {
 	if show {
 		<div class="flex items-center sm:hidden">
 			<button
 				type="button"
-				class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:hover:bg-gray-800 dark:hover:text-gray-300"
-				aria-controls="tc-mobile-menu"
+				class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 hover:bg-gray-100 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+				aria-controls={ "tc-mobile-menu-" + menuID }
 				aria-expanded="false"
-				data-mobile-menu-toggle
+				data-mobile-menu-toggle={ menuID }
 			>
 				<span class="sr-only">Open main menu</span>
 				@icons.Icon(icons.Menu, "tc-menu-open block h-6 w-6")
@@ -23,42 +25,47 @@ templ MobileMenuToggle(show bool) {
 	}
 }
 
-// MobileMenu renders the collapsible mobile navigation menu
+// MobileMenu renders the collapsible mobile navigation menu.
+// menuID uniquely identifies this menu; the toggle uses the same ID so the
+// aria-controls relationship stays valid even with multiple Navs on a page.
 //
-//	@navigation.MobileMenu(links, "/", "")
-templ MobileMenu(links []NavLinkProps, currentPath string, nonce string) {
-	<div class="hidden sm:hidden" id="tc-mobile-menu">
-		<div class="space-y-1 pb-3 pt-2 border-t border-gray-200 dark:border-gray-800">
-			for _, link := range links {
-				@MobileNavLink(link, currentPath)
-			}
-		</div>
-	</div>
-	<script nonce={ nonce }>
-		if (!window.tcMobileMenuAttached) {
-			window.tcMobileMenuAttached = true;
-			document.addEventListener('click', function(e) {
-				var btn = e.target.closest('[data-mobile-menu-toggle]');
-				if (!btn) return;
-				var nav = btn.closest('nav');
-				if (!nav) return;
-				var menu = nav.querySelector('#tc-mobile-menu');
-				var openIcon = nav.querySelector('.tc-menu-open');
-				var closeIcon = nav.querySelector('.tc-menu-close');
-				if (!menu || !openIcon || !closeIcon) return;
-				var isHidden = menu.classList.contains('hidden');
-				if (isHidden) {
-					menu.classList.remove('hidden');
-					openIcon.classList.add('hidden');
-					closeIcon.classList.remove('hidden');
-					btn.setAttribute('aria-expanded', 'true');
-				} else {
-					menu.classList.add('hidden');
-					openIcon.classList.remove('hidden');
-					closeIcon.classList.add('hidden');
-					btn.setAttribute('aria-expanded', 'false');
+//	@navigation.MobileMenu(links, "/", "", "abc123")
+templ MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID string) {
+	if len(links) > 0 {
+		<div class="hidden sm:hidden" id={ "tc-mobile-menu-" + menuID } data-mobile-menu-id={ menuID }>
+			<div class="space-y-1 pb-3 pt-2 border-t border-gray-200 dark:border-gray-800">
+				for _, link := range links {
+					@MobileNavLink(link, currentPath)
 				}
-			});
-		}
-	</script>
+			</div>
+		</div>
+		<script nonce={ nonce }>
+			if (!window.tcMobileMenuAttached) {
+				window.tcMobileMenuAttached = true;
+				document.addEventListener('click', function(e) {
+					var btn = e.target.closest('[data-mobile-menu-toggle]');
+					if (!btn) return;
+					var menuId = btn.getAttribute('data-mobile-menu-toggle');
+					var nav = btn.closest('nav');
+					if (!nav) return;
+					var menu = nav.querySelector('[data-mobile-menu-id="' + menuId + '"]');
+					var openIcon = nav.querySelector('.tc-menu-open');
+					var closeIcon = nav.querySelector('.tc-menu-close');
+					if (!menu || !openIcon || !closeIcon) return;
+					var isHidden = menu.classList.contains('hidden');
+					if (isHidden) {
+						menu.classList.remove('hidden');
+						openIcon.classList.add('hidden');
+						closeIcon.classList.remove('hidden');
+						btn.setAttribute('aria-expanded', 'true');
+					} else {
+						menu.classList.add('hidden');
+						openIcon.classList.remove('hidden');
+						closeIcon.classList.add('hidden');
+						btn.setAttribute('aria-expanded', 'false');
+					}
+				});
+			}
+		</script>
+	}
 }

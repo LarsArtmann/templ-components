@@ -1,5 +1,14 @@
 package htmx
 
+// defaultSpinner returns the provided spinner, or a no-op component when nil,
+// so callers can safely pass a zero-value templ.Component without a render panic.
+func defaultSpinner(spinner templ.Component) templ.Component {
+	if spinner != nil {
+		return spinner
+	}
+	return templ.NopComponent
+}
+
 // LoadingIndicator renders a fixed-position HTMX loading indicator.
 // Accepts a spinner component for decoupled loading animation.
 //
@@ -7,7 +16,7 @@ package htmx
 templ LoadingIndicator(spinner templ.Component) {
 	<div id="tc-loading-indicator" class="htmx-indicator fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-gray-950/80 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-200 motion-reduce:transition-none motion-reduce:duration-0" role="status" aria-live="polite">
 		<div class="flex flex-col items-center gap-3">
-			@spinner
+			@defaultSpinner(spinner)
 		</div>
 	</div>
 }
@@ -22,12 +31,13 @@ templ InlineLoadingOverlay(id string, spinner templ.Component) {
 		class="htmx-indicator absolute inset-0 z-40 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 backdrop-blur-xs rounded-lg"
 		aria-hidden="true"
 	>
-		@spinner
+		@defaultSpinner(spinner)
 	</div>
 }
 
 // LoadingButton renders a button with built-in loading state.
-// Accepts a spinner component for decoupled loading animation.
+// The default text hides during an HTMX request (htmx-request on the form
+// toggles htmx-indicator visibility); loadingText is the htmx-indicator.
 //
 //	<button class="btn-primary" hx-post="/save" hx-indicator=".tc-btn-loading">
 //	   @htmx.LoadingButton("Save", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "htmx-indicator"}))
@@ -35,9 +45,9 @@ templ InlineLoadingOverlay(id string, spinner templ.Component) {
 templ LoadingButton(defaultText, loadingText string, spinner templ.Component) {
 	<span class="tc-btn-loading">
 		<span class="inline-flex items-center gap-2">
-			@spinner
+			@defaultSpinner(spinner)
 			<span class="htmx-indicator">{ loadingText }</span>
-			<span>{ defaultText }</span>
+			<span class="htmx-hide-during-request">{ defaultText }</span>
 		</span>
 	</span>
 }

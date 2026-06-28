@@ -73,6 +73,7 @@ func Lookup[K comparable, V any](m map[K]V, key K, fallback V) V {
 
 // DismissScript returns shared JavaScript for dismissing elements via [data-dismiss]
 // click delegation. Used by Alert, Toast, and ErrorAlert components.
+// Handles both role="alert" (Alert) and role="status" (Toast) containers.
 func DismissScript() string {
-	return `if(!window.tcDismissAttached){window.tcDismissAttached=true;document.addEventListener('click',function(e){var btn=e.target.closest('[data-dismiss]');if(btn){var el=btn.closest('[role="alert"]');if(el)el.remove();}});}`
+	return `if(!window.tcDismissAttached){window.tcDismissAttached=true;document.addEventListener('click',function(e){var btn=e.target.closest('[data-dismiss]');if(btn){var el=btn.closest('[role="alert"],[role="status"]');if(el)el.remove();}});}`
 }

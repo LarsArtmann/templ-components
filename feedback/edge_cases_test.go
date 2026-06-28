@@ -60,7 +60,7 @@ func TestToastEdgeCases(t *testing.T) {
 			Type:  ToastInfo,
 		}))
 		utils.AssertContains(t, output, "No Body")
-		utils.AssertContains(t, output, `role="alert"`)
+		utils.AssertContains(t, output, `role="status"`)
 	})
 
 	t.Run("unknown type falls back to info styling", func(t *testing.T) {

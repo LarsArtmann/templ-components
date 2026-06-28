@@ -19,7 +19,11 @@ func TestHtmxMainSRI(t *testing.T) {
 			version: defaultHTMXVersion,
 			want:    "sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V",
 		},
-		{name: "unknown version returns empty", version: "99.99.99", want: ""},
+		{
+			name:    "unknown version falls back to default SRI",
+			version: "99.99.99",
+			want:    "sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V",
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {

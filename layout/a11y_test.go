@@ -78,11 +78,11 @@ func TestHTMXMainSRI(t *testing.T) {
 		utils.AssertContains(t, hash, "sha384-")
 	})
 
-	t.Run("unknown version returns empty string", func(t *testing.T) {
+	t.Run("unknown version falls back to default SRI", func(t *testing.T) {
 		t.Parallel()
 		hash := htmxMainSRI("99.99.99")
-		if hash != "" {
-			t.Errorf("expected empty hash for unknown version, got %q", hash)
+		if hash == "" {
+			t.Error("expected non-empty fallback SRI hash for unknown version (SRI must not be silently dropped)")
 		}
 	})
 

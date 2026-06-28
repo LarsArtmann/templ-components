@@ -3,6 +3,7 @@ package navigation
 import (
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
@@ -21,6 +22,9 @@ type BreadcrumbsProps struct {
 	Items     []BreadcrumbItem
 	Separator string
 	JSONLD    bool
+	// BaseURL is used to resolve relative Hrefs into absolute URLs for
+	// JSON-LD structured data (schema.org requires absolute URLs).
+	BaseURL string
 }
 
 // DefaultBreadcrumbsProps returns sensible defaults
@@ -28,11 +32,12 @@ func DefaultBreadcrumbsProps() BreadcrumbsProps {
 	return BreadcrumbsProps{}
 }
 
-// breadcrumbJSONLD generates JSON-LD structured data for breadcrumbs
-func breadcrumbJSONLD(items []BreadcrumbItem) string {
+// breadcrumbJSONLD generates JSON-LD structured data for breadcrumbs.
+// Relative Hrefs are resolved against baseURL (schema.org requires absolute URLs).
+func breadcrumbJSONLD(items []BreadcrumbItem, baseURL string) string {
 	type ListItem struct {
-		Type string `json:"@type"`
-		Position int `json:"position"`
+		Type     string `json:"@type"`
+		Position int    `json:"position"`
 		Name     string `json:"name"`
 		Item     string `json:"item,omitempty"`
 	}
@@ -54,7 +59,7 @@ func breadcrumbJSONLD(items []BreadcrumbItem) string {
 			Name:     item.Text,
 		}
 		if item.Href != "" {
-			entry.Item = item.Href
+			entry.Item = resolveBreadcrumbURL(item.Href, baseURL)
 		}
 		list.Items = append(list.Items, entry)
 	}
@@ -64,6 +69,21 @@ func breadcrumbJSONLD(items []BreadcrumbItem) string {
 		return ""
 	}
 	return string(data)
+}
+
+// resolveBreadcrumbURL joins a relative Href to baseURL for JSON-LD output.
+// Absolute Hrefs (already containing a scheme) are returned unchanged.
+func resolveBreadcrumbURL(href, baseURL string) string {
+	if href == "" {
+		return ""
+	}
+	if strings.Contains(href, "://") {
+		return href
+	}
+	if baseURL == "" {
+		return href
+	}
+	return strings.TrimRight(baseURL, "/") + "/" + strings.TrimLeft(href, "/")
 }
 
 // breadcrumbSeparator renders the separator between breadcrumb items
@@ -111,6 +131,6 @@ templ Breadcrumbs(props BreadcrumbsProps) {
 		</ol>
 	</nav>
 	if props.JSONLD && len(props.Items) > 0 {
-		@templ.Raw(fmt.Sprintf(`<script type="application/ld+json">%s</script>`, breadcrumbJSONLD(props.Items)))
+		@templ.Raw(fmt.Sprintf(`<script type="application/ld+json">%s</script>`, breadcrumbJSONLD(props.Items, props.BaseURL)))
 	}
 }

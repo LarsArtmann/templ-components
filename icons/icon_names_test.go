@@ -88,3 +88,50 @@ func TestIconPathsFallbackOnUnknown(t *testing.T) {
 		t.Errorf("unknown icon should fall back to Question, got %d paths, want %d", len(paths), len(questionPaths))
 	}
 }
+
+func TestSpinnerIsSpecialAndFallsBackToQuestion(t *testing.T) {
+	t.Parallel()
+	if !specialIcons[Spinner] {
+		t.Fatal("Spinner must be in specialIcons so it doesn't silently return wrong path data")
+	}
+	spinnerPaths := IconPathData(Spinner)
+	questionPaths := IconPathData(Question)
+	if len(spinnerPaths) != len(questionPaths) {
+		t.Errorf(
+			"IconPathData(Spinner) should fall back to Question, got %d paths, want %d",
+			len(spinnerPaths),
+			len(questionPaths),
+		)
+	}
+	for i, p := range spinnerPaths {
+		if p != questionPaths[i] {
+			t.Errorf("IconPathData(Spinner)[%d] = %q, want Question fallback %q", i, p, questionPaths[i])
+		}
+	}
+}
+
+func TestAllExportedNameConstsHavePathDataOrAreSpecial(t *testing.T) {
+	t.Parallel()
+	// Every exported Name const must either be in iconPathData, be an alias
+	// of a name in iconPathData, or be a special icon (Spinner). A const added
+	// without a map entry would silently render as Question — this test catches
+	// that regression.
+	allNames := allIconNames()
+	for _, name := range allNames {
+		if specialIcons[name] {
+			continue
+		}
+		if _, ok := iconPathData[name]; ok {
+			continue
+		}
+		if alias, ok := iconAliases[name]; ok {
+			if _, ok := iconPathData[alias]; ok {
+				continue
+			}
+		}
+		t.Errorf(
+			"Name const %q has no iconPathData entry and is not special — would silently fall back to Question",
+			name,
+		)
+	}
+}

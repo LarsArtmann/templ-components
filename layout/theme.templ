@@ -5,29 +5,35 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-// ThemeScript renders the inline script that sets the dark mode class before paint
-// Include this in your base template head to prevent FOUC
+// ThemeScript renders the inline script that sets the dark mode class before paint.
+// Also sets `color-scheme` so native scrollbars, form controls, and <details>
+// match the active theme. Include this in your base template head to prevent FOUC.
 templ ThemeScript(nonce string) {
 	<script nonce={ nonce }>
 		(function() {
 			var theme = localStorage.getItem('theme');
 			var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-			if (theme === 'dark' || (!theme && prefersDark)) {
+			var isDark = theme === 'dark' || (!theme && prefersDark);
+			if (isDark) {
 				document.documentElement.classList.add('dark');
 			}
+			document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
 		})();
 	</script>
 }
 
-// ThemeToggle renders a theme toggle button with sun/moon icons
-// Requires Tailwind CSS dark: variants and the ThemeScript in your base layout
+// ThemeToggle renders a theme toggle button with sun/moon icons.
+// Uses role="switch" + aria-checked so screen-reader users know the active mode.
+// Requires Tailwind CSS dark: variants and the ThemeScript in your base layout.
 //
 //	@layout.ThemeToggle("Toggle theme")
 templ ThemeToggle(ariaLabel string, nonce string) {
 	<button
 		type="button"
-		class="rounded-md p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 transition-colors"
+		class="rounded-md p-2 text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
 		data-theme-toggle
+		role="switch"
+		aria-checked="false"
 		aria-label={ utils.Ternary(ariaLabel != "", ariaLabel, "Toggle theme") }
 	>
 		@icons.Icon(icons.Moon, "h-5 w-5 dark:hidden")
@@ -36,10 +42,12 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 	<script nonce={ nonce }>
 		if (!window.tcThemeToggleAttached) {
 			window.tcThemeToggleAttached = true;
+			var html = document.documentElement;
+			var initBtn = document.querySelector('[data-theme-toggle]');
+			if (initBtn) initBtn.setAttribute('aria-checked', html.classList.contains('dark'));
 			document.addEventListener('click', function(e) {
 				var btn = e.target.closest('[data-theme-toggle]');
 				if (!btn) return;
-				var html = document.documentElement;
 				var isDark = html.classList.contains('dark');
 				if (isDark) {
 					html.classList.remove('dark');
@@ -48,6 +56,8 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 					html.classList.add('dark');
 					localStorage.setItem('theme', 'dark');
 				}
+				html.style.colorScheme = isDark ? 'light' : 'dark';
+				btn.setAttribute('aria-checked', String(!isDark));
 			});
 		}
 	</script>
