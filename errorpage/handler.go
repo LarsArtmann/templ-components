@@ -51,6 +51,8 @@ func FromError(err error) ErrorPageProps {
 		Timestamp:  errorTimestamp(err),
 	}
 
+	// Reuse the classified error if familyFromError already resolved it,
+	// avoiding a second errors.AsType call.
 	if classified, ok := errors.AsType[errorfamily.Classified](err); ok {
 		ef := classified.ErrorFamily()
 		props.Why = ef.DefaultWhy()
@@ -79,7 +81,7 @@ func familyFromError(err error) Family {
 	if c, ok := err.(interface{ ErrorFamily() string }); ok {
 		return ParseFamily(c.ErrorFamily())
 	}
-	return FamilyTransient
+	return FamilyInfrastructure
 }
 
 // cleanMessage returns the clean message from a go-error-family error
@@ -104,13 +106,13 @@ func errorTimestamp(err error) string {
 
 // errorResponse is the JSON structure returned when ErrorHandlerConfig.JSON is true.
 type errorResponse struct {
-	Family  string `json:"family"`
-	Code    string `json:"code,omitempty"`
-	Message string `json:"message"`
-	Title   string `json:"title,omitempty"`
-	Why     string `json:"why,omitempty"`
-	Fix     string `json:"fix,omitempty"`
-	Context any    `json:"context,omitempty"`
+	Family  string            `json:"family"`
+	Code    string            `json:"code,omitempty"`
+	Message string            `json:"message"`
+	Title   string            `json:"title,omitempty"`
+	Why     string            `json:"why,omitempty"`
+	Fix     string            `json:"fix,omitempty"`
+	Context map[string]string `json:"context,omitempty"`
 }
 
 // NotFound returns a 404-style error page.
@@ -338,13 +340,13 @@ func renderWithShell(ctx context.Context, w io.Writer, title string, props Error
 		_, _ = fmt.Fprint(bw, `</head><body>`)
 		renderErr := ErrorPage(props).Render(ctx, bw) //nolint:contextcheck // intentional passthrough
 		if renderErr != nil {
-			return fmt.Errorf("render error page in shell: %w", renderErr)
+			return fmt.Errorf("render error page: %w", renderErr)
 		}
 		_, _ = fmt.Fprint(bw, `</body></html>`)
 		return nil
 	})
 	if err := shell.Render(ctx, w); err != nil {
-		return fmt.Errorf("render error page shell: %w", err)
+		return fmt.Errorf("render error page shell (title=%q): %w", title, err)
 	}
 	return nil
 }

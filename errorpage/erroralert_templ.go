@@ -223,7 +223,7 @@ func ErrorAlert(props ErrorAlertProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var13 = []any{"inline-flex rounded-md p-1.5 hover:bg-opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2", style.BG, style.Text}
+			var templ_7745c5c3_Var13 = []any{"inline-flex rounded-md p-1.5 hover:opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2", style.BG, style.Text}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

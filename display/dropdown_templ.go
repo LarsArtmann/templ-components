@@ -74,7 +74,7 @@ const dropdownItemClass = "block px-4 py-2 text-sm text-gray-700 dark:text-gray-
 const dropdownItemDisabledClass = " opacity-50 cursor-not-allowed pointer-events-none"
 
 // dropdownItemLink renders an anchor dropdown item
-func dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) templ.Component {
+func dropdownItemLink(item DropdownItem) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

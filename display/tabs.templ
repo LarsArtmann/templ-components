@@ -81,9 +81,8 @@ templ Tabs(props TabsProps) {
 		{ props.Attrs... }
 	>
 		<div role="tablist" aria-label="Tabs" class="border-b border-gray-200 dark:border-gray-700">
-			<nav
+			<div
 				class={ "-mb-px flex space-x-8", templ.KV("space-x-2", props.Variant == TabsPills) }
-				aria-label="Tabs"
 			>
 				for _, tab := range props.Tabs {
 					{{ active := isActiveTab(tab.ID, props.ActiveTabID) }}
@@ -99,7 +98,7 @@ templ Tabs(props TabsProps) {
 						)
 					}
 				}
-			</nav>
+			</div>
 		</div>
 		for _, tab := range props.Tabs {
 			if tab.Content != nil {

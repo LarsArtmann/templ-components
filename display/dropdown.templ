@@ -66,7 +66,7 @@ const dropdownItemClass = "block px-4 py-2 text-sm text-gray-700 dark:text-gray-
 const dropdownItemDisabledClass = " opacity-50 cursor-not-allowed pointer-events-none"
 
 // dropdownItemLink renders an anchor dropdown item
-templ dropdownItemLink(item DropdownItem, extraAttrs ...templ.Attributes) {
+templ dropdownItemLink(item DropdownItem) {
 	if item.Disabled {
 		<span
 			class={ dropdownItemClass + dropdownItemDisabledClass }

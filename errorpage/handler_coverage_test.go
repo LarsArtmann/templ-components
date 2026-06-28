@@ -61,7 +61,7 @@ func TestErrorHandlerCoverage(t *testing.T) {
 		if !strings.Contains(ct, "application/json") {
 			t.Errorf("Content-Type = %q, want json", ct)
 		}
-		if !strings.Contains(rec.Body.String(), "transient") {
+		if !strings.Contains(rec.Body.String(), "infrastructure") {
 			t.Error("expected family in JSON response")
 		}
 	})
@@ -124,11 +124,11 @@ func TestFamilyFromErrorStringInterface(t *testing.T) {
 		}
 	})
 
-	t.Run("plain error falls back to transient", func(t *testing.T) {
+	t.Run("plain error falls back to infrastructure", func(t *testing.T) {
 		t.Parallel()
 		family := familyFromError(&testError{msg: "plain"})
-		if family != FamilyTransient {
-			t.Errorf("family = %q, want %q", family, FamilyTransient)
+		if family != FamilyInfrastructure {
+			t.Errorf("family = %q, want %q", family, FamilyInfrastructure)
 		}
 	})
 }
