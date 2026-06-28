@@ -95,8 +95,8 @@
 - [x] Benchmark tests for display, feedback, navigation packages (source: \*/benchmark_test.go)
 - [x] Component composition integration tests — Card+Badge, Table+Content, StatCard (source: display/composition_test.go)
 - [x] Godoc ExampleXxx() functions for forms package — Form, Input, Select, Textarea (source: forms/example_test.go)
-- [ ] Improve coverage for functions below 70%: fillIcon, Select, Textarea
-- [ ] Convert remaining snapshot tests to golden file comparison (feedback/ done, pattern in internal/golden)
+- [x] Improve coverage for functions below 70%: fillIcon, Select, Textarea — Verified: all handwritten Go logic is at 100% coverage. Remaining gaps (71-76%) are in generated `*_templ.go` boilerplate (templ runtime error branches), not business logic. These can't be meaningfully improved without testing templ internals.
+- [~] Convert remaining snapshot tests to golden file comparison (feedback/ done, pattern in internal/golden) — Golden files exist for display (4), feedback (7), navigation (1). Converting the remaining 60+ assertion-based snapshot tests would create ~60 golden files for marginal value — the existing AssertContains tests already verify behavior. New components should use golden; old tests work fine as-is.
 - [x] Consistent nonce propagation audit across all components — verified 2026-06-28: all 13 components with inline executable scripts use nonce. base.templ (external src) and breadcrumbs.templ (JSON-LD) correctly don't need nonce.
 - [ ] Add accessibility audit automation — axe-core/pa11y
 
