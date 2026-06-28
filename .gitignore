@@ -26,7 +26,5 @@ node_modules/
 /demo
 # Sensitive files
 *.db
-# Add pattern for Templ generated files
-*_templ.go
 # Nix build output
 /result
