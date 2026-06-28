@@ -156,3 +156,34 @@ func overlayScriptComponent(nonce, id, componentName string, cfg overlayPanelCon
 		return nil
 	})
 }
+
+// tooltipJS returns the singleton JavaScript for tooltip touch support and
+// Escape-to-dismiss. Uses a window.tcTooltipAttached guard so it executes
+// only once per page regardless of how many Tooltip components are rendered.
+func tooltipJS() string {
+	return `if(!window.tcTooltipAttached){window.tcTooltipAttached=true;` +
+		`document.addEventListener('click',function(e){` +
+		`var trigger=e.target.closest('[data-tc-tooltip]');` +
+		`if(trigger){e.preventDefault();var t=trigger.querySelector('[role="tooltip"]');if(t)t.classList.toggle('hidden');}` +
+		`else{document.querySelectorAll('[data-tc-tooltip] [role="tooltip"]:not(.hidden)').forEach(function(t){t.classList.add('hidden');});}` +
+		`});` +
+		`document.addEventListener('keydown',function(e){` +
+		`if(e.key==='Escape'){document.querySelectorAll('[data-tc-tooltip] [role="tooltip"]:not(.hidden)').forEach(function(t){t.classList.add('hidden');});}` +
+		`});}` +
+		"\n"
+}
+
+// tooltipScriptComponent renders a <script nonce="..."> tag containing the
+// tooltip touch/Escape JS. The script is a singleton — only the first
+// Tooltip on the page injects executable code; subsequent instances
+// skip it via the window.tcTooltipAttached guard.
+func tooltipScriptComponent(nonce string) templ.Component {
+	js := tooltipJS()
+	escapedNonce := html.EscapeString(nonce)
+	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, js); err != nil {
+			return fmt.Errorf("write tooltip script: %w", err)
+		}
+		return nil
+	})
+}

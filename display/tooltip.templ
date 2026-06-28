@@ -65,6 +65,7 @@ templ Tooltip(props TooltipProps) {
 	{{ pos := tooltipLookupPosition(props.Position) }}
 	<div
 		id={ id }
+		data-tc-tooltip
 		class={ utils.Class("group relative inline-flex", props.Class) }
 		aria-describedby={ id + "-tooltip" }
 		if props.AriaLabel != "" {
@@ -83,4 +84,5 @@ templ Tooltip(props TooltipProps) {
 			<div class={ "absolute h-0 w-0 border-4 border-transparent", pos.Arrow }></div>
 		</div>
 	</div>
+	@tooltipScriptComponent(props.Nonce)
 }
