@@ -5,9 +5,10 @@ package errorpage
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
+import "github.com/a-h/templ"
+import templruntime "github.com/a-h/templ/runtime"
+
 import (
-	"github.com/a-h/templ"
-	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -34,7 +35,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		style := lookupFamilyStyle(props.Family)
-		templ_7745c5c3_Var2 := []any{utils.Class("min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900", props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -106,7 +107,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var6 := []any{"rounded-xl border shadow-xs overflow-hidden", style.Border, style.BG}
+		var templ_7745c5c3_Var6 = []any{"rounded-xl border shadow-xs overflow-hidden", style.Border, style.BG}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -128,7 +129,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var8 := []any{"flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg", style.AccentBG}
+		var templ_7745c5c3_Var8 = []any{"flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg", style.AccentBG}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var8...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -233,7 +234,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.WayOutHref != "" {
-				templ_7745c5c3_Var13 := []any{"inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
+				var templ_7745c5c3_Var13 = []any{"inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -290,7 +291,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else if props.WayOut != "" {
-				templ_7745c5c3_Var17 := []any{"inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
+				var templ_7745c5c3_Var17 = []any{"inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var17...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
