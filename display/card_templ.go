@@ -8,6 +8,9 @@ package display
 import (
 	"github.com/a-h/templ"
 	templruntime "github.com/a-h/templ/runtime"
+)
+
+import (
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
