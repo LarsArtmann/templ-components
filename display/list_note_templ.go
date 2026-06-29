@@ -5,11 +5,12 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
+import "github.com/a-h/templ"
+import templruntime "github.com/a-h/templ/runtime"
+
 import (
 	"fmt"
 
-	"github.com/a-h/templ"
-	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -48,7 +49,7 @@ func ListNote(props ListNoteProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if props.Total > props.Shown {
-			templ_7745c5c3_Var2 := []any{utils.Class("border-t border-gray-200 dark:border-gray-700 px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400", props.Class)}
+			var templ_7745c5c3_Var2 = []any{utils.Class("border-t border-gray-200 dark:border-gray-700 px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400", props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

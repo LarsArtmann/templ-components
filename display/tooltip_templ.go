@@ -5,11 +5,10 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import (
-	"github.com/a-h/templ"
-	templruntime "github.com/a-h/templ/runtime"
-	"github.com/larsartmann/templ-components/utils"
-)
+import "github.com/a-h/templ"
+import templruntime "github.com/a-h/templ/runtime"
+
+import "github.com/larsartmann/templ-components/utils"
 
 // TooltipPosition defines where the tooltip appears relative to the trigger
 type TooltipPosition string
@@ -92,7 +91,7 @@ func Tooltip(props TooltipProps) templ.Component {
 		ctx = templ.ClearChildren(ctx)
 		id := utils.EnsureID("tooltip", props.ID)
 		pos := tooltipLookupPosition(props.Position)
-		templ_7745c5c3_Var2 := []any{utils.Class("group relative inline-flex", props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("group relative inline-flex", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -171,10 +170,8 @@ func Tooltip(props TooltipProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var7 := []any{
-			"absolute z-20 hidden group-hover:block group-focus-within:block whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-white shadow-xs",
-			pos.Tooltip,
-		}
+		var templ_7745c5c3_Var7 = []any{"absolute z-20 hidden group-hover:block group-focus-within:block whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-white shadow-xs",
+			pos.Tooltip}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -218,7 +215,7 @@ func Tooltip(props TooltipProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Var11 := []any{"absolute h-0 w-0 border-4 border-transparent", pos.Arrow}
+		var templ_7745c5c3_Var11 = []any{"absolute h-0 w-0 border-4 border-transparent", pos.Arrow}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
