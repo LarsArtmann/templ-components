@@ -5,10 +5,9 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -36,7 +35,7 @@ const emptyStateActionClass = "inline-flex items-center rounded-md bg-blue-600 p
 
 // emptyStateAction renders an action link or button for the empty state.
 // When href is non-empty it renders an anchor; otherwise it renders a button.
-func emptyStateAction(text string, href string, attrs templ.Attributes) templ.Component {
+func emptyStateAction(text, href string, attrs templ.Attributes) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -58,7 +57,7 @@ func emptyStateAction(text string, href string, attrs templ.Attributes) templ.Co
 		}
 		ctx = templ.ClearChildren(ctx)
 		if href != "" {
-			var templ_7745c5c3_Var2 = []any{emptyStateActionClass}
+			templ_7745c5c3_Var2 := []any{emptyStateActionClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -115,7 +114,7 @@ func emptyStateAction(text string, href string, attrs templ.Attributes) templ.Co
 				return templ_7745c5c3_Err
 			}
 		} else {
-			var templ_7745c5c3_Var6 = []any{emptyStateActionClass}
+			templ_7745c5c3_Var6 := []any{emptyStateActionClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -193,7 +192,7 @@ func EmptyState(props EmptyStateProps) templ.Component {
 			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var10 = []any{utils.Class("text-center py-12 px-4 sm:py-16", props.Class)}
+		templ_7745c5c3_Var10 := []any{utils.Class("text-center py-12 px-4 sm:py-16", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -297,7 +296,7 @@ func EmptyState(props EmptyStateProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Description != "" {
-			var templ_7745c5c3_Var15 = []any{utils.Class(mutedTextClass, "mt-2")}
+			templ_7745c5c3_Var15 := []any{utils.Class(mutedTextClass, "mt-2")}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var15...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

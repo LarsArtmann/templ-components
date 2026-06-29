@@ -5,10 +5,9 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -38,9 +37,11 @@ func overlayShell(p overlayShellProps) templ.Component {
 		if p.title != "" {
 			labelledBy = p.id + "-title"
 		}
-		var templ_7745c5c3_Var2 = []any{utils.Class("fixed inset-0 z-50 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", p.outerClass),
+		templ_7745c5c3_Var2 := []any{
+			utils.Class("fixed inset-0 z-50 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", p.outerClass),
 			templ.KV("opacity-100 pointer-events-auto", p.open),
-			templ.KV("opacity-0 pointer-events-none", !p.open)}
+			templ.KV("opacity-0 pointer-events-none", !p.open),
+		}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

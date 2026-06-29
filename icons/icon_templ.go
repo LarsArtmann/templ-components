@@ -5,12 +5,11 @@ package icons
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
 	"fmt"
 
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/internal/svg"
 )
 
@@ -73,7 +72,7 @@ func IconWithStrokeWidth(name Name, class string, strokeWidth float64) templ.Com
 		}
 		ctx = templ.ClearChildren(ctx)
 		if name == Spinner {
-			var templ_7745c5c3_Var3 = []any{class, "animate-spin"}
+			templ_7745c5c3_Var3 := []any{class, "animate-spin"}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -135,7 +134,7 @@ func strokeIcon(class string, strokeWidth float64, paths []string) templ.Compone
 			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var6 = []any{class}
+		templ_7745c5c3_Var6 := []any{class}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

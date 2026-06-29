@@ -5,12 +5,11 @@ package feedback
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
 	"fmt"
 
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -60,7 +59,7 @@ func StepIndicator(props StepIndicatorProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{utils.Class("", props.Class)}
+		templ_7745c5c3_Var2 := []any{utils.Class("", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -141,7 +140,7 @@ func StepIndicator(props StepIndicatorProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				if i < len(props.Steps)-1 {
-					var templ_7745c5c3_Var6 = []any{"w-0.5 h-8", stepLineClass(i+1, props.CurrentStep)}
+					templ_7745c5c3_Var6 := []any{"w-0.5 h-8", stepLineClass(i+1, props.CurrentStep)}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -168,7 +167,7 @@ func StepIndicator(props StepIndicatorProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var8 = []any{"ml-3 text-sm font-medium mt-1", stepLabelClass(i, props.CurrentStep)}
+				templ_7745c5c3_Var8 := []any{"ml-3 text-sm font-medium mt-1", stepLabelClass(i, props.CurrentStep)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var8...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -214,7 +213,7 @@ func StepIndicator(props StepIndicatorProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for i, step := range props.Steps {
-				var templ_7745c5c3_Var11 = []any{"flex-1 flex items-center", templ.KV("", i == len(props.Steps)-1)}
+				templ_7745c5c3_Var11 := []any{"flex-1 flex items-center", templ.KV("", i == len(props.Steps)-1)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -237,7 +236,7 @@ func StepIndicator(props StepIndicatorProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				if i > 0 {
-					var templ_7745c5c3_Var13 = []any{"flex-1 h-0.5 mx-2", stepLineClass(i, props.CurrentStep)}
+					templ_7745c5c3_Var13 := []any{"flex-1 h-0.5 mx-2", stepLineClass(i, props.CurrentStep)}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -268,7 +267,7 @@ func StepIndicator(props StepIndicatorProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				var templ_7745c5c3_Var15 = []any{"mt-2 text-xs font-medium", stepLabelClass(i, props.CurrentStep)}
+				templ_7745c5c3_Var15 := []any{"mt-2 text-xs font-medium", stepLabelClass(i, props.CurrentStep)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var15...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -340,7 +339,7 @@ func stepCircle(stepIndex, currentStep int) templ.Component {
 			templ_7745c5c3_Var18 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var19 = []any{"w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(stepIndex, currentStep)}
+		templ_7745c5c3_Var19 := []any{"w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(stepIndex, currentStep)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var19...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

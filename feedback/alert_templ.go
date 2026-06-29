@@ -5,10 +5,9 @@ package feedback
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -69,7 +68,7 @@ func Alert(props AlertProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		s := feedbackStyle(props.Type)
-		var templ_7745c5c3_Var2 = []any{utils.Class("rounded-md border p-4", s.Border, s.BG, props.Class)}
+		templ_7745c5c3_Var2 := []any{utils.Class("rounded-md border p-4", s.Border, s.BG, props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -150,7 +149,7 @@ func Alert(props AlertProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Title != "" {
-			var templ_7745c5c3_Var6 = []any{"text-sm font-medium", s.Text}
+			templ_7745c5c3_Var6 := []any{"text-sm font-medium", s.Text}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -186,7 +185,7 @@ func Alert(props AlertProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		var templ_7745c5c3_Var9 = []any{"text-sm", s.Text}
+		templ_7745c5c3_Var9 := []any{"text-sm", s.Text}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -226,7 +225,7 @@ func Alert(props AlertProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var12 = []any{"inline-flex rounded-md p-1.5 hover:opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2", s.BG, s.Text}
+			templ_7745c5c3_Var12 := []any{"inline-flex rounded-md p-1.5 hover:opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2", s.BG, s.Text}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var12...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -301,7 +300,7 @@ func Alert(props AlertProps) templ.Component {
 }
 
 // inlineMessage renders a compact inline status message with icon
-func inlineMessage(message string, colorClass string, role string, icon templ.Component) templ.Component {
+func inlineMessage(message, colorClass, role string, icon templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -322,7 +321,7 @@ func inlineMessage(message string, colorClass string, role string, icon templ.Co
 			templ_7745c5c3_Var16 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var17 = []any{"mt-2 flex items-center gap-1.5 text-sm", colorClass}
+		templ_7745c5c3_Var17 := []any{"mt-2 flex items-center gap-1.5 text-sm", colorClass}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var17...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

@@ -5,10 +5,11 @@ package errorpage
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 func ErrorDetail(props ErrorDetailProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -32,7 +33,7 @@ func ErrorDetail(props ErrorDetailProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		style := lookupFamilyStyle(props.Family)
-		var templ_7745c5c3_Var2 = []any{utils.Class("rounded-lg border overflow-hidden", style.Border, style.BG, props.Class)}
+		templ_7745c5c3_Var2 := []any{utils.Class("rounded-lg border overflow-hidden", style.Border, style.BG, props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -136,7 +137,7 @@ func ErrorDetail(props ErrorDetailProps) templ.Component {
 			}
 		}
 		if props.Message != "" {
-			var templ_7745c5c3_Var7 = []any{"mt-1 text-sm", style.Text}
+			templ_7745c5c3_Var7 := []any{"mt-1 text-sm", style.Text}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

@@ -5,10 +5,11 @@ package navigation
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // navLinkBaseClass is the shared class prefix for active and inactive nav links.
 const navLinkBaseClass = "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0"
@@ -48,7 +49,7 @@ func DefaultNavLinkProps() NavLinkProps {
 }
 
 // activeSpanOrLink renders a span with aria-current when active, or a link when inactive
-func activeSpanOrLink(isActive bool, href string, text string, activeClass string, inactiveClass string) templ.Component {
+func activeSpanOrLink(isActive bool, href, text, activeClass, inactiveClass string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -70,7 +71,7 @@ func activeSpanOrLink(isActive bool, href string, text string, activeClass strin
 		}
 		ctx = templ.ClearChildren(ctx)
 		if isActive {
-			var templ_7745c5c3_Var2 = []any{activeClass}
+			templ_7745c5c3_Var2 := []any{activeClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -106,7 +107,7 @@ func activeSpanOrLink(isActive bool, href string, text string, activeClass strin
 				return templ_7745c5c3_Err
 			}
 		} else {
-			var templ_7745c5c3_Var5 = []any{inactiveClass}
+			templ_7745c5c3_Var5 := []any{inactiveClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var5...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -184,7 +185,7 @@ func navLinkAnchor(props NavLinkProps, isActive bool, baseClass string) templ.Co
 			templ_7745c5c3_Var9 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var10 = []any{utils.Class(baseClass, props.Class)}
+		templ_7745c5c3_Var10 := []any{utils.Class(baseClass, props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

@@ -5,10 +5,9 @@ package errorpage
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -35,7 +34,7 @@ func ErrorAlert(props ErrorAlertProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		style := lookupFamilyStyle(props.Family)
-		var templ_7745c5c3_Var2 = []any{utils.Class("rounded-md border p-4", style.Border, style.BG, props.Class)}
+		templ_7745c5c3_Var2 := []any{utils.Class("rounded-md border p-4", style.Border, style.BG, props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -116,7 +115,7 @@ func ErrorAlert(props ErrorAlertProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Title != "" {
-			var templ_7745c5c3_Var6 = []any{"text-sm font-medium", style.Text}
+			templ_7745c5c3_Var6 := []any{"text-sm font-medium", style.Text}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -160,7 +159,7 @@ func ErrorAlert(props ErrorAlertProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var9 = []any{"mt-1 text-sm", style.Text}
+		templ_7745c5c3_Var9 := []any{"mt-1 text-sm", style.Text}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -223,7 +222,7 @@ func ErrorAlert(props ErrorAlertProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var13 = []any{"inline-flex rounded-md p-1.5 hover:opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2", style.BG, style.Text}
+			templ_7745c5c3_Var13 := []any{"inline-flex rounded-md p-1.5 hover:opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2", style.BG, style.Text}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

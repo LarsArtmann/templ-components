@@ -5,10 +5,11 @@ package navigation
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // NavProps configures a navigation bar
 type NavProps struct {
@@ -59,8 +60,10 @@ func Nav(props NavProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		menuID := utils.EnsureID("mobile-menu", props.ID)
-		var templ_7745c5c3_Var2 = []any{utils.Class("z-40 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900", props.Class),
-			templ.KV("sticky top-0", props.Sticky)}
+		templ_7745c5c3_Var2 := []any{
+			utils.Class("z-40 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900", props.Class),
+			templ.KV("sticky top-0", props.Sticky),
+		}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
