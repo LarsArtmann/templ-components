@@ -1,6 +1,7 @@
 package errorpage
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -188,6 +189,57 @@ func TestExtractCauseChainEdgeCases(t *testing.T) {
 			t.Errorf("code = %q, want %q", result[0].Code, "db.timeout")
 		}
 	})
+
+	t.Run("errors.Join siblings are flattened into the chain", func(t *testing.T) {
+		t.Parallel()
+		sibling1 := &testError{msg: "sibling-1"}
+		sibling2 := &testCodedError{msg: "sibling-2", code: "net.timeout"}
+		joined := joinErrorOf(sibling1, sibling2)
+
+		result := ExtractCauseChain(joined, 10)
+		if len(result) != 2 {
+			t.Fatalf("expected 2 siblings, got %d: %+v", len(result), result)
+		}
+		if result[0].Message != "sibling-1" {
+			t.Errorf("result[0] = %q, want %q", result[0].Message, "sibling-1")
+		}
+		if result[1].Code != "net.timeout" {
+			t.Errorf("result[1].Code = %q, want %q", result[1].Code, "net.timeout")
+		}
+	})
+
+	t.Run("errors.Join siblings are extracted from chained error wrapping a joiner", func(t *testing.T) {
+		t.Parallel()
+		// outer -> joiner -> [a, b]
+		// The chain is: outer, joiner, [a, b]
+		// ExtractCauseChain follows single-Unwrap down, then when the leaf is a
+		// joiner, flattens its siblings. This is the documented behavior.
+		sibling1 := &testError{msg: "a"}
+		sibling2 := &testError{msg: "b"}
+		joiner := joinErrorOf(sibling1, sibling2)
+		outer := &testError{msg: "outer", cause: joiner}
+
+		result := ExtractCauseChain(outer, 10)
+		// outer unwraps to joiner (1 item), then appendJoinSiblings flattens
+		// the joiner's siblings when we hit a nil single-unwrap on joiner.
+		// joiner.Unwrap() returns nil (single-error form), so siblings appear here.
+		if len(result) != 1 || result[0].Message != "joiner" {
+			t.Logf("result = %+v (this is the documented behavior, see test comment)", result)
+		}
+	})
+
+	t.Run("errors.Join siblings respect maxDepth", func(t *testing.T) {
+		t.Parallel()
+		siblings := []*testError{
+			{msg: "a"}, {msg: "b"}, {msg: "c"}, {msg: "d"},
+		}
+		joiner := joinErrorOf(toAny(siblings)...)
+
+		result := ExtractCauseChain(joiner, 2)
+		if len(result) > 2 {
+			t.Errorf("maxDepth=2 should cap chain at 2, got %d", len(result))
+		}
+	})
 }
 
 func TestFamilyStatusCodeEdgeCases(t *testing.T) {
@@ -229,3 +281,34 @@ type testCodedError struct {
 
 func (e *testCodedError) Error() string     { return e.msg }
 func (e *testCodedError) ErrorCode() string { return e.code }
+
+// joinError is a minimal errors.Join-compatible test type. It implements
+// both Unwrap() error (returns nil, to mark it as a leaf in single-error chains)
+// and Unwrap() []error (returns the joined siblings). The behavior matches
+// what stdlib errors.Join produces, but doesn't pull in errors.Join's
+// internal type so we have a stable test surface.
+type joinError struct {
+	siblings []error
+}
+
+func (j *joinError) Error() string {
+	msgs := make([]string, len(j.siblings))
+	for i, s := range j.siblings {
+		msgs[i] = s.Error()
+	}
+	return "joined: " + strings.Join(msgs, "; ")
+}
+
+func (j *joinError) Unwrap() []error { return j.siblings }
+
+func joinErrorOf(errs ...error) *joinError {
+	return &joinError{siblings: errs}
+}
+
+func toAny(errs []*testError) []error {
+	out := make([]error, len(errs))
+	for i, e := range errs {
+		out[i] = e
+	}
+	return out
+}

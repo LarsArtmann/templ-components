@@ -10,7 +10,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- Tooltip touch-device support: click/tap toggles visibility, Escape and click-outside dismiss (singleton JS, CSP-safe with nonce)
+- Tooltip touch-device support: click/tap toggles visibility, Escape and click-outside dismiss (idempotent JS body guarded by `window.tcTooltipAttached`, CSP-safe with nonce)
 - Tooltip auto-generates an ID via `utils.EnsureID` when none is provided, so `aria-describedby` is always wired up
 - Typed `HTMXVersion` enum (`HTMXVersion2_0_10`) replacing the bare string, matching the library's typed-constant convention
 - `ThemeColor`/`DarkThemeColor` are now validated as CSS hex colors, falling back to `DefaultThemeColor`/`DefaultDarkThemeColor` for invalid values instead of emitting garbage into the `<meta>` tag
@@ -22,7 +22,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Changed
 
 - **Breaking:** `forms.FormFieldWrapper` now takes a `FormFieldProps{ID, Label, Required, Error, HelpText}` struct instead of 5 positional parameters (affects `Input`, `Textarea`, `Select`, `FileInput`, `DatePicker`, `Combobox`)
-- **Breaking:** `feedback.ConfirmDelete` now takes a `ConfirmDeleteProps{Delete, Target, Confirm}` struct instead of 3 positional strings
+- **Breaking:** `htmx.ConfirmDelete` now takes a `ConfirmDeleteProps{Delete, Target, Confirm}` struct instead of 3 positional strings
 - **Breaking:** `htmx.SwapOOB` now takes a `SwapOOBProps{Selector, SwapStyle}` struct instead of positional parameters
 - `errorpage` handler split into focused files; `WriteErrorPage` now derives the HTTP status from `props.Family` when `statusCode` is 0 (prevents status/family mismatch)
 - `errorpage` renders to a buffer before writing the response, so a mid-stream templ failure can no longer emit a truncated HTML document at the wrong status code
