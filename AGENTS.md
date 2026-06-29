@@ -141,6 +141,73 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - icons.IconPathData: exported function returning raw SVG path d-strings for consumers needing full `<svg>` wrapper control (used by cqrs-htmx/adminui for icons-only adoption without Tailwind).
 - icons-only adoption: the `icons` and `utils` packages are CSS-agnostic (pure SVG data). This is a natural property of icons, not a portability strategy. See `docs/icons-only-adoption.md`.
 
+## Release Convention: One-Commit Release
+
+Established with v0.4.0 → v0.5.0 → v0.6.0. Each version is cut with a **single
+release commit** at the tip of `master`, even if many feature/fix commits preceded it.
+The release commit message is the canonical user-facing description of what changed.
+
+**Release commit message structure:**
+
+```
+release: <version> — <one-line summary>
+
+<one-paragraph "why this version" / headline summary>
+<one-paragraph "what's in it" / feature highlights>
+<one-paragraph "notes" / breaking changes, deprecations, migration paths>
+
+💘 Generated with Crush
+Assisted-by: Crush:MiniMax-M3
+```
+
+**Release commit body must include:**
+
+- The version bump in `utils/version.go`
+- The CHANGELOG heading (e.g., `## [0.6.0] — YYYY-MM-DD`) replacing `[Unreleased]`,
+  with a fresh empty `## [Unreleased]` inserted above it
+- The release notes in the commit body **and** the CHANGELOG (both kept in sync)
+
+**Tag format:** annotated + SSH-signed, message `<version>: <one-line summary>`,
+e.g., `v0.6.0: typed Props structs, tooltip a11y, error handler hardening`.
+Sign with the same key used for v0.5.0.
+
+**Post-release commits** (e.g., backfilling tests, fixing docs, regenerating
+after a templ patch release) are committed normally on `master` and roll up
+into the next minor/patch release. Do not retag the same version.
+
+**Two-commit alternative was considered and rejected** for v0.6.0: it
+doubles the commit noise without improving the reviewability of the
+release. The one-commit convention keeps the release timeline obvious
+in `git log` and matches every prior release in this repo.
+
+**To cut a release:** use `scripts/release.sh` (see "Release Script" below).
+
+## Release Script
+
+`scripts/release.sh` automates the full release cut in one command:
+
+```bash
+scripts/release.sh <new-version> "<release-summary>"
+# Example: scripts/release.sh 0.7.0 "typed HTMX retry, Drawer motion-reduce"
+```
+
+What it does:
+
+1. Validates the working tree is clean and on `master`
+2. Confirms the new version is greater than the current one (via `sort -V`)
+3. Bumps `utils.Version` via in-place sed
+4. Inserts a new `## [<version>] — YYYY-MM-DD` heading into CHANGELOG, replacing
+   `[Unreleased]` and adding a fresh empty `[Unreleased]` block above
+5. Prompts for release notes on stdin (Ctrl-D on an empty line to finish)
+6. Regenerates `*_templ.go` and runs the full verify suite (build + test + lint)
+7. Asserts the version drift-guard test passes (CHANGELOG heading matches `utils.Version`)
+8. Stages and commits as `release: <version> — <summary>` (one-commit convention)
+9. Creates an annotated, SSH-signed tag `v<version>: <summary>`
+
+The script does **not** push. House rule: "NEVER PUSH TO REMOTE". Push manually
+after reviewing the release commit and tag with `git show v<version>` and
+`git show <commit>`.
+
 ## Lint Command
 
 ```bash
