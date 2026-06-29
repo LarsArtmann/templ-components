@@ -33,6 +33,26 @@ will have their Go toolchain download the tagged commit. If `*_templ.go` is miss
 commit, the package won't compile. Unlike applications (where you generate at build time), a
 **library's generated code is part of its distributable artifact**.
 
+## templ Version Pin: go.mod v0.3.1020, system binary may be v0.3.1036
+
+`go.mod` pins `github.com/a-h/templ v0.3.1020` — the latest **published** version on the Go module
+proxy (https://proxy.golang.org/github.com/a-h/templ/@v/list). The system `templ` binary in
+`~/.nix-profile/bin/templ` may be a local Nix build of unreleased upstream master
+(`github:a-h/templ` flake), reporting `v0.3.1036`. This causes a cosmetic import-block style diff
+across all 51 `*_templ.go` files on every regen:
+
+- v0.3.1020 emits `import "github.com/a-h/templ"` on its own line, then a separate
+  `import (...)` block for project imports
+- v0.3.1036 collapses both into a single `import (...)` block
+
+**Rule:** always use `nix develop` to enter the dev shell before running `templ generate`. The dev
+shell provides `pkgs.templ` (v0.3.1020) which matches `go.mod` and produces zero diff. If you run
+`templ generate` with the system binary, expect 51 files to change cosmetically — these are no-op
+import-style changes; the generated code is semantically identical.
+
+**Do not bump `go.mod` to v0.3.1036** — that version is not yet on the module proxy, so consumers
+who `go get` this package would fail. Wait for the official upstream release, then bump in lockstep.
+
 ## Architecture
 
 - **Module:** `github.com/larsartmann/templ-components`
