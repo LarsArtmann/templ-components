@@ -30,3 +30,53 @@ node_modules/
 /result
 # Add pattern for Templ generated files
 *_templ.go
+
+# >>> buildflow-managed (.gitignore) >>>
+# Auto-managed by buildflow. Edit outside these markers; this block is regenerated on `buildflow --fix`.
+
+## Secrets and environment
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+
+## Databases
+*.db-shm
+*.db-wal
+
+## Operating systems
+._*
+.Spotlight-V100
+.Trashes
+Thumbs.db
+ehthumbs.db
+
+## Editors and ides
+*.swp
+*.swo
+*~
+
+## Logs and temporaries
+*.log
+*.tmp
+*.temp
+
+## Reports and coverage
+reports/
+
+## Go
+*.exe
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+go.work
+go.work.sum
+
+## Nix
+result-*
+.envrc
+.direnv/
+# <<< buildflow-managed (.gitignore) <<<

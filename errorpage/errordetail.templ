@@ -3,11 +3,11 @@ package errorpage
 import "github.com/larsartmann/templ-components/utils"
 
 templ ErrorDetail(props ErrorDetailProps) {
-// ErrorDetail renders a compact inline error card for a single classified error.
-//
-// The header scaffold (icon + badge + title + message) is intentionally not shared
-// with ErrorPage: shared logic is already extracted (familyIcon, codeAndFamilyBadge,
-// diagnosticSection) and the remaining layout differs by visual density.
+	// ErrorDetail renders a compact inline error card for a single classified error.
+	//
+	// The header scaffold (icon + badge + title + message) is intentionally not shared
+	// with ErrorPage: shared logic is already extracted (familyIcon, codeAndFamilyBadge,
+	// diagnosticSection) and the remaining layout differs by visual density.
 	{{ style := lookupFamilyStyle(props.Family) }}
 	<div
 		if props.ID != "" {

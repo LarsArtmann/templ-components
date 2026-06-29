@@ -5,10 +5,11 @@ package forms
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // InputGroupProps configures an input group with optional left/right addons
 //
