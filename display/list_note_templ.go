@@ -48,7 +48,7 @@ func ListNote(props ListNoteProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if props.Total > props.Shown {
-			var templ_7745c5c3_Var2 = []any{utils.Class("border-t border-gray-200 dark:border-gray-700 px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400", props.Class)}
+			templ_7745c5c3_Var2 := []any{utils.Class("border-t border-gray-200 dark:border-gray-700 px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400", props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

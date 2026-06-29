@@ -6,10 +6,13 @@ package display
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
 import (
-	"strings"
-
 	"github.com/a-h/templ"
 	templruntime "github.com/a-h/templ/runtime"
+)
+
+import (
+	"strings"
+
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -78,7 +81,7 @@ func Badge(props BadgeProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if props.Href != "" {
-			var templ_7745c5c3_Var2 = []any{utils.Class("inline-flex items-center font-medium", badgeSizeClass(props.Size), badgeShapeClass(props.Pill), badgeColorClass(props.Type), props.Class)}
+			templ_7745c5c3_Var2 := []any{utils.Class("inline-flex items-center font-medium", badgeSizeClass(props.Size), badgeShapeClass(props.Pill), badgeColorClass(props.Type), props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -164,7 +167,7 @@ func Badge(props BadgeProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.Dot {
-				var templ_7745c5c3_Var7 = []any{"mr-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type)}
+				templ_7745c5c3_Var7 := []any{"mr-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -201,7 +204,7 @@ func Badge(props BadgeProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			var templ_7745c5c3_Var10 = []any{utils.Class("inline-flex items-center font-medium", badgeSizeClass(props.Size), badgeShapeClass(props.Pill), badgeColorClass(props.Type), props.Class)}
+			templ_7745c5c3_Var10 := []any{utils.Class("inline-flex items-center font-medium", badgeSizeClass(props.Size), badgeShapeClass(props.Pill), badgeColorClass(props.Type), props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -274,7 +277,7 @@ func Badge(props BadgeProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.Dot {
-				var templ_7745c5c3_Var14 = []any{"mr-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type)}
+				templ_7745c5c3_Var14 := []any{"mr-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type)}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var14...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err

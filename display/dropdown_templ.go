@@ -95,7 +95,7 @@ func dropdownItemLink(item DropdownItem) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if item.Disabled {
-			var templ_7745c5c3_Var2 = []any{dropdownItemClass + dropdownItemDisabledClass}
+			templ_7745c5c3_Var2 := []any{dropdownItemClass + dropdownItemDisabledClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -149,7 +149,7 @@ func dropdownItemLink(item DropdownItem) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			var templ_7745c5c3_Var5 = []any{dropdownItemClass}
+			templ_7745c5c3_Var5 := []any{dropdownItemClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var5...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -261,7 +261,7 @@ func Dropdown(props DropdownProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		id := utils.EnsureID("dropdown", props.ID)
-		var templ_7745c5c3_Var10 = []any{utils.Class("relative inline-block text-left", props.Class)}
+		templ_7745c5c3_Var10 := []any{utils.Class("relative inline-block text-left", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -422,7 +422,7 @@ func Dropdown(props DropdownProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				var templ_7745c5c3_Var20 = []any{utils.Class("block w-full text-left", dropdownItemClass, utils.Ternary(item.Disabled, dropdownItemDisabledClass, ""))}
+				templ_7745c5c3_Var20 := []any{utils.Class("block w-full text-left", dropdownItemClass, utils.Ternary(item.Disabled, dropdownItemDisabledClass, ""))}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var20...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err

@@ -102,7 +102,7 @@ func Select(props SelectProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			var templ_7745c5c3_Var3 = []any{utils.Class(baseInputClass(props.Error != ""), props.Class)}
+			templ_7745c5c3_Var3 := []any{utils.Class(baseInputClass(props.Error != ""), props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

@@ -90,7 +90,7 @@ func MobileMenuToggle(show bool, menuID string) templ.Component {
 // aria-controls relationship stays valid even with multiple Navs on a page.
 //
 //	@navigation.MobileMenu(links, "/", "", "abc123")
-func MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID string) templ.Component {
+func MobileMenu(links []NavLinkProps, currentPath, nonce, menuID string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

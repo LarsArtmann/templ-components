@@ -72,7 +72,7 @@ func IconWithStrokeWidth(name Name, class string, strokeWidth float64) templ.Com
 		}
 		ctx = templ.ClearChildren(ctx)
 		if name == Spinner {
-			var templ_7745c5c3_Var3 = []any{class, "animate-spin"}
+			templ_7745c5c3_Var3 := []any{class, "animate-spin"}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -134,7 +134,7 @@ func strokeIcon(class string, strokeWidth float64, paths []string) templ.Compone
 			templ_7745c5c3_Var5 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var6 = []any{class}
+		templ_7745c5c3_Var6 := []any{class}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

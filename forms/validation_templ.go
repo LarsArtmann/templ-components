@@ -61,7 +61,7 @@ func ValidationSummary(props ValidationSummaryProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if len(props.Errors) > 0 {
-			var templ_7745c5c3_Var2 = []any{utils.Class("rounded-md bg-red-50 dark:bg-red-900/30 p-4 border border-red-200 dark:border-red-800", props.Class)}
+			templ_7745c5c3_Var2 := []any{utils.Class("rounded-md bg-red-50 dark:bg-red-900/30 p-4 border border-red-200 dark:border-red-800", props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

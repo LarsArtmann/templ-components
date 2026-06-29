@@ -62,7 +62,7 @@ func ThemeScript(nonce string) templ.Component {
 // Requires Tailwind CSS dark: variants and the ThemeScript in your base layout.
 //
 //	@layout.ThemeToggle("Toggle theme")
-func ThemeToggle(ariaLabel string, nonce string) templ.Component {
+func ThemeToggle(ariaLabel, nonce string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {

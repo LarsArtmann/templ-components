@@ -75,7 +75,7 @@ func ConfirmDelete(props ConfirmDeleteProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{utils.Class("text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300", props.Class)}
+		templ_7745c5c3_Var2 := []any{utils.Class("text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -226,7 +226,7 @@ func SwapOOB(props SwapOOBProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		style := normalizeSwapStyle(props.SwapStyle)
-		var templ_7745c5c3_Var10 = []any{props.Class}
+		templ_7745c5c3_Var10 := []any{props.Class}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

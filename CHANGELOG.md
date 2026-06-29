@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.6.0] — 2026-06-29
+
 ### Added
 
 - Tooltip touch-device support: click/tap toggles visibility, Escape and click-outside dismiss (singleton JS, CSP-safe with nonce)

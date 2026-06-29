@@ -54,9 +54,11 @@ func Modal(props ModalProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			var templ_7745c5c3_Var3 = []any{utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", modalSizeClass(props.Size), props.Class),
+			templ_7745c5c3_Var3 := []any{
+				utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", modalSizeClass(props.Size), props.Class),
 				templ.KV("scale-100 opacity-100", props.Open),
-				templ.KV("scale-95 opacity-0", !props.Open)}
+				templ.KV("scale-95 opacity-0", !props.Open),
+			}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

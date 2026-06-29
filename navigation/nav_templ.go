@@ -60,8 +60,10 @@ func Nav(props NavProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		menuID := utils.EnsureID("mobile-menu", props.ID)
-		var templ_7745c5c3_Var2 = []any{utils.Class("z-40 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900", props.Class),
-			templ.KV("sticky top-0", props.Sticky)}
+		templ_7745c5c3_Var2 := []any{
+			utils.Class("z-40 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900", props.Class),
+			templ.KV("sticky top-0", props.Sticky),
+		}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

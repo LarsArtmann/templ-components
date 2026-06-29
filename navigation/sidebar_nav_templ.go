@@ -84,7 +84,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{utils.Class("flex h-full w-64 flex-col bg-gray-900 dark:bg-black", props.Class)}
+		templ_7745c5c3_Var2 := []any{utils.Class("flex h-full w-64 flex-col bg-gray-900 dark:bg-black", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -181,9 +181,11 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 		}
 		for _, item := range props.Items {
 			active := sidebarItemActive(item, props.CurrentPath)
-			var templ_7745c5c3_Var6 = []any{"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0",
+			templ_7745c5c3_Var6 := []any{
+				"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0",
 				templ.KV("bg-blue-600 text-white", active),
-				templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active)}
+				templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active),
+			}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

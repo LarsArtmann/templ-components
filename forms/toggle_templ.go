@@ -88,7 +88,7 @@ func Toggle(props ToggleProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		trackClass, thumbClass, translateClass := toggleSizeClasses(props.Size)
-		var templ_7745c5c3_Var2 = []any{utils.Class("inline-flex cursor-pointer items-center", utils.Ternary(props.Disabled, "opacity-50 cursor-not-allowed", "cursor-pointer"), props.Class)}
+		templ_7745c5c3_Var2 := []any{utils.Class("inline-flex cursor-pointer items-center", utils.Ternary(props.Disabled, "opacity-50 cursor-not-allowed", "cursor-pointer"), props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -199,7 +199,7 @@ func Toggle(props ToggleProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var7 = []any{utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 motion-reduce:transition-none", trackClass)}
+		templ_7745c5c3_Var7 := []any{utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 motion-reduce:transition-none", trackClass)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -221,7 +221,7 @@ func Toggle(props ToggleProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var9 = []any{utils.Class("absolute top-0.5 left-0.5 rounded-full bg-white shadow-sm transition-transform peer-checked:"+translateClass+" motion-reduce:transition-none", thumbClass)}
+		templ_7745c5c3_Var9 := []any{utils.Class("absolute top-0.5 left-0.5 rounded-full bg-white shadow-sm transition-transform peer-checked:"+translateClass+" motion-reduce:transition-none", thumbClass)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
