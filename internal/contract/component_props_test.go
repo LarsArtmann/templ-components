@@ -97,7 +97,7 @@ func componentTypes() []any {
 func TestAllComponentPropsSatisfyInterface(t *testing.T) {
 	t.Parallel()
 
-	componentInterface := reflect.TypeOf((*utils.ComponentProps)(nil)).Elem()
+	componentInterface := reflect.TypeFor[utils.ComponentProps]()
 	required := componentTypes()
 	if len(required) == 0 {
 		t.Fatal("componentTypes() returned an empty list; the inventory is broken")
@@ -129,7 +129,7 @@ func TestAllComponentPropsSatisfyInterface(t *testing.T) {
 func TestComponentPropsInterfaceContract(t *testing.T) {
 	t.Parallel()
 
-	iface := reflect.TypeOf((*utils.ComponentProps)(nil)).Elem()
+	iface := reflect.TypeFor[utils.ComponentProps]()
 	if iface.NumMethod() != 2 {
 		t.Errorf("ComponentProps interface has %d methods, want 2 (GetBaseProps, SetBaseProps)", iface.NumMethod())
 	}
@@ -152,8 +152,8 @@ func embedsBaseProps(typ reflect.Type) bool {
 	if typ.Kind() != reflect.Struct {
 		return false
 	}
-	for i := range typ.NumField() {
-		f := typ.Field(i)
+	for f := range typ.Fields() {
+
 		if !f.Anonymous {
 			continue
 		}
