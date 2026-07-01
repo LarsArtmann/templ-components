@@ -5,13 +5,12 @@ package feedback
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
 	"fmt"
 	"strings"
 
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -170,7 +169,7 @@ func Toast(props ToastProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		s := feedbackStyle(props.Type)
-		var templ_7745c5c3_Var6 = []any{utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0", s.Border, s.BG, props.Class)}
+		templ_7745c5c3_Var6 := []any{utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0", s.Border, s.BG, props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -251,7 +250,7 @@ func Toast(props ToastProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Title != "" {
-			var templ_7745c5c3_Var10 = []any{"text-sm font-semibold", s.Text}
+			templ_7745c5c3_Var10 := []any{"text-sm font-semibold", s.Text}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -287,7 +286,7 @@ func Toast(props ToastProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		var templ_7745c5c3_Var13 = []any{"text-sm", s.Text}
+		templ_7745c5c3_Var13 := []any{"text-sm", s.Text}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

@@ -5,10 +5,9 @@ package errorpage
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -241,7 +240,7 @@ func contextTable(pairs []ContextPair) templ.Component {
 	})
 }
 
-func timestampFooter(timestamp string, class string) templ.Component {
+func timestampFooter(timestamp, class string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -263,7 +262,7 @@ func timestampFooter(timestamp string, class string) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if timestamp != "" {
-			var templ_7745c5c3_Var12 = []any{class, "border-t border-gray-100 dark:border-gray-800"}
+			templ_7745c5c3_Var12 := []any{class, "border-t border-gray-100 dark:border-gray-800"}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var12...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -324,7 +323,7 @@ func familyBadge(family Family, style familyVisualStyle) templ.Component {
 			templ_7745c5c3_Var15 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var16 = []any{"inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium", style.AccentBG, style.AccentText}
+		templ_7745c5c3_Var16 := []any{"inline-flex items-center rounded-md px-2 py-0.5 text-xs font-medium", style.AccentBG, style.AccentText}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var16...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -389,7 +388,7 @@ func codeAndFamilyBadge(family Family, style familyVisualStyle, code string) tem
 			return templ_7745c5c3_Err
 		}
 		if code != "" {
-			var templ_7745c5c3_Var20 = []any{"inline-flex items-center rounded px-1.5 py-0.5 text-xs font-mono font-medium", style.AccentBG, style.AccentText}
+			templ_7745c5c3_Var20 := []any{"inline-flex items-center rounded px-1.5 py-0.5 text-xs font-mono font-medium", style.AccentBG, style.AccentText}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var20...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -437,7 +436,7 @@ func codeAndFamilyBadge(family Family, style familyVisualStyle, code string) tem
 	})
 }
 
-func diagnosticSection(fix string, context []ContextPair, causes []CauseItem, containerClass string, causeLabel string) templ.Component {
+func diagnosticSection(fix string, context []ContextPair, causes []CauseItem, containerClass, causeLabel string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -459,7 +458,7 @@ func diagnosticSection(fix string, context []ContextPair, causes []CauseItem, co
 		}
 		ctx = templ.ClearChildren(ctx)
 		if fix != "" || len(context) > 0 || len(causes) > 0 {
-			var templ_7745c5c3_Var24 = []any{containerClass}
+			templ_7745c5c3_Var24 := []any{containerClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var24...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

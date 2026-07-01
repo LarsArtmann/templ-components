@@ -5,8 +5,10 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
+import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
+)
 
 import (
 	"github.com/larsartmann/templ-components/icons"
@@ -69,7 +71,7 @@ func Card(props CardProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{utils.Class(cardShellClass+" overflow-hidden", props.Class)}
+		templ_7745c5c3_Var2 := []any{utils.Class(cardShellClass+" overflow-hidden", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -166,7 +168,7 @@ func Card(props CardProps) templ.Component {
 				}
 			}
 			if props.Subtitle != "" {
-				var templ_7745c5c3_Var7 = []any{utils.Class(mutedTextClass, "mt-1")}
+				templ_7745c5c3_Var7 := []any{utils.Class(mutedTextClass, "mt-1")}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -225,7 +227,7 @@ func Card(props CardProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		var templ_7745c5c3_Var10 = []any{cardPaddingClass(props.Padding)}
+		templ_7745c5c3_Var10 := []any{cardPaddingClass(props.Padding)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -425,7 +427,7 @@ func StatCard(props StatCardProps) templ.Component {
 			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var15 = []any{utils.Class(cardShellClass+" p-5", props.Class)}
+		templ_7745c5c3_Var15 := []any{utils.Class(cardShellClass+" p-5", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var15...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -595,9 +597,11 @@ func statCardFigures(props StatCardProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Change != "" {
-			var templ_7745c5c3_Var22 = []any{"ml-2 flex items-baseline text-sm font-semibold",
+			templ_7745c5c3_Var22 := []any{
+				"ml-2 flex items-baseline text-sm font-semibold",
 				templ.KV("text-green-600 dark:text-green-400", trend == TrendUp),
-				templ.KV("text-red-600 dark:text-red-400", trend == TrendDown)}
+				templ.KV("text-red-600 dark:text-red-400", trend == TrendDown),
+			}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var22...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

@@ -5,12 +5,11 @@ package feedback
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
 	"fmt"
 
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -86,7 +85,7 @@ func Spinner(props SpinnerProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{utils.Class("animate-spin motion-reduce:animate-none", spinnerSizeClass(props.Size), props.Color, props.Class)}
+		templ_7745c5c3_Var2 := []any{utils.Class("animate-spin motion-reduce:animate-none", spinnerSizeClass(props.Size), props.Color, props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -214,7 +213,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 			templ_7745c5c3_Var6 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var7 = []any{utils.Class("fixed inset-0 bg-black/50 z-50 flex items-center justify-center", props.Class)}
+		templ_7745c5c3_Var7 := []any{utils.Class("fixed inset-0 bg-black/50 z-50 flex items-center justify-center", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

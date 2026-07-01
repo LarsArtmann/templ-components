@@ -5,12 +5,11 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
 	"fmt"
 
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -72,7 +71,7 @@ func tabLink(tab Tab, isActive bool, activeClass, inactiveClass string) templ.Co
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{utils.Ternary(isActive, activeClass, inactiveClass)}
+		templ_7745c5c3_Var2 := []any{utils.Ternary(isActive, activeClass, inactiveClass)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -206,7 +205,7 @@ func Tabs(props TabsProps) templ.Component {
 			templ_7745c5c3_Var10 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var11 = []any{utils.Class("w-full", props.Class)}
+		templ_7745c5c3_Var11 := []any{utils.Class("w-full", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -284,7 +283,7 @@ func Tabs(props TabsProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var15 = []any{"-mb-px flex space-x-8", templ.KV("space-x-2", props.Variant == TabsPills)}
+		templ_7745c5c3_Var15 := []any{"-mb-px flex space-x-8", templ.KV("space-x-2", props.Variant == TabsPills)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var15...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -309,7 +308,8 @@ func Tabs(props TabsProps) templ.Component {
 		for _, tab := range props.Tabs {
 			active := isActiveTab(tab.ID, props.ActiveTabID)
 			if props.Variant == TabsPills {
-				templ_7745c5c3_Err = tabLink(tab, active,
+				templ_7745c5c3_Err = tabLink(
+					tab, active,
 					"rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white",
 					"rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
 				).Render(ctx, templ_7745c5c3_Buffer)
@@ -317,7 +317,8 @@ func Tabs(props TabsProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = tabLink(tab, active,
+				templ_7745c5c3_Err = tabLink(
+					tab, active,
 					"whitespace-nowrap border-b-2 border-blue-500 px-1 py-4 text-sm font-medium text-blue-600 dark:text-blue-400",
 					"whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200",
 				).Render(ctx, templ_7745c5c3_Buffer)

@@ -5,14 +5,13 @@ package navigation
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
 import (
 	"fmt"
 	"net/url"
 	"strconv"
 
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -87,7 +86,7 @@ func paginationRange(current, total, maxVisible uint) (start, end uint) {
 }
 
 // mobilePageButton renders an enabled link or disabled span for mobile pagination
-func mobilePageButton(enabled bool, href string, marginClass string, text string) templ.Component {
+func mobilePageButton(enabled bool, href, marginClass, text string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -109,7 +108,7 @@ func mobilePageButton(enabled bool, href string, marginClass string, text string
 		}
 		ctx = templ.ClearChildren(ctx)
 		if enabled {
-			var templ_7745c5c3_Var2 = []any{"relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700", marginClass}
+			templ_7745c5c3_Var2 := []any{"relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700", marginClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -158,7 +157,7 @@ func mobilePageButton(enabled bool, href string, marginClass string, text string
 				return templ_7745c5c3_Err
 			}
 		} else {
-			var templ_7745c5c3_Var6 = []any{"relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed", marginClass}
+			templ_7745c5c3_Var6 := []any{"relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed", marginClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -199,7 +198,7 @@ func mobilePageButton(enabled bool, href string, marginClass string, text string
 }
 
 // paginationArrowIcon renders the shared icon content for pagination arrows
-func paginationArrowIcon(srText string, svgPath string) templ.Component {
+func paginationArrowIcon(srText, svgPath string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -246,7 +245,7 @@ func paginationArrowIcon(srText string, svgPath string) templ.Component {
 }
 
 // paginationArrow renders a previous/next arrow button for desktop pagination
-func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel string, srText string, svgPath string, rel string) templ.Component {
+func paginationArrow(enabled bool, href, roundedSide, ariaLabel, srText, svgPath, rel string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -268,7 +267,7 @@ func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel st
 		}
 		ctx = templ.ClearChildren(ctx)
 		if enabled {
-			var templ_7745c5c3_Var12 = []any{"relative inline-flex items-center px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0", "rounded-" + roundedSide + "-md"}
+			templ_7745c5c3_Var12 := []any{"relative inline-flex items-center px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0", "rounded-" + roundedSide + "-md"}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var12...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -348,7 +347,7 @@ func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel st
 				return templ_7745c5c3_Err
 			}
 		} else {
-			var templ_7745c5c3_Var17 = []any{"relative inline-flex items-center px-2 py-2 text-gray-300 dark:text-gray-600 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed", "rounded-" + roundedSide + "-md"}
+			templ_7745c5c3_Var17 := []any{"relative inline-flex items-center px-2 py-2 text-gray-300 dark:text-gray-600 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed", "rounded-" + roundedSide + "-md"}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var17...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -414,7 +413,7 @@ func paginationEllipsis() templ.Component {
 }
 
 // paginationPageItem renders a single page number inside a list item.
-func paginationPageItem(isActive bool, href string, text string, activeClass string) templ.Component {
+func paginationPageItem(isActive bool, href, text, activeClass string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -519,7 +518,7 @@ func Pagination(props PaginationProps) templ.Component {
 		ctx = templ.ClearChildren(ctx)
 		props.normalize()
 		if props.TotalPages > 1 {
-			var templ_7745c5c3_Var23 = []any{utils.Class("flex items-center justify-between", props.Class)}
+			templ_7745c5c3_Var23 := []any{utils.Class("flex items-center justify-between", props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var23...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

@@ -5,10 +5,11 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
-
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // Drawer renders an accessible side panel that slides in from the left or right
 //
@@ -53,12 +54,14 @@ func Drawer(props DrawerProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			var templ_7745c5c3_Var3 = []any{utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0", drawerSizeClass(props.Size), props.Class),
+			templ_7745c5c3_Var3 := []any{
+				utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0", drawerSizeClass(props.Size), props.Class),
 				templ.KV("left-0", props.Side == DrawerLeft),
 				templ.KV("right-0", props.Side == DrawerRight),
 				templ.KV("translate-x-0", props.Open),
 				templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
-				templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight)}
+				templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight),
+			}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var3...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

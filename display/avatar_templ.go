@@ -5,8 +5,10 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import "github.com/a-h/templ"
-import templruntime "github.com/a-h/templ/runtime"
+import (
+	"github.com/a-h/templ"
+	templruntime "github.com/a-h/templ/runtime"
+)
 
 import (
 	"github.com/larsartmann/templ-components/internal/svg"
@@ -116,7 +118,7 @@ func Avatar(props AvatarProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if props.Src != "" {
-			var templ_7745c5c3_Var2 = []any{utils.Class("relative inline-block", props.Class)}
+			templ_7745c5c3_Var2 := []any{utils.Class("relative inline-block", props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -188,7 +190,7 @@ func Avatar(props AvatarProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var6 = []any{utils.Class("inline-block object-cover bg-gray-100 dark:bg-gray-800", avatarSizeClass(props.Size), avatarShapeClass(props.Shape))}
+			templ_7745c5c3_Var6 := []any{utils.Class("inline-block object-cover bg-gray-100 dark:bg-gray-800", avatarSizeClass(props.Size), avatarShapeClass(props.Shape))}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -237,10 +239,12 @@ func Avatar(props AvatarProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
-				var templ_7745c5c3_Var10 = []any{"absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
+				templ_7745c5c3_Var10 := []any{
+					"absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
 					avatarDotSizeClass(props.Size),
 					templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
-					templ.KV("bg-gray-400", props.Status == AvatarStatusOffline)}
+					templ.KV("bg-gray-400", props.Status == AvatarStatusOffline),
+				}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -268,7 +272,7 @@ func Avatar(props AvatarProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			var templ_7745c5c3_Var12 = []any{utils.Class("relative inline-flex items-center justify-center bg-blue-600 text-white font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class)}
+			templ_7745c5c3_Var12 := []any{utils.Class("relative inline-flex items-center justify-center bg-blue-600 text-white font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var12...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -374,10 +378,12 @@ func Avatar(props AvatarProps) templ.Component {
 				}
 			}
 			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
-				var templ_7745c5c3_Var18 = []any{"absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
+				templ_7745c5c3_Var18 := []any{
+					"absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
 					avatarDotSizeClass(props.Size),
 					templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
-					templ.KV("bg-gray-400", props.Status == AvatarStatusOffline)}
+					templ.KV("bg-gray-400", props.Status == AvatarStatusOffline),
+				}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var18...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
