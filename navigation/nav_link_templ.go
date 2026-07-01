@@ -5,11 +5,10 @@ package navigation
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import (
-	"github.com/a-h/templ"
-	templruntime "github.com/a-h/templ/runtime"
-	"github.com/larsartmann/templ-components/utils"
-)
+import "github.com/a-h/templ"
+import templruntime "github.com/a-h/templ/runtime"
+
+import "github.com/larsartmann/templ-components/utils"
 
 // navLinkBaseClass is the shared class prefix for active and inactive nav links.
 const navLinkBaseClass = "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0"
