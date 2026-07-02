@@ -62,6 +62,11 @@ ehthumbs.db
 *.tmp
 *.temp
 
+## Buildflow artifacts
+audit-log.*
+workflow-audit-log.*
+.buildflow-workflow-baseline.json
+
 ## Reports and coverage
 reports/
 
