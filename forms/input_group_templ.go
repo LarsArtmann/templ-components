@@ -5,11 +5,10 @@ package forms
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import (
-	"github.com/a-h/templ"
-	templruntime "github.com/a-h/templ/runtime"
-	"github.com/larsartmann/templ-components/utils"
-)
+import "github.com/a-h/templ"
+import templruntime "github.com/a-h/templ/runtime"
+
+import "github.com/larsartmann/templ-components/utils"
 
 // InputGroupProps configures an input group with optional left/right addons
 //
@@ -78,7 +77,7 @@ func InputGroup(props InputGroupProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var2 := []any{utils.Class("relative flex items-center", props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("relative flex items-center", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

@@ -5,11 +5,10 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
-import (
-	"github.com/a-h/templ"
-	templruntime "github.com/a-h/templ/runtime"
-	"github.com/larsartmann/templ-components/utils"
-)
+import "github.com/a-h/templ"
+import templruntime "github.com/a-h/templ/runtime"
+
+import "github.com/larsartmann/templ-components/utils"
 
 // Button renders a button or link styled as a button.
 // When Href is set, renders as an anchor tag; otherwise renders as a button element.
@@ -45,7 +44,7 @@ func Button(props ButtonProps) templ.Component {
 			props.Class,
 		)
 		if props.Href != "" {
-			templ_7745c5c3_Var2 := []any{utils.Class(classes, utils.Ternary(props.Disabled, "pointer-events-none opacity-50", ""))}
+			var templ_7745c5c3_Var2 = []any{utils.Class(classes, utils.Ternary(props.Disabled, "pointer-events-none opacity-50", ""))}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -166,7 +165,7 @@ func Button(props ButtonProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Var8 := []any{classes}
+			var templ_7745c5c3_Var8 = []any{classes}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var8...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

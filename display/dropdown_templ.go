@@ -5,9 +5,10 @@ package display
 
 //lint:file-ignore SA4006 This context is only used if a nested component is present.
 
+import "github.com/a-h/templ"
+import templruntime "github.com/a-h/templ/runtime"
+
 import (
-	"github.com/a-h/templ"
-	templruntime "github.com/a-h/templ/runtime"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
@@ -95,7 +96,7 @@ func dropdownItemLink(item DropdownItem) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if item.Disabled {
-			templ_7745c5c3_Var2 := []any{dropdownItemClass + dropdownItemDisabledClass}
+			var templ_7745c5c3_Var2 = []any{dropdownItemClass + dropdownItemDisabledClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -149,7 +150,7 @@ func dropdownItemLink(item DropdownItem) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Var5 := []any{dropdownItemClass}
+			var templ_7745c5c3_Var5 = []any{dropdownItemClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var5...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -261,7 +262,7 @@ func Dropdown(props DropdownProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		id := utils.EnsureID("dropdown", props.ID)
-		templ_7745c5c3_Var10 := []any{utils.Class("relative inline-block text-left", props.Class)}
+		var templ_7745c5c3_Var10 = []any{utils.Class("relative inline-block text-left", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -422,7 +423,7 @@ func Dropdown(props DropdownProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Var20 := []any{utils.Class("block w-full text-left", dropdownItemClass, utils.Ternary(item.Disabled, dropdownItemDisabledClass, ""))}
+				var templ_7745c5c3_Var20 = []any{utils.Class("block w-full text-left", dropdownItemClass, utils.Ternary(item.Disabled, dropdownItemDisabledClass, ""))}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var20...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
