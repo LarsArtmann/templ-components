@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.6.1] — 2026-07-04
+
+### Added
+
+- `PageProps.HTMXCDN`: overrides the CDN base URL for htmx scripts. Empty defaults to `https://cdn.jsdelivr.net/npm`. Both the htmx main script and the response-targets extension derive their URLs from this value, so consumers with a different CSP allow-list (e.g. `unpkg.com` or a self-hosted origin) no longer need to fork the library.
+
+### Fixed
+
+- htmx CDN switched from `unpkg.com` to `cdn.jsdelivr.net` — unpkg was not in any consumer's CSP allow-list, causing htmx scripts to be silently blocked by the browser
+- `Favicon`: no `<link rel="icon">` tag is rendered when `Favicon` is empty, letting consumers provide their own favicon via `HeadContent` (e.g. a data URI that templ's URL sanitizer would otherwise reject)
+
+### Internal
+
+- Regenerated all `*_templ.go` files with standardized import grouping matching go.mod templ pin (v0.3.1020)
+- Added cross-package `ComponentProps` contract test in `internal/contract`
+- Added `scripts/release.sh` for automated one-commit releases
+
 ## [0.6.0] — 2026-06-29
 
 ### Added
