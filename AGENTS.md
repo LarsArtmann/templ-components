@@ -94,6 +94,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - Toast icons: generated from Go `iconPathData` via `icons.IconPathJS()` (single source of truth)
 - TrendDirection: `TrendNone = "none"` (non-empty sentinel, not "")
 - Layout: `Minimal(MinimalProps)` uses props struct like `Base(PageProps)`
+- Layout: `PageProps.HTMXCDN` overrides the CDN base URL for htmx scripts. Empty defaults to `https://cdn.jsdelivr.net/npm`. Both `htmx.org` and `htmx-ext-response-targets` URLs derive from this value. Consumers with a different CSP can set e.g. `HTMXCDN: "https://unpkg.com"` without forking the library.
 - Interactive: `cursor-pointer` on buttons, `caret-blue-600 dark:caret-blue-400` on inputs, `scroll-smooth` + selection colors on body, `shadow-sm` on card shell
 - Modal: focus save/restore via `data-tc-prev-focus` attribute on open, restored on close
 - NavLink/MobileNavLink: both render through the shared `navLinkAnchor` sub-template; each supplies an active/inactive base-class builder (`navLinkClasses`, `mobileNavLinkClass`) and `navLinkAnchor` merges `props.Class` via `utils.Class()` so consumer Tailwind overrides resolve correctly. Do NOT assert ordered class substrings in tests — `utils.Class`/tailwind-merge reorders classes; use `utils.AssertContainsAll` for multi-token checks.

@@ -52,18 +52,48 @@ func TestHtmxScriptURL(t *testing.T) {
 	t.Parallel()
 	utils.AssertEqual(
 		t,
-		"htmxScriptURL(defaultHTMXVersion)",
-		htmxScriptURL(defaultHTMXVersion),
+		"htmxScriptURL(defaultHTMXVersion, \"\")",
+		htmxScriptURL(defaultHTMXVersion, ""),
 		"https://cdn.jsdelivr.net/npm/htmx.org@2.0.10",
 	)
 }
 
-func TestResponseTargetsCDNURL(t *testing.T) {
+func TestResponseTargetsURL(t *testing.T) {
 	t.Parallel()
 	utils.AssertEqual(
 		t,
-		"responseTargetsCDNURL",
-		responseTargetsCDNURL,
+		"responseTargetsURL(\"\")",
+		responseTargetsURL(""),
 		"https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.4/dist/response-targets.min.js",
+	)
+}
+
+func TestHtmxScriptURLOverride(t *testing.T) {
+	t.Parallel()
+	utils.AssertEqual(
+		t,
+		"htmxScriptURL with unpkg override",
+		htmxScriptURL(defaultHTMXVersion, "https://unpkg.com"),
+		"https://unpkg.com/htmx.org@2.0.10",
+	)
+}
+
+func TestHtmxScriptURLTrailingSlash(t *testing.T) {
+	t.Parallel()
+	utils.AssertEqual(
+		t,
+		"htmxScriptURL with trailing slash trimmed",
+		htmxScriptURL(defaultHTMXVersion, "https://unpkg.com/"),
+		"https://unpkg.com/htmx.org@2.0.10",
+	)
+}
+
+func TestResponseTargetsURLOverride(t *testing.T) {
+	t.Parallel()
+	utils.AssertEqual(
+		t,
+		"responseTargetsURL with unpkg override",
+		responseTargetsURL("https://unpkg.com"),
+		"https://unpkg.com/htmx-ext-response-targets@2.0.4/dist/response-targets.min.js",
 	)
 }

@@ -1,6 +1,8 @@
 // Package layout pins the HTMX CDN scripts and their Sub-Resource Integrity hashes.
 package layout
 
+import "strings"
+
 // HTMXVersion is a pinned HTMX main-script version. Use the exported constants
 // (e.g. HTMXVersion2_0_10) for compile-time safety; custom versions can be
 // constructed via HTMXVersion("x.y.z") but will fall back to the default SRI hash.
@@ -27,14 +29,11 @@ const (
 	responseTargetsVersion = "2.0.4"
 )
 
-const (
-	htmxCDNBase = "https://cdn.jsdelivr.net/npm/htmx.org@"
-	// responseTargetsCDNURL is the full URL of the v2 response-targets minified
-	// build. It is not derived from htmxCDNBase because the extension is its own
-	// package now (see the comment on the version block above).
-	responseTargetsCDNURL = "https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@" +
-		responseTargetsVersion + "/dist/response-targets.min.js"
-)
+// defaultCDNBase is the CDN base URL used when PageProps.HTMXCDN is empty.
+// Both htmx.org and htmx-ext-response-targets are served from npm-style paths
+// under this base. Consumers override via PageProps.HTMXCDN (e.g.
+// "https://unpkg.com" or a self-hosted origin).
+const defaultCDNBase = "https://cdn.jsdelivr.net/npm"
 
 // sriResponseTargets is the sha384 (base64) SRI hash for the pinned
 // response-targets extension build.
@@ -56,9 +55,25 @@ var sriHTMXMainByVersion = map[HTMXVersion]string{
 	HTMXVersion2_0_10: htmxMainSRIDefault,
 }
 
-// htmxScriptURL returns the CDN URL for the htmx main script at the given version.
-func htmxScriptURL(version HTMXVersion) string {
-	return htmxCDNBase + string(version)
+// htmxScriptURL returns the CDN URL for the htmx main script at the given
+// version. If cdnBase is empty, defaults to defaultCDNBase. A trailing slash
+// on cdnBase is trimmed so consumers can pass "https://unpkg.com/" safely.
+func htmxScriptURL(version HTMXVersion, cdnBase string) string {
+	if cdnBase == "" {
+		cdnBase = defaultCDNBase
+	}
+	return strings.TrimRight(cdnBase, "/") + "/htmx.org@" + string(version)
+}
+
+// responseTargetsURL returns the CDN URL for the response-targets extension.
+// If cdnBase is empty, defaults to defaultCDNBase. A trailing slash on cdnBase
+// is trimmed for consumer convenience.
+func responseTargetsURL(cdnBase string) string {
+	if cdnBase == "" {
+		cdnBase = defaultCDNBase
+	}
+	return strings.TrimRight(cdnBase, "/") + "/htmx-ext-response-targets@" +
+		responseTargetsVersion + "/dist/response-targets.min.js"
 }
 
 // htmxMainSRI returns the SRI hash for the htmx main script at the given
