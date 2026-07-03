@@ -28,11 +28,11 @@ const (
 )
 
 const (
-	htmxCDNBase = "https://unpkg.com/htmx.org@"
+	htmxCDNBase = "https://cdn.jsdelivr.net/npm/htmx.org@"
 	// responseTargetsCDNURL is the full URL of the v2 response-targets minified
 	// build. It is not derived from htmxCDNBase because the extension is its own
 	// package now (see the comment on the version block above).
-	responseTargetsCDNURL = "https://unpkg.com/htmx-ext-response-targets@" +
+	responseTargetsCDNURL = "https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@" +
 		responseTargetsVersion + "/dist/response-targets.min.js"
 )
 
@@ -46,7 +46,7 @@ const sriResponseTargets = "sha384-T41oglUPvXLGBVyRdZsVRxNWnOOqCynaPubjUVjxhsjFT
 //
 // Regenerate a hash after a bump with:
 //
-//	curl -sL https://unpkg.com/htmx.org@<v> | openssl dgst -sha384 -binary | openssl base64 -A
+//	curl -sL https://cdn.jsdelivr.net/npm/htmx.org@<v> | openssl dgst -sha384 -binary | openssl base64 -A
 //
 // htmxMainSRIDefault is the sha384 SRI hash for the pinned default htmx version.
 const htmxMainSRIDefault = "sha384-H5SrcfygHmAuTDZphMHqBJLc3FhssKjG7w/CeCpFReSfwBWDTKpkzPP8c+cLsK+V"

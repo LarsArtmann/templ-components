@@ -54,7 +54,7 @@ func TestHtmxScriptURL(t *testing.T) {
 		t,
 		"htmxScriptURL(defaultHTMXVersion)",
 		htmxScriptURL(defaultHTMXVersion),
-		"https://unpkg.com/htmx.org@2.0.10",
+		"https://cdn.jsdelivr.net/npm/htmx.org@2.0.10",
 	)
 }
 
@@ -64,6 +64,6 @@ func TestResponseTargetsCDNURL(t *testing.T) {
 		t,
 		"responseTargetsCDNURL",
 		responseTargetsCDNURL,
-		"https://unpkg.com/htmx-ext-response-targets@2.0.4/dist/response-targets.min.js",
+		"https://cdn.jsdelivr.net/npm/htmx-ext-response-targets@2.0.4/dist/response-targets.min.js",
 	)
 }
