@@ -105,7 +105,9 @@ templ Base(props PageProps) {
 			if props.Description != "" {
 				<meta name="description" content={ props.Description }/>
 			}
-			<link rel="icon" type="image/svg+xml" href={ props.Favicon }/>
+			if props.Favicon != "" {
+				<link rel="icon" type="image/svg+xml" href={ props.Favicon }/>
+			}
 			<meta name="theme-color" content={ themeColor(props) } media="(prefers-color-scheme: light)"/>
 			<meta name="theme-color" content={ darkThemeColor(props) } media="(prefers-color-scheme: dark)"/>
 			<meta property="og:title" content={ props.Title }/>
