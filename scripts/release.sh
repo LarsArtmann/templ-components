@@ -64,12 +64,22 @@ if [ "$SORTED_LOWER" != "$CURRENT_VERSION" ]; then
     exit 1
 fi
 
-# 4. Bump utils.Version.
+# 4. Verify [Unreleased] has content (not just an empty placeholder).
+#    Look for the first non-empty, non-heading line after ## [Unreleased].
+UNRELEASED_BODY="$(awk '/^## \[Unreleased\]$/ {found=1; next} found && /^## \[/ {exit} found && /^### / {has_heading=1; next} found && has_heading && NF > 0 {print; exit}' CHANGELOG.md)"
+if [ -z "$UNRELEASED_BODY" ]; then
+    echo "Error: [Unreleased] section in CHANGELOG.md is empty." >&2
+    echo "Add changelog entries to [Unreleased] before cutting a release." >&2
+    exit 1
+fi
+echo "[Unreleased] section has content — proceeding."
+
+# 5. Bump utils.Version.
 sed -i.bak -E "s|^(const[[:space:]]+Version[[:space:]]+=[[:space:]]+\")[^\"]+(\")|\1${NEW_VERSION}\2|" utils/version.go
 rm -f utils/version.go.bak
 echo "Bumped utils.Version to $NEW_VERSION"
 
-# 5. Insert CHANGELOG heading. The pattern is:
+# 6. Insert CHANGELOG heading. The pattern is:
 #      ## [Unreleased]
 #      <empty>
 #      ## [OLD_VERSION] — <old-date>
@@ -102,7 +112,7 @@ CHANGELOG_TMP="$(mktemp)"
 mv "$CHANGELOG_TMP" CHANGELOG.md
 echo "Updated CHANGELOG.md with $NEW_VERSION heading"
 
-# 6. Run full verify.
+# 7. Run full verify.
 echo "Running full verify (templ generate + build + test + lint)..."
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...
@@ -117,7 +127,7 @@ if ! go test ./utils/... -run TestVersionMatchesChangelog -count=1 >/dev/null 2>
     exit 1
 fi
 
-# 7. Stage and commit.
+# 8. Stage and commit.
 git add utils/version.go CHANGELOG.md
 git add -u  # any verified updates
 
@@ -137,7 +147,7 @@ Co-Authored-By: Crush <noreply@crush.lars.software>"
 
 RELEASE_COMMIT="$(git rev-parse HEAD)"
 
-# 8. Annotated, SSH-signed tag.
+# 9. Annotated, SSH-signed tag.
 git tag -s "v${NEW_VERSION}" -m "v${NEW_VERSION}: ${RELEASE_SUMMARY}" "$RELEASE_COMMIT"
 
 echo ""

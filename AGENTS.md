@@ -148,6 +148,11 @@ Established with v0.4.0 → v0.5.0 → v0.6.0. Each version is cut with a **sing
 release commit** at the tip of `master`, even if many feature/fix commits preceded it.
 The release commit message is the canonical user-facing description of what changed.
 
+**`[Unreleased]` must be warm at all times.** Every feature/fix commit that lands on
+`master` must add its changelog entry to the `[Unreleased]` section immediately — not
+deferred to release time. The release script (`scripts/release.sh`) enforces this by
+failing if `[Unreleased]` has no body.
+
 **Release commit message structure:**
 
 ```

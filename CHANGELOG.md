@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Internal
+
+- Added `TestPinnedSRIMatchesCDN` network-gated test that fetches live CDN scripts and verifies pinned SRI hashes match the bytes (skips under `-short` and on network errors)
+- Added `release.sh` pre-check: fails if `[Unreleased]` section body is empty
+
 ## [0.6.1] — 2026-07-04
 
 ### Added
