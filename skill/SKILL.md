@@ -124,6 +124,13 @@ Inside `component.templ`:
 8. **Shared rendering** across 2+ components is extracted to a private `templ` sub-template
    (e.g. `overlayShell`, `dialogHeader`, `navLinkAnchor`, the six `errorpage/shared.templ`
    helpers). Lift duplication into a sub-template rather than copying.
+9. **Register the new Props type in the contract inventory.** Open
+   `internal/contract/component_props_test.go` and add `yourpackage.YourProps{}` to the
+   `componentTypes()` slice (in the right package section). The test
+   `TestAllComponentPropsSatisfyInterface` then enforces at CI time that your struct both
+   embeds `utils.BaseProps` and satisfies `utils.ComponentProps` — catching silent contract
+   breakage for consumers using generic wrappers. Forgetting this step is the #1 way a new
+   component slips in without the BaseProps embed.
 
 ## Decision trees
 
@@ -246,6 +253,14 @@ Load these only when the task needs them — do not read proactively.
   unification. Read the relevant ADR before changing the thing it decided.
 - **`docs/icons-only-adoption.md`** — adopting just the `icons` package (CSS-agnostic).
 - **`docs/DOMAIN_LANGUAGE.md`** — ubiquitous-language glossary for terms used in types.
+- **`internal/contract/component_props_test.go`** — the compile-time-enforced Props inventory;
+  every new component must be registered here (see Component anatomy step 9).
+- **`integration/composition_test.go`** — cross-package composition proof; extend it when a
+  change affects how packages combine.
+- **`examples/demo/`** — a live, runnable example wiring layout + feedback + display together.
+  Read it as the canonical "how a consumer assembles a page" reference.
+- **`FEATURES.md`** / **`TODO_LIST.md`** — honest feature inventory and short-term work. Check
+  these before proposing a new component so you don't duplicate planned or existing work.
 - **`scripts/release.sh`** — the one-command release cut; read it before tagging.
 
 ## Installing this skill into Crush
