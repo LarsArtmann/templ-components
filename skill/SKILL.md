@@ -265,12 +265,18 @@ Load these only when the task needs them — do not read proactively.
 
 ## Installing this skill into Crush
 
-This skill lives in the repo so it versions with the code. To make Crush auto-trigger it from
-any session, symlink (or copy) it into the user skills directory:
+This skill lives in the repo so it versions with the code. Crush only auto-loads skills from
+`~/.config/crush/skills/` (repo-level `crush.json` `context_paths` cover `AGENTS.md`, not
+skills), so install it once with a symlink — it then stays in sync with the branch you're on:
 
 ```bash
 mkdir -p ~/.config/crush/skills/templ-components
-ln -s "$PWD/skill/SKILL.md" ~/.config/crush/skills/templ-components/SKILL.md
+ln -sf "$PWD/skill/SKILL.md" ~/.config/crush/skills/templ-components/SKILL.md
 ```
 
-Then it appears in `available_skills` and loads on the triggers in the frontmatter.
+Run this from the repo root so `$PWD` resolves correctly. `-f` makes it idempotent — re-run
+after cloning or switching machines. Verify it appears in `available_skills` (named
+`templ-components`); on a new session it will auto-load on the triggers in the frontmatter.
+
+Prefer a copy? `cp skill/SKILL.md ~/.config/crush/skills/templ-components/SKILL.md` works too,
+but you must re-copy after every update — the symlink is the recommended option.
