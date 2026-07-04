@@ -37,42 +37,48 @@ When it is about _how to make a new or changed component fit the library_, follo
 - **Composition over configuration.** Props embed `utils.BaseProps`; consumers override via
   `@theme` CSS variables, never by editing Go. Slots are `templ.Component` children.
 
+## Flake commands (the canonical entry points)
+
+Build automation lives in `flake.nix`, not a Makefile. Per repo policy you run these instead
+of raw `go`/`golangci-lint` invocations — they wrap the pinned `templ` (v0.3.1020, matching
+`go.mod`) so generation is reproducible.
+
+| Command              | What it does                                                              |
+| -------------------- | ------------------------------------------------------------------------- |
+| `nix run .#build`    | Regenerate `*_templ.go` + `go build ./...`                                |
+| `nix run .#test`     | `go test ./... -count=1 -race`                                            |
+| `nix run .#lint`     | `golangci-lint` across all non-example packages                           |
+| `nix run .#coverage` | Tests with `-coverprofile` + summary line                                 |
+| `nix run .#verify`   | **Generate + build + test + lint in one shot — this is the "done" check** |
+
+Run `nix run .#verify` before considering any component work finished. The full equivalent
+manual command (only if you have no Nix) is documented in `AGENTS.md` and `CONTRIBUTING.md`.
+
 ## Process (run this when touching any `.templ` file)
 
-1. **Enter the pinned dev shell before generating.** Run `nix develop`. The shell provides
-   `pkgs.templ` (v0.3.1020) matching `go.mod`. The system `templ` binary may be v0.3.1036 and
-   will produce a cosmetic import-style diff across all 51 generated files. See `AGENTS.md`
-   "templ Version Pin" for the full story — do not bump `go.mod` to an unreleased version.
-2. **Regenerate, then build.** templ generates `*_templ.go` from `.templ`; Go never sees the
-   source change until you generate:
-   ```bash
-   find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./...
-   ```
+1. **Enter the pinned dev shell before generating.** Run `nix develop` (or use the `nix run .#*`
+   apps, which pull the same pinned `templ`). The system `templ` binary may be v0.3.1036 and will
+   produce a cosmetic import-style diff across all 51 generated files. See `AGENTS.md` "templ
+   Version Pin" — do not bump `go.mod` to an unreleased version.
+2. **Regenerate and build** via `nix run .#build`. templ generates `*_templ.go` from `.templ`;
+   Go never sees the source change until you generate.
 3. **Commit `*_templ.go`.** This is a _library_, not an app. The Go module proxy serves source
    as-is from the Git tag and does **not** run `templ generate`. Missing generated files break
    every consumer. The `.gitignore` uses `!*_templ.go` to keep them tracked — never undo that.
-   Watch for the BuildFlow pre-commit gotcha documented in `AGENTS.md` that re-hides them.
-4. **Test the full matrix for the package you touched.** Each package pairs golden, a11y, BDD,
-   edge-case, example, and snapshot tests:
-   ```bash
-   go test ./<package>/...
-   ```
-   Golden files: run `go test ./<pkg>/... -update` after an intentional output change, then
-   eyeball the diff in the `.golden` file before committing.
-5. **Lint the changed packages** (examples/ is excluded by `.golangci.yml`):
-   ```bash
-   golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
-   ```
+   Watch for the BuildFlow pre-commit gotcha documented in `AGENTS.md` that re-appends
+   `*_templ.go` to `.gitignore`; for already-tracked files it is harmless, but a NEW
+   component's generated file will be invisible to `git status` until `git add -f`.
+4. **Test the full matrix for the package you touched** — `nix run .#test` (or `go test ./<pkg>/...`).
+   Each package pairs golden, a11y, BDD, edge-case, example, and snapshot tests (see the
+   testing table below). Golden files: run `go test ./<pkg>/... -update` after an intentional
+   output change, then eyeball the `.golden` diff before committing.
+5. **Lint** via `nix run .#lint` (`examples/` is excluded by `.golangci.yml`).
 6. **Keep `[Unreleased]` warm.** Add the changelog entry in the same commit as the change. The
    release script refuses to cut a version with an empty `[Unreleased]`.
 7. **Verify no new dependencies.** The allowed set is `templ`, `tailwind-merge-go`, and
    `go-error-family` (errorpage only). Anything else needs an explicit decision.
 
-The all-in-one verify command (run this before considering work done):
-
-```bash
-find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
-```
+The single done-check: **`nix run .#verify`**.
 
 ## Component anatomy (the canonical shape)
 
