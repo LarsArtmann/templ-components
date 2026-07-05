@@ -20,7 +20,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `layout`     | 5             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script tag                                                                                                                                      |
 | `navigation` | 11            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more                                                                                                                       |
 
-**Totals:** 83 templ components, 101 icon names, 32 typed enums, 59 generated `*_templ.go` files, ~24,000 lines of Go/templ source
+**Totals:** 83 templ components, 101 icon names, 33 typed enums, 59 generated `*_templ.go` files, ~24,000 lines of Go/templ source
 
 ---
 
@@ -112,6 +112,7 @@ type BaseProps struct {
 | `TrendDirection`   | Up, Down, None                                           |
 | `GridCols`         | 1, 2, 3 (default), 4, 5, 6                               |
 | `TooltipPosition`  | Top, Bottom, Left, Right                                 |
+| `SortDirection`    | None, Asc, Desc (for TableHeader sortable columns)      |
 
 ### Known Issues
 

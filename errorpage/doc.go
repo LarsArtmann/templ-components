@@ -13,7 +13,8 @@
 //	family := errorpage.ParseFamily(myError.ErrorFamily())
 //
 // Components:
-//   - ErrorPage:  Full-page error view for HTTP error responses (4xx/5xx)
+//   - ErrorPage:   Full-page error view for HTTP error responses (4xx/5xx)
+//   - NotFound404: Dedicated 404 page with gradient numeral, search, quick-links
 //   - ErrorDetail: Inline card with context table, cause chain, and fix
 //   - ErrorAlert:  Alert banner with family-aware styling
 //
