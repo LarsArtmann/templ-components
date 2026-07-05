@@ -4,6 +4,8 @@ import (
 	"testing"
 	"time"
 
+	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/internal/golden"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -55,4 +57,40 @@ func TestGoldenImage(t *testing.T) {
 		Height: 128,
 	}))
 	golden.Assert(t, "image", output)
+}
+
+func TestGoldenStatCardHTMX(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, StatCard(StatCardProps{
+		Value:  "1,204",
+		Label:  "Active Users",
+		Change: "+8%",
+		Trend:  TrendUp,
+		Icon:   icons.Users,
+		HxGet:  "/api/stats",
+		HxTarget: "#stat-container",
+		HxSwap: "innerHTML",
+	}))
+	golden.Assert(t, "stat_card_htmx", output)
+}
+
+func TestGoldenStatCardHrefWithHTMX(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, StatCard(StatCardProps{
+		Value:  "42",
+		Label:  "Pending",
+		Href:   "/admin/pending",
+		HxGet:  "/api/pending",
+		HxSwap: "outerHTML",
+	}))
+	golden.Assert(t, "stat_card_href_htmx", output)
+}
+
+func TestGoldenCardBodySlot(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Card(CardProps{
+		Title: "Installation",
+		Body:  templ.Raw("<pre>npm install @larsartmann/templ-components</pre>"),
+	}))
+	golden.Assert(t, "card_body_slot", output)
 }
