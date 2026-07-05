@@ -3,6 +3,7 @@
 package feedback
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -209,5 +210,26 @@ func TestInlineMessagesUserSeesFieldFeedback(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, InlineSuccess("Username is available"))
 		utils.AssertContains(t, output, "Username is available")
+	})
+}
+
+// --- SkeletonCardGrid Behavior ---
+
+func TestSkeletonCardGridUserSeesLoadingState(t *testing.T) {
+	t.Parallel()
+
+	t.Run("user sees 6 skeleton cards while loading", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SkeletonCardGrid(6))
+		utils.AssertContains(t, output, `role="status"`)
+		utils.AssertContains(t, output, "lg:grid-cols-3")
+	})
+
+	t.Run("zero count falls back to single placeholder", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SkeletonCardGrid(0))
+		if got := strings.Count(output, "h-48"); got != 1 {
+			t.Errorf("expected 1 fallback card, got %d", got)
+		}
 	})
 }

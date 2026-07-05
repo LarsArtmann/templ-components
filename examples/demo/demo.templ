@@ -44,11 +44,11 @@ templ demoContent() {
 			@feedback.Alert(feedback.AlertProps{Title: "Info", Message: "Here is some information.", Type: feedback.FeedbackInfo})
 		</div>
 		@demoSection("Stat Cards")
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-			@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp})
-			@display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Icon: icons.Chart, Change: "-3%", Trend: display.TrendDown})
+		@display.Grid(display.GridProps{Cols: display.GridCols3}) {
+			@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp, Href: "/users"})
+			@display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Icon: icons.Chart, Change: "-3%", Trend: display.TrendDown, Href: "/revenue"})
 			@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Icon: icons.CheckCircle, Trend: display.TrendNone})
-		</div>
+		}
 		@demoSection("Badges")
 		<div class="flex flex-wrap gap-2">
 			@display.Badge(display.BadgeProps{Text: "Default"})

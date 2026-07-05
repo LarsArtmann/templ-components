@@ -28,8 +28,6 @@ node_modules/
 *.db
 # Nix build output
 /result
-# Add pattern for Templ generated files
-*_templ.go
 
 # >>> buildflow-managed (.gitignore) >>>
 # Auto-managed by buildflow. Edit outside these markers; this block is regenerated on `buildflow --fix`.

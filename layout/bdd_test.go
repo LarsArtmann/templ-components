@@ -5,6 +5,7 @@ package layout
 import (
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -169,5 +170,28 @@ func TestDefaultPagePropsProvidesSensibleDefaults(t *testing.T) {
 		if !props.HTMXUseSRI {
 			t.Error("expected HTMXUseSRI to be true")
 		}
+	})
+}
+
+// --- Script Behavior ---
+
+func TestScriptUserGetsCSPSafeScriptTag(t *testing.T) {
+	t.Parallel()
+
+	t.Run("user includes a script with nonce", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Script("abc123", "/static/app.js", nil))
+		utils.AssertContains(t, output, `src="/static/app.js"`)
+		utils.AssertContains(t, output, `nonce="abc123"`)
+	})
+
+	t.Run("user can add defer and module type", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Script("n1", "/app.js", templ.Attributes{
+			"defer": true,
+			"type":  "module",
+		}))
+		utils.AssertContains(t, output, "defer")
+		utils.AssertContains(t, output, `type="module"`)
 	})
 }

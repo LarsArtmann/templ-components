@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/internal/golden"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -142,4 +143,10 @@ func TestScriptRender(t *testing.T) {
 		utils.AssertContains(t, output, "defer")
 		utils.AssertContains(t, output, `type="module"`)
 	})
+}
+
+func TestGoldenScript(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Script("abc123", "/static/app.js", nil))
+	golden.Assert(t, "script", output)
 }

@@ -139,3 +139,28 @@
 - [x] Investigate gopls QF1003 suppression for generated `*_templ.go` files — Decision: leave as-is. The lint rule is correct for handwritten code; generated files are excluded via `.golangci.yml`. Adding per-file suppressions would mask real issues in handwritten code.
 - [~] Extract shared Tailwind preset/theme configuration file — PARTIALLY DONE: tailwind.css in tailwind-v4-adoption-guide.md provides the pattern. A standalone preset file is deferred until multiple consumers exist.
 - [x] Plan v1.0 API freeze scope and timeline — **v1.0 scope**: (1) Move test helpers to `internal/testutil/` (breaking), (2) Add `Validate() error` to all props structs, (3) Freeze all type names and prop field names, (4) Remove deprecated aliases (AlertType, ToastType). **Timeline**: After cqrs-htmx adminui fully adopts templ-components (in progress) and at least one external consumer. Target: after v0.6.0.
+
+## 🔵 Consumer Feedback Backlog (Session 6)
+
+Sourced from DiscordSync, SwettySwipper, Overview, and browser-history feedback (see `docs/feedback/`).
+
+### High Priority — Discoverability
+
+- [ ] Make `forms` package the flagship — prominent README placement, forms demo page, quickstart guide. SwettySwipper hand-rolled 44+ raw form elements because forms were undiscoverable.
+- [ ] Generate a complete component catalog page (or demo site) — 76 components across 9 packages; consumers can't find what exists without reading source. 4/6 DiscordSync "missing" components already existed.
+- [ ] Document cursor-based pagination pattern (`?cursor=...` + HTMX infinite scroll) — DiscordSync hand-rolls this; `navigation.Pagination` is page-number-based only.
+
+### Medium Priority — New Components
+
+- [ ] `display.CopyButton` — clipboard integration + "Copied!" feedback (DiscordSync)
+- [ ] `display.RelativeTime(timestamp)` — "2 hours ago" formatting (DiscordSync)
+- [ ] `navigation.LoadMore` / cursor pagination component (DiscordSync)
+- [ ] Count badge overlay on icon (DiscordSync)
+- [ ] `display.DefinitionGrid` — responsive 2-column wrapper for DefinitionList (DiscordSync)
+- [ ] `display.Image` — lazy loading, aspect ratio, fallback src (SwettySwipper)
+
+### Low Priority — Design Decisions
+
+- [ ] Consider self-hosting htmx as default (CDN opt-in) — SwettySwipper + Overview both hit CSP friction. v1.0 breaking change.
+- [ ] Consider typed HTMX fields on StatCard (HxGet/HxTarget) vs Attrs workaround — Overview's use case used hx-get/hx-target.
+- [ ] Consider `Card.Body` explicit slot field (SEC feedback — Card already has Footer/HeaderAction/children but no explicit Body).

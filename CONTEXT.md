@@ -1,6 +1,6 @@
 # Context — templ-components
 
-**Updated:** 2026-06-27
+**Updated:** 2026-07-05
 
 ## What
 
@@ -24,15 +24,15 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 templ-components/
 ├── utils/           # Base types, Tailwind class merging, generic helpers (Lookup, Ternary, EnsureID)
 ├── internal/svg/    # Shared SVG primitives (fillIcon, spinner)
-├── display/         # UI: card, badge, modal, drawer, table, tabs, avatar, tooltip, accordion, dropdown, page header, definition list
-├── feedback/        # User feedback: alert, toast, spinner, progress, skeleton (shared feedbackStyleSet)
-├── forms/           # Form controls: input, select, textarea, checkbox, radio, toggle, file input, date picker, combobox, label, validation
-├── errorpage/       # Error presentation: ErrorPage, ErrorDetail, ErrorAlert, http.Handler integration
+├── display/         # UI (20): card, badge, modal, drawer, table, tabs, avatar, tooltip, accordion, dropdown, stat card, grid, page header, definition list, list note, empty state
+├── feedback/        # Feedback (13): alert, toast, spinner, progress, skeleton, skeleton card grid, step indicator (shared feedbackStyleSet)
+├── forms/           # Form controls (16): input, select, textarea, checkbox, radio, toggle, file input, date picker, combobox, label, form, validation summary
+├── errorpage/       # Error presentation (3): ErrorPage, ErrorDetail, ErrorAlert + ErrorHandler + 6 constructors
 ├── htmx/            # HTMX helpers: loading, error handling, CSRF, OOB swap, confirm delete
 ├── internal/golden/ # Golden file comparison with CSS class normalization
-├── icons/           # Named SVG icons (100 path icons + Spinner, map-driven rendering)
-├── layout/          # Page layout: base HTML, theme toggle, dark mode
-└── navigation/      # Nav: navbar, breadcrumbs, pagination, mobile menu, sidebar nav
+├── icons/           # Named SVG icons (100 path icons + Spinner = 101, map-driven rendering)
+├── layout/          # Page layout (5): base HTML, minimal, theme toggle, dark mode, CSP-safe Script helper
+└── navigation/      # Nav (10): navbar, simple nav, breadcrumbs, pagination, mobile menu, sidebar nav, footer
 ```
 
 ### Import Graph

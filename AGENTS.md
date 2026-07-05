@@ -60,7 +60,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - **No framework deps** — pure Go + templ + Tailwind v4 class strings
 - **CSS standard:** Tailwind CSS v4+ (latest) for ALL LarsArtmann projects. CSS-first config, no Node.js runtime, no DaisyUI. Small custom CSS only where Tailwind doesn't cover something. See `docs/adr-001-tailwind-v4-standard.md` and `docs/tailwind-v4-adoption-guide.md`.
 - **Theming:** Components emit standard Tailwind classes (`bg-blue-600`). Consumers override via `@theme { --color-blue-600: #custom; }` in their CSS. No Go code changes needed. See `templ-components-theme.css` for semantic alias examples.
-- **ComponentProps interface:** `utils.ComponentProps` with `GetBaseProps()`/`SetBaseProps()` on `*BaseProps` (pointer receivers for `recvcheck`). All 25+ props structs auto-satisfy via method promotion.
+- **ComponentProps interface:** `utils.ComponentProps` with `GetBaseProps()`/`SetBaseProps()` on `*BaseProps` (pointer receivers for `recvcheck`). All 26+ props structs auto-satisfy via method promotion.
 - **Accessibility — motion-reduce:** `motion-reduce:transition-none motion-reduce:duration-0` on all transitions, `motion-reduce:animate-none` on all animations (spinner, skeletons, toast enter/exit, modal, accordion)
 - **Dark mode colors:** All components use `gray-*` exclusively (no mixed `slate-*`/`gray-*`). Dark mode via class strategy: `@custom-variant dark (&:where(.dark, .dark *))` toggled by `layout.ThemeScript()` + `layout.ThemeToggle()`
 - **CI:** `.github/workflows/ci.yaml` — lint (golangci-lint), build+test with `templ generate`, coverage artifact. Pre-commit: `.git/hooks/pre-commit` → `scripts/pre-commit.sh`

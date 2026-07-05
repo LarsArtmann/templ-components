@@ -172,7 +172,7 @@ Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, s
 @display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
 ```
 
-### `feedback` — User Feedback (12 components)
+### `feedback` — User Feedback (13 components)
 
 Alerts, toasts, spinners, progress bars, skeletons, and loading states.
 

@@ -52,3 +52,15 @@ func TestDarkModeClasses(t *testing.T) {
 		utils.AssertContains(t, output, "dark:")
 	})
 }
+
+func TestSkeletonCardGridA11y(t *testing.T) {
+	t.Parallel()
+
+	t.Run("skeleton card grid has role=status and motion-reduce", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SkeletonCardGrid(3))
+		utils.AssertContains(t, output, `role="status"`)
+		utils.AssertContains(t, output, `aria-busy="true"`)
+		utils.AssertContains(t, output, "motion-reduce:animate-none")
+	})
+}

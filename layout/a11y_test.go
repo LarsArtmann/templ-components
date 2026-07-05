@@ -107,3 +107,19 @@ func TestBaseDarkMode(t *testing.T) {
 		utils.AssertContains(t, output, "dark:text-gray-100")
 	})
 }
+
+func TestScriptA11y(t *testing.T) {
+	t.Parallel()
+
+	t.Run("nonce is always present on script tag", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Script("my-nonce", "/app.js", nil))
+		utils.AssertContains(t, output, `nonce="my-nonce"`)
+	})
+
+	t.Run("empty nonce still emits the attribute", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Script("", "/app.js", nil))
+		utils.AssertContains(t, output, `nonce=""`)
+	})
+}
