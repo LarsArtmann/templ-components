@@ -2,6 +2,7 @@ package display
 
 import (
 	"testing"
+	"time"
 
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
@@ -83,4 +84,46 @@ func TestTableExtraCoverage(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `id="tbl"`)
 	})
+}
+
+func TestCountBadgeMaxOverflow(t *testing.T) {
+	t.Parallel()
+	t.Run("shows N+ when count exceeds max", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CountBadge(CountBadgeProps{Count: 150, Max: 99}))
+		utils.AssertContains(t, output, "99+")
+	})
+	t.Run("shows exact count when under max", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CountBadge(CountBadgeProps{Count: 5}))
+		utils.AssertContains(t, output, "5")
+		utils.AssertNotContains(t, output, "+")
+	})
+}
+
+func TestFormatRelativeTimeBoundaries(t *testing.T) {
+	t.Parallel()
+	tests := []struct {
+		name string
+		from time.Time
+		want string
+	}{
+		{"59 seconds ago", time.Now().Add(-59 * time.Second), "59 seconds ago"},
+		{"1 minute ago", time.Now().Add(-60 * time.Second), "1 minute ago"},
+		{"59 minutes ago", time.Now().Add(-59 * time.Minute), "59 minutes ago"},
+		{"1 hour ago", time.Now().Add(-60 * time.Minute), "1 hour ago"},
+		{"23 hours ago", time.Now().Add(-23 * time.Hour), "23 hours ago"},
+		{"1 day ago", time.Now().Add(-24 * time.Hour), "1 day ago"},
+		{"6 days ago", time.Now().Add(-144 * time.Hour), "6 days ago"},
+		{"7 days ago (1 week)", time.Now().Add(-168 * time.Hour), "1 week ago"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			got := formatRelativeTime(tt.from, time.Now())
+			if got != tt.want {
+				t.Errorf("formatRelativeTime() = %q, want %q", got, tt.want)
+			}
+		})
+	}
 }

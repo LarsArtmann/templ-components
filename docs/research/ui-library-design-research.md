@@ -9,18 +9,18 @@
 
 ## TL;DR — The 10 Pillars
 
-| # | Pillar | One-sentence thesis |
-|---|--------|-------------------|
-| 1 | **Distribution model** | Decide explicitly: npm import (templ-components), copy-paste CLI (shadcn), or hybrid (templui) — each has a different ownership/upgrade tradeoff. |
-| 2 | **HATEOAS-first** | HTML is the source of truth, not a dumb view layer. The server encodes available actions in the hypermedia itself. |
-| 3 | **Type-safe variant system** | Variants are typed enums + map lookups (Go) or CVA (TS), never raw strings — make invalid states unrepresentable. |
-| 4 | **Design-token theming** | Three-layer token stack (primitive → semantic → component) via CSS variables; consumers retheme without touching Go/JS. |
-| 5 | **Compound composition** | Complex components (Dialog, Card) split into sub-parts that compose freely, mirroring the DOM structure. |
-| 6 | **Accessibility by construction** | Native HTML first, ARIA only when needed, APG keyboard patterns mandatory, motion-reduce on every transition. |
-| 7 | **CSP-safe by default** | Every inline script carries a nonce; no `eval`, no inline handlers, no `javascript:` URLs. |
-| 8 | **Progressive-enhancement JS** | JavaScript reads state from `data-*` attributes and HTML, not from a parallel client-side state store; idempotent across HTMX re-renders. |
-| 9 | **Multi-layered testing** | Golden snapshots + a11y assertions + BDD behaviour specs + edge-case coverage — not assertion-only tests. |
-| 10 | **Beautiful defaults, zero lock-in** | Components look great out of the box but every visual decision is overridable via CSS variables, class props, or attrs. |
+| #   | Pillar                               | One-sentence thesis                                                                                                                               |
+| --- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Distribution model**               | Decide explicitly: npm import (templ-components), copy-paste CLI (shadcn), or hybrid (templui) — each has a different ownership/upgrade tradeoff. |
+| 2   | **HATEOAS-first**                    | HTML is the source of truth, not a dumb view layer. The server encodes available actions in the hypermedia itself.                                |
+| 3   | **Type-safe variant system**         | Variants are typed enums + map lookups (Go) or CVA (TS), never raw strings — make invalid states unrepresentable.                                 |
+| 4   | **Design-token theming**             | Three-layer token stack (primitive → semantic → component) via CSS variables; consumers retheme without touching Go/JS.                           |
+| 5   | **Compound composition**             | Complex components (Dialog, Card) split into sub-parts that compose freely, mirroring the DOM structure.                                          |
+| 6   | **Accessibility by construction**    | Native HTML first, ARIA only when needed, APG keyboard patterns mandatory, motion-reduce on every transition.                                     |
+| 7   | **CSP-safe by default**              | Every inline script carries a nonce; no `eval`, no inline handlers, no `javascript:` URLs.                                                        |
+| 8   | **Progressive-enhancement JS**       | JavaScript reads state from `data-*` attributes and HTML, not from a parallel client-side state store; idempotent across HTMX re-renders.         |
+| 9   | **Multi-layered testing**            | Golden snapshots + a11y assertions + BDD behaviour specs + edge-case coverage — not assertion-only tests.                                         |
+| 10  | **Beautiful defaults, zero lock-in** | Components look great out of the box but every visual decision is overridable via CSS variables, class props, or attrs.                           |
 
 ---
 
@@ -77,6 +77,7 @@ templui add button
 ### Verdict for templ-components
 
 The Go-module model (A) is correct for this library because:
+
 1. Go's module system makes versioned imports trivial and reliable.
 2. `utils.Class()` (tailwind-merge-go) gives consumers real override power without
    source edits — closing the gap that made shadcn invent copy-paste.
@@ -88,8 +89,9 @@ The Go-module model (A) is correct for this library because:
 
 **Actionable:** Document the "override without forking" story prominently. This is the
 key counter-argument to "why not just copy-paste like shadcn?" The answer: `utils.Class()`
-+ CSS `@theme` variables + `Attrs` map + `templ.Component` slots give you 95% of the
-customization power without owning the maintenance burden.
+
+- CSS `@theme` variables + `Attrs` map + `templ.Component` slots give you 95% of the
+  customization power without owning the maintenance burden.
 
 ---
 
@@ -104,12 +106,12 @@ HATEOAS (Hypermedia as the Engine of Application State) means: **the server enco
 available actions directly in the HTML response.** The client (browser) needs no prior
 knowledge of the application — it just renders hypermedia.
 
-| Aspect | Hypermedia (HTML) | JSON API + SPA |
-|--------|-------------------|----------------|
-| **Available actions** | Encoded in the response (`<a>`, `<form>`, `hx-*`) | Client must hardcode URLs/methods |
-| **State transitions** | Server controls by changing the hypermedia | Client maintains its own state machine |
-| **Decoupling** | Server evolves independently | Coordinated server+client updates required |
-| **Self-describing** | `<form method="post" action="...">` says everything | `{"status": "overdrawn"}` says nothing about what to do |
+| Aspect                | Hypermedia (HTML)                                   | JSON API + SPA                                          |
+| --------------------- | --------------------------------------------------- | ------------------------------------------------------- |
+| **Available actions** | Encoded in the response (`<a>`, `<form>`, `hx-*`)   | Client must hardcode URLs/methods                       |
+| **State transitions** | Server controls by changing the hypermedia          | Client maintains its own state machine                  |
+| **Decoupling**        | Server evolves independently                        | Coordinated server+client updates required              |
+| **Self-describing**   | `<form method="post" action="...">` says everything | `{"status": "overdrawn"}` says nothing about what to do |
 
 ### Implications for a Component Library
 
@@ -144,6 +146,7 @@ User clicks "Delete" button
 ```
 
 Contrast with a JSON API approach:
+
 ```
 User clicks "Delete"
   → Client sends DELETE /api/items/42
@@ -184,6 +187,7 @@ func badgeClass(t BadgeType) string {
 ```
 
 **Key rules from the templ-components playbook:**
+
 - Pure class/style data → map + `utils.Lookup(map, key, fallback)`.
 - Structural DOM differences (which markup to emit) → `if`-branch in the template, NOT a map.
 - Enum validation → map+fallback (graceful); never panic in render code.
@@ -207,10 +211,11 @@ const buttonVariants = cva("inline-flex items-center justify-center ...", {
     },
   },
   defaultVariants: { variant: "default", size: "default" },
-})
+});
 ```
 
 CVA provides:
+
 - **Type-safe variant combinations** — invalid props are compile-time errors.
 - **Compound variants** — styles applied when multiple conditions match simultaneously.
 - **Pre-computed class strings** — zero runtime concatenation.
@@ -232,6 +237,7 @@ func (b Props) variantClasses() string {
 
 **Note:** templui uses `switch` statements where templ-components mandates map+lookup.
 The map approach is preferred because:
+
 1. It's data, not code — easier to audit and extend.
 2. The `utils.Lookup` fallback pattern makes graceful degradation explicit.
 3. Maps can't accidentally fall through or miss a case.
@@ -252,14 +258,15 @@ Layer 2: Semantic Tokens      --color-accent → var(--blue-500)
 Layer 1: Primitive Tokens     --blue-500 → #3b82f6  (the ONLY layer with raw values)
 ```
 
-| Layer | Named after | Contains | Example |
-|-------|-------------|----------|---------|
-| **Primitive** | What they ARE | Raw values (hex, px) | `--blue-500: #3b82f6` |
-| **Semantic** | What they DO | References to primitives | `--color-accent: var(--blue-500)` |
-| **Component** | What element uses them | References to semantic | `--button-bg: var(--color-accent)` |
+| Layer         | Named after            | Contains                 | Example                            |
+| ------------- | ---------------------- | ------------------------ | ---------------------------------- |
+| **Primitive** | What they ARE          | Raw values (hex, px)     | `--blue-500: #3b82f6`              |
+| **Semantic**  | What they DO           | References to primitives | `--color-accent: var(--blue-500)`  |
+| **Component** | What element uses them | References to semantic   | `--button-bg: var(--color-accent)` |
 
 **Critical rule:** Each layer only references the layer directly below. Nothing bleeds
 across boundaries. This means:
+
 - **Brand color change** → update one primitive (`--blue-500: #6366f1`).
 - **Theme switch** → reassign semantic tokens (dark mode remaps `--color-bg` to a different primitive).
 - **Component redesign** → update component tokens only.
@@ -284,6 +291,7 @@ shadcn uses **OKLCH** color values (perceptually uniform) in semantic token pair
 ```
 
 These map to Tailwind via `@theme inline`:
+
 ```css
 @theme inline {
   --color-background: var(--background);
@@ -302,7 +310,7 @@ templ-components takes a **different but compatible** approach:
 2. **Consumers override via `@theme` CSS variables:**
    ```css
    @theme {
-     --color-blue-600: #4f46e5;  /* indigo instead of blue */
+     --color-blue-600: #4f46e5; /* indigo instead of blue */
    }
    ```
 3. **Semantic aliases** live in `templ-components-theme.css` (`bg-tc-primary`, `text-tc-danger`).
@@ -339,13 +347,13 @@ Dialog (shadcn)          Dialog (templui)         Modal (templ-components)
 
 ### Tradeoffs
 
-| Approach | shadcn/templui (compound) | templ-components (monolithic) |
-|----------|---------------------------|-------------------------------|
-| **Flexibility** | Maximum — compose any structure | Constrained to supported configs |
-| **Ergonomics** | More verbose (many sub-components) | Simpler (one props struct) |
-| **Type safety** | Each sub-part has its own typed props | One props struct covers all |
-| **HTML control** | Consumer owns the DOM tree | Library owns the DOM tree |
-| **HATEOAS fit** | Better — consumer decides what hypermedia controls to embed | Library decides; consumer gets what they get |
+| Approach         | shadcn/templui (compound)                                   | templ-components (monolithic)                |
+| ---------------- | ----------------------------------------------------------- | -------------------------------------------- |
+| **Flexibility**  | Maximum — compose any structure                             | Constrained to supported configs             |
+| **Ergonomics**   | More verbose (many sub-components)                          | Simpler (one props struct)                   |
+| **Type safety**  | Each sub-part has its own typed props                       | One props struct covers all                  |
+| **HTML control** | Consumer owns the DOM tree                                  | Library owns the DOM tree                    |
+| **HATEOAS fit**  | Better — consumer decides what hypermedia controls to embed | Library decides; consumer gets what they get |
 
 **templui's compound pattern** is notable: `Dialog`, `Trigger`, `Content`, `Close`,
 `Header`, `Footer`, `Title`, `Description` are all separate `templ` components with their
@@ -380,30 +388,34 @@ ContextMenu, HoverCard), consider the compound pattern. For simple, opinionated 
 
 ### Mandatory Keyboard Patterns (from WAI-ARIA APG)
 
-| Component | Keyboard pattern |
-|-----------|-----------------|
-| **Dialog/Modal** | Escape to close; focus trapped inside; focus restored to trigger on close |
-| **Tabs** | Arrow Left/Right between tabs; Tab enters panel |
-| **Menu/Dropdown** | Arrow keys navigate; Enter/Space activates; Escape closes |
-| **Accordion** | Enter/Space toggles; arrows move between headers |
-| **Combobox/Listbox** | Arrow Up/Down moves selection; Home/End for first/last |
-| **Tooltip** | Escape dismisses; focus management on trigger |
+| Component            | Keyboard pattern                                                          |
+| -------------------- | ------------------------------------------------------------------------- |
+| **Dialog/Modal**     | Escape to close; focus trapped inside; focus restored to trigger on close |
+| **Tabs**             | Arrow Left/Right between tabs; Tab enters panel                           |
+| **Menu/Dropdown**    | Arrow keys navigate; Enter/Space activates; Escape closes                 |
+| **Accordion**        | Enter/Space toggles; arrows move between headers                          |
+| **Combobox/Listbox** | Arrow Up/Down moves selection; Home/End for first/last                    |
+| **Tooltip**          | Escape dismisses; focus management on trigger                             |
 
 ### Motion Safety
 
 Every transition must carry:
+
 ```css
 motion-reduce:transition-none motion-reduce:duration-0
 ```
+
 Every animation must carry:
+
 ```css
-motion-reduce:animate-none
+motion-reduce: animate-none;
 ```
 
 ### What "Accessible by Default" Means
 
 An accessible-by-default library **encapsulates accessibility complexity** so consumers
 get it for free. A well-built Dialog automatically:
+
 - Sets `role="dialog"` and `aria-modal="true"`
 - Moves focus into the dialog on open
 - Traps focus while open (Tab cycles inside, never escapes)
@@ -442,6 +454,7 @@ forbids: inline scripts without nonces, `eval()`, inline event handlers (`onclic
 
 templui ships **separate `.js` files** (e.g., `dialog.js`, `dialog.min.js`) that are
 loaded externally. This works with CSP (external scripts are allowed) but:
+
 1. Requires the consumer to serve the JS files from their own static asset path.
 2. The `Script()` component uses `templ.NewOnceHandle()` for idempotent injection but
    doesn't show nonce handling in the examined source.
@@ -486,11 +499,11 @@ it. This means:
 
 ### Patterns observed
 
-| Library | JS idempotency | CSP nonce | State source |
-|---------|---------------|-----------|-------------|
-| **templ-components** | Global singleton flag (`window.tcXxxAttached`) | `nonce={ props.Nonce }` on every script | `data-tc-*` HTML attributes |
-| **templui** | `templ.NewOnceHandle()` | External `.js` files (CSP-allowed) | `data-tui-*` HTML attributes |
-| **shadcn/ui** | React re-render lifecycle (N/A for SSR) | N/A (React manages) | React state/props |
+| Library              | JS idempotency                                 | CSP nonce                               | State source                 |
+| -------------------- | ---------------------------------------------- | --------------------------------------- | ---------------------------- |
+| **templ-components** | Global singleton flag (`window.tcXxxAttached`) | `nonce={ props.Nonce }` on every script | `data-tc-*` HTML attributes  |
+| **templui**          | `templ.NewOnceHandle()`                        | External `.js` files (CSP-allowed)      | `data-tui-*` HTML attributes |
+| **shadcn/ui**        | React re-render lifecycle (N/A for SSR)        | N/A (React manages)                     | React state/props            |
 
 ---
 
@@ -507,6 +520,7 @@ Based on comparing all three libraries and the theory, here are concrete opportu
 `--color-blue-600` globally, which affects ALL uses of blue-600, not just "primary" uses.
 
 **Recommendation:** Introduce an optional semantic token layer:
+
 ```css
 /* templ-components-theme.css (expanded) */
 @theme {
@@ -521,6 +535,7 @@ Based on comparing all three libraries and the theory, here are concrete opportu
   --color-tc-border: var(--color-gray-200);
 }
 ```
+
 Then components can use `bg-tc-primary` instead of `bg-blue-600`. Consumers retheme by
 reassigning `--color-tc-primary` to any color — no collision with raw Tailwind utilities.
 
@@ -556,6 +571,7 @@ power without source ownership.
 **templui:** Uses native HTML5 `<dialog>` element with `::backdrop` pseudo-element.
 
 **Benefits of native `<dialog>`:**
+
 - Built-in focus trap (browser-managed, more reliable than JS)
 - `::backdrop` pseudo-element for styling
 - Top layer rendering (no z-index battles)
@@ -571,6 +587,7 @@ browser support allows (all modern browsers support `<dialog>` since 2022).
 **templui:** `Button(props ...Props)` — props are optional (variadic), defaults to zero-value.
 
 **templui's pattern:**
+
 ```go
 templ Button(props ...Props) {
     {{ var p Props }}
@@ -593,17 +610,17 @@ for brevity — not worth the confusion cost.
 
 Comparing component coverage:
 
-| Category | templ-components | templui | shadcn/ui |
-|----------|-----------------|---------|-----------|
-| **Data display** | 25 | 12 | 20+ |
-| **Forms** | 16 | 12 | 15+ |
-| **Feedback** | 13 | 3 | 5 |
-| **Navigation** | 11 | 5 | 8 |
-| **Layout** | 5 | 3 | 4 |
-| **Overlays** | 4 (Modal, Drawer, Dropdown, Tooltip) | 6 (+Popover, HoverCard, Sheet) | 8+ |
-| **Charts** | 0 | 1 | 1 (recharts) |
-| **Date/Calendar** | 1 (DatePicker input) | 3 (Calendar, DatePicker, TimePicker) | 2 |
-| **Data input (advanced)** | Combobox | Combobox, TagsInput, OTPInput, Rating, Slider | Same + more |
+| Category                  | templ-components                     | templui                                       | shadcn/ui    |
+| ------------------------- | ------------------------------------ | --------------------------------------------- | ------------ |
+| **Data display**          | 25                                   | 12                                            | 20+          |
+| **Forms**                 | 16                                   | 12                                            | 15+          |
+| **Feedback**              | 13                                   | 3                                             | 5            |
+| **Navigation**            | 11                                   | 5                                             | 8            |
+| **Layout**                | 5                                    | 3                                             | 4            |
+| **Overlays**              | 4 (Modal, Drawer, Dropdown, Tooltip) | 6 (+Popover, HoverCard, Sheet)                | 8+           |
+| **Charts**                | 0                                    | 1                                             | 1 (recharts) |
+| **Date/Calendar**         | 1 (DatePicker input)                 | 3 (Calendar, DatePicker, TimePicker)          | 2            |
+| **Data input (advanced)** | Combobox                             | Combobox, TagsInput, OTPInput, Rating, Slider | Same + more  |
 
 **Notable gaps:** Popover, HoverCard, Slider, Rating, TagsInput, Carousel, Calendar
 (full calendar grid), Chart components.
@@ -615,6 +632,7 @@ Comparing component coverage:
 A superb web UI library, synthesized from all sources:
 
 ### Architecture
+
 - [ ] **Type-safe variants** — enums + map lookups, never raw strings for closed sets
 - [ ] **Make invalid states unrepresentable** — typed enums, fallback values, zero panics in render
 - [ ] **Compound composition** for complex widgets — sub-parts that mirror DOM structure
@@ -622,6 +640,7 @@ A superb web UI library, synthesized from all sources:
 - [ ] **Composition over configuration** — `templ.Component` slots for extensibility
 
 ### Theming
+
 - [ ] **Three-layer token stack** — primitive → semantic → component tokens
 - [ ] **CSS variable theming** — consumers retheme without touching Go/JS
 - [ ] **Dark mode** — class strategy, consistent color palette (no mixed `slate-*`/`gray-*`)
@@ -629,12 +648,14 @@ A superb web UI library, synthesized from all sources:
 - [ ] **Zero lock-in** — every visual decision overridable
 
 ### Hypermedia Philosophy
+
 - [ ] **HATEOAS-first** — HTML is the source of truth, server controls available actions
 - [ ] **Native HTML preferred** — `<details>`, `<form>`, `<dialog>` over JS reimplementations
 - [ ] **Progressive enhancement** — JS reads state from HTML, enhances rather than replaces
 - [ ] **HTMX-native** — components emit `hx-*` attributes naturally
 
 ### Accessibility
+
 - [ ] **Native HTML first** — `<button>` not `<div role="button">`
 - [ ] **APG keyboard patterns** — every interactive widget follows WAI-ARIA Authoring Practices
 - [ ] **Focus management** — trap in modals, restore on close, logical tab order
@@ -643,11 +664,13 @@ A superb web UI library, synthesized from all sources:
 - [ ] **Screen reader text** — `.sr-only` where visual text isn't enough
 
 ### Security
+
 - [ ] **CSP-safe by construction** — nonce on every inline script, no eval/handlers
 - [ ] **XSS prevention** — `strconv.Quote()` for IDs in JS, `templ.SafeURL` for hrefs
 - [ ] **No external assets required** — JS travels with the component (inline + nonce)
 
 ### Testing
+
 - [ ] **Golden tests** — exact rendered HTML matches snapshots (with normalization)
 - [ ] **A11y tests** — ARIA, roles, keyboard, motion-reduce assertions
 - [ ] **BDD tests** — behaviour specs (user-visible, not markup)
@@ -656,6 +679,7 @@ A superb web UI library, synthesized from all sources:
 - [ ] **Coverage tests** — private helpers and branches
 
 ### Developer Experience
+
 - [ ] **Zero-config defaults** — `DefaultComponentProps()` for meaningful non-zero defaults
 - [ ] **Override without forking** — `Class` prop + `Attrs` map + CSS variables
 - [ ] **Godoc examples** — every component has a runnable `ExampleXxx()`
@@ -663,6 +687,7 @@ A superb web UI library, synthesized from all sources:
 - [ ] **Progressive disclosure** — simple API surface, deep docs for advanced cases
 
 ### Distribution
+
 - [ ] **Versioned releases** — semver, one-commit release convention
 - [ ] **Generated code committed** — `*_templ.go` files in the repo (library requirement)
 - [ ] **Granular adoption** — multi-module workspace for partial adoption (icons-only, etc.)
@@ -672,22 +697,22 @@ A superb web UI library, synthesized from all sources:
 
 ## Appendix A: Source Comparison Matrix
 
-| Dimension | templ-components | templui | shadcn/ui |
-|-----------|-----------------|---------|-----------|
-| **Language** | Go + templ | Go + templ | TypeScript + React |
-| **Rendering** | Server-side (SSR) | Server-side (SSR) | Client-side (CSR/SSR) |
-| **CSS framework** | Tailwind v4 | Tailwind v3/v4 | Tailwind v4 |
-| **Distribution** | Go module | Go module + CLI copy | npm CLI copy-paste |
-| **Props pattern** | Explicit struct (embeds BaseProps) | Variadic struct (no BaseProps) | React props + CVA |
-| **Variant lookup** | Map + `utils.Lookup` | Switch statement | CVA (class-variance-authority) |
-| **Class merge** | `utils.Class` (tailwind-merge-go) | `utils.TwMerge` (tailwind-merge-go) | `cn()` (tailwind-merge + clsx) |
-| **Theming** | Tailwind primitives + `@theme` | Semantic tokens (`bg-primary`) | Semantic tokens (OKLCH + `@theme`) |
-| **JS strategy** | Inline + nonce + singleton guard | External `.js` files + OnceHandle | React lifecycle |
-| **CSP** | Safe by construction (nonce everywhere) | External scripts (CSP-allowed) | React (N/A for inline) |
-| **A11y** | motion-reduce, focus trap, ARIA, keyboard | ARIA, keyboard | Built into Radix/Base UI primitives |
-| **Component count** | 82 + 101 icons | 43 | 50+ |
-| **Testing** | Golden + a11y + BDD + edge + example | Unknown | Vitest + browser + E2E |
-| **HATEOAS alignment** | Strong (HTML-first, HTMX-native) | Strong (HTML-first) | Weak (SPA model, JSON-driven) |
+| Dimension             | templ-components                          | templui                             | shadcn/ui                           |
+| --------------------- | ----------------------------------------- | ----------------------------------- | ----------------------------------- |
+| **Language**          | Go + templ                                | Go + templ                          | TypeScript + React                  |
+| **Rendering**         | Server-side (SSR)                         | Server-side (SSR)                   | Client-side (CSR/SSR)               |
+| **CSS framework**     | Tailwind v4                               | Tailwind v3/v4                      | Tailwind v4                         |
+| **Distribution**      | Go module                                 | Go module + CLI copy                | npm CLI copy-paste                  |
+| **Props pattern**     | Explicit struct (embeds BaseProps)        | Variadic struct (no BaseProps)      | React props + CVA                   |
+| **Variant lookup**    | Map + `utils.Lookup`                      | Switch statement                    | CVA (class-variance-authority)      |
+| **Class merge**       | `utils.Class` (tailwind-merge-go)         | `utils.TwMerge` (tailwind-merge-go) | `cn()` (tailwind-merge + clsx)      |
+| **Theming**           | Tailwind primitives + `@theme`            | Semantic tokens (`bg-primary`)      | Semantic tokens (OKLCH + `@theme`)  |
+| **JS strategy**       | Inline + nonce + singleton guard          | External `.js` files + OnceHandle   | React lifecycle                     |
+| **CSP**               | Safe by construction (nonce everywhere)   | External scripts (CSP-allowed)      | React (N/A for inline)              |
+| **A11y**              | motion-reduce, focus trap, ARIA, keyboard | ARIA, keyboard                      | Built into Radix/Base UI primitives |
+| **Component count**   | 82 + 101 icons                            | 43                                  | 50+                                 |
+| **Testing**           | Golden + a11y + BDD + edge + example      | Unknown                             | Vitest + browser + E2E              |
+| **HATEOAS alignment** | Strong (HTML-first, HTMX-native)          | Strong (HTML-first)                 | Weak (SPA model, JSON-driven)       |
 
 ---
 
