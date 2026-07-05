@@ -20,9 +20,9 @@ func TestHtmxMainSRI(t *testing.T) {
 			want:    htmxMainSRIDefault,
 		},
 		{
-			name:    "unknown version falls back to default SRI",
+			name:    "unknown version returns empty (no wrong hash)",
 			version: "99.99.99",
-			want:    htmxMainSRIDefault,
+			want:    "",
 		},
 	}
 	for _, tt := range tests {

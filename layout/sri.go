@@ -78,12 +78,9 @@ func responseTargetsURL(cdnBase string) string {
 }
 
 // htmxMainSRI returns the SRI hash for the htmx main script at the given
-// version. If the version is not pinned, it falls back to the default version's
-// SRI so HTMXUseSRI never silently renders a script without an integrity hash
-// (an unknown version bump shouldn't silently drop SRI).
+// version. Returns empty string for unpinned versions — the browser will
+// load the script without SRI verification, which is safer than returning
+// a wrong hash (the browser would block the script on hash mismatch).
 func htmxMainSRI(version HTMXVersion) string {
-	if sri, ok := sriHTMXMainByVersion[version]; ok {
-		return sri
-	}
-	return sriHTMXMainByVersion[HTMXVersion2_0_10]
+	return sriHTMXMainByVersion[version]
 }

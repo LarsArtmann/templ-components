@@ -101,3 +101,10 @@ func feedbackStyle(t FeedbackType) feedbackStyleSet {
 func feedbackIcon(t FeedbackType) icons.Name {
 	return feedbackIconName(feedbackIconMap, t)
 }
+
+// FeedbackTypeIsValid reports whether the FeedbackType value is one of the
+// four defined constants (Success, Error, Warning, Info).
+func FeedbackTypeIsValid(t FeedbackType) bool {
+	_, ok := feedbackStyleMap[t]
+	return ok
+}
