@@ -182,6 +182,9 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - SimpleNav.RightItems: `SimpleNavProps.RightItems` forwards a `templ.Component` (e.g. ThemeToggle, sign-in button) to `Nav.RightItems`. Consumers no longer render right-side nav items in a separate flex container.
 - PageProps auto-injects: `DefaultPageProps()` auto-injects `<link rel="stylesheet" href="/app.css">` (CSSPath) and `<script src="...htmx.org@...">` (HTMXVersion). Set either to `""` to suppress. Documented in godoc on both fields + DefaultPageProps.
 - ProgressBar clamp: uses `max(0, min(100, props.Progress))` (Go 1.21+ builtin) instead of manual if-branch clamping.
+- OverlayKind: typed enum (`OverlayModal`, `OverlayDrawer`) replaces untyped `closeKind`/`componentName` strings on `overlayShellProps`. The `componentName()` method derives JS function names from the kind.
+- CopyButton: `execCommand('copy')` fallback for non-secure HTTP contexts. `role="status"` + `aria-live="polite"` on label span for screen reader feedback.
+- Table.Body: `TableProps.Body templ.Component` slot — when set, overrides Rows for custom `<tr>` rendering. Follows Card.Body pattern.
 
 ## Release Convention: One-Commit Release
 

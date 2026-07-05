@@ -1,8 +1,9 @@
 # TODO List
 
 **Updated:** 2026-07-05
-**Coverage:** ~73% | **Tests:** 526 functions | **Packages:** 10+demo | **Lint:** 0 issues | **Icons:** 101 (100 path + 1 Spinner)
+**Coverage:** ~73% | **Tests:** 530+ functions | **Packages:** 13+demo | **Lint:** 0 issues | **Icons:** 101 (100 path + 1 Spinner)
 
+> Session 8: OverlayKind typed enum, CopyButton execCommand fallback + aria-live, Table.Body slot, golden tests for StatCard HTMX + Card.Body, 7 composition integration tests, benchmarks for CopyButton/CountBadge/Image/RelativeTime/LoadMore, NotFound404, Image srcset docs, formatRelativeTime boundary fix.
 > Session 6: Consumer feedback-driven improvements — Grid, StatCard.Href, SimpleNav.RightItems, layout.Script, SkeletonCardGrid, PageProps auto-inject docs, Tailwind v4 migration recipe, HTMX error feedback recipe.
 > Session 5: Modal/Drawer overlay JS extraction + CSP fix, SimpleNav props conversion, Alert/Toast style unification, Form children pattern, Pagination uint, FormFieldWrapper adoption, button/select/toggle map lookups, stdlib htmlEscape.
 
@@ -185,6 +186,25 @@ Sourced from DiscordSync, SwettySwipper, Overview, and browser-history feedback 
 - [x] **Silent SRI fallback** — FIXED: htmxMainSRI returns empty for unknown versions
 - [x] **Split forms/helpers.go** — FIXED: split into ids.go, aria.go, input_classes.go
 - [x] **Validation asymmetry (partial)** — FIXED: added FeedbackTypeIsValid()
-- [ ] **Overlay closeKind/componentName untyped** — Requires editing .templ sources + regenerate
-- [ ] **Error code constants untyped** — CodePageNotFound etc. should be typed Code enum
-- [ ] **Remaining IsValid() methods** — ButtonType, ModalSize, DrawerSize, DrawerSide still need IsValid()
+- [x] **Overlay closeKind/componentName untyped** — FIXED: typed `OverlayKind` enum (OverlayModal/OverlayDrawer) replaces both string fields
+- [x] **Error code constants untyped** — FIXED: `type Code string` in errorpage with typed constants
+- [x] **Remaining IsValid() methods** — FIXED: ButtonTypeIsValid, ModalSizeIsValid, DrawerSizeIsValid, DrawerSideIsValid, FeedbackTypeIsValid
+
+## 🟣 Session 8 — Hardening & Test Coverage (2026-07-05)
+
+### Fixed
+
+- [x] CopyButton `execCommand('copy')` fallback for non-secure HTTP contexts and older browsers
+- [x] CopyButton `role="status"` + `aria-live="polite"` on label span for screen reader feedback
+- [x] formatRelativeTime boundary test expectation corrected ("just now" for sub-60s)
+- [x] Image srcset/sizes limitation documented in godoc with Attrs workaround example
+
+### Added
+
+- [x] `display.OverlayKind` typed enum (OverlayModal, OverlayDrawer) replaces untyped closeKind/componentName strings
+- [x] `display.TableProps.Body` slot — overrides Rows for custom `<tr>` rendering
+- [x] `errorpage.NotFound404` component — dedicated 404 with gradient numeral, search, links
+- [x] Golden tests for StatCard HTMX (div + a variants) and Card.Body slot
+- [x] 7 composition integration tests (CopyButton+Card, CountBadge overflow, Image+fallback, DefinitionGrid, Card.Body slot, Grid container)
+- [x] Benchmark tests for CopyButton, CountBadge, Image, RelativeTime, LoadMore
+- [x] LoadMore uses `utils.EnsureID` instead of hardcoded DOM ID

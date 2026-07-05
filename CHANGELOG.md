@@ -59,6 +59,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Fixed `GridCols4`/`GridCols5` responsive ladders to include intermediate breakpoints (md) instead of jumping directly from 2 to the final count
 - Modernized `ProgressBar` clamp from manual if-branch to `max(0, min(100, v))` (Go 1.21+ builtins)
 - Updated `AGENTS.md`, `TODO_LIST.md`, `FEATURES.md` with session 6 conventions and component inventory
+- Code review session 8: CopyButton `execCommand('copy')` fallback for non-secure HTTP contexts; `role="status"` + `aria-live="polite"` on label span; typed `OverlayKind` enum replaces untyped `closeKind`/`componentName` string fields on `overlayShellProps`; `formatRelativeTime` boundary tests; golden tests for StatCard HTMX (`div` + `a` variants) and Card.Body slot; 7 composition integration tests (CopyButton+Card, CountBadge overflow, Image+fallback, DefinitionGrid, Card.Body, Grid); benchmark tests for CopyButton, CountBadge, Image, RelativeTime, LoadMore; Image srcset/sizes documentation; replaced `formatInt` with `strconv.Itoa`; typed `Code` enum in errorpage; `IsValid()` methods for ButtonType, ModalSize, DrawerSize, DrawerSide, FeedbackType; SRI returns empty string for unknown HTMX versions
 
 ## [0.6.1] — 2026-07-04
 
