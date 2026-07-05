@@ -41,8 +41,10 @@ this a one-liner:
 ### Why not bundle?
 
 Bundling a JS file in a Go library is unconventional and adds binary size for
-consumers who don't use HTMX. The library's principle is "zero JavaScript by
-default" — self-hosting makes the JS dependency explicit.
+consumers who don't use HTMX. The library follows a HATEOAS-first philosophy
+(see [htmx.org/essays/hateoas](https://htmx.org/essays/hateoas/)) — HTML is the
+source of truth, and JavaScript enhances it rather than replacing it. Self-hosting
+makes the htmx dependency explicit rather than silently loading from a CDN.
 
 ## Consequences
 
