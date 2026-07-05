@@ -85,3 +85,4 @@ result-*
 .envrc
 .direnv/
 # <<< buildflow-managed (.gitignore) <<<
+examples/demo/demo

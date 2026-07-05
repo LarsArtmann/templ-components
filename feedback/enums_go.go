@@ -11,3 +11,13 @@ func ProgressBarSizeIsValid(v ProgressBarSize) bool {
 	_, ok := progressHeightLookup[string(v)]
 	return ok
 }
+
+// SkeletonVariantIsValid reports whether v is one of the defined SkeletonVariant constants.
+func SkeletonVariantIsValid(v SkeletonVariant) bool {
+	switch v {
+	case SkeletonText, SkeletonTextShort, SkeletonTitle, SkeletonAvatar, SkeletonImage, SkeletonCard, SkeletonTableRow:
+		return true
+	default:
+		return false
+	}
+}

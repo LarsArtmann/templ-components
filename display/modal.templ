@@ -14,14 +14,14 @@ import "github.com/larsartmann/templ-components/utils"
 templ Modal(props ModalProps) {
 	{{ id := utils.EnsureID("modal", props.ID) }}
 	@overlayShell(overlayShellProps{
-		id:            id,
-		open:          props.Open,
-		title:         props.Title,
-		ariaLabel:     props.AriaLabel,
-		kind:          OverlayModal,
-		outerClass:    "flex items-center justify-center p-4",
-		nonce:         props.Nonce,
-		cfg:           modalPanelConfig(),
+		id:         id,
+		open:       props.Open,
+		title:      props.Title,
+		ariaLabel:  props.AriaLabel,
+		kind:       OverlayModal,
+		outerClass: "flex items-center justify-center p-4",
+		nonce:      props.Nonce,
+		cfg:        modalPanelConfig(),
 	}) {
 		<div
 			id={ id + "-panel" }

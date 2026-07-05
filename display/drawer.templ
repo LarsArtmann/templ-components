@@ -14,13 +14,13 @@ import "github.com/larsartmann/templ-components/utils"
 templ Drawer(props DrawerProps) {
 	{{ id := utils.EnsureID("drawer", props.ID) }}
 	@overlayShell(overlayShellProps{
-		id:            id,
-		open:          props.Open,
-		title:         props.Title,
-		ariaLabel:     props.AriaLabel,
-		kind:          OverlayDrawer,
-		nonce:         props.Nonce,
-		cfg:           drawerPanelConfig(props.Side),
+		id:        id,
+		open:      props.Open,
+		title:     props.Title,
+		ariaLabel: props.AriaLabel,
+		kind:      OverlayDrawer,
+		nonce:     props.Nonce,
+		cfg:       drawerPanelConfig(props.Side),
 	}) {
 		<div
 			id={ id + "-panel" }

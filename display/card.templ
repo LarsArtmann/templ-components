@@ -103,6 +103,8 @@ func cardPaddingClass(p CardPadding) string {
 type SimpleCardProps struct {
 	utils.BaseProps
 	Padding CardPadding
+	// Body, when set, overrides children — same pattern as CardProps.Body.
+	Body templ.Component
 }
 
 // DefaultSimpleCardProps returns sensible defaults
@@ -122,6 +124,7 @@ templ SimpleCard(props SimpleCardProps) {
 	@Card(CardProps{
 		BaseProps: props.BaseProps,
 		Padding:   props.Padding,
+		Body:      props.Body,
 	}) {
 		{ children... }
 	}

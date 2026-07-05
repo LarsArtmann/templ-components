@@ -8,7 +8,11 @@ package navigation
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"net/url"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // LoadMoreProps configures a "Load more" button for cursor-based pagination.
 // The button issues an HTMX request to Endpoint with the current Cursor value.
@@ -68,11 +72,15 @@ func LoadMore(props LoadMoreProps) templ.Component {
 		}
 		href := props.Endpoint
 		if props.Cursor != "" {
-			sep := "?"
-			if containsChar(href, '?') {
-				sep = "&"
+			parsed, err := url.Parse(href)
+			if err == nil {
+				q := parsed.Query()
+				q.Set("cursor", props.Cursor)
+				parsed.RawQuery = q.Encode()
+				href = parsed.String()
+			} else {
+				href = href + "?cursor=" + url.QueryEscape(props.Cursor)
 			}
-			href = href + sep + "cursor=" + props.Cursor
 		}
 		var templ_7745c5c3_Var2 = []any{utils.Class("flex justify-center py-6", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
@@ -86,7 +94,7 @@ func LoadMore(props LoadMoreProps) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.EnsureID("load-more", props.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 52, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 60, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -117,7 +125,7 @@ func LoadMore(props LoadMoreProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 55, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 63, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -139,7 +147,7 @@ func LoadMore(props LoadMoreProps) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(href)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 61, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 69, Col: 16}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
@@ -152,7 +160,7 @@ func LoadMore(props LoadMoreProps) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 66, Col: 10}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 74, Col: 10}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -164,16 +172,6 @@ func LoadMore(props LoadMoreProps) templ.Component {
 		}
 		return nil
 	})
-}
-
-// containsChar reports whether s contains the byte c.
-func containsChar(s string, c byte) bool {
-	for i := 0; i < len(s); i++ {
-		if s[i] == c {
-			return true
-		}
-	}
-	return false
 }
 
 var _ = templruntime.GeneratedTemplate

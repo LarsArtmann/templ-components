@@ -48,28 +48,28 @@ func DefaultImageProps() ImageProps {
 //	@display.Image(display.ImageProps{Src: "/photo.jpg", Alt: "Profile photo", Width: 128, Height: 128, FallbackSrc: "/placeholder.jpg"})
 templ Image(props ImageProps) {
 	if props.Src != "" {
-	<img
-		src={ props.Src }
-		alt={ props.Alt }
-		loading={ utils.Ternary(props.Lazy, "lazy", "eager") }
-		if props.Width > 0 {
-			width={ props.Width }
-		}
-		if props.Height > 0 {
-			height={ props.Height }
-		}
-		if props.FallbackSrc != "" {
-			data-tc-img-fallback={ props.FallbackSrc }
-		}
-		if props.ID != "" {
-			id={ props.ID }
-		}
-		class={ utils.Class("max-w-full h-auto rounded-md", props.Class) }
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
-		}
-		{ props.Attrs... }
-	/>
+		<img
+			src={ props.Src }
+			alt={ props.Alt }
+			loading={ utils.Ternary(props.Lazy, "lazy", "eager") }
+			if props.Width > 0 {
+				width={ props.Width }
+			}
+			if props.Height > 0 {
+				height={ props.Height }
+			}
+			if props.FallbackSrc != "" {
+				data-tc-img-fallback={ props.FallbackSrc }
+			}
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("max-w-full h-auto rounded-md", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		/>
 	}
 	if props.FallbackSrc != "" {
 		@imageFallbackScriptComponent(props.Nonce)

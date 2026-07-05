@@ -39,7 +39,7 @@ func TestLoadMoreBehavior(t *testing.T) {
 			Endpoint: "/api/items?filter=active",
 			Cursor:   "abc",
 		}))
-		utils.AssertContains(t, output, `hx-get="/api/items?filter=active&amp;cursor=abc"`)
+		utils.AssertContainsAll(t, output, `hx-get="/api/items?cursor=abc&amp;filter=active"`)
 	})
 
 	t.Run("uses custom label", func(t *testing.T) {

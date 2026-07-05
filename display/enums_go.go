@@ -44,7 +44,7 @@ func TooltipPositionIsValid(v TooltipPosition) bool {
 // AvatarShapeIsValid reports whether v is one of the defined AvatarShape constants.
 func AvatarShapeIsValid(v AvatarShape) bool {
 	switch v {
-	case AvatarCircle, AvatarSquare:
+	case AvatarShapeCircle, AvatarShapeSquare:
 		return true
 	default:
 		return false
