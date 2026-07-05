@@ -41,3 +41,12 @@ func ExampleBreadcrumbs() {
 	_ = navigation.Breadcrumbs(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
+
+func ExampleLoadMore() {
+	props := navigation.DefaultLoadMoreProps()
+	props.Endpoint = "/api/items"
+	props.Cursor = "eyJwYWdlIjoyfQ=="
+	var buf bytes.Buffer
+	_ = navigation.LoadMore(props).Render(context.Background(), &buf)
+	fmt.Println(buf.String())
+}

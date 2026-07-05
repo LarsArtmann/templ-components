@@ -48,3 +48,16 @@ func ExampleGrid() {
 	fmt.Println(buf.String())
 	// Output will contain responsive grid classes
 }
+
+func ExampleTable() {
+	props := display.TableProps{
+		Headers: []string{"Name", "Email", "Role"},
+		Rows: []display.TableRow{
+			display.SimpleTableRow("Alice", "alice@example.com", "Admin"),
+			display.SimpleTableRow("Bob", "bob@example.com", "User"),
+		},
+	}
+	var buf bytes.Buffer
+	_ = display.Table(props).Render(context.Background(), &buf)
+	fmt.Println(buf.String())
+}
