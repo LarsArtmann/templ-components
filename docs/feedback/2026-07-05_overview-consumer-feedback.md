@@ -149,3 +149,16 @@ templ-components is a **solid foundation** for server-rendered Go UIs. The compo
 The main friction is **undocumented auto-injection defaults** (`HTMXVersion`, `CSSPath`) — these silently add CDN links and 404s until you discover and blank them. Making the defaults explicit (or opt-in) would save every new consumer from reading source.
 
 The component catalogue is comprehensive but discoverability of the loading/skeleton family needs improvement — I hand-rolled something that already existed.
+
+---
+
+## Appendix: Resolution Status (2026-07-05)
+
+| Pain point                                 | Status                 | Resolution                                                                                                                                                                                                                                                               |
+| ------------------------------------------ | ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1. `HTMXVersion = ""` undocumented         | **RESOLVED**           | `PageProps.HTMXVersion` godoc now documents the auto-inject behavior and how to suppress it. `DefaultPageProps()` godoc calls it out explicitly. README has a "Suppressing auto-injected `<head>` tags" subsection with copy-paste example.                              |
+| 2. `CSSPath` defaults to `/app.css`        | **RESOLVED**           | Same treatment as HTMXVersion — godoc on the field, `DefaultPageProps()` godoc, README subsection.                                                                                                                                                                       |
+| 3. Skeleton components undiscoverable      | **PARTIALLY RESOLVED** | Added `feedback.SkeletonCardGrid(count)` convenience function. README feedback section now shows `SkeletonCard` and `SkeletonCardGrid`. Golden test added. Still missing: demo page showcase, cross-reference from `EmptyState` godoc.                                   |
+| 4. `StatCard` has no link support          | **RESOLVED**           | Added `StatCardProps.Href` — renders `<a>` wrapper with hover shadow, focus-visible ring, cursor-pointer when set. BaseProps (ID/Class/AriaLabel) propagate to the anchor. Shared body extracted to `statCardInner` sub-template. Tests: golden, BDD, a11y, integration. |
+| 5. `SimpleNavProps` has no right-side slot | **RESOLVED**           | Added `SimpleNavProps.RightItems` (templ.Component) — forwarded to `Nav.RightItems`. Consumers can now pass `@layout.ThemeToggle(...)` directly. Tests: coverage + BDD.                                                                                                  |
+| 6. No responsive grid helper               | **RESOLVED**           | Added `display.Grid(GridProps{Cols: GridCols3})` with typed `GridCols` enum (1–6), responsive breakpoints (stacks on mobile, expands at sm/md/lg/xl), `gridColsLookup` map+fallback. Tests: golden, BDD, a11y, example, integration.                                     |
