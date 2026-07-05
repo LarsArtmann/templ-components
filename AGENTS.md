@@ -100,6 +100,9 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - All component props embed `utils.BaseProps` (exception: `layout.PageProps`) — all auto-satisfy `utils.ComponentProps` interface
 - All root elements propagate `props.Class`, `props.Attrs`, `props.ID`, and `props.AriaLabel` from BaseProps (26/26 components, including NavLink/MobileNavLink)
 - Class attributes use `utils.Class()` for Tailwind conflict resolution (exception: `templ.KV` conditionals where comma-join is required)
+- **RTL/i18n: use logical CSS properties exclusively.** Never use `ml-`/`mr-`/`pl-`/`pr-`/`left-`/`right-`/`text-left`/`border-l-`/`border-r-` — use `ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`/`text-start`/`border-s-`/`border-e-` instead. These are CSS logical properties that automatically mirror in RTL (`dir="rtl"`). Exception: `left-1/2 -translate-x-1/2` for centering (not directional).
+- **Motion: use shared transition constants.** Use `transitionFast` (150ms), `transitionNormal` (200ms), `transitionSlow` (300ms), `transitionColors`, `transitionTransform` from `display/shared.go` instead of inline timing strings. All include `motion-reduce:*` fallbacks.
+- **Container queries: use `@container` for context-responsive grids.** Set `GridProps.ContainerResponsive = true` to make the Grid respond to its parent container width instead of the viewport. Uses Tailwind v4 container-query variants (`@sm:`, `@lg:`).
 - Style lookups use maps/structs, not switches (e.g., `badgeStyleMap`, `badgeSizeLookup`, `cardPaddingLookup`, `iconPathData`, `alertIconMap`, `toastIconMap`, `spinnerSizeLookup`, `progressHeightLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`)
 - String enums: `type XxxType string` + `const XxxDefault XxxType = "default"`
 - Size constants: uppercase suffix pattern `[Component]Size[SM|MD|LG]` (e.g., `AvatarSizeSM`, `BadgeSizeSM`, `SpinnerSM`)

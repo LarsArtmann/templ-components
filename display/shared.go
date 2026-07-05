@@ -26,6 +26,14 @@ const mutedTextClass = "text-sm text-gray-500 dark:text-gray-400"
 //   - 200ms: overlays (modal, drawer, dropdown)
 //   - 300ms: panel transitions, large element movement
 //
+// Every transition includes motion-reduce fallbacks for vestibular safety.
+// Use these instead of inline strings so timing is consistent and auditable.
+const (
+	transitionFast      = "transition-all duration-150 ease-out motion-reduce:transition-none motion-reduce:duration-0"
+	transitionNormal    = "transition-all duration-200 ease-out motion-reduce:transition-none motion-reduce:duration-0"
+	transitionColors    = "transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+	transitionTransform = "transition-transform motion-reduce:transition-none"
+)
 
 // overlayPanelConfig defines the CSS classes that animate the panel element
 // between open and closed states. The fields are typed slices, converted to

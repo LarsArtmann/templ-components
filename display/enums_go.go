@@ -34,3 +34,19 @@ func AvatarSizeIsValid(v AvatarSize) bool {
 	_, ok := avatarSizeLookup[string(v)]
 	return ok
 }
+
+// TooltipPositionIsValid reports whether v is one of the defined TooltipPosition constants.
+func TooltipPositionIsValid(v TooltipPosition) bool {
+	_, ok := tooltipPositionMap[v]
+	return ok
+}
+
+// AvatarShapeIsValid reports whether v is one of the defined AvatarShape constants.
+func AvatarShapeIsValid(v AvatarShape) bool {
+	switch v {
+	case AvatarCircle, AvatarSquare:
+		return true
+	default:
+		return false
+	}
+}

@@ -53,7 +53,7 @@ func Drawer(props DrawerProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			var templ_7745c5c3_Var3 = []any{utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0", drawerSizeClass(props.Size), props.Class),
+			var templ_7745c5c3_Var3 = []any{utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform", transitionTransform, "duration-200", drawerSizeClass(props.Size), props.Class),
 				templ.KV("start-0", props.Side == DrawerLeft),
 				templ.KV("end-0", props.Side == DrawerRight),
 				templ.KV("translate-x-0", props.Open),

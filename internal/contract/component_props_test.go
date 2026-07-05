@@ -87,8 +87,9 @@ func componentTypes() []any {
 		htmx.ConfirmDeleteProps{},
 		htmx.SwapOOBProps{},
 
-		// errorpage (3)
+		// errorpage (4)
 		errorpage.ErrorPageProps{},
+		errorpage.NotFound404Props{},
 		errorpage.ErrorDetailProps{},
 		errorpage.ErrorAlertProps{},
 	}

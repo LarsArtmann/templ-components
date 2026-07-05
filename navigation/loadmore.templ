@@ -1,6 +1,10 @@
 package navigation
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"net/url"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // LoadMoreProps configures a "Load more" button for cursor-based pagination.
 // The button issues an HTMX request to Endpoint with the current Cursor value.
@@ -41,11 +45,15 @@ templ LoadMore(props LoadMoreProps) {
 		}
 		href := props.Endpoint
 		if props.Cursor != "" {
-			sep := "?"
-			if containsChar(href, '?') {
-				sep = "&"
+			parsed, err := url.Parse(href)
+			if err == nil {
+				q := parsed.Query()
+				q.Set("cursor", props.Cursor)
+				parsed.RawQuery = q.Encode()
+				href = parsed.String()
+			} else {
+				href = href + "?cursor=" + url.QueryEscape(props.Cursor)
 			}
-			href = href + sep + "cursor=" + props.Cursor
 		}
 	}}
 	<div
@@ -68,12 +76,3 @@ templ LoadMore(props LoadMoreProps) {
 	</div>
 }
 
-// containsChar reports whether s contains the byte c.
-func containsChar(s string, c byte) bool {
-	for i := 0; i < len(s); i++ {
-		if s[i] == c {
-			return true
-		}
-	}
-	return false
-}
