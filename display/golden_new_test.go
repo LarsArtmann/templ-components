@@ -62,14 +62,14 @@ func TestGoldenImage(t *testing.T) {
 func TestGoldenStatCardHTMX(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, StatCard(StatCardProps{
-		Value:  "1,204",
-		Label:  "Active Users",
-		Change: "+8%",
-		Trend:  TrendUp,
-		Icon:   icons.Users,
-		HxGet:  "/api/stats",
+		Value:    "1,204",
+		Label:    "Active Users",
+		Change:   "+8%",
+		Trend:    TrendUp,
+		Icon:     icons.Users,
+		HxGet:    "/api/stats",
 		HxTarget: "#stat-container",
-		HxSwap: "innerHTML",
+		HxSwap:   "innerHTML",
 	}))
 	golden.Assert(t, "stat_card_htmx", output)
 }

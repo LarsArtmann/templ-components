@@ -28,19 +28,41 @@ type overlayPanelConfig struct {
 	closeClasses []string // e.g. {"scale-95", "opacity-0"}
 }
 
+// OverlayKind identifies whether an overlay is a Modal or a Drawer.
+type OverlayKind string
+
+const (
+	// OverlayModal is the kind for Modal overlays.
+	OverlayModal OverlayKind = "modal"
+	// OverlayDrawer is the kind for Drawer overlays.
+	OverlayDrawer OverlayKind = "drawer"
+)
+
+// componentName returns the capitalized name used in generated JS function names
+// (tcOpenModal, tcCloseDrawer, etc.). Unknown kinds fall back to "Overlay".
+func (k OverlayKind) componentName() string {
+	switch k {
+	case OverlayModal:
+		return "Modal"
+	case OverlayDrawer:
+		return "Drawer"
+	default:
+		return "Overlay"
+	}
+}
+
 // overlayShellProps parameterizes the shared accessibility shell used by
 // Modal and Drawer. It centralizes the outer overlay div, backdrop, and
 // per-instance script so the two components stay consistent.
 type overlayShellProps struct {
-	id            string
-	open          bool
-	title         string
-	ariaLabel     string
-	closeKind     string
-	componentName string
-	outerClass    string
-	nonce         string
-	cfg           overlayPanelConfig
+	id         string
+	open       bool
+	title      string
+	ariaLabel  string
+	kind       OverlayKind
+	outerClass string
+	nonce      string
+	cfg        overlayPanelConfig
 }
 
 // jsClassArgs converts a slice of CSS class names into comma-separated,

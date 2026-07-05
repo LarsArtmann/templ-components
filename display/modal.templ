@@ -18,8 +18,7 @@ templ Modal(props ModalProps) {
 		open:          props.Open,
 		title:         props.Title,
 		ariaLabel:     props.AriaLabel,
-		closeKind:     "modal",
-		componentName: "Modal",
+		kind:          OverlayModal,
 		outerClass:    "flex items-center justify-center p-4",
 		nonce:         props.Nonce,
 		cfg:           modalPanelConfig(),
@@ -34,7 +33,7 @@ templ Modal(props ModalProps) {
 			}
 			{ props.Attrs... }
 		>
-			@dialogHeader(props.Title, id+"-title", "modal")
+			@dialogHeader(props.Title, id+"-title", OverlayModal)
 			<div class="px-4 py-4 sm:px-6">
 				{ children... }
 			</div>

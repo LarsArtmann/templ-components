@@ -67,7 +67,7 @@ func Modal(props ModalProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(id + "-panel")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 28, Col: 21}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/modal.templ`, Line: 27, Col: 21}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -104,7 +104,7 @@ func Modal(props ModalProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = dialogHeader(props.Title, id+"-title", "modal").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = dialogHeader(props.Title, id+"-title", OverlayModal).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -123,15 +123,14 @@ func Modal(props ModalProps) templ.Component {
 			return nil
 		})
 		templ_7745c5c3_Err = overlayShell(overlayShellProps{
-			id:            id,
-			open:          props.Open,
-			title:         props.Title,
-			ariaLabel:     props.AriaLabel,
-			closeKind:     "modal",
-			componentName: "Modal",
-			outerClass:    "flex items-center justify-center p-4",
-			nonce:         props.Nonce,
-			cfg:           modalPanelConfig(),
+			id:         id,
+			open:       props.Open,
+			title:      props.Title,
+			ariaLabel:  props.AriaLabel,
+			kind:       OverlayModal,
+			outerClass: "flex items-center justify-center p-4",
+			nonce:      props.Nonce,
+			cfg:        modalPanelConfig(),
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

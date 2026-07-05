@@ -30,20 +30,20 @@ templ overlayShell(p overlayShellProps) {
 			aria-label={ p.ariaLabel }
 		}
 	>
-		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" data-tc-close={ p.closeKind }></div>
+		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" data-tc-close={ string(p.kind) }></div>
 		{ children... }
 	</div>
-	@overlayScriptComponent(p.nonce, p.id, p.componentName, p.cfg)
+	@overlayScriptComponent(p.nonce, p.id, p.kind.componentName(), p.cfg)
 }
 
-templ dialogHeader(title, titleID, closeKind string) {
+templ dialogHeader(title, titleID string, kind OverlayKind) {
 	if title != "" {
 		<div class="flex items-center justify-between px-4 py-3 sm:px-6 border-b border-gray-200 dark:border-gray-700">
 			<h2 id={ titleID } class="text-base font-semibold text-gray-900 dark:text-white">{ title }</h2>
 			<button
 				type="button"
 				class="rounded-md text-gray-400 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500"
-				data-tc-close={ closeKind }
+				data-tc-close={ string(kind) }
 				aria-label="Close"
 			>
 				@icons.Icon(icons.X, "h-5 w-5")

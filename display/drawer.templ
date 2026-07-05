@@ -18,8 +18,7 @@ templ Drawer(props DrawerProps) {
 		open:          props.Open,
 		title:         props.Title,
 		ariaLabel:     props.AriaLabel,
-		closeKind:     "drawer",
-		componentName: "Drawer",
+		kind:          OverlayDrawer,
 		nonce:         props.Nonce,
 		cfg:           drawerPanelConfig(props.Side),
 	}) {
@@ -36,7 +35,7 @@ templ Drawer(props DrawerProps) {
 			}
 			{ props.Attrs... }
 		>
-			@dialogHeader(props.Title, id+"-title", "drawer")
+			@dialogHeader(props.Title, id+"-title", OverlayDrawer)
 			<div class="px-4 py-4 sm:px-6">
 				{ children... }
 			</div>
