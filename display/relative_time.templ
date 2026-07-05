@@ -1,6 +1,7 @@
 package display
 
 import (
+	"strconv"
 	"time"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -114,28 +115,7 @@ func formatRelativeTime(t, now time.Time) string {
 
 // formatRelativeAgo returns "<n> <unit> ago".
 func formatRelativeAgo(n int, unit string) string {
-	return formatInt(n) + " " + unit + " ago"
+	return strconv.Itoa(n) + " " + unit + " ago"
 }
 
-// formatInt converts an int to its decimal string representation.
-func formatInt(n int) string {
-	if n == 0 {
-		return "0"
-	}
-	neg := n < 0
-	if neg {
-		n = -n
-	}
-	var digits [20]byte
-	pos := len(digits)
-	for n > 0 {
-		pos--
-		digits[pos] = byte('0' + n%10)
-		n /= 10
-	}
-	if neg {
-		pos--
-		digits[pos] = '-'
-	}
-	return string(digits[pos:])
-}
+

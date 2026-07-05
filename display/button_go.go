@@ -90,6 +90,12 @@ func buttonVariantClasses(v ButtonType) string {
 	return utils.Lookup(buttonVariantLookup, v, buttonVariantLookup[ButtonPrimary])
 }
 
+// ButtonTypeIsValid reports whether v is one of the defined ButtonType constants.
+func ButtonTypeIsValid(v ButtonType) bool {
+	_, ok := buttonVariantLookup[v]
+	return ok
+}
+
 //nolint:gochecknoglobals // Package-level lookup table for button sizes
 var buttonSizeLookup = map[ButtonSize]string{
 	ButtonSizeSM: "px-2.5 py-1.5 text-xs",

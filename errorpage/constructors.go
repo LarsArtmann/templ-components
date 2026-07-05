@@ -1,13 +1,16 @@
 package errorpage
 
+// Code is a typed error code string for categorizing error pages.
+type Code string
+
 // Pre-built HTTP error page code constants.
 const (
-	CodePageNotFound    = "page.not_found"
-	CodeAccessForbidden = "access.forbidden"
-	CodeBadRequest      = "request.bad_request"
-	CodeConflict        = "resource.conflict"
-	CodeUnavailable     = "service.unavailable"
-	CodeInternalError   = "internal.error"
+	CodePageNotFound    Code = "page.not_found"
+	CodeAccessForbidden Code = "access.forbidden"
+	CodeBadRequest      Code = "request.bad_request"
+	CodeConflict        Code = "resource.conflict"
+	CodeUnavailable     Code = "service.unavailable"
+	CodeInternalError   Code = "internal.error"
 
 	msgGoHome = "Go home"
 )

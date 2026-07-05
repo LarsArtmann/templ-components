@@ -46,3 +46,9 @@ var modalSizeLookup = map[ModalSize]string{
 func modalSizeClass(size ModalSize) string {
 	return utils.Lookup(modalSizeLookup, size, modalSizeLookup[ModalSizeMD])
 }
+
+// ModalSizeIsValid reports whether s is one of the defined ModalSize constants.
+func ModalSizeIsValid(s ModalSize) bool {
+	_, ok := modalSizeLookup[s]
+	return ok
+}

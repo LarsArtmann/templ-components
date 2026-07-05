@@ -63,3 +63,14 @@ var drawerSizeLookup = map[DrawerSize]string{
 func drawerSizeClass(size DrawerSize) string {
 	return utils.Lookup(drawerSizeLookup, size, drawerSizeLookup[DrawerSizeMD])
 }
+
+// DrawerSizeIsValid reports whether s is one of the defined DrawerSize constants.
+func DrawerSizeIsValid(s DrawerSize) bool {
+	_, ok := drawerSizeLookup[s]
+	return ok
+}
+
+// DrawerSideIsValid reports whether s is DrawerLeft or DrawerRight.
+func DrawerSideIsValid(s DrawerSide) bool {
+	return s == DrawerLeft || s == DrawerRight
+}

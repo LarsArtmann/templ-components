@@ -66,7 +66,7 @@ templ familyBadge(family Family, style familyVisualStyle) {
 	</span>
 }
 
-templ codeAndFamilyBadge(family Family, style familyVisualStyle, code string) {
+templ codeAndFamilyBadge(family Family, style familyVisualStyle, code Code) {
 	<div class="flex items-center gap-2 flex-wrap">
 		if code != "" {
 			<code class={ "inline-flex items-center rounded px-1.5 py-0.5 text-xs font-mono font-medium", style.AccentBG, style.AccentText }>

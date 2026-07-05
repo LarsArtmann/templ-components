@@ -47,7 +47,7 @@ func FromError(err error) ErrorPageProps {
 	}
 
 	if coded, ok := err.(interface{ ErrorCode() string }); ok {
-		props.Code = coded.ErrorCode()
+		props.Code = Code(coded.ErrorCode())
 	}
 
 	if ctx, ok := err.(interface{ ErrorContext() map[string]string }); ok {

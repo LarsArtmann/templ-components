@@ -1,6 +1,10 @@
 package display
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"strconv"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // CountBadgeProps configures an icon or element with a notification count
 // badge overlaid in the top-right corner. Use it to show unread counts,
@@ -39,9 +43,9 @@ templ CountBadge(props CountBadgeProps) {
 			maxVal = CountBadgeDefaultMax
 		}
 		showBadge := props.Count > 0
-		display := formatInt(props.Count)
+		display := strconv.Itoa(props.Count)
 		if props.Count > maxVal {
-			display = formatInt(maxVal) + "+"
+			display = strconv.Itoa(maxVal) + "+"
 		}
 	}}
 	<div

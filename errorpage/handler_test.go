@@ -190,7 +190,7 @@ func TestPreBuiltConstructorsRender(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, ErrorPage(tc.props))
 			utils.AssertContains(t, output, "min-h-screen")
-			utils.AssertContains(t, output, tc.props.Code)
+			utils.AssertContains(t, output, string(tc.props.Code))
 		})
 	}
 }

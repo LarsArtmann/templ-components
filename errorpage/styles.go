@@ -138,7 +138,7 @@ type CauseItem struct {
 type ErrorPageProps struct {
 	utils.BaseProps
 	Family        Family
-	Code          string
+	Code          Code
 	Title         string
 	Message       string
 	Why           string
@@ -162,7 +162,7 @@ func DefaultErrorPageProps() ErrorPageProps {
 type ErrorDetailProps struct {
 	utils.BaseProps
 	Family     Family
-	Code       string
+	Code       Code
 	Title      string
 	Message    string
 	Fix        string

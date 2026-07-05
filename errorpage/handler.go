@@ -135,7 +135,7 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 func writeJSONError(w http.ResponseWriter, statusCode int, props ErrorPageProps) {
 	resp := errorResponse{ //nolint:exhaustruct // Context set conditionally below
 		Family:  string(props.Family),
-		Code:    props.Code,
+		Code:    string(props.Code),
 		Message: props.Message,
 		Title:   props.Title,
 		Why:     props.Why,
