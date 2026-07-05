@@ -48,7 +48,7 @@
               name = "run-lint";
               runtimeInputs = [pkgs.golangci-lint];
               text = ''
-                golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+                golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./svg/... ./internal/...
               '';
             };
           };
@@ -90,7 +90,7 @@
                 echo "==> Testing..."
                 go test ./... -count=1
                 echo "==> Linting..."
-                golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+                golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./svg/... ./internal/...
                 echo "==> All checks passed."
               '';
             };
