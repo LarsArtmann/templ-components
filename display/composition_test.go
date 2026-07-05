@@ -116,3 +116,86 @@ func TestCompositionDropdownWithMixedItems(t *testing.T) {
 		utils.AssertContains(t, output, `rel="noopener noreferrer"`)
 	})
 }
+
+func TestCompositionCardWithCopyButton(t *testing.T) {
+	t.Parallel()
+	t.Run("card body renders a CopyButton", func(t *testing.T) {
+		t.Parallel()
+		copyBtn := CopyButton(CopyButtonProps{Text: "npm install foo"})
+		output := utils.Render(t, Card(CardProps{
+			Title: "Install",
+			Body:  copyBtn,
+		}))
+		utils.AssertContains(t, output, "Install")
+		utils.AssertContains(t, output, `data-tc-copy="npm install foo"`)
+	})
+}
+
+func TestCompositionCountBadgeWithAvatar(t *testing.T) {
+	t.Parallel()
+	t.Run("count badge renders overflow correctly in relative wrapper", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CountBadge(CountBadgeProps{
+			Count: 150,
+			Max:   CountBadgeDefaultMax,
+		}))
+		utils.AssertContains(t, output, "99+")
+	})
+}
+
+func TestCompositionImageWithFallback(t *testing.T) {
+	t.Parallel()
+	t.Run("image renders fallback attribute and lazy loading", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Image(ImageProps{
+			Src:         "/photo.jpg",
+			Alt:         "Profile photo",
+			Lazy:        true,
+			FallbackSrc: "/avatar-placeholder.png",
+		}))
+		utils.AssertContains(t, output, `src="/photo.jpg"`)
+		utils.AssertContains(t, output, `data-tc-img-fallback`)
+		utils.AssertContains(t, output, `loading="lazy"`)
+	})
+}
+
+func TestCompositionDefinitionGridWithItems(t *testing.T) {
+	t.Parallel()
+	t.Run("definition grid renders term-detail pairs", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, DefinitionGrid(DefinitionGridProps{
+			Cols: GridCols2,
+			Items: []DefinitionItem{
+				{Term: "Name", Detail: "Alice"},
+				{Term: "Role", Detail: "Admin"},
+			},
+		}))
+		utils.AssertContains(t, output, "Name")
+		utils.AssertContains(t, output, "Alice")
+		utils.AssertContains(t, output, "Role")
+		utils.AssertContains(t, output, "Admin")
+		utils.AssertContains(t, output, "<dl")
+	})
+}
+
+func TestCompositionCardBodySlotOverridesChildren(t *testing.T) {
+	t.Parallel()
+	t.Run("Body slot overrides children content", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Card(CardProps{
+			Title: "Slotted",
+			Body:  templ.Raw("<p data-testid='custom'>Custom body</p>"),
+		}))
+		utils.AssertContains(t, output, "Custom body")
+		utils.AssertContains(t, output, `data-testid='custom'`)
+	})
+}
+
+func TestCompositionGridContainer(t *testing.T) {
+	t.Parallel()
+	t.Run("grid container renders responsive classes", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Grid(GridProps{Cols: GridCols3}))
+		utils.AssertContains(t, output, "grid-cols-")
+	})
+}
