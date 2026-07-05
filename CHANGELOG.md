@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Multi-module workspace**: split into 6 Go modules coordinated by `go.work`. Extracted `svg` (promoted from `internal/svg`), `utils`, `icons`, and `errorpage` as sub-modules with replace directives. The root module retains the 6 cohesive core packages (display, feedback, forms, layout, navigation, htmx). Zero import path changes for consumers — all paths remain `github.com/larsartmann/templ-components/<pkg>`.
+- `go-error-family` is now an indirect dependency (only `errorpage` sub-module imports it directly). Consumers not using errorpage skip it entirely via Go 1.26.4 graph pruning.
+- `go.work` and `go.work.sum` are committed (un-ignored via `!go.work` in `.gitignore`).
+
 ### Added
 
 - `display.CopyButton`: CSP-safe clipboard copy button with singleton event-delegation script. Copies text via `navigator.clipboard.writeText`, temporarily shows a "Copied!" label, reverts after 2s. Optional clipboard icon, fully accessible (type=button, focus ring, motion-reduce).
@@ -36,6 +42,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Internal
 
+- Code review session 7: fixed stale count comments in component_props_test.go (display 18→23, nav 6→7), stale comment in fromerror.go, missing WayOutHref on 3 error constructors, extracted shared `scriptComponent()` helper (eliminates 4 near-identical functions), added `maxW2XL` named constant, fixed `allIconNames()` sorting, extracted `resolveCDNBase()` helper, removed competing package doc comments from 8 files
 - Added `TestPinnedSRIMatchesCDN` network-gated test that fetches live CDN scripts and verifies pinned SRI hashes match the bytes (skips under `-short` and on network errors)
 - Added `release.sh` pre-check: fails if `[Unreleased]` section body is empty
 - Extracted `statCardInner` sub-template from `StatCard` so the linked (`<a>`) and unlinked (`<div>`) layouts share the icon/value/label body without duplication

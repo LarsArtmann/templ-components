@@ -1,19 +1,45 @@
 # AGENTS.md — templ-components
 
+## Multi-Module Structure (go.work + 6 modules)
+
+This repo uses a **Go multi-module workspace** with 6 modules coordinated by `go.work`:
+
+| Module            | Path                   | Contains                                                      | Purpose                                               |
+| ----------------- | ---------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
+| **root**          | `go.mod`               | display, feedback, forms, layout, navigation, htmx, internal/ | Core UI components                                    |
+| **svg**           | `svg/go.mod`           | svg (promoted from `internal/svg`)                            | SVG rendering primitives                              |
+| **utils**         | `utils/go.mod`         | utils                                                         | BaseProps, Class(), EnsureID, test helpers            |
+| **icons**         | `icons/go.mod`         | icons                                                         | Named SVG icons (lightweight: no tailwind-merge-go)   |
+| **errorpage**     | `errorpage/go.mod`     | errorpage                                                     | Error pages + HTTP handler (isolates go-error-family) |
+| **examples/demo** | `examples/demo/go.mod` | demo                                                          | Demo binary                                           |
+
+**Each sub-module has replace directives** for its siblings (e.g., `icons/go.mod` has
+`replace github.com/larsartmann/templ-components/svg => ../svg`). This ensures
+`GOWORK=off go build` works per-module — essential for CI and external consumers.
+
+**go.work is committed** (un-ignored via `!go.work` in `.gitignore`). BuildFlow may
+re-add `go.work` to `.gitignore` on pre-commit — the `!` negation after it keeps it tracked.
+
 ## Build & Test Commands
 
 ```bash
 # Full build (required before go build after .templ changes)
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./...
 
-# Tests
+# Tests (root module)
 go test ./...
 
-# Lint
-golangci-lint run ./...
+# Tests (all modules including sub-modules)
+for mod in svg utils icons errorpage examples/demo; do (cd $mod && go test ./...); done && go test ./...
+
+# Lint (must include ./svg/...)
+golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./svg/... ./internal/...
+
+# GOWORK=off isolation test (verify replace directives work standalone)
+for mod in svg utils icons errorpage examples/demo; do (cd $mod && GOWORK=off go build ./... && GOWORK=off go test ./...); done && GOWORK=off go build ./...
 
 # All-in-one verification
-find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./...
+find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./svg/... ./internal/...
 ```
 
 ## CRITICAL: Generated `*_templ.go` Files MUST Be Committed
@@ -25,7 +51,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 51 generated files across 10 packages + examples/demo (display, errorpage, feedback, forms, htmx, icons, internal/golden, internal/svg, layout, navigation)
+- 59 generated files across 6 modules: root (display, errorpage, feedback, forms, htmx, layout, navigation, internal/golden), svg, utils, icons, examples/demo
 - **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
@@ -64,7 +90,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - **Accessibility — motion-reduce:** `motion-reduce:transition-none motion-reduce:duration-0` on all transitions, `motion-reduce:animate-none` on all animations (spinner, skeletons, toast enter/exit, modal, accordion)
 - **Dark mode colors:** All components use `gray-*` exclusively (no mixed `slate-*`/`gray-*`). Dark mode via class strategy: `@custom-variant dark (&:where(.dark, .dark *))` toggled by `layout.ThemeScript()` + `layout.ThemeToggle()`
 - **CI:** `.github/workflows/ci.yaml` — lint (golangci-lint), build+test with `templ generate`, coverage artifact. Pre-commit: `.git/hooks/pre-commit` → `scripts/pre-commit.sh`
-- **Import graph:** `utils ← all`, `internal/svg ← display,feedback,icons`, `icons ← display,feedback,errorpage,navigation`, `feedback ← none (htmx decoupled)`, `errorpage ← icons,utils,go-error-family (no feedback dep)`, `navigation ← icons,utils`
+- **Import graph (multi-module):** Module DAG: `svg` ← `icons`; `utils` (leaf); `icons,svg,utils` ← root (display,feedback,forms,layout,navigation,htmx); `icons,utils` ← errorpage; all ← examples/demo. Production deps: `icons → svg`, `display → icons,svg,utils`, `feedback → icons,svg,utils`, `forms → icons,utils`, `layout → icons,utils`, `navigation → icons,svg,utils`, `htmx → utils`, `errorpage → icons,utils`
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
 - **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
@@ -147,7 +173,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - ListNote: `display.ListNote(ListNoteProps{Shown, Total})` — renders "Showing N of M" truncation notice when Total > Shown. `role="status"` for a11y.
 - SidebarNav: `navigation.SidebarNav(SidebarNavProps)` — vertical sidebar with Brand/Footer slots, icon+label nav items, CurrentPath auto-active detection, `aria-current="page"` on active item.
 - icons.IconPathData: exported function returning raw SVG path d-strings for consumers needing full `<svg>` wrapper control (used by cqrs-htmx/adminui for icons-only adoption without Tailwind).
-- icons-only adoption: the `icons` and `utils` packages are CSS-agnostic (pure SVG data). This is a natural property of icons, not a portability strategy. See `docs/icons-only-adoption.md`.
+- icons-only adoption: the `icons` sub-module depends only on `svg` + `templ` — no tailwind-merge-go, no CSS framework. This is a natural property of icons, not a portability strategy. See `docs/icons-only-adoption.md`.
 - Grid: `display.Grid(GridProps)` — responsive grid container with typed `GridCols` enum (1–6) and `gridColsLookup` map+fallback. Replaces the repeated `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4` pattern. Children passed via `{ children... }`.
 - StatCard.Href: `StatCardProps.Href` renders the whole card as an `<a>` with hover shadow, focus ring, cursor-pointer when set. Mirrors `Badge.Href` pattern. Shared body extracted to `statCardInner` sub-template so linked/unlinked layouts don't diverge.
 - layout.Script: `layout.Script(nonce, src, attrs)` — CSP-safe `<script src>` tag that auto-injects the nonce. Prevents forgetting `nonce={...}` under strict CSP. Use instead of raw `<script>` tags for external scripts.
@@ -232,5 +258,5 @@ after reviewing the release commit and tag with `git show v<version>` and
 
 ```bash
 # Must lint specific packages — examples/ excluded via .golangci.yml
-golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./svg/... ./internal/...
 ```

@@ -77,6 +77,8 @@ reports/
 *.out
 go.work
 go.work.sum
+!go.work
+!go.work.sum
 
 ## Nix
 result-*

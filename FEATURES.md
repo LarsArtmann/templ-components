@@ -1,6 +1,6 @@
 # Features — templ-components
 
-**Updated:** 2026-06-27 | **Version:** 0.4.0
+**Updated:** 2026-07-05 | **Version:** 0.6.1
 
 A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 
@@ -11,16 +11,16 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | Package      | Components    | Description                                                                                                                                                                                               |
 | ------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                     |
-| `display`    | 24            | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states, page headers, definition lists, copy button, relative time, count badge, image |
+| `display`    | 25            | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states, page headers, definition lists, copy button, relative time, count badge, image |
 | `errorpage`  | 3             | Error presentation: full-page errors, error detail cards, family-aware alerts                                                                                                                             |
-| `feedback`   | 12            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                         |
+| `feedback`   | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                         |
 | `forms`      | 16            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation                                                                                 |
 | `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                                                                             |
 | `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                                                                 |
-| `layout`     | 4             | Page layout: base HTML, theme toggle, dark mode                                                                                                                                                           |
+| `layout`     | 5             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script tag                                                                                                                                      |
 | `navigation` | 11            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more                                                                                                                       |
 
-**Totals:** 78 templ components, 101 icon names, 26 typed enums, 56 generated `*_templ.go` files, ~4,500 lines of Go/templ source
+**Totals:** 80 templ components, 101 icon names, 26+ typed enums, 59 generated `*_templ.go` files, ~24,000 lines of Go/templ source
 
 ---
 
@@ -105,7 +105,9 @@ type BaseProps struct {
 | `BadgeSize`        | SM, MD, LG                                               |
 | `CardPadding`      | None, SM, MD, LG                                         |
 | `DropdownPosition` | Left, Right                                              |
-| `ModalSize`        | SM, MD, LG, XL, Full                                     |
+| `ModalSize`        | SM, MD, LG, XL, 2XL, Full                                |
+| `DrawerSide`       | Left, Right                                              |
+| `DrawerSize`       | SM, MD, LG, XL, 2XL, Full                                |
 | `TabsVariant`      | Default, Pills                                           |
 | `TrendDirection`   | Up, Down, None                                           |
 | `GridCols`         | 1, 2, 3 (default), 4, 5, 6                               |

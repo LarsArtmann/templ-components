@@ -1,7 +1,7 @@
 # TODO List
 
 **Updated:** 2026-07-05
-**Coverage:** ~75% | **Tests:** 465+ functions + ~670 subtests | **Packages:** 10+demo | **Lint:** 0 issues | **Icons:** 101 (100 path + 1 Spinner)
+**Coverage:** ~73% | **Tests:** 526 functions | **Packages:** 10+demo | **Lint:** 0 issues | **Icons:** 101 (100 path + 1 Spinner)
 
 > Session 6: Consumer feedback-driven improvements — Grid, StatCard.Href, SimpleNav.RightItems, layout.Script, SkeletonCardGrid, PageProps auto-inject docs, Tailwind v4 migration recipe, HTMX error feedback recipe.
 > Session 5: Modal/Drawer overlay JS extraction + CSP fix, SimpleNav props conversion, Alert/Toast style unification, Form children pattern, Pagination uint, FormFieldWrapper adoption, button/select/toggle map lookups, stdlib htmlEscape.
