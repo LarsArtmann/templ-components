@@ -41,3 +41,28 @@ func TestVersionMatchesChangelog(t *testing.T) {
 	}
 	t.Fatalf("no released version heading found in CHANGELOG.md")
 }
+
+// TestVersionMatchesFeatures ensures utils.Version stays in sync with the
+// version declared in FEATURES.md. Documentation drift (e.g. FEATURES.md still
+// showing an old version after a release) is caught here.
+func TestVersionMatchesFeatures(t *testing.T) {
+	t.Parallel()
+
+	data, err := os.ReadFile("../FEATURES.md")
+	if err != nil {
+		t.Skipf("FEATURES.md not found (running outside repo root?): %v", err)
+	}
+
+	const marker = "**Version:**"
+	for line := range strings.SplitSeq(string(data), "\n") {
+		// marker may appear mid-line, e.g. "**Updated:** ... | **Version:** 0.7.0"
+		if _, rest, ok := strings.Cut(line, marker); ok {
+			want := strings.TrimSpace(rest)
+			if want != Version {
+				t.Errorf("utils.Version = %q, but FEATURES.md declares %q", Version, want)
+			}
+			return
+		}
+	}
+	t.Fatalf("no **Version:** marker found in FEATURES.md")
+}
