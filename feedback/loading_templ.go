@@ -545,7 +545,7 @@ func SkeletonGroup(variants []SkeletonVariant) templ.Component {
 			templ_7745c5c3_Var18 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "<div class=\"space-y-3 animate-pulse\" aria-busy=\"true\" role=\"status\" aria-label=\"Loading content\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "<div class=\"space-y-3 animate-pulse motion-reduce:animate-none\" aria-busy=\"true\" role=\"status\" aria-label=\"Loading content\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -188,7 +188,7 @@ templ skeletonBody(variant SkeletonVariant) {
 //
 //	@feedback.SkeletonGroup([]string{"title", "text", "text", "text"})
 templ SkeletonGroup(variants []SkeletonVariant) {
-	<div class="space-y-3 animate-pulse" aria-busy="true" role="status" aria-label="Loading content">
+	<div class="space-y-3 animate-pulse motion-reduce:animate-none" aria-busy="true" role="status" aria-label="Loading content">
 		for _, v := range variants {
 			@skeletonBody(v)
 		}

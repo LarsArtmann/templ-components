@@ -52,7 +52,7 @@ func DefaultBadgeProps() BadgeProps {
 templ Badge(props BadgeProps) {
 	if props.Href != "" {
 		<a
-			href={ props.Href }
+			href={ templ.SafeURL(props.Href) }
 			if props.ID != "" {
 				id={ props.ID }
 			}

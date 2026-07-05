@@ -189,7 +189,7 @@ func normalizeTrend(t TrendDirection) TrendDirection {
 templ StatCard(props StatCardProps) {
 	if props.Href != "" {
 		<a
-			href={ props.Href }
+			href={ templ.SafeURL(props.Href) }
 			if props.ID != "" {
 				id={ props.ID }
 			}

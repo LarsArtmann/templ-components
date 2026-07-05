@@ -69,7 +69,7 @@ templ ProgressBar(props ProgressBarProps) {
 		<div class={ progressTrackClass(props.Size) }>
 			if props.Indeterminate {
 				<div
-					class={ "rounded-full animate-indeterminate-progress", progressHeightClass(props.Size), props.Color }
+					class={ "rounded-full animate-indeterminate-progress motion-reduce:animate-none", progressHeightClass(props.Size), props.Color }
 					role="progressbar"
 					aria-busy="true"
 					if props.AriaLabel != "" {

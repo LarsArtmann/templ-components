@@ -47,6 +47,7 @@ func DefaultImageProps() ImageProps {
 //
 //	@display.Image(display.ImageProps{Src: "/photo.jpg", Alt: "Profile photo", Width: 128, Height: 128, FallbackSrc: "/placeholder.jpg"})
 templ Image(props ImageProps) {
+	if props.Src != "" {
 	<img
 		src={ props.Src }
 		alt={ props.Alt }
@@ -69,6 +70,7 @@ templ Image(props ImageProps) {
 		}
 		{ props.Attrs... }
 	/>
+	}
 	if props.FallbackSrc != "" {
 		@imageFallbackScriptComponent(props.Nonce)
 	}
