@@ -137,17 +137,18 @@ already existed.
 | `CSRFToken`            | `CSRFToken(token string)`                                 | Hidden CSRF input           |
 | `GlobalErrorHandling`  | `GlobalErrorHandling(cfg ErrorHandlingConfig)`            | HTMX error → toast pipeline |
 
-### `errorpage` — 3 components + 6 constructors + handler
+### `errorpage` — 4 components + 6 constructors + handler
 
-| Component / Function           | Signature                             | One-liner                                 |
-| ------------------------------ | ------------------------------------- | ----------------------------------------- |
-| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display                   |
-| `ErrorDetail`                  | `ErrorDetail(props ErrorDetailProps)` | Inline error card                         |
-| `ErrorAlert`                   | `ErrorAlert(props ErrorAlertProps)`   | Family-aware alert                        |
-| `ErrorHandler`                 | `ErrorHandler(err, cfg) http.Handler` | go-error-family aware HTTP handler        |
-| `WriteError`                   | `WriteError(w, r, err, nonce)`        | One-call error page from any handler      |
-| `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/code/why/fix from error    |
-| `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family |
+| Component / Function           | Signature                             | One-liner                                        |
+| ------------------------------ | ------------------------------------- | ------------------------------------------------ |
+| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display                          |
+| `NotFound404`                  | `NotFound404(props NotFound404Props)` | Dedicated 404 page — hero numeral, search, links |
+| `ErrorDetail`                  | `ErrorDetail(props ErrorDetailProps)` | Inline error card                                |
+| `ErrorAlert`                   | `ErrorAlert(props ErrorAlertProps)`   | Family-aware alert                               |
+| `ErrorHandler`                 | `ErrorHandler(err, cfg) http.Handler` | go-error-family aware HTTP handler               |
+| `WriteError`                   | `WriteError(w, r, err, nonce)`        | One-call error page from any handler             |
+| `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/code/why/fix from error           |
+| `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family        |
 
 ### `icons` — 101 icons + 2 functions
 
@@ -266,10 +267,11 @@ Before hand-rolling HTML, check in this order:
   maps with explicit fallbacks; the only permitted runtime panic is the single developer
   data-integrity check in `icons` (stray `|` in a path). Everything else degrades gracefully.
   This is a _library_: a panic in a consumer's render path is a bug we shipped.
-- **Server-rendered first, zero JS by default.** Prefer native HTML (`<details>`, forms, links)
-  over scripts. When interactivity is unavoidable (modal, drawer, dropdown, accordion, combobox,
-  tabs, theme toggle), ship minimal vanilla JS guarded by a global singleton flag so it is
-  idempotent across HTMX re-renders.
+- **HATEOAS-first ([htmx.org/essays/hateoas](https://htmx.org/essays/hateoas/)).** HTML is the source of truth.
+  Prefer native HTML (`<details>`, forms, links) over scripts. When JavaScript enhances the hypermedia
+  (modal, drawer, tooltip, relative time auto-refresh), it reads state FROM HTML attributes
+  (`data-tc-*`, `datetime`) — progressive enhancement, not SPA replacement. All JS is guarded by a
+  global singleton flag so it is idempotent across HTMX re-renders.
 - **Accessibility is not optional.** ARIA attributes, roles, keyboard nav, `motion-reduce:*`
   on every transition/animation, and screen-reader text are part of "done". A component that
   renders but is unusable from a keyboard is not finished.

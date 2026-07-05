@@ -15,7 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Added
 
 - `display.CopyButton`: CSP-safe clipboard copy button with singleton event-delegation script. Copies text via `navigator.clipboard.writeText`, temporarily shows a "Copied!" label, reverts after 2s. Optional clipboard icon, fully accessible (type=button, focus ring, motion-reduce).
-- `display.RelativeTime`: server-rendered relative timestamp ("2 hours ago", "3 days ago") in a `<time datetime>` element with absolute-time `title` for hover. Pure Go formatting — no JavaScript needed. Falls back to absolute date for >30 days. Optional `AutoRefresh bool` injects a singleton script using native `Intl.RelativeTimeFormat` to live-update every 30s + on `htmx:afterSettle`.
+- `display.RelativeTime`: relative timestamp ("2 hours ago", "3 days ago") in a `<time datetime>` element. Server renders the initial text (pure Go formatting); `AutoRefresh` (defaults to `true`) injects a singleton script using native `Intl.RelativeTimeFormat` that live-updates every 30s and on `htmx:afterSettle`. Progressive enhancement — HTML carries the `datetime` attribute, JS just keeps the display fresh. Set `AutoRefresh: false` for static contexts (PDF, email).
 - `display.CountBadge`: notification count overlay — renders children (e.g. a bell icon) with an absolutely-positioned count badge in the top-right corner. Overflow shows "N+" (default max 99). Zero count hides the badge entirely. Badge is `aria-hidden` (decorative — count is announced by the container's aria-label).
 - `display.DefinitionGrid`: responsive grid of term-detail pairs in SimpleCard tiles. Composes through `Grid` + `SimpleCard` internally. Ideal for dashboard metrics and settings pages where many key-value pairs need to be scanned side by side.
 - `display.Image`: `<img>` with lazy loading (`loading="lazy"` default), optional `width`/`height` for CLS prevention, and CSP-safe fallback source. The fallback swap uses a singleton error-capture listener (`data-tc-img-fallback` attribute) — no inline `onerror` handler.
@@ -32,6 +32,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - README component count: 76 → 82. Display section updated with new component examples.
 - Demo app: new "New Components (Session 7)" section showcasing all 6 new components + LoadMore.
 - Registered all 7 new props types in `internal/contract/component_props_test.go` (the cross-package BaseProps contract inventory).
+- `errorpage.NotFound404`: dedicated, visually striking 404 page with large gradient numeral hero, optional search form, quick-links card grid, and "Go home" / "Go back" actions. Welcoming navigation aid (not an alarming error). Accessible, CSP-safe, dark-mode aware. Composable via `NotFound404Props` + `NotFoundLink` types.
 
 ### Changed
 

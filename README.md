@@ -10,7 +10,7 @@ Reusable UI components for Go web apps — built on [templ](https://templ.guide)
 
 **No DaisyUI. No Node.js. No framework lock-in.**
 
-templ-components is a pure Tailwind CSS v4 component library for Go's templ engine, with first-class HTMX integration. Every component renders server-side, ships zero JavaScript by default, and uses only Tailwind utility classes — so you stay in full control of your CSS and build pipeline.
+templ-components is a pure Tailwind CSS v4 component library for Go's templ engine, with first-class HTMX integration. Every component renders server-side and follows [HATEOAS](https://htmx.org/essays/hateoas/) — HTML is the source of truth, JavaScript enhances it rather than replacing it.
 
 > **Status:** Work in progress. No stability is guaranteed — APIs may change without notice at any time.
 
@@ -18,19 +18,19 @@ templ-components is a pure Tailwind CSS v4 component library for Go's templ engi
 
 ## Why templ-components?
 
-| Feature              | templ-components            | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
-| -------------------- | --------------------------- | ----------------------------- | ---------------------------------------------- |
-| **CSS approach**     | Tailwind v4+ (CSS-first)    | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
-| **JavaScript**       | None (pure server-rendered) | Alpine.js                     | DaisyUI JS                                     |
-| **Requires Node.js** | No                          | No                            | Yes                                            |
-| **Go module**        | Yes                         | Yes                           | Yes                                            |
-| **Components**       | 82                          | 40+                           | —                                              |
-| **Dark mode**        | Built-in (Tailwind `dark:`) | CSS custom properties         | Via DaisyUI                                    |
-| **CSP compliant**    | Yes (nonce support)         | Yes                           | —                                              |
-| **Typed props**      | 27 string enums             | —                             | —                                              |
-| **HTMX integration** | Built-in package            | —                             | —                                              |
+| Feature              | templ-components                | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
+| -------------------- | ------------------------------- | ----------------------------- | ---------------------------------------------- |
+| **CSS approach**     | Tailwind v4+ (CSS-first)        | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
+| **JavaScript**       | HATEOAS-aligned (enhances HTML) | Alpine.js                     | DaisyUI JS                                     |
+| **Requires Node.js** | No                              | No                            | Yes                                            |
+| **Go module**        | Yes                             | Yes                           | Yes                                            |
+| **Components**       | 82                              | 40+                           | —                                              |
+| **Dark mode**        | Built-in (Tailwind `dark:`)     | CSS custom properties         | Via DaisyUI                                    |
+| **CSP compliant**    | Yes (nonce support)             | Yes                           | —                                              |
+| **Typed props**      | 27 string enums                 | —                             | —                                              |
+| **HTMX integration** | Built-in package                | —                             | —                                              |
 
-**templ-components is for developers who want server-rendered HTML with zero client-side JavaScript — no Alpine.js, no DaisyUI, no build pipeline beyond `templ generate`.**
+**templ-components is for developers who want [HATEOAS](https://htmx.org/essays/hateoas/) — hypermedia as the engine of application state. The server renders HTML; JavaScript (via htmx or progressive enhancement) reads from HTML attributes to enhance UX. No Alpine.js, no DaisyUI, no SPA framework, no build pipeline beyond `templ generate`.**
 
 ---
 

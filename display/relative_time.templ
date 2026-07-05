@@ -17,17 +17,21 @@ type RelativeTimeProps struct {
 	// Title, when non-empty, overrides the default title (absolute time shown
 	// on hover). Set to "" to use the formatted absolute timestamp.
 	Title string
-	// AutoRefresh, when true, injects a singleton script that uses the native
-	// Intl.RelativeTimeFormat API to live-update the text every 30 seconds.
-	// Also listens to htmx:afterSettle so newly-swapped <time> elements are
-	// formatted immediately. Defaults to false (static server-rendered text).
+	// AutoRefresh defaults to true — the component injects a singleton script
+	// that uses the native Intl.RelativeTimeFormat API to live-update the text
+	// every 30 seconds. Also listens to htmx:afterSettle so newly-swapped
+	// <time> elements are formatted immediately. This is progressive enhancement:
+	// the server-rendered text is correct without JS; the script just keeps it
+	// fresh. Set to false for static contexts (PDF, email, SEO-only).
 	AutoRefresh bool
 }
 
-// DefaultRelativeTimeProps returns sensible defaults. Time defaults to now.
+// DefaultRelativeTimeProps returns sensible defaults. Time defaults to now,
+// AutoRefresh defaults to true (live-updating via Intl.RelativeTimeFormat).
 func DefaultRelativeTimeProps() RelativeTimeProps {
 	return RelativeTimeProps{ //nolint:exhaustruct // intentionally minimal defaults
-		Time: time.Now(),
+		Time:        time.Now(),
+		AutoRefresh: true,
 	}
 }
 
@@ -36,7 +40,7 @@ func DefaultRelativeTimeProps() RelativeTimeProps {
 // attribute carries the RFC 3339 timestamp for accessibility and SEO.
 //
 //	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt})
-//	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt, AutoRefresh: true})
+//	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt, AutoRefresh: false}) // static
 templ RelativeTime(props RelativeTimeProps) {
 	{{
 		relative := formatRelativeTime(props.Time, time.Now())

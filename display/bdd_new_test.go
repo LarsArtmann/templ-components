@@ -87,19 +87,18 @@ func TestRelativeTimeBehavior(t *testing.T) {
 		utils.AssertContains(t, output, `title="Jan 15, 2025`)
 	})
 
-	t.Run("auto-refresh adds data attribute and script", func(t *testing.T) {
+	t.Run("auto-refresh is on by default (progressive enhancement)", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, RelativeTime(RelativeTimeProps{
-			Time:        time.Now().Add(-1 * time.Hour),
-			AutoRefresh: true,
-			BaseProps:   utils.BaseProps{Nonce: "n1"},
-		}))
+		props := DefaultRelativeTimeProps()
+		props.Time = time.Now().Add(-1 * time.Hour)
+		props.Nonce = "n1"
+		output := utils.Render(t, RelativeTime(props))
 		utils.AssertContains(t, output, `data-tc-relative`)
 		utils.AssertContains(t, output, `nonce="n1"`)
 		utils.AssertContains(t, output, "tcRelativeTimeAttached")
 	})
 
-	t.Run("auto-refresh omitted when disabled", func(t *testing.T) {
+	t.Run("auto-refresh can be disabled for static contexts", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, RelativeTime(RelativeTimeProps{
 			Time:        time.Now(),

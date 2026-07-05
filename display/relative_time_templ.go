@@ -25,17 +25,21 @@ type RelativeTimeProps struct {
 	// Title, when non-empty, overrides the default title (absolute time shown
 	// on hover). Set to "" to use the formatted absolute timestamp.
 	Title string
-	// AutoRefresh, when true, injects a singleton script that uses the native
-	// Intl.RelativeTimeFormat API to live-update the text every 30 seconds.
-	// Also listens to htmx:afterSettle so newly-swapped <time> elements are
-	// formatted immediately. Defaults to false (static server-rendered text).
+	// AutoRefresh defaults to true — the component injects a singleton script
+	// that uses the native Intl.RelativeTimeFormat API to live-update the text
+	// every 30 seconds. Also listens to htmx:afterSettle so newly-swapped
+	// <time> elements are formatted immediately. This is progressive enhancement:
+	// the server-rendered text is correct without JS; the script just keeps it
+	// fresh. Set to false for static contexts (PDF, email, SEO-only).
 	AutoRefresh bool
 }
 
-// DefaultRelativeTimeProps returns sensible defaults. Time defaults to now.
+// DefaultRelativeTimeProps returns sensible defaults. Time defaults to now,
+// AutoRefresh defaults to true (live-updating via Intl.RelativeTimeFormat).
 func DefaultRelativeTimeProps() RelativeTimeProps {
 	return RelativeTimeProps{ //nolint:exhaustruct // intentionally minimal defaults
-		Time: time.Now(),
+		Time:        time.Now(),
+		AutoRefresh: true,
 	}
 }
 
@@ -44,7 +48,7 @@ func DefaultRelativeTimeProps() RelativeTimeProps {
 // attribute carries the RFC 3339 timestamp for accessibility and SEO.
 //
 //	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt})
-//	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt, AutoRefresh: true})
+//	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt, AutoRefresh: false}) // static
 func RelativeTime(props RelativeTimeProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -83,7 +87,7 @@ func RelativeTime(props RelativeTimeProps) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Time.Format(time.RFC3339))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/relative_time.templ`, Line: 49, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/relative_time.templ`, Line: 53, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -96,7 +100,7 @@ func RelativeTime(props RelativeTimeProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/relative_time.templ`, Line: 50, Col: 15}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/relative_time.templ`, Line: 54, Col: 15}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -120,7 +124,7 @@ func RelativeTime(props RelativeTimeProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/relative_time.templ`, Line: 55, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/relative_time.templ`, Line: 59, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -156,7 +160,7 @@ func RelativeTime(props RelativeTimeProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/relative_time.templ`, Line: 59, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/relative_time.templ`, Line: 63, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -178,7 +182,7 @@ func RelativeTime(props RelativeTimeProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(relative)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/relative_time.templ`, Line: 63, Col: 12}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/relative_time.templ`, Line: 67, Col: 12}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
