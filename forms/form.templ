@@ -39,6 +39,7 @@ type FormProps struct {
 	Action    string
 	Method    FormMethod
 	CSRFToken string
+	Inline    bool // When true, renders as flex flex-wrap (horizontal) instead of space-y-6 (vertical)
 }
 
 // DefaultFormProps returns sensible defaults
@@ -60,7 +61,7 @@ templ Form(props FormProps) {
 		}
 		action={ props.Action }
 		method={ formMethod(props.Method) }
-		class={ utils.Class("space-y-6", props.Class) }
+		class={ utils.Class(utils.Ternary(props.Inline, "flex flex-wrap items-end gap-3", "space-y-6"), props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}

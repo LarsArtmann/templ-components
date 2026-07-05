@@ -144,3 +144,35 @@ func TestTableRender(t *testing.T) {
 		utils.AssertContains(t, output, "divide-y")
 	})
 }
+
+func TestTableTypedHeaders(t *testing.T) {
+	t.Parallel()
+	t.Run("sortable headers with aria-sort", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			TypedHeaders: []TableHeader{
+				{Label: "Name", Sortable: true, SortDirection: SortAsc, Href: "/sort?col=name&dir=asc"},
+				{Label: "Date", Sortable: true, SortDirection: SortNone, Href: "/sort?col=date&dir=asc"},
+				{Label: "Status"},
+			},
+			Rows: []TableRow{
+				SimpleTableRow("Alice", "2024-01-01", "Active"),
+			},
+		}))
+		utils.AssertContains(t, output, `aria-sort="ascending"`)
+		utils.AssertContains(t, output, `aria-sort="none"`)
+		utils.AssertContains(t, output, `/sort?col=name`)
+		utils.AssertContains(t, output, "Name")
+		utils.AssertContains(t, output, "↑")
+		utils.AssertNotContains(t, output, "Status</a>")
+	})
+	t.Run("non-sortable header has no aria-sort", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			TypedHeaders: []TableHeader{
+				{Label: "Name"},
+			},
+		}))
+		utils.AssertNotContains(t, output, "aria-sort")
+	})
+}

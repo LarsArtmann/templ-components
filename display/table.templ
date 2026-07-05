@@ -10,6 +10,48 @@ type TableCell struct {
 	Content templ.Component
 }
 
+// SortDirection defines the sort order for a table column.
+type SortDirection string
+
+const (
+	SortNone SortDirection = ""
+	SortAsc  SortDirection = "asc"
+	SortDesc SortDirection = "desc"
+)
+
+// TableHeader defines a typed column header with optional sort capabilities.
+// When TypedHeaders is set on TableProps, it takes precedence over Headers.
+type TableHeader struct {
+	Label         string
+	Sortable      bool
+	SortDirection SortDirection
+	Href          string // When set with Sortable=true, renders as <a> for server-side sorting
+}
+
+// ariaSortValue maps SortDirection to the WAI-ARIA aria-sort attribute value.
+func ariaSortValue(d SortDirection) string {
+	switch d {
+	case SortAsc:
+		return "ascending"
+	case SortDesc:
+		return "descending"
+	default:
+		return "none"
+	}
+}
+
+// sortIndicator returns the visual indicator character for a sort direction.
+func sortIndicator(d SortDirection) string {
+	switch d {
+	case SortAsc:
+		return " \u2191" // ↑
+	case SortDesc:
+		return " \u2193" // ↓
+	default:
+		return ""
+	}
+}
+
 func tableBorderedClass(bordered bool) string {
 	if bordered {
 		return "border border-gray-200 dark:border-gray-700"
@@ -46,15 +88,25 @@ func tableRowCells(row TableRow, headerCount int) []TableCell {
 	return padded
 }
 
+// tableHeaderCount returns the number of headers to align cells against.
+// TypedHeaders takes precedence over Headers when set.
+func tableHeaderCount(props TableProps) int {
+	if len(props.TypedHeaders) > 0 {
+		return len(props.TypedHeaders)
+	}
+	return len(props.Headers)
+}
+
 // TableProps configures a data table
 type TableProps struct {
 	utils.BaseProps
-	Caption  string
-	Headers  []string
-	Rows     []TableRow
-	Striped  bool
-	Hover    bool
-	Bordered bool
+	Caption      string
+	Headers      []string
+	TypedHeaders []TableHeader // When set, takes precedence over Headers for sortable column rendering
+	Rows         []TableRow
+	Striped      bool
+	Hover        bool
+	Bordered     bool
 	// Body, when set, overrides Rows for the <tbody> content. The component
 	// should render <tr> elements directly — ideal for templ loops where each
 	// row needs custom cell rendering:
@@ -105,16 +157,36 @@ templ Table(props TableProps) {
 			if props.Caption != "" {
 				<caption class="sr-only">{ props.Caption }</caption>
 			}
-			if len(props.Headers) > 0 {
+			if len(props.Headers) > 0 || len(props.TypedHeaders) > 0 {
 				<thead class="bg-gray-50 dark:bg-gray-800">
 					<tr>
-						for _, h := range props.Headers {
-							<th
-								scope="col"
-								class="px-4 py-3 text-start font-semibold text-gray-900 dark:text-white"
-							>
-								{ h }
-							</th>
+						if len(props.TypedHeaders) > 0 {
+							for _, th := range props.TypedHeaders {
+								<th
+									scope="col"
+									if th.Sortable {
+										aria-sort={ ariaSortValue(th.SortDirection) }
+									}
+									class="px-4 py-3 text-start font-semibold text-gray-900 dark:text-white"
+								>
+									if th.Sortable && th.Href != "" {
+										<a href={ templ.SafeURL(th.Href) } class="inline-flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400">
+											{ th.Label }{ sortIndicator(th.SortDirection) }
+										</a>
+									} else {
+										{ th.Label }{ sortIndicator(th.SortDirection) }
+									}
+								</th>
+							}
+						} else {
+							for _, h := range props.Headers {
+								<th
+									scope="col"
+									class="px-4 py-3 text-start font-semibold text-gray-900 dark:text-white"
+								>
+									{ h }
+								</th>
+							}
 						}
 					</tr>
 				</thead>
@@ -130,7 +202,7 @@ templ Table(props TableProps) {
 								templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover),
 							}
 						>
-							for _, cell := range tableRowCells(row, len(props.Headers)) {
+							for _, cell := range tableRowCells(row, tableHeaderCount(props)) {
 								<td class="px-4 py-3 text-gray-700 dark:text-gray-300">
 									if cell.Content != nil {
 										@cell.Content
