@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/feedback"
@@ -220,6 +222,39 @@ templ demoContent() {
 				},
 				Footer: templ.Raw(`<span>v` + utils.Version + `</span>`),
 			})
+		</div>
+		@demoSection("New Components (Session 7)")
+		<div class="space-y-6">
+			@display.CopyButton(display.CopyButtonProps{Text: "go get github.com/larsartmann/templ-components", Label: "Copy install command"})
+			<div class="flex items-center gap-4">
+				<span class="text-sm text-gray-500 dark:text-gray-400">Relative time:</span>
+				@display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(-2 * time.Hour)})
+			</div>
+			<div class="flex items-center gap-4">
+				<span class="text-sm text-gray-500 dark:text-gray-400">Count badge:</span>
+				@display.CountBadge(display.CountBadgeProps{Count: 12}) {
+					@icons.Icon(icons.Bell, "h-6 w-6 text-gray-600 dark:text-gray-400")
+				}
+				@display.CountBadge(display.CountBadgeProps{Count: 150}) {
+					@icons.Icon(icons.Mail, "h-6 w-6 text-gray-600 dark:text-gray-400")
+				}
+				@display.CountBadge(display.CountBadgeProps{Count: 0}) {
+					@icons.Icon(icons.Bell, "h-6 w-6 text-gray-600 dark:text-gray-400")
+				}
+			</div>
+			@display.DefinitionGrid(display.DefinitionGridProps{
+				Cols: display.GridCols3,
+				Items: []display.DefinitionItem{
+					{Term: "CPU", Detail: "42%"},
+					{Term: "Memory", Detail: "8.2 GB"},
+					{Term: "Disk", Detail: "156 GB"},
+					{Term: "Uptime", Detail: "99.9%"},
+					{Term: "Requests", Detail: "1.2K/s"},
+					{Term: "Latency", Detail: "12ms"},
+				},
+			})
+			@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo", Alt: "Demo image", Width: 96, Height: 96})
+			@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "next-page"})
 		</div>
 	</div>
 }

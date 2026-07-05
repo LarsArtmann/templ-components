@@ -1,0 +1,83 @@
+package navigation
+
+import "github.com/larsartmann/templ-components/utils"
+
+// LoadMoreProps configures a "Load more" button for cursor-based pagination.
+// The button issues an HTMX request to Endpoint with the current Cursor value.
+// The server responds with the next batch of items plus a new LoadMore button
+// (with the updated cursor) that replaces this one via hx-swap="outerHTML".
+type LoadMoreProps struct {
+	utils.BaseProps
+	// Endpoint is the URL the button requests via hx-get. The cursor is
+	// appended as a query parameter (?cursor=...).
+	Endpoint string
+	// Cursor is the opaque cursor value for the next page of results.
+	Cursor string
+	// Label is the button text. Defaults to "Load more".
+	Label string
+}
+
+// DefaultLoadMoreProps returns sensible defaults.
+func DefaultLoadMoreProps() LoadMoreProps {
+	return LoadMoreProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Label: "Load more",
+	}
+}
+
+// LoadMore renders a centered "Load more" button for cursor-based pagination.
+// The button uses hx-get to fetch the next batch and hx-swap="outerHTML" so the
+// server's response (next items + updated LoadMore) replaces this button in
+// place. The cursor is passed via the hx-vals attribute as a query parameter.
+//
+//	@navigation.LoadMore(navigation.LoadMoreProps{
+//	   Endpoint: "/api/items",
+//	   Cursor:   nextCursor,
+//	})
+templ LoadMore(props LoadMoreProps) {
+	{{
+		label := props.Label
+		if label == "" {
+			label = "Load more"
+		}
+		href := props.Endpoint
+		if props.Cursor != "" {
+			sep := "?"
+			if containsChar(href, '?') {
+				sep = "&"
+			}
+			href = href + sep + "cursor=" + props.Cursor
+		}
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		} else {
+			id="tc-load-more"
+		}
+		class={ utils.Class("flex justify-center py-6", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<button
+			type="button"
+			hx-get={ href }
+			hx-swap="outerHTML"
+			hx-target="this"
+			class="inline-flex items-center gap-2 rounded-md bg-white dark:bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+		>
+			{ label }
+		</button>
+	</div>
+}
+
+// containsChar reports whether s contains the byte c.
+func containsChar(s string, c byte) bool {
+	for i := 0; i < len(s); i++ {
+		if s[i] == c {
+			return true
+		}
+	}
+	return false
+}

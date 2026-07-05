@@ -8,13 +8,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- `display.Grid`: responsive grid container with typed `GridCols` enum (1–6 columns, stacks on mobile, expands at sm/lg/xl breakpoints). Replaces the hand-written `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4` pattern that appeared in every consumer's templates.
-- `display.StatCardProps.Href`: when set, wraps the whole card in an `<a>` with hover shadow, focus ring, and cursor pointer — for dashboard stat cards that drill down into a filtered view. Mirrors the existing `Badge.Href` pattern. BaseProps (ID/Class/AriaLabel/Attrs) propagate to the anchor.
-- `navigation.SimpleNavProps.RightItems`: forwards a `templ.Component` (e.g. `layout.ThemeToggle`, sign-in button, user menu) to the right side of the nav bar. `NavProps` already had `RightItems`; `SimpleNav` now exposes the same slot so consumers no longer render `ThemeToggle` in a separate flex container outside `SimpleNav`.
-- `layout.Script(nonce, src, attrs)`: CSP-safe `<script src="...">` helper that auto-injects the nonce. Prevents the common bug of forgetting `nonce={...}` on a script tag under a strict CSP (silent script blocking in the browser). Optional `attrs` covers `async`, `defer`, `type="module"`, `crossorigin`.
-- `feedback.SkeletonCardGrid(count)`: renders N skeleton cards in a responsive 3-column grid under a single `role="status"` announcement. Pairs with `display.Grid` for the common dashboard "loading cards" pattern. Non-positive counts fall back to a single placeholder.
-- Recipe: [`docs/migration/play-cdn-to-tailwind-v4.md`](docs/migration/play-cdn-to-tailwind-v4.md) — step-by-step migration from Tailwind Play CDN to v4 CSS-first build (7 steps, covers CLI install, `@source` scanning, CSP tightening, flake.nix integration).
-- Recipe: [`docs/recipes/server-rendered-htmx-error-feedback.md`](docs/recipes/server-rendered-htmx-error-feedback.md) — the three HTMX error render modes (full page, partial swap, toast) and how `errorpage.ErrorHandler`, `htmx.GlobalErrorHandling`, and `feedback.ToastContainer` compose for family-aware accessible error UX.
+- `display.CopyButton`: CSP-safe clipboard copy button with singleton event-delegation script. Copies text via `navigator.clipboard.writeText`, temporarily shows a "Copied!" label, reverts after 2s. Optional clipboard icon, fully accessible (type=button, focus ring, motion-reduce).
+- `display.RelativeTime`: server-rendered relative timestamp ("2 hours ago", "3 days ago") in a `<time datetime>` element with absolute-time `title` for hover. Pure Go formatting — no JavaScript needed. Falls back to absolute date for >30 days.
+- `display.CountBadge`: notification count overlay — renders children (e.g. a bell icon) with an absolutely-positioned count badge in the top-right corner. Overflow shows "N+" (default max 99). Zero count hides the badge entirely. Badge is `aria-hidden` (decorative — count is announced by the container's aria-label).
+- `display.DefinitionGrid`: responsive grid of term-detail pairs in SimpleCard tiles. Composes through `Grid` + `SimpleCard` internally. Ideal for dashboard metrics and settings pages where many key-value pairs need to be scanned side by side.
+- `display.Image`: `<img>` with lazy loading (`loading="lazy"` default), optional `width`/`height` for CLS prevention, and CSP-safe fallback source. The fallback swap uses a singleton error-capture listener (`data-tc-img-fallback` attribute) — no inline `onerror` handler.
+- `navigation.LoadMore`: centered "Load more" button for cursor-based pagination. Uses `hx-get` + `hx-swap="outerHTML"` so the server response (next items + updated button) replaces this one in place. Cursor is appended as a query parameter.
+- `display.CardProps.Body`: explicit `templ.Component` body slot for struct-based composition. When set, overrides children. Backward compatible — existing children-passing code is unaffected.
+- `display.StatCardProps.HxGet`/`HxTarget`/`HxSwap`: typed HTMX fields on StatCard for HTMX-driven partial updates. When set, the corresponding `hx-*` attributes are rendered on both the `<a>` and `<div>` variants.
+- Recipe: [`docs/recipes/cursor-pagination.md`](docs/recipes/cursor-pagination.md) — cursor-based pagination pattern with HTMX infinite scroll using `navigation.LoadMore`.
+- ADR: [`docs/adr/0007-self-host-htmx-default.md`](docs/adr/0007-self-host-htmx-default.md) — decision to self-host htmx as default (CDN opt-in) in v1.0.
+
+### Changed
+
+- `display` package: 20 → 25 components (CopyButton, RelativeTime, CountBadge, DefinitionGrid, Image added).
+- `navigation` package: 10 → 11 components (LoadMore added).
+- README component count: 76 → 82. Display section updated with new component examples.
+- Demo app: new "New Components (Session 7)" section showcasing all 6 new components + LoadMore.
+- Registered all 7 new props types in `internal/contract/component_props_test.go` (the cross-package BaseProps contract inventory).
 
 ### Changed
 

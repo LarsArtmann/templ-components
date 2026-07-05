@@ -8,19 +8,19 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 
 ## Overview
 
-| Package      | Components    | Description                                                                                                                                               |
-| ------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                     |
-| `display`    | 19            | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states, page headers, definition lists |
-| `errorpage`  | 3             | Error presentation: full-page errors, error detail cards, family-aware alerts                                                                             |
-| `feedback`   | 12            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                         |
-| `forms`      | 16            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation                                 |
-| `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                             |
-| `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                 |
-| `layout`     | 4             | Page layout: base HTML, theme toggle, dark mode                                                                                                           |
-| `navigation` | 10            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav                                                                                  |
+| Package      | Components    | Description                                                                                                                                                                                               |
+| ------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                     |
+| `display`    | 24            | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states, page headers, definition lists, copy button, relative time, count badge, image |
+| `errorpage`  | 3             | Error presentation: full-page errors, error detail cards, family-aware alerts                                                                                                                             |
+| `feedback`   | 12            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                         |
+| `forms`      | 16            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation                                                                                 |
+| `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                                                                             |
+| `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                                                                 |
+| `layout`     | 4             | Page layout: base HTML, theme toggle, dark mode                                                                                                                                                           |
+| `navigation` | 11            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more                                                                                                                       |
 
-**Totals:** 73 templ components, 101 icon names, 26 typed enums, 51 generated `*_templ.go` files, ~4,000 lines of Go/templ source
+**Totals:** 78 templ components, 101 icon names, 26 typed enums, 56 generated `*_templ.go` files, ~4,500 lines of Go/templ source
 
 ---
 
@@ -88,6 +88,11 @@ type BaseProps struct {
 | `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots                                                               |
 | `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup                                                             |
 | `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                                                                          |
+| `CopyButton`       | FULLY_FUNCTIONAL | Clipboard copy button           | CSP-safe singleton JS, "Copied!" feedback, clipboard icon                                                          |
+| `RelativeTime`     | FULLY_FUNCTIONAL | Relative timestamp              | `<time datetime>` with "2 hours ago", absolute title on hover                                                      |
+| `CountBadge`       | FULLY_FUNCTIONAL | Notification count overlay      | Absolute-positioned badge, overflow "N+", aria-hidden decorative                                                   |
+| `DefinitionGrid`   | FULLY_FUNCTIONAL | Responsive key/value grid       | Term-detail pairs in SimpleCard tiles, composes through Grid                                                       |
+| `Image`            | FULLY_FUNCTIONAL | Lazy-loaded image               | `loading=lazy` default, width/height for CLS, CSP-safe fallback via event capture                                  |
 
 ### Enums
 
@@ -333,18 +338,19 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component          | Status           | Description               | Key Features                                                      |
-| ------------------ | ---------------- | ------------------------- | ----------------------------------------------------------------- |
-| `Nav`              | FULLY_FUNCTIONAL | Responsive navigation bar | Brand, links, right items, sticky option, mobile menu             |
-| `SimpleNav`        | FULLY_FUNCTIONAL | Simplified nav            | Text brand, sticky by default                                     |
-| `NavLink`          | FULLY_FUNCTIONAL | Desktop nav link          | Active state styling via currentPath                              |
-| `MobileNavLink`    | FULLY_FUNCTIONAL | Mobile nav link           | Border-left active indicator                                      |
-| `Breadcrumbs`      | FULLY_FUNCTIONAL | Breadcrumb navigation     | Chevron separators, active state                                  |
-| `Pagination`       | FULLY_FUNCTIONAL | Page navigation           | Mobile/desktop layouts, prev/next arrows, page range, query param |
-| `MobileMenu`       | FULLY_FUNCTIONAL | Collapsible mobile menu   | JS toggle, nonce-based CSP                                        |
-| `MobileMenuToggle` | FULLY_FUNCTIONAL | Hamburger button          | Conditional visibility                                            |
-| `Footer`           | FULLY_FUNCTIONAL | Simple footer             | Copyright with dynamic year                                       |
-| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav      | Brand/footer slots, icons, active-route detection                 |
+| Component          | Status           | Description               | Key Features                                                       |
+| ------------------ | ---------------- | ------------------------- | ------------------------------------------------------------------ |
+| `Nav`              | FULLY_FUNCTIONAL | Responsive navigation bar | Brand, links, right items, sticky option, mobile menu              |
+| `SimpleNav`        | FULLY_FUNCTIONAL | Simplified nav            | Text brand, sticky by default                                      |
+| `NavLink`          | FULLY_FUNCTIONAL | Desktop nav link          | Active state styling via currentPath                               |
+| `MobileNavLink`    | FULLY_FUNCTIONAL | Mobile nav link           | Border-left active indicator                                       |
+| `Breadcrumbs`      | FULLY_FUNCTIONAL | Breadcrumb navigation     | Chevron separators, active state                                   |
+| `Pagination`       | FULLY_FUNCTIONAL | Page navigation           | Mobile/desktop layouts, prev/next arrows, page range, query param  |
+| `MobileMenu`       | FULLY_FUNCTIONAL | Collapsible mobile menu   | JS toggle, nonce-based CSP                                         |
+| `MobileMenuToggle` | FULLY_FUNCTIONAL | Hamburger button          | Conditional visibility                                             |
+| `Footer`           | FULLY_FUNCTIONAL | Simple footer             | Copyright with dynamic year                                        |
+| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav      | Brand/footer slots, icons, active-route detection                  |
+| `LoadMore`         | FULLY_FUNCTIONAL | Cursor pagination button  | hx-get + hx-swap outerHTML, cursor as query param, centered layout |
 
 ### Known Issues
 

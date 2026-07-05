@@ -24,7 +24,7 @@ templ-components is a pure Tailwind CSS v4 component library for Go's templ engi
 | **JavaScript**       | None (pure server-rendered) | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js** | No                          | No                            | Yes                                            |
 | **Go module**        | Yes                         | Yes                           | Yes                                            |
-| **Components**       | 76                          | 40+                           | —                                              |
+| **Components**       | 82                          | 40+                           | —                                              |
 | **Dark mode**        | Built-in (Tailwind `dark:`) | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**    | Yes (nonce support)         | Yes                           | —                                              |
 | **Typed props**      | 27 string enums             | —                             | —                                              |
@@ -109,9 +109,9 @@ props.CSSPath = ""                   // suppresses <link rel="stylesheet" href="
 
 If you load htmx from a different CDN or self-host, see `PageProps.HTMXCDN`.
 
-### `display` — Data Display (20 components)
+### `display` — Data Display (25 components)
 
-Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, and more.
+Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, copy button, relative time, count badge, image, and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {
@@ -170,6 +170,22 @@ Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, s
     {Term: "Status", Detail: "Active"},
 }})
 @display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
+
+{{ /* New: CopyButton, RelativeTime, CountBadge, DefinitionGrid, Image */ }}
+@display.CopyButton(display.CopyButtonProps{Text: "npm install foo", Label: "Copy"})
+
+@display.RelativeTime(display.RelativeTimeProps{Time: createdAt})
+
+@display.CountBadge(display.CountBadgeProps{Count: 5}) {
+    @icons.Icon(icons.Bell, "h-6 w-6")
+}
+
+@display.DefinitionGrid(display.DefinitionGridProps{
+    Cols: display.GridCols3,
+    Items: []display.DefinitionItem{{Term: "CPU", Detail: "42%"}, {Term: "RAM", Detail: "8GB"}},
+})
+
+@display.Image(display.ImageProps{Src: "/photo.jpg", Alt: "Photo", Width: 128, Height: 128, FallbackSrc: "/placeholder.jpg"})
 ```
 
 ### `feedback` — User Feedback (13 components)
@@ -219,9 +235,9 @@ Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date picke
 }})
 ```
 
-### `navigation` — Navigation (10 components)
+### `navigation` — Navigation (11 components)
 
-Nav bars, breadcrumbs, pagination, mobile menus, and sidebar navigation.
+Nav bars, breadcrumbs, pagination, mobile menus, sidebar navigation, and cursor-based load-more.
 
 ```templ
 @navigation.SimpleNav(navigation.SimpleNavProps{
@@ -240,6 +256,8 @@ Nav bars, breadcrumbs, pagination, mobile menus, and sidebar navigation.
 })
 
 @navigation.Pagination(navigation.PaginationProps{CurrentPage: 2, TotalPages: 10, BaseURL: "/users"})
+
+@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: nextCursor})
 @navigation.Footer("MyApp")
 
 @navigation.SidebarNav(navigation.SidebarNavProps{

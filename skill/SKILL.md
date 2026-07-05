@@ -26,11 +26,11 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-76 components across 9 packages + 101 icons. If you're about to hand-roll
+76 → 82 components across 9 packages + 101 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
-### `display` — 20 components
+### `display` — 25 components
 
 | Component          | Signature                                   | One-liner                                                                          |
 | ------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------- |
@@ -54,6 +54,11 @@ already existed.
 | `PageHeader`       | `PageHeader(props PageHeaderProps)`         | Page title block — title, subtitle, breadcrumb, action slots                       |
 | `DefinitionList`   | `DefinitionList(props DefinitionListProps)` | Two-column `<dl>` key/value list                                                   |
 | `ListNote`         | `ListNote(props ListNoteProps)`             | "Showing N of M" truncation notice                                                 |
+| `CopyButton`       | `CopyButton(props CopyButtonProps)`         | Clipboard copy button — CSP-safe, "Copied!" feedback                               |
+| `RelativeTime`     | `RelativeTime(props RelativeTimeProps)`     | `<time datetime>` with relative text ("2 hours ago")                               |
+| `CountBadge`       | `CountBadge(props CountBadgeProps)`         | Icon + notification count overlay — overflow "N+"                                  |
+| `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards                                               |
+| `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback                                         |
 
 ### `forms` — 16 components
 
@@ -104,7 +109,7 @@ already existed.
 | `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                |
 | `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                |
 
-### `navigation` — 10 components
+### `navigation` — 11 components
 
 | Component          | Signature                                               | One-liner                                                  |
 | ------------------ | ------------------------------------------------------- | ---------------------------------------------------------- |
@@ -117,6 +122,7 @@ already existed.
 | `Pagination`       | `Pagination(props PaginationProps)`                     | Page-number pagination — ellipsis, prev/next, SEO rel      |
 | `Breadcrumbs`      | `Breadcrumbs(props BreadcrumbsProps)`                   | Breadcrumb trail — separator, JSON-LD                      |
 | `SidebarNav`       | `SidebarNav(props SidebarNavProps)`                     | Vertical sidebar — brand, icon+label items, footer slot    |
+| `LoadMore`         | `LoadMore(props LoadMoreProps)`                         | Cursor-based "Load more" button — hx-get, hx-swap          |
 | `Footer`           | `Footer(brandText string)`                              | Simple footer with copyright                               |
 
 ### `htmx` — 7 components

@@ -109,6 +109,13 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - Version: `utils.Version` is the single source of truth for the library release; a drift-guard test (`utils.TestVersionMatchesChangelog`) asserts it matches the latest CHANGELOG heading. Bump in lockstep with the Git tag.
 - Modal/Dropdown/Accordion/Combobox: IDs auto-generated via `utils.EnsureID()` when consumer omits props.ID — no panics.
 - Combobox JS: global singleton `tcComboboxAttached` handler for input filtering, click-to-select, focus/blur dropdown management, Escape key dismissal. CSP-safe with `nonce={ props.Nonce }`.
+- CopyButton JS: global singleton `tcCopyAttached` handler — click delegation on `[data-tc-copy]`, clipboard write via `navigator.clipboard.writeText`, temporary label swap via `[data-tc-copy-label]` for 2s.
+- Image fallback JS: global singleton `tcImageFallbackAttached` handler — error event capture (true) on `[data-tc-img-fallback]`, swaps src to fallback and removes attribute. Uses capture phase because error events don't bubble.
+- CountBadge: zero count hides badge (aria-hidden decorative), overflow shows "N+" (default max 99). `formatInt` helper is shared with CountBadge.
+- RelativeTime: pure Go formatting (`formatRelativeTime`), no JS. `<time datetime>` for a11y/SEO, `title` for absolute time on hover.
+- LoadMore: cursor appended as `?cursor=` query param (detects existing `?` for `&`). `hx-swap="outerHTML"` + `hx-target="this"` for self-replacement.
+- StatCard HTMX: `HxGet`/`HxTarget`/`HxSwap` typed fields on both `<a>` and `<div>` variants. When empty, attributes are omitted.
+- Card.Body: `Body templ.Component` slot — when set, overrides children. Backward compatible.
 
 - Toast JS: dismiss icon from `icons.IconPathJS()` via `tcToastIcons.dismiss`
 - Table: row cells auto-padded/truncated to match header count

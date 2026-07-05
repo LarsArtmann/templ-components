@@ -1,0 +1,68 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// CopyButtonProps configures a button that copies text to the clipboard.
+// When the user clicks the button, the text is copied via the Clipboard API,
+// and the button label temporarily changes to CopiedLabel before reverting.
+type CopyButtonProps struct {
+	utils.BaseProps
+	// Text is the string to copy to the clipboard.
+	Text string
+	// Label is the button text in the idle state. Defaults to "Copy".
+	Label string
+	// CopiedLabel is the button text shown briefly after a successful copy.
+	// Defaults to "Copied!".
+	CopiedLabel string
+	// Icon optionally renders a leading clipboard icon.
+	Icon bool
+}
+
+// DefaultCopyButtonProps returns sensible defaults.
+func DefaultCopyButtonProps() CopyButtonProps {
+	return CopyButtonProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Label:       "Copy",
+		CopiedLabel: "Copied!",
+		Icon:        true,
+	}
+}
+
+// CopyButton renders a button that copies the given text to the clipboard.
+// Uses the Clipboard API (navigator.clipboard.writeText) via a singleton
+// event-delegation script. CSP-safe: no inline handlers, nonce-guarded script.
+//
+//	@display.CopyButton(display.CopyButtonProps{Text: "npm install my-package", Label: "Copy install command"})
+templ CopyButton(props CopyButtonProps) {
+	{{
+		label := props.Label
+		if label == "" {
+			label = "Copy"
+		}
+		copied := props.CopiedLabel
+		if copied == "" {
+			copied = "Copied!"
+		}
+	}}
+	<button
+		type="button"
+		data-tc-copy={ props.Text }
+		data-tc-copy-label={ copied }
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("inline-flex items-center gap-1.5 rounded-md bg-gray-50 dark:bg-gray-700 px-2.5 py-1 text-xs font-medium text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if props.Icon {
+			@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
+		}
+		<span data-tc-copy-text>{ label }</span>
+	</button>
+	@copyButtonScriptComponent(props.Nonce)
+}

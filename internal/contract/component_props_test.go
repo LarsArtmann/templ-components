@@ -45,6 +45,11 @@ func componentTypes() []any {
 		display.ModalProps{},
 		display.DrawerProps{},
 		display.GridProps{},
+		display.CopyButtonProps{},
+		display.RelativeTimeProps{},
+		display.CountBadgeProps{},
+		display.DefinitionGridProps{},
+		display.ImageProps{},
 
 		// forms (13)
 		forms.InputProps{},
@@ -76,6 +81,7 @@ func componentTypes() []any {
 		navigation.BreadcrumbsProps{},
 		navigation.PaginationProps{},
 		navigation.SidebarNavProps{},
+		navigation.LoadMoreProps{},
 
 		// htmx (2)
 		htmx.ConfirmDeleteProps{},

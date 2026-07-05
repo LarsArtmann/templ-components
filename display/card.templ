@@ -25,7 +25,11 @@ type CardProps struct {
 	Subtitle     string
 	Footer       templ.Component
 	HeaderAction templ.Component
-	Padding      CardPadding
+	// Body, when set, overrides children for the card's main content area.
+	// Use this for struct-based composition; pass children for templ-block
+	// composition. If both are set, Body takes precedence.
+	Body    templ.Component
+	Padding CardPadding
 }
 
 // DefaultCardProps returns sensible defaults
@@ -69,7 +73,11 @@ templ Card(props CardProps) {
 			</div>
 		}
 		<div class={ cardPaddingClass(props.Padding) }>
-			{ children... }
+			if props.Body != nil {
+				@props.Body
+			} else {
+				{ children... }
+			}
 		</div>
 		if props.Footer != nil {
 			<div class="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
@@ -141,6 +149,13 @@ type StatCardProps struct {
 	// as a clickable navigation/filter link. Use this for dashboard stat cards
 	// that drill down into a filtered view.
 	Href string
+	// HxGet, when set, adds hx-get to the card for HTMX-driven updates.
+	// Mutually independent of Href — Href navigates, HxGet fetches partial HTML.
+	HxGet string
+	// HxTarget specifies the hx-target attribute (CSS selector for the swap target).
+	HxTarget string
+	// HxSwap specifies the hx-swap attribute (e.g. "innerHTML", "outerHTML").
+	HxSwap string
 }
 
 // DefaultStatCardProps returns sensible defaults
@@ -182,6 +197,15 @@ templ StatCard(props StatCardProps) {
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
+			if props.HxGet != "" {
+				hx-get={ props.HxGet }
+			}
+			if props.HxTarget != "" {
+				hx-target={ props.HxTarget }
+			}
+			if props.HxSwap != "" {
+				hx-swap={ props.HxSwap }
+			}
 			{ props.Attrs... }
 		>
 			@statCardInner(props)
@@ -194,6 +218,15 @@ templ StatCard(props StatCardProps) {
 			class={ utils.Class(cardShellClass+" p-5", props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
+			}
+			if props.HxGet != "" {
+				hx-get={ props.HxGet }
+			}
+			if props.HxTarget != "" {
+				hx-target={ props.HxTarget }
+			}
+			if props.HxSwap != "" {
+				hx-swap={ props.HxSwap }
 			}
 			{ props.Attrs... }
 		>

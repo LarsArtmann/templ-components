@@ -146,21 +146,21 @@ Sourced from DiscordSync, SwettySwipper, Overview, and browser-history feedback 
 
 ### High Priority — Discoverability
 
-- [ ] Make `forms` package the flagship — prominent README placement, forms demo page, quickstart guide. SwettySwipper hand-rolled 44+ raw form elements because forms were undiscoverable.
-- [ ] Generate a complete component catalog page (or demo site) — 76 components across 9 packages; consumers can't find what exists without reading source. 4/6 DiscordSync "missing" components already existed.
-- [ ] Document cursor-based pagination pattern (`?cursor=...` + HTMX infinite scroll) — DiscordSync hand-rolls this; `navigation.Pagination` is page-number-based only.
+- [x] Make `forms` package the flagship — prominent README placement, forms demo page, quickstart guide. SwettySwipper hand-rolled 44+ raw form elements because forms were undiscoverable. **DONE**: Forms have prominent README placement, demo showcase, and SKILL.md catalogue.
+- [x] Generate a complete component catalog page (or demo site) — 76 → 82 components across 9 packages; consumers can't find what exists without reading source. 4/6 DiscordSync "missing" components already existed. **DONE**: Demo app showcases all components by section, SKILL.md has complete catalogue.
+- [x] Document cursor-based pagination pattern (`?cursor=...` + HTMX infinite scroll) — DiscordSync hand-rolls this; `navigation.Pagination` is page-number-based only. **DONE**: `docs/recipes/cursor-pagination.md` + `navigation.LoadMore` component.
 
 ### Medium Priority — New Components
 
-- [ ] `display.CopyButton` — clipboard integration + "Copied!" feedback (DiscordSync)
-- [ ] `display.RelativeTime(timestamp)` — "2 hours ago" formatting (DiscordSync)
-- [ ] `navigation.LoadMore` / cursor pagination component (DiscordSync)
-- [ ] Count badge overlay on icon (DiscordSync)
-- [ ] `display.DefinitionGrid` — responsive 2-column wrapper for DefinitionList (DiscordSync)
-- [ ] `display.Image` — lazy loading, aspect ratio, fallback src (SwettySwipper)
+- [x] `display.CopyButton` — clipboard integration + "Copied!" feedback (DiscordSync) **DONE**
+- [x] `display.RelativeTime(timestamp)` — "2 hours ago" formatting (DiscordSync) **DONE**
+- [x] `navigation.LoadMore` / cursor pagination component (DiscordSync) **DONE**
+- [x] Count badge overlay on icon (DiscordSync) **DONE**: `display.CountBadge`
+- [x] `display.DefinitionGrid` — responsive 2-column wrapper for DefinitionList (DiscordSync) **DONE**
+- [x] `display.Image` — lazy loading, aspect ratio, fallback src (SwettySwipper) **DONE**
 
 ### Low Priority — Design Decisions
 
-- [ ] Consider self-hosting htmx as default (CDN opt-in) — SwettySwipper + Overview both hit CSP friction. v1.0 breaking change.
-- [ ] Consider typed HTMX fields on StatCard (HxGet/HxTarget) vs Attrs workaround — Overview's use case used hx-get/hx-target.
-- [ ] Consider `Card.Body` explicit slot field (SEC feedback — Card already has Footer/HeaderAction/children but no explicit Body).
+- [x] Consider self-hosting htmx as default (CDN opt-in) — SwettySwipper + Overview both hit CSP friction. v1.0 breaking change. **DONE**: ADR 0007 written, deferred to v1.0.
+- [x] Consider typed HTMX fields on StatCard (HxGet/HxTarget) vs Attrs workaround — Overview's use case used hx-get/hx-target. **DONE**: `StatCardProps.HxGet/HxTarget/HxSwap` added.
+- [x] Consider `Card.Body` explicit slot field (SEC feedback — Card already has Footer/HeaderAction/children but no explicit Body). **DONE**: `CardProps.Body templ.Component` added.

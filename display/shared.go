@@ -207,3 +207,68 @@ func tooltipScriptComponent(nonce string) templ.Component {
 		return nil
 	})
 }
+
+// copyButtonJS returns the singleton JavaScript for clipboard copy via event
+// delegation. Listens for clicks on [data-tc-copy] buttons, copies the text
+// via navigator.clipboard.writeText, and temporarily swaps the label text.
+func copyButtonJS() string {
+	return `if(!window.tcCopyAttached){window.tcCopyAttached=true;` +
+		`document.addEventListener('click',function(e){` +
+		`var btn=e.target.closest('[data-tc-copy]');if(!btn)return;` +
+		`var text=btn.getAttribute('data-tc-copy');` +
+		`var label=btn.getAttribute('data-tc-copy-label')||'Copied!';` +
+		`var labelEl=btn.querySelector('[data-tc-copy-text]');` +
+		`var original=labelEl?labelEl.textContent:'';` +
+		`if(navigator.clipboard&&navigator.clipboard.writeText){` +
+		`navigator.clipboard.writeText(text).then(function(){` +
+		`if(labelEl)labelEl.textContent=label;` +
+		`setTimeout(function(){if(labelEl)labelEl.textContent=original;},2000);` +
+		`});}` +
+		`});}` +
+		"\n"
+}
+
+// copyButtonScriptComponent renders a <script nonce="..."> tag containing the
+// clipboard copy JS. Singleton — only the first CopyButton on the page injects
+// executable code; subsequent instances skip via the window.tcCopyAttached guard.
+func copyButtonScriptComponent(nonce string) templ.Component {
+	js := copyButtonJS()
+	escapedNonce := html.EscapeString(nonce)
+	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, js); err != nil {
+			return fmt.Errorf("write copy button script: %w", err)
+		}
+		return nil
+	})
+}
+
+// imageFallbackJS returns the singleton JavaScript for image fallback source
+// swapping. Uses event capture (true) because the error event does not bubble.
+// When an img with data-tc-img-fallback fails to load, the src is swapped to
+// the fallback and the attribute is removed to prevent infinite loops.
+func imageFallbackJS() string {
+	return `if(!window.tcImageFallbackAttached){window.tcImageFallbackAttached=true;` +
+		`document.addEventListener('error',function(e){` +
+		`var img=e.target;` +
+		`if(img&&img.dataset&&img.dataset.tcImgFallback){` +
+		`img.onerror=null;` +
+		`img.src=img.dataset.tcImgFallback;` +
+		`delete img.dataset.tcImgFallback;` +
+		`}` +
+		`},true);}` +
+		"\n"
+}
+
+// imageFallbackScriptComponent renders a <script nonce="..."> tag containing
+// the image fallback JS. Singleton — only injected when at least one Image
+// with FallbackSrc is rendered on the page.
+func imageFallbackScriptComponent(nonce string) templ.Component {
+	js := imageFallbackJS()
+	escapedNonce := html.EscapeString(nonce)
+	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, js); err != nil {
+			return fmt.Errorf("write image fallback script: %w", err)
+		}
+		return nil
+	})
+}
