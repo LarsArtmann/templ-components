@@ -4,6 +4,7 @@ package display
 import (
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -112,5 +113,34 @@ func TestTableRender(t *testing.T) {
 		if props.Striped != true {
 			t.Error("DefaultTableProps().Striped should be true")
 		}
+	})
+
+	t.Run("Body slot overrides Rows", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"Name", "Status"},
+			Rows:    []TableRow{SimpleTableRow("should-not-appear")},
+			Body: templ.Raw(
+				"<tr><td>Alice</td><td><span class=\"badge\">Admin</span></td></tr><tr><td>Bob</td><td>User</td></tr>",
+			),
+		}))
+		utils.AssertContains(t, output, "Alice")
+		utils.AssertContains(t, output, "Bob")
+		utils.AssertContains(t, output, "<span class=\"badge\">Admin</span>")
+		utils.AssertNotContains(t, output, "should-not-appear")
+		utils.AssertContains(t, output, "<tbody")
+	})
+
+	t.Run("Body slot renders headers and tbody wrapper", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"Name"},
+			Body:    templ.Raw("<tr><td>Custom row</td></tr>"),
+		}))
+		utils.AssertContains(t, output, "Name")
+		utils.AssertContains(t, output, "Custom row")
+		utils.AssertContains(t, output, "<thead")
+		utils.AssertContains(t, output, "<tbody")
+		utils.AssertContains(t, output, "divide-y")
 	})
 }

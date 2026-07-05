@@ -21,6 +21,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `display.Image`: `<img>` with lazy loading (`loading="lazy"` default), optional `width`/`height` for CLS prevention, and CSP-safe fallback source. The fallback swap uses a singleton error-capture listener (`data-tc-img-fallback` attribute) — no inline `onerror` handler.
 - `navigation.LoadMore`: centered "Load more" button for cursor-based pagination. Uses `hx-get` + `hx-swap="outerHTML"` so the server response (next items + updated button) replaces this one in place. Cursor is appended as a query parameter.
 - `display.CardProps.Body`: explicit `templ.Component` body slot for struct-based composition. When set, overrides children. Backward compatible — existing children-passing code is unaffected.
+- `display.TableProps.Body`: explicit `templ.Component` body slot for custom `<tr>` rendering. When set, overrides `Rows` — ideal for templ loops where each row needs custom cell rendering. Follows the Card.Body pattern. Backward compatible.
+- Recipe: [`docs/recipes/horizontal-filter-bar.md`](docs/recipes/horizontal-filter-bar.md) — horizontal HTMX filter bar pattern vs `forms.Form`, with copy-pasteable helper code.
+- SKILL.md: "Components by use case" cross-reference table above the per-package catalogue. Consumer tip: track library component adoption in your project's AGENTS.md.
 - `display.StatCardProps.HxGet`/`HxTarget`/`HxSwap`: typed HTMX fields on StatCard for HTMX-driven partial updates. When set, the corresponding `hx-*` attributes are rendered on both the `<a>` and `<div>` variants.
 - Recipe: [`docs/recipes/cursor-pagination.md`](docs/recipes/cursor-pagination.md) — cursor-based pagination pattern with HTMX infinite scroll using `navigation.LoadMore`.
 - ADR: [`docs/adr/0007-self-host-htmx-default.md`](docs/adr/0007-self-host-htmx-default.md) — decision to self-host htmx as default (CDN opt-in) in v1.0.

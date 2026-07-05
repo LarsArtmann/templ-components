@@ -55,6 +55,20 @@ type TableProps struct {
 	Striped  bool
 	Hover    bool
 	Bordered bool
+	// Body, when set, overrides Rows for the <tbody> content. The component
+	// should render <tr> elements directly — ideal for templ loops where each
+	// row needs custom cell rendering:
+	//
+	//	@display.Table(display.TableProps{
+	//	    Headers: headers,
+	//	    Body:    messageRows(messages),
+	//	})
+	//	templ messageRows(messages []Message) {
+	//	    for _, m := range messages {
+	//	        <tr><td>{ m.Text }</td><td>{ m.Author }</td></tr>
+	//	    }
+	//	}
+	Body templ.Component
 }
 
 // DefaultTableProps returns sensible defaults
@@ -73,6 +87,9 @@ func DefaultTableProps() TableProps {
 //	     display.SimpleTableRow("Bob", "bob@example.com", "User"),
 //	   },
 //	})
+//
+// For custom cell rendering, set Body to a component that renders <tr> elements
+// directly — see the Body field on TableProps.
 templ Table(props TableProps) {
 	<div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
 		<table
@@ -103,23 +120,27 @@ templ Table(props TableProps) {
 				</thead>
 			}
 			<tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
-				for i, row := range props.Rows {
-					<tr
-						class={
-							templ.KV("bg-gray-50 dark:bg-gray-800/50", props.Striped && i%2 == 1),
-							templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover),
-						}
-					>
-						for _, cell := range tableRowCells(row, len(props.Headers)) {
-							<td class="px-4 py-3 text-gray-700 dark:text-gray-300">
-								if cell.Content != nil {
-									@cell.Content
-								} else {
-									{ cell.Text }
-								}
-							</td>
-						}
-					</tr>
+				if props.Body != nil {
+					@props.Body
+				} else {
+					for i, row := range props.Rows {
+						<tr
+							class={
+								templ.KV("bg-gray-50 dark:bg-gray-800/50", props.Striped && i%2 == 1),
+								templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover),
+							}
+						>
+							for _, cell := range tableRowCells(row, len(props.Headers)) {
+								<td class="px-4 py-3 text-gray-700 dark:text-gray-300">
+									if cell.Content != nil {
+										@cell.Content
+									} else {
+										{ cell.Text }
+									}
+								</td>
+							}
+						</tr>
+					}
 				}
 			</tbody>
 		</table>

@@ -26,41 +26,60 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-76 → 83 components across 9 packages + 101 icons. If you're about to hand-roll
+83 components across 9 packages + 101 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
-### `display` — 25 components
+### By use case (start here)
 
-| Component          | Signature                                   | One-liner                                                                          |
-| ------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------- |
-| `Card`             | `Card(props CardProps)`                     | Bordered card with title, subtitle, footer, header action, 4 padding sizes         |
-| `SimpleCard`       | `SimpleCard(props SimpleCardProps)`         | Minimal card — children only, no header/footer                                     |
-| `StatCard`         | `StatCard(props StatCardProps)`             | Dashboard metric card with value, label, change, trend, icon, optional `Href` link |
-| `Grid`             | `Grid(props GridProps)`                     | Responsive grid container with typed `GridCols` enum (1–6)                         |
-| `Badge`            | `Badge(props BadgeProps)`                   | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                |
-| `StatusBadge`      | `StatusBadge(status string)`                | Auto-maps ~20 status strings to badge types                                        |
-| `Button`           | `Button(props ButtonProps)`                 | Button or link button — variants, sizes, icons, HTMX attrs                         |
-| `Avatar`           | `Avatar(props AvatarProps)`                 | Image avatar with fallback initials, sizes, status dot                             |
-| `Modal`            | `Modal(props ModalProps)`                   | Accessible dialog — focus trap, Escape, backdrop, 5 sizes                          |
-| `Drawer`           | `Drawer(props DrawerProps)`                 | Side panel — left/right slide, focus trap, Escape, backdrop                        |
-| `Dropdown`         | `Dropdown(props DropdownProps)`             | Button-triggered menu — links, buttons, keyboard nav                               |
-| `Tooltip`          | `Tooltip(props TooltipProps)`               | Hover tooltip — 4 positions, arrow, touch support                                  |
-| `Accordion`        | `Accordion(props AccordionProps)`           | Collapsible sections — open/closed state, keyboard nav                             |
-| `Table`            | `Table(props TableProps)`                   | Responsive data table — striping, hover, caption, bordered                         |
-| `Tabs`             | `Tabs(props TabsProps)`                     | Tabbed interface — underline/pills, optional client-side JS                        |
-| `EmptyState`       | `EmptyState(props EmptyStateProps)`         | Empty-data placeholder — icon, title, description, action                          |
-| `SimpleEmptyState` | `SimpleEmptyState(message string)`          | Minimal empty state — text only                                                    |
-| `PageHeader`       | `PageHeader(props PageHeaderProps)`         | Page title block — title, subtitle, breadcrumb, action slots                       |
-| `DefinitionList`   | `DefinitionList(props DefinitionListProps)` | Two-column `<dl>` key/value list                                                   |
-| `ListNote`         | `ListNote(props ListNoteProps)`             | "Showing N of M" truncation notice                                                 |
-| `CopyButton`       | `CopyButton(props CopyButtonProps)`         | Clipboard copy button — CSP-safe, "Copied!" feedback                               |
-| `RelativeTime`     | `RelativeTime(props RelativeTimeProps)`     | `<time datetime>` with relative text ("2 hours ago")                               |
-| `CountBadge`       | `CountBadge(props CountBadgeProps)`         | Icon + notification count overlay — overflow "N+"                                  |
-| `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards                                               |
-| `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback                                         |
+Don't know what to look for? Find your page type:
 
-### `forms` — 16 components
+| You're building...             | Reach for                                                                                                                       |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| **Dashboard / metrics page**   | `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`                                                     |
+| **List / table page**          | `Table` (or `Table.Body` for custom rows), `Badge`, `StatusBadge`, `Avatar`, `Pagination`, `LoadMore`, `EmptyState`, `ListNote` |
+| **Detail page**                | `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `Breadcrumbs`                                                 |
+| **Settings / data-entry form** | `Form`, `Input`, `Select`, `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`                                  |
+| **Filter bar (horizontal)**    | Thin custom helper (see `docs/recipes/horizontal-filter-bar.md`) — `forms.Form` targets vertical                                |
+| **Feedback / notifications**   | `Toast`, `ToastContainer`, `Alert`, `Spinner`, `ProgressBar`, `GlobalErrorHandling`                                             |
+| **Navigation**                 | `Nav`, `SimpleNav`, `SidebarNav`, `Breadcrumbs`, `Pagination`, `MobileMenu`                                                     |
+| **Modal / overlay**            | `Modal`, `Drawer`, `Dropdown`, `Tooltip`, `Accordion`                                                                           |
+| **Error pages**                | `ErrorPage`, `NotFound404`, `ErrorDetail`, `ErrorAlert`, `ErrorHandler`                                                         |
+| **Full page shell**            | `Base`, `Minimal`, `ThemeScript`, `ThemeToggle`, `Script`                                                                       |
+
+### By package (import path reference)
+
+#### `display` — 25 components
+
+| Component          | Signature                                   | One-liner                                                                                 |
+| ------------------ | ------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `Card`             | `Card(props CardProps)`                     | Bordered card with title, subtitle, footer, header action, 4 padding sizes                |
+| `SimpleCard`       | `SimpleCard(props SimpleCardProps)`         | Minimal card — children only, no header/footer                                            |
+| `StatCard`         | `StatCard(props StatCardProps)`             | Dashboard metric card with value, label, change, trend, icon, optional `Href` link        |
+| `Grid`             | `Grid(props GridProps)`                     | Responsive grid container with typed `GridCols` enum (1–6)                                |
+| `Badge`            | `Badge(props BadgeProps)`                   | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                       |
+| `StatusBadge`      | `StatusBadge(status string)`                | Auto-maps ~20 status strings to badge types                                               |
+| `Button`           | `Button(props ButtonProps)`                 | Button or link button — variants, sizes, icons, HTMX attrs                                |
+| `Avatar`           | `Avatar(props AvatarProps)`                 | Image avatar with fallback initials, sizes, status dot                                    |
+| `Modal`            | `Modal(props ModalProps)`                   | Accessible dialog — focus trap, Escape, backdrop, 5 sizes                                 |
+| `Drawer`           | `Drawer(props DrawerProps)`                 | Side panel — left/right slide, focus trap, Escape, backdrop                               |
+| `Dropdown`         | `Dropdown(props DropdownProps)`             | Button-triggered menu — links, buttons, keyboard nav                                      |
+| `Tooltip`          | `Tooltip(props TooltipProps)`               | Hover tooltip — 4 positions, arrow, touch support                                         |
+| `Accordion`        | `Accordion(props AccordionProps)`           | Collapsible sections — open/closed state, keyboard nav                                    |
+| `Table`            | `Table(props TableProps)`                   | Responsive data table — striping, hover, caption, bordered, `Body` slot for custom `<tr>` |
+| `Tabs`             | `Tabs(props TabsProps)`                     | Tabbed interface — underline/pills, optional client-side JS                               |
+| `EmptyState`       | `EmptyState(props EmptyStateProps)`         | Empty-data placeholder — icon, title, description, action                                 |
+| `SimpleEmptyState` | `SimpleEmptyState(message string)`          | Minimal empty state — text only                                                           |
+| `PageHeader`       | `PageHeader(props PageHeaderProps)`         | Page title block — title, subtitle, breadcrumb, action slots                              |
+| `DefinitionList`   | `DefinitionList(props DefinitionListProps)` | Two-column `<dl>` key/value list                                                          |
+| `ListNote`         | `ListNote(props ListNoteProps)`             | "Showing N of M" truncation notice                                                        |
+| `CopyButton`       | `CopyButton(props CopyButtonProps)`         | Clipboard copy button — CSP-safe, "Copied!" feedback                                      |
+| `RelativeTime`     | `RelativeTime(props RelativeTimeProps)`     | `<time datetime>` with relative text ("2 hours ago")                                      |
+| `CountBadge`       | `CountBadge(props CountBadgeProps)`         | Icon + notification count overlay — overflow "N+"                                         |
+| `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards                                                      |
+| `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback                                                |
+
+#### `forms` — 16 components
 
 | Component           | Signature                                         | One-liner                                                                                  |
 | ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -81,7 +100,7 @@ already existed.
 | `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                   |
 | `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                   |
 
-### `feedback` — 13 components
+#### `feedback` — 13 components
 
 | Component          | Signature                                   | One-liner                                           |
 | ------------------ | ------------------------------------------- | --------------------------------------------------- |
@@ -99,7 +118,7 @@ already existed.
 | `ProgressBar`      | `ProgressBar(props ProgressBarProps)`       | Progress indicator — 3 sizes, indeterminate, label  |
 | `StepIndicator`    | `StepIndicator(props StepIndicatorProps)`   | Horizontal/vertical step progress                   |
 
-### `layout` — 5 components
+#### `layout` — 5 components
 
 | Component     | Signature                              | One-liner                                                   |
 | ------------- | -------------------------------------- | ----------------------------------------------------------- |
@@ -109,7 +128,7 @@ already existed.
 | `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                |
 | `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                |
 
-### `navigation` — 11 components
+#### `navigation` — 11 components
 
 | Component          | Signature                                               | One-liner                                                  |
 | ------------------ | ------------------------------------------------------- | ---------------------------------------------------------- |
@@ -125,7 +144,7 @@ already existed.
 | `LoadMore`         | `LoadMore(props LoadMoreProps)`                         | Cursor-based "Load more" button — hx-get, hx-swap          |
 | `Footer`           | `Footer(brandText string)`                              | Simple footer with copyright                               |
 
-### `htmx` — 7 components
+#### `htmx` — 7 components
 
 | Component              | Signature                                                 | One-liner                   |
 | ---------------------- | --------------------------------------------------------- | --------------------------- |
@@ -137,7 +156,7 @@ already existed.
 | `CSRFToken`            | `CSRFToken(token string)`                                 | Hidden CSRF input           |
 | `GlobalErrorHandling`  | `GlobalErrorHandling(cfg ErrorHandlingConfig)`            | HTMX error → toast pipeline |
 
-### `errorpage` — 4 components + 6 constructors + handler
+#### `errorpage` — 4 components + 6 constructors + handler
 
 | Component / Function           | Signature                             | One-liner                                        |
 | ------------------------------ | ------------------------------------- | ------------------------------------------------ |
@@ -150,7 +169,7 @@ already existed.
 | `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/code/why/fix from error           |
 | `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family        |
 
-### `icons` — 101 icons + 2 functions
+#### `icons` — 101 icons + 2 functions
 
 | Function                                        | One-liner                                          |
 | ----------------------------------------------- | -------------------------------------------------- |
@@ -159,7 +178,7 @@ already existed.
 | `IconPathData(name) []string`                   | Raw path data for custom SVG wrapper               |
 | `IconPathJS(name) string`                       | Path data formatted for JS injection               |
 
-### `utils` — shared types + helpers
+#### `utils` — shared types + helpers
 
 | Function                   | One-liner                                                        |
 | -------------------------- | ---------------------------------------------------------------- |
@@ -245,6 +264,7 @@ run `templ generate`. This is the standard pattern for publishable templ package
 | ----------------------------------------------------- | --------------------------------------------------- |
 | `docs/migration/play-cdn-to-tailwind-v4.md`           | Migrating from Tailwind Play CDN to CSS-first build |
 | `docs/recipes/server-rendered-htmx-error-feedback.md` | Wiring HTMX error feedback (toast/alert/page)       |
+| `docs/recipes/horizontal-filter-bar.md`               | Horizontal HTMX filter bar vs `forms.Form`          |
 | `docs/tailwind-v4-adoption-guide.md`                  | Full Tailwind v4 setup with `@source` scanning      |
 | `docs/icons-only-adoption.md`                         | Adopting just the `icons` package (CSS-agnostic)    |
 
@@ -252,10 +272,31 @@ run `templ generate`. This is the standard pattern for publishable templ package
 
 Before hand-rolling HTML, check in this order:
 
-1. **The catalogue table above** — 76 components, one-liners for each.
-2. **`README.md` component catalogue** — code examples grouped by package.
-3. **`pkg.go.dev/github.com/larsartmann/templ-components`** — full API reference.
-4. **`grep -r "templ [A-Z]" --include="*.templ"`** — find every component definition.
+1. **The "By use case" table above** — find your page type first.
+2. **The per-package catalogue below it** — full signatures and one-liners.
+3. **`README.md` component catalogue** — code examples grouped by package.
+4. **`pkg.go.dev/github.com/larsartmann/templ-components`** — full API reference.
+5. **`grep -r "templ [A-Z]" --include="*.templ"`** — find every component definition.
+
+### Consumer tip: track adoption in your AGENTS.md
+
+The #1 discoverability gap across consumers is not knowing which library
+components are already adopted vs hand-rolled in your own project. Keep a
+grep-able table in your consumer project's `AGENTS.md`:
+
+```markdown
+## templ-components adoption
+
+| Library component      | Status  | Where                   |
+| ---------------------- | ------- | ----------------------- |
+| `display.Grid`         | adopted | dashboard.templ         |
+| `display.Table`        | custom  | filters.templ (thinner) |
+| `forms.Form`           | custom  | filterForm helper       |
+| `feedback.ProgressBar` | adopted | backfill.templ          |
+```
+
+This lets every AI session and developer quickly audit what's adopted, what's
+hand-rolled, and where the gaps are.
 
 ---
 

@@ -1,4 +1,9 @@
-<!doctype html><html lang="en"><head><meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1.0"/><title>Data Model Review — templ-components 2026-07-05</title><style>
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Model Review — templ-components 2026-07-05</title>
     <style>
       /* =========================================================================
          BAUHAUS DARK — Dashboard template
@@ -795,32 +800,124 @@
         }
       }
     </style>
-</style></head><body>
-<div class="top-bar"><span>DATA MODEL REVIEW</span><span>2026-07-05</span><span>v0.6.1</span></div>
-<div class="layout"><aside class="sidebar" data-nav><nav><div class="label">Contents</div><a href="#s">Summary</a><a href="#p">Problems</a><a href="#st">Strengths</a></nav></aside>
-<main class="main">
-<div class="hero"><div class="hero-shapes"><div class="circle"></div><div class="square"></div><div class="tri"></div></div><div class="hero-badge">Data Model Review</div><h1>Type System Audit</h1><p class="hero-subtitle">First-principles review of typed enums, props structs, style lookups.</p></div>
-<h2 id="s"><span class="num">00</span>Summary</h2>
-<div class="stat-grid">
-<div class="stat-card"><div class="stat-value">30+</div><div class="stat-label">Typed Enums</div></div>
-<div class="stat-card stat-warn"><div class="stat-value">8</div><div class="stat-label">Issues</div></div>
-<div class="stat-card stat-bad"><div class="stat-value">2</div><div class="stat-label">Critical</div></div>
-<div class="stat-card stat-good"><div class="stat-value">5</div><div class="stat-label">Strong Patterns</div></div>
-</div>
-<div class="card card-solution"><h4>Assessment: Strong, room to tighten</h4><p>Typed enums, map lookups, BaseProps embedding. Gaps: validation asymmetry, 2XL="full" mismatch, lossy family→status mapping.</p></div>
-<h2 id="p"><span class="num">01</span>Problem Catalog</h2>
-<div class="issue issue-critical"><span class="severity severity-critical">Critical</span><h3>P1: ModalSize2XL value is "full"</h3><div class="where">modal_go.go:18, drawer_go.go:25</div><p>Name says 2XL, value says full. Lookup keyed by deprecated alias.</p></div>
-<div class="issue issue-critical"><span class="severity severity-critical">Critical</span><h3>P2: Error family→status lossy</h3><div class="where">styles.go:208</div><p>NotFound→400 (should be 404), InternalError→503 (should be 500).</p></div>
-<div class="issue issue-important"><span class="severity severity-important">High</span><h3>P3: Validation asymmetry</h3><div class="where">button_go.go</div><p>Only ButtonHTMLType validates. Others silently coerce.</p></div>
-<div class="issue issue-important"><span class="severity severity-important">High</span><h3>P4: Overlay discriminators untyped</h3><div class="where">shared.go:39-40</div><p>closeKind + componentName: two strings, same concept.</p></div>
-<div class="issue issue-important"><span class="severity severity-important">Medium</span><h3>P5: Silent SRI fallback</h3><div class="where">sri.go:83</div><p>Unknown version gets default hash silently.</p></div>
-<h2 id="st"><span class="num">02</span>Strengths</h2>
-<div class="strengths">
-<div class="strength"><div class="check">+</div><div class="text"><strong>BaseProps embedding</strong><span>30+ structs auto-satisfy ComponentProps.</span></div></div>
-<div class="strength"><div class="check">+</div><div class="text"><strong>Map-based lookups</strong><span>utils.Lookup[K,V]() generic.</span></div></div>
-<div class="strength"><div class="check">+</div><div class="text"><strong>Typed string enums</strong><span>Prevents cross-assignment.</span></div></div>
-<div class="strength"><div class="check">+</div><div class="text"><strong>FeedbackType unification</strong><span>Single canonical enum.</span></div></div>
-<div class="strength"><div class="check">+</div><div class="text"><strong>Generic style lookup</strong><span>lookupFeedbackStyle[T]() DRY.</span></div></div>
-</div>
-<footer class="footer">Generated 2026-07-05</footer>
-</main></div></body></html>
+  </head>
+  <body>
+    <div class="top-bar">
+      <span>DATA MODEL REVIEW</span><span>2026-07-05</span><span>v0.6.1</span>
+    </div>
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#s">Summary</a><a href="#p">Problems</a><a href="#st">Strengths</a>
+        </nav>
+      </aside>
+      <main class="main">
+        <div class="hero">
+          <div class="hero-shapes">
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="hero-badge">Data Model Review</div>
+          <h1>Type System Audit</h1>
+          <p class="hero-subtitle">
+            First-principles review of typed enums, props structs, style lookups.
+          </p>
+        </div>
+        <h2 id="s"><span class="num">00</span>Summary</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">30+</div>
+            <div class="stat-label">Typed Enums</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">8</div>
+            <div class="stat-label">Issues</div>
+          </div>
+          <div class="stat-card stat-bad">
+            <div class="stat-value">2</div>
+            <div class="stat-label">Critical</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">5</div>
+            <div class="stat-label">Strong Patterns</div>
+          </div>
+        </div>
+        <div class="card card-solution">
+          <h4>Assessment: Strong, room to tighten</h4>
+          <p>
+            Typed enums, map lookups, BaseProps embedding. Gaps: validation asymmetry, 2XL="full"
+            mismatch, lossy family→status mapping.
+          </p>
+        </div>
+        <h2 id="p"><span class="num">01</span>Problem Catalog</h2>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Critical</span>
+          <h3>P1: ModalSize2XL value is "full"</h3>
+          <div class="where">modal_go.go:18, drawer_go.go:25</div>
+          <p>Name says 2XL, value says full. Lookup keyed by deprecated alias.</p>
+        </div>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Critical</span>
+          <h3>P2: Error family→status lossy</h3>
+          <div class="where">styles.go:208</div>
+          <p>NotFound→400 (should be 404), InternalError→503 (should be 500).</p>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">High</span>
+          <h3>P3: Validation asymmetry</h3>
+          <div class="where">button_go.go</div>
+          <p>Only ButtonHTMLType validates. Others silently coerce.</p>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">High</span>
+          <h3>P4: Overlay discriminators untyped</h3>
+          <div class="where">shared.go:39-40</div>
+          <p>closeKind + componentName: two strings, same concept.</p>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Medium</span>
+          <h3>P5: Silent SRI fallback</h3>
+          <div class="where">sri.go:83</div>
+          <p>Unknown version gets default hash silently.</p>
+        </div>
+        <h2 id="st"><span class="num">02</span>Strengths</h2>
+        <div class="strengths">
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>BaseProps embedding</strong
+              ><span>30+ structs auto-satisfy ComponentProps.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Map-based lookups</strong><span>utils.Lookup[K,V]() generic.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Typed string enums</strong><span>Prevents cross-assignment.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>FeedbackType unification</strong><span>Single canonical enum.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Generic style lookup</strong><span>lookupFeedbackStyle[T]() DRY.</span>
+            </div>
+          </div>
+        </div>
+        <footer class="footer">Generated 2026-07-05</footer>
+      </main>
+    </div>
+  </body>
+</html>
