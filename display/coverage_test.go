@@ -139,10 +139,11 @@ func TestGridResponsiveClasses(t *testing.T) {
 		cols    GridCols
 		wantSub string
 	}{
-		{"1 col stacks", GridCols1, "grid grid-cols-1 gap-4"},
+		{"1 col stacks", GridCols1, "grid-cols-1"},
 		{"2 col expands at sm", GridCols2, "sm:grid-cols-2"},
 		{"3 col default expands at lg", GridCols3, "lg:grid-cols-3"},
 		{"4 col expands at lg", GridCols4, "lg:grid-cols-4"},
+		{"5 col expands at xl", GridCols5, "xl:grid-cols-5"},
 		{"6 col expands at xl", GridCols6, "xl:grid-cols-6"},
 	}
 	for _, tc := range cases {

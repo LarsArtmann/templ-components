@@ -66,27 +66,28 @@ type BaseProps struct {
 
 ### Components
 
-| Component          | Status           | Description                     | Key Features                                                                    |
-| ------------------ | ---------------- | ------------------------------- | ------------------------------------------------------------------------------- |
-| `Accordion`        | FULLY_FUNCTIONAL | Collapsible accordion panels    | JS toggle, `aria-expanded`, `aria-controls`, chevron rotation                   |
-| `Avatar`           | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                   |
-| `Button`           | FULLY_FUNCTIONAL | Action button                   | 5 variants, 3 sizes, href (link mode), loading state                            |
-| `Badge`            | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                               |
-| `StatusBadge`      | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                                          |
-| `Card`             | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, 4 padding sizes                        |
-| `SimpleCard`       | FULLY_FUNCTIONAL | Minimal card                    | Children-only, no header/footer                                                 |
-| `StatCard`         | FULLY_FUNCTIONAL | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None), optional `Icon` field |
-| `Dropdown`         | FULLY_FUNCTIONAL | Button-triggered menu           | External/internal links, buttons, keyboard nav, ARIA menu                       |
-| `Drawer`           | FULLY_FUNCTIONAL | Side panel                      | Left/right slide, focus trap, Escape, backdrop, 5 sizes                         |
-| `EmptyState`       | FULLY_FUNCTIONAL | Centered empty state            | Icon, title, description, action link/button                                    |
-| `SimpleEmptyState` | FULLY_FUNCTIONAL | Minimal empty state             | Text-only                                                                       |
-| `Modal`            | FULLY_FUNCTIONAL | Accessible modal dialog         | Focus trap, Escape close, backdrop, 5 sizes, open/close API                     |
-| `Table`            | FULLY_FUNCTIONAL | Responsive data table           | Headers, rows, striping, hover, caption, bordered, cell content                 |
-| `Tabs`             | FULLY_FUNCTIONAL | Tabbed interface                | Default underline or pills variant, ARIA tablist/tab/tabpanel                   |
-| `Tooltip`          | FULLY_FUNCTIONAL | Hover tooltip                   | 4 positions, arrow, `role="tooltip"`, CSS-only                                  |
-| `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots                            |
-| `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup                          |
-| `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                                       |
+| Component          | Status           | Description                     | Key Features                                                                                                       |
+| ------------------ | ---------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `Accordion`        | FULLY_FUNCTIONAL | Collapsible accordion panels    | JS toggle, `aria-expanded`, `aria-controls`, chevron rotation                                                      |
+| `Avatar`           | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                                                      |
+| `Button`           | FULLY_FUNCTIONAL | Action button                   | 5 variants, 3 sizes, href (link mode), loading state                                                               |
+| `Badge`            | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                                                                  |
+| `StatusBadge`      | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                                                                             |
+| `Card`             | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, 4 padding sizes                                                           |
+| `SimpleCard`       | FULLY_FUNCTIONAL | Minimal card                    | Children-only, no header/footer                                                                                    |
+| `StatCard`         | FULLY_FUNCTIONAL | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None), optional `Icon` field, `Href` renders as clickable `<a>` |
+| `Grid`             | FULLY_FUNCTIONAL | Responsive grid container       | Typed `GridCols` enum (1–6), responsive breakpoints (1→2→3→N), children slot                                       |
+| `Dropdown`         | FULLY_FUNCTIONAL | Button-triggered menu           | External/internal links, buttons, keyboard nav, ARIA menu                                                          |
+| `Drawer`           | FULLY_FUNCTIONAL | Side panel                      | Left/right slide, focus trap, Escape, backdrop, 5 sizes                                                            |
+| `EmptyState`       | FULLY_FUNCTIONAL | Centered empty state            | Icon, title, description, action link/button                                                                       |
+| `SimpleEmptyState` | FULLY_FUNCTIONAL | Minimal empty state             | Text-only                                                                                                          |
+| `Modal`            | FULLY_FUNCTIONAL | Accessible modal dialog         | Focus trap, Escape close, backdrop, 5 sizes, open/close API                                                        |
+| `Table`            | FULLY_FUNCTIONAL | Responsive data table           | Headers, rows, striping, hover, caption, bordered, cell content                                                    |
+| `Tabs`             | FULLY_FUNCTIONAL | Tabbed interface                | Default underline or pills variant, ARIA tablist/tab/tabpanel                                                      |
+| `Tooltip`          | FULLY_FUNCTIONAL | Hover tooltip                   | 4 positions, arrow, `role="tooltip"`, CSS-only                                                                     |
+| `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots                                                               |
+| `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup                                                             |
+| `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                                                                          |
 
 ### Enums
 
@@ -102,6 +103,7 @@ type BaseProps struct {
 | `ModalSize`        | SM, MD, LG, XL, Full                                     |
 | `TabsVariant`      | Default, Pills                                           |
 | `TrendDirection`   | Up, Down, None                                           |
+| `GridCols`         | 1, 2, 3 (default), 4, 5, 6                               |
 | `TooltipPosition`  | Top, Bottom, Left, Right                                 |
 
 ### Known Issues
@@ -165,20 +167,21 @@ type BaseProps struct {
 
 ### Components
 
-| Component        | Status           | Description               | Key Features                                            |
-| ---------------- | ---------------- | ------------------------- | ------------------------------------------------------- |
-| `Alert`          | FULLY_FUNCTIONAL | Full-width alert banner   | 4 types, dismissible, icon, CSP nonce                   |
-| `InlineError`    | FULLY_FUNCTIONAL | Compact error message     | Red icon + text                                         |
-| `InlineSuccess`  | FULLY_FUNCTIONAL | Compact success message   | Green checkmark + text                                  |
-| `Spinner`        | FULLY_FUNCTIONAL | Animated SVG spinner      | 3 sizes, custom color class                             |
-| `LoadingOverlay` | FULLY_FUNCTIONAL | Full-screen loading       | Spinner, message, optional progress bar                 |
-| `InlineLoading`  | FULLY_FUNCTIONAL | Compact inline loading    | Spinner + message                                       |
-| `Skeleton`       | FULLY_FUNCTIONAL | Pulsing placeholder       | 7 variants: text, title, avatar, image, card, table-row |
-| `SkeletonGroup`  | FULLY_FUNCTIONAL | Multiple skeletons        | Group with `animate-pulse`                              |
-| `ProgressBar`    | FULLY_FUNCTIONAL | Progress indicator        | 3 sizes, custom color, label, percentage                |
-| `StepIndicator`  | FULLY_FUNCTIONAL | Horizontal step indicator | Completed/current/future states, labels                 |
-| `ToastContainer` | FULLY_FUNCTIONAL | Fixed toast container     | JS `tcShowToast()` for dynamic toasts                   |
-| `Toast`          | FULLY_FUNCTIONAL | Server-rendered toast     | 4 types, dismissible, title, message, duration          |
+| Component          | Status           | Description               | Key Features                                                      |
+| ------------------ | ---------------- | ------------------------- | ----------------------------------------------------------------- |
+| `Alert`            | FULLY_FUNCTIONAL | Full-width alert banner   | 4 types, dismissible, icon, CSP nonce                             |
+| `InlineError`      | FULLY_FUNCTIONAL | Compact error message     | Red icon + text                                                   |
+| `InlineSuccess`    | FULLY_FUNCTIONAL | Compact success message   | Green checkmark + text                                            |
+| `Spinner`          | FULLY_FUNCTIONAL | Animated SVG spinner      | 3 sizes, custom color class                                       |
+| `LoadingOverlay`   | FULLY_FUNCTIONAL | Full-screen loading       | Spinner, message, optional progress bar                           |
+| `InlineLoading`    | FULLY_FUNCTIONAL | Compact inline loading    | Spinner + message                                                 |
+| `Skeleton`         | FULLY_FUNCTIONAL | Pulsing placeholder       | 7 variants: text, title, avatar, image, card, table-row           |
+| `SkeletonGroup`    | FULLY_FUNCTIONAL | Multiple skeletons        | Group with `animate-pulse`                                        |
+| `SkeletonCardGrid` | FULLY_FUNCTIONAL | Loading card grid         | N skeleton cards in responsive 3-col grid, single `role="status"` |
+| `ProgressBar`      | FULLY_FUNCTIONAL | Progress indicator        | 3 sizes, custom color, label, percentage                          |
+| `StepIndicator`    | FULLY_FUNCTIONAL | Horizontal step indicator | Completed/current/future states, labels                           |
+| `ToastContainer`   | FULLY_FUNCTIONAL | Fixed toast container     | JS `tcShowToast()` for dynamic toasts                             |
+| `Toast`            | FULLY_FUNCTIONAL | Server-rendered toast     | 4 types, dismissible, title, message, duration                    |
 
 ### Enums
 
@@ -312,6 +315,7 @@ Used by both Alert and Toast for consistent visual styling.
 | `Minimal`     | FULLY_FUNCTIONAL | Minimal HTML document | No dependencies, for static pages/emails/PDFs                                                          |
 | `ThemeScript` | FULLY_FUNCTIONAL | Dark mode script      | localStorage-based, prevents FOUC                                                                      |
 | `ThemeToggle` | FULLY_FUNCTIONAL | Theme switch button   | Sun/moon icons, JS toggle, CSP nonce                                                                   |
+| `Script`      | FULLY_FUNCTIONAL | CSP-safe script tag   | Auto-injects nonce, optional attrs (async, defer, type)                                                |
 
 ### Functions
 

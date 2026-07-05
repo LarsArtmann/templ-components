@@ -211,3 +211,46 @@ func TestEmptyStateUserSeesHelpfulGuidance(t *testing.T) {
 		utils.AssertContains(t, output, `href="/connect"`)
 	})
 }
+
+func TestStatCardUserCanClickToFilter(t *testing.T) {
+	t.Parallel()
+
+	t.Run("user sees a clickable stat card with href", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Label: "Active",
+			Value: "42",
+			Href:  "/?activity=active",
+		}))
+		utils.AssertContains(t, output, `href="/?activity=active"`)
+		utils.AssertContains(t, output, "42")
+		utils.AssertContains(t, output, "Active")
+	})
+
+	t.Run("user can keyboard-focus the linked stat card", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Value: "10",
+			Label: "Total",
+			Href:  "/all",
+		}))
+		utils.AssertContains(t, output, "focus-visible:ring")
+	})
+}
+
+func TestGridUserSeesResponsiveLayout(t *testing.T) {
+	t.Parallel()
+
+	t.Run("user sees a grid that stacks on mobile", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Grid(GridProps{Cols: GridCols3}))
+		utils.AssertContains(t, output, "grid-cols-1")
+		utils.AssertContains(t, output, "lg:grid-cols-3")
+	})
+
+	t.Run("grid falls back to 3 cols for unknown value", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Grid(GridProps{Cols: GridCols("bogus")}))
+		utils.AssertContains(t, output, "lg:grid-cols-3")
+	})
+}

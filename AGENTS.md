@@ -72,7 +72,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 ## Code Conventions
 
 - All component props embed `utils.BaseProps` (exception: `layout.PageProps`) — all auto-satisfy `utils.ComponentProps` interface
-- All root elements propagate `props.Class`, `props.Attrs`, `props.ID`, and `props.AriaLabel` from BaseProps (25/25 components, including NavLink/MobileNavLink)
+- All root elements propagate `props.Class`, `props.Attrs`, `props.ID`, and `props.AriaLabel` from BaseProps (26/26 components, including NavLink/MobileNavLink)
 - Class attributes use `utils.Class()` for Tailwind conflict resolution (exception: `templ.KV` conditionals where comma-join is required)
 - Style lookups use maps/structs, not switches (e.g., `badgeStyleMap`, `badgeSizeLookup`, `cardPaddingLookup`, `iconPathData`, `alertIconMap`, `toastIconMap`, `spinnerSizeLookup`, `progressHeightLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`)
 - String enums: `type XxxType string` + `const XxxDefault XxxType = "default"`
@@ -141,6 +141,13 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - SidebarNav: `navigation.SidebarNav(SidebarNavProps)` — vertical sidebar with Brand/Footer slots, icon+label nav items, CurrentPath auto-active detection, `aria-current="page"` on active item.
 - icons.IconPathData: exported function returning raw SVG path d-strings for consumers needing full `<svg>` wrapper control (used by cqrs-htmx/adminui for icons-only adoption without Tailwind).
 - icons-only adoption: the `icons` and `utils` packages are CSS-agnostic (pure SVG data). This is a natural property of icons, not a portability strategy. See `docs/icons-only-adoption.md`.
+- Grid: `display.Grid(GridProps)` — responsive grid container with typed `GridCols` enum (1–6) and `gridColsLookup` map+fallback. Replaces the repeated `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4` pattern. Children passed via `{ children... }`.
+- StatCard.Href: `StatCardProps.Href` renders the whole card as an `<a>` with hover shadow, focus ring, cursor-pointer when set. Mirrors `Badge.Href` pattern. Shared body extracted to `statCardInner` sub-template so linked/unlinked layouts don't diverge.
+- layout.Script: `layout.Script(nonce, src, attrs)` — CSP-safe `<script src>` tag that auto-injects the nonce. Prevents forgetting `nonce={...}` under strict CSP. Use instead of raw `<script>` tags for external scripts.
+- SkeletonCardGrid: `feedback.SkeletonCardGrid(count)` — renders N skeleton cards in a responsive 3-col grid under a single `role="status"`. Pairs with `display.Grid` for the common dashboard loading pattern. Non-positive count falls back to 1.
+- SimpleNav.RightItems: `SimpleNavProps.RightItems` forwards a `templ.Component` (e.g. ThemeToggle, sign-in button) to `Nav.RightItems`. Consumers no longer render right-side nav items in a separate flex container.
+- PageProps auto-injects: `DefaultPageProps()` auto-injects `<link rel="stylesheet" href="/app.css">` (CSSPath) and `<script src="...htmx.org@...">` (HTMXVersion). Set either to `""` to suppress. Documented in godoc on both fields + DefaultPageProps.
+- ProgressBar clamp: uses `max(0, min(100, props.Progress))` (Go 1.21+ builtin) instead of manual if-branch clamping.
 
 ## Release Convention: One-Commit Release
 

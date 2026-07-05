@@ -175,3 +175,52 @@ func TestDropdownXSSSafety(t *testing.T) {
 		utils.AssertContains(t, output, `&lt;script&gt;`)
 	})
 }
+
+func TestGridA11y(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Grid propagates AriaLabel", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Grid(GridProps{
+			BaseProps: utils.BaseProps{AriaLabel: "User cards"},
+			Cols:      GridCols3,
+		}))
+		utils.AssertContains(t, output, `aria-label="User cards"`)
+	})
+
+	t.Run("Grid propagates ID", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Grid(GridProps{
+			BaseProps: utils.BaseProps{ID: "user-grid"},
+		}))
+		utils.AssertContains(t, output, `id="user-grid"`)
+	})
+}
+
+func TestStatCardHrefA11y(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Href anchor propagates AriaLabel", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Label: "Active",
+			Value: "42",
+			BaseProps: utils.BaseProps{
+				AriaLabel: "Filter by active users",
+			},
+			Href: "/active",
+		}))
+		utils.AssertContains(t, output, `aria-label="Filter by active users"`)
+		utils.AssertContains(t, output, `<a `)
+	})
+
+	t.Run("Href anchor has focus-visible ring for keyboard nav", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Label: "Total",
+			Value: "100",
+			Href:  "/total",
+		}))
+		utils.AssertContains(t, output, "focus-visible:ring-2")
+	})
+}

@@ -302,13 +302,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.ShowProgress {
-			clamped := props.Progress
-			if clamped < 0 {
-				clamped = 0
-			}
-			if clamped > 100 {
-				clamped = 100
-			}
+			clamped := max(0, min(100, props.Progress))
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2\"><div class=\"bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0\" style=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -316,7 +310,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templruntime.SanitizeStyleAttributeValues(fmt.Sprintf("width: %d%%", clamped))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 129, Col: 50}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 121, Col: 50}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
@@ -329,7 +323,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d%%", clamped))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 132, Col: 87}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 124, Col: 87}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -392,7 +386,7 @@ func InlineLoading(message string) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 147, Col: 66}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/loading.templ`, Line: 139, Col: 66}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {

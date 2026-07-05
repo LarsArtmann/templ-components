@@ -114,15 +114,7 @@ templ LoadingOverlay(props LoadingOverlayProps) {
 				</div>
 				<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{ props.Message }</h3>
 				if props.ShowProgress {
-					{{
-						clamped := props.Progress
-						if clamped < 0 {
-							clamped = 0
-						}
-						if clamped > 100 {
-							clamped = 100
-						}
-					}}
+					{{ clamped := max(0, min(100, props.Progress)) }}
 					<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
 						<div
 							class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"

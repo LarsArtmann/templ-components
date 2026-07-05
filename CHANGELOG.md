@@ -29,6 +29,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Added `release.sh` pre-check: fails if `[Unreleased]` section body is empty
 - Extracted `statCardInner` sub-template from `StatCard` so the linked (`<a>`) and unlinked (`<div>`) layouts share the icon/value/label body without duplication
 - Added `TestSimpleNavForwardsRightItems`, `TestSimpleNavOmitsRightItemsWhenNil`, `TestStatCardRender/Href_*`, `TestGridResponsiveClasses`, `TestGridFallsBackForUnknownCols`, `TestGridRendersChildren`, `TestGridPropagatesBaseProps`, `TestScriptRender`, `TestSkeletonCardGridRender`
+- Added golden tests for `Grid`, `StatCard.Href`, and `SkeletonCardGrid`
+- Added BDD tests for `Grid` (responsive layout) and `StatCard.Href` (clickable filter)
+- Added a11y tests for `Grid` (aria-label/ID propagation) and `StatCard.Href` (focus-visible ring)
+- Added `ExampleGrid` godoc example
+- Added `TestGridWithStatCards` and `TestStatCardWithHrefComposes` to integration composition suite
+- Fixed `GridCols4`/`GridCols5` responsive ladders to include intermediate breakpoints (md) instead of jumping directly from 2 to the final count
+- Modernized `ProgressBar` clamp from manual if-branch to `max(0, min(100, v))` (Go 1.21+ builtins)
+- Updated `AGENTS.md`, `TODO_LIST.md`, `FEATURES.md` with session 6 conventions and component inventory
 
 ## [0.6.1] — 2026-07-04
 

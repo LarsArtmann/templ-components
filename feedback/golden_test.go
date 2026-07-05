@@ -77,3 +77,9 @@ func TestGoldenSkeleton(t *testing.T) {
 	output := utils.Render(t, Skeleton(SkeletonText))
 	golden.Assert(t, "skeleton_text", output)
 }
+
+func TestGoldenSkeletonCardGrid(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, SkeletonCardGrid(3))
+	golden.Assert(t, "skeleton_card_grid", output)
+}

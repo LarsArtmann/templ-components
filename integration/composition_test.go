@@ -185,6 +185,25 @@ func TestDisplayComponentsCompose(t *testing.T) {
 	utils.AssertContains(t, output, "Alice")
 }
 
+func TestGridWithStatCards(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, display.Grid(display.GridProps{Cols: display.GridCols3}))
+	utils.AssertContains(t, output, "grid")
+	utils.AssertContains(t, output, "lg:grid-cols-3")
+}
+
+func TestStatCardWithHrefComposes(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, display.StatCard(display.StatCardProps{
+		Label: "Active",
+		Value: "42",
+		Href:  "/?active=true",
+	}))
+	utils.AssertContains(t, output, `<a `)
+	utils.AssertContains(t, output, `href="/?active=true"`)
+	utils.AssertContains(t, output, "42")
+}
+
 func TestBasePropsPropagation(t *testing.T) {
 	t.Parallel()
 

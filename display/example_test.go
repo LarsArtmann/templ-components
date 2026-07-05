@@ -39,3 +39,12 @@ func ExampleStatCard() {
 	_ = display.StatCard(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
+
+func ExampleGrid() {
+	props := display.DefaultGridProps()
+
+	var buf bytes.Buffer
+	_ = display.Grid(props).Render(context.Background(), &buf)
+	fmt.Println(buf.String())
+	// Output will contain responsive grid classes
+}
