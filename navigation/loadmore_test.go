@@ -12,6 +12,9 @@ func TestGoldenLoadMore(t *testing.T) {
 	output := utils.Render(t, LoadMore(LoadMoreProps{
 		Endpoint: "/api/items",
 		Cursor:   "abc123",
+		BaseProps: utils.BaseProps{
+			ID: "test-load-more",
+		},
 	}))
 	golden.Assert(t, "loadmore", output)
 }

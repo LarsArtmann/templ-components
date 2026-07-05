@@ -49,11 +49,7 @@ templ LoadMore(props LoadMoreProps) {
 		}
 	}}
 	<div
-		if props.ID != "" {
-			id={ props.ID }
-		} else {
-			id="tc-load-more"
-		}
+		id={ utils.EnsureID("load-more", props.ID) }
 		class={ utils.Class("flex justify-center py-6", props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
