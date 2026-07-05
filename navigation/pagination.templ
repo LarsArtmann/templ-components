@@ -126,9 +126,10 @@ templ paginationEllipsis() {
 }
 
 // paginationPageItem renders a single page number inside a list item.
-templ paginationPageItem(isActive bool, href string, text string, activeClass string) {
+// rel, when non-empty, adds a rel attribute to the link (e.g. "canonical" for page 1).
+templ paginationPageItem(isActive bool, href string, text string, activeClass string, rel string) {
 	<li>
-		@activeSpanOrLink(isActive, href, text, activeClass, inactivePageLinkClass)
+		@activeSpanOrLink(isActive, href, text, activeClass, inactivePageLinkClass, rel)
 	</li>
 }
 
@@ -185,7 +186,7 @@ templ Pagination(props PaginationProps) {
 						</li>
 						{{ start, end := paginationRange(props.CurrentPage, props.TotalPages, props.MaxVisible) }}
 						if start > 1 {
-							@paginationPageItem(false, props.pageURL(1), "1", "")
+							@paginationPageItem(false, props.pageURL(1), "1", "", "canonical")
 							@paginationEllipsisItem()
 						}
 						for p := start; p <= end; p++ {
@@ -194,11 +195,12 @@ templ Pagination(props PaginationProps) {
 								props.pageURL(p),
 								fmt.Sprintf("%d", p),
 								"relative z-10 inline-flex items-center bg-blue-600 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600",
+								"",
 							)
 						}
 						if end < props.TotalPages {
 							@paginationEllipsisItem()
-							@paginationPageItem(false, props.pageURL(props.TotalPages), fmt.Sprintf("%d", props.TotalPages), "")
+							@paginationPageItem(false, props.pageURL(props.TotalPages), fmt.Sprintf("%d", props.TotalPages), "", "")
 						}
 						<li>
 							@paginationArrow(

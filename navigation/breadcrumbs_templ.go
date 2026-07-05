@@ -257,6 +257,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 				item.Text,
 				"text-sm font-medium text-gray-500 dark:text-gray-400",
 				"text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white",
+				"",
 			).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

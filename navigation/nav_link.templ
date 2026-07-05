@@ -39,12 +39,19 @@ func DefaultNavLinkProps() NavLinkProps {
 	return NavLinkProps{}
 }
 
-// activeSpanOrLink renders a span with aria-current when active, or a link when inactive
-templ activeSpanOrLink(isActive bool, href string, text string, activeClass string, inactiveClass string) {
+// activeSpanOrLink renders a span with aria-current when active, or a link when inactive.
+// rel, when non-empty, adds a rel attribute to the <a> (e.g. "canonical", "prev", "next").
+templ activeSpanOrLink(isActive bool, href string, text string, activeClass string, inactiveClass string, rel string) {
 	if isActive {
 		<span aria-current="page" class={ activeClass }>{ text }</span>
 	} else {
-		<a href={ templ.SafeURL(href) } class={ inactiveClass }>{ text }</a>
+		<a
+			href={ templ.SafeURL(href) }
+			class={ inactiveClass }
+			if rel != "" {
+				rel={ rel }
+			}
+		>{ text }</a>
 	}
 }
 

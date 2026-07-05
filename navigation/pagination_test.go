@@ -109,6 +109,16 @@ func TestPaginationRender(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `id="my-pager"`)
 	})
+
+	t.Run("rel=canonical on first page when ellipsis shown", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Pagination(PaginationProps{
+			CurrentPage: 5,
+			TotalPages:  20,
+			BaseURL:     "/items",
+		}))
+		utils.AssertContains(t, output, `rel="canonical"`)
+	})
 }
 
 func renderPagination(t *testing.T, currentPage, totalPages uint, baseURL string) string {
