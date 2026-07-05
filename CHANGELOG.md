@@ -8,12 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **RTL/i18n: all physical CSS properties migrated to logical**. Replaced `ml-`/`mr-` with `ms-`/`me-` (margin-inline-start/end), `pl-`/`pr-` with `ps-`/`pe-` (padding-inline-start/end), `left-0`/`right-0` with `start-0`/`end-0` (inset-inline-start/end), `text-left` with `text-start`, `border-l-`/`border-r-` with `border-s-`/`border-e-` across all `.templ` files. Zero behavioral change in LTR contexts (Tailwind logical utilities resolve identically). Makes the library RTL-ready for Arabic, Hebrew, Persian, and Urdu markets — consumers set `dir="rtl"` and components automatically mirror.
 - **Multi-module workspace**: split into 6 Go modules coordinated by `go.work`. Extracted `svg` (promoted from `internal/svg`), `utils`, `icons`, and `errorpage` as sub-modules with replace directives. The root module retains the 6 cohesive core packages (display, feedback, forms, layout, navigation, htmx). Zero import path changes for consumers — all paths remain `github.com/larsartmann/templ-components/<pkg>`.
 - `go-error-family` is now an indirect dependency (only `errorpage` sub-module imports it directly). Consumers not using errorpage skip it entirely via Go 1.26.4 graph pruning.
 - `go.work` and `go.work.sum` are committed (un-ignored via `!go.work` in `.gitignore`).
 
 ### Added
 
+- `display.GridProps.ContainerResponsive`: when `true`, wraps the grid in an `@container` div and uses Tailwind container-query variants (`@sm:`, `@lg:`, etc.) instead of viewport breakpoints. The grid adapts to its parent container's width, not the browser viewport — useful for grids in sidebars, cards, or constrained layouts. Defaults to `false` (viewport breakpoints, current behavior). Requires Tailwind CSS v4 (container queries built into core).
 - `display.CopyButton`: CSP-safe clipboard copy button with singleton event-delegation script. Copies text via `navigator.clipboard.writeText`, temporarily shows a "Copied!" label, reverts after 2s. Optional clipboard icon, fully accessible (type=button, focus ring, motion-reduce).
 - `display.RelativeTime`: relative timestamp ("2 hours ago", "3 days ago") in a `<time datetime>` element. Server renders the initial text (pure Go formatting); `AutoRefresh` (defaults to `true`) injects a singleton script using native `Intl.RelativeTimeFormat` that live-updates every 30s and on `htmx:afterSettle`. Progressive enhancement — HTML carries the `datetime` attribute, JS just keeps the display fresh. Set `AutoRefresh: false` for static contexts (PDF, email).
 - `display.CountBadge`: notification count overlay — renders children (e.g. a bell icon) with an absolutely-positioned count badge in the top-right corner. Overflow shows "N+" (default max 99). Zero count hides the badge entirely. Badge is `aria-hidden` (decorative — count is announced by the container's aria-label).
