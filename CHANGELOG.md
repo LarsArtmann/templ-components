@@ -6,11 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.8.0] — 2026-07-06
+
 ### Added
 
 - `display.TableHeader` + `TypedHeaders []TableHeader`: sortable table columns with WAI-ARIA `aria-sort` (`ascending`/`descending`/`none`), clickable `<a>` sort links via `Href`, and visual ↑/↓ indicators. `TypedHeaders` takes precedence over `Headers []string` when set; backward compatible (empty `TypedHeaders` keeps existing header rendering). `SortDirection` enum (`None`/`Asc`/`Desc`) added to the display typed-enum set.
 - `forms.FormProps.Inline`: horizontal form layout (`flex flex-wrap items-end gap-3`) instead of the default vertical stack (`space-y-6`). One-field toggle — useful for filter bars and compact toolbars. Follows the `RadioGroup.Inline` precedent.
-- 14 new `IsValid()` methods across 5 packages, bringing every closed-set typed enum to full validation coverage (`AvatarStatus`, `DropdownItemKind`, `DropdownPosition`, `TabsVariant`, `OverlayKind`, `ButtonSize`, `ButtonHTMLType`, `StepIndicatorOrientation`, `ToggleSize`, `InputType`, `FormMethod`, `SwapStyle`, `icons.Name`). Every `IsValid` is now test-covered.
+- `navigation.Pagination`: `rel="canonical"` on the first-page link when ellipsis truncates it — tells search engines the first page is the canonical version of a paginated list. `activeSpanOrLink` sub-template gains an optional `rel` parameter.
+- 14 new `IsValid()` methods across 5 packages, bringing every closed-set typed enum to full validation coverage (`AvatarStatus`, `DropdownItemKind`, `DropdownPosition`, `TabsVariant`, `OverlayKind`, `ButtonSize`, `ButtonHTMLType`, `StepIndicatorOrientation`, `ToggleSize`, `InputType`, `FormMethod`, `SwapStyle`, `icons.Name`, `SortDirection`). Every `IsValid` is now test-covered.
+- `utils.TestVersionMatchesFeatures`: drift-guard test asserting `FEATURES.md` version matches `utils.Version` (mirrors the existing `TestVersionMatchesChangelog`).
 - Recipe docs: [`docs/recipes/custom-table-rows.md`](docs/recipes/custom-table-rows.md) (Body slot + sortable `TypedHeaders`), [`docs/recipes/custom-404-page.md`](docs/recipes/custom-404-page.md) (`NotFound404` with custom links/search), [`docs/recipes/recipe-index.md`](docs/recipes/recipe-index.md) (index of all recipes).
 - Recipe: [`docs/recipes/container-queries.md`](docs/recipes/container-queries.md) — when and how to use `ContainerResponsive` for parent-width-responsive grids.
 - Reference: [`docs/motion-design.md`](docs/motion-design.md) — timing constants, duration guidelines, easing policy, and `motion-reduce` compliance rules.
@@ -20,14 +24,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **`display.StatCardProps.HxSwap` typed from `string` to `htmx.SwapStyle`** — consumers now pass typed constants (`htmx.SwapInnerHTML`) instead of raw strings, matching the pattern used by `SwapOOB`.
+- **`ButtonHTMLType` converted from `map[X]bool` to `map[X]string` + `utils.Lookup`** — matches the convention used by all other enums (InputType, FormMethod, etc.).
+- **`feedback.feedbackIconName` + `lookupFeedbackStyle` private helpers removed** — replaced with direct `utils.Lookup` calls, reducing custom boilerplate.
 - **6 lookup maps converted from `map[string]string` to typed-key maps**: `cardPaddingLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`, `badgeSizeLookup` (display); `spinnerSizeLookup`, `progressHeightLookup` (feedback). Eliminates all `string(v)` casts at call sites — invalid enum values are now caught at compile time rather than silently missing the map.
 - `errorpage.CauseItem.Code` changed from raw `string` to the existing `Code` type (same package), closing a split brain where the `Code` type was defined but unused on this struct.
 - `errorpage.FamilyStatusCode` simplified to use `utils.Lookup` instead of manual map+fallback.
-- Motion constants (`transitionFast`, `transitionNormal`, `transitionColors`, `transitionTransform`) wired into `CopyButton` and `Accordion` panel — previously only Modal and Drawer used them.
+- Motion constants (`transitionFast`, `transitionNormal`, `transitionColors`, `transitionTransform`) wired into `CopyButton` — previously only Modal and Drawer used them.
 - SKILL.md authoring playbook updated with three new mandatory conventions: RTL logical properties, motion constants, and container queries.
 
 ### Fixed
 
+- **Documentation/code split brain corrected**: AGENTS.md, flake.nix, and CHANGELOG v0.7.0 all falsely described a 6-module workspace with `go.work` — the modularization was prototyped on `modularize/strategic-split` but never merged. All three corrected to match the single-module reality.
 - **`ModalSize2XL` and `DrawerSize2XL` both had value `"full"`** — identical to the deprecated `ModalSizeFull`/`DrawerFull` aliases. They resolved only by map-key accident (the alias's entry matched). Each now has its own value (`"2xl"`) with a dedicated map entry; the deprecated aliases keep `"full"` for backward compatibility.
 - **Combobox WAI-ARIA compliance**: options now carry `aria-selected` (set to `"true"` on the active option alongside `data-selected`); Tab key now closes the listbox and clears `aria-activedescendant`/selection state instead of leaving stale focus. Extracted a shared `tcClearComboSelection()` helper across Escape/Enter/Tab/navigation paths.
 - **Combobox `focusout` handler**: listbox now closes and `aria-activedescendant` clears when focus leaves the combobox container (mouse click outside, Tab away). Previously `aria-activedescendant` could remain stale if the outside-click handler didn't fire before blur.

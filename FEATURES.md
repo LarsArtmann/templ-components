@@ -1,6 +1,6 @@
 # Features — templ-components
 
-**Updated:** 2026-07-05 | **Version:** 0.7.0
+**Updated:** 2026-07-06 | **Version:** 0.8.0
 
 A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 
@@ -96,23 +96,23 @@ type BaseProps struct {
 
 ### Enums
 
-| Type               | Values                                                   |
-| ------------------ | -------------------------------------------------------- |
-| `AvatarSize`       | XS, SM, MD, LG, XL                                       |
-| `AvatarShape`      | Circle, Square                                           |
-| `AvatarStatus`     | Online, Offline, None                                    |
-| `BadgeType`        | Primary, Success, Warning, Error, Info, Neutral |
-| `BadgeSize`        | SM, MD, LG                                               |
-| `CardPadding`      | None, SM, MD, LG                                         |
-| `DropdownPosition` | Left, Right                                              |
-| `ModalSize`        | SM, MD, LG, XL, 2XL, Full                                |
-| `DrawerSide`       | Left, Right                                              |
-| `DrawerSize`       | SM, MD, LG, XL, 2XL, Full                                |
-| `TabsVariant`      | Default, Pills                                           |
-| `TrendDirection`   | Up, Down, None                                           |
-| `GridCols`         | 1, 2, 3 (default), 4, 5, 6                               |
-| `TooltipPosition`  | Top, Bottom, Left, Right                                 |
-| `SortDirection`    | None, Asc, Desc (for TableHeader sortable columns)      |
+| Type               | Values                                             |
+| ------------------ | -------------------------------------------------- |
+| `AvatarSize`       | XS, SM, MD, LG, XL                                 |
+| `AvatarShape`      | Circle, Square                                     |
+| `AvatarStatus`     | Online, Offline, None                              |
+| `BadgeType`        | Primary, Success, Warning, Error, Info, Neutral    |
+| `BadgeSize`        | SM, MD, LG                                         |
+| `CardPadding`      | None, SM, MD, LG                                   |
+| `DropdownPosition` | Left, Right                                        |
+| `ModalSize`        | SM, MD, LG, XL, 2XL, Full                          |
+| `DrawerSide`       | Left, Right                                        |
+| `DrawerSize`       | SM, MD, LG, XL, 2XL, Full                          |
+| `TabsVariant`      | Default, Pills                                     |
+| `TrendDirection`   | Up, Down, None                                     |
+| `GridCols`         | 1, 2, 3 (default), 4, 5, 6                         |
+| `TooltipPosition`  | Top, Bottom, Left, Right                           |
+| `SortDirection`    | None, Asc, Desc (for TableHeader sortable columns) |
 
 ### Known Issues
 
@@ -194,14 +194,14 @@ _None — all previously reported issues resolved._
 
 ### Enums
 
-| Type              | Values                                                |
-| ----------------- | ----------------------------------------------------- |
+| Type              | Values                                                                         |
+| ----------------- | ------------------------------------------------------------------------------ |
 | `FeedbackType`    | Success, Error, Warning, Info (canonical; AlertType and ToastType are aliases) |
-| `AlertType`       | Alias for `FeedbackType`                              |
-| `SpinnerSize`     | SM, MD, LG                                            |
-| `SkeletonVariant` | Text, TextShort, Title, Avatar, Image, Card, TableRow |
-| `ProgressBarSize` | SM, MD, LG                                            |
-| `ToastType`       | Alias for `FeedbackType`                              |
+| `AlertType`       | Alias for `FeedbackType`                                                       |
+| `SpinnerSize`     | SM, MD, LG                                                                     |
+| `SkeletonVariant` | Text, TextShort, Title, Avatar, Image, Card, TableRow                          |
+| `ProgressBarSize` | SM, MD, LG                                                                     |
+| `ToastType`       | Alias for `FeedbackType`                                                       |
 
 ### Constants
 
