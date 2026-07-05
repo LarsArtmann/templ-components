@@ -263,7 +263,7 @@ templ statCardFigures(props StatCardProps) {
 		<dd class="text-2xl font-semibold text-gray-900 dark:text-white">{ props.Value }</dd>
 		if props.Change != "" {
 			<div
-				class={ "ml-2 flex items-baseline text-sm font-semibold",
+				class={ "ms-2 flex items-baseline text-sm font-semibold",
 				templ.KV("text-green-600 dark:text-green-400", trend == TrendUp),
 				templ.KV("text-red-600 dark:text-red-400", trend == TrendDown) }
 			>

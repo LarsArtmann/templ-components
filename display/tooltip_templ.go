@@ -50,12 +50,12 @@ var tooltipPositionMap = map[TooltipPosition]tooltipPositionStyles{
 		Arrow:   "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 dark:border-b-gray-700",
 	},
 	TooltipPositionLeft: {
-		Tooltip: "right-full top-1/2 -translate-y-1/2 mr-2",
-		Arrow:   "left-full top-1/2 -translate-y-1/2 border-l-gray-900 dark:border-l-gray-700",
+		Tooltip: "right-full top-1/2 -translate-y-1/2 me-2",
+		Arrow:   "left-full top-1/2 -translate-y-1/2 border-s-gray-900 dark:border-s-gray-700",
 	},
 	TooltipPositionRight: {
-		Tooltip: "left-full top-1/2 -translate-y-1/2 ml-2",
-		Arrow:   "right-full top-1/2 -translate-y-1/2 border-r-gray-900 dark:border-r-gray-700",
+		Tooltip: "left-full top-1/2 -translate-y-1/2 ms-2",
+		Arrow:   "right-full top-1/2 -translate-y-1/2 border-e-gray-900 dark:border-e-gray-700",
 	},
 }
 

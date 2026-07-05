@@ -221,7 +221,7 @@ func Table(props TableProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			for _, h := range props.Headers {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<th scope=\"col\" class=\"px-4 py-3 text-left font-semibold text-gray-900 dark:text-white\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<th scope=\"col\" class=\"px-4 py-3 text-start font-semibold text-gray-900 dark:text-white\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

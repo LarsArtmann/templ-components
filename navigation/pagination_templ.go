@@ -589,7 +589,7 @@ func Pagination(props PaginationProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = mobilePageButton(props.CurrentPage < props.TotalPages, props.pageURL(props.CurrentPage+1), "ml-3", "Next").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = mobilePageButton(props.CurrentPage < props.TotalPages, props.pageURL(props.CurrentPage+1), "ms-3", "Next").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

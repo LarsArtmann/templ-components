@@ -206,7 +206,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Why != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<div class=\"mt-5 ml-14\"><p class=\"text-sm text-gray-500 dark:text-gray-400\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "<div class=\"mt-5 ms-14\"><p class=\"text-sm text-gray-500 dark:text-gray-400\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -224,12 +224,12 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-4 ml-14", "Cause chain").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-4 ms-14", "Cause chain").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if props.WayOut != "" || props.WayOutHref != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"mt-6 ml-14\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div class=\"mt-6 ms-14\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

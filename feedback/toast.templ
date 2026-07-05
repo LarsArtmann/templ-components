@@ -71,7 +71,7 @@ func DefaultToastProps() ToastProps {
 //
 //	@feedback.ToastContainer()
 templ ToastContainer(nonce string) {
-	<div id="tc-toast-container" class="fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none" aria-live="polite" aria-atomic="true">
+	<div id="tc-toast-container" class="fixed bottom-4 end-4 z-50 flex flex-col gap-2 pointer-events-none" aria-live="polite" aria-atomic="true">
 		<!-- Toasts are injected here -->
 	</div>
 	<script nonce={ nonce }>

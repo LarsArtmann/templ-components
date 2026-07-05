@@ -176,7 +176,7 @@ func ErrorDetail(props ErrorDetailProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-3 ml-8", "Caused by").Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-3 ms-8", "Caused by").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

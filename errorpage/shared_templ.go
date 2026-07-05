@@ -63,7 +63,7 @@ func fixCard(fix string) templ.Component {
 			templ_7745c5c3_Var2 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2\"><p class=\"text-xs text-gray-600 dark:text-gray-400\"><span class=\"font-medium text-gray-500 dark:text-gray-500\">Suggested fix:</span> <span class=\"ml-1\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2\"><p class=\"text-xs text-gray-600 dark:text-gray-400\"><span class=\"font-medium text-gray-500 dark:text-gray-500\">Suggested fix:</span> <span class=\"ms-1\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

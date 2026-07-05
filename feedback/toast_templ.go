@@ -99,7 +99,7 @@ func ToastContainer(nonce string) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"tc-toast-container\" class=\"fixed bottom-4 right-4 z-50 flex flex-col gap-2 pointer-events-none\" aria-live=\"polite\" aria-atomic=\"true\"><!-- Toasts are injected here --></div><script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div id=\"tc-toast-container\" class=\"fixed bottom-4 end-4 z-50 flex flex-col gap-2 pointer-events-none\" aria-live=\"polite\" aria-atomic=\"true\"><!-- Toasts are injected here --></div><script nonce=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

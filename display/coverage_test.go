@@ -203,6 +203,29 @@ func TestDefaultGridPropsValue(t *testing.T) {
 	}
 }
 
+func TestGridContainerResponsive(t *testing.T) {
+	t.Parallel()
+	t.Run("wraps in @container div", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Grid(GridProps{Cols: GridCols3, ContainerResponsive: true}))
+		utils.AssertContains(t, output, "@container")
+		utils.AssertContains(t, output, "@lg:grid-cols-3")
+	})
+	t.Run("default does not wrap", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Grid(GridProps{Cols: GridCols3}))
+		if strings.Contains(output, "@container") {
+			t.Error("non-container-responsive grid should not contain @container")
+		}
+		utils.AssertContains(t, output, "lg:grid-cols-3")
+	})
+	t.Run("container 2 col uses @sm", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Grid(GridProps{Cols: GridCols2, ContainerResponsive: true}))
+		utils.AssertContains(t, output, "@sm:grid-cols-2")
+	})
+}
+
 // --- Button coverage (was 53.7%) ---
 
 func TestButtonIcon(t *testing.T) {

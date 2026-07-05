@@ -105,7 +105,7 @@ templ Avatar(props AvatarProps) {
 			/>
 			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
 				<span
-					class={ "absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
+					class={ "absolute bottom-0 end-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
 						avatarDotSizeClass(props.Size),
 						templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
 						templ.KV("bg-gray-400", props.Status == AvatarStatusOffline) }
@@ -133,7 +133,7 @@ templ Avatar(props AvatarProps) {
 			}
 			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
 				<span
-					class={ "absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
+					class={ "absolute bottom-0 end-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
 						avatarDotSizeClass(props.Size),
 						templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
 						templ.KV("bg-gray-400", props.Status == AvatarStatusOffline) }

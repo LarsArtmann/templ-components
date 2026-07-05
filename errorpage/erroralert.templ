@@ -27,7 +27,7 @@ templ ErrorAlert(props ErrorAlertProps) {
 			<div class="flex-shrink-0">
 				@familyIcon(style)
 			</div>
-			<div class="ml-3 flex-1">
+			<div class="ms-3 flex-1">
 				<div class="flex items-center gap-2">
 					if props.Title != "" {
 						<h3 class={ "text-sm font-medium", style.Text }>{ props.Title }</h3>
@@ -46,7 +46,7 @@ templ ErrorAlert(props ErrorAlertProps) {
 				}
 			</div>
 			if props.Dismissible {
-				<div class="ml-auto pl-3">
+				<div class="ms-auto ps-3">
 					<div class="-mx-1.5 -my-1.5">
 						<button
 							type="button"

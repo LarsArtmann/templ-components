@@ -76,7 +76,7 @@ templ dropdownItemLink(item DropdownItem) {
 			{ item.Attrs... }
 		>
 			if item.Icon != "" {
-				@icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500")
+				@icons.Icon(item.Icon, "me-3 h-4 w-4 text-gray-400 dark:text-gray-500")
 			}
 			{ item.Text }
 		</span>
@@ -92,7 +92,7 @@ templ dropdownItemLink(item DropdownItem) {
 			{ item.Attrs... }
 		>
 			if item.Icon != "" {
-				@icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500")
+				@icons.Icon(item.Icon, "me-3 h-4 w-4 text-gray-400 dark:text-gray-500")
 			}
 			{ item.Text }
 		</a>
@@ -112,7 +112,7 @@ templ Dropdown(props DropdownProps) {
 	{{ id := utils.EnsureID("dropdown", props.ID) }}
 	<div
 		id={ id }
-		class={ utils.Class("relative inline-block text-left", props.Class) }
+		class={ utils.Class("relative inline-block text-start", props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
@@ -129,7 +129,7 @@ templ Dropdown(props DropdownProps) {
 				aria-label={ props.Label }
 			>
 				{ props.Label }
-				@svg.FillIcon("-mr-1 h-5 w-5 text-gray-400", svg.PathChevronSmall, false)
+				@svg.FillIcon("-me-1 h-5 w-5 text-gray-400", svg.PathChevronSmall, false)
 			</button>
 		</div>
 		<div
@@ -150,7 +150,7 @@ templ Dropdown(props DropdownProps) {
 					} else {
 						<button
 							type="button"
-							class={ utils.Class("block w-full text-left", dropdownItemClass, utils.Ternary(item.Disabled, dropdownItemDisabledClass, "")) }
+							class={ utils.Class("block w-full text-start", dropdownItemClass, utils.Ternary(item.Disabled, dropdownItemDisabledClass, "")) }
 							role="menuitem"
 							if item.Disabled {
 								disabled
@@ -159,7 +159,7 @@ templ Dropdown(props DropdownProps) {
 							{ item.Attrs... }
 						>
 							if item.Icon != "" {
-								@icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500")
+								@icons.Icon(item.Icon, "me-3 h-4 w-4 text-gray-400 dark:text-gray-500")
 							}
 							{ item.Text }
 						</button>

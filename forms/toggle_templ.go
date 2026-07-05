@@ -220,7 +220,7 @@ func Toggle(props ToggleProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var9 = []any{utils.Class("absolute top-0.5 left-0.5 rounded-full bg-white shadow-sm transition-transform peer-checked:"+translateClass+" motion-reduce:transition-none", thumbClass)}
+		var templ_7745c5c3_Var9 = []any{utils.Class("absolute top-0.5 start-0.5 rounded-full bg-white shadow-sm transition-transform peer-checked:"+translateClass+" motion-reduce:transition-none", thumbClass)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -243,7 +243,7 @@ func Toggle(props ToggleProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Label != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<span class=\"ml-3 text-sm font-medium text-gray-900 dark:text-white\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<span class=\"ms-3 text-sm font-medium text-gray-900 dark:text-white\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

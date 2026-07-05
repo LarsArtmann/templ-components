@@ -35,13 +35,13 @@ templ ErrorPage(props ErrorPageProps) {
 						</div>
 					</div>
 					if props.Why != "" {
-						<div class="mt-5 ml-14">
+						<div class="mt-5 ms-14">
 							<p class="text-sm text-gray-500 dark:text-gray-400">{ props.Why }</p>
 						</div>
 					}
-					@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-4 ml-14", "Cause chain")
+					@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-4 ms-14", "Cause chain")
 					if props.WayOut != "" || props.WayOutHref != "" {
-						<div class="mt-6 ml-14">
+						<div class="mt-6 ms-14">
 							if props.WayOutHref != "" {
 								<a
 									href={ templ.SafeURL(props.WayOutHref) }

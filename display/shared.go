@@ -20,6 +20,13 @@ const focusableSelector = `'a[href], button:not([disabled]), textarea, input, se
 // it with a margin utility via utils.Class, e.g. utils.Class(mutedTextClass, "mt-1").
 const mutedTextClass = "text-sm text-gray-500 dark:text-gray-400"
 
+// Motion class constants for consistent animation timing across components.
+// Durations follow the motion design research guidelines:
+//   - 150ms: micro-interactions (hover, toggle, tooltip)
+//   - 200ms: overlays (modal, drawer, dropdown)
+//   - 300ms: panel transitions, large element movement
+//
+
 // overlayPanelConfig defines the CSS classes that animate the panel element
 // between open and closed states. The fields are typed slices, converted to
 // JS-quoted classList.add/remove arguments via jsClassArgs at use site.

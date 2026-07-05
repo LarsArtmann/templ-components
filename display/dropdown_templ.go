@@ -127,7 +127,7 @@ func dropdownItemLink(item DropdownItem) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if item.Icon != "" {
-				templ_7745c5c3_Err = icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = icons.Icon(item.Icon, "me-3 h-4 w-4 text-gray-400 dark:text-gray-500").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -200,7 +200,7 @@ func dropdownItemLink(item DropdownItem) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if item.Icon != "" {
-				templ_7745c5c3_Err = icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500").Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = icons.Icon(item.Icon, "me-3 h-4 w-4 text-gray-400 dark:text-gray-500").Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -254,7 +254,7 @@ func Dropdown(props DropdownProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		id := utils.EnsureID("dropdown", props.ID)
-		var templ_7745c5c3_Var10 = []any{utils.Class("relative inline-block text-left", props.Class)}
+		var templ_7745c5c3_Var10 = []any{utils.Class("relative inline-block text-start", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var10...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -364,7 +364,7 @@ func Dropdown(props DropdownProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = svg.FillIcon("-mr-1 h-5 w-5 text-gray-400", svg.PathChevronSmall, false).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = svg.FillIcon("-me-1 h-5 w-5 text-gray-400", svg.PathChevronSmall, false).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -415,7 +415,7 @@ func Dropdown(props DropdownProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				var templ_7745c5c3_Var20 = []any{utils.Class("block w-full text-left", dropdownItemClass, utils.Ternary(item.Disabled, dropdownItemDisabledClass, ""))}
+				var templ_7745c5c3_Var20 = []any{utils.Class("block w-full text-start", dropdownItemClass, utils.Ternary(item.Disabled, dropdownItemDisabledClass, ""))}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var20...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -452,7 +452,7 @@ func Dropdown(props DropdownProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				if item.Icon != "" {
-					templ_7745c5c3_Err = icons.Icon(item.Icon, "mr-3 h-4 w-4 text-gray-400 dark:text-gray-500").Render(ctx, templ_7745c5c3_Buffer)
+					templ_7745c5c3_Err = icons.Icon(item.Icon, "me-3 h-4 w-4 text-gray-400 dark:text-gray-500").Render(ctx, templ_7745c5c3_Buffer)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}

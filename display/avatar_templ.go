@@ -237,7 +237,7 @@ func Avatar(props AvatarProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
-				var templ_7745c5c3_Var10 = []any{"absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
+				var templ_7745c5c3_Var10 = []any{"absolute bottom-0 end-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
 					avatarDotSizeClass(props.Size),
 					templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
 					templ.KV("bg-gray-400", props.Status == AvatarStatusOffline)}
@@ -374,7 +374,7 @@ func Avatar(props AvatarProps) templ.Component {
 				}
 			}
 			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
-				var templ_7745c5c3_Var18 = []any{"absolute bottom-0 right-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
+				var templ_7745c5c3_Var18 = []any{"absolute bottom-0 end-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
 					avatarDotSizeClass(props.Size),
 					templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
 					templ.KV("bg-gray-400", props.Status == AvatarStatusOffline)}

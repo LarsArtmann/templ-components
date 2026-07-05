@@ -42,7 +42,7 @@ templ Radio(props RadioProps) {
 				if props.ID != "" {
 					for={ props.ID }
 				}
-				class="ml-3 text-sm font-medium text-gray-900 dark:text-white"
+				class="ms-3 text-sm font-medium text-gray-900 dark:text-white"
 			>
 				{ props.Label }
 			</label>
@@ -79,7 +79,7 @@ templ RadioGroup(props RadioGroupProps) {
 			<legend class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
 				{ props.Label }
 				if props.Required {
-					<span class="text-red-500 ml-0.5" aria-hidden="true">*</span>
+					<span class="text-red-500 ms-0.5" aria-hidden="true">*</span>
 				}
 			</legend>
 		}

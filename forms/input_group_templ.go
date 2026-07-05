@@ -14,9 +14,9 @@ import "github.com/larsartmann/templ-components/utils"
 //
 // Use with Input, Select, or Textarea. When using an addon, add padding
 // to the input so the content doesn't overlap:
-//   - Left addon  → add "pl-10" to input Class
-//   - Right addon → add "pr-10" to input Class
-//   - Both        → add "pl-10 pr-10"
+//   - Left addon  → add "ps-10" to input Class
+//   - Right addon → add "pe-10" to input Class
+//   - Both        → add "ps-10 pe-10"
 type InputGroupProps struct {
 	utils.BaseProps
 	LeftAddon  templ.Component
@@ -38,11 +38,11 @@ func DefaultInputGroupProps() InputGroupProps {
 func InputGroupPaddingClass(left, right bool) string {
 	switch {
 	case left && right:
-		return "pl-10 pr-10"
+		return "ps-10 pe-10"
 	case left:
-		return "pl-10"
+		return "ps-10"
 	case right:
-		return "pr-10"
+		return "pe-10"
 	default:
 		return ""
 	}
@@ -54,7 +54,7 @@ func InputGroupPaddingClass(left, right bool) string {
 //	@forms.InputGroup(forms.InputGroupProps{
 //	   LeftAddon: icons.Icon(icons.Search, "h-5 w-5 text-gray-400"),
 //	}) {
-//	   @forms.Input(forms.InputProps{Class: "pl-10"})
+//	   @forms.Input(forms.InputProps{Class: "ps-10"})
 //	}
 func InputGroup(props InputGroupProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -131,7 +131,7 @@ func InputGroup(props InputGroupProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.LeftAddon != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -157,7 +157,7 @@ func InputGroup(props InputGroupProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.RightAddon != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"absolute inset-y-0 right-0 flex items-center pr-3\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"absolute inset-y-0 end-0 flex items-center pe-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

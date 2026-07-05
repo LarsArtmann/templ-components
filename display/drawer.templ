@@ -25,8 +25,8 @@ templ Drawer(props DrawerProps) {
 		<div
 			id={ id + "-panel" }
 			class={ utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0", drawerSizeClass(props.Size), props.Class),
-				templ.KV("left-0", props.Side == DrawerLeft),
-				templ.KV("right-0", props.Side == DrawerRight),
+				templ.KV("start-0", props.Side == DrawerLeft),
+				templ.KV("end-0", props.Side == DrawerRight),
 				templ.KV("translate-x-0", props.Open),
 				templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
 				templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight) }

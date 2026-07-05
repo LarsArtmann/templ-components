@@ -159,7 +159,7 @@ templ Pagination(props PaginationProps) {
 		>
 			<div class="flex flex-1 justify-between sm:hidden">
 				@mobilePageButton(props.CurrentPage > 1, props.pageURL(props.CurrentPage-1), "", "Previous")
-				@mobilePageButton(props.CurrentPage < props.TotalPages, props.pageURL(props.CurrentPage+1), "ml-3", "Next")
+				@mobilePageButton(props.CurrentPage < props.TotalPages, props.pageURL(props.CurrentPage+1), "ms-3", "Next")
 			</div>
 			<div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
 				<div>
