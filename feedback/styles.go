@@ -3,6 +3,7 @@ package feedback
 
 import (
 	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 // FeedbackType represents the severity/visual style of a feedback component.
@@ -20,28 +21,6 @@ const (
 // feedbackStyleSet holds the CSS classes for a feedback component variant.
 type feedbackStyleSet struct {
 	Border, BG, Text, Icon string
-}
-
-// lookupFeedbackStyle returns the style set for key t from map m,
-// or def if not found.
-func lookupFeedbackStyle[T ~string](
-	m map[T]feedbackStyleSet,
-	def feedbackStyleSet,
-	t T,
-) feedbackStyleSet {
-	if s, ok := m[t]; ok {
-		return s
-	}
-	return def
-}
-
-// feedbackIconName maps a FeedbackType to its canonical icon name.
-// Shared by Alert and Toast components.
-func feedbackIconName(m map[FeedbackType]icons.Name, t FeedbackType) icons.Name {
-	if n, ok := m[t]; ok {
-		return n
-	}
-	return icons.Information
 }
 
 // feedbackStyleMap is the single source of truth for feedback styles.
@@ -95,11 +74,11 @@ var feedbackIconMap = map[FeedbackType]icons.Name{
 }
 
 func feedbackStyle(t FeedbackType) feedbackStyleSet {
-	return lookupFeedbackStyle(feedbackStyleMap, feedbackStyleDefault, t)
+	return utils.Lookup(feedbackStyleMap, t, feedbackStyleDefault)
 }
 
 func feedbackIcon(t FeedbackType) icons.Name {
-	return feedbackIconName(feedbackIconMap, t)
+	return utils.Lookup(feedbackIconMap, t, icons.Information)
 }
 
 // FeedbackTypeIsValid reports whether the FeedbackType value is one of the

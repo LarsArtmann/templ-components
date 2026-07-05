@@ -200,7 +200,7 @@ func TestDismissScript(t *testing.T) {
 	}
 }
 
-func TestFeedbackIconName(t *testing.T) {
+func TestFeedbackIcon(t *testing.T) {
 	t.Parallel()
 	tests := []struct {
 		name string
@@ -214,9 +214,9 @@ func TestFeedbackIconName(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
-			got := feedbackIconName(feedbackIconMap, tt.typ)
+			got := feedbackIcon(tt.typ)
 			if got != tt.want {
-				t.Errorf("feedbackIconName(feedbackIconMap, %q) = %q, want %q", tt.typ, got, tt.want)
+				t.Errorf("feedbackIcon(%q) = %q, want %q", tt.typ, got, tt.want)
 			}
 		})
 	}

@@ -198,10 +198,7 @@ func DefaultErrorAlertProps() ErrorAlertProps {
 // FamilyStatusCode returns the HTTP status code for a family.
 // Useful for HTTP handlers that need to set the correct response status.
 func FamilyStatusCode(f Family) int {
-	if code, ok := familyStatusCodeMap[f]; ok {
-		return code
-	}
-	return 500
+	return utils.Lookup(familyStatusCodeMap, f, 500)
 }
 
 //nolint:gochecknoglobals // Package-level lookup table
