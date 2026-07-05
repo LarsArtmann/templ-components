@@ -23,7 +23,7 @@ func DefaultFileInputProps() FileInputProps {
 // fileInputClass returns the shared Tailwind classes for file inputs,
 // using the file: modifier to style the native button.
 func fileInputClass(hasError bool) string {
-	base := "block w-full text-sm text-gray-900 dark:text-gray-300 file:me-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 transition-colors cursor-pointer"
+	base := "block w-full text-sm text-gray-900 dark:text-gray-300 file:me-4 file:rounded-md file:border-0 file:px-4 file:py-2 file:text-sm file:font-semibold file:bg-blue-600 file:text-white hover:file:bg-blue-500 transition-colors motion-reduce:transition-none motion-reduce:duration-0 cursor-pointer"
 	if hasError {
 		return base + " ring-1 ring-inset ring-red-300 focus:ring-2 focus:ring-inset focus:ring-red-500 rounded-md dark:ring-red-700 dark:focus:ring-red-500"
 	}

@@ -45,7 +45,7 @@ templ ErrorPage(props ErrorPageProps) {
 							if props.WayOutHref != "" {
 								<a
 									href={ templ.SafeURL(props.WayOutHref) }
-									class={ "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+									class={ "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 								>
 									<span>{ utils.Ternary(props.WayOut != "", props.WayOut, "Go back") }</span>
 									@icons.Icon(icons.ArrowRight, "h-4 w-4")
@@ -54,7 +54,7 @@ templ ErrorPage(props ErrorPageProps) {
 								<button
 									type="button"
 									data-tc-go-back
-									class={ "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
+									class={ "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 								>
 									{ props.WayOut }
 								</button>

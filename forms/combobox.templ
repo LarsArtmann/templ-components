@@ -192,6 +192,20 @@ templ Combobox(props ComboboxProps) {
 					});
 				}
 			});
+			document.addEventListener('focusout', function(e) {
+				var input = e.target.closest('[data-combobox-input]');
+				if (!input) return;
+				var container = input.closest('[data-combobox]');
+				if (container && container.contains(e.relatedTarget)) return;
+				var id = input.getAttribute('data-combobox-input');
+				var list = document.querySelector('[data-combobox-list="' + id + '"]');
+				if (list) {
+					list.classList.add('hidden');
+					var opts = Array.prototype.slice.call(list.querySelectorAll('[data-combobox-option]'));
+					tcClearComboSelection(opts, input);
+				}
+				input.setAttribute('aria-expanded', 'false');
+			});
 			document.addEventListener('keydown', function(e) {
 				var input = e.target.closest('[data-combobox-input]');
 				if (!input) return;

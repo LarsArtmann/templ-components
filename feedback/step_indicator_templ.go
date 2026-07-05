@@ -340,7 +340,7 @@ func stepCircle(stepIndex, currentStep int) templ.Component {
 			templ_7745c5c3_Var18 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var19 = []any{"w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors", stepCircleClass(stepIndex, currentStep)}
+		var templ_7745c5c3_Var19 = []any{"w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors motion-reduce:transition-none motion-reduce:duration-0", stepCircleClass(stepIndex, currentStep)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var19...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
