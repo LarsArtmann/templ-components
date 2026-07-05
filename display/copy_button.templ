@@ -62,7 +62,7 @@ templ CopyButton(props CopyButtonProps) {
 		if props.Icon {
 			@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
 		}
-		<span data-tc-copy-text>{ label }</span>
+		<span data-tc-copy-text role="status" aria-live="polite">{ label }</span>
 	</button>
 	@copyButtonScriptComponent(props.Nonce)
 }

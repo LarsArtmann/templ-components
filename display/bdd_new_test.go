@@ -58,6 +58,20 @@ func TestCopyButtonBehavior(t *testing.T) {
 		utils.AssertContains(t, output, `nonce="secret123"`)
 		utils.AssertContains(t, output, "tcCopyAttached")
 	})
+
+	t.Run("includes execCommand fallback for non-secure contexts", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CopyButton(CopyButtonProps{Text: "x"}))
+		utils.AssertContains(t, output, "execCommand")
+		utils.AssertContains(t, output, "tcFallbackCopy")
+	})
+
+	t.Run("label span has aria-live for screen reader feedback", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CopyButton(CopyButtonProps{Text: "x"}))
+		utils.AssertContains(t, output, `aria-live="polite"`)
+		utils.AssertContains(t, output, `role="status"`)
+	})
 }
 
 // --- RelativeTime Behavior ---
