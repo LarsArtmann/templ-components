@@ -164,3 +164,26 @@ Sourced from DiscordSync, SwettySwipper, Overview, and browser-history feedback 
 - [x] Consider self-hosting htmx as default (CDN opt-in) — SwettySwipper + Overview both hit CSP friction. v1.0 breaking change. **DONE**: ADR 0007 written, deferred to v1.0.
 - [x] Consider typed HTMX fields on StatCard (HxGet/HxTarget) vs Attrs workaround — Overview's use case used hx-get/hx-target. **DONE**: `StatCardProps.HxGet/HxTarget/HxSwap` added.
 - [x] Consider `Card.Body` explicit slot field (SEC feedback — Card already has Footer/HeaderAction/children but no explicit Body). **DONE**: `CardProps.Body templ.Component` added.
+
+## 🟣 Session 7 — Code Review Findings (2026-07-05)
+
+### Fixed On The Spot (commit 4369ff2)
+
+- [x] Fix stale count comments in component_props_test.go (display 18→23, navigation 6→7)
+- [x] Fix stale comment in errorpage/fromerror.go (claimed to avoid second errors.AsType call that was performed)
+- [x] Add missing WayOutHref to BadRequest, Conflict, ServiceUnavailable constructors
+- [x] Extract shared scriptComponent() helper — eliminates 4 near-identical functions in display/shared.go
+- [x] Add maxW2XL named constant in drawer_go.go — fixes broken maxW\* naming convention
+- [x] Fix allIconNames() sorting — Spinner appended before sort for correct alphabetical order
+- [x] Extract resolveCDNBase() in layout/sri.go — eliminates duplicated CDN defaulting logic
+- [x] Remove competing package doc comments from 8 non-doc.go files
+
+### Remaining Issues
+
+- [ ] **ModalSize2XL/DrawerSize2XL value mismatch** — constants named "2XL" have value "full" (modal_go.go:18, drawer_go.go:25). Breaking change for next minor.
+- [ ] **Error family→HTTP status code lossy** — NotFound()→400 (should be 404), InternalError()→503 (should be 500). Add StatusCode field to ErrorPageProps.
+- [ ] **Validation asymmetry** — Only ButtonHTMLType validates; other enums silently coerce. Add IsValid() methods.
+- [ ] **Overlay closeKind/componentName untyped** — Two parallel string fields encode same domain (shared.go:39-40). Should be typed OverlayKind enum.
+- [ ] **Silent SRI fallback** — htmxMainSRI(unknownVersion) silently returns default hash (sri.go:83). Browser blocks script.
+- [ ] **Split forms/helpers.go** — Junk-drawer file mixing ARIA, IDs, CSS. Split into aria.go, ids.go, classes.go.
+- [ ] **Error code constants untyped** — CodePageNotFound etc. are bare string constants, not typed Code enum.
