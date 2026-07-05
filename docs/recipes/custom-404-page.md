@@ -9,6 +9,7 @@ How to use `errorpage.NotFound404` for a branded, user-friendly 404 experience.
 ```
 
 Renders a full-page 404 with:
+
 - Large gradient "404" numeral
 - Search form (wire to your search endpoint)
 - Quick-link grid (Home, Docs, Support)

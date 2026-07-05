@@ -95,13 +95,13 @@ go get github.com/larsartmann/templ-components@v0.7.0
 import display "github.com/larsartmann/templ-components/display"
 ```
 
-| Dimension | Assessment |
-|-----------|------------|
-| **Ownership** | Library owns; consumer gets updates via `go get -u` |
-| **Customization** | Props structs + `Class` field + CSS variables + `Attrs` map |
-| **Upgrade story** | Atomic, semver-guaranteed, one command |
+| Dimension                | Assessment                                                                     |
+| ------------------------ | ------------------------------------------------------------------------------ |
+| **Ownership**            | Library owns; consumer gets updates via `go get -u`                            |
+| **Customization**        | Props structs + `Class` field + CSS variables + `Attrs` map                    |
+| **Upgrade story**        | Atomic, semver-guaranteed, one command                                         |
 | **Critical requirement** | Generated `*_templ.go` MUST be committed (Go module proxy serves source as-is) |
-| **Best for** | Teams that want stable, versioned dependencies |
+| **Best for**             | Teams that want stable, versioned dependencies                                 |
 
 **Why this works for templ-components:** Go's module system makes versioned imports
 trivial and reliable. `utils.Class()` (tailwind-merge-go) gives consumers real override
@@ -114,16 +114,16 @@ power — closing the gap that made shadcn invent copy-paste. The multi-module w
 npx shadcn@latest add dialog   # copies source INTO your project
 ```
 
-| Dimension | Assessment |
-|-----------|------------|
-| **Ownership** | Consumer owns the code outright after scaffolding |
-| **Customization** | Edit the source directly — no wrappers, no `!important` |
-| **Upgrade story** | Re-run `add` to pull updates, or stay frozen. Consumer controls when. |
+| Dimension           | Assessment                                                                                    |
+| ------------------- | --------------------------------------------------------------------------------------------- |
+| **Ownership**       | Consumer owns the code outright after scaffolding                                             |
+| **Customization**   | Edit the source directly — no wrappers, no `!important`                                       |
+| **Upgrade story**   | Re-run `add` to pull updates, or stay frozen. Consumer controls when.                         |
 | **Registry system** | JSON schema (`registry.json`) + CLI. Types: `registry:ui`, `registry:block`, `registry:theme` |
-| **Best for** | Teams that want full control and accept maintenance ownership |
+| **Best for**        | Teams that want full control and accept maintenance ownership                                 |
 
-**shadcn's thesis:** *"This is not a component library. It is how you build your
-component library."* Open code > opaque packages. AI can read, understand, and generate
+**shadcn's thesis:** _"This is not a component library. It is how you build your
+component library."_ Open code > opaque packages. AI can read, understand, and generate
 components. The registry JSON format is open and self-hostable.
 
 ### Model C — Hybrid (templui)
@@ -173,10 +173,11 @@ import { Dialog } from "radix-ui";
       <Dialog.Close>Cancel</Dialog.Close>
     </Dialog.Content>
   </Dialog.Portal>
-</Dialog.Root>
+</Dialog.Root>;
 ```
 
 **What Radix provides (you don't write this):**
+
 - Focus trapping inside `Content` (Tab cycles, never escapes)
 - Focus restoration to `Trigger` on close
 - `aria-labelledby` / `aria-describedby` wired from `Title` / `Description`
@@ -186,6 +187,7 @@ import { Dialog } from "radix-ui";
 - `asChild` prop for element replacement (use `<a>` instead of `<button>` as trigger)
 
 **What you provide:**
+
 - ALL CSS (even functional styles like overlay coverage)
 - Layout and spacing
 - Animation (via `data-state` CSS selectors)
@@ -193,20 +195,28 @@ import { Dialog } from "radix-ui";
 **The `data-*` styling bridge:** Radix exposes internal state through data attributes:
 
 ```css
-.AccordionItem[data-state="open"] { border-bottom-width: 2px; }
-.PopoverContent[data-side="top"]  { animation-name: slideUp; }
-.PopoverContent[data-side="bottom"] { animation-name: slideDown; }
+.AccordionItem[data-state="open"] {
+  border-bottom-width: 2px;
+}
+.PopoverContent[data-side="top"] {
+  animation-name: slideUp;
+}
+.PopoverContent[data-side="bottom"] {
+  animation-name: slideDown;
+}
 ```
 
 **Controlled/uncontrolled pattern:** Every stateful component supports both:
 
 ```jsx
 // Uncontrolled (simple — no state management)
-<Dialog.Root defaultOpen={false}>...</Dialog.Root>
+<Dialog.Root defaultOpen={false}>...</Dialog.Root>;
 
 // Controlled (full control — for async, validation, orchestration)
 const [open, setOpen] = useState(false);
-<Dialog.Root open={open} onOpenChange={setOpen}>...</Dialog.Root>
+<Dialog.Root open={open} onOpenChange={setOpen}>
+  ...
+</Dialog.Root>;
 ```
 
 ### Layer 2: Behavior Hooks (React Aria)
@@ -216,9 +226,7 @@ React Aria goes further — it separates behavior into **hooks** that return pro
 ```jsx
 function ComboBox(props) {
   let state = useComboBoxState(props);
-  let {
-    buttonProps, inputProps, listBoxProps, labelProps
-  } = useComboBox({...props}, state);
+  let { buttonProps, inputProps, listBoxProps, labelProps } = useComboBox({ ...props }, state);
 
   return (
     <>
@@ -227,7 +235,7 @@ function ComboBox(props) {
         <input {...inputProps} />
         <button {...buttonProps}>▼</button>
         <ul {...listBoxProps}>
-          {state.collection.getItems().map(item => (
+          {state.collection.getItems().map((item) => (
             <Option key={item.key} item={item} state={state} />
           ))}
         </ul>
@@ -246,11 +254,13 @@ all invisible to the consumer.
 This is where styling meets behavior. Two sub-approaches:
 
 **Monolithic (templ-components):** One component, one props struct, library owns the DOM:
+
 ```go
 @display.Modal(display.ModalProps{Title: "Delete?", Open: true, Size: display.ModalSizeMD})
 ```
 
 **Compound (shadcn/ui, templui):** Multiple sub-components, consumer owns the DOM:
+
 ```go
 // templui compound pattern
 @dialog.Dialog() {
@@ -267,13 +277,13 @@ This is where styling meets behavior. Two sub-approaches:
 
 ### When to use which
 
-| Component type | Recommended pattern | Why |
-|---------------|-------------------|-----|
-| Simple primitives (Badge, Spinner, Skeleton) | Monolithic | Structure is fixed; flexibility isn't needed |
-| Form inputs (Input, Select, Textarea) | Monolithic | HTML structure is standardized; wrapper adds value |
-| Complex overlays (Dialog, Popover, Drawer) | **Compound** | Consumer needs to compose trigger/content/header/footer |
-| Data display (Table, Tree, DataTable) | **Compound** | Structure varies dramatically per use case |
-| Navigation (Tabs, Accordion, Breadcrumbs) | Either | Depends on structural flexibility needs |
+| Component type                               | Recommended pattern | Why                                                     |
+| -------------------------------------------- | ------------------- | ------------------------------------------------------- |
+| Simple primitives (Badge, Spinner, Skeleton) | Monolithic          | Structure is fixed; flexibility isn't needed            |
+| Form inputs (Input, Select, Textarea)        | Monolithic          | HTML structure is standardized; wrapper adds value      |
+| Complex overlays (Dialog, Popover, Drawer)   | **Compound**        | Consumer needs to compose trigger/content/header/footer |
+| Data display (Table, Tree, DataTable)        | **Compound**        | Structure varies dramatically per use case              |
+| Navigation (Tabs, Accordion, Breadcrumbs)    | Either              | Depends on structural flexibility needs                 |
 
 **For templ-components:** The current monolithic pattern is correct for simple components
 but limits complex overlays. For future components (Popover, ContextMenu, HoverCard,
@@ -327,6 +337,7 @@ templ Button(props ButtonProps) {
 ```
 
 **The four propagation rules (no exceptions):**
+
 1. **ID** → `if props.ID != "" { id={ props.ID } }`
 2. **Class** → `utils.Class(libraryClasses..., props.Class)` — consumer always wins
 3. **Attrs** → `{ props.Attrs... }` — spread for arbitrary HTML attributes
@@ -337,20 +348,24 @@ templ Button(props ButtonProps) {
 Radix adds two capabilities that templ-components doesn't have yet:
 
 **`asChild` (element polymorphism):** Any part can become any element:
+
 ```jsx
 <Dialog.Trigger asChild>
-  <a href="/settings">Settings</a>  {/* anchor instead of button */}
+  <a href="/settings">Settings</a> {/* anchor instead of button */}
 </Dialog.Trigger>
 ```
+
 This is powerful for HATEOAS — a dialog trigger can be a hyperlink, preserving
 navigation semantics. In Go templ, this pattern is harder (templates emit fixed tags),
 but the spirit can be achieved via conditional rendering (as Button already does with
 `Href` → `<a>` vs `<button>`).
 
 **`data-*` state exposure:** Components expose internal state for CSS styling:
+
 ```html
 <div data-state="open" data-side="top">...</div>
 ```
+
 templ-components already does this (e.g., `data-tc-dialog-open="true"` in templui
 equivalents) but should standardize the naming convention across all interactive
 components.
@@ -431,20 +446,18 @@ an if-branch in the template instead).
 const buttonVariants = cva("inline-flex items-center justify-center ...", {
   variants: {
     variant: {
-      default:     "bg-primary text-primary-foreground hover:bg-primary/90",
+      default: "bg-primary text-primary-foreground hover:bg-primary/90",
       destructive: "bg-destructive text-white hover:bg-destructive/90",
     },
     size: {
       default: "h-9 px-4 py-2",
-      sm:      "h-8 rounded-md gap-1.5 px-3",
-      icon:    "size-9",
+      sm: "h-8 rounded-md gap-1.5 px-3",
+      icon: "size-9",
     },
   },
-  compoundVariants: [
-    { variant: "primary", size: "sm", class: "shadow-sm" },
-  ],
+  compoundVariants: [{ variant: "primary", size: "sm", class: "shadow-sm" }],
   defaultVariants: { variant: "default", size: "default" },
-})
+});
 ```
 
 **Strengths:** Type-safe (invalid props = compile error), compound variants for
@@ -518,11 +531,11 @@ Every mature design system converges on the same architecture:
 
 Each layer only references the layer directly below:
 
-| Change type | Which layer to update | Example |
-|-------------|----------------------|---------|
-| Brand color change | Primitive | `--blue-500: #6366f1` |
-| Theme switch (light/dark) | Semantic | `--color-bg: var(--gray-950)` |
-| Component restyle | Component | `--button-bg: var(--color-success)` |
+| Change type               | Which layer to update | Example                             |
+| ------------------------- | --------------------- | ----------------------------------- |
+| Brand color change        | Primitive             | `--blue-500: #6366f1`               |
+| Theme switch (light/dark) | Semantic              | `--color-bg: var(--gray-950)`       |
+| Component restyle         | Component             | `--button-bg: var(--color-success)` |
 
 ### shadcn/ui's Implementation (OKLCH + semantic pairs)
 
@@ -547,6 +560,7 @@ shadcn uses **OKLCH** color values (perceptually uniform) in semantic token pair
 ```
 
 Mapped to Tailwind via `@theme inline`:
+
 ```css
 @theme inline {
   --color-primary: var(--primary);
@@ -612,24 +626,25 @@ flip the default to semantic tokens.
 
 ## 7. HATEOAS: HTML as the Source of Truth
 
-> *"A natural hypermedia such as HTML is a practical necessity for building RESTful
-> systems."* — [htmx.org/essays/hateoas](https://htmx.org/essays/hateoas/)
+> _"A natural hypermedia such as HTML is a practical necessity for building RESTful
+> systems."_ — [htmx.org/essays/hateoas](https://htmx.org/essays/hateoas/)
 
 ### The Core Insight
 
 HATEOAS means: **the server encodes all available actions directly in the HTML response.**
 The browser needs no prior knowledge of the application — it just renders hypermedia.
 
-| Aspect | Hypermedia (HTML) | JSON API + SPA |
-|--------|-------------------|----------------|
-| **Available actions** | Encoded in response (`<a>`, `<form>`, `hx-*`) | Client hardcodes URLs/methods |
-| **State transitions** | Server controls via hypermedia changes | Client maintains its own state machine |
-| **Decoupling** | Server evolves independently | Coordinated server+client updates required |
-| **Self-describing** | `<form method="post" action="...">` says everything | `{"status": "overdrawn"}` says nothing |
+| Aspect                | Hypermedia (HTML)                                   | JSON API + SPA                             |
+| --------------------- | --------------------------------------------------- | ------------------------------------------ |
+| **Available actions** | Encoded in response (`<a>`, `<form>`, `hx-*`)       | Client hardcodes URLs/methods              |
+| **State transitions** | Server controls via hypermedia changes              | Client maintains its own state machine     |
+| **Decoupling**        | Server evolves independently                        | Coordinated server+client updates required |
+| **Self-describing**   | `<form method="post" action="...">` says everything | `{"status": "overdrawn"}` says nothing     |
 
 ### Practical Example: Delete Action
 
 **Hypermedia approach (HTMX):**
+
 ```
 User clicks "Delete"
   → hx-delete="/items/42" fires (hypermedia control in HTML)
@@ -641,6 +656,7 @@ User clicks "Delete"
 ```
 
 **JSON API approach (SPA):**
+
 ```
 User clicks "Delete"
   → Client sends DELETE /api/items/42
@@ -683,24 +699,17 @@ A form must work via standard HTML POST without any JavaScript, then HTMX layers
 
 ```html
 <!-- This form works without JS. HTMX enhances it when available. -->
-<form action="/register" method="POST"
-      hx-post="/register"
-      hx-target="#form-container"
-      hx-swap="outerHTML">
-    @forms.Input(forms.InputProps{
-        Name: "email",
-        Type: forms.InputTypeEmail,
-        Label: "Email",
-        Required: true,
-    })
-    @forms.Input(forms.InputProps{
-        Name: "password",
-        Type: forms.InputTypePassword,
-        Label: "Password",
-        Required: true,
-    })
-    @forms.CSRFToken(csrfToken)
-    @display.Button(display.ButtonProps{Text: "Register", Type: display.ButtonSubmit})
+<form
+  action="/register"
+  method="POST"
+  hx-post="/register"
+  hx-target="#form-container"
+  hx-swap="outerHTML"
+>
+  @forms.Input(forms.InputProps{ Name: "email", Type: forms.InputTypeEmail, Label: "Email",
+  Required: true, }) @forms.Input(forms.InputProps{ Name: "password", Type: forms.InputTypePassword,
+  Label: "Password", Required: true, }) @forms.CSRFToken(csrfToken)
+  @display.Button(display.ButtonProps{Text: "Register", Type: display.ButtonSubmit})
 </form>
 ```
 
@@ -712,21 +721,28 @@ The WCAG-compliant pattern for linking errors to fields:
 
 ```html
 <label for="email">Email *</label>
-<input type="email" id="email" name="email" required
-       aria-invalid="true"
-       aria-describedby="email-error" />
+<input
+  type="email"
+  id="email"
+  name="email"
+  required
+  aria-invalid="true"
+  aria-describedby="email-error"
+/>
 <div id="email-error" class="text-sm text-red-600">
-    <span aria-hidden="true">⚠</span> Please enter a valid email address
+  <span aria-hidden="true">⚠</span> Please enter a valid email address
 </div>
 ```
 
 **Key rules:**
+
 1. `aria-invalid="true"` — set ONLY on fields that fail validation
 2. `aria-describedby` — links input to its error message by ID; screen reader announces both
 3. Reset ARIA attributes on each submission — stale errors confuse screen readers
 4. Never rely on color alone — combine border color with icon + text
 
 **templ-components already does this** via `forms.ErrorAttrs(id, errMsg, helpTextID)`:
+
 ```go
 // Returns templ.Attributes for aria-invalid/aria-describedby
 attrs := forms.ErrorAttrs("email", "Invalid email", "email-help")
@@ -738,15 +754,16 @@ A validation summary lists ALL errors above the form, with each error linking to
 
 ```html
 <div id="error-summary" tabindex="-1" role="alert" class="rounded-md bg-red-50 p-4">
-    <h3>2 errors found</h3>
-    <ul>
-        <li><a href="#email">Please enter a valid email address</a></li>
-        <li><a href="#password">Password must be at least 8 characters</a></li>
-    </ul>
+  <h3>2 errors found</h3>
+  <ul>
+    <li><a href="#email">Please enter a valid email address</a></li>
+    <li><a href="#password">Password must be at least 8 characters</a></li>
+  </ul>
 </div>
 ```
 
 **templ-components' implementation** (`forms/validation.templ`):
+
 ```go
 type ValidationError struct {
     Field   string
@@ -759,6 +776,7 @@ type ValidationSummaryProps struct {
 ```
 
 The error count uses singular/plural:
+
 ```go
 fmt.Sprintf("%d error%s found", len(props.Errors),
     utils.Ternary(len(props.Errors) == 1, "", "s"))
@@ -770,15 +788,17 @@ focus directly to the problem field.
 ### 8.4 CSRF Protection
 
 **Hidden input (preferred — survives page reloads, works without JS):**
+
 ```html
 <form hx-post="/api/settings">
-    <input type="hidden" name="csrf_token" value="{ token }" />
+  <input type="hidden" name="csrf_token" value="{ token }" />
 </form>
 ```
 
 **`hx-headers` (global — but stale after `hx-boost` swaps `<html>`/`<body>`):**
+
 ```html
-<body hx-headers='{"X-CSRF-TOKEN": "TOKEN_HERE"}'>
+<body hx-headers='{"X-CSRF-TOKEN": "TOKEN_HERE"}'></body>
 ```
 
 **templ-components provides** `htmx.CSRFToken(token string)` which renders the hidden input.
@@ -786,25 +806,29 @@ focus directly to the problem field.
 ### 8.5 HTMX-Specific Form Patterns
 
 **Per-field real-time validation:**
+
 ```html
-<input type="email" name="email"
-    hx-post="/validate?field=email"
-    hx-trigger="keyup changed delay:500ms"
-    hx-target="#email-error" />
+<input
+  type="email"
+  name="email"
+  hx-post="/validate?field=email"
+  hx-trigger="keyup changed delay:500ms"
+  hx-target="#email-error"
+/>
 ```
 
 **Race condition prevention with `hx-sync`:**
+
 ```html
 <form hx-post="/register">
-    <input name="email"
-        hx-post="/validate"
-        hx-trigger="change"
-        hx-sync="closest form:abort" />  <!-- aborts validation if form submits -->
-    <button type="submit">Register</button>
+  <input name="email" hx-post="/validate" hx-trigger="change" hx-sync="closest form:abort" />
+  <!-- aborts validation if form submits -->
+  <button type="submit">Register</button>
 </form>
 ```
 
 **HTTP 422 for validation errors** (HTMX ignores 4xx by default — configure it):
+
 ```html
 <meta name="htmx-config" content='{"responseHandling":[{"code":"422","swap":true}]}' />
 ```
@@ -835,19 +859,20 @@ redirect needed after successful POST.
 
 ### 9.2 Mandatory Keyboard Patterns (WAI-ARIA APG)
 
-| Component | Keyboard Pattern |
-|-----------|-----------------|
-| **Dialog/Modal** | Escape closes; Tab trapped inside; focus restored to trigger |
-| **Tabs** | Arrow Left/Right between tabs; Tab enters panel; Home/End for first/last |
-| **Menu/Dropdown** | Arrows navigate; Enter/Space activates; Escape closes |
-| **Accordion** | Enter/Space toggles; arrows move between headers (if not using `<details>`) |
-| **Combobox** | Arrow Up/Down moves selection; Home/End; Escape clears |
-| **Tooltip** | Opens on focus; Escape/hover-out dismisses |
+| Component         | Keyboard Pattern                                                            |
+| ----------------- | --------------------------------------------------------------------------- |
+| **Dialog/Modal**  | Escape closes; Tab trapped inside; focus restored to trigger                |
+| **Tabs**          | Arrow Left/Right between tabs; Tab enters panel; Home/End for first/last    |
+| **Menu/Dropdown** | Arrows navigate; Enter/Space activates; Escape closes                       |
+| **Accordion**     | Enter/Space toggles; arrows move between headers (if not using `<details>`) |
+| **Combobox**      | Arrow Up/Down moves selection; Home/End; Escape clears                      |
+| **Tooltip**       | Opens on focus; Escape/hover-out dismisses                                  |
 
 ### 9.3 What "Accessible by Default" Means
 
 An accessible-by-default library **encapsulates accessibility complexity**. A well-built
 Modal automatically:
+
 - Sets `role="dialog"` and `aria-modal="true"`
 - Moves focus into the dialog on open
 - Traps focus while open (Tab cycles inside, never escapes)
@@ -874,12 +899,15 @@ Radix UI and React Aria are the gold standards because:
 ### 9.5 Motion Safety
 
 Every transition must carry:
+
 ```css
 motion-reduce:transition-none motion-reduce:duration-0
 ```
+
 Every animation must carry:
+
 ```css
-motion-reduce:animate-none
+motion-reduce: animate-none;
 ```
 
 **templ-components enforces this** via a11y tests that check for `motion-reduce:*` on
@@ -894,17 +922,17 @@ than no animation.
 
 ### 10.1 Duration Guidelines
 
-| Interaction | Duration | Rationale |
-|-------------|----------|-----------|
-| Button press | 80–100ms | Must feel instant |
-| Toggle/checkbox | 80–150ms | Quick, clear feedback |
-| Button hover | ~200ms | Responsive but not distracting |
-| Tooltip | ~100ms | Informational, shouldn't distract |
-| Dropdown menu | ~200ms | Predictable, avoid bounce |
-| Modal entrance | 250–300ms | Large movement needs gentle timing |
-| Drawer/panel | 250–350ms | Spatial reorientation |
-| Page transition | 300–500ms | Large context change |
-| Success feedback | 400–700ms | Emphasis, deserves time |
+| Interaction      | Duration  | Rationale                          |
+| ---------------- | --------- | ---------------------------------- |
+| Button press     | 80–100ms  | Must feel instant                  |
+| Toggle/checkbox  | 80–150ms  | Quick, clear feedback              |
+| Button hover     | ~200ms    | Responsive but not distracting     |
+| Tooltip          | ~100ms    | Informational, shouldn't distract  |
+| Dropdown menu    | ~200ms    | Predictable, avoid bounce          |
+| Modal entrance   | 250–300ms | Large movement needs gentle timing |
+| Drawer/panel     | 250–350ms | Spatial reorientation              |
+| Page transition  | 300–500ms | Large context change               |
+| Success feedback | 400–700ms | Emphasis, deserves time            |
 
 **Rule:** Keep animations under 300ms for perceived performance. Exits should be 60–70%
 of entrance duration — an exit that lingers blocks the user.
@@ -913,17 +941,18 @@ of entrance duration — an exit that lingers blocks the user.
 
 **The core principle:** Linear motion feels robotic. Real objects accelerate and decelerate.
 
-| Easing | Use For | Avoid |
-|--------|---------|-------|
-| **`ease-out`** (fast start, slow finish) | Entrances, user-initiated interactions — the workhorse | — |
-| **`ease-in`** (slow start, fast finish) | Exits and dismissals only | Never for entrances — feels sluggish |
-| **`ease-in-out`** | Elements already moving on screen | Exits (content lingers) |
-| **`linear`** | Spinners, progress bars — anything representing passage of time | Almost everything else |
+| Easing                                   | Use For                                                         | Avoid                                |
+| ---------------------------------------- | --------------------------------------------------------------- | ------------------------------------ |
+| **`ease-out`** (fast start, slow finish) | Entrances, user-initiated interactions — the workhorse          | —                                    |
+| **`ease-in`** (slow start, fast finish)  | Exits and dismissals only                                       | Never for entrances — feels sluggish |
+| **`ease-in-out`**                        | Elements already moving on screen                               | Exits (content lingers)              |
+| **`linear`**                             | Spinners, progress bars — anything representing passage of time | Almost everything else               |
 
 **The asymmetry rule:** Entrances use ease-out (fast-in, slow-out). Exits use ease-in
 (slow-in, fast-out). This mirrors physical object behavior.
 
 **Professional custom curves:**
+
 ```css
 /* Smooth ease-out — professional default for large movements */
 cubic-bezier(0.16, 1, 0.3, 1)
@@ -941,20 +970,31 @@ cubic-bezier(0.4, 0, 0.2, 1)
 
 ```css
 /* BAD: triggers layout recalculation every frame */
-.dropdown { transition: height 300ms; height: 0; }
-.dropdown.open { height: 200px; }
+.dropdown {
+  transition: height 300ms;
+  height: 0;
+}
+.dropdown.open {
+  height: 200px;
+}
 
 /* GOOD: compositor-only, GPU-accelerated */
-.dropdown { transition: transform 300ms; transform: scaleY(0); transform-origin: top; }
-.dropdown.open { transform: scaleY(1); }
+.dropdown {
+  transition: transform 300ms;
+  transform: scaleY(0);
+  transform-origin: top;
+}
+.dropdown.open {
+  transform: scaleY(1);
+}
 ```
 
-| ❌ Avoid (layout + paint) | ✅ Use (composite only) |
-|---|---|
-| `width`, `height` | `transform: scale()` |
+| ❌ Avoid (layout + paint)        | ✅ Use (composite only)  |
+| -------------------------------- | ------------------------ |
+| `width`, `height`                | `transform: scale()`     |
 | `top`, `left`, `right`, `bottom` | `transform: translate()` |
-| `margin`, `padding` | `transform` |
-| `border-width` | `transform` |
+| `margin`, `padding`              | `transform`              |
+| `border-width`                   | `transform`              |
 
 ### 10.4 `prefers-reduced-motion`
 
@@ -963,14 +1003,19 @@ cross-dissolves are safe replacements.
 
 ```css
 /* Replace vestibular triggers (scaling) with safe motion (fade) */
-.card { transition: transform 300ms var(--ease-enter); }
+.card {
+  transition: transform 300ms var(--ease-enter);
+}
 
 @media (prefers-reduced-motion: reduce) {
-    .card { transition: opacity 150ms linear; }
+  .card {
+    transition: opacity 150ms linear;
+  }
 }
 ```
 
 In Tailwind, this is expressed as utility classes on every transition/animation:
+
 ```
 motion-reduce:transition-none motion-reduce:duration-0   (transitions)
 motion-reduce:animate-none                                (animations)
@@ -983,21 +1028,25 @@ JavaScript — critical for server-rendered components:
 
 ```css
 dialog[open] {
-    opacity: 1;
-    transform: translateY(0);
-    transition: opacity 0.3s, transform 0.3s, overlay 0.3s allow-discrete, display 0.3s allow-discrete;
+  opacity: 1;
+  transform: translateY(0);
+  transition:
+    opacity 0.3s,
+    transform 0.3s,
+    overlay 0.3s allow-discrete,
+    display 0.3s allow-discrete;
 }
 
 @starting-style {
-    dialog[open] {
-        opacity: 0;
-        transform: translateY(20px);
-    }
+  dialog[open] {
+    opacity: 0;
+    transform: translateY(20px);
+  }
 }
 
 dialog {
-    opacity: 0;
-    transform: translateY(20px);
+  opacity: 0;
+  transform: translateY(20px);
 }
 ```
 
@@ -1011,13 +1060,13 @@ Professional libraries define motion as design tokens, not scattered literals:
 
 ```css
 :root {
-    --ease-enter: cubic-bezier(0, 0, 0.3, 1);
-    --ease-exit: cubic-bezier(0.4, 0, 1, 1);
-    --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
-    --duration-instant: 100ms;
-    --duration-fast: 200ms;
-    --duration-standard: 300ms;
-    --duration-slow: 500ms;
+  --ease-enter: cubic-bezier(0, 0, 0.3, 1);
+  --ease-exit: cubic-bezier(0.4, 0, 1, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-instant: 100ms;
+  --duration-fast: 200ms;
+  --duration-standard: 300ms;
+  --duration-slow: 500ms;
 }
 ```
 
@@ -1056,16 +1105,16 @@ Before writing ANY JavaScript for a component:
 Every JS attachment in templ-components uses a global singleton flag:
 
 ```javascript
-(function() {
-    if (window.tcComboboxAttached) return;  // already bound — idempotent
-    window.tcComboboxAttached = true;
+(function () {
+  if (window.tcComboboxAttached) return; // already bound — idempotent
+  window.tcComboboxAttached = true;
 
-    document.addEventListener('click', function(e) {
-        // event delegation — handles dynamically added elements
-        var trigger = e.target.closest('[data-tc-combobox]');
-        if (!trigger) return;
-        // ... handle combobox interaction
-    });
+  document.addEventListener("click", function (e) {
+    // event delegation — handles dynamically added elements
+    var trigger = e.target.closest("[data-tc-combobox]");
+    if (!trigger) return;
+    // ... handle combobox interaction
+  });
 })();
 ```
 
@@ -1098,11 +1147,11 @@ creates state independently.
 
 ```javascript
 // GOOD: reads state from HTML attributes
-var modal = document.querySelector('[data-tc-modal]');
-var open = modal.getAttribute('data-tc-modal-open') === 'true';
+var modal = document.querySelector("[data-tc-modal]");
+var open = modal.getAttribute("data-tc-modal-open") === "true";
 
 // BAD: maintains parallel state in JS
-var modalState = { open: false };  // where does this come from? the server!
+var modalState = { open: false }; // where does this come from? the server!
 ```
 
 When HTMX swaps new HTML, the JS reads the new `data-*` attributes — it doesn't need to
@@ -1146,6 +1195,7 @@ to emit an unnonce'd script.
 
 templui ships **separate `.js` files** (`dialog.js`, `dialog.min.js`) loaded as external
 scripts. This works with CSP (external scripts are allowed without nonces) but:
+
 1. Consumer must serve the JS files from their own static asset path
 2. More moving parts (separate files to manage, minify, version, serve)
 3. Breaks if the consumer's static file path differs from the library's expectation
@@ -1164,46 +1214,47 @@ libraries fall short.
 
 Replace physical properties with logical ones that automatically flip in RTL:
 
-| Physical (❌) | Logical (✅) | What it does |
-|-------------|------------|-------------|
-| `margin-left` | `margin-inline-start` | Start margin (left in LTR, right in RTL) |
-| `margin-right` | `margin-inline-end` | End margin |
-| `padding-left` | `padding-inline-start` | Start padding |
-| `text-align: left` | `text-align: start` | Start-aligned text |
-| `left: 0` | `inset-inline-start: 0` | Start position |
-| `border-left` | `border-inline-start` | Start border |
+| Physical (❌)      | Logical (✅)            | What it does                             |
+| ------------------ | ----------------------- | ---------------------------------------- |
+| `margin-left`      | `margin-inline-start`   | Start margin (left in LTR, right in RTL) |
+| `margin-right`     | `margin-inline-end`     | End margin                               |
+| `padding-left`     | `padding-inline-start`  | Start padding                            |
+| `text-align: left` | `text-align: start`     | Start-aligned text                       |
+| `left: 0`          | `inset-inline-start: 0` | Start position                           |
+| `border-left`      | `border-inline-start`   | Start border                             |
 
 ### Tailwind Logical Utilities (v4)
 
 Tailwind provides logical utility aliases:
 
-| Physical | Logical | Notes |
-|----------|---------|-------|
-| `ml-4` | `ms-4` | margin-inline-start |
-| `mr-4` | `me-4` | margin-inline-end |
-| `pl-4` | `ps-4` | padding-inline-start |
-| `pr-4` | `pe-4` | padding-inline-end |
-| `left-0` | `start-0` | inset-inline-start |
-| `right-0` | `end-0` | inset-inline-end |
-| `text-left` | `text-start` | text-align: start |
-| `text-right` | `text-end` | text-align: end |
+| Physical     | Logical      | Notes                |
+| ------------ | ------------ | -------------------- |
+| `ml-4`       | `ms-4`       | margin-inline-start  |
+| `mr-4`       | `me-4`       | margin-inline-end    |
+| `pl-4`       | `ps-4`       | padding-inline-start |
+| `pr-4`       | `pe-4`       | padding-inline-end   |
+| `left-0`     | `start-0`    | inset-inline-start   |
+| `right-0`    | `end-0`      | inset-inline-end     |
+| `text-left`  | `text-start` | text-align: start    |
+| `text-right` | `text-end`   | text-align: end      |
 
 ### Icon Mirroring
 
 In RTL, **directional icons must flip** — but symmetric icons must not:
 
-| Mirror in RTL | Don't mirror |
-|--------------|-------------|
-| Arrows (←→↑↓) | Checkmarks |
-| Chevrons (‹›) | X / close |
-| Play/forward/rewind | Plus, minus |
+| Mirror in RTL            | Don't mirror  |
+| ------------------------ | ------------- |
+| Arrows (←→↑↓)            | Checkmarks    |
+| Chevrons (‹›)            | X / close     |
+| Play/forward/rewind      | Plus, minus   |
 | "Back" / "forward" icons | Dots, circles |
-| Bread crumb separators | Avatars |
+| Bread crumb separators   | Avatars       |
 
 CSS for icon flipping:
+
 ```css
 [dir="rtl"] .icon-directional {
-    transform: scaleX(-1);
+  transform: scaleX(-1);
 }
 ```
 
@@ -1227,16 +1278,16 @@ v4 is a ground-up rewrite that fundamentally changes component library authoring
 
 ### What Changed
 
-| Feature | v3 | v4 |
-|---------|----|----|
-| Configuration | `tailwind.config.js` (JS) | `@theme` in CSS (CSS-first) |
-| Content detection | `content: [...]` array | Automatic (respects `.gitignore`) |
-| Color space | RGB | OKLCH (perceptually uniform, wider gamut) |
-| Performance | Baseline | Full builds 5× faster, incremental 182× faster |
-| Dark mode | `dark:` with config | `@custom-variant dark (...)` in CSS |
-| Custom utilities | Plugin API (`addUtilities`) | `@utility` directive in CSS |
-| Custom variants | Plugin API (`addVariant`) | `@custom-variant` directive in CSS |
-| External scanning | Manual config | `@source "../node_modules/my-lib"` |
+| Feature           | v3                          | v4                                             |
+| ----------------- | --------------------------- | ---------------------------------------------- |
+| Configuration     | `tailwind.config.js` (JS)   | `@theme` in CSS (CSS-first)                    |
+| Content detection | `content: [...]` array      | Automatic (respects `.gitignore`)              |
+| Color space       | RGB                         | OKLCH (perceptually uniform, wider gamut)      |
+| Performance       | Baseline                    | Full builds 5× faster, incremental 182× faster |
+| Dark mode         | `dark:` with config         | `@custom-variant dark (...)` in CSS            |
+| Custom utilities  | Plugin API (`addUtilities`) | `@utility` directive in CSS                    |
+| Custom variants   | Plugin API (`addVariant`)   | `@custom-variant` directive in CSS             |
+| External scanning | Manual config               | `@source "../node_modules/my-lib"`             |
 
 ### What This Means for templ-components
 
@@ -1247,28 +1298,34 @@ v4 is a ground-up rewrite that fundamentally changes component library authoring
    consumers `@import` it. No build step, no JS bundling.
 
 3. **`@source` for library scanning.** Consumers add one line:
+
    ```css
    @source "../node_modules/templ-components";
    ```
+
    Wait — templ-components is a Go library, not npm. But the Tailwind scanning still
    needs to find the class strings in the generated `*_templ.go` files. The
    `docs/tailwind-v4-adoption-guide.md` documents this setup.
 
 4. **`@custom-variant` for domain-specific variants.** The library ships:
+
    ```css
    @custom-variant dark (&:where(.dark, .dark *));
    ```
+
    Consumers could create custom variants:
+
    ```css
    @custom-variant tc-error (&:where([data-tc-state="error"]));
    ```
 
 5. **`@utility` for custom utilities.** Libraries can ship first-class utilities:
+
    ```css
    @utility tc-skeleton {
-       background: linear-gradient(90deg, rgba(0,0,0,0.06) 25%, rgba(0,0,0,0.12) 37%, ...);
-       background-size: 400% 100%;
-       animation: shimmer 1.4s ease infinite;
+     background: linear-gradient(90deg, rgba(0, 0, 0, 0.06) 25%, rgba(0, 0, 0, 0.12) 37%, ...);
+     background-size: 400% 100%;
+     animation: shimmer 1.4s ease infinite;
    }
    ```
 
@@ -1368,6 +1425,7 @@ var _ = Describe("Modal", func() {
 ### Component Documentation Pattern
 
 Every component doc page should have:
+
 1. **One-line description** — what it is
 2. **Installation** — one command to add it
 3. **Usage** — minimal import + code snippet
@@ -1380,12 +1438,12 @@ Every component doc page should have:
 Blocks are **pre-composed multi-component layouts** — full-page or full-section patterns
 that demonstrate how primitives compose:
 
-| Block type | Example | What it shows |
-|-----------|---------|--------------|
-| Dashboard | stat cards + chart + data table + sidebar | Full app shell |
-| Login page | card + form inputs + button + link | Authentication flow |
-| Sidebar | collapsible nav + user menu + team switcher | Navigation patterns |
-| Settings | tabs + form + save button | Form composition |
+| Block type | Example                                     | What it shows       |
+| ---------- | ------------------------------------------- | ------------------- |
+| Dashboard  | stat cards + chart + data table + sidebar   | Full app shell      |
+| Login page | card + form inputs + button + link          | Authentication flow |
+| Sidebar    | collapsible nav + user menu + team switcher | Navigation patterns |
+| Settings   | tabs + form + save button                   | Form composition    |
 
 **Why blocks matter:** They teach consumers HOW to compose primitives. A consumer who
 sees a working dashboard block learns more than reading 10 component API pages.
@@ -1426,6 +1484,7 @@ Server-rendered HTML with Tailwind utility classes has inherent performance adva
 
 templ-components has **zero JavaScript framework dependencies**. The only runtime deps
 are:
+
 - `tailwind-merge-go` — class merging (tiny Go library)
 - `go-error-family` — error classification (errorpage module only)
 - `templ` — the template runtime (already in the consumer's binary)
@@ -1460,6 +1519,7 @@ focus trap. All modern browsers support it since 2022.
 **Bonus:** CSS `@starting-style` enables zero-JS enter/exit animations on `<dialog>`.
 
 templui already uses `<dialog>` — see their `dialog.templ`:
+
 ```go
 <dialog class="fixed left-[50%] top-[50%] ...">
     {/* content */}
@@ -1476,16 +1536,16 @@ templui already uses `<dialog>` — see their `dialog.templ`:
 
 Comparing component coverage across libraries:
 
-| Missing component | Priority | Complexity | Notes |
-|-------------------|----------|------------|-------|
-| **Popover** | High | Medium | Compound pattern; positioning needed |
-| **HoverCard** | Medium | Medium | Like Popover but hover-triggered |
-| **Slider** | Medium | Medium | Range input with ARIA slider pattern |
-| **Rating** | Low | Low | Star rating with keyboard support |
-| **Carousel** | Low | High | Complex; consider if needed |
-| **Calendar** | Medium | High | Full calendar grid; date-fns equivalent |
-| **DataTable** | Medium | High | Sorting, filtering, pagination, virtualization |
-| **ContextMenu** | Low | Medium | Right-click menu; compound pattern |
+| Missing component | Priority | Complexity | Notes                                          |
+| ----------------- | -------- | ---------- | ---------------------------------------------- |
+| **Popover**       | High     | Medium     | Compound pattern; positioning needed           |
+| **HoverCard**     | Medium   | Medium     | Like Popover but hover-triggered               |
+| **Slider**        | Medium   | Medium     | Range input with ARIA slider pattern           |
+| **Rating**        | Low      | Low        | Star rating with keyboard support              |
+| **Carousel**      | Low      | High       | Complex; consider if needed                    |
+| **Calendar**      | Medium   | High       | Full calendar grid; date-fns equivalent        |
+| **DataTable**     | Medium   | High       | Sorting, filtering, pagination, virtualization |
+| **ContextMenu**   | Low      | Medium     | Right-click menu; compound pattern             |
 
 ### Gap 6: Motion Tokens (LOW IMPACT)
 
@@ -1505,6 +1565,7 @@ composition patterns.
 A superb web UI component library, synthesized from all research:
 
 ### Architecture
+
 - [ ] Type-safe variants — typed enums + map lookups, never raw strings
 - [ ] Make impossible states unrepresentable — typed enums, fallback values, zero panics
 - [ ] Compound composition for complex widgets — sub-parts mirroring DOM structure
@@ -1513,6 +1574,7 @@ A superb web UI component library, synthesized from all research:
 - [ ] Register new types in contract test — `internal/contract/component_props_test.go`
 
 ### Theming
+
 - [ ] Three-layer token stack — primitive → semantic → component tokens
 - [ ] Semantic token layer — `bg-tc-primary` not `bg-blue-600`
 - [ ] CSS variable theming — consumers retheme without Go/JS changes
@@ -1521,12 +1583,14 @@ A superb web UI component library, synthesized from all research:
 - [ ] Zero lock-in — every visual decision overridable
 
 ### Hypermedia Philosophy
+
 - [ ] HATEOAS-first — HTML is source of truth, server controls available actions
 - [ ] Native HTML preferred — `<details>`, `<form>`, `<dialog>` over JS reimplementations
 - [ ] Progressive enhancement — JS reads state from HTML, enhances rather than replaces
 - [ ] HTMX-native — components emit `hx-*` attributes naturally
 
 ### Accessibility
+
 - [ ] Native HTML first — `<button>` not `<div role="button">`
 - [ ] APG keyboard patterns — every interactive widget follows WAI-ARIA Authoring Practices
 - [ ] Focus management — trap in modals, restore on close, logical tab order
@@ -1536,6 +1600,7 @@ A superb web UI component library, synthesized from all research:
 - [ ] AriaLabel propagation — every component with BaseProps propagates it
 
 ### Forms
+
 - [ ] Progressive enhancement — forms work without JavaScript
 - [ ] Server-side validation — source of truth, never trust client-only
 - [ ] Accessible errors — `aria-invalid`, `aria-describedby`, error summary
@@ -1544,6 +1609,7 @@ A superb web UI component library, synthesized from all research:
 - [ ] State preservation — re-populate values after failed submission
 
 ### Motion Design
+
 - [ ] Purposeful animation — only where it adds value, not everywhere
 - [ ] Professional easing — custom cubic-bezier, not `linear` or default `ease`
 - [ ] Asymmetric enter/exit — different curves and durations
@@ -1553,18 +1619,21 @@ A superb web UI component library, synthesized from all research:
 - [ ] `prefers-reduced-motion` — always handled with safe alternatives
 
 ### Security
+
 - [ ] CSP-safe by construction — nonce on every inline script
 - [ ] No eval/handlers — no `eval()`, no inline event handlers, no `javascript:` URLs
 - [ ] XSS prevention — `strconv.Quote()` for IDs in JS, `templ.SafeURL` for hrefs
 - [ ] No external assets — JS travels with component (inline + nonce)
 
 ### Internationalization
+
 - [ ] Logical CSS properties — `ms-`/`me-` not `ml-`/`mr-`
 - [ ] RTL testing — `dir="rtl"` test cases
 - [ ] Icon mirroring — directional icons flip in RTL
 - [ ] Locale-aware formatting — date/number formatting by locale
 
 ### Testing
+
 - [ ] Golden tests — exact rendered HTML matches snapshots
 - [ ] A11y tests — ARIA, roles, keyboard, motion-reduce
 - [ ] BDD tests — behaviour specs (user-visible, not markup)
@@ -1573,6 +1642,7 @@ A superb web UI component library, synthesized from all research:
 - [ ] Coverage tests — private helpers and branches
 
 ### Developer Experience
+
 - [ ] Zero-config defaults — `DefaultComponentProps()` for meaningful non-zero defaults
 - [ ] Override without forking — `Class` prop + `Attrs` map + CSS variables + slots
 - [ ] Godoc examples — every component has a runnable `ExampleXxx()`
@@ -1580,6 +1650,7 @@ A superb web UI component library, synthesized from all research:
 - [ ] Progressive disclosure — simple API surface, deep docs for advanced cases
 
 ### Distribution
+
 - [ ] Versioned releases — semver, one-commit release convention
 - [ ] Generated code committed — `*_templ.go` in the repo
 - [ ] Granular adoption — multi-module workspace for partial adoption
@@ -1663,29 +1734,29 @@ manually). This means templ-components has a stronger, more consistent API contr
 
 ## Appendix B: Source Comparison Matrix
 
-| Dimension | templ-components | templui | shadcn/ui |
-|-----------|-----------------|---------|-----------|
-| **Language** | Go + templ | Go + templ | TypeScript + React |
-| **Rendering** | Server-side | Server-side | Client-side (CSR/SSR) |
-| **CSS** | Tailwind v4 | Tailwind v3/v4 | Tailwind v4 |
-| **Distribution** | Go module | Module + CLI copy | npm CLI copy-paste |
-| **BaseProps** | Embedded (consistent) | Not embedded (repeated) | React props (per-component) |
-| **Variant lookup** | Map + `utils.Lookup` | Switch statement | CVA |
-| **Class merge** | `utils.Class` (tailwind-merge-go) | `utils.TwMerge` | `cn()` (clsx + tailwind-merge) |
-| **Theming** | Primitive Tailwind names | Semantic tokens (`bg-primary`) | Semantic OKLCH tokens |
-| **Dark mode** | `gray-*` exclusively | `zinc-*` / mixed | Semantic pairs |
-| **JS strategy** | Inline + nonce + singleton | External `.js` + OnceHandle | React lifecycle |
-| **CSP** | Safe by construction | External scripts | React (N/A) |
-| **Compound components** | Monolithic (mostly) | Compound (Dialog, Accordion) | Compound (Radix-based) |
-| **Accordion** | Custom JS | Native `<details>` (zero JS) | Radix (JS required) |
-| **Dialog** | Div overlay + JS | Native `<dialog>` | Radix Dialog (JS) |
-| **A11y** | Strong (motion-reduce, focus, ARIA) | ARIA, keyboard | Radix primitives (gold standard) |
-| **Forms** | 16 components + ValidationSummary | Form.Item + Message | React Hook Form integration |
-| **HATEOAS** | Strong (HTML-first, HTMX-native) | Strong (HTML-first) | Weak (SPA, JSON-driven) |
-| **Component count** | 82 + 101 icons | 43 | 50+ |
-| **Testing** | 7-layer matrix | Unknown | Vitest + browser + E2E |
-| **i18n/RTL** | Physical properties (gap) | Physical properties | `migrate rtl` command |
-| **Motion tokens** | Inline (gap) | Inline | CSS variables |
+| Dimension               | templ-components                    | templui                        | shadcn/ui                        |
+| ----------------------- | ----------------------------------- | ------------------------------ | -------------------------------- |
+| **Language**            | Go + templ                          | Go + templ                     | TypeScript + React               |
+| **Rendering**           | Server-side                         | Server-side                    | Client-side (CSR/SSR)            |
+| **CSS**                 | Tailwind v4                         | Tailwind v3/v4                 | Tailwind v4                      |
+| **Distribution**        | Go module                           | Module + CLI copy              | npm CLI copy-paste               |
+| **BaseProps**           | Embedded (consistent)               | Not embedded (repeated)        | React props (per-component)      |
+| **Variant lookup**      | Map + `utils.Lookup`                | Switch statement               | CVA                              |
+| **Class merge**         | `utils.Class` (tailwind-merge-go)   | `utils.TwMerge`                | `cn()` (clsx + tailwind-merge)   |
+| **Theming**             | Primitive Tailwind names            | Semantic tokens (`bg-primary`) | Semantic OKLCH tokens            |
+| **Dark mode**           | `gray-*` exclusively                | `zinc-*` / mixed               | Semantic pairs                   |
+| **JS strategy**         | Inline + nonce + singleton          | External `.js` + OnceHandle    | React lifecycle                  |
+| **CSP**                 | Safe by construction                | External scripts               | React (N/A)                      |
+| **Compound components** | Monolithic (mostly)                 | Compound (Dialog, Accordion)   | Compound (Radix-based)           |
+| **Accordion**           | Custom JS                           | Native `<details>` (zero JS)   | Radix (JS required)              |
+| **Dialog**              | Div overlay + JS                    | Native `<dialog>`              | Radix Dialog (JS)                |
+| **A11y**                | Strong (motion-reduce, focus, ARIA) | ARIA, keyboard                 | Radix primitives (gold standard) |
+| **Forms**               | 16 components + ValidationSummary   | Form.Item + Message            | React Hook Form integration      |
+| **HATEOAS**             | Strong (HTML-first, HTMX-native)    | Strong (HTML-first)            | Weak (SPA, JSON-driven)          |
+| **Component count**     | 82 + 101 icons                      | 43                             | 50+                              |
+| **Testing**             | 7-layer matrix                      | Unknown                        | Vitest + browser + E2E           |
+| **i18n/RTL**            | Physical properties (gap)           | Physical properties            | `migrate rtl` command            |
+| **Motion tokens**       | Inline (gap)                        | Inline                         | CSS variables                    |
 
 ---
 

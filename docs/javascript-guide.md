@@ -11,15 +11,15 @@
 Before writing ANY JavaScript, walk this ladder. Stop at the first rung that solves
 your problem.
 
-| Rung | Tool                         | When to use                                                                      | JS required |
-| ---- | ---------------------------- | -------------------------------------------------------------------------------- | ----------- |
-| 1    | Native HTML                  | `<details>`, `<form>`, `:checked`, `:target`                                     | Zero        |
-| 2    | HTMX                         | Server round-trips, partial updates, form submits                                | Zero (attrs) |
-| 3    | Inline `<script>` + singleton | Document-level event delegation (dropdowns, tabs, accordions)                   | Minimal, CSP-safe |
-| 4    | Alpine.js                    | Client-side state (toggles, modals, filtering) without server round-trip         | ~8KB lib    |
-| 5    | External JS bundle (esbuild) | Complex client-side logic, charts, editors                                       | Full build  |
-| 6    | React/Vue islands            | Rich interactive widgets that can't be server-rendered                           | Framework + bundler |
-| 7    | Datastar                     | Server-driven reactive UI with SSE streaming (replaces HTMX + Alpine)            | ~15KB lib   |
+| Rung | Tool                          | When to use                                                              | JS required         |
+| ---- | ----------------------------- | ------------------------------------------------------------------------ | ------------------- |
+| 1    | Native HTML                   | `<details>`, `<form>`, `:checked`, `:target`                             | Zero                |
+| 2    | HTMX                          | Server round-trips, partial updates, form submits                        | Zero (attrs)        |
+| 3    | Inline `<script>` + singleton | Document-level event delegation (dropdowns, tabs, accordions)            | Minimal, CSP-safe   |
+| 4    | Alpine.js                     | Client-side state (toggles, modals, filtering) without server round-trip | ~8KB lib            |
+| 5    | External JS bundle (esbuild)  | Complex client-side logic, charts, editors                               | Full build          |
+| 6    | React/Vue islands             | Rich interactive widgets that can't be server-rendered                   | Framework + bundler |
+| 7    | Datastar                      | Server-driven reactive UI with SSE streaming (replaces HTMX + Alpine)    | ~15KB lib           |
 
 ---
 
@@ -79,12 +79,12 @@ need **per-instance state** (focus trap, previous-focus element). See
 
 ### Pros / Cons
 
-| Pros                                      | Cons                                    |
-| ----------------------------------------- | --------------------------------------- |
-| Zero dependencies                         | Verbose for complex state               |
-| HTMX-compatible                           | Manual focus management                 |
-| CSP-safe (nonce on every script)          | No reactivity system                    |
-| Works after DOM swaps                     | Each component repeats the boilerplate  |
+| Pros                             | Cons                                   |
+| -------------------------------- | -------------------------------------- |
+| Zero dependencies                | Verbose for complex state              |
+| HTMX-compatible                  | Manual focus management                |
+| CSP-safe (nonce on every script) | No reactivity system                   |
+| Works after DOM swaps            | Each component repeats the boilerplate |
 
 **This repo uses 12 singleton guards** across all interactive components (see
 ADR 0005).
@@ -115,11 +115,11 @@ update. No separate API endpoint or JSON serialization needed.
 
 ### Pros / Cons
 
-| Pros                                  | Cons                                     |
-| ------------------------------------- | ---------------------------------------- |
-| Simplest possible interactivity       | Server round-trip for every interaction  |
-| Progressive enhancement (works w/o JS)| No client-side state                     |
-| Reuses same templ component           | Latency on every interaction             |
+| Pros                                   | Cons                                    |
+| -------------------------------------- | --------------------------------------- |
+| Simplest possible interactivity        | Server round-trip for every interaction |
+| Progressive enhancement (works w/o JS) | No client-side state                    |
+| Reuses same templ component            | Latency on every interaction            |
 
 ---
 
@@ -159,14 +159,14 @@ templ EditableRow(item Item) {
 
 ### Common Alpine features in templ projects
 
-| Feature               | Directive          | Use case                              |
-| --------------------- | ------------------ | ------------------------------------- |
-| Toggles/show-hide     | `x-show`, `@click` | Dropdowns, modals, confirmation       |
-| Conditional rendering  | `x-if` (template)  | Edit mode toggling                    |
-| Two-way data binding   | `x-model`          | Form inputs                           |
-| Text binding           | `x-text`           | Displaying server data reactively     |
-| List rendering         | `x-for` (template) | Client-side filtering                 |
-| Attribute binding      | `x-bind` / `:attr` | Dynamic classes, styles               |
+| Feature               | Directive          | Use case                          |
+| --------------------- | ------------------ | --------------------------------- |
+| Toggles/show-hide     | `x-show`, `@click` | Dropdowns, modals, confirmation   |
+| Conditional rendering | `x-if` (template)  | Edit mode toggling                |
+| Two-way data binding  | `x-model`          | Form inputs                       |
+| Text binding          | `x-text`           | Displaying server data reactively |
+| List rendering        | `x-for` (template) | Client-side filtering             |
+| Attribute binding     | `x-bind` / `:attr` | Dynamic classes, styles           |
 
 ### Gotcha: string values in `x-text` / `x-model`
 
@@ -177,11 +177,11 @@ avoid this.
 
 ### Pros / Cons
 
-| Pros                                | Cons                                        |
-| ----------------------------------- | ------------------------------------------- |
-| No build step                       | Another library (~8KB)                      |
+| Pros                                | Cons                                         |
+| ----------------------------------- | -------------------------------------------- |
+| No build step                       | Another library (~8KB)                       |
 | Tiny, declarative                   | `x-data` values are JS expressions (escape!) |
-| Handles client-side state elegantly | Doesn't help with server communication      |
+| Handles client-side state elegantly | Doesn't help with server communication       |
 
 ---
 
@@ -216,23 +216,23 @@ sse.MarshalAndMergeSignals(patchJSON)
 
 ### Datastar vs HTMX
 
-| Aspect          | HTMX                               | Datastar                                    |
-| --------------- | ---------------------------------- | ------------------------------------------- |
-| Architecture    | Frontend-driven (attrs on trigger) | Server-driven (server sends patches)        |
-| Transport       | AJAX (fetch) request/response      | SSE streaming                               |
-| DOM updates     | `innerHTML` swap (morph via ext)   | DOM morphing by default (preserves state)   |
-| Client state    | None (pair with Alpine.js)         | Built-in reactive signals                   |
-| Bundle size     | ~14KB                              | ~15KB                                       |
-| Expressions     | `hx-*` attributes + hyperscript    | `data-*` attributes use plain JS + `$signal` |
+| Aspect       | HTMX                               | Datastar                                     |
+| ------------ | ---------------------------------- | -------------------------------------------- |
+| Architecture | Frontend-driven (attrs on trigger) | Server-driven (server sends patches)         |
+| Transport    | AJAX (fetch) request/response      | SSE streaming                                |
+| DOM updates  | `innerHTML` swap (morph via ext)   | DOM morphing by default (preserves state)    |
+| Client state | None (pair with Alpine.js)         | Built-in reactive signals                    |
+| Bundle size  | ~14KB                              | ~15KB                                        |
+| Expressions  | `hx-*` attributes + hyperscript    | `data-*` attributes use plain JS + `$signal` |
 
 ### Pros / Cons
 
-| Pros                                          | Cons                                    |
-| --------------------------------------------- | --------------------------------------- |
-| Single library (no Alpine needed)             | Steeper learning curve                  |
-| SSE streaming for real-time                   | SSE lifecycle management on server      |
-| DOM morphing preserves focus/scroll/input     | Newer ecosystem than HTMX               |
-| Signal-only patches (no HTML round-trip)      | `data-*` expressions are JS (escaping!) |
+| Pros                                      | Cons                                    |
+| ----------------------------------------- | --------------------------------------- |
+| Single library (no Alpine needed)         | Steeper learning curve                  |
+| SSE streaming for real-time               | SSE lifecycle management on server      |
+| DOM morphing preserves focus/scroll/input | Newer ecosystem than HTMX               |
+| Signal-only patches (no HTML round-trip)  | `data-*` expressions are JS (escaping!) |
 
 ---
 
@@ -260,15 +260,15 @@ mounts the React component into it. The rest of the page is pure templ.
 
 ## Templ's Built-in JS Features (Reference)
 
-| Feature                         | Purpose                                              | Example                                                  |
-| ------------------------------- | ---------------------------------------------------- | -------------------------------------------------------- |
-| `templ.NewOnceHandle()`         | Render a `<script>` block only once per page         | `@handle.Once() { <script>...</script> }`               |
-| `templ.WithNonce(ctx, nonce)`   | Inject CSP nonce into context                        | All inline `<script>` tags get `nonce="..."`            |
-| `templ.JSFuncCall("fn", data)`  | Call JS function with JSON-encoded Go data           | `onclick={ templ.JSFuncCall("alert", msg) }`            |
-| `templ.JSExpression("event")`   | Pass raw JS expression (event objects, `this`)       | `onclick={ templ.JSFuncCall("fn", templ.JSExpression("event")) }` |
-| `templ.JSONString(data)`        | Encode Go data as JSON in an HTML attribute          | `x-data={ templ.JSONString(data) }`                     |
-| `templ.JSONScript("id", data)`  | Embed data in `<script type="application/json">`     | Large data payloads, chart configs                       |
-| `{{ value }}` in `<script>`     | Interpolate Go values into JS (auto-escaped)         | `const msg = "{{ user.Name }}";`                        |
+| Feature                        | Purpose                                          | Example                                                           |
+| ------------------------------ | ------------------------------------------------ | ----------------------------------------------------------------- |
+| `templ.NewOnceHandle()`        | Render a `<script>` block only once per page     | `@handle.Once() { <script>...</script> }`                         |
+| `templ.WithNonce(ctx, nonce)`  | Inject CSP nonce into context                    | All inline `<script>` tags get `nonce="..."`                      |
+| `templ.JSFuncCall("fn", data)` | Call JS function with JSON-encoded Go data       | `onclick={ templ.JSFuncCall("alert", msg) }`                      |
+| `templ.JSExpression("event")`  | Pass raw JS expression (event objects, `this`)   | `onclick={ templ.JSFuncCall("fn", templ.JSExpression("event")) }` |
+| `templ.JSONString(data)`       | Encode Go data as JSON in an HTML attribute      | `x-data={ templ.JSONString(data) }`                               |
+| `templ.JSONScript("id", data)` | Embed data in `<script type="application/json">` | Large data payloads, chart configs                                |
+| `{{ value }}` in `<script>`    | Interpolate Go values into JS (auto-escaped)     | `const msg = "{{ user.Name }}";`                                  |
 
 ### `templ.OnceHandle` — deduplicate scripts
 
@@ -368,7 +368,7 @@ esbuild --bundle --minify --outfile=assets/js/app.js src/ts/main.ts
 ```
 
 ```ts
-const config = JSON.parse(document.getElementById('page-data').textContent);
+const config = JSON.parse(document.getElementById("page-data").textContent);
 ```
 
 ### Hot reload
@@ -391,8 +391,12 @@ zero JS:
 ```
 
 ```css
-::view-transition-old(root) { animation: 180ms both fade-out; }
-::view-transition-new(root) { animation: 420ms both fade-in; }
+::view-transition-old(root) {
+  animation: 180ms both fade-out;
+}
+::view-transition-new(root) {
+  animation: 420ms both fade-in;
+}
 ```
 
 For multi-page apps (MPA), Chrome supports cross-document view transitions natively
@@ -431,26 +435,26 @@ IDs and works after HTMX swaps.
 
 ## What NOT to Do
 
-| Anti-pattern                                        | Why                                              | Fix                                            |
-| --------------------------------------------------- | ------------------------------------------------ | --------------------------------------------- |
-| Inline `onclick` / `onload` handlers                | Breaks strict CSP, Mozilla bad practice         | Use `addEventListener` or event delegation    |
-| `@templ.NewOnceHandle().Once()` inline              | Creates new handle each render                   | Declare as package-level `var`                 |
-| `templ.JSExpression` with user data                 | Bypasses escaping, XSS risk                      | Use `templ.JSONString` or `templ.JSFuncCall`   |
-| Per-element `addEventListener` without delegation   | Lost on HTMX DOM swap                            | Use `document.addEventListener` + `closest()`  |
-| Missing `nonce` on `<script>`                       | Blocked by CSP                                   | Use `layout.Script(nonce, src, attrs)`         |
-| `x-text={ goString }` without quotes (Alpine.js)    | Alpine interprets as JS variable, not string     | Use `templ.JSONString(goString)`               |
+| Anti-pattern                                      | Why                                          | Fix                                           |
+| ------------------------------------------------- | -------------------------------------------- | --------------------------------------------- |
+| Inline `onclick` / `onload` handlers              | Breaks strict CSP, Mozilla bad practice      | Use `addEventListener` or event delegation    |
+| `@templ.NewOnceHandle().Once()` inline            | Creates new handle each render               | Declare as package-level `var`                |
+| `templ.JSExpression` with user data               | Bypasses escaping, XSS risk                  | Use `templ.JSONString` or `templ.JSFuncCall`  |
+| Per-element `addEventListener` without delegation | Lost on HTMX DOM swap                        | Use `document.addEventListener` + `closest()` |
+| Missing `nonce` on `<script>`                     | Blocked by CSP                               | Use `layout.Script(nonce, src, attrs)`        |
+| `x-text={ goString }` without quotes (Alpine.js)  | Alpine interprets as JS variable, not string | Use `templ.JSONString(goString)`              |
 
 ---
 
 ## Recommendation by Project Type
 
-| Project type                         | Recommended stack          | Why                                                |
-| ----------------------------------- | ------------------------- | -------------------------------------------------- |
-| Content site / blog                  | HTMX only                 | Server renders everything, minimal interactivity    |
-| Admin dashboard                      | HTMX + singleton-guard JS | Type-safe, CSP-safe, zero deps (this repo's pattern)|
-| SaaS app (forms heavy)               | HTMX + Alpine.js          | Client-side form state, validation, toggles         |
-| Real-time app (chat, live data)      | Datastar                  | SSE streaming, signal patching, built-in reactivity |
-| App with complex widgets             | HTMX + React islands      | Server-render most pages, islands for widgets       |
+| Project type                    | Recommended stack         | Why                                                  |
+| ------------------------------- | ------------------------- | ---------------------------------------------------- |
+| Content site / blog             | HTMX only                 | Server renders everything, minimal interactivity     |
+| Admin dashboard                 | HTMX + singleton-guard JS | Type-safe, CSP-safe, zero deps (this repo's pattern) |
+| SaaS app (forms heavy)          | HTMX + Alpine.js          | Client-side form state, validation, toggles          |
+| Real-time app (chat, live data) | Datastar                  | SSE streaming, signal patching, built-in reactivity  |
+| App with complex widgets        | HTMX + React islands      | Server-render most pages, islands for widgets        |
 
 ---
 

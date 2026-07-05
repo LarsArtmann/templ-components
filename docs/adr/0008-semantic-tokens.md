@@ -25,13 +25,13 @@ names:
 ```css
 /* templ-components-theme.css (consumer-side, opt-in) */
 @theme {
-    --color-tc-primary: var(--color-blue-600);
-    --color-tc-primary-hover: var(--color-blue-500);
-    --color-tc-danger: var(--color-red-600);
-    --color-tc-danger-hover: var(--color-red-500);
-    --color-tc-success: var(--color-green-600);
-    --color-tc-warning: var(--color-yellow-500);
-    --color-tc-info: var(--color-blue-500);
+  --color-tc-primary: var(--color-blue-600);
+  --color-tc-primary-hover: var(--color-blue-500);
+  --color-tc-danger: var(--color-red-600);
+  --color-tc-danger-hover: var(--color-red-500);
+  --color-tc-success: var(--color-green-600);
+  --color-tc-warning: var(--color-yellow-500);
+  --color-tc-info: var(--color-blue-500);
 }
 ```
 
