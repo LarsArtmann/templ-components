@@ -188,6 +188,11 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - OverlayKind: typed enum (`OverlayModal`, `OverlayDrawer`) replaces untyped `closeKind`/`componentName` strings on `overlayShellProps`. The `componentName()` method derives JS function names from the kind.
 - CopyButton: `execCommand('copy')` fallback for non-secure HTTP contexts. `role="status"` + `aria-live="polite"` on label span for screen reader feedback.
 - Table.Body: `TableProps.Body templ.Component` slot — when set, overrides Rows for custom `<tr>` rendering. Follows Card.Body pattern.
+- SimpleCard.Body: `SimpleCardProps.Body templ.Component` slot — same pattern, forwarded to Card.Body internally.
+- layout.Stylesheet: `layout.Stylesheet(href, attrs)` — CSP-safe `<link rel="stylesheet">` companion to `layout.Script`.
+- LoadMore URL: uses `net/url` for cursor encoding — base64 cursors with `=`/`+` are properly escaped. Physical-property `containsChar` helper deleted.
+- RTL/i18n: all Tailwind classes use logical properties (`ms-`/`me-`/`start-0`/`end-0`/`ps-`/`pe-`/`text-start`/`border-s-`/`border-e-`). Components automatically mirror in RTL contexts when consumer sets `dir="rtl"`.
+- CSP nonce test: `integration/csp_nonce_test.go` renders every inline-script component and asserts every `<script>` tag has `nonce=`. Prevents CSP regressions.
 
 ## Release Convention: One-Commit Release
 
