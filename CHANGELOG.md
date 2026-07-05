@@ -6,14 +6,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `display.TableHeader` + `TypedHeaders []TableHeader`: sortable table columns with WAI-ARIA `aria-sort` (`ascending`/`descending`/`none`), clickable `<a>` sort links via `Href`, and visual ↑/↓ indicators. `TypedHeaders` takes precedence over `Headers []string` when set; backward compatible (empty `TypedHeaders` keeps existing header rendering). `SortDirection` enum (`None`/`Asc`/`Desc`) added to the display typed-enum set.
+- `forms.FormProps.Inline`: horizontal form layout (`flex flex-wrap items-end gap-3`) instead of the default vertical stack (`space-y-6`). One-field toggle — useful for filter bars and compact toolbars. Follows the `RadioGroup.Inline` precedent.
+- 14 new `IsValid()` methods across 5 packages, bringing every closed-set typed enum to full validation coverage (`AvatarStatus`, `DropdownItemKind`, `DropdownPosition`, `TabsVariant`, `OverlayKind`, `ButtonSize`, `ButtonHTMLType`, `StepIndicatorOrientation`, `ToggleSize`, `InputType`, `FormMethod`, `SwapStyle`, `icons.Name`). Every `IsValid` is now test-covered.
+- Recipe docs: [`docs/recipes/custom-table-rows.md`](docs/recipes/custom-table-rows.md) (Body slot + sortable `TypedHeaders`), [`docs/recipes/custom-404-page.md`](docs/recipes/custom-404-page.md) (`NotFound404` with custom links/search), [`docs/recipes/recipe-index.md`](docs/recipes/recipe-index.md) (index of all recipes).
+- Recipe: [`docs/recipes/container-queries.md`](docs/recipes/container-queries.md) — when and how to use `ContainerResponsive` for parent-width-responsive grids.
+- Reference: [`docs/motion-design.md`](docs/motion-design.md) — timing constants, duration guidelines, easing policy, and `motion-reduce` compliance rules.
+- Reference: [`docs/javascript-guide.md`](docs/javascript-guide.md) — comprehensive JS patterns reference: decision ladder (native HTML → HTMX → singleton-guard → Alpine → Datastar → React islands), CSP compliance, templ's built-in JS features (`OnceHandle`, `JSFuncCall`, `JSONString`, `JSONScript`), TypeScript workflow, View Transitions API, event delegation, and anti-patterns.
+
+### Changed
+
+- **6 lookup maps converted from `map[string]string` to typed-key maps**: `cardPaddingLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`, `badgeSizeLookup` (display); `spinnerSizeLookup`, `progressHeightLookup` (feedback). Eliminates all `string(v)` casts at call sites — invalid enum values are now caught at compile time rather than silently missing the map.
+- `errorpage.CauseItem.Code` changed from raw `string` to the existing `Code` type (same package), closing a split brain where the `Code` type was defined but unused on this struct.
+- `errorpage.FamilyStatusCode` simplified to use `utils.Lookup` instead of manual map+fallback.
+- Motion constants (`transitionFast`, `transitionNormal`, `transitionColors`, `transitionTransform`) wired into `CopyButton` and `Accordion` panel — previously only Modal and Drawer used them.
+- SKILL.md authoring playbook updated with three new mandatory conventions: RTL logical properties, motion constants, and container queries.
+
+### Fixed
+
+- **`ModalSize2XL` and `DrawerSize2XL` both had value `"full"`** — identical to the deprecated `ModalSizeFull`/`DrawerFull` aliases. They resolved only by map-key accident (the alias's entry matched). Each now has its own value (`"2xl"`) with a dedicated map entry; the deprecated aliases keep `"full"` for backward compatibility.
+- **Combobox WAI-ARIA compliance**: options now carry `aria-selected` (set to `"true"` on the active option alongside `data-selected`); Tab key now closes the listbox and clears `aria-activedescendant`/selection state instead of leaving stale focus. Extracted a shared `tcClearComboSelection()` helper across Escape/Enter/Tab/navigation paths.
+- **Combobox `focusout` handler**: listbox now closes and `aria-activedescendant` clears when focus leaves the combobox container (mouse click outside, Tab away). Previously `aria-activedescendant` could remain stale if the outside-click handler didn't fire before blur.
+- **Motion-reduce a11y gaps**: 7 `transition-colors` instances missing `motion-reduce` fallbacks fixed across `toast` (dismiss button ×2), `step_indicator`, `empty_state`, `file_input`, `errorpage` (action buttons ×2).
+- `FEATURES.md` drift corrected: version `0.6.1` → `0.7.0`, removed phantom `BadgeType "Default"` value, removed already-fixed Tooltip "known issue", added `FeedbackType` to the feedback enum table (`AlertType`/`ToastType` are aliases).
+
 ## [0.7.0] — 2026-07-05
 
 ### Changed
 
 - **RTL/i18n: all physical CSS properties migrated to logical**. Replaced `ml-`/`mr-` with `ms-`/`me-` (margin-inline-start/end), `pl-`/`pr-` with `ps-`/`pe-` (padding-inline-start/end), `left-0`/`right-0` with `start-0`/`end-0` (inset-inline-start/end), `text-left` with `text-start`, `border-l-`/`border-r-` with `border-s-`/`border-e-` across all `.templ` files. Zero behavioral change in LTR contexts (Tailwind logical utilities resolve identically). Makes the library RTL-ready for Arabic, Hebrew, Persian, and Urdu markets — consumers set `dir="rtl"` and components automatically mirror.
-- **Multi-module workspace**: split into 6 Go modules coordinated by `go.work`. Extracted `svg` (promoted from `internal/svg`), `utils`, `icons`, and `errorpage` as sub-modules with replace directives. The root module retains the 6 cohesive core packages (display, feedback, forms, layout, navigation, htmx). Zero import path changes for consumers — all paths remain `github.com/larsartmann/templ-components/<pkg>`.
-- `go-error-family` is now an indirect dependency (only `errorpage` sub-module imports it directly). Consumers not using errorpage skip it entirely via Go 1.26.4 graph pruning.
-- `go.work` and `go.work.sum` are committed (un-ignored via `!go.work` in `.gitignore`).
+- **Multi-module workspace (prototyped, not shipped)**: a 6-module split was prototyped on `modularize/strategic-split` but not merged. `master` remains single-module. The split may be revisited post-v1.0.
+- `go-error-family` remains a direct dependency of `errorpage` (not isolated to a sub-module since the split was not merged).
 
 ### Added
 

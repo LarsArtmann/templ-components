@@ -1,24 +1,29 @@
 # AGENTS.md — templ-components
 
-## Multi-Module Structure (go.work + 6 modules)
+## Module Structure (single module)
 
-This repo uses a **Go multi-module workspace** with 6 modules coordinated by `go.work`:
+This repo is a **single Go module** (`github.com/larsartmann/templ-components`) with 14 packages:
 
-| Module            | Path                   | Contains                                                      | Purpose                                               |
-| ----------------- | ---------------------- | ------------------------------------------------------------- | ----------------------------------------------------- |
-| **root**          | `go.mod`               | display, feedback, forms, layout, navigation, htmx, internal/ | Core UI components                                    |
-| **svg**           | `svg/go.mod`           | svg (promoted from `internal/svg`)                            | SVG rendering primitives                              |
-| **utils**         | `utils/go.mod`         | utils                                                         | BaseProps, Class(), EnsureID, test helpers            |
-| **icons**         | `icons/go.mod`         | icons                                                         | Named SVG icons (lightweight: no tailwind-merge-go)   |
-| **errorpage**     | `errorpage/go.mod`     | errorpage                                                     | Error pages + HTTP handler (isolates go-error-family) |
-| **examples/demo** | `examples/demo/go.mod` | demo                                                          | Demo binary                                           |
+| Package             | Contains                                   | Purpose                                               |
+| ------------------- | ------------------------------------------ | ----------------------------------------------------- |
+| `display`           | 25+ UI components                          | Cards, tables, modals, badges, buttons, avatars, etc. |
+| `feedback`          | 13 components                              | Alerts, toasts, spinners, skeletons, progress bars    |
+| `forms`             | 16 components                              | Inputs, selects, toggles, combobox, validation        |
+| `layout`            | 5 components                               | Page shell, theme toggle, CSP-safe script/style tags  |
+| `navigation`        | 11 components                              | Nav bars, pagination, breadcrumbs, sidebar            |
+| `htmx`              | 7 components                               | HTMX loading, error handling, OOB swaps               |
+| `icons`             | 101 named SVG icons                        | Heroicons v2 outline + Spinner                        |
+| `errorpage`         | 4 components + handler                     | Error pages, 404, go-error-family integration         |
+| `utils`             | BaseProps, Class(), EnsureID, test helpers | Shared utilities                                      |
+| `internal/svg`      | SVG path constants                         | Single source of truth for inline SVG paths           |
+| `internal/golden`   | Golden file testing                        | CSS-normalized HTML snapshot comparison               |
+| `internal/contract` | Contract tests                             | Cross-package interface verification                  |
+| `integration`       | CSP nonce tests                            | Asserts nonce on all inline scripts                   |
+| `examples/demo`     | Demo binary                                | Showcases components                                  |
 
-**Each sub-module has replace directives** for its siblings (e.g., `icons/go.mod` has
-`replace github.com/larsartmann/templ-components/svg => ../svg`). This ensures
-`GOWORK=off go build` works per-module — essential for CI and external consumers.
-
-**go.work is committed** (un-ignored via `!go.work` in `.gitignore`). BuildFlow may
-re-add `go.work` to `.gitignore` on pre-commit — the `!` negation after it keeps it tracked.
+> **Note:** A multi-module workspace split was prototyped on the `modularize/strategic-split`
+> branch but was never merged to `master`. The split may be re-attempted post-v1.0 if the
+> package graph warrants it.
 
 ## Build & Test Commands
 
@@ -26,20 +31,14 @@ re-add `go.work` to `.gitignore` on pre-commit — the `!` negation after it kee
 # Full build (required before go build after .templ changes)
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./...
 
-# Tests (root module)
+# Tests
 go test ./...
 
-# Tests (all modules including sub-modules)
-for mod in svg utils icons errorpage examples/demo; do (cd $mod && go test ./...); done && go test ./...
-
-# Lint (must include ./svg/...)
-golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./svg/... ./internal/...
-
-# GOWORK=off isolation test (verify replace directives work standalone)
-for mod in svg utils icons errorpage examples/demo; do (cd $mod && GOWORK=off go build ./... && GOWORK=off go test ./...); done && GOWORK=off go build ./...
+# Lint
+golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
 
 # All-in-one verification
-find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./svg/... ./internal/...
+find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
 ```
 
 ## CRITICAL: Generated `*_templ.go` Files MUST Be Committed
@@ -51,7 +50,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 59 generated files across 6 modules: root (display, errorpage, feedback, forms, htmx, layout, navigation, internal/golden), svg, utils, icons, examples/demo
+- 61 generated files across all packages (display, errorpage, feedback, forms, htmx, icons, layout, navigation, examples/demo, internal/golden)
 - **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
@@ -85,12 +84,13 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - **Go:** 1.26, **templ:** v0.3.x
 - **No framework deps** — pure Go + templ + Tailwind v4 class strings
 - **CSS standard:** Tailwind CSS v4+ (latest) for ALL LarsArtmann projects. CSS-first config, no Node.js runtime, no DaisyUI. Small custom CSS only where Tailwind doesn't cover something. See `docs/adr-001-tailwind-v4-standard.md` and `docs/tailwind-v4-adoption-guide.md`.
+- **JavaScript patterns:** see `docs/javascript-guide.md` for the complete decision ladder (native HTML → HTMX → singleton-guard → Alpine → Datastar → islands), CSP compliance, and templ's built-in JS features. See ADR 0005 for the singleton-guard pattern used by all interactive components in this repo.
 - **Theming:** Components emit standard Tailwind classes (`bg-blue-600`). Consumers override via `@theme { --color-blue-600: #custom; }` in their CSS. No Go code changes needed. See `templ-components-theme.css` for semantic alias examples.
 - **ComponentProps interface:** `utils.ComponentProps` with `GetBaseProps()`/`SetBaseProps()` on `*BaseProps` (pointer receivers for `recvcheck`). All 26+ props structs auto-satisfy via method promotion.
 - **Accessibility — motion-reduce:** `motion-reduce:transition-none motion-reduce:duration-0` on all transitions, `motion-reduce:animate-none` on all animations (spinner, skeletons, toast enter/exit, modal, accordion)
 - **Dark mode colors:** All components use `gray-*` exclusively (no mixed `slate-*`/`gray-*`). Dark mode via class strategy: `@custom-variant dark (&:where(.dark, .dark *))` toggled by `layout.ThemeScript()` + `layout.ThemeToggle()`
 - **CI:** `.github/workflows/ci.yaml` — lint (golangci-lint), build+test with `templ generate`, coverage artifact. Pre-commit: `.git/hooks/pre-commit` → `scripts/pre-commit.sh`
-- **Import graph (multi-module):** Module DAG: `svg` ← `icons`; `utils` (leaf); `icons,svg,utils` ← root (display,feedback,forms,layout,navigation,htmx); `icons,utils` ← errorpage; all ← examples/demo. Production deps: `icons → svg`, `display → icons,svg,utils`, `feedback → icons,svg,utils`, `forms → icons,utils`, `layout → icons,utils`, `navigation → icons,svg,utils`, `htmx → utils`, `errorpage → icons,utils`
+- **Import graph:** `internal/svg` ← `icons`; `utils` (leaf); `icons,internal/svg,utils` ← root packages (display,feedback,forms,layout,navigation,htmx); `icons,utils` ← errorpage; all ← examples/demo. Production deps: `icons → internal/svg`, `display → icons,internal/svg,utils`, `feedback → icons,internal/svg,utils`, `forms → icons,utils`, `layout → icons,utils`, `navigation → icons,internal/svg,utils`, `htmx → utils`, `errorpage → icons,utils`
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
 - **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
@@ -101,9 +101,12 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - All root elements propagate `props.Class`, `props.Attrs`, `props.ID`, and `props.AriaLabel` from BaseProps (26/26 components, including NavLink/MobileNavLink)
 - Class attributes use `utils.Class()` for Tailwind conflict resolution (exception: `templ.KV` conditionals where comma-join is required)
 - **RTL/i18n: use logical CSS properties exclusively.** Never use `ml-`/`mr-`/`pl-`/`pr-`/`left-`/`right-`/`text-left`/`border-l-`/`border-r-` — use `ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`/`text-start`/`border-s-`/`border-e-` instead. These are CSS logical properties that automatically mirror in RTL (`dir="rtl"`). Exception: `left-1/2 -translate-x-1/2` for centering (not directional).
-- **Motion: use shared transition constants.** Use `transitionFast` (150ms), `transitionNormal` (200ms), `transitionSlow` (300ms), `transitionColors`, `transitionTransform` from `display/shared.go` instead of inline timing strings. All include `motion-reduce:*` fallbacks.
+- **Motion: use shared transition constants.** Use `transitionFast` (150ms), `transitionNormal` (200ms), `transitionColors`, `transitionTransform` from `display/shared.go` instead of inline timing strings. All include `motion-reduce:*` fallbacks. Wire into CopyButton, Accordion, Modal, Drawer — do NOT leave inline `transition-colors motion-reduce:...` strings when a constant matches.
 - **Container queries: use `@container` for context-responsive grids.** Set `GridProps.ContainerResponsive = true` to make the Grid respond to its parent container width instead of the viewport. Uses Tailwind v4 container-query variants (`@sm:`, `@lg:`).
 - Style lookups use maps/structs, not switches (e.g., `badgeStyleMap`, `badgeSizeLookup`, `cardPaddingLookup`, `iconPathData`, `alertIconMap`, `toastIconMap`, `spinnerSizeLookup`, `progressHeightLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`)
+- **Lookup maps MUST use typed enum keys** (never `map[string]X`). If a typed enum exists, its lookup map uses it as the key type — `badgeSizeLookup[BadgeSizeMD]`, not `badgeSizeLookup[string(v)]`. All map lookups go through `utils.Lookup(m, key, fallback)` (generic, no per-call `if ok` boilerplate). `ButtonHTMLType` uses `map[ButtonHTMLType]string` + `utils.Lookup` (not `map[X]bool`).
+- **Every closed-set enum MUST ship an `IsValid()` method + a test in the same commit.** 30 enums have IsValid (e.g., `SortDirectionIsValid`, `ButtonHTMLTypeIsValid`). Test in the package's `enums_test.go` table-driven `TestIsValidEnums`. No IsValid without a test — this prevents the dead-code ghost system.
+- **Drift-guard tests:** `utils.TestVersionMatchesChangelog` (CHANGELOG heading == `utils.Version`) and `utils.TestVersionMatchesFeatures` (FEATURES.md `**Version:**` == `utils.Version`). Bump version, CHANGELOG heading, and FEATURES.md version together at release time.
 - String enums: `type XxxType string` + `const XxxDefault XxxType = "default"`
 - Size constants: uppercase suffix pattern `[Component]Size[SM|MD|LG]` (e.g., `AvatarSizeSM`, `BadgeSizeSM`, `SpinnerSM`)
 - Default constructors: `DefaultXxxProps()` for every component with non-zero defaults
@@ -147,7 +150,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - Card.Body: `Body templ.Component` slot — when set, overrides children. Backward compatible.
 
 - Toast JS: dismiss icon from `icons.IconPathJS()` via `tcToastIcons.dismiss`
-- Table: row cells auto-padded/truncated to match header count
+- Table: row cells auto-padded/truncated to match header count. `TypedHeaders []TableHeader` takes precedence over `Headers []string` for sortable columns: each `TableHeader` has `Sortable bool`, `SortDirection` (`SortNone`/`SortAsc`/`SortDesc`), and `Href` for server-side sort links. Renders `aria-sort="ascending/descending/none"` + ↑/↓ indicators. `ariaSortValue()` maps the enum; `tableHeaderCount()` aligns cell padding to whichever header type is used.
 - **Error handler:** `errorpage/handler.go` provides `ErrorHandler(err, cfg)` returning `http.Handler`, `FromError(err)` for type-safe conversion from go-error-family errors, 6 pre-built constructors (`NotFound`, `Forbidden`, `BadRequest`, `Conflict`, `ServiceUnavailable`, `InternalError`), `WriteError`/`WriteErrorPage` convenience wrappers, `HTMLShell` mode for valid HTML documents, `JSON` mode for API/HTMX responses. Uses `errors.AsType[errorfamily.Classified]()` for go-error-family integration.
 - **Error families:** `errorpage` package integrates with go-error-family via `FamilyFromErrorFamily()` converter + `ParseFamily()` for string-based lookup. `FromError()` extracts Why/Fix defaults from go-error-family's `Family.DefaultWhy()`/`DefaultFix()` methods.
 - **Error components:** `ErrorPage` (full-page), `NotFound404` (dedicated 404 with hero numeral + search + links), `ErrorDetail` (inline card), `ErrorAlert` (family-aware alert) in `errorpage/`
@@ -168,7 +171,8 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - ProgressBar indeterminate: `ProgressBarProps.Indeterminate bool` renders animated bar with `aria-busy="true"` instead of percentage-based width.
 - StepIndicator orientation: `StepIndicatorProps.Orientation` with `StepHorizontal`/`StepVertical` constants for vertical progress tracking.
 - Tabs client-side: `TabsProps.ClientSide bool` adds `data-tc-tabs` attribute and inline JS for click-to-activate and keyboard nav (ArrowLeft/Right, Home, End). Uses global singleton guard (`tcTabsAttached`).
-- Form component: `forms.Form(FormProps)` with `Action`, `Method` (GET/POST), `CSRFToken` hidden input, and `Content` for composing form fields.
+- Form component: `forms.Form(FormProps)` with `Action`, `Method` (GET/POST), `CSRFToken` hidden input, and `Content` for composing form fields. `Inline bool` switches to horizontal `flex flex-wrap items-end gap-3` layout (for filter bars / toolbars) instead of the default vertical `space-y-6` stack. Follows the `RadioGroup.Inline` precedent.
+- StatCard HTMX: `HxGet`/`HxTarget`/`HxSwap` typed fields on both `<a>` and `<div>` variants. `HxSwap` is typed `htmx.SwapStyle` (not raw `string`) — consumers pass `htmx.SwapInnerHTML`/`htmx.SwapOuterHTML`. When empty, attributes are omitted.
 - Icons: 101 total (100 path icons + Spinner). Added BuildingOffice2 (tenants/orgs), Key (credentials), ArrowRightOnRectangle (logout) — gaps surfaced by cqrs-htmx/adminui.
 - Thread safety: `utils.Class()` uses `sync.Mutex` to protect tailwind-merge-go's shared LRU cache from concurrent access. Required even though the LRU has internal mutexes — they don't protect the full Merge() call sequence.
 - DropdownItemKind: typed enum (`DropdownItemLink`, `DropdownItemButton`) with backward compat via `IsLink()` fallback to Href-based discrimination.
@@ -177,7 +181,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - ListNote: `display.ListNote(ListNoteProps{Shown, Total})` — renders "Showing N of M" truncation notice when Total > Shown. `role="status"` for a11y.
 - SidebarNav: `navigation.SidebarNav(SidebarNavProps)` — vertical sidebar with Brand/Footer slots, icon+label nav items, CurrentPath auto-active detection, `aria-current="page"` on active item.
 - icons.IconPathData: exported function returning raw SVG path d-strings for consumers needing full `<svg>` wrapper control (used by cqrs-htmx/adminui for icons-only adoption without Tailwind).
-- icons-only adoption: the `icons` sub-module depends only on `svg` + `templ` — no tailwind-merge-go, no CSS framework. This is a natural property of icons, not a portability strategy. See `docs/icons-only-adoption.md`.
+- icons-only adoption: the `icons` package depends only on `internal/svg` + `templ` + `utils` — no tailwind-merge-go, no CSS framework. This is a natural property of icons, not a portability strategy. See `docs/icons-only-adoption.md`.
 - Grid: `display.Grid(GridProps)` — responsive grid container with typed `GridCols` enum (1–6) and `gridColsLookup` map+fallback. Replaces the repeated `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4` pattern. Children passed via `{ children... }`.
 - StatCard.Href: `StatCardProps.Href` renders the whole card as an `<a>` with hover shadow, focus ring, cursor-pointer when set. Mirrors `Badge.Href` pattern. Shared body extracted to `statCardInner` sub-template so linked/unlinked layouts don't diverge.
 - layout.Script: `layout.Script(nonce, src, attrs)` — CSP-safe `<script src>` tag that auto-injects the nonce. Prevents forgetting `nonce={...}` under strict CSP. Use instead of raw `<script>` tags for external scripts.
