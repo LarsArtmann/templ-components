@@ -25,14 +25,14 @@ const (
 )
 
 //nolint:gochecknoglobals // Package-level lookup table for spinner sizes
-var spinnerSizeLookup = map[string]string{
-	string(SpinnerSM): "h-4 w-4",
-	string(SpinnerMD): "h-6 w-6",
-	string(SpinnerLG): "h-8 w-8",
+var spinnerSizeLookup = map[SpinnerSize]string{
+	SpinnerSM: "h-4 w-4",
+	SpinnerMD: "h-6 w-6",
+	SpinnerLG: "h-8 w-8",
 }
 
 func spinnerSizeClass(s SpinnerSize) string {
-	return utils.Lookup(spinnerSizeLookup, string(s), "h-6 w-6")
+	return utils.Lookup(spinnerSizeLookup, s, "h-6 w-6")
 }
 
 // SkeletonVariant defines the shape of a skeleton placeholder

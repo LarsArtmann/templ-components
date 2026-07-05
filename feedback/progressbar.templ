@@ -98,12 +98,12 @@ func progressTrackClass(size ProgressBarSize) string {
 }
 
 //nolint:gochecknoglobals // Package-level lookup table for progress bar heights
-var progressHeightLookup = map[string]string{
-	string(ProgressBarSizeSM): "h-1.5",
-	string(ProgressBarSizeMD): "h-2.5",
-	string(ProgressBarSizeLG): "h-4",
+var progressHeightLookup = map[ProgressBarSize]string{
+	ProgressBarSizeSM: "h-1.5",
+	ProgressBarSizeMD: "h-2.5",
+	ProgressBarSizeLG: "h-4",
 }
 
 func progressHeightClass(size ProgressBarSize) string {
-	return utils.Lookup(progressHeightLookup, string(size), "h-2.5")
+	return utils.Lookup(progressHeightLookup, size, "h-2.5")
 }

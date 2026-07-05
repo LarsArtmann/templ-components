@@ -8,13 +8,13 @@ func BadgeTypeIsValid(v BadgeType) bool {
 
 // BadgeSizeIsValid reports whether v is one of the defined BadgeSize constants.
 func BadgeSizeIsValid(v BadgeSize) bool {
-	_, ok := badgeSizeLookup[string(v)]
+	_, ok := badgeSizeLookup[v]
 	return ok
 }
 
 // CardPaddingIsValid reports whether v is one of the defined CardPadding constants.
 func CardPaddingIsValid(v CardPadding) bool {
-	_, ok := cardPaddingLookup[string(v)]
+	_, ok := cardPaddingLookup[v]
 	return ok
 }
 
@@ -31,7 +31,7 @@ func TrendDirectionIsValid(v TrendDirection) bool {
 
 // AvatarSizeIsValid reports whether v is one of the defined AvatarSize constants.
 func AvatarSizeIsValid(v AvatarSize) bool {
-	_, ok := avatarSizeLookup[string(v)]
+	_, ok := avatarSizeLookup[v]
 	return ok
 }
 

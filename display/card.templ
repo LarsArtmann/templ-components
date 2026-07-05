@@ -88,15 +88,15 @@ templ Card(props CardProps) {
 }
 
 //nolint:gochecknoglobals // Package-level lookup table for card padding
-var cardPaddingLookup = map[string]string{
-	string(CardPaddingNone): "",
-	string(CardPaddingSM):   "px-3 py-3",
-	string(CardPaddingMD):   "px-4 py-5 sm:p-6",
-	string(CardPaddingLG):   "px-6 py-6",
+var cardPaddingLookup = map[CardPadding]string{
+	CardPaddingNone: "",
+	CardPaddingSM:   "px-3 py-3",
+	CardPaddingMD:   "px-4 py-5 sm:p-6",
+	CardPaddingLG:   "px-6 py-6",
 }
 
 func cardPaddingClass(p CardPadding) string {
-	return utils.Lookup(cardPaddingLookup, string(p), cardPaddingLookup[string(CardPaddingMD)])
+	return utils.Lookup(cardPaddingLookup, p, cardPaddingLookup[CardPaddingMD])
 }
 
 // SimpleCardProps configures a simple card without header/footer

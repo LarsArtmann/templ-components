@@ -317,14 +317,14 @@ func Badge(props BadgeProps) templ.Component {
 }
 
 //nolint:gochecknoglobals // Package-level lookup table for badge sizes
-var badgeSizeLookup = map[string]string{
-	string(BadgeSizeSM): "px-2 py-0.5 text-xs",
-	string(BadgeSizeMD): "px-2.5 py-0.5 text-xs",
-	string(BadgeSizeLG): "px-3 py-1 text-sm",
+var badgeSizeLookup = map[BadgeSize]string{
+	BadgeSizeSM: "px-2 py-0.5 text-xs",
+	BadgeSizeMD: "px-2.5 py-0.5 text-xs",
+	BadgeSizeLG: "px-3 py-1 text-sm",
 }
 
 func badgeSizeClass(s BadgeSize) string {
-	return utils.Lookup(badgeSizeLookup, string(s), badgeSizeLookup[string(BadgeSizeMD)])
+	return utils.Lookup(badgeSizeLookup, s, badgeSizeLookup[BadgeSizeMD])
 }
 
 func badgeShapeClass(pill bool) string {

@@ -131,7 +131,7 @@ type ContextPair struct {
 // CauseItem represents one error in a cause chain.
 type CauseItem struct {
 	Message string
-	Code    string
+	Code    Code
 }
 
 // ErrorPageProps configures a full-page error view.
@@ -269,7 +269,7 @@ func appendJoinSiblings(chain []CauseItem, current error, maxDepth int) []CauseI
 func causeItemFromError(err error) CauseItem {
 	item := CauseItem{Message: err.Error()} //nolint:exhaustruct // Code set conditionally below
 	if c, ok := err.(interface{ ErrorCode() string }); ok {
-		item.Code = c.ErrorCode()
+		item.Code = Code(c.ErrorCode())
 	}
 	return item
 }
