@@ -109,6 +109,7 @@ templ Combobox(props ComboboxProps) {
 						role="option"
 						id={ id + "-option-" + opt.Value }
 						tabindex="-1"
+						aria-selected="false"
 						class="relative cursor-pointer select-none py-2 ps-3 pe-9 text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-gray-700 data-[selected]:bg-blue-50 dark:data-[selected]:bg-gray-700"
 						data-combobox-option={ opt.Value }
 						data-combobox-label={ opt.Label }
@@ -122,6 +123,13 @@ templ Combobox(props ComboboxProps) {
 	<script nonce={ props.Nonce }>
 		if (!window.tcComboboxAttached) {
 			window.tcComboboxAttached = true;
+			function tcClearComboSelection(opts, input) {
+				opts.forEach(function(o) {
+					o.removeAttribute('data-selected');
+					o.setAttribute('aria-selected', 'false');
+				});
+				input.removeAttribute('aria-activedescendant');
+			}
 			document.addEventListener('input', function(e) {
 				var input = e.target.closest('[data-combobox-input]');
 				if (!input) return;
@@ -193,11 +201,16 @@ templ Combobox(props ComboboxProps) {
 				var opts = Array.prototype.slice.call(list.querySelectorAll('[data-combobox-option]')).filter(function(o) {
 					return o.style.display !== 'none';
 				});
+				if (e.key === 'Tab') {
+					list.classList.add('hidden');
+					input.setAttribute('aria-expanded', 'false');
+					tcClearComboSelection(opts, input);
+					return;
+				}
 				if (e.key === 'Escape') {
 					list.classList.add('hidden');
 					input.setAttribute('aria-expanded', 'false');
-					opts.forEach(function(o) { o.removeAttribute('data-selected'); });
-					input.removeAttribute('aria-activedescendant');
+					tcClearComboSelection(opts, input);
 					return;
 				}
 				if (opts.length === 0) return;
@@ -224,15 +237,15 @@ templ Combobox(props ComboboxProps) {
 							if (hidden) hidden.value = sel.getAttribute('data-combobox-option');
 							list.classList.add('hidden');
 							input.setAttribute('aria-expanded', 'false');
-							opts.forEach(function(o) { o.removeAttribute('data-selected'); });
-							input.removeAttribute('aria-activedescendant');
+							tcClearComboSelection(opts, input);
 						}
 						return;
 				}
 				if (nextIdx !== currentIdx) {
-					opts.forEach(function(o) { o.removeAttribute('data-selected'); });
+					tcClearComboSelection(opts, input);
 					var sel = opts[nextIdx];
 					sel.setAttribute('data-selected', 'true');
+					sel.setAttribute('aria-selected', 'true');
 					input.setAttribute('aria-activedescendant', sel.getAttribute('id') || '');
 					sel.scrollIntoView({ block: 'nearest' });
 				}
