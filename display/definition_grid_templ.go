@@ -84,7 +84,7 @@ func DefinitionGrid(props DefinitionGridProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/definition_grid.templ`, Line: 44, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/definition_grid.templ`, Line: 46, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -120,7 +120,7 @@ func DefinitionGrid(props DefinitionGridProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/definition_grid.templ`, Line: 48, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/definition_grid.templ`, Line: 50, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -159,7 +159,7 @@ func DefinitionGrid(props DefinitionGridProps) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(item.Term)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/definition_grid.templ`, Line: 55, Col: 105}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/definition_grid.templ`, Line: 57, Col: 105}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 				if templ_7745c5c3_Err != nil {
@@ -178,7 +178,7 @@ func DefinitionGrid(props DefinitionGridProps) templ.Component {
 					var templ_7745c5c3_Var8 string
 					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(item.Detail)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/definition_grid.templ`, Line: 60, Col: 20}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/definition_grid.templ`, Line: 62, Col: 20}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 					if templ_7745c5c3_Err != nil {
