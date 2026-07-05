@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Naming Review — templ-components 2026-07-05</title><style>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Naming Review — templ-components 2026-07-05</title>
     <style>
       /* =========================================================================
          BAUHAUS DARK — Dashboard template
@@ -796,37 +800,170 @@
         }
       }
     </style>
-    </style></head><body>
-    <div class="top-bar"><span>NAMING REVIEW</span><span>2026-07-05</span><span>templ-components v0.6.1</span></div>
-    <div class="layout"><aside class="sidebar" data-nav><nav><div class="label">Contents</div><a href="#summary">Summary</a><a href="#issues">Issues</a><a href="#strengths">Strengths</a></nav></aside>
-    <main class="main">
-    <div class="hero"><div class="hero-shapes"><div class="circle"></div><div class="square"></div><div class="tri"></div></div><div class="hero-badge">Naming Review</div><h1>templ-components — Identifier Audit</h1><p class="hero-subtitle">Honesty, clarity, domain alignment, and consistency of every exported identifier.</p></div>
-    <h2 id="summary"><span class="num">00</span>Summary</h2>
-    <div class="stat-grid">
-    <div class="stat-card"><div class="stat-value">200+</div><div class="stat-label">Identifiers Reviewed</div></div>
-    <div class="stat-card stat-warn"><div class="stat-value">9</div><div class="stat-label">Naming Issues</div></div>
-    <div class="stat-card stat-bad"><div class="stat-value">2</div><div class="stat-label">Honesty (Critical)</div></div>
-    <div class="stat-card stat-good"><div class="stat-value">15+</div><div class="stat-label">Excellent Names</div></div>
+  </head>
+  <body>
+    <div class="top-bar">
+      <span>NAMING REVIEW</span><span>2026-07-05</span><span>templ-components v0.6.1</span>
     </div>
-    <div class="card card-solution"><h4>Overall: Honest names; minor consistency gaps</h4><p>Zero Manager/Handler/Helper classes. Strong domain-aligned enums. Issues: ModalSize2XL value mismatch, vague helpers.go filename, abbreviation errMsg.</p></div>
-    <h2 id="issues"><span class="num">01</span>Issues</h2>
-    <table><thead><tr><th>#</th><th>Severity</th><th>File</th><th>Identifier</th><th>Issue</th></tr></thead><tbody>
-    <tr><td>1</td><td><span class="badge badge-critical">Critical</span></td><td>modal_go.go:18</td><td>ModalSize2XL="full"</td><td>Name says 2XL, value is "full"</td></tr>
-    <tr><td>2</td><td><span class="badge badge-critical">Critical</span></td><td>drawer_go.go:25</td><td>DrawerSize2XL="full"</td><td>Same mismatch as Modal</td></tr>
-    <tr><td>3</td><td><span class="badge badge-high">High</span></td><td>forms/helpers.go</td><td>helpers.go</td><td>Junk-drawer filename</td></tr>
-    <tr><td>4</td><td><span class="badge badge-high">High</span></td><td>forms/radio_go.go</td><td>radio_go.go</td><td>_go.go suffix implies generated</td></tr>
-    <tr><td>5</td><td><span class="badge badge-medium">Medium</span></td><td>forms/helpers.go:29</td><td>errMsg</td><td>Abbreviation</td></tr>
-    <tr><td>6</td><td><span class="badge badge-medium">Medium</span></td><td>icons/icon_names.go:20</td><td>X</td><td>Single-letter identifier</td></tr>
-    <tr><td>7</td><td><span class="badge badge-medium">Medium</span></td><td>fromerror.go:76</td><td>cleanMessage</td><td>Vague verb</td></tr>
-    <tr><td>8</td><td><span class="badge badge-low">Low</span></td><td>fromerror.go:12</td><td>FamilyFromErrorFamily</td><td>Stuttery name</td></tr>
-    <tr><td>9</td><td><span class="badge badge-low">Low</span></td><td>layout/sri.go</td><td>htmxMainSRIDefault vs sriHTMXMainByVersion</td><td>Inconsistent word order</td></tr>
-    </tbody></table>
-    <h2 id="strengths"><span class="num">02</span>Strengths</h2>
-    <div class="strengths">
-    <div class="strength"><div class="check">+</div><div class="text"><strong>Zero Manager/Handler/Helper classes</strong><span>No trash-can names anywhere.</span></div></div>
-    <div class="strength"><div class="check">+</div><div class="text"><strong>Domain-aligned enums</strong><span>FamilyRejection, FeedbackSuccess — not ErrorType1.</span></div></div>
-    <div class="strength"><div class="check">+</div><div class="text"><strong>Consistent Default*Props() pattern</strong><span>Every component has predictable constructor naming.</span></div></div>
-    <div class="strength"><div class="check">+</div><div class="text"><strong>Honest boolean names</strong><span>ShowTimestamp, External, Disabled — all read as yes/no.</span></div></div>
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a><a href="#issues">Issues</a
+          ><a href="#strengths">Strengths</a>
+        </nav>
+      </aside>
+      <main class="main">
+        <div class="hero">
+          <div class="hero-shapes">
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="hero-badge">Naming Review</div>
+          <h1>templ-components — Identifier Audit</h1>
+          <p class="hero-subtitle">
+            Honesty, clarity, domain alignment, and consistency of every exported identifier.
+          </p>
+        </div>
+        <h2 id="summary"><span class="num">00</span>Summary</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">200+</div>
+            <div class="stat-label">Identifiers Reviewed</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">9</div>
+            <div class="stat-label">Naming Issues</div>
+          </div>
+          <div class="stat-card stat-bad">
+            <div class="stat-value">2</div>
+            <div class="stat-label">Honesty (Critical)</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">15+</div>
+            <div class="stat-label">Excellent Names</div>
+          </div>
+        </div>
+        <div class="card card-solution">
+          <h4>Overall: Honest names; minor consistency gaps</h4>
+          <p>
+            Zero Manager/Handler/Helper classes. Strong domain-aligned enums. Issues: ModalSize2XL
+            value mismatch, vague helpers.go filename, abbreviation errMsg.
+          </p>
+        </div>
+        <h2 id="issues"><span class="num">01</span>Issues</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Severity</th>
+              <th>File</th>
+              <th>Identifier</th>
+              <th>Issue</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td>modal_go.go:18</td>
+              <td>ModalSize2XL="full"</td>
+              <td>Name says 2XL, value is "full"</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><span class="badge badge-critical">Critical</span></td>
+              <td>drawer_go.go:25</td>
+              <td>DrawerSize2XL="full"</td>
+              <td>Same mismatch as Modal</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>forms/helpers.go</td>
+              <td>helpers.go</td>
+              <td>Junk-drawer filename</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>forms/radio_go.go</td>
+              <td>radio_go.go</td>
+              <td>_go.go suffix implies generated</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>forms/helpers.go:29</td>
+              <td>errMsg</td>
+              <td>Abbreviation</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>icons/icon_names.go:20</td>
+              <td>X</td>
+              <td>Single-letter identifier</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>fromerror.go:76</td>
+              <td>cleanMessage</td>
+              <td>Vague verb</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td>fromerror.go:12</td>
+              <td>FamilyFromErrorFamily</td>
+              <td>Stuttery name</td>
+            </tr>
+            <tr>
+              <td>9</td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td>layout/sri.go</td>
+              <td>htmxMainSRIDefault vs sriHTMXMainByVersion</td>
+              <td>Inconsistent word order</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="strengths"><span class="num">02</span>Strengths</h2>
+        <div class="strengths">
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Zero Manager/Handler/Helper classes</strong
+              ><span>No trash-can names anywhere.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Domain-aligned enums</strong
+              ><span>FamilyRejection, FeedbackSuccess — not ErrorType1.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Consistent Default*Props() pattern</strong
+              ><span>Every component has predictable constructor naming.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Honest boolean names</strong
+              ><span>ShowTimestamp, External, Disabled — all read as yes/no.</span>
+            </div>
+          </div>
+        </div>
+        <footer class="footer">
+          Generated 2026-07-05 &middot; 200+ identifiers across 10 packages
+        </footer>
+      </main>
     </div>
-    <footer class="footer">Generated 2026-07-05 &middot; 200+ identifiers across 10 packages</footer>
-    </main></div></body></html>
+  </body>
+</html>

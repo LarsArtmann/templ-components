@@ -1,5 +1,9 @@
 <!doctype html>
-<html lang="en"><head><meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" /><title>Full Code Review — templ-components 2026-07-05</title><style>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Full Code Review — templ-components 2026-07-05</title>
     <style>
       /* =========================================================================
          BAUHAUS DARK — Dashboard template
@@ -796,42 +800,183 @@
         }
       }
     </style>
-    </style></head><body>
-    <div class="top-bar"><span>FULL CODE REVIEW</span><span>2026-07-05</span><span>templ-components v0.6.1</span></div>
-    <div class="layout"><aside class="sidebar" data-nav><nav><div class="label">Contents</div><a href="#summary">Summary</a><a href="#fixed">Fixed</a><a href="#remaining">Remaining</a><a href="#strengths">Strengths</a></nav></aside>
-    <main class="main">
-    <div class="hero"><div class="hero-shapes"><div class="circle"></div><div class="square"></div><div class="tri"></div></div><div class="hero-badge">Full Code Review</div><h1>templ-components — Comprehensive Audit</h1><p class="hero-subtitle">Every source file reviewed. 8 issues fixed, 6 ticketed.</p></div>
-    <h2 id="summary"><span class="num">00</span>Summary</h2>
-    <div class="stat-grid">
-    <div class="stat-card"><div class="stat-value">29</div><div class="stat-label">Files Reviewed</div></div>
-    <div class="stat-card stat-good"><div class="stat-value">8</div><div class="stat-label">Fixed</div></div>
-    <div class="stat-card stat-warn"><div class="stat-value">6</div><div class="stat-label">Remaining</div></div>
-    <div class="stat-card stat-good"><div class="stat-value">0</div><div class="stat-label">Critical Bugs</div></div>
+  </head>
+  <body>
+    <div class="top-bar">
+      <span>FULL CODE REVIEW</span><span>2026-07-05</span><span>templ-components v0.6.1</span>
     </div>
-    <div class="card card-solution"><h4>Verdict: Production-quality library</h4><p>Build clean, 0 lint issues, 0 duplication, 14/14 packages pass. Multiple prior quality passes show in shared helpers, typed enums, consistent BaseProps. Remaining issues are design improvements, not bugs.</p></div>
-    <h2 id="fixed"><span class="num">01</span>Fixed On The Spot</h2>
-    <table><thead><tr><th>#</th><th>Severity</th><th>File</th><th>Fix</th></tr></thead><tbody>
-    <tr><td>1</td><td><span class="badge badge-medium">Medium</span></td><td>component_props_test.go</td><td>Stale count comments (display 18→23, nav 6→7)</td></tr>
-    <tr><td>2</td><td><span class="badge badge-medium">Medium</span></td><td>fromerror.go</td><td>Stale comment about errors.AsType optimization</td></tr>
-    <tr><td>3</td><td><span class="badge badge-high">High</span></td><td>constructors.go</td><td>Missing WayOutHref on 3 error constructors</td></tr>
-    <tr><td>4</td><td><span class="badge badge-medium">Medium</span></td><td>drawer_go.go</td><td>Inline "max-w-2xl" → maxW2XL named constant</td></tr>
-    <tr><td>5</td><td><span class="badge badge-high">High</span></td><td>shared.go</td><td>4 near-identical scriptComponent functions → 1 helper</td></tr>
-    <tr><td>6</td><td><span class="badge badge-medium">Medium</span></td><td>icon_names.go</td><td>allIconNames() Spinner appended after sort → before</td></tr>
-    <tr><td>7</td><td><span class="badge badge-medium">Medium</span></td><td>sri.go</td><td>Duplicated CDN defaulting → resolveCDNBase()</td></tr>
-    <tr><td>8</td><td><span class="badge badge-low">Low</span></td><td>8 files</td><td>Competing package doc comments removed</td></tr>
-    </tbody></table>
-    <h2 id="remaining"><span class="num">02</span>Remaining Issues</h2>
-    <div class="issue issue-critical"><span class="severity severity-critical">Critical</span><h3>ModalSize2XL/DrawerSize2XL value mismatch</h3><div class="where">modal_go.go:18, drawer_go.go:25</div><p>Breaking change — schedule for next minor.</p></div>
-    <div class="issue issue-important"><span class="severity severity-important">High</span><h3>Error family→HTTP status lossy</h3><div class="where">styles.go:208</div><p>NotFound→400, InternalError→503. Need StatusCode field.</p></div>
-    <div class="issue issue-important"><span class="severity severity-important">High</span><h3>Validation asymmetry</h3><div class="where">button_go.go</div><p>Only ButtonHTMLType validates.</p></div>
-    <div class="issue issue-nice"><span class="severity severity-nice">Medium</span><h3>helpers.go junk drawer</h3><div class="where">forms/helpers.go</div><p>Split by concern.</p></div>
-    <h2 id="strengths"><span class="num">03</span>Strengths</h2>
-    <div class="strengths">
-    <div class="strength"><div class="check">+</div><div class="text"><strong>Zero lint, zero duplication</strong><span>golangci-lint clean, dupl clean.</span></div></div>
-    <div class="strength"><div class="check">+</div><div class="text"><strong>Consistent ComponentProps</strong><span>30+ structs via BaseProps embedding.</span></div></div>
-    <div class="strength"><div class="check">+</div><div class="text"><strong>Thread-safe class merge</strong><span>sync.Mutex in utils.Class().</span></div></div>
-    <div class="strength"><div class="check">+</div><div class="text"><strong>Accessibility-first</strong><span>motion-reduce, aria-label, focus traps, keyboard nav.</span></div></div>
-    <div class="strength"><div class="check">+</div><div class="text"><strong>CSP-safe throughout</strong><span>Every inline script uses nonce.</span></div></div>
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a><a href="#fixed">Fixed</a><a href="#remaining">Remaining</a
+          ><a href="#strengths">Strengths</a>
+        </nav>
+      </aside>
+      <main class="main">
+        <div class="hero">
+          <div class="hero-shapes">
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="hero-badge">Full Code Review</div>
+          <h1>templ-components — Comprehensive Audit</h1>
+          <p class="hero-subtitle">Every source file reviewed. 8 issues fixed, 6 ticketed.</p>
+        </div>
+        <h2 id="summary"><span class="num">00</span>Summary</h2>
+        <div class="stat-grid">
+          <div class="stat-card">
+            <div class="stat-value">29</div>
+            <div class="stat-label">Files Reviewed</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">8</div>
+            <div class="stat-label">Fixed</div>
+          </div>
+          <div class="stat-card stat-warn">
+            <div class="stat-value">6</div>
+            <div class="stat-label">Remaining</div>
+          </div>
+          <div class="stat-card stat-good">
+            <div class="stat-value">0</div>
+            <div class="stat-label">Critical Bugs</div>
+          </div>
+        </div>
+        <div class="card card-solution">
+          <h4>Verdict: Production-quality library</h4>
+          <p>
+            Build clean, 0 lint issues, 0 duplication, 14/14 packages pass. Multiple prior quality
+            passes show in shared helpers, typed enums, consistent BaseProps. Remaining issues are
+            design improvements, not bugs.
+          </p>
+        </div>
+        <h2 id="fixed"><span class="num">01</span>Fixed On The Spot</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Severity</th>
+              <th>File</th>
+              <th>Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>component_props_test.go</td>
+              <td>Stale count comments (display 18→23, nav 6→7)</td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>fromerror.go</td>
+              <td>Stale comment about errors.AsType optimization</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>constructors.go</td>
+              <td>Missing WayOutHref on 3 error constructors</td>
+            </tr>
+            <tr>
+              <td>4</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>drawer_go.go</td>
+              <td>Inline "max-w-2xl" → maxW2XL named constant</td>
+            </tr>
+            <tr>
+              <td>5</td>
+              <td><span class="badge badge-high">High</span></td>
+              <td>shared.go</td>
+              <td>4 near-identical scriptComponent functions → 1 helper</td>
+            </tr>
+            <tr>
+              <td>6</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>icon_names.go</td>
+              <td>allIconNames() Spinner appended after sort → before</td>
+            </tr>
+            <tr>
+              <td>7</td>
+              <td><span class="badge badge-medium">Medium</span></td>
+              <td>sri.go</td>
+              <td>Duplicated CDN defaulting → resolveCDNBase()</td>
+            </tr>
+            <tr>
+              <td>8</td>
+              <td><span class="badge badge-low">Low</span></td>
+              <td>8 files</td>
+              <td>Competing package doc comments removed</td>
+            </tr>
+          </tbody>
+        </table>
+        <h2 id="remaining"><span class="num">02</span>Remaining Issues</h2>
+        <div class="issue issue-critical">
+          <span class="severity severity-critical">Critical</span>
+          <h3>ModalSize2XL/DrawerSize2XL value mismatch</h3>
+          <div class="where">modal_go.go:18, drawer_go.go:25</div>
+          <p>Breaking change — schedule for next minor.</p>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">High</span>
+          <h3>Error family→HTTP status lossy</h3>
+          <div class="where">styles.go:208</div>
+          <p>NotFound→400, InternalError→503. Need StatusCode field.</p>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">High</span>
+          <h3>Validation asymmetry</h3>
+          <div class="where">button_go.go</div>
+          <p>Only ButtonHTMLType validates.</p>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Medium</span>
+          <h3>helpers.go junk drawer</h3>
+          <div class="where">forms/helpers.go</div>
+          <p>Split by concern.</p>
+        </div>
+        <h2 id="strengths"><span class="num">03</span>Strengths</h2>
+        <div class="strengths">
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Zero lint, zero duplication</strong
+              ><span>golangci-lint clean, dupl clean.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Consistent ComponentProps</strong
+              ><span>30+ structs via BaseProps embedding.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Thread-safe class merge</strong><span>sync.Mutex in utils.Class().</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>Accessibility-first</strong
+              ><span>motion-reduce, aria-label, focus traps, keyboard nav.</span>
+            </div>
+          </div>
+          <div class="strength">
+            <div class="check">+</div>
+            <div class="text">
+              <strong>CSP-safe throughout</strong><span>Every inline script uses nonce.</span>
+            </div>
+          </div>
+        </div>
+        <footer class="footer">
+          Generated 2026-07-05 &middot; 29 source files, 90+ test files reviewed
+        </footer>
+      </main>
     </div>
-    <footer class="footer">Generated 2026-07-05 &middot; 29 source files, 90+ test files reviewed</footer>
-    </main></div></body></html>
+  </body>
+</html>

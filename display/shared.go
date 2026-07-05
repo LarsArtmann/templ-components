@@ -212,9 +212,19 @@ func tooltipScriptComponent(nonce string) templ.Component {
 
 // copyButtonJS returns the singleton JavaScript for clipboard copy via event
 // delegation. Listens for clicks on [data-tc-copy] buttons, copies the text
-// via navigator.clipboard.writeText, and temporarily swaps the label text.
+// via navigator.clipboard.writeText (with a document.execCommand fallback for
+// non-secure HTTP contexts or older browsers), and temporarily swaps the label.
 func copyButtonJS() string {
 	return `if(!window.tcCopyAttached){window.tcCopyAttached=true;` +
+		`function tcSwapLabel(el,label,original){` +
+		`if(el)el.textContent=label;` +
+		`setTimeout(function(){if(el)el.textContent=original;},2000);}` +
+		`function tcFallbackCopy(text,done){` +
+		`var ta=document.createElement('textarea');ta.value=text;` +
+		`ta.style.cssText='position:fixed;top:-9999px;left:-9999px';` +
+		`document.body.appendChild(ta);ta.focus();ta.select();` +
+		`try{document.execCommand('copy');done();}catch(e){}` +
+		`document.body.removeChild(ta);}` +
 		`document.addEventListener('click',function(e){` +
 		`var btn=e.target.closest('[data-tc-copy]');if(!btn)return;` +
 		`var text=btn.getAttribute('data-tc-copy');` +
@@ -223,9 +233,9 @@ func copyButtonJS() string {
 		`var original=labelEl?labelEl.textContent:'';` +
 		`if(navigator.clipboard&&navigator.clipboard.writeText){` +
 		`navigator.clipboard.writeText(text).then(function(){` +
-		`if(labelEl)labelEl.textContent=label;` +
-		`setTimeout(function(){if(labelEl)labelEl.textContent=original;},2000);` +
-		`});}` +
+		`tcSwapLabel(labelEl,label,original);}).catch(function(){` +
+		`tcFallbackCopy(text,function(){tcSwapLabel(labelEl,label,original);});});` +
+		`}else{tcFallbackCopy(text,function(){tcSwapLabel(labelEl,label,original);});}` +
 		`});}` +
 		"\n"
 }
