@@ -1,0 +1,14 @@
+package layout
+
+// Stylesheet renders a CSP-safe `<link rel="stylesheet">` tag. Companion to
+// Script — ensures consistent, auditable external resource loading. While
+// stylesheets are not subject to script-src nonce restrictions, this helper
+// provides a single pattern for all external resource tags.
+//
+// Pass optional attributes (media, crossorigin, integrity) via attrs.
+//
+//	@layout.Stylesheet("/static/app.css", nil)
+//	@layout.Stylesheet("/static/print.css", templ.Attributes{"media": "print"})
+templ Stylesheet(href string, attrs templ.Attributes) {
+	<link rel="stylesheet" href={ href } { attrs... }/>
+}
