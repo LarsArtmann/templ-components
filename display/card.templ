@@ -1,6 +1,7 @@
 package display
 
 import (
+	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
@@ -157,8 +158,8 @@ type StatCardProps struct {
 	HxGet string
 	// HxTarget specifies the hx-target attribute (CSS selector for the swap target).
 	HxTarget string
-	// HxSwap specifies the hx-swap attribute (e.g. "innerHTML", "outerHTML").
-	HxSwap string
+	// HxSwap specifies the hx-swap attribute (e.g. htmx.SwapInnerHTML, htmx.SwapOuterHTML).
+	HxSwap htmx.SwapStyle
 }
 
 // DefaultStatCardProps returns sensible defaults
@@ -196,7 +197,7 @@ templ StatCard(props StatCardProps) {
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class(cardShellClass+" p-5 transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 hover:shadow-md cursor-pointer", props.Class) }
+			class={ utils.Class(cardShellClass+" p-5 transition-shadow motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 hover:shadow-md cursor-pointer", props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}

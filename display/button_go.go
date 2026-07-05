@@ -38,19 +38,18 @@ const (
 	ButtonHTMLReset  ButtonHTMLType = "reset"
 )
 
-//nolint:gochecknoglobals // Package-level validation set for button HTML types
-var validButtonHTMLTypes = map[ButtonHTMLType]bool{
-	ButtonHTMLButton: true, ButtonHTMLSubmit: true, ButtonHTMLReset: true,
+//nolint:gochecknoglobals // Package-level lookup table for button HTML types
+var buttonHTMLTypeLookup = map[ButtonHTMLType]string{
+	ButtonHTMLButton: string(ButtonHTMLButton),
+	ButtonHTMLSubmit: string(ButtonHTMLSubmit),
+	ButtonHTMLReset:  string(ButtonHTMLReset),
 }
 
 // buttonHTMLType returns the validated HTML type attribute. Unknown or empty
 // values fall back to "button" — matching the map+fallback convention used by
 // all other enums in the library and the HTML spec default.
 func buttonHTMLType(t ButtonHTMLType) string {
-	if t == "" || !validButtonHTMLTypes[t] {
-		return string(ButtonHTMLButton)
-	}
-	return string(t)
+	return utils.Lookup(buttonHTMLTypeLookup, t, string(ButtonHTMLButton))
 }
 
 // ButtonProps configures a button or link styled as a button

@@ -71,6 +71,11 @@ func TestIsValidEnums(t *testing.T) {
 		// ButtonType
 		{"ButtonType Primary", func() bool { return ButtonTypeIsValid(ButtonPrimary) }, true},
 		{"ButtonType invalid", func() bool { return ButtonTypeIsValid(ButtonType("bogus")) }, false},
+		// SortDirection
+		{"SortDirection None", func() bool { return SortDirectionIsValid(SortNone) }, true},
+		{"SortDirection Asc", func() bool { return SortDirectionIsValid(SortAsc) }, true},
+		{"SortDirection Desc", func() bool { return SortDirectionIsValid(SortDesc) }, true},
+		{"SortDirection invalid", func() bool { return SortDirectionIsValid(SortDirection("bogus")) }, false},
 	}
 
 	for _, tt := range tests {

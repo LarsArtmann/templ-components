@@ -109,5 +109,16 @@ func ButtonSizeIsValid(v ButtonSize) bool {
 
 // ButtonHTMLTypeIsValid reports whether v is one of the defined ButtonHTMLType constants.
 func ButtonHTMLTypeIsValid(v ButtonHTMLType) bool {
-	return validButtonHTMLTypes[v]
+	_, ok := buttonHTMLTypeLookup[v]
+	return ok
+}
+
+// SortDirectionIsValid reports whether v is one of the defined SortDirection constants.
+func SortDirectionIsValid(v SortDirection) bool {
+	switch v {
+	case SortNone, SortAsc, SortDesc:
+		return true
+	default:
+		return false
+	}
 }

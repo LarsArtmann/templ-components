@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/internal/golden"
 	"github.com/larsartmann/templ-components/utils"
@@ -69,7 +70,7 @@ func TestGoldenStatCardHTMX(t *testing.T) {
 		Icon:     icons.Users,
 		HxGet:    "/api/stats",
 		HxTarget: "#stat-container",
-		HxSwap:   "innerHTML",
+		HxSwap:   htmx.SwapInnerHTML,
 	}))
 	golden.Assert(t, "stat_card_htmx", output)
 }
@@ -81,7 +82,7 @@ func TestGoldenStatCardHrefWithHTMX(t *testing.T) {
 		Label:  "Pending",
 		Href:   "/admin/pending",
 		HxGet:  "/api/pending",
-		HxSwap: "outerHTML",
+		HxSwap: htmx.SwapOuterHTML,
 	}))
 	golden.Assert(t, "stat_card_href_htmx", output)
 }
@@ -93,4 +94,20 @@ func TestGoldenCardBodySlot(t *testing.T) {
 		Body:  templ.Raw("<pre>npm install @larsartmann/templ-components</pre>"),
 	}))
 	golden.Assert(t, "card_body_slot", output)
+}
+
+func TestGoldenTableSortableHeaders(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Table(TableProps{
+		TypedHeaders: []TableHeader{
+			{Label: "Name", Sortable: true, SortDirection: SortAsc, Href: "/sort?col=name&dir=desc"},
+			{Label: "Joined", Sortable: true, SortDirection: SortNone, Href: "/sort?col=joined&dir=asc"},
+			{Label: "Role"},
+		},
+		Rows: []TableRow{
+			SimpleTableRow("Alice", "2024-01-01", "Admin"),
+			SimpleTableRow("Bob", "2024-02-01", "User"),
+		},
+	}))
+	golden.Assert(t, "table_sortable_headers", output)
 }

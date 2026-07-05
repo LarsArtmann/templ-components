@@ -5,6 +5,7 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -155,7 +156,7 @@ func TestStatCardHxAttributes(t *testing.T) {
 			Label:  "Users",
 			Value:  "42",
 			HxGet:  "/api/stats",
-			HxSwap: "innerHTML",
+			HxSwap: htmx.SwapInnerHTML,
 		}))
 		utils.AssertContains(t, output, `hx-swap="innerHTML"`)
 	})
