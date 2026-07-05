@@ -44,10 +44,11 @@ func DefaultDrawerProps() DrawerProps {
 }
 
 const (
-	maxWSM = "max-w-sm"
-	maxWMD = "max-w-md"
-	maxWLG = "max-w-lg"
-	maxWXL = "max-w-xl"
+	maxWSM  = "max-w-sm"
+	maxWMD  = "max-w-md"
+	maxWLG  = "max-w-lg"
+	maxWXL  = "max-w-xl"
+	maxW2XL = "max-w-2xl"
 )
 
 //nolint:gochecknoglobals // Package-level lookup table for drawer sizes
@@ -56,7 +57,7 @@ var drawerSizeLookup = map[DrawerSize]string{
 	DrawerSizeMD: maxWMD,
 	DrawerSizeLG: maxWLG,
 	DrawerSizeXL: maxWXL,
-	DrawerFull:   "max-w-2xl",
+	DrawerFull:   maxW2XL,
 }
 
 func drawerSizeClass(size DrawerSize) string {

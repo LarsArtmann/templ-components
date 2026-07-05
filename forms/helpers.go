@@ -1,4 +1,4 @@
-// Package forms provides utility functions for form components.
+// Form helpers: ID sanitization, ARIA attributes, and input class utilities.
 package forms
 
 import (

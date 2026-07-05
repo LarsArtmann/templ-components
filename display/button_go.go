@@ -1,4 +1,4 @@
-// Package display provides button components.
+// Button component: variant/size enums, default props, and class lookups.
 package display
 
 import (

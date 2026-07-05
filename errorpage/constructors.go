@@ -82,6 +82,7 @@ func ServiceUnavailable() ErrorPageProps {
 		Why:           "This is a temporary issue. No data was lost.",
 		Fix:           "Wait a moment and refresh the page.",
 		WayOut:        "Retry",
+		WayOutHref:    "/",
 		ShowTimestamp: true,
 	}
 }

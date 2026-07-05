@@ -1,4 +1,4 @@
-// Package feedback provides user feedback components such as alerts, toasts, and loading indicators.
+// Feedback style lookups: shared style sets, icon mapping, and generic enum lookup.
 package feedback
 
 import (

@@ -1,4 +1,4 @@
-// Package display provides modal dialog components and related functionality.
+// Modal component: size enum, default props, and class lookup.
 package display
 
 import (

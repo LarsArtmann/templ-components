@@ -1,4 +1,4 @@
-// Package forms provides radio button components.
+// Radio and RadioGroup component types and helpers.
 package forms
 
 import "github.com/larsartmann/templ-components/utils"

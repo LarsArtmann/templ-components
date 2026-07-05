@@ -1,4 +1,4 @@
-// Package layout pins the HTMX CDN scripts and their Sub-Resource Integrity hashes.
+// HTMX CDN version pinning and SRI hash lookup.
 package layout
 
 import "strings"
@@ -55,24 +55,25 @@ var sriHTMXMainByVersion = map[HTMXVersion]string{
 	HTMXVersion2_0_10: htmxMainSRIDefault,
 }
 
-// htmxScriptURL returns the CDN URL for the htmx main script at the given
-// version. If cdnBase is empty, defaults to defaultCDNBase. A trailing slash
-// on cdnBase is trimmed so consumers can pass "https://unpkg.com/" safely.
-func htmxScriptURL(version HTMXVersion, cdnBase string) string {
+// resolveCDNBase returns cdnBase if non-empty, otherwise defaultCDNBase.
+// A trailing slash is trimmed so consumers can pass "https://unpkg.com/" safely.
+func resolveCDNBase(cdnBase string) string {
 	if cdnBase == "" {
 		cdnBase = defaultCDNBase
 	}
-	return strings.TrimRight(cdnBase, "/") + "/htmx.org@" + string(version)
+	return strings.TrimRight(cdnBase, "/")
+}
+
+// htmxScriptURL returns the CDN URL for the htmx main script at the given
+// version. If cdnBase is empty, defaults to defaultCDNBase.
+func htmxScriptURL(version HTMXVersion, cdnBase string) string {
+	return resolveCDNBase(cdnBase) + "/htmx.org@" + string(version)
 }
 
 // responseTargetsURL returns the CDN URL for the response-targets extension.
-// If cdnBase is empty, defaults to defaultCDNBase. A trailing slash on cdnBase
-// is trimmed for consumer convenience.
+// If cdnBase is empty, defaults to defaultCDNBase.
 func responseTargetsURL(cdnBase string) string {
-	if cdnBase == "" {
-		cdnBase = defaultCDNBase
-	}
-	return strings.TrimRight(cdnBase, "/") + "/htmx-ext-response-targets@" +
+	return resolveCDNBase(cdnBase) + "/htmx-ext-response-targets@" +
 		responseTargetsVersion + "/dist/response-targets.min.js"
 }
 

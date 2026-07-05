@@ -166,15 +166,24 @@ func overlayJS(id, componentName string, cfg overlayPanelConfig) string {
 // script-context sanitization (which would JSON-encode the JS string).
 // The nonce is HTML-attribute-escaped to prevent attribute-boundary breakage
 // from a caller-supplied value containing quotes or angle brackets.
-func overlayScriptComponent(nonce, id, componentName string, cfg overlayPanelConfig) templ.Component {
-	js := overlayJS(id, componentName, cfg)
+// scriptComponent renders a CSP-safe <script nonce="..."> tag wrapping the
+// given JS string. Shared by all singleton-script components to avoid duplicating
+// the nonce-escaping and error-wrapping pattern. The errLabel is used in the
+// wrapped error message for debugging.
+func scriptComponent(nonce, js, errLabel string) templ.Component {
 	escapedNonce := html.EscapeString(nonce)
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, js); err != nil {
-			return fmt.Errorf("write overlay script: %w", err)
+			return fmt.Errorf("write %s: %w", errLabel, err)
 		}
 		return nil
 	})
+}
+
+// overlayScriptComponent renders the overlay (modal/drawer) JS in a CSP-safe
+// <script nonce> tag.
+func overlayScriptComponent(nonce, id, componentName string, cfg overlayPanelConfig) templ.Component {
+	return scriptComponent(nonce, overlayJS(id, componentName, cfg), "overlay script")
 }
 
 // tooltipJS returns the singleton JavaScript for tooltip touch support and
@@ -198,14 +207,7 @@ func tooltipJS() string {
 // Tooltip on the page injects executable code; subsequent instances
 // skip it via the window.tcTooltipAttached guard.
 func tooltipScriptComponent(nonce string) templ.Component {
-	js := tooltipJS()
-	escapedNonce := html.EscapeString(nonce)
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, js); err != nil {
-			return fmt.Errorf("write tooltip script: %w", err)
-		}
-		return nil
-	})
+	return scriptComponent(nonce, tooltipJS(), "tooltip script")
 }
 
 // copyButtonJS returns the singleton JavaScript for clipboard copy via event
@@ -232,14 +234,7 @@ func copyButtonJS() string {
 // clipboard copy JS. Singleton — only the first CopyButton on the page injects
 // executable code; subsequent instances skip via the window.tcCopyAttached guard.
 func copyButtonScriptComponent(nonce string) templ.Component {
-	js := copyButtonJS()
-	escapedNonce := html.EscapeString(nonce)
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, js); err != nil {
-			return fmt.Errorf("write copy button script: %w", err)
-		}
-		return nil
-	})
+	return scriptComponent(nonce, copyButtonJS(), "copy button script")
 }
 
 // imageFallbackJS returns the singleton JavaScript for image fallback source
@@ -263,12 +258,5 @@ func imageFallbackJS() string {
 // the image fallback JS. Singleton — only injected when at least one Image
 // with FallbackSrc is rendered on the page.
 func imageFallbackScriptComponent(nonce string) templ.Component {
-	js := imageFallbackJS()
-	escapedNonce := html.EscapeString(nonce)
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, js); err != nil {
-			return fmt.Errorf("write image fallback script: %w", err)
-		}
-		return nil
-	})
+	return scriptComponent(nonce, imageFallbackJS(), "image fallback script")
 }

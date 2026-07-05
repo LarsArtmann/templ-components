@@ -1,4 +1,4 @@
-// Package icons provides constants for predefined icon names used throughout the component library.
+// Icon name constants — single source of truth for the icon catalogue.
 package icons
 
 import "sort"
@@ -118,9 +118,9 @@ func allIconNames() []Name {
 	for name := range iconPathData {
 		names = append(names, name)
 	}
+	names = append(names, Spinner)
 	sort.Slice(names, func(i, j int) bool {
 		return string(names[i]) < string(names[j])
 	})
-	names = append(names, Spinner)
 	return names
 }
