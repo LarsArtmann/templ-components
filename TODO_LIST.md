@@ -180,10 +180,11 @@ Sourced from DiscordSync, SwettySwipper, Overview, and browser-history feedback 
 
 ### Remaining Issues
 
-- [ ] **ModalSize2XL/DrawerSize2XL value mismatch** — constants named "2XL" have value "full" (modal_go.go:18, drawer_go.go:25). Breaking change for next minor.
-- [ ] **Error family→HTTP status code lossy** — NotFound()→400 (should be 404), InternalError()→503 (should be 500). Add StatusCode field to ErrorPageProps.
-- [ ] **Validation asymmetry** — Only ButtonHTMLType validates; other enums silently coerce. Add IsValid() methods.
-- [ ] **Overlay closeKind/componentName untyped** — Two parallel string fields encode same domain (shared.go:39-40). Should be typed OverlayKind enum.
-- [ ] **Silent SRI fallback** — htmxMainSRI(unknownVersion) silently returns default hash (sri.go:83). Browser blocks script.
-- [ ] **Split forms/helpers.go** — Junk-drawer file mixing ARIA, IDs, CSS. Split into aria.go, ids.go, classes.go.
-- [ ] **Error code constants untyped** — CodePageNotFound etc. are bare string constants, not typed Code enum.
+- [x] **ModalSize2XL/DrawerSize2XL value mismatch** — FIXED: value changed from "full" to "2xl"
+- [x] **Error family→HTTP status code lossy** — FIXED: added StatusCode field to ErrorPageProps
+- [x] **Silent SRI fallback** — FIXED: htmxMainSRI returns empty for unknown versions
+- [x] **Split forms/helpers.go** — FIXED: split into ids.go, aria.go, input_classes.go
+- [x] **Validation asymmetry (partial)** — FIXED: added FeedbackTypeIsValid()
+- [ ] **Overlay closeKind/componentName untyped** — Requires editing .templ sources + regenerate
+- [ ] **Error code constants untyped** — CodePageNotFound etc. should be typed Code enum
+- [ ] **Remaining IsValid() methods** — ButtonType, ModalSize, DrawerSize, DrawerSide still need IsValid()
