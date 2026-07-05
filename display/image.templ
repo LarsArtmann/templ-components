@@ -36,6 +36,15 @@ func DefaultImageProps() ImageProps {
 // fallback source. The fallback swap is CSP-safe: a data-tc-img-fallback
 // attribute on the img tag is consumed by a singleton error-capture listener.
 //
+// For responsive images with multiple resolutions, this component does not
+// expose a dedicated srcset field — use Attrs to add srcset/sizes manually:
+//
+//	@display.Image(display.ImageProps{
+//	    Src:    "/photo.jpg",
+//	    Alt:    "Profile photo",
+//	    Attrs:  templ.Attributes{"srcset": "/photo-2x.jpg 2x", "sizes": "50vw"},
+//	})
+//
 //	@display.Image(display.ImageProps{Src: "/photo.jpg", Alt: "Profile photo", Width: 128, Height: 128, FallbackSrc: "/placeholder.jpg"})
 templ Image(props ImageProps) {
 	<img

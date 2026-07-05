@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"testing"
+	"time"
 
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -76,4 +77,49 @@ func BenchmarkHotPaths(b *testing.B) {
 			_ = Dropdown(props).Render(context.Background(), &buf)
 		}
 	})
+
+	b.Run("CopyButton render", func(b *testing.B) {
+		props := DefaultCopyButtonProps()
+		props.Text = "npm install foo"
+		b.ResetTimer()
+		for b.Loop() {
+			var buf bytes.Buffer
+			_ = CopyButton(props).Render(context.Background(), &buf)
+		}
+	})
+
+	b.Run("CountBadge render", func(b *testing.B) {
+		props := CountBadgeProps{Count: 42}
+		b.ResetTimer()
+		for b.Loop() {
+			var buf bytes.Buffer
+			_ = CountBadge(props).Render(context.Background(), &buf)
+		}
+	})
+
+	b.Run("Image render", func(b *testing.B) {
+		props := ImageProps{Src: "/photo.jpg", Alt: "Photo", Width: 128, Height: 128, FallbackSrc: "/placeholder.jpg"}
+		b.ResetTimer()
+		for b.Loop() {
+			var buf bytes.Buffer
+			_ = Image(props).Render(context.Background(), &buf)
+		}
+	})
+
+	b.Run("RelativeTime render", func(b *testing.B) {
+		props := RelativeTimeProps{Time: mustTime("2025-01-15T10:30:00Z")}
+		b.ResetTimer()
+		for b.Loop() {
+			var buf bytes.Buffer
+			_ = RelativeTime(props).Render(context.Background(), &buf)
+		}
+	})
+}
+
+func mustTime(s string) time.Time {
+	t, err := time.Parse(time.RFC3339, s)
+	if err != nil {
+		panic(err)
+	}
+	return t
 }

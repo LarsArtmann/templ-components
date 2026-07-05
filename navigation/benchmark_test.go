@@ -48,6 +48,19 @@ func BenchmarkNavigationRenders(b *testing.B) {
 		}
 	})
 
+	b.Run("LoadMore render", func(b *testing.B) {
+		props := LoadMoreProps{
+			BaseProps: utils.BaseProps{ID: "bm-loadmore"},
+			Endpoint:  "/items",
+			Cursor:    "abc",
+		}
+		b.ResetTimer()
+		for b.Loop() {
+			var buf bytes.Buffer
+			_ = LoadMore(props).Render(context.Background(), &buf)
+		}
+	})
+
 	b.Run("Class merge", func(b *testing.B) {
 		for b.Loop() {
 			utils.Class("px-4 py-2 text-sm", "px-6 text-lg font-bold")
