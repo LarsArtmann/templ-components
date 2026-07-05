@@ -124,3 +124,12 @@ func allIconNames() []Name {
 	})
 	return names
 }
+
+// NameIsValid reports whether v is one of the defined icon names.
+func NameIsValid(v Name) bool {
+	if v == Spinner {
+		return true
+	}
+	_, ok := iconPathData[v]
+	return ok
+}

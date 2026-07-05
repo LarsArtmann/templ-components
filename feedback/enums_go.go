@@ -21,3 +21,13 @@ func SkeletonVariantIsValid(v SkeletonVariant) bool {
 		return false
 	}
 }
+
+// StepIndicatorOrientationIsValid reports whether v is one of the defined StepIndicatorOrientation constants.
+func StepIndicatorOrientationIsValid(v StepIndicatorOrientation) bool {
+	switch v {
+	case StepHorizontal, StepVertical:
+		return true
+	default:
+		return false
+	}
+}

@@ -50,3 +50,64 @@ func AvatarShapeIsValid(v AvatarShape) bool {
 		return false
 	}
 }
+
+// AvatarStatusIsValid reports whether v is one of the defined AvatarStatus constants.
+func AvatarStatusIsValid(v AvatarStatus) bool {
+	switch v {
+	case AvatarStatusNone, AvatarStatusOnline, AvatarStatusOffline:
+		return true
+	default:
+		return false
+	}
+}
+
+// DropdownItemKindIsValid reports whether v is one of the defined DropdownItemKind constants.
+func DropdownItemKindIsValid(v DropdownItemKind) bool {
+	switch v {
+	case DropdownItemLink, DropdownItemButton:
+		return true
+	default:
+		return false
+	}
+}
+
+// DropdownPositionIsValid reports whether v is one of the defined DropdownPosition constants.
+func DropdownPositionIsValid(v DropdownPosition) bool {
+	switch v {
+	case DropdownPositionLeft, DropdownPositionRight:
+		return true
+	default:
+		return false
+	}
+}
+
+// TabsVariantIsValid reports whether v is one of the defined TabsVariant constants.
+func TabsVariantIsValid(v TabsVariant) bool {
+	switch v {
+	case TabsDefault, TabsPills:
+		return true
+	default:
+		return false
+	}
+}
+
+// OverlayKindIsValid reports whether v is one of the defined OverlayKind constants.
+func OverlayKindIsValid(v OverlayKind) bool {
+	switch v {
+	case OverlayModal, OverlayDrawer:
+		return true
+	default:
+		return false
+	}
+}
+
+// ButtonSizeIsValid reports whether v is one of the defined ButtonSize constants.
+func ButtonSizeIsValid(v ButtonSize) bool {
+	_, ok := buttonSizeLookup[v]
+	return ok
+}
+
+// ButtonHTMLTypeIsValid reports whether v is one of the defined ButtonHTMLType constants.
+func ButtonHTMLTypeIsValid(v ButtonHTMLType) bool {
+	return validButtonHTMLTypes[v]
+}

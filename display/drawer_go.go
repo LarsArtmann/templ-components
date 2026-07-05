@@ -22,7 +22,7 @@ const (
 	DrawerSizeMD  DrawerSize = "md"
 	DrawerSizeLG  DrawerSize = "lg"
 	DrawerSizeXL  DrawerSize = "xl"
-	DrawerSize2XL DrawerSize = "2xl" // largest available width (max-w-2xl)
+	DrawerSize2XL DrawerSize = "2xl"  // largest available width (max-w-2xl)
 	DrawerFull    DrawerSize = "full" // Deprecated: use DrawerSize2XL
 )
 
