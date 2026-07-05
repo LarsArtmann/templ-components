@@ -17,8 +17,8 @@ func NotFound() ErrorPageProps {
 	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
 		Family:        FamilyRejection,
 		Code:          CodePageNotFound,
-		Title:         "Page not found",
-		Message:       "The page you're looking for doesn't exist or has been moved.",
+		Title:         notFound404DefaultTitle,
+		Message:       notFound404DefaultMessage,
 		Fix:           "Check the URL for typos or navigate back to the homepage.",
 		WayOut:        msgGoHome,
 		WayOutHref:    "/",

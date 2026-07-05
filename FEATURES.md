@@ -126,6 +126,7 @@ type BaseProps struct {
 | Component     | Status           | Description              | Key Features                                                            |
 | ------------- | ---------------- | ------------------------ | ----------------------------------------------------------------------- |
 | `ErrorPage`   | FULLY_FUNCTIONAL | Full-page error view     | Wix-style What/Why/Fix/WayOut, 5 families, context, cause chain, action |
+| `NotFound404` | FULLY_FUNCTIONAL | Dedicated 404 page       | Gradient numeral hero, search form, quick-links grid, go-home/go-back   |
 | `ErrorDetail` | FULLY_FUNCTIONAL | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix     |
 | `ErrorAlert`  | FULLY_FUNCTIONAL | Family-aware alert       | 5 distinct color schemes, dismiss, fix suggestion, family badge         |
 

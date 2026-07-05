@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-76 → 82 components across 9 packages + 101 icons. If you're about to hand-roll
+76 → 83 components across 9 packages + 101 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 

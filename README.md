@@ -405,12 +405,13 @@ Wiring up HTMX error feedback in a server-rendered app? See [`docs/recipes/serve
 
 ---
 
-### `errorpage` — Error Pages (3 components)
+### `errorpage` — Error Pages (4 components)
 
-Structured error pages with family-aware styling, HTTP handler integration, and pre-built constructors.
+Structured error pages with family-aware styling, HTTP handler integration, and pre-built constructors. Includes a dedicated `NotFound404` component with a large gradient numeral, optional search, and quick-links.
 
 ```templ
 @errorpage.ErrorPage(errorpage.ErrorPageProps{Family: errorpage.FamilyNotFound, Why: "Page not found"})
+@errorpage.NotFound404(errorpage.DefaultNotFound404Props())
 @errorpage.ErrorDetail(errorpage.ErrorDetailProps{Family: errorpage.FamilyConflict, Why: "Conflict", Fix: "Refresh and retry"})
 @errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyTransient, Why: "Temporary issue"})
 ```
