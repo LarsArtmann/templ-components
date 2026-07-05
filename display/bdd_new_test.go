@@ -86,6 +86,28 @@ func TestRelativeTimeBehavior(t *testing.T) {
 		output := utils.Render(t, RelativeTime(RelativeTimeProps{Time: ts}))
 		utils.AssertContains(t, output, `title="Jan 15, 2025`)
 	})
+
+	t.Run("auto-refresh adds data attribute and script", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, RelativeTime(RelativeTimeProps{
+			Time:        time.Now().Add(-1 * time.Hour),
+			AutoRefresh: true,
+			BaseProps:   utils.BaseProps{Nonce: "n1"},
+		}))
+		utils.AssertContains(t, output, `data-tc-relative`)
+		utils.AssertContains(t, output, `nonce="n1"`)
+		utils.AssertContains(t, output, "tcRelativeTimeAttached")
+	})
+
+	t.Run("auto-refresh omitted when disabled", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, RelativeTime(RelativeTimeProps{
+			Time:        time.Now(),
+			AutoRefresh: false,
+		}))
+		utils.AssertNotContains(t, output, "data-tc-relative")
+		utils.AssertNotContains(t, output, "tcRelativeTimeAttached")
+	})
 }
 
 // --- CountBadge Behavior ---

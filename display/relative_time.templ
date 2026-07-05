@@ -17,6 +17,11 @@ type RelativeTimeProps struct {
 	// Title, when non-empty, overrides the default title (absolute time shown
 	// on hover). Set to "" to use the formatted absolute timestamp.
 	Title string
+	// AutoRefresh, when true, injects a singleton script that uses the native
+	// Intl.RelativeTimeFormat API to live-update the text every 30 seconds.
+	// Also listens to htmx:afterSettle so newly-swapped <time> elements are
+	// formatted immediately. Defaults to false (static server-rendered text).
+	AutoRefresh bool
 }
 
 // DefaultRelativeTimeProps returns sensible defaults. Time defaults to now.
@@ -31,6 +36,7 @@ func DefaultRelativeTimeProps() RelativeTimeProps {
 // attribute carries the RFC 3339 timestamp for accessibility and SEO.
 //
 //	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt})
+//	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt, AutoRefresh: true})
 templ RelativeTime(props RelativeTimeProps) {
 	{{
 		relative := formatRelativeTime(props.Time, time.Now())
@@ -42,6 +48,9 @@ templ RelativeTime(props RelativeTimeProps) {
 	<time
 		datetime={ props.Time.Format(time.RFC3339) }
 		title={ title }
+		if props.AutoRefresh {
+			data-tc-relative
+		}
 		if props.ID != "" {
 			id={ props.ID }
 		}
@@ -53,6 +62,9 @@ templ RelativeTime(props RelativeTimeProps) {
 	>
 		{ relative }
 	</time>
+	if props.AutoRefresh {
+		@relativeTimeScriptComponent(props.Nonce)
+	}
 }
 
 // formatRelativeTime returns a human-readable string describing how far ago

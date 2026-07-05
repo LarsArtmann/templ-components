@@ -260,3 +260,38 @@ func imageFallbackJS() string {
 func imageFallbackScriptComponent(nonce string) templ.Component {
 	return scriptComponent(nonce, imageFallbackJS(), "image fallback script")
 }
+
+// relativeTimeJS returns the singleton JavaScript for live-updating relative
+// timestamps. Uses the native Intl.RelativeTimeFormat API for localization.
+// Runs every 30 seconds via setInterval and also listens to htmx:afterSettle
+// so newly-swapped <time> elements are formatted immediately after HTMX
+// content swaps.
+func relativeTimeJS() string {
+	return `if(!window.tcRelativeTimeAttached){window.tcRelativeTimeAttached=true;` +
+		`function tcRelativeTimeFormat(el){` +
+		`var diff=(new Date(el.getAttribute('datetime'))-Date.now())/1000;` +
+		`var abs=Math.abs(diff),val,unit;` +
+		`if(abs<60){val=0;unit='second'}` +
+		`else if(abs<3600){val=Math.round(diff/60);unit='minute'}` +
+		`else if(abs<86400){val=Math.round(diff/3600);unit='hour'}` +
+		`else if(abs<604800){val=Math.round(diff/86400);unit='day'}` +
+		`else if(abs<2592000){val=Math.round(diff/604800);unit='week'}` +
+		`else{el.textContent=new Date(el.getAttribute('datetime')).toLocaleDateString();return}` +
+		`el.textContent=new Intl.RelativeTimeFormat(document.documentElement.lang||'en',{numeric:'auto'}).format(val,unit);` +
+		`}` +
+		`function tcRelativeTimeTick(){` +
+		`document.querySelectorAll('time[data-tc-relative]').forEach(tcRelativeTimeFormat);` +
+		`}` +
+		`tcRelativeTimeTick();` +
+		`setInterval(tcRelativeTimeTick,30000);` +
+		`document.body.addEventListener('htmx:afterSettle',tcRelativeTimeTick);` +
+		`}` +
+		"\n"
+}
+
+// relativeTimeScriptComponent renders the relative-time auto-refresh JS.
+// Singleton — only the first RelativeTime with AutoRefresh=true on the page
+// injects executable code; subsequent instances skip via the guard flag.
+func relativeTimeScriptComponent(nonce string) templ.Component {
+	return scriptComponent(nonce, relativeTimeJS(), "relative time script")
+}
