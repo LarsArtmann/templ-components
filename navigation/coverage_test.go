@@ -1,6 +1,7 @@
 package navigation
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/a-h/templ"
@@ -225,6 +226,26 @@ func TestSimpleNavWithLinks(t *testing.T) {
 	}, CurrentPath: "/about"}))
 	utils.AssertContains(t, output, "About")
 	utils.AssertContains(t, output, "Contact")
+}
+
+func TestSimpleNavForwardsRightItems(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, SimpleNav(SimpleNavProps{
+		BrandText:  "App",
+		BrandHref:  "/",
+		RightItems: simpleBrand("Sign in", "/login"),
+	}))
+	utils.AssertContains(t, output, "Sign in")
+	utils.AssertContains(t, output, `/login`)
+}
+
+func TestSimpleNavOmitsRightItemsWhenNil(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, SimpleNav(SimpleNavProps{BrandText: "App", BrandHref: "/"}))
+	// RightItems slot is empty: no "flex items-center gap-2" wrapper rendered.
+	if got := strings.Count(output, "Sign in"); got != 0 {
+		t.Errorf("expected no RightItems text, got %d occurrence(s)", got)
+	}
 }
 
 func TestFooterMinimal(t *testing.T) {

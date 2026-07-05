@@ -142,6 +142,47 @@ func TestStatCardRender(t *testing.T) {
 		utils.AssertNotContains(t, output, "bg-blue-50")
 		utils.AssertNotContains(t, output, "<svg")
 	})
+
+	t.Run("Href wraps card in an anchor", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Label: "Active",
+			Value: "42",
+			Href:  "/?activity=active",
+		}))
+		utils.AssertContains(t, output, `href="/?activity=active"`)
+		utils.AssertContains(t, output, "hover:shadow-md")
+		utils.AssertContains(t, output, "focus-visible:ring-2")
+		utils.AssertContains(t, output, "cursor-pointer")
+		utils.AssertContains(t, output, "42")
+	})
+
+	t.Run("Href forwards BaseProps to anchor", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			BaseProps: utils.BaseProps{
+				ID:        "active-stat",
+				Class:     "mb-4",
+				AriaLabel: "Filter by active users",
+			},
+			Label: "Active",
+			Value: "42",
+			Href:  "/active",
+		}))
+		utils.AssertContains(t, output, `id="active-stat"`)
+		utils.AssertContains(t, output, `mb-4`)
+		utils.AssertContains(t, output, `aria-label="Filter by active users"`)
+	})
+
+	t.Run("no Href renders a div, not an anchor", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, StatCard(StatCardProps{
+			Label: "Total",
+			Value: "100",
+		}))
+		utils.AssertNotContains(t, output, "<a ")
+		utils.AssertNotContains(t, output, "hover:shadow-md")
+	})
 }
 
 func TestEmptyStateRender(t *testing.T) {

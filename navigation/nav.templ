@@ -69,9 +69,12 @@ templ Nav(props NavProps) {
 // SimpleNavProps configures a minimal navigation with a text brand
 type SimpleNavProps struct {
 	utils.BaseProps
-	BrandText   string
-	BrandHref   string
-	Links       []NavLinkProps
+	BrandText string
+	BrandHref string
+	Links     []NavLinkProps
+	// RightItems is rendered on the right side of the bar (e.g. a ThemeToggle,
+	// a sign-in button, a user menu). Forwarded to Nav.RightItems. Optional.
+	RightItems  templ.Component
 	CurrentPath string
 	Sticky      bool
 }
@@ -92,6 +95,7 @@ func DefaultSimpleNavProps() SimpleNavProps {
 //	   Links: []navigation.NavLinkProps{
 //	     {Href: "/", Text: "Home"},
 //	   },
+//	   RightItems: @layout.ThemeToggle("Toggle theme", ""),
 //	   CurrentPath: "/",
 //	})
 templ SimpleNav(props SimpleNavProps) {
@@ -99,6 +103,7 @@ templ SimpleNav(props SimpleNavProps) {
 		BaseProps:   props.GetBaseProps(),
 		Brand:       simpleBrand(props.BrandText, props.BrandHref),
 		Links:       props.Links,
+		RightItems:  props.RightItems,
 		CurrentPath: props.CurrentPath,
 		Sticky:      props.Sticky,
 	})

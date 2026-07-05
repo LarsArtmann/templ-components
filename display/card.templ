@@ -137,6 +137,10 @@ type StatCardProps struct {
 	Trend  TrendDirection
 	// Icon optionally renders a leading icon tile (e.g. icons.Users).
 	Icon icons.Name
+	// Href, when non-empty, wraps the whole card in an <a> so the card acts
+	// as a clickable navigation/filter link. Use this for dashboard stat cards
+	// that drill down into a filtered view.
+	Href string
 }
 
 // DefaultStatCardProps returns sensible defaults
@@ -162,35 +166,59 @@ func normalizeTrend(t TrendDirection) TrendDirection {
 }
 
 // StatCard renders a dashboard stat card with value, label, optional change
-// indicator, and an optional leading icon tile.
+// indicator, and an optional leading icon tile. When Href is set, the whole
+// card is wrapped in an <a> so it acts as a clickable navigation link.
 //
 //	@display.StatCard(display.StatCardProps{Label: "Users", Value: "1,204", Icon: icons.Users})
+//	@display.StatCard(display.StatCardProps{Label: "Active", Value: "42", Href: "/?activity=active"})
 templ StatCard(props StatCardProps) {
-	<div
-		if props.ID != "" {
-			id={ props.ID }
-		}
-		class={ utils.Class(cardShellClass+" p-5", props.Class) }
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
-		}
-		{ props.Attrs... }
-	>
-		if props.Icon != "" {
-			<div class="flex items-center gap-4">
-				<div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/30">
-					@icons.Icon(props.Icon, "h-6 w-6 text-blue-600 dark:text-blue-400")
-				</div>
-				<dl class="min-w-0 flex-1">
-					@statCardFigures(props)
-				</dl>
+	if props.Href != "" {
+		<a
+			href={ props.Href }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class(cardShellClass+" p-5 transition-shadow focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 hover:shadow-md cursor-pointer", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			@statCardInner(props)
+		</a>
+	} else {
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class(cardShellClass+" p-5", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			@statCardInner(props)
+		</div>
+	}
+}
+
+// statCardInner renders the icon/value/label body shared by both the linked
+// and unlinked StatCard layouts.
+templ statCardInner(props StatCardProps) {
+	if props.Icon != "" {
+		<div class="flex items-center gap-4">
+			<div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/30">
+				@icons.Icon(props.Icon, "h-6 w-6 text-blue-600 dark:text-blue-400")
 			</div>
-		} else {
-			<dl>
+			<dl class="min-w-0 flex-1">
 				@statCardFigures(props)
 			</dl>
-		}
-	</div>
+		</div>
+	} else {
+		<dl>
+			@statCardFigures(props)
+		</dl>
+	}
 }
 
 // statCardFigures renders the label, value, and optional change indicator shared

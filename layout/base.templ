@@ -47,10 +47,23 @@ type PageProps struct {
 	OGImage        string
 	ThemeColor     string
 	DarkThemeColor string
-	CSSPath        string
-	Favicon        string
-	HTMXVersion    HTMXVersion
-	HTMXUseSRI     bool
+	// CSSPath auto-injects `<link rel="stylesheet" href={CSSPath}>` into the
+	// page `<head>`. DefaultPageProps sets it to "/app.css". Set CSSPath to ""
+	// to suppress the stylesheet tag entirely — for example when you load
+	// Tailwind via the browser Play CDN, embed styles inline, or serve your
+	// own stylesheet through HeadContent.
+	CSSPath string
+	Favicon string
+	// HTMXVersion controls auto-injection of the htmx `<script>` tag.
+	// DefaultPageProps sets it to HTMXVersion2_0_10, which emits
+	// `<script src="https://cdn.jsdelivr.net/npm/htmx.org@2.0.10" ...>`.
+	// Set HTMXVersion to "" (the zero value) to disable auto-injection — for
+	// example when you bundle htmx yourself, serve it from a local path via
+	// HeadContent, or don't use htmx at all.
+	HTMXVersion HTMXVersion
+	// HTMXUseSRI adds an `integrity` attribute (subresource integrity) to the
+	// auto-injected htmx script. Only meaningful when HTMXVersion is non-empty.
+	HTMXUseSRI bool
 	// HTMXCDN overrides the CDN base URL for htmx scripts. When empty, defaults
 	// to "https://cdn.jsdelivr.net/npm". Set to e.g. "https://unpkg.com" to use
 	// a different CDN, or a self-hosted origin. Both the htmx main script and
@@ -68,7 +81,16 @@ type PageProps struct {
 	SecurityHeaders bool
 }
 
-// DefaultPageProps returns sensible defaults for PageProps
+// DefaultPageProps returns sensible defaults for PageProps.
+//
+// Two fields auto-inject `<head>` tags and are the most common defaults to
+// override when integrating with an existing asset pipeline:
+//
+//   - CSSPath ("/app.css") — set to "" if you serve styles another way.
+//   - HTMXVersion (HTMXVersion2_0_10) — set to "" to suppress the htmx CDN tag.
+//
+// HTMXResponseTargets defaults to true (loads the response-targets extension
+// alongside htmx); set to false to skip the extra request when unused.
 func DefaultPageProps() PageProps {
 	return PageProps{
 		Locale:              "en",

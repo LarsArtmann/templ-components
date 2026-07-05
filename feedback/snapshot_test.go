@@ -2,6 +2,7 @@
 package feedback
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -146,6 +147,40 @@ func TestSkeletonGroupRender(t *testing.T) {
 	)
 	utils.AssertContains(t, output, "space-y-3")
 	utils.AssertContains(t, output, `aria-busy="true"`)
+}
+
+func TestSkeletonCardGridRender(t *testing.T) {
+	t.Parallel()
+
+	t.Run("renders N cards in a responsive grid", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SkeletonCardGrid(6))
+		utils.AssertContains(t, output, "grid")
+		utils.AssertContains(t, output, "sm:grid-cols-2")
+		utils.AssertContains(t, output, "lg:grid-cols-3")
+		utils.AssertContains(t, output, `aria-busy="true"`)
+		utils.AssertContains(t, output, `role="status"`)
+		// Each SkeletonCard body emits a `h-48` image placeholder; 6 cards → 6 occurrences.
+		if got := strings.Count(output, "h-48"); got != 6 {
+			t.Errorf("expected 6 skeleton cards (h-48), got %d", got)
+		}
+	})
+
+	t.Run("non-positive count renders a single placeholder", func(t *testing.T) {
+		t.Parallel()
+		for _, n := range []int{0, -1, -10} {
+			output := utils.Render(t, SkeletonCardGrid(n))
+			if got := strings.Count(output, "h-48"); got != 1 {
+				t.Errorf("count=%d: expected 1 fallback card, got %d", n, got)
+			}
+		}
+	})
+
+	t.Run("preserves motion-reduce variant", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SkeletonCardGrid(3))
+		utils.AssertContains(t, output, "motion-reduce:animate-none")
+	})
 }
 
 func TestProgressBarRender(t *testing.T) {

@@ -6,10 +6,29 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `display.Grid`: responsive grid container with typed `GridCols` enum (1–6 columns, stacks on mobile, expands at sm/lg/xl breakpoints). Replaces the hand-written `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4` pattern that appeared in every consumer's templates.
+- `display.StatCardProps.Href`: when set, wraps the whole card in an `<a>` with hover shadow, focus ring, and cursor pointer — for dashboard stat cards that drill down into a filtered view. Mirrors the existing `Badge.Href` pattern. BaseProps (ID/Class/AriaLabel/Attrs) propagate to the anchor.
+- `navigation.SimpleNavProps.RightItems`: forwards a `templ.Component` (e.g. `layout.ThemeToggle`, sign-in button, user menu) to the right side of the nav bar. `NavProps` already had `RightItems`; `SimpleNav` now exposes the same slot so consumers no longer render `ThemeToggle` in a separate flex container outside `SimpleNav`.
+- `layout.Script(nonce, src, attrs)`: CSP-safe `<script src="...">` helper that auto-injects the nonce. Prevents the common bug of forgetting `nonce={...}` on a script tag under a strict CSP (silent script blocking in the browser). Optional `attrs` covers `async`, `defer`, `type="module"`, `crossorigin`.
+- `feedback.SkeletonCardGrid(count)`: renders N skeleton cards in a responsive 3-column grid under a single `role="status"` announcement. Pairs with `display.Grid` for the common dashboard "loading cards" pattern. Non-positive counts fall back to a single placeholder.
+- Recipe: [`docs/migration/play-cdn-to-tailwind-v4.md`](docs/migration/play-cdn-to-tailwind-v4.md) — step-by-step migration from Tailwind Play CDN to v4 CSS-first build (7 steps, covers CLI install, `@source` scanning, CSP tightening, flake.nix integration).
+- Recipe: [`docs/recipes/server-rendered-htmx-error-feedback.md`](docs/recipes/server-rendered-htmx-error-feedback.md) — the three HTMX error render modes (full page, partial swap, toast) and how `errorpage.ErrorHandler`, `htmx.GlobalErrorHandling`, and `feedback.ToastContainer` compose for family-aware accessible error UX.
+
+### Changed
+
+- `layout.PageProps`: documented the two auto-injected `<head>` tags in godoc — `CSSPath` ("/app.css" default) and `HTMXVersion` (HTMXVersion2_0_10 default) — and how to suppress each by setting to "". `DefaultPageProps()` godoc now explicitly calls out these as the most common defaults to override when integrating with an existing asset pipeline. Addresses the "silent 404 / silent CDN tag" friction reported by two consumers.
+- README layout section: new "Suppressing auto-injected `<head>` tags" subsection with copy-paste example for blanking `HTMXVersion` and `CSSPath`.
+- README component catalogue: added `display.Grid` (count 19 → 20), `feedback.SkeletonCardGrid`, `StatCard.Href`, and `SimpleNav.RightItems` examples. Cross-linked the two new recipe docs.
+- Registered `display.GridProps` in `internal/contract/component_props_test.go` (the cross-package BaseProps contract inventory).
+
 ### Internal
 
 - Added `TestPinnedSRIMatchesCDN` network-gated test that fetches live CDN scripts and verifies pinned SRI hashes match the bytes (skips under `-short` and on network errors)
 - Added `release.sh` pre-check: fails if `[Unreleased]` section body is empty
+- Extracted `statCardInner` sub-template from `StatCard` so the linked (`<a>`) and unlinked (`<div>`) layouts share the icon/value/label body without duplication
+- Added `TestSimpleNavForwardsRightItems`, `TestSimpleNavOmitsRightItemsWhenNil`, `TestStatCardRender/Href_*`, `TestGridResponsiveClasses`, `TestGridFallsBackForUnknownCols`, `TestGridRendersChildren`, `TestGridPropagatesBaseProps`, `TestScriptRender`, `TestSkeletonCardGridRender`
 
 ## [0.6.1] — 2026-07-04
 

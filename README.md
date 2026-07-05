@@ -24,10 +24,10 @@ templ-components is a pure Tailwind CSS v4 component library for Go's templ engi
 | **JavaScript**       | None (pure server-rendered) | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js** | No                          | No                            | Yes                                            |
 | **Go module**        | Yes                         | Yes                           | Yes                                            |
-| **Components**       | 73                          | 40+                           | —                                              |
+| **Components**       | 76                          | 40+                           | —                                              |
 | **Dark mode**        | Built-in (Tailwind `dark:`) | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**    | Yes (nonce support)         | Yes                           | —                                              |
-| **Typed props**      | 26 string enums             | —                             | —                                              |
+| **Typed props**      | 27 string enums             | —                             | —                                              |
 | **HTMX integration** | Built-in package            | —                             | —                                              |
 
 **templ-components is for developers who want server-rendered HTML with zero client-side JavaScript — no Alpine.js, no DaisyUI, no build pipeline beyond `templ generate`.**
@@ -94,9 +94,24 @@ Base HTML layouts, theme toggle, and dark mode support.
 @layout.ThemeToggle("Toggle theme", "")
 ```
 
-### `display` — Data Display (19 components)
+#### Suppressing auto-injected `<head>` tags
 
-Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, and more.
+`DefaultPageProps()` auto-injects two tags that new consumers often want to
+suppress. Override them in your `PageProps` literal:
+
+```templ
+props := layout.DefaultPageProps()
+// 1. You bundle htmx yourself (e.g. via embedded /htmx.js), or don't use htmx:
+props.HTMXVersion = ""               // suppresses <script src="...htmx.org...">
+// 2. You serve styles another way (Tailwind Play CDN, inline, HeadContent):
+props.CSSPath = ""                   // suppresses <link rel="stylesheet" href="/app.css">
+```
+
+If you load htmx from a different CDN or self-host, see `PageProps.HTMXCDN`.
+
+### `display` — Data Display (20 components)
+
+Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {
@@ -104,8 +119,16 @@ Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, s
 }
 
 @display.StatCard(display.StatCardProps{Label: "Users", Value: "1,204", Icon: icons.Users, Change: "12%", Trend: display.TrendUp})
+
+@display.StatCard(display.StatCardProps{Label: "Active", Value: "42", Href: "/?activity=active"})
 @display.Badge(display.BadgeProps{Text: "Active", Type: display.BadgeSuccess, Dot: true})
 @display.StatusBadge("healthy")
+
+@display.Grid(display.GridProps{Cols: display.GridCols3}) {
+    for _, u := range users {
+        @display.Card(display.CardProps{Title: u.Name}) { <p>{ u.Email }</p> }
+    }
+}
 
 @display.Modal(display.ModalProps{Title: "Confirm", Size: display.ModalSizeSM}) {
     <p>Are you sure?</p>
@@ -163,6 +186,10 @@ Alerts, toasts, spinners, progress bars, skeletons, and loading states.
 
 @feedback.Spinner(feedback.SpinnerMD, "text-blue-600")
 @feedback.Skeleton(feedback.SkeletonCard)
+
+{{ /* Loading state for a card grid (pairs with display.Grid) */ }}
+@feedback.SkeletonCardGrid(6)
+
 @feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100})
 @feedback.StepIndicator(feedback.StepIndicatorProps{
     Steps: []string{"Details", "Review", "Confirm"}, CurrentStep: 1,
@@ -202,6 +229,7 @@ Nav bars, breadcrumbs, pagination, mobile menus, and sidebar navigation.
     Links: []navigation.NavLinkProps{
         {Href: "/", Text: "Home"}, {Href: "/about", Text: "About"},
     },
+    RightItems: @layout.ThemeToggle("Toggle theme", ""),
     CurrentPath: "/",
 })
 
@@ -328,9 +356,11 @@ The theme file provides `@custom-variant dark` (required for `ThemeScript`/`Them
 
 ### Tailwind v4+ is the standard
 
-**All LarsArtmann projects use Tailwind CSS v4+ (latest).** CSS-first config, no Node.js runtime, no DaisyUI. Small custom CSS only where Tailwind doesn't cover something. New to Tailwind v4? See the [`docs/tailwind-v4-adoption-guide.md`](docs/tailwind-v4-adoption-guide.md) for setup, theming, and migration from custom CSS design systems.
+**All LarsArtmann projects use Tailwind CSS v4+ (latest).** CSS-first config, no Node.js runtime, no DaisyUI. Small custom CSS only where Tailwind doesn't cover something. New to Tailwind v4? See the [`docs/tailwind-v4-adoption-guide.md`](docs/tailwind-v4-adoption-guide.md) for setup, theming, and migration from custom CSS design systems. Migrating from the Play CDN? See [`docs/migration/play-cdn-to-tailwind-v4.md`](docs/migration/play-cdn-to-tailwind-v4.md).
 
 The `icons` package is the only CSS-agnostic package (pure SVG path data). See [`docs/icons-only-adoption.md`](docs/icons-only-adoption.md).
+
+Wiring up HTMX error feedback in a server-rendered app? See [`docs/recipes/server-rendered-htmx-error-feedback.md`](docs/recipes/server-rendered-htmx-error-feedback.md).
 
 ---
 
@@ -338,11 +368,11 @@ The `icons` package is the only CSS-agnostic package (pure SVG path data). See [
 
 | Metric       | Value                                               |
 | ------------ | --------------------------------------------------- |
-| Components   | 73                                                  |
+| Components   | 76                                                  |
 | SVG icons    | 101                                                 |
-| Typed enums  | 26                                                  |
+| Typed enums  | 27                                                  |
 | Packages     | 11                                                  |
-| Tests        | 451 functions + ~650 subtests                       |
+| Tests        | 456 functions + ~660 subtests                       |
 | Coverage     | ~75% (72–79% per package)                           |
 | Dependencies | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 

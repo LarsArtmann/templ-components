@@ -569,4 +569,55 @@ func SkeletonGroup(variants []SkeletonVariant) templ.Component {
 	})
 }
 
+// SkeletonCardGrid renders a responsive grid of N skeleton cards — the common
+// "loading state" for a dashboard card list. It wraps SkeletonGroup so the
+// whole grid shares one `role="status"` announcement, and uses the same
+// responsive grid classes as display.Grid. Negative or zero counts render a
+// single placeholder card so consumers never see an empty container.
+//
+//	@feedback.SkeletonCardGrid(6)
+//	@feedback.SkeletonCardGrid(12)  // 3x4 grid at lg breakpoint
+func SkeletonCardGrid(count int) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var19 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var19 == nil {
+			templ_7745c5c3_Var19 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		n := count
+		if n <= 0 {
+			n = 1
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "<div class=\"grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse motion-reduce:animate-none\" aria-busy=\"true\" role=\"status\" aria-label=\"Loading cards\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		for range n {
+			templ_7745c5c3_Err = skeletonBody(SkeletonCard).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
 var _ = templruntime.GeneratedTemplate

@@ -1,6 +1,9 @@
 package display
 
 import (
+	"bytes"
+	"context"
+	"strings"
 	"testing"
 
 	"github.com/a-h/templ"
@@ -125,6 +128,78 @@ func TestBadgeHrefRendersAsAnchor(t *testing.T) {
 		utils.AssertContains(t, output, `<a`)
 		utils.AssertContains(t, output, "bg-gray-100")
 	})
+}
+
+// --- Grid coverage ---
+
+func TestGridResponsiveClasses(t *testing.T) {
+	t.Parallel()
+	cases := []struct {
+		name    string
+		cols    GridCols
+		wantSub string
+	}{
+		{"1 col stacks", GridCols1, "grid grid-cols-1 gap-4"},
+		{"2 col expands at sm", GridCols2, "sm:grid-cols-2"},
+		{"3 col default expands at lg", GridCols3, "lg:grid-cols-3"},
+		{"4 col expands at lg", GridCols4, "lg:grid-cols-4"},
+		{"6 col expands at xl", GridCols6, "xl:grid-cols-6"},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Grid(GridProps{Cols: tc.cols}))
+			utils.AssertContains(t, output, tc.wantSub)
+		})
+	}
+}
+
+func TestGridFallsBackForUnknownCols(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Grid(GridProps{Cols: GridCols("99")}))
+	// Unknown values fall back to the default 3-col responsive grid.
+	utils.AssertContains(t, output, "lg:grid-cols-3")
+}
+
+func TestGridEmptyColsFallsBackToDefault(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Grid(GridProps{}))
+	utils.AssertContains(t, output, "lg:grid-cols-3")
+}
+
+func TestGridRendersChildren(t *testing.T) {
+	t.Parallel()
+	child := templ.Raw(`<div data-test="child">cell</div>`)
+	var buf bytes.Buffer
+	_ = Grid(GridProps{Cols: GridCols2}).Render(
+		templ.WithChildren(context.Background(), child), &buf,
+	)
+	output := strings.TrimSpace(buf.String())
+	if !strings.Contains(output, `data-test="child"`) {
+		t.Errorf("expected children in output, got: %s", output)
+	}
+}
+
+func TestGridPropagatesBaseProps(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Grid(GridProps{
+		BaseProps: utils.BaseProps{
+			ID:        "user-grid",
+			Class:     "mt-8",
+			AriaLabel: "User list",
+		},
+	}))
+	utils.AssertContains(t, output, `id="user-grid"`)
+	utils.AssertContains(t, output, "mt-8")
+	utils.AssertContains(t, output, `aria-label="User list"`)
+}
+
+func TestDefaultGridPropsValue(t *testing.T) {
+	t.Parallel()
+	props := DefaultGridProps()
+	if props.Cols != GridColsDefault {
+		t.Errorf("DefaultGridProps().Cols = %q, want %q", props.Cols, GridColsDefault)
+	}
 }
 
 // --- Button coverage (was 53.7%) ---

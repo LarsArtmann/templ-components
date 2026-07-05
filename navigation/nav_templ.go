@@ -191,9 +191,12 @@ func Nav(props NavProps) templ.Component {
 // SimpleNavProps configures a minimal navigation with a text brand
 type SimpleNavProps struct {
 	utils.BaseProps
-	BrandText   string
-	BrandHref   string
-	Links       []NavLinkProps
+	BrandText string
+	BrandHref string
+	Links     []NavLinkProps
+	// RightItems is rendered on the right side of the bar (e.g. a ThemeToggle,
+	// a sign-in button, a user menu). Forwarded to Nav.RightItems. Optional.
+	RightItems  templ.Component
 	CurrentPath string
 	Sticky      bool
 }
@@ -214,6 +217,7 @@ func DefaultSimpleNavProps() SimpleNavProps {
 //	   Links: []navigation.NavLinkProps{
 //	     {Href: "/", Text: "Home"},
 //	   },
+//	   RightItems: @layout.ThemeToggle("Toggle theme", ""),
 //	   CurrentPath: "/",
 //	})
 func SimpleNav(props SimpleNavProps) templ.Component {
@@ -241,6 +245,7 @@ func SimpleNav(props SimpleNavProps) templ.Component {
 			BaseProps:   props.GetBaseProps(),
 			Brand:       simpleBrand(props.BrandText, props.BrandHref),
 			Links:       props.Links,
+			RightItems:  props.RightItems,
 			CurrentPath: props.CurrentPath,
 			Sticky:      props.Sticky,
 		}).Render(ctx, templ_7745c5c3_Buffer)
@@ -279,7 +284,7 @@ func simpleBrand(text, href string) templ.Component {
 		var templ_7745c5c3_Var8 templ.SafeURL
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(href))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 108, Col: 30}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 113, Col: 30}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 		if templ_7745c5c3_Err != nil {
@@ -292,7 +297,7 @@ func simpleBrand(text, href string) templ.Component {
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 108, Col: 98}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 113, Col: 98}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
@@ -337,7 +342,7 @@ func Footer(brandText string) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(utils.CurrentYear())
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 118, Col: 32}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 123, Col: 32}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -350,7 +355,7 @@ func Footer(brandText string) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(brandText)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 118, Col: 46}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/nav.templ`, Line: 123, Col: 46}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {

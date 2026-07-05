@@ -202,3 +202,25 @@ templ SkeletonGroup(variants []SkeletonVariant) {
 		}
 	</div>
 }
+
+// SkeletonCardGrid renders a responsive grid of N skeleton cards — the common
+// "loading state" for a dashboard card list. It wraps SkeletonGroup so the
+// whole grid shares one `role="status"` announcement, and uses the same
+// responsive grid classes as display.Grid. Negative or zero counts render a
+// single placeholder card so consumers never see an empty container.
+//
+//	@feedback.SkeletonCardGrid(6)
+//	@feedback.SkeletonCardGrid(12)  // 3x4 grid at lg breakpoint
+templ SkeletonCardGrid(count int) {
+	{{
+		n := count
+		if n <= 0 {
+			n = 1
+		}
+	}}
+	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse motion-reduce:animate-none" aria-busy="true" role="status" aria-label="Loading cards">
+		for range n {
+			@skeletonBody(SkeletonCard)
+		}
+	</div>
+}

@@ -113,3 +113,33 @@ func TestDefaultMinimalProps(t *testing.T) {
 		t.Errorf("DefaultMinimalProps().Locale = %q, want %q", props.Locale, "en")
 	}
 }
+
+func TestScriptRender(t *testing.T) {
+	t.Parallel()
+
+	t.Run("always emits nonce", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Script("abc123", "/static/app.js", nil))
+		utils.AssertContains(t, output, `src="/static/app.js"`)
+		utils.AssertContains(t, output, `nonce="abc123"`)
+	})
+
+	t.Run("empty nonce still tags the attribute", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Script("", "/static/app.js", nil))
+		// Empty nonce is emitted so the helper never forgets the attribute.
+		utils.AssertContains(t, output, `nonce=""`)
+		utils.AssertContains(t, output, `src="/static/app.js"`)
+	})
+
+	t.Run("forwards optional attributes", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Script("n1", "/static/app.js", templ.Attributes{
+			"defer": true,
+			"type":  "module",
+		}))
+		utils.AssertContains(t, output, `nonce="n1"`)
+		utils.AssertContains(t, output, "defer")
+		utils.AssertContains(t, output, `type="module"`)
+	})
+}
