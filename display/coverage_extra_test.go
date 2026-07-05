@@ -108,7 +108,7 @@ func TestFormatRelativeTimeBoundaries(t *testing.T) {
 		from time.Time
 		want string
 	}{
-		{"59 seconds ago", time.Now().Add(-59 * time.Second), "59 seconds ago"},
+		{"just now (under 60s)", time.Now().Add(-59 * time.Second), "just now"},
 		{"1 minute ago", time.Now().Add(-60 * time.Second), "1 minute ago"},
 		{"59 minutes ago", time.Now().Add(-59 * time.Minute), "59 minutes ago"},
 		{"1 hour ago", time.Now().Add(-60 * time.Minute), "1 hour ago"},
