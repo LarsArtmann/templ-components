@@ -429,6 +429,7 @@ that's what made `layout.Script` the worst-tested component in the library.
 ```
 [ ] golden_test.go      — exact rendered HTML matches .golden snapshot
 [ ] a11y_test.go        — ARIA, roles, keyboard, motion-reduce, screen-reader text
+[ ] rtl_check           — verify no physical properties (ml-, mr-, pl-, pr-, left-, right-)
 [ ] bdd_test.go         — behaviour spec (user-visible behaviour, not markup)
 [ ] edge_cases_test.go  — empty inputs, unknown enum values, ID collisions
 [ ] example_test.go     — godoc ExampleXxx() compiles and renders
@@ -511,6 +512,11 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
 - **Motion safety:** every transition gets
   `motion-reduce:transition-none motion-reduce:duration-0`; every animation gets
   `motion-reduce:animate-none`. If you forget this, you fail the a11y tests.
+  **Use the shared motion constants** (`transitionFast`, `transitionNormal`,
+  `transitionColors`, `transitionTransform`) from `display/shared.go` instead of
+  inline timing strings — they guarantee consistent durations and built-in
+  `motion-reduce` fallbacks. `transitionColors` for hover/active color changes,
+  `transitionNormal` for overlay panels, `transitionTransform` for sliding/rotating.
 - **Class merging:** always go through `utils.Class(...)` so tailwind-merge resolves conflicts
   and consumer overrides win. The only exception is `templ.KV` conditionals where the templ
   runtime must comma-join. `utils.Class` is mutex-protected; do not bypass it.
@@ -522,6 +528,17 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
   margin, not a bespoke class string.
 - **SVG paths:** reference constants in `internal/svg`, never inline a new path literal.
 - **ProgressBar clamp:** use `max(0, min(100, v))` (Go 1.21+ builtins), not manual if-branch.
+- **RTL logical properties:** use logical Tailwind utilities (`ms-`, `me-`, `ps-`,
+  `pe-`, `start-0`, `end-0`, `text-start`, `border-s-`, `border-e-`) instead of
+  physical ones (`ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`, `text-left`,
+  `border-l-`, `border-r-`). Logical properties render identically in LTR and
+  mirror automatically in RTL (Arabic, Hebrew, Persian, Urdu). The ONLY exceptions
+  are `left-1/2` (tooltip centering) and `left-0.5` (toggle thumb) — physical
+  positioning that must not flip.
+- **Container queries:** when a component should respond to its parent's width
+  rather than the viewport, use Tailwind v4's `@container` + `@sm:`/`@md:`/`@lg:`
+  variants. The `Grid` component supports this via the opt-in `ContainerResponsive`
+  field.
 
 ## Anti-patterns to refuse on review
 
@@ -533,6 +550,11 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
 - A new dependency in `go.mod` outside the allowed three.
 - `slate-*` dark-mode colors → switch to `gray-*`.
 - Hardcoded `aria-label` that ignores `props.AriaLabel` → propagate via `utils.Ternary`.
+- Physical Tailwind properties (`ml-`, `mr-`, `pl-`, `pr-`, `left-`, `right-`, `text-left`)
+  → switch to logical (`ms-`, `me-`, `ps-`, `pe-`, `start-`, `end-`, `text-start`).
+- Inline transition strings (`"transition-colors motion-reduce:..."`) → use the
+  shared `transitionFast`/`transitionNormal`/`transitionColors`/`transitionTransform`
+  constants from `display/shared.go`.
 - Duplicating an icon path or a Tailwind class string that already has a shared constant.
 - Shipping a component with only assertion tests → add golden, BDD, a11y, example lenses.
 
@@ -551,6 +573,10 @@ Load these only when the task needs them — do not read proactively.
 - **`docs/adr/`** — decision records: two icon systems, shared SVG helpers, committing
   generated templ files, filled-vs-stroke icons, JS attachment patterns, feedback-type
   unification. Read the relevant ADR before changing the thing it decided.
+- **`docs/javascript-guide.md`** — comprehensive JS patterns reference: the decision
+  ladder (native HTML → HTMX → singleton-guard → Alpine → Datastar → islands), CSP
+  compliance, templ's built-in JS features (`OnceHandle`, `JSFuncCall`, `JSONString`,
+  `JSONScript`), TypeScript workflow, View Transitions API, and anti-patterns.
 - **`docs/icons-only-adoption.md`** — adopting just the `icons` package (CSS-agnostic).
 - **`docs/DOMAIN_LANGUAGE.md`** — ubiquitous-language glossary for terms used in types.
 - **`internal/contract/component_props_test.go`** — the compile-time-enforced Props inventory;

@@ -15,6 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Recipe: [`docs/recipes/container-queries.md`](docs/recipes/container-queries.md) — when and how to use `ContainerResponsive` for parent-width-responsive grids.
 - Reference: [`docs/motion-design.md`](docs/motion-design.md) — timing constants, duration guidelines, easing policy, and `motion-reduce` compliance rules.
 - Reference: [`docs/javascript-guide.md`](docs/javascript-guide.md) — comprehensive JS patterns reference: decision ladder (native HTML → HTMX → singleton-guard → Alpine → Datastar → React islands), CSP compliance, templ's built-in JS features (`OnceHandle`, `JSFuncCall`, `JSONString`, `JSONScript`), TypeScript workflow, View Transitions API, event delegation, and anti-patterns.
+- Audit: [`docs/audits/icon-rtl-mirroring.md`](docs/audits/icon-rtl-mirroring.md) — identifies 5 directional icons needing RTL mirroring, recommends `data-tc-dir-icon` + CSS approach, deferred to v1.0.
+- ADR: [`docs/adr/0008-semantic-tokens.md`](docs/adr/0008-semantic-tokens.md) — semantic token layer (`bg-tc-primary`) migration plan, proposed and deferred to v1.0 with opt-in migration path.
 
 ### Changed
 
