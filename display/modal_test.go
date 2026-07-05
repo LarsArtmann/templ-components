@@ -52,6 +52,7 @@ func TestModalRender(t *testing.T) {
 			ModalSizeMD:   "max-w-md",
 			ModalSizeLG:   "max-w-lg",
 			ModalSizeXL:   "max-w-xl",
+			ModalSize2XL:  "max-w-4xl",
 			ModalSizeFull: "max-w-4xl",
 		}
 		for size, want := range sizes {

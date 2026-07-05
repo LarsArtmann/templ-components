@@ -1,6 +1,6 @@
 # Features — templ-components
 
-**Updated:** 2026-07-05 | **Version:** 0.6.1
+**Updated:** 2026-07-05 | **Version:** 0.7.0
 
 A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 
@@ -101,7 +101,7 @@ type BaseProps struct {
 | `AvatarSize`       | XS, SM, MD, LG, XL                                       |
 | `AvatarShape`      | Circle, Square                                           |
 | `AvatarStatus`     | Online, Offline, None                                    |
-| `BadgeType`        | Default, Primary, Success, Warning, Error, Info, Neutral |
+| `BadgeType`        | Primary, Success, Warning, Error, Info, Neutral |
 | `BadgeSize`        | SM, MD, LG                                               |
 | `CardPadding`      | None, SM, MD, LG                                         |
 | `DropdownPosition` | Left, Right                                              |
@@ -115,7 +115,7 @@ type BaseProps struct {
 
 ### Known Issues
 
-- **Tooltip** calls `tooltipLookupPosition()` twice per render instead of caching
+_None — all previously reported issues resolved._
 
 ---
 
@@ -195,11 +195,12 @@ type BaseProps struct {
 
 | Type              | Values                                                |
 | ----------------- | ----------------------------------------------------- |
-| `AlertType`       | Success, Error, Warning, Info                         |
+| `FeedbackType`    | Success, Error, Warning, Info (canonical; AlertType and ToastType are aliases) |
+| `AlertType`       | Alias for `FeedbackType`                              |
 | `SpinnerSize`     | SM, MD, LG                                            |
 | `SkeletonVariant` | Text, TextShort, Title, Avatar, Image, Card, TableRow |
 | `ProgressBarSize` | SM, MD, LG                                            |
-| `ToastType`       | Success, Error, Warning, Info                         |
+| `ToastType`       | Alias for `FeedbackType`                              |
 
 ### Constants
 

@@ -15,8 +15,8 @@ const (
 	ModalSizeMD   ModalSize = "md"
 	ModalSizeLG   ModalSize = "lg"
 	ModalSizeXL   ModalSize = "xl"
-	ModalSize2XL  ModalSize = "full" // largest available width (max-w-4xl)
-	ModalSizeFull ModalSize = "full" // Deprecated: use ModalSize2XL; "full" is a misnomer (capped at max-w-4xl)
+	ModalSize2XL  ModalSize = "2xl"  // largest available width (max-w-4xl)
+	ModalSizeFull ModalSize = "full" // Deprecated: use ModalSize2XL
 )
 
 // ModalProps configures a modal dialog
@@ -40,7 +40,8 @@ var modalSizeLookup = map[ModalSize]string{
 	ModalSizeMD:   "max-w-md",
 	ModalSizeLG:   "max-w-lg",
 	ModalSizeXL:   "max-w-xl",
-	ModalSizeFull: "max-w-4xl",
+	ModalSize2XL:  "max-w-4xl",
+	ModalSizeFull: "max-w-4xl", // Deprecated alias (value "full")
 }
 
 func modalSizeClass(size ModalSize) string {

@@ -181,7 +181,7 @@ Sourced from DiscordSync, SwettySwipper, Overview, and browser-history feedback 
 
 ### Remaining Issues
 
-- [x] **ModalSize2XL/DrawerSize2XL value mismatch** — FIXED: value changed from "full" to "2xl"
+- [x] **ModalSize2XL/DrawerSize2XL value mismatch** — FIXED (v0.8.0): value changed from "full" to "2xl"; both constants now have distinct values and their own map entries. ModalSizeFull/DrawerFull remain as deprecated aliases keeping value "full" for backward compat.
 - [x] **Error family→HTTP status code lossy** — FIXED: added StatusCode field to ErrorPageProps
 - [x] **Silent SRI fallback** — FIXED: htmxMainSRI returns empty for unknown versions
 - [x] **Split forms/helpers.go** — FIXED: split into ids.go, aria.go, input_classes.go
