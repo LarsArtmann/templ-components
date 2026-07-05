@@ -12,7 +12,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | ------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                     |
 | `display`    | 25            | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states, page headers, definition lists, copy button, relative time, count badge, image |
-| `errorpage`  | 3             | Error presentation: full-page errors, error detail cards, family-aware alerts                                                                                                                             |
+| `errorpage`  | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                              |
 | `feedback`   | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                         |
 | `forms`      | 16            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation                                                                                 |
 | `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                                                                             |
@@ -20,7 +20,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `layout`     | 5             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script tag                                                                                                                                      |
 | `navigation` | 11            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more                                                                                                                       |
 
-**Totals:** 80 templ components, 101 icon names, 26+ typed enums, 59 generated `*_templ.go` files, ~24,000 lines of Go/templ source
+**Totals:** 83 templ components, 101 icon names, 32 typed enums, 59 generated `*_templ.go` files, ~24,000 lines of Go/templ source
 
 ---
 
@@ -368,7 +368,7 @@ Used by both Alert and Toast for consistent visual styling.
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first designs with `sm:` breakpoints
-- **Type Safety:** 26 typed string enums, `utils.BaseProps` embedded in all Props structs
+- **Type Safety:** 32 typed string enums, `utils.BaseProps` embedded in all Props structs
 - **Test Coverage:** 74% average across packages, BDD + snapshot + a11y + benchmark + integration tests
 - **Theming:** Tailwind v4 `@theme` override support via `templ-components-theme.css`. Components emit standard utility classes (`bg-blue-600`, `text-gray-900`) — consumers override `--color-*` variables to theme globally without touching component code.
 

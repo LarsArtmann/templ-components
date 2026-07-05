@@ -24,10 +24,10 @@ templ-components is a pure Tailwind CSS v4 component library for Go's templ engi
 | **JavaScript**       | HATEOAS-aligned (enhances HTML) | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js** | No                              | No                            | Yes                                            |
 | **Go module**        | Yes                             | Yes                           | Yes                                            |
-| **Components**       | 82                              | 40+                           | —                                              |
+| **Components**       | 83                              | 40+                           | —                                              |
 | **Dark mode**        | Built-in (Tailwind `dark:`)     | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**    | Yes (nonce support)             | Yes                           | —                                              |
-| **Typed props**      | 27 string enums                 | —                             | —                                              |
+| **Typed props**      | 32 string enums                 | —                             | —                                              |
 | **HTMX integration** | Built-in package                | —                             | —                                              |
 
 **templ-components is for developers who want [HATEOAS](https://htmx.org/essays/hateoas/) — hypermedia as the engine of application state. The server renders HTML; JavaScript (via htmx or progressive enhancement) reads from HTML attributes to enhance UX. No Alpine.js, no DaisyUI, no SPA framework, no build pipeline beyond `templ generate`.**
@@ -386,7 +386,7 @@ Wiring up HTMX error feedback in a server-rendered app? See [`docs/recipes/serve
 
 | Metric       | Value                                               |
 | ------------ | --------------------------------------------------- |
-| Components   | 76                                                  |
+| Components   | 83                                                  |
 | SVG icons    | 101                                                 |
 | Typed enums  | 27                                                  |
 | Packages     | 11                                                  |
