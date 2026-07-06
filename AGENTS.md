@@ -205,6 +205,8 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - NotFound404.LinksTitle: `NotFound404Props.LinksTitle string` — configurable heading for the quick-links section. Defaults to "Popular pages".
 - WriteNotFound404: `errorpage.WriteNotFound404(w, r, props, nonce)` — convenience HTTP handler that renders `NotFound404` with a 404 status code. Mirrors `WriteErrorPage` pattern.
 - ROADMAP.md and CONTRIBUTING.md: both created. ROADMAP tracks v0.x/v1.0/v2.0+ direction. CONTRIBUTING has Nix setup, conventions table, release flow.
+- goBackScript promotion: stays in `errorpage/shared.templ` — only `errorpage` uses `history.back()` (ErrorPage + NotFound404). Promote to `utils` when a 2nd package needs it, following the `DismissButton` precedent (promoted to `utils/dismiss.templ` only when both `feedback` and `errorpage` shared the same markup).
+- overlayShellProps field count: 11 fields, 2 callers (Modal + Drawer) — reviewed and acceptable for a private struct with named-field initialization. When a 3rd overlay type emerges, group `panelClass` + `panelKVs` + `attrs` into an `overlayPanelProps` sub-struct to reduce top-level fields to 8.
 
 ## Release Convention: One-Commit Release
 

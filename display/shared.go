@@ -69,6 +69,10 @@ func (k OverlayKind) componentName() string {
 // overlayShellProps parameterizes the shared accessibility shell used by
 // Modal and Drawer. It centralizes the outer overlay div, backdrop, panel
 // body, and per-instance script so the two components stay consistent.
+//
+// 11 fields is acceptable for a private struct with exactly 2 named-field
+// callers. When a 3rd overlay type emerges, group panelClass + panelKVs +
+// attrs into an overlayPanelProps sub-struct to reduce top-level fields to 8.
 type overlayShellProps struct {
 	id         string
 	open       bool
