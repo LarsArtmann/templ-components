@@ -131,8 +131,11 @@ templ Tabs(props TabsProps) {
 						var tabs = Array.from(tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]'));
 						var idx = tabs.indexOf(tab);
 						var next = -1;
-						if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { next = (idx + 1) % tabs.length; }
-						else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { next = (idx - 1 + tabs.length) % tabs.length; }
+						var rtl = document.documentElement.getAttribute('dir') === 'rtl';
+						var nextKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+						var prevKey = rtl ? 'ArrowRight' : 'ArrowLeft';
+						if (e.key === nextKey || e.key === 'ArrowDown') { next = (idx + 1) % tabs.length; }
+						else if (e.key === prevKey || e.key === 'ArrowUp') { next = (idx - 1 + tabs.length) % tabs.length; }
 						else if (e.key === 'Home') { next = 0; }
 						else if (e.key === 'End') { next = tabs.length - 1; }
 						if (next >= 0) { e.preventDefault(); tabs[next].focus(); activateTab(tabs[next]); }

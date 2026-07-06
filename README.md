@@ -124,10 +124,15 @@ Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, s
 @display.Badge(display.BadgeProps{Text: "Active", Type: display.BadgeSuccess, Dot: true})
 @display.StatusBadge("healthy")
 
-@display.Grid(display.GridProps{Cols: display.GridCols3}) {
+@display.Grid(display.GridProps{Cols: display.GridCols3, Gap: display.GridGapLG}) {
     for _, u := range users {
         @display.Card(display.CardProps{Title: u.Name}) { <p>{ u.Email }</p> }
     }
+}
+
+{{ /* Container-responsive grid — columns adapt to parent width, not viewport */ }}
+@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerResponsive: true}) {
+    @display.Card(display.CardProps{Title: "In a sidebar"}) { <p>Width-aware layout.</p> }
 }
 
 @display.Modal(display.ModalProps{Title: "Confirm", Size: display.ModalSizeSM}) {
@@ -234,6 +239,20 @@ Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date picke
     {Value: "de", Label: "Germany"}, {Value: "at", Label: "Austria"},
 }})
 ```
+
+For horizontal filter bars, use `FormProps{Inline: true}`:
+
+```templ
+@forms.Form(forms.FormProps{
+    Action: "/search", Method: forms.MethodGet,
+    Inline: true, // renders flex flex-wrap gap-3 instead of space-y-6
+}) {
+    @forms.Select(forms.SelectProps{Name: "status", Options: statusOpts})
+    @forms.Input(forms.InputProps{Name: "q", Type: forms.InputSearch, Placeholder: "Search..."})
+}
+```
+
+See [`docs/recipes/horizontal-filter-bar.md`](docs/recipes/horizontal-filter-bar.md) for the full pattern.
 
 ### `navigation` — Navigation (11 components)
 
@@ -379,6 +398,18 @@ The theme file provides `@custom-variant dark` (required for `ThemeScript`/`Them
 The `icons` package is the only CSS-agnostic package (pure SVG path data). See [`docs/icons-only-adoption.md`](docs/icons-only-adoption.md).
 
 Wiring up HTMX error feedback in a server-rendered app? See [`docs/recipes/server-rendered-htmx-error-feedback.md`](docs/recipes/server-rendered-htmx-error-feedback.md).
+
+### Further reading
+
+| Topic                                                         | Document                                                                         |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| JavaScript patterns (decision ladder: native → HTMX → Alpine) | [`docs/javascript-guide.md`](docs/javascript-guide.md)                           |
+| Motion design system (timing, easing, motion-reduce rules)    | [`docs/motion-design.md`](docs/motion-design.md)                                 |
+| Container queries (parent-width-responsive grids)             | [`docs/recipes/container-queries.md`](docs/recipes/container-queries.md)         |
+| Horizontal filter bars (HTMX auto-submit)                     | [`docs/recipes/horizontal-filter-bar.md`](docs/recipes/horizontal-filter-bar.md) |
+| Custom table rows (`Table.Body` slot pattern)                 | [`docs/recipes/custom-table-rows.md`](docs/recipes/custom-table-rows.md)         |
+| Custom 404 page (server integration)                          | [`docs/recipes/custom-404-page.md`](docs/recipes/custom-404-page.md)             |
+| Semantic token layer (theming with `tc-*` tokens)             | [`docs/adr/0008-semantic-tokens.md`](docs/adr/0008-semantic-tokens.md)           |
 
 ---
 

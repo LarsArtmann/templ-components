@@ -30,7 +30,7 @@ func TestPinnedSRIMatchesCDN(t *testing.T) {
 		{
 			name: "htmx main 2.0.10",
 			url:  htmxScriptURL(defaultHTMXVersion, ""),
-			want: htmxMainSRIDefault,
+			want: sriHTMXMainDefault,
 		},
 		{
 			name: "response-targets 2.0.4",

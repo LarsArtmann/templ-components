@@ -6,6 +6,39 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- Naming: `icons.Close` alias for `icons.X` (both map to `"x"`). Prefer `Close` in new code.
+- RTL keyboard mapping for `display.Tabs` and `display.Dropdown` — ArrowLeft/Right swap when `dir="rtl"` is set on `<html>`.
+- Demo: SkeletonCardGrid loading state showcase, anchor-linked TOC at top.
+- Documentation: `docs/adr/0010-sub-template-extraction-pattern.md` (when to extract/when to keep duplication).
+- Documentation: `docs/migration/v0.8-to-v0.9.md` migration guide.
+- README: "Further reading" table cross-linking javascript-guide, motion-design, container-queries, recipes, and ADRs.
+- README: `GridProps.Gap` + `ContainerResponsive` examples, `FormProps.Inline` filter bar example.
+- `htmx.GlobalErrorHandling`: enhanced godoc example showing ToastContainer wiring.
+- Benchmark suites for `forms` (Input, Select, Textarea, Combobox), `layout` (ThemeScript, ThemeToggle, Script, Minimal), `htmx` (LoadingIndicator, CSRFToken, SwapOOB), `icons` (Icon, IconWithStrokeWidth, IconPathData, IconPathJS), `utils` (Class, EnsureID, Ternary, Lookup).
+- Fuzz tests for `forms.InputType`, `forms.FormMethod`, `display.ButtonHTMLType`.
+- Motion-reduce compliance grep test (asserts every `transition-*`/`animate-*` in `.templ` files has `motion-reduce:` fallback).
+- SKILL.md component count drift-guard test (informational, logs actual vs documented count).
+- Golden package coverage boost: 70.5% → 81.8% (update-flag, mkdir, normalization edge cases, diff, lineAt).
+- Dedicated sub-template tests for `errorHeader`, `actionLinkBody`, `goBackScript`, `skeletonContainer`, `definitionDetailContent`.
+
+### Changed
+
+- Deduplication sprint: 6 sub-template extractions across `errorpage`, `display`, and `feedback` packages — `errorHeader`, `goBackScript`, `actionLinkBody`, `skeletonContainer`, `definitionDetailContent`, and merged `overlayPanel` into `overlayShell`. Reduces production clone groups from t=8→4.
+- Coverage boost: 152 new test functions across 6 packages (display, feedback, forms, navigation, errorpage, layout) targeting untested branches.
+- Renamed `forms/radio_go.go` → `forms/radio.go` (misleading `_go.go` suffix).
+- Renamed `forms/aria.go` parameter `errMsg` → `errorMessage` (descriptive, no abbreviation).
+- Renamed `errorpage/fromerror.go` `cleanMessage` → `sanitizeErrorMessage` (precise verb).
+- Standardized `layout/sri.go` naming: `htmxMainSRIDefault` → `sriHTMXMainDefault` (consistent with `sriHTMXMainByVersion`).
+- Extracted `msgGoBack` constant in `errorpage/constructors.go` (goconst compliance — 0 lint issues).
+- `goBackScript` and `overlayShellProps` reviewed for promotion/restructure — both documented with trigger conditions.
+- ADR 0009 rewritten with rigorous per-clone justification for 6 remaining accepted clone groups.
+
+### Removed
+
+- Deleted stale `origin/modularize/strategic-split` remote branch (abandoned experiment, never merged).
+
 ## [0.9.0] — 2026-07-06
 
 ### Added

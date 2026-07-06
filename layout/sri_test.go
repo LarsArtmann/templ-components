@@ -17,7 +17,7 @@ func TestHtmxMainSRI(t *testing.T) {
 		{
 			name:    "pinned 2.0.10 returns main SRI hash",
 			version: defaultHTMXVersion,
-			want:    htmxMainSRIDefault,
+			want:    sriHTMXMainDefault,
 		},
 		{
 			name:    "unknown version returns empty (no wrong hash)",

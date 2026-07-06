@@ -28,7 +28,16 @@ templ demoContent() {
 		<div class="flex items-center justify-between mb-8">
 			<h1 class="text-3xl font-bold text-gray-900 dark:text-white">templ-components Demo</h1>
 		</div>
-		@demoSection("Navigation")
+		<nav class="flex flex-wrap gap-2 mb-8 text-sm">
+			<a href="#alerts" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Alerts</a>
+			<a href="#stat-cards" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Cards</a>
+			<a href="#buttons" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Buttons</a>
+			<a href="#forms" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Forms</a>
+			<a href="#table" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Table</a>
+			<a href="#loading" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Loading</a>
+			<a href="#404" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">404 Page</a>
+		</nav>
+		@demoSection("Navigation", "nav")
 		@navigation.Nav(navigation.NavProps{
 			Sticky:      false,
 			CurrentPath: "/",
@@ -38,20 +47,20 @@ templ demoContent() {
 				{Href: "/contact", Text: "Contact"},
 			},
 		})
-		@demoSection("Alerts")
+		@demoSection("Alerts", "alerts")
 		<div class="space-y-4">
 			@feedback.Alert(feedback.AlertProps{Title: "Success", Message: "Operation completed.", Type: feedback.FeedbackSuccess})
 			@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong.", Type: feedback.FeedbackError})
 			@feedback.Alert(feedback.AlertProps{Title: "Warning", Message: "Check your input.", Type: feedback.FeedbackWarning})
 			@feedback.Alert(feedback.AlertProps{Title: "Info", Message: "Here is some information.", Type: feedback.FeedbackInfo})
 		</div>
-		@demoSection("Stat Cards")
+		@demoSection("Stat Cards", "stat-cards")
 		@display.Grid(display.GridProps{Cols: display.GridCols3}) {
 			@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp, Href: "/users"})
 			@display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Icon: icons.Chart, Change: "-3%", Trend: display.TrendDown, Href: "/revenue"})
 			@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Icon: icons.CheckCircle, Trend: display.TrendNone})
 		}
-		@demoSection("Badges")
+		@demoSection("Badges", "badges")
 		<div class="flex flex-wrap gap-2">
 			@display.Badge(display.BadgeProps{Text: "Default"})
 			@display.Badge(display.BadgeProps{Text: "Success", Type: display.BadgeSuccess})
@@ -59,7 +68,7 @@ templ demoContent() {
 			@display.Badge(display.BadgeProps{Text: "Warning", Type: display.BadgeWarning})
 			@display.Badge(display.BadgeProps{Text: "Info", Type: display.BadgeInfo})
 		</div>
-		@demoSection("Icons")
+		@demoSection("Icons", "icons")
 		<div class="flex flex-wrap gap-4">
 			for _, name := range []icons.Name{
 					icons.Home, icons.Users, icons.Folder, icons.Document,
@@ -73,20 +82,20 @@ templ demoContent() {
 				</div>
 			}
 		</div>
-		@demoSection("Avatar")
+		@demoSection("Avatar", "avatar")
 		<div class="flex items-center gap-4">
 			@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=JD", Alt: "John Doe", Size: display.AvatarSizeSM})
 			@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=AB", Alt: "Alice Brown", Size: display.AvatarSizeMD, Status: display.AvatarStatusOnline})
 			@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=CD", Alt: "Charlie Day", Size: display.AvatarSizeLG, Status: display.AvatarStatusOffline})
 		</div>
-		@demoSection("Loading")
+		@demoSection("Loading", "loading")
 		<div class="flex items-center gap-8">
 			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-blue-600"})
 			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-gray-600"})
 			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-red-600"})
 			@feedback.InlineLoading("Saving...")
 		</div>
-		@demoSection("Accordion")
+		@demoSection("Accordion", "accordion")
 		@display.Accordion(display.AccordionProps{
 			Items: []display.AccordionItem{
 				{ID: "demo-1", Title: "What is templ-components?", Open: true},
@@ -104,19 +113,19 @@ templ demoContent() {
 				<p class="text-gray-600 dark:text-gray-400">It's in active development (v0.x). The API may change before v1.0.</p>
 			</template>
 		}
-		@demoSection("Pagination")
+		@demoSection("Pagination", "pagination")
 		@navigation.Pagination(navigation.PaginationProps{
 			CurrentPage: 3,
 			TotalPages:  10,
 			BaseURL:     "/users",
 		})
-		@demoSection("Breadcrumbs")
+		@demoSection("Breadcrumbs", "breadcrumbs")
 		@navigation.Breadcrumbs(navigation.BreadcrumbsProps{Items: []navigation.BreadcrumbItem{
 			{Text: "Home", Href: "/"},
 			{Text: "Users", Href: "/users"},
 			{Text: "John Doe"},
 		}})
-		@demoSection("Tooltip")
+		@demoSection("Tooltip", "tooltip")
 		<div class="flex items-center gap-4 pt-2">
 			@display.Tooltip(display.TooltipProps{BaseProps: utils.BaseProps{ID: "tooltip-1"}, Text: "Edit this item"}) {
 				@display.Button(display.ButtonProps{Text: "Edit"})
@@ -125,7 +134,7 @@ templ demoContent() {
 				@display.Button(display.ButtonProps{Text: "Delete", Variant: display.ButtonDanger})
 			}
 		</div>
-		@demoSection("Buttons")
+		@demoSection("Buttons", "buttons")
 		<div class="flex flex-wrap items-center gap-3">
 			@display.Button(display.ButtonProps{Text: "Primary"})
 			@display.Button(display.ButtonProps{Text: "Secondary", Variant: display.ButtonSecondary})
@@ -137,7 +146,7 @@ templ demoContent() {
 			@display.Button(display.ButtonProps{Text: "Disabled", Disabled: true})
 			@display.Button(display.ButtonProps{Text: "External", Href: "https://example.com", External: true})
 		</div>
-		@demoSection("Form Controls")
+		@demoSection("Form Controls", "forms")
 		<div class="space-y-6 max-w-md">
 			@forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email address", Required: true})
 			@forms.InputGroup(forms.InputGroupProps{
@@ -168,7 +177,7 @@ templ demoContent() {
 			@forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications", Checked: true})
 			@forms.FileInput(forms.FileInputProps{Name: "avatar", Label: "Upload avatar", Accept: "image/*"})
 		</div>
-		@demoSection("Error Alerts")
+		@demoSection("Error Alerts", "error-alerts")
 		<div class="space-y-4">
 			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyRejection, Title: "Invalid Input", Message: "The email address format is invalid.", Fix: "Enter a valid email address."})
 			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyConflict, Title: "Version Conflict", Message: "Someone else modified this resource.", Fix: "Refresh and try again."})
@@ -176,7 +185,7 @@ templ demoContent() {
 			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyCorruption, Title: "Data Corrupted", Message: "Configuration file is unreadable.", Fix: "Check the file format."})
 			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyInfrastructure, Title: "Service Unavailable", Message: "The service is currently down."})
 		</div>
-		@demoSection("Error Details")
+		@demoSection("Error Details", "error-details")
 		<div class="space-y-4">
 			@errorpage.ErrorDetail(errorpage.ErrorDetailProps{
 				Family:  errorpage.FamilyCorruption,
@@ -194,12 +203,12 @@ templ demoContent() {
 				CauseChain: []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}, {Message: "timeout after 30s", Code: "db.timeout"}},
 			})
 		</div>
-		@demoSection("PageHeader")
+		@demoSection("PageHeader", "pageheader")
 		@display.PageHeader(display.PageHeaderProps{
 			Title:    "User Settings",
 			Subtitle: "Manage your account preferences and security options",
 		})
-		@demoSection("Definition List")
+		@demoSection("Definition List", "definition-list")
 		<div class="max-w-md">
 			@display.DefinitionList(display.DefinitionListProps{
 				Items: []display.DefinitionItem{
@@ -209,9 +218,9 @@ templ demoContent() {
 				},
 			})
 		</div>
-		@demoSection("List Note")
+		@demoSection("List Note", "list-note")
 		@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
-		@demoSection("Sidebar Nav")
+		@demoSection("Sidebar Nav", "sidebar-nav")
 		<div class="w-64 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
 			@navigation.SidebarNav(navigation.SidebarNavProps{
 				Brand: templ.Raw(`<span class="font-bold text-white">Demo App</span>`),
@@ -223,7 +232,7 @@ templ demoContent() {
 				Footer: templ.Raw(`<span>v` + utils.Version + `</span>`),
 			})
 		</div>
-		@demoSection("New Components (Session 7)")
+		@demoSection("New Components (Session 7)", "session7")
 		<div class="space-y-6">
 			@display.CopyButton(display.CopyButtonProps{Text: "go get github.com/larsartmann/templ-components", Label: "Copy install command"})
 			<div class="flex items-center gap-4">
@@ -256,7 +265,7 @@ templ demoContent() {
 			@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo", Alt: "Demo image", Width: 96, Height: 96})
 			@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "next-page"})
 		</div>
-		@demoSection("Sortable Table")
+		@demoSection("Sortable Table", "table")
 		@display.Table(display.TableProps{
 			TypedHeaders: []display.TableHeader{
 				{Label: "Name", Sortable: true, SortDirection: display.SortAsc},
@@ -270,7 +279,7 @@ templ demoContent() {
 			Striped: true,
 			Hover:   true,
 		})
-		@demoSection("Inline Form (Filter Bar)")
+		@demoSection("Inline Form (Filter Bar)", "inline-form")
 		@forms.Form(forms.FormProps{Action: "/filter", Method: forms.FormGet, Inline: true}) {
 			@forms.Select(forms.SelectProps{
 				Name:  "status",
@@ -283,7 +292,7 @@ templ demoContent() {
 			})
 			@display.Button(display.ButtonProps{Text: "Filter", Type: display.ButtonHTMLSubmit})
 		}
-		@demoSection("Container Query Grid")
+		@demoSection("Container Query Grid", "container-grid")
 		<div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
 			@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerResponsive: true}) {
 				@display.StatCard(display.StatCardProps{Value: "42", Label: "Requests/s"})
@@ -291,7 +300,7 @@ templ demoContent() {
 				@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime"})
 			}
 		</div>
-		@demoSection("404 Page Preview")
+		@demoSection("404 Page Preview", "404")
 		<div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
 			@errorpage.NotFound404(errorpage.NotFound404Props{
 				Numeral:    "404",
@@ -301,16 +310,18 @@ templ demoContent() {
 				ShowGoBack: false,
 			})
 		</div>
-		@demoSection("Table Body Slot")
+		@demoSection("Table Body Slot", "table-body")
 		@display.Table(display.TableProps{
 			Headers: []string{"Message", "Author", "Status"},
 			Body:    demoTableBody(),
 		})
+		@demoSection("Loading State (SkeletonCardGrid)", "loading")
+		@feedback.SkeletonCardGrid(3)
 	</div>
 }
 
-templ demoSection(title string) {
-	<section class="mt-12">
+templ demoSection(title, anchor string) {
+	<section class="mt-12" id={ anchor }>
 		<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
 			{ title }
 		</h2>

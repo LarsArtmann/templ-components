@@ -13,6 +13,7 @@ const (
 	CodeInternalError   Code = "internal.error"
 
 	msgGoHome             = "Go home"
+	msgGoBack             = notFound404GoBackText
 	titleInternalError    = "Something went wrong"
 	msgBadRequestDefault  = "The request was invalid or malformed."
 	msgConflictDefault    = "A conflict was detected with the current state of the resource."
@@ -59,7 +60,7 @@ func BadRequest(message string) ErrorPageProps {
 		Title:         "Bad request",
 		Message:       message,
 		Fix:           "Check your input and try again.",
-		WayOut:        "Go back",
+		WayOut:        msgGoBack,
 		ShowTimestamp: true,
 	}
 }
@@ -75,7 +76,7 @@ func Conflict(message string) ErrorPageProps {
 		Title:         "Conflict detected",
 		Message:       message,
 		Fix:           "Refresh your data and try the operation again.",
-		WayOut:        "Go back",
+		WayOut:        msgGoBack,
 		ShowTimestamp: true,
 	}
 }

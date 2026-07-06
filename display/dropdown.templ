@@ -209,9 +209,9 @@ templ Dropdown(props DropdownProps) {
 					var btnId = menu.getAttribute('aria-labelledby');
 					var b = document.getElementById(btnId);
 					if (b) tcCloseDropdown(menu, b);
-				} else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+				} else if (e.key === 'ArrowDown' || e.key === '(document.documentElement.getAttribute('dir') === 'rtl' ? 'ArrowLeft' : 'ArrowRight')') {
 					e.preventDefault(); items[(idx + 1) % items.length].focus();
-				} else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+				} else if (e.key === 'ArrowUp' || e.key === '(document.documentElement.getAttribute('dir') === 'rtl' ? 'ArrowRight' : 'ArrowLeft')') {
 					e.preventDefault(); items[(idx - 1 + items.length) % items.length].focus();
 				}
 			});

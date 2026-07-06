@@ -18,6 +18,7 @@ const (
 	Inbox                 Name = "inbox"
 	Check                 Name = "check"
 	X                     Name = "x"
+	Close                 Name = "x"
 	Plus                  Name = "plus"
 	Minus                 Name = "minus"
 	ChevronRight          Name = "chevron-right"

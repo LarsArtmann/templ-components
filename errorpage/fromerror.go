@@ -26,7 +26,7 @@ func FromError(err error) ErrorPageProps {
 
 	props := ErrorPageProps{ //nolint:exhaustruct // filled incrementally
 		Family:     family,
-		Message:    cleanMessage(err),
+		Message:    sanitizeErrorMessage(err),
 		CauseChain: ExtractCauseChain(err, 5),
 		Timestamp:  errorTimestamp(err),
 	}
@@ -71,9 +71,9 @@ func familyFromError(err error) Family {
 	return FamilyInfrastructure
 }
 
-// cleanMessage returns the clean message from a go-error-family error
+// sanitizeErrorMessage returns the clean message from a go-error-family error
 // (without the [family:code] prefix), or falls back to err.Error().
-func cleanMessage(err error) string {
+func sanitizeErrorMessage(err error) string {
 	type messenger interface{ Message() string }
 	if m, ok := err.(messenger); ok {
 		return m.Message()

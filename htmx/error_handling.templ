@@ -38,7 +38,13 @@ func (c *ErrorHandlingConfig) normalize() {
 // Requires feedback.ToastContainer on the page for accessible error announcements (aria-live).
 // If ToastContainer is not present, errors are only logged to the console.
 //
-//	@htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
+// Typical layout wiring:
+//
+//	@layout.Base(layout.PageProps{...}) {
+//	    @feedback.ToastContainer(nonce)  // must be present for toast error feedback
+//	    // ... page content ...
+//	    @htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
+//	}
 templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
 	{{ cfg.normalize() }}
 	<div id="tc-error-announcer" aria-live="polite" class="sr-only"></div>
