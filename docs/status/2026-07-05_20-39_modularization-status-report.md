@@ -1,9 +1,20 @@
 # Status Report — Modularization Session
 
+> **Updated:** 2026-07-06 (post-v0.8.0). **OUTCOME: BRANCH NEVER MERGED.**
+
 **Date:** 2026-07-05 20:39
-**Branch:** `modularize/strategic-split` (pushed to origin)
+**Branch:** `modularize/strategic-split` (pushed to origin, **never merged**)
 **Base:** `origin/master` at `f81ae66`
 **Commits on branch:** 12 (7 modularization + 5 fixes from self-review)
+
+> **UPDATE NOTE (2026-07-06):** The modularization branch was **abandoned**.
+> Commit `a0dbae7` ("fix(docs): correct split-brain — master is single-module not multi-module")
+> corrected the false documentation that claimed a 6-module workspace. `master` remains a single
+> Go module. The branch still exists on origin (`remotes/origin/modularize/strategic-split`) but
+> there is no `go.work`, no `svg/go.mod`, and no sub-module go.mod files on master. AGENTS.md
+> documents: "The split may be re-attempted post-v1.0 if the package graph warrants it."
+>
+> **Current state:** v0.8.0, single-module, 14 packages, 575 test cases, 13/13 green, 0 lint.
 
 ---
 
@@ -61,26 +72,31 @@ github.com/larsartmann/templ-components/
 
 ## B) PARTIALLY DONE ⚠️
 
-| Item                                     | What's done                                                           | What's missing                                                                                                                               |
-| ---------------------------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Release script end-to-end test**       | Script updated with placeholder→version replacement + per-module tags | NOT test-run (would need a dry-run mode or a real release). The `sed` replacements and tag creation are untested in practice.                |
-| **CI workflow on actual GitHub Actions** | YAML written with sub-module iteration + GOWORK=off                   | NOT run on actual CI — only verified locally. The `go mod tidy` step in CI may modify go.sum files in unexpected ways with multi-module.     |
-| **Consumer experience verification**     | GOWORK=off builds pass for all modules                                | NOT tested from outside the repo (simulating a consumer cloning + `go get`). The placeholder→real-version bump only happens at release time. |
-| **Merge to master**                      | Branch pushed to origin                                               | NOT merged — waiting for review/decision. PR not created.                                                                                    |
+> **ALL ITEMS BELOW ARE MOOT** — the branch was never merged. These were "done" on the
+> branch but never landed on `master`. Listed for historical reference only.
+
+| Item                                     | What was done on the branch                                           | What's missing (and now moot)                                                        |
+| ---------------------------------------- | --------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| **Release script end-to-end test**       | Script updated with placeholder→version replacement + per-module tags | NEVER tested. Single-module `scripts/release.sh` used for v0.7.0 and v0.8.0 instead. |
+| **CI workflow on actual GitHub Actions** | YAML written with sub-module iteration + GOWORK=off                   | NEVER run on CI. The actual CI uses the single-module workflow.                      |
+| **Consumer experience verification**     | GOWORK=off builds pass for all modules                                | NEVER tested from outside. Single-module consumers use standard `go get`.            |
+| **Merge to master**                      | Branch pushed to origin                                               | ❌ **NEVER MERGED.** Branch abandoned. Documentation corrected in `a0dbae7`.         |
 
 ---
 
 ## C) NOT STARTED ❌
 
-| Item                                   | Why                                                                                                                                                      |
-| -------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **PR creation**                        | User hasn't asked for a PR yet. Branch is pushed but no `gh pr create`.                                                                                  |
-| **First release with per-module tags** | v0.7.0 not cut. The release script is ready but untested in production.                                                                                  |
-| **Per-module go.sum audit**            | Each sub-module has its own go.sum — haven't verified checksums are minimal (no unnecessary entries from root).                                          |
-| **flake.nix multi-module apps**        | flake.nix `build`/`test`/`verify` apps still use `go build ./...` at root — they work via go.work but don't explicitly iterate sub-modules for tidy/vet. |
-| **README.md update for multi-module**  | README still describes single-module `go get` — consumers of sub-modules need to know about per-module tags.                                             |
-| **icons-only-adoption.md update**      | Doc still says "depends only on templ and internal SVG path constants" — should mention it's now a standalone sub-module.                                |
-| **CONTRIBUTING.md update**             | Still references old single-module build commands.                                                                                                       |
+> **ALL ITEMS BELOW ARE MOOT** — modularization was abandoned.
+
+| Item                                   | Why (moot)                                                                                                       |
+| -------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **PR creation**                        | ❌ Never created. Branch abandoned.                                                                              |
+| **First release with per-module tags** | ❌ Never happened. v0.7.0/v0.8.0 released as single-module with standard tags.                                   |
+| **Per-module go.sum audit**            | ❌ Moot — no sub-modules exist.                                                                                  |
+| **flake.nix multi-module apps**        | ❌ Moot — flake.nix uses single-module commands.                                                                 |
+| **README.md update for multi-module**  | ❌ Moot — README correctly describes single-module `go get`.                                                     |
+| **icons-only-adoption.md update**      | ✅ Done differently — doc now describes icons as naturally having zero CSS deps, not as a standalone sub-module. |
+| **CONTRIBUTING.md update**             | ❌ Moot — single-module build commands are correct.                                                              |
 
 ---
 
@@ -138,70 +154,60 @@ the consumer experience before claiming success.
 
 ## F) Next 25 Things To Get Done
 
-### Tier 1 — Must Do Before Merge (blocks v0.7.0)
+> **ALL TIER 1–2 ITEMS ARE MOOT** — modularization was abandoned. Tiers 3–4 updated below
+> with current status where applicable to the single-module codebase.
 
-| #   | Task                                                                                                            | Effort | Impact   |
-| --- | --------------------------------------------------------------------------------------------------------------- | ------ | -------- |
-| 1   | **Merge `modularize/strategic-split` to master** (or create PR for review)                                      | 5 min  | Critical |
-| 2   | **Cut v0.7.0 release** using updated `scripts/release.sh` — first test of per-module tags                       | 30 min | Critical |
-| 3   | **Verify consumer experience**: `go get github.com/larsartmann/templ-components/icons@v0.7.0` from a clean repo | 15 min | Critical |
-| 4   | **Run CI on the branch** — verify the multi-module CI workflow actually passes on GitHub Actions                | 10 min | Critical |
+### Tier 1 — Must Do Before Merge (blocks v0.7.0) — ❌ ALL MOOT
 
-### Tier 2 — Should Do After Merge
+| #   | Task                                             | Status (2026-07-06)                      |
+| --- | ------------------------------------------------ | ---------------------------------------- |
+| 1   | **Merge `modularize/strategic-split` to master** | ❌ Abandoned                             |
+| 2   | **Cut v0.7.0 release using per-module tags**     | ✅ v0.7.0 released as single-module      |
+| 3   | **Verify consumer experience from clean repo**   | ✅ Standard single-module `go get` works |
+| 4   | **Run CI on the branch**                         | ❌ Moot                                  |
 
-| #   | Task                                                                                                   | Effort | Impact |
-| --- | ------------------------------------------------------------------------------------------------------ | ------ | ------ |
-| 5   | **Update README.md** — document multi-module structure, consumer `go get` instructions for sub-modules | 20 min | High   |
-| 6   | **Update CONTRIBUTING.md** — multi-module build/test/lint commands                                     | 10 min | High   |
-| 7   | **Update icons-only-adoption.md** — reference sub-module structure, update import examples             | 10 min | High   |
-| 8   | **Add `make dry-release` or `scripts/release.sh --dry-run`** — test release without tagging            | 30 min | High   |
-| 9   | **Update flake.nix `verify` app** — iterate over all modules for tidy/vet/build/test                   | 15 min | High   |
-| 10  | **File BuildFlow issue** — branch-switching + go.work gitignore fight                                  | 10 min | High   |
-| 11  | **Clean up stashes** — 5 stashes accumulated from branch-switching chaos                               | 2 min  | Medium |
+### Tier 2 — Should Do After Merge — ❌ ALL MOOT (except #10)
 
-### Tier 3 — Improve Quality
+| #   | Task                                                                  | Status (2026-07-06)                                                  |
+| --- | --------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| 5   | **Update README.md** for multi-module                                 | ❌ Moot — single-module correct                                      |
+| 6   | **Update CONTRIBUTING.md** for multi-module                           | ❌ Moot                                                              |
+| 7   | **Update icons-only-adoption.md**                                     | ✅ Done (different framing)                                          |
+| 8   | **Add `make dry-release`**                                            | ⬜ Not done                                                          |
+| 9   | **Update flake.nix `verify` app** for multi-module                    | ❌ Moot                                                              |
+| 10  | **File BuildFlow issue** — branch-switching + go.work gitignore fight | ✅ Resolved — BuildFlow no longer switches branches; go.work removed |
+| 11  | **Clean up stashes**                                                  | ⬠ Likely resolved                                                    |
 
-| #   | Task                                                                                                                                                      | Effort | Impact |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 12  | **Add workspace sync CI check** — `go work sync && git diff --exit-code go.work`                                                                          | 10 min | Medium |
-| 13  | **Add replace-directive audit script** — verify all replaces use relative paths, no absolute paths                                                        | 15 min | Medium |
-| 14  | **Per-module go.sum audit** — verify no unnecessary checksum entries from root module                                                                     | 15 min | Medium |
-| 15  | **Add version-drift CI check** — verify all sub-modules reference siblings at the same version                                                            | 15 min | Medium |
-| 16  | **Document the release workflow** for multi-module — step-by-step guide in AGENTS.md                                                                      | 20 min | Medium |
-| 17  | **Evaluate: should `htmx` be extracted?** — currently in root, but it only depends on utils. If consumers want HTMX without display/feedback, extract it. | 30 min | Medium |
-| 18  | **Evaluate: merge svg + utils?** — svg has 2 functions and depends on utils for tests. May not justify its own go.mod.                                    | 15 min | Medium |
+### Tier 3 — Improve Quality — ❌ MOSTLY MOOT
+
+| #   | Task                                               | Status (2026-07-06)                                        |
+| --- | -------------------------------------------------- | ---------------------------------------------------------- |
+| 12  | **Add workspace sync CI check**                    | ❌ Moot                                                    |
+| 13  | **Add replace-directive audit script**             | ❌ Moot                                                    |
+| 14  | **Per-module go.sum audit**                        | ❌ Moot                                                    |
+| 15  | **Add version-drift CI check**                     | ❌ Moot                                                    |
+| 16  | **Document the release workflow** for multi-module | ❌ Moot                                                    |
+| 17  | **Evaluate: should `htmx` be extracted?**          | ⬜ Deferred — may revisit post-v1.0                        |
+| 18  | **Evaluate: merge svg + utils?**                   | ✅ Resolved — svg stays as `internal/svg` in single module |
 
 ### Tier 4 — Polish & Long-term
 
-| #   | Task                                                                                                                                                               | Effort  | Impact    |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------- | --------- |
-| 19  | **Add per-module coverage reporting** — CI uploads separate coverage profiles per module                                                                           | 20 min  | Low       |
-| 20  | **Update `docs/diagrams/internal-dependencies.d2`** — reflect new multi-module DAG                                                                                 | 15 min  | Low       |
-| 21  | **Consider go.work.sum in .gitignore vs committed** — currently committed, but BuildFlow keeps fighting it. Long-term decision needed.                             | 5 min   | Low       |
-| 22  | **Add `go work vendor` support** if any consumer needs vendored deps                                                                                               | 30 min  | Low       |
-| 23  | **Stale doc cleanup** — ~30 docs/status/_.md and docs/planning/_.md files still reference `internal/svg`. Batch find-replace.                                      | 20 min  | Low       |
-| 24  | **Monitor co-change after 3 months** — if git log shows sub-modules still change together 80%+, reconsider merging some back                                       | ongoing | Strategic |
-| 25  | **Consider independent versioning for icons** — if icons stabilizes and rarely changes, it could graduate to independent semver (icons/v1.0.0, icons/v1.1.0, etc.) | 1 hour  | Strategic |
+| #   | Task                                                                                                     | Status (2026-07-06)                               |
+| --- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| 19  | **Add per-module coverage reporting**                                                                    | ❌ Moot                                           |
+| 20  | **Update `docs/diagrams/internal-dependencies.d2`** — reflect new multi-module DAG                       | ❌ Moot — diagram is for single module            |
+| 21  | **Consider go.work.sum in .gitignore vs committed**                                                      | ❌ Moot — no go.work                              |
+| 22  | **Add `go work vendor` support**                                                                         | ❌ Moot                                           |
+| 23  | **Stale doc cleanup** — ~30 docs/status/_.md and docs/planning/_.md files still reference `internal/svg` | ✅ Resolved — `internal/svg` is correct on master |
+| 24  | **Monitor co-change after 3 months**                                                                     | ⬜ Ongoing                                        |
+| 25  | **Consider independent versioning for icons**                                                            | ⬜ Deferred — may revisit post-v1.0               |
 
 ---
 
 ## G) Top #1 Question I Cannot Figure Out Myself
 
-**Should this modularization branch be merged to master now, or should we cut v0.7.0 first
-from the branch to test the release script, and only merge after confirming the consumer
-experience works?**
-
-The dilemma:
-
-- **Merging now** means master has the multi-module structure, but the release script is
-  untested in production. If the per-module tag creation fails, we're stuck on master with
-  a broken release process.
-- **Releasing from the branch first** tests the full release pipeline (placeholder→version
-  bump, per-module tags, proxy resolution) before merge, but means the branch needs to be
-  rebased/merged carefully afterward.
-- **The release script requires being on `master`** (line 47: `if [ "$CURRENT_BRANCH" !=
-"master" ]`), so releasing from the branch requires either merging first or temporarily
-  relaxing that constraint.
-
-I cannot determine the right answer because it depends on your risk tolerance for the
-release script and whether you want to test it in isolation first.
+> ✅ **RESOLVED — DECISION: DO NOT MERGE.** The modularization branch was abandoned.
+> Master remains single-module. The split was prototyped but the cost/benefit didn't justify
+> it (80%+ of commits touch 5+ packages — co-change is too high for a 6-module split).
+> Documentation corrected in `a0dbae7`. The split may be re-attempted post-v1.0 if the
+> package graph warrants it.

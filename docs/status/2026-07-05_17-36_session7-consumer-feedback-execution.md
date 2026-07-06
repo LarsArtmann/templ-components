@@ -1,11 +1,16 @@
 # Status Report — Session 7
 
+> **Updated:** 2026-07-06 (post-v0.8.0). Version at report: 0.6.1 → **Current:** 0.8.0
+
 **Date:** 2026-07-05 17:36
 **Commit:** `d8b4f13` — feat: add 6 new components + StatCard HTMX + Card.Body slot
 **Branch:** `master` (pushed to origin)
 **Verify:** `nix run .#verify` = generate + build + test + lint = **0 issues**
 **BuildFlow:** 28/28 steps passed (10.2s)
 **Files changed this session:** 37 files, +3,108 lines
+
+> **UPDATE NOTE (2026-07-06):** Session 7 shipped 6 new components. Since then, sessions
+> 8–10 + v0.7.0/v0.8.0 releases addressed most remaining items. See status annotations below.
 
 ---
 
@@ -100,13 +105,12 @@ Nothing from the Consumer Feedback Backlog remains unstarted — all 11 items ar
 
 ### Minor Issues Noticed (not blocking)
 
-1. **`relative_time.templ` uses custom `formatInt()` helper** — I wrote a manual int-to-string converter to avoid importing `strconv` (keeping the import list minimal per templ conventions). This works but is unnecessary; `strconv.Itoa` would be cleaner. The custom helper is also used by `CountBadge`. If we ever need to format negative numbers or larger values, `strconv.Itoa` is more robust.
-
-2. **`formatRelativeTime` has no tests for edge cases** — the BDD test only covers "just now" and the datetime attribute. The time boundary logic (59 seconds vs 1 minute, 23 hours vs 1 day, 6 days vs 1 week) is untested. A table-driven test with fixed timestamps would close this gap.
-
-3. **`LoadMore` button has a hardcoded default `id="tc-load-more"`** when no ID is provided. If multiple LoadMore buttons render on the same page (unlikely but possible), IDs would collide. Should use `utils.EnsureID()` like Modal/Drawer/Dropdown.
-
-4. **`go.mod` was silently bumped from `go-error-family v0.5.1` to `v0.6.0`** during the build process. I caught this and reverted it before committing, but it indicates the Nix flake or Go toolchain is pulling a newer dependency version than `go.mod` pins. This could cause confusion in future sessions if not monitored.
+| #   | Issue                                                                                                                                | Status (2026-07-06)                                     |
+| --- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| 1   | **`relative_time.templ` uses custom `formatInt()` helper** — unnecessary; `strconv.Itoa` would be cleaner. Shared with `CountBadge`. | ✅ Fixed — `strconv.Itoa` adopted                       |
+| 2   | **`formatRelativeTime` has no tests for edge cases** — boundary logic untested.                                                      | ✅ Fixed — boundary tests added (8 cases)               |
+| 3   | **`LoadMore` button has hardcoded default `id="tc-load-more"`** — ID collision risk.                                                 | ✅ Fixed — uses `utils.EnsureID("load-more", props.ID)` |
+| 4   | **`go.mod` was silently bumped from `go-error-family v0.5.1` to `v0.6.0`** during build.                                             | ✅ Monitored — no recurrence reported                   |
 
 ---
 
@@ -114,29 +118,22 @@ Nothing from the Consumer Feedback Backlog remains unstarted — all 11 items ar
 
 ### Architecture & Design
 
-1. **`formatInt` → `strconv.Itoa`**: The custom int formatter in `relative_time.templ` should use the stdlib. Remove the hand-rolled implementation.
-
-2. **`LoadMore` ID generation**: Should use `utils.EnsureID("loadmore", props.ID)` instead of a hardcoded fallback. Consistent with Modal, Drawer, Dropdown, Accordion, Combobox.
-
-3. **`RelativeTime` has no auto-refresh JS**: The server renders a static relative time. For a truly dynamic "2 minutes ago → 3 minutes ago" experience, an optional JS auto-refresh would be needed. Currently out of scope (pure server-rendered is the library default), but worth noting.
-
-4. **CopyButton graceful degradation**: The singleton JS checks `navigator.clipboard` existence, but if the Clipboard API is unavailable (older browser, insecure context), the button silently does nothing. A fallback to `document.execCommand('copy')` with a temporary textarea would improve compatibility.
-
-5. **Image fallback uses error capture but doesn't handle `srcset`**: If a consumer sets `srcset` via `Attrs`, the fallback only swaps `src`, not `srcset`. Edge case, but worth documenting.
+1. ✅ **`formatInt` → `strconv.Itoa`** — Fixed.
+2. ✅ **`LoadMore` ID generation** — Fixed. Uses `utils.EnsureID("load-more", props.ID)`.
+3. ✅ **`RelativeTime` auto-refresh JS** — Shipped. `AutoRefresh` defaults to `true` with `Intl.RelativeTimeFormat` singleton script.
+4. ✅ **CopyButton graceful degradation** — Fixed. `execCommand('copy')` fallback for non-secure contexts.
+5. ⬜ **Image fallback `srcset` handling** — Still only swaps `src`, not `srcset`. Documented in godoc.
 
 ### Testing
 
-6. **`formatRelativeTime` needs boundary tests**: The time bucketing logic (just now / minutes / hours / days / weeks / absolute) has no unit tests. A table-driven test with fixed `now` and `t` values would cover all branches.
-
-7. **CopyButton `formatInt` not tested directly**: The helper is shared between RelativeTime and CountBadge but has no unit test. If the formatting logic changes, both components could break silently.
-
-8. **Integration tests for new components**: No composition tests (e.g., CopyButton inside a Card, CountBadge wrapping a Button, DefinitionGrid inside a Grid). The existing `composition_test.go` doesn't cover new components.
+6. ✅ **`formatRelativeTime` boundary tests** — Done (8 cases).
+7. ✅ **CopyButton `formatInt` test** — Moot (helper deleted, `strconv.Itoa` used).
+8. ✅ **Integration tests** — 7 composition integration tests added (CopyButton+Card, CountBadge overflow, Image+fallback, etc.).
 
 ### Documentation
 
-9. **SKILL.md Part 2 (Authoring Playbook) not updated**: The consumer catalogue (Part 1) is updated with all new components, but the authoring playbook (Part 2) doesn't mention the new patterns (CopyButton JS singleton, Image fallback event capture, CountBadge overflow logic). A maintainer adding a similar component wouldn't know the pattern without reading source.
-
-10. **Cursor pagination recipe lacks a runnable example**: The recipe shows code snippets but no link to a working example in the demo app. Adding a `/cursor-demo` route would make it concrete.
+9. ✅ **SKILL.md Part 2** — Done. Full rewrite with CopyButton/Image/CountBadge patterns + RTL/motion/container-query conventions.
+10. ✅ **Cursor pagination runnable example** — Recipe doc written + demo integration.
 
 ---
 
@@ -144,70 +141,59 @@ Nothing from the Consumer Feedback Backlog remains unstarted — all 11 items ar
 
 ### High Impact (P0)
 
-| #   | Task                                                                       | Impact                          | Effort |
-| --- | -------------------------------------------------------------------------- | ------------------------------- | ------ |
-| 1   | Fix `LoadMore` to use `utils.EnsureID()`                                   | Prevents ID collision bug       | 5 min  |
-| 2   | Replace `formatInt` with `strconv.Itoa`                                    | Removes unnecessary custom code | 10 min |
-| 3   | Add `formatRelativeTime` boundary unit tests                               | Covers untested time logic      | 15 min |
-| 4   | CopyButton: add `document.execCommand` fallback                            | Improves browser compatibility  | 15 min |
-| 5   | Integration tests: CopyButton+Card, CountBadge+Button, DefinitionGrid+Grid | Composition coverage            | 20 min |
+| #   | Task                                                                       | Impact                          | Effort | Status (2026-07-06) |
+| --- | -------------------------------------------------------------------------- | ------------------------------- | ------ | ------------------- |
+| 1   | Fix `LoadMore` to use `utils.EnsureID()`                                   | Prevents ID collision bug       | 5 min  | ✅ Done             |
+| 2   | Replace `formatInt` with `strconv.Itoa`                                    | Removes unnecessary custom code | 10 min | ✅ Done             |
+| 3   | Add `formatRelativeTime` boundary unit tests                               | Covers untested time logic      | 15 min | ✅ Done             |
+| 4   | CopyButton: add `document.execCommand` fallback                            | Improves browser compatibility  | 15 min | ✅ Done             |
+| 5   | Integration tests: CopyButton+Card, CountBadge+Button, DefinitionGrid+Grid | Composition coverage            | 20 min | ✅ Done             |
 
 ### Medium Impact (P1)
 
-| #   | Task                                                           | Impact                 | Effort |
-| --- | -------------------------------------------------------------- | ---------------------- | ------ |
-| 6   | SKILL.md Part 2: document CopyButton/Image/CountBadge patterns | Maintainer guidance    | 20 min |
-| 7   | Demo: anchor-linked table of contents at top                   | Demo navigability      | 15 min |
-| 8   | Demo: standalone `/forms` quickstart route                     | Forms discoverability  | 30 min |
-| 9   | Add runnable cursor pagination example to demo                 | Recipe concreteness    | 20 min |
-| 10  | CopyButton: add `aria-live` for "Copied!" announcement         | Screen reader feedback | 10 min |
-| 11  | Image: document `srcset` limitation in godoc                   | Prevent confusion      | 5 min  |
-| 12  | StatCard HTMX: golden test for `hx-get` variant                | Snapshot coverage      | 10 min |
-| 13  | Card.Body: golden test for Body slot variant                   | Snapshot coverage      | 10 min |
+| #   | Task                                                           | Impact                 | Effort | Status (2026-07-06)                              |
+| --- | -------------------------------------------------------------- | ---------------------- | ------ | ------------------------------------------------ |
+| 6   | SKILL.md Part 2: document CopyButton/Image/CountBadge patterns | Maintainer guidance    | 20 min | ✅ Done                                          |
+| 7   | Demo: anchor-linked table of contents at top                   | Demo navigability      | 15 min | ⬜ Not done                                      |
+| 8   | Demo: standalone `/forms` quickstart route                     | Forms discoverability  | 30 min | ⬜ Not done                                      |
+| 9   | Add runnable cursor pagination example to demo                 | Recipe concreteness    | 20 min | ✅ Done (recipe + demo)                          |
+| 10  | CopyButton: add `aria-live` for "Copied!" announcement         | Screen reader feedback | 10 min | ✅ Done (`role="status"` + `aria-live="polite"`) |
+| 11  | Image: document `srcset` limitation in godoc                   | Prevent confusion      | 5 min  | ✅ Done                                          |
+| 12  | StatCard HTMX: golden test for `hx-get` variant                | Snapshot coverage      | 10 min | ✅ Done                                          |
+| 13  | Card.Body: golden test for Body slot variant                   | Snapshot coverage      | 10 min | ✅ Done                                          |
 
 ### v1.0 Preparation (P2)
 
-| #   | Task                                                        | Impact               | Effort |
-| --- | ----------------------------------------------------------- | -------------------- | ------ |
-| 14  | Design `Validate() error` pattern for all props structs     | v1.0 API freeze      | 2-4h   |
-| 15  | Plan `internal/testutil/` migration (70 test files)         | v1.0 breaking change | 3-4h   |
-| 16  | Self-host htmx: download + commit `htmx.min.js` to examples | v1.0 readiness       | 15 min |
-| 17  | Remove deprecated aliases (`AlertType`, `ToastType`)        | v1.0 cleanup         | 30 min |
+| #   | Task                                                        | Impact               | Effort | Status (2026-07-06)                                  |
+| --- | ----------------------------------------------------------- | -------------------- | ------ | ---------------------------------------------------- |
+| 14  | Design `Validate() error` pattern for all props structs     | v1.0 API freeze      | 2-4h   | ⬜ Not started                                       |
+| 15  | Plan `internal/testutil/` migration (70 test files)         | v1.0 breaking change | 3-4h   | ⬜ Not started                                       |
+| 16  | Self-host htmx: download + commit `htmx.min.js` to examples | v1.0 readiness       | 15 min | ⬜ Not started (ADR 0007 deferred)                   |
+| 17  | Remove deprecated aliases (`AlertType`, `ToastType`)        | v1.0 cleanup         | 30 min | ⬜ Not started (kept as aliases for backward compat) |
 
 ### Polish (P3)
 
-| #   | Task                                                                   | Impact                  | Effort |
-| --- | ---------------------------------------------------------------------- | ----------------------- | ------ |
-| 18  | RelativeTime: optional JS auto-refresh (opt-in via `AutoRefresh bool`) | Dynamic UX              | 30 min |
-| 19  | CountBadge: `Max` default test (verify 99 overflow)                    | Edge case coverage      | 5 min  |
-| 20  | DefinitionGrid: test with `DetailComponent` slot                       | Component slot coverage | 10 min |
-| 21  | CopyButton: test nonce propagation on script tag                       | CSP safety verification | 5 min  |
-| 22  | LoadMore: test `containsChar` helper                                   | Private helper coverage | 5 min  |
-| 23  | Add `CopyButton.Href` variant (link button that also copies)           | Consumer use case       | 15 min |
-| 24  | Add `Image.Rounded` bool for quick rounded corners                     | Common use case         | 10 min |
-| 25  | Benchmark tests for new components                                     | Performance baseline    | 20 min |
+| #   | Task                                                                   | Impact                  | Effort | Status (2026-07-06)                                |
+| --- | ---------------------------------------------------------------------- | ----------------------- | ------ | -------------------------------------------------- |
+| 18  | RelativeTime: optional JS auto-refresh (opt-in via `AutoRefresh bool`) | Dynamic UX              | 30 min | ✅ Done (defaults to `true`)                       |
+| 19  | CountBadge: `Max` default test (verify 99 overflow)                    | Edge case coverage      | 5 min  | ✅ Done                                            |
+| 20  | DefinitionGrid: test with `DetailComponent` slot                       | Component slot coverage | 10 min | ✅ Done                                            |
+| 21  | CopyButton: test nonce propagation on script tag                       | CSP safety verification | 5 min  | ✅ Done (CSP nonce-presence test)                  |
+| 22  | LoadMore: test `containsChar` helper                                   | Private helper coverage | 5 min  | ✅ Moot — `containsChar` deleted, `net/url` used   |
+| 23  | Add `CopyButton.Href` variant (link button that also copies)           | Consumer use case       | 15 min | ⬜ Not started                                     |
+| 24  | Add `Image.Rounded` bool for quick rounded corners                     | Common use case         | 10 min | ⬜ Not started                                     |
+| 25  | Benchmark tests for new components                                     | Performance baseline    | 20 min | ✅ Done (display, feedback, navigation benchmarks) |
+
+**Scorecard:** 16 of 25 complete (64%).
 
 ---
 
 ## G) Top #1 Question I Cannot Figure Out Myself
 
-**Should `RelativeTime` ship with an optional client-side auto-refresh JavaScript?**
-
-The library's principle is "zero JavaScript by default" — and RelativeTime currently follows this perfectly (pure server-rendered, no JS). But the #1 use case for relative timestamps is a dynamically-updating "2 minutes ago → 3 minutes ago" indicator, which requires a `setInterval` polling script.
-
-Arguments for:
-
-- It's the expected behavior for relative time components in every UI library
-- The singleton-guard pattern already exists — adding it is ~15 lines
-- Consumers who don't want JS can set `AutoRefresh: false` (default could go either way)
-
-Arguments against:
-
-- Violates the "zero JS by default" principle
-- Relative timestamps in server-rendered apps are typically re-rendered on the next page load or HTMX swap
-- Adding JS makes the component harder to test (golden files would need to account for the script tag)
-
-**This is a design philosophy question, not a technical one — it needs the project owner's call.**
+> ✅ **RESOLVED.** `RelativeTime.AutoRefresh` was shipped in session 8, defaulting to `true`.
+> It uses `Intl.RelativeTimeFormat` via a singleton-guarded script, with HTMX `afterSettle`
+> event re-trigger. Consumers can set `AutoRefresh: false` for static contexts (PDF, email).
+> The design philosophy landed on **progressive enhancement** (HATEOAS-first), not "zero JS".
 
 ---
 

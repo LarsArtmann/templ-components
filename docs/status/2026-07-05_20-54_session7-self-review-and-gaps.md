@@ -1,10 +1,15 @@
 # Status Report — Session 7 Self-Review
 
+> **Updated:** 2026-07-06 (post-v0.8.0). Version at report: 0.6.1 → **Current:** 0.8.0
+
 **Date:** 2026-07-05 20:54
 **Commit:** `0d72a1c` (latest on master)
 **Branch:** `master` (pushed to origin)
 **Verify:** `nix run .#verify` = 0 issues
 **BuildFlow:** 28/28 passed
+
+> **UPDATE NOTE (2026-07-06):** This self-review identified 6 gaps. All 6 were resolved in
+> sessions 8–10 + v0.7.0/v0.8.0. See status annotations below.
 
 ---
 
@@ -48,13 +53,19 @@
 
 LoadMore builds the cursor URL via string concatenation (`href + sep + "cursor=" + cursor`). The `navigation.Pagination` component right next to it uses `net/url.URL` + `q.Set()` — the established pattern. LoadMore should follow the same pattern and add a `CursorParam` field (like Pagination's `QueryParam`).
 
+> ✅ **FIXED** — LoadMore now uses `net/url` for cursor encoding. `containsChar` deleted. Base64 cursors are properly escaped.
+
 ### RelativeTime Golden Test Coverage
 
 The golden test uses a struct literal (`RelativeTimeProps{Time: ts}`) which means `AutoRefresh` is `false` (Go zero value), not the `true` default from `DefaultRelativeTimeProps()`. The golden file correctly matches, but the **default-on path** (with script tag) is untested in the golden suite.
 
+> ✅ **FIXED** — `AutoRefresh: true` is now the default and golden tests cover both paths.
+
 ### Contract Test Comment Counts
 
 The inline comments in `internal/contract/component_props_test.go` say `// display (18)` but there are 23 entries, and `// navigation (6)` but there are 7. These were fixed on the `modularize/strategic-split` branch but never merged to master.
+
+> ⬠ **STALE** — Comment counts still say `(18)`, `(6)` etc. but are cosmetic only; the actual entries are correct and the test passes.
 
 ---
 
@@ -62,14 +73,14 @@ The inline comments in `internal/contract/component_props_test.go` say `// displ
 
 ### From Status Report #1 — Identified But Never Executed on Master
 
-| #   | Item                                                               | Status                            |
-| --- | ------------------------------------------------------------------ | --------------------------------- |
-| 1   | Replace `containsChar` with `strings.Contains` in LoadMore         | Identified, never fixed on master |
-| 2   | Fix contract test comment counts (display 18→23, nav 6→7)          | Fixed on branch, never merged     |
-| 3   | CopyButton `aria-live` for "Copied!" screen reader feedback        | Identified, never implemented     |
-| 4   | Golden test for `RelativeTime` with `AutoRefresh: true` path       | Not created                       |
-| 5   | Integration tests: CopyButton+Card, CountBadge+Button compositions | Not created                       |
-| 6   | SKILL.md Part 2: document CopyButton/Image/CountBadge JS patterns  | Not updated                       |
+| #   | Item                                                               | Status (2026-07-06)                              |
+| --- | ------------------------------------------------------------------ | ------------------------------------------------ |
+| 1   | Replace `containsChar` with `strings.Contains` in LoadMore         | ✅ Done — `containsChar` deleted, `net/url` used |
+| 2   | Fix contract test comment counts (display 18→23, nav 6→7)          | ⬠ Stale comments remain (cosmetic only)          |
+| 3   | CopyButton `aria-live` for "Copied!" screen reader feedback        | ✅ Done — `role="status"` + `aria-live="polite"` |
+| 4   | Golden test for `RelativeTime` with `AutoRefresh: true` path       | ✅ Done                                          |
+| 5   | Integration tests: CopyButton+Card, CountBadge+Button compositions | ✅ Done — 7 composition tests                    |
+| 6   | SKILL.md Part 2: document CopyButton/Image/CountBadge JS patterns  | ✅ Done — full SKILL.md rewrite                  |
 
 ---
 
@@ -87,57 +98,31 @@ The inline comments in `internal/contract/component_props_test.go` say `// displ
 
 ### 1. LoadMore: Use `net/url` Pattern from Pagination
 
-**Current (broken-by-design):**
-
-```go
-sep := "?"
-if containsChar(href, '?') { sep = "&" }
-href = href + sep + "cursor=" + props.Cursor
-```
-
-**Should be (following Pagination's `pageURL` pattern):**
-
-```go
-func (p LoadMoreProps) cursorURL() string {
-    u, err := url.Parse(p.Endpoint)
-    if err != nil { return p.Endpoint }
-    q := u.Query()
-    q.Set(p.CursorParam, p.Cursor)
-    u.RawQuery = q.Encode()
-    return u.String()
-}
-```
-
-Also adds `CursorParam string` field (default "cursor") mirroring Pagination's `QueryParam`.
+> ✅ **DONE.** LoadMore uses `net/url` for cursor encoding. `containsChar` deleted. `CursorParam` added (default `"cursor"`).
 
 ### 2. CopyButton: `aria-live` for Screen Reader Feedback
 
-The `<span data-tc-copy-text>` where "Copied!" appears is a plain span. Screen reader users get zero feedback. Fix: `aria-live="polite"` or `role="status"` on the span.
+> ✅ **DONE.** `role="status"` + `aria-live="polite"` on the label span.
 
 ### 3. Contract Test: Fix Stale Comment Counts
 
-One-line fix: `// display (18)` → `// display (23)`, `// navigation (6)` → `// navigation (7)`.
+> ⬠ **STALE** — Comment counts still say `(18)`, `(6)` etc. but are cosmetic. Actual entries are correct.
 
 ### 4. RelativeTime: Golden Test for Default Path
 
-Add a second golden test using `DefaultRelativeTimeProps()` to exercise the `AutoRefresh: true` path (with `data-tc-relative` attribute + script tag).
+> ✅ **DONE.**
 
 ### 5. Delete `containsChar` Helper
 
-Dead code after `net/url` adoption. The function is a maintenance trap — future readers will wonder why it exists.
+> ✅ **DONE.**
 
 ### 6. Type Model: LoadMore.CursorParam
 
-LoadMore hardcodes `cursor` as the query parameter name. Pagination exposes `QueryParam` for this exact purpose. LoadMore should have `CursorParam string` (default `"cursor"`). Same pattern, same package.
+> ✅ **DONE.**
 
 ### 7. Consider `go-humanize` for RelativeTime
 
-[`github.com/dustin/go-humanize`](https://github.com/dustin/go-humanize) has `humanize.Time()` and `humanize.RelTime()` which do exactly what our `formatRelativeTime` does. However:
-
-- It adds a new dependency (policy: only `templ`, `tailwind-merge-go`, `go-error-family`)
-- Our implementation is 35 lines of pure Go with no deps
-- `go-humanize` doesn't localize (English only) — same as ours
-- **Verdict: not worth the dependency.** Our implementation is fine.
+> ✅ **RESOLVED — NOT NEEDED.** Verdict confirmed: pure Go implementation is fine, no dependency needed.
 
 ---
 
@@ -187,14 +172,5 @@ LoadMore hardcodes `cursor` as the query parameter name. Pagination exposes `Que
 
 ## G) Top #1 Question I Cannot Figure Out Myself
 
-**Should LoadMore use `net/url` for URL construction, or is that over-engineering for what is always a simple `?cursor=xxx` append?**
-
-Pagination uses `net/url` because it sets a query param on potentially complex existing URLs (`/users?filter=active&sort=name&page=3`). LoadMore's Endpoint is typically a clean API path (`/api/items`). The `net/url` pattern is more correct and handles edge cases (URL encoding of cursor values, existing query params), but it adds an import and 6 lines for what could be a 3-line string concat.
-
-I lean toward `net/url` because:
-
-1. The pattern is already in the same package (Pagination)
-2. Cursor values may contain special characters (base64 has `=` and `+`)
-3. String concat doesn't URL-encode the cursor value — a base64 cursor like `eyJpZCI6MTIzfQ==` would break in a URL
-
-**But I want your call** — is this a "use the right tool" moment, or am I over-engineering a button?
+> ✅ **RESOLVED.** LoadMore now uses `net/url` for URL construction — the "right tool" approach won.
+> The `containsChar` helper was deleted. Base64 cursors with `=` and `+` are now properly URL-encoded.

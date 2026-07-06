@@ -1,9 +1,15 @@
 # Status Report — 2026-07-05 03:14 CEST
 
+> **Updated:** 2026-07-06 (post-v0.8.0). Version at report: 0.6.x → **Current:** 0.8.0
+
 **Session goal:** Process `docs/feedback/*` consumer feedback, build a comprehensive
 prioritized TODO list, execute every item, verify.
 
 **Done-check:** `nix run .#verify` → **All checks passed** (generate + build + test + lint, 0 issues)
+
+> **UPDATE NOTE (2026-07-06):** This was session 6. Since then, sessions 7–10 + v0.7.0/v0.8.0
+> releases landed. Most open items from this report are now resolved. Items closed since are
+> marked ✅. Current state: v0.8.0, 575 test cases, 13/13 packages green, 0 lint issues.
 
 ---
 
@@ -43,14 +49,14 @@ prioritized TODO list, execute every item, verify.
 
 ## c) NOT STARTED (should have been)
 
-| #   | What                                  | Why it matters                                                                                                                                                                            |
-| --- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **AGENTS.md update**                  | 3 new components, 2 new fields, 1 new enum, `statCardInner` sub-template — NONE documented in AGENTS.md conventions. Violates the "Aggressive Update Protocol" from the global AGENTS.md. |
-| 2   | **TODO_LIST.md update**               | None of the 13 completed items were recorded. TODO_LIST still shows the old session 5 header.                                                                                             |
-| 3   | **FEATURES.md update**                | New components (Grid, Script, SkeletonCardGrid) and new fields not in the feature inventory.                                                                                              |
-| 4   | **`examples/demo/` update**           | Demo is the canonical "how a consumer assembles a page" reference. Grid not demonstrated there.                                                                                           |
-| 5   | **`integration/composition_test.go`** | Grid composes with Card/StatCard — cross-package integration test not extended.                                                                                                           |
-| 6   | **Skill `SKILL.md` update**           | New GridCols enum, Grid component, Script helper, SkeletonCardGrid not mentioned in decision trees or conventions.                                                                        |
+| #   | What                                  | Why it matters                                                                                                                                                                            | Status (2026-07-06)                                                            |
+| --- | ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| 1   | **AGENTS.md update**                  | 3 new components, 2 new fields, 1 new enum, `statCardInner` sub-template — NONE documented in AGENTS.md conventions. Violates the "Aggressive Update Protocol" from the global AGENTS.md. | ✅ Done — AGENTS.md now documents all conventions comprehensively              |
+| 2   | **TODO_LIST.md update**               | None of the 13 completed items were recorded. TODO_LIST still shows the old session 5 header.                                                                                             | ✅ Done — maintained through v0.8.0                                            |
+| 3   | **FEATURES.md update**                | New components (Grid, Script, SkeletonCardGrid) and new fields not in the feature inventory.                                                                                              | ✅ Done — version-sync drift-guard test added                                  |
+| 4   | **`examples/demo/` update**           | Demo is the canonical "how a consumer assembles a page" reference. Grid not demonstrated there.                                                                                           | ✅ Done — demo updated with Grid + StatCard composition                        |
+| 5   | **`integration/composition_test.go`** | Grid composes with Card/StatCard — cross-package integration test not extended.                                                                                                           | ✅ Done — 7 composition integration tests added                                |
+| 6   | **Skill `SKILL.md` update**           | New GridCols enum, Grid component, Script helper, SkeletonCardGrid not mentioned in decision trees or conventions.                                                                        | ✅ Done — SKILL.md fully rewritten with use-case table + authoring conventions |
 
 ---
 
@@ -70,68 +76,54 @@ Nothing is broken — verify passes, tests pass, lint passes. But these are
 
 ## e) WHAT WE SHOULD IMPROVE
 
-1. **Update AGENTS.md immediately** — This is the #1 miss. Every convention I added (GridCols enum, statCardInner sub-template, Script helper pattern, SkeletonCardGrid) should be in the conventions section. Future sessions will be blind without it.
-2. **Add golden tests for new components** — The skill explicitly says "New components should use golden." I created 3 new components with zero golden files.
-3. **Add BDD + a11y tests** — Grid (aria-label propagation), Script (nonce always present), SkeletonCardGrid (role=status, motion-reduce) all have accessibility contracts that should be tested.
-4. **Fix the GridCols5 responsive ladder.**
-5. **Add typed HTMX fields to StatCard** (or at minimum document the `Attrs` workaround in the godoc).
-6. **Update `examples/demo/`** with a Grid + StatCard composition showing the new Href field.
-7. **Fix the `templ minmax` hint** — 30 seconds.
+> All 7 items below were resolved in sessions 7–10 + v0.7.0/v0.8.0 releases.
+
+1. ✅ **Update AGENTS.md immediately** — Done. All conventions documented and maintained through v0.8.0.
+2. ✅ **Add golden tests for new components** — Done. All new components have golden files.
+3. ✅ **Add BDD + a11y tests** — Done. Grid, Script, SkeletonCardGrid all have BDD + a11y + example tests.
+4. ✅ **Fix the GridCols5 responsive ladder.** — Done (added intermediate md breakpoint).
+5. ✅ **Add typed HTMX fields to StatCard** — Done (`HxGet`/`HxTarget`/`HxSwap` added; `HxSwap` typed as `htmx.SwapStyle` in v0.8.0).
+6. ✅ **Update `examples/demo/`** — Done. Grid + StatCard composition showcased.
+7. ✅ **Fix the `templ minmax` hint** — Done (ProgressBar uses `max(0, min(100, v))`).
 
 ---
 
 ## f) Up to 25 things to do next
 
-| #   | Task                                                                                                                                                | Impact | Effort |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 1   | Update AGENTS.md with new components, fields, enums, sub-templates                                                                                  | High   | Low    |
-| 2   | Update TODO_LIST.md with completed session 6 items                                                                                                  | Med    | Low    |
-| 3   | Update FEATURES.md with Grid, Script, SkeletonCardGrid                                                                                              | Med    | Low    |
-| 4   | Add golden test for `display.Grid` (all 6 GridCols variants)                                                                                        | Med    | Low    |
-| 5   | Add golden test for `layout.Script`                                                                                                                 | Low    | Low    |
-| 6   | Add golden test for `feedback.SkeletonCardGrid`                                                                                                     | Low    | Low    |
-| 7   | Add BDD test for Grid (user sees responsive grid)                                                                                                   | Med    | Low    |
-| 8   | Add BDD test for StatCard.Href (user clicks stat card → navigates)                                                                                  | Med    | Low    |
-| 9   | Add a11y test for Grid (aria-label propagation, role)                                                                                               | Med    | Low    |
-| 10  | Add a11y test for Script (nonce always emitted)                                                                                                     | Med    | Low    |
-| 11  | Add a11y test for SkeletonCardGrid (role=status, motion-reduce)                                                                                     | Med    | Low    |
-| 12  | Add godoc ExampleGrid, ExampleScript, ExampleSkeletonCardGrid                                                                                       | Low    | Low    |
-| 13  | Fix `GridCols5` responsive ladder (`sm:grid-cols-3 lg:grid-cols-5`)                                                                                 | Med    | Low    |
-| 14  | Add typed HTMX fields to StatCard (HxGet, HxTarget, HxSwap) or document Attrs workaround                                                            | High   | Med    |
-| 15  | Fix `templ minmax` diagnostic in `feedback/loading.templ:217`                                                                                       | Low    | Low    |
-| 16  | Add Grid + StatCard composition to `examples/demo/`                                                                                                 | Med    | Low    |
-| 17  | Add Grid to `integration/composition_test.go`                                                                                                       | Med    | Low    |
-| 18  | Update `feedback` README section count (12 → 13 components)                                                                                         | Low    | Low    |
-| 19  | Update skill `SKILL.md` with GridCols enum in decision tree + Script helper                                                                         | Med    | Low    |
-| 20  | Process the 2 new untracked feedback files (DiscordSync, swettyswipper)                                                                             | High   | Med    |
-| 21  | Consider `GridProps.Gap` typed enum (gap-2/gap-4/gap-6/gap-8)                                                                                       | Low    | Low    |
-| 22  | Consider `Card.Header` / `Card.Body` slot fields (SEC feedback — partially already met via Footer/HeaderAction/children but not explicit Body slot) | Med    | Med    |
-| 23  | Verify README component count (76) by actual grep across packages                                                                                   | Low    | Low    |
-| 24  | Consider `layout.Stylesheet(nonce, href, attrs)` companion to `layout.Script` for CSP-safe `<link>` tags                                            | Low    | Low    |
-| 25  | Cut v0.7.0 release once items 1–14 are done                                                                                                         | High   | Low    |
+| #   | Task                                                                                     | Impact | Effort | Status (2026-07-06)                                            |
+| --- | ---------------------------------------------------------------------------------------- | ------ | ------ | -------------------------------------------------------------- |
+| 1   | Update AGENTS.md with new components, fields, enums, sub-templates                       | High   | Low    | ✅ Done                                                        |
+| 2   | Update TODO_LIST.md with completed session 6 items                                       | Med    | Low    | ✅ Done                                                        |
+| 3   | Update FEATURES.md with Grid, Script, SkeletonCardGrid                                   | Med    | Low    | ✅ Done                                                        |
+| 4   | Add golden test for `display.Grid` (all 6 GridCols variants)                             | Med    | Low    | ✅ Done                                                        |
+| 5   | Add golden test for `layout.Script`                                                      | Low    | Low    | ✅ Done                                                        |
+| 6   | Add golden test for `feedback.SkeletonCardGrid`                                          | Low    | Low    | ✅ Done                                                        |
+| 7   | Add BDD test for Grid (user sees responsive grid)                                        | Med    | Low    | ✅ Done                                                        |
+| 8   | Add BDD test for StatCard.Href (user clicks stat card → navigates)                       | Med    | Low    | ✅ Done                                                        |
+| 9   | Add a11y test for Grid (aria-label propagation, role)                                    | Med    | Low    | ✅ Done                                                        |
+| 10  | Add a11y test for Script (nonce always emitted)                                          | Med    | Low    | ✅ Done (CSP nonce-presence test covers all script components) |
+| 11  | Add a11y test for SkeletonCardGrid (role=status, motion-reduce)                          | Med    | Low    | ✅ Done                                                        |
+| 12  | Add godoc ExampleGrid, ExampleScript, ExampleSkeletonCardGrid                            | Low    | Low    | ✅ Done                                                        |
+| 13  | Fix `GridCols5` responsive ladder (`sm:grid-cols-3 lg:grid-cols-5`)                      | Med    | Low    | ✅ Done                                                        |
+| 14  | Add typed HTMX fields to StatCard (HxGet, HxTarget, HxSwap) or document Attrs workaround | High   | Med    | ✅ Done (HxSwap typed as htmx.SwapStyle in v0.8.0)             |
+| 15  | Fix `templ minmax` diagnostic in `feedback/loading.templ:217`                            | Low    | Low    | ✅ Done                                                        |
+| 16  | Add Grid + StatCard composition to `examples/demo/`                                      | Med    | Low    | ✅ Done                                                        |
+| 17  | Add Grid to `integration/composition_test.go`                                            | Med    | Low    | ✅ Done                                                        |
+| 18  | Update `feedback` README section count (12 → 13 components)                              | Low    | Low    | ✅ Done                                                        |
+| 19  | Update skill `SKILL.md` with GridCols enum in decision tree + Script helper              | Med    | Low    | ✅ Done (full rewrite)                                         |
+| 20  | Process the 2 new untracked feedback files (DiscordSync, swettyswipper)                  | High   | Med    | ✅ Done (session 7 implemented all feedback)                   |
+| 21  | Consider `GridProps.Gap` typed enum (gap-2/gap-4/gap-6/gap-8)                            | Low    | Low    | ⬜ Not done — low priority                                     |
+| 22  | Consider `Card.Header` / `Card.Body` slot fields (SEC feedback)                          | Med    | Med    | ✅ Done (Card.Body slot shipped)                               |
+| 23  | Verify README component count (76) by actual grep across packages                        | Low    | Low    | ✅ Done (82 components verified)                               |
+| 24  | Consider `layout.Stylesheet(nonce, href, attrs)` companion to `layout.Script`            | Low    | Low    | ✅ Done                                                        |
+| 25  | Cut v0.7.0 release once items 1–14 are done                                              | High   | Low    | ✅ Done (v0.7.0 + v0.8.0 released)                             |
+
+**Scorecard:** 23 of 25 complete (92%).
 
 ---
 
 ## g) Top #1 question I cannot figure out myself
 
-**Should `StatCard.Href` support typed HTMX attributes (`HxGet`, `HxTarget`,
-`HxSwap`), or should the library keep HTMX attributes on Button only and let
-StatCard consumers use `Attrs`?**
-
-Overview's actual use case was:
-
-```go
-<a href="/?activity=active" class="block" hx-get="/projects?activity=active" hx-target="#content-area">
-    @tc.StatCard(tc.StatCardProps{Value: "42", Label: "Active"})
-</a>
-```
-
-My `Href` field renders a plain `<a>` — correct for progressive-enhancement
-navigation (no-JS fallback via `href`). But the HTMX enhancement path requires
-`Attrs`. Button has 8 typed Hx fields. Adding the same to StatCard would be
-ergonomically consistent but bloats the props struct for a feature most
-StatCard consumers won't use.
-
-This is a **design-philosophy decision** (typed HTMX everywhere vs. Attrs escape
-hatch) that affects the whole library's API surface — not something I should
-decide unilaterally.
+> ✅ **RESOLVED.** StatCard got typed HTMX fields (`HxGet`/`HxTarget`/`HxSwap`) in session 7.
+> In v0.8.0, `HxSwap` was further typed from `string` to `htmx.SwapStyle` for compile-time safety.
+> The design philosophy question is settled: typed HTMX everywhere for components that support it.

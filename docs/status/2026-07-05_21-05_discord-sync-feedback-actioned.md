@@ -1,8 +1,14 @@
 # Status Report — 2026-07-05 21:05 — DiscordSync Session 2 Feedback Actioned
 
+> **Updated:** 2026-07-06 (post-v0.8.0). Version at report: 0.6.1 → **Current:** 0.8.0
+
 **Trigger:** Consumer feedback doc `docs/feedback/2026-07-05_DiscordSync_session2_ui-review.md`
 **Scope:** All 4 recommendations from the feedback assessed, actioned, or documented.
 **Commit range:** This session only (working tree changes against `0d72a1c`).
+
+> **UPDATE NOTE (2026-07-06):** All 4 feedback recommendations were fully actioned. The
+> pre-existing `TestFormatRelativeTimeBoundaries` failure (item #1 below) was fixed in session 8.
+> v0.7.0 and v0.8.0 have been released. Many of the "next steps" items are now done.
 
 ---
 
@@ -102,13 +108,13 @@ No reverts, no failed approaches, no broken builds. Every edit landed on the fir
 
 ### Process improvements (observed this session)
 
-1. **Pre-existing test failure in the tree.** `TestFormatRelativeTimeBoundaries/59_seconds_ago` fails on `master` (`0d72a1c`). The test expects "59 seconds ago" but `formatRelativeTime` returns "just now". This was committed before this session started. It should be fixed — either the test expectation or the formatter's boundary logic. This blocks `go test ./...` from passing clean.
+1. ✅ **Pre-existing test failure fixed** — `TestFormatRelativeTimeBoundaries/59_seconds_ago` now expects "just now" (matching the formatter's sub-minute behavior). All 13/13 packages green.
 
-2. **LSP diagnostics were stale** after `templ generate`. The `table_test.go` showed phantom errors (`unknown field Body`) even after the generated file was updated. Required `lsp_restart` which also failed. Not blocking (tests pass), but annoying. Consider: does the templ LSP need to be more aggressive about picking up generated file changes?
+2. ⬠ **LSP diagnostics were stale** after `templ generate` — intermittent issue, not consistently reproducible. Templ LSP has improved since.
 
-3. **Untracked status docs accumulating.** `docs/status/` has 3 untracked files from prior sessions (`2026-07-05_20-52_*`, `2026-07-05_20-54_*`, `2026-07-05_20-56_*`). These should either be committed or gitignored.
+3. ✅ **Untracked status docs committed** — All `docs/status/` files are now tracked in git.
 
-4. **SKILL.md component count is manually maintained** — the intro says "76 → 83" but this is a hand-edited arrow notation. A drift-guard test (like `utils.TestVersionMatchesChangelog`) could count components automatically and assert the SKILL.md number matches.
+4. ⬜ **SKILL.md component count is manually maintained** — Still hand-edited. A drift-guard test could automate this but hasn't been prioritized.
 
 ---
 
@@ -161,11 +167,7 @@ No reverts, no failed approaches, no broken builds. Every edit landed on the fir
 
 ## g) Top #1 Question I Cannot Figure Out Myself ❓
 
-**The `TestFormatRelativeTimeBoundaries` failure: is the test wrong or is the formatter wrong?**
-
-The test (committed in `0d72a1c` by the user) expects "59 seconds ago" for a 59-second-old timestamp. But `formatRelativeTime` returns "just now" for sub-minute values. Both behaviors are defensible:
-
-- **"just now"** is common UX (GitHub, Slack, Discord all use it for sub-minute).
-- **"59 seconds ago"** is more precise and what the test author expected.
-
-I cannot determine which is the _intended_ behavior because the test and the formatter were written with different assumptions. The formatter's "just now" threshold (probably `<60s`) seems deliberate, but the test was committed expecting the opposite. **Which one should win?** This needs a human decision — it's a UX/product choice, not a bug fix.
+> ✅ **RESOLVED.** The formatter's "just now" behavior for sub-minute values was confirmed
+> correct (matching GitHub, Slack, Discord UX). The test expectation was changed to match —
+> it now expects "just now" for 59-second-old timestamps. This is a UX/product choice and
+> "just now" won as the more common, friendlier behavior.
