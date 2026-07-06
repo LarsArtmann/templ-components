@@ -67,8 +67,8 @@ func (k OverlayKind) componentName() string {
 }
 
 // overlayShellProps parameterizes the shared accessibility shell used by
-// Modal and Drawer. It centralizes the outer overlay div, backdrop, and
-// per-instance script so the two components stay consistent.
+// Modal and Drawer. It centralizes the outer overlay div, backdrop, panel
+// body, and per-instance script so the two components stay consistent.
 type overlayShellProps struct {
 	id         string
 	open       bool
@@ -78,6 +78,9 @@ type overlayShellProps struct {
 	outerClass string
 	nonce      string
 	cfg        overlayPanelConfig
+	panelClass string           // full Tailwind class list for the panel div
+	panelKVs   templ.CSSClasses // conditional classes (open/close transforms, etc.)
+	attrs      templ.Attributes // consumer extra HTML attributes from BaseProps.Attrs
 }
 
 // jsClassArgs converts a slice of CSS class names into comma-separated,

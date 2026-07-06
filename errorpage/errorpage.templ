@@ -1,9 +1,6 @@
 package errorpage
 
-import (
-	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/utils"
-)
+import "github.com/larsartmann/templ-components/utils"
 
 templ ErrorPage(props ErrorPageProps) {
 	{{ style := lookupFamilyStyle(props.Family) }}
@@ -20,14 +17,7 @@ templ ErrorPage(props ErrorPageProps) {
 		<div class="w-full max-w-lg">
 			<div class={ "rounded-xl border shadow-xs overflow-hidden", style.Border, style.BG }>
 				<div class="px-6 py-8 sm:px-10">
-					<div class="flex items-start gap-4">
-						<div class={ "flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg", style.AccentBG }>
-							@familyIcon(style)
-						</div>
-						<div class="flex-1 min-w-0">
-							@errorBody(style, props.Family, props.Code, props.Title, "h1", "mt-2 text-lg font-semibold text-gray-900 dark:text-white", props.Message, "mt-2 text-sm text-gray-600 dark:text-gray-400")
-						</div>
-					</div>
+					@errorHeader("gap-4", utils.Class("flex-shrink-0 flex h-10 w-10 items-center justify-center rounded-lg", style.AccentBG), style, props.Family, props.Code, props.Title, "h1", "mt-2 text-lg font-semibold text-gray-900 dark:text-white", props.Message, "mt-2 text-sm text-gray-600 dark:text-gray-400")
 					if props.Why != "" {
 						<div class="mt-5 ms-14">
 							<p class="text-sm text-gray-500 dark:text-gray-400">{ props.Why }</p>
@@ -41,8 +31,7 @@ templ ErrorPage(props ErrorPageProps) {
 									href={ templ.SafeURL(props.WayOutHref) }
 									class={ "inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton }
 								>
-									<span>{ utils.Ternary(props.WayOut != "", props.WayOut, "Go back") }</span>
-									@icons.Icon(icons.ArrowRight, "h-4 w-4")
+									@actionLinkBody(utils.Ternary(props.WayOut != "", props.WayOut, "Go back"))
 								</a>
 							} else if props.WayOut != "" {
 								<button
@@ -63,13 +52,6 @@ templ ErrorPage(props ErrorPageProps) {
 		</div>
 	</div>
 	if props.WayOut != "" && props.WayOutHref == "" {
-		<script nonce={ props.Nonce }>
-			if (!window.tcGoBackAttached) {
-				window.tcGoBackAttached = true;
-				document.addEventListener('click', function(e) {
-					if (e.target.closest('[data-tc-go-back]')) history.back();
-				});
-			}
-		</script>
+		@goBackScript(props.Nonce)
 	}
 }

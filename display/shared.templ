@@ -31,7 +31,9 @@ templ overlayShell(p overlayShellProps) {
 		}
 	>
 		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" data-tc-close={ string(p.kind) }></div>
-		{ children... }
+		@overlayPanel(p.id+"-panel", p.id+"-title", p.panelClass, p.panelKVs, p.open, p.title, p.kind, p.attrs) {
+			{ children... }
+		}
 	</div>
 	@overlayScriptComponent(p.nonce, p.id, p.kind.componentName(), p.cfg)
 }

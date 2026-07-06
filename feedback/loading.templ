@@ -183,16 +183,26 @@ templ skeletonBody(variant SkeletonVariant) {
 	}
 }
 
+// skeletonContainer renders the shared aria shell for skeleton groups:
+// a single `role="status"` + `aria-busy="true"` wrapper with pulse animation.
+// Both SkeletonGroup and SkeletonCardGrid compose through it to avoid
+// duplicating the accessibility annotations.
+templ skeletonContainer(layoutClass string, label string) {
+	<div class={ layoutClass, "animate-pulse motion-reduce:animate-none" } aria-busy="true" role="status" aria-label={ label }>
+		{ children... }
+	</div>
+}
+
 // SkeletonGroup renders multiple skeleton placeholders under a single
 // role="status" announcement to avoid redundant screen-reader reads.
 //
 //	@feedback.SkeletonGroup([]string{"title", "text", "text", "text"})
 templ SkeletonGroup(variants []SkeletonVariant) {
-	<div class="space-y-3 animate-pulse motion-reduce:animate-none" aria-busy="true" role="status" aria-label="Loading content">
+	@skeletonContainer("space-y-3", "Loading content") {
 		for _, v := range variants {
 			@skeletonBody(v)
 		}
-	</div>
+	}
 }
 
 // SkeletonCardGrid renders a responsive grid of N skeleton cards — the common
@@ -210,9 +220,9 @@ templ SkeletonCardGrid(count int) {
 			n = 1
 		}
 	}}
-	<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 animate-pulse motion-reduce:animate-none" aria-busy="true" role="status" aria-label="Loading cards">
+	@skeletonContainer("grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4", "Loading cards") {
 		for range n {
 			@skeletonBody(SkeletonCard)
 		}
-	</div>
+	}
 }

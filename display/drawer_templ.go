@@ -16,9 +16,9 @@ import "github.com/larsartmann/templ-components/utils"
 //	   <p>Drawer content</p>
 //	}
 //
-// The panel body (id, inert, attrs, dialogHeader, content slot) is rendered
-// through @overlayPanel; only the transition classes and overlay-shell config
-// differ from Modal. overlayShell owns the shared a11y shell + JS.
+// overlayShell owns the shared a11y shell + JS + panel body. Drawer only
+// supplies the panel classes (translate-x transitions, size, side) and
+// the overlay-shell config (side-aware close animation).
 func Drawer(props DrawerProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -41,7 +41,6 @@ func Drawer(props DrawerProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		id := utils.EnsureID("drawer", props.ID)
-		panelClass := utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform", transitionTransform, "duration-200", drawerSizeClass(props.Size), props.Class)
 		templ_7745c5c3_Var2 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -54,35 +53,29 @@ func Drawer(props DrawerProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = overlayPanel(
-				id+"-panel",
-				id+"-title",
-				panelClass,
-				templ.Classes(
-					templ.KV("start-0", props.Side == DrawerLeft),
-					templ.KV("end-0", props.Side == DrawerRight),
-					templ.KV("translate-x-0", props.Open),
-					templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
-					templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight),
-				),
-				props.Open,
-				props.Title,
-				OverlayDrawer,
-				props.Attrs,
-			).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = templ_7745c5c3_Var1.Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
 		templ_7745c5c3_Err = overlayShell(overlayShellProps{
-			id:        id,
-			open:      props.Open,
-			title:     props.Title,
-			ariaLabel: props.AriaLabel,
-			kind:      OverlayDrawer,
-			nonce:     props.Nonce,
-			cfg:       drawerPanelConfig(props.Side),
+			id:         id,
+			open:       props.Open,
+			title:      props.Title,
+			ariaLabel:  props.AriaLabel,
+			kind:       OverlayDrawer,
+			nonce:      props.Nonce,
+			cfg:        drawerPanelConfig(props.Side),
+			panelClass: utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform", transitionTransform, "duration-200", drawerSizeClass(props.Size), props.Class),
+			panelKVs: templ.Classes(
+				templ.KV("start-0", props.Side == DrawerLeft),
+				templ.KV("end-0", props.Side == DrawerRight),
+				templ.KV("translate-x-0", props.Open),
+				templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
+				templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight),
+			),
+			attrs: props.Attrs,
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

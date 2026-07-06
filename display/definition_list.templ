@@ -11,6 +11,16 @@ type DefinitionItem struct {
 	DetailComponent templ.Component
 }
 
+// definitionDetailContent renders the DetailComponent-or-Detail fallback
+// shared by DefinitionList and DefinitionGrid.
+templ definitionDetailContent(item DefinitionItem) {
+	if item.DetailComponent != nil {
+		@item.DetailComponent
+	} else {
+		{ item.Detail }
+	}
+}
+
 // DefinitionListProps configures a two-column term/detail list.
 type DefinitionListProps struct {
 	utils.BaseProps
@@ -46,11 +56,7 @@ templ DefinitionList(props DefinitionListProps) {
 		for _, item := range props.Items {
 			<dt class="font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap">{ item.Term }</dt>
 			<dd class="text-gray-900 dark:text-white break-words m-0">
-				if item.DetailComponent != nil {
-					@item.DetailComponent
-				} else {
-					{ item.Detail }
-				}
+				@definitionDetailContent(item)
 			</dd>
 		}
 	</dl>

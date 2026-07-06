@@ -16,9 +16,9 @@ import "github.com/larsartmann/templ-components/utils"
 //	   <p>Are you sure?</p>
 //	}
 //
-// The panel body (id, inert, attrs, dialogHeader, content slot) is rendered
-// through @overlayPanel; only the transition classes and overlay-shell config
-// differ from Drawer. overlayShell owns the shared a11y shell + JS.
+// overlayShell owns the shared a11y shell + JS + panel body. Modal only
+// supplies the panel classes (scale/opacity transitions, size) and the
+// overlay-shell config (centered outerClass, scale close animation).
 func Modal(props ModalProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -41,7 +41,6 @@ func Modal(props ModalProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		id := utils.EnsureID("modal", props.ID)
-		panelClass := utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform", transitionNormal, modalSizeClass(props.Size), props.Class)
 		templ_7745c5c3_Var2 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -54,19 +53,7 @@ func Modal(props ModalProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = overlayPanel(
-				id+"-panel",
-				id+"-title",
-				panelClass,
-				templ.Classes(
-					templ.KV("scale-100 opacity-100", props.Open),
-					templ.KV("scale-95 opacity-0", !props.Open),
-				),
-				props.Open,
-				props.Title,
-				OverlayModal,
-				props.Attrs,
-			).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = templ_7745c5c3_Var1.Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -81,6 +68,12 @@ func Modal(props ModalProps) templ.Component {
 			outerClass: "flex items-center justify-center p-4",
 			nonce:      props.Nonce,
 			cfg:        modalPanelConfig(),
+			panelClass: utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform", transitionNormal, modalSizeClass(props.Size), props.Class),
+			panelKVs: templ.Classes(
+				templ.KV("scale-100 opacity-100", props.Open),
+				templ.KV("scale-95 opacity-0", !props.Open),
+			),
+			attrs: props.Attrs,
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

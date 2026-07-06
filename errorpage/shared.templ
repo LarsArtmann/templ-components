@@ -34,6 +34,33 @@ templ errorBody(style familyVisualStyle, family Family, code Code, title, titleT
 	}
 }
 
+// errorHeader renders the complete icon + content header for error display
+// components. Both ErrorDetail (compact) and ErrorPage (full) call this,
+// passing their variant-specific gap, icon-container class, and text density
+// parameters. The card.templ StatCard uses a different pattern (<dl> + different
+// alignment) and is not served by this template.
+templ errorHeader(
+	gap string,
+	iconContainerClass string,
+	style familyVisualStyle,
+	family Family,
+	code Code,
+	title string,
+	titleTag string,
+	titleClass string,
+	message string,
+	messageClass string,
+) {
+	<div class={ "flex items-start", gap }>
+		<div class={ iconContainerClass }>
+			@familyIcon(style)
+		</div>
+		<div class="flex-1 min-w-0">
+			@errorBody(style, family, code, title, titleTag, titleClass, message, messageClass)
+		</div>
+	</div>
+}
+
 templ fixCard(fix string) {
 	<div class="rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2">
 		<p class="text-xs text-gray-600 dark:text-gray-400">
@@ -112,4 +139,25 @@ templ diagnosticSection(fix string, context []ContextPair, causes []CauseItem, c
 			@causeList(causes, causeLabel)
 		</div>
 	}
+}
+
+// goBackScript renders the singleton history.back() delegation script shared
+// by ErrorPage (WayOut button) and NotFound404 (ShowGoBack button). Both
+// components use [data-tc-go-back] as the click target.
+templ goBackScript(nonce string) {
+	<script nonce={ nonce }>
+		if (!window.tcGoBackAttached) {
+			window.tcGoBackAttached = true;
+			document.addEventListener('click', function(e) {
+				if (e.target.closest('[data-tc-go-back]')) history.back();
+			});
+		}
+	</script>
+}
+
+// actionLinkBody renders the shared <span>text</span> + ArrowRight icon body
+// used inside action <a> elements by ErrorPage and NotFound404.
+templ actionLinkBody(text string) {
+	<span>{ text }</span>
+	@icons.Icon(icons.ArrowRight, "h-4 w-4")
 }

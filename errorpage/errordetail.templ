@@ -5,9 +5,8 @@ import "github.com/larsartmann/templ-components/utils"
 templ ErrorDetail(props ErrorDetailProps) {
 	// ErrorDetail renders a compact inline error card for a single classified error.
 	//
-	// The header scaffold (icon + badge + title + message) is intentionally not shared
-	// with ErrorPage: shared logic is already extracted (familyIcon, codeAndFamilyBadge,
-	// diagnosticSection) and the remaining layout differs by visual density.
+	// The header (icon + badge + title + message) is rendered through @errorHeader
+	// in compact mode; ErrorPage reuses the same template in full mode.
 	{{ style := lookupFamilyStyle(props.Family) }}
 	<div
 		if props.ID != "" {
@@ -21,14 +20,7 @@ templ ErrorDetail(props ErrorDetailProps) {
 		{ props.Attrs... }
 	>
 		<div class="px-4 py-3 sm:px-5">
-			<div class="flex items-start gap-3">
-				<div class="flex-shrink-0 mt-0.5">
-					@familyIcon(style)
-				</div>
-				<div class="flex-1 min-w-0">
-					@errorBody(style, props.Family, props.Code, props.Title, "h3", "mt-1.5 text-sm font-semibold text-gray-900 dark:text-white", props.Message, utils.Class("mt-1 text-sm", style.Text))
-				</div>
-			</div>
+			@errorHeader("gap-3", "flex-shrink-0 mt-0.5", style, props.Family, props.Code, props.Title, "h3", "mt-1.5 text-sm font-semibold text-gray-900 dark:text-white", props.Message, utils.Class("mt-1 text-sm", style.Text))
 			@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-3 ms-8", "Caused by")
 		</div>
 		@timestampFooter(props.Timestamp, "px-4 py-2 sm:px-5")

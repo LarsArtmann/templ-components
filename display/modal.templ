@@ -8,12 +8,11 @@ import "github.com/larsartmann/templ-components/utils"
 //	   <p>Are you sure?</p>
 //	}
 //
-// The panel body (id, inert, attrs, dialogHeader, content slot) is rendered
-// through @overlayPanel; only the transition classes and overlay-shell config
-// differ from Drawer. overlayShell owns the shared a11y shell + JS.
+// overlayShell owns the shared a11y shell + JS + panel body. Modal only
+// supplies the panel classes (scale/opacity transitions, size) and the
+// overlay-shell config (centered outerClass, scale close animation).
 templ Modal(props ModalProps) {
 	{{ id := utils.EnsureID("modal", props.ID) }}
-	{{ panelClass := utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform", transitionNormal, modalSizeClass(props.Size), props.Class) }}
 	@overlayShell(overlayShellProps{
 		id:         id,
 		open:       props.Open,
@@ -23,19 +22,13 @@ templ Modal(props ModalProps) {
 		outerClass: "flex items-center justify-center p-4",
 		nonce:      props.Nonce,
 		cfg:        modalPanelConfig(),
+		panelClass: utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform", transitionNormal, modalSizeClass(props.Size), props.Class),
+		panelKVs: templ.Classes(
+			templ.KV("scale-100 opacity-100", props.Open),
+			templ.KV("scale-95 opacity-0", !props.Open),
+		),
+		attrs: props.Attrs,
 	}) {
-		@overlayPanel(
-			id+"-panel",
-			id+"-title",
-			panelClass,
-			templ.Classes(
-				templ.KV("scale-100 opacity-100", props.Open),
-				templ.KV("scale-95 opacity-0", !props.Open),
-			),
-			props.Open,
-			props.Title,
-			OverlayModal,
-			props.Attrs,
-		)
+		{ children... }
 	}
 }
