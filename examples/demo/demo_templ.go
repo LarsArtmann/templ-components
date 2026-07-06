@@ -959,7 +959,13 @@ func demoContent() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = errorpage.NotFound404(errorpage.DefaultNotFound404Props()).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = errorpage.NotFound404(errorpage.NotFound404Props{
+			Numeral:    "404",
+			Title:      "Page not found",
+			Message:    "The page you're looking for doesn't exist or has been moved.",
+			GoHomeHref: "/",
+			ShowGoBack: false,
+		}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1014,7 +1020,7 @@ func demoSection(title string) templ.Component {
 		var templ_7745c5c3_Var18 string
 		templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(title)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/demo.templ`, Line: 309, Col: 10}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/demo.templ`, Line: 315, Col: 10}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 		if templ_7745c5c3_Err != nil {

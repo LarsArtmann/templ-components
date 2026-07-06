@@ -72,6 +72,25 @@ func TestCopyButtonBehavior(t *testing.T) {
 		utils.AssertContains(t, output, `aria-live="polite"`)
 		utils.AssertContains(t, output, `role="status"`)
 	})
+
+	t.Run("renders anchor when Href is set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CopyButton(CopyButtonProps{
+			Text: "snippet",
+			Href: "/snippets/42",
+		}))
+		utils.AssertContains(t, output, `<a`)
+		utils.AssertContains(t, output, `href="/snippets/42"`)
+		utils.AssertContains(t, output, `data-tc-copy="snippet"`)
+		utils.AssertNotContains(t, output, `<button`)
+	})
+
+	t.Run("renders button when Href is empty", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CopyButton(CopyButtonProps{Text: "x"}))
+		utils.AssertContains(t, output, `<button`)
+		utils.AssertNotContains(t, output, `<a`)
+	})
 }
 
 // --- RelativeTime Behavior ---
@@ -237,5 +256,19 @@ func TestImageBehavior(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `data-tc-img-fallback="/fallback.jpg"`)
 		utils.AssertContains(t, output, "tcImageFallbackAttached")
+	})
+
+	t.Run("rounded-full when Rounded is true", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Image(ImageProps{Src: "/avatar.jpg", Rounded: true}))
+		utils.AssertContains(t, output, "rounded-full")
+		utils.AssertNotContains(t, output, "rounded-md")
+	})
+
+	t.Run("rounded-md by default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Image(ImageProps{Src: "/x.jpg"}))
+		utils.AssertContains(t, output, "rounded-md")
+		utils.AssertNotContains(t, output, "rounded-full")
 	})
 }

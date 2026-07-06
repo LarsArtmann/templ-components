@@ -293,7 +293,13 @@ templ demoContent() {
 		</div>
 		@demoSection("404 Page Preview")
 		<div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-			@errorpage.NotFound404(errorpage.DefaultNotFound404Props())
+			@errorpage.NotFound404(errorpage.NotFound404Props{
+				Numeral:    "404",
+				Title:      "Page not found",
+				Message:    "The page you're looking for doesn't exist or has been moved.",
+				GoHomeHref: "/",
+				ShowGoBack: false,
+			})
 		</div>
 		@demoSection("Table Body Slot")
 		@display.Table(display.TableProps{

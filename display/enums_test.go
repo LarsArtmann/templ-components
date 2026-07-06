@@ -23,6 +23,10 @@ func TestIsValidEnums(t *testing.T) {
 		// GridCols
 		{"GridCols 1", func() bool { return GridColsIsValid(GridCols1) }, true},
 		{"GridCols invalid", func() bool { return GridColsIsValid(GridCols("bogus")) }, false},
+		// GridGap
+		{"GridGap SM", func() bool { return GridGapIsValid(GridGapSM) }, true},
+		{"GridGap MD", func() bool { return GridGapIsValid(GridGapMD) }, true},
+		{"GridGap invalid", func() bool { return GridGapIsValid(GridGap("bogus")) }, false},
 		// TrendDirection
 		{"TrendDirection Up", func() bool { return TrendDirectionIsValid(TrendUp) }, true},
 		{"TrendDirection invalid", func() bool { return TrendDirectionIsValid(TrendDirection("bogus")) }, false},

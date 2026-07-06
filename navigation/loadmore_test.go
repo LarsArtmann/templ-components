@@ -59,6 +59,24 @@ func TestLoadMoreBehavior(t *testing.T) {
 		utils.AssertContains(t, output, `hx-get="/api/items"`)
 		utils.AssertNotContains(t, output, "cursor=")
 	})
+
+	t.Run("adds hx-trigger=revealed when InfiniteScroll is true", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadMore(LoadMoreProps{
+			Endpoint:       "/api/items",
+			Cursor:         "next",
+			InfiniteScroll: true,
+		}))
+		utils.AssertContains(t, output, `hx-trigger="revealed"`)
+	})
+
+	t.Run("omits hx-trigger by default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadMore(LoadMoreProps{
+			Endpoint: "/api/items",
+		}))
+		utils.AssertNotContains(t, output, "hx-trigger")
+	})
 }
 
 func TestLoadMoreA11y(t *testing.T) {
