@@ -197,6 +197,13 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - LoadMore URL: uses `net/url` for cursor encoding — base64 cursors with `=`/`+` are properly escaped. Physical-property `containsChar` helper deleted.
 - RTL/i18n: all Tailwind classes use logical properties (`ms-`/`me-`/`start-0`/`end-0`/`ps-`/`pe-`/`text-start`/`border-s-`/`border-e-`). Components automatically mirror in RTL contexts when consumer sets `dir="rtl"`.
 - CSP nonce test: `integration/csp_nonce_test.go` renders every inline-script component and asserts every `<script>` tag has `nonce=`. Prevents CSP regressions.
+- GridProps.Gap: `GridGap` typed enum (`GridGapSM`/`MD`/`LG`/`XL` → `gap-2`/`4`/`6`/`8`) with `gridGapLookup` map + `GridGapIsValid`. Gap is a separate field from `Cols` — the lookup maps no longer include hardcoded `gap-4`. `DefinitionGrid` passes `gridGapClass(GridGapDefault)` explicitly.
+- CopyButton.Href: `CopyButtonProps.Href` renders `<a>` instead of `<button>` when set. Link still copies to clipboard via the singleton script. Same `data-tc-copy` attribute on both variants.
+- Image.Rounded: `ImageProps.Rounded bool` adds `rounded-full` when true (for avatars/icons), defaults to `rounded-md`. Convenience shortcut — consumers wanting other rounding use `props.Class`.
+- LoadMore.InfiniteScroll: `LoadMoreProps.InfiniteScroll bool` adds `hx-trigger="revealed"` for auto-load on scroll. Defaults to false (click-to-load).
+- NotFound404.LinksTitle: `NotFound404Props.LinksTitle string` — configurable heading for the quick-links section. Defaults to "Popular pages".
+- WriteNotFound404: `errorpage.WriteNotFound404(w, r, props, nonce)` — convenience HTTP handler that renders `NotFound404` with a 404 status code. Mirrors `WriteErrorPage` pattern.
+- ROADMAP.md and CONTRIBUTING.md: both created. ROADMAP tracks v0.x/v1.0/v2.0+ direction. CONTRIBUTING has Nix setup, conventions table, release flow.
 
 ## Release Convention: One-Commit Release
 

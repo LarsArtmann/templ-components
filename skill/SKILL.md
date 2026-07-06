@@ -56,7 +56,7 @@ Don't know what to look for? Find your page type:
 | `Card`             | `Card(props CardProps)`                     | Bordered card with title, subtitle, footer, header action, 4 padding sizes                |
 | `SimpleCard`       | `SimpleCard(props SimpleCardProps)`         | Minimal card — children only, no header/footer                                            |
 | `StatCard`         | `StatCard(props StatCardProps)`             | Dashboard metric card with value, label, change, trend, icon, optional `Href` link        |
-| `Grid`             | `Grid(props GridProps)`                     | Responsive grid container with typed `GridCols` enum (1–6)                                |
+| `Grid`             | `Grid(props GridProps)`                     | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerResponsive`            |
 | `Badge`            | `Badge(props BadgeProps)`                   | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                       |
 | `StatusBadge`      | `StatusBadge(status string)`                | Auto-maps ~20 status strings to badge types                                               |
 | `Button`           | `Button(props ButtonProps)`                 | Button or link button — variants, sizes, icons, HTMX attrs                                |
@@ -73,11 +73,11 @@ Don't know what to look for? Find your page type:
 | `PageHeader`       | `PageHeader(props PageHeaderProps)`         | Page title block — title, subtitle, breadcrumb, action slots                              |
 | `DefinitionList`   | `DefinitionList(props DefinitionListProps)` | Two-column `<dl>` key/value list                                                          |
 | `ListNote`         | `ListNote(props ListNoteProps)`             | "Showing N of M" truncation notice                                                        |
-| `CopyButton`       | `CopyButton(props CopyButtonProps)`         | Clipboard copy button — CSP-safe, "Copied!" feedback                                      |
+| `CopyButton`       | `CopyButton(props CopyButtonProps)`         | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant     |
 | `RelativeTime`     | `RelativeTime(props RelativeTimeProps)`     | `<time datetime>` with relative text ("2 hours ago")                                      |
 | `CountBadge`       | `CountBadge(props CountBadgeProps)`         | Icon + notification count overlay — overflow "N+"                                         |
 | `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards                                                      |
-| `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback                                                |
+| `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback, optional `Rounded` for circular               |
 
 #### `forms` — 16 components
 
@@ -130,19 +130,19 @@ Don't know what to look for? Find your page type:
 
 #### `navigation` — 11 components
 
-| Component          | Signature                                               | One-liner                                                  |
-| ------------------ | ------------------------------------------------------- | ---------------------------------------------------------- |
-| `Nav`              | `Nav(props NavProps)`                                   | Full nav bar — brand, links, right items slot, mobile menu |
-| `SimpleNav`        | `SimpleNav(props SimpleNavProps)`                       | Simplified nav — text brand, links, `RightItems` slot      |
-| `NavLink`          | `NavLink(props NavLinkProps, currentPath string)`       | Single nav link with active detection                      |
-| `MobileNavLink`    | `MobileNavLink(props NavLinkProps, currentPath string)` | Mobile menu link                                           |
-| `MobileMenu`       | `MobileMenu(links, currentPath, nonce, menuID)`         | Responsive mobile menu                                     |
-| `MobileMenuToggle` | `MobileMenuToggle(show bool, menuID string)`            | Hamburger toggle button                                    |
-| `Pagination`       | `Pagination(props PaginationProps)`                     | Page-number pagination — ellipsis, prev/next, SEO rel      |
-| `Breadcrumbs`      | `Breadcrumbs(props BreadcrumbsProps)`                   | Breadcrumb trail — separator, JSON-LD                      |
-| `SidebarNav`       | `SidebarNav(props SidebarNavProps)`                     | Vertical sidebar — brand, icon+label items, footer slot    |
-| `LoadMore`         | `LoadMore(props LoadMoreProps)`                         | Cursor-based "Load more" button — hx-get, hx-swap          |
-| `Footer`           | `Footer(brandText string)`                              | Simple footer with copyright                               |
+| Component          | Signature                                               | One-liner                                                                    |
+| ------------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `Nav`              | `Nav(props NavProps)`                                   | Full nav bar — brand, links, right items slot, mobile menu                   |
+| `SimpleNav`        | `SimpleNav(props SimpleNavProps)`                       | Simplified nav — text brand, links, `RightItems` slot                        |
+| `NavLink`          | `NavLink(props NavLinkProps, currentPath string)`       | Single nav link with active detection                                        |
+| `MobileNavLink`    | `MobileNavLink(props NavLinkProps, currentPath string)` | Mobile menu link                                                             |
+| `MobileMenu`       | `MobileMenu(links, currentPath, nonce, menuID)`         | Responsive mobile menu                                                       |
+| `MobileMenuToggle` | `MobileMenuToggle(show bool, menuID string)`            | Hamburger toggle button                                                      |
+| `Pagination`       | `Pagination(props PaginationProps)`                     | Page-number pagination — ellipsis, prev/next, SEO rel                        |
+| `Breadcrumbs`      | `Breadcrumbs(props BreadcrumbsProps)`                   | Breadcrumb trail — separator, JSON-LD                                        |
+| `SidebarNav`       | `SidebarNav(props SidebarNavProps)`                     | Vertical sidebar — brand, icon+label items, footer slot                      |
+| `LoadMore`         | `LoadMore(props LoadMoreProps)`                         | Cursor-based "Load more" button — hx-get, hx-swap, optional `InfiniteScroll` |
+| `Footer`           | `Footer(brandText string)`                              | Simple footer with copyright                                                 |
 
 #### `htmx` — 7 components
 
@@ -158,16 +158,16 @@ Don't know what to look for? Find your page type:
 
 #### `errorpage` — 4 components + 6 constructors + handler
 
-| Component / Function           | Signature                             | One-liner                                        |
-| ------------------------------ | ------------------------------------- | ------------------------------------------------ |
-| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display                          |
-| `NotFound404`                  | `NotFound404(props NotFound404Props)` | Dedicated 404 page — hero numeral, search, links |
-| `ErrorDetail`                  | `ErrorDetail(props ErrorDetailProps)` | Inline error card                                |
-| `ErrorAlert`                   | `ErrorAlert(props ErrorAlertProps)`   | Family-aware alert                               |
-| `ErrorHandler`                 | `ErrorHandler(err, cfg) http.Handler` | go-error-family aware HTTP handler               |
-| `WriteError`                   | `WriteError(w, r, err, nonce)`        | One-call error page from any handler             |
-| `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/code/why/fix from error           |
-| `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family        |
+| Component / Function           | Signature                             | One-liner                                                                   |
+| ------------------------------ | ------------------------------------- | --------------------------------------------------------------------------- |
+| `ErrorPage`                    | `ErrorPage(props ErrorPageProps)`     | Full-page error display                                                     |
+| `NotFound404`                  | `NotFound404(props NotFound404Props)` | Dedicated 404 page — hero numeral, search, links, configurable `LinksTitle` |
+| `ErrorDetail`                  | `ErrorDetail(props ErrorDetailProps)` | Inline error card                                                           |
+| `ErrorAlert`                   | `ErrorAlert(props ErrorAlertProps)`   | Family-aware alert                                                          |
+| `ErrorHandler`                 | `ErrorHandler(err, cfg) http.Handler` | go-error-family aware HTTP handler                                          |
+| `WriteError`                   | `WriteError(w, r, err, nonce)`        | One-call error page from any handler                                        |
+| `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/code/why/fix from error                                      |
+| `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family                                   |
 
 #### `icons` — 101 icons + 2 functions
 

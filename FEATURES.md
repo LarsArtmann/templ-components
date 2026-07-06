@@ -88,11 +88,11 @@ type BaseProps struct {
 | `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots                                                               |
 | `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup                                                             |
 | `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                                                                          |
-| `CopyButton`       | FULLY_FUNCTIONAL | Clipboard copy button           | CSP-safe singleton JS, "Copied!" feedback, clipboard icon                                                          |
+| `CopyButton`       | FULLY_FUNCTIONAL | Clipboard copy button           | CSP-safe singleton JS, "Copied!" feedback, clipboard icon, optional `Href` variant (renders `<a>`)                 |
 | `RelativeTime`     | FULLY_FUNCTIONAL | Relative timestamp              | `<time datetime>` with "2 hours ago", absolute title on hover                                                      |
 | `CountBadge`       | FULLY_FUNCTIONAL | Notification count overlay      | Absolute-positioned badge, overflow "N+", aria-hidden decorative                                                   |
 | `DefinitionGrid`   | FULLY_FUNCTIONAL | Responsive key/value grid       | Term-detail pairs in SimpleCard tiles, composes through Grid                                                       |
-| `Image`            | FULLY_FUNCTIONAL | Lazy-loaded image               | `loading=lazy` default, width/height for CLS, CSP-safe fallback via event capture                                  |
+| `Image`            | FULLY_FUNCTIONAL | Lazy-loaded image               | `loading=lazy` default, width/height for CLS, CSP-safe fallback, optional `Rounded` for circular                   |
 
 ### Enums
 
@@ -124,12 +124,12 @@ _None — all previously reported issues resolved._
 
 ### Components
 
-| Component     | Status           | Description              | Key Features                                                            |
-| ------------- | ---------------- | ------------------------ | ----------------------------------------------------------------------- |
-| `ErrorPage`   | FULLY_FUNCTIONAL | Full-page error view     | Wix-style What/Why/Fix/WayOut, 5 families, context, cause chain, action |
-| `NotFound404` | FULLY_FUNCTIONAL | Dedicated 404 page       | Gradient numeral hero, search form, quick-links grid, go-home/go-back   |
-| `ErrorDetail` | FULLY_FUNCTIONAL | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix     |
-| `ErrorAlert`  | FULLY_FUNCTIONAL | Family-aware alert       | 5 distinct color schemes, dismiss, fix suggestion, family badge         |
+| Component     | Status           | Description              | Key Features                                                                                                                  |
+| ------------- | ---------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| `ErrorPage`   | FULLY_FUNCTIONAL | Full-page error view     | Wix-style What/Why/Fix/WayOut, 5 families, context, cause chain, action                                                       |
+| `NotFound404` | FULLY_FUNCTIONAL | Dedicated 404 page       | Gradient numeral hero, search form, quick-links grid (configurable `LinksTitle`), `WriteNotFound404` handler, go-home/go-back |
+| `ErrorDetail` | FULLY_FUNCTIONAL | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix                                                           |
+| `ErrorAlert`  | FULLY_FUNCTIONAL | Family-aware alert       | 5 distinct color schemes, dismiss, fix suggestion, family badge                                                               |
 
 ### Enums
 
@@ -343,19 +343,19 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component          | Status           | Description               | Key Features                                                       |
-| ------------------ | ---------------- | ------------------------- | ------------------------------------------------------------------ |
-| `Nav`              | FULLY_FUNCTIONAL | Responsive navigation bar | Brand, links, right items, sticky option, mobile menu              |
-| `SimpleNav`        | FULLY_FUNCTIONAL | Simplified nav            | Text brand, sticky by default                                      |
-| `NavLink`          | FULLY_FUNCTIONAL | Desktop nav link          | Active state styling via currentPath                               |
-| `MobileNavLink`    | FULLY_FUNCTIONAL | Mobile nav link           | Border-left active indicator                                       |
-| `Breadcrumbs`      | FULLY_FUNCTIONAL | Breadcrumb navigation     | Chevron separators, active state                                   |
-| `Pagination`       | FULLY_FUNCTIONAL | Page navigation           | Mobile/desktop layouts, prev/next arrows, page range, query param  |
-| `MobileMenu`       | FULLY_FUNCTIONAL | Collapsible mobile menu   | JS toggle, nonce-based CSP                                         |
-| `MobileMenuToggle` | FULLY_FUNCTIONAL | Hamburger button          | Conditional visibility                                             |
-| `Footer`           | FULLY_FUNCTIONAL | Simple footer             | Copyright with dynamic year                                        |
-| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav      | Brand/footer slots, icons, active-route detection                  |
-| `LoadMore`         | FULLY_FUNCTIONAL | Cursor pagination button  | hx-get + hx-swap outerHTML, cursor as query param, centered layout |
+| Component          | Status           | Description               | Key Features                                                                                                          |
+| ------------------ | ---------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `Nav`              | FULLY_FUNCTIONAL | Responsive navigation bar | Brand, links, right items, sticky option, mobile menu                                                                 |
+| `SimpleNav`        | FULLY_FUNCTIONAL | Simplified nav            | Text brand, sticky by default                                                                                         |
+| `NavLink`          | FULLY_FUNCTIONAL | Desktop nav link          | Active state styling via currentPath                                                                                  |
+| `MobileNavLink`    | FULLY_FUNCTIONAL | Mobile nav link           | Border-left active indicator                                                                                          |
+| `Breadcrumbs`      | FULLY_FUNCTIONAL | Breadcrumb navigation     | Chevron separators, active state                                                                                      |
+| `Pagination`       | FULLY_FUNCTIONAL | Page navigation           | Mobile/desktop layouts, prev/next arrows, page range, query param                                                     |
+| `MobileMenu`       | FULLY_FUNCTIONAL | Collapsible mobile menu   | JS toggle, nonce-based CSP                                                                                            |
+| `MobileMenuToggle` | FULLY_FUNCTIONAL | Hamburger button          | Conditional visibility                                                                                                |
+| `Footer`           | FULLY_FUNCTIONAL | Simple footer             | Copyright with dynamic year                                                                                           |
+| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav      | Brand/footer slots, icons, active-route detection                                                                     |
+| `LoadMore`         | FULLY_FUNCTIONAL | Cursor pagination button  | hx-get + hx-swap outerHTML, cursor as query param, centered layout, optional `InfiniteScroll` (hx-trigger="revealed") |
 
 ### Known Issues
 
