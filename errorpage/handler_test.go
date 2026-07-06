@@ -641,3 +641,40 @@ func TestErrorHandlerEdgeCases(t *testing.T) {
 		}
 	})
 }
+
+func TestWriteNotFound404Handler(t *testing.T) {
+	t.Parallel()
+	w := httptest.NewRecorder()
+	r := httptest.NewRequestWithContext(context.Background(), "GET", "/missing", nil)
+	WriteNotFound404(w, r, DefaultNotFound404Props(), "test-nonce")
+	if w.Code != http.StatusNotFound {
+		t.Errorf("status = %d, want %d", w.Code, http.StatusNotFound)
+	}
+	body := w.Body.String()
+	if !strings.Contains(body, "404") {
+		t.Error("expected 404 numeral in body")
+	}
+	if !strings.Contains(body, "Page not found") {
+		t.Error("expected title in body")
+	}
+}
+
+func TestNotFound404LinksTitle(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, NotFound404(NotFound404Props{
+		Title:      "Custom",
+		Message:    "Custom message",
+		GoHomeHref: "/",
+		LinksTitle: "Quick links",
+		Links:      DefaultNotFoundLinks(),
+	}))
+	utils.AssertContains(t, output, "Quick links")
+}
+
+func TestNotFound404DefaultLinksTitle(t *testing.T) {
+	t.Parallel()
+	props := DefaultNotFound404Props()
+	props.Links = DefaultNotFoundLinks()
+	output := utils.Render(t, NotFound404(props))
+	utils.AssertContains(t, output, "Popular pages")
+}

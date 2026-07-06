@@ -131,7 +131,30 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 	_, _ = w.Write(buf)
 }
 
-// writeJSONError writes a JSON error response.
+// WriteNotFound404 writes a NotFound404 page to an http.ResponseWriter with a
+// 404 status code. Convenience wrapper for common 404 handler usage.
+//
+//	func main() {
+//	    mux := http.NewServeMux()
+//	    mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
+//	        errorpage.WriteNotFound404(w, r, errorpage.DefaultNotFound404Props(), "")
+//	    })
+//	}
+func WriteNotFound404(w http.ResponseWriter, r *http.Request, props NotFound404Props, nonce string) {
+	if nonce != "" {
+		props.Nonce = nonce
+	}
+	buf, renderErr := renderToBuffer(r.Context(), NotFound404(props)) //nolint:contextcheck // intentional passthrough
+	if renderErr != nil {
+		slog.Error("not found 404 page render failed", "error", renderErr)
+		writeFallbackError(w, http.StatusNotFound)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusNotFound)
+	_, _ = w.Write(buf)
+}
+
 func writeJSONError(w http.ResponseWriter, statusCode int, props ErrorPageProps) {
 	resp := errorResponse{ //nolint:exhaustruct // Context set conditionally below
 		Family:  string(props.Family),

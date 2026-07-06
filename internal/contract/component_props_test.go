@@ -26,7 +26,7 @@ import (
 // interface contract breakage for consumers using generic wrappers.
 func componentTypes() []any {
 	return []any{
-		// display (18)
+		// display (23)
 		display.BadgeProps{},
 		display.AvatarProps{},
 		display.TooltipProps{},
@@ -74,7 +74,7 @@ func componentTypes() []any {
 		feedback.ProgressBarProps{},
 		feedback.StepIndicatorProps{},
 
-		// navigation (6)
+		// navigation (7)
 		navigation.NavProps{},
 		navigation.SimpleNavProps{},
 		navigation.NavLinkProps{},
