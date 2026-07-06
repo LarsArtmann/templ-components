@@ -1,11 +1,23 @@
 # Status Report — Session 11: Comprehensive Hardening + JS Deep Research
 
+> **Updated:** 2026-07-06 (post-v0.8.0 final review). **Current version:** 0.8.0
+
 > **Date:** 2026-07-06 01:36
 > **Session scope:** Motion-reduce a11y sweep, combobox focusout handler, motion constant wiring, pagination `rel="canonical"`, JS deep research guide, container query recipe, motion design reference, icon RTL audit, semantic token ADR
 > **Build:** ✅ Passing · **Tests:** 13/13 packages ✅ · **Lint:** 0 issues ✅
 > **Version:** v0.8.0 (released — tag `v0.8.0`, commit `2d2d127`)
 > **Commits this session:** 8 (`a0dbae7` → `2d2d127`)
 > **Files changed:** 50 files, +1,279 insertions, -220 deletions
+
+> **UPDATE NOTE (2026-07-06):**
+> **FACTUAL CORRECTION:** Item #8 below claims "`transitionNormal` replaces inline string in
+> Accordion panel" — this is **incorrect**. The BuildFlow-generated `utils.Class(transitionNormal, templ.KV(...))`
+> call was reverted because `templ.KV` can't be passed to `utils.Class`. The accordion now uses
+> **inline** `motion-reduce:transition-none motion-reduce:duration-0` classes, not the shared constant.
+> Only **3** components use shared motion constants (Modal, Drawer, CopyButton), not 4.
+>
+> The "Top #1 Question" about motion constant adoption timing remains open — 3 of 22
+> transition-bearing components use shared constants.
 
 ---
 
@@ -21,13 +33,13 @@
 
 ### Code Quality
 
-| #   | Item                                                   | Details                                                                                                                                                                          | Commit    |
-| --- | ------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| 4   | **StatCardProps.HxSwap typed**                         | Changed from raw `string` to `htmx.SwapStyle` — consumers now pass typed constants instead of string literals. Cross-package type safety.                                        | `cc88d41` |
-| 5   | **SortDirectionIsValid**                               | Added to complete the enum validation set (was the only enum missing IsValid).                                                                                                   | `cc88d41` |
-| 6   | **ButtonHTMLType typed map**                           | Converted from `map[X]bool` to `map[X]string` + `utils.Lookup`, matching all other enums.                                                                                        | `cc88d41` |
-| 7   | **Feedback/errorpage lookup consolidation**            | Replaced `lookupFeedbackStyle()` generic + `feedbackIconName()` helper with direct `utils.Lookup()` calls. Same behavior, less custom code. Same for `FamilyStatusCode`.         | `d3c8b88` |
-| 8   | **Motion constants wired into CopyButton + Accordion** | `transitionColors` replaces inline string in CopyButton. `transitionNormal` replaces inline string in Accordion panel. Previously only Modal + Drawer used the shared constants. | `de8171c` |
+| #   | Item                                        | Details                                                                                                                                                                                                                                                                                  | Commit    |
+| --- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| 4   | **StatCardProps.HxSwap typed**              | Changed from raw `string` to `htmx.SwapStyle` — consumers now pass typed constants instead of string literals. Cross-package type safety.                                                                                                                                                | `cc88d41` |
+| 5   | **SortDirectionIsValid**                    | Added to complete the enum validation set (was the only enum missing IsValid).                                                                                                                                                                                                           | `cc88d41` |
+| 6   | **ButtonHTMLType typed map**                | Converted from `map[X]bool` to `map[X]string` + `utils.Lookup`, matching all other enums.                                                                                                                                                                                                | `cc88d41` |
+| 7   | **Feedback/errorpage lookup consolidation** | Replaced `lookupFeedbackStyle()` generic + `feedbackIconName()` helper with direct `utils.Lookup()` calls. Same behavior, less custom code. Same for `FamilyStatusCode`.                                                                                                                 | `d3c8b88` |
+| 8   | **Motion constants wired into CopyButton**  | `transitionColors` replaces inline string in CopyButton. Accordion uses inline `motion-reduce:*` classes (the `transitionNormal` constant approach was reverted — `templ.KV` can't be mixed with `utils.Class`). **3 components** total use shared constants: Modal, Drawer, CopyButton. | `de8171c` |
 
 ### SEO
 
@@ -60,12 +72,12 @@
 
 ## b) PARTIALLY DONE 🟡
 
-| #   | Item                         | What's done                                                                                                          | What's missing                                                                                                                                                                                                                                    |
-| --- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Motion constant adoption** | 4 of ~20 transition-bearing components use shared constants (Modal, Drawer, CopyButton, Accordion)                   | ~16 components still use inline timing strings (Toast, Nav links, SidebarNav, ThemeToggle, StepIndicator, MobileMenu, EmptyState, FileInput, ErrorPage buttons, Dropdown, Tabs, Tooltip, ProgressBar, etc.). Full migration is a separate sprint. |
-| 2   | **RTL support**              | All CSS properties migrated to logical (`ms-`, `me-`, `ps-`, `pe-`, `start-`, `end-`). 0 physical properties remain. | 5 directional icons need mirroring (audit documented). Keyboard navigation in Dropdown/Tabs maps ArrowLeft/Right without checking `dir` attribute. No `dir="rtl"` golden rendering tests.                                                         |
-| 3   | **Container query adoption** | Grid supports `ContainerResponsive` with full test coverage                                                          | Only Grid has container query support. Other components (Card, SidebarNav) could benefit. No consumer-facing recipe existed until this session.                                                                                                   |
-| 4   | **JS documentation**         | 472-line guide covers all patterns                                                                                   | No ADR for "why singleton-guard instead of Alpine.js" — the ADR 0005 exists but predates the comprehensive guide. The guide could be cross-linked from README.                                                                                    |
+| #   | Item                         | What's done                                                                                                                           | What's missing (Status 2026-07-06)                                                                                                                                                                                                                                                                  |
+| --- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Motion constant adoption** | 3 of 22 transition-bearing components use shared constants (Modal, Drawer, CopyButton). **Accordion reverted** — uses inline classes. | 19 components still use inline timing strings (Toast, Nav links, SidebarNav, ThemeToggle, StepIndicator, MobileMenu, EmptyState, FileInput, ErrorPage buttons, Dropdown, Tabs, Tooltip, ProgressBar, Accordion, etc.). Full migration is a separate sprint.                                         |
+| 2   | **RTL support**              | All CSS properties migrated to logical (`ms-`, `me-`, `ps-`, `pe-`, `start-`, `end-`). 0 physical properties remain.                  | 5 directional icons need mirroring (audit documented). Keyboard navigation in Dropdown/Tabs maps ArrowLeft/Right without checking `dir` attribute. No `dir="rtl"` golden rendering tests. (Note: `display/rtl_test.go` exists but only verifies logical property presence, not full RTL rendering.) |
+| 3   | **Container query adoption** | Grid supports `ContainerResponsive` with full test coverage + recipe doc.                                                             | Only Grid has container query support. Other components (Card, SidebarNav) could benefit.                                                                                                                                                                                                           |
+| 4   | **JS documentation**         | 472-line guide covers all patterns                                                                                                    | No ADR for "why singleton-guard instead of Alpine.js" — the ADR 0005 exists but predates the comprehensive guide. The guide could be cross-linked from README.                                                                                                                                      |
 
 ---
 
@@ -98,7 +110,7 @@
 
 ## e) WHAT WE SHOULD IMPROVE 🔧
 
-1. **Wire motion constants into ALL transition-bearing components** — 4 of ~20 components use shared constants. Partial adoption creates inconsistency. Either commit fully or remove the constants (current state is the worst of both worlds).
+1. **Wire motion constants into ALL transition-bearing components** — 3 of 22 components use shared constants. Partial adoption creates inconsistency. Either commit fully or remove the constants (current state is the worst of both worlds). Note: Accordion can't use the constant via `utils.Class` due to `templ.KV` incompatibility — would need a different pattern or inline approach.
 
 2. **Add `dir="rtl"` rendering tests** — logical properties are in place but zero tests verify RTL rendering output. A golden test on 2-3 key components (Card, Drawer, Nav) would prove the migration.
 
@@ -150,44 +162,34 @@ Sorted by impact × effort × customer value.
 
 ## g) Top #1 Question I Cannot Figure Out Myself
 
-**Should the motion constant adoption be completed now (mechanical, 90min) or
-deferred until a broader "design system" sprint that also addresses semantic
-tokens, easing curves, and view transitions?**
-
-Context:
-
-- 4 of ~20 components use the shared constants. The rest use inline strings.
-- The inline strings are semantically identical to the constants — this is about
-  consistency and maintainability, not behavior.
-- Completing the adoption means touching ~16 `.templ` files and regenerating
-  golden files for each.
-- But if we're planning a semantic token migration (256 color refs) and a view
-  transitions adoption, those will ALSO touch every component file.
-- Doing motion constants now means two rounds of golden file churn instead of one.
-- Deferring means living with inconsistency until the bigger sprint — which could
-  be months away.
-
-Should I do the mechanical 90-minute migration now, or batch it with the larger
-design system work?
+> ⚠️ **STILL OPEN.** The motion constant adoption question remains unresolved.
+> Current state: 3 of 22 transition-bearing components use shared constants (Modal, Drawer,
+> CopyButton). Accordion can't use `transitionNormal` via `utils.Class` due to `templ.KV`
+> incompatibility — needs a different approach.
+>
+> **Recommendation:** Defer to a broader "design system" sprint that also addresses semantic
+> tokens (256 color refs), easing curves, and view transitions. Doing motion constants now
+> means two rounds of golden file churn instead of one. The inconsistency is cosmetic — the
+> inline strings are semantically identical to the constants.
 
 ---
 
 ## Session Metrics
 
-| Metric                                   | Value                                                                                           |
-| ---------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| Commits                                  | 8                                                                                               |
-| Files changed                            | 50                                                                                              |
-| Lines added                              | +1,279                                                                                          |
-| Lines removed                            | -220                                                                                            |
-| Motion-reduce gaps fixed                 | 7 → 0 remaining                                                                                 |
-| Components using shared motion constants | 4 (was 2)                                                                                       |
-| New documentation files                  | 6 (JS guide, motion ref, container query recipe, RTL audit, semantic token ADR, hardening plan) |
-| New tests                                | 3 (FEATURES.md drift-guard, table golden, StatCard golden update)                               |
-| Typed enums with IsValid                 | 33 (complete)                                                                                   |
-| Packages below 70% coverage              | 0                                                                                               |
-| Test packages green                      | 13/13                                                                                           |
-| Lint issues                              | 0                                                                                               |
-| Version released                         | v0.8.0                                                                                          |
-| JS guide lines                           | 472                                                                                             |
-| Total library size                       | ~24,000 lines Go/templ                                                                          |
+| Metric                                   | Value                                                                                              |
+| ---------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| Commits                                  | 8                                                                                                  |
+| Files changed                            | 50                                                                                                 |
+| Lines added                              | +1,279                                                                                             |
+| Lines removed                            | -220                                                                                               |
+| Motion-reduce gaps fixed                 | 7 → 0 remaining                                                                                    |
+| Components using shared motion constants | 3 (was 2) — Modal, Drawer, CopyButton. Accordion uses inline classes (constant approach reverted). |
+| New documentation files                  | 6 (JS guide, motion ref, container query recipe, RTL audit, semantic token ADR, hardening plan)    |
+| New tests                                | 3 (FEATURES.md drift-guard, table golden, StatCard golden update)                                  |
+| Typed enums with IsValid                 | 33 (complete)                                                                                      |
+| Packages below 70% coverage              | 0                                                                                                  |
+| Test packages green                      | 13/13                                                                                              |
+| Lint issues                              | 0                                                                                                  |
+| Version released                         | v0.8.0                                                                                             |
+| JS guide lines                           | 472                                                                                                |
+| Total library size                       | ~24,000 lines Go/templ                                                                             |

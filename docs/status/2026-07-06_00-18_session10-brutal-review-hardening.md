@@ -1,10 +1,17 @@
 # Status Report — Session 10: Brutal Self-Review & Comprehensive Hardening
 
-**Date:** 2026-07-06 00:18  
-**Version:** 0.7.0 (unreleased — changes target v0.8.0)  
-**Commits:** 7 (ced952b → 7778f95)  
-**Files changed:** 40 files, +1032 insertions, -171 deletions  
+> **Updated:** 2026-07-06 (post-v0.8.0 final review). Version at report: 0.7.0 → **Current:** 0.8.0
+
+**Date:** 2026-07-06 00:18
+**Version:** 0.7.0 (unreleased — changes target v0.8.0) → **Released as v0.8.0**
+**Commits:** 7 (ced952b → 7778f95)
+**Files changed:** 40 files, +1032 insertions, -171 deletions
 **Tests:** 2,192 test cases, 13/13 packages green, 0 lint issues
+
+> **UPDATE NOTE (2026-07-06):** This session's work was released as v0.8.0 (commit `2d2d127`).
+> All "Not Started" items (#1–3: release, CHANGELOG, version bump) were completed in the
+> v0.8.0 release session. The combobox `focusout` handler (partially done below) was shipped
+> in `de8171c`. The TableHeader golden test was added in `cc88d41`. See status annotations below.
 
 ---
 
@@ -73,26 +80,26 @@ The brutal truth that surfaced: **the previous sessions lied in TODO_LIST.md** �
 
 ## B) PARTIALLY DONE 🟡
 
-| Item              | What's done                                                                                                                                               | What's missing                                                                                                                                                              |
-| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Combobox WAI-ARIA | aria-selected, Tab cleanup, ArrowDown/Up/Home/End/Enter/Escape all present. Type-ahead handled by input filter (correct for filterable combobox pattern). | **No `focusout`/`blur` handler** — on blur via mouse click outside, `aria-activedescendant` may not clear if the outside-click handler doesn't fire before blur. Edge case. |
-| Coverage          | All packages ≥70%.                                                                                                                                        | Several packages still have room: errorpage 73%, feedback 72.5%, forms 72.3%, navigation 72.6% — all could reach 75%+ with targeted tests.                                  |
-| IsValid system    | All 30 closed-set enums have IsValid methods + tests.                                                                                                     | `layout.HTMXVersion` enum has no IsValid (open-set, changes per release — arguably not needed).                                                                             |
-| TableHeader       | TypedHeaders with aria-sort + indicators fully working + tested.                                                                                          | No golden test file for the sortable table variant yet (only assertion tests).                                                                                              |
+| Item              | What's done                                                                                                                                               | What's missing (Status 2026-07-06)                                                                                                      |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Combobox WAI-ARIA | aria-selected, Tab cleanup, ArrowDown/Up/Home/End/Enter/Escape all present. Type-ahead handled by input filter (correct for filterable combobox pattern). | ✅ **`focusout` handler shipped** (`de8171c`) — listbox closes and `aria-activedescendant` clears on blur. All WAI-ARIA gaps closed.    |
+| Coverage          | All packages ≥70%.                                                                                                                                        | Unchanged: errorpage 72.9%, feedback 72.3%, forms 72.3%, navigation 72.6%. Could reach 75%+ with targeted tests.                        |
+| IsValid system    | All 30 closed-set enums have IsValid methods + tests.                                                                                                     | `layout.HTMXVersion` enum has no IsValid (open-set, changes per release — arguably not needed). Unchanged.                              |
+| TableHeader       | TypedHeaders with aria-sort + indicators fully working + tested.                                                                                          | ✅ **Golden test added** (`cc88d41`) — `TestGoldenTableSortableHeaders` renders 3-column table with aria-sort, sort links, ↑ indicator. |
 
 ---
 
 ## C) NOT STARTED ⬜
 
-| #   | Item                                                                                                                                          | Priority | Effort |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------ |
-| 1   | **v0.8.0 release** — all changes target this version but no release commit/tag cut yet                                                        | High     | 10m    |
-| 2   | **CHANGELOG [Unreleased] entries** — none of the 7 commits this session added CHANGELOG entries                                               | High     | 10m    |
-| 3   | **`utils.Version` bump to 0.8.0** — still says 0.7.0                                                                                          | High     | 2m     |
-| 4   | **Sortable DataTable component** — TableHeader provides the type, but no high-level DataTable component that auto-manages sort state          | Medium   | 30m    |
-| 5   | **Filter dropdown component** — recipe documents the manual pattern; no purpose-built component exists                                        | Medium   | 45m    |
-| 6   | **`forms.InlineForm`** vs `Form.Inline` — the Inline field is done but a dedicated InlineForm constructor function might be more discoverable | Low      | 5m     |
-| 7   | **Demo app showcase** — new TableHeader and Form.Inline features not yet showcased in examples/demo                                           | Low      | 15m    |
+| #   | Item                                                                                                                                          | Status (2026-07-06)                                 |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| 1   | **v0.8.0 release** — all changes target this version but no release commit/tag cut yet                                                        | ✅ **Done** — v0.8.0 released (`2d2d127`)           |
+| 2   | **CHANGELOG [Unreleased] entries** — none of the 7 commits this session added CHANGELOG entries                                               | ✅ **Done** — all entries added, released in v0.8.0 |
+| 3   | **`utils.Version` bump to 0.8.0** — still says 0.7.0                                                                                          | ✅ **Done** — `utils.Version = "0.8.0"`             |
+| 4   | **Sortable DataTable component** — TableHeader provides the type, but no high-level DataTable component that auto-manages sort state          | ⬜ Not started                                      |
+| 5   | **Filter dropdown component** — recipe documents the manual pattern; no purpose-built component exists                                        | ⬜ Not started                                      |
+| 6   | **`forms.InlineForm`** vs `Form.Inline` — the Inline field is done but a dedicated InlineForm constructor function might be more discoverable | ⬜ Not started (low priority)                       |
+| 7   | **Demo app showcase** — new TableHeader and Form.Inline features not yet showcased in examples/demo                                           | ⬜ Not started                                      |
 
 ---
 
@@ -120,9 +127,9 @@ The brutal truth that surfaced: **the previous sessions lied in TODO_LIST.md** �
 
 ### Code Quality Improvements Still Open
 
-5. **`feedbackIconName()` and `FamilyStatusCode()` use manual map+fallback** instead of `utils.Lookup()` — cosmetic DRY issue, low priority.
-6. **`StatCardProps.HxSwap` uses raw `string`** instead of `htmx.SwapStyle` — cross-package type safety gap.
-7. **`ButtonHTMLType` uses `map[X]bool`** instead of `map[X]string` + `utils.Lookup` — different pattern from all other enums.
+5. ✅ **`feedbackIconName()` and `FamilyStatusCode()` use manual map+fallback** — **Fixed** (`d3c8b88`): both replaced with `utils.Lookup()` calls.
+6. ✅ **`StatCardProps.HxSwap` uses raw `string`** — **Fixed** (`cc88d41`): typed as `htmx.SwapStyle`.
+7. ✅ **`ButtonHTMLType` uses `map[X]bool`** — **Fixed** (`cc88d41`): converted to `map[X]string` + `utils.Lookup`.
 
 ---
 
@@ -130,49 +137,44 @@ The brutal truth that surfaced: **the previous sessions lied in TODO_LIST.md** �
 
 Sorted by impact × effort × customer value.
 
-| #   | Task                                                                                                        | Impact   | Effort | Customer Value |
-| --- | ----------------------------------------------------------------------------------------------------------- | -------- | ------ | -------------- |
-| 1   | **Cut v0.8.0 release** — bump version, CHANGELOG, tag, push                                                 | Critical | 15m    | High           |
-| 2   | **Add CHANGELOG [Unreleased] entries** for all 7 commits this session                                       | High     | 10m    | Medium         |
-| 3   | **Add FEATURES.md version-sync test** (like TestVersionMatchesChangelog)                                    | High     | 10m    | Low            |
-| 4   | **Demo app: showcase TableHeader sortable columns**                                                         | Medium   | 15m    | High           |
-| 5   | **Demo app: showcase Form.Inline**                                                                          | Medium   | 10m    | Medium         |
-| 6   | **Golden test for TableHeader sortable variant**                                                            | Medium   | 10m    | Low            |
-| 7   | **StatCardProps.HxSwap: change `string` → `htmx.SwapStyle`**                                                | Medium   | 10m    | Medium         |
-| 8   | **ButtonHTMLType: convert `map[X]bool` → `map[X]string` + Lookup**                                          | Low      | 10m    | Low            |
-| 9   | **`feedbackIconName` + `FamilyStatusCode`: use `utils.Lookup`**                                             | Low      | 5m     | None           |
-| 10  | **Combobox `focusout` handler** — clear aria-activedescendant on blur                                       | Medium   | 10m    | Medium         |
-| 11  | **Sortable DataTable component** — high-level wrapper around TableHeader                                    | High     | 45m    | High           |
-| 12  | **Filter dropdown component** — purpose-built for filter bars                                               | Medium   | 45m    | High           |
-| 13  | **Move test helpers to `internal/testutil/`** — deferred to v1.0 but plan it                                | Medium   | 2h     | Low            |
-| 14  | **Add `Validate() error` to props structs** — v1.0 scope, but design now                                    | Medium   | 4h     | Medium         |
-| 15  | **errorpage coverage to 80%+** — handler edge paths, write failures                                         | Medium   | 30m    | Low            |
-| 15  | **feedback coverage to 80%+** — StepIndicator branches, LoadingOverlay                                      | Medium   | 30m    | Low            |
-| 16  | **forms coverage to 80%+** — Combobox rendering branches, RadioGroup                                        | Medium   | 30m    | Low            |
-| 17  | **navigation coverage to 80%+** — SidebarNav, Breadcrumbs JSON-LD                                           | Low      | 30m    | Low            |
-| 18  | **AGENTS.md update** — document TableHeader, Form.Inline, typed-map convention, IsValid-test convention     | Medium   | 15m    | Low            |
-| 19  | **Icons-only adoption doc update** — mention new icons added since v0.7.0                                   | Low      | 5m     | Low            |
-| 20  | **awesome-templ PR submission** — component count updated, submit the prepared entry                        | Low      | 5m     | Medium         |
-| 21  | **templ.guide listing submission** — prepared but never submitted                                           | Low      | 5m     | Medium         |
-| 22  | **Tooltip: add `aria-describedby` via `props.ID`** — investigate if CSS-only tooltip needs JS for full a11y | Medium   | 30m    | Medium         |
-| 23  | **Pagination: add `rel="canonical"` for page 1** — SEO improvement                                          | Low      | 10m    | Medium         |
-| 24  | **Consolidate `feedbackIconName` into `utils.Lookup` call** — reduces custom helper code                    | Low      | 5m     | None           |
-| 25  | **Add `TableHeader.IsValid` / `SortDirection.IsValid`** — complete the enum validation set                  | Low      | 5m     | Low            |
+| #   | Task                                                                                                        | Status (2026-07-06)     |
+| --- | ----------------------------------------------------------------------------------------------------------- | ----------------------- |
+| 1   | **Cut v0.8.0 release** — bump version, CHANGELOG, tag, push                                                 | ✅ **Done** (`2d2d127`) |
+| 2   | **Add CHANGELOG [Unreleased] entries** for all 7 commits this session                                       | ✅ **Done**             |
+| 3   | **Add FEATURES.md version-sync test** (like TestVersionMatchesChangelog)                                    | ✅ **Done** (`6e94f93`) |
+| 4   | **Demo app: showcase TableHeader sortable columns**                                                         | ⬜ Not started          |
+| 5   | **Demo app: showcase Form.Inline**                                                                          | ⬜ Not started          |
+| 6   | **Golden test for TableHeader sortable variant**                                                            | ✅ **Done** (`cc88d41`) |
+| 7   | **StatCardProps.HxSwap: change `string` → `htmx.SwapStyle`**                                                | ✅ **Done** (`cc88d41`) |
+| 8   | **ButtonHTMLType: convert `map[X]bool` → `map[X]string` + Lookup**                                          | ✅ **Done** (`cc88d41`) |
+| 9   | **`feedbackIconName` + `FamilyStatusCode`: use `utils.Lookup`**                                             | ✅ **Done** (`d3c8b88`) |
+| 10  | **Combobox `focusout` handler** — clear aria-activedescendant on blur                                       | ✅ **Done** (`de8171c`) |
+| 11  | **Sortable DataTable component** — high-level wrapper around TableHeader                                    | ⬜ Not started          |
+| 12  | **Filter dropdown component** — purpose-built for filter bars                                               | ⬜ Not started          |
+| 13  | **Move test helpers to `internal/testutil/`** — deferred to v1.0 but plan it                                | ⬜ Deferred to v1.0     |
+| 14  | **Add `Validate() error` to props structs** — v1.0 scope, but design now                                    | ⬜ Deferred to v1.0     |
+| 15  | **errorpage coverage to 80%+** — handler edge paths, write failures                                         | ⬜ Not done (72.9%)     |
+| 16  | **feedback coverage to 80%+** — StepIndicator branches, LoadingOverlay                                      | ⬜ Not done (72.3%)     |
+| 17  | **forms coverage to 80%+** — Combobox rendering branches, RadioGroup                                        | ⬜ Not done (72.3%)     |
+| 18  | **navigation coverage to 80%+** — SidebarNav, Breadcrumbs JSON-LD                                           | ⬜ Not done (72.6%)     |
+| 19  | **AGENTS.md update** — document TableHeader, Form.Inline, typed-map convention, IsValid-test convention     | ✅ **Done** (`a0dbae7`) |
+| 20  | **Icons-only adoption doc update** — mention new icons added since v0.7.0                                   | ⬜ Not done             |
+| 21  | **awesome-templ PR submission** — component count updated, submit the prepared entry                        | ⬜ Not done             |
+| 22  | **templ.guide listing submission** — prepared but never submitted                                           | ⬜ Not done             |
+| 23  | **Tooltip: add `aria-describedby` via `props.ID`** — investigate if CSS-only tooltip needs JS for full a11y | ⬜ Not started          |
+| 24  | **Pagination: add `rel="canonical"` for page 1** — SEO improvement                                          | ✅ **Done** (`098f7c3`) |
+| 25  | **Add `TableHeader.IsValid` / `SortDirection.IsValid`** — complete the enum validation set                  | ✅ **Done** (`cc88d41`) |
+
+**Scorecard:** 12 of 25 complete (48%).
 
 ---
 
 ## G) Top #1 Question I Cannot Answer
 
-**Should `SortDirection` and `TableHeader` be in `display/` or should table types get their own sub-package?**
-
-The table types (`TableProps`, `TableRow`, `TableCell`, `TableHeader`, `SortDirection`) now represent 5 types + 3 constants + 3 helper functions — the largest type cluster in any single `.templ` file. The `display` package already has 25 components. Splitting `display/table/` as a sub-package would:
-
-- Pro: Cleaner imports (`display.Table` stays, but types are `table.Props`, `table.Row`, etc.)
-- Pro: Reduces `display/` file count
-- Con: **Breaking change** for all consumers using `display.TableProps`, `display.TableRow`, etc.
-- Con: Doesn't match the established pattern (all other components live flat in `display/`)
-
-I lean toward **keeping it flat** — the breaking change cost isn't worth the organizational benefit until v1.0. But this is a design direction question, not a technical one.
+> ✅ **RESOLVED — DECISION: KEEP IT FLAT.** Table types stay in `display/` as `display.TableHeader`,
+> `display.SortDirection`, etc. The breaking change cost of splitting into a sub-package isn't
+> worth the organizational benefit until v1.0. This matches the established pattern — all other
+> components live flat in `display/`. Confirmed by v0.8.0 release which kept types flat.
 
 ---
 
