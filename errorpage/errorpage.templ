@@ -25,13 +25,7 @@ templ ErrorPage(props ErrorPageProps) {
 							@familyIcon(style)
 						</div>
 						<div class="flex-1 min-w-0">
-							@codeAndFamilyBadge(props.Family, style, props.Code)
-							if props.Title != "" {
-								<h1 class="mt-2 text-lg font-semibold text-gray-900 dark:text-white">{ props.Title }</h1>
-							}
-							if props.Message != "" {
-								<p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{ props.Message }</p>
-							}
+							@errorBody(style, props.Family, props.Code, props.Title, "h1", "mt-2 text-lg font-semibold text-gray-900 dark:text-white", props.Message, "mt-2 text-sm text-gray-600 dark:text-gray-400")
 						</div>
 					</div>
 					if props.Why != "" {

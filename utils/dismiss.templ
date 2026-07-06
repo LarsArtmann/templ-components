@@ -1,0 +1,27 @@
+package utils
+
+// DismissButton renders the shared alert/notification dismiss control used by
+// feedback.Alert and errorpage.ErrorAlert. The bg/text classes must be passed
+// in because the caller owns the visual style set (feedback.FeedbackType vs
+// errorpage.Family).
+//
+// The X icon path (M6 18L18 6M6 6l12 12) is inlined rather than going through
+// github.com/larsartmann/templ-components/icons to keep utils a leaf package
+// that does not depend on icons. The SVG matches the icons package's stroke
+// template (class, fill, viewBox, stroke-width, stroke, aria-hidden).
+templ DismissButton(bgClass string, textClass string) {
+	<div class="ms-auto ps-3">
+		<div class="-mx-1.5 -my-1.5">
+			<button
+				type="button"
+				class={ "inline-flex rounded-md p-1.5 hover:opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2", bgClass, textClass }
+				data-dismiss="alert"
+				aria-label="Dismiss"
+			>
+				<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path>
+				</svg>
+			</button>
+		</div>
+	</div>
+}

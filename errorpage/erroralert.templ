@@ -1,16 +1,13 @@
 package errorpage
 
-import (
-	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/utils"
-)
+import "github.com/larsartmann/templ-components/utils"
 
 templ ErrorAlert(props ErrorAlertProps) {
 	// ErrorAlert renders a family-aware inline alert for use on error-rendering paths.
 	//
-	// The dismiss-button markup is intentionally duplicated in feedback.Alert: errorpage
-	// must not import feedback (kept minimal for error paths) and no shared markup
-	// package exists. JS behaviour is shared via utils.DismissScript().
+	// The dismiss control markup is shared via utils.DismissButton; only the
+	// style classes differ from feedback.Alert. JS behaviour is shared via
+	// utils.DismissScript().
 	{{ style := lookupFamilyStyle(props.Family) }}
 	<div
 		if props.ID != "" {
@@ -46,18 +43,7 @@ templ ErrorAlert(props ErrorAlertProps) {
 				}
 			</div>
 			if props.Dismissible {
-				<div class="ms-auto ps-3">
-					<div class="-mx-1.5 -my-1.5">
-						<button
-							type="button"
-							class={ "inline-flex rounded-md p-1.5 hover:opacity-80 focus:outline-hidden focus:ring-2 focus:ring-offset-2", style.BG, style.Text }
-							data-dismiss="alert"
-							aria-label="Dismiss"
-						>
-							@icons.Icon(icons.X, "h-4 w-4")
-						</button>
-					</div>
-				</div>
+				@utils.DismissButton(style.BG, style.Text)
 			}
 		</div>
 		if props.Dismissible {

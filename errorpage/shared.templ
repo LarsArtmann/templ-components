@@ -9,6 +9,31 @@ templ familyIcon(style familyVisualStyle) {
 	@icons.Icon(style.Icon, utils.Class("h-5 w-5", style.IconColor))
 }
 
+// errorBody renders the badge + title + message block that lives inside the
+// `flex-1 min-w-0` content column of an error header (shared between
+// ErrorPage and ErrorDetail). The icon and outer flex wrapper stay at the
+// call site because their layout (gap, icon container decoration) differs
+// per visual density.
+//
+// Parameters:
+//   - titleTag: heading element — "h1" for hero/full, "h3" for compact.
+//   - titleClass: Tailwind classes for the heading (mt-N + text size).
+//   - messageClass: Tailwind classes for the message paragraph.
+templ errorBody(style familyVisualStyle, family Family, code Code, title, titleTag, titleClass, message, messageClass string) {
+	@codeAndFamilyBadge(family, style, code)
+	if title != "" {
+		switch titleTag {
+			case "h1":
+				<h1 class={ titleClass }>{ title }</h1>
+			case "h3":
+				<h3 class={ titleClass }>{ title }</h3>
+		}
+	}
+	if message != "" {
+		<p class={ messageClass }>{ message }</p>
+	}
+}
+
 templ fixCard(fix string) {
 	<div class="rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 px-3 py-2">
 		<p class="text-xs text-gray-600 dark:text-gray-400">

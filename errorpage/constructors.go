@@ -12,7 +12,12 @@ const (
 	CodeUnavailable     Code = "service.unavailable"
 	CodeInternalError   Code = "internal.error"
 
-	msgGoHome = "Go home"
+	msgGoHome             = "Go home"
+	titleInternalError    = "Something went wrong"
+	msgBadRequestDefault  = "The request was invalid or malformed."
+	msgConflictDefault    = "A conflict was detected with the current state of the resource."
+	msgServiceUnavailable = "We're performing maintenance or experiencing high traffic."
+	msgInternalUnexpected = "An unexpected error occurred. Our team has been notified."
 )
 
 // NotFound returns a 404-style error page.
@@ -46,7 +51,7 @@ func Forbidden() ErrorPageProps {
 // BadRequest returns a 400-style error page.
 func BadRequest(message string) ErrorPageProps {
 	if message == "" {
-		message = "The request was invalid or malformed."
+		message = msgBadRequestDefault
 	}
 	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
 		Family:        FamilyRejection,
@@ -62,7 +67,7 @@ func BadRequest(message string) ErrorPageProps {
 // Conflict returns a 409-style error page.
 func Conflict(message string) ErrorPageProps {
 	if message == "" {
-		message = "A conflict was detected with the current state of the resource."
+		message = msgConflictDefault
 	}
 	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
 		Family:        FamilyConflict,
@@ -81,7 +86,7 @@ func ServiceUnavailable() ErrorPageProps {
 		Family:        FamilyTransient,
 		Code:          CodeUnavailable,
 		Title:         "Service temporarily unavailable",
-		Message:       "We're performing maintenance or experiencing high traffic.",
+		Message:       msgServiceUnavailable,
 		Why:           "This is a temporary issue. No data was lost.",
 		Fix:           "Wait a moment and refresh the page.",
 		WayOut:        "Retry",
@@ -95,8 +100,8 @@ func InternalError() ErrorPageProps {
 	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
 		Family:        FamilyInfrastructure,
 		Code:          CodeInternalError,
-		Title:         "Something went wrong",
-		Message:       "An unexpected error occurred. Our team has been notified.",
+		Title:         titleInternalError,
+		Message:       msgInternalUnexpected,
 		Why:           "This is a system issue, not something you caused.",
 		Fix:           "Try again in a few minutes. If the problem persists, contact support.",
 		WayOut:        msgGoHome,

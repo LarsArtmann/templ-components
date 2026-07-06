@@ -38,6 +38,15 @@ func DefaultCopyButtonProps() CopyButtonProps {
 // event-delegation script. CSP-safe: no inline handlers, nonce-guarded script.
 //
 //	@display.CopyButton(display.CopyButtonProps{Text: "npm install my-package", Label: "Copy install command"})
+// copyButtonContent renders the icon + label body shared by both the <a>
+// and <button> variants of CopyButton.
+templ copyButtonContent(icon bool, label string) {
+	if icon {
+		@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
+	}
+	<span data-tc-copy-text role="status" aria-live="polite">{ label }</span>
+}
+
 templ CopyButton(props CopyButtonProps) {
 	{{
 		label := props.Label
@@ -64,10 +73,7 @@ templ CopyButton(props CopyButtonProps) {
 			}
 			{ props.Attrs... }
 		>
-			if props.Icon {
-				@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
-			}
-			<span data-tc-copy-text role="status" aria-live="polite">{ label }</span>
+			@copyButtonContent(props.Icon, label)
 		</a>
 	} else {
 		<button
@@ -83,10 +89,7 @@ templ CopyButton(props CopyButtonProps) {
 			}
 			{ props.Attrs... }
 		>
-			if props.Icon {
-				@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
-			}
-			<span data-tc-copy-text role="status" aria-live="polite">{ label }</span>
+			@copyButtonContent(props.Icon, label)
 		</button>
 	}
 	@copyButtonScriptComponent(props.Nonce)

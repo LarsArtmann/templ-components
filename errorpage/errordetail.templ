@@ -26,13 +26,7 @@ templ ErrorDetail(props ErrorDetailProps) {
 					@familyIcon(style)
 				</div>
 				<div class="flex-1 min-w-0">
-					@codeAndFamilyBadge(props.Family, style, props.Code)
-					if props.Title != "" {
-						<h3 class="mt-1.5 text-sm font-semibold text-gray-900 dark:text-white">{ props.Title }</h3>
-					}
-					if props.Message != "" {
-						<p class={ "mt-1 text-sm", style.Text }>{ props.Message }</p>
-					}
+					@errorBody(style, props.Family, props.Code, props.Title, "h3", "mt-1.5 text-sm font-semibold text-gray-900 dark:text-white", props.Message, utils.Class("mt-1 text-sm", style.Text))
 				</div>
 			</div>
 			@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-3 ms-8", "Caused by")
