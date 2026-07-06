@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.9.0] — 2026-07-06
+
+### Added
+
+- `display.GridProps.Gap`: typed `GridGap` enum (`GridGapSM`/`MD`/`LG`/`XL` → `gap-2`/`4`/`6`/`8`) with `gridGapLookup` map + `GridGapIsValid`. Replaces hardcoded `gap-4` in grid lookup maps — consumers can now control spacing. Defaults to `GridGapMD` (`gap-4`), backward compatible.
+- `display.CopyButtonProps.Href`: when set, renders an `<a>` instead of a `<button>`. The link still copies to clipboard on click.
+- `display.ImageProps.Rounded`: when `true`, adds `rounded-full` instead of `rounded-md`. Quick convenience for avatars and icons.
+- `navigation.LoadMoreProps.InfiniteScroll`: when `true`, adds `hx-trigger="revealed"` for auto-loading when scrolled into view (infinite scroll pattern).
+- `errorpage.NotFound404Props.LinksTitle`: configurable heading for the quick-links section. Defaults to "Popular pages".
+- `errorpage.WriteNotFound404`: convenience HTTP handler that writes a `NotFound404` page with 404 status code.
+- Demo app: 5 new showcase sections — sortable Table (`TypedHeaders`), inline Form filter bar (`FormProps.Inline`), container query Grid (`ContainerResponsive`), 404 page preview (`NotFound404`), Table.Body slot.
+- Documentation: `ROADMAP.md` (v0.x/v1.0/v2.0+ direction), rewritten `CONTRIBUTING.md` (Nix setup, conventions, release flow), `docs/migration/v0.7-to-v0.8.md` (all changes with before/after examples).
+- Benchmark suite for `errorpage` package (ErrorPage, NotFound404, ErrorDetail, ErrorAlert).
+
+### Changed
+
+- Contract test comment counts corrected (`display 18→23`, `navigation 6→7`).
+- Grid lookup maps no longer include `gap-4` (gap is now a separate `Gap` field with its own lookup). `DefinitionGrid` updated to pass `gridGapClass(GridGapDefault)` explicitly.
+
 ## [0.8.0] — 2026-07-06
 
 ### Added
