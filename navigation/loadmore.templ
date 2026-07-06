@@ -19,6 +19,9 @@ type LoadMoreProps struct {
 	Cursor string
 	// Label is the button text. Defaults to "Load more".
 	Label string
+	// InfiniteScroll, when true, adds hx-trigger="revealed" so the button
+	// auto-fires when scrolled into view (infinite scroll pattern).
+	InfiniteScroll bool
 }
 
 // DefaultLoadMoreProps returns sensible defaults.
@@ -69,6 +72,9 @@ templ LoadMore(props LoadMoreProps) {
 			hx-get={ href }
 			hx-swap="outerHTML"
 			hx-target="this"
+			if props.InfiniteScroll {
+				hx-trigger="revealed"
+			}
 			class="inline-flex items-center gap-2 rounded-md bg-white dark:bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
 		>
 			{ label }

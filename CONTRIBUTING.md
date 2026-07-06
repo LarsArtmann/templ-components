@@ -1,50 +1,71 @@
 # Contributing to templ-components
 
-Thanks for your interest. This project is in early development (pre-release), so APIs may change and contributions that improve consistency are especially welcome.
+Thanks for your interest. This project is pre-v1.0; APIs may change and
+contributions that improve consistency are especially welcome.
 
-## Setup
+---
 
-Requirements:
+## Prerequisites
 
-- Go 1.26+
-- [templ CLI](https://templ.guide/quick-start/installation)
+| Tool      | Version           | Notes                                                                                  |
+| --------- | ----------------- | -------------------------------------------------------------------------------------- |
+| Go        | 1.26+             | Pinned in `go.mod` and `flake.nix`                                                     |
+| Nix       | any (recommended) | `nix develop` provides Go, `golangci-lint`, and **templ v0.3.1020** (matches `go.mod`) |
+| templ CLI | v0.3.1020         | The dev shell pins this; do **not** use a system binary that may be v0.3.1036+         |
+
+> **Why Nix?** The system `templ` binary may be an unreleased upstream build.
+> Always use `nix develop` before generating. See [`AGENTS.md`](AGENTS.md).
+
+---
+
+## Build
 
 ```bash
-git clone https://github.com/larsartmann/templ-components.git
-cd templ-components
-templ generate ./...
-go build ./...
+nix develop
+
+# Regenerate all *_templ.go from .templ sources, then build
+find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./...
+```
+
+## Test
+
+```bash
 go test ./...
 ```
 
-## Development Workflow
-
-1. Create a feature branch from `master`
-2. Make your changes
-3. Run the full verification:
+## Lint
 
 ```bash
-find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./svg/... ./internal/...
 ```
 
-4. Open a pull request
+## Full verification (do this before every PR)
 
-## Code Conventions
+```bash
+find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./svg/... ./internal/...
+```
 
-- All component props embed `utils.BaseProps` (exception: `layout.PageProps`)
-- All root elements propagate `props.Class`, `props.Attrs`, and `props.ID`
-- Style lookups use maps, not switches
-- String enums: `type XxxType string` + constants
-- Size constants: uppercase suffix `[Component]Size[SM|MD|LG]`
-- Default constructors: `DefaultXxxProps()` with meaningful non-zero defaults
-- Class merging: always use `utils.Class()` for Tailwind conflict resolution. Thread-safe via `sync.Mutex` protecting the full Merge() call sequence.
-- CSP: all inline scripts use `nonce={ props.Nonce }`
-- JS IDs: escape with `strconv.Quote()` to prevent XSS (see `validateDropdownID`)
-- No external dependencies beyond `templ`, `tailwind-merge-go`, and `go-error-family` (errorpage only)
+---
 
-## Commit Messages
+## Conventions
 
-Use [Conventional Commits](https://www.conventionalcommits.org):
+**Read [`AGENTS.md`](AGENTS.md) first** — it is the canonical reference for all
+architecture, code conventions, and gotchas. The highlights:
+
+| Convention               | Rule                                                                                                                                   |
+| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Props structs            | Every component's props embed `utils.BaseProps` (exception: `layout.PageProps`).                                                       |
+| RTL / logical properties | Never use `ml-`/`mr-`/`pl-`/`pr-`/`left-`/`right-`. Use `ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`.                                       |
+| Motion                   | Use shared constants (`transitionFast`, `transitionNormal`, `transitionColors`, `transitionTransform`). All include `motion-reduce:*`. |
+| Typed enums              | `type XxxType string` + typed constants + `IsValid()` method + test. Lookup maps use typed keys. All lookups via `utils.Lookup`.       |
+| CSP safety               | Every inline `<script>` uses `nonce={ props.Nonce }`. No exceptions.                                                                   |
+| Class merging            | Always use `utils.Class()` for Tailwind conflict resolution (thread-safe via `sync.Mutex`).                                            |
+| Style lookups            | Use maps + `utils.Lookup`, not switches. Structural variants use `if`-branch for DOM structure.                                        |
+| Zero runtime panics      | Component code must never panic. Enum lookups fall back gracefully.                                                                    |
+
+### Commit messages
+
+Follow [Conventional Commits](https://www.conventionalcommits.org):
 
 ```
 feat(display): add carousel component
@@ -52,10 +73,35 @@ fix(feedback): correct toast dismiss timing
 docs: update quick start example
 ```
 
-## Reporting Issues
+---
 
-- Include Go version, templ version, and a minimal reproduction
-- For feature requests, describe the use case — not just the solution
+## Generated files: `*_templ.go` MUST be committed
+
+This is a **templ library**, not an application. The Go module proxy
+(`proxy.golang.org`) fetches source from the Git tag — it does not run
+`templ generate`. Without committed `*_templ.go` files, consumers who `go get`
+this package get uncompilable code.
+
+After editing any `.templ` file, run `templ generate ./...` and commit the
+updated `*_templ.go` files alongside the source change. See [`AGENTS.md`](AGENTS.md).
+
+---
+
+## Release
+
+```bash
+scripts/release.sh <new-version> "<release-summary>"
+```
+
+One-commit convention. SSH-signed tags. House rule: **never push automatically**.
+See [`AGENTS.md`](AGENTS.md) § Release Convention for details.
+
+---
+
+## Reporting issues
+
+- Include Go version, templ version, and a minimal reproduction.
+- For feature requests, describe the **use case** — not just the solution.
 
 ## License
 

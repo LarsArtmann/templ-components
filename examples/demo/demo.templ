@@ -256,6 +256,50 @@ templ demoContent() {
 			@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo", Alt: "Demo image", Width: 96, Height: 96})
 			@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "next-page"})
 		</div>
+		@demoSection("Sortable Table")
+		@display.Table(display.TableProps{
+			TypedHeaders: []display.TableHeader{
+				{Label: "Name", Sortable: true, SortDirection: display.SortAsc},
+				{Label: "Email", Sortable: true, SortDirection: display.SortNone},
+				{Label: "Role"},
+			},
+			Rows: []display.TableRow{
+				display.SimpleTableRow("Alice Smith", "alice@example.com", "Admin"),
+				display.SimpleTableRow("Bob Jones", "bob@example.com", "User"),
+			},
+			Striped: true,
+			Hover:   true,
+		})
+		@demoSection("Inline Form (Filter Bar)")
+		@forms.Form(forms.FormProps{Action: "/filter", Method: forms.FormGet, Inline: true}) {
+			@forms.Select(forms.SelectProps{
+				Name:  "status",
+				Label: "Status",
+				Options: []forms.SelectOption{
+					{Value: "all", Label: "All"},
+					{Value: "active", Label: "Active"},
+					{Value: "inactive", Label: "Inactive"},
+				},
+			})
+			@display.Button(display.ButtonProps{Text: "Filter", Type: display.ButtonHTMLSubmit})
+		}
+		@demoSection("Container Query Grid")
+		<div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
+			@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerResponsive: true}) {
+				@display.StatCard(display.StatCardProps{Value: "42", Label: "Requests/s"})
+				@display.StatCard(display.StatCardProps{Value: "12ms", Label: "Latency"})
+				@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime"})
+			}
+		</div>
+		@demoSection("404 Page Preview")
+		<div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+			@errorpage.NotFound404(errorpage.DefaultNotFound404Props())
+		</div>
+		@demoSection("Table Body Slot")
+		@display.Table(display.TableProps{
+			Headers: []string{"Message", "Author", "Status"},
+			Body:    demoTableBody(),
+		})
 	</div>
 }
 
@@ -266,4 +310,28 @@ templ demoSection(title string) {
 		</h2>
 		{ children... }
 	</section>
+}
+
+templ demoTableBody() {
+	<tr>
+		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">Deployment succeeded</td>
+		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">ci-bot</td>
+		<td class="px-4 py-3">
+			@display.Badge(display.BadgeProps{Text: "Success", Type: display.BadgeSuccess})
+		</td>
+	</tr>
+	<tr>
+		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">Build failed on stage 2</td>
+		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">ci-bot</td>
+		<td class="px-4 py-3">
+			@display.Badge(display.BadgeProps{Text: "Failed", Type: display.BadgeError})
+		</td>
+	</tr>
+	<tr>
+		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">Tests passed (142/142)</td>
+		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">test-runner</td>
+		<td class="px-4 py-3">
+			@display.Badge(display.BadgeProps{Text: "Passed", Type: display.BadgeSuccess})
+		</td>
+	</tr>
 }

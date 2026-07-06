@@ -45,7 +45,7 @@ templ DefinitionGrid(props DefinitionGridProps) {
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class(gridClass(cols), props.Class) }
+		class={ utils.Class(gridClass(cols), gridGapClass(GridGapDefault), props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}

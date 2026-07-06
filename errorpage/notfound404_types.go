@@ -32,6 +32,7 @@ type NotFound404Props struct {
 	SearchPlaceholder string
 	SearchInputName   string
 	Links             []NotFoundLink
+	LinksTitle        string
 	GoHomeHref        string
 	GoHomeText        string
 	ShowGoBack        bool
@@ -44,6 +45,7 @@ func DefaultNotFound404Props() NotFound404Props {
 		Message:           notFound404DefaultMessage,
 		SearchPlaceholder: notFound404SearchDefault,
 		SearchInputName:   notFound404InputName,
+		LinksTitle:        notFound404PopularLabel,
 		GoHomeHref:        "/",
 		GoHomeText:        notFound404GoHomeText,
 		ShowGoBack:        true,

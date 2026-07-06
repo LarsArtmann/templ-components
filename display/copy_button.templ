@@ -19,6 +19,9 @@ type CopyButtonProps struct {
 	CopiedLabel string
 	// Icon optionally renders a leading clipboard icon.
 	Icon bool
+	// Href, when set, renders an <a> instead of a <button>. The link still
+	// copies text to the clipboard on click. Use for copy-as-link patterns.
+	Href string
 }
 
 // DefaultCopyButtonProps returns sensible defaults.
@@ -45,24 +48,46 @@ templ CopyButton(props CopyButtonProps) {
 		if copied == "" {
 			copied = "Copied!"
 		}
+		baseClass := utils.Class("inline-flex items-center gap-1.5 rounded-md bg-gray-50 dark:bg-gray-700 px-2.5 py-1 text-xs font-medium text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer", transitionColors, "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", props.Class)
 	}}
-	<button
-		type="button"
-		data-tc-copy={ props.Text }
-		data-tc-copy-label={ copied }
-		if props.ID != "" {
-			id={ props.ID }
-		}
-		class={ utils.Class("inline-flex items-center gap-1.5 rounded-md bg-gray-50 dark:bg-gray-700 px-2.5 py-1 text-xs font-medium text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer", transitionColors, "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", props.Class) }
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
-		}
-		{ props.Attrs... }
-	>
-		if props.Icon {
-			@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
-		}
-		<span data-tc-copy-text role="status" aria-live="polite">{ label }</span>
-	</button>
+	if props.Href != "" {
+		<a
+			href={ props.Href }
+			data-tc-copy={ props.Text }
+			data-tc-copy-label={ copied }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ baseClass }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			if props.Icon {
+				@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
+			}
+			<span data-tc-copy-text role="status" aria-live="polite">{ label }</span>
+		</a>
+	} else {
+		<button
+			type="button"
+			data-tc-copy={ props.Text }
+			data-tc-copy-label={ copied }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ baseClass }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			if props.Icon {
+				@icons.Icon(icons.Clipboard, "h-3.5 w-3.5")
+			}
+			<span data-tc-copy-text role="status" aria-live="polite">{ label }</span>
+		</button>
+	}
 	@copyButtonScriptComponent(props.Nonce)
 }

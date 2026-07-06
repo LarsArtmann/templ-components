@@ -67,7 +67,7 @@ func DefinitionGrid(props DefinitionGridProps) templ.Component {
 		if cols == "" {
 			cols = GridColsDefault
 		}
-		var templ_7745c5c3_Var2 = []any{utils.Class(gridClass(cols), props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class(gridClass(cols), gridGapClass(GridGapDefault), props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

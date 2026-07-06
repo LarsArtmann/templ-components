@@ -24,6 +24,12 @@ func GridColsIsValid(v GridCols) bool {
 	return ok
 }
 
+// GridGapIsValid reports whether v is one of the defined GridGap constants.
+func GridGapIsValid(v GridGap) bool {
+	_, ok := gridGapLookup[v]
+	return ok
+}
+
 // TrendDirectionIsValid reports whether v is one of the defined TrendDirection constants.
 func TrendDirectionIsValid(v TrendDirection) bool {
 	return validTrendDirections[v]

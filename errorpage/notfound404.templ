@@ -72,7 +72,7 @@ templ NotFound404(props NotFound404Props) {
 			</div>
 			if len(props.Links) > 0 {
 				<div class="mt-10">
-					<p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{ notFound404PopularLabel }</p>
+					<p class="text-xs font-semibold uppercase tracking-wider text-gray-400 dark:text-gray-500">{ utils.Ternary(props.LinksTitle != "", props.LinksTitle, notFound404PopularLabel) }</p>
 					<div class="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
 						for _, link := range props.Links {
 							<a

@@ -23,6 +23,9 @@ type ImageProps struct {
 	// Lazy controls the loading attribute. When true (default), uses
 	// loading="lazy". Set to false for above-the-fold images.
 	Lazy bool
+	// Rounded, when true, adds rounded-full for circular images (avatars, icons).
+	// Defaults to false (rounded-md).
+	Rounded bool
 }
 
 // DefaultImageProps returns sensible defaults.
@@ -64,7 +67,7 @@ templ Image(props ImageProps) {
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class("max-w-full h-auto rounded-md", props.Class) }
+			class={ utils.Class(utils.Ternary(props.Rounded, "max-w-full h-auto rounded-full", "max-w-full h-auto rounded-md"), props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}

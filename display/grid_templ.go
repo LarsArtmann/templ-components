@@ -25,28 +25,53 @@ const (
 	GridColsDefault GridCols = GridCols3
 )
 
+// GridGap is a typed enum for the gap spacing between grid items.
+// Unknown values fall back to GridGapMD (graceful degradation — never panic).
+type GridGap string
+
+const (
+	GridGapSM GridGap = "sm" // gap-2 (0.5rem)
+	GridGapMD GridGap = "md" // gap-4 (1rem) — default
+	GridGapLG GridGap = "lg" // gap-6 (1.5rem)
+	GridGapXL GridGap = "xl" // gap-8 (2rem)
+	// GridGapDefault is the canonical default.
+	GridGapDefault GridGap = GridGapMD
+)
+
+// gridGapLookup maps each GridGap value to its Tailwind gap utility class.
+var gridGapLookup = map[GridGap]string{
+	GridGapSM: "gap-2",
+	GridGapMD: "gap-4",
+	GridGapLG: "gap-6",
+	GridGapXL: "gap-8",
+}
+
+func gridGapClass(gap GridGap) string {
+	return utils.Lookup(gridGapLookup, gap, gridGapLookup[GridGapDefault])
+}
+
 // gridColsLookup maps each GridCols value to the responsive Tailwind classes
 // that stack on mobile and expand at sm/lg breakpoints. This is a pure class
 // lookup, so the map+fallback pattern applies.
 var gridColsLookup = map[GridCols]string{
-	GridCols1: "grid grid-cols-1 gap-4",
-	GridCols2: "grid grid-cols-1 sm:grid-cols-2 gap-4",
-	GridCols3: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4",
-	GridCols4: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4",
-	GridCols5: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4",
-	GridCols6: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4",
+	GridCols1: "grid grid-cols-1",
+	GridCols2: "grid grid-cols-1 sm:grid-cols-2",
+	GridCols3: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+	GridCols4: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+	GridCols5: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5",
+	GridCols6: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6",
 }
 
 // gridColsContainerLookup maps each GridCols value to container-query-based
 // Tailwind classes (@sm:, @lg:) that respond to the parent container's width
 // instead of the browser viewport. Used when ContainerResponsive is true.
 var gridColsContainerLookup = map[GridCols]string{
-	GridCols1: "grid grid-cols-1 gap-4",
-	GridCols2: "grid grid-cols-1 @sm:grid-cols-2 gap-4",
-	GridCols3: "grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-4",
-	GridCols4: "grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 gap-4",
-	GridCols5: "grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 @xl:grid-cols-5 gap-4",
-	GridCols6: "grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 @xl:grid-cols-6 gap-4",
+	GridCols1: "grid grid-cols-1",
+	GridCols2: "grid grid-cols-1 @sm:grid-cols-2",
+	GridCols3: "grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3",
+	GridCols4: "grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4",
+	GridCols5: "grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 @xl:grid-cols-5",
+	GridCols6: "grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 @xl:grid-cols-6",
 }
 
 // gridClass returns the responsive Tailwind class string for a column count,
@@ -76,6 +101,8 @@ type GridProps struct {
 	// Cols controls the responsive column count. Defaults to GridCols3 when
 	// empty or unknown.
 	Cols GridCols
+	// Gap controls the spacing between grid items. Defaults to GridGapMD (gap-4).
+	Gap GridGap
 	// ContainerResponsive, when true, renders the grid inside an @container
 	// wrapper so column counts respond to the container's width instead of
 	// the browser viewport. Useful for grids placed in sidebars, cards, or
@@ -130,10 +157,12 @@ func Grid(props GridProps) templ.Component {
 		if cols == "" {
 			cols = GridColsDefault
 		}
-		gridClasses := utils.Class(gridClass(cols), props.Class)
+		gap := gridGapClass(props.Gap)
+		baseGrid := gridClass(cols)
 		if props.ContainerResponsive {
-			gridClasses = utils.Class(gridContainerClass(cols), props.Class)
+			baseGrid = gridContainerClass(cols)
 		}
+		gridClasses := utils.Class(baseGrid, gap, props.Class)
 		if props.ContainerResponsive {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"@container\">")
 			if templ_7745c5c3_Err != nil {
@@ -156,7 +185,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 115, Col: 18}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 144, Col: 18}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 				if templ_7745c5c3_Err != nil {
@@ -192,7 +221,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 119, Col: 33}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 148, Col: 33}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
@@ -237,7 +266,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 129, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 158, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 				if templ_7745c5c3_Err != nil {
@@ -273,7 +302,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 133, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 162, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 				if templ_7745c5c3_Err != nil {
