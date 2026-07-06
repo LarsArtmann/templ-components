@@ -8,11 +8,12 @@ import "github.com/larsartmann/templ-components/utils"
 //	   <p>Drawer content</p>
 //	}
 //
-// The panel body is intentionally not shared with Modal: the transition
-// (translate-x) and positioning classes differ, with conditional templ.KV
-// classes inline. overlayShell already owns the shared a11y shell + JS.
+// The panel body (id, inert, attrs, dialogHeader, content slot) is rendered
+// through @overlayPanel; only the transition classes and overlay-shell config
+// differ from Modal. overlayShell owns the shared a11y shell + JS.
 templ Drawer(props DrawerProps) {
 	{{ id := utils.EnsureID("drawer", props.ID) }}
+	{{ panelClass := utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform", transitionTransform, "duration-200", drawerSizeClass(props.Size), props.Class) }}
 	@overlayShell(overlayShellProps{
 		id:        id,
 		open:      props.Open,
@@ -22,23 +23,21 @@ templ Drawer(props DrawerProps) {
 		nonce:     props.Nonce,
 		cfg:       drawerPanelConfig(props.Side),
 	}) {
-		<div
-			id={ id + "-panel" }
-			class={ utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform", transitionTransform, "duration-200", drawerSizeClass(props.Size), props.Class),
+		@overlayPanel(
+			id+"-panel",
+			id+"-title",
+			panelClass,
+			templ.Classes(
 				templ.KV("start-0", props.Side == DrawerLeft),
 				templ.KV("end-0", props.Side == DrawerRight),
 				templ.KV("translate-x-0", props.Open),
 				templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
-				templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight) }
-			if !props.Open {
-				inert
-			}
-			{ props.Attrs... }
-		>
-			@dialogHeader(props.Title, id+"-title", OverlayDrawer)
-			<div class="px-4 py-4 sm:px-6">
-				{ children... }
-			</div>
-		</div>
+				templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight),
+			),
+			props.Open,
+			props.Title,
+			OverlayDrawer,
+			props.Attrs,
+		)
 	}
 }

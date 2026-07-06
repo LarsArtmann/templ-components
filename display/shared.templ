@@ -51,3 +51,33 @@ templ dialogHeader(title, titleID string, kind OverlayKind) {
 		</div>
 	}
 }
+
+// overlayPanel renders the panel body (id, inert-when-closed, attrs, dialogHeader,
+// content slot) shared by Modal and Drawer. Each overlay applies its own
+// transition + sizing + open-state transforms, which are baked into panelClass
+// + panelKV at the call site.
+//
+// Parameters:
+//   - panelID: panel DOM id (e.g. id + "-panel")
+//   - titleID: matching h2 id for aria-labelledby (e.g. id + "-title")
+//   - panelClass: full Tailwind class list (size + transform + props.Class)
+//   - panelKV: extra conditional classes (templ.CSSClasses of templ.KV entries)
+//   - open: whether the overlay is open — drives the `inert` attribute
+//   - title: header title (empty suppresses the header)
+//   - kind: OverlayKind, controls the close button's data-tc-close value
+//   - attrs: extra HTML attributes from the consumer's BaseProps.Attrs
+templ overlayPanel(panelID, titleID, panelClass string, panelKV templ.CSSClasses, open bool, title string, kind OverlayKind, attrs templ.Attributes) {
+	<div
+		id={ panelID }
+		class={ panelClass, panelKV }
+		if !open {
+			inert
+		}
+		{ attrs... }
+	>
+		@dialogHeader(title, titleID, kind)
+		<div class="px-4 py-4 sm:px-6">
+			{ children... }
+		</div>
+	</div>
+}

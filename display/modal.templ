@@ -8,11 +8,12 @@ import "github.com/larsartmann/templ-components/utils"
 //	   <p>Are you sure?</p>
 //	}
 //
-// The panel body is intentionally not shared with Drawer: the transition
-// (scale/opacity) and sizing classes differ, with conditional templ.KV classes
-// inline. overlayShell already owns the shared a11y shell + JS.
+// The panel body (id, inert, attrs, dialogHeader, content slot) is rendered
+// through @overlayPanel; only the transition classes and overlay-shell config
+// differ from Drawer. overlayShell owns the shared a11y shell + JS.
 templ Modal(props ModalProps) {
 	{{ id := utils.EnsureID("modal", props.ID) }}
+	{{ panelClass := utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform", transitionNormal, modalSizeClass(props.Size), props.Class) }}
 	@overlayShell(overlayShellProps{
 		id:         id,
 		open:       props.Open,
@@ -23,20 +24,18 @@ templ Modal(props ModalProps) {
 		nonce:      props.Nonce,
 		cfg:        modalPanelConfig(),
 	}) {
-		<div
-			id={ id + "-panel" }
-			class={ utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform", transitionNormal, modalSizeClass(props.Size), props.Class),
+		@overlayPanel(
+			id+"-panel",
+			id+"-title",
+			panelClass,
+			templ.Classes(
 				templ.KV("scale-100 opacity-100", props.Open),
-				templ.KV("scale-95 opacity-0", !props.Open) }
-			if !props.Open {
-				inert
-			}
-			{ props.Attrs... }
-		>
-			@dialogHeader(props.Title, id+"-title", OverlayModal)
-			<div class="px-4 py-4 sm:px-6">
-				{ children... }
-			</div>
-		</div>
+				templ.KV("scale-95 opacity-0", !props.Open),
+			),
+			props.Open,
+			props.Title,
+			OverlayModal,
+			props.Attrs,
+		)
 	}
 }
