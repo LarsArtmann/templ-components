@@ -19,7 +19,8 @@ type ErrorHandlerConfig struct {
 	Nonce string
 
 	// Override allows per-error customization of the ErrorPageProps
-	// before rendering. Return nil to skip rendering (e.g., for custom handling).
+	// before rendering. When the returned pointer is non-nil, its values
+	// replace the derived props. When nil, the original derived props are used.
 	Override func(err error, props ErrorPageProps) *ErrorPageProps
 
 	// HTMLShell wraps the error page in a minimal HTML document with
@@ -62,7 +63,10 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 			props.Nonce = cfg.Nonce
 		}
 
-		statusCode := FamilyStatusCode(props.Family)
+		statusCode := props.StatusCode
+		if statusCode == 0 {
+			statusCode = FamilyStatusCode(props.Family)
+		}
 
 		if cfg.JSON {
 			writeJSONError(w, statusCode, props)

@@ -91,10 +91,11 @@ templ contextTable(pairs []ContextPair) {
 	if len(pairs) > 0 {
 		<div class="mt-3 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden">
 			<table class="min-w-full text-xs">
+				<caption class="sr-only">Error context</caption>
 				<tbody class="divide-y divide-gray-100 dark:divide-gray-700">
 					for _, pair := range pairs {
 						<tr>
-							<td class="px-3 py-1.5 font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap w-1/4">{ pair.Key }</td>
+							<th scope="row" class="px-3 py-1.5 font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap w-1/4 text-start">{ pair.Key }</th>
 							<td class="px-3 py-1.5 font-mono text-gray-700 dark:text-gray-300 break-all">{ pair.Value }</td>
 						</tr>
 					}

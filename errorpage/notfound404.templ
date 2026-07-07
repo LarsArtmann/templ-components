@@ -30,6 +30,7 @@ templ NotFound404(props NotFound404Props) {
 			id={ props.ID }
 		}
 		class={ utils.Class("min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900", props.Class) }
+		role="region"
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		} else {

@@ -449,32 +449,32 @@ func contextTable(pairs []ContextPair) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if len(pairs) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<div class=\"mt-3 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden\"><table class=\"min-w-full text-xs\"><tbody class=\"divide-y divide-gray-100 dark:divide-gray-700\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<div class=\"mt-3 rounded-md bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 overflow-hidden\"><table class=\"min-w-full text-xs\"><caption class=\"sr-only\">Error context</caption> <tbody class=\"divide-y divide-gray-100 dark:divide-gray-700\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, pair := range pairs {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<tr><td class=\"px-3 py-1.5 font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap w-1/4\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<tr><th scope=\"row\" class=\"px-3 py-1.5 font-medium text-gray-500 dark:text-gray-400 whitespace-nowrap w-1/4 text-start\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var24 string
 				templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(pair.Key)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 97, Col: 110}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 98, Col: 133}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</td><td class=\"px-3 py-1.5 font-mono text-gray-700 dark:text-gray-300 break-all\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</th><td class=\"px-3 py-1.5 font-mono text-gray-700 dark:text-gray-300 break-all\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var25 string
 				templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.JoinStringErrs(pair.Value)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 98, Col: 96}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 99, Col: 96}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var25))
 				if templ_7745c5c3_Err != nil {
@@ -541,7 +541,7 @@ func timestampFooter(timestamp string, class string) templ.Component {
 			var templ_7745c5c3_Var29 string
 			templ_7745c5c3_Var29, templ_7745c5c3_Err = templ.JoinStringErrs(timestamp)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 110, Col: 66}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 111, Col: 66}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var29))
 			if templ_7745c5c3_Err != nil {
@@ -602,7 +602,7 @@ func familyBadge(family Family, style familyVisualStyle) templ.Component {
 		var templ_7745c5c3_Var33 string
 		templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.JoinStringErrs(string(family))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 117, Col: 18}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 118, Col: 18}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var33))
 		if templ_7745c5c3_Err != nil {
@@ -667,7 +667,7 @@ func codeAndFamilyBadge(family Family, style familyVisualStyle, code Code) templ
 			var templ_7745c5c3_Var37 string
 			templ_7745c5c3_Var37, templ_7745c5c3_Err = templ.JoinStringErrs(code)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 125, Col: 10}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 126, Col: 10}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var37))
 			if templ_7745c5c3_Err != nil {
@@ -792,7 +792,7 @@ func goBackScript(nonce string) templ.Component {
 		var templ_7745c5c3_Var42 string
 		templ_7745c5c3_Var42, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 152, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 153, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var42)
 		if templ_7745c5c3_Err != nil {
@@ -836,7 +836,7 @@ func actionLinkBody(text string) templ.Component {
 		var templ_7745c5c3_Var44 string
 		templ_7745c5c3_Var44, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 165, Col: 13}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `errorpage/shared.templ`, Line: 166, Col: 13}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var44))
 		if templ_7745c5c3_Err != nil {

@@ -32,7 +32,9 @@ templ ErrorAlert(props ErrorAlertProps) {
 					@familyBadge(props.Family, style)
 				</div>
 				<div class={ "mt-1 text-sm", style.Text }>
-					<p>{ props.Message }</p>
+					if props.Message != "" {
+						<p>{ props.Message }</p>
+					}
 				</div>
 				if props.Fix != "" {
 					<div class="mt-2">

@@ -138,6 +138,7 @@ type CauseItem struct {
 type ErrorPageProps struct {
 	utils.BaseProps
 	Family        Family
+	StatusCode    int
 	Code          Code
 	Title         string
 	Message       string

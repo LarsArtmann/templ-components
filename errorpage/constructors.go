@@ -25,6 +25,7 @@ const (
 func NotFound() ErrorPageProps {
 	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
 		Family:        FamilyRejection,
+		StatusCode:    404,
 		Code:          CodePageNotFound,
 		Title:         notFound404DefaultTitle,
 		Message:       notFound404DefaultMessage,
@@ -39,6 +40,7 @@ func NotFound() ErrorPageProps {
 func Forbidden() ErrorPageProps {
 	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
 		Family:        FamilyRejection,
+		StatusCode:    403,
 		Code:          CodeAccessForbidden,
 		Title:         "Access denied",
 		Message:       "You don't have permission to access this resource.",
@@ -100,6 +102,7 @@ func ServiceUnavailable() ErrorPageProps {
 func InternalError() ErrorPageProps {
 	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
 		Family:        FamilyInfrastructure,
+		StatusCode:    500,
 		Code:          CodeInternalError,
 		Title:         titleInternalError,
 		Message:       msgInternalUnexpected,

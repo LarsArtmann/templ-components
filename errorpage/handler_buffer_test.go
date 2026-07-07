@@ -140,10 +140,10 @@ func TestWriteErrorPageBufferBeforeWriteSameAsHandler(t *testing.T) {
 	}
 }
 
-// TestOverrideNilSkipsRender verifies the documented behavior that an
-// Override returning nil causes ErrorHandler to skip rendering the page.
-// The client receives no body but the handler does not panic.
-func TestOverrideNilSkipsRender(t *testing.T) {
+// TestOverrideNilDoesNotPanic verifies that an Override returning nil
+// does not cause a panic. When nil is returned, the original derived
+// props are used and rendering proceeds normally.
+func TestOverrideNilDoesNotPanic(t *testing.T) {
 	t.Parallel()
 
 	handler := ErrorHandler(
@@ -160,9 +160,8 @@ func TestOverrideNilSkipsRender(t *testing.T) {
 	// Should not panic.
 	handler.ServeHTTP(rec, req)
 
-	// When Override returns nil, props is unchanged (zero value of ErrorPageProps),
-	// which has Family="" — the handler will attempt to render with empty family.
-	// We assert only that the call completed without panic.
+	// When Override returns nil, the original derived props are used.
+	// We assert only that the call completed without panic and produced output.
 	if rec.Code == 0 {
 		t.Error("expected a status code to be set")
 	}
