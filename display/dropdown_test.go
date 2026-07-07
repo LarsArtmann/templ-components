@@ -116,4 +116,17 @@ func TestDropdownRender(t *testing.T) {
 		utils.AssertContains(t, output, dropdownItemDelete)
 		utils.AssertContains(t, output, "text-red-600")
 	})
+
+	t.Run("RTL keyboard nav computes keys correctly", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Dropdown(DropdownProps{
+			BaseProps: utils.BaseProps{ID: "rtl-menu"},
+			Label:     dropdownLabelMenu,
+			Items:     []DropdownItem{{Text: "Item", Href: "/x"}},
+		}))
+		// The RTL ternary must NOT be inside a JS string literal (dead code).
+		// It should be computed as a variable assignment.
+		utils.AssertContains(t, output, "var nextKey")
+		utils.AssertNotContains(t, output, "=== '(document.documentElement")
+	})
 }

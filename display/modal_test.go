@@ -155,4 +155,20 @@ func TestModalRender(t *testing.T) {
 		utils.AssertNotContains(t, output, " inert")
 		utils.AssertContains(t, output, `data-tc-open-on-load="true"`)
 	})
+
+	t.Run("overlay JS syncs aria-hidden and inert on open/close", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Modal(ModalProps{
+			BaseProps: utils.BaseProps{ID: "js-sync-modal"},
+			Title:     "Sync",
+			Open:      false,
+		}))
+		// Open function must remove inert and set aria-hidden=false so the
+		// dialog is focusable and in the a11y tree when opened via JS.
+		utils.AssertContains(t, output, "setAttribute('aria-hidden', 'false')")
+		utils.AssertContains(t, output, "removeAttribute('inert')")
+		// Close function must add inert and set aria-hidden=true.
+		utils.AssertContains(t, output, "setAttribute('aria-hidden', 'true')")
+		utils.AssertContains(t, output, "setAttribute('inert', '')")
+	})
 }

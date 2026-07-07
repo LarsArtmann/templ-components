@@ -53,7 +53,7 @@ func TestTabsRender(t *testing.T) {
 		utils.AssertContains(t, output, "bg-blue-600")
 	})
 
-	t.Run("no active tab renders all inactive", func(t *testing.T) {
+	t.Run("no active tab defaults to first", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Tabs(TabsProps{
 			Tabs: []Tab{
@@ -61,7 +61,23 @@ func TestTabsRender(t *testing.T) {
 				{ID: "y", Label: "Y"},
 			},
 		}))
-		utils.AssertNotContains(t, output, `aria-selected="true"`)
+		// WAI-ARIA tab pattern: exactly one tab must be keyboard-focusable
+		utils.AssertContains(t, output, `tabindex="0"`)
+		utils.AssertContains(t, output, `aria-selected="true"`)
+	})
+
+	t.Run("tabs without IDs get auto-generated IDs", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Tabs(TabsProps{
+			Tabs: []Tab{
+				{Label: "No ID"},
+				{Label: "Also No ID"},
+			},
+		}))
+		// Auto-generated IDs prevent invalid HTML (id="-tab") and JS crashes
+		utils.AssertContains(t, output, `id="tc-tab-`)
+		utils.AssertNotContains(t, output, `id="-tab"`)
+		utils.AssertNotContains(t, output, `aria-controls=""`)
 	})
 
 	t.Run("default props has TabsDefault variant", func(t *testing.T) {

@@ -227,7 +227,7 @@ func Accordion(props AccordionProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var11 = []any{"overflow-hidden transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", templ.KV("max-h-96", item.Open), templ.KV("max-h-0", !item.Open)}
+			var templ_7745c5c3_Var11 = []any{"grid transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", templ.KV("grid-rows-[1fr]", item.Open), templ.KV("grid-rows-[0fr]", !item.Open)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -281,7 +281,7 @@ func Accordion(props AccordionProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "><div class=\"px-4 pb-4 text-sm text-gray-600 dark:text-gray-400\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "><div class=\"overflow-hidden\"><div class=\"px-4 pb-4 text-sm text-gray-600 dark:text-gray-400\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -291,7 +291,7 @@ func Accordion(props AccordionProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div></div></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div></div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -303,13 +303,13 @@ func Accordion(props AccordionProps) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/accordion.templ`, Line: 93, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/accordion.templ`, Line: 95, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\">\n\t\tif (!window.tcAccordionAttached) {\n\t\t\twindow.tcAccordionAttached = true;\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar btn = e.target.closest('[data-accordion-trigger]');\n\t\t\t\tif (!btn) return;\n\t\t\t\tvar id = btn.getAttribute('data-accordion-trigger');\n\t\t\t\tvar panel = document.getElementById(id + '-panel');\n\t\t\t\tvar icon = btn.querySelector('svg');\n\t\t\t\tif (!panel) return;\n\t\t\t\tvar isOpen = panel.hasAttribute('data-open');\n\t\t\t\tif (isOpen) {\n\t\t\t\t\tpanel.removeAttribute('data-open');\n\t\t\t\t\tpanel.classList.remove('max-h-96');\n\t\t\t\t\tpanel.classList.add('max-h-0');\n\t\t\t\t\tbtn.setAttribute('aria-expanded', 'false');\n\t\t\t\t\tif (icon) icon.classList.remove('rotate-180');\n\t\t\t\t} else {\n\t\t\t\t\tpanel.setAttribute('data-open', '');\n\t\t\t\t\tpanel.classList.remove('max-h-0');\n\t\t\t\t\tpanel.classList.add('max-h-96');\n\t\t\t\t\tbtn.setAttribute('aria-expanded', 'true');\n\t\t\t\t\tif (icon) icon.classList.add('rotate-180');\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\">\n\t\tif (!window.tcAccordionAttached) {\n\t\t\twindow.tcAccordionAttached = true;\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar btn = e.target.closest('[data-accordion-trigger]');\n\t\t\t\tif (!btn) return;\n\t\t\t\tvar id = btn.getAttribute('data-accordion-trigger');\n\t\t\t\tvar panel = document.getElementById(id + '-panel');\n\t\t\t\tvar icon = btn.querySelector('svg');\n\t\t\t\tif (!panel) return;\n\t\t\t\tvar isOpen = panel.hasAttribute('data-open');\n\t\t\t\tif (isOpen) {\n\t\t\t\t\tpanel.removeAttribute('data-open');\n\t\t\t\t\tpanel.classList.remove('grid-rows-[1fr]');\n\t\t\t\t\tpanel.classList.add('grid-rows-[0fr]');\n\t\t\t\t\tbtn.setAttribute('aria-expanded', 'false');\n\t\t\t\t\tif (icon) icon.classList.remove('rotate-180');\n\t\t\t\t} else {\n\t\t\t\t\tpanel.setAttribute('data-open', '');\n\t\t\t\t\tpanel.classList.remove('grid-rows-[0fr]');\n\t\t\t\t\tpanel.classList.add('grid-rows-[1fr]');\n\t\t\t\t\tbtn.setAttribute('aria-expanded', 'true');\n\t\t\t\t\tif (icon) icon.classList.add('rotate-180');\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

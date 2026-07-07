@@ -44,11 +44,9 @@ func TestAccordionRender(t *testing.T) {
 				{ID: "item1", Title: "Closed", Open: false, Content: templ.Raw("Content")},
 			},
 		}))
-		utils.AssertContains(
-			t,
-			output,
-			`class="overflow-hidden transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0 max-h-0"`,
-		)
+		utils.AssertContains(t, output, "grid transition-all")
+		utils.AssertContains(t, output, "grid-rows-[0fr]")
+		utils.AssertContains(t, output, `aria-expanded="false"`)
 	})
 
 	t.Run("with nonce", func(t *testing.T) {

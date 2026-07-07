@@ -76,15 +76,17 @@ templ Accordion(props AccordionProps) {
 					id={ item.ID + "-panel" }
 					role="region"
 					aria-labelledby={ item.ID + "-trigger" }
-					class={ "overflow-hidden transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", templ.KV("max-h-96", item.Open), templ.KV("max-h-0", !item.Open) }
+					class={ "grid transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", templ.KV("grid-rows-[1fr]", item.Open), templ.KV("grid-rows-[0fr]", !item.Open) }
 					if item.Open {
 						data-open
 					}
 				>
-					<div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">
-						if item.Content != nil {
-							@item.Content
-						}
+					<div class="overflow-hidden">
+						<div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">
+							if item.Content != nil {
+								@item.Content
+							}
+						</div>
 					</div>
 				</div>
 			</div>
@@ -103,14 +105,14 @@ templ Accordion(props AccordionProps) {
 				var isOpen = panel.hasAttribute('data-open');
 				if (isOpen) {
 					panel.removeAttribute('data-open');
-					panel.classList.remove('max-h-96');
-					panel.classList.add('max-h-0');
+					panel.classList.remove('grid-rows-[1fr]');
+					panel.classList.add('grid-rows-[0fr]');
 					btn.setAttribute('aria-expanded', 'false');
 					if (icon) icon.classList.remove('rotate-180');
 				} else {
 					panel.setAttribute('data-open', '');
-					panel.classList.remove('max-h-0');
-					panel.classList.add('max-h-96');
+					panel.classList.remove('grid-rows-[0fr]');
+					panel.classList.add('grid-rows-[1fr]');
 					btn.setAttribute('aria-expanded', 'true');
 					if (icon) icon.classList.add('rotate-180');
 				}

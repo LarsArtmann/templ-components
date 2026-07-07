@@ -42,6 +42,31 @@ func isActiveTab(tabID, activeTabID string) bool {
 	return tabID == activeTabID && tabID != ""
 }
 
+// ensureTabIDs generates stable IDs for tabs that omit them, preventing
+// invalid HTML (duplicate id="" attributes) and JS selector crashes in
+// client-side mode.
+func ensureTabIDs(tabs []Tab) []Tab {
+	for i := range tabs {
+		if tabs[i].ID == "" {
+			tabs[i].ID = utils.EnsureID("tab", "")
+		}
+	}
+	return tabs
+}
+
+// resolveActiveTabID returns activeTabID if set, otherwise defaults to the
+// first tab so that exactly one tab is keyboard-focusable (tabindex=0) per
+// the WAI-ARIA tab pattern.
+func resolveActiveTabID(activeTabID string, tabs []Tab) string {
+	if activeTabID != "" {
+		return activeTabID
+	}
+	if len(tabs) > 0 {
+		return tabs[0].ID
+	}
+	return ""
+}
+
 // tabLink renders a single tab link with the given class based on active state
 templ tabLink(tab Tab, isActive bool, activeClass, inactiveClass string) {
 	<a
@@ -67,6 +92,8 @@ templ tabLink(tab Tab, isActive bool, activeClass, inactiveClass string) {
 //	   },
 //	})
 templ Tabs(props TabsProps) {
+	{{ tabs := ensureTabIDs(props.Tabs) }}
+	{{ activeID := resolveActiveTabID(props.ActiveTabID, tabs) }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
@@ -84,8 +111,8 @@ templ Tabs(props TabsProps) {
 			<div
 				class={ "-mb-px flex space-x-8", templ.KV("space-x-2", props.Variant == TabsPills) }
 			>
-				for _, tab := range props.Tabs {
-					{{ active := isActiveTab(tab.ID, props.ActiveTabID) }}
+				for _, tab := range tabs {
+					{{ active := isActiveTab(tab.ID, activeID) }}
 					if props.Variant == TabsPills {
 						@tabLink(tab, active,
 							"rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white",
@@ -100,13 +127,13 @@ templ Tabs(props TabsProps) {
 				}
 			</div>
 		</div>
-		for _, tab := range props.Tabs {
+		for _, tab := range tabs {
 			if tab.Content != nil {
 				<div
 					id={ tab.ID }
 					role="tabpanel"
 					aria-labelledby={ tab.ID + "-tab" }
-					if !isActiveTab(tab.ID, props.ActiveTabID) {
+					if !isActiveTab(tab.ID, activeID) {
 						hidden
 					}
 					class="mt-4"

@@ -125,10 +125,12 @@ func overlayCloseJS(componentName string, cfg overlayPanelConfig) string {
 		"\tif (overlay) {\n" +
 		"\t\toverlay.classList.remove('opacity-100', 'pointer-events-auto');\n" +
 		"\t\toverlay.classList.add('opacity-0', 'pointer-events-none');\n" +
+		"\t\toverlay.setAttribute('aria-hidden', 'true');\n" +
 		"\t\tvar panel = document.getElementById(id + '-panel');\n" +
 		"\t\tif (panel) {\n" +
 		"\t\t\tpanel.classList.remove(" + jsClassArgs(cfg.openClasses) + ");\n" +
 		"\t\t\tpanel.classList.add(" + jsClassArgs(cfg.closeClasses) + ");\n" +
+		"\t\t\tpanel.setAttribute('inert', '');\n" +
 		"\t\t}\n" +
 		"\t\tvar prevId = overlay.getAttribute('data-tc-prev-focus');\n" +
 		"\t\tif (prevId) {\n" +
@@ -150,10 +152,12 @@ func overlayOpenJS(componentName string, cfg overlayPanelConfig) string {
 		"\t\t}\n" +
 		"\t\toverlay.classList.remove('opacity-0', 'pointer-events-none');\n" +
 		"\t\toverlay.classList.add('opacity-100', 'pointer-events-auto');\n" +
+		"\t\toverlay.setAttribute('aria-hidden', 'false');\n" +
 		"\t\tvar panel = document.getElementById(id + '-panel');\n" +
 		"\t\tif (panel) {\n" +
 		"\t\t\tpanel.classList.remove(" + jsClassArgs(cfg.closeClasses) + ");\n" +
 		"\t\t\tpanel.classList.add(" + jsClassArgs(cfg.openClasses) + ");\n" +
+		"\t\t\tpanel.removeAttribute('inert');\n" +
 		"\t\t\tvar focusable = panel.querySelectorAll(" + focusableSelector + ");\n" +
 		"\t\t\tif (focusable.length) focusable[0].focus();\n" +
 		"\t\t}\n" +
@@ -235,6 +239,13 @@ func overlayScriptComponent(nonce, id, componentName string, cfg overlayPanelCon
 // only once per page regardless of how many Tooltip components are rendered.
 func tooltipJS() string {
 	return `if(!window.tcTooltipAttached){window.tcTooltipAttached=true;` +
+		`function tcPropagateTooltipDesc(){` +
+		`document.querySelectorAll('[data-tc-tooltip]').forEach(function(w){` +
+		`var t=w.querySelector('a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])');` +
+		`if(t&&!t.getAttribute('aria-describedby')){var d=w.getAttribute('aria-describedby');if(d)t.setAttribute('aria-describedby',d);}` +
+		`});}` +
+		`tcPropagateTooltipDesc();` +
+		`document.body.addEventListener('htmx:afterSettle',tcPropagateTooltipDesc);` +
 		`document.addEventListener('click',function(e){` +
 		`var trigger=e.target.closest('[data-tc-tooltip]');` +
 		`if(trigger){e.preventDefault();var t=trigger.querySelector('[role="tooltip"]');if(t)t.classList.toggle('hidden');}` +
@@ -271,6 +282,7 @@ func copyButtonJS() string {
 		`document.body.removeChild(ta);}` +
 		`document.addEventListener('click',function(e){` +
 		`var btn=e.target.closest('[data-tc-copy]');if(!btn)return;` +
+		`e.preventDefault();` +
 		`var text=btn.getAttribute('data-tc-copy');` +
 		`var label=btn.getAttribute('data-tc-copy-label')||'Copied!';` +
 		`var labelEl=btn.querySelector('[data-tc-copy-text]');` +
