@@ -25,8 +25,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `display.Tabs` auto-generates IDs for tabs that omit them (`ensureTabIDs`) and defaults `ActiveTabID` to the first tab when unset (`resolveActiveTabID`) — prevents invalid HTML and ensures WAI-ARIA keyboard-focus compliance.
 - `display.Tooltip` JS propagates `aria-describedby` from wrapper to the focusable trigger element so screen readers announce tooltip text.
 - `display.Accordion` uses CSS grid technique (`grid-rows-[1fr]`/`grid-rows-[0fr]`) instead of `max-h-96` — content of any height animates correctly without clipping.
+- `errorpage.ErrorPageProps.StatusCode` — explicit HTTP status code override. When set (non-zero), takes precedence over the family-derived default. `NotFound()` sets 404, `Forbidden()` sets 403, `InternalError()` sets 500.
+- `forms.RadioOption.Checked` — enables pre-selecting a radio option for edit forms.
+- `forms.RadioProps.Required` — propagates `required` to individual radio inputs for native HTML5 validation.
 
-### Fixed
+### Fixed — Round 2 (htmx, errorpage, layout, forms, navigation)
+
+- **`htmx.LoadingButton`**: `htmx-hide-during-request` was not a real CSS class — default text never hid during loading. Replaced with Tailwind arbitrary variant `[.htmx-request_&]:hidden`.
+- **`htmx.InlineLoadingOverlay`**: static `aria-hidden="true"` was never toggled. Replaced with `role="status"` + `aria-live="polite"`.
+- **`htmx` retry counter**: was set on `event.detail.elt` but cleared on `event.detail.target`. Now clears from the same element.
+- **`htmx` error announcer**: `#tc-error-announcer` aria-live region was rendered but never populated. Now updated with error messages.
+- **`htmx` missing catch-all**: no default `else` left `undefined` values for uncovered status codes. Added fallback.
+- **`htmx.ConfirmDelete`**: `hx-confirm` was always rendered even when empty. Now conditional.
+- **`htmx.SwapOOB`**: empty `Selector` produced malformed attribute. Now omits selector when empty.
+- **`errorpage` status codes**: `NotFound()` returned 400 (should be 404), `Forbidden()` returned 400 (should be 403), `InternalError()` returned 503 (should be 500). Added `StatusCode` field.
+- **`errorpage` a11y**: `role="region"` added to `ErrorPage`/`NotFound404` root divs. `ErrorAlert`: empty message guarded. `contextTable`: caption + `th scope`.
+- **`layout.ThemeToggle`**: `querySelectorAll` syncs all instances. localStorage wrapped in try/catch.
+- **`layout` FOUC**: `ThemeScript` moved before HTMX CDN scripts. Favicon type attribute removed. SRI integrity conditional.
+- **`forms.RadioGroup`**: `Required` now propagates `required` to radio inputs for native validation.
+- **`forms.InputGroup`**: right addon missing `pointer-events-none` — was blocking clicks.
+- **`forms.FieldError`**: added `role="alert"`. Empty message guarded.
+- **`navigation.LoadMore`**: `aria-label` moved from div to button.
+- **`navigation` breadcrumb URL**: uses `net/url.Parse` instead of naive string check.
+
+### Fixed — Round 1 (forms, feedback, display, navigation)
 
 - **`forms.Toggle`**: `peer-checked:translate-*` classes were dynamically concatenated (`"peer-checked:" + translateClass`) at runtime, making them invisible to Tailwind's content scanner. The thumb did not slide when checked in production. Now stores complete variant-prefixed class literals (`peer-checked:translate-x-5`).
 - **`navigation.Pagination`**: arrow button border-radius was dynamically concatenated (`"rounded-" + side + "-md"`), invisible to Tailwind's scanner. Now passes complete logical-property literals (`rounded-s-md`/`rounded-e-md`) that also auto-mirror in RTL.
