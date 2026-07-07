@@ -34,7 +34,7 @@ func DefaultLoadMoreProps() LoadMoreProps {
 // LoadMore renders a centered "Load more" button for cursor-based pagination.
 // The button uses hx-get to fetch the next batch and hx-swap="outerHTML" so the
 // server's response (next items + updated LoadMore) replaces this button in
-// place. The cursor is passed via the hx-vals attribute as a query parameter.
+// place. The cursor is appended as a ?cursor= query parameter to the hx-get URL.
 //
 //	@navigation.LoadMore(navigation.LoadMoreProps{
 //	   Endpoint: "/api/items",
@@ -62,9 +62,6 @@ templ LoadMore(props LoadMoreProps) {
 	<div
 		id={ utils.EnsureID("load-more", props.ID) }
 		class={ utils.Class("flex justify-center py-6", props.Class) }
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
-		}
 		{ props.Attrs... }
 	>
 		<button
@@ -76,6 +73,9 @@ templ LoadMore(props LoadMoreProps) {
 				hx-trigger="revealed"
 			}
 			class="inline-flex items-center gap-2 rounded-md bg-white dark:bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
 		>
 			{ label }
 		</button>

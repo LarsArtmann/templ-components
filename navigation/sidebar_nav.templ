@@ -74,7 +74,7 @@ templ SidebarNav(props SidebarNavProps) {
 				@props.Brand
 			</div>
 		}
-		<nav class="flex flex-1 flex-col gap-1 px-3 py-2">
+		<nav class="flex flex-1 flex-col gap-1 px-3 py-2" aria-label="Sidebar navigation">
 			for _, item := range props.Items {
 				{{ active := sidebarItemActive(item, props.CurrentPath) }}
 				<a

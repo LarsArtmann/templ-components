@@ -3,6 +3,7 @@ package navigation
 import (
 	"encoding/json"
 	"fmt"
+	"net/url"
 	"strings"
 
 	"github.com/larsartmann/templ-components/icons"
@@ -72,12 +73,14 @@ func breadcrumbJSONLD(items []BreadcrumbItem, baseURL string) string {
 }
 
 // resolveBreadcrumbURL joins a relative Href to baseURL for JSON-LD output.
-// Absolute Hrefs (already containing a scheme) are returned unchanged.
+// Absolute Hrefs (with a scheme) and protocol-relative URLs (//host) are
+// returned unchanged.
 func resolveBreadcrumbURL(href, baseURL string) string {
 	if href == "" {
 		return ""
 	}
-	if strings.Contains(href, "://") {
+	parsed, err := url.Parse(href)
+	if err != nil || parsed.IsAbs() || strings.HasPrefix(href, "//") {
 		return href
 	}
 	if baseURL == "" {
