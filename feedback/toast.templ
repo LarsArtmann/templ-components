@@ -130,11 +130,10 @@ templ ToastContainer(nonce string) {
 //
 //	@feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.ToastSuccess})
 templ Toast(props ToastProps) {
+	{{ toastID := utils.EnsureID("toast", props.ID) }}
 	{{ s := feedbackStyle(props.Type) }}
 	<div
-		if props.ID != "" {
-			id={ props.ID }
-		}
+		id={ toastID }
 		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0", s.Border, s.BG, props.Class) }
 		role="status"
 		aria-live="polite"
@@ -160,11 +159,11 @@ templ Toast(props ToastProps) {
 			</button>
 		</div>
 	</div>
-	if props.Duration > 0 && props.ID != "" {
+	if props.Duration > 0 {
 		<script nonce={ props.Nonce }>
 			{{ utils.DismissScript() }}
 			setTimeout(function() {
-				var toast = document.getElementById('{{ props.ID }}');
+				var toast = document.getElementById('{{ toastID }}');
 				if (toast) toast.remove();
 			}, {{ fmt.Sprintf("%d", props.Duration) }});
 		</script>

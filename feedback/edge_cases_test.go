@@ -82,6 +82,25 @@ func TestToastEdgeCases(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, `id="my-toast"`)
 	})
+
+	t.Run("auto-dismiss fires even without ID", func(t *testing.T) {
+		t.Parallel()
+		// DefaultToastProps sets Duration: 5000 but no ID. Before the fix,
+		// the absence of an ID silently disabled auto-dismiss.
+		output := utils.Render(t, Toast(DefaultToastProps()))
+		utils.AssertContains(t, output, `id="tc-toast-`)
+		utils.AssertContains(t, output, "setTimeout")
+	})
+
+	t.Run("duration zero omits setTimeout", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Toast(ToastProps{
+			BaseProps: utils.BaseProps{ID: "manual-toast"},
+			Message:   "Manual",
+			Type:      ToastInfo,
+		}))
+		utils.AssertNotContains(t, output, "setTimeout")
+	})
 }
 
 func TestProgressBarEdgeCases(t *testing.T) {
@@ -103,6 +122,18 @@ func TestProgressBarEdgeCases(t *testing.T) {
 			Total:   100,
 		}))
 		utils.AssertContains(t, output, "0%")
+		utils.AssertContains(t, output, `aria-valuenow="0"`)
+	})
+
+	t.Run("overflow current clamps aria-valuenow to total", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, ProgressBar(ProgressBarProps{
+			Current: 250,
+			Total:   100,
+		}))
+		utils.AssertContains(t, output, `aria-valuenow="100"`)
+		utils.AssertContains(t, output, `aria-valuemax="100"`)
+		utils.AssertContains(t, output, "100%")
 	})
 }
 

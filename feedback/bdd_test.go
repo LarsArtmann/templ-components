@@ -175,7 +175,7 @@ func TestProgressBarUserSeesCompletion(t *testing.T) {
 			extra   string
 		}{
 			{"150/100", 150, 100, ""},
-			{"200/100 with aria-valuenow", 200, 100, `aria-valuenow="200"`},
+			{"200/100 with aria-valuenow", 200, 100, `aria-valuenow="100"`},
 		} {
 			t.Run(tt.name, func(t *testing.T) {
 				t.Parallel()
