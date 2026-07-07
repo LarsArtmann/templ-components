@@ -5,7 +5,7 @@ import "strings"
 
 // HTMXVersion is a pinned HTMX main-script version. Use the exported constants
 // (e.g. HTMXVersion2_0_10) for compile-time safety; custom versions can be
-// constructed via HTMXVersion("x.y.z") but will fall back to the default SRI hash.
+// constructed via HTMXVersion("x.y.z") but will render without SRI (no integrity hash).
 type HTMXVersion string
 
 const (

@@ -11,7 +11,8 @@ import (
 templ ThemeScript(nonce string) {
 	<script nonce={ nonce }>
 		(function() {
-			var theme = localStorage.getItem('theme');
+			var theme;
+			try { theme = localStorage.getItem('theme'); } catch(e) {}
 			var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
 			var isDark = theme === 'dark' || (!theme && prefersDark);
 			if (isDark) {
@@ -26,7 +27,7 @@ templ ThemeScript(nonce string) {
 // Uses role="switch" + aria-checked so screen-reader users know the active mode.
 // Requires Tailwind CSS dark: variants and the ThemeScript in your base layout.
 //
-//	@layout.ThemeToggle("Toggle theme")
+//	@layout.ThemeToggle("Toggle theme", nonce)
 templ ThemeToggle(ariaLabel string, nonce string) {
 	<button
 		type="button"
@@ -43,21 +44,26 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 		if (!window.tcThemeToggleAttached) {
 			window.tcThemeToggleAttached = true;
 			var html = document.documentElement;
-			var initBtn = document.querySelector('[data-theme-toggle]');
-			if (initBtn) initBtn.setAttribute('aria-checked', html.classList.contains('dark'));
+
+			function syncToggleAria(btn) {
+				if (btn) btn.setAttribute('aria-checked', String(html.classList.contains('dark')));
+			}
+
+			document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
+
 			document.addEventListener('click', function(e) {
 				var btn = e.target.closest('[data-theme-toggle]');
 				if (!btn) return;
 				var isDark = html.classList.contains('dark');
 				if (isDark) {
 					html.classList.remove('dark');
-					localStorage.setItem('theme', 'light');
+					try { localStorage.setItem('theme', 'light'); } catch(e) {}
 				} else {
 					html.classList.add('dark');
-					localStorage.setItem('theme', 'dark');
+					try { localStorage.setItem('theme', 'dark'); } catch(e) {}
 				}
 				html.style.colorScheme = isDark ? 'light' : 'dark';
-				btn.setAttribute('aria-checked', String(!isDark));
+				document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
 			});
 		}
 	</script>

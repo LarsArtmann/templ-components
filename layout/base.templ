@@ -133,7 +133,7 @@ templ Base(props PageProps) {
 				<meta name="description" content={ props.Description }/>
 			}
 			if props.Favicon != "" {
-				<link rel="icon" type="image/svg+xml" href={ props.Favicon }/>
+				<link rel="icon" href={ props.Favicon }/>
 			}
 			<meta name="theme-color" content={ themeColor(props) } media="(prefers-color-scheme: light)"/>
 			<meta name="theme-color" content={ darkThemeColor(props) } media="(prefers-color-scheme: dark)"/>
@@ -148,18 +148,30 @@ templ Base(props PageProps) {
 			if props.Locale != "" {
 				<meta property="og:locale" content={ props.Locale }/>
 			}
-			<meta name="twitter:card" content="summary_large_image"/>
+			if props.OGImage != "" {
+				<meta name="twitter:card" content="summary_large_image"/>
+			} else {
+				<meta name="twitter:card" content="summary"/>
+			}
 			<meta name="twitter:title" content={ props.Title }/>
 			if props.Description != "" {
 				<meta name="twitter:description" content={ props.Description }/>
 			}
+			if props.OGImage != "" {
+				<meta name="twitter:image" content={ props.OGImage }/>
+			}
+			@ThemeScript(props.Nonce)
 			if props.CSSPath != "" {
 				<link rel="stylesheet" href={ props.CSSPath }/>
 			}
 			if props.HTMXVersion != "" {
 				if props.HTMXUseSRI {
 					{{ mainSRI := htmxMainSRI(props.HTMXVersion) }}
-					<script src={ htmxScriptURL(props.HTMXVersion, props.HTMXCDN) } integrity={ mainSRI } crossorigin="anonymous"></script>
+					if mainSRI != "" {
+						<script src={ htmxScriptURL(props.HTMXVersion, props.HTMXCDN) } integrity={ mainSRI } crossorigin="anonymous"></script>
+					} else {
+						<script src={ htmxScriptURL(props.HTMXVersion, props.HTMXCDN) }></script>
+					}
 				} else {
 					<script src={ htmxScriptURL(props.HTMXVersion, props.HTMXCDN) }></script>
 				}
@@ -171,7 +183,6 @@ templ Base(props PageProps) {
 					}
 				}
 			}
-			@ThemeScript(props.Nonce)
 			if props.HeadContent != nil {
 				@props.HeadContent
 			}
