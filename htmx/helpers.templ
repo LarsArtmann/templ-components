@@ -83,10 +83,12 @@ type SwapOOBProps struct {
 //	 }
 templ SwapOOB(props SwapOOBProps) {
 	{{ style := normalizeSwapStyle(props.SwapStyle) }}
-	{{ oobAttr := string(style)
-if props.Selector != "" {
-	oobAttr += ":" + props.Selector
-} }}
+	{{
+		oobAttr := string(style)
+		if props.Selector != "" {
+			oobAttr += ":" + props.Selector
+		}
+	}}
 	<div
 		hx-swap-oob={ oobAttr }
 		if props.ID != "" {
