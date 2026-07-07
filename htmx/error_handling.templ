@@ -132,9 +132,15 @@ templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
 						if (structured && structured.message) message = structured.message;
 						toastType = 'error';
 						title = structured && structured.code ? structured.code : 'Request Failed';
+					} else {
+						message = 'An unexpected error occurred.';
+						toastType = 'error';
+						title = 'Error';
 					}
 					tcShowToast(message, toastType, title, 5000);
 				}
+				var announcer = document.getElementById('tc-error-announcer');
+				if (announcer) announcer.textContent = message || 'An error occurred.';
 			}
 
 			document.addEventListener('htmx:sendError', function(event) {
@@ -159,18 +165,10 @@ templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
 			});
 
 			document.addEventListener('htmx:afterRequest', function(event) {
-				var target = event.detail.target;
-				if (target) {
-					target.classList.remove('htmx-loading');
-					var timer = target.getAttribute('data-loading-timer');
-					if (timer) {
-						clearTimeout(parseInt(timer));
-						target.removeAttribute('data-loading-timer');
-					}
-					var xhr = event.detail.xhr;
-					if (xhr && xhr.status >= 200 && xhr.status < 300) {
-						target.removeAttribute('data-tc-retry');
-					}
+				var xhr = event.detail.xhr;
+				if (xhr && xhr.status >= 200 && xhr.status < 300) {
+					var elt = event.detail.elt;
+					if (elt) elt.removeAttribute('data-tc-retry');
 				}
 			});
 

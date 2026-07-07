@@ -55,7 +55,9 @@ templ ConfirmDelete(props ConfirmDeleteProps) {
 		hx-delete={ props.Delete }
 		hx-target={ props.Target }
 		hx-swap="outerHTML"
-		hx-confirm={ props.Confirm }
+		if props.Confirm != "" {
+			hx-confirm={ props.Confirm }
+		}
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
@@ -81,8 +83,12 @@ type SwapOOBProps struct {
 //	 }
 templ SwapOOB(props SwapOOBProps) {
 	{{ style := normalizeSwapStyle(props.SwapStyle) }}
+	{{ oobAttr := string(style)
+if props.Selector != "" {
+	oobAttr += ":" + props.Selector
+} }}
 	<div
-		hx-swap-oob={ string(style) + ":" + props.Selector }
+		hx-swap-oob={ oobAttr }
 		if props.ID != "" {
 			id={ props.ID }
 		}
