@@ -20,7 +20,12 @@ templ Label(forID, text string, required bool) {
 // helpText renders the shared help text paragraph for form fields
 templ helpText(id, text string) {
 	if text != "" {
-		<p id={ HelpTextID(id) } class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ text }</p>
+		<p
+			if HelpTextID(id) != "" {
+				id={ HelpTextID(id) }
+			}
+			class="mt-1 text-sm text-gray-500 dark:text-gray-400"
+		>{ text }</p>
 	}
 }
 
@@ -28,12 +33,15 @@ templ helpText(id, text string) {
 //
 //	@forms.FieldError("email", "This field is required")
 templ FieldError(fieldID, message string) {
-	<p
-		class="mt-2 text-sm text-red-600 dark:text-red-400"
-		if fieldID != "" {
-			id={ fieldID + errorIDSuffix }
-		}
-	>{ message }</p>
+	if message != "" {
+		<p
+			class="mt-2 text-sm text-red-600 dark:text-red-400"
+			role="alert"
+			if fieldID != "" {
+				id={ fieldID + errorIDSuffix }
+			}
+		>{ message }</p>
+	}
 }
 
 // FormFieldProps configures the standard form field wrapper structure.

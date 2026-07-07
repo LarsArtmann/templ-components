@@ -29,6 +29,9 @@ templ Radio(props RadioProps) {
 			if props.Checked {
 				checked
 			}
+			if props.Required {
+				required
+			}
 			if props.Disabled {
 				disabled
 			}
@@ -85,7 +88,7 @@ templ RadioGroup(props RadioGroupProps) {
 		}
 		<div class={ utils.Ternary(props.Inline, "mt-2 flex space-x-6", "mt-2 space-y-2") }>
 			for _, opt := range props.Options {
-				@Radio(radioItemProps(props.ID, props.Name, opt))
+				@Radio(radioItemProps(props.ID, props.Name, opt, props.Required))
 			}
 		</div>
 		if props.Error != "" {

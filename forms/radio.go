@@ -10,6 +10,7 @@ type RadioProps struct {
 	Value    string
 	Label    string
 	Checked  bool
+	Required bool
 	Disabled bool
 }
 
@@ -22,6 +23,7 @@ func DefaultRadioProps() RadioProps {
 type RadioOption struct {
 	Value    string
 	Label    string
+	Checked  bool
 	Disabled bool
 }
 
@@ -44,11 +46,13 @@ func DefaultRadioGroupProps() RadioGroupProps {
 
 // radioItemProps builds a RadioProps for an option within a group.
 // Auto-generates the ID from the group ID and option value.
-func radioItemProps(groupID, name string, opt RadioOption) RadioProps {
+func radioItemProps(groupID, name string, opt RadioOption, required bool) RadioProps {
 	p := RadioProps{ //nolint:exhaustruct // BaseProps.ID set conditionally below
 		Name:     name,
 		Value:    opt.Value,
 		Label:    opt.Label,
+		Checked:  opt.Checked,
+		Required: required,
 		Disabled: opt.Disabled,
 	}
 	if groupID != "" {

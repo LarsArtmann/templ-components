@@ -157,7 +157,7 @@ func InputGroup(props InputGroupProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.RightAddon != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"absolute inset-y-0 end-0 flex items-center pe-3\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
