@@ -97,6 +97,71 @@ func TestSelectMoreEdgeCases(t *testing.T) {
 	}
 }
 
+// TestSelectDoesNotMutateCallerOptions verifies that normalizeSelectOptions
+// returns a defensive copy and does not corrupt the caller's []SelectOption.
+// This was a real bug: reusing the same options slice across renders silently
+// cleared Selected flags on the second render.
+func TestSelectDoesNotMutateCallerOptions(t *testing.T) {
+	t.Parallel()
+
+	opts := []SelectOption{
+		{Value: "a", Label: "A", Selected: true, Disabled: true}, // Disabled+Selected → Selected cleared
+		{Value: "b", Label: "B", Selected: true},                 // valid second-selected → cleared (single-value)
+	}
+	props := SelectProps{Name: "s", Options: opts}
+
+	_ = utils.Render(t, Select(props))
+	_ = utils.Render(t, Select(props)) // second render must see the same original data
+
+	if !opts[0].Selected || !opts[0].Disabled {
+		t.Error("normalizeSelectOptions mutated caller's slice: opts[0] changed")
+	}
+	if !opts[1].Selected {
+		t.Error("normalizeSelectOptions mutated caller's slice: opts[1].Selected was cleared")
+	}
+}
+
+// TestCheckboxWithoutIDDoesNotEmitEmptyFor verifies that a checkbox without an
+// ID does not render <label for=""> (invalid HTML that breaks label association).
+func TestCheckboxWithoutIDDoesNotEmitEmptyFor(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Checkbox(CheckboxProps{
+		Name:  "agree",
+		Label: "I agree",
+	}))
+	utils.AssertNotContains(t, output, `for=""`)
+	utils.AssertContains(t, output, "I agree")
+}
+
+// TestToggleEmitsCompletePeerCheckedClasses verifies that the toggle's thumb
+// translate classes include the complete "peer-checked:" variant prefix so
+// Tailwind's content scanner can detect them. Dynamically concatenated variant
+// prefixes are invisible to the scanner and produce no CSS — the thumb would
+// not slide when checked.
+func TestToggleEmitsCompletePeerCheckedClasses(t *testing.T) {
+	t.Parallel()
+
+	for _, tt := range []struct {
+		name string
+		size ToggleSize
+		want string
+	}{
+		{"sm", ToggleSizeSM, "peer-checked:translate-x-4"},
+		{"md default", ToggleSizeMD, "peer-checked:translate-x-5"},
+		{"lg", ToggleSizeLG, "peer-checked:translate-x-6"},
+	} {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, Toggle(ToggleProps{
+				Name:  "t",
+				Label: "Toggle",
+				Size:  tt.size,
+			}))
+			utils.AssertContains(t, output, tt.want)
+		})
+	}
+}
+
 func TestTextareaFullCoverage(t *testing.T) {
 	t.Parallel()
 

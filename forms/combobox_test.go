@@ -113,6 +113,10 @@ func TestComboboxRender(t *testing.T) {
 			Options:   []ComboboxOption{{Value: "z", Label: "Z"}},
 		}))
 		utils.AssertContains(t, output, `disabled`)
+		// The hidden submission input must also be disabled so its value is
+		// excluded from form submission (HTML spec: disabled controls are not submitted).
+		utils.AssertContains(t, output,
+			`type="hidden" name="disabled_cb" value="" data-combobox-value="disabled-cb" disabled`)
 	})
 
 	t.Run("default props", func(t *testing.T) {

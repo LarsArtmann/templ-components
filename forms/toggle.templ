@@ -41,13 +41,19 @@ type toggleSizeSet struct {
 	Track, Thumb, Translate string
 }
 
-//nolint:gochecknoglobals // Package-level lookup table for toggle sizes
+// Translate values include the complete "peer-checked:" variant prefix as a
+// literal so Tailwind's content scanner can detect them. Concatenating the
+// variant at runtime ("peer-checked:" + x) produces an invisible token that
+// the scanner never finds, so the generated CSS omits the class and the thumb
+// does not slide.
+//
+//nolint:gochecknoglobals // Package-level lookup table for toggle sizes.
 var toggleSizeMap = map[ToggleSize]toggleSizeSet{
-	ToggleSizeSM: {"w-9 h-5", "w-4 h-4", "translate-x-4"},
-	ToggleSizeLG: {"w-14 h-8", "w-7 h-7", "translate-x-6"},
+	ToggleSizeSM: {"w-9 h-5", "w-4 h-4", "peer-checked:translate-x-4"},
+	ToggleSizeLG: {"w-14 h-8", "w-7 h-7", "peer-checked:translate-x-6"},
 }
 
-var toggleSizeDefault = toggleSizeSet{"w-11 h-6", "w-5 h-5", "translate-x-5"}
+var toggleSizeDefault = toggleSizeSet{"w-11 h-6", "w-5 h-5", "peer-checked:translate-x-5"}
 
 func toggleSizeLookup(size ToggleSize) toggleSizeSet {
 	return utils.Lookup(toggleSizeMap, size, toggleSizeDefault)
@@ -86,7 +92,7 @@ templ Toggle(props ToggleProps) {
 			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 		/>
 		<div class={ utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 motion-reduce:transition-none", trackClass) }>
-			<div class={ utils.Class("absolute top-0.5 start-0.5 rounded-full bg-white shadow-sm transition-transform peer-checked:"+translateClass+" motion-reduce:transition-none", thumbClass) }></div>
+			<div class={ utils.Class("absolute top-0.5 start-0.5 rounded-full bg-white shadow-sm transition-transform "+translateClass+" motion-reduce:transition-none", thumbClass) }></div>
 		</div>
 		if props.Label != "" {
 			<span class="ms-3 text-sm font-medium text-gray-900 dark:text-white">{ props.Label }</span>

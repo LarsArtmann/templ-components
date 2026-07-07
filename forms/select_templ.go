@@ -11,8 +11,8 @@ import templruntime "github.com/a-h/templ/runtime"
 import "github.com/larsartmann/templ-components/utils"
 
 // SelectOption represents a single option in a select.
-// If both Disabled and Selected are true, Selected takes precedence (Disabled is cleared)
-// because a disabled option cannot be meaningfully pre-selected by the user.
+// If both Disabled and Selected are true, Selected is cleared because a
+// disabled option cannot be meaningfully pre-selected by the user.
 type SelectOption struct {
 	Value    string
 	Label    string
@@ -20,25 +20,28 @@ type SelectOption struct {
 	Selected bool
 }
 
-// normalizeSelectOptions resolves contradictions: Disabled+Selected clears
-// Selected, and only the first Selected option is kept (a single-value
-// <select> cannot have multiple pre-selected options — browsers resolve the
-// ambiguity inconsistently).
+// normalizeSelectOptions returns a defensive copy of opts with contradictions
+// resolved: Disabled+Selected clears Selected, and only the first Selected option
+// is kept (a single-value <select> cannot have multiple pre-selected options —
+// browsers resolve the ambiguity inconsistently). The caller's slice is never
+// mutated, so reusing the same []SelectOption across renders is safe.
 func normalizeSelectOptions(opts []SelectOption) []SelectOption {
+	out := make([]SelectOption, len(opts))
+	copy(out, opts)
 	firstSelected := true
-	for i := range opts {
-		if opts[i].Disabled && opts[i].Selected {
-			opts[i].Selected = false
+	for i := range out {
+		if out[i].Disabled && out[i].Selected {
+			out[i].Selected = false
 			continue
 		}
-		if opts[i].Selected {
+		if out[i].Selected {
 			if !firstSelected {
-				opts[i].Selected = false
+				out[i].Selected = false
 			}
 			firstSelected = false
 		}
 	}
-	return opts
+	return out
 }
 
 // SelectProps configures a select dropdown
@@ -113,7 +116,7 @@ func Select(props SelectProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 66, Col: 20}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 69, Col: 20}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -131,7 +134,7 @@ func Select(props SelectProps) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 68, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 71, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
@@ -183,7 +186,7 @@ func Select(props SelectProps) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 80, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 83, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 				if templ_7745c5c3_Err != nil {
@@ -211,7 +214,7 @@ func Select(props SelectProps) templ.Component {
 				var templ_7745c5c3_Var8 string
 				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(opt.Value)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 87, Col: 22}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 90, Col: 22}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 				if templ_7745c5c3_Err != nil {
@@ -240,7 +243,7 @@ func Select(props SelectProps) templ.Component {
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(opt.Label)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 95, Col: 16}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 98, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 				if templ_7745c5c3_Err != nil {

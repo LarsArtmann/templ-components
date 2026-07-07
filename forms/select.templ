@@ -3,8 +3,8 @@ package forms
 import "github.com/larsartmann/templ-components/utils"
 
 // SelectOption represents a single option in a select.
-// If both Disabled and Selected are true, Selected takes precedence (Disabled is cleared)
-// because a disabled option cannot be meaningfully pre-selected by the user.
+// If both Disabled and Selected are true, Selected is cleared because a
+// disabled option cannot be meaningfully pre-selected by the user.
 type SelectOption struct {
 	Value    string
 	Label    string
@@ -12,25 +12,28 @@ type SelectOption struct {
 	Selected bool
 }
 
-// normalizeSelectOptions resolves contradictions: Disabled+Selected clears
-// Selected, and only the first Selected option is kept (a single-value
-// <select> cannot have multiple pre-selected options — browsers resolve the
-// ambiguity inconsistently).
+// normalizeSelectOptions returns a defensive copy of opts with contradictions
+// resolved: Disabled+Selected clears Selected, and only the first Selected option
+// is kept (a single-value <select> cannot have multiple pre-selected options —
+// browsers resolve the ambiguity inconsistently). The caller's slice is never
+// mutated, so reusing the same []SelectOption across renders is safe.
 func normalizeSelectOptions(opts []SelectOption) []SelectOption {
+	out := make([]SelectOption, len(opts))
+	copy(out, opts)
 	firstSelected := true
-	for i := range opts {
-		if opts[i].Disabled && opts[i].Selected {
-			opts[i].Selected = false
+	for i := range out {
+		if out[i].Disabled && out[i].Selected {
+			out[i].Selected = false
 			continue
 		}
-		if opts[i].Selected {
+		if out[i].Selected {
 			if !firstSelected {
-				opts[i].Selected = false
+				out[i].Selected = false
 			}
 			firstSelected = false
 		}
 	}
-	return opts
+	return out
 }
 
 // SelectProps configures a select dropdown

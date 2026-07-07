@@ -97,7 +97,15 @@ templ Combobox(props ComboboxProps) {
 				{ ErrorAttrs(id, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(id), ""))... }
 				{ props.Attrs... }
 			/>
-			<input type="hidden" name={ props.Name } value={ props.Value } data-combobox-value={ id }/>
+			<input
+				type="hidden"
+				name={ props.Name }
+				value={ props.Value }
+				data-combobox-value={ id }
+				if props.Disabled {
+					disabled
+				}
+			/>
 			<ul
 				id={ id + "-listbox" }
 				role="listbox"
@@ -136,6 +144,8 @@ templ Combobox(props ComboboxProps) {
 				var id = input.getAttribute('data-combobox-input');
 				var list = document.querySelector('[data-combobox-list="' + id + '"]');
 				if (!list) return;
+				var hidden = document.querySelector('[data-combobox-value="' + id + '"]');
+				if (hidden) hidden.value = '';
 				var query = input.value.toLowerCase();
 				var visible = 0;
 				list.querySelectorAll('[data-combobox-option]').forEach(function(opt) {
@@ -228,7 +238,22 @@ templ Combobox(props ComboboxProps) {
 					return;
 				}
 				if (opts.length === 0) return;
-				if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End' || e.key === 'Enter') {
+				if (e.key === 'Enter') {
+					var enterIdx = -1;
+					opts.forEach(function(o, i) { if (o.getAttribute('data-selected') === 'true') enterIdx = i; });
+					if (enterIdx >= 0) {
+						e.preventDefault();
+						var sel = opts[enterIdx];
+						input.value = sel.getAttribute('data-combobox-label');
+						var hidden = document.querySelector('[data-combobox-value="' + id + '"]');
+						if (hidden) hidden.value = sel.getAttribute('data-combobox-option');
+						list.classList.add('hidden');
+						input.setAttribute('aria-expanded', 'false');
+						tcClearComboSelection(opts, input);
+					}
+					return;
+				}
+				if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {
 					e.preventDefault();
 					list.classList.remove('hidden');
 					input.setAttribute('aria-expanded', 'true');
@@ -243,17 +268,6 @@ templ Combobox(props ComboboxProps) {
 					case 'ArrowUp':   nextIdx = currentIdx > 0 ? currentIdx - 1 : opts.length - 1; break;
 					case 'Home':      nextIdx = 0; break;
 					case 'End':       nextIdx = opts.length - 1; break;
-					case 'Enter':
-						if (currentIdx >= 0) {
-							var sel = opts[currentIdx];
-							input.value = sel.getAttribute('data-combobox-label');
-							var hidden = document.querySelector('[data-combobox-value="' + id + '"]');
-							if (hidden) hidden.value = sel.getAttribute('data-combobox-option');
-							list.classList.add('hidden');
-							input.setAttribute('aria-expanded', 'false');
-							tcClearComboSelection(opts, input);
-						}
-						return;
 				}
 				if (nextIdx !== currentIdx) {
 					tcClearComboSelection(opts, input);

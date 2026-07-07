@@ -256,7 +256,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 100, Col: 41}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 102, Col: 21}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 			if templ_7745c5c3_Err != nil {
@@ -269,7 +269,7 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Value)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 100, Col: 63}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 103, Col: 23}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {
@@ -282,101 +282,111 @@ func Combobox(props ComboboxProps) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 100, Col: 90}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 104, Col: 28}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "\"><ul id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if props.Disabled {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, " disabled")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "><ul id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(id + "-listbox")
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 102, Col: 24}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 110, Col: 24}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\" role=\"listbox\" class=\"hidden absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm\" data-combobox-list=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\" role=\"listbox\" class=\"hidden absolute z-10 mt-1 max-h-60 w-full overflow-auto rounded-md bg-white dark:bg-gray-800 py-1 text-base shadow-lg ring-1 ring-black/5 focus:outline-hidden sm:text-sm\" data-combobox-list=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 105, Col: 27}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 113, Col: 27}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			for _, opt := range props.Options {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<li role=\"option\" id=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<li role=\"option\" id=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var16 string
 				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(id + "-option-" + opt.Value)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 110, Col: 38}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 118, Col: 38}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" tabindex=\"-1\" aria-selected=\"false\" class=\"relative cursor-pointer select-none py-2 ps-3 pe-9 text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-gray-700 data-[selected]:bg-blue-50 dark:data-[selected]:bg-gray-700\" data-combobox-option=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\" tabindex=\"-1\" aria-selected=\"false\" class=\"relative cursor-pointer select-none py-2 ps-3 pe-9 text-gray-900 dark:text-white hover:bg-blue-50 dark:hover:bg-gray-700 data-[selected]:bg-blue-50 dark:data-[selected]:bg-gray-700\" data-combobox-option=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var17 string
 				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.ResolveAttributeValue(opt.Value)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 114, Col: 38}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 122, Col: 38}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\" data-combobox-label=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\" data-combobox-label=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var18 string
 				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(opt.Label)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 115, Col: 37}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 123, Col: 37}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var19 string
 				templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.JoinStringErrs(opt.Label)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 117, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 125, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var19))
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</li>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "</li>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</ul></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</ul></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -386,20 +396,20 @@ func Combobox(props ComboboxProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<script nonce=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var20 string
 		templ_7745c5c3_Var20, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 123, Col: 28}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/combobox.templ`, Line: 131, Col: 28}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var20)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\">\n\t\tif (!window.tcComboboxAttached) {\n\t\t\twindow.tcComboboxAttached = true;\n\t\t\tfunction tcClearComboSelection(opts, input) {\n\t\t\t\topts.forEach(function(o) {\n\t\t\t\t\to.removeAttribute('data-selected');\n\t\t\t\t\to.setAttribute('aria-selected', 'false');\n\t\t\t\t});\n\t\t\t\tinput.removeAttribute('aria-activedescendant');\n\t\t\t}\n\t\t\tdocument.addEventListener('input', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (!list) return;\n\t\t\t\tvar query = input.value.toLowerCase();\n\t\t\t\tvar visible = 0;\n\t\t\t\tlist.querySelectorAll('[data-combobox-option]').forEach(function(opt) {\n\t\t\t\t\tvar label = opt.getAttribute('data-combobox-label').toLowerCase();\n\t\t\t\t\tvar match = label.includes(query);\n\t\t\t\t\topt.style.display = match ? '' : 'none';\n\t\t\t\t\tif (match) visible++;\n\t\t\t\t});\n\t\t\t\tif (visible > 0) {\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t} else {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar opt = e.target.closest('[data-combobox-option]');\n\t\t\t\tif (opt) {\n\t\t\t\t\tvar list = opt.closest('[data-combobox-list]');\n\t\t\t\t\tif (!list) return;\n\t\t\t\t\tvar id = list.getAttribute('data-combobox-list');\n\t\t\t\t\tvar input = document.querySelector('[data-combobox-input=\"' + id + '\"]');\n\t\t\t\t\tvar hidden = document.querySelector('[data-combobox-value=\"' + id + '\"]');\n\t\t\t\t\tvar label = opt.getAttribute('data-combobox-label');\n\t\t\t\t\tvar value = opt.getAttribute('data-combobox-option');\n\t\t\t\t\tif (input) {\n\t\t\t\t\t\tinput.value = label;\n\t\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t}\n\t\t\t\t\tif (hidden) hidden.value = value;\n\t\t\t\t\tif (list) list.classList.add('hidden');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('focusin', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (list && list.querySelector('[data-combobox-option]')) {\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tvar list = e.target.closest('[data-combobox-list]');\n\t\t\t\tif (!input && !list) {\n\t\t\t\t\tdocument.querySelectorAll('[data-combobox-list]').forEach(function(l) {\n\t\t\t\t\t\tl.classList.add('hidden');\n\t\t\t\t\t});\n\t\t\t\t\tdocument.querySelectorAll('[data-combobox-input]').forEach(function(i) {\n\t\t\t\t\t\ti.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('focusout', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar container = input.closest('[data-combobox]');\n\t\t\t\tif (container && container.contains(e.relatedTarget)) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (list) {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tvar opts = Array.prototype.slice.call(list.querySelectorAll('[data-combobox-option]'));\n\t\t\t\t\ttcClearComboSelection(opts, input);\n\t\t\t\t}\n\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t});\n\t\t\tdocument.addEventListener('keydown', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (!list) return;\n\t\t\t\tvar opts = Array.prototype.slice.call(list.querySelectorAll('[data-combobox-option]')).filter(function(o) {\n\t\t\t\t\treturn o.style.display !== 'none';\n\t\t\t\t});\n\t\t\t\tif (e.key === 'Tab') {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\ttcClearComboSelection(opts, input);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tif (e.key === 'Escape') {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\ttcClearComboSelection(opts, input);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tif (opts.length === 0) return;\n\t\t\t\tif (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End' || e.key === 'Enter') {\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t}\n\t\t\t\tvar currentIdx = -1;\n\t\t\t\topts.forEach(function(o, i) {\n\t\t\t\t\tif (o.getAttribute('data-selected') === 'true') currentIdx = i;\n\t\t\t\t});\n\t\t\t\tvar nextIdx = currentIdx;\n\t\t\t\tswitch (e.key) {\n\t\t\t\t\tcase 'ArrowDown': nextIdx = currentIdx < opts.length - 1 ? currentIdx + 1 : 0; break;\n\t\t\t\t\tcase 'ArrowUp':   nextIdx = currentIdx > 0 ? currentIdx - 1 : opts.length - 1; break;\n\t\t\t\t\tcase 'Home':      nextIdx = 0; break;\n\t\t\t\t\tcase 'End':       nextIdx = opts.length - 1; break;\n\t\t\t\t\tcase 'Enter':\n\t\t\t\t\t\tif (currentIdx >= 0) {\n\t\t\t\t\t\t\tvar sel = opts[currentIdx];\n\t\t\t\t\t\t\tinput.value = sel.getAttribute('data-combobox-label');\n\t\t\t\t\t\t\tvar hidden = document.querySelector('[data-combobox-value=\"' + id + '\"]');\n\t\t\t\t\t\t\tif (hidden) hidden.value = sel.getAttribute('data-combobox-option');\n\t\t\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t\t\ttcClearComboSelection(opts, input);\n\t\t\t\t\t\t}\n\t\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tif (nextIdx !== currentIdx) {\n\t\t\t\t\ttcClearComboSelection(opts, input);\n\t\t\t\t\tvar sel = opts[nextIdx];\n\t\t\t\t\tsel.setAttribute('data-selected', 'true');\n\t\t\t\t\tsel.setAttribute('aria-selected', 'true');\n\t\t\t\t\tinput.setAttribute('aria-activedescendant', sel.getAttribute('id') || '');\n\t\t\t\t\tsel.scrollIntoView({ block: 'nearest' });\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\">\n\t\tif (!window.tcComboboxAttached) {\n\t\t\twindow.tcComboboxAttached = true;\n\t\t\tfunction tcClearComboSelection(opts, input) {\n\t\t\t\topts.forEach(function(o) {\n\t\t\t\t\to.removeAttribute('data-selected');\n\t\t\t\t\to.setAttribute('aria-selected', 'false');\n\t\t\t\t});\n\t\t\t\tinput.removeAttribute('aria-activedescendant');\n\t\t\t}\n\t\t\tdocument.addEventListener('input', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (!list) return;\n\t\t\t\tvar hidden = document.querySelector('[data-combobox-value=\"' + id + '\"]');\n\t\t\t\tif (hidden) hidden.value = '';\n\t\t\t\tvar query = input.value.toLowerCase();\n\t\t\t\tvar visible = 0;\n\t\t\t\tlist.querySelectorAll('[data-combobox-option]').forEach(function(opt) {\n\t\t\t\t\tvar label = opt.getAttribute('data-combobox-label').toLowerCase();\n\t\t\t\t\tvar match = label.includes(query);\n\t\t\t\t\topt.style.display = match ? '' : 'none';\n\t\t\t\t\tif (match) visible++;\n\t\t\t\t});\n\t\t\t\tif (visible > 0) {\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t} else {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar opt = e.target.closest('[data-combobox-option]');\n\t\t\t\tif (opt) {\n\t\t\t\t\tvar list = opt.closest('[data-combobox-list]');\n\t\t\t\t\tif (!list) return;\n\t\t\t\t\tvar id = list.getAttribute('data-combobox-list');\n\t\t\t\t\tvar input = document.querySelector('[data-combobox-input=\"' + id + '\"]');\n\t\t\t\t\tvar hidden = document.querySelector('[data-combobox-value=\"' + id + '\"]');\n\t\t\t\t\tvar label = opt.getAttribute('data-combobox-label');\n\t\t\t\t\tvar value = opt.getAttribute('data-combobox-option');\n\t\t\t\t\tif (input) {\n\t\t\t\t\t\tinput.value = label;\n\t\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t}\n\t\t\t\t\tif (hidden) hidden.value = value;\n\t\t\t\t\tif (list) list.classList.add('hidden');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('focusin', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (list && list.querySelector('[data-combobox-option]')) {\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tvar list = e.target.closest('[data-combobox-list]');\n\t\t\t\tif (!input && !list) {\n\t\t\t\t\tdocument.querySelectorAll('[data-combobox-list]').forEach(function(l) {\n\t\t\t\t\t\tl.classList.add('hidden');\n\t\t\t\t\t});\n\t\t\t\t\tdocument.querySelectorAll('[data-combobox-input]').forEach(function(i) {\n\t\t\t\t\t\ti.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t});\n\t\t\tdocument.addEventListener('focusout', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar container = input.closest('[data-combobox]');\n\t\t\t\tif (container && container.contains(e.relatedTarget)) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (list) {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tvar opts = Array.prototype.slice.call(list.querySelectorAll('[data-combobox-option]'));\n\t\t\t\t\ttcClearComboSelection(opts, input);\n\t\t\t\t}\n\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t});\n\t\t\tdocument.addEventListener('keydown', function(e) {\n\t\t\t\tvar input = e.target.closest('[data-combobox-input]');\n\t\t\t\tif (!input) return;\n\t\t\t\tvar id = input.getAttribute('data-combobox-input');\n\t\t\t\tvar list = document.querySelector('[data-combobox-list=\"' + id + '\"]');\n\t\t\t\tif (!list) return;\n\t\t\t\tvar opts = Array.prototype.slice.call(list.querySelectorAll('[data-combobox-option]')).filter(function(o) {\n\t\t\t\t\treturn o.style.display !== 'none';\n\t\t\t\t});\n\t\t\t\tif (e.key === 'Tab') {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\ttcClearComboSelection(opts, input);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tif (e.key === 'Escape') {\n\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\ttcClearComboSelection(opts, input);\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tif (opts.length === 0) return;\n\t\t\t\tif (e.key === 'Enter') {\n\t\t\t\t\tvar enterIdx = -1;\n\t\t\t\t\topts.forEach(function(o, i) { if (o.getAttribute('data-selected') === 'true') enterIdx = i; });\n\t\t\t\t\tif (enterIdx >= 0) {\n\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\tvar sel = opts[enterIdx];\n\t\t\t\t\t\tinput.value = sel.getAttribute('data-combobox-label');\n\t\t\t\t\t\tvar hidden = document.querySelector('[data-combobox-value=\"' + id + '\"]');\n\t\t\t\t\t\tif (hidden) hidden.value = sel.getAttribute('data-combobox-option');\n\t\t\t\t\t\tlist.classList.add('hidden');\n\t\t\t\t\t\tinput.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t\ttcClearComboSelection(opts, input);\n\t\t\t\t\t}\n\t\t\t\t\treturn;\n\t\t\t\t}\n\t\t\t\tif (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tlist.classList.remove('hidden');\n\t\t\t\t\tinput.setAttribute('aria-expanded', 'true');\n\t\t\t\t}\n\t\t\t\tvar currentIdx = -1;\n\t\t\t\topts.forEach(function(o, i) {\n\t\t\t\t\tif (o.getAttribute('data-selected') === 'true') currentIdx = i;\n\t\t\t\t});\n\t\t\t\tvar nextIdx = currentIdx;\n\t\t\t\tswitch (e.key) {\n\t\t\t\t\tcase 'ArrowDown': nextIdx = currentIdx < opts.length - 1 ? currentIdx + 1 : 0; break;\n\t\t\t\t\tcase 'ArrowUp':   nextIdx = currentIdx > 0 ? currentIdx - 1 : opts.length - 1; break;\n\t\t\t\t\tcase 'Home':      nextIdx = 0; break;\n\t\t\t\t\tcase 'End':       nextIdx = opts.length - 1; break;\n\t\t\t\t}\n\t\t\t\tif (nextIdx !== currentIdx) {\n\t\t\t\t\ttcClearComboSelection(opts, input);\n\t\t\t\t\tvar sel = opts[nextIdx];\n\t\t\t\t\tsel.setAttribute('data-selected', 'true');\n\t\t\t\t\tsel.setAttribute('aria-selected', 'true');\n\t\t\t\t\tinput.setAttribute('aria-activedescendant', sel.getAttribute('id') || '');\n\t\t\t\t\tsel.scrollIntoView({ block: 'nearest' });\n\t\t\t\t}\n\t\t\t});\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

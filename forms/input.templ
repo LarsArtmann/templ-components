@@ -151,7 +151,11 @@ func DefaultCheckboxProps() CheckboxProps {
 templ checkboxLabel(id, label, helpMsg string) {
 	<div class="ms-3 text-sm leading-6">
 		if label != "" {
-			<label for={ id } class="font-medium text-gray-900 dark:text-white">{ label }</label>
+			if id != "" {
+				<label for={ id } class="font-medium text-gray-900 dark:text-white">{ label }</label>
+			} else {
+				<span class="font-medium text-gray-900 dark:text-white">{ label }</span>
+			}
 		}
 		@helpText(id, helpMsg)
 	</div>
