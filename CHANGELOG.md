@@ -22,6 +22,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - SKILL.md component count drift-guard test (informational, logs actual vs documented count).
 - Golden package coverage boost: 70.5% → 81.8% (update-flag, mkdir, normalization edge cases, diff, lineAt).
 - Dedicated sub-template tests for `errorHeader`, `actionLinkBody`, `goBackScript`, `skeletonContainer`, `definitionDetailContent`.
+- `display.Tabs` auto-generates IDs for tabs that omit them (`ensureTabIDs`) and defaults `ActiveTabID` to the first tab when unset (`resolveActiveTabID`) — prevents invalid HTML and ensures WAI-ARIA keyboard-focus compliance.
+- `display.Tooltip` JS propagates `aria-describedby` from wrapper to the focusable trigger element so screen readers announce tooltip text.
+- `display.Accordion` uses CSS grid technique (`grid-rows-[1fr]`/`grid-rows-[0fr]`) instead of `max-h-96` — content of any height animates correctly without clipping.
+
+### Fixed
+
+- **`forms.Toggle`**: `peer-checked:translate-*` classes were dynamically concatenated (`"peer-checked:" + translateClass`) at runtime, making them invisible to Tailwind's content scanner. The thumb did not slide when checked in production. Now stores complete variant-prefixed class literals (`peer-checked:translate-x-5`).
+- **`navigation.Pagination`**: arrow button border-radius was dynamically concatenated (`"rounded-" + side + "-md"`), invisible to Tailwind's scanner. Now passes complete logical-property literals (`rounded-s-md`/`rounded-e-md`) that also auto-mirror in RTL.
+- **`forms.Combobox` disabled hidden input**: the hidden submission input was not disabled when `Disabled: true`, so its value was still submitted (violating the HTML spec's disabled-exclusion contract). Now both visible and hidden inputs get `disabled`.
+- **`forms.Combobox` stale hidden value**: typing in the text input without selecting an option left the hidden input's value stale (the pre-populated server value was silently submitted instead of the user's typed text). The `input` event handler now clears the hidden value when the user types.
+- **`forms.Combobox` Enter blocking form submission**: `e.preventDefault()` was called unconditionally for Enter, even when no option was highlighted. This blocked form submission when pressing Enter in the combobox. Now Enter only prevents default when an option is actively highlighted.
+- **`forms.Select` slice mutation**: `normalizeSelectOptions` mutated the caller's `[]SelectOption` in place, corrupting `Selected`/`Disabled` flags on re-render. Now returns a defensive copy.
+- **`forms.Select` doc contradiction**: type comment said "Selected takes precedence (Disabled is cleared)" but code clears Selected. Documentation corrected to match the implementation (Selected is cleared).
+- **`forms.Checkbox` invalid `for=""`**: a checkbox without an ID rendered `<label for="">` (invalid HTML that breaks label association). Now renders a `<span>` when no ID is present.
+- **`feedback.Toast` auto-dismiss**: a toast with `Duration > 0` but no ID silently disabled auto-dismiss (the `setTimeout` was gated on `props.ID != ""`). Now auto-generates an ID via `EnsureID` so `DefaultToastProps()` (which sets Duration: 5000) auto-dismisses correctly.
+- **`feedback.ProgressBar` aria-valuenow**: `aria-valuenow` used the raw `props.Current` value without clamping, producing values outside `[aria-valuemin, aria-valuemax]`. Now clamped to `[0, Total]`.
+- **`display.Modal`/`display.Drawer` aria-hidden/inert sync**: the JS open/close functions only toggled CSS classes but never synced `aria-hidden` or `inert`. A JS-opened modal stayed `inert` (keyboard inaccessible) and `aria-hidden="true"` (screen reader invisible). Now `tcOpen` removes `inert` and sets `aria-hidden="false"`; `tcClose` adds `inert` and sets `aria-hidden="true"`.
+- **`display.Dropdown` RTL dead code**: the RTL arrow-key ternary was inside a JS string literal (`e.key === '(document... ? ...)'`), making it dead code that never matched. Now computes `nextKey`/`prevKey` as variables outside the comparison.
+- **`display.CopyButton` link navigation**: clicking the `<a>` variant followed the `href` before the "Copied!" feedback could show. Now calls `e.preventDefault()` so copy feedback is visible.
 
 ### Changed
 

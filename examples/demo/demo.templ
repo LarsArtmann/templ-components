@@ -28,14 +28,26 @@ templ demoContent() {
 		<div class="flex items-center justify-between mb-8">
 			<h1 class="text-3xl font-bold text-gray-900 dark:text-white">templ-components Demo</h1>
 		</div>
-		<nav class="flex flex-wrap gap-2 mb-8 text-sm">
-			<a href="#alerts" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Alerts</a>
-			<a href="#stat-cards" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Cards</a>
-			<a href="#buttons" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Buttons</a>
-			<a href="#forms" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Forms</a>
-			<a href="#table" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Table</a>
-			<a href="#loading" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">Loading</a>
-			<a href="#404" class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">404 Page</a>
+		{{
+			tocLinks := []struct{ Label, Anchor string }{
+				{"Navigation", "nav"},
+				{"Alerts", "alerts"},
+				{"Stat Cards", "stat-cards"},
+				{"Badges", "badges"},
+				{"Icons", "icons"},
+				{"Avatar", "avatar"},
+				{"Buttons", "buttons"},
+				{"Forms", "forms"},
+				{"Table", "table"},
+				{"Loading", "loading"},
+				{"Skeletons", "skeletons"},
+				{"404", "404"},
+			}
+		}}
+		<nav class="flex flex-wrap gap-2 mb-8 text-sm" aria-label="Demo sections">
+			for _, link := range tocLinks {
+				<a href={ templ.SafeURL("#" + link.Anchor) } class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">{ link.Label }</a>
+			}
 		</nav>
 		@demoSection("Navigation", "nav")
 		@navigation.Nav(navigation.NavProps{
@@ -315,7 +327,7 @@ templ demoContent() {
 			Headers: []string{"Message", "Author", "Status"},
 			Body:    demoTableBody(),
 		})
-		@demoSection("Loading State (SkeletonCardGrid)", "loading")
+		@demoSection("Loading State (SkeletonCardGrid)", "skeletons")
 		@feedback.SkeletonCardGrid(3)
 	</div>
 }
