@@ -245,8 +245,10 @@ func paginationArrowIcon(srText string, svgPath string) templ.Component {
 	})
 }
 
-// paginationArrow renders a previous/next arrow button for desktop pagination
-func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel string, srText string, svgPath string, rel string) templ.Component {
+// paginationArrow renders a previous/next arrow button for desktop pagination.
+// roundedClass is the complete border-radius utility (e.g. "rounded-s-md") —
+// passed as a literal so Tailwind's content scanner can detect it.
+func paginationArrow(enabled bool, href string, roundedClass string, ariaLabel string, srText string, svgPath string, rel string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -268,7 +270,7 @@ func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel st
 		}
 		ctx = templ.ClearChildren(ctx)
 		if enabled {
-			var templ_7745c5c3_Var12 = []any{"relative inline-flex items-center px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0", "rounded-" + roundedSide + "-md"}
+			var templ_7745c5c3_Var12 = []any{"relative inline-flex items-center px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0", roundedClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var12...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -280,7 +282,7 @@ func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel st
 			var templ_7745c5c3_Var13 templ.SafeURL
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(href))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 105, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 107, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
@@ -306,7 +308,7 @@ func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel st
 			var templ_7745c5c3_Var15 string
 			templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(ariaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 107, Col: 25}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 109, Col: 25}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 			if templ_7745c5c3_Err != nil {
@@ -324,7 +326,7 @@ func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel st
 				var templ_7745c5c3_Var16 string
 				templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(rel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 109, Col: 13}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 111, Col: 13}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 				if templ_7745c5c3_Err != nil {
@@ -348,7 +350,7 @@ func paginationArrow(enabled bool, href string, roundedSide string, ariaLabel st
 				return templ_7745c5c3_Err
 			}
 		} else {
-			var templ_7745c5c3_Var17 = []any{"relative inline-flex items-center px-2 py-2 text-gray-300 dark:text-gray-600 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed", "rounded-" + roundedSide + "-md"}
+			var templ_7745c5c3_Var17 = []any{"relative inline-flex items-center px-2 py-2 text-gray-300 dark:text-gray-600 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed", roundedClass}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var17...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -537,7 +539,7 @@ func Pagination(props PaginationProps) templ.Component {
 				var templ_7745c5c3_Var24 string
 				templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 155, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 157, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var24)
 				if templ_7745c5c3_Err != nil {
@@ -555,7 +557,7 @@ func Pagination(props PaginationProps) templ.Component {
 			var templ_7745c5c3_Var25 string
 			templ_7745c5c3_Var25, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Pagination"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 157, Col: 83}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 159, Col: 83}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var25)
 			if templ_7745c5c3_Err != nil {
@@ -601,7 +603,7 @@ func Pagination(props PaginationProps) templ.Component {
 			var templ_7745c5c3_Var27 string
 			templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", props.CurrentPage))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 169, Col: 70}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 171, Col: 70}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 			if templ_7745c5c3_Err != nil {
@@ -614,7 +616,7 @@ func Pagination(props PaginationProps) templ.Component {
 			var templ_7745c5c3_Var28 string
 			templ_7745c5c3_Var28, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", props.TotalPages))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 171, Col: 69}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/pagination.templ`, Line: 173, Col: 69}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var28))
 			if templ_7745c5c3_Err != nil {
@@ -627,7 +629,7 @@ func Pagination(props PaginationProps) templ.Component {
 			templ_7745c5c3_Err = paginationArrow(
 				props.CurrentPage > 1,
 				props.pageURL(props.CurrentPage-1),
-				"l",
+				"rounded-s-md",
 				"Previous page",
 				"Previous",
 				svg.PathArrowLeft,
@@ -688,7 +690,7 @@ func Pagination(props PaginationProps) templ.Component {
 			templ_7745c5c3_Err = paginationArrow(
 				props.CurrentPage < props.TotalPages,
 				props.pageURL(props.CurrentPage+1),
-				"r",
+				"rounded-e-md",
 				"Next page",
 				"Next",
 				svg.PathArrowRight,

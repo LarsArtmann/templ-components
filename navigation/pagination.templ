@@ -98,12 +98,14 @@ templ paginationArrowIcon(srText string, svgPath string) {
 	@svg.FillIcon("h-5 w-5", svgPath, false)
 }
 
-// paginationArrow renders a previous/next arrow button for desktop pagination
-templ paginationArrow(enabled bool, href string, roundedSide string, ariaLabel string, srText string, svgPath string, rel string) {
+// paginationArrow renders a previous/next arrow button for desktop pagination.
+// roundedClass is the complete border-radius utility (e.g. "rounded-s-md") —
+// passed as a literal so Tailwind's content scanner can detect it.
+templ paginationArrow(enabled bool, href string, roundedClass string, ariaLabel string, srText string, svgPath string, rel string) {
 	if enabled {
 		<a
 			href={ templ.SafeURL(href) }
-			class={ "relative inline-flex items-center px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0", "rounded-" + roundedSide + "-md" }
+			class={ "relative inline-flex items-center px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0", roundedClass }
 			aria-label={ ariaLabel }
 			if rel != "" {
 				rel={ rel }
@@ -112,7 +114,7 @@ templ paginationArrow(enabled bool, href string, roundedSide string, ariaLabel s
 			@paginationArrowIcon(srText, svgPath)
 		</a>
 	} else {
-		<span class={ "relative inline-flex items-center px-2 py-2 text-gray-300 dark:text-gray-600 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed", "rounded-" + roundedSide + "-md" } aria-disabled="true" tabindex="-1">
+		<span class={ "relative inline-flex items-center px-2 py-2 text-gray-300 dark:text-gray-600 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed", roundedClass } aria-disabled="true" tabindex="-1">
 			@paginationArrowIcon(srText, svgPath)
 		</span>
 	}
@@ -177,7 +179,7 @@ templ Pagination(props PaginationProps) {
 							@paginationArrow(
 								props.CurrentPage > 1,
 								props.pageURL(props.CurrentPage-1),
-								"l",
+								"rounded-s-md",
 								"Previous page",
 								"Previous",
 								svg.PathArrowLeft,
@@ -206,7 +208,7 @@ templ Pagination(props PaginationProps) {
 							@paginationArrow(
 								props.CurrentPage < props.TotalPages,
 								props.pageURL(props.CurrentPage+1),
-								"r",
+								"rounded-e-md",
 								"Next page",
 								"Next",
 								svg.PathArrowRight,
