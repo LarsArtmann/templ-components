@@ -232,7 +232,7 @@ func TestStepCircleClass(t *testing.T) {
 		{
 			2,
 			2,
-			"bg-white border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400",
+			"bg-white dark:bg-gray-800 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400",
 		},
 		{3, 2, "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"},
 	}

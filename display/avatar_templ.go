@@ -268,7 +268,7 @@ func Avatar(props AvatarProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			var templ_7745c5c3_Var12 = []any{utils.Class("relative inline-flex items-center justify-center bg-blue-600 text-white font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class)}
+			var templ_7745c5c3_Var12 = []any{utils.Class("relative inline-flex items-center justify-center bg-blue-600 text-white dark:bg-blue-500 font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var12...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

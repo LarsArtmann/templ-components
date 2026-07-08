@@ -204,7 +204,7 @@ func Toggle(props ToggleProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var7 = []any{utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 motion-reduce:transition-none", trackClass)}
+		var templ_7745c5c3_Var7 = []any{utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 dark:peer-checked:bg-blue-500 motion-reduce:transition-none", trackClass)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

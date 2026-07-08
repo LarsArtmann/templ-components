@@ -337,7 +337,7 @@ func Tabs(props TabsProps) templ.Component {
 			active := isActiveTab(tab.ID, activeID)
 			if props.Variant == TabsPills {
 				templ_7745c5c3_Err = tabLink(tab, active,
-					"rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white",
+					"rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-2 text-sm font-medium text-white",
 					"rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
 				).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {

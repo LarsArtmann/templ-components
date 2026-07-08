@@ -107,7 +107,7 @@ templ ToastContainer(nonce string) {
 			content.appendChild(msgEl);
 			inner.appendChild(content);
 			var btn = document.createElement('button');
-			btn.className = 'flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0';
+			btn.className = 'flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0';
 			btn.setAttribute('aria-label', 'Dismiss');
 			btn.addEventListener('click', function() { this.closest('.pointer-events-auto').remove(); });
 			btn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (tcToastIcons.dismiss || '') + '</svg>';
@@ -152,7 +152,7 @@ templ Toast(props ToastProps) {
 			</div>
 			<button
 				data-dismiss="toast"
-				class="flex-shrink-0 text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+				class="flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
 				aria-label="Dismiss"
 			>
 				@icons.Icon(icons.X, "h-4 w-4")

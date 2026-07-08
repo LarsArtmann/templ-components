@@ -91,7 +91,7 @@ templ Toggle(props ToggleProps) {
 			}
 			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 		/>
-		<div class={ utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 motion-reduce:transition-none", trackClass) }>
+		<div class={ utils.Class("relative rounded-full bg-gray-200 transition-colors peer-checked:bg-blue-600 dark:bg-gray-700 dark:peer-checked:bg-blue-500 motion-reduce:transition-none", trackClass) }>
 			<div class={ utils.Class("absolute top-0.5 start-0.5 rounded-full bg-white shadow-sm transition-transform "+translateClass+" motion-reduce:transition-none", thumbClass) }></div>
 		</div>
 		if props.Label != "" {

@@ -12,7 +12,7 @@ import "github.com/larsartmann/templ-components/utils"
 
 // radioInputClass returns the shared Tailwind classes for radio inputs
 func radioInputClass() string {
-	return "h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-blue-600"
+	return "h-4 w-4 border-gray-300 text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-blue-600"
 }
 
 // Radio renders a single radio button with label
@@ -365,7 +365,7 @@ func RadioGroup(props RadioGroupProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.Required {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "<span class=\"text-red-500 ms-0.5\" aria-hidden=\"true\">*</span>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "<span class=\"text-red-500 dark:text-red-400 ms-0.5\" aria-hidden=\"true\">*</span>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

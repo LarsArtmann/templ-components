@@ -890,12 +890,12 @@ func statCardFigures(props StatCardProps) templ.Component {
 			}
 			switch trend {
 			case TrendUp:
-				templ_7745c5c3_Err = svg.FillIcon("self-center flex-shrink-0 h-4 w-4 text-green-500", svg.PathArrowUp, false).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = svg.FillIcon("self-center flex-shrink-0 h-4 w-4 text-green-500 dark:text-green-400", svg.PathArrowUp, false).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			case TrendDown:
-				templ_7745c5c3_Err = svg.FillIcon("self-center flex-shrink-0 h-4 w-4 text-red-500", svg.PathArrowDown, false).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = svg.FillIcon("self-center flex-shrink-0 h-4 w-4 text-red-500 dark:text-red-400", svg.PathArrowDown, false).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

@@ -80,7 +80,7 @@ templ SidebarNav(props SidebarNavProps) {
 				<a
 					href={ templ.SafeURL(item.Href) }
 					class={ "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0",
-						templ.KV("bg-blue-600 text-white", active),
+						templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
 						templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active) }
 					if active {
 						aria-current="page"
@@ -94,7 +94,7 @@ templ SidebarNav(props SidebarNavProps) {
 			}
 		</nav>
 		if props.Footer != nil {
-			<div class="px-4 py-3 text-xs text-gray-500">
+			<div class="px-4 py-3 text-xs text-gray-500 dark:text-gray-400">
 				@props.Footer
 			</div>
 		}

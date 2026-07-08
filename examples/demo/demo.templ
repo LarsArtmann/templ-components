@@ -90,7 +90,7 @@ templ demoContent() {
 				} {
 				<div class="flex flex-col items-center gap-1">
 					@icons.Icon(name, "h-6 w-6 text-gray-600 dark:text-gray-400")
-					<span class="text-xs text-gray-500">{ string(name) }</span>
+					<span class="text-xs text-gray-500 dark:text-gray-400">{ string(name) }</span>
 				</div>
 			}
 		</div>
@@ -102,9 +102,9 @@ templ demoContent() {
 		</div>
 		@demoSection("Loading", "loading")
 		<div class="flex items-center gap-8">
-			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-blue-600"})
-			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-gray-600"})
-			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-red-600"})
+			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-blue-600 dark:text-blue-400"})
+			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-gray-600 dark:text-gray-400"})
+			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-red-600 dark:text-red-400"})
 			@feedback.InlineLoading("Saving...")
 		</div>
 		@demoSection("Accordion", "accordion")
@@ -162,7 +162,7 @@ templ demoContent() {
 		<div class="space-y-6 max-w-md">
 			@forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email address", Required: true})
 			@forms.InputGroup(forms.InputGroupProps{
-				LeftAddon: icons.Icon(icons.Search, "h-5 w-5 text-gray-400"),
+				LeftAddon: icons.Icon(icons.Search, "h-5 w-5 text-gray-400 dark:text-gray-500"),
 			}) {
 				@forms.Input(forms.InputProps{Name: "search", Type: forms.InputSearch, Placeholder: "Search...", BaseProps: utils.BaseProps{Class: "pl-10"}})
 			}

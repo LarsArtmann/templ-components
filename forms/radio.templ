@@ -4,7 +4,7 @@ import "github.com/larsartmann/templ-components/utils"
 
 // radioInputClass returns the shared Tailwind classes for radio inputs
 func radioInputClass() string {
-	return "h-4 w-4 border-gray-300 text-blue-600 focus:ring-blue-600 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-blue-600"
+	return "h-4 w-4 border-gray-300 text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-blue-600"
 }
 
 // Radio renders a single radio button with label
@@ -82,7 +82,7 @@ templ RadioGroup(props RadioGroupProps) {
 			<legend class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
 				{ props.Label }
 				if props.Required {
-					<span class="text-red-500 ms-0.5" aria-hidden="true">*</span>
+					<span class="text-red-500 dark:text-red-400 ms-0.5" aria-hidden="true">*</span>
 				}
 			</legend>
 		}

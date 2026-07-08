@@ -183,7 +183,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 		for _, item := range props.Items {
 			active := sidebarItemActive(item, props.CurrentPath)
 			var templ_7745c5c3_Var6 = []any{"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0",
-				templ.KV("bg-blue-600 text-white", active),
+				templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
 				templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)
 			if templ_7745c5c3_Err != nil {
@@ -254,7 +254,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.Footer != nil {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"px-4 py-3 text-xs text-gray-500\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"px-4 py-3 text-xs text-gray-500 dark:text-gray-400\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

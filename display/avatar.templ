@@ -118,7 +118,7 @@ templ Avatar(props AvatarProps) {
 			if props.ID != "" {
 				id={ props.ID }
 			}
-			class={ utils.Class("relative inline-flex items-center justify-center bg-blue-600 text-white font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class) }
+			class={ utils.Class("relative inline-flex items-center justify-center bg-blue-600 text-white dark:bg-blue-500 font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class) }
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
