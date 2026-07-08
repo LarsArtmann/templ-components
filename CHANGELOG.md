@@ -8,6 +8,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+### Fixed
+
+### Changed
+
+### Removed
+
+## [0.10.0] — 2026-07-08
+
+### Added
+
 - Naming: `icons.Close` alias for `icons.X` (both map to `"x"`). Prefer `Close` in new code.
 - RTL keyboard mapping for `display.Tabs` and `display.Dropdown` — ArrowLeft/Right swap when `dir="rtl"` is set on `<html>`.
 - Demo: SkeletonCardGrid loading state showcase, anchor-linked TOC at top.
