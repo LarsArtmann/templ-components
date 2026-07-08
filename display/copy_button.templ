@@ -57,7 +57,7 @@ templ CopyButton(props CopyButtonProps) {
 		if copied == "" {
 			copied = "Copied!"
 		}
-		baseClass := utils.Class("inline-flex items-center gap-1.5 rounded-md bg-gray-50 dark:bg-gray-700 px-2.5 py-1 text-xs font-medium text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer", transitionColors, "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500", props.Class)
+		baseClass := utils.Class("inline-flex items-center gap-1.5 rounded-md bg-gray-50 dark:bg-gray-700 px-2.5 py-1 text-xs font-medium text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer", transitionColors, "focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400", props.Class)
 	}}
 	if props.Href != "" {
 		<a

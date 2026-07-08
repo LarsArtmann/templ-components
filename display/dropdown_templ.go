@@ -381,7 +381,7 @@ func Dropdown(props DropdownProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" class=\"hidden absolute z-10 mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg ring-1 ring-black/5 focus:outline-hidden\" role=\"menu\" aria-orientation=\"vertical\" aria-labelledby=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" class=\"hidden absolute z-10 mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 focus:outline-hidden\" role=\"menu\" aria-orientation=\"vertical\" aria-labelledby=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

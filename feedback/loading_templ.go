@@ -64,7 +64,7 @@ func DefaultSpinnerProps() SpinnerProps {
 
 // Spinner renders a simple animated loading spinner
 //
-//	@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600"})
+//	@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"})
 func Spinner(props SpinnerProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -276,7 +276,7 @@ func LoadingOverlay(props LoadingOverlayProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\"><div class=\"bg-white dark:bg-gray-800 rounded-lg shadow-xl p-8 max-w-sm w-full mx-4\"><div class=\"text-center\"><div class=\"mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\"><div class=\"bg-white dark:bg-gray-800 rounded-lg shadow-xl dark:shadow-black/20 p-8 max-w-sm w-full mx-4\"><div class=\"text-center\"><div class=\"mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -9,7 +9,7 @@ import (
 // Icon renders an SVG icon by name with customizable class and size.
 // All icons are 24x24 with currentColor fill/stroke for easy theming.
 //
-//	@icons.Icon(icons.Home, "h-5 w-5 text-gray-500")
+//	@icons.Icon(icons.Home, "h-5 w-5 text-gray-500 dark:text-gray-400")
 templ Icon(name Name, class string) {
 	@IconWithStrokeWidth(name, class, 1.5)
 }
@@ -17,7 +17,7 @@ templ Icon(name Name, class string) {
 // IconWithStrokeWidth renders an SVG icon with a custom stroke-width.
 // The default Icon uses 1.5; use this for thicker or thinner strokes.
 //
-//	@icons.IconWithStrokeWidth(icons.Home, "h-5 w-5 text-gray-500", 2.0)
+//	@icons.IconWithStrokeWidth(icons.Home, "h-5 w-5 text-gray-500 dark:text-gray-400", 2.0)
 templ IconWithStrokeWidth(name Name, class string, strokeWidth float64) {
 	if name == Spinner {
 		<svg class={ class, "animate-spin motion-reduce:animate-none" } fill="none" viewBox="0 0 24 24" aria-hidden="true">

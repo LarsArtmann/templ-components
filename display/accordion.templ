@@ -59,7 +59,7 @@ templ Accordion(props AccordionProps) {
 			<div class="bg-white dark:bg-gray-900">
 				<button
 					type="button"
-					class="flex w-full items-center justify-between px-4 py-4 text-start text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-inset"
+					class="flex w-full items-center justify-between px-4 py-4 text-start text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset"
 					aria-expanded={ strconv.FormatBool(item.Open) }
 					aria-controls={ item.ID + "-panel" }
 					id={ item.ID + "-trigger" }

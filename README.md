@@ -321,7 +321,7 @@ Loading indicators, error handling, CSRF protection, and out-of-band swaps.
 
 **CSP-ready.** All inline scripts use `nonce` attributes. No `eval()`, no inline event handlers.
 
-**Dark mode.** Every component supports Tailwind's `dark:` variant. Include `@layout.ThemeScript("")` to prevent flash of unstyled content.
+**Dark mode.** Every component has proper `dark:` variants for all neutral and semantic colors — enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. Include `@layout.ThemeScript("")` to prevent flash of unstyled content. `color-scheme: light/dark` is set for native form control rendering. See [ADR 0011](docs/adr/0011-dark-mode-convention.md) for the full color convention.
 
 **Server-rendered.** Zero client-side JavaScript by default. Interactive features (accordion, dropdown, modal, theme toggle) use minimal vanilla JS with nonce-based CSP.
 

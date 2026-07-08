@@ -662,7 +662,7 @@ func Pagination(props PaginationProps) templ.Component {
 					p == props.CurrentPage,
 					props.pageURL(p),
 					fmt.Sprintf("%d", p),
-					"relative z-10 inline-flex items-center bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600",
+					"relative z-10 inline-flex items-center bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500",
 					"",
 				).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {

@@ -17,7 +17,7 @@ import (
 // Icon renders an SVG icon by name with customizable class and size.
 // All icons are 24x24 with currentColor fill/stroke for easy theming.
 //
-//	@icons.Icon(icons.Home, "h-5 w-5 text-gray-500")
+//	@icons.Icon(icons.Home, "h-5 w-5 text-gray-500 dark:text-gray-400")
 func Icon(name Name, class string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -50,7 +50,7 @@ func Icon(name Name, class string) templ.Component {
 // IconWithStrokeWidth renders an SVG icon with a custom stroke-width.
 // The default Icon uses 1.5; use this for thicker or thinner strokes.
 //
-//	@icons.IconWithStrokeWidth(icons.Home, "h-5 w-5 text-gray-500", 2.0)
+//	@icons.IconWithStrokeWidth(icons.Home, "h-5 w-5 text-gray-500 dark:text-gray-400", 2.0)
 func IconWithStrokeWidth(name Name, class string, strokeWidth float64) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context

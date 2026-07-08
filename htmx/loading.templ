@@ -12,7 +12,7 @@ func defaultSpinner(spinner templ.Component) templ.Component {
 // LoadingIndicator renders a fixed-position HTMX loading indicator.
 // Accepts a spinner component for decoupled loading animation.
 //
-//	@htmx.LoadingIndicator(feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-blue-600"}))
+//	@htmx.LoadingIndicator(feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-blue-600 dark:text-blue-400"}))
 templ LoadingIndicator(spinner templ.Component) {
 	<div id="tc-loading-indicator" class="htmx-indicator fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-gray-950/80 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-200 motion-reduce:transition-none motion-reduce:duration-0" role="status" aria-live="polite">
 		<span class="sr-only">Loading…</span>
@@ -25,7 +25,7 @@ templ LoadingIndicator(spinner templ.Component) {
 // InlineLoadingOverlay renders a localized loading overlay for HTMX targets.
 // Accepts a spinner component for decoupled loading animation.
 //
-//	@htmx.InlineLoadingOverlay("tc-form-loading", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600"}))
+//	@htmx.InlineLoadingOverlay("tc-form-loading", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"}))
 templ InlineLoadingOverlay(id string, spinner templ.Component) {
 	<div
 		id={ id }

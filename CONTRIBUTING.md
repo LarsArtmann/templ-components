@@ -52,16 +52,17 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 **Read [`AGENTS.md`](AGENTS.md) first** — it is the canonical reference for all
 architecture, code conventions, and gotchas. The highlights:
 
-| Convention               | Rule                                                                                                                                   |
-| ------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- |
-| Props structs            | Every component's props embed `utils.BaseProps` (exception: `layout.PageProps`).                                                       |
-| RTL / logical properties | Never use `ml-`/`mr-`/`pl-`/`pr-`/`left-`/`right-`. Use `ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`.                                       |
-| Motion                   | Use shared constants (`transitionFast`, `transitionNormal`, `transitionColors`, `transitionTransform`). All include `motion-reduce:*`. |
-| Typed enums              | `type XxxType string` + typed constants + `IsValid()` method + test. Lookup maps use typed keys. All lookups via `utils.Lookup`.       |
-| CSP safety               | Every inline `<script>` uses `nonce={ props.Nonce }`. No exceptions.                                                                   |
-| Class merging            | Always use `utils.Class()` for Tailwind conflict resolution (thread-safe via `sync.Mutex`).                                            |
-| Style lookups            | Use maps + `utils.Lookup`, not switches. Structural variants use `if`-branch for DOM structure.                                        |
-| Zero runtime panics      | Component code must never panic. Enum lookups fall back gracefully.                                                                    |
+| Convention               | Rule                                                                                                                                                                                                                                                                      |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Props structs            | Every component's props embed `utils.BaseProps` (exception: `layout.PageProps`).                                                                                                                                                                                          |
+| RTL / logical properties | Never use `ml-`/`mr-`/`pl-`/`pr-`/`left-`/`right-`. Use `ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`.                                                                                                                                                                          |
+| Motion                   | Use shared constants (`transitionFast`, `transitionNormal`, `transitionColors`, `transitionTransform`). All include `motion-reduce:*`.                                                                                                                                    |
+| Dark mode                | Every neutral and semantic color MUST have a `dark:` variant. `-600` light → `-500` dark for backgrounds, `-400` for text. Use `gray-*` only. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors`. See [ADR 0011](docs/adr/0011-dark-mode-convention.md). |
+| Typed enums              | `type XxxType string` + typed constants + `IsValid()` method + test. Lookup maps use typed keys. All lookups via `utils.Lookup`.                                                                                                                                          |
+| CSP safety               | Every inline `<script>` uses `nonce={ props.Nonce }`. No exceptions.                                                                                                                                                                                                      |
+| Class merging            | Always use `utils.Class()` for Tailwind conflict resolution (thread-safe via `sync.Mutex`).                                                                                                                                                                               |
+| Style lookups            | Use maps + `utils.Lookup`, not switches. Structural variants use `if`-branch for DOM structure.                                                                                                                                                                           |
+| Zero runtime panics      | Component code must never panic. Enum lookups fall back gracefully.                                                                                                                                                                                                       |
 
 ### Commit messages
 

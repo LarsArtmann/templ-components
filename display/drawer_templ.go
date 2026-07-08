@@ -67,7 +67,7 @@ func Drawer(props DrawerProps) templ.Component {
 			kind:       OverlayDrawer,
 			nonce:      props.Nonce,
 			cfg:        drawerPanelConfig(props.Side),
-			panelClass: utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl h-full overflow-y-auto transform", transitionTransform, "duration-200", drawerSizeClass(props.Size), props.Class),
+			panelClass: utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl dark:shadow-black/20 h-full overflow-y-auto transform", transitionTransform, "duration-200", drawerSizeClass(props.Size), props.Class),
 			panelKVs: templ.Classes(
 				templ.KV("start-0", props.Side == DrawerLeft),
 				templ.KV("end-0", props.Side == DrawerRight),

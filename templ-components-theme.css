@@ -23,6 +23,10 @@
  * Remove this line if you prefer prefers-color-scheme media queries. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+:root {
+  color-scheme: light;
+}
+
 /* ------------------------------------------------------------------
  * Color overrides (uncomment to customize)
  * ------------------------------------------------------------------ */
@@ -82,9 +86,31 @@
  * ------------------------------------------------------------------ */
 
 .dark {
+  color-scheme: dark;
+  scrollbar-color: var(--color-gray-600) var(--color-gray-900);
   --color-tc-surface: var(--color-gray-900);
   --color-tc-surface-elevated: var(--color-gray-800);
   --color-tc-text: var(--color-gray-100);
   --color-tc-text-muted: var(--color-gray-400);
   --color-tc-border: var(--color-gray-700);
+}
+
+/* ------------------------------------------------------------------
+ * prefers-color-scheme fallback (for users without JS)
+ * ------------------------------------------------------------------ */
+
+@media (prefers-color-scheme: dark) {
+  :root:not(.light) {
+    color-scheme: dark;
+  }
+}
+
+/* ------------------------------------------------------------------
+ * prefers-reduced-transparency (solid backgrounds for overlays)
+ * ------------------------------------------------------------------ */
+
+@media (prefers-reduced-transparency) {
+  .dark {
+    scrollbar-color: var(--color-gray-600) var(--color-gray-900);
+  }
 }

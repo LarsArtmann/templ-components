@@ -3,7 +3,7 @@ package errorpage
 import (
 	"bytes"
 	"context"
-	"encoding/json/v2"
+	"encoding/json"
 	"fmt"
 	"html"
 	"io"

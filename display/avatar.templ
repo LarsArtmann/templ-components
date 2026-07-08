@@ -107,8 +107,8 @@ templ Avatar(props AvatarProps) {
 				<span
 					class={ "absolute bottom-0 end-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
 						avatarDotSizeClass(props.Size),
-						templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
-						templ.KV("bg-gray-400", props.Status == AvatarStatusOffline) }
+						templ.KV("bg-green-400 dark:bg-green-500", props.Status == AvatarStatusOnline),
+						templ.KV("bg-gray-400 dark:bg-gray-500", props.Status == AvatarStatusOffline) }
 					aria-hidden="true"
 				></span>
 			}
@@ -135,8 +135,8 @@ templ Avatar(props AvatarProps) {
 				<span
 					class={ "absolute bottom-0 end-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
 						avatarDotSizeClass(props.Size),
-						templ.KV("bg-green-400", props.Status == AvatarStatusOnline),
-						templ.KV("bg-gray-400", props.Status == AvatarStatusOffline) }
+						templ.KV("bg-green-400 dark:bg-green-500", props.Status == AvatarStatusOnline),
+						templ.KV("bg-gray-400 dark:bg-gray-500", props.Status == AvatarStatusOffline) }
 					aria-hidden="true"
 				></span>
 			}

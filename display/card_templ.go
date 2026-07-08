@@ -454,7 +454,7 @@ func StatCard(props StatCardProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if props.Href != "" {
-			var templ_7745c5c3_Var15 = []any{utils.Class(cardShellClass+" p-5 transition-shadow motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 hover:shadow-md cursor-pointer", props.Class)}
+			var templ_7745c5c3_Var15 = []any{utils.Class(cardShellClass+" p-5 transition-shadow motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 hover:shadow-md dark:hover:shadow-black/20 cursor-pointer", props.Class)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var15...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

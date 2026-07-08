@@ -59,7 +59,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		Icon:         icons.ExclamationTriangle,
 		AccentBG:     "bg-amber-100 dark:bg-amber-900/30",
 		AccentText:   "text-amber-700 dark:text-amber-300",
-		ActionButton: "bg-amber-600 hover:bg-amber-500 dark:bg-amber-500 dark:hover:bg-amber-400 focus-visible:ring-amber-500 text-white",
+		ActionButton: "bg-amber-600 hover:bg-amber-500 dark:bg-amber-500 dark:hover:bg-amber-400 focus-visible:ring-amber-500 dark:focus-visible:ring-amber-400 text-white",
 	},
 	FamilyConflict: {
 		Border:       "border-orange-200 dark:border-orange-800",
@@ -69,7 +69,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		Icon:         icons.ExclamationCircle,
 		AccentBG:     "bg-orange-100 dark:bg-orange-900/30",
 		AccentText:   "text-orange-700 dark:text-orange-300",
-		ActionButton: "bg-orange-600 hover:bg-orange-500 dark:bg-orange-500 dark:hover:bg-orange-400 focus-visible:ring-orange-500 text-white",
+		ActionButton: "bg-orange-600 hover:bg-orange-500 dark:bg-orange-500 dark:hover:bg-orange-400 focus-visible:ring-orange-500 dark:focus-visible:ring-orange-400 text-white",
 	},
 	FamilyTransient: {
 		Border:       "border-blue-200 dark:border-blue-800",
@@ -79,7 +79,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		Icon:         icons.Refresh,
 		AccentBG:     "bg-blue-100 dark:bg-blue-900/30",
 		AccentText:   "text-blue-700 dark:text-blue-300",
-		ActionButton: "bg-blue-600 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 focus-visible:ring-blue-500 text-white",
+		ActionButton: "bg-blue-600 hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 text-white",
 	},
 	FamilyCorruption: {
 		Border:       "border-red-200 dark:border-red-800",
@@ -89,7 +89,7 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		Icon:         icons.ExclamationTriangle,
 		AccentBG:     "bg-red-100 dark:bg-red-900/30",
 		AccentText:   "text-red-700 dark:text-red-300",
-		ActionButton: "bg-red-600 hover:bg-red-500 dark:bg-red-500 dark:hover:bg-red-400 focus-visible:ring-red-500 text-white",
+		ActionButton: "bg-red-600 hover:bg-red-500 dark:bg-red-500 dark:hover:bg-red-400 focus-visible:ring-red-500 dark:focus-visible:ring-red-400 text-white",
 	},
 	FamilyInfrastructure: {
 		Border:       "border-gray-200 dark:border-gray-700",

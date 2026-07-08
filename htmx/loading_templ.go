@@ -20,7 +20,7 @@ func defaultSpinner(spinner templ.Component) templ.Component {
 // LoadingIndicator renders a fixed-position HTMX loading indicator.
 // Accepts a spinner component for decoupled loading animation.
 //
-//	@htmx.LoadingIndicator(feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-blue-600"}))
+//	@htmx.LoadingIndicator(feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-blue-600 dark:text-blue-400"}))
 func LoadingIndicator(spinner templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -61,7 +61,7 @@ func LoadingIndicator(spinner templ.Component) templ.Component {
 // InlineLoadingOverlay renders a localized loading overlay for HTMX targets.
 // Accepts a spinner component for decoupled loading animation.
 //
-//	@htmx.InlineLoadingOverlay("tc-form-loading", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600"}))
+//	@htmx.InlineLoadingOverlay("tc-form-loading", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"}))
 func InlineLoadingOverlay(id string, spinner templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context

@@ -134,7 +134,7 @@ func ValidationSummary(props ValidationSummaryProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = icons.Icon(icons.ExclamationCircle, "h-5 w-5 text-red-400").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = icons.Icon(icons.ExclamationCircle, "h-5 w-5 text-red-400 dark:text-red-500").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

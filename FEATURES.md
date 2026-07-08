@@ -1,6 +1,6 @@
 # Features — templ-components
 
-**Updated:** 2026-07-06 | **Version:** 0.9.0
+**Updated:** 2026-07-08 | **Version:** 0.9.1
 
 A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 
@@ -366,7 +366,7 @@ Used by both Alert and Toast for consistent visual styling.
 ## Cross-Cutting Features
 
 - **CSP Compliance:** All inline scripts use `nonce` attribute
-- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript`
+- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 83 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first designs with `sm:` breakpoints

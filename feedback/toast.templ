@@ -83,7 +83,7 @@ templ ToastContainer(nonce string) {
 			var toast = document.createElement('div');
 			var typeKey = type || 'info';
 			var style = tcToastColors[typeKey] || tcToastColors.info;
-			toast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;
+			toast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;
 			var inner = document.createElement('div');
 			inner.className = 'flex items-start gap-3';
 			var svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
@@ -134,7 +134,7 @@ templ Toast(props ToastProps) {
 	{{ s := feedbackStyle(props.Type) }}
 	<div
 		id={ toastID }
-		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0", s.Border, s.BG, props.Class) }
+		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0", s.Border, s.BG, props.Class) }
 		role="status"
 		aria-live="polite"
 		if props.AriaLabel != "" {

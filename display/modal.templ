@@ -22,7 +22,7 @@ templ Modal(props ModalProps) {
 		outerClass: "flex items-center justify-center p-4",
 		nonce:      props.Nonce,
 		cfg:        modalPanelConfig(),
-		panelClass: utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl w-full overflow-hidden transform", transitionNormal, modalSizeClass(props.Size), props.Class),
+		panelClass: utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 w-full overflow-hidden transform", transitionNormal, modalSizeClass(props.Size), props.Class),
 		panelKVs: templ.Classes(
 			templ.KV("scale-100 opacity-100", props.Open),
 			templ.KV("scale-95 opacity-0", !props.Open),

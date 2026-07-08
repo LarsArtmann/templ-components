@@ -250,7 +250,20 @@ Components emit standard Tailwind classes (`bg-blue-600`). Override globally in 
 }
 ```
 
-Dark mode: `@custom-variant dark (&:where(.dark, .dark *))` + `layout.ThemeScript()` + `layout.ThemeToggle()`.
+Dark mode: `@custom-variant dark (&:where(.dark, .dark *))` + `layout.ThemeScript()` + `layout.ThemeToggle()`. `color-scheme: light` on `:root`, `color-scheme: dark` on `.dark`.
+
+### Dark mode checklist (for new components)
+
+Every new component MUST pass `TestDarkModeCompliance` + `TestDarkModeSemanticColors`. Checklist:
+
+1. **Neutral colors** — every `text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`, `ring-gray-*` MUST have a `dark:` variant on the same line.
+2. **Semantic colors** — every `bg-blue-600`, `bg-red-600`, `text-blue-600`, `text-green-500`, etc. MUST have a `dark:` variant. Convention: `-600` light → `-500` dark for backgrounds, `-400` for text.
+3. **Focus rings** — `focus:ring-blue-500` needs `dark:focus:ring-blue-400`. `focus-visible:outline-blue-600` needs `dark:focus-visible:outline-blue-500`.
+4. **Ring offset** — `focus:ring-offset-2` needs `dark:focus:ring-offset-gray-900` (default offset is white, invisible in dark).
+5. **Shadows** — overlay/card shadows (`shadow-xl`, `shadow-lg`) should have `dark:shadow-black/20` for visibility on dark backgrounds.
+6. **Palette** — use `gray-*` exclusively. No `slate-*`, `zinc-*`, `neutral-*`, `stone-*`.
+
+See `docs/adr/0011-dark-mode-convention.md` for the full convention.
 
 ### Consumer `_templ.go` guidance
 

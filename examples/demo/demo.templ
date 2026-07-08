@@ -27,6 +27,7 @@ templ demoContent() {
 	<div class="max-w-5xl mx-auto px-4 py-8">
 		<div class="flex items-center justify-between mb-8">
 			<h1 class="text-3xl font-bold text-gray-900 dark:text-white">templ-components Demo</h1>
+			@layout.ThemeToggle("Toggle dark mode", "")
 		</div>
 		{{
 			tocLinks := []struct{ Label, Anchor string }{

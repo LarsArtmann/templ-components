@@ -80,6 +80,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Deleted stale `origin/modularize/strategic-split` remote branch (abandoned experiment, never merged).
 
+## [0.9.1] — 2026-07-08
+
+### Added
+
+- Dark mode compliance tests: `utils.TestDarkModeCompliance` (neutral colors) and `utils.TestDarkModeSemanticColors` (semantic colors) — scanning all `.templ`/`.go` source files for missing `dark:` variants. Failing tests block CI.
+- `color-scheme: light` on `:root` and `color-scheme: dark` on `.dark` in `templ-components-theme.css` — improves native form control rendering (scrollbars, checkboxes, radios, date pickers) in dark mode.
+- Dark mode focus-ring and ring-offset variants on all interactive elements (`dark:focus:ring-*`, `dark:focus-visible:ring-*`, `dark:focus-visible:outline-*`, `dark:focus:ring-offset-gray-900`).
+- Dark mode shadow variants on overlays and cards (`dark:shadow-black/20`).
+- `progressbar.templ` modernized to use `max()`/`min()` builtins (Go 1.21+) instead of manual if-branch clamping.
+- Doc comments updated with `dark:` variants in all example code.
+
+### Fixed
+
+- 30+ missing `dark:` variants fixed across all packages — buttons, avatars, badges, tabs, pagination, sidebar, breadcrumbs, mobile menu, theme toggle, toast dismiss, step indicator, error page families, form inputs, and more.
+- `errorpage/handler.go` reverted from `encoding/json/v2` to `encoding/json` — `json/v2` requires `GOEXPERIMENT=jsonv2` which is not enabled in Go 1.26.4.
+
 ## [0.9.0] — 2026-07-06
 
 ### Added
