@@ -20,7 +20,6 @@ This repo is a **single Go module** (`github.com/larsartmann/templ-components`) 
 | `internal/contract` | Contract tests                             | Cross-package interface verification                     |
 | `integration`       | CSP nonce tests                            | Asserts nonce on all inline scripts                      |
 | `examples/demo`     | Demo binary                                | Showcases components                                     |
-| `cmd/tc-css`        | CSS build CLI for consumers                | Automates `go mod vendor` + `tailwindcss` build pipeline |
 
 > **Note:** A multi-module workspace split was prototyped on the `modularize/strategic-split`
 > branch but was never merged to `master`. The split may be re-attempted post-v1.0 if the
@@ -85,7 +84,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - **Go:** 1.26, **templ:** v0.3.x
 - **No framework deps** — pure Go + templ + Tailwind v4 class strings
 - **CSS standard:** Tailwind CSS v4+ (latest) for ALL LarsArtmann projects. CSS-first config, no Node.js runtime, no DaisyUI. Small custom CSS only where Tailwind doesn't cover something. See `docs/adr-001-tailwind-v4-standard.md` and `docs/tailwind-v4-adoption-guide.md`.
-- **Consumer CSS automation:** `cmd/tc-css` CLI automates the full build pipeline for consumers: `go mod vendor` → auto-detect `@source` paths → generate starter CSS if missing → run `tailwindcss`. Used via `//go:generate go run github.com/larsartmann/templ-components/cmd/tc-css` or BuildFlow's `tailwind-build` provider. Ships a ready-to-copy `templates/app.css` entry point.
+- **CSS setup:** Consumers vendor the library and use `templates/app.css` as a starter entry point, then compile with `tailwindcss`. BuildFlow's `tailwind-build` provider automates this in its DAG. See `docs/tailwind-v4-adoption-guide.md` for details.
 - **JavaScript patterns:** see `docs/javascript-guide.md` for the complete decision ladder (native HTML → HTMX → singleton-guard → Alpine → Datastar → islands), CSP compliance, and templ's built-in JS features. See ADR 0005 for the singleton-guard pattern used by all interactive components in this repo.
 - **Accepted code duplication:** see `docs/adr/0009-accepted-clones.md` for the 4 clone groups that art-dupl flags but are intentional (idiomatic UI layout, required by templ DSL, or demo content). New dedup passes should not force extraction beyond what's documented in that ADR.
 - **Theming:** Components emit standard Tailwind classes (`bg-blue-600`). Consumers override via `@theme { --color-blue-600: #custom; }` in their CSS. No Go code changes needed. See `templ-components-theme.css` for semantic alias examples.

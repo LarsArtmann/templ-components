@@ -8,16 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
-- `cmd/tc-css` CLI tool — automates the Tailwind CSS v4 build pipeline for consumers: runs `go mod vendor`, auto-generates a starter CSS entry-point if missing, auto-detects vendored `@source` paths, and invokes `tailwindcss`. Usable via `//go:generate go run github.com/larsartmann/templ-components/cmd/tc-css`.
 - `templates/app.css` — ready-to-copy starter CSS entry-point with `@import "tailwindcss" source(none)`, project + vendored `@source` directives, `@custom-variant dark`, and commented `@theme`/`@import` blocks.
 - BuildFlow `tailwind-build` provider — auto-discovers CSS entry-point files and compiles them via `tailwindcss` as part of BuildFlow's DAG, ordered after `go-mod-vendor` and `templ-generate`.
 - `tailwindcss_4` added to templ-components devShell (`flake.nix`) so the binary is available without nix fallback.
-- Documentation: README "Tailwind CSS Setup" section expanded with 3 automated options (tc-css, BuildFlow, starter template). Adoption guide and migration guide updated with "Automated setup" sections.
+- Documentation: README "Tailwind CSS Setup" section simplified to BuildFlow + starter template options. Adoption guide and migration guide updated.
 
 ### Fixed
 
-- `cmd/tc-css/main.go` lint compliance — fixed all golangci-lint issues (gosec, noctx, wrapcheck, nilerr, nolintlint, paralleltest) to pass CI.
-- `navigation/breadcrumbs_templ.go` — corrected import from `encoding/json/v2` to `encoding/json` (was incorrectly generated under GOEXPERIMENT=jsonv2).
+- `errorpage/handler.go` — reverted accidental `encoding/json/v2` import to `encoding/json` (was introduced by an auto-formatter under GOEXPERIMENT=jsonv2; this repo does not use that flag).
+- `navigation/breadcrumbs_templ.go` — corrected import from `encoding/json/v2` to `encoding/json` (same root cause).
 
 ### Changed
 
