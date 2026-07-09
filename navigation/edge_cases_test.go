@@ -48,6 +48,22 @@ func TestMobileNavLinkEdgeCases(t *testing.T) {
 	}
 }
 
+func TestNavWithManyLinksWraps(t *testing.T) {
+	t.Parallel()
+
+	links := make([]NavLinkProps, 0, 12)
+	for i := range 12 {
+		links = append(links, NavLinkProps{Href: "/page" + string(rune('A'+i)), Text: "Page " + string(rune('A'+i))})
+	}
+
+	output := utils.Render(t, Nav(NavProps{Links: links, CurrentPath: "/pageA"}))
+
+	utils.AssertContainsAll(t, output, "flex-wrap", "gap-x-8", "gap-y-2")
+	for _, link := range links {
+		utils.AssertContains(t, output, link.Text)
+	}
+}
+
 func TestPaginationEdgeCases(t *testing.T) {
 	t.Parallel()
 

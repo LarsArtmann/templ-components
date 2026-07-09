@@ -6,11 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.12.0] — 2026-07-09
+
+### Fixed
+
+- `navigation/Nav` — desktop link container now wraps gracefully when the number of links exceeds the viewport width. Changed from fixed `h-16` to `min-h-16 items-center` (grows to accommodate wrapped rows) and from `sm:space-x-8` to `sm:flex-wrap sm:gap-x-8 sm:gap-y-2` (wraps instead of overflowing off-screen). Works for any number of links on any screen width without JavaScript or horizontal scroll.
 
 ## [0.11.0] — 2026-07-09
 
 ### Added
-
 
 ### Added
 

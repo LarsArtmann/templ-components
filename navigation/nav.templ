@@ -41,14 +41,14 @@ templ Nav(props NavProps) {
 		{ props.Attrs... }
 	>
 		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-			<div class="flex h-16 justify-between">
+			<div class="flex min-h-16 items-center justify-between">
 				<div class="flex">
 					if props.Brand != nil {
 						<div class="flex flex-shrink-0 items-center">
 							@props.Brand
 						</div>
 					}
-					<div class="hidden sm:ms-6 sm:flex sm:space-x-8">
+					<div class="hidden sm:ms-6 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-2">
 						for _, link := range props.Links {
 							@NavLink(link, props.CurrentPath)
 						}
