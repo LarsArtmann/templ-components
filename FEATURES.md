@@ -20,7 +20,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `layout`     | 5             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script tag                                                                                                                                      |
 | `navigation` | 11            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more                                                                                                                       |
 
-**Totals:** 83 templ components, 101 icon names, 33 typed enums, 59 generated `*_templ.go` files, ~24,000 lines of Go/templ source
+**Totals:** 83 templ components, 101 icon names, 33 typed enums (32 with `IsValid()`), 62 generated `*_templ.go` files, ~24,000 lines of Go/templ source
 
 ---
 
@@ -66,33 +66,33 @@ type BaseProps struct {
 
 ### Components
 
-| Component          | Status           | Description                     | Key Features                                                                                                       |
-| ------------------ | ---------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
-| `Accordion`        | FULLY_FUNCTIONAL | Collapsible accordion panels    | JS toggle, `aria-expanded`, `aria-controls`, chevron rotation                                                      |
-| `Avatar`           | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                                                      |
-| `Button`           | FULLY_FUNCTIONAL | Action button                   | 5 variants, 3 sizes, href (link mode), loading state                                                               |
-| `Badge`            | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                                                                  |
-| `StatusBadge`      | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                                                                             |
-| `Card`             | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, 4 padding sizes                                                           |
-| `SimpleCard`       | FULLY_FUNCTIONAL | Minimal card                    | Children-only, no header/footer                                                                                    |
-| `StatCard`         | FULLY_FUNCTIONAL | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None), optional `Icon` field, `Href` renders as clickable `<a>` |
-| `Grid`             | FULLY_FUNCTIONAL | Responsive grid container       | Typed `GridCols` enum (1–6), responsive breakpoints (1→2→3→N), children slot                                       |
-| `Dropdown`         | FULLY_FUNCTIONAL | Button-triggered menu           | External/internal links, buttons, keyboard nav, ARIA menu                                                          |
-| `Drawer`           | FULLY_FUNCTIONAL | Side panel                      | Left/right slide, focus trap, Escape, backdrop, 5 sizes                                                            |
-| `EmptyState`       | FULLY_FUNCTIONAL | Centered empty state            | Icon, title, description, action link/button                                                                       |
-| `SimpleEmptyState` | FULLY_FUNCTIONAL | Minimal empty state             | Text-only                                                                                                          |
-| `Modal`            | FULLY_FUNCTIONAL | Accessible modal dialog         | Focus trap, Escape close, backdrop, 5 sizes, open/close API                                                        |
-| `Table`            | FULLY_FUNCTIONAL | Responsive data table           | Headers, rows, striping, hover, caption, bordered, cell content                                                    |
-| `Tabs`             | FULLY_FUNCTIONAL | Tabbed interface                | Default underline or pills variant, ARIA tablist/tab/tabpanel                                                      |
-| `Tooltip`          | FULLY_FUNCTIONAL | Hover tooltip                   | 4 positions, arrow, `role="tooltip"`, CSS-only                                                                     |
-| `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots                                                               |
-| `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup                                                             |
-| `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                                                                          |
-| `CopyButton`       | FULLY_FUNCTIONAL | Clipboard copy button           | CSP-safe singleton JS, "Copied!" feedback, clipboard icon, optional `Href` variant (renders `<a>`)                 |
-| `RelativeTime`     | FULLY_FUNCTIONAL | Relative timestamp              | `<time datetime>` with "2 hours ago", absolute title on hover                                                      |
-| `CountBadge`       | FULLY_FUNCTIONAL | Notification count overlay      | Absolute-positioned badge, overflow "N+", aria-hidden decorative                                                   |
-| `DefinitionGrid`   | FULLY_FUNCTIONAL | Responsive key/value grid       | Term-detail pairs in SimpleCard tiles, composes through Grid                                                       |
-| `Image`            | FULLY_FUNCTIONAL | Lazy-loaded image               | `loading=lazy` default, width/height for CLS, CSP-safe fallback, optional `Rounded` for circular                   |
+| Component          | Status           | Description                     | Key Features                                                                                                                                |
+| ------------------ | ---------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Accordion`        | FULLY_FUNCTIONAL | Collapsible accordion panels    | JS toggle, `aria-expanded`, `aria-controls`, chevron rotation                                                                               |
+| `Avatar`           | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                                                                               |
+| `Button`           | FULLY_FUNCTIONAL | Action button                   | 5 variants, 3 sizes, href (link mode), loading state                                                                                        |
+| `Badge`            | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                                                                                           |
+| `StatusBadge`      | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                                                                                                      |
+| `Card`             | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, 4 padding sizes, `Body` slot override                                                              |
+| `SimpleCard`       | FULLY_FUNCTIONAL | Minimal card                    | Children-only, no header/footer, `Body` slot override (forwards to Card.Body)                                                               |
+| `StatCard`         | FULLY_FUNCTIONAL | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None), optional `Icon` field, `Href` renders as clickable `<a>`                          |
+| `Grid`             | FULLY_FUNCTIONAL | Responsive grid container       | Typed `GridCols` enum (1–6), `GridGap` enum, responsive breakpoints (1→2→3→N), optional `ContainerResponsive` (`@container`), children slot |
+| `Dropdown`         | FULLY_FUNCTIONAL | Button-triggered menu           | External/internal links, buttons, keyboard nav, ARIA menu                                                                                   |
+| `Drawer`           | FULLY_FUNCTIONAL | Side panel                      | Left/right slide, focus trap, Escape, backdrop, 5 sizes                                                                                     |
+| `EmptyState`       | FULLY_FUNCTIONAL | Centered empty state            | Icon, title, description, action link/button                                                                                                |
+| `SimpleEmptyState` | FULLY_FUNCTIONAL | Minimal empty state             | Text-only                                                                                                                                   |
+| `Modal`            | FULLY_FUNCTIONAL | Accessible modal dialog         | Focus trap, Escape close, backdrop, 5 sizes, open/close API                                                                                 |
+| `Table`            | FULLY_FUNCTIONAL | Responsive data table           | Headers, rows, striping, hover, caption, bordered, `Body` slot (custom `<tr>` rendering), `TypedHeaders`/`TableHeader` with `aria-sort`     |
+| `Tabs`             | FULLY_FUNCTIONAL | Tabbed interface                | Default underline or pills variant, ARIA tablist/tab/tabpanel                                                                               |
+| `Tooltip`          | FULLY_FUNCTIONAL | Hover tooltip                   | 4 positions, arrow, `role="tooltip"`, CSS-only                                                                                              |
+| `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots                                                                                        |
+| `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup                                                                                      |
+| `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                                                                                                   |
+| `CopyButton`       | FULLY_FUNCTIONAL | Clipboard copy button           | CSP-safe singleton JS, "Copied!" feedback, clipboard icon, optional `Href` variant (renders `<a>`)                                          |
+| `RelativeTime`     | FULLY_FUNCTIONAL | Relative timestamp              | `<time datetime>` with "2 hours ago", absolute title on hover                                                                               |
+| `CountBadge`       | FULLY_FUNCTIONAL | Notification count overlay      | Absolute-positioned badge, overflow "N+", aria-hidden decorative                                                                            |
+| `DefinitionGrid`   | FULLY_FUNCTIONAL | Responsive key/value grid       | Term-detail pairs in SimpleCard tiles, composes through Grid                                                                                |
+| `Image`            | FULLY_FUNCTIONAL | Lazy-loaded image               | `loading=lazy` default, width/height for CLS, CSP-safe fallback, optional `Rounded` for circular                                            |
 
 ### Enums
 
@@ -111,12 +111,22 @@ type BaseProps struct {
 | `TabsVariant`      | Default, Pills                                     |
 | `TrendDirection`   | Up, Down, None                                     |
 | `GridCols`         | 1, 2, 3 (default), 4, 5, 6                         |
+| `ButtonSize`       | SM, MD (default), LG                               |
+| `ButtonHTMLType`   | Button, Submit, Reset                              |
+| `OverlayKind`      | Modal, Drawer                                      |
+| `DropdownItemKind` | Link, Button                                       |
 | `TooltipPosition`  | Top, Bottom, Left, Right                           |
 | `SortDirection`    | None, Asc, Desc (for TableHeader sortable columns) |
 
 ### Known Issues
 
-_None — all previously reported issues resolved._
+- `Accordion` `grid-rows-[0fr]` CSS output never verified against compiled Tailwind v4 output — accordion collapse animation depends on it (`display/accordion.templ:79`)
+
+### Enums
+
+| Type      | Values                   |
+| --------- | ------------------------ |
+| `GridGap` | SM, MD (default), LG, XL |
 
 ---
 
@@ -124,12 +134,12 @@ _None — all previously reported issues resolved._
 
 ### Components
 
-| Component     | Status           | Description              | Key Features                                                                                                                  |
-| ------------- | ---------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
-| `ErrorPage`   | FULLY_FUNCTIONAL | Full-page error view     | Wix-style What/Why/Fix/WayOut, 5 families, context, cause chain, action                                                       |
-| `NotFound404` | FULLY_FUNCTIONAL | Dedicated 404 page       | Gradient numeral hero, search form, quick-links grid (configurable `LinksTitle`), `WriteNotFound404` handler, go-home/go-back |
-| `ErrorDetail` | FULLY_FUNCTIONAL | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix                                                           |
-| `ErrorAlert`  | FULLY_FUNCTIONAL | Family-aware alert       | 5 distinct color schemes, dismiss, fix suggestion, family badge                                                               |
+| Component     | Status               | Description              | Key Features                                                                                                                                                                   |
+| ------------- | -------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ErrorPage`   | PARTIALLY_FUNCTIONAL | Full-page error view     | Wix-style What/Why/Fix/WayOut, 5 families, context, cause chain, action. **Gap:** Missing `<main>` landmark (WCAG 2.4.1) — uses `<div role="region">` instead                  |
+| `NotFound404` | PARTIALLY_FUNCTIONAL | Dedicated 404 page       | Gradient numeral hero, search form, quick-links grid (configurable `LinksTitle`), `WriteNotFound404` handler, go-home/go-back. **Gap:** Missing `<main>` landmark (WCAG 2.4.1) |
+| `ErrorDetail` | FULLY_FUNCTIONAL     | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix                                                                                                            |
+| `ErrorAlert`  | FULLY_FUNCTIONAL     | Family-aware alert       | 5 distinct color schemes, dismiss, fix suggestion, family badge                                                                                                                |
 
 ### Enums
 
@@ -139,12 +149,12 @@ _None — all previously reported issues resolved._
 
 ### Bridge Helpers
 
-| Function            | Purpose                                                     |
-| ------------------- | ----------------------------------------------------------- |
-| `FamilyStatusCode`  | Maps Family → HTTP status code (400/409/503/500/503)        |
-| `ContextMap`        | Converts map[string]string → []ContextPair                  |
-| `ExtractCauseChain` | Walks Unwrap() chain → []CauseItem with ErrorCode() support |
-| `FromError`         | Converts any `error` → `ErrorPageProps` (family/code/cause) |
+| Function            | Purpose                                                                                                                                                                     |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `FamilyStatusCode`  | Maps Family → HTTP status code (400/409/503/500/503)                                                                                                                        |
+| `ContextMap`        | Converts map[string]string → []ContextPair                                                                                                                                  |
+| `ExtractCauseChain` | Walks Unwrap() chain → []CauseItem with ErrorCode() support                                                                                                                 |
+| `FromError`         | Converts any `error` → `ErrorPageProps` (family/code/cause). **Known issue:** Returns `FamilyInfrastructure` (→503) for unknown errors; should be `FamilyCorruption` (→500) |
 
 ### HTTP Handler
 
@@ -176,21 +186,21 @@ _None — all previously reported issues resolved._
 
 ### Components
 
-| Component          | Status           | Description               | Key Features                                                      |
-| ------------------ | ---------------- | ------------------------- | ----------------------------------------------------------------- |
-| `Alert`            | FULLY_FUNCTIONAL | Full-width alert banner   | 4 types, dismissible, icon, CSP nonce                             |
-| `InlineError`      | FULLY_FUNCTIONAL | Compact error message     | Red icon + text                                                   |
-| `InlineSuccess`    | FULLY_FUNCTIONAL | Compact success message   | Green checkmark + text                                            |
-| `Spinner`          | FULLY_FUNCTIONAL | Animated SVG spinner      | 3 sizes, custom color class                                       |
-| `LoadingOverlay`   | FULLY_FUNCTIONAL | Full-screen loading       | Spinner, message, optional progress bar                           |
-| `InlineLoading`    | FULLY_FUNCTIONAL | Compact inline loading    | Spinner + message                                                 |
-| `Skeleton`         | FULLY_FUNCTIONAL | Pulsing placeholder       | 7 variants: text, title, avatar, image, card, table-row           |
-| `SkeletonGroup`    | FULLY_FUNCTIONAL | Multiple skeletons        | Group with `animate-pulse`                                        |
-| `SkeletonCardGrid` | FULLY_FUNCTIONAL | Loading card grid         | N skeleton cards in responsive 3-col grid, single `role="status"` |
-| `ProgressBar`      | FULLY_FUNCTIONAL | Progress indicator        | 3 sizes, custom color, label, percentage                          |
-| `StepIndicator`    | FULLY_FUNCTIONAL | Horizontal step indicator | Completed/current/future states, labels                           |
-| `ToastContainer`   | FULLY_FUNCTIONAL | Fixed toast container     | JS `tcShowToast()` for dynamic toasts                             |
-| `Toast`            | FULLY_FUNCTIONAL | Server-rendered toast     | 4 types, dismissible, title, message, duration                    |
+| Component          | Status           | Description             | Key Features                                                                                        |
+| ------------------ | ---------------- | ----------------------- | --------------------------------------------------------------------------------------------------- |
+| `Alert`            | FULLY_FUNCTIONAL | Full-width alert banner | 4 types, dismissible, icon, CSP nonce                                                               |
+| `InlineError`      | FULLY_FUNCTIONAL | Compact error message   | Red icon + text                                                                                     |
+| `InlineSuccess`    | FULLY_FUNCTIONAL | Compact success message | Green checkmark + text                                                                              |
+| `Spinner`          | FULLY_FUNCTIONAL | Animated SVG spinner    | 3 sizes, custom color class                                                                         |
+| `LoadingOverlay`   | FULLY_FUNCTIONAL | Full-screen loading     | Spinner, message, optional progress bar                                                             |
+| `InlineLoading`    | FULLY_FUNCTIONAL | Compact inline loading  | Spinner + message                                                                                   |
+| `Skeleton`         | FULLY_FUNCTIONAL | Pulsing placeholder     | 7 variants: text, title, avatar, image, card, table-row                                             |
+| `SkeletonGroup`    | FULLY_FUNCTIONAL | Multiple skeletons      | Group with `animate-pulse`                                                                          |
+| `SkeletonCardGrid` | FULLY_FUNCTIONAL | Loading card grid       | N skeleton cards in responsive 3-col grid, single `role="status"`                                   |
+| `ProgressBar`      | FULLY_FUNCTIONAL | Progress indicator      | 3 sizes, custom color, label, percentage, indeterminate mode (`aria-busy`), clamped `aria-valuenow` |
+| `StepIndicator`    | FULLY_FUNCTIONAL | Step progress indicator | Horizontal/vertical orientation, completed/current/future states, labels                            |
+| `ToastContainer`   | FULLY_FUNCTIONAL | Fixed toast container   | JS `tcShowToast()` for dynamic toasts                                                               |
+| `Toast`            | FULLY_FUNCTIONAL | Server-rendered toast   | 4 types, dismissible, title, message, duration, auto-generates ID via `EnsureID` for auto-dismiss   |
 
 ### Enums
 
@@ -230,24 +240,24 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component           | Status           | Description              | Key Features                                                        |
-| ------------------- | ---------------- | ------------------------ | ------------------------------------------------------------------- |
-| `Input`             | FULLY_FUNCTIONAL | Text input with label    | 11 types, error, help text, required, disabled, readonly, autofocus |
-| `Checkbox`          | FULLY_FUNCTIONAL | Checkbox with label      | Error, help text, required                                          |
-| `RadioGroup`        | FULLY_FUNCTIONAL | Radio button group       | Inline/stacked, AriaLabel propagation on fieldset                   |
-| `Select`            | FULLY_FUNCTIONAL | Select dropdown          | Options, disabled options, pre-selected, normalize contradiction    |
-| `Textarea`          | FULLY_FUNCTIONAL | Textarea with label      | Configurable rows, error, help text                                 |
-| `Toggle`            | FULLY_FUNCTIONAL | Toggle switch            | 3 sizes (SM/MD/LG), label, error, help text                         |
-| `FileInput`         | FULLY_FUNCTIONAL | File upload input        | Multiple, accept filter, error, help text                           |
-| `DatePicker`        | FULLY_FUNCTIONAL | Date input               | Native `<input type="date">`, min/max constraints                   |
-| `Combobox`          | FULLY_FUNCTIONAL | Autocomplete with filter | `role="combobox"`, client-side filtering, auto-generated IDs        |
-| `Label`             | FULLY_FUNCTIONAL | Form label               | Optional `for` attribute, required indicator                        |
-| `FieldError`        | FULLY_FUNCTIONAL | Field validation error   | Accessible with ID linking for aria-describedby                     |
-| `ValidationSummary` | FULLY_FUNCTIONAL | Accessible error summary | Icon, error count, linked fields, `role="alert"`                    |
-| `Form`              | FULLY_FUNCTIONAL | Form wrapper             | Action, Method (GET/POST), CSRF token, children pattern             |
-| `InputGroup`        | FULLY_FUNCTIONAL | Input group container    | Groups multiple inputs with shared styling                          |
-| `FormFieldWrapper`  | FULLY_FUNCTIONAL | Shared field chrome      | Label + FieldError + helpText, used by Input/Select/Textarea        |
-| `Radio`             | FULLY_FUNCTIONAL | Single radio button      | Sub-component of RadioGroup                                         |
+| Component           | Status           | Description              | Key Features                                                                                                                                                                |
+| ------------------- | ---------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Input`             | FULLY_FUNCTIONAL | Text input with label    | 11 types, error, help text, required, disabled, readonly, autofocus                                                                                                         |
+| `Checkbox`          | FULLY_FUNCTIONAL | Checkbox with label      | Error, help text, required                                                                                                                                                  |
+| `RadioGroup`        | FULLY_FUNCTIONAL | Radio button group       | Inline/stacked, AriaLabel propagation on fieldset                                                                                                                           |
+| `Select`            | FULLY_FUNCTIONAL | Select dropdown          | Options, disabled options, pre-selected, normalize contradiction                                                                                                            |
+| `Textarea`          | FULLY_FUNCTIONAL | Textarea with label      | Configurable rows, error, help text                                                                                                                                         |
+| `Toggle`            | FULLY_FUNCTIONAL | Toggle switch            | 3 sizes (SM/MD/LG), label, error, help text                                                                                                                                 |
+| `FileInput`         | FULLY_FUNCTIONAL | File upload input        | Multiple, accept filter, error, help text                                                                                                                                   |
+| `DatePicker`        | FULLY_FUNCTIONAL | Date input               | Native `<input type="date">`, min/max constraints                                                                                                                           |
+| `Combobox`          | FULLY_FUNCTIONAL | Autocomplete with filter | `role="combobox"`, client-side filtering, auto-generated IDs, full WAI-ARIA keyboard nav (ArrowUp/Down/Home/End/Enter/Escape/Tab), `aria-activedescendant`, `aria-selected` |
+| `Label`             | FULLY_FUNCTIONAL | Form label               | Optional `for` attribute, required indicator                                                                                                                                |
+| `FieldError`        | FULLY_FUNCTIONAL | Field validation error   | Accessible with ID linking for aria-describedby                                                                                                                             |
+| `ValidationSummary` | FULLY_FUNCTIONAL | Accessible error summary | Icon, error count, linked fields, `role="alert"`                                                                                                                            |
+| `Form`              | FULLY_FUNCTIONAL | Form wrapper             | Action, Method (GET/POST), CSRF token, children pattern                                                                                                                     |
+| `InputGroup`        | FULLY_FUNCTIONAL | Input group container    | Groups multiple inputs with shared styling                                                                                                                                  |
+| `FormFieldWrapper`  | FULLY_FUNCTIONAL | Shared field chrome      | Label + FieldError + helpText, used by Input/Select/Textarea                                                                                                                |
+| `Radio`             | FULLY_FUNCTIONAL | Single radio button      | Sub-component of RadioGroup                                                                                                                                                 |
 
 ### Enums
 
@@ -264,7 +274,8 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Known Issues
 
-- **Combobox** lacks full WAI-ARIA keyboard pattern (no ArrowDown/Up navigation within listbox, no `aria-activedescendant` tracking)
+- **SanitizeID mismatch in ValidationSummary** — error links use `SanitizeID(err.Field)` (transforms `_`→`-`) but field IDs are whatever the consumer set (e.g. `user_email`). Links may not match actual element IDs (`forms/ids.go:9`, `forms/validation.templ:61`)
+- **FormProps CSRF token name hardcoded** — `name="csrf_token"` with no `CSRFTokenName` field for framework compatibility (`forms/form.templ:71`)
 
 ---
 
@@ -272,15 +283,15 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component              | Status           | Description                | Key Features                                                                               |
-| ---------------------- | ---------------- | -------------------------- | ------------------------------------------------------------------------------------------ |
-| `LoadingIndicator`     | FULLY_FUNCTIONAL | Fixed full-screen loading  | Uses `htmx-indicator`, blur backdrop                                                       |
-| `InlineLoadingOverlay` | FULLY_FUNCTIONAL | Localized loading overlay  | Absolute positioned, for form targets                                                      |
-| `LoadingButton`        | FULLY_FUNCTIONAL | Button with loading state  | Text swaps to spinner during HTMX requests                                                 |
-| `ConfirmDelete`        | FULLY_FUNCTIONAL | Delete button with confirm | `hx-delete`, `hx-target`, `hx-confirm`, `hx-swap`                                          |
-| `SwapOOB`              | FULLY_FUNCTIONAL | Out-of-band swap wrapper   | For updating multiple elements per response                                                |
-| `CSRFToken`            | FULLY_FUNCTIONAL | Hidden CSRF input          | Standard `csrf_token` name                                                                 |
-| `GlobalErrorHandling`  | FULLY_FUNCTIONAL | HTMX error handler         | Network errors, response errors, auto-retry, toast integration, family-aware error parsing |
+| Component              | Status               | Description                | Key Features                                                                                                                                                  |
+| ---------------------- | -------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LoadingIndicator`     | FULLY_FUNCTIONAL     | Fixed full-screen loading  | Uses `htmx-indicator`, blur backdrop                                                                                                                          |
+| `InlineLoadingOverlay` | PARTIALLY_FUNCTIONAL | Localized loading overlay  | Absolute positioned, for form targets. **Gap:** Missing sr-only loading text (parity with LoadingIndicator which has `<span class="sr-only">Loading…</span>`) |
+| `LoadingButton`        | FULLY_FUNCTIONAL     | Button with loading state  | Text swaps to spinner during HTMX requests                                                                                                                    |
+| `ConfirmDelete`        | FULLY_FUNCTIONAL     | Delete button with confirm | `hx-delete`, `hx-target`, `hx-confirm`, `hx-swap`                                                                                                             |
+| `SwapOOB`              | FULLY_FUNCTIONAL     | Out-of-band swap wrapper   | For updating multiple elements per response                                                                                                                   |
+| `CSRFToken`            | FULLY_FUNCTIONAL     | Hidden CSRF input          | Standard `csrf_token` name                                                                                                                                    |
+| `GlobalErrorHandling`  | FULLY_FUNCTIONAL     | HTMX error handler         | Network errors, response errors, auto-retry, toast integration, family-aware error parsing                                                                    |
 
 ### Known Issues
 
@@ -307,6 +318,7 @@ Used by both Alert and Toast for consistent visual styling.
 | --------------------- | ---------------------------------------------------------------------- |
 | `IconWithStrokeWidth` | Icon with custom stroke-width                                          |
 | `IconPathData`        | Returns raw path data for a named icon (full `<svg>` wrapper control)  |
+| `IconPathJS`          | Returns path data formatted for JS injection                           |
 | `allIconNames`        | Auto-generated list of all icon names from `iconPathData` (unexported) |
 
 ### Known Issues
@@ -326,6 +338,7 @@ Used by both Alert and Toast for consistent visual styling.
 | `ThemeScript` | FULLY_FUNCTIONAL | Dark mode script      | localStorage-based, prevents FOUC                                                                      |
 | `ThemeToggle` | FULLY_FUNCTIONAL | Theme switch button   | Sun/moon icons, JS toggle, CSP nonce                                                                   |
 | `Script`      | FULLY_FUNCTIONAL | CSP-safe script tag   | Auto-injects nonce, optional attrs (async, defer, type)                                                |
+| `Stylesheet`  | FULLY_FUNCTIONAL | CSP-safe stylesheet   | `<link rel="stylesheet">` companion to Script, optional attrs                                          |
 
 ### Functions
 
@@ -343,23 +356,23 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component          | Status           | Description               | Key Features                                                                                                          |
-| ------------------ | ---------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `Nav`              | FULLY_FUNCTIONAL | Responsive navigation bar | Brand, links, right items, sticky option, mobile menu                                                                 |
-| `SimpleNav`        | FULLY_FUNCTIONAL | Simplified nav            | Text brand, sticky by default                                                                                         |
-| `NavLink`          | FULLY_FUNCTIONAL | Desktop nav link          | Active state styling via currentPath                                                                                  |
-| `MobileNavLink`    | FULLY_FUNCTIONAL | Mobile nav link           | Border-left active indicator                                                                                          |
-| `Breadcrumbs`      | FULLY_FUNCTIONAL | Breadcrumb navigation     | Chevron separators, active state                                                                                      |
-| `Pagination`       | FULLY_FUNCTIONAL | Page navigation           | Mobile/desktop layouts, prev/next arrows, page range, query param                                                     |
-| `MobileMenu`       | FULLY_FUNCTIONAL | Collapsible mobile menu   | JS toggle, nonce-based CSP                                                                                            |
-| `MobileMenuToggle` | FULLY_FUNCTIONAL | Hamburger button          | Conditional visibility                                                                                                |
-| `Footer`           | FULLY_FUNCTIONAL | Simple footer             | Copyright with dynamic year                                                                                           |
-| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav      | Brand/footer slots, icons, active-route detection                                                                     |
-| `LoadMore`         | FULLY_FUNCTIONAL | Cursor pagination button  | hx-get + hx-swap outerHTML, cursor as query param, centered layout, optional `InfiniteScroll` (hx-trigger="revealed") |
+| Component          | Status               | Description               | Key Features                                                                                                             |
+| ------------------ | -------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `Nav`              | FULLY_FUNCTIONAL     | Responsive navigation bar | Brand, links, right items, sticky option, mobile menu                                                                    |
+| `SimpleNav`        | FULLY_FUNCTIONAL     | Simplified nav            | Text brand, sticky by default                                                                                            |
+| `NavLink`          | FULLY_FUNCTIONAL     | Desktop nav link          | Active state styling via currentPath                                                                                     |
+| `MobileNavLink`    | FULLY_FUNCTIONAL     | Mobile nav link           | Border-left active indicator                                                                                             |
+| `Breadcrumbs`      | FULLY_FUNCTIONAL     | Breadcrumb navigation     | Chevron separators, active state, optional custom `Separator`, JSON-LD structured data, `rel` support                    |
+| `Pagination`       | FULLY_FUNCTIONAL     | Page navigation           | Mobile/desktop layouts, prev/next arrows, page range, query param, `rel="prev"/"next"/"canonical"` for SEO               |
+| `MobileMenu`       | FULLY_FUNCTIONAL     | Collapsible mobile menu   | JS toggle, nonce-based CSP                                                                                               |
+| `MobileMenuToggle` | FULLY_FUNCTIONAL     | Hamburger button          | Conditional visibility                                                                                                   |
+| `Footer`           | PARTIALLY_FUNCTIONAL | Simple footer             | Copyright with dynamic year. **Gap:** Doesn't accept `BaseProps` — can't set Class/ID/Attrs (`navigation/nav.templ:119`) |
+| `SidebarNav`       | FULLY_FUNCTIONAL     | Vertical sidebar nav      | Brand/footer slots, icons, active-route detection                                                                        |
+| `LoadMore`         | FULLY_FUNCTIONAL     | Cursor pagination button  | hx-get + hx-swap outerHTML, cursor as query param, centered layout, optional `InfiniteScroll` (hx-trigger="revealed")    |
 
 ### Known Issues
 
-- `Footer` could arguably live in `layout/` instead
+- `Footer` doesn't accept `BaseProps` — API inconsistency with all other components
 
 ---
 
@@ -370,15 +383,27 @@ Used by both Alert and Toast for consistent visual styling.
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first designs with `sm:` breakpoints
-- **Type Safety:** 32 typed string enums, `utils.BaseProps` embedded in all Props structs
+- **Type Safety:** 33 typed string enums (32 with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
 - **Test Coverage:** 74% average across packages, BDD + snapshot + a11y + benchmark + integration tests
 - **Theming:** Tailwind v4 `@theme` override support via `templ-components-theme.css`. Components emit standard utility classes (`bg-blue-600`, `text-gray-900`) — consumers override `--color-*` variables to theme globally without touching component code.
+- **CSS Automation:** `templates/app.css` starter entry-point + BuildFlow `tailwind-build` provider (auto-discovers CSS entry-points, compiles via `tailwindcss` in the DAG). See `docs/tailwind-v4-adoption-guide.md`.
+- **RTL/i18n:** All CSS uses logical properties (`ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`). Components auto-mirror in `dir="rtl"` contexts. Keyboard nav (Tabs, Dropdown) swaps ArrowLeft/Right in RTL.
 
 ---
 
 ## Planned / Not Yet Implemented
 
-| Component       | Package | Notes                      |
-| --------------- | ------- | -------------------------- |
-| Docs site       | —       | Auto-generated from source |
-| Release tooling | —       | goreleaser, tag-based      |
+See `TODO_LIST.md` for the full verified inventory. Highlights:
+
+| Feature / Component    | Package  | Status       | Notes                                                                 |
+| ---------------------- | -------- | ------------ | --------------------------------------------------------------------- |
+| `Popover`              | display  | ⚪ `PLANNED` | Most requested missing component across consumer feedback             |
+| `DataTable`            | display  | ⚪ `PLANNED` | High-level sortable/filtering/pagination wrapper around `TableHeader` |
+| `FilterDropdown`       | forms    | ⚪ `PLANNED` | Purpose-built for HTMX filter bars                                    |
+| `Validate() error`     | all      | ⚪ `PLANNED` | v1.0 — design decision needed (83 components)                         |
+| `internal/testutil/`   | internal | ⚪ `PLANNED` | v1.0 — move test helpers (70+ files depend on exports)                |
+| Semantic token layer   | all      | ⚪ `PLANNED` | v1.0 — `bg-tc-primary` aliases (ADR 0008, 256 color refs)             |
+| Self-host htmx default | layout   | ⚪ `PLANNED` | v1.0 — breaking CSP change (ADR 0007)                                 |
+| Native `<dialog>`      | display  | ⚪ `PLANNED` | v2.0 — Modal/Drawer architecture change                               |
+| Compound components    | display  | —            | v2.0 — Trigger/Content/Close API for overlays                         |
+| Docs/showcase site     | —        | ⚪ `PLANNED` | Live rendered component catalog                                       |
