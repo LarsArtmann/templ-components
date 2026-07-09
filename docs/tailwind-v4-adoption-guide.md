@@ -19,7 +19,49 @@ doesn't cover something.
 
 ---
 
-## Setup (5 minutes)
+## Automated setup (recommended)
+
+### Option A: `go generate` with tc-css
+
+The `cmd/tc-css` CLI tool automates the entire pipeline: `go mod vendor`, CSS entry-point generation, and `tailwindcss` compilation.
+
+```go
+// In any .go file in your project:
+//go:generate go run github.com/larsartmann/templ-components/cmd/tc-css -input app.css -output styles.css
+```
+
+```bash
+go generate ./...
+```
+
+The tool:
+
+1. Runs `go mod vendor` so vendored `.templ` files are available for `@source` scanning
+2. Auto-generates a starter `app.css` if none exists (with `@import`, `@source`, `@custom-variant`, commented `@theme`)
+3. Auto-detects `@source` paths from `vendor/` — no manual path guessing
+4. Runs `tailwindcss` to compile the final CSS
+
+### Option B: BuildFlow
+
+If your project uses [BuildFlow](https://github.com/larsartmann/buildflow), the `tailwind-build` provider handles CSS automatically as part of its DAG:
+
+```
+go-mod-vendor → templ-generate → tailwind-build
+```
+
+Just ensure a CSS file with `@import "tailwindcss"` exists. No `go:generate` directive needed.
+
+### Option C: Starter template
+
+Copy [`templates/app.css`](../templates/app.css) into your project as a ready-to-use entry point, then build:
+
+```bash
+tailwindcss -i app.css -o styles.css --minify
+```
+
+---
+
+## Manual setup (5 minutes)
 
 ### 1. Install the Tailwind CLI
 

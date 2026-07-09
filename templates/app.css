@@ -1,0 +1,52 @@
+/*
+ * templ-components starter CSS — Tailwind v4 entry point.
+ *
+ * Copy this file into your project (e.g. app.css, input.css) and customize.
+ * Build with:
+ *   tailwindcss -i app.css -o styles.css --minify
+ *   go run github.com/larsartmann/templ-components/cmd/tc-css -input app.css -output styles.css
+ *   buildflow (tailwind-build provider handles it automatically)
+ */
+
+/* Tailwind v4 — CSS-first config, no tailwind.config.js */
+@import "tailwindcss" source(none);
+
+/*
+ * @source directives tell Tailwind where to scan for class names.
+ * Adjust the vendored path to match your module layout.
+ */
+@source "**/*.templ";
+@source "vendor/github.com/larsartmann/templ-components/**/*.templ";
+
+/*
+ * Class-based dark mode — required for layout.ThemeScript() / layout.ThemeToggle().
+ * The .dark class is toggled on <html> by ThemeScript before first paint.
+ */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * Override colors globally — all templ-components use standard Tailwind
+ * utility classes, so overriding --color-* changes every component.
+ */
+@theme {
+  /* Example: indigo instead of blue */
+  /* --color-blue-600: #4f46e5; */
+  /* --color-blue-500: #6366f1; */
+}
+
+/*
+ * Semantic aliases (optional):
+ * Import the theme file for bg-tc-primary, text-tc-danger, bg-tc-surface, etc.
+ */
+/* @import "./templ-components-theme.css"; */
+
+/*
+ * Small custom CSS where Tailwind doesn't cover something.
+ */
+@layer utilities {
+  /* Example: thin scrollbar */
+  /* .scrollbar-thin { */
+  /*   scrollbar-width: thin; */
+  /*   scrollbar-color: var(--color-gray-400) transparent; */
+  /* } */
+}

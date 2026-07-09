@@ -24,6 +24,16 @@ CSP that allows only `style-src 'self'`.
 
 ---
 
+## Automated migration (recommended)
+
+Instead of the manual 7-step process below, use one of these shortcuts:
+
+- **`go generate`:** Add `//go:generate go run github.com/larsartmann/templ-components/cmd/tc-css -input app.css -output styles.css` to any `.go` file, then run `go generate ./...`. The tool handles vendoring, CSS generation, and compilation.
+- **BuildFlow:** If using BuildFlow, the `tailwind-build` provider does everything automatically.
+- **Starter template:** Copy [`templates/app.css`](../../templates/app.css) as your entry point, then build with the Tailwind CLI.
+
+---
+
 ## Step 1 — Install the Tailwind v4 CLI
 
 Pick one option. The CLI is the same binary in all three cases.

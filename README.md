@@ -338,7 +338,39 @@ import (
 
 ## Tailwind CSS Setup
 
-Tailwind v4 uses CSS-first configuration. Since this is a Go module (not an npm package), you need to vendor the dependency so Tailwind can scan the `.templ` source files for class names:
+Tailwind v4 uses CSS-first configuration. Since this is a Go module (not an npm package), you need to vendor the dependency so Tailwind can scan the `.templ` source files for class names.
+
+### Automated setup (recommended)
+
+**Option A — `go generate`:**
+
+Add this directive to any `.go` file in your project:
+
+```go
+//go:generate go run github.com/larsartmann/templ-components/cmd/tc-css -input app.css -output styles.css
+```
+
+Then run:
+
+```bash
+go generate ./...
+```
+
+The `tc-css` tool auto-detects vendored `@source` paths, generates a starter CSS if none exists, runs `go mod vendor`, and invokes `tailwindcss`. No manual path configuration needed.
+
+**Option B — BuildFlow:**
+
+If your project uses [BuildFlow](https://github.com/larsartmann/buildflow), the `tailwind-build` provider handles everything automatically. The DAG chain runs `go-mod-vendor → templ-generate → tailwind-build` in order. No `go:generate` directive needed — just ensure a CSS file with `@import "tailwindcss"` exists in your project.
+
+**Option C — Starter template:**
+
+Copy [`templates/app.css`](templates/app.css) into your project as a ready-to-use entry point, then build with the Tailwind CLI:
+
+```bash
+tailwindcss -i app.css -o styles.css --minify
+```
+
+### Manual setup
 
 ```bash
 go mod vendor
