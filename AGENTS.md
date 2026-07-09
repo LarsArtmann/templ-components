@@ -4,22 +4,22 @@
 
 This repo is a **single Go module** (`github.com/larsartmann/templ-components`) with 14 packages:
 
-| Package             | Contains                                   | Purpose                                                  |
-| ------------------- | ------------------------------------------ | -------------------------------------------------------- |
-| `display`           | 25+ UI components                          | Cards, tables, modals, badges, buttons, avatars, etc.    |
-| `feedback`          | 13 components                              | Alerts, toasts, spinners, skeletons, progress bars       |
-| `forms`             | 16 components                              | Inputs, selects, toggles, combobox, validation           |
-| `layout`            | 5 components                               | Page shell, theme toggle, CSP-safe script/style tags     |
-| `navigation`        | 11 components                              | Nav bars, pagination, breadcrumbs, sidebar               |
-| `htmx`              | 7 components                               | HTMX loading, error handling, OOB swaps                  |
-| `icons`             | 101 named SVG icons                        | Heroicons v2 outline + Spinner                           |
-| `errorpage`         | 4 components + handler                     | Error pages, 404, go-error-family integration            |
-| `utils`             | BaseProps, Class(), EnsureID, test helpers | Shared utilities                                         |
-| `internal/svg`      | SVG path constants                         | Single source of truth for inline SVG paths              |
-| `internal/golden`   | Golden file testing                        | CSS-normalized HTML snapshot comparison                  |
-| `internal/contract` | Contract tests                             | Cross-package interface verification                     |
-| `integration`       | CSP nonce tests                            | Asserts nonce on all inline scripts                      |
-| `examples/demo`     | Demo binary                                | Showcases components                                     |
+| Package             | Contains                                   | Purpose                                               |
+| ------------------- | ------------------------------------------ | ----------------------------------------------------- |
+| `display`           | 25+ UI components                          | Cards, tables, modals, badges, buttons, avatars, etc. |
+| `feedback`          | 13 components                              | Alerts, toasts, spinners, skeletons, progress bars    |
+| `forms`             | 16 components                              | Inputs, selects, toggles, combobox, validation        |
+| `layout`            | 5 components                               | Page shell, theme toggle, CSP-safe script/style tags  |
+| `navigation`        | 11 components                              | Nav bars, pagination, breadcrumbs, sidebar            |
+| `htmx`              | 7 components                               | HTMX loading, error handling, OOB swaps               |
+| `icons`             | 101 named SVG icons                        | Heroicons v2 outline + Spinner                        |
+| `errorpage`         | 4 components + handler                     | Error pages, 404, go-error-family integration         |
+| `utils`             | BaseProps, Class(), EnsureID, test helpers | Shared utilities                                      |
+| `internal/svg`      | SVG path constants                         | Single source of truth for inline SVG paths           |
+| `internal/golden`   | Golden file testing                        | CSS-normalized HTML snapshot comparison               |
+| `internal/contract` | Contract tests                             | Cross-package interface verification                  |
+| `integration`       | CSP nonce tests                            | Asserts nonce on all inline scripts                   |
+| `examples/demo`     | Demo binary                                | Showcases components                                  |
 
 > **Note:** A multi-module workspace split was prototyped on the `modularize/strategic-split`
 > branch but was never merged to `master`. The split may be re-attempted post-v1.0 if the
