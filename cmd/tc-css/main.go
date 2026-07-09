@@ -68,10 +68,10 @@ func main() {
 
 	fmt.Fprintf(os.Stderr, "tc-css: tailwindcss %s\n", strings.Join(args, " "))
 
-	cmd := exec.CommandContext(
+	cmd := exec.CommandContext( //nolint:gosec // CLI tool intentionally runs subprocesses
 		context.Background(),
 		"tailwindcss",
-		args...) //nolint:gosec // CLI tool intentionally runs subprocesses
+		args...)
 	cmd.Dir = projectRoot
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -89,7 +89,7 @@ func runVendor(root string) error {
 		"go",
 		"mod",
 		"vendor",
-	) //nolint:gosec // CLI tool intentionally runs subprocesses
+	)
 	cmd.Dir = root
 	cmd.Stdout = os.Stderr
 	cmd.Stderr = os.Stderr
@@ -100,8 +100,8 @@ func generateInputCSS(path, projectRoot string) error {
 	if err := os.MkdirAll(
 		filepath.Dir(path),
 		0o750,
-	); err != nil { //nolint:wrapcheck // CLI tool, error propagates to main and exits
-		return err
+	); err != nil {
+		return fmt.Errorf("failed to create directory %s: %w", filepath.Dir(path), err)
 	}
 
 	cssDir := filepath.Dir(path)
@@ -155,7 +155,7 @@ func findTemplVendoredSources(cssDir, projectRoot string) []string {
 
 	_ = filepath.Walk(
 		vendorDir,
-		func(path string, info os.FileInfo, _ error) error { //nolint:nilerr // intentionally skip unreadable files
+		func(path string, info os.FileInfo, _ error) error {
 			if info.IsDir() {
 				return nil
 			}
@@ -167,7 +167,7 @@ func findTemplVendoredSources(cssDir, projectRoot string) []string {
 			dir := filepath.Dir(path)
 			rel, err := filepath.Rel(cssDir, dir)
 			if err != nil {
-				return nil
+				rel = dir // fallback: use absolute path if relative computation fails
 			}
 
 			if !seen[rel] {
@@ -175,7 +175,7 @@ func findTemplVendoredSources(cssDir, projectRoot string) []string {
 				sources = append(sources, filepath.Join(rel, "**/*.templ"))
 			}
 
-			return nil //nolint:nilerr // walk callback
+			return nil
 		},
 	)
 

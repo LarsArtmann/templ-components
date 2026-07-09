@@ -8,6 +8,7 @@ import (
 )
 
 func TestFindProjectRoot(t *testing.T) {
+	t.Parallel()
 	root := findProjectRoot()
 	if root == "" {
 		t.Fatal("findProjectRoot returned empty string")
@@ -18,6 +19,7 @@ func TestFindProjectRoot(t *testing.T) {
 }
 
 func TestFileExists(t *testing.T) {
+	t.Parallel()
 	if !fileExists("main.go") {
 		t.Error("fileExists(main.go) = false, want true")
 	}
@@ -30,6 +32,7 @@ func TestFileExists(t *testing.T) {
 }
 
 func TestDirExists(t *testing.T) {
+	t.Parallel()
 	if !dirExists(".") {
 		t.Error("dirExists(.) = false, want true")
 	}
@@ -39,6 +42,7 @@ func TestDirExists(t *testing.T) {
 }
 
 func TestAbsPath(t *testing.T) {
+	t.Parallel()
 	got := absPath("/root", "relative/path.css")
 	want := "/root/relative/path.css"
 	if got != want {
@@ -53,6 +57,7 @@ func TestAbsPath(t *testing.T) {
 }
 
 func TestGenerateInputCSS(t *testing.T) {
+	t.Parallel()
 	tmp := t.TempDir()
 	projectRoot := tmp
 	cssDir := filepath.Join(projectRoot, "css")
@@ -62,7 +67,7 @@ func TestGenerateInputCSS(t *testing.T) {
 		t.Fatalf("generateInputCSS failed: %v", err)
 	}
 
-	content, err := os.ReadFile(cssPath)
+	content, err := os.ReadFile(cssPath) //nolint:gosec // test file reading temp dir
 	if err != nil {
 		t.Fatalf("failed to read generated CSS: %v", err)
 	}
@@ -88,6 +93,7 @@ func TestGenerateInputCSS(t *testing.T) {
 }
 
 func TestGenerateInputCSSWithVendor(t *testing.T) {
+	t.Parallel()
 	tmp := t.TempDir()
 	projectRoot := tmp
 	cssDir := filepath.Join(projectRoot, "static")
@@ -106,7 +112,7 @@ func TestGenerateInputCSSWithVendor(t *testing.T) {
 		t.Fatalf("generateInputCSS failed: %v", err)
 	}
 
-	content, err := os.ReadFile(cssPath)
+	content, err := os.ReadFile(cssPath) //nolint:gosec // test file reading temp dir
 	if err != nil {
 		t.Fatalf("failed to read generated CSS: %v", err)
 	}
@@ -123,6 +129,7 @@ func TestGenerateInputCSSWithVendor(t *testing.T) {
 }
 
 func TestFindTemplVendoredSources(t *testing.T) {
+	t.Parallel()
 	tmp := t.TempDir()
 
 	// No vendor dir → empty

@@ -25,6 +25,7 @@
             gopls
             golangci-lint
             templ
+            tailwindcss_4
           ];
         };
 
