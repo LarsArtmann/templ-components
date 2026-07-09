@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+
+## [0.11.0] — 2026-07-09
+
+### Added
+
+
 ### Added
 
 - `templates/app.css` — ready-to-copy starter CSS entry-point with `@import "tailwindcss" source(none)`, project + vendored `@source` directives, `@custom-variant dark`, and commented `@theme`/`@import` blocks.
