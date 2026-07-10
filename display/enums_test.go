@@ -22,6 +22,7 @@ func TestIsValidEnums(t *testing.T) {
 		{"CardPadding invalid", func() bool { return CardPaddingIsValid(CardPadding("bogus")) }, false},
 		// GridCols
 		{"GridCols 1", func() bool { return GridColsIsValid(GridCols1) }, true},
+		{"GridCols AutoFit", func() bool { return GridColsIsValid(GridColsAutoFit) }, true},
 		{"GridCols invalid", func() bool { return GridColsIsValid(GridCols("bogus")) }, false},
 		// GridGap
 		{"GridGap SM", func() bool { return GridGapIsValid(GridGapSM) }, true},

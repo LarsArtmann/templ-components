@@ -21,6 +21,9 @@ const (
 	GridCols4 GridCols = "4"
 	GridCols5 GridCols = "5"
 	GridCols6 GridCols = "6"
+	// GridColsAutoFit uses CSS auto-fit + minmax() instead of fixed breakpoints.
+	// The grid responds to container width, not viewport. Requires MinColWidth.
+	GridColsAutoFit GridCols = "auto-fit"
 	// GridColsDefault is the canonical default (3 columns at the lg breakpoint).
 	GridColsDefault GridCols = GridCols3
 )
@@ -83,6 +86,16 @@ func gridClass(cols GridCols) string {
 	return gridColsLookup[GridColsDefault]
 }
 
+// gridAutoFitClass generates a CSS auto-fit/minmax template class for
+// container-width-responsive grids. The minColWidth should include units
+// (e.g., "190px", "12rem"). Falls back to a 240px default if empty.
+func gridAutoFitClass(minColWidth string) string {
+	if minColWidth == "" {
+		minColWidth = "240px"
+	}
+	return "grid [grid-template-columns:repeat(auto-fit,minmax(" + minColWidth + ",1fr))]"
+}
+
 // gridContainerClass returns the container-query-based Tailwind class string
 // for a column count, falling back to GridColsDefault for unknown values.
 func gridContainerClass(cols GridCols) string {
@@ -108,6 +121,12 @@ type GridProps struct {
 	// the browser viewport. Useful for grids placed in sidebars, cards, or
 	// other constrained layouts. Defaults to false (viewport breakpoints).
 	ContainerResponsive bool
+	// MinColWidth sets the minimum column width for auto-fit grids. Used only
+	// when Cols is GridColsAutoFit. Generates a CSS auto-fit/minmax template
+	// that responds to container width. Example: "190px" produces
+	// grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)).
+	// Ignored for fixed column counts.
+	MinColWidth string
 }
 
 // DefaultGridProps returns sensible defaults (GridCols3).
@@ -159,6 +178,9 @@ func Grid(props GridProps) templ.Component {
 		}
 		gap := gridGapClass(props.Gap)
 		baseGrid := gridClass(cols)
+		if cols == GridColsAutoFit {
+			baseGrid = gridAutoFitClass(props.MinColWidth)
+		}
 		if props.ContainerResponsive {
 			baseGrid = gridContainerClass(cols)
 		}
@@ -185,7 +207,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 144, Col: 18}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 166, Col: 18}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 				if templ_7745c5c3_Err != nil {
@@ -221,7 +243,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 148, Col: 33}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 170, Col: 33}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
@@ -266,7 +288,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 158, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 180, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 				if templ_7745c5c3_Err != nil {
@@ -302,7 +324,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 162, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 184, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 				if templ_7745c5c3_Err != nil {

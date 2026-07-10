@@ -20,6 +20,9 @@ func CardPaddingIsValid(v CardPadding) bool {
 
 // GridColsIsValid reports whether v is one of the defined GridCols constants.
 func GridColsIsValid(v GridCols) bool {
+	if v == GridColsAutoFit {
+		return true
+	}
 	_, ok := gridColsLookup[v]
 	return ok
 }

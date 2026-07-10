@@ -26,6 +26,11 @@ type CardProps struct {
 	Subtitle     string
 	Footer       templ.Component
 	HeaderAction templ.Component
+	// Header, when set, replaces the entire default header section (title,
+	// subtitle, header action). Use this for custom header layouts that the
+	// Title/Subtitle/HeaderAction fields can't express. When nil, the default
+	// header renders if Title or HeaderAction is set.
+	Header templ.Component
 	// Body, when set, overrides children for the card's main content area.
 	// Use this for struct-based composition; pass children for templ-block
 	// composition. If both are set, Body takes precedence.
@@ -56,7 +61,11 @@ templ Card(props CardProps) {
 		}
 		{ props.Attrs... }
 	>
-		if props.Title != "" || props.HeaderAction != nil {
+		if props.Header != nil {
+			<div class="flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+				@props.Header
+			</div>
+		} else if props.Title != "" || props.HeaderAction != nil {
 			<div class="flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700">
 				<div>
 					if props.Title != "" {
@@ -73,13 +82,21 @@ templ Card(props CardProps) {
 				}
 			</div>
 		}
-		<div class={ cardPaddingClass(props.Padding) }>
+		if props.Padding == CardPaddingNone {
 			if props.Body != nil {
 				@props.Body
 			} else {
 				{ children... }
 			}
-		</div>
+		} else {
+			<div class={ cardPaddingClass(props.Padding) }>
+				if props.Body != nil {
+					@props.Body
+				} else {
+					{ children... }
+				}
+			</div>
+		}
 		if props.Footer != nil {
 			<div class="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
 				@props.Footer
