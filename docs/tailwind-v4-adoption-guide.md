@@ -8,14 +8,14 @@ doesn't cover something.
 
 ## Why Tailwind v4+?
 
-| Benefit                   | Details                                                                                                                                          |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **No Node.js required**   | Build step is a single Go-callable or standalone binary (`@tailwindcss/cli`). No `package.json`, no `node_modules`.                              |
-| **CSS-first config**      | No `tailwind.config.js`. Everything lives in CSS via `@import "tailwindcss"` and `@theme`.                                                       |
-| **`@source` scanning**    | Point Tailwind at any directory — including vendored Go modules — and it extracts class names from `.templ`, `.go`, `.html` files automatically. |
-| **`@theme` overrides**    | Recolor the entire design system by overriding `--color-*` variables. One line changes every `bg-blue-600` globally.                             |
-| **Class-based dark mode** | `@custom-variant dark (&:where(.dark, .dark *))` enables JS-toggled dark mode without `prefers-color-scheme`.                                    |
-| **Zero runtime JS**       | Pure CSS output. No Alpine.js, no DaisyUI JS, no hydration. Server-rendered HTML just works.                                                     |
+| Benefit                 | Details                                                                                                                                          |
+| ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **No Node.js required** | Build step is a single Go-callable or standalone binary (`@tailwindcss/cli`). No `package.json`, no `node_modules`.                              |
+| **CSS-first config**    | No `tailwind.config.js`. Everything lives in CSS via `@import "tailwindcss"` and `@theme`.                                                       |
+| **`@source` scanning**  | Point Tailwind at any directory — including vendored Go modules — and it extracts class names from `.templ`, `.go`, `.html` files automatically. |
+| **`@theme` overrides**  | Recolor the entire design system by overriding `--color-*` variables. One line changes every `bg-blue-600` globally.                             |
+| **Dark mode**           | `dark:` variants follow `prefers-color-scheme` by default (zero-config). Optional `@custom-variant` for toggle strategy.                         |
+| **Zero runtime JS**     | Pure CSS output. No Alpine.js, no DaisyUI JS, no hydration. Server-rendered HTML just works.                                                     |
 
 ---
 
@@ -107,7 +107,10 @@ tailwindcss -i app.css -o static/app.css --watch
 
 ## Vendoring templ-components
 
-If you use `templ-components`, vendor it so Tailwind can scan for class names:
+If you use `templ-components`, Tailwind needs to scan the library's source files
+for class names. There are two approaches:
+
+### Vendored (recommended for full control)
 
 ```bash
 go mod vendor
@@ -115,9 +118,106 @@ go mod vendor
 
 Then add the `@source` line pointing at the vendored path (shown above).
 
+### Go module cache (no vendoring)
+
+If you don't vendor, Tailwind can scan the module cache directly:
+
+```css
+/* Use go list to find the exact path */
+@source "$(go env GOMODCACHE)/github.com/larsartmann/templ-components@v0.13.0";
+```
+
+To generate this path automatically:
+
+```bash
+# Print the @source line for your current version
+echo "@source \"$(go list -m -f '{{.Dir}}' github.com/larsartmann/templ-components)\";"
+```
+
+> **Troubleshooting:** If components render unstyled (no colors, no spacing), the
+> `@source` path is wrong and Tailwind can't find the class names. Verify the path
+> with `ls "$(go env GOMODCACHE)/github.com/larsartmann/templ-components@"*`.
+
 ---
 
-## Theming without touching component code
+## Setting Class on components
+
+All component props embed `utils.BaseProps`, which provides the `Class`, `Attrs`,
+`ID`, and `AriaLabel` fields. In Go, **promoted fields cannot be set in struct
+literals** — you must use the embedded struct name:
+
+```go
+// This does NOT compile — Class is promoted from BaseProps:
+// display.GridProps{Cols: display.GridCols3, Class: "gap-8"}
+
+// Correct — set Class through the embedded BaseProps:
+display.GridProps{
+    BaseProps: utils.BaseProps{Class: "gap-8"},
+    Cols:      display.GridCols3,
+}
+```
+
+This is a Go language limitation, not a library design choice. Once you know the
+pattern, it's consistent across every component.
+
+---
+
+## Theming
+
+### Override the palette with `@theme`
+
+All templ-components emit standard Tailwind classes (`bg-blue-600`, `text-gray-900`).
+Override colors globally via `@theme`:
+
+```css
+@theme {
+  /* Your brand color replaces blue everywhere */
+  --color-blue-600: #0ea5e9; /* sky-500 */
+  --color-blue-500: #38bdf8; /* sky-400 */
+
+  /* Dark mode surface adjustments */
+  --color-gray-900: #0f172a; /* slate-900 */
+  --color-gray-800: #1e293b; /* slate-800 */
+}
+```
+
+One `@theme` block changes every `bg-blue-600` across every component — no Go code
+changes needed.
+
+### Map to your CSS-variable design system
+
+If your project uses CSS custom properties (e.g., `var(--surface)`, `var(--text)`),
+map the library's palette to your tokens:
+
+```css
+@theme {
+  --color-white: var(--surface);
+  --color-gray-50: var(--surface-2);
+  --color-gray-100: var(--border);
+  --color-gray-200: var(--border);
+  --color-gray-400: var(--text-muted);
+  --color-gray-500: var(--text-muted);
+  --color-gray-700: var(--border-dark);
+  --color-gray-800: var(--surface-dark);
+  --color-gray-900: var(--bg);
+}
+```
+
+Now every `bg-white`, `text-gray-*`, `border-gray-*`, `dark:bg-gray-*` in every
+library component resolves to your variables. Both sides of each `dark:` pair
+resolve to the same consumer variable, so mode-switching is automatic — no `.bg-white`
+bridge hacks, no strategy mismatch. See [Dark Mode & Theming Research](dark-mode-research.md)
+"Path 3" for the full worked example.
+
+### Semantic aliases
+
+For semantic aliases (`bg-tc-primary`, `text-tc-danger`), use the included
+`templ-components-theme.css`:
+
+```css
+@import "tailwindcss";
+@import "./templ-components-theme.css";
+```
 
 All templ-components emit standard Tailwind classes (`bg-blue-600`, `text-gray-900`).
 Override colors globally via `@theme`:
@@ -178,20 +278,92 @@ Delete it.
 
 ## Dark mode strategies
 
-templ-components components emit `dark:` variants on all color classes. There are
-three ways to activate dark mode, depending on your app's needs:
+templ-components components emit `dark:` variants on all color classes. Tailwind
+v4's **default** `dark:` variant follows `prefers-color-scheme` (zero-config).
+There are three ways to handle dark mode:
 
-1. **OS-following (zero config):** Tailwind v4's default `dark:` variant follows
-   `prefers-color-scheme`. Just `@import "tailwindcss"` — done. No JS, no class.
-2. **Toggle (user-controlled):** Add `@custom-variant dark (&:where(.dark, .dark *))`
-   and use `layout.ThemeScript()` + `layout.ThemeToggle()`.
-3. **CSS-variable design system:** Override `--color-*` variables in `@theme` to
-   reference your own design tokens (e.g., `--color-white: var(--surface)`). Both
-   sides of each `dark:` pair resolve to your variables, so mode-switching is
-   automatic.
+### Path 1: OS-following (zero config)
+
+The simplest option. Tailwind v4's default `dark:` variant follows the user's OS
+setting. No configuration, no JavaScript:
+
+```css
+/* app.css — that's it */
+@import "tailwindcss";
+@source "../vendor/github.com/larsartmann/templ-components";
+
+:root {
+  color-scheme: light dark;
+}
+```
+
+Every `dark:bg-gray-800` in every library component activates automatically.
+Add `color-scheme: light dark` on `:root` so native form controls render correctly.
+
+### Path 2: Toggle (user-controlled)
+
+For apps that want a dark/light toggle button:
+
+```css
+@import "tailwindcss";
+@source "../vendor/github.com/larsartmann/templ-components";
+
+/* Override the dark variant to use a class instead of media query */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  color-scheme: light dark;
+}
+.dark {
+  color-scheme: dark;
+}
+```
+
+Use `layout.ThemeScript()` (FOUC-prevention inline script) + `layout.ThemeToggle()`
+(the toggle button). Both are only needed for this path.
+
+### Path 3: CSS-variable design system
+
+For projects with an existing CSS custom property design system. Map the library's
+palette to your variables via `@theme` (see [Theming](#theming) section above).
+Both sides of each `dark:` pair resolve to your variables, so mode-switching is
+automatic regardless of strategy.
+
+### Comparison
+
+| Path                       | Config needed                                     | JavaScript           | Best for                        |
+| -------------------------- | ------------------------------------------------- | -------------------- | ------------------------------- |
+| OS-following               | `@import` only                                    | None                 | Blogs, docs, internal tools     |
+| Toggle                     | `@custom-variant` + `ThemeScript` + `ThemeToggle` | ThemeScript (inline) | SaaS, dashboards, user-pickable |
+| CSS-variable design system | `@theme` palette override                         | None (or your own)   | Existing design systems         |
+
+> **`prefers-color-scheme` consumers:** Without a `.dark` class in the DOM,
+> component-internal `dark:` variants that reference non-surface colors (e.g.,
+> `dark:text-gray-300`) won't activate. Surface colors can be bridged via the
+> `@theme` palette override (Path 3). Full `dark:` activation requires either
+> the `.dark` class (Path 2) or OS-following (Path 1, which is the Tailwind
+> default — just don't add `@custom-variant`).
 
 For a deep analysis of all dark mode mechanisms in Tailwind v4 + modern CSS,
 see [Dark Mode & Theming Research](dark-mode-research.md).
+
+---
+
+## Default constructors
+
+Most components provide a `DefaultXxxProps()` constructor for the "I just want
+the defaults with one field changed" pattern:
+
+```go
+props := display.DefaultGridProps()
+props.Cols = display.GridCols4
+props.BaseProps.Class = "gap-8"
+```
+
+Available constructors include `display.DefaultGridProps()`,
+`display.DefaultCardProps()`, `display.DefaultEmptyStateProps()`,
+`feedback.DefaultSpinnerProps()`, and more. Check each component's package for
+the full list.
 
 ---
 

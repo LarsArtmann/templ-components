@@ -16,6 +16,10 @@ import (
 // ThemeScript renders the inline script that sets the dark mode class before paint.
 // Also sets `color-scheme` so native scrollbars, form controls, and <details>
 // match the active theme. Include this in your base template head to prevent FOUC.
+//
+// Only needed for the TOGGLE dark mode strategy (user-controlled .dark class).
+// If you use OS-following (prefers-color-scheme), you do NOT need this script —
+// Tailwind v4's default dark: variant handles it automatically.
 func ThemeScript(nonce string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -44,7 +48,7 @@ func ThemeScript(nonce string) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 12, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 16, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
@@ -61,6 +65,10 @@ func ThemeScript(nonce string) templ.Component {
 // ThemeToggle renders a theme toggle button with sun/moon icons.
 // Uses role="switch" + aria-checked so screen-reader users know the active mode.
 // Requires Tailwind CSS dark: variants and the ThemeScript in your base layout.
+//
+// Only needed for the TOGGLE dark mode strategy (user-controlled .dark class).
+// If you use OS-following (prefers-color-scheme), dark mode is automatic —
+// there is nothing to toggle and this component is unnecessary.
 //
 //	@layout.ThemeToggle("Toggle theme", nonce)
 func ThemeToggle(ariaLabel string, nonce string) templ.Component {
@@ -109,7 +117,7 @@ func ThemeToggle(ariaLabel string, nonce string) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(ariaLabel != "", ariaLabel, "Toggle theme"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 38, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 46, Col: 72}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
@@ -134,7 +142,7 @@ func ThemeToggle(ariaLabel string, nonce string) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 43, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 51, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {

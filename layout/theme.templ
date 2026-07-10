@@ -8,6 +8,10 @@ import (
 // ThemeScript renders the inline script that sets the dark mode class before paint.
 // Also sets `color-scheme` so native scrollbars, form controls, and <details>
 // match the active theme. Include this in your base template head to prevent FOUC.
+//
+// Only needed for the TOGGLE dark mode strategy (user-controlled .dark class).
+// If you use OS-following (prefers-color-scheme), you do NOT need this script —
+// Tailwind v4's default dark: variant handles it automatically.
 templ ThemeScript(nonce string) {
 	<script nonce={ nonce }>
 		(function() {
@@ -26,6 +30,10 @@ templ ThemeScript(nonce string) {
 // ThemeToggle renders a theme toggle button with sun/moon icons.
 // Uses role="switch" + aria-checked so screen-reader users know the active mode.
 // Requires Tailwind CSS dark: variants and the ThemeScript in your base layout.
+//
+// Only needed for the TOGGLE dark mode strategy (user-controlled .dark class).
+// If you use OS-following (prefers-color-scheme), dark mode is automatic —
+// there is nothing to toggle and this component is unnecessary.
 //
 //	@layout.ThemeToggle("Toggle theme", nonce)
 templ ThemeToggle(ariaLabel string, nonce string) {

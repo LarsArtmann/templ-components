@@ -13,18 +13,48 @@
  * (e.g. bg-blue-600, text-gray-900). By overriding the underlying
  * --color-* variables in @theme, you change every instance of that
  * color throughout your application — including all components.
+ *
+ * For the full dark mode strategy analysis, see:
+ *   docs/dark-mode-research.md
  */
 
 /* ------------------------------------------------------------------
- * Dark mode variant
- * ------------------------------------------------------------------ */
+ * Dark mode strategy
+ * ------------------------------------------------------------------
+ *
+ * Tailwind v4's DEFAULT dark: variant follows prefers-color-scheme
+ * (zero-config OS-following). The @custom-variant below is ONLY needed
+ * if you want user-controlled dark mode via a .dark class toggle
+ * (layout.ThemeScript + layout.ThemeToggle).
+ *
+ * THREE OPTIONS — pick one:
+ *
+ * 1. OS-following (zero config): REMOVE the @custom-variant line below.
+ *    dark: variants activate automatically from prefers-color-scheme.
+ *
+ * 2. Toggle (user-controlled): KEEP the @custom-variant line + use
+ *    layout.ThemeScript() + layout.ThemeToggle().
+ *
+ * 3. CSS-variable design system: Override --color-* in @theme below to
+ *    reference your own variables (e.g., --color-white: var(--surface)).
+ *    Both sides of each dark: pair resolve to your variables.
+ *    See docs/dark-mode-research.md "Path 3" for a worked example.
+ */
 
-/* Class-based dark mode (required for ThemeScript + ThemeToggle).
- * Remove this line if you prefer prefers-color-scheme media queries. */
+/* ONLY needed for toggle strategy — remove for OS-following. */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* ------------------------------------------------------------------
+ * Color scheme
+ * ------------------------------------------------------------------
+ * light dark lets the browser pick correctly based on the active mode,
+ * whether driven by prefers-color-scheme or the .dark class.
+ * This makes native form controls (scrollbars, checkboxes, date pickers)
+ * render correctly in both modes.
+ */
+
 :root {
-  color-scheme: light;
+  color-scheme: light dark;
 }
 
 /* ------------------------------------------------------------------
@@ -82,7 +112,7 @@
 }
 
 /* ------------------------------------------------------------------
- * Dark mode semantic aliases
+ * Dark mode semantic aliases (only relevant for toggle strategy)
  * ------------------------------------------------------------------ */
 
 .dark {
@@ -93,16 +123,6 @@
   --color-tc-text: var(--color-gray-100);
   --color-tc-text-muted: var(--color-gray-400);
   --color-tc-border: var(--color-gray-700);
-}
-
-/* ------------------------------------------------------------------
- * prefers-color-scheme fallback (for users without JS)
- * ------------------------------------------------------------------ */
-
-@media (prefers-color-scheme: dark) {
-  :root:not(.light) {
-    color-scheme: dark;
-  }
 }
 
 /* ------------------------------------------------------------------
