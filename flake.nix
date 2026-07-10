@@ -10,15 +10,16 @@
     systems.url = "github:nix-systems/default";
   };
 
-  outputs = inputs @ {
-    self,
-    flake-parts,
-    ...
-  }:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs =
+    inputs@{
+      self,
+      flake-parts,
+      ...
+    }:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       systems = import inputs.systems;
 
-      perSystem = {pkgs, ...}: {
+      perSystem = { pkgs, ... }: {
         devShells.default = pkgs.mkShellNoCC {
           packages = with pkgs; [
             go_1_26
@@ -35,7 +36,7 @@
             meta.description = "Run all tests with race detector";
             program = pkgs.writeShellApplication {
               name = "run-tests";
-              runtimeInputs = [pkgs.go_1_26];
+              runtimeInputs = [ pkgs.go_1_26 ];
               text = ''
                 go test ./... -count=1 -race
               '';
@@ -47,7 +48,7 @@
             meta.description = "Run golangci-lint across all packages";
             program = pkgs.writeShellApplication {
               name = "run-lint";
-              runtimeInputs = [pkgs.golangci-lint];
+              runtimeInputs = [ pkgs.golangci-lint ];
               text = ''
                 golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
               '';
@@ -102,7 +103,7 @@
             meta.description = "Run tests with coverage report";
             program = pkgs.writeShellApplication {
               name = "run-coverage";
-              runtimeInputs = [pkgs.go_1_26];
+              runtimeInputs = [ pkgs.go_1_26 ];
               text = ''
                 go test ./... -count=1 -coverprofile=coverage.out
                 go tool cover -func=coverage.out | tail -1
@@ -111,7 +112,7 @@
           };
         };
 
-        formatter = pkgs.alejandra;
+        formatter = pkgs.nixfmt;
       };
     };
 }
