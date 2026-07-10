@@ -182,7 +182,7 @@ func TestBreadcrumbsCoverage(t *testing.T) {
 
 func TestFooterRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, Footer("MyApp"))
+	output := utils.Render(t, Footer(FooterProps{BrandText: "MyApp"}))
 	utils.AssertContains(t, output, "MyApp")
 	utils.AssertContains(t, output, "All rights reserved")
 }

@@ -113,14 +113,34 @@ templ simpleBrand(text, href string) {
 	<a href={ templ.SafeURL(href) } class="text-xl font-bold text-blue-600 dark:text-blue-400">{ text }</a>
 }
 
+// FooterProps configures a simple footer.
+type FooterProps struct {
+	utils.BaseProps
+	BrandText string
+}
+
+// DefaultFooterProps returns sensible defaults
+func DefaultFooterProps() FooterProps {
+	return FooterProps{}
+}
+
 // Footer renders a simple footer
 //
-//	@navigation.Footer("MyApp")
-templ Footer(brandText string) {
-	<footer class="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
+//	@navigation.Footer(navigation.FooterProps{BrandText: "MyApp"})
+templ Footer(props FooterProps) {
+	<footer
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
 		<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
 			<p class="text-center text-sm text-gray-500 dark:text-gray-400">
-				&copy; { utils.CurrentYear() } { brandText }. All rights reserved.
+				&copy; { utils.CurrentYear() } { props.BrandText }. All rights reserved.
 			</p>
 		</div>
 	</footer>

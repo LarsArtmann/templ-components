@@ -36,16 +36,18 @@ func formMethod(m FormMethod) string {
 // FormProps configures a form wrapper
 type FormProps struct {
 	utils.BaseProps
-	Action    string
-	Method    FormMethod
-	CSRFToken string
-	Inline    bool // When true, renders as flex flex-wrap (horizontal) instead of space-y-6 (vertical)
+	Action        string
+	Method        FormMethod
+	CSRFToken     string
+	CSRFTokenName string // Hidden input name attribute; defaults to "csrf_token"
+	Inline        bool   // When true, renders as flex flex-wrap (horizontal) instead of space-y-6 (vertical)
 }
 
 // DefaultFormProps returns sensible defaults
 func DefaultFormProps() FormProps {
 	return FormProps{
-		Method: FormPost,
+		Method:        FormPost,
+		CSRFTokenName: "csrf_token",
 	}
 }
 
@@ -68,7 +70,8 @@ templ Form(props FormProps) {
 		{ props.Attrs... }
 	>
 		if props.CSRFToken != "" {
-			<input type="hidden" name="csrf_token" value={ props.CSRFToken }/>
+			{{ csrfName := utils.Ternary(props.CSRFTokenName != "", props.CSRFTokenName, "csrf_token") }}
+			<input type="hidden" name={ csrfName } value={ props.CSRFToken }/>
 		}
 		{ children... }
 	</form>

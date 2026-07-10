@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- `htmx/InlineLoadingOverlay` — added `<span class="sr-only">Loading…</span>` for screen reader parity with `LoadingIndicator`.
+- `forms/ValidationSummary` — error links now use raw `err.Field` instead of `SanitizeID(err.Field)`, so anchors match actual element IDs.
+- `errorpage/FromError` — unknown errors now fall back to `FamilyCorruption` (→500) instead of `FamilyInfrastructure` (→503). An unknown error is more likely a bug than a temporary outage.
+- `errorpage/ErrorPage` + `errorpage/NotFound404` — changed outer container from `<div role="region">` to `<main>` landmark (WCAG 2.4.1 Bypass Blocks).
+- `forms/Form` — added `CSRFTokenName` field (defaults to `"csrf_token"`) so frameworks with different token names (Django `_csrf_token`, Rails `authenticity_token`, Spring `_csrf`) don't need to fork.
+
+### Changed
+
+- `navigation/Footer` — signature changed from `Footer(brandText string)` to `Footer(props FooterProps)`. `FooterProps` embeds `BaseProps` (Class/ID/Attrs/AriaLabel) matching every other component. **Breaking:** update callers to `Footer(FooterProps{BrandText: "MyApp"})`.
+- Pre-commit hook (`scripts/pre-commit.sh`) — lint now uses `golangci-lint run ./...` (examples/ excluded via `.golangci.yml`), and includes a grep guard rejecting `encoding/json/v2` imports.
+- AGENTS.md — renamed stale "Post-v0.9.0 Conventions" section to "Conventions"; fixed lint path typo (`./svg/...` → `./...`); corrected generated file count (61→62); added `encoding/json/v2` prohibition section.
+
 ## [0.12.1] — 2026-07-10
 
 ### Fixed

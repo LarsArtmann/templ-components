@@ -317,7 +317,7 @@ func TestLoadMoreWithBaseProps(t *testing.T) {
 
 func TestFooterRenderOutput(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, Footer("Acme Inc."))
+	output := utils.Render(t, Footer(FooterProps{BrandText: "Acme Inc."}))
 	utils.AssertContains(t, output, "Acme Inc.")
 }
 

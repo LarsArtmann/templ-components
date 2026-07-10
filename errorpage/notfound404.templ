@@ -25,12 +25,11 @@ templ NotFound404(props NotFound404Props) {
 			goHomeText = notFound404GoHomeText
 		}
 	}}
-	<div
+	<main
 		if props.ID != "" {
 			id={ props.ID }
 		}
 		class={ utils.Class("min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900", props.Class) }
-		role="region"
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		} else {
@@ -91,7 +90,7 @@ templ NotFound404(props NotFound404Props) {
 				</div>
 			}
 		</div>
-	</div>
+	</main>
 	if props.ShowGoBack {
 		@goBackScript(props.Nonce)
 	}

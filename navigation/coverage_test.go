@@ -250,7 +250,7 @@ func TestSimpleNavOmitsRightItemsWhenNil(t *testing.T) {
 
 func TestFooterMinimal(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, Footer("2024 Acme"))
+	output := utils.Render(t, Footer(FooterProps{BrandText: "2024 Acme"}))
 	utils.AssertContains(t, output, "2024 Acme")
 }
 

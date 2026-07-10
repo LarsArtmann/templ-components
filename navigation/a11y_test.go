@@ -163,7 +163,7 @@ func TestNavDarkMode(t *testing.T) {
 
 func renderFooter(t *testing.T) string {
 	t.Helper()
-	return utils.Render(t, Footer("MyApp"))
+	return utils.Render(t, Footer(FooterProps{BrandText: "MyApp"}))
 }
 
 func assertFooterContainsAll(t *testing.T, contains ...string) {

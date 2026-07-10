@@ -61,7 +61,7 @@ func TestErrorHandlerCoverage(t *testing.T) {
 		if !strings.Contains(ct, "application/json") {
 			t.Errorf("Content-Type = %q, want json", ct)
 		}
-		if !strings.Contains(rec.Body.String(), "infrastructure") {
+		if !strings.Contains(rec.Body.String(), "corruption") {
 			t.Error("expected family in JSON response")
 		}
 	})
@@ -124,11 +124,11 @@ func TestFamilyFromErrorStringInterface(t *testing.T) {
 		}
 	})
 
-	t.Run("plain error falls back to infrastructure", func(t *testing.T) {
+	t.Run("plain error falls back to corruption", func(t *testing.T) {
 		t.Parallel()
 		family := familyFromError(&testError{msg: "plain"})
-		if family != FamilyInfrastructure {
-			t.Errorf("family = %q, want %q", family, FamilyInfrastructure)
+		if family != FamilyCorruption {
+			t.Errorf("family = %q, want %q", family, FamilyCorruption)
 		}
 	})
 }
@@ -141,8 +141,8 @@ func TestWriteErrorWrapper(t *testing.T) {
 		req := httptest.NewRequestWithContext(context.Background(), "GET", "/x", nil)
 		rec := httptest.NewRecorder()
 		WriteError(rec, req, &testError{msg: "wrapped"}, "nonce-xyz")
-		if rec.Code != http.StatusServiceUnavailable {
-			t.Errorf("status = %d, want %d", rec.Code, http.StatusServiceUnavailable)
+		if rec.Code != http.StatusInternalServerError {
+			t.Errorf("status = %d, want %d", rec.Code, http.StatusInternalServerError)
 		}
 		body := rec.Body.String()
 		if !strings.Contains(body, "wrapped") {

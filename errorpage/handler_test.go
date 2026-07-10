@@ -23,11 +23,11 @@ func TestFromError(t *testing.T) {
 		}
 	})
 
-	t.Run("plain error returns infrastructure with message", func(t *testing.T) {
+	t.Run("plain error returns corruption with message", func(t *testing.T) {
 		t.Parallel()
 		props := FromError(&testError{msg: "plain error"})
-		if props.Family != FamilyInfrastructure {
-			t.Errorf("Family = %q, want %q", props.Family, FamilyInfrastructure)
+		if props.Family != FamilyCorruption {
+			t.Errorf("Family = %q, want %q", props.Family, FamilyCorruption)
 		}
 		if props.Message == "" {
 			t.Error("expected non-empty message")

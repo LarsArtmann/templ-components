@@ -142,7 +142,7 @@ Don't know what to look for? Find your page type:
 | `Breadcrumbs`      | `Breadcrumbs(props BreadcrumbsProps)`                   | Breadcrumb trail — separator, JSON-LD                                        |
 | `SidebarNav`       | `SidebarNav(props SidebarNavProps)`                     | Vertical sidebar — brand, icon+label items, footer slot                      |
 | `LoadMore`         | `LoadMore(props LoadMoreProps)`                         | Cursor-based "Load more" button — hx-get, hx-swap, optional `InfiniteScroll` |
-| `Footer`           | `Footer(brandText string)`                              | Simple footer with copyright                                                 |
+| `Footer`           | `Footer(props FooterProps)`                             | Simple footer with copyright                                                 |
 
 #### `htmx` — 7 components
 

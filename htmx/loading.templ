@@ -33,6 +33,7 @@ templ InlineLoadingOverlay(id string, spinner templ.Component) {
 		role="status"
 		aria-live="polite"
 	>
+		<span class="sr-only">Loading…</span>
 		@defaultSpinner(spinner)
 	</div>
 }

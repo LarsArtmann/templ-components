@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-07-09 | **Version:** 0.12.0
+**Updated:** 2026-07-09 | **Version:** 0.12.1
 
 > Built from 42 `docs/**/2026-07-0*` files (5 feedback, 14 status, 8 planning, 4 HTML
 > reviews, 11 older status/planning) + code verification. Each item is verified against
@@ -10,15 +10,15 @@
 
 ## P0 — Real bugs & correctness gaps
 
-| #   | Task                                                                                                                                                      | Status  | Evidence                                                                                                              | Source                  |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| 1   | `InlineLoadingOverlay` missing sr-only loading text (parity with `LoadingIndicator` which has `<span class="sr-only">Loading…</span>`)                    | ⬜ OPEN | `htmx/loading.templ:29` — has `role="status"` + `aria-live` but no sr-only text                                       | bug-hunt-status:143     |
-| 2   | `SanitizeID` mismatch in `ValidationSummary` — error links point to `#user-email` (sanitized) but field IDs are whatever consumer set (e.g. `user_email`) | ⬜ OPEN | `forms/ids.go:9` + `forms/validation.templ:61` — `SanitizeID` transforms `_`→`-` but doesn't match actual element IDs | bug-hunt-status:129     |
-| 3   | `FromError` returns `FamilyInfrastructure` (→503) for unknown errors instead of `FamilyCorruption` (→500)                                                 | ⬜ OPEN | `errorpage/fromerror.go:71` — generic `errors.New("nil pointer")` returns 503 (implies temporary outage)              | bug-hunt-status:127     |
-| 4   | `Footer` doesn't accept `BaseProps` — can't set Class/ID/Attrs (API inconsistency; every other component embeds BaseProps)                                | ⬜ OPEN | `navigation/nav.templ:119` — `templ Footer(brandText string)`                                                         | bug-hunt-status:180,188 |
-| 5   | ErrorPage / NotFound404 missing `<main>` landmark — only `<div role="region">`, failing WCAG 2.4.1 (Bypass Blocks)                                        | ⬜ OPEN | `errorpage/errorpage.templ:7`, `errorpage/notfound404.templ:28`                                                       | bug-hunt-status:135     |
-| 6   | `FormProps` CSRF token name hardcoded (`name="csrf_token"`) — frameworks use different names (Django, Rails, Spring)                                      | ⬜ OPEN | `forms/form.templ:71` — needs `CSRFTokenName` field                                                                   | bug-hunt-status:128     |
-| 7   | `grid-rows-[0fr]` CSS output never verified against compiled Tailwind v4 — accordion collapse depends on it                                               | ⬜ OPEN | `display/accordion.templ:79` — test asserts class string present, not that it generates correct CSS                   | bug-hunt-status:155     |
+| #   | Task                                                                                                                                                      | Status  | Evidence                                                                                                          | Source                  |
+| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| 1   | `InlineLoadingOverlay` missing sr-only loading text (parity with `LoadingIndicator` which has `<span class="sr-only">Loading…</span>`)                    | ✅ DONE | `htmx/loading.templ:36` — added `<span class="sr-only">Loading…</span>`                                           | bug-hunt-status:143     |
+| 2   | `SanitizeID` mismatch in `ValidationSummary` — error links point to `#user-email` (sanitized) but field IDs are whatever consumer set (e.g. `user_email`) | ✅ DONE | `forms/validation.templ:61` — link now uses raw `err.Field`; Field doc clarifies it should be the HTML element ID | bug-hunt-status:129     |
+| 3   | `FromError` returns `FamilyInfrastructure` (→503) for unknown errors instead of `FamilyCorruption` (→500)                                                 | ✅ DONE | `errorpage/fromerror.go:71` — now returns `FamilyCorruption` (→500); tests updated                                | bug-hunt-status:127     |
+| 4   | `Footer` doesn't accept `BaseProps` — can't set Class/ID/Attrs (API inconsistency; every other component embeds BaseProps)                                | ✅ DONE | `navigation/nav.templ:119` — now takes `FooterProps` with `BaseProps`; all callers/tests/README updated           | bug-hunt-status:180,188 |
+| 5   | ErrorPage / NotFound404 missing `<main>` landmark — only `<div role="region">`, failing WCAG 2.4.1 (Bypass Blocks)                                        | ✅ DONE | `errorpage/errorpage.templ:7`, `errorpage/notfound404.templ:28` — changed to `<main>`; golden files updated       | bug-hunt-status:135     |
+| 6   | `FormProps` CSRF token name hardcoded (`name="csrf_token"`) — frameworks use different names (Django, Rails, Spring)                                      | ✅ DONE | `forms/form.templ:71` — added `CSRFTokenName` field (defaults to `"csrf_token"`)                                  | bug-hunt-status:128     |
+| 7   | `grid-rows-[0fr]` CSS output never verified against compiled Tailwind v4 — accordion collapse depends on it                                               | ⬜ OPEN | `display/accordion.templ:79` — test asserts class string present, not that it generates correct CSS               | bug-hunt-status:155     |
 
 ---
 
@@ -37,11 +37,11 @@
 
 ## P2 — Pre-commit / CI hardening
 
-| #   | Task                                                                      | Status  | Evidence                                                         | Source          |
-| --- | ------------------------------------------------------------------------- | ------- | ---------------------------------------------------------------- | --------------- |
-| 14  | Add `encoding/json/v2` grep guard to pre-commit hook                      | ⬜ OPEN | `scripts/pre-commit.sh` — no guard; the import broke builds 3×   | css-cleanup:92  |
-| 15  | Pre-commit lint uses hardcoded package paths instead of `./...`           | ⬜ OPEN | `scripts/pre-commit.sh:22` — omits `cmd/`, may miss new packages | css-cleanup:100 |
-| 16  | Document `encoding/json/v2` prohibition in AGENTS.md (blocked on Go 1.27) | ⬜ OPEN | No mention in AGENTS.md                                          | css-cleanup:102 |
+| #   | Task                                                                      | Status  | Evidence                                                                                | Source          |
+| --- | ------------------------------------------------------------------------- | ------- | --------------------------------------------------------------------------------------- | --------------- |
+| 14  | Add `encoding/json/v2` grep guard to pre-commit hook                      | ✅ DONE | `scripts/pre-commit.sh` — grep guard added; rejects `encoding/json/v2` imports          | css-cleanup:92  |
+| 15  | Pre-commit lint uses hardcoded package paths instead of `./...`           | ✅ DONE | `scripts/pre-commit.sh:22` — now uses `./...`; `examples/` excluded via `.golangci.yml` | css-cleanup:100 |
+| 16  | Document `encoding/json/v2` prohibition in AGENTS.md (blocked on Go 1.27) | ✅ DONE | New section in AGENTS.md documents the prohibition + pre-commit guard                   | css-cleanup:102 |
 
 ---
 
@@ -49,13 +49,13 @@
 
 | #   | Task                                                                                               | Status  | Evidence                                                                 | Source            |
 | --- | -------------------------------------------------------------------------------------------------- | ------- | ------------------------------------------------------------------------ | ----------------- |
-| 17  | Fix AGENTS.md lint path typo: `./svg/...` → `./internal/svg/...`                                   | ⬜ OPEN | `AGENTS.md:317` — path doesn't exist, causes lint error                  | v0.10-release:108 |
+| 17  | Fix AGENTS.md lint path typo: `./svg/...` → `./internal/svg/...`                                   | ✅ DONE | AGENTS.md lint command now uses `./...` (typo eliminated)                | v0.10-release:108 |
 | 18  | Add note to CHANGELOG `[0.9.1]` that it was never tagged (changes included in v0.10.0)             | ⬜ OPEN | `CHANGELOG.md:111-126` — no "untagged" note; consumers may try `@v0.9.1` | v0.10-release:110 |
 | 19  | ROADMAP.md doesn't mention dark mode compliance milestone                                          | ⬜ OPEN | `ROADMAP.md` — no dark mode row                                          | v0.10-release:64  |
 | 20  | Create `docs/migration/v0.9-to-v0.10.md` migration guide                                           | ⬜ OPEN | `docs/migration/` has v0.7→v0.8, v0.8→v0.9 only                          | v0.10-release:61  |
 | 21  | Update FEATURES.md with `templates/app.css` + BuildFlow `tailwind-build` provider entry            | ⬜ OPEN | `FEATURES.md` — no mention of CSS automation                             | css-cleanup:58    |
-| 22  | AGENTS.md "Post-v0.9.0 Conventions" section header is stale (shipped in v0.10.0) — rename or merge | ⬜ OPEN | `AGENTS.md` — section still named "Post-v0.9.0"                          | v0.10-release:66  |
-| 23  | AGENTS.md claims "61 generated files" but actual count is 62                                       | ⬜ OPEN | `AGENTS.md:53` vs `find . -name '*_templ.go' \| wc -l` = 62              | code-verification |
+| 22  | AGENTS.md "Post-v0.9.0 Conventions" section header is stale (shipped in v0.10.0) — rename or merge | ✅ DONE | Renamed to "Conventions" in AGENTS.md                                    | v0.10-release:66  |
+| 23  | AGENTS.md claims "61 generated files" but actual count is 62                                       | ✅ DONE | AGENTS.md updated to 62 — matches actual count                           | code-verification |
 
 ---
 

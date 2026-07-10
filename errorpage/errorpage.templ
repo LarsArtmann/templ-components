@@ -4,12 +4,11 @@ import "github.com/larsartmann/templ-components/utils"
 
 templ ErrorPage(props ErrorPageProps) {
 	{{ style := lookupFamilyStyle(props.Family) }}
-	<div
+	<main
 		if props.ID != "" {
 			id={ props.ID }
 		}
 		class={ utils.Class("min-h-screen flex items-center justify-center p-4 bg-gray-50 dark:bg-gray-900", props.Class) }
-		role="region"
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
@@ -51,7 +50,7 @@ templ ErrorPage(props ErrorPageProps) {
 				}
 			</div>
 		</div>
-	</div>
+	</main>
 	if props.WayOut != "" && props.WayOutHref == "" {
 		@goBackScript(props.Nonce)
 	}

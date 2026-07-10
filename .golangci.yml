@@ -126,6 +126,7 @@ linters:
       - \.gen\.go$
       - _templ\.go$
       - vendor/
+      - examples/
 formatters:
   enable:
     - gci

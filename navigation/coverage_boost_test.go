@@ -98,6 +98,6 @@ func TestMobileMenuFullCoverage(t *testing.T) {
 
 func TestFooterFullCoverage(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, Footer("MyApp"))
+	output := utils.Render(t, Footer(FooterProps{BrandText: "MyApp"}))
 	utils.AssertContains(t, output, "MyApp")
 }

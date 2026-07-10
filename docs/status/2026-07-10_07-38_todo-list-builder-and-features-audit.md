@@ -20,12 +20,14 @@ I read the project skill (`templ-components/SKILL.md`), both target skills (`tod
 ### 1. Read all 42 `docs/**/2026-07-0*` files
 
 **5 consumer feedback files:**
+
 - DiscordSync (session 1 + session 2 UI review)
 - browser-history
 - Overview
 - SwettySwipper
 
 **24 status reports** (2026-07-04 through 2026-07-09), covering:
+
 - Sessions 7–13 (consumer feedback execution, self-reviews, v0.7.0–v0.10.0 releases)
 - Bug hunt sprints (17+30+47 bugs found and fixed across all packages)
 - Coverage boost sprint (+152 test functions)
@@ -44,51 +46,52 @@ I read the project skill (`templ-components/SKILL.md`), both target skills (`tod
 
 Every item was verified against the actual codebase before inclusion. Structure:
 
-| Section | Tasks | Description |
-|---------|-------|-------------|
-| P0 — Real bugs & correctness gaps | 7 | InlineLoadingOverlay sr-only, SanitizeID mismatch, FromError wrong family, Footer no BaseProps, missing `<main>` landmarks, hardcoded CSRF name, unverified grid-rows CSS |
-| P1 — Testing gaps | 6 | 18 untested Round-2 fixes, InlineLoadingOverlay role assertion, dark golden variants, toast JS golden, coverage <80%, visual regression |
-| P2 — Pre-commit / CI hardening | 3 | json/v2 grep guard, hardcoded lint paths, AGENTS.md json/v2 prohibition doc |
-| P2 — Documentation accuracy | 7 | AGENTS.md lint path typo, v0.9.1 untagged note, ROADMAP dark mode, v0.9→v0.10 migration guide, FEATURES.md CSS automation, stale section header, generated file count |
-| P2 — Code quality | 3 | Motion constants in 19 components, FamilyFromErrorFamily name, CHANGELOG round headings |
-| P3 — Polish & community | 6 | Demo site, awesome-templ PR, templ.guide listing, SSH tag signing, blocks/examples, /forms demo |
-| v1.0 — Deferred breaking changes | 6 | Validate() error, testutil move, self-host htmx, semantic tokens, icon RTL, deprecate aliases |
-| v2.0 — Architectural changes | 4 | Compound components, native `<dialog>`, headless variants, CLI tool |
-| New components | 10 | Popover, DataTable, FilterDropdown, Slider, Rating, TagsInput, ContextMenu, Carousel, HoverCard, Calendar |
-| Confirmed done | 30+ | Verified-complete items from older reports |
+| Section                           | Tasks | Description                                                                                                                                                               |
+| --------------------------------- | ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| P0 — Real bugs & correctness gaps | 7     | InlineLoadingOverlay sr-only, SanitizeID mismatch, FromError wrong family, Footer no BaseProps, missing `<main>` landmarks, hardcoded CSRF name, unverified grid-rows CSS |
+| P1 — Testing gaps                 | 6     | 18 untested Round-2 fixes, InlineLoadingOverlay role assertion, dark golden variants, toast JS golden, coverage <80%, visual regression                                   |
+| P2 — Pre-commit / CI hardening    | 3     | json/v2 grep guard, hardcoded lint paths, AGENTS.md json/v2 prohibition doc                                                                                               |
+| P2 — Documentation accuracy       | 7     | AGENTS.md lint path typo, v0.9.1 untagged note, ROADMAP dark mode, v0.9→v0.10 migration guide, FEATURES.md CSS automation, stale section header, generated file count     |
+| P2 — Code quality                 | 3     | Motion constants in 19 components, FamilyFromErrorFamily name, CHANGELOG round headings                                                                                   |
+| P3 — Polish & community           | 6     | Demo site, awesome-templ PR, templ.guide listing, SSH tag signing, blocks/examples, /forms demo                                                                           |
+| v1.0 — Deferred breaking changes  | 6     | Validate() error, testutil move, self-host htmx, semantic tokens, icon RTL, deprecate aliases                                                                             |
+| v2.0 — Architectural changes      | 4     | Compound components, native `<dialog>`, headless variants, CLI tool                                                                                                       |
+| New components                    | 10    | Popover, DataTable, FilterDropdown, Slider, Rating, TagsInput, ContextMenu, Carousel, HoverCard, Calendar                                                                 |
+| Confirmed done                    | 30+   | Verified-complete items from older reports                                                                                                                                |
 
 Each open task includes: status (⬜ OPEN), evidence (`file:line`), and source (which doc/report it came from).
 
 ### 3. Updated `FEATURES.md` (22 corrections from code audit)
 
-| # | Correction | Why |
-|---|------------|-----|
-| 1 | Fixed Combobox stale known issue | WAI-ARIA keyboard nav IS fully implemented (ArrowUp/Down/Home/End/Enter/Escape/Tab, aria-activedescendant, aria-selected) — was marked as a known gap |
-| 2 | Downgraded `InlineLoadingOverlay` → PARTIALLY_FUNCTIONAL | Missing sr-only loading text (LoadingIndicator has it, InlineLoadingOverlay doesn't) — `htmx/loading.templ:29` |
-| 3 | Downgraded `Footer` → PARTIALLY_FUNCTIONAL | Doesn't accept BaseProps — API inconsistency — `navigation/nav.templ:119` |
-| 4 | Downgraded `ErrorPage` → PARTIALLY_FUNCTIONAL | Missing `<main>` landmark (WCAG 2.4.1 Bypass Blocks) |
-| 5 | Downgraded `NotFound404` → PARTIALLY_FUNCTIONAL | Same `<main>` landmark gap |
-| 6 | Downgraded `FromError` with known issue note | Returns FamilyInfrastructure (→503) for unknown errors instead of FamilyCorruption (→500) |
-| 7 | Added `layout.Stylesheet` to component table | Was missing entirely from the layout section |
-| 8 | Added `GridGap` enum | Was missing from enums table |
-| 9 | Added `ButtonSize`, `ButtonHTMLType`, `OverlayKind`, `DropdownItemKind` enums | Were missing from enums table |
-| 10 | Updated `Grid` description | Added `GridGap`, `ContainerResponsive` mentions |
-| 11 | Updated `Card`/`SimpleCard`/`Table` descriptions | Added `Body` slot mentions |
-| 12 | Updated `Table` description | Added `TypedHeaders`/`TableHeader`/`aria-sort` mention |
-| 13 | Updated `ProgressBar` description | Added indeterminate mode, clamped aria-valuenow |
-| 14 | Updated `StepIndicator` description | Added vertical orientation |
-| 15 | Updated `Toast` description | Added EnsureID auto-generation |
-| 16 | Updated `Breadcrumbs`/`Pagination` descriptions | Added JSON-LD, Separator, rel=prev/next/canonical |
-| 17 | Fixed generated file count | 59 → 62 (actual `find` count) |
-| 18 | Fixed enum count in totals | "33 typed enums" → "33 typed enums (32 with IsValid())" |
-| 19 | Fixed cross-cutting type safety count | 32 → 33 |
-| 20 | Added CSS Automation cross-cutting feature | `templates/app.css` + BuildFlow `tailwind-build` provider |
-| 21 | Added RTL/i18n cross-cutting feature | Logical properties, keyboard nav RTL swap |
-| 22 | Rewrote Planned section | Aligned with TODO_LIST.md, added 10 PLANNED items with honest status |
+| #   | Correction                                                                    | Why                                                                                                                                                   |
+| --- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | Fixed Combobox stale known issue                                              | WAI-ARIA keyboard nav IS fully implemented (ArrowUp/Down/Home/End/Enter/Escape/Tab, aria-activedescendant, aria-selected) — was marked as a known gap |
+| 2   | Downgraded `InlineLoadingOverlay` → PARTIALLY_FUNCTIONAL                      | Missing sr-only loading text (LoadingIndicator has it, InlineLoadingOverlay doesn't) — `htmx/loading.templ:29`                                        |
+| 3   | Downgraded `Footer` → PARTIALLY_FUNCTIONAL                                    | Doesn't accept BaseProps — API inconsistency — `navigation/nav.templ:119`                                                                             |
+| 4   | Downgraded `ErrorPage` → PARTIALLY_FUNCTIONAL                                 | Missing `<main>` landmark (WCAG 2.4.1 Bypass Blocks)                                                                                                  |
+| 5   | Downgraded `NotFound404` → PARTIALLY_FUNCTIONAL                               | Same `<main>` landmark gap                                                                                                                            |
+| 6   | Downgraded `FromError` with known issue note                                  | Returns FamilyInfrastructure (→503) for unknown errors instead of FamilyCorruption (→500)                                                             |
+| 7   | Added `layout.Stylesheet` to component table                                  | Was missing entirely from the layout section                                                                                                          |
+| 8   | Added `GridGap` enum                                                          | Was missing from enums table                                                                                                                          |
+| 9   | Added `ButtonSize`, `ButtonHTMLType`, `OverlayKind`, `DropdownItemKind` enums | Were missing from enums table                                                                                                                         |
+| 10  | Updated `Grid` description                                                    | Added `GridGap`, `ContainerResponsive` mentions                                                                                                       |
+| 11  | Updated `Card`/`SimpleCard`/`Table` descriptions                              | Added `Body` slot mentions                                                                                                                            |
+| 12  | Updated `Table` description                                                   | Added `TypedHeaders`/`TableHeader`/`aria-sort` mention                                                                                                |
+| 13  | Updated `ProgressBar` description                                             | Added indeterminate mode, clamped aria-valuenow                                                                                                       |
+| 14  | Updated `StepIndicator` description                                           | Added vertical orientation                                                                                                                            |
+| 15  | Updated `Toast` description                                                   | Added EnsureID auto-generation                                                                                                                        |
+| 16  | Updated `Breadcrumbs`/`Pagination` descriptions                               | Added JSON-LD, Separator, rel=prev/next/canonical                                                                                                     |
+| 17  | Fixed generated file count                                                    | 59 → 62 (actual `find` count)                                                                                                                         |
+| 18  | Fixed enum count in totals                                                    | "33 typed enums" → "33 typed enums (32 with IsValid())"                                                                                               |
+| 19  | Fixed cross-cutting type safety count                                         | 32 → 33                                                                                                                                               |
+| 20  | Added CSS Automation cross-cutting feature                                    | `templates/app.css` + BuildFlow `tailwind-build` provider                                                                                             |
+| 21  | Added RTL/i18n cross-cutting feature                                          | Logical properties, keyboard nav RTL swap                                                                                                             |
+| 22  | Rewrote Planned section                                                       | Aligned with TODO_LIST.md, added 10 PLANNED items with honest status                                                                                  |
 
 ### 4. Code verification via sub-agents
 
 Dispatched two verification agents that checked 34 specific claims against the codebase. Key findings used to build both files:
+
 - `Validate() error` — confirmed NOT implemented (no methods exist)
 - `internal/testutil/` — confirmed does NOT exist
 - `Footer` — confirmed takes `string`, not `BaseProps`
@@ -129,6 +132,7 @@ The user specified `2026-07-0*` files. The repo has ~30 additional `.md` files f
 ### 1. Didn't run `templ generate` or full test suite after BuildFlow corruption
 
 After my commit, BuildFlow's pre-commit hook left uncommitted changes in the working tree (see section d). The build is currently broken. I did NOT fix this because:
+
 - The changes are NOT mine (per "NEVER revert changes you didn't author" rule)
 - The user asked for a status report, not a fix session
 - I need user guidance on whether to complete or revert the incomplete refactoring
@@ -177,6 +181,7 @@ feedback/toast_templ.go:69:15: undefined: utils.RawScript
 The git status at conversation start said "Status: clean" — but that was a **snapshot from conversation start** that was already stale. By the time I committed, the working tree had these uncommitted changes from another session/BuildFlow. I ran `git status --short` before committing and it showed only `FEATURES.md` (modified) and `TODO_LIST.md` (untracked) — but the toast files were ALSO modified at that point and I didn't see them in the output.
 
 Wait — actually, re-reading my `git status --short` output before the commit, it showed only:
+
 ```
  M FEATURES.md
 ?? TODO_LIST.md
@@ -222,98 +227,98 @@ I read files in batches of 5 (parallel tool calls) and built the TODO_LIST.md at
 
 ### CRITICAL — Fix the broken build (do first)
 
-| # | Task | Effort |
-|---|------|--------|
-| 1 | Fix broken build: either complete the `utils.RawJS`/`RawScript` refactoring OR revert the 3 uncommitted toast files | 10m |
-| 2 | Run `go build ./... && go test ./...` to verify all 14 packages pass | 5m |
-| 3 | Run `git status` to verify working tree is clean | 1m |
+| #   | Task                                                                                                                | Effort |
+| --- | ------------------------------------------------------------------------------------------------------------------- | ------ |
+| 1   | Fix broken build: either complete the `utils.RawJS`/`RawScript` refactoring OR revert the 3 uncommitted toast files | 10m    |
+| 2   | Run `go build ./... && go test ./...` to verify all 14 packages pass                                                | 5m     |
+| 3   | Run `git status` to verify working tree is clean                                                                    | 1m     |
 
 ### P0 — Real bugs from TODO_LIST.md
 
-| # | Task | Effort |
-|---|------|--------|
-| 4 | Add sr-only "Loading…" text to `InlineLoadingOverlay` (parity with LoadingIndicator) | 5m |
-| 5 | Fix `SanitizeID` mismatch in ValidationSummary — links don't match actual field IDs | 15m |
-| 6 | Fix `FromError` to return `FamilyCorruption` (→500) for unknown errors instead of `FamilyInfrastructure` (→503) | 10m |
-| 7 | Add `BaseProps` to `Footer` component (API consistency) | 15m |
-| 8 | Add `<main>` landmark to ErrorPage and NotFound404 (WCAG 2.4.1) | 10m |
-| 9 | Add `CSRFTokenName` field to FormProps (framework compatibility) | 10m |
-| 10 | Verify `grid-rows-[0fr]` produces correct CSS in compiled Tailwind v4 | 10m |
+| #   | Task                                                                                                            | Effort |
+| --- | --------------------------------------------------------------------------------------------------------------- | ------ |
+| 4   | Add sr-only "Loading…" text to `InlineLoadingOverlay` (parity with LoadingIndicator)                            | 5m     |
+| 5   | Fix `SanitizeID` mismatch in ValidationSummary — links don't match actual field IDs                             | 15m    |
+| 6   | Fix `FromError` to return `FamilyCorruption` (→500) for unknown errors instead of `FamilyInfrastructure` (→503) | 10m    |
+| 7   | Add `BaseProps` to `Footer` component (API consistency)                                                         | 15m    |
+| 8   | Add `<main>` landmark to ErrorPage and NotFound404 (WCAG 2.4.1)                                                 | 10m    |
+| 9   | Add `CSRFTokenName` field to FormProps (framework compatibility)                                                | 10m    |
+| 10  | Verify `grid-rows-[0fr]` produces correct CSS in compiled Tailwind v4                                           | 10m    |
 
 ### P1 — Testing gaps
 
-| # | Task | Effort |
-|---|------|--------|
-| 11 | Add regression tests for 18 untested Round-2 bug fixes | 2h |
-| 12 | Add `role="status"` assertion to InlineLoadingOverlay tests | 5m |
-| 13 | Add dark golden test variants (render with `.dark` parent) | 30m |
-| 14 | Add toast JS-created toast golden test | 30m |
-| 15 | Boost coverage to 80%+ on errorpage, feedback, forms, navigation | 4h |
+| #   | Task                                                             | Effort |
+| --- | ---------------------------------------------------------------- | ------ |
+| 11  | Add regression tests for 18 untested Round-2 bug fixes           | 2h     |
+| 12  | Add `role="status"` assertion to InlineLoadingOverlay tests      | 5m     |
+| 13  | Add dark golden test variants (render with `.dark` parent)       | 30m    |
+| 14  | Add toast JS-created toast golden test                           | 30m    |
+| 15  | Boost coverage to 80%+ on errorpage, feedback, forms, navigation | 4h     |
 
 ### P2 — CI / Pre-commit hardening
 
-| # | Task | Effort |
-|---|------|--------|
-| 16 | Add `encoding/json/v2` grep guard to pre-commit hook | 5m |
-| 17 | Change pre-commit lint from hardcoded paths to `./...` | 5m |
-| 18 | Document `encoding/json/v2` prohibition in AGENTS.md | 10m |
+| #   | Task                                                   | Effort |
+| --- | ------------------------------------------------------ | ------ |
+| 16  | Add `encoding/json/v2` grep guard to pre-commit hook   | 5m     |
+| 17  | Change pre-commit lint from hardcoded paths to `./...` | 5m     |
+| 18  | Document `encoding/json/v2` prohibition in AGENTS.md   | 10m    |
 
 ### P2 — Documentation accuracy
 
-| # | Task | Effort |
-|---|------|--------|
-| 19 | Fix AGENTS.md lint path typo: `./svg/...` → `./internal/svg/...` | 1m |
-| 20 | Add "untagged" note to CHANGELOG `[0.9.1]` section | 5m |
-| 21 | Update ROADMAP.md with dark mode compliance milestone | 5m |
-| 22 | Create `docs/migration/v0.9-to-v0.10.md` migration guide | 15m |
-| 23 | Update FEATURES.md with CSS automation entry (app.css + BuildFlow) | 10m |
-| 24 | Fix FEATURES.md layout component count: 5 → 6, total 83 → 84 | 2m |
-| 25 | Rename AGENTS.md "Post-v0.9.0 Conventions" section | 5m |
-| 26 | Fix AGENTS.md generated file count: "61" → "62" | 1m |
+| #   | Task                                                               | Effort |
+| --- | ------------------------------------------------------------------ | ------ |
+| 19  | Fix AGENTS.md lint path typo: `./svg/...` → `./internal/svg/...`   | 1m     |
+| 20  | Add "untagged" note to CHANGELOG `[0.9.1]` section                 | 5m     |
+| 21  | Update ROADMAP.md with dark mode compliance milestone              | 5m     |
+| 22  | Create `docs/migration/v0.9-to-v0.10.md` migration guide           | 15m    |
+| 23  | Update FEATURES.md with CSS automation entry (app.css + BuildFlow) | 10m    |
+| 24  | Fix FEATURES.md layout component count: 5 → 6, total 83 → 84       | 2m     |
+| 25  | Rename AGENTS.md "Post-v0.9.0 Conventions" section                 | 5m     |
+| 26  | Fix AGENTS.md generated file count: "61" → "62"                    | 1m     |
 
 ### P2 — Code quality
 
-| # | Task | Effort |
-|---|------|--------|
-| 27 | Wire shared motion constants into remaining 19 components | 90m |
-| 28 | Rename `FamilyFromErrorFamily` → `FromErrorFamily` | 5m |
-| 29 | Consolidate CHANGELOG "Round 1"/"Round 2" headings | 5m |
+| #   | Task                                                      | Effort |
+| --- | --------------------------------------------------------- | ------ |
+| 27  | Wire shared motion constants into remaining 19 components | 90m    |
+| 28  | Rename `FamilyFromErrorFamily` → `FromErrorFamily`        | 5m     |
+| 29  | Consolidate CHANGELOG "Round 1"/"Round 2" headings        | 5m     |
 
 ### P3 — Community & polish
 
-| # | Task | Effort |
-|---|------|--------|
-| 30 | Submit awesome-templ PR (updated component count) | 5m |
-| 31 | Submit templ.guide listing | 5m |
-| 32 | Configure SSH tag signing | 10m |
-| 33 | Create blocks/composition examples (dashboard, login, settings) | 3h |
-| 34 | Add standalone `/forms` quickstart demo route | 30m |
-| 35 | Build demo/showcase site (live rendered components) | 8h+ |
+| #   | Task                                                            | Effort |
+| --- | --------------------------------------------------------------- | ------ |
+| 30  | Submit awesome-templ PR (updated component count)               | 5m     |
+| 31  | Submit templ.guide listing                                      | 5m     |
+| 32  | Configure SSH tag signing                                       | 10m    |
+| 33  | Create blocks/composition examples (dashboard, login, settings) | 3h     |
+| 34  | Add standalone `/forms` quickstart demo route                   | 30m    |
+| 35  | Build demo/showcase site (live rendered components)             | 8h+    |
 
 ### v1.0 preparation
 
-| # | Task | Effort |
-|---|------|--------|
-| 36 | Design `Validate() error` pattern (pick 3 pilot components) | 4h |
-| 37 | Plan `internal/testutil/` migration (70+ files) | 2h |
-| 38 | Self-host htmx as default (ADR 0007) | 2h |
-| 39 | Semantic token layer migration (ADR 0008, 256 color refs) | 4h+ |
-| 40 | Icon RTL mirroring (`data-tc-dir-icon`) | 45m |
-| 41 | Remove deprecated aliases (AlertType, ToastType) | 30m |
+| #   | Task                                                        | Effort |
+| --- | ----------------------------------------------------------- | ------ |
+| 36  | Design `Validate() error` pattern (pick 3 pilot components) | 4h     |
+| 37  | Plan `internal/testutil/` migration (70+ files)             | 2h     |
+| 38  | Self-host htmx as default (ADR 0007)                        | 2h     |
+| 39  | Semantic token layer migration (ADR 0008, 256 color refs)   | 4h+    |
+| 40  | Icon RTL mirroring (`data-tc-dir-icon`)                     | 45m    |
+| 41  | Remove deprecated aliases (AlertType, ToastType)            | 30m    |
 
 ### New components
 
-| # | Task | Effort |
-|---|------|--------|
-| 42 | Add `Popover` component (most requested) | 4h |
-| 43 | Add `DataTable` (sorting, filtering, pagination) | 6h+ |
-| 44 | Add `FilterDropdown` | 2h |
-| 45 | Add `Slider` (ARIA slider pattern) | 2h |
-| 46 | Add `Rating` (star rating, keyboard) | 1h |
-| 47 | Add `TagsInput` | 2h |
-| 48 | Add `ContextMenu` (right-click menu) | 2h |
-| 49 | Add `HoverCard` | 2h |
-| 50 | Add `Calendar` (full calendar grid) | 4h |
+| #   | Task                                             | Effort |
+| --- | ------------------------------------------------ | ------ |
+| 42  | Add `Popover` component (most requested)         | 4h     |
+| 43  | Add `DataTable` (sorting, filtering, pagination) | 6h+    |
+| 44  | Add `FilterDropdown`                             | 2h     |
+| 45  | Add `Slider` (ARIA slider pattern)               | 2h     |
+| 46  | Add `Rating` (star rating, keyboard)             | 1h     |
+| 47  | Add `TagsInput`                                  | 2h     |
+| 48  | Add `ContextMenu` (right-click menu)             | 2h     |
+| 49  | Add `HoverCard`                                  | 2h     |
+| 50  | Add `Calendar` (full calendar grid)              | 4h     |
 
 ---
 

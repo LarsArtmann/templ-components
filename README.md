@@ -277,7 +277,7 @@ Nav bars, breadcrumbs, pagination, mobile menus, sidebar navigation, and cursor-
 @navigation.Pagination(navigation.PaginationProps{CurrentPage: 2, TotalPages: 10, BaseURL: "/users"})
 
 @navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: nextCursor})
-@navigation.Footer("MyApp")
+@navigation.Footer(navigation.FooterProps{BrandText: "MyApp"})
 
 @navigation.SidebarNav(navigation.SidebarNavProps{
     Brand: templ.Raw(`<span class="font-bold text-white">MyApp</span>`),

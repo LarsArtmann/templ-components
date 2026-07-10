@@ -50,7 +50,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 61 generated files across all packages (display, errorpage, feedback, forms, htmx, icons, layout, navigation, examples/demo, internal/golden)
+- 62 generated files across all packages (display, errorpage, feedback, forms, htmx, icons, layout, navigation, examples/demo, internal/golden)
 - **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package
@@ -313,11 +313,19 @@ after reviewing the release commit and tag with `git show v<version>` and
 ## Lint Command
 
 ```bash
-# Must lint specific packages — examples/ excluded via .golangci.yml
-golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./svg/... ./internal/...
+# examples/ excluded via .golangci.yml paths exclusion
+golangci-lint run ./...
 ```
 
-## Post-v0.9.0 Conventions
+## `encoding/json/v2` Prohibition
+
+`encoding/json/v2` is an experimental package gated behind `GOEXPERIMENT=jsonv2` (not
+stable until Go 1.27). **Never import it.** Auto-formatters running under the
+`goexperiment.jsonv2` build tag can silently rewrite imports, breaking builds.
+The pre-commit hook (`scripts/pre-commit.sh`) includes a grep guard that rejects
+any `encoding/json/v2` import. Use `encoding/json` (v1) instead.
+
+## Conventions
 
 - **Naming hygiene:** `forms/radio_go.go` renamed to `forms/radio.go` (the `_go.go` suffix falsely implied generated code). `icons.Close` added as alias for `icons.X` (prefer `Close` in new code — `X` is a single-letter identifier with poor discoverability). `errMsg` → `errorMessage` (no abbreviations). `cleanMessage` → `sanitizeErrorMessage` (precise verb). `htmxMainSRIDefault` → `sriHTMXMainDefault` (consistent word order with `sriHTMXMainByVersion`).
 - **RTL keyboard mapping:** `display.Tabs` and `display.Dropdown` JS handlers check `document.documentElement.getAttribute('dir') === 'rtl'` and swap ArrowLeft/Right mappings per WAI-ARIA APG. In LTR: ArrowRight=next, ArrowLeft=prev. In RTL: ArrowLeft=next, ArrowRight=prev.
@@ -328,3 +336,7 @@ golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htm
 - **Benchmark suites:** Now in 7 packages (display, feedback, navigation, forms, layout, htmx, icons, utils). Run via `go test -bench=. -benchmem ./...`.
 - **goconst zero issues:** All repeated string literals extracted to named constants. `msgGoBack` in constructors.go uses `notFound404GoBackText` (single source of truth across errorpage package).
 - **Golden package coverage:** 81.8% (was 70.5%). New tests cover: `-update` flag, `MkdirAll`, normalization edge cases, diff identical/multi-line, `lineAt` out-of-range.
+- **FooterProps:** `navigation.Footer` now takes `FooterProps` (embeds `BaseProps`) instead of a raw `brandText string`. All components in the library now accept `BaseProps`.
+- **CSRFTokenName:** `forms.FormProps` has a `CSRFTokenName` field (defaults to `"csrf_token"`) for framework compatibility.
+- **ErrorPage/NotFound404 landmark:** Both use `<main>` (not `<div role="region">`) for WCAG 2.4.1 Bypass Blocks compliance.
+- **FromError fallback:** Unknown errors return `FamilyCorruption` (→500), not `FamilyInfrastructure` (→503). An unrecognized error is a bug, not a transient outage.

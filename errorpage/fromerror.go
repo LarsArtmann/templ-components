@@ -16,7 +16,8 @@ func FamilyFromErrorFamily(f errorfamily.Family) Family {
 // FromError converts any error into ErrorPageProps.
 // Extracts code, family, context, and cause chain from structured errors.
 // For go-error-family errors, also extracts Why/Fix defaults.
-// Falls back to Infrastructure family for unknown errors.
+// Falls back to Corruption family for unrecognized errors (HTTP 500),
+// since an unknown error is most likely a bug rather than a temporary outage.
 func FromError(err error) ErrorPageProps {
 	if err == nil {
 		return ErrorPageProps{Family: FamilyTransient} //nolint:exhaustruct // minimal nil response
@@ -68,7 +69,7 @@ func familyFromError(err error) Family {
 	if c, ok := err.(interface{ ErrorFamily() string }); ok {
 		return ParseFamily(c.ErrorFamily())
 	}
-	return FamilyInfrastructure
+	return FamilyCorruption
 }
 
 // sanitizeErrorMessage returns the clean message from a go-error-family error

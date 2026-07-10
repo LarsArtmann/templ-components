@@ -134,12 +134,12 @@ type BaseProps struct {
 
 ### Components
 
-| Component     | Status               | Description              | Key Features                                                                                                                                                                   |
-| ------------- | -------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `ErrorPage`   | PARTIALLY_FUNCTIONAL | Full-page error view     | Wix-style What/Why/Fix/WayOut, 5 families, context, cause chain, action. **Gap:** Missing `<main>` landmark (WCAG 2.4.1) — uses `<div role="region">` instead                  |
-| `NotFound404` | PARTIALLY_FUNCTIONAL | Dedicated 404 page       | Gradient numeral hero, search form, quick-links grid (configurable `LinksTitle`), `WriteNotFound404` handler, go-home/go-back. **Gap:** Missing `<main>` landmark (WCAG 2.4.1) |
-| `ErrorDetail` | FULLY_FUNCTIONAL     | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix                                                                                                            |
-| `ErrorAlert`  | FULLY_FUNCTIONAL     | Family-aware alert       | 5 distinct color schemes, dismiss, fix suggestion, family badge                                                                                                                |
+| Component     | Status           | Description              | Key Features                                                                                                                                     |
+| ------------- | ---------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `ErrorPage`   | FULLY_FUNCTIONAL | Full-page error view     | Wix-style What/Why/Fix/WayOut, 5 families, context, cause chain, action, `<main>` landmark (WCAG 2.4.1)                                          |
+| `NotFound404` | FULLY_FUNCTIONAL | Dedicated 404 page       | Gradient numeral hero, search form, quick-links grid (configurable `LinksTitle`), `WriteNotFound404` handler, go-home/go-back, `<main>` landmark |
+| `ErrorDetail` | FULLY_FUNCTIONAL | Inline error detail card | Code badge, family badge, context table, cause chain, suggested fix                                                                              |
+| `ErrorAlert`  | FULLY_FUNCTIONAL | Family-aware alert       | 5 distinct color schemes, dismiss, fix suggestion, family badge                                                                                  |
 
 ### Enums
 
@@ -149,12 +149,12 @@ type BaseProps struct {
 
 ### Bridge Helpers
 
-| Function            | Purpose                                                                                                                                                                     |
-| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `FamilyStatusCode`  | Maps Family → HTTP status code (400/409/503/500/503)                                                                                                                        |
-| `ContextMap`        | Converts map[string]string → []ContextPair                                                                                                                                  |
-| `ExtractCauseChain` | Walks Unwrap() chain → []CauseItem with ErrorCode() support                                                                                                                 |
-| `FromError`         | Converts any `error` → `ErrorPageProps` (family/code/cause). **Known issue:** Returns `FamilyInfrastructure` (→503) for unknown errors; should be `FamilyCorruption` (→500) |
+| Function            | Purpose                                                                                                            |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `FamilyStatusCode`  | Maps Family → HTTP status code (400/409/503/500/503)                                                               |
+| `ContextMap`        | Converts map[string]string → []ContextPair                                                                         |
+| `ExtractCauseChain` | Walks Unwrap() chain → []CauseItem with ErrorCode() support                                                        |
+| `FromError`         | Converts any `error` → `ErrorPageProps` (family/code/cause). Unknown errors fall back to `FamilyCorruption` (→500) |
 
 ### HTTP Handler
 
@@ -274,8 +274,7 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Known Issues
 
-- **SanitizeID mismatch in ValidationSummary** — error links use `SanitizeID(err.Field)` (transforms `_`→`-`) but field IDs are whatever the consumer set (e.g. `user_email`). Links may not match actual element IDs (`forms/ids.go:9`, `forms/validation.templ:61`)
-- **FormProps CSRF token name hardcoded** — `name="csrf_token"` with no `CSRFTokenName` field for framework compatibility (`forms/form.templ:71`)
+_(None currently)_
 
 ---
 
@@ -283,15 +282,15 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component              | Status               | Description                | Key Features                                                                                                                                                  |
-| ---------------------- | -------------------- | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `LoadingIndicator`     | FULLY_FUNCTIONAL     | Fixed full-screen loading  | Uses `htmx-indicator`, blur backdrop                                                                                                                          |
-| `InlineLoadingOverlay` | PARTIALLY_FUNCTIONAL | Localized loading overlay  | Absolute positioned, for form targets. **Gap:** Missing sr-only loading text (parity with LoadingIndicator which has `<span class="sr-only">Loading…</span>`) |
-| `LoadingButton`        | FULLY_FUNCTIONAL     | Button with loading state  | Text swaps to spinner during HTMX requests                                                                                                                    |
-| `ConfirmDelete`        | FULLY_FUNCTIONAL     | Delete button with confirm | `hx-delete`, `hx-target`, `hx-confirm`, `hx-swap`                                                                                                             |
-| `SwapOOB`              | FULLY_FUNCTIONAL     | Out-of-band swap wrapper   | For updating multiple elements per response                                                                                                                   |
-| `CSRFToken`            | FULLY_FUNCTIONAL     | Hidden CSRF input          | Standard `csrf_token` name                                                                                                                                    |
-| `GlobalErrorHandling`  | FULLY_FUNCTIONAL     | HTMX error handler         | Network errors, response errors, auto-retry, toast integration, family-aware error parsing                                                                    |
+| Component              | Status           | Description                | Key Features                                                                                        |
+| ---------------------- | ---------------- | -------------------------- | --------------------------------------------------------------------------------------------------- |
+| `LoadingIndicator`     | FULLY_FUNCTIONAL | Fixed full-screen loading  | Uses `htmx-indicator`, blur backdrop                                                                |
+| `InlineLoadingOverlay` | FULLY_FUNCTIONAL | Localized loading overlay  | Absolute positioned, for form targets, sr-only loading text, `role="status"` + `aria-live="polite"` |
+| `LoadingButton`        | FULLY_FUNCTIONAL | Button with loading state  | Text swaps to spinner during HTMX requests                                                          |
+| `ConfirmDelete`        | FULLY_FUNCTIONAL | Delete button with confirm | `hx-delete`, `hx-target`, `hx-confirm`, `hx-swap`                                                   |
+| `SwapOOB`              | FULLY_FUNCTIONAL | Out-of-band swap wrapper   | For updating multiple elements per response                                                         |
+| `CSRFToken`            | FULLY_FUNCTIONAL | Hidden CSRF input          | Configurable name via `CSRFTokenName` field (defaults to `csrf_token`)                              |
+| `GlobalErrorHandling`  | FULLY_FUNCTIONAL | HTMX error handler         | Network errors, response errors, auto-retry, toast integration, family-aware error parsing          |
 
 ### Known Issues
 
@@ -356,23 +355,23 @@ Used by both Alert and Toast for consistent visual styling.
 
 ### Components
 
-| Component          | Status               | Description               | Key Features                                                                                                             |
-| ------------------ | -------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
-| `Nav`              | FULLY_FUNCTIONAL     | Responsive navigation bar | Brand, links, right items, sticky option, mobile menu                                                                    |
-| `SimpleNav`        | FULLY_FUNCTIONAL     | Simplified nav            | Text brand, sticky by default                                                                                            |
-| `NavLink`          | FULLY_FUNCTIONAL     | Desktop nav link          | Active state styling via currentPath                                                                                     |
-| `MobileNavLink`    | FULLY_FUNCTIONAL     | Mobile nav link           | Border-left active indicator                                                                                             |
-| `Breadcrumbs`      | FULLY_FUNCTIONAL     | Breadcrumb navigation     | Chevron separators, active state, optional custom `Separator`, JSON-LD structured data, `rel` support                    |
-| `Pagination`       | FULLY_FUNCTIONAL     | Page navigation           | Mobile/desktop layouts, prev/next arrows, page range, query param, `rel="prev"/"next"/"canonical"` for SEO               |
-| `MobileMenu`       | FULLY_FUNCTIONAL     | Collapsible mobile menu   | JS toggle, nonce-based CSP                                                                                               |
-| `MobileMenuToggle` | FULLY_FUNCTIONAL     | Hamburger button          | Conditional visibility                                                                                                   |
-| `Footer`           | PARTIALLY_FUNCTIONAL | Simple footer             | Copyright with dynamic year. **Gap:** Doesn't accept `BaseProps` — can't set Class/ID/Attrs (`navigation/nav.templ:119`) |
-| `SidebarNav`       | FULLY_FUNCTIONAL     | Vertical sidebar nav      | Brand/footer slots, icons, active-route detection                                                                        |
-| `LoadMore`         | FULLY_FUNCTIONAL     | Cursor pagination button  | hx-get + hx-swap outerHTML, cursor as query param, centered layout, optional `InfiniteScroll` (hx-trigger="revealed")    |
+| Component          | Status           | Description               | Key Features                                                                                                          |
+| ------------------ | ---------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `Nav`              | FULLY_FUNCTIONAL | Responsive navigation bar | Brand, links, right items, sticky option, mobile menu                                                                 |
+| `SimpleNav`        | FULLY_FUNCTIONAL | Simplified nav            | Text brand, sticky by default                                                                                         |
+| `NavLink`          | FULLY_FUNCTIONAL | Desktop nav link          | Active state styling via currentPath                                                                                  |
+| `MobileNavLink`    | FULLY_FUNCTIONAL | Mobile nav link           | Border-left active indicator                                                                                          |
+| `Breadcrumbs`      | FULLY_FUNCTIONAL | Breadcrumb navigation     | Chevron separators, active state, optional custom `Separator`, JSON-LD structured data, `rel` support                 |
+| `Pagination`       | FULLY_FUNCTIONAL | Page navigation           | Mobile/desktop layouts, prev/next arrows, page range, query param, `rel="prev"/"next"/"canonical"` for SEO            |
+| `MobileMenu`       | FULLY_FUNCTIONAL | Collapsible mobile menu   | JS toggle, nonce-based CSP                                                                                            |
+| `MobileMenuToggle` | FULLY_FUNCTIONAL | Hamburger button          | Conditional visibility                                                                                                |
+| `Footer`           | FULLY_FUNCTIONAL | Simple footer             | `FooterProps` with `BaseProps`, copyright with dynamic year                                                           |
+| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav      | Brand/footer slots, icons, active-route detection                                                                     |
+| `LoadMore`         | FULLY_FUNCTIONAL | Cursor pagination button  | hx-get + hx-swap outerHTML, cursor as query param, centered layout, optional `InfiniteScroll` (hx-trigger="revealed") |
 
 ### Known Issues
 
-- `Footer` doesn't accept `BaseProps` — API inconsistency with all other components
+_(None currently)_
 
 ---
 
