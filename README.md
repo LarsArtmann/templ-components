@@ -24,10 +24,10 @@ templ-components is a pure Tailwind CSS v4 component library for Go's templ engi
 | **JavaScript**       | HATEOAS-aligned (enhances HTML) | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js** | No                              | No                            | Yes                                            |
 | **Go module**        | Yes                             | Yes                           | Yes                                            |
-| **Components**       | 83                              | 40+                           | —                                              |
+| **Components**       | 84                              | 40+                           | —                                              |
 | **Dark mode**        | Built-in (Tailwind `dark:`)     | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**    | Yes (nonce support)             | Yes                           | —                                              |
-| **Typed props**      | 32 string enums                 | —                             | —                                              |
+| **Typed props**      | 33 string enums                 | —                             | —                                              |
 | **HTMX integration** | Built-in package                | —                             | —                                              |
 
 **templ-components is for developers who want [HATEOAS](https://htmx.org/essays/hateoas/) — hypermedia as the engine of application state. The server renders HTML; JavaScript (via htmx or progressive enhancement) reads from HTML attributes to enhance UX. No Alpine.js, no DaisyUI, no SPA framework, no build pipeline beyond `templ generate`.**
@@ -109,9 +109,9 @@ props.CSSPath = ""                   // suppresses <link rel="stylesheet" href="
 
 If you load htmx from a different CDN or self-host, see `PageProps.HTMXCDN`.
 
-### `display` — Data Display (25 components)
+### `display` — Data Display (26 components)
 
-Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, copy button, relative time, count badge, image, and more.
+Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, stat cards, page headers, definition lists, responsive grid, copy button, relative time, count badge, image, and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {
@@ -434,9 +434,9 @@ Wiring up HTMX error feedback in a server-rendered app? See [`docs/recipes/serve
 
 | Metric       | Value                                               |
 | ------------ | --------------------------------------------------- |
-| Components   | 83                                                  |
+| Components   | 84                                                  |
 | SVG icons    | 101                                                 |
-| Typed enums  | 27                                                  |
+| Typed enums  | 34                                                  |
 | Packages     | 11                                                  |
 | Tests        | 456 functions + ~660 subtests                       |
 | Coverage     | ~75% (72–79% per package)                           |

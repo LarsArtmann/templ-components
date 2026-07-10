@@ -1,6 +1,6 @@
 # Features — templ-components
 
-**Updated:** 2026-07-10 | **Version:** 0.13.0
+**Updated:** 2026-07-10 | **Version:** 0.14.0
 
 A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 
@@ -8,19 +8,19 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 
 ## Overview
 
-| Package      | Components    | Description                                                                                                                                                                                               |
-| ------------ | ------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                     |
-| `display`    | 25            | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, empty states, page headers, definition lists, copy button, relative time, count badge, image |
-| `errorpage`  | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                              |
-| `feedback`   | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                         |
-| `forms`      | 16            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation                                                                                 |
-| `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                                                                             |
-| `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                                                                 |
-| `layout`     | 5             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script tag                                                                                                                                      |
-| `navigation` | 11            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more                                                                                                                       |
+| Package      | Components    | Description                                                                                                                                                                                                         |
+| ------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                               |
+| `display`    | 26            | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, empty states, page headers, definition lists, copy button, relative time, count badge, image |
+| `errorpage`  | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                                        |
+| `feedback`   | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                                   |
+| `forms`      | 16            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation                                                                                           |
+| `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                                                                                       |
+| `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                                                                           |
+| `layout`     | 5             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script tag                                                                                                                                                |
+| `navigation` | 11            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more                                                                                                                                 |
 
-**Totals:** 83 templ components, 101 icon names, 33 typed enums (32 with `IsValid()`), 62 generated `*_templ.go` files, ~24,000 lines of Go/templ source
+**Totals:** 84 templ components, 101 icon names, 34 typed enums (33 with `IsValid()`), 63 generated `*_templ.go` files, ~24,500 lines of Go/templ source
 
 ---
 
@@ -85,6 +85,7 @@ type BaseProps struct {
 | `Table`            | FULLY_FUNCTIONAL | Responsive data table           | Headers, rows, striping, hover, caption, bordered, `Body` slot (custom `<tr>` rendering), `TypedHeaders`/`TableHeader` with `aria-sort`     |
 | `Tabs`             | FULLY_FUNCTIONAL | Tabbed interface                | Default underline or pills variant, ARIA tablist/tab/tabpanel                                                                               |
 | `Tooltip`          | FULLY_FUNCTIONAL | Hover tooltip                   | 4 positions, arrow, `role="tooltip"`, CSS-only                                                                                              |
+| `Popover`          | FULLY_FUNCTIONAL | Button-triggered floating panel | 4 positions, `role="dialog"`, click-outside/Escape dismiss, CSP-safe singleton JS, arbitrary content via children slot                      |
 | `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots                                                                                        |
 | `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup                                                                                      |
 | `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                                                                                                   |
@@ -116,6 +117,7 @@ type BaseProps struct {
 | `OverlayKind`      | Modal, Drawer                                      |
 | `DropdownItemKind` | Link, Button                                       |
 | `TooltipPosition`  | Top, Bottom, Left, Right                           |
+| `PopoverPosition`  | Top, Bottom, Left, Right                           |
 | `SortDirection`    | None, Asc, Desc (for TableHeader sortable columns) |
 
 ### Known Issues
@@ -378,11 +380,11 @@ _(None currently)_
 ## Cross-Cutting Features
 
 - **CSP Compliance:** All inline scripts use `nonce` attribute
-- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 83 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
+- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 84 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first designs with `sm:` breakpoints
-- **Type Safety:** 33 typed string enums (32 with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
+- **Type Safety:** 34 typed string enums (33 with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
 - **Test Coverage:** 74% average across packages, BDD + snapshot + a11y + benchmark + integration tests
 - **Theming:** Tailwind v4 `@theme` override support via `templ-components-theme.css`. Components emit standard utility classes (`bg-blue-600`, `text-gray-900`) — consumers override `--color-*` variables to theme globally without touching component code.
 - **CSS Automation:** `templates/app.css` starter entry-point + BuildFlow `tailwind-build` provider (auto-discovers CSS entry-points, compiles via `tailwindcss` in the DAG). See `docs/tailwind-v4-adoption-guide.md`.
@@ -396,10 +398,9 @@ See `TODO_LIST.md` for the full verified inventory. Highlights:
 
 | Feature / Component    | Package  | Status       | Notes                                                                 |
 | ---------------------- | -------- | ------------ | --------------------------------------------------------------------- |
-| `Popover`              | display  | ⚪ `PLANNED` | Most requested missing component across consumer feedback             |
 | `DataTable`            | display  | ⚪ `PLANNED` | High-level sortable/filtering/pagination wrapper around `TableHeader` |
 | `FilterDropdown`       | forms    | ⚪ `PLANNED` | Purpose-built for HTMX filter bars                                    |
-| `Validate() error`     | all      | ⚪ `PLANNED` | v1.0 — design decision needed (83 components)                         |
+| `Validate() error`     | all      | ⚪ `PLANNED` | v1.0 — design decision needed (84 components)                         |
 | `internal/testutil/`   | internal | ⚪ `PLANNED` | v1.0 — move test helpers (70+ files depend on exports)                |
 | Semantic token layer   | all      | ⚪ `PLANNED` | v1.0 — `bg-tc-primary` aliases (ADR 0008, 256 color refs)             |
 | Self-host htmx default | layout   | ⚪ `PLANNED` | v1.0 — breaking CSP change (ADR 0007)                                 |

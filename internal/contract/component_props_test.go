@@ -50,6 +50,7 @@ func componentTypes() []any {
 		display.CountBadgeProps{},
 		display.DefinitionGridProps{},
 		display.ImageProps{},
+		display.PopoverProps{},
 
 		// forms (13)
 		forms.InputProps{},

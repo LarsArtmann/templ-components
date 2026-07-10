@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-83 components across 9 packages + 101 icons. If you're about to hand-roll
+84 components across 9 packages + 101 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -43,13 +43,13 @@ Don't know what to look for? Find your page type:
 | **Filter bar (horizontal)**    | Thin custom helper (see `docs/recipes/horizontal-filter-bar.md`) — `forms.Form` targets vertical                                |
 | **Feedback / notifications**   | `Toast`, `ToastContainer`, `Alert`, `Spinner`, `ProgressBar`, `GlobalErrorHandling`                                             |
 | **Navigation**                 | `Nav`, `SimpleNav`, `SidebarNav`, `Breadcrumbs`, `Pagination`, `MobileMenu`                                                     |
-| **Modal / overlay**            | `Modal`, `Drawer`, `Dropdown`, `Tooltip`, `Accordion`                                                                           |
+| **Modal / overlay**            | `Modal`, `Drawer`, `Dropdown`, `Tooltip`, `Popover`, `Accordion`                                                                |
 | **Error pages**                | `ErrorPage`, `NotFound404`, `ErrorDetail`, `ErrorAlert`, `ErrorHandler`                                                         |
 | **Full page shell**            | `Base`, `Minimal`, `ThemeScript`, `ThemeToggle`, `Script`                                                                       |
 
 ### By package (import path reference)
 
-#### `display` — 25 components
+#### `display` — 26 components
 
 | Component          | Signature                                   | One-liner                                                                                 |
 | ------------------ | ------------------------------------------- | ----------------------------------------------------------------------------------------- |
@@ -65,6 +65,7 @@ Don't know what to look for? Find your page type:
 | `Drawer`           | `Drawer(props DrawerProps)`                 | Side panel — left/right slide, focus trap, Escape, backdrop                               |
 | `Dropdown`         | `Dropdown(props DropdownProps)`             | Button-triggered menu — links, buttons, keyboard nav                                      |
 | `Tooltip`          | `Tooltip(props TooltipProps)`               | Hover tooltip — 4 positions, arrow, touch support                                         |
+| `Popover`          | `Popover(props PopoverProps)`               | Button-triggered floating panel — 4 positions, arbitrary content, click-outside dismiss   |
 | `Accordion`        | `Accordion(props AccordionProps)`           | Collapsible sections — open/closed state, keyboard nav                                    |
 | `Table`            | `Table(props TableProps)`                   | Responsive data table — striping, hover, caption, bordered, `Body` slot for custom `<tr>` |
 | `Tabs`             | `Tabs(props TabsProps)`                     | Tabbed interface — underline/pills, optional client-side JS                               |

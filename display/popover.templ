@@ -1,0 +1,141 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// PopoverPosition defines where the popover content appears relative to the trigger.
+type PopoverPosition string
+
+const (
+	PopoverPositionTop    PopoverPosition = "top"
+	PopoverPositionBottom PopoverPosition = "bottom"
+	PopoverPositionLeft   PopoverPosition = "left"
+	PopoverPositionRight  PopoverPosition = "right"
+)
+
+// PopoverProps configures a popover component.
+//
+// A popover is a floating panel triggered by a button click. It displays
+// arbitrary content (unlike Dropdown which renders menu items) and dismisses
+// on Escape, click-outside, or when the trigger is toggled again.
+type PopoverProps struct {
+	utils.BaseProps
+	TriggerText string
+	Position    PopoverPosition
+}
+
+// DefaultPopoverProps returns sensible defaults.
+func DefaultPopoverProps() PopoverProps {
+	return PopoverProps{
+		Position: PopoverPositionBottom,
+	}
+}
+
+type popoverPositionStyles struct {
+	Panel string
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for popover position styles
+var popoverPositionMap = map[PopoverPosition]popoverPositionStyles{
+	PopoverPositionTop: {
+		Panel: "bottom-full left-1/2 -translate-x-1/2 mb-2",
+	},
+	PopoverPositionBottom: {
+		Panel: "top-full left-1/2 -translate-x-1/2 mt-2",
+	},
+	PopoverPositionLeft: {
+		Panel: "right-full top-1/2 -translate-y-1/2 me-2",
+	},
+	PopoverPositionRight: {
+		Panel: "left-full top-1/2 -translate-y-1/2 ms-2",
+	},
+}
+
+func popoverLookupPosition(pos PopoverPosition) popoverPositionStyles {
+	return utils.Lookup(popoverPositionMap, pos, popoverPositionMap[PopoverPositionBottom])
+}
+
+// Popover renders a button-triggered floating panel with arbitrary content.
+//
+//	@display.Popover(display.PopoverProps{TriggerText: "Details"}) {
+//	   <p class="text-sm">Popover content goes here.</p>
+//	}
+templ Popover(props PopoverProps) {
+	{{ id := utils.EnsureID("popover", props.ID) }}
+	{{ pos := popoverLookupPosition(props.Position) }}
+	<div
+		id={ id }
+		class={ utils.Class("relative inline-block text-start", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<button
+			type="button"
+			id={ id + "-trigger" }
+			class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white shadow-xs ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+			aria-expanded="false"
+			aria-haspopup="dialog"
+			aria-controls={ id + "-content" }
+			data-tc-popover-trigger={ id }
+		>
+			{ props.TriggerText }
+			@svg.FillIcon("-me-1 h-5 w-5 text-gray-400 dark:text-gray-500", svg.PathChevronSmall, false)
+		</button>
+		<div
+			id={ id + "-content" }
+			class={ utils.Class(
+				"absolute z-20 hidden w-72 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 p-4 text-sm text-gray-900 dark:text-white",
+				pos.Panel,
+			) }
+			role="dialog"
+			aria-labelledby={ id + "-trigger" }
+		>
+			{ children... }
+		</div>
+	</div>
+	<script nonce={ props.Nonce }>
+		if (!window.tcPopoverAttached) {
+			window.tcPopoverAttached = true;
+			function tcClosePopover(panel, trigger) {
+				panel.classList.add('hidden');
+				trigger.setAttribute('aria-expanded', 'false');
+				trigger.focus();
+			}
+			function tcOpenPopover(panel, trigger) {
+				panel.classList.remove('hidden');
+				trigger.setAttribute('aria-expanded', 'true');
+				var focusable = panel.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+				if (focusable.length) focusable[0].focus();
+			}
+			document.addEventListener('click', function(e) {
+				var trigger = e.target.closest('[data-tc-popover-trigger]');
+				if (trigger) {
+					e.stopPropagation();
+					var id = trigger.getAttribute('data-tc-popover-trigger');
+					var panel = document.getElementById(id + '-content');
+					if (!panel) return;
+					if (trigger.getAttribute('aria-expanded') === 'true') tcClosePopover(panel, trigger);
+					else tcOpenPopover(panel, trigger);
+					return;
+				}
+				document.querySelectorAll('[data-tc-popover-trigger][aria-expanded="true"]').forEach(function(t) {
+					var pid = t.getAttribute('data-tc-popover-trigger');
+					var p = document.getElementById(pid + '-content');
+					if (p && !p.contains(e.target)) tcClosePopover(p, t);
+				});
+			});
+			document.addEventListener('keydown', function(e) {
+				if (e.key !== 'Escape') return;
+				document.querySelectorAll('[data-tc-popover-trigger][aria-expanded="true"]').forEach(function(t) {
+					var pid = t.getAttribute('data-tc-popover-trigger');
+					var p = document.getElementById(pid + '-content');
+					if (p && (p.contains(e.target) || e.target === t)) tcClosePopover(p, t);
+				});
+			});
+		}
+	</script>
+}

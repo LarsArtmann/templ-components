@@ -73,6 +73,38 @@ func TestIconWithStrokeWidth(t *testing.T) {
 	})
 }
 
+func TestIconRTL(t *testing.T) {
+	t.Parallel()
+
+	t.Run("regular icon has data-tc-dir-icon attribute", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, IconRTL(ArrowRight, "h-5 w-5"))
+		utils.AssertContains(t, output, "<svg")
+		utils.AssertContains(t, output, "</svg>")
+		utils.AssertContains(t, output, "data-tc-dir-icon")
+		utils.AssertContains(t, output, "h-5 w-5")
+	})
+
+	t.Run("spinner variant has data-tc-dir-icon and animate-spin", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, IconRTL(Spinner, "text-blue-500"))
+		utils.AssertContains(t, output, "data-tc-dir-icon")
+		utils.AssertContains(t, output, "animate-spin")
+		utils.AssertContains(t, output, "text-blue-500")
+	})
+
+	t.Run("all path icons render with data-tc-dir-icon", func(t *testing.T) {
+		t.Parallel()
+		for _, name := range allIconNames() {
+			if name == Spinner {
+				continue
+			}
+			output := utils.Render(t, IconRTL(name, "h-5 w-5"))
+			utils.AssertContains(t, output, "data-tc-dir-icon")
+		}
+	})
+}
+
 func TestIconPathJS(t *testing.T) {
 	t.Parallel()
 	t.Run("known icon produces path elements", func(t *testing.T) {

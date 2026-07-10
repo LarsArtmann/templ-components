@@ -36,6 +36,10 @@ func TestIsValidEnums(t *testing.T) {
 		// TooltipPosition
 		{"TooltipPosition Top", func() bool { return TooltipPositionIsValid(TooltipPositionTop) }, true},
 		{"TooltipPosition invalid", func() bool { return TooltipPositionIsValid(TooltipPosition("bogus")) }, false},
+		// PopoverPosition
+		{"PopoverPosition Top", func() bool { return PopoverPositionIsValid(PopoverPositionTop) }, true},
+		{"PopoverPosition Bottom", func() bool { return PopoverPositionIsValid(PopoverPositionBottom) }, true},
+		{"PopoverPosition invalid", func() bool { return PopoverPositionIsValid(PopoverPosition("bogus")) }, false},
 		// AvatarShape
 		{"AvatarShape Circle", func() bool { return AvatarShapeIsValid(AvatarShapeCircle) }, true},
 		{"AvatarShape invalid", func() bool { return AvatarShapeIsValid(AvatarShape("bogus")) }, false},

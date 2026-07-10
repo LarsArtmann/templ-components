@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-07-10 | **Version:** 0.12.1
+**Updated:** 2026-07-10 | **Version:** 0.14.0
 
 > Built from 42 `docs/**/2026-07-0*` files + code verification. Each item is verified against
 > the actual codebase. Items marked ✅ are confirmed done; ⬜ are open.
@@ -107,18 +107,18 @@
 
 ## New components — Not started
 
-| #   | Component                                                      | Priority | Source                                           |
-| --- | -------------------------------------------------------------- | -------- | ------------------------------------------------ |
-| 43  | `Popover`                                                      | High     | Most requested missing component across feedback |
-| 44  | `DataTable` (high-level sortable/filtering/pagination wrapper) | High     | DiscordSync + Overview feedback                  |
-| 45  | `FilterDropdown`                                               | Medium   | Consumer-requested for filter bars               |
-| 46  | `Slider` (ARIA slider pattern)                                 | Medium   | Research §5                                      |
-| 47  | `Rating` (star rating, keyboard support)                       | Low      | Research §5                                      |
-| 48  | `TagsInput`                                                    | Low      | Research §5                                      |
-| 49  | `ContextMenu` (right-click menu)                               | Low      | Research §5                                      |
-| 50  | `Carousel`                                                     | Low      | Research §5                                      |
-| 51  | `HoverCard`                                                    | Medium   | Research §5                                      |
-| 52  | `Calendar` (full calendar grid)                                | Medium   | Research §5                                      |
+| #   | Component                                                      | Priority | Source                                                                                               |
+| --- | -------------------------------------------------------------- | -------- | ---------------------------------------------------------------------------------------------------- |
+| 43  | `Popover`                                                      | ✅ DONE  | `display/popover.templ` — button-triggered floating panel, 4 positions, click-outside/Escape dismiss |
+| 44  | `DataTable` (high-level sortable/filtering/pagination wrapper) | High     | DiscordSync + Overview feedback                                                                      |
+| 45  | `FilterDropdown`                                               | Medium   | Consumer-requested for filter bars                                                                   |
+| 46  | `Slider` (ARIA slider pattern)                                 | Medium   | Research §5                                                                                          |
+| 47  | `Rating` (star rating, keyboard support)                       | Low      | Research §5                                                                                          |
+| 48  | `TagsInput`                                                    | Low      | Research §5                                                                                          |
+| 49  | `ContextMenu` (right-click menu)                               | Low      | Research §5                                                                                          |
+| 50  | `Carousel`                                                     | Low      | Research §5                                                                                          |
+| 51  | `HoverCard`                                                    | Medium   | Research §5                                                                                          |
+| 52  | `Calendar` (full calendar grid)                                | Medium   | Research §5                                                                                          |
 
 ---
 

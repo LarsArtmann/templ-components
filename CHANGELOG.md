@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.14.0] — 2026-07-10
+
+### Added
+
+- `display.Popover` — new component: button-triggered floating panel with arbitrary content (children slot), 4 positions (`PopoverPositionTop/Bottom/Left/Right`), `role="dialog"`, `aria-haspopup`/`aria-controls`/`aria-labelledby` wiring, click-outside and Escape dismissal, CSP-safe singleton JS. The #1 most requested missing component across consumer feedback.
+- `PopoverPosition` typed enum with `PopoverPositionIsValid()` + test coverage.
+
+### Changed
+
+- Icons coverage improved from 47.1% → 75.9% via `TestIconRTL` covering the shipped-but-untested `IconRTL` public API (all 100 path icons + spinner variant).
+
 ## [0.13.0] — 2026-07-10
 
 ### Fixed

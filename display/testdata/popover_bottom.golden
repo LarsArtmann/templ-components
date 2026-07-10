@@ -1,0 +1,41 @@
+<div id="golden-popover" class="inline-block relative text-start"><button type="button" id="golden-popover-trigger" class="bg-white dark:bg-gray-800 dark:hover:bg-gray-700 dark:ring-gray-600 dark:text-white font-semibold gap-x-1.5 hover:bg-gray-50 inline-flex justify-center px-3 py-2 ring-1 ring-gray-300 ring-inset rounded-md shadow-xs text-gray-900 text-sm w-full" aria-expanded="false" aria-haspopup="dialog" aria-controls="golden-popover-content" data-tc-popover-trigger="golden-popover">Details<svg class="-me-1 dark:text-gray-500 h-5 text-gray-400 w-5" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true"><path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd"></path></svg></button><div id="golden-popover-content" class="-translate-x-1/2 absolute bg-white dark:bg-gray-800 dark:shadow-black/20 dark:text-white hidden left-1/2 mt-2 p-4 ring-1 ring-black/5 rounded-md shadow-lg text-gray-900 text-sm top-full w-72 z-20" role="dialog" aria-labelledby="golden-popover-trigger"></div></div><script nonce="">
+		if (!window.tcPopoverAttached) {
+			window.tcPopoverAttached = true;
+			function tcClosePopover(panel, trigger) {
+				panel.classList.add('hidden');
+				trigger.setAttribute('aria-expanded', 'false');
+				trigger.focus();
+			}
+			function tcOpenPopover(panel, trigger) {
+				panel.classList.remove('hidden');
+				trigger.setAttribute('aria-expanded', 'true');
+				var focusable = panel.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
+				if (focusable.length) focusable[0].focus();
+			}
+			document.addEventListener('click', function(e) {
+				var trigger = e.target.closest('[data-tc-popover-trigger]');
+				if (trigger) {
+					e.stopPropagation();
+					var id = trigger.getAttribute('data-tc-popover-trigger');
+					var panel = document.getElementById(id + '-content');
+					if (!panel) return;
+					if (trigger.getAttribute('aria-expanded') === 'true') tcClosePopover(panel, trigger);
+					else tcOpenPopover(panel, trigger);
+					return;
+				}
+				document.querySelectorAll('[data-tc-popover-trigger][aria-expanded="true"]').forEach(function(t) {
+					var pid = t.getAttribute('data-tc-popover-trigger');
+					var p = document.getElementById(pid + '-content');
+					if (p && !p.contains(e.target)) tcClosePopover(p, t);
+				});
+			});
+			document.addEventListener('keydown', function(e) {
+				if (e.key !== 'Escape') return;
+				document.querySelectorAll('[data-tc-popover-trigger][aria-expanded="true"]').forEach(function(t) {
+					var pid = t.getAttribute('data-tc-popover-trigger');
+					var p = document.getElementById(pid + '-content');
+					if (p && (p.contains(e.target) || e.target === t)) tcClosePopover(p, t);
+				});
+			});
+		}
+	</script>

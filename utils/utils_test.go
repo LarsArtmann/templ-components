@@ -178,6 +178,22 @@ func TestAssertEqual(t *testing.T) {
 	AssertEqual(t, "matching values", 42, 42)
 }
 
+func TestAssertContainsAll(t *testing.T) {
+	t.Parallel()
+	t.Run("all substrings present passes", func(t *testing.T) {
+		t.Parallel()
+		AssertContainsAll(t, "foo bar baz", "foo", "bar", "baz")
+	})
+	t.Run("single substring", func(t *testing.T) {
+		t.Parallel()
+		AssertContainsAll(t, "hello world", "world")
+	})
+	t.Run("zero substrings is a no-op", func(t *testing.T) {
+		t.Parallel()
+		AssertContainsAll(t, "anything")
+	})
+}
+
 // Verify that *BaseProps satisfies the ComponentProps interface.
 func TestBasePropsImplementsComponentProps(t *testing.T) {
 	t.Parallel()
