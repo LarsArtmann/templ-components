@@ -7,9 +7,9 @@ import (
 	errorfamily "github.com/larsartmann/go-error-family"
 )
 
-// FamilyFromErrorFamily converts a go-error-family Family to an errorpage Family.
+// FromErrorFamily converts a go-error-family Family to an errorpage Family.
 // Returns FamilyTransient for unrecognized values.
-func FamilyFromErrorFamily(f errorfamily.Family) Family {
+func FromErrorFamily(f errorfamily.Family) Family {
 	return ParseFamily(f.String())
 }
 
@@ -61,7 +61,7 @@ func FromError(err error) ErrorPageProps {
 // familyFromError extracts the family from any error, trying go-error-family first.
 func familyFromError(err error) Family {
 	if classified, ok := errors.AsType[errorfamily.Classified](err); ok {
-		return FamilyFromErrorFamily(classified.ErrorFamily())
+		return FromErrorFamily(classified.ErrorFamily())
 	}
 	if c, ok := err.(interface{ ErrorFamily() Family }); ok {
 		return c.ErrorFamily()
@@ -91,6 +91,12 @@ func errorTimestamp(err error) string {
 	}
 	return time.Now().UTC().Format(time.RFC3339)
 }
+
+// FamilyFromErrorFamily is a deprecated alias for FromErrorFamily.
+// Kept for backward compatibility; will be removed in v1.0.
+//
+// Deprecated: Use FromErrorFamily instead.
+var FamilyFromErrorFamily = FromErrorFamily //nolint:gochecknoglobals // deprecated alias for backward compat
 
 // errorResponse is the JSON structure returned when ErrorHandlerConfig.JSON is true.
 type errorResponse struct {

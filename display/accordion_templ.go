@@ -227,7 +227,7 @@ func Accordion(props AccordionProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var11 = []any{"grid transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", templ.KV("grid-rows-[1fr]", item.Open), templ.KV("grid-rows-[0fr]", !item.Open)}
+			var templ_7745c5c3_Var11 = []any{"grid " + transitionNormal, templ.KV("grid-rows-[1fr]", item.Open), templ.KV("grid-rows-[0fr]", !item.Open)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

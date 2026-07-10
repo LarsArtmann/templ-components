@@ -14,6 +14,20 @@ templ Icon(name Name, class string) {
 	@IconWithStrokeWidth(name, class, 1.5)
 }
 
+// IconRTL renders a directional icon that auto-mirrors in RTL contexts.
+// Add this CSS to your stylesheet: [dir="rtl"] [data-tc-dir-icon] { transform: scaleX(-1); }
+//
+//	@icons.IconRTL(icons.ArrowRight, "h-4 w-4")
+templ IconRTL(name Name, class string) {
+	if name == Spinner {
+		<svg class={ class, "animate-spin motion-reduce:animate-none" } fill="none" viewBox="0 0 24 24" aria-hidden="true" data-tc-dir-icon>
+			@svg.SpinnerSVG()
+		</svg>
+	} else {
+		@strokeIconRTL(class, 1.5, iconPaths(name))
+	}
+}
+
 // IconWithStrokeWidth renders an SVG icon with a custom stroke-width.
 // The default Icon uses 1.5; use this for thicker or thinner strokes.
 //
@@ -31,6 +45,15 @@ templ IconWithStrokeWidth(name Name, class string, strokeWidth float64) {
 // strokeIcon renders a standard stroke-based SVG icon with the given paths
 templ strokeIcon(class string, strokeWidth float64, paths []string) {
 	<svg class={ class } fill="none" viewBox="0 0 24 24" stroke-width={ fmt.Sprintf("%g", strokeWidth) } stroke="currentColor" aria-hidden="true">
+		for _, p := range paths {
+			<path stroke-linecap="round" stroke-linejoin="round" d={ p }></path>
+		}
+	</svg>
+}
+
+// strokeIconRTL renders a directional icon with data-tc-dir-icon for CSS mirroring.
+templ strokeIconRTL(class string, strokeWidth float64, paths []string) {
+	<svg class={ class } fill="none" viewBox="0 0 24 24" stroke-width={ fmt.Sprintf("%g", strokeWidth) } stroke="currentColor" aria-hidden="true" data-tc-dir-icon>
 		for _, p := range paths {
 			<path stroke-linecap="round" stroke-linejoin="round" d={ p }></path>
 		}

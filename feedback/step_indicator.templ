@@ -76,7 +76,7 @@ templ StepIndicator(props StepIndicatorProps) {
 // both the vertical and horizontal step layouts.
 templ stepCircle(stepIndex, currentStep int) {
 	<div
-		class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-colors motion-reduce:transition-none motion-reduce:duration-0", stepCircleClass(stepIndex, currentStep) }
+		class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold " + utils.TransitionColors, stepCircleClass(stepIndex, currentStep) }
 		if stepIndex == currentStep {
 			aria-current="step"
 		}

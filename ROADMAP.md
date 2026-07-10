@@ -10,16 +10,17 @@ listed under v1.0 is a **freeze**, not a redesign.
 
 The library is feature-complete for production server-rendered Go web apps.
 
-| Pillar        | Status                                                                                                  |
-| ------------- | ------------------------------------------------------------------------------------------------------- |
-| Components    | **82** across 9 packages (display, feedback, forms, layout, navigation, htmx, errorpage, icons, utils)  |
-| Icons         | **101** named SVG icons (Heroicons v2 outline + Spinner), typed `icons.Name` constants                  |
-| Typed enums   | 30+ closed-set enums, each with `IsValid()` + test coverage; `map[X]string` + `utils.Lookup` everywhere |
-| RTL / i18n    | All CSS uses logical properties (`ms-`/`me-`/`start-`/`end-`); auto-mirrors under `dir="rtl"`           |
-| HTMX helpers  | `SwapOOB`, loading indicators, error handling, family-aware toasts                                      |
-| CSP safety    | Every inline script carries `nonce={ props.Nonce }`; integration test guards regressions                |
-| Accessibility | `motion-reduce:*` on all transitions/animations, `aria-sort`, focus trap, `aria-live` regions           |
-| Error pages   | `errorpage` package: 404, full-page, inline detail, family-aware alert, `http.Handler` integration      |
+| Pillar        | Status                                                                                                                                                                                                                                                                  |
+| ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Components    | **82** across 9 packages (display, feedback, forms, layout, navigation, htmx, errorpage, icons, utils)                                                                                                                                                                  |
+| Icons         | **101** named SVG icons (Heroicons v2 outline + Spinner), typed `icons.Name` constants                                                                                                                                                                                  |
+| Typed enums   | 30+ closed-set enums, each with `IsValid()` + test coverage; `map[X]string` + `utils.Lookup` everywhere                                                                                                                                                                 |
+| RTL / i18n    | All CSS uses logical properties (`ms-`/`me-`/`start-`/`end-`); auto-mirrors under `dir="rtl"`                                                                                                                                                                           |
+| Dark mode     | Full `dark:` variant coverage on all components; enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` (failing CI tests). Class-based strategy via `layout.ThemeScript()` + `layout.ThemeToggle()`. `color-scheme: light/dark` for native form controls. |
+| HTMX helpers  | `SwapOOB`, loading indicators, error handling, family-aware toasts                                                                                                                                                                                                      |
+| CSP safety    | Every inline script carries `nonce={ props.Nonce }`; integration test guards regressions                                                                                                                                                                                |
+| Accessibility | `motion-reduce:*` on all transitions/animations, `aria-sort`, focus trap, `aria-live` regions                                                                                                                                                                           |
+| Error pages   | `errorpage` package: 404, full-page, inline detail, family-aware alert, `http.Handler` integration                                                                                                                                                                      |
 
 **Current version:** see [`utils/version.go`](utils/version.go) and the latest
 heading in [`CHANGELOG.md`](CHANGELOG.md).

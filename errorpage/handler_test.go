@@ -414,7 +414,7 @@ func TestFromErrorWithGoErrorFamily(t *testing.T) {
 	})
 }
 
-func TestFamilyFromErrorFamily(t *testing.T) {
+func TestFromErrorFamily(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
@@ -430,9 +430,9 @@ func TestFamilyFromErrorFamily(t *testing.T) {
 	for _, tc := range tests {
 		t.Run(tc.input.String(), func(t *testing.T) {
 			t.Parallel()
-			got := FamilyFromErrorFamily(tc.input)
+			got := FromErrorFamily(tc.input)
 			if got != tc.want {
-				t.Errorf("FamilyFromErrorFamily(%v) = %q, want %q", tc.input, got, tc.want)
+				t.Errorf("FromErrorFamily(%v) = %q, want %q", tc.input, got, tc.want)
 			}
 		})
 	}

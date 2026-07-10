@@ -27,6 +27,12 @@ func TestMotionReduceCompliance(t *testing.T) {
 	// motion-reduce presence check
 	motionReduceRe := regexp.MustCompile(`motion-reduce:`)
 
+	// Shared motion constants that already include motion-reduce fallbacks.
+	// Lines referencing these are exempt from the inline motion-reduce check.
+	transitionConstRe := regexp.MustCompile(
+		`(utils\.Transition|transitionFast|transitionNormal|transitionColors|transitionTransform)`,
+	)
+
 	violations := 0
 	for _, dir := range dirs {
 		err := filepath.Walk(filepath.Join(root, dir), func(path string, info os.FileInfo, err error) error {
@@ -51,6 +57,11 @@ func TestMotionReduceCompliance(t *testing.T) {
 				}
 				// Check if the same line or a nearby line has motion-reduce
 				if motionReduceRe.MatchString(line) {
+					continue
+				}
+				// Lines referencing shared motion constants are safe — the
+				// constants already include motion-reduce fallbacks.
+				if transitionConstRe.MatchString(line) {
 					continue
 				}
 				// Allow multi-line class strings — check if motion-reduce appears

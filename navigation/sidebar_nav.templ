@@ -79,7 +79,7 @@ templ SidebarNav(props SidebarNavProps) {
 				{{ active := sidebarItemActive(item, props.CurrentPath) }}
 				<a
 					href={ templ.SafeURL(item.Href) }
-					class={ "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0",
+					class={ "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium " + utils.TransitionColors,
 						templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
 						templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active) }
 					if active {

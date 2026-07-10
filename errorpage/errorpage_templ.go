@@ -159,7 +159,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			if props.WayOutHref != "" {
-				var templ_7745c5c3_Var9 = []any{"inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
+				var templ_7745c5c3_Var9 = []any{"inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -203,7 +203,7 @@ func ErrorPage(props ErrorPageProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else if props.WayOut != "" {
-				var templ_7745c5c3_Var12 = []any{"inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs transition-colors motion-reduce:transition-none motion-reduce:duration-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
+				var templ_7745c5c3_Var12 = []any{"inline-flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold shadow-xs " + utils.TransitionColors + " focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2", style.ActionButton}
 				templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var12...)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err

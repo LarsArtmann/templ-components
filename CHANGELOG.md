@@ -77,7 +77,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `forms.RadioOption.Checked` — enables pre-selecting a radio option for edit forms.
 - `forms.RadioProps.Required` — propagates `required` to individual radio inputs for native HTML5 validation.
 
-### Fixed — Round 2 (htmx, errorpage, layout, forms, navigation)
+### Fixed (htmx, errorpage, layout, forms, navigation)
 
 - **`htmx.LoadingButton`**: `htmx-hide-during-request` was not a real CSS class — default text never hid during loading. Replaced with Tailwind arbitrary variant `[.htmx-request_&]:hidden`.
 - **`htmx.InlineLoadingOverlay`**: static `aria-hidden="true"` was never toggled. Replaced with `role="status"` + `aria-live="polite"`.
@@ -96,7 +96,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`navigation.LoadMore`**: `aria-label` moved from div to button.
 - **`navigation` breadcrumb URL**: uses `net/url.Parse` instead of naive string check.
 
-### Fixed — Round 1 (forms, feedback, display, navigation)
+### Fixed (forms, feedback, display, navigation)
 
 - **`forms.Toggle`**: `peer-checked:translate-*` classes were dynamically concatenated (`"peer-checked:" + translateClass`) at runtime, making them invisible to Tailwind's content scanner. The thumb did not slide when checked in production. Now stores complete variant-prefixed class literals (`peer-checked:translate-x-5`).
 - **`navigation.Pagination`**: arrow button border-radius was dynamically concatenated (`"rounded-" + side + "-md"`), invisible to Tailwind's scanner. Now passes complete logical-property literals (`rounded-s-md`/`rounded-e-md`) that also auto-mirror in RTL.
@@ -129,6 +129,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Deleted stale `origin/modularize/strategic-split` remote branch (abandoned experiment, never merged).
 
 ## [0.9.1] — 2026-07-08
+
+> **Note:** This version was never tagged. All changes were included in v0.10.0.
+> Consumers should use `@v0.10.0` or later; `@v0.9.1` will return a 404 from the Go module proxy.
 
 ### Added
 

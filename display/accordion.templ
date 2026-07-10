@@ -76,7 +76,7 @@ templ Accordion(props AccordionProps) {
 					id={ item.ID + "-panel" }
 					role="region"
 					aria-labelledby={ item.ID + "-trigger" }
-					class={ "grid transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", templ.KV("grid-rows-[1fr]", item.Open), templ.KV("grid-rows-[0fr]", !item.Open) }
+					class={ "grid " + transitionNormal, templ.KV("grid-rows-[1fr]", item.Open), templ.KV("grid-rows-[0fr]", !item.Open) }
 					if item.Open {
 						data-open
 					}

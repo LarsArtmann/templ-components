@@ -11,7 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import "github.com/larsartmann/templ-components/utils"
 
 // navLinkBaseClass is the shared class prefix for active and inactive nav links.
-const navLinkBaseClass = "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+const navLinkBaseClass = "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium " + utils.TransitionColors
 
 func navLinkClasses(isActive bool) string {
 	if isActive {
@@ -21,7 +21,7 @@ func navLinkClasses(isActive bool) string {
 }
 
 func mobileNavLinkClass(isActive bool) string {
-	base := "block border-s-4 py-2 ps-3 pe-4 text-base font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+	base := "block border-s-4 py-2 ps-3 pe-4 text-base font-medium " + utils.TransitionColors
 	if isActive {
 		return base + " border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300"
 	}

@@ -84,20 +84,38 @@ func ThemeToggle(ariaLabel string, nonce string) templ.Component {
 			templ_7745c5c3_Var3 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<button type=\"button\" class=\"rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 dark:hover:text-gray-300 transition-colors motion-reduce:transition-none motion-reduce:duration-0\" data-theme-toggle role=\"switch\" aria-checked=\"false\" aria-label=\"")
+		var templ_7745c5c3_Var4 = []any{"rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 dark:hover:text-gray-300 " + utils.TransitionColors}
+		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var4...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var4 string
-		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(ariaLabel != "", ariaLabel, "Toggle theme"))
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<button type=\"button\" class=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var5 string
+		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var4).String())
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 1, Col: 0}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" data-theme-toggle role=\"switch\" aria-checked=\"false\" aria-label=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var6 string
+		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(ariaLabel != "", ariaLabel, "Toggle theme"))
 		if templ_7745c5c3_Err != nil {
 			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 38, Col: 72}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -109,20 +127,20 @@ func ThemeToggle(ariaLabel string, nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</button><script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</button><script nonce=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var5 string
-		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
+		var templ_7745c5c3_Var7 string
+		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
 		if templ_7745c5c3_Err != nil {
 			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 43, Col: 22}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\">\n\t\tif (!window.tcThemeToggleAttached) {\n\t\t\twindow.tcThemeToggleAttached = true;\n\t\t\tvar html = document.documentElement;\n\n\t\t\tfunction syncToggleAria(btn) {\n\t\t\t\tif (btn) btn.setAttribute('aria-checked', String(html.classList.contains('dark')));\n\t\t\t}\n\n\t\t\tdocument.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);\n\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar btn = e.target.closest('[data-theme-toggle]');\n\t\t\t\tif (!btn) return;\n\t\t\t\tvar isDark = html.classList.contains('dark');\n\t\t\t\tif (isDark) {\n\t\t\t\t\thtml.classList.remove('dark');\n\t\t\t\t\ttry { localStorage.setItem('theme', 'light'); } catch(e) {}\n\t\t\t\t} else {\n\t\t\t\t\thtml.classList.add('dark');\n\t\t\t\t\ttry { localStorage.setItem('theme', 'dark'); } catch(e) {}\n\t\t\t\t}\n\t\t\t\thtml.style.colorScheme = isDark ? 'light' : 'dark';\n\t\t\t\tdocument.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);\n\t\t\t});\n\t\t}\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\">\n\t\tif (!window.tcThemeToggleAttached) {\n\t\t\twindow.tcThemeToggleAttached = true;\n\t\t\tvar html = document.documentElement;\n\n\t\t\tfunction syncToggleAria(btn) {\n\t\t\t\tif (btn) btn.setAttribute('aria-checked', String(html.classList.contains('dark')));\n\t\t\t}\n\n\t\t\tdocument.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);\n\n\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar btn = e.target.closest('[data-theme-toggle]');\n\t\t\t\tif (!btn) return;\n\t\t\t\tvar isDark = html.classList.contains('dark');\n\t\t\t\tif (isDark) {\n\t\t\t\t\thtml.classList.remove('dark');\n\t\t\t\t\ttry { localStorage.setItem('theme', 'light'); } catch(e) {}\n\t\t\t\t} else {\n\t\t\t\t\thtml.classList.add('dark');\n\t\t\t\t\ttry { localStorage.setItem('theme', 'dark'); } catch(e) {}\n\t\t\t\t}\n\t\t\t\thtml.style.colorScheme = isDark ? 'light' : 'dark';\n\t\t\t\tdocument.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);\n\t\t\t});\n\t\t}\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

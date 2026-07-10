@@ -9,7 +9,7 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
-	"encoding/json/v2"
+	"encoding/json"
 	"fmt"
 	"net/url"
 	"strings"
@@ -138,7 +138,7 @@ func breadcrumbSeparator(custom string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = icons.Icon(icons.ChevronRight, "h-4 w-4 text-gray-400 dark:text-gray-500").Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = icons.IconRTL(icons.ChevronRight, "h-4 w-4 text-gray-400 dark:text-gray-500").Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -9,6 +9,7 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 // focusableSelector is the CSS selector for focusable elements within an
@@ -20,19 +21,13 @@ const focusableSelector = `'a[href], button:not([disabled]), textarea, input, se
 // it with a margin utility via utils.Class, e.g. utils.Class(mutedTextClass, "mt-1").
 const mutedTextClass = "text-sm text-gray-500 dark:text-gray-400"
 
-// Motion class constants for consistent animation timing across components.
-// Durations follow the motion design research guidelines:
-//   - 150ms: micro-interactions (hover, toggle, tooltip)
-//   - 200ms: overlays (modal, drawer, dropdown)
-//   - 300ms: panel transitions, large element movement
-//
-// Every transition includes motion-reduce fallbacks for vestibular safety.
-// Use these instead of inline strings so timing is consistent and auditable.
+// Motion class constants — re-exported from utils for backward compatibility.
+// Use utils.TransitionFast, utils.TransitionNormal, etc. directly in new code.
 const (
-	transitionFast      = "transition-all duration-150 ease-out motion-reduce:transition-none motion-reduce:duration-0"
-	transitionNormal    = "transition-all duration-200 ease-out motion-reduce:transition-none motion-reduce:duration-0"
-	transitionColors    = "transition-colors motion-reduce:transition-none motion-reduce:duration-0"
-	transitionTransform = "transition-transform motion-reduce:transition-none"
+	transitionFast      = utils.TransitionFast
+	transitionNormal    = utils.TransitionNormal
+	transitionColors    = utils.TransitionColors
+	transitionTransform = utils.TransitionTransform
 )
 
 // overlayPanelConfig defines the CSS classes that animate the panel element

@@ -14,7 +14,7 @@ templ overlayShell(p overlayShellProps) {
 	}}
 	<div
 		id={ p.id }
-		class={ utils.Class("fixed inset-0 z-50 transition-all duration-200 motion-reduce:transition-none motion-reduce:duration-0", p.outerClass),
+		class={ utils.Class(transitionNormal, p.outerClass),
 			templ.KV("opacity-100 pointer-events-auto", p.open),
 			templ.KV("opacity-0 pointer-events-none", !p.open) }
 		role="dialog"

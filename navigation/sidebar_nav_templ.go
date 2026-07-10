@@ -182,7 +182,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 		}
 		for _, item := range props.Items {
 			active := sidebarItemActive(item, props.CurrentPath)
-			var templ_7745c5c3_Var6 = []any{"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium transition-colors motion-reduce:transition-none motion-reduce:duration-0",
+			var templ_7745c5c3_Var6 = []any{"flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium " + utils.TransitionColors,
 				templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
 				templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var6...)

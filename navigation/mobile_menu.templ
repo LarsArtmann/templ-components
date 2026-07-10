@@ -1,6 +1,9 @@
 package navigation
 
-import "github.com/larsartmann/templ-components/icons"
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // MobileMenuToggle renders the hamburger button for mobile menus.
 // menuID uniquely identifies the menu this toggle controls, so multiple Nav
@@ -12,7 +15,7 @@ templ MobileMenuToggle(show bool, menuID string) {
 		<div class="flex items-center sm:hidden">
 			<button
 				type="button"
-				class="inline-flex items-center justify-center rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:focus:ring-blue-400 dark:hover:bg-gray-800 dark:hover:text-gray-300 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+				class={ "inline-flex items-center justify-center rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:focus:ring-blue-400 dark:hover:bg-gray-800 dark:hover:text-gray-300 " + utils.TransitionColors }
 				aria-controls={ "tc-mobile-menu-" + menuID }
 				aria-expanded="false"
 				data-mobile-menu-toggle={ menuID }

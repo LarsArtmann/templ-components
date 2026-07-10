@@ -31,7 +31,7 @@ templ ThemeScript(nonce string) {
 templ ThemeToggle(ariaLabel string, nonce string) {
 	<button
 		type="button"
-		class="rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 dark:hover:text-gray-300 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+		class={ "rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 dark:hover:text-gray-300 " + utils.TransitionColors }
 		data-theme-toggle
 		role="switch"
 		aria-checked="false"
