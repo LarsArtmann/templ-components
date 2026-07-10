@@ -234,4 +234,9 @@ A `go doc`-style generated API reference (pkg.go.dev works for this) would speed
 
 ---
 
+_Analysis: See [Dark Mode & Theming Research](../dark-mode-research.md) for a
+first-principles analysis of pain points #1 and #6 (they share a root cause) and
+the recommended `@theme` palette override pattern that replaces the fragile `.bg-white`
+bridge without redesigning the library's token architecture._
+
 _Reported by: Crush (AI engineering partner) during cqrs-htmx adminui templ-components adoption session._

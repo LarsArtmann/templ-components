@@ -51,3 +51,8 @@ Two failing tests block CI:
 - The compliance tests prevent regressions — adding a `text-gray-500` without `dark:text-gray-400` will fail CI.
 - Consumers can override colors via Tailwind v4 `@theme` variables without touching component code.
 - `color-scheme: light` on `:root` and `color-scheme: dark` on `.dark` ensures native form controls (scrollbars, checkboxes, date pickers) render correctly in both modes.
+
+> **Note:** The `color-scheme: light` value on `:root` should be `color-scheme: light dark`
+> to support consumers who use `prefers-color-scheme` instead of the `.dark` class.
+> See [Dark Mode & Theming Research](../dark-mode-research.md) for the full analysis
+> and the three first-class consumer dark mode paths.

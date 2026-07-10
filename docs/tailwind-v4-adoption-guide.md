@@ -176,6 +176,25 @@ Delete it.
 
 ---
 
+## Dark mode strategies
+
+templ-components components emit `dark:` variants on all color classes. There are
+three ways to activate dark mode, depending on your app's needs:
+
+1. **OS-following (zero config):** Tailwind v4's default `dark:` variant follows
+   `prefers-color-scheme`. Just `@import "tailwindcss"` — done. No JS, no class.
+2. **Toggle (user-controlled):** Add `@custom-variant dark (&:where(.dark, .dark *))`
+   and use `layout.ThemeScript()` + `layout.ThemeToggle()`.
+3. **CSS-variable design system:** Override `--color-*` variables in `@theme` to
+   reference your own design tokens (e.g., `--color-white: var(--surface)`). Both
+   sides of each `dark:` pair resolve to your variables, so mode-switching is
+   automatic.
+
+For a deep analysis of all dark mode mechanisms in Tailwind v4 + modern CSS,
+see [Dark Mode & Theming Research](dark-mode-research.md).
+
+---
+
 ## FAQ
 
 **Do I need Node.js?** No. The standalone Tailwind CLI binary works without Node.
@@ -186,8 +205,10 @@ templ-components. Use templ-components instead.
 **Can I use arbitrary values?** Yes. `w-[248px]`, `grid-cols-[auto_1fr]`,
 `text-[13px]` — all standard Tailwind v4.
 
-**How do I handle dark mode?** Include `@custom-variant dark` in your CSS and
-use `layout.ThemeScript()` + `layout.ThemeToggle()` for JS-toggled dark mode.
+**How do I handle dark mode?** See the [Dark mode strategies](#dark-mode-strategies)
+section above. The simplest option is zero-config (`prefers-color-scheme`), or use
+`@custom-variant dark` + `layout.ThemeScript()` + `layout.ThemeToggle()` for a
+user-controlled toggle.
 
 **What about CSP?** Tailwind produces pure CSS files — no inline styles, no
 `eval()`. Include the built `.css` via `<link>` and you're CSP-compliant.
