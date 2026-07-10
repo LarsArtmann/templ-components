@@ -15,6 +15,15 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: "1.26"
+
+      - name: Check for encoding/json/v2 imports
+        run: |
+          if grep -rn 'encoding/json/v2\|encoding/json/jsontext' --include='*.go' .; then
+            echo "ERROR: encoding/json/v2 or encoding/json/jsontext import detected."
+            echo "These packages require GOEXPERIMENT=jsonv2 (not stable until Go 1.27)."
+            exit 1
+          fi
+
       - uses: golangci/golangci-lint-action@v6
         with:
           version: latest

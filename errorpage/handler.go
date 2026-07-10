@@ -3,14 +3,12 @@ package errorpage
 import (
 	"bytes"
 	"context"
-	"encoding/json/v2"
+	"encoding/json"
 	"fmt"
 	"html"
 	"io"
 	"log/slog"
 	"net/http"
-
-	"encoding/json/jsontext"
 
 	"github.com/a-h/templ"
 )
@@ -180,9 +178,9 @@ func writeJSONError(w http.ResponseWriter, statusCode int, props ErrorPageProps)
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(statusCode)
-	enc := jsontext.NewEncoder(w)
+	enc := json.NewEncoder(w)
 	enc.SetEscapeHTML(true)
-	if err := json.MarshalEncode(enc, resp); err != nil {
+	if err := enc.Encode(resp); err != nil {
 		slog.Error("JSON error response encode failed", "error", err)
 	}
 }

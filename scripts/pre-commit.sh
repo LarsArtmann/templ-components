@@ -10,8 +10,9 @@ echo "Running templ-components pre-commit checks..."
 
 # Guard: encoding/json/v2 is not yet stable (Go 1.27+) and breaks builds.
 # Auto-formatters running under GOEXPERIMENT=jsonv2 can rewrite imports.
-if grep -rn 'encoding/json/v2' --include='*.go' .; then
-    echo "ERROR: encoding/json/v2 import detected. This package is not stable yet (blocked on Go 1.27)."
+if grep -rn 'encoding/json/v2\|encoding/json/jsontext' --include='*.go' .; then
+    echo "ERROR: encoding/json/v2 or encoding/json/jsontext import detected."
+    echo "These packages require GOEXPERIMENT=jsonv2 (not stable until Go 1.27)."
     echo "Use encoding/json (v1) instead."
     exit 1
 fi
