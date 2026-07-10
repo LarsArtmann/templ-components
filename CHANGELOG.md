@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.13.0] — 2026-07-10
+
 ### Fixed
 
 - `htmx/InlineLoadingOverlay` — added `<span class="sr-only">Loading…</span>` for screen reader parity with `LoadingIndicator`.
