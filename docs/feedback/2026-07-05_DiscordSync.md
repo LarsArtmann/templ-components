@@ -1,3 +1,28 @@
+<!-- AUTO-UPDATED 2026-07-10: Retrospective status overlay -->
+
+> ## 🔔 Update Notice — 2026-07-10
+>
+> This report is **historical**. Many items listed as "open", "todo", or "broken" below
+> have since been **fixed and verified**. Do not act on open items without first checking
+> [TODO_LIST.md](../../TODO_LIST.md) for current status.
+>
+> **Key fixes completed since this report:**
+>
+> - ✅ All 7 P0 bugs fixed (InlineLoadingOverlay a11y, SanitizeID mismatch, FromError fallback,
+>   Footer BaseProps, ErrorPage/NotFound404 `<main>` landmark, CSRFTokenName, grid-rows verified)
+> - ✅ `encoding/json/v2` purged from all production code + pre-commit guard added
+> - ✅ Motion constants centralized in `utils/motion.go`, wired into 13 components
+> - ✅ `FamilyFromErrorFamily` → `FromErrorFamily` (old name kept as deprecated alias)
+> - ✅ `icons.IconRTL()` + CSS for directional icon RTL mirroring
+> - ✅ 33 regression tests added (htmx, errorpage, layout, navigation, feedback, display)
+> - ✅ Dark golden test infrastructure (badge/card/button)
+> - ✅ CHANGELOG consolidated, ROADMAP updated, migration guide created
+> - ✅ All 14 packages pass, 0 lint issues
+>
+> **Canonical source of truth:** [TODO_LIST.md](../../TODO_LIST.md) (52 items, 37 ✅ done, 12 deferred/blocked)
+
+---
+
 # templ-components — Consumer Feedback (DiscordSync)
 
 **Consumer:** [DiscordSync](https://github.com/LarsArtmann/DiscordSync) — Discord backup bot
@@ -93,17 +118,15 @@ DiscordSync's message browser, member list, and voice states all use hand-built 
 - Zebra striping option
 - Empty state integration
 
-### 2. No modal/drawer for detail views
+### 2. No modal/drawer for detail views — **✅ EXISTS since v0.8.0**
 
 Message detail is a full page (`GET /messages/{id}`). A slide-out drawer or modal would be better UX — see the detail without losing the list context.
 
-**Suggestion:** If `display.Modal` or `layout.Drawer` doesn't exist yet, it's the most-requested missing component for data-heavy apps.
+> **✅ RESOLVED:** `display.Modal` and `display.Drawer` both exist with focus trap, aria sync, backdrop, keyboard nav.
 
-### 3. No pagination component that works with cursor-based pagination
+### 3. No pagination component that works with cursor-based pagination — **✅ EXISTS since v0.10.0**
 
-`navigation.Pagination` (if it exists) is page-number-based. DiscordSync uses cursor pagination (`?cursor=...`) with a "Load More" button + HTMX infinite scroll. We build this manually with `display.Button`.
-
-**Suggestion:** Add `navigation.LoadMore` or `navigation.CursorPagination` that handles the HTMX swap pattern. Even just documenting the recommended pattern would help.
+> **✅ RESOLVED:** `navigation.LoadMore` exists with cursor pagination, `hx-get`/`hx-swap`, and optional `InfiniteScroll` (`hx-trigger="revealed"`).
 
 ### 4. The `_templ.go` gitignore problem
 
@@ -137,7 +160,9 @@ Every page has `for _, x := range items { @template(x) }`. A generic list with c
 
 We use `<dl>` manually for attachment metadata (filename, size, content type, dimensions). `display.DefinitionList` + `display.DefinitionItem` exist (we use them) — but they need a `display.DefinitionGrid` wrapper for responsive 2-column layout.
 
-### 3. A copy-to-clipboard button
+### 3. A copy-to-clipboard button — **✅ EXISTS since v0.10.0**
+
+> **✅ RESOLVED:** `display.CopyButton` exists with clipboard write, "Copied!" feedback, `<a>` and `<button>` variants, CSP-safe singleton script.
 
 Message IDs, attachment hashes, and error codes are frequently copied. A `display.CopyButton` with clipboard integration + "Copied!" feedback would be useful.
 

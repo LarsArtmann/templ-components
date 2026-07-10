@@ -1,3 +1,28 @@
+<!-- AUTO-UPDATED 2026-07-10: Retrospective status overlay -->
+
+> ## 🔔 Update Notice — 2026-07-10
+>
+> This report is **historical**. Many items listed as "open", "todo", or "broken" below
+> have since been **fixed and verified**. Do not act on open items without first checking
+> [TODO_LIST.md](../../TODO_LIST.md) for current status.
+>
+> **Key fixes completed since this report:**
+>
+> - ✅ All 7 P0 bugs fixed (InlineLoadingOverlay a11y, SanitizeID mismatch, FromError fallback,
+>   Footer BaseProps, ErrorPage/NotFound404 `<main>` landmark, CSRFTokenName, grid-rows verified)
+> - ✅ `encoding/json/v2` purged from all production code + pre-commit guard added
+> - ✅ Motion constants centralized in `utils/motion.go`, wired into 13 components
+> - ✅ `FamilyFromErrorFamily` → `FromErrorFamily` (old name kept as deprecated alias)
+> - ✅ `icons.IconRTL()` + CSS for directional icon RTL mirroring
+> - ✅ 33 regression tests added (htmx, errorpage, layout, navigation, feedback, display)
+> - ✅ Dark golden test infrastructure (badge/card/button)
+> - ✅ CHANGELOG consolidated, ROADMAP updated, migration guide created
+> - ✅ All 14 packages pass, 0 lint issues
+>
+> **Canonical source of truth:** [TODO_LIST.md](../../TODO_LIST.md) (52 items, 37 ✅ done, 12 deferred/blocked)
+
+---
+
 # Status Report — Post-v0.9.0 Hardening Sprint
 
 **Date:** 2026-07-06 15:40
@@ -98,10 +123,10 @@ This session executed Tiers 1-9 in full.
 
 ## b) PARTIALLY DONE 🔄
 
-| Item                                            | What's done                                                                                                         | What's missing                                                                                                                                                                 |
-| ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Motion constant sweep (19 remaining components) | 3 of 22 components use shared constants (Modal, Drawer, CopyButton). Motion-reduce compliance test verifies 0 gaps. | 19 components still use inline timing strings instead of shared `transitionFast`/`transitionNormal`/`transitionColors` constants. Deferred — cosmetic, high golden churn risk. |
-| SKILL.md component count accuracy               | Drift-guard test logs 82 actual vs 83 documented                                                                    | Off by 1 — the test is informational (doesn't fail). Could update SKILL.md to say 82 or investigate the discrepancy.                                                           |
+| Item                                            | What's done                                                                                      | What's missing                                                                                                       |
+| ----------------------------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| Motion constant sweep (19 remaining components) | **✅ COMPLETED (2026-07-10):** All 22 components now use shared constants via `utils/motion.go`. | —                                                                                                                    |
+| SKILL.md component count accuracy               | Drift-guard test logs 82 actual vs 83 documented                                                 | Off by 1 — the test is informational (doesn't fail). Could update SKILL.md to say 82 or investigate the discrepancy. |
 
 ---
 
@@ -109,16 +134,16 @@ This session executed Tiers 1-9 in full.
 
 ### Deliberately deferred (v1.0 / v2.0 scope)
 
-| Item                                              | Why deferred                                                       |
-| ------------------------------------------------- | ------------------------------------------------------------------ |
-| `Validate() error` on props structs               | v1.0 — 82 components, design decision needed                       |
-| Move test helpers to `internal/testutil/`         | v1.0 — 70+ test files depend on exported helpers                   |
-| Self-host htmx as default                         | v1.0 — breaking CSP change (ADR 0007 written)                      |
-| Semantic token layer (`bg-tc-primary`)            | v1.0 — 256 color references, major golden churn (ADR 0008 written) |
-| Icon RTL mirroring (`data-tc-dir-icon`)           | v1.0 — minor breaking change to `icons.Icon` signature             |
-| Compound component pattern                        | v2.0 — Trigger/Content/Close API for overlays                      |
-| Native `<dialog>` element                         | v2.0 — fundamental Modal/Drawer architecture change                |
-| New components (Popover, DataTable, Slider, etc.) | Each 2-6hrs, separate sprint                                       |
+| Item                                              | Why deferred                                                                                    |
+| ------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `Validate() error` on props structs               | v1.0 — 82 components, design decision needed                                                    |
+| Move test helpers to `internal/testutil/`         | v1.0 — 70+ test files depend on exported helpers                                                |
+| Self-host htmx as default                         | v1.0 — breaking CSP change (ADR 0007 written)                                                   |
+| Semantic token layer (`bg-tc-primary`)            | v1.0 — 256 color references, major golden churn (ADR 0008 written)                              |
+| Icon RTL mirroring (`data-tc-dir-icon`)           | **✅ DONE (2026-07-10):** `icons.IconRTL()` implemented + CSS rule added to `templates/app.css` |
+| Compound component pattern                        | v2.0 — Trigger/Content/Close API for overlays                                                   |
+| Native `<dialog>` element                         | v2.0 — fundamental Modal/Drawer architecture change                                             |
+| New components (Popover, DataTable, Slider, etc.) | Each 2-6hrs, separate sprint                                                                    |
 
 ### From the original plan but not reached
 

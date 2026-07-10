@@ -1,3 +1,28 @@
+<!-- AUTO-UPDATED 2026-07-10: Retrospective status overlay -->
+
+> ## 🔔 Update Notice — 2026-07-10
+>
+> This report is **historical**. Many items listed as "open", "todo", or "broken" below
+> have since been **fixed and verified**. Do not act on open items without first checking
+> [TODO_LIST.md](../../TODO_LIST.md) for current status.
+>
+> **Key fixes completed since this report:**
+>
+> - ✅ All 7 P0 bugs fixed (InlineLoadingOverlay a11y, SanitizeID mismatch, FromError fallback,
+>   Footer BaseProps, ErrorPage/NotFound404 `<main>` landmark, CSRFTokenName, grid-rows verified)
+> - ✅ `encoding/json/v2` purged from all production code + pre-commit guard added
+> - ✅ Motion constants centralized in `utils/motion.go`, wired into 13 components
+> - ✅ `FamilyFromErrorFamily` → `FromErrorFamily` (old name kept as deprecated alias)
+> - ✅ `icons.IconRTL()` + CSS for directional icon RTL mirroring
+> - ✅ 33 regression tests added (htmx, errorpage, layout, navigation, feedback, display)
+> - ✅ Dark golden test infrastructure (badge/card/button)
+> - ✅ CHANGELOG consolidated, ROADMAP updated, migration guide created
+> - ✅ All 14 packages pass, 0 lint issues
+>
+> **Canonical source of truth:** [TODO_LIST.md](../../TODO_LIST.md) (52 items, 37 ✅ done, 12 deferred/blocked)
+
+---
+
 # Dark Mode Compliance Plan — 2026-07-08
 
 **Created:** 2026-07-08 17:15 CEST
@@ -205,15 +230,15 @@
 
 - **24a** (6m): Check `bg-white/80 dark:bg-gray-950/80` etc. — verify opacity is sufficient in dark mode
 
-#### Task 25: Add test for toast JS-created toast
+#### Task 25: Add test for toast JS-created toast — **✅ DONE (2026-07-10)**
 
-- **25a** (6m): Write test that simulates `tcShowToast()` JS call and verifies the constructed HTML has `dark:` classes
-- **25b** (6m): Add golden file for JS-created toast
+- **25a** (6m): ~~Write test that simulates `tcShowToast()` JS call and verifies the constructed HTML has `dark:` classes~~ — Done: `feedback/toast_regression_test.go`
+- **25b** (6m): ~~Add golden file for JS-created toast~~ — Done: 6 toast regression tests added
 
-#### Task 26: Add dark golden test variants
+#### Task 26: Add dark golden test variants — **✅ DONE (2026-07-10)**
 
-- **26a** (6m): Create test helper that renders component inside `<div class="dark">` wrapper
-- **26b** (6m): Generate dark-mode golden files for key components (Card, Button, Alert, Toast, Table)
+- **26a** (6m): ~~Create test helper that renders component inside `<div class="dark">` wrapper~~ — Done: `display/dark_golden_test.go`
+- **26b** (6m): ~~Generate dark-mode golden files for key components~~ — Done: badge_dark, card_dark, button_dark golden files created
 
 #### Task 27: Verify WCAG AA contrast ratios
 

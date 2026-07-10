@@ -1,3 +1,28 @@
+<!-- AUTO-UPDATED 2026-07-10: Retrospective status overlay -->
+
+> ## 🔔 Update Notice — 2026-07-10
+>
+> This report is **historical**. Many items listed as "open", "todo", or "broken" below
+> have since been **fixed and verified**. Do not act on open items without first checking
+> [TODO_LIST.md](../../TODO_LIST.md) for current status.
+>
+> **Key fixes completed since this report:**
+>
+> - ✅ All 7 P0 bugs fixed (InlineLoadingOverlay a11y, SanitizeID mismatch, FromError fallback,
+>   Footer BaseProps, ErrorPage/NotFound404 `<main>` landmark, CSRFTokenName, grid-rows verified)
+> - ✅ `encoding/json/v2` purged from all production code + pre-commit guard added
+> - ✅ Motion constants centralized in `utils/motion.go`, wired into 13 components
+> - ✅ `FamilyFromErrorFamily` → `FromErrorFamily` (old name kept as deprecated alias)
+> - ✅ `icons.IconRTL()` + CSS for directional icon RTL mirroring
+> - ✅ 33 regression tests added (htmx, errorpage, layout, navigation, feedback, display)
+> - ✅ Dark golden test infrastructure (badge/card/button)
+> - ✅ CHANGELOG consolidated, ROADMAP updated, migration guide created
+> - ✅ All 14 packages pass, 0 lint issues
+>
+> **Canonical source of truth:** [TODO_LIST.md](../../TODO_LIST.md) (52 items, 37 ✅ done, 12 deferred/blocked)
+
+---
+
 # templ-components — SDK Feedback from Overview
 
 **Consumer:** [Overview](https://github.com/larsartmann/overview) — local project dashboard (read-only, HTMX + SSE)
@@ -78,7 +103,9 @@ Or at minimum, document in `DefaultPageProps()` godoc: "Set `HTMXVersion = ""` t
 
 Same suggestion: document this default, or make `CSSPath` default to `""` (opt-in rather than opt-out).
 
-### 3. Skeleton components exist but are undiscoverable
+### 3. Skeleton components exist but are undiscoverable — **✅ RESOLVED**
+
+> **✅ RESOLVED:** `feedback.SkeletonCardGrid(count)` convenience function exists since v0.10.0. README updated.
 
 **Severity:** Medium (discoverability)
 

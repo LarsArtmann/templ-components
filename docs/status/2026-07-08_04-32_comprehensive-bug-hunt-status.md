@@ -1,3 +1,28 @@
+<!-- AUTO-UPDATED 2026-07-10: Retrospective status overlay -->
+
+> ## 🔔 Update Notice — 2026-07-10
+>
+> This report is **historical**. Many items listed as "open", "todo", or "broken" below
+> have since been **fixed and verified**. Do not act on open items without first checking
+> [TODO_LIST.md](../../TODO_LIST.md) for current status.
+>
+> **Key fixes completed since this report:**
+>
+> - ✅ All 7 P0 bugs fixed (InlineLoadingOverlay a11y, SanitizeID mismatch, FromError fallback,
+>   Footer BaseProps, ErrorPage/NotFound404 `<main>` landmark, CSRFTokenName, grid-rows verified)
+> - ✅ `encoding/json/v2` purged from all production code + pre-commit guard added
+> - ✅ Motion constants centralized in `utils/motion.go`, wired into 13 components
+> - ✅ `FamilyFromErrorFamily` → `FromErrorFamily` (old name kept as deprecated alias)
+> - ✅ `icons.IconRTL()` + CSS for directional icon RTL mirroring
+> - ✅ 33 regression tests added (htmx, errorpage, layout, navigation, feedback, display)
+> - ✅ Dark golden test infrastructure (badge/card/button)
+> - ✅ CHANGELOG consolidated, ROADMAP updated, migration guide created
+> - ✅ All 14 packages pass, 0 lint issues
+>
+> **Canonical source of truth:** [TODO_LIST.md](../../TODO_LIST.md) (52 items, 37 ✅ done, 12 deferred/blocked)
+
+---
+
 # Status Report — 2026-07-08 04:32
 
 ## Comprehensive Bug Hunt Audit & Fix Sprint
@@ -89,9 +114,9 @@
 
 ## B) PARTIALLY DONE
 
-### Regression test coverage for Round 2 fixes — ~20% coverage
+### Regression test coverage for Round 2 fixes — ✅ COMPLETED (2026-07-10)
 
-Fixed 30 bugs in Round 2. Added regression tests for only 6. **The following fixes have NO regression tests:**
+33 regression tests added across htmx, errorpage, layout, navigation, feedback, display. **Previously untested fixes now have coverage:**
 
 - htmx.LoadingButton `[.htmx-request_&]:hidden` class presence
 - htmx.InlineLoadingOverlay role="status" assertion
@@ -112,9 +137,9 @@ Fixed 30 bugs in Round 2. Added regression tests for only 6. **The following fix
 - navigation breadcrumb URL protocol-relative handling
 - navigation.SidebarNav aria-label
 
-### CHANGELOG structure — messy
+### CHANGELOG structure — ✅ FIXED (2026-07-10)
 
-The `[Unreleased]` section has `### Fixed — Round 1` and `### Fixed — Round 2` as separate headings. A real changelog should have a single `### Fixed` section. These need to be consolidated before the next release.
+The `### Fixed — Round 1` and `### Fixed — Round 2` headings have been consolidated into single `### Fixed` sections.
 
 ---
 
@@ -124,15 +149,15 @@ The `[Unreleased]` section has `### Fixed — Round 1` and `### Fixed — Round 
 
 These were identified by the audit agents but I chose to skip them — some are feature requests, some are low-priority, some need design decisions:
 
-1. **errorpage `FromError` returns 503 for unknown errors** — `familyFromError()` returns `FamilyInfrastructure` (→503) for any error without a family interface. A generic `errors.New("nil pointer")` returns 503 (implies temporary outage) instead of 500 (permanent bug). Should be `FamilyCorruption` (→500).
-2. **forms.Form CSRF token name hardcoded** — `name="csrf_token"` is hardcoded. Frameworks use different names (Django: `csrfmiddlewaretoken`, Rails: `authenticity_token`, Spring: `_csrf`). Needs `CSRFTokenName` field.
-3. **forms.ValidationSummary SanitizeID mismatch** — Error links use `SanitizeID(err.Field)` but field IDs are whatever the consumer set. `SanitizeID` transforms `"user_email"` → `"user-email"` — link won't match. Needs convention documentation or removal of SanitizeID.
+1. ~~**errorpage `FromError` returns 503 for unknown errors**~~ — **✅ FIXED (2026-07-10):** Now returns `FamilyCorruption` (→500). Tests updated.
+2. ~~**forms.Form CSRF token name hardcoded**~~ — **✅ FIXED (2026-07-10):** Added `CSRFTokenName` field (defaults to `"csrf_token"`).
+3. ~~**forms.ValidationSummary SanitizeID mismatch**~~ — **✅ FIXED (2026-07-10):** Links now use raw `err.Field` instead of `SanitizeID()`.
 4. **navigation mobile menu double-prefix** — `EnsureID("mobile-menu", props.ID)` returns `"tc-mobile-menu-<hex>"`, then template prepends `"tc-mobile-menu-"` again → `"tc-mobile-menu-tc-mobile-menu-<hex>"`. Functionally consistent (ID matches aria-controls) but cosmetically wrong.
 5. **navigation mobile menu script duplicated per Nav instance** — Each Nav renders a full `<script>` block. The singleton guard prevents double-binding, but the markup is emitted N times.
 6. **navigation breadcrumbs no CurrentPath auto-detection** — Unlike NavLink/SidebarNav, Breadcrumbs requires manual `Active: true` flag. API inconsistency.
 7. **layout stale aria-checked after htmx swap** — ThemeToggle singleton guard prevents re-init after htmx swap. Newly swapped buttons get hardcoded `aria-checked="false"`.
 8. **htmx retry `.click()` may not replay non-click triggers** — If the original request used `hx-trigger="change"`, `.click()` won't replay it. Should use `htmx.trigger()`.
-9. **errorpage no `<main>` landmark in standalone pages** — ErrorPage and NotFound404 render only `<div>` elements. WCAG 2.4.1 (Bypass Blocks) requires landmarks.
+9. ~~**errorpage no `<main>` landmark in standalone pages**~~ — **✅ FIXED (2026-07-10):** Both ErrorPage and NotFound404 now use `<main>` instead of `<div role="region">`.
 10. **forms.RadioGroup error ARIA not on individual inputs** — `aria-invalid`/`aria-describedby` only on `<fieldset>`, not on individual radio `<input>` elements. Screen readers don't announce invalid state when tabbing through radios.
 
 ### From the 89-task plan (Tier 3-9, never started)
@@ -140,8 +165,8 @@ These were identified by the audit agents but I chose to skip them — some are 
 - CI check for dynamic Tailwind class concatenation (grep-based preventive test)
 - Release v0.10.0
 - Browser testing of visual fixes
-- `htmx.InlineLoadingOverlay` still missing sr-only loading text (LoadingIndicator got it, InlineLoadingOverlay did not)
-- Footer component doesn't accept BaseProps (only `Footer(brandText string)`)
+- ~~`htmx.InlineLoadingOverlay` still missing sr-only loading text~~ — **✅ FIXED (2026-07-10)**
+- ~~Footer component doesn't accept BaseProps~~ — **✅ FIXED (2026-07-10):** Now takes `FooterProps` with `BaseProps`
 - Combobox SanitizeID collision risk (two values sanitizing to same suffix)
 
 ---
@@ -152,13 +177,13 @@ Nothing is irrevocably broken. But here's what I did poorly:
 
 1. **CopyButton preventDefault — unresolved behavior change.** I added `e.preventDefault()` to the CopyButton click handler so `<a>` variants copy-only and never navigate. The previous session flagged this as needing consumer intent review. **I never resolved it.** If consumers expect copy+navigate behavior, this is a regression. The question is still open: should a CopyButton link `<a href="...">` navigate after copying, or copy-only?
 
-2. **grid-rows-[0fr] CSS never verified.** The plan explicitly said "Verify grid-rows-[0fr] produces correct CSS in Tailwind v4." I never checked the compiled CSS output. The Tailwind v4 arbitrary value syntax `grid-rows-[0fr]` should produce `grid-template-rows: 0fr`, but I didn't confirm this. If it doesn't work, accordion collapse is broken in production.
+2. ~~**grid-rows-[0fr] CSS never verified.**~~ **✅ VERIFIED (2026-07-10):** Tailwind v4.3.1 confirmed to generate `grid-template-rows: 0fr` / `1fr` correctly.
 
 3. **No browser testing at all.** 47 bug fixes, many involving JavaScript behavior (overlay aria sync, dropdown RTL, theme toggle multi-instance, accordion animation, copy button, tooltip). Zero browser verification. All fixes are "should work" based on code reading, not "confirmed working."
 
 4. **Golden files blindly updated.** When golden tests failed after my changes (role="region" addition, sidebar aria-label), I ran `-update` without carefully reviewing whether the new output was actually correct. The golden files now encode my changes as the source of truth — if my changes were wrong, the golden files lock in the error.
 
-5. **CHANGELOG "Round 1" / "Round 2" headings.** This is embarrassing for a library changelog. Consumers don't care about our internal audit rounds. These need to be merged into a single `### Fixed` section before any release.
+5. ~~**CHANGELOG "Round 1" / "Round 2" headings.**~~ **✅ FIXED (2026-07-10):** Consolidated into clean sections.
 
 ---
 

@@ -1,3 +1,28 @@
+<!-- AUTO-UPDATED 2026-07-10: Retrospective status overlay -->
+
+> ## 🔔 Update Notice — 2026-07-10
+>
+> This report is **historical**. Many items listed as "open", "todo", or "broken" below
+> have since been **fixed and verified**. Do not act on open items without first checking
+> [TODO_LIST.md](../../TODO_LIST.md) for current status.
+>
+> **Key fixes completed since this report:**
+>
+> - ✅ All 7 P0 bugs fixed (InlineLoadingOverlay a11y, SanitizeID mismatch, FromError fallback,
+>   Footer BaseProps, ErrorPage/NotFound404 `<main>` landmark, CSRFTokenName, grid-rows verified)
+> - ✅ `encoding/json/v2` purged from all production code + pre-commit guard added
+> - ✅ Motion constants centralized in `utils/motion.go`, wired into 13 components
+> - ✅ `FamilyFromErrorFamily` → `FromErrorFamily` (old name kept as deprecated alias)
+> - ✅ `icons.IconRTL()` + CSS for directional icon RTL mirroring
+> - ✅ 33 regression tests added (htmx, errorpage, layout, navigation, feedback, display)
+> - ✅ Dark golden test infrastructure (badge/card/button)
+> - ✅ CHANGELOG consolidated, ROADMAP updated, migration guide created
+> - ✅ All 14 packages pass, 0 lint issues
+>
+> **Canonical source of truth:** [TODO_LIST.md](../../TODO_LIST.md) (52 items, 37 ✅ done, 12 deferred/blocked)
+
+---
+
 # Status Report: CSS Integration Automation — Cleanup & Completion
 
 **Date:** 2026-07-09 09:07 (updated 09:25)
@@ -71,15 +96,15 @@ All 3 repos are committed and pushed. Builds pass. Tests pass.
 
 ## e) WHAT WE SHOULD IMPROVE
 
-| #   | Area                                 | Current State                                                                      | Improvement                                                                      |
-| --- | ------------------------------------ | ---------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
-| 1   | **Pre-commit build check**           | Hook runs templ generate + lint on specific dirs, but NOT `go build ./...`         | Add `go build ./...` to catch import errors before push                          |
-| 2   | **`encoding/json/v2` safety**        | Auto-formatters can rewrite imports when running under the flag                    | Add grep guard: `! grep -rn "encoding/json/v2" --include="*.go" .` in pre-commit |
-| 3   | **Pre-commit lint coverage**         | `scripts/pre-commit.sh` lists specific package dirs, omits `cmd/`                  | Use `golangci-lint run ./...` instead of hardcoded list                          |
-| 4   | **E2E testing before commit**        | `tc-css` was committed without testing against a real project                      | Always E2E test new tools before pushing                                         |
-| 5   | **YAGNI enforcement**                | Built `tc-css` when `templates/app.css` + one `tailwindcss` command does the job   | Question every new tool: does this earn its complexity?                          |
-| 6   | **BuildFlow working tree hygiene**   | 12+ uncommitted files from another session block `nix develop` and `go test ./...` | Commit or stash other sessions' work before starting                             |
-| 7   | **Status reports should be current** | Previous session's report claimed "nothing committed" but everything was committed | Always `git status` + `git log` before writing status reports                    |
+| #   | Area                                 | Current State                                                                                      | Improvement                                                   |
+| --- | ------------------------------------ | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| 1   | **Pre-commit build check**           | **✅ DONE (2026-07-10):** Pre-commit now runs `go build ./...` + `go test ./...`                   |
+| 2   | **`encoding/json/v2` safety**        | **✅ DONE (2026-07-10):** Grep guard added to pre-commit + json/v2 purged from all production code |
+| 3   | **Pre-commit lint coverage**         | **✅ DONE (2026-07-10):** Uses `golangci-lint run ./...` + examples excluded via .golangci.yml     |
+| 4   | **E2E testing before commit**        | `tc-css` was committed without testing against a real project                                      | Always E2E test new tools before pushing                      |
+| 5   | **YAGNI enforcement**                | Built `tc-css` when `templates/app.css` + one `tailwindcss` command does the job                   | Question every new tool: does this earn its complexity?       |
+| 6   | **BuildFlow working tree hygiene**   | 12+ uncommitted files from another session block `nix develop` and `go test ./...`                 | Commit or stash other sessions' work before starting          |
+| 7   | **Status reports should be current** | Previous session's report claimed "nothing committed" but everything was committed                 | Always `git status` + `git log` before writing status reports |
 
 ---
 
@@ -87,21 +112,21 @@ All 3 repos are committed and pushed. Builds pass. Tests pass.
 
 ### Critical (P0)
 
-| #   | Task                                                                           | Impact                              | Effort |
-| --- | ------------------------------------------------------------------------------ | ----------------------------------- | ------ |
-| 1   | Add `go build ./...` to pre-commit hook                                        | Prevent build-breaking commits      | 10m    |
-| 2   | Add `encoding/json/v2` grep guard to pre-commit                                | Prevent the exact bug that happened | 5m     |
-| 3   | Cut v0.11.0 release (tc-css deleted, json/v2 fix, app.css, BuildFlow provider) | Gets clean code to consumers        | 30m    |
+| #   | Task                                                                         | Impact                              | Effort  |
+| --- | ---------------------------------------------------------------------------- | ----------------------------------- | ------- |
+| 1   | ~~Add `go build ./...` to pre-commit hook~~ **✅ DONE (2026-07-10)**         | Prevent build-breaking commits      | ~~10m~~ |
+| 2   | ~~Add `encoding/json/v2` grep guard to pre-commit~~ **✅ DONE (2026-07-10)** | Prevent the exact bug that happened | ~~5m~~  |
+| 3   | ~~Cut v0.11.0 release~~ **✅ DONE (v0.11.0 shipped)**                        | Gets clean code to consumers        | ~~30m~~ |
 
 ### High Priority (P1)
 
-| #   | Task                                                                     | Impact                                    | Effort |
-| --- | ------------------------------------------------------------------------ | ----------------------------------------- | ------ |
-| 4   | Update pre-commit lint to `golangci-lint run ./...` (not hardcoded dirs) | Lint gaps cause CI failures               | 10m    |
-| 5   | Commit or stash BuildFlow's 12+ uncommitted files from other session     | Unblock `nix develop` and `go test ./...` | 15m    |
-| 6   | Document `encoding/json/v2` prohibition in AGENTS.md                     | Knowledge preservation                    | 10m    |
-| 7   | Update FEATURES.md with app.css + BuildFlow tailwind-build provider      | Feature inventory                         | 15m    |
-| 8   | Document the `encoding/json/v2` auto-formatter gotcha as an ADR          | Prevent recurrence                        | 15m    |
+| #   | Task                                                                                           | Impact                                        | Effort  |
+| --- | ---------------------------------------------------------------------------------------------- | --------------------------------------------- | ------- |
+| 4   | ~~Update pre-commit lint to `golangci-lint run ./...`~~ **✅ DONE (2026-07-10)**               | ~~Lint gaps cause CI failures~~               | ~~10m~~ |
+| 5   | ~~Commit or stash BuildFlow's 12+ uncommitted files from other session~~ **✅ DONE (v0.11.0)** | ~~Unblock `nix develop` and `go test ./...`~~ | ~~15m~~ |
+| 6   | ~~Document `encoding/json/v2` prohibition in AGENTS.md~~ **✅ DONE (2026-07-10)**              | ~~Knowledge preservation~~                    | ~~10m~~ |
+| 7   | Update FEATURES.md with app.css + BuildFlow tailwind-build provider                            | Feature inventory                             | 15m     |
+| 8   | Document the `encoding/json/v2` auto-formatter gotcha as an ADR                                | Prevent recurrence                            | 15m     |
 
 ### Medium Priority (P2)
 

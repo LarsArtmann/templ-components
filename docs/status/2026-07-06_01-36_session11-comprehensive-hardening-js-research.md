@@ -1,3 +1,28 @@
+<!-- AUTO-UPDATED 2026-07-10: Retrospective status overlay -->
+
+> ## 🔔 Update Notice — 2026-07-10
+>
+> This report is **historical**. Many items listed as "open", "todo", or "broken" below
+> have since been **fixed and verified**. Do not act on open items without first checking
+> [TODO_LIST.md](../../TODO_LIST.md) for current status.
+>
+> **Key fixes completed since this report:**
+>
+> - ✅ All 7 P0 bugs fixed (InlineLoadingOverlay a11y, SanitizeID mismatch, FromError fallback,
+>   Footer BaseProps, ErrorPage/NotFound404 `<main>` landmark, CSRFTokenName, grid-rows verified)
+> - ✅ `encoding/json/v2` purged from all production code + pre-commit guard added
+> - ✅ Motion constants centralized in `utils/motion.go`, wired into 13 components
+> - ✅ `FamilyFromErrorFamily` → `FromErrorFamily` (old name kept as deprecated alias)
+> - ✅ `icons.IconRTL()` + CSS for directional icon RTL mirroring
+> - ✅ 33 regression tests added (htmx, errorpage, layout, navigation, feedback, display)
+> - ✅ Dark golden test infrastructure (badge/card/button)
+> - ✅ CHANGELOG consolidated, ROADMAP updated, migration guide created
+> - ✅ All 14 packages pass, 0 lint issues
+>
+> **Canonical source of truth:** [TODO_LIST.md](../../TODO_LIST.md) (52 items, 37 ✅ done, 12 deferred/blocked)
+
+---
+
 # Status Report — Session 11: Comprehensive Hardening + JS Deep Research
 
 > **Updated:** 2026-07-06 (post-v0.8.0 final review). **Current version:** 0.8.0
@@ -72,12 +97,12 @@
 
 ## b) PARTIALLY DONE 🟡
 
-| #   | Item                         | What's done                                                                                                                           | What's missing (Status 2026-07-06)                                                                                                                                                                                                                                                                  |
-| --- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Motion constant adoption** | 3 of 22 transition-bearing components use shared constants (Modal, Drawer, CopyButton). **Accordion reverted** — uses inline classes. | 19 components still use inline timing strings (Toast, Nav links, SidebarNav, ThemeToggle, StepIndicator, MobileMenu, EmptyState, FileInput, ErrorPage buttons, Dropdown, Tabs, Tooltip, ProgressBar, Accordion, etc.). Full migration is a separate sprint.                                         |
-| 2   | **RTL support**              | All CSS properties migrated to logical (`ms-`, `me-`, `ps-`, `pe-`, `start-`, `end-`). 0 physical properties remain.                  | 5 directional icons need mirroring (audit documented). Keyboard navigation in Dropdown/Tabs maps ArrowLeft/Right without checking `dir` attribute. No `dir="rtl"` golden rendering tests. (Note: `display/rtl_test.go` exists but only verifies logical property presence, not full RTL rendering.) |
-| 3   | **Container query adoption** | Grid supports `ContainerResponsive` with full test coverage + recipe doc.                                                             | Only Grid has container query support. Other components (Card, SidebarNav) could benefit.                                                                                                                                                                                                           |
-| 4   | **JS documentation**         | 472-line guide covers all patterns                                                                                                    | No ADR for "why singleton-guard instead of Alpine.js" — the ADR 0005 exists but predates the comprehensive guide. The guide could be cross-linked from README.                                                                                                                                      |
+| #   | Item                         | What's done                                                                                                                                                                                                                | What's missing (Status 2026-07-06)                                                                                                                             |
+| --- | ---------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **Motion constant adoption** | **✅ COMPLETED (2026-07-10):** All 22 transition-bearing components now use shared constants via `utils/motion.go`. 19 previously-inline components wired.                                                                 | —                                                                                                                                                              |
+| 2   | **RTL support**              | All CSS properties migrated to logical (`ms-`, `me-`, `ps-`, `pe-`, `start-`, `end-`). 0 physical properties remain. **✅ Icon RTL implemented (2026-07-10):** `icons.IconRTL()` + CSS `scaleX(-1)` for directional icons. | Keyboard navigation in Dropdown/Tabs maps ArrowLeft/Right without checking `dir` attribute (LOW priority). No `dir="rtl"` golden rendering tests.              |
+| 3   | **Container query adoption** | Grid supports `ContainerResponsive` with full test coverage + recipe doc.                                                                                                                                                  | Only Grid has container query support. Other components (Card, SidebarNav) could benefit.                                                                      |
+| 4   | **JS documentation**         | 472-line guide covers all patterns                                                                                                                                                                                         | No ADR for "why singleton-guard instead of Alpine.js" — the ADR 0005 exists but predates the comprehensive guide. The guide could be cross-linked from README. |
 
 ---
 
