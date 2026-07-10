@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.12.1] — 2026-07-10
+
+### Fixed
+
+- `feedback/Toast` + `feedback/Alert` + `errorpage/ErrorAlert` — `tcToastColors`, `tcToastIcons`, and `DismissScript` were JSON-marshaled by templ's `ScriptContentOutsideStringLiteral` instead of emitted as raw JS. The `var` declarations became discarded string literals, so the variables were never declared. Fix: render entire `<script>` tags via `templ.Raw()` component, bypassing the JSON marshaling path entirely.
+
 ## [0.12.0] — 2026-07-09
 
 ### Fixed
