@@ -292,6 +292,23 @@ templ demoContent() {
 			Striped: true,
 			Hover:   true,
 		})
+		@demoSection("Table in Card (Flush + Compact)", "table-in-card")
+		@display.Card(display.CardProps{
+			Title:   "Recent Users",
+			Padding: display.CardPaddingNone,
+		}) {
+			@display.Table(display.TableProps{
+				Headers: []string{"Name", "Email", "Status"},
+				Rows: []display.TableRow{
+					display.SimpleTableRow("Alice Smith", "alice@example.com", "Active"),
+					display.SimpleTableRow("Bob Jones", "bob@example.com", "Invited"),
+					display.SimpleTableRow("Carol Wu", "carol@example.com", "Active"),
+				},
+				Flush:       true,
+				Hover:       true,
+				CellPadding: display.TableCellPaddingCompact,
+			})
+		}
 		@demoSection("Inline Form (Filter Bar)", "inline-form")
 		@forms.Form(forms.FormProps{Action: "/filter", Method: forms.FormGet, Inline: true}) {
 			@forms.Select(forms.SelectProps{
