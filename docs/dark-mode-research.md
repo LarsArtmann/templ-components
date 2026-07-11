@@ -396,18 +396,17 @@ an indirection that most don't need.
 
 ---
 
-## Action items
+## Action items (all completed)
 
-1. **Split `templ-components-theme.css`** — separate the `@custom-variant dark`
-   opt-in from the `@theme` color overrides, so importing color overrides doesn't
-   silently change the dark mode strategy
-2. **Fix `color-scheme: light` → `color-scheme: light dark`** on `:root`
-3. **Rewrite the adoption guide's dark mode section** — present the three consumer
-   paths as equal first-class options, with OS-following as the zero-config default
-4. **Add the `@theme` palette override pattern** to the adoption guide as a
-   top-level "Theming" section (currently buried in the migration section)
-5. **Add a note to `ThemeScript`/`ThemeToggle` godoc** clarifying they're only
-   needed for the toggle strategy, not for OS-following
+1. ~~**Split `templ-components-theme.css`**~~ — Done. `@custom-variant dark` is
+   now in a clearly commented opt-in section with three options documented inline.
+2. ~~**Fix `color-scheme: light` → `color-scheme: light dark`**~~ — Done.
+3. ~~**Rewrite the adoption guide's dark mode section**~~ — Done. Three first-class
+   consumer paths with code examples and comparison table.
+4. ~~**Add the `@theme` palette override pattern**~~ — Done. Top-level "Theming"
+   section with CSS-variable design system mapping example.
+5. ~~**Add a note to `ThemeScript`/`ThemeToggle` godoc**~~ — Done. Both now clarify
+   they are only needed for the toggle strategy.
 
 ---
 

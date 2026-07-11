@@ -219,6 +219,9 @@ For semantic aliases (`bg-tc-primary`, `text-tc-danger`), use the included
 @import "./templ-components-theme.css";
 ```
 
+For a step-by-step recipe on mapping custom semantic palettes to library tokens,
+see [Theme Bridge Recipe](recipes/theme-bridge.md).
+
 All templ-components emit standard Tailwind classes (`bg-blue-600`, `text-gray-900`).
 Override colors globally via `@theme`:
 
