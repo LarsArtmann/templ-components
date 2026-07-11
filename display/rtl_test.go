@@ -36,4 +36,15 @@ func TestRTLRendering(t *testing.T) {
 		utils.AssertContains(t, output, "ms-2")
 		utils.AssertNotContains(t, output, "ml-2")
 	})
+
+	t.Run("table uses logical text alignment, not physical", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers:     []string{"Name"},
+			Rows:        []TableRow{SimpleTableRow("Alice")},
+			CellPadding: TableCellPaddingCompact,
+		}))
+		utils.AssertContains(t, output, "text-start")
+		utils.AssertNotContains(t, output, "text-left")
+	})
 }
