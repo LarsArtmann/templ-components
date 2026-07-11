@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.15.0] — 2026-07-11
+
+GridColsAutoFit + MinColWidth for container-responsive dashboard grids. Card.Header slot for custom card headers. CardPaddingNone fix for table-in-card. Dark mode packaging fixes: color-scheme: light dark, split @custom-variant into opt-in. Adoption guide rewrite with three dark mode paths, @theme palette override pattern, BaseProps.Class gotcha docs. Adopted encoding/json/v2 — consumers need GOEXPERIMENT=jsonv2. Also includes prior session features: TrendWarn, TableRow.Href, Select optgroups, EndOfList, theme-bridge recipe.
+
 ### Added
 
 - `display.GridColsAutoFit` + `GridProps.MinColWidth` — CSS `auto-fit`/`minmax()` grid template for container-width-responsive layouts. Common dashboard pattern that previously required the `Class` escape hatch. Takes precedence over `ContainerResponsive` when both are set (auto-fit already responds to container width via CSS).
