@@ -32,6 +32,9 @@ NEW_VERSION="$1"
 RELEASE_SUMMARY="$2"
 TODAY="$(date -u +%Y-%m-%d)"
 
+export GOWORK=off
+export GOEXPERIMENT=jsonv2
+
 cd "$(dirname "$0")/.."
 
 # 1. Working tree must be clean.
