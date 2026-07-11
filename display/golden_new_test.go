@@ -96,6 +96,27 @@ func TestGoldenCardBodySlot(t *testing.T) {
 	golden.Assert(t, "card_body_slot", output)
 }
 
+func TestGoldenCardHeaderSlot(t *testing.T) {
+	t.Parallel()
+	customHeader := `<div class="flex items-center gap-2">` +
+		`<h2 class="text-lg font-bold">Custom Header</h2>` +
+		`<span class="badge">New</span></div>`
+	output := utils.Render(t, Card(CardProps{
+		Header: templ.Raw(customHeader),
+		Body:   templ.Raw("<p>Card body content</p>"),
+	}))
+	golden.Assert(t, "card_header_slot", output)
+}
+
+func TestGoldenGridAutoFit(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Grid(GridProps{
+		Cols:        GridColsAutoFit,
+		MinColWidth: "200px",
+	}))
+	golden.Assert(t, "grid_autofit", output)
+}
+
 func TestGoldenTableSortableHeaders(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Table(TableProps{
