@@ -727,6 +727,34 @@ func TestTableCaption(t *testing.T) {
 	utils.AssertContains(t, output, "User list")
 }
 
+func TestTableWrapperClassCoverage(t *testing.T) {
+	t.Parallel()
+	flush := tableWrapperClass(true)
+	utils.AssertContains(t, flush, "overflow-x-auto")
+	utils.AssertNotContains(t, flush, "border")
+	utils.AssertNotContains(t, flush, "rounded-lg")
+
+	normal := tableWrapperClass(false)
+	utils.AssertContains(t, normal, "overflow-x-auto")
+	utils.AssertContains(t, normal, "rounded-lg")
+	utils.AssertContains(t, normal, "border border-gray-200 dark:border-gray-700")
+}
+
+func TestTableCellPaddingClassCoverage(t *testing.T) {
+	t.Parallel()
+	comfortable := tableCellPaddingClass(TableCellPaddingComfortable)
+	utils.AssertEqual(t, "comfortable", comfortable, "px-4 py-3")
+
+	compact := tableCellPaddingClass(TableCellPaddingCompact)
+	utils.AssertEqual(t, "compact", compact, "px-4 py-2")
+
+	empty := tableCellPaddingClass("")
+	utils.AssertEqual(t, "empty default", empty, "px-4 py-3")
+
+	invalid := tableCellPaddingClass(TableCellPadding("bogus"))
+	utils.AssertEqual(t, "invalid fallback", invalid, "px-4 py-3")
+}
+
 // --- Drawer ---
 
 func TestDrawerRender(t *testing.T) {
