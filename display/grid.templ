@@ -117,7 +117,9 @@ type GridProps struct {
 	// when Cols is GridColsAutoFit. Generates a CSS auto-fit/minmax template
 	// that responds to container width. Example: "190px" produces
 	// grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)).
-	// Ignored for fixed column counts.
+	// Ignored for fixed column counts. When Cols is GridColsAutoFit,
+	// ContainerResponsive is ignored (auto-fit already responds to container
+	// width via CSS minmax).
 	MinColWidth string
 }
 
@@ -153,8 +155,7 @@ templ Grid(props GridProps) {
 		baseGrid := gridClass(cols)
 		if cols == GridColsAutoFit {
 			baseGrid = gridAutoFitClass(props.MinColWidth)
-		}
-		if props.ContainerResponsive {
+		} else if props.ContainerResponsive {
 			baseGrid = gridContainerClass(cols)
 		}
 		gridClasses := utils.Class(baseGrid, gap, props.Class)

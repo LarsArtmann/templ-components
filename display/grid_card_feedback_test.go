@@ -49,6 +49,18 @@ func TestGridColsAutoFitIsValid(t *testing.T) {
 	utils.AssertEqual(t, "GridColsAutoFit valid", GridColsIsValid(GridColsAutoFit), true)
 }
 
+func TestGridAutoFitTakesPrecedenceOverContainerResponsive(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Grid(GridProps{
+		Cols:                GridColsAutoFit,
+		MinColWidth:         "190px",
+		ContainerResponsive: true,
+	}))
+	utils.AssertContainsAll(t, output, "auto-fit", "minmax(190px,1fr)")
+	utils.AssertNotContains(t, output, "@sm:grid-cols")
+	utils.AssertNotContains(t, output, "@lg:grid-cols")
+}
+
 func TestCardHeaderSlotReplacesDefaultHeader(t *testing.T) {
 	t.Parallel()
 	customHeader := templ.Raw("<div data-test='custom-header'><h2>My Header</h2></div>")
