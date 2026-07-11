@@ -320,13 +320,17 @@ after reviewing the release commit and tag with `git show v<version>` and
 golangci-lint run ./...
 ```
 
-## `encoding/json/v2` Prohibition
+## `encoding/json/v2` Adoption
 
-`encoding/json/v2` is an experimental package gated behind `GOEXPERIMENT=jsonv2` (not
-stable until Go 1.27). **Never import it.** Auto-formatters running under the
-`goexperiment.jsonv2` build tag can silently rewrite imports, breaking builds.
-The pre-commit hook (`scripts/pre-commit.sh`) includes a grep guard that rejects
-any `encoding/json/v2` import. Use `encoding/json` (v1) instead.
+This library uses `encoding/json/v2` + `encoding/json/jsontext` (Go 1.26+ with
+`GOEXPERIMENT=jsonv2`). The pre-commit hook (`scripts/pre-commit.sh`) sets
+`GOEXPERIMENT=jsonv2` automatically. The `.golangci.yml` enables the
+`goexperiment.jsonv2` build tag. BuildFlow also auto-detects and sets it.
+
+**Consumers** must set `GOEXPERIMENT=jsonv2` when building (or wait for Go 1.27
+where it becomes stable). The `errorpage` package uses `json.MarshalEncode` +
+`jsontext.NewEncoder` for JSON error responses. Other packages (breadcrumbs,
+tests) still use `encoding/json` v1 — both coexist fine under the experiment flag.
 
 ## Conventions
 

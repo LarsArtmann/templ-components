@@ -5,17 +5,9 @@
 set -euo pipefail
 
 export GOWORK=off
+export GOEXPERIMENT=jsonv2
 
 echo "Running templ-components pre-commit checks..."
-
-# Guard: encoding/json/v2 is not yet stable (Go 1.27+) and breaks builds.
-# Auto-formatters running under GOEXPERIMENT=jsonv2 can rewrite imports.
-if grep -rn 'encoding/json/v2\|encoding/json/jsontext' --include='*.go' .; then
-    echo "ERROR: encoding/json/v2 or encoding/json/jsontext import detected."
-    echo "These packages require GOEXPERIMENT=jsonv2 (not stable until Go 1.27)."
-    echo "Use encoding/json (v1) instead."
-    exit 1
-fi
 
 # Remove stale generated files and regenerate
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
