@@ -18,13 +18,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `templ-components-theme.css`: `color-scheme: light` → `color-scheme: light dark` on `:root` — native form controls (scrollbars, checkboxes, date pickers) were rendering light-only even in dark mode.
 - `templ-components-theme.css`: `@custom-variant dark` moved to a clearly commented opt-in section. Previously, importing the theme file for color overrides silently forced class-based dark mode, overriding Tailwind v4's default `prefers-color-scheme` strategy.
 - `display.CardProps.CardPaddingNone`: children/body now render directly inside the card shell without the wrapping padding `<div>`. Enables table-in-card layouts where `<table>` must be a direct child for `overflow-x-auto` to work correctly.
-- `errorpage/handler.go`: restored `encoding/json` v1 (was reverted to prohibited `encoding/json/v2` by a parallel session, breaking builds for consumers without `GOEXPERIMENT=jsonv2`).
+- `display.Grid` — `ContainerResponsive` no longer silently overrides `GridColsAutoFit`. When both are set, auto-fit takes precedence (it already responds to container width via CSS `minmax()`).
 - `layout.ThemeScript` / `layout.ThemeToggle` godoc: clarified they are only needed for the toggle dark mode strategy, not for OS-following.
 
 ### Changed
 
 - `display.GridColsIsValid` now recognizes `GridColsAutoFit` as a valid value.
-
+- **Adopted `encoding/json/v2`** — the library now uses `encoding/json/v2` + `encoding/json/jsontext` in `errorpage`. Consumers must set `GOEXPERIMENT=jsonv2` (stable in Go 1.27). Deleted the `utils/jsonv2_guard_test.go` prohibition test and removed the pre-commit grep guard.
 - `display.TrendWarn` — amber trend variant for StatCard (the #1 gap reported by DiscordSync, which previously mapped "warn" to `TrendDown` with an apology comment). Uses `text-amber-600 dark:text-amber-400` + right-pointing arrow icon, sr-only label "Holding at".
 - `display.TableRow.Href` — clickable table rows. When set, the row gets `data-tc-row-href`, `role="link"`, `tabindex="0"`, `cursor-pointer`, and hover styling. A CSP-safe singleton script handles click navigation and keyboard support (Enter/Space). Clicks on interactive elements inside the row (links, buttons, inputs) are not hijacked. Replaces the `data-href` JS workaround used across 10+ pages in DiscordSync.
 - `forms.SelectGroup` + `forms.SelectProps.Groups` — optgroup support for Select. When `Groups` is non-empty, options render as `<optgroup>` elements instead of a flat list. Each group's options go through the same `normalizeSelectOptions` normalization (Disabled+Selected clearing, single-Selected enforcement). Replaces the custom `channelGroupedSelect` in DiscordSync.
