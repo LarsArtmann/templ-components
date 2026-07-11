@@ -59,6 +59,42 @@ func tableBorderedClass(bordered bool) string {
 	return ""
 }
 
+// tableWrapperClass returns the class string for the table's scroll wrapper div.
+// When flush is true (table nested in a Card with CardPaddingNone), the border
+// and rounded corners are suppressed so the table sits flush against the card
+// shell — avoiding the double-border defect. The overflow-x-auto scroll
+// wrapper is always retained.
+func tableWrapperClass(flush bool) string {
+	if flush {
+		return "overflow-x-auto"
+	}
+	return "overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
+}
+
+// TableCellPadding controls the vertical density of header and body cells.
+type TableCellPadding string
+
+const (
+	// TableCellPaddingComfortable is the default cell padding (px-4 py-3) —
+	// suitable for general-purpose tables and content pages.
+	TableCellPaddingComfortable TableCellPadding = "comfortable"
+	// TableCellPaddingCompact reduces vertical padding (px-4 py-2) for
+	// data-heavy dashboards and admin panels where rows should feel tighter.
+	TableCellPaddingCompact TableCellPadding = "compact"
+)
+
+//nolint:gochecknoglobals // Package-level lookup table for table cell padding
+var tableCellPaddingLookup = map[TableCellPadding]string{
+	TableCellPaddingComfortable: "px-4 py-3",
+	TableCellPaddingCompact:     "px-4 py-2",
+}
+
+// tableCellPaddingClass returns the padding classes for the given cell padding,
+// falling back to comfortable when unset or invalid.
+func tableCellPaddingClass(p TableCellPadding) string {
+	return utils.Lookup(tableCellPaddingLookup, p, tableCellPaddingLookup[TableCellPaddingComfortable])
+}
+
 // TableRow represents a single row in a table.
 // When Href is set, the row becomes clickable (navigates on click/Enter).
 // A CSP-safe singleton script handles click delegation and keyboard navigation.
@@ -124,6 +160,16 @@ type TableProps struct {
 	Striped      bool
 	Hover        bool
 	Bordered     bool
+	// Flush, when true, suppresses the wrapper div's border and rounded corners.
+	// Use this when the table is nested inside a Card(CardPaddingNone) to avoid
+	// a double border — the card provides the outer border, and the table sits
+	// flush against it. The overflow-x-auto scroll wrapper is always retained.
+	Flush bool
+	// CellPadding controls the vertical density of header and body cells.
+	// Defaults to TableCellPaddingComfortable (px-4 py-3). Set to
+	// TableCellPaddingCompact (px-4 py-2) for data-heavy dashboards and admin
+	// panels where rows should feel tighter.
+	CellPadding TableCellPadding
 	// Body, when set, overrides Rows for the <tbody> content. The component
 	// should render <tr> elements directly — ideal for templ loops where each
 	// row needs custom cell rendering:
@@ -160,7 +206,7 @@ func DefaultTableProps() TableProps {
 // For custom cell rendering, set Body to a component that renders <tr> elements
 // directly — see the Body field on TableProps.
 templ Table(props TableProps) {
-	<div class="overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700">
+	<div class={ tableWrapperClass(props.Flush) }>
 		<table
 			if props.ID != "" {
 				id={ props.ID }
@@ -184,7 +230,7 @@ templ Table(props TableProps) {
 									if th.Sortable {
 										aria-sort={ ariaSortValue(th.SortDirection) }
 									}
-									class="px-4 py-3 text-start font-semibold text-gray-900 dark:text-white"
+									class={ utils.Class(tableCellPaddingClass(props.CellPadding), "text-start font-semibold text-gray-900 dark:text-white") }
 								>
 									if th.Sortable && th.Href != "" {
 										<a href={ templ.SafeURL(th.Href) } class="inline-flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400">
@@ -199,7 +245,7 @@ templ Table(props TableProps) {
 							for _, h := range props.Headers {
 								<th
 									scope="col"
-									class="px-4 py-3 text-start font-semibold text-gray-900 dark:text-white"
+									class={ utils.Class(tableCellPaddingClass(props.CellPadding), "text-start font-semibold text-gray-900 dark:text-white") }
 								>
 									{ h }
 								</th>
@@ -226,7 +272,7 @@ templ Table(props TableProps) {
 							}
 						>
 							for _, cell := range tableRowCells(row, tableHeaderCount(props)) {
-								<td class="px-4 py-3 text-gray-700 dark:text-gray-300">
+								<td class={ utils.Class(tableCellPaddingClass(props.CellPadding), "text-gray-700 dark:text-gray-300") }>
 									if cell.Content != nil {
 										@cell.Content
 									} else {

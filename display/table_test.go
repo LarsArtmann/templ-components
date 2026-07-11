@@ -145,6 +145,90 @@ func TestTableRender(t *testing.T) {
 	})
 }
 
+func TestTableFlush(t *testing.T) {
+	t.Parallel()
+
+	t.Run("default table has wrapper border", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A"},
+			Rows:    []TableRow{SimpleTableRow("1")},
+		}))
+		utils.AssertContains(t, output, "overflow-x-auto")
+		utils.AssertContains(t, output, "rounded-lg")
+		utils.AssertContains(t, output, "border border-gray-200 dark:border-gray-700")
+	})
+
+	t.Run("flush table suppresses wrapper border", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A"},
+			Rows:    []TableRow{SimpleTableRow("1")},
+			Flush:   true,
+		}))
+		utils.AssertContains(t, output, "overflow-x-auto")
+		utils.AssertNotContains(t, output, "rounded-lg")
+		utils.AssertNotContains(t, output, "border border-gray-200")
+	})
+}
+
+func TestTableCellPaddingOption(t *testing.T) {
+	t.Parallel()
+
+	t.Run("default uses comfortable padding", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"A"},
+			Rows:    []TableRow{SimpleTableRow("1")},
+		}))
+		utils.AssertContains(t, output, "px-4 py-3")
+		utils.AssertNotContains(t, output, "px-4 py-2")
+	})
+
+	t.Run("compact uses py-2 padding", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers:     []string{"A"},
+			Rows:        []TableRow{SimpleTableRow("1")},
+			CellPadding: TableCellPaddingCompact,
+		}))
+		utils.AssertContains(t, output, "px-4 py-2")
+		utils.AssertNotContains(t, output, "py-3")
+	})
+
+	t.Run("comfortable explicitly uses py-3", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers:     []string{"A"},
+			Rows:        []TableRow{SimpleTableRow("1")},
+			CellPadding: TableCellPaddingComfortable,
+		}))
+		utils.AssertContains(t, output, "px-4 py-3")
+	})
+
+	t.Run("invalid cell padding falls back to comfortable", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers:     []string{"A"},
+			Rows:        []TableRow{SimpleTableRow("1")},
+			CellPadding: TableCellPadding("bogus"),
+		}))
+		utils.AssertContains(t, output, "px-4 py-3")
+		utils.AssertNotContains(t, output, "px-4 py-2")
+	})
+
+	t.Run("compact applies to typed headers too", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			TypedHeaders: []TableHeader{{Label: "A"}},
+			Rows:         []TableRow{SimpleTableRow("1")},
+			CellPadding:  TableCellPaddingCompact,
+		}))
+		utils.AssertContains(t, output, "px-4 py-2")
+		utils.AssertNotContains(t, output, "py-3")
+	})
+}
+
 func TestTableTypedHeaders(t *testing.T) {
 	t.Parallel()
 	t.Run("sortable headers with aria-sort", func(t *testing.T) {

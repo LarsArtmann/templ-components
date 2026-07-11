@@ -86,6 +86,16 @@ func TestIsValidEnums(t *testing.T) {
 		{"SortDirection Asc", func() bool { return SortDirectionIsValid(SortAsc) }, true},
 		{"SortDirection Desc", func() bool { return SortDirectionIsValid(SortDesc) }, true},
 		{"SortDirection invalid", func() bool { return SortDirectionIsValid(SortDirection("bogus")) }, false},
+		// TableCellPadding
+		{"TableCellPadding Comfortable", func() bool {
+			return TableCellPaddingIsValid(TableCellPaddingComfortable)
+		}, true},
+		{"TableCellPadding Compact", func() bool {
+			return TableCellPaddingIsValid(TableCellPaddingCompact)
+		}, true},
+		{"TableCellPadding invalid", func() bool {
+			return TableCellPaddingIsValid(TableCellPadding("bogus"))
+		}, false},
 	}
 
 	for _, tt := range tests {

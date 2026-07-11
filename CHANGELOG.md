@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `display.TableProps.Flush` — when true, suppresses the Table wrapper div's border and rounded corners. Use when nesting a Table inside a `Card(CardPaddingNone)` to eliminate the double-border defect. The `overflow-x-auto` scroll wrapper is always retained.
+- `display.TableCellPadding` typed enum (`TableCellPaddingComfortable` / `TableCellPaddingCompact`) + `TableCellPaddingIsValid`. Controls vertical density of header and body cells. Comfortable (px-4 py-3) is the default; Compact (px-4 py-2) suits data-heavy dashboards and admin panels.
+
+### Fixed
+
+- Table-in-Card double border: nesting `Table` inside `Card(CardPaddingNone)` previously rendered two concentric borders (one from each component). Set `Flush: true` on the Table to suppress its wrapper border — the card provides the outer border and the table sits flush against it.
+
 ## [0.15.0] — 2026-07-11
 
 GridColsAutoFit + MinColWidth for container-responsive dashboard grids. Card.Header slot for custom card headers. CardPaddingNone fix for table-in-card. Dark mode packaging fixes: color-scheme: light dark, split @custom-variant into opt-in. Adoption guide rewrite with three dark mode paths, @theme palette override pattern, BaseProps.Class gotcha docs. Adopted encoding/json/v2 — consumers need GOEXPERIMENT=jsonv2. Also includes prior session features: TrendWarn, TableRow.Href, Select optgroups, EndOfList, theme-bridge recipe.

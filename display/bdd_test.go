@@ -139,6 +139,17 @@ func TestTableUserCanViewData(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "bg-gray-50")
 	})
+
+	t.Run("flush table inside card has no double border", func(t *testing.T) {
+		t.Parallel()
+		flushOutput := utils.Render(t, Table(TableProps{
+			Headers: []string{"A"},
+			Rows:    []TableRow{SimpleTableRow("1")},
+			Flush:   true,
+		}))
+		utils.AssertNotContains(t, flushOutput, "rounded-lg")
+		utils.AssertNotContains(t, flushOutput, "border border-gray-200")
+	})
 }
 
 // --- Accordion Behavior ---

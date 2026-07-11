@@ -137,3 +137,9 @@ func SortDirectionIsValid(v SortDirection) bool {
 		return false
 	}
 }
+
+// TableCellPaddingIsValid reports whether v is one of the defined TableCellPadding constants.
+func TableCellPaddingIsValid(v TableCellPadding) bool {
+	_, ok := tableCellPaddingLookup[v]
+	return ok
+}

@@ -61,3 +61,18 @@ func ExampleTable() {
 	_ = display.Table(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
+
+func ExampleTable_flushInCard() {
+	// When nesting a Table inside a Card(CardPaddingNone), set Flush to true
+	// to suppress the table's own border and avoid a double-border defect.
+	// Use CellPadding: TableCellPaddingCompact for data-heavy dashboards.
+	props := display.TableProps{
+		Headers:     []string{"Name", "Status"},
+		Rows:        []display.TableRow{display.SimpleTableRow("Alice", "Active")},
+		Flush:       true,
+		CellPadding: display.TableCellPaddingCompact,
+	}
+	var buf bytes.Buffer
+	_ = display.Table(props).Render(context.Background(), &buf)
+	fmt.Println(buf.String())
+}

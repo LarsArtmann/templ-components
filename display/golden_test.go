@@ -63,3 +63,26 @@ func TestGoldenGrid(t *testing.T) {
 	output := utils.Render(t, Grid(GridProps{Cols: GridCols3}))
 	golden.Assert(t, "grid_default", output)
 }
+
+func TestGoldenTableFlush(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Table(TableProps{
+		Headers: []string{"Name", "Email"},
+		Rows: []TableRow{
+			SimpleTableRow("Alice", "alice@example.com"),
+			SimpleTableRow("Bob", "bob@example.com"),
+		},
+		Flush: true,
+	}))
+	golden.Assert(t, "table_flush", output)
+}
+
+func TestGoldenTableCompact(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Table(TableProps{
+		Headers:     []string{"Name", "Email"},
+		Rows:        []TableRow{SimpleTableRow("Alice", "alice@example.com")},
+		CellPadding: TableCellPaddingCompact,
+	}))
+	golden.Assert(t, "table_compact", output)
+}
