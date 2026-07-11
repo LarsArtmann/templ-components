@@ -30,6 +30,7 @@ func TestIsValidEnums(t *testing.T) {
 		{"GridGap invalid", func() bool { return GridGapIsValid(GridGap("bogus")) }, false},
 		// TrendDirection
 		{"TrendDirection Up", func() bool { return TrendDirectionIsValid(TrendUp) }, true},
+		{"TrendDirection Warn", func() bool { return TrendDirectionIsValid(TrendWarn) }, true},
 		{"TrendDirection invalid", func() bool { return TrendDirectionIsValid(TrendDirection("bogus")) }, false},
 		// AvatarSize
 		{"AvatarSize SM", func() bool { return AvatarSizeIsValid(AvatarSizeSM) }, true},

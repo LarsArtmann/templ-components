@@ -83,6 +83,7 @@ func componentTypes() []any {
 		navigation.PaginationProps{},
 		navigation.SidebarNavProps{},
 		navigation.LoadMoreProps{},
+		navigation.EndOfListProps{},
 
 		// htmx (2)
 		htmx.ConfirmDeleteProps{},

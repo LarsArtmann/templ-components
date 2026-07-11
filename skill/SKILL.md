@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-84 components across 9 packages + 101 icons. If you're about to hand-roll
+85 components across 9 packages + 101 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -34,51 +34,51 @@ already existed.
 
 Don't know what to look for? Find your page type:
 
-| You're building...             | Reach for                                                                                                                       |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
-| **Dashboard / metrics page**   | `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`                                                     |
-| **List / table page**          | `Table` (or `Table.Body` for custom rows), `Badge`, `StatusBadge`, `Avatar`, `Pagination`, `LoadMore`, `EmptyState`, `ListNote` |
-| **Detail page**                | `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `Breadcrumbs`                                                 |
-| **Settings / data-entry form** | `Form`, `Input`, `Select`, `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`                                  |
-| **Filter bar (horizontal)**    | Thin custom helper (see `docs/recipes/horizontal-filter-bar.md`) — `forms.Form` targets vertical                                |
-| **Feedback / notifications**   | `Toast`, `ToastContainer`, `Alert`, `Spinner`, `ProgressBar`, `GlobalErrorHandling`                                             |
-| **Navigation**                 | `Nav`, `SimpleNav`, `SidebarNav`, `Breadcrumbs`, `Pagination`, `MobileMenu`                                                     |
-| **Modal / overlay**            | `Modal`, `Drawer`, `Dropdown`, `Tooltip`, `Popover`, `Accordion`                                                                |
-| **Error pages**                | `ErrorPage`, `NotFound404`, `ErrorDetail`, `ErrorAlert`, `ErrorHandler`                                                         |
-| **Full page shell**            | `Base`, `Minimal`, `ThemeScript`, `ThemeToggle`, `Script`                                                                       |
+| You're building...             | Reach for                                                                                                                                                                   |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dashboard / metrics page**   | `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`                                                                                                 |
+| **List / table page**          | `Table` (or `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `ListNote` |
+| **Detail page**                | `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `Breadcrumbs`                                                                                             |
+| **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`                                            |
+| **Filter bar (horizontal)**    | Thin custom helper (see `docs/recipes/horizontal-filter-bar.md`) — `forms.Form` targets vertical                                                                            |
+| **Feedback / notifications**   | `Toast`, `ToastContainer`, `Alert`, `Spinner`, `ProgressBar`, `GlobalErrorHandling`                                                                                         |
+| **Navigation**                 | `Nav`, `SimpleNav`, `SidebarNav`, `Breadcrumbs`, `Pagination`, `MobileMenu`                                                                                                 |
+| **Modal / overlay**            | `Modal`, `Drawer`, `Dropdown`, `Tooltip`, `Popover`, `Accordion`                                                                                                            |
+| **Error pages**                | `ErrorPage`, `NotFound404`, `ErrorDetail`, `ErrorAlert`, `ErrorHandler`                                                                                                     |
+| **Full page shell**            | `Base`, `Minimal`, `ThemeScript`, `ThemeToggle`, `Script`                                                                                                                   |
 
 ### By package (import path reference)
 
 #### `display` — 26 components
 
-| Component          | Signature                                   | One-liner                                                                                 |
-| ------------------ | ------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| `Card`             | `Card(props CardProps)`                     | Bordered card with title, subtitle, footer, header action, 4 padding sizes                |
-| `SimpleCard`       | `SimpleCard(props SimpleCardProps)`         | Minimal card — children only, no header/footer                                            |
-| `StatCard`         | `StatCard(props StatCardProps)`             | Dashboard metric card with value, label, change, trend, icon, optional `Href` link        |
-| `Grid`             | `Grid(props GridProps)`                     | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerResponsive`            |
-| `Badge`            | `Badge(props BadgeProps)`                   | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                       |
-| `StatusBadge`      | `StatusBadge(status string)`                | Auto-maps ~20 status strings to badge types                                               |
-| `Button`           | `Button(props ButtonProps)`                 | Button or link button — variants, sizes, icons, HTMX attrs                                |
-| `Avatar`           | `Avatar(props AvatarProps)`                 | Image avatar with fallback initials, sizes, status dot                                    |
-| `Modal`            | `Modal(props ModalProps)`                   | Accessible dialog — focus trap, Escape, backdrop, 5 sizes                                 |
-| `Drawer`           | `Drawer(props DrawerProps)`                 | Side panel — left/right slide, focus trap, Escape, backdrop                               |
-| `Dropdown`         | `Dropdown(props DropdownProps)`             | Button-triggered menu — links, buttons, keyboard nav                                      |
-| `Tooltip`          | `Tooltip(props TooltipProps)`               | Hover tooltip — 4 positions, arrow, touch support                                         |
-| `Popover`          | `Popover(props PopoverProps)`               | Button-triggered floating panel — 4 positions, arbitrary content, click-outside dismiss   |
-| `Accordion`        | `Accordion(props AccordionProps)`           | Collapsible sections — open/closed state, keyboard nav                                    |
-| `Table`            | `Table(props TableProps)`                   | Responsive data table — striping, hover, caption, bordered, `Body` slot for custom `<tr>` |
-| `Tabs`             | `Tabs(props TabsProps)`                     | Tabbed interface — underline/pills, optional client-side JS                               |
-| `EmptyState`       | `EmptyState(props EmptyStateProps)`         | Empty-data placeholder — icon, title, description, action                                 |
-| `SimpleEmptyState` | `SimpleEmptyState(message string)`          | Minimal empty state — text only                                                           |
-| `PageHeader`       | `PageHeader(props PageHeaderProps)`         | Page title block — title, subtitle, breadcrumb, action slots                              |
-| `DefinitionList`   | `DefinitionList(props DefinitionListProps)` | Two-column `<dl>` key/value list                                                          |
-| `ListNote`         | `ListNote(props ListNoteProps)`             | "Showing N of M" truncation notice                                                        |
-| `CopyButton`       | `CopyButton(props CopyButtonProps)`         | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant     |
-| `RelativeTime`     | `RelativeTime(props RelativeTimeProps)`     | `<time datetime>` with relative text ("2 hours ago")                                      |
-| `CountBadge`       | `CountBadge(props CountBadgeProps)`         | Icon + notification count overlay — overflow "N+"                                         |
-| `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards                                                      |
-| `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback, optional `Rounded` for circular               |
+| Component          | Signature                                   | One-liner                                                                                              |
+| ------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `Card`             | `Card(props CardProps)`                     | Bordered card with title, subtitle, footer, header action, 4 padding sizes                             |
+| `SimpleCard`       | `SimpleCard(props SimpleCardProps)`         | Minimal card — children only, no header/footer                                                         |
+| `StatCard`         | `StatCard(props StatCardProps)`             | Dashboard metric card with value, label, change, trend, icon, optional `Href` link                     |
+| `Grid`             | `Grid(props GridProps)`                     | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerResponsive`                         |
+| `Badge`            | `Badge(props BadgeProps)`                   | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                                    |
+| `StatusBadge`      | `StatusBadge(status string)`                | Auto-maps ~20 status strings to badge types                                                            |
+| `Button`           | `Button(props ButtonProps)`                 | Button or link button — variants, sizes, icons, HTMX attrs                                             |
+| `Avatar`           | `Avatar(props AvatarProps)`                 | Image avatar with fallback initials, sizes, status dot                                                 |
+| `Modal`            | `Modal(props ModalProps)`                   | Accessible dialog — focus trap, Escape, backdrop, 5 sizes                                              |
+| `Drawer`           | `Drawer(props DrawerProps)`                 | Side panel — left/right slide, focus trap, Escape, backdrop                                            |
+| `Dropdown`         | `Dropdown(props DropdownProps)`             | Button-triggered menu — links, buttons, keyboard nav                                                   |
+| `Tooltip`          | `Tooltip(props TooltipProps)`               | Hover tooltip — 4 positions, arrow, touch support                                                      |
+| `Popover`          | `Popover(props PopoverProps)`               | Button-triggered floating panel — 4 positions, arbitrary content, click-outside dismiss                |
+| `Accordion`        | `Accordion(props AccordionProps)`           | Collapsible sections — open/closed state, keyboard nav                                                 |
+| `Table`            | `Table(props TableProps)`                   | Responsive data table — striping, hover, caption, bordered, `Body` slot, `Row.Href` for clickable rows |
+| `Tabs`             | `Tabs(props TabsProps)`                     | Tabbed interface — underline/pills, optional client-side JS                                            |
+| `EmptyState`       | `EmptyState(props EmptyStateProps)`         | Empty-data placeholder — icon, title, description, action                                              |
+| `SimpleEmptyState` | `SimpleEmptyState(message string)`          | Minimal empty state — text only                                                                        |
+| `PageHeader`       | `PageHeader(props PageHeaderProps)`         | Page title block — title, subtitle, breadcrumb, action slots                                           |
+| `DefinitionList`   | `DefinitionList(props DefinitionListProps)` | Two-column `<dl>` key/value list                                                                       |
+| `ListNote`         | `ListNote(props ListNoteProps)`             | "Showing N of M" truncation notice                                                                     |
+| `CopyButton`       | `CopyButton(props CopyButtonProps)`         | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant                  |
+| `RelativeTime`     | `RelativeTime(props RelativeTimeProps)`     | `<time datetime>` with relative text ("2 hours ago")                                                   |
+| `CountBadge`       | `CountBadge(props CountBadgeProps)`         | Icon + notification count overlay — overflow "N+"                                                      |
+| `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards                                                                   |
+| `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback, optional `Rounded` for circular                            |
 
 #### `forms` — 16 components
 
@@ -86,7 +86,7 @@ Don't know what to look for? Find your page type:
 | ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
 | `Input`             | `Input(props InputProps)`                         | Typed input (text, email, password, search, url, tel, number) with label, error, help text |
 | `Checkbox`          | `Checkbox(props CheckboxProps)`                   | Checkbox with label, help text, error                                                      |
-| `Select`            | `Select(props SelectProps)`                       | Select dropdown with typed options, disabled, selected                                     |
+| `Select`            | `Select(props SelectProps)`                       | Select dropdown with typed options, disabled, selected, optional `Groups` for optgroups    |
 | `Textarea`          | `Textarea(props TextareaProps)`                   | Multi-line text input with label, rows, max length                                         |
 | `Toggle`            | `Toggle(props ToggleProps)`                       | Toggle switch with label, required, error, help text                                       |
 | `Radio`             | `Radio(props RadioProps)`                         | Radio button with label                                                                    |
@@ -129,7 +129,7 @@ Don't know what to look for? Find your page type:
 | `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                |
 | `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                |
 
-#### `navigation` — 11 components
+#### `navigation` — 12 components
 
 | Component          | Signature                                               | One-liner                                                                    |
 | ------------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------- |
@@ -143,6 +143,7 @@ Don't know what to look for? Find your page type:
 | `Breadcrumbs`      | `Breadcrumbs(props BreadcrumbsProps)`                   | Breadcrumb trail — separator, JSON-LD                                        |
 | `SidebarNav`       | `SidebarNav(props SidebarNavProps)`                     | Vertical sidebar — brand, icon+label items, footer slot                      |
 | `LoadMore`         | `LoadMore(props LoadMoreProps)`                         | Cursor-based "Load more" button — hx-get, hx-swap, optional `InfiniteScroll` |
+| `EndOfList`        | `EndOfList(props EndOfListProps)`                       | "You've reached the end" indicator — companion to LoadMore/Pagination        |
 | `Footer`           | `Footer(props FooterProps)`                             | Simple footer with copyright                                                 |
 
 #### `htmx` — 7 components
@@ -281,6 +282,7 @@ run `templ generate`. This is the standard pattern for publishable templ package
 | `docs/recipes/horizontal-filter-bar.md`               | Horizontal HTMX filter bar vs `forms.Form`          |
 | `docs/tailwind-v4-adoption-guide.md`                  | Full Tailwind v4 setup with `@source` scanning      |
 | `docs/icons-only-adoption.md`                         | Adopting just the `icons` package (CSS-agnostic)    |
+| `docs/recipes/theme-bridge.md`                        | Remap library colors to custom semantic palette     |
 
 ## How to know if a component already exists
 

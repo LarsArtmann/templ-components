@@ -66,6 +66,13 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 		{"NotFound404", utils.Render(t, errorpage.NotFound404(errorpage.NotFound404Props{
 			BaseProps: utils.BaseProps{Nonce: testNonce},
 		}))},
+		{"TableWithRowHref", utils.Render(t, display.Table(display.TableProps{
+			BaseProps: utils.BaseProps{Nonce: testNonce},
+			Headers:   []string{"Name"},
+			Rows: []display.TableRow{
+				{Cells: []display.TableCell{{Text: "Alice"}}, Href: "/users/1"},
+			},
+		}))},
 	}
 
 	for _, r := range renderings {

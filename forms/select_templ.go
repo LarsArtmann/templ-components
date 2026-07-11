@@ -20,6 +20,15 @@ type SelectOption struct {
 	Selected bool
 }
 
+// SelectGroup represents an <optgroup> with a label and its options.
+// When SelectProps.Groups is non-empty, options are rendered as optgroups
+// instead of a flat list. Use this for logically grouping options (e.g.
+// channels by category, cities by country).
+type SelectGroup struct {
+	Label   string
+	Options []SelectOption
+}
+
 // normalizeSelectOptions returns a defensive copy of opts with contradictions
 // resolved: Disabled+Selected clears Selected, and only the first Selected option
 // is kept (a single-value <select> cannot have multiple pre-selected options —
@@ -44,12 +53,17 @@ func normalizeSelectOptions(opts []SelectOption) []SelectOption {
 	return out
 }
 
-// SelectProps configures a select dropdown
+// SelectProps configures a select dropdown.
+// Set Groups to render <optgroup> elements; Options is ignored when Groups is non-empty.
 type SelectProps struct {
 	utils.BaseProps
-	Name     string
-	Label    string
-	Options  []SelectOption
+	Name    string
+	Label   string
+	Options []SelectOption
+	// Groups, when non-empty, renders <optgroup> elements instead of a flat
+	// Options list. Each group has its own label. Options is ignored when
+	// Groups is set.
+	Groups   []SelectGroup
 	Required bool
 	Disabled bool
 	Error    string
@@ -69,6 +83,21 @@ func DefaultSelectProps() SelectProps {
 //	   Options: []forms.SelectOption{
 //	     {Value: "de", Label: "Germany"},
 //	     {Value: "at", Label: "Austria"},
+//	   },
+//	})
+//	// Grouped options (renders <optgroup>):
+//	//
+//	@forms.Select(forms.SelectProps{
+//	   Name: "channel",
+//	   Label: "Channel",
+//	   Groups: []forms.SelectGroup{
+//	     {Label: "Text Channels", Options: []forms.SelectOption{
+//	       {Value: "general", Label: "#general"},
+//	       {Value: "random", Label: "#random"},
+//	     }},
+//	     {Label: "Voice Channels", Options: []forms.SelectOption{
+//	       {Value: "voice-1", Label: "🔊 Lounge"},
+//	     }},
 //	   },
 //	})
 func Select(props SelectProps) templ.Component {
@@ -116,7 +145,7 @@ func Select(props SelectProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Name)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 69, Col: 20}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 98, Col: 20}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -134,7 +163,7 @@ func Select(props SelectProps) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 71, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 100, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
@@ -186,7 +215,7 @@ func Select(props SelectProps) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 83, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 112, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 				if templ_7745c5c3_Err != nil {
@@ -205,56 +234,131 @@ func Select(props SelectProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			options := normalizeSelectOptions(props.Options)
-			for _, opt := range options {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<option value=\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var8 string
-				templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(opt.Value)
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 90, Col: 22}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\"")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				if opt.Disabled {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, " disabled")
+			if len(props.Groups) > 0 {
+				for _, grp := range props.Groups {
+					opts := normalizeSelectOptions(grp.Options)
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<optgroup label=\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var8 string
+					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(grp.Label)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 119, Col: 32}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					for _, opt := range opts {
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<option value=\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var9 string
+						templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(opt.Value)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 122, Col: 25}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						if opt.Disabled {
+							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, " disabled")
+							if templ_7745c5c3_Err != nil {
+								return templ_7745c5c3_Err
+							}
+						}
+						if opt.Selected {
+							templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, " selected")
+							if templ_7745c5c3_Err != nil {
+								return templ_7745c5c3_Err
+							}
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, ">")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						var templ_7745c5c3_Var10 string
+						templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(opt.Label)
+						if templ_7745c5c3_Err != nil {
+							return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 130, Col: 19}
+						}
+						_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</option>")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</optgroup>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				if opt.Selected {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, " selected")
+			} else {
+				options := normalizeSelectOptions(props.Options)
+				for _, opt := range options {
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<option value=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, ">")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				var templ_7745c5c3_Var9 string
-				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(opt.Label)
-				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 98, Col: 16}
-				}
-				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "</option>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
+					var templ_7745c5c3_Var11 string
+					templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(opt.Value)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 139, Col: 23}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					if opt.Disabled {
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, " disabled")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					}
+					if opt.Selected {
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, " selected")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, ">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var12 string
+					templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(opt.Label)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/select.templ`, Line: 147, Col: 17}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</option>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "</select>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "</select>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -356,3 +356,40 @@ func relativeTimeJS() string {
 func relativeTimeScriptComponent(nonce string) templ.Component {
 	return scriptComponent(nonce, relativeTimeJS(), "relative time script")
 }
+
+// tableRowHrefJS returns the singleton JavaScript for clickable table rows.
+// When any <tr> has data-tc-row-href, clicking it (or pressing Enter/Space when
+// focused) navigates to the URL. Clicks on interactive elements inside the row
+// (links, buttons, inputs) are NOT hijacked so they work normally.
+func tableRowHrefJS() string {
+	return `if(!window.tcTableRowHrefAttached){window.tcTableRowHrefAttached=true;` +
+		`document.addEventListener('click',function(e){` +
+		`var row=e.target.closest('tr[data-tc-row-href]');` +
+		`if(!row)return;` +
+		`if(e.target.closest('a[href],button:not([disabled]),input,select,textarea,[contenteditable]'))return;` +
+		`window.location.href=row.dataset.tcRowHref;` +
+		`});` +
+		`document.addEventListener('keydown',function(e){` +
+		`var row=e.target.closest('tr[data-tc-row-href]');` +
+		`if(!row)return;` +
+		`if(e.key==='Enter'||e.key===' '){` +
+		`if(e.target.closest('a[href],button:not([disabled]),input,select,textarea,[contenteditable]'))return;` +
+		`e.preventDefault();` +
+		`window.location.href=row.dataset.tcRowHref;` +
+		`}` +
+		`});` +
+		`document.body.addEventListener('htmx:afterSettle',function(){` +
+		`document.querySelectorAll('tr[data-tc-row-href]').forEach(function(r){` +
+		`if(!r.hasAttribute('tabindex'))r.setAttribute('tabindex','0');` +
+		`if(!r.hasAttribute('role'))r.setAttribute('role','link');` +
+		`});` +
+		`});` +
+		`}` +
+		"\n"
+}
+
+// tableRowHrefScriptComponent renders the clickable-row JS. Only injected when
+// at least one TableRow has Href set.
+func tableRowHrefScriptComponent(nonce string) templ.Component {
+	return scriptComponent(nonce, tableRowHrefJS(), "table row href script")
+}

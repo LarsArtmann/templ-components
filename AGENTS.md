@@ -10,7 +10,7 @@ This repo is a **single Go module** (`github.com/larsartmann/templ-components`) 
 | `feedback`          | 13 components                              | Alerts, toasts, spinners, skeletons, progress bars    |
 | `forms`             | 16 components                              | Inputs, selects, toggles, combobox, validation        |
 | `layout`            | 5 components                               | Page shell, theme toggle, CSP-safe script/style tags  |
-| `navigation`        | 11 components                              | Nav bars, pagination, breadcrumbs, sidebar            |
+| `navigation`        | 12 components                              | Nav bars, pagination, breadcrumbs, sidebar, EndOfList |
 | `htmx`              | 7 components                               | HTMX loading, error handling, OOB swaps               |
 | `icons`             | 101 named SVG icons                        | Heroicons v2 outline + Spinner                        |
 | `errorpage`         | 4 components + handler                     | Error pages, 404, go-error-family integration         |
@@ -128,7 +128,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - EmptyState: single `emptyStateAction(text, href, attrs)` helper renders an anchor when `href != ""`, else a button (replaces the former link/button pair).
 - HTMX loading: accepts `templ.Component` spinner parameter (decoupled from feedback package)
 - Toast icons: generated from Go `iconPathData` via `icons.IconPathJS()` (single source of truth)
-- TrendDirection: `TrendNone = "none"` (non-empty sentinel, not "")
+- TrendDirection: `TrendUp`/`TrendDown`/`TrendWarn`/`TrendNone`. `TrendWarn` uses amber (`text-amber-600 dark:text-amber-400`) + right-pointing arrow + sr-only "Holding at". `TrendNone = "none"` (non-empty sentinel, not "")
 - Layout: `Minimal(MinimalProps)` uses props struct like `Base(PageProps)`
 - Layout: `PageProps.HTMXCDN` overrides the CDN base URL for htmx scripts. Empty defaults to `https://cdn.jsdelivr.net/npm`. Both `htmx.org` and `htmx-ext-response-targets` URLs derive from this value. Consumers with a different CSP can set e.g. `HTMXCDN: "https://unpkg.com"` without forking the library.
 - Interactive: `cursor-pointer` on buttons, `caret-blue-600 dark:caret-blue-400` on inputs, `scroll-smooth` + selection colors on body, `shadow-sm` on card shell
@@ -149,14 +149,15 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - Image fallback JS: global singleton `tcImageFallbackAttached` handler — error event capture (true) on `[data-tc-img-fallback]`, swaps src to fallback and removes attribute. Uses capture phase because error events don't bubble.
 - CountBadge: zero count hides badge (aria-hidden decorative), overflow shows "N+" (default max 99). `formatInt` helper is shared with CountBadge.
 - RelativeTime: pure Go formatting (`formatRelativeTime`), no JS. `<time datetime>` for a11y/SEO, `title` for absolute time on hover.
-- LoadMore: cursor appended as `?cursor=` query param (detects existing `?` for `&`). `hx-swap="outerHTML"` + `hx-target="this"` for self-replacement.
+- LoadMore: cursor appended as `?cursor=` query param (detects existing `?` for `&`). `hx-swap="outerHTML"` + `hx-target="this"` for self-replacement. `InfiniteScroll: true` adds `hx-trigger="revealed"`.
+- EndOfList: `navigation.EndOfList(EndOfListProps)` — "You've reached the end" indicator for the bottom of a list. Companion to LoadMore/Pagination. `role="status"`, `text-gray-500 dark:text-gray-400`. Customizable `Message`.
 - StatCard HTMX: `HxGet`/`HxTarget`/`HxSwap` typed fields on both `<a>` and `<div>` variants. When empty, attributes are omitted.
 - Card.Body: `Body templ.Component` slot — when set, overrides children. Backward compatible.
 - Card.Header: `Header templ.Component` slot — when set, replaces the entire default header section (title, subtitle, header action). Use for custom header layouts. When nil, default header renders if Title or HeaderAction is set.
 - Card.CardPaddingNone: when `Padding == CardPaddingNone`, children/body render without the wrapping padding `<div>` — directly inside the card shell. Enables table-in-card layouts where `<table>` must be a direct child for `overflow-x-auto`.
 
 - Toast JS: dismiss icon from `icons.IconPathJS()` via `tcToastIcons.dismiss`
-- Table: row cells auto-padded/truncated to match header count. `TypedHeaders []TableHeader` takes precedence over `Headers []string` for sortable columns: each `TableHeader` has `Sortable bool`, `SortDirection` (`SortNone`/`SortAsc`/`SortDesc`), and `Href` for server-side sort links. Renders `aria-sort="ascending/descending/none"` + ↑/↓ indicators. `ariaSortValue()` maps the enum; `tableHeaderCount()` aligns cell padding to whichever header type is used.
+- Table: row cells auto-padded/truncated to match header count. `TypedHeaders []TableHeader` takes precedence over `Headers []string` for sortable columns: each `TableHeader` has `Sortable bool`, `SortDirection` (`SortNone`/`SortAsc`/`SortDesc`), and `Href` for server-side sort links. Renders `aria-sort="ascending/descending/none"` + ↑/↓ indicators. `ariaSortValue()` maps the enum; `tableHeaderCount()` aligns cell padding to whichever header type is used. `TableRow.Href` makes rows clickable: sets `data-tc-row-href` + `role="link"` + `tabindex="0"` + `cursor-pointer`. A CSP-safe singleton script (`tableRowHrefJS` in `shared.go`) handles click + keyboard navigation. Clicks on interactive child elements (links, buttons) are not hijacked.
 - **Error handler:** `errorpage/handler.go` provides `ErrorHandler(err, cfg)` returning `http.Handler`, `FromError(err)` for type-safe conversion from go-error-family errors, 6 pre-built constructors (`NotFound`, `Forbidden`, `BadRequest`, `Conflict`, `ServiceUnavailable`, `InternalError`), `WriteError`/`WriteErrorPage` convenience wrappers, `HTMLShell` mode for valid HTML documents, `JSON` mode for API/HTMX responses. Uses `errors.AsType[errorfamily.Classified]()` for go-error-family integration.
 - **Error families:** `errorpage` package integrates with go-error-family via `FromErrorFamily()` converter + `ParseFamily()` for string-based lookup. `FromError()` extracts Why/Fix defaults from go-error-family's `Family.DefaultWhy()`/`DefaultFix()` methods. (`FamilyFromErrorFamily` is a deprecated alias, will be removed in v1.0.)
 - **Error components:** `ErrorPage` (full-page), `NotFound404` (dedicated 404 with hero numeral + search + links), `ErrorDetail` (inline card), `ErrorAlert` (family-aware alert) in `errorpage/`
@@ -172,7 +173,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - Breadcrumbs: optional `Separator` field for custom separators. `JSONLD` field enables JSON-LD structured data (`application/ld+json`).
 - Theme colors: `DefaultThemeColor` and `DefaultDarkThemeColor` constants in layout package.
 - Icon stroke-width: `IconWithStrokeWidth(name, class, strokeWidth)` for custom stroke widths (default Icon uses 1.5).
-- Select validation: `normalizeSelectOptions()` resolves Disabled+Selected contradiction (clears Selected).
+- Select validation: `normalizeSelectOptions()` resolves Disabled+Selected contradiction (clears Selected). `SelectProps.Groups []SelectGroup` renders `<optgroup>` elements when set (Options is ignored). Each group's options go through the same normalization.
 - Badge href: `BadgeProps.Href` renders `<a>` instead of `<span>` when set, enabling badge-based navigation.
 - ProgressBar indeterminate: `ProgressBarProps.Indeterminate bool` renders animated bar with `aria-busy="true"` instead of percentage-based width.
 - StepIndicator orientation: `StepIndicatorProps.Orientation` with `StepHorizontal`/`StepVertical` constants for vertical progress tracking.

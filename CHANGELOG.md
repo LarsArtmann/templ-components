@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `display.TrendWarn` — amber trend variant for StatCard (the #1 gap reported by DiscordSync, which previously mapped "warn" to `TrendDown` with an apology comment). Uses `text-amber-600 dark:text-amber-400` + right-pointing arrow icon, sr-only label "Holding at".
+- `display.TableRow.Href` — clickable table rows. When set, the row gets `data-tc-row-href`, `role="link"`, `tabindex="0"`, `cursor-pointer`, and hover styling. A CSP-safe singleton script handles click navigation and keyboard support (Enter/Space). Clicks on interactive elements inside the row (links, buttons, inputs) are not hijacked. Replaces the `data-href` JS workaround used across 10+ pages in DiscordSync.
+- `forms.SelectGroup` + `forms.SelectProps.Groups` — optgroup support for Select. When `Groups` is non-empty, options render as `<optgroup>` elements instead of a flat list. Each group's options go through the same `normalizeSelectOptions` normalization (Disabled+Selected clearing, single-Selected enforcement). Replaces the custom `channelGroupedSelect` in DiscordSync.
+- `navigation.EndOfList` — "You've reached the end" indicator for the bottom of a list. Companion to `LoadMore` and `Pagination`. Customizable `Message`, `role="status"` for a11y, `text-gray-500 dark:text-gray-400` muted styling.
+- `docs/recipes/theme-bridge.md` — documentation showing how consumers with custom semantic palettes (e.g. `bg-surface`, `bg-accent`) can remap standard Tailwind color tokens via `@theme` to use library components without forking. Replaces ~250 lines of reimplementation in SwettySwipperWeb.
+
 ## [0.14.0] — 2026-07-10
 
 ### Added

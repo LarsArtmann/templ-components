@@ -59,9 +59,15 @@ func tableBorderedClass(bordered bool) string {
 	return ""
 }
 
-// TableRow represents a single row in a table
+// TableRow represents a single row in a table.
+// When Href is set, the row becomes clickable (navigates on click/Enter).
+// A CSP-safe singleton script handles click delegation and keyboard navigation.
+// Clicks on interactive elements inside the row (links, buttons) are not hijacked.
 type TableRow struct {
 	Cells []TableCell
+	// Href, when non-empty, makes the entire row clickable. The row gets
+	// data-tc-row-href, role="link", tabindex="0", and cursor-pointer.
+	Href string
 }
 
 // SimpleTableRow creates a row from string values for convenience
@@ -86,6 +92,17 @@ func tableRowCells(row TableRow, headerCount int) []TableCell {
 	padded := make([]TableCell, headerCount)
 	copy(padded, cells)
 	return padded
+}
+
+// tableHasRowHref reports whether any row in the slice has Href set.
+// Used to conditionally include the singleton click-delegation script.
+func tableHasRowHref(rows []TableRow) bool {
+	for _, r := range rows {
+		if r.Href != "" {
+			return true
+		}
+	}
+	return false
 }
 
 // tableHeaderCount returns the number of headers to align cells against.
@@ -197,9 +214,15 @@ templ Table(props TableProps) {
 				} else {
 					for i, row := range props.Rows {
 						<tr
+							if row.Href != "" {
+								data-tc-row-href={ row.Href }
+								role="link"
+								tabindex="0"
+							}
 							class={
 								templ.KV("bg-gray-50 dark:bg-gray-800/50", props.Striped && i%2 == 1),
-								templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover),
+								templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover || row.Href != ""),
+								templ.KV("cursor-pointer", row.Href != ""),
 							}
 						>
 							for _, cell := range tableRowCells(row, tableHeaderCount(props)) {
@@ -217,4 +240,7 @@ templ Table(props TableProps) {
 			</tbody>
 		</table>
 	</div>
+	if tableHasRowHref(props.Rows) {
+		@tableRowHrefScriptComponent(props.Nonce)
+	}
 }

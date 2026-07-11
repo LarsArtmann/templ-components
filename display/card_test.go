@@ -280,6 +280,7 @@ func TestNormalizeTrend(t *testing.T) {
 	}{
 		{TrendUp, TrendUp},
 		{TrendDown, TrendDown},
+		{TrendWarn, TrendWarn},
 		{TrendNone, TrendNone},
 		{TrendDirection("invalid"), TrendNone},
 		{TrendDirection(""), TrendNone},

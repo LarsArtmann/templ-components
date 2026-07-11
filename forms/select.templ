@@ -12,6 +12,15 @@ type SelectOption struct {
 	Selected bool
 }
 
+// SelectGroup represents an <optgroup> with a label and its options.
+// When SelectProps.Groups is non-empty, options are rendered as optgroups
+// instead of a flat list. Use this for logically grouping options (e.g.
+// channels by category, cities by country).
+type SelectGroup struct {
+	Label   string
+	Options []SelectOption
+}
+
 // normalizeSelectOptions returns a defensive copy of opts with contradictions
 // resolved: Disabled+Selected clears Selected, and only the first Selected option
 // is kept (a single-value <select> cannot have multiple pre-selected options —
@@ -36,12 +45,17 @@ func normalizeSelectOptions(opts []SelectOption) []SelectOption {
 	return out
 }
 
-// SelectProps configures a select dropdown
+// SelectProps configures a select dropdown.
+// Set Groups to render <optgroup> elements; Options is ignored when Groups is non-empty.
 type SelectProps struct {
 	utils.BaseProps
-	Name     string
-	Label    string
-	Options  []SelectOption
+	Name    string
+	Label   string
+	Options []SelectOption
+	// Groups, when non-empty, renders <optgroup> elements instead of a flat
+	// Options list. Each group has its own label. Options is ignored when
+	// Groups is set.
+	Groups   []SelectGroup
 	Required bool
 	Disabled bool
 	Error    string
@@ -61,6 +75,21 @@ func DefaultSelectProps() SelectProps {
 //	   Options: []forms.SelectOption{
 //	     {Value: "de", Label: "Germany"},
 //	     {Value: "at", Label: "Austria"},
+//	   },
+//	})
+//	// Grouped options (renders <optgroup>):
+//	//
+//	@forms.Select(forms.SelectProps{
+//	   Name: "channel",
+//	   Label: "Channel",
+//	   Groups: []forms.SelectGroup{
+//	     {Label: "Text Channels", Options: []forms.SelectOption{
+//	       {Value: "general", Label: "#general"},
+//	       {Value: "random", Label: "#random"},
+//	     }},
+//	     {Label: "Voice Channels", Options: []forms.SelectOption{
+//	       {Value: "voice-1", Label: "🔊 Lounge"},
+//	     }},
 //	   },
 //	})
 templ Select(props SelectProps) {
@@ -84,19 +113,40 @@ templ Select(props SelectProps) {
 			}
 			{ props.Attrs... }
 		>
-			{{ options := normalizeSelectOptions(props.Options) }}
-			for _, opt := range options {
-				<option
-					value={ opt.Value }
-					if opt.Disabled {
-						disabled
-					}
-					if opt.Selected {
-						selected
-					}
-				>
-					{ opt.Label }
-				</option>
+			if len(props.Groups) > 0 {
+				for _, grp := range props.Groups {
+					{{ opts := normalizeSelectOptions(grp.Options) }}
+					<optgroup label={ grp.Label }>
+						for _, opt := range opts {
+							<option
+								value={ opt.Value }
+								if opt.Disabled {
+									disabled
+								}
+								if opt.Selected {
+									selected
+								}
+							>
+								{ opt.Label }
+							</option>
+						}
+					</optgroup>
+				}
+			} else {
+				{{ options := normalizeSelectOptions(props.Options) }}
+				for _, opt := range options {
+					<option
+						value={ opt.Value }
+						if opt.Disabled {
+							disabled
+						}
+						if opt.Selected {
+							selected
+						}
+					>
+						{ opt.Label }
+					</option>
+				}
 			}
 		</select>
 	}
