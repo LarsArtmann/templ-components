@@ -310,3 +310,55 @@ func TestCSPNonceConsistency(t *testing.T) {
 		}
 	}
 }
+
+// TestTableInCardNoDoubleBorder verifies that Table nested inside
+// Card(CardPaddingNone) with Flush=true does not produce a double border.
+// The card provides the outer border; the table's wrapper border is suppressed.
+// Regression test for the table-in-card double-border defect.
+func TestTableInCardNoDoubleBorder(t *testing.T) {
+	t.Parallel()
+
+	t.Run("Flush suppresses table wrapper border inside card", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, display.Card(display.CardProps{
+			Title:   "Users",
+			Padding: display.CardPaddingNone,
+			Body: display.Table(display.TableProps{
+				Headers: []string{"Name", "Email"},
+				Rows: []display.TableRow{
+					display.SimpleTableRow("Alice", "alice@example.com"),
+				},
+				Flush:       true,
+				CellPadding: display.TableCellPaddingCompact,
+			}),
+		}))
+		// rounded-lg appears on the card shell. Without Flush it also appears
+		// on the table wrapper div. With Flush, only once.
+		roundedCount := strings.Count(output, "rounded-lg")
+		if roundedCount != 1 {
+			t.Errorf("expected exactly 1 rounded-lg (from card shell), got %d.\nOutput:\n%s", roundedCount, output)
+		}
+		utils.AssertContains(t, output, "Alice")
+		utils.AssertContains(t, output, "px-4 py-2")
+	})
+
+	t.Run("without Flush the double border is present (confirms test catches the bug)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, display.Card(display.CardProps{
+			Title:   "Users",
+			Padding: display.CardPaddingNone,
+			Body: display.Table(display.TableProps{
+				Headers: []string{"Name"},
+				Rows:    []display.TableRow{display.SimpleTableRow("Alice")},
+			}),
+		}))
+		roundedCount := strings.Count(output, "rounded-lg")
+		if roundedCount != 2 {
+			t.Errorf(
+				"expected 2 rounded-lg (card + table wrapper) without Flush, got %d.\nOutput:\n%s",
+				roundedCount,
+				output,
+			)
+		}
+	})
+}
