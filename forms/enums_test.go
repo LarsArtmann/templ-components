@@ -18,6 +18,10 @@ func TestIsValidEnums(t *testing.T) {
 		{"FormMethod GET", func() bool { return FormMethodIsValid(FormGet) }, true},
 		{"FormMethod POST", func() bool { return FormMethodIsValid(FormPost) }, true},
 		{"FormMethod invalid", func() bool { return FormMethodIsValid(FormMethod("bogus")) }, false},
+		{"RatingSize SM", func() bool { return RatingSizeIsValid(RatingSizeSM) }, true},
+		{"RatingSize MD", func() bool { return RatingSizeIsValid(RatingSizeMD) }, true},
+		{"RatingSize LG", func() bool { return RatingSizeIsValid(RatingSizeLG) }, true},
+		{"RatingSize invalid", func() bool { return RatingSizeIsValid(RatingSize("bogus")) }, false},
 	}
 
 	for _, tt := range tests {

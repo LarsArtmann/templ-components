@@ -66,8 +66,8 @@ func TestDataTableSortURLsGenerated(t *testing.T) {
 	// aria-sort should be present
 	utils.AssertContains(t, output, `aria-sort="ascending"`)
 	// Non-sortable column should NOT have aria-sort
-	nameStart := strings.Index(output, "Role")
-	if nameStart == -1 {
+	found := strings.Contains(output, "Role")
+	if !found {
 		t.Fatal("expected Role in output")
 	}
 }

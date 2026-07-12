@@ -1,0 +1,147 @@
+package forms
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// RatingSize controls the visual size of rating stars.
+type RatingSize string
+
+const (
+	RatingSizeSM RatingSize = "sm"
+	RatingSizeMD RatingSize = "md" // default
+	RatingSizeLG RatingSize = "lg"
+)
+
+//nolint:gochecknoglobals // Package-level lookup table
+var ratingSizeLookup = map[RatingSize]string{
+	RatingSizeSM: "h-4 w-4",
+	RatingSizeMD: "h-5 w-5",
+	RatingSizeLG: "h-6 w-6",
+}
+
+// RatingSizeIsValid reports whether v is one of the defined RatingSize constants.
+func RatingSizeIsValid(v RatingSize) bool {
+	_, ok := ratingSizeLookup[v]
+	return ok
+}
+
+func ratingSizeClass(s RatingSize) string {
+	return utils.Lookup(ratingSizeLookup, s, ratingSizeLookup[RatingSizeMD])
+}
+
+// RatingProps configures an interactive star rating component.
+// Uses radio inputs under the hood for full keyboard accessibility.
+type RatingProps struct {
+	utils.BaseProps
+	Name     string
+	Value    int // current rating (0 = unrated)
+	Max      int // maximum stars (default: 5)
+	Size     RatingSize
+	ReadOnly bool // display-only mode (no inputs)
+	Required bool
+	Label    string
+	HelpText string
+}
+
+// DefaultRatingProps returns sensible defaults.
+func DefaultRatingProps() RatingProps {
+	return RatingProps{
+		Max:  5,
+		Size: RatingSizeMD,
+	}
+}
+
+// Rating renders an accessible star rating using radio inputs.
+// Each star is a labeled radio button with keyboard navigation.
+// In ReadOnly mode, renders a static display with aria-label.
+//
+//	@forms.Rating(forms.RatingProps{
+//	   Name:  "quality",
+//	   Value: 4,
+//	   Max:   5,
+//	})
+templ Rating(props RatingProps) {
+	{{
+		maxStars := props.Max
+		if maxStars <= 0 {
+			maxStars = 5
+		}
+	}}
+	<div class={ utils.Class("space-y-1", props.Class) } { props.Attrs... }>
+		if props.Label != "" {
+			<span class="block text-sm font-medium text-gray-900 dark:text-white">
+				{ props.Label }
+				if props.Required {
+					<span class="text-red-500 dark:text-red-400 ms-0.5" aria-hidden="true">*</span>
+				}
+			</span>
+		}
+		<div
+			class="inline-flex items-center gap-0.5"
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			role={ utils.Ternary(props.ReadOnly, "img", "radiogroup") }
+			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, "Rating")) }
+			if props.Required && !props.ReadOnly {
+				aria-required="true"
+			}
+		>
+			if props.ReadOnly {
+				for i := 1; i <= maxStars; i++ {
+					if i <= props.Value {
+						@icons.Icon(icons.Star, ratingSizeClass(props.Size)+" text-amber-400 dark:text-amber-400")
+					} else {
+						@icons.Icon(icons.Star, ratingSizeClass(props.Size)+" text-gray-300 dark:text-gray-600")
+					}
+				}
+				<span class="sr-only">{ fmt.Sprintf("%d out of %d", props.Value, maxStars) }</span>
+			} else {
+				for i := maxStars; i >= 1; i-- {
+					<input
+						type="radio"
+						name={ props.Name }
+						value={ fmt.Sprintf("%d", i) }
+						if props.ID != "" {
+							id={ fmt.Sprintf("%s-%d", props.ID, i) }
+						}
+						class="sr-only peer"
+						if i == props.Value {
+							checked
+						}
+						if props.Required && i == 1 {
+							required
+						}
+					/>
+					<label
+						if props.ID != "" {
+							for={ fmt.Sprintf("%s-%d", props.ID, i) }
+						}
+						class={ ratingStarLabelClass() }
+					>
+						<span class="sr-only">{ fmt.Sprintf("%d star%s", i, pluralStars(i)) }</span>
+						@icons.Icon(icons.Star, ratingSizeClass(props.Size)+" text-gray-300 dark:text-gray-600 peer-checked:text-amber-400 dark:peer-checked:text-amber-400 peer-focus-visible:text-amber-400 dark:peer-focus-visible:text-amber-400 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 dark:peer-focus-visible:ring-amber-400 rounded cursor-pointer hover:text-amber-300 dark:hover:text-amber-300 "+utils.TransitionColors)
+					</label>
+				}
+			}
+		</div>
+		if props.HelpText != "" {
+			@helpText(props.ID, props.HelpText)
+		}
+	</div>
+}
+
+func ratingStarLabelClass() string {
+	return "inline-flex cursor-pointer"
+}
+
+func pluralStars(n int) string {
+	if n == 1 {
+		return ""
+	}
+	return "s"
+}

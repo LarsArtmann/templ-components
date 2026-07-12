@@ -48,10 +48,12 @@ func sliderInputClass() string {
 //	   Step:  5,
 //	})
 templ Slider(props SliderProps) {
-	{{ step := props.Step
-if step == 0 {
-	step = 1
-} }}
+	{{
+		step := props.Step
+		if step == 0 {
+			step = 1
+		}
+	}}
 	<div class={ utils.Class("space-y-1", props.Class) } { props.Attrs... }>
 		if props.Label != "" {
 			<div class="flex items-center justify-between">
