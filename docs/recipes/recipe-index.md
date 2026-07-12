@@ -4,6 +4,7 @@ Practical guides for common templ-components patterns.
 
 | Recipe                                                        | What you learn                                                                  |
 | ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| [Table Inside Card](table-in-card.md)                         | Flush + compact padding for table-in-card layouts (the admin dashboard pattern) |
 | [Custom Table Rows](custom-table-rows.md)                     | Table.Body slot for custom `<tr>` rendering + TypedHeaders for sortable columns |
 | [Custom 404 Page](custom-404-page.md)                         | NotFound404 component with custom links, search, and HTTP handler integration   |
 | [Cursor Pagination](cursor-pagination.md)                     | Cursor-based "Load more" pattern with HTMX infinite scroll                      |

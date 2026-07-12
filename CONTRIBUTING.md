@@ -63,6 +63,7 @@ architecture, code conventions, and gotchas. The highlights:
 | Class merging            | Always use `utils.Class()` for Tailwind conflict resolution (thread-safe via `sync.Mutex`).                                                                                                                                                                               |
 | Style lookups            | Use maps + `utils.Lookup`, not switches. Structural variants use `if`-branch for DOM structure.                                                                                                                                                                           |
 | Zero runtime panics      | Component code must never panic. Enum lookups fall back gracefully.                                                                                                                                                                                                       |
+| Nested borders           | Components nested inside `Card(CardPaddingNone)` must provide a `Flush`-style option to suppress their own border. See [ADR 0012](docs/adr/0012-flush-prop-for-nested-borders.md) and [Table-in-Card recipe](docs/recipes/table-in-card.md).                              |
 
 ### Commit messages
 

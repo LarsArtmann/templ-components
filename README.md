@@ -148,6 +148,16 @@ Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, p
     Striped: true,
 })
 
+{{ /* Table inside Card — Flush suppresses the double border, CellPadding controls density */ }}
+@display.Card(display.CardProps{Title: "Users", Padding: display.CardPaddingNone}) {
+    @display.Table(display.TableProps{
+        Headers:     []string{"Name", "Email"},
+        Rows:        []display.TableRow{display.SimpleTableRow("Alice", "alice@example.com")},
+        Flush:       true,
+        CellPadding: display.TableCellPaddingCompact,
+    })
+}
+
 @display.Tabs(display.TabsProps{
     Tabs: []display.Tab{
         {ID: "users", Label: "Users", Active: true},
@@ -425,6 +435,7 @@ Wiring up HTMX error feedback in a server-rendered app? See [`docs/recipes/serve
 | Container queries (parent-width-responsive grids)             | [`docs/recipes/container-queries.md`](docs/recipes/container-queries.md)         |
 | Horizontal filter bars (HTMX auto-submit)                     | [`docs/recipes/horizontal-filter-bar.md`](docs/recipes/horizontal-filter-bar.md) |
 | Custom table rows (`Table.Body` slot pattern)                 | [`docs/recipes/custom-table-rows.md`](docs/recipes/custom-table-rows.md)         |
+| Table inside Card (Flush + compact padding)                   | [`docs/recipes/table-in-card.md`](docs/recipes/table-in-card.md)                 |
 | Custom 404 page (server integration)                          | [`docs/recipes/custom-404-page.md`](docs/recipes/custom-404-page.md)             |
 | Semantic token layer (theming with `tc-*` tokens)             | [`docs/adr/0008-semantic-tokens.md`](docs/adr/0008-semantic-tokens.md)           |
 
@@ -436,9 +447,9 @@ Wiring up HTMX error feedback in a server-rendered app? See [`docs/recipes/serve
 | ------------ | --------------------------------------------------- |
 | Components   | 84                                                  |
 | SVG icons    | 101                                                 |
-| Typed enums  | 34                                                  |
+| Typed enums  | 35                                                  |
 | Packages     | 11                                                  |
-| Tests        | 456 functions + ~660 subtests                       |
+| Tests        | ~850 functions + ~1,700 subtests                    |
 | Coverage     | ~75% (72–79% per package)                           |
 | Dependencies | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
