@@ -49,7 +49,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 26 components
+#### `display` — 27 components
 
 | Component          | Signature                                   | One-liner                                                                                                                                        |
 | ------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -68,6 +68,7 @@ Don't know what to look for? Find your page type:
 | `Popover`          | `Popover(props PopoverProps)`               | Button-triggered floating panel — 4 positions, arbitrary content, click-outside dismiss                                                          |
 | `Accordion`        | `Accordion(props AccordionProps)`           | Collapsible sections — open/closed state, keyboard nav                                                                                           |
 | `Table`            | `Table(props TableProps)`                   | Responsive data table — striping, hover, caption, bordered, `Body` slot, `Row.Href`, `Flush` (card nesting), `CellPadding` (comfortable/compact) |
+| `DataTable`        | `DataTable(props DataTableProps)`           | Data table with integrated sort management, pagination, empty-state — composes `Table` internally                                                |
 | `Tabs`             | `Tabs(props TabsProps)`                     | Tabbed interface — underline/pills, optional client-side JS                                                                                      |
 | `EmptyState`       | `EmptyState(props EmptyStateProps)`         | Empty-data placeholder — icon, title, description, action                                                                                        |
 | `SimpleEmptyState` | `SimpleEmptyState(message string)`          | Minimal empty state — text only                                                                                                                  |
@@ -80,7 +81,7 @@ Don't know what to look for? Find your page type:
 | `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards                                                                                                             |
 | `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback, optional `Rounded` for circular                                                                      |
 
-#### `forms` — 16 components
+#### `forms` — 19 components
 
 | Component           | Signature                                         | One-liner                                                                                  |
 | ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -100,6 +101,9 @@ Don't know what to look for? Find your page type:
 | `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                  |
 | `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                   |
 | `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                   |
+| `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | HTMX auto-submit select for filter bars                                                    |
+| `Slider`            | `Slider(props SliderProps)`                       | Range input slider with label, value display, help text                                    |
+| `Rating`            | `Rating(props RatingProps)`                       | Accessible star rating — radio inputs, read-only mode, 3 sizes                             |
 
 #### `feedback` — 13 components
 

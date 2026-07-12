@@ -132,3 +132,36 @@ func TestGoldenTableSortableHeaders(t *testing.T) {
 	}))
 	golden.Assert(t, "table_sortable_headers", output)
 }
+
+func TestGoldenDataTable(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, DataTable(DataTableProps{
+		Columns: []DataTableColumn{
+			{Label: "Name", Sortable: true},
+			{Label: "Email"},
+		},
+		Rows: []TableRow{
+			SimpleTableRow("Alice", "alice@example.com"),
+			SimpleTableRow("Bob", "bob@example.com"),
+		},
+		Striped: true,
+	}))
+	golden.Assert(t, "datatable_basic", output)
+}
+
+func TestGoldenDataTableSortable(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, DataTable(DataTableProps{
+		Columns: []DataTableColumn{
+			{Label: "Name", Sortable: true},
+			{Label: "Email", Sortable: true, SortKey: "email_address"},
+		},
+		ActiveSortColumn: "Name",
+		ActiveSortDir:    SortAsc,
+		SortBaseURL:      "/users",
+		Rows: []TableRow{
+			SimpleTableRow("Alice", "alice@example.com"),
+		},
+	}))
+	golden.Assert(t, "datatable_sortable", output)
+}

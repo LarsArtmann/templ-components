@@ -137,6 +137,7 @@ func TestRatingSizes(t *testing.T) {
 	}
 }
 
+//nolint:unparam // substr is always type="radio" but kept for flexibility
 func substringCount(s, substr string) int {
 	count := 0
 	for {

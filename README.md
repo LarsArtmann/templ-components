@@ -109,9 +109,9 @@ props.CSSPath = ""                   // suppresses <link rel="stylesheet" href="
 
 If you load htmx from a different CDN or self-host, see `PageProps.HTMXCDN`.
 
-### `display` — Data Display (26 components)
+### `display` — Data Display (27 components)
 
-Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, stat cards, page headers, definition lists, responsive grid, copy button, relative time, count badge, image, and more.
+Cards, badges, modals, tables (Table + DataTable), tabs, avatars, tooltips, accordions, dropdowns, popovers, stat cards, page headers, definition lists, responsive grid, copy button, relative time, count badge, image, and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {
@@ -157,6 +157,20 @@ Cards, badges, modals, tables, tabs, avatars, tooltips, accordions, dropdowns, p
         CellPadding: display.TableCellPaddingCompact,
     })
 }
+
+{{ /* DataTable — integrated sort management, pagination, empty-state */ }}
+@display.DataTable(display.DataTableProps{
+    Columns: []display.DataTableColumn{
+        {Label: "Name", Sortable: true},
+        {Label: "Email", Sortable: true, SortKey: "email_address"},
+    },
+    ActiveSortColumn: "Name",
+    ActiveSortDir:    display.SortAsc,
+    SortBaseURL:      "/users",
+    Rows: []display.TableRow{
+        display.SimpleTableRow("Alice", "alice@example.com"),
+    },
+})
 
 @display.Tabs(display.TabsProps{
     Tabs: []display.Tab{
@@ -227,9 +241,9 @@ Alerts, toasts, spinners, progress bars, skeletons, and loading states.
 })
 ```
 
-### `forms` — Form Controls (16 components)
+### `forms` — Form Controls (19 components)
 
-Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, labels, and validation errors.
+Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, filter dropdowns, slider, rating, labels, and validation errors.
 
 ```templ
 @forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email address"})
@@ -248,6 +262,10 @@ Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date picke
 @forms.Combobox(forms.ComboboxProps{Name: "country", Label: "Country", Options: []forms.ComboboxOption{
     {Value: "de", Label: "Germany"}, {Value: "at", Label: "Austria"},
 }})
+@forms.FilterDropdown(forms.FilterDropdownProps{Name: "status", Value: "active", HxGet: "/api/users", HxTarget: "#user-list",
+    Options: []forms.SelectOption{{Value: "all", Label: "All"}, {Value: "active", Label: "Active"}}})
+@forms.Slider(forms.SliderProps{Name: "volume", Label: "Volume", Min: 0, Max: 100, Value: 50, Step: 5, ShowValue: true})
+@forms.Rating(forms.RatingProps{Name: "quality", Value: 4, Max: 5, Label: "Quality"})
 ```
 
 For horizontal filter bars, use `FormProps{Inline: true}`:
