@@ -52,6 +52,9 @@ func componentTypes() []any {
 		display.ImageProps{},
 		display.PopoverProps{},
 		display.DataTableProps{},
+		display.HoverCardProps{},
+		display.ContextMenuProps{},
+		display.CarouselProps{},
 
 		// forms (16)
 		forms.InputProps{},
@@ -70,6 +73,8 @@ func componentTypes() []any {
 		forms.FilterDropdownProps{},
 		forms.SliderProps{},
 		forms.RatingProps{},
+		forms.TagsInputProps{},
+		forms.CalendarProps{},
 
 		// feedback (6)
 		feedback.AlertProps{},

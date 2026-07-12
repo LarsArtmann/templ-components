@@ -1,0 +1,116 @@
+package display
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// CarouselSlide represents a single slide in a carousel.
+type CarouselSlide struct {
+	Content templ.Component
+}
+
+// CarouselProps configures a content carousel with prev/next navigation.
+// Uses a CSP-safe singleton script for slide control.
+type CarouselProps struct {
+	utils.BaseProps
+	Slides         []CarouselSlide
+	ShowIndicators bool
+	ShowArrows     bool
+}
+
+// DefaultCarouselProps returns sensible defaults.
+func DefaultCarouselProps() CarouselProps {
+	return CarouselProps{
+		ShowArrows: true,
+	}
+}
+
+// Carousel renders a slide carousel with prev/next buttons and optional
+// dot indicators. The first slide is visible by default.
+//
+//	@display.Carousel(display.CarouselProps{
+//	   Slides: []display.CarouselSlide{
+//	     {Content: templ.Raw("<div>Slide 1</div>")},
+//	     {Content: templ.Raw("<div>Slide 2</div>")},
+//	   },
+//	   ShowIndicators: true,
+//	})
+templ Carousel(props CarouselProps) {
+	{{ id := utils.EnsureID("carousel", props.ID) }}
+	<div
+		class={ utils.Class("relative overflow-hidden rounded-lg", props.Class) }
+		data-tc-carousel={ id }
+		role="region"
+		aria-roledescription="carousel"
+		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Carousel") }
+		{ props.Attrs... }
+	>
+		<div class="flex transition-transform motion-reduce:transition-none" data-tc-carousel-track>
+			for i, slide := range props.Slides {
+				<div
+					class="w-full flex-shrink-0"
+					role="group"
+					aria-roledescription="slide"
+					aria-label={ fmt.Sprintf("Slide %d of %d", i+1, len(props.Slides)) }
+				>
+					if slide.Content != nil {
+						@slide.Content
+					}
+				</div>
+			}
+		</div>
+		if props.ShowArrows && len(props.Slides) > 1 {
+			<button
+				type="button"
+				class="absolute start-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 shadow-sm transition-opacity motion-reduce:transition-none"
+				data-tc-carousel-prev
+				aria-label="Previous slide"
+			>
+				<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" d={ svg.PathArrowLeft }></path>
+				</svg>
+			</button>
+			<button
+				type="button"
+				class="absolute end-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 shadow-sm transition-opacity motion-reduce:transition-none"
+				data-tc-carousel-next
+				aria-label="Next slide"
+			>
+				<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+					<path stroke-linecap="round" stroke-linejoin="round" d={ svg.PathArrowRight }></path>
+				</svg>
+			</button>
+		}
+		if props.ShowIndicators && len(props.Slides) > 1 {
+			<div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex gap-1.5">
+				for i := range props.Slides {
+					<button
+						type="button"
+						class={ utils.Ternary(i == 0, "h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500 transition-colors motion-reduce:transition-none", "h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60 transition-colors motion-reduce:transition-none") }
+						data-tc-carousel-dot={ fmt.Sprintf("%d", i) }
+						aria-label={ fmt.Sprintf("Go to slide %d", i+1) }
+					></button>
+				}
+			</div>
+		}
+		if props.Nonce != "" {
+			<script nonce={ props.Nonce }>
+				(function(){if(window.tcCarouselAttached)return;window.tcCarouselAttached=true;
+				document.addEventListener('click',function(e){
+				var next=e.target.closest('[data-tc-carousel-next]');var prev=e.target.closest('[data-tc-carousel-prev]');var dot=e.target.closest('[data-tc-carousel-dot]');
+				if(!next&&!prev&&!dot)return;
+				var c=e.target.closest('[data-tc-carousel]');if(!c)return;
+				var track=c.querySelector('[data-tc-carousel-track]');if(!track)return;
+				var slides=track.children;var n=slides.length;if(n===0)return;
+				var current=parseInt(c.dataset.current||'0',10);
+				if(next)current=(current+1)%n;if(prev)current=(current-1+n)%n;if(dot)current=parseInt(dot.getAttribute('data-tc-carousel-dot'),10);
+				c.dataset.current=current;track.style.transform='translateX(-'+(current*100)+'%)';
+				var dots=c.querySelectorAll('[data-tc-carousel-dot]');for(var i=0;i<dots.length;i++){if(i===current){dots[i].className='h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500 transition-colors motion-reduce:transition-none';}else{dots[i].className='h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60 transition-colors motion-reduce:transition-none';}}
+				});})();
+			</script>
+		}
+	</div>
+}
