@@ -1,0 +1,189 @@
+package display
+
+import (
+	"net/url"
+	"strings"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// DataTableColumn defines a column in a DataTable with sort configuration.
+type DataTableColumn struct {
+	Label    string
+	Sortable bool
+	// SortKey is the query-param value representing this column when sorting
+	// (e.g. "created_at"). When empty, defaults to the lowercase Label.
+	SortKey string
+}
+
+// DataTableProps configures a data table with integrated sort management,
+// optional pagination, and empty-state rendering. It composes Table internally,
+// computing TypedHeaders with correct sort URLs from the current sort state.
+//
+// Consumers provide column definitions and the current sort state (read from
+// URL query params on the server). DataTable generates the correct sort-toggle
+// links for each header automatically.
+type DataTableProps struct {
+	utils.BaseProps
+	Columns []DataTableColumn
+	Rows    []TableRow
+	// ActiveSortColumn is the Label of the currently sorted column.
+	ActiveSortColumn string
+	// ActiveSortDir is the current sort direction of the active column.
+	ActiveSortDir SortDirection
+	// SortBaseURL is the base URL for sort links (e.g. "/users").
+	// Query params for sort/dir are appended automatically.
+	SortBaseURL string
+	// SortParam is the query-parameter name for the sort column (default: "sort").
+	SortParam string
+	// DirParam is the query-parameter name for the sort direction (default: "dir").
+	DirParam string
+	// Pagination, when set, renders below the table. Pass a
+	// navigation.Pagination component or any custom pager.
+	Pagination templ.Component
+	// EmptyState, when set and Rows is empty, replaces the table entirely.
+	EmptyState templ.Component
+	// Striped, Hover, Bordered — table appearance options (passed to Table).
+	Striped  bool
+	Hover    bool
+	Bordered bool
+	// Flush suppresses the table wrapper border — use when nesting inside
+	// a Card(CardPaddingNone) to avoid double borders.
+	Flush bool
+	// CellPadding controls vertical density (passed to Table).
+	CellPadding TableCellPadding
+	// Caption is an accessibility-only table caption (visually hidden).
+	Caption string
+}
+
+// DefaultDataTableProps returns sensible defaults.
+func DefaultDataTableProps() DataTableProps {
+	return DataTableProps{
+		Striped:   true,
+		SortParam: "sort",
+		DirParam:  "dir",
+	}
+}
+
+// toggleSortDir reverses the sort direction for header-click toggling.
+func toggleSortDir(d SortDirection) SortDirection {
+	if d == SortAsc {
+		return SortDesc
+	}
+	return SortAsc
+}
+
+// columnSortKey returns the sort key for a column, defaulting to lowercase Label.
+func columnSortKey(col DataTableColumn) string {
+	if col.SortKey != "" {
+		return col.SortKey
+	}
+	return strings.ToLower(col.Label)
+}
+
+// dataTableSortURL builds a sort URL: baseURL?sortParam=sortKey&dirParam=direction.
+func dataTableSortURL(baseURL, sortParam, sortKey string, direction SortDirection, dirParam string) string {
+	if baseURL == "" {
+		return ""
+	}
+	params := url.Values{}
+	params.Set(sortParam, sortKey)
+	params.Set(dirParam, string(direction))
+	sep := "?"
+	if strings.Contains(baseURL, "?") {
+		sep = "&"
+	}
+	return baseURL + sep + params.Encode()
+}
+
+// dataTableTypedHeaders computes TypedHeaders from columns + sort state.
+// The active column gets its current direction and a toggle link.
+// Other sortable columns get an ascending-sort link.
+func dataTableTypedHeaders(props DataTableProps) []TableHeader {
+	sortParam := props.SortParam
+	if sortParam == "" {
+		sortParam = "sort"
+	}
+	dirParam := props.DirParam
+	if dirParam == "" {
+		dirParam = "dir"
+	}
+	headers := make([]TableHeader, len(props.Columns))
+	for i, col := range props.Columns {
+		h := TableHeader{
+			Label:    col.Label,
+			Sortable: col.Sortable,
+		}
+		if col.Sortable && props.SortBaseURL != "" {
+			key := columnSortKey(col)
+			if col.Label == props.ActiveSortColumn {
+				h.SortDirection = props.ActiveSortDir
+				h.Href = dataTableSortURL(
+					props.SortBaseURL, sortParam, key,
+					toggleSortDir(props.ActiveSortDir), dirParam,
+				)
+			} else {
+				h.Href = dataTableSortURL(
+					props.SortBaseURL, sortParam, key,
+					SortAsc, dirParam,
+				)
+			}
+		}
+		headers[i] = h
+	}
+	return headers
+}
+
+// DataTable renders a data table with integrated sort management, optional
+// pagination, and empty-state handling. It composes the Table component
+// internally, generating correct sort-toggle URLs for each column header.
+//
+//	@display.DataTable(display.DataTableProps{
+//	   Columns: []display.DataTableColumn{
+//	     {Label: "Name", Sortable: true},
+//	     {Label: "Email", Sortable: true, SortKey: "email_address"},
+//	     {Label: "Role"},
+//	   },
+//	   Rows: []display.TableRow{
+//	     display.SimpleTableRow("Alice", "alice@example.com", "Admin"),
+//	     display.SimpleTableRow("Bob", "bob@example.com", "User"),
+//	   },
+//	   ActiveSortColumn: "Name",
+//	   ActiveSortDir:    display.SortAsc,
+//	   SortBaseURL:      "/users",
+//	})
+templ DataTable(props DataTableProps) {
+	{{ hasRows := len(props.Rows) > 0 }}
+	if hasRows {
+		@Table(TableProps{
+			BaseProps:    props.BaseProps,
+			Caption:      props.Caption,
+			TypedHeaders: dataTableTypedHeaders(props),
+			Rows:         props.Rows,
+			Striped:      props.Striped,
+			Hover:        props.Hover,
+			Bordered:     props.Bordered,
+			Flush:        props.Flush,
+			CellPadding:  props.CellPadding,
+		})
+	} else if props.EmptyState != nil {
+		@props.EmptyState
+	} else {
+		@Table(TableProps{
+			BaseProps:    props.BaseProps,
+			Caption:      props.Caption,
+			TypedHeaders: dataTableTypedHeaders(props),
+			Rows:         props.Rows,
+			Striped:      props.Striped,
+			Hover:        props.Hover,
+			Bordered:     props.Bordered,
+			Flush:        props.Flush,
+			CellPadding:  props.CellPadding,
+		})
+	}
+	if hasRows && props.Pagination != nil {
+		<div class="mt-4">
+			@props.Pagination
+		</div>
+	}
+}

@@ -45,3 +45,13 @@ func TestHTMXDarkMode(t *testing.T) {
 		utils.AssertContains(t, output, "dark:")
 	})
 }
+
+// TestRetryUsesHtmxTriggerNotClick verifies the retry logic uses htmx.trigger()
+// instead of the DOM .click() method. This ensures retries work for elements
+// triggered by non-click events (e.g., hx-trigger="change").
+func TestRetryUsesHtmxTriggerNotClick(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, GlobalErrorHandling(DefaultErrorHandlingConfig()))
+	utils.AssertContains(t, output, "htmx.trigger(elt")
+	utils.AssertNotContains(t, output, "elt.click()")
+}

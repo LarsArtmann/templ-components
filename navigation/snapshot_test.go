@@ -193,7 +193,7 @@ func TestMobileMenuToggleRender(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, MobileMenuToggle(true, "test-menu"))
 		utils.AssertContains(t, output, `data-mobile-menu-toggle="test-menu"`)
-		utils.AssertContains(t, output, `aria-controls="tc-mobile-menu-test-menu"`)
+		utils.AssertContains(t, output, `aria-controls="test-menu"`)
 		utils.AssertContains(t, output, `aria-expanded="false"`)
 	})
 	t.Run("hidden", func(t *testing.T) {
@@ -213,7 +213,8 @@ func TestMobileMenuRender(t *testing.T) {
 	output := utils.Render(t, MobileMenu(testNavLinks, "/", "test-nonce", "test-menu"))
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, navItemAbout)
-	utils.AssertContains(t, output, `id="tc-mobile-menu-test-menu"`)
+	utils.AssertContains(t, output, `id="test-menu"`)
+	utils.AssertNotContains(t, output, `tc-mobile-menu-tc-mobile-menu-`)
 	utils.AssertContains(t, output, `nonce="test-nonce"`)
 }
 

@@ -1,7 +1,10 @@
 // Radio and RadioGroup component types and helpers.
 package forms
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // RadioProps configures a single radio button input
 type RadioProps struct {
@@ -46,7 +49,7 @@ func DefaultRadioGroupProps() RadioGroupProps {
 
 // radioItemProps builds a RadioProps for an option within a group.
 // Auto-generates the ID from the group ID and option value.
-func radioItemProps(groupID, name string, opt RadioOption, required bool) RadioProps {
+func radioItemProps(groupID, name string, opt RadioOption, required bool, ariaAttrs templ.Attributes) RadioProps {
 	p := RadioProps{ //nolint:exhaustruct // BaseProps.ID set conditionally below
 		Name:     name,
 		Value:    opt.Value,
@@ -57,6 +60,9 @@ func radioItemProps(groupID, name string, opt RadioOption, required bool) RadioP
 	}
 	if groupID != "" {
 		p.ID = groupID + "-" + SanitizeID(opt.Value)
+	}
+	if len(ariaAttrs) > 0 {
+		p.Attrs = ariaAttrs
 	}
 	return p
 }

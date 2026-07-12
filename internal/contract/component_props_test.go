@@ -51,6 +51,7 @@ func componentTypes() []any {
 		display.DefinitionGridProps{},
 		display.ImageProps{},
 		display.PopoverProps{},
+		display.DataTableProps{},
 
 		// forms (13)
 		forms.InputProps{},
@@ -66,6 +67,9 @@ func componentTypes() []any {
 		forms.ValidationSummaryProps{},
 		forms.RadioProps{},
 		forms.RadioGroupProps{},
+		forms.FilterDropdownProps{},
+		forms.SliderProps{},
+		forms.RatingProps{},
 
 		// feedback (6)
 		feedback.AlertProps{},

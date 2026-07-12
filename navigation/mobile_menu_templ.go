@@ -67,9 +67,9 @@ func MobileMenuToggle(show bool, menuID string) templ.Component {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var4 string
-			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue("tc-mobile-menu-" + menuID)
+			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 19, Col: 46}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 19, Col: 26}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -141,9 +141,9 @@ func MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID s
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var7 string
-			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue("tc-mobile-menu-" + menuID)
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 38, Col: 63}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 38, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -156,7 +156,7 @@ func MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID s
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 38, Col: 94}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 38, Col: 74}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {

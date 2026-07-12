@@ -16,7 +16,7 @@ templ MobileMenuToggle(show bool, menuID string) {
 			<button
 				type="button"
 				class={ "inline-flex items-center justify-center rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:focus:ring-blue-400 dark:hover:bg-gray-800 dark:hover:text-gray-300 " + utils.TransitionColors }
-				aria-controls={ "tc-mobile-menu-" + menuID }
+				aria-controls={ menuID }
 				aria-expanded="false"
 				data-mobile-menu-toggle={ menuID }
 			>
@@ -35,7 +35,7 @@ templ MobileMenuToggle(show bool, menuID string) {
 //	@navigation.MobileMenu(links, "/", "", "abc123")
 templ MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID string) {
 	if len(links) > 0 {
-		<div class="hidden sm:hidden" id={ "tc-mobile-menu-" + menuID } data-mobile-menu-id={ menuID }>
+		<div class="hidden sm:hidden" id={ menuID } data-mobile-menu-id={ menuID }>
 			<div class="space-y-1 pb-3 pt-2 border-t border-gray-200 dark:border-gray-800">
 				for _, link := range links {
 					@MobileNavLink(link, currentPath)

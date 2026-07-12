@@ -264,6 +264,7 @@ func RadioGroup(props RadioGroupProps) templ.Component {
 			templ_7745c5c3_Var12 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
+		errorAttrs := ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))
 		var templ_7745c5c3_Var13 = []any{utils.Class("", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
 		if templ_7745c5c3_Err != nil {
@@ -281,7 +282,7 @@ func RadioGroup(props RadioGroupProps) templ.Component {
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/radio.templ`, Line: 69, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/radio.templ`, Line: 70, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 			if templ_7745c5c3_Err != nil {
@@ -317,7 +318,7 @@ func RadioGroup(props RadioGroupProps) templ.Component {
 			var templ_7745c5c3_Var16 string
 			templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/radio.templ`, Line: 73, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/radio.templ`, Line: 74, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var16)
 			if templ_7745c5c3_Err != nil {
@@ -334,7 +335,7 @@ func RadioGroup(props RadioGroupProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), "")))
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, errorAttrs)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -354,7 +355,7 @@ func RadioGroup(props RadioGroupProps) templ.Component {
 			var templ_7745c5c3_Var17 string
 			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(props.Label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/radio.templ`, Line: 83, Col: 17}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/radio.templ`, Line: 84, Col: 17}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
 			if templ_7745c5c3_Err != nil {
@@ -398,7 +399,7 @@ func RadioGroup(props RadioGroupProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		for _, opt := range props.Options {
-			templ_7745c5c3_Err = Radio(radioItemProps(props.ID, props.Name, opt, props.Required)).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = Radio(radioItemProps(props.ID, props.Name, opt, props.Required, errorAttrs)).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

@@ -155,7 +155,9 @@ templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
 					if (retries < MAX_RETRIES) {
 						elt.setAttribute('data-tc-retry', String(retries + 1));
 						setTimeout(function() {
-							if (elt && elt.click) elt.click();
+							var triggerSpec = elt.getAttribute('hx-trigger');
+							var eventName = triggerSpec ? triggerSpec.split(' ')[0].trim() : 'click';
+							htmx.trigger(elt, eventName);
 						}, RETRY_DELAY_MS * (retries + 1));
 						return;
 					}

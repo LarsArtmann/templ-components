@@ -26,6 +26,27 @@ type BreadcrumbsProps struct {
 	// BaseURL is used to resolve relative Hrefs into absolute URLs for
 	// JSON-LD structured data (schema.org requires absolute URLs).
 	BaseURL string
+	// CurrentPath enables auto-detection of the active breadcrumb.
+	// When set, the crumb whose Href matches CurrentPath is auto-highlighted.
+	// Explicit Active=true on an item always takes priority.
+	// When empty, active state falls back to the manual Active flag or
+	// an empty Href (terminal crumb).
+	CurrentPath string
+}
+
+// breadcrumbItemActive determines whether a crumb should render as active.
+// Priority: explicit Active flag > empty Href (terminal crumb) > CurrentPath match.
+func breadcrumbItemActive(item BreadcrumbItem, currentPath string) bool {
+	if item.Active {
+		return true
+	}
+	if item.Href == "" {
+		return true
+	}
+	if currentPath == "" {
+		return false
+	}
+	return IsActive(item.Href, currentPath)
 }
 
 // DefaultBreadcrumbsProps returns sensible defaults
@@ -123,7 +144,7 @@ templ Breadcrumbs(props BreadcrumbsProps) {
 						@breadcrumbSeparator(props.Separator)
 					}
 					@activeSpanOrLink(
-						item.Active || item.Href == "",
+						breadcrumbItemActive(item, props.CurrentPath),
 						item.Href,
 						item.Text,
 						"text-sm font-medium text-gray-500 dark:text-gray-400",

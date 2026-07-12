@@ -62,6 +62,29 @@ func ExampleTable() {
 	fmt.Println(buf.String())
 }
 
+func ExampleDataTable() {
+	// DataTable wraps Table with integrated sort management, pagination,
+	// and empty-state handling. Set SortBaseURL + ActiveSortColumn/Dir to
+	// auto-generate sort-toggle links for each column header.
+	props := display.DataTableProps{
+		Columns: []display.DataTableColumn{
+			{Label: "Name", Sortable: true},
+			{Label: "Email", Sortable: true, SortKey: "email_address"},
+			{Label: "Role"},
+		},
+		Rows: []display.TableRow{
+			display.SimpleTableRow("Alice", "alice@example.com", "Admin"),
+			display.SimpleTableRow("Bob", "bob@example.com", "User"),
+		},
+		ActiveSortColumn: "Name",
+		ActiveSortDir:    display.SortAsc,
+		SortBaseURL:      "/users",
+	}
+	var buf bytes.Buffer
+	_ = display.DataTable(props).Render(context.Background(), &buf)
+	fmt.Println(buf.String())
+}
+
 func ExampleTable_flushInCard() {
 	// When nesting a Table inside a Card(CardPaddingNone), set Flush to true
 	// to suppress the table's own border and avoid a double-border defect.

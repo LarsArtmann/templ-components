@@ -34,6 +34,27 @@ type BreadcrumbsProps struct {
 	// BaseURL is used to resolve relative Hrefs into absolute URLs for
 	// JSON-LD structured data (schema.org requires absolute URLs).
 	BaseURL string
+	// CurrentPath enables auto-detection of the active breadcrumb.
+	// When set, the crumb whose Href matches CurrentPath is auto-highlighted.
+	// Explicit Active=true on an item always takes priority.
+	// When empty, active state falls back to the manual Active flag or
+	// an empty Href (terminal crumb).
+	CurrentPath string
+}
+
+// breadcrumbItemActive determines whether a crumb should render as active.
+// Priority: explicit Active flag > empty Href (terminal crumb) > CurrentPath match.
+func breadcrumbItemActive(item BreadcrumbItem, currentPath string) bool {
+	if item.Active {
+		return true
+	}
+	if item.Href == "" {
+		return true
+	}
+	if currentPath == "" {
+		return false
+	}
+	return IsActive(item.Href, currentPath)
 }
 
 // DefaultBreadcrumbsProps returns sensible defaults
@@ -127,7 +148,7 @@ func breadcrumbSeparator(custom string) templ.Component {
 			var templ_7745c5c3_Var2 string
 			templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.JoinStringErrs(custom)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 95, Col: 81}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 116, Col: 81}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var2))
 			if templ_7745c5c3_Err != nil {
@@ -194,7 +215,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 113, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 134, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -225,7 +246,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Breadcrumb"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 116, Col: 82}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/breadcrumbs.templ`, Line: 137, Col: 82}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {
@@ -255,7 +276,7 @@ func Breadcrumbs(props BreadcrumbsProps) templ.Component {
 				}
 			}
 			templ_7745c5c3_Err = activeSpanOrLink(
-				item.Active || item.Href == "",
+				breadcrumbItemActive(item, props.CurrentPath),
 				item.Href,
 				item.Text,
 				"text-sm font-medium text-gray-500 dark:text-gray-400",

@@ -8,19 +8,19 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 
 ## Overview
 
-| Package      | Components    | Description                                                                                                                                                                                                         |
-| ------------ | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                               |
-| `display`    | 26            | UI display: cards, badges, buttons, modals, drawers, tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, empty states, page headers, definition lists, copy button, relative time, count badge, image |
-| `errorpage`  | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                                        |
-| `feedback`   | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                                   |
-| `forms`      | 16            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation                                                                                           |
-| `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                                                                                       |
-| `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                                                                           |
-| `layout`     | 6             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags                                                                                                                                         |
-| `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                    |
+| Package      | Components    | Description                                                                                                                                                                                                                      |
+| ------------ | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                                            |
+| `display`    | 27            | UI display: cards, badges, buttons, modals, drawers, tables, data tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, empty states, page headers, definition lists, copy button, relative time, count badge, image |
+| `errorpage`  | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                                                     |
+| `feedback`   | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                                                |
+| `forms`      | 17            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, filter dropdowns, validation                                                                                      |
+| `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                                                                                                    |
+| `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                                                                                        |
+| `layout`     | 6             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags                                                                                                                                                      |
+| `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                 |
 
-**Totals:** 84 templ components, 101 icon names, 34 typed enums (34 with `IsValid()`), 64 generated `*_templ.go` files, ~24,500 lines of Go/templ source
+**Totals:** 86 templ components, 101 icon names, 34 typed enums (34 with `IsValid()`), 66 generated `*_templ.go` files, ~25,500 lines of Go/templ source
 
 ---
 
@@ -94,6 +94,7 @@ type BaseProps struct {
 | `CountBadge`       | FULLY_FUNCTIONAL | Notification count overlay      | Absolute-positioned badge, overflow "N+", aria-hidden decorative                                                                                                                                                         |
 | `DefinitionGrid`   | FULLY_FUNCTIONAL | Responsive key/value grid       | Term-detail pairs in SimpleCard tiles, composes through Grid                                                                                                                                                             |
 | `Image`            | FULLY_FUNCTIONAL | Lazy-loaded image               | `loading=lazy` default, width/height for CLS, CSP-safe fallback, optional `Rounded` for circular                                                                                                                         |
+| `DataTable`        | FULLY_FUNCTIONAL | Data table with sort + paging   | Composes Table, auto-generates sort-toggle URLs from `ActiveSortColumn`/`ActiveSortDir`/`SortBaseURL`, optional `Pagination` slot, optional `EmptyState` slot                                                            |
 
 ### Enums
 
@@ -260,6 +261,7 @@ Used by both Alert and Toast for consistent visual styling.
 | `InputGroup`        | FULLY_FUNCTIONAL | Input group container    | Groups multiple inputs with shared styling                                                                                                                                  |
 | `FormFieldWrapper`  | FULLY_FUNCTIONAL | Shared field chrome      | Label + FieldError + helpText, used by Input/Select/Textarea                                                                                                                |
 | `Radio`             | FULLY_FUNCTIONAL | Single radio button      | Sub-component of RadioGroup                                                                                                                                                 |
+| `FilterDropdown`    | FULLY_FUNCTIONAL | HTMX filter select       | Auto-submit on change, `hx-get`/`hx-target`/`hx-trigger`, `Value` pre-select, `HxInclude` for multi-field filter forms                                                      |
 
 ### Enums
 
@@ -396,14 +398,14 @@ _(None currently)_
 
 See `TODO_LIST.md` for the full verified inventory. Highlights:
 
-| Feature / Component    | Package  | Status       | Notes                                                                 |
-| ---------------------- | -------- | ------------ | --------------------------------------------------------------------- |
-| `DataTable`            | display  | ⚪ `PLANNED` | High-level sortable/filtering/pagination wrapper around `TableHeader` |
-| `FilterDropdown`       | forms    | ⚪ `PLANNED` | Purpose-built for HTMX filter bars                                    |
-| `Validate() error`     | all      | ⚪ `PLANNED` | v1.0 — design decision needed (84 components)                         |
-| `internal/testutil/`   | internal | ⚪ `PLANNED` | v1.0 — move test helpers (70+ files depend on exports)                |
-| Semantic token layer   | all      | ⚪ `PLANNED` | v1.0 — `bg-tc-primary` aliases (ADR 0008, 256 color refs)             |
-| Self-host htmx default | layout   | ⚪ `PLANNED` | v1.0 — breaking CSP change (ADR 0007)                                 |
-| Native `<dialog>`      | display  | ⚪ `PLANNED` | v2.0 — Modal/Drawer architecture change                               |
-| Compound components    | display  | —            | v2.0 — Trigger/Content/Close API for overlays                         |
-| Docs/showcase site     | —        | ⚪ `PLANNED` | Live rendered component catalog                                       |
+| Feature / Component    | Package  | Status       | Notes                                                             |
+| ---------------------- | -------- | ------------ | ----------------------------------------------------------------- |
+| `DataTable`            | display  | ✅ `DONE`    | High-level sortable/pagination/empty-state wrapper around `Table` |
+| `FilterDropdown`       | forms    | ✅ `DONE`    | Purpose-built for HTMX filter bars                                |
+| `Validate() error`     | all      | ⚪ `PLANNED` | v1.0 — design decision needed (84 components)                     |
+| `internal/testutil/`   | internal | ⚪ `PLANNED` | v1.0 — move test helpers (70+ files depend on exports)            |
+| Semantic token layer   | all      | ⚪ `PLANNED` | v1.0 — `bg-tc-primary` aliases (ADR 0008, 256 color refs)         |
+| Self-host htmx default | layout   | ⚪ `PLANNED` | v1.0 — breaking CSP change (ADR 0007)                             |
+| Native `<dialog>`      | display  | ⚪ `PLANNED` | v2.0 — Modal/Drawer architecture change                           |
+| Compound components    | display  | —            | v2.0 — Trigger/Content/Close API for overlays                     |
+| Docs/showcase site     | —        | ⚪ `PLANNED` | Live rendered component catalog                                   |
