@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.17.0] — 2026-07-12
+
 9 new components (DataTable, FilterDropdown, Slider, Rating, TagsInput, HoverCard, ContextMenu, Carousel, Calendar), 5 audit bug fixes, coverage tests, ADR 0013, demo /forms route.
 
 ### Added
