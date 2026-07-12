@@ -22,6 +22,9 @@ func TestIsValidEnums(t *testing.T) {
 		{"RatingSize MD", func() bool { return RatingSizeIsValid(RatingSizeMD) }, true},
 		{"RatingSize LG", func() bool { return RatingSizeIsValid(RatingSizeLG) }, true},
 		{"RatingSize invalid", func() bool { return RatingSizeIsValid(RatingSize("bogus")) }, false},
+		{"EnterKeyHint Send", func() bool { return EnterKeyHintTypeIsValid(EnterKeyHintSend) }, true},
+		{"EnterKeyHint Search", func() bool { return EnterKeyHintTypeIsValid(EnterKeyHintSearch) }, true},
+		{"EnterKeyHint invalid", func() bool { return EnterKeyHintTypeIsValid(EnterKeyHintType("bogus")) }, false},
 	}
 
 	for _, tt := range tests {

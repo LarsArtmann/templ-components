@@ -165,3 +165,48 @@ func TestGoldenDataTableSortable(t *testing.T) {
 	}))
 	golden.Assert(t, "datatable_sortable", output)
 }
+
+func TestGoldenModal(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Modal(ModalProps{
+		BaseProps: utils.BaseProps{ID: "confirm-modal", Nonce: "nonce123"},
+		Title:     "Confirm Action",
+		Size:      ModalSizeMD,
+	}))
+	golden.Assert(t, "modal", output)
+}
+
+func TestGoldenDrawer(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Drawer(DrawerProps{
+		BaseProps: utils.BaseProps{ID: "filter-drawer", Nonce: "nonce123"},
+		Title:     "Filters",
+		Side:      DrawerRight,
+		Size:      DrawerSizeMD,
+	}))
+	golden.Assert(t, "drawer", output)
+}
+
+func TestGoldenTableLazyRows(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Table(TableProps{
+		Headers:  []string{"Name", "Status"},
+		LazyRows: true,
+		Rows: []TableRow{
+			SimpleTableRow("Alice", "Active"),
+			SimpleTableRow("Bob", "Inactive"),
+		},
+	}))
+	golden.Assert(t, "table_lazy_rows", output)
+}
+
+func TestGoldenImageSrcSet(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Image(ImageProps{
+		Src:    "/photo.jpg",
+		Alt:    "Responsive photo",
+		SrcSet: "/photo-480w.jpg 480w, /photo-800w.jpg 800w",
+		Sizes:  "(max-width: 600px) 480px, 800px",
+	}))
+	golden.Assert(t, "image_srcset", output)
+}

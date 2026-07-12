@@ -10,15 +10,15 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "github.com/larsartmann/templ-components/utils"
 
-// Modal renders an accessible modal dialog with backdrop
+// Modal renders an accessible modal dialog using the native <dialog> element.
 //
 //	@display.Modal(display.ModalProps{Title: "Confirm", ID: "confirm-modal", Nonce: nonce}) {
 //	   <p>Are you sure?</p>
 //	}
 //
-// overlayShell owns the shared a11y shell + JS + panel body. Modal only
-// supplies the panel classes (scale/opacity transitions, size) and the
-// overlay-shell config (centered outerClass, scale close animation).
+// The native <dialog> element provides focus trapping, Escape-to-close,
+// top-layer rendering, and ::backdrop. CSS handles open/close animations.
+// The tc-modal class selects the scale animation profile in app.css.
 func Modal(props ModalProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -60,20 +60,14 @@ func Modal(props ModalProps) templ.Component {
 			return nil
 		})
 		templ_7745c5c3_Err = overlayShell(overlayShellProps{
-			id:         id,
-			open:       props.Open,
-			title:      props.Title,
-			ariaLabel:  props.AriaLabel,
-			kind:       OverlayModal,
-			outerClass: "flex items-center justify-center p-4",
-			nonce:      props.Nonce,
-			cfg:        modalPanelConfig(),
-			panelClass: utils.Class("relative bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 w-full overflow-hidden transform", transitionNormal, modalSizeClass(props.Size), props.Class),
-			panelKVs: templ.Classes(
-				templ.KV("scale-100 opacity-100", props.Open),
-				templ.KV("scale-95 opacity-0", !props.Open),
-			),
-			attrs: props.Attrs,
+			id:          id,
+			open:        props.Open,
+			title:       props.Title,
+			ariaLabel:   props.AriaLabel,
+			kind:        OverlayModal,
+			nonce:       props.Nonce,
+			dialogClass: utils.Class("tc-modal bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 overflow-hidden", modalSizeClass(props.Size), props.Class),
+			attrs:       props.Attrs,
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

@@ -10,15 +10,16 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "github.com/larsartmann/templ-components/utils"
 
-// Drawer renders an accessible side panel that slides in from the left or right
+// Drawer renders an accessible side panel using the native <dialog> element.
 //
 //	@display.Drawer(display.DrawerProps{Title: "Settings", ID: "settings-drawer", Side: display.DrawerRight, Open: true, Nonce: nonce}) {
 //	   <p>Drawer content</p>
 //	}
 //
-// overlayShell owns the shared a11y shell + JS + panel body. Drawer only
-// supplies the panel classes (translate-x transitions, size, side) and
-// the overlay-shell config (side-aware close animation).
+// The native <dialog> element provides focus trapping, Escape-to-close,
+// top-layer rendering, and ::backdrop. CSS handles slide animations based
+// on the data-side attribute. The tc-drawer class selects the slide
+// animation profile in app.css.
 func Drawer(props DrawerProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -60,22 +61,15 @@ func Drawer(props DrawerProps) templ.Component {
 			return nil
 		})
 		templ_7745c5c3_Err = overlayShell(overlayShellProps{
-			id:         id,
-			open:       props.Open,
-			title:      props.Title,
-			ariaLabel:  props.AriaLabel,
-			kind:       OverlayDrawer,
-			nonce:      props.Nonce,
-			cfg:        drawerPanelConfig(props.Side),
-			panelClass: utils.Class("fixed inset-y-0 w-full bg-white dark:bg-gray-900 shadow-xl dark:shadow-black/20 h-full overflow-y-auto transform", transitionTransform, "duration-200", drawerSizeClass(props.Size), props.Class),
-			panelKVs: templ.Classes(
-				templ.KV("start-0", props.Side == DrawerLeft),
-				templ.KV("end-0", props.Side == DrawerRight),
-				templ.KV("translate-x-0", props.Open),
-				templ.KV("-translate-x-full", !props.Open && props.Side == DrawerLeft),
-				templ.KV("translate-x-full", !props.Open && props.Side == DrawerRight),
-			),
-			attrs: props.Attrs,
+			id:          id,
+			open:        props.Open,
+			title:       props.Title,
+			ariaLabel:   props.AriaLabel,
+			kind:        OverlayDrawer,
+			nonce:       props.Nonce,
+			dialogClass: utils.Class("tc-drawer bg-white dark:bg-gray-900 shadow-xl dark:shadow-black/20 overflow-y-auto", drawerSizeClass(props.Size), props.Class),
+			side:        props.Side,
+			attrs:       props.Attrs,
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

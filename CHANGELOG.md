@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+Native `<dialog>` for Modal/Drawer, stylable `<select>`, auto-growing Textarea, responsive Image srcset, semantic `<search>` landmark, `hx-validate` on Form, and `content-visibility: auto` for large tables. All progressive enhancement — zero breaking changes.
+
+### Changed
+
+- **Modal/Drawer migrated to native `<dialog>` element.** Replaces ~200 lines of custom focus-trap JS with browser-native `showModal()`/`close()`. Benefits: native focus trap, Escape-to-close, focus restore, top-layer rendering (no z-index wars), `::backdrop` dimming, automatic background `inert`. The `.tc-overlay`/`.tc-modal`/`.tc-drawer` CSS classes in `templates/app.css` handle animations via `@starting-style` + `allow-discrete`. `tcOpenOverlay(id)`/`tcCloseOverlay(id)` wrappers kept for backward compatibility.
+
+### Added
+
+- `forms.SelectProps.Stylable` — opts into the modern customizable `<select>` API (`appearance: base-select`). Emits `<button><selectedcontent></selectedcontent></button>` structure for full CSS styling of the button, dropdown picker, options, checkmark, and arrow icon. Progressive enhancement: non-supporting browsers (Firefox, iOS Safari) ignore the structure and render a normal native `<select>`. Requires `.tc-select` CSS from `templates/app.css`.
+- `forms.TextareaProps.AutoGrow` (default `true`) — uses CSS `field-sizing: content` to auto-grow the textarea to fit content without JavaScript. Set `AutoGrow: false` to disable.
+- `forms.TextareaProps.EnterKeyHint` + `forms.EnterKeyHintType` typed enum — sets the mobile keyboard's Enter key label. Constants: `EnterKeyHintSend` (chat), `EnterKeyHintDone`, `EnterKeyHintGo`, `EnterKeyHintNext`, `EnterKeyHintPrevious`, `EnterKeyHintSearch`, `EnterKeyHintEnter`. `EnterKeyHintTypeIsValid` included. `forms.InputProps.EnterKeyHint` uses the same enum — explicit override takes priority; otherwise auto-derived from `InputType` (email→next, search→search, etc.).
+- `forms.FormProps.Validate` — when true, adds `hx-validate="true"` for HTML5 constraint validation before HTMX submit.
+- `forms.Input` with `Type: InputSearch` now wraps the input in a `<search>` element — a semantic landmark for screen reader navigation. No API change needed; auto-detected from `InputType`.
+- `display.ImageProps.SrcSet` and `Sizes` — typed fields for responsive image delivery (`srcset`/`sizes` attributes). Replaces the previous `Attrs` workaround documented in the old doc comment.
+- `display.TableProps.LazyRows` — when true, applies `content-visibility: auto` to body rows. Browser skips rendering off-screen rows, giving 2-5x faster initial render for tables with 100+ rows.
+- CSS for stylable `<select>` in `templates/app.css` — comprehensive `.tc-select` styles with light/dark mode, hover/focus states, custom dropdown arrow (`::picker-icon`), styled picker container (`::picker(select)`), option hover/selected states. Guarded by `@supports (appearance: base-select)`.
+- Global `accent-color` in `templates/app.css` — all native form controls (checkboxes, radios, range inputs, progress bars) get the library's blue accent by default. Dark mode variant included. Override per-component with Tailwind `accent-*` utilities.
+
 ## [0.17.0] — 2026-07-12
 
 9 new components (DataTable, FilterDropdown, Slider, Rating, TagsInput, HoverCard, ContextMenu, Carousel, Calendar), 5 audit bug fixes, coverage tests, ADR 0013, demo /forms route.

@@ -12,16 +12,14 @@ import (
 func TestRTLRendering(t *testing.T) {
 	t.Parallel()
 
-	t.Run("drawer uses logical positioning classes", func(t *testing.T) {
+	t.Run("drawer uses logical positioning via data-side", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Drawer(DrawerProps{
 			BaseProps: utils.BaseProps{ID: "rtl-drawer"},
 			Open:      true,
 			Side:      DrawerLeft,
 		}))
-		// After RTL migration, left-0 should have become start-0
-		utils.AssertContains(t, output, "start-0")
-		utils.AssertNotContains(t, output, "left-0")
+		utils.AssertContains(t, output, `data-side="left"`)
 	})
 
 	t.Run("statcard renders without physical margins", func(t *testing.T) {

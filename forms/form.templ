@@ -41,6 +41,7 @@ type FormProps struct {
 	CSRFToken     string
 	CSRFTokenName string // Hidden input name attribute; defaults to "csrf_token"
 	Inline        bool   // When true, renders as flex flex-wrap (horizontal) instead of space-y-6 (vertical)
+	Validate      bool   // When true, adds hx-validate="true" for HTML5 constraint validation before HTMX submit
 }
 
 // DefaultFormProps returns sensible defaults
@@ -63,6 +64,9 @@ templ Form(props FormProps) {
 		}
 		action={ props.Action }
 		method={ formMethod(props.Method) }
+		if props.Validate {
+			hx-validate="true"
+		}
 		class={ utils.Class(utils.Ternary(props.Inline, "flex flex-wrap items-end gap-3", "space-y-6"), props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }

@@ -5,6 +5,15 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+// overlayShell renders a native <dialog>-based overlay shell shared by Modal
+// and Drawer. The <dialog> element provides top-layer rendering, focus trapping,
+// Escape-to-close, focus restore, and ::backdrop — all native, no JS needed
+// for those behaviors. CSS animations handle open/close via @starting-style
+// and allow-discrete display transitions (defined in app.css).
+//
+// The dialog element IS the visual panel: dialogClass carries the Tailwind
+// classes for background, border-radius, shadow, and sizing. A dialogClass
+// prefix (tc-modal / tc-drawer) selects the animation profile in app.css.
 templ overlayShell(p overlayShellProps) {
 	{{ labelledBy := "" }}
 	{{
@@ -12,30 +21,29 @@ templ overlayShell(p overlayShellProps) {
 			labelledBy = p.id + "-title"
 		}
 	}}
-	<div
+	<dialog
 		id={ p.id }
-		class={ utils.Class(transitionNormal, p.outerClass),
-			templ.KV("opacity-100 pointer-events-auto", p.open),
-			templ.KV("opacity-0 pointer-events-none", !p.open) }
-		role="dialog"
-		aria-modal="true"
-		aria-hidden={ !p.open }
+		class={ utils.Class("tc-overlay", p.dialogClass) }
 		if labelledBy != "" {
 			aria-labelledby={ labelledBy }
-		}
-		if p.open {
-			data-tc-open-on-load="true"
 		}
 		if p.ariaLabel != "" {
 			aria-label={ p.ariaLabel }
 		}
-	>
-		<div class="fixed inset-0 bg-black/50 backdrop-blur-xs" data-tc-close={ string(p.kind) }></div>
-		@overlayPanel(p.id+"-panel", p.id+"-title", p.panelClass, p.panelKVs, p.open, p.title, p.kind, p.attrs) {
-			{ children... }
+		if p.open {
+			data-tc-open="true"
 		}
-	</div>
-	@overlayScriptComponent(p.nonce, p.id, p.kind.componentName(), p.cfg)
+		if p.kind == OverlayDrawer && p.side != "" {
+			data-side={ string(p.side) }
+		}
+		{ p.attrs... }
+	>
+		@dialogHeader(p.title, p.id+"-title", p.kind)
+		<div class="px-4 py-4 sm:px-6">
+			{ children... }
+		</div>
+	</dialog>
+	@overlayScriptComponent(p.nonce, p.id, p.kind.componentName())
 }
 
 templ dialogHeader(title, titleID string, kind OverlayKind) {
@@ -52,34 +60,4 @@ templ dialogHeader(title, titleID string, kind OverlayKind) {
 			</button>
 		</div>
 	}
-}
-
-// overlayPanel renders the panel body (id, inert-when-closed, attrs, dialogHeader,
-// content slot) shared by Modal and Drawer. Each overlay applies its own
-// transition + sizing + open-state transforms, which are baked into panelClass
-// + panelKV at the call site.
-//
-// Parameters:
-//   - panelID: panel DOM id (e.g. id + "-panel")
-//   - titleID: matching h2 id for aria-labelledby (e.g. id + "-title")
-//   - panelClass: full Tailwind class list (size + transform + props.Class)
-//   - panelKV: extra conditional classes (templ.CSSClasses of templ.KV entries)
-//   - open: whether the overlay is open — drives the `inert` attribute
-//   - title: header title (empty suppresses the header)
-//   - kind: OverlayKind, controls the close button's data-tc-close value
-//   - attrs: extra HTML attributes from the consumer's BaseProps.Attrs
-templ overlayPanel(panelID, titleID, panelClass string, panelKV templ.CSSClasses, open bool, title string, kind OverlayKind, attrs templ.Attributes) {
-	<div
-		id={ panelID }
-		class={ panelClass, panelKV }
-		if !open {
-			inert
-		}
-		{ attrs... }
-	>
-		@dialogHeader(title, titleID, kind)
-		<div class="px-4 py-4 sm:px-6">
-			{ children... }
-		</div>
-	</div>
 }

@@ -61,8 +61,8 @@ Don't know what to look for? Find your page type:
 | `StatusBadge`      | `StatusBadge(status string)`                | Auto-maps ~20 status strings to badge types                                                                                                      |
 | `Button`           | `Button(props ButtonProps)`                 | Button or link button — variants, sizes, icons, HTMX attrs                                                                                       |
 | `Avatar`           | `Avatar(props AvatarProps)`                 | Image avatar with fallback initials, sizes, status dot                                                                                           |
-| `Modal`            | `Modal(props ModalProps)`                   | Accessible dialog — focus trap, Escape, backdrop, 5 sizes                                                                                        |
-| `Drawer`           | `Drawer(props DrawerProps)`                 | Side panel — left/right slide, focus trap, Escape, backdrop                                                                                      |
+| `Modal`            | `Modal(props ModalProps)`                   | Native `<dialog>` overlay — showModal(), focus trap, Escape, backdrop, 5 sizes                                                                   |
+| `Drawer`           | `Drawer(props DrawerProps)`                 | Native `<dialog>` side panel — slide animation, focus trap, Escape, backdrop                                                                     |
 | `Dropdown`         | `Dropdown(props DropdownProps)`             | Button-triggered menu — links, buttons, keyboard nav                                                                                             |
 | `Tooltip`          | `Tooltip(props TooltipProps)`               | Hover tooltip — 4 positions, arrow, touch support                                                                                                |
 | `Popover`          | `Popover(props PopoverProps)`               | Button-triggered floating panel — 4 positions, arbitrary content, click-outside dismiss                                                          |
@@ -79,36 +79,36 @@ Don't know what to look for? Find your page type:
 | `RelativeTime`     | `RelativeTime(props RelativeTimeProps)`     | `<time datetime>` with relative text ("2 hours ago")                                                                                             |
 | `CountBadge`       | `CountBadge(props CountBadgeProps)`         | Icon + notification count overlay — overflow "N+"                                                                                                |
 | `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards                                                                                                             |
-| `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback, optional `Rounded` for circular                                                                      |
+| `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback, `SrcSet`/`Sizes` for responsive delivery, optional `Rounded`                                         |
 | `HoverCard`        | `HoverCard(props HoverCardProps)`           | CSS-only hover-activated card — 4 positions, focus-within support                                                                                |
 | `ContextMenu`      | `ContextMenu(props ContextMenuProps)`       | Right-click context menu — CSP-safe JS, role=menu, Escape/click-outside dismiss                                                                  |
 | `Carousel`         | `Carousel(props CarouselProps)`             | Slide carousel with prev/next arrows and dot indicators                                                                                          |
 
 #### `forms` — 21 components
 
-| Component           | Signature                                         | One-liner                                                                                  |
-| ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `Input`             | `Input(props InputProps)`                         | Typed input (text, email, password, search, url, tel, number) with label, error, help text |
-| `Checkbox`          | `Checkbox(props CheckboxProps)`                   | Checkbox with label, help text, error                                                      |
-| `Select`            | `Select(props SelectProps)`                       | Select dropdown with typed options, disabled, selected, optional `Groups` for optgroups    |
-| `Textarea`          | `Textarea(props TextareaProps)`                   | Multi-line text input with label, rows, max length                                         |
-| `Toggle`            | `Toggle(props ToggleProps)`                       | Toggle switch with label, required, error, help text                                       |
-| `Radio`             | `Radio(props RadioProps)`                         | Radio button with label                                                                    |
-| `RadioGroup`        | `RadioGroup(props RadioGroupProps)`               | Group of radios with options                                                               |
-| `Combobox`          | `Combobox(props ComboboxProps)`                   | Autocomplete input with filterable dropdown                                                |
-| `DatePicker`        | `DatePicker(props DatePickerProps)`               | Date input with label                                                                      |
-| `FileInput`         | `FileInput(props FileInputProps)`                 | File upload input with label, accept types                                                 |
-| `Form`              | `Form(props FormProps)`                           | Form wrapper with action, method, CSRF token                                               |
-| `Label`             | `Label(forID, text string, required bool)`        | Form label element                                                                         |
-| `FieldError`        | `FieldError(fieldID, message string)`             | Inline field error message                                                                 |
-| `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                  |
-| `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                   |
-| `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                   |
-| `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | HTMX auto-submit select for filter bars                                                    |
-| `Slider`            | `Slider(props SliderProps)`                       | Range input slider with label, value display, help text                                    |
-| `Rating`            | `Rating(props RatingProps)`                       | Accessible star rating — radio inputs, read-only mode, 3 sizes                             |
-| `TagsInput`         | `TagsInput(props TagsInputProps)`                 | Tag input with add/remove — hidden inputs for submission, MaxTags/AllowDuplicate           |
-| `Calendar`          | `Calendar(props CalendarProps)`                   | Month-view calendar — server-side navigation, day links, MinDate/MaxDate disabling         |
+| Component           | Signature                                         | One-liner                                                                                                     |
+| ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `Input`             | `Input(props InputProps)`                         | Typed input (text, email, password, search, url, tel, number) with label, error, help text                    |
+| `Checkbox`          | `Checkbox(props CheckboxProps)`                   | Checkbox with label, help text, error                                                                         |
+| `Select`            | `Select(props SelectProps)`                       | Select dropdown with typed options, disabled, selected, optgroups; `Stylable` for customizable `<select>` API |
+| `Textarea`          | `Textarea(props TextareaProps)`                   | Multi-line text input with label, rows, max length; `AutoGrow` (field-sizing), `EnterKeyHint`                 |
+| `Toggle`            | `Toggle(props ToggleProps)`                       | Toggle switch with label, required, error, help text                                                          |
+| `Radio`             | `Radio(props RadioProps)`                         | Radio button with label                                                                                       |
+| `RadioGroup`        | `RadioGroup(props RadioGroupProps)`               | Group of radios with options                                                                                  |
+| `Combobox`          | `Combobox(props ComboboxProps)`                   | Autocomplete input with filterable dropdown                                                                   |
+| `DatePicker`        | `DatePicker(props DatePickerProps)`               | Date input with label                                                                                         |
+| `FileInput`         | `FileInput(props FileInputProps)`                 | File upload input with label, accept types                                                                    |
+| `Form`              | `Form(props FormProps)`                           | Form wrapper with action, method, CSRF token                                                                  |
+| `Label`             | `Label(forID, text string, required bool)`        | Form label element                                                                                            |
+| `FieldError`        | `FieldError(fieldID, message string)`             | Inline field error message                                                                                    |
+| `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                                     |
+| `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                                      |
+| `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                                      |
+| `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | HTMX auto-submit select for filter bars                                                                       |
+| `Slider`            | `Slider(props SliderProps)`                       | Range input slider with label, value display, help text                                                       |
+| `Rating`            | `Rating(props RatingProps)`                       | Accessible star rating — radio inputs, read-only mode, 3 sizes                                                |
+| `TagsInput`         | `TagsInput(props TagsInputProps)`                 | Tag input with add/remove — hidden inputs for submission, MaxTags/AllowDuplicate                              |
+| `Calendar`          | `Calendar(props CalendarProps)`                   | Month-view calendar — server-side navigation, day links, MinDate/MaxDate disabling                            |
 
 #### `feedback` — 13 components
 

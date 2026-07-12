@@ -1,0 +1,1 @@
+<img src="/photo.jpg" alt="Responsive photo" srcset="/photo-480w.jpg 480w, /photo-800w.jpg 800w" sizes="(max-width: 600px) 480px, 800px" loading="eager" decoding="async" fetchpriority="high" class="h-auto max-w-full rounded-md">

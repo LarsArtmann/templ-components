@@ -10,7 +10,7 @@ const modalTestNonce = "test-nonce"
 
 func TestModalRender(t *testing.T) {
 	t.Parallel()
-	t.Run("closed modal", func(t *testing.T) {
+	t.Run("closed modal renders dialog element", func(t *testing.T) {
 		t.Parallel()
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
@@ -22,16 +22,15 @@ func TestModalRender(t *testing.T) {
 			Size:  ModalSizeMD,
 		}
 		output := utils.Render(t, Modal(props))
+		utils.AssertContains(t, output, `<dialog`)
 		utils.AssertContains(t, output, `id="test-modal"`)
 		utils.AssertContains(t, output, "Confirm")
-		utils.AssertContains(t, output, `role="dialog"`)
-		utils.AssertContains(t, output, `aria-modal="true"`)
 		utils.AssertContains(t, output, `nonce="`+modalTestNonce+`"`)
 		utils.AssertContains(t, output, "tcCloseModal")
-		utils.AssertContains(t, output, "opacity-0")
+		utils.AssertContains(t, output, "tcOpenModal")
 	})
 
-	t.Run("open modal", func(t *testing.T) {
+	t.Run("open modal has data-tc-open attribute", func(t *testing.T) {
 		t.Parallel()
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
@@ -42,8 +41,7 @@ func TestModalRender(t *testing.T) {
 			Size:  ModalSizeMD,
 		}
 		output := utils.Render(t, Modal(props))
-		utils.AssertContains(t, output, "opacity-100")
-		utils.AssertContains(t, output, "pointer-events-auto")
+		utils.AssertContains(t, output, `data-tc-open="true"`)
 	})
 
 	t.Run("size variants", func(t *testing.T) {
@@ -87,20 +85,20 @@ func TestModalRender(t *testing.T) {
 		utils.AssertContains(t, output, `"modal-with-'quotes'"`)
 	})
 
-	t.Run("focus restore JS saves activeElement", func(t *testing.T) {
+	t.Run("JS uses native showModal API", func(t *testing.T) {
 		t.Parallel()
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
-				ID:    "focus-modal",
+				ID:    "dialog-modal",
 				Nonce: modalTestNonce,
 			},
-			Title: "Focus Test",
+			Title: "Dialog Test",
 			Open:  false,
 		}
 		output := utils.Render(t, Modal(props))
-		utils.AssertContains(t, output, "data-tc-prev-focus")
-		utils.AssertContains(t, output, "document.activeElement")
-		utils.AssertContains(t, output, "removeAttribute")
+		utils.AssertContains(t, output, "showModal")
+		utils.AssertContains(t, output, "d.close()")
+		utils.AssertContains(t, output, "data-tc-close")
 	})
 
 	t.Run("empty ID auto-generates on render", func(t *testing.T) {
@@ -131,7 +129,7 @@ func TestModalRender(t *testing.T) {
 		utils.AssertContains(t, output, `aria-labelledby="titled-modal-title"`)
 	})
 
-	t.Run("closed overlay has aria-hidden and inert", func(t *testing.T) {
+	t.Run("closed dialog has no data-tc-open", func(t *testing.T) {
 		t.Parallel()
 		props := ModalProps{
 			BaseProps: utils.BaseProps{ID: "closed-modal"},
@@ -139,11 +137,10 @@ func TestModalRender(t *testing.T) {
 			Open:      false,
 		}
 		output := utils.Render(t, Modal(props))
-		utils.AssertContains(t, output, `aria-hidden="true"`)
-		utils.AssertContains(t, output, " inert")
+		utils.AssertNotContains(t, output, `data-tc-open="true"`)
 	})
 
-	t.Run("open overlay has aria-hidden=false, no inert, open-on-load hook", func(t *testing.T) {
+	t.Run("open dialog has data-tc-open for auto-open", func(t *testing.T) {
 		t.Parallel()
 		props := ModalProps{
 			BaseProps: utils.BaseProps{ID: "open-modal-a11y"},
@@ -151,24 +148,26 @@ func TestModalRender(t *testing.T) {
 			Open:      true,
 		}
 		output := utils.Render(t, Modal(props))
-		utils.AssertContains(t, output, `aria-hidden="false"`)
-		utils.AssertNotContains(t, output, " inert")
-		utils.AssertContains(t, output, `data-tc-open-on-load="true"`)
+		utils.AssertContains(t, output, `data-tc-open="true"`)
 	})
 
-	t.Run("overlay JS syncs aria-hidden and inert on open/close", func(t *testing.T) {
+	t.Run("JS singleton guard prevents double-binding", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Modal(ModalProps{
-			BaseProps: utils.BaseProps{ID: "js-sync-modal"},
-			Title:     "Sync",
+			BaseProps: utils.BaseProps{ID: "js-guard-modal"},
+			Title:     "Guard",
 			Open:      false,
 		}))
-		// Open function must remove inert and set aria-hidden=false so the
-		// dialog is focusable and in the a11y tree when opened via JS.
-		utils.AssertContains(t, output, "setAttribute('aria-hidden', 'false')")
-		utils.AssertContains(t, output, "removeAttribute('inert')")
-		// Close function must add inert and set aria-hidden=true.
-		utils.AssertContains(t, output, "setAttribute('aria-hidden', 'true')")
-		utils.AssertContains(t, output, "setAttribute('inert', '')")
+		utils.AssertContains(t, output, "window.tcOverlayModalAttached")
+	})
+
+	t.Run("JS backdrop click handler detects dialog target", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Modal(ModalProps{
+			BaseProps: utils.BaseProps{ID: "backdrop-modal"},
+			Title:     "Backdrop",
+			Open:      false,
+		}))
+		utils.AssertContains(t, output, "e.target===d")
 	})
 }

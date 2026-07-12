@@ -58,3 +58,40 @@ func TestGoldenRatingReadOnly(t *testing.T) {
 	}))
 	golden.Assert(t, "rating_readonly", output)
 }
+
+func TestGoldenStylableSelect(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Select(SelectProps{
+		BaseProps: utils.BaseProps{ID: "country"},
+		Name:      "country",
+		Label:     "Country",
+		Stylable:  true,
+		Options: []SelectOption{
+			{Value: "de", Label: "Germany"},
+			{Value: "at", Label: "Austria", Selected: true},
+		},
+	}))
+	golden.Assert(t, "stylable_select", output)
+}
+
+func TestGoldenAutoGrowTextarea(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Textarea(TextareaProps{
+		BaseProps: utils.BaseProps{ID: "bio"},
+		Name:      "bio",
+		Label:     "Bio",
+		AutoGrow:  true,
+	}))
+	golden.Assert(t, "textarea_autogrow", output)
+}
+
+func TestGoldenSearchInput(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Input(InputProps{
+		BaseProps:   utils.BaseProps{ID: "q"},
+		Type:        InputSearch,
+		Name:        "q",
+		Placeholder: "Search...",
+	}))
+	golden.Assert(t, "search_input", output)
+}

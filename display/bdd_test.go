@@ -104,15 +104,14 @@ func TestCardUserCanComposeContent(t *testing.T) {
 func TestModalUserCanOpenAndClose(t *testing.T) {
 	t.Parallel()
 
-	t.Run("modal renders with accessible attributes", func(t *testing.T) {
+	t.Run("modal renders with accessible dialog element", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultModalProps()
 		props.ID = "bdd-modal"
 		props.Title = "Confirm Action"
 		output := utils.Render(t, Modal(props))
 		utils.AssertContains(t, output, "Confirm Action")
-		utils.AssertContains(t, output, `role="dialog"`)
-		utils.AssertContains(t, output, `aria-modal="true"`)
+		utils.AssertContains(t, output, "<dialog")
 	})
 
 	t.Run("modal renders in open state", func(t *testing.T) {
@@ -121,7 +120,7 @@ func TestModalUserCanOpenAndClose(t *testing.T) {
 		props.ID = "bdd-modal-open"
 		props.Open = true
 		output := utils.Render(t, Modal(props))
-		utils.AssertContains(t, output, "opacity-100")
+		utils.AssertContains(t, output, `data-tc-open="true"`)
 	})
 }
 

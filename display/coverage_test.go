@@ -476,8 +476,8 @@ func TestModalClosed(t *testing.T) {
 		Title:     "Hidden",
 		Open:      false,
 	}))
-	utils.AssertContains(t, output, "opacity-0")
-	utils.AssertContains(t, output, "pointer-events-none")
+	utils.AssertContains(t, output, "<dialog")
+	utils.AssertNotContains(t, output, `data-tc-open="true"`)
 }
 
 func TestModalWithClass(t *testing.T) {
@@ -767,11 +767,11 @@ func TestDrawerRender(t *testing.T) {
 			Open:      true,
 			Side:      DrawerRight,
 		}))
+		utils.AssertContains(t, output, `<dialog`)
 		utils.AssertContains(t, output, `id="test-drawer"`)
 		utils.AssertContains(t, output, "Settings")
-		utils.AssertContains(t, output, `role="dialog"`)
-		utils.AssertContains(t, output, `aria-modal="true"`)
-		utils.AssertContains(t, output, `translate-x-0`)
+		utils.AssertContains(t, output, `data-side="right"`)
+		utils.AssertContains(t, output, `data-tc-open="true"`)
 	})
 
 	t.Run("left drawer", func(t *testing.T) {
@@ -781,8 +781,7 @@ func TestDrawerRender(t *testing.T) {
 			Open:      true,
 			Side:      DrawerLeft,
 		}))
-		utils.AssertContains(t, output, "inset-y-0")
-		utils.AssertContains(t, output, "start-0")
+		utils.AssertContains(t, output, `data-side="left"`)
 	})
 
 	t.Run("closed drawer", func(t *testing.T) {
@@ -792,8 +791,9 @@ func TestDrawerRender(t *testing.T) {
 			Open:      false,
 			Side:      DrawerRight,
 		}))
-		utils.AssertContains(t, output, "opacity-0")
-		utils.AssertContains(t, output, "translate-x-full")
+		utils.AssertContains(t, output, "<dialog")
+		utils.AssertNotContains(t, output, `data-tc-open="true"`)
+		utils.AssertContains(t, output, `data-side="right"`)
 	})
 
 	t.Run("empty ID auto-generates", func(t *testing.T) {

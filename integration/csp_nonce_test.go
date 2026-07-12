@@ -29,6 +29,14 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 			BaseProps: utils.BaseProps{Nonce: testNonce},
 			Items:     []display.AccordionItem{{ID: "a1", Title: "A"}},
 		}))},
+		{"Modal", utils.Render(t, display.Modal(display.ModalProps{
+			BaseProps: utils.BaseProps{ID: "m1", Nonce: testNonce},
+			Title:     "Test",
+		}))},
+		{"Drawer", utils.Render(t, display.Drawer(display.DrawerProps{
+			BaseProps: utils.BaseProps{ID: "dr1", Nonce: testNonce},
+			Title:     "Test",
+		}))},
 		{"Dropdown", utils.Render(t, display.Dropdown(display.DropdownProps{
 			BaseProps: utils.BaseProps{ID: "dd", Nonce: testNonce},
 			Label:     "Menu",

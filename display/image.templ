@@ -12,6 +12,14 @@ type ImageProps struct {
 	Src string
 	// Alt text for accessibility. Required for non-decorative images.
 	Alt string
+	// SrcSet defines multiple image sources for responsive delivery.
+	// Example: "photo-1x.jpg 1x, photo-2x.jpg 2x" or
+	// "photo-480w.jpg 480w, photo-800w.jpg 800w".
+	SrcSet string
+	// Sizes defines the intended display width at different breakpoints.
+	// Example: "(max-width: 600px) 480px, 800px".
+	// Pair with a width-descriptor srcset for responsive images.
+	Sizes string
 	// Width in CSS pixels. When set, the img tag includes a width attribute
 	// and helps prevent layout shift (CLS).
 	Width int
@@ -39,13 +47,13 @@ func DefaultImageProps() ImageProps {
 // fallback source. The fallback swap is CSP-safe: a data-tc-img-fallback
 // attribute on the img tag is consumed by a singleton error-capture listener.
 //
-// For responsive images with multiple resolutions, this component does not
-// expose a dedicated srcset field — use Attrs to add srcset/sizes manually:
+// For responsive images with multiple resolutions, use SrcSet and Sizes:
 //
 //	@display.Image(display.ImageProps{
 //	    Src:    "/photo.jpg",
+//	    SrcSet: "/photo-480w.jpg 480w, /photo-800w.jpg 800w",
+//	    Sizes:  "(max-width: 600px) 480px, 800px",
 //	    Alt:    "Profile photo",
-//	    Attrs:  templ.Attributes{"srcset": "/photo-2x.jpg 2x", "sizes": "50vw"},
 //	})
 //
 //	@display.Image(display.ImageProps{Src: "/photo.jpg", Alt: "Profile photo", Width: 128, Height: 128, FallbackSrc: "/placeholder.jpg"})
@@ -54,6 +62,12 @@ templ Image(props ImageProps) {
 		<img
 			src={ props.Src }
 			alt={ props.Alt }
+			if props.SrcSet != "" {
+				srcset={ props.SrcSet }
+			}
+			if props.Sizes != "" {
+				sizes={ props.Sizes }
+			}
 			loading={ utils.Ternary(props.Lazy, "lazy", "eager") }
 			decoding="async"
 			fetchpriority={ utils.Ternary(props.Lazy, "low", "high") }

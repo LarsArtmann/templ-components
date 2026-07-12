@@ -22,14 +22,13 @@ const (
 func TestA11yAttributes(t *testing.T) {
 	t.Parallel()
 
-	t.Run("modal has role=dialog", func(t *testing.T) {
+	t.Run("modal uses native dialog element", func(t *testing.T) {
 		t.Parallel()
 		props := DefaultModalProps()
 		props.ID = "test-modal"
 		props.Title = "Test"
 		output := utils.Render(t, Modal(props))
-		utils.AssertContains(t, output, `role="dialog"`)
-		utils.AssertContains(t, output, `aria-modal="true"`)
+		utils.AssertContains(t, output, "<dialog")
 	})
 
 	t.Run("dropdown has proper ARIA", func(t *testing.T) {

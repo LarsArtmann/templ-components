@@ -409,6 +409,19 @@ See `TODO_LIST.md` for the full verified inventory. Highlights:
 | `internal/testutil/`   | internal | ⚪ `PLANNED` | v1.0 — move test helpers (70+ files depend on exports)            |
 | Semantic token layer   | all      | ⚪ `PLANNED` | v1.0 — `bg-tc-primary` aliases (ADR 0008, 256 color refs)         |
 | Self-host htmx default | layout   | ⚪ `PLANNED` | v1.0 — breaking CSP change (ADR 0007)                             |
-| Native `<dialog>`      | display  | ⚪ `PLANNED` | v2.0 — Modal/Drawer architecture change                           |
+| Native `<dialog>`      | display  | ✅ `DONE`    | Modal/Drawer use native `<dialog>` + `showModal()` (ADR 0014)     |
 | Compound components    | display  | —            | v2.0 — Trigger/Content/Close API for overlays                     |
 | Docs/showcase site     | —        | ⚪ `PLANNED` | Live rendered component catalog                                   |
+
+## Modern Web Standards (Unreleased — `[Unreleased]` in CHANGELOG)
+
+| Feature                   | Component                 | Status    | Notes                                                                 |
+| ------------------------- | ------------------------- | --------- | --------------------------------------------------------------------- |
+| Stylable `<select>` API   | `SelectProps.Stylable`    | ✅ `DONE` | `appearance: base-select` + `<button><selectedcontent>` (ADR 0015)    |
+| Auto-growing Textarea     | `TextareaProps.AutoGrow`  | ✅ `DONE` | CSS `field-sizing: content`, default true                             |
+| Unified EnterKeyHint      | Input, Textarea           | ✅ `DONE` | `EnterKeyHintType` enum, auto-derive on Input, explicit override both |
+| Form `hx-validate`        | `FormProps.Validate`      | ✅ `DONE` | HTML5 constraint validation before HTMX submit                        |
+| `<search>` landmark       | Input (InputSearch)       | ✅ `DONE` | Auto-wraps search inputs in semantic `<search>` element               |
+| Image responsive delivery | `ImageProps.SrcSet/Sizes` | ✅ `DONE` | Typed fields replace `Attrs` workaround                               |
+| Table content-visibility  | `TableProps.LazyRows`     | ✅ `DONE` | `content-visibility: auto` on body rows, compact variant included     |
+| Global `accent-color`     | `templates/app.css`       | ✅ `DONE` | Native form controls get library blue accent                          |
