@@ -21,7 +21,7 @@ type CarouselSlide struct {
 }
 
 // CarouselProps configures a content carousel with prev/next navigation.
-// Uses a CSP-safe singleton script for slide control.
+// Uses CSS scroll-snap for native touch/drag support and smooth scrolling.
 type CarouselProps struct {
 	utils.BaseProps
 	Slides         []CarouselSlide
@@ -36,11 +36,12 @@ func DefaultCarouselProps() CarouselProps {
 	}
 }
 
-// Carousel renders a slide carousel with prev/next buttons and optional
-// dot indicators. The first slide is visible by default.
+// Carousel renders a slide carousel with native CSS scroll-snap for
+// touch-friendly swiping, momentum scrolling, and smooth programmatic
+// navigation. Prev/next buttons use scrollBy; dots sync via scrollend.
 //
 //	@display.Carousel(display.CarouselProps{
-//	   Slides: []display.CarouselSlide{
+//	   Slides: []display.CararouselSlide{
 //	     {Content: templ.Raw("<div>Slide 1</div>")},
 //	     {Content: templ.Raw("<div>Slide 2</div>")},
 //	   },
@@ -68,7 +69,7 @@ func Carousel(props CarouselProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		id := utils.EnsureID("carousel", props.ID)
-		var templ_7745c5c3_Var2 = []any{utils.Class("relative overflow-hidden rounded-lg", props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("relative rounded-lg", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -93,7 +94,7 @@ func Carousel(props CarouselProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 45, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 46, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -106,7 +107,7 @@ func Carousel(props CarouselProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Carousel"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 48, Col: 80}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 49, Col: 80}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -120,19 +121,19 @@ func Carousel(props CarouselProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "><div class=\"flex transition-transform motion-reduce:transition-none\" data-tc-carousel-track>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "><div class=\"flex overflow-x-auto snap-x snap-mandatory scroll-smooth tc-no-scrollbar\" data-tc-carousel-track>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for i, slide := range props.Slides {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"w-full flex-shrink-0\" role=\"group\" aria-roledescription=\"slide\" aria-label=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"w-full flex-shrink-0 snap-center\" role=\"group\" aria-roledescription=\"slide\" aria-label=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("Slide %d of %d", i+1, len(props.Slides)))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 57, Col: 71}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 61, Col: 71}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -158,27 +159,27 @@ func Carousel(props CarouselProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.ShowArrows && len(props.Slides) > 1 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<button type=\"button\" class=\"absolute start-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 shadow-sm transition-opacity motion-reduce:transition-none\" data-tc-carousel-prev aria-label=\"Previous slide\"><svg class=\"h-5 w-5\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<button type=\"button\" class=\"absolute start-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 shadow-sm\" data-tc-carousel-prev aria-label=\"Previous slide\"><svg class=\"h-5 w-5\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(svg.PathArrowLeft)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 73, Col: 79}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 77, Col: 79}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\"></path></svg></button> <button type=\"button\" class=\"absolute end-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 shadow-sm transition-opacity motion-reduce:transition-none\" data-tc-carousel-next aria-label=\"Next slide\"><svg class=\"h-5 w-5\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\"></path></svg></button> <button type=\"button\" class=\"absolute end-0 top-1/2 -translate-y-1/2 p-2 rounded-full bg-white/80 dark:bg-gray-800/80 text-gray-700 dark:text-gray-300 hover:bg-white dark:hover:bg-gray-800 shadow-sm\" data-tc-carousel-next aria-label=\"Next slide\"><svg class=\"h-5 w-5\" fill=\"none\" viewBox=\"0 0 24 24\" stroke-width=\"1.5\" stroke=\"currentColor\" aria-hidden=\"true\"><path stroke-linecap=\"round\" stroke-linejoin=\"round\" d=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(svg.PathArrowRight)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 83, Col: 80}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 87, Col: 80}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {
@@ -220,7 +221,7 @@ func Carousel(props CarouselProps) templ.Component {
 				var templ_7745c5c3_Var11 string
 				templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("%d", i))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 93, Col: 49}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 97, Col: 49}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 				if templ_7745c5c3_Err != nil {
@@ -233,7 +234,7 @@ func Carousel(props CarouselProps) templ.Component {
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("Go to slide %d", i+1))
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 94, Col: 53}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 98, Col: 53}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 				if templ_7745c5c3_Err != nil {
@@ -257,13 +258,13 @@ func Carousel(props CarouselProps) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 100, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/carousel.templ`, Line: 104, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\">\n\t\t\t\t(function(){if(window.tcCarouselAttached)return;window.tcCarouselAttached=true;\n\t\t\t\tdocument.addEventListener('click',function(e){\n\t\t\t\tvar next=e.target.closest('[data-tc-carousel-next]');var prev=e.target.closest('[data-tc-carousel-prev]');var dot=e.target.closest('[data-tc-carousel-dot]');\n\t\t\t\tif(!next&&!prev&&!dot)return;\n\t\t\t\tvar c=e.target.closest('[data-tc-carousel]');if(!c)return;\n\t\t\t\tvar track=c.querySelector('[data-tc-carousel-track]');if(!track)return;\n\t\t\t\tvar slides=track.children;var n=slides.length;if(n===0)return;\n\t\t\t\tvar current=parseInt(c.dataset.current||'0',10);\n\t\t\t\tif(next)current=(current+1)%n;if(prev)current=(current-1+n)%n;if(dot)current=parseInt(dot.getAttribute('data-tc-carousel-dot'),10);\n\t\t\t\tc.dataset.current=current;track.style.transform='translateX(-'+(current*100)+'%)';\n\t\t\t\tvar dots=c.querySelectorAll('[data-tc-carousel-dot]');for(var i=0;i<dots.length;i++){if(i===current){dots[i].className='h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500 transition-colors motion-reduce:transition-none';}else{dots[i].className='h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60 transition-colors motion-reduce:transition-none';}}\n\t\t\t\t});})();\n\t\t\t</script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "\">\n\t\t\t\t(function(){\n\t\t\t\tif(window.tcCarouselAttached)return;window.tcCarouselAttached=true;\n\t\t\t\tvar activeDot='h-2 w-2 rounded-full bg-blue-600 dark:bg-blue-500 transition-colors motion-reduce:transition-none';\n\t\t\t\tvar idleDot='h-2 w-2 rounded-full bg-gray-400/60 dark:bg-gray-500/60 transition-colors motion-reduce:transition-none';\n\t\t\t\tfunction tcUpdateDots(track){\n\t\t\t\tvar c=track.closest('[data-tc-carousel]');if(!c)return;\n\t\t\t\tvar idx=Math.round(track.scrollLeft/track.offsetWidth);\n\t\t\t\tvar dots=c.querySelectorAll('[data-tc-carousel-dot]');\n\t\t\t\tfor(var i=0;i<dots.length;i++){dots[i].className=i===idx?activeDot:idleDot;}\n\t\t\t\t}\n\t\t\t\tdocument.addEventListener('click',function(e){\n\t\t\t\tvar next=e.target.closest('[data-tc-carousel-next]');\n\t\t\t\tvar prev=e.target.closest('[data-tc-carousel-prev]');\n\t\t\t\tvar dot=e.target.closest('[data-tc-carousel-dot]');\n\t\t\t\tif(!next&&!prev&&!dot)return;\n\t\t\t\tvar c=e.target.closest('[data-tc-carousel]');if(!c)return;\n\t\t\t\tvar track=c.querySelector('[data-tc-carousel-track]');if(!track)return;\n\t\t\t\tvar w=track.offsetWidth;\n\t\t\t\tif(next)track.scrollBy({left:w,behavior:'smooth'});\n\t\t\t\tif(prev)track.scrollBy({left:-w,behavior:'smooth'});\n\t\t\t\tif(dot){var idx=parseInt(dot.getAttribute('data-tc-carousel-dot'),10);track.scrollTo({left:idx*w,behavior:'smooth'});}\n\t\t\t\t});\n\t\t\t\tfunction tcBindTracks(){\n\t\t\t\tdocument.querySelectorAll('[data-tc-carousel-track]').forEach(function(track){\n\t\t\t\tif(track.dataset.tcBound)return;track.dataset.tcBound='1';\n\t\t\t\tif('onscrollend' in window){\n\t\t\t\ttrack.addEventListener('scrollend',function(){tcUpdateDots(track);});\n\t\t\t\t}else{\n\t\t\t\tvar t;track.addEventListener('scroll',function(){clearTimeout(t);t=setTimeout(function(){tcUpdateDots(track);},150);});\n\t\t\t\t}\n\t\t\t\t});\n\t\t\t\t}\n\t\t\t\ttcBindTracks();\n\t\t\t\tdocument.body.addEventListener('htmx:afterSettle',tcBindTracks);\n\t\t\t\t})();\n\t\t\t</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

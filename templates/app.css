@@ -49,3 +49,104 @@
     transform: scaleX(-1);
   }
 }
+
+/*
+ * Modern Browser Capabilities — progressive enhancement layer.
+ * These features gracefully degrade in older browsers.
+ * See: docs/research/modern-browser-capabilities.md
+ */
+
+/* --- Native <dialog> backdrop (Modal, Drawer) --- */
+dialog::backdrop {
+  background-color: rgb(0 0 0 / 0.5);
+  backdrop-filter: blur(2px);
+}
+
+/* --- Popover API backdrop (Dropdown, Popover, ContextMenu) --- */
+[popover]::backdrop {
+  background-color: transparent;
+}
+
+/* --- @starting-style: CSS-only entry/exit animations for overlays --- */
+/* Eliminates the need for JS opacity/transform class toggling. */
+/* Requires: popover API or <dialog> for display:none transitions. */
+@layer components {
+  [popover],
+  dialog {
+    transition:
+      opacity 200ms ease,
+      transform 200ms ease,
+      overlay 200ms allow-discrete,
+      display 200ms allow-discrete;
+  }
+
+  /* Open state */
+  [popover]:popover-open,
+  dialog:modal {
+    opacity: 1;
+    transform: scale(1) translateX(0);
+  }
+
+  /* Closed state (exit animation target) */
+  [popover]:not(:popover-open),
+  dialog:not(:modal) {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+
+  /* Entry starting state — defines "from" when element first appears */
+  @starting-style {
+    [popover]:popover-open,
+    dialog:modal {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+}
+
+/* --- content-visibility: auto — skip rendering off-screen content --- */
+/* Apply to long lists/tables for 2-5x faster initial render. */
+@layer utilities {
+  .tc-content-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 48px;
+  }
+}
+
+/* --- scroll-snap carousel helpers --- */
+@layer utilities {
+  .tc-snap-x {
+    scroll-snap-type: x mandatory;
+  }
+  .tc-snap-center {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+  .tc-no-scrollbar {
+    scrollbar-width: none;
+  }
+  .tc-no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* --- <details> marker reset (Accordion) --- */
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Accordion chevron rotation — reacts to native <details> open attribute */
+[data-tc-chevron] {
+  transition: transform 200ms ease;
+}
+details[open] [data-tc-chevron] {
+  transform: rotate(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-tc-chevron] {
+    transition: none;
+  }
+}

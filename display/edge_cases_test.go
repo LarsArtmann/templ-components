@@ -85,7 +85,7 @@ func TestAccordionEdgeCases(t *testing.T) {
 			t,
 			Accordion(AccordionProps{Items: []AccordionItem{{ID: "a", Title: "Q1", Open: false}}}),
 		)
-		utils.AssertContains(t, output, `aria-expanded=`)
+		utils.AssertContains(t, output, `<details`)
 	})
 }
 

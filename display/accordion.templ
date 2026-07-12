@@ -1,8 +1,6 @@
 package display
 
 import (
-	"strconv"
-
 	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -35,7 +33,9 @@ func DefaultAccordionProps() AccordionProps {
 	return AccordionProps{}
 }
 
-// Accordion renders a collapsible accordion with accessible markup
+// Accordion renders a collapsible accordion using native <details>/<summary>
+// elements for zero-JS toggle, native keyboard support, and built-in
+// accessibility (implicit aria-expanded, role=group).
 //
 //	@display.Accordion(display.AccordionProps{
 //	   Items: []display.AccordionItem{
@@ -56,67 +56,35 @@ templ Accordion(props AccordionProps) {
 		{ props.Attrs... }
 	>
 		for _, item := range items {
-			<div class="bg-white dark:bg-gray-900">
-				<button
-					type="button"
-					class="flex w-full items-center justify-between px-4 py-4 text-start text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset"
-					aria-expanded={ strconv.FormatBool(item.Open) }
-					aria-controls={ item.ID + "-panel" }
-					id={ item.ID + "-trigger" }
-					data-accordion-trigger={ item.ID }
+			<details
+				class="bg-white dark:bg-gray-900"
+				if item.ID != "" {
+					id={ item.ID }
+				}
+				if item.Open {
+					open
+				}
+			>
+				<summary
+					class="flex w-full items-center justify-between px-4 py-4 text-start text-sm font-medium text-gray-900 dark:text-white hover:bg-gray-50 dark:hover:bg-gray-800 focus:outline-hidden focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400 focus:ring-inset cursor-pointer list-none"
 				>
 					<span>{ item.Title }</span>
-					@svg.FillIcon(
-						"h-5 w-5 text-gray-500 dark:text-gray-400 transition-transform duration-200 motion-reduce:transition-none motion-reduce:duration-0",
-						svg.PathChevronDown,
-						item.Open,
-					)
-				</button>
-				<div
-					id={ item.ID + "-panel" }
-					role="region"
-					aria-labelledby={ item.ID + "-trigger" }
-					class={ "grid " + transitionNormal, templ.KV("grid-rows-[1fr]", item.Open), templ.KV("grid-rows-[0fr]", !item.Open) }
-					if item.Open {
-						data-open
+					<svg
+						data-tc-chevron
+						class="h-5 w-5 text-gray-500 dark:text-gray-400"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+						aria-hidden="true"
+					>
+						<path fill-rule="evenodd" d={ svg.PathChevronDown } clip-rule="evenodd"></path>
+					</svg>
+				</summary>
+				<div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">
+					if item.Content != nil {
+						@item.Content
 					}
-				>
-					<div class="overflow-hidden">
-						<div class="px-4 pb-4 text-sm text-gray-600 dark:text-gray-400">
-							if item.Content != nil {
-								@item.Content
-							}
-						</div>
-					</div>
 				</div>
-			</div>
+			</details>
 		}
 	</div>
-	<script nonce={ props.Nonce }>
-		if (!window.tcAccordionAttached) {
-			window.tcAccordionAttached = true;
-			document.addEventListener('click', function(e) {
-				var btn = e.target.closest('[data-accordion-trigger]');
-				if (!btn) return;
-				var id = btn.getAttribute('data-accordion-trigger');
-				var panel = document.getElementById(id + '-panel');
-				var icon = btn.querySelector('svg');
-				if (!panel) return;
-				var isOpen = panel.hasAttribute('data-open');
-				if (isOpen) {
-					panel.removeAttribute('data-open');
-					panel.classList.remove('grid-rows-[1fr]');
-					panel.classList.add('grid-rows-[0fr]');
-					btn.setAttribute('aria-expanded', 'false');
-					if (icon) icon.classList.remove('rotate-180');
-				} else {
-					panel.setAttribute('data-open', '');
-					panel.classList.remove('grid-rows-[0fr]');
-					panel.classList.add('grid-rows-[1fr]');
-					btn.setAttribute('aria-expanded', 'true');
-					if (icon) icon.classList.add('rotate-180');
-				}
-			});
-		}
-	</script>
 }

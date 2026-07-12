@@ -1,0 +1,15 @@
+package htmx
+
+// ViewTransitions renders a CSP-safe script that enables native View
+// Transitions for HTMX swaps, plus default transition CSS.
+//
+// Place this component once per page, typically in the <head> or at the
+// end of <body> before other HTMX-using components.
+//
+//	@htmx.ViewTransitions(htmx.ViewTransitionsProps{Global: true})
+templ ViewTransitions(props ViewTransitionsProps) {
+	if props.Global {
+		@scriptComponent(props.Nonce, viewTransitionsScript)
+	}
+	@styleComponent(props.Nonce, viewTransitionsCSS)
+}

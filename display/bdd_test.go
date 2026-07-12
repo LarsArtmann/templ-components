@@ -176,7 +176,7 @@ func TestAccordionUserCanExpandCollapse(t *testing.T) {
 				{ID: "faq1", Title: "Open by default", Open: true},
 			},
 		}))
-		utils.AssertContains(t, output, `aria-expanded="true"`)
+		utils.AssertContains(t, output, `<details`)
 	})
 }
 
