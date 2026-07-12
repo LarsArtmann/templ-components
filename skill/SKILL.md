@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-88 components across 9 packages + 101 icons. If you're about to hand-roll
+93 components across 9 packages + 101 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -49,7 +49,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 27 components
+#### `display` — 30 components
 
 | Component          | Signature                                   | One-liner                                                                                                                                        |
 | ------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -80,8 +80,11 @@ Don't know what to look for? Find your page type:
 | `CountBadge`       | `CountBadge(props CountBadgeProps)`         | Icon + notification count overlay — overflow "N+"                                                                                                |
 | `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards                                                                                                             |
 | `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback, optional `Rounded` for circular                                                                      |
+| `HoverCard`        | `HoverCard(props HoverCardProps)`           | CSS-only hover-activated card — 4 positions, focus-within support                                                                                |
+| `ContextMenu`      | `ContextMenu(props ContextMenuProps)`       | Right-click context menu — CSP-safe JS, role=menu, Escape/click-outside dismiss                                                                  |
+| `Carousel`         | `Carousel(props CarouselProps)`             | Slide carousel with prev/next arrows and dot indicators                                                                                          |
 
-#### `forms` — 19 components
+#### `forms` — 21 components
 
 | Component           | Signature                                         | One-liner                                                                                  |
 | ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------ |
@@ -104,6 +107,8 @@ Don't know what to look for? Find your page type:
 | `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | HTMX auto-submit select for filter bars                                                    |
 | `Slider`            | `Slider(props SliderProps)`                       | Range input slider with label, value display, help text                                    |
 | `Rating`            | `Rating(props RatingProps)`                       | Accessible star rating — radio inputs, read-only mode, 3 sizes                             |
+| `TagsInput`         | `TagsInput(props TagsInputProps)`                 | Tag input with add/remove — hidden inputs for submission, MaxTags/AllowDuplicate           |
+| `Calendar`          | `Calendar(props CalendarProps)`                   | Month-view calendar — server-side navigation, day links, MinDate/MaxDate disabling         |
 
 #### `feedback` — 13 components
 

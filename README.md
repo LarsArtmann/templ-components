@@ -109,9 +109,9 @@ props.CSSPath = ""                   // suppresses <link rel="stylesheet" href="
 
 If you load htmx from a different CDN or self-host, see `PageProps.HTMXCDN`.
 
-### `display` — Data Display (27 components)
+### `display` — Data Display (30 components)
 
-Cards, badges, modals, tables (Table + DataTable), tabs, avatars, tooltips, accordions, dropdowns, popovers, stat cards, page headers, definition lists, responsive grid, copy button, relative time, count badge, image, and more.
+Cards, badges, modals, tables (Table + DataTable), tabs, avatars, tooltips, accordions, dropdowns, popovers, stat cards, page headers, definition lists, responsive grid, copy button, relative time, count badge, image, hover card, context menu, carousel, and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {
@@ -241,9 +241,9 @@ Alerts, toasts, spinners, progress bars, skeletons, and loading states.
 })
 ```
 
-### `forms` — Form Controls (19 components)
+### `forms` — Form Controls (21 components)
 
-Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, filter dropdowns, slider, rating, labels, and validation errors.
+Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, filter dropdowns, slider, rating, tags input, calendar, labels, and validation errors.
 
 ```templ
 @forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email address"})

@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-4 new components (DataTable, FilterDropdown, Slider, Rating), 5 audit bug fixes, ADR 0013, demo /forms route.
+9 new components (DataTable, FilterDropdown, Slider, Rating, TagsInput, HoverCard, ContextMenu, Carousel, Calendar), 5 audit bug fixes, coverage tests, ADR 0013, demo /forms route.
 
 ### Added
 
@@ -14,6 +14,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `forms.FilterDropdown` — compact select dropdown purpose-built for HTMX filter bars. Auto-submits via `hx-get`/`hx-target`/`hx-trigger` on change. `Value` pre-selects the current filter value.
 - `forms.Slider` — labeled range input with Min/Max/Step, `ShowValue` display, error/help text. Dark mode compliant with `accent-blue` native styling.
 - `forms.Rating` — star rating input using radio inputs for keyboard accessibility. `RatingSize` enum (SM/MD/LG), `ReadOnly` display mode, configurable `Max` stars. `RatingSizeIsValid` included.
+- `forms.TagsInput` — tag input with add/remove via CSP-safe singleton JS. Hidden inputs for form submission. `MaxTags`/`AllowDuplicate` controls.
+- `display.HoverCard` — CSS-only hover-activated card with 4 positions. Focus-within support, aria-describedby linkage. No JavaScript required.
+- `display.ContextMenu` — right-click context menu with CSP-safe singleton JS. `role="menu"`/`role="menuitem"`, Escape and click-outside dismiss.
+- `display.Carousel` — slide carousel with prev/next arrows and dot indicators. `aria-roledescription="carousel"`, singleton JS for slide control.
+- `forms.Calendar` — month-view calendar with server-side navigation. Day links via `{year}`/`{month}`/`{day}` placeholder substitution. `MinDate`/`MaxDate` disabling.
+- `display.HoverCardPositionIsValid` — typed enum validation for HoverCardPosition (top/bottom/start/end).
 - `navigation.BreadcrumbsProps.CurrentPath` — auto-detects active breadcrumb from the current request path, matching the NavLink/SidebarNav pattern. Explicit `Active=true` takes priority.
 - Demo `/forms` route — standalone form showcase at `http://localhost:8080/forms` with validation, all form components, and an HTMX filter bar example.
 - ADR 0013: `encoding/json/v2` auto-formatter guard — documents why only `errorpage` uses v2 and how the pre-commit hook prevents accidental rewrites.
