@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+4 new components (DataTable, FilterDropdown, Slider, Rating), 5 audit bug fixes, ADR 0013, demo /forms route.
+
+### Added
+
+- `display.DataTable` — data table with integrated sort management, optional pagination slot, and empty-state handling. Auto-generates sort-toggle URLs from `ActiveSortColumn`/`ActiveSortDir`/`SortBaseURL`. Composes `Table` internally.
+- `forms.FilterDropdown` — compact select dropdown purpose-built for HTMX filter bars. Auto-submits via `hx-get`/`hx-target`/`hx-trigger` on change. `Value` pre-selects the current filter value.
+- `forms.Slider` — labeled range input with Min/Max/Step, `ShowValue` display, error/help text. Dark mode compliant with `accent-blue` native styling.
+- `forms.Rating` — star rating input using radio inputs for keyboard accessibility. `RatingSize` enum (SM/MD/LG), `ReadOnly` display mode, configurable `Max` stars. `RatingSizeIsValid` included.
+- `navigation.BreadcrumbsProps.CurrentPath` — auto-detects active breadcrumb from the current request path, matching the NavLink/SidebarNav pattern. Explicit `Active=true` takes priority.
+- Demo `/forms` route — standalone form showcase at `http://localhost:8080/forms` with validation, all form components, and an HTMX filter bar example.
+- ADR 0013: `encoding/json/v2` auto-formatter guard — documents why only `errorpage` uses v2 and how the pre-commit hook prevents accidental rewrites.
+
+### Fixed
+
+- `navigation.MobileMenu`/`MobileMenuToggle` double-prefix: `EnsureID("mobile-menu", ...)` already produces `tc-mobile-menu-<hex>`, but the template prepended `tc-mobile-menu-` again, producing `tc-mobile-menu-tc-mobile-menu-<hex>`. Removed the redundant prefix from both `aria-controls` and `id`.
+- `layout.ThemeToggle` stale `aria-checked` after HTMX swap: the singleton guard prevented the `syncToggleAria` call from running on re-rendered buttons. Moved the sync call outside the guard so it runs on every render.
+- `htmx.GlobalErrorHandling` retry used `.click()` instead of `htmx.trigger()`: non-click-triggered elements (e.g., `hx-trigger="change"`) wouldn't retry. Now reads the element's `hx-trigger` attribute and fires the matching event.
+- `forms.RadioGroup` did not propagate `aria-invalid`/`aria-describedby` to individual radio `<input>` elements: screen readers couldn't announce the error state. Now passes error attributes through to each radio via `radioItemProps`.
+- `navigation/end_of_list_test.go` ordered class assertion: `utils.Class()`/tailwind-merge reorders classes, causing a flaky test. Changed to `AssertContainsAll` for ordering-independent checks.
+
 ## [0.16.0] — 2026-07-12
 
 Flush prop eliminates table-in-card double border; CellPadding typed enum adds compact density for admin dashboards; ADR 0012 documents the nesting convention.

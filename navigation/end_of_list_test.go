@@ -14,7 +14,7 @@ func TestEndOfList(t *testing.T) {
 		html := utils.Render(t, EndOfList(DefaultEndOfListProps()))
 		utils.AssertContains(t, html, "reached the end")
 		utils.AssertContains(t, html, `role="status"`)
-		utils.AssertContains(t, html, "text-gray-500 dark:text-gray-400")
+		utils.AssertContainsAll(t, html, "text-gray-500", "dark:text-gray-400")
 	})
 
 	t.Run("custom message", func(t *testing.T) {

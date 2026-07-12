@@ -14,13 +14,13 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `display`    | 27            | UI display: cards, badges, buttons, modals, drawers, tables, data tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, empty states, page headers, definition lists, copy button, relative time, count badge, image |
 | `errorpage`  | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                                                     |
 | `feedback`   | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                                                |
-| `forms`      | 17            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, filter dropdowns, validation                                                                                      |
+| `forms`      | 19            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, sliders, ratings, file inputs, date pickers, comboboxes, filter dropdowns, validation                                                                    |
 | `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                                                                                                    |
 | `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                                                                                        |
 | `layout`     | 6             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags                                                                                                                                                      |
 | `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                 |
 
-**Totals:** 86 templ components, 101 icon names, 34 typed enums (34 with `IsValid()`), 66 generated `*_templ.go` files, ~25,500 lines of Go/templ source
+**Totals:** 88 templ components, 101 icon names, 35 typed enums (35 with `IsValid()`), 69 generated `*_templ.go` files, ~27,000 lines of Go/templ source
 
 ---
 
@@ -262,12 +262,15 @@ Used by both Alert and Toast for consistent visual styling.
 | `FormFieldWrapper`  | FULLY_FUNCTIONAL | Shared field chrome      | Label + FieldError + helpText, used by Input/Select/Textarea                                                                                                                |
 | `Radio`             | FULLY_FUNCTIONAL | Single radio button      | Sub-component of RadioGroup                                                                                                                                                 |
 | `FilterDropdown`    | FULLY_FUNCTIONAL | HTMX filter select       | Auto-submit on change, `hx-get`/`hx-target`/`hx-trigger`, `Value` pre-select, `HxInclude` for multi-field filter forms                                                      |
+| `Slider`            | FULLY_FUNCTIONAL | Range input slider       | Min/Max/Step, `ShowValue` display, label/error/help text, dark mode, `accent-blue` native styling                                                                           |
+| `Rating`            | FULLY_FUNCTIONAL | Star rating input        | Radio-based (keyboard accessible), `RatingSize` enum (SM/MD/LG), `ReadOnly` display mode, `Max` stars, sr-only labels, `amber-400` active stars                             |
 
 ### Enums
 
-| Type        | Values                                                                        |
-| ----------- | ----------------------------------------------------------------------------- |
-| `InputType` | Text, Email, Password, Number, Tel, URL, Date, Time, Datetime, Search, Hidden |
+| Type         | Values                                                                        |
+| ------------ | ----------------------------------------------------------------------------- |
+| `InputType`  | Text, Email, Password, Number, Tel, URL, Date, Time, Datetime, Search, Hidden |
+| `RatingSize` | SM, MD, LG                                                                    |
 
 ### Functions
 
@@ -382,7 +385,7 @@ _(None currently)_
 ## Cross-Cutting Features
 
 - **CSP Compliance:** All inline scripts use `nonce` attribute
-- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 84 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
+- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 88 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first designs with `sm:` breakpoints
@@ -402,7 +405,7 @@ See `TODO_LIST.md` for the full verified inventory. Highlights:
 | ---------------------- | -------- | ------------ | ----------------------------------------------------------------- |
 | `DataTable`            | display  | ✅ `DONE`    | High-level sortable/pagination/empty-state wrapper around `Table` |
 | `FilterDropdown`       | forms    | ✅ `DONE`    | Purpose-built for HTMX filter bars                                |
-| `Validate() error`     | all      | ⚪ `PLANNED` | v1.0 — design decision needed (84 components)                     |
+| `Validate() error`     | all      | ⚪ `PLANNED` | v1.0 — design decision needed (88 components)                     |
 | `internal/testutil/`   | internal | ⚪ `PLANNED` | v1.0 — move test helpers (70+ files depend on exports)            |
 | Semantic token layer   | all      | ⚪ `PLANNED` | v1.0 — `bg-tc-primary` aliases (ADR 0008, 256 color refs)         |
 | Self-host htmx default | layout   | ⚪ `PLANNED` | v1.0 — breaking CSP change (ADR 0007)                             |
