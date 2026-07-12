@@ -264,7 +264,7 @@ For horizontal filter bars, use `FormProps{Inline: true}`:
 
 See [`docs/recipes/horizontal-filter-bar.md`](docs/recipes/horizontal-filter-bar.md) for the full pattern.
 
-### `navigation` — Navigation (11 components)
+### `navigation` — Navigation (12 components)
 
 Nav bars, breadcrumbs, pagination, mobile menus, sidebar navigation, and cursor-based load-more.
 

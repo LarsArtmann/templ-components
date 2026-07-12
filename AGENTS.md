@@ -6,10 +6,10 @@ This repo is a **single Go module** (`github.com/larsartmann/templ-components`) 
 
 | Package             | Contains                                   | Purpose                                               |
 | ------------------- | ------------------------------------------ | ----------------------------------------------------- |
-| `display`           | 25+ UI components                          | Cards, tables, modals, badges, buttons, avatars, etc. |
+| `display`           | 26 UI components                           | Cards, tables, modals, badges, buttons, avatars, etc. |
 | `feedback`          | 13 components                              | Alerts, toasts, spinners, skeletons, progress bars    |
 | `forms`             | 16 components                              | Inputs, selects, toggles, combobox, validation        |
-| `layout`            | 5 components                               | Page shell, theme toggle, CSP-safe script/style tags  |
+| `layout`            | 6 components                               | Page shell, theme toggle, CSP-safe script/style tags  |
 | `navigation`        | 12 components                              | Nav bars, pagination, breadcrumbs, sidebar, EndOfList |
 | `htmx`              | 7 components                               | HTMX loading, error handling, OOB swaps               |
 | `icons`             | 101 named SVG icons                        | Heroicons v2 outline + Spinner                        |
@@ -35,10 +35,10 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 go test ./...
 
 # Lint
-golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+golangci-lint run ./...
 
 # All-in-one verification
-find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./...
 ```
 
 ## CRITICAL: Generated `*_templ.go` Files MUST Be Committed
@@ -50,7 +50,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 62 generated files across all packages (display, errorpage, feedback, forms, htmx, icons, layout, navigation, examples/demo, internal/golden)
+- 64 generated files across all packages (display, errorpage, feedback, forms, htmx, icons, layout, navigation, examples/demo, internal/golden)
 - **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package

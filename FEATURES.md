@@ -17,10 +17,10 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `forms`      | 16            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, validation                                                                                           |
 | `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                                                                                       |
 | `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                                                                           |
-| `layout`     | 5             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script tag                                                                                                                                                |
-| `navigation` | 11            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more                                                                                                                                 |
+| `layout`     | 6             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags                                                                                                                                         |
+| `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                    |
 
-**Totals:** 84 templ components, 101 icon names, 34 typed enums (33 with `IsValid()`), 63 generated `*_templ.go` files, ~24,500 lines of Go/templ source
+**Totals:** 84 templ components, 101 icon names, 34 typed enums (34 with `IsValid()`), 64 generated `*_templ.go` files, ~24,500 lines of Go/templ source
 
 ---
 

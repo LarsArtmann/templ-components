@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-07-10 | **Version:** 0.14.0
+**Updated:** 2026-07-12 | **Version:** 0.16.0
 
 > Built from 42 `docs/**/2026-07-0*` files + code verification. Each item is verified against
 > the actual codebase. Items marked ✅ are confirmed done; ⬜ are open.
