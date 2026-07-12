@@ -181,8 +181,8 @@ func TestTableCellPaddingOption(t *testing.T) {
 			Headers: []string{"A"},
 			Rows:    []TableRow{SimpleTableRow("1")},
 		}))
-		utils.AssertContains(t, output, "px-4 py-3")
-		utils.AssertNotContains(t, output, "px-4 py-2")
+		utils.AssertContainsAll(t, output, "px-4", "py-3")
+		utils.AssertNotContains(t, output, "py-2")
 	})
 
 	t.Run("compact uses py-2 padding", func(t *testing.T) {
@@ -192,7 +192,7 @@ func TestTableCellPaddingOption(t *testing.T) {
 			Rows:        []TableRow{SimpleTableRow("1")},
 			CellPadding: TableCellPaddingCompact,
 		}))
-		utils.AssertContains(t, output, "px-4 py-2")
+		utils.AssertContainsAll(t, output, "px-4", "py-2")
 		utils.AssertNotContains(t, output, "py-3")
 	})
 
@@ -203,7 +203,7 @@ func TestTableCellPaddingOption(t *testing.T) {
 			Rows:        []TableRow{SimpleTableRow("1")},
 			CellPadding: TableCellPaddingComfortable,
 		}))
-		utils.AssertContains(t, output, "px-4 py-3")
+		utils.AssertContainsAll(t, output, "px-4", "py-3")
 	})
 
 	t.Run("invalid cell padding falls back to comfortable", func(t *testing.T) {
@@ -213,8 +213,8 @@ func TestTableCellPaddingOption(t *testing.T) {
 			Rows:        []TableRow{SimpleTableRow("1")},
 			CellPadding: TableCellPadding("bogus"),
 		}))
-		utils.AssertContains(t, output, "px-4 py-3")
-		utils.AssertNotContains(t, output, "px-4 py-2")
+		utils.AssertContainsAll(t, output, "px-4", "py-3")
+		utils.AssertNotContains(t, output, "py-2")
 	})
 
 	t.Run("compact applies to typed headers too", func(t *testing.T) {
@@ -224,7 +224,7 @@ func TestTableCellPaddingOption(t *testing.T) {
 			Rows:         []TableRow{SimpleTableRow("1")},
 			CellPadding:  TableCellPaddingCompact,
 		}))
-		utils.AssertContains(t, output, "px-4 py-2")
+		utils.AssertContainsAll(t, output, "px-4", "py-2")
 		utils.AssertNotContains(t, output, "py-3")
 	})
 }

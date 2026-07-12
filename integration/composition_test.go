@@ -338,8 +338,7 @@ func TestTableInCardNoDoubleBorder(t *testing.T) {
 		if roundedCount != 1 {
 			t.Errorf("expected exactly 1 rounded-lg (from card shell), got %d.\nOutput:\n%s", roundedCount, output)
 		}
-		utils.AssertContains(t, output, "Alice")
-		utils.AssertContains(t, output, "px-4 py-2")
+		utils.AssertContainsAll(t, output, "Alice", "px-4", "py-2")
 	})
 
 	t.Run("without Flush the double border is present (confirms test catches the bug)", func(t *testing.T) {

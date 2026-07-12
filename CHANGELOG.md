@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.16.0] — 2026-07-12
+
+Flush prop eliminates table-in-card double border; CellPadding typed enum adds compact density for admin dashboards; ADR 0012 documents the nesting convention.
+
 ### Added
 
 - `display.TableProps.Flush` — when true, suppresses the Table wrapper div's border and rounded corners. Use when nesting a Table inside a `Card(CardPaddingNone)` to eliminate the double-border defect. The `overflow-x-auto` scroll wrapper is always retained.
