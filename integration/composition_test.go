@@ -279,6 +279,8 @@ func TestBasePropsPropagation(t *testing.T) {
 
 // TestCSPNonceConsistency verifies that components with inline scripts all
 // use the nonce from their props, not hardcoded values.
+// Note: Accordion was removed from this list — it now uses native <details>
+// and has zero inline JavaScript.
 func TestCSPNonceConsistency(t *testing.T) {
 	t.Parallel()
 
@@ -291,10 +293,6 @@ func TestCSPNonceConsistency(t *testing.T) {
 		utils.Render(t, display.Dropdown(display.DropdownProps{
 			BaseProps: utils.BaseProps{ID: "d1", Nonce: nonce},
 			Label:     "Actions",
-		})),
-		utils.Render(t, display.Accordion(display.AccordionProps{
-			BaseProps: utils.BaseProps{Nonce: nonce},
-			Items:     []display.AccordionItem{{ID: "a1", Title: "Item 1"}},
 		})),
 		utils.Render(t, forms.Combobox(forms.ComboboxProps{
 			BaseProps: utils.BaseProps{ID: "cb1", Nonce: nonce},

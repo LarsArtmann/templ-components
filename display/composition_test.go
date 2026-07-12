@@ -75,10 +75,10 @@ func TestCompositionAccordionWithMultipleItems(t *testing.T) {
 				{ID: "item2", Title: "Second"},
 			},
 		}))
-		utils.AssertContains(t, output, `aria-controls="item1-panel"`)
-		utils.AssertContains(t, output, `id="item1-trigger"`)
-		utils.AssertContains(t, output, `aria-expanded="true"`)
-		utils.AssertContains(t, output, `aria-expanded="false"`)
+		utils.AssertContains(t, output, "<details")
+		utils.AssertContains(t, output, "<summary")
+		utils.AssertContains(t, output, `id="item1"`)
+		utils.AssertContains(t, output, " open")
 	})
 }
 

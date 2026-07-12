@@ -61,7 +61,7 @@ func TestA11yAttributes(t *testing.T) {
 		utils.AssertContains(t, output, `aria-selected="true"`)
 	})
 
-	t.Run("accordion has aria-expanded", func(t *testing.T) {
+	t.Run("accordion uses native details element", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Accordion(AccordionProps{
 			Items: []AccordionItem{
@@ -69,8 +69,9 @@ func TestA11yAttributes(t *testing.T) {
 				{ID: "b", Title: "Q2"},
 			},
 		}))
-		utils.AssertContains(t, output, `aria-expanded="true"`)
-		utils.AssertContains(t, output, `aria-expanded="false"`)
+		utils.AssertContains(t, output, "<details")
+		utils.AssertContains(t, output, "<summary")
+		utils.AssertContains(t, output, " open")
 	})
 
 	t.Run("avatar image has alt text", func(t *testing.T) {

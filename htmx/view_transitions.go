@@ -32,7 +32,7 @@ type ViewTransitionsProps struct {
 
 // DefaultViewTransitionsProps returns sensible defaults.
 func DefaultViewTransitionsProps() ViewTransitionsProps {
-	return ViewTransitionsProps{
+	return ViewTransitionsProps{ //nolint:exhaustruct // intentionally minimal defaults
 		Global: true,
 	}
 }
@@ -55,8 +55,10 @@ const viewTransitionsScript = `(function(){if(typeof htmx!=='undefined'&&documen
 func styleComponent(nonce, css string) templ.Component {
 	escapedNonce := html.EscapeString(nonce)
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		_, err := fmt.Fprintf(w, "<style nonce=\"%s\">\n%s\n</style>\n", escapedNonce, css)
-		return err
+		if _, err := fmt.Fprintf(w, "<style nonce=\"%s\">\n%s\n</style>\n", escapedNonce, css); err != nil {
+			return fmt.Errorf("write view transitions style: %w", err)
+		}
+		return nil
 	})
 }
 
@@ -64,7 +66,9 @@ func styleComponent(nonce, css string) templ.Component {
 func scriptComponent(nonce, js string) templ.Component {
 	escapedNonce := html.EscapeString(nonce)
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		_, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s\n</script>\n", escapedNonce, js)
-		return err
+		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s\n</script>\n", escapedNonce, js); err != nil {
+			return fmt.Errorf("write view transitions script: %w", err)
+		}
+		return nil
 	})
 }
