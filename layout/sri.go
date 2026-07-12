@@ -64,6 +64,21 @@ func resolveCDNBase(cdnBase string) string {
 	return strings.TrimRight(cdnBase, "/")
 }
 
+// htmxCDNOrigin extracts the scheme+host (origin) from the CDN base URL for
+// use in <link rel="preconnect">. Returns "" if the input doesn't parse as
+// an absolute URL (e.g. a relative self-hosted path like "/assets").
+func htmxCDNOrigin(cdnBase string) string {
+	base := resolveCDNBase(cdnBase)
+	if !strings.HasPrefix(base, "http://") && !strings.HasPrefix(base, "https://") {
+		return ""
+	}
+	idx := strings.Index(base[8:], "/")
+	if idx < 0 {
+		return base
+	}
+	return base[:8+idx]
+}
+
 // htmxScriptURL returns the CDN URL for the htmx main script at the given
 // version. If cdnBase is empty, defaults to defaultCDNBase.
 func htmxScriptURL(version HTMXVersion, cdnBase string) string {

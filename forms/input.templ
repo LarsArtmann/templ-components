@@ -45,6 +45,31 @@ func inputType(t InputType) string {
 	return string(t)
 }
 
+// enterKeyHintForType maps InputType to the optimal mobile keyboard Enter
+// key label. Returns "" when no hint applies (text, password, hidden, date/time).
+//
+//nolint:gochecknoglobals // Mobile UX lookup table
+var enterKeyHintForType = map[InputType]string{
+	InputEmail:  "next",
+	InputNumber: "next",
+	InputTel:    "next",
+	InputURL:    "next",
+	InputSearch: "search",
+}
+
+// inputModeForType maps InputType to the optimal mobile keyboard layout.
+// Returns "" when the native type attribute already provides the correct
+// keyboard (text, password, date, time, datetime-local, hidden).
+//
+//nolint:gochecknoglobals // Mobile UX lookup table
+var inputModeForType = map[InputType]string{
+	InputEmail:  "email",
+	InputNumber: "decimal",
+	InputTel:    "tel",
+	InputURL:    "url",
+	InputSearch: "search",
+}
+
 // InputProps configures a text input
 type InputProps struct {
 	utils.BaseProps
@@ -100,6 +125,12 @@ templ Input(props InputProps) {
 					value={ props.Value }
 					if props.Placeholder != "" {
 						placeholder={ props.Placeholder }
+					}
+					if ekh, ok := enterKeyHintForType[props.Type]; ok {
+						enterkeyhint={ ekh }
+					}
+					if im, ok := inputModeForType[props.Type]; ok {
+						inputmode={ im }
 					}
 					class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
 					if props.Required {

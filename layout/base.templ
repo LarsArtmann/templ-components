@@ -124,6 +124,7 @@ templ Base(props PageProps) {
 		<head>
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+			<meta name="color-scheme" content="light dark"/>
 			if props.SecurityHeaders {
 				<meta http-equiv="X-Content-Type-Options" content="nosniff"/>
 				<meta http-equiv="Referrer-Policy" content="strict-origin-when-cross-origin"/>
@@ -165,6 +166,11 @@ templ Base(props PageProps) {
 				<link rel="stylesheet" href={ props.CSSPath }/>
 			}
 			if props.HTMXVersion != "" {
+				{{ cdnOrigin := htmxCDNOrigin(props.HTMXCDN) }}
+				if cdnOrigin != "" {
+					<link rel="preconnect" href={ cdnOrigin } crossorigin/>
+					<link rel="dns-prefetch" href={ cdnOrigin }/>
+				}
 				if props.HTMXUseSRI {
 					{{ mainSRI := htmxMainSRI(props.HTMXVersion) }}
 					if mainSRI != "" {

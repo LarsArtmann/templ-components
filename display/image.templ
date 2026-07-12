@@ -55,6 +55,8 @@ templ Image(props ImageProps) {
 			src={ props.Src }
 			alt={ props.Alt }
 			loading={ utils.Ternary(props.Lazy, "lazy", "eager") }
+			decoding="async"
+			fetchpriority={ utils.Ternary(props.Lazy, "low", "high") }
 			if props.Width > 0 {
 				width={ props.Width }
 			}

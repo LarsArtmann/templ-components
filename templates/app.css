@@ -150,3 +150,75 @@ details[open] [data-tc-chevron] {
     transition: none;
   }
 }
+
+/* --- Typography: balanced headlines, clean paragraphs --- */
+/* text-wrap: balance limits to 6 lines — safe for headings */
+/* text-wrap: pretty prevents orphan words in body copy */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* --- Form validation: CSS-only post-interaction feedback --- */
+/* :user-valid / :user-invalid fire ONLY after user interacts — unlike */
+/* :valid/:invalid which fire immediately on page load */
+@layer components {
+  input:user-invalid,
+  textarea:user-invalid,
+  select:user-invalid {
+    border-color: rgb(220 38 38); /* red-600 */
+  }
+  input:user-valid,
+  textarea:user-valid,
+  select:user-valid {
+    border-color: rgb(22 163 74); /* green-600 */
+  }
+}
+
+/* --- Auto-growing textarea (field-sizing) --- */
+/* Progressive enhancement: grows textarea to fit content */
+@layer utilities {
+  .tc-auto-grow {
+    field-sizing: content;
+    min-height: 2.5rem;
+    max-height: 20rem;
+  }
+}
+
+/* --- interpolate-size: enable animating to/from height:auto --- */
+/* Eliminates need for grid-rows hack or max-height hack */
+/* Graceful degradation: unsupported browsers just snap */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+}
+
+/* --- Accessibility: forced-colors (Windows High Contrast) --- */
+/* box-shadow is forced to 'none' — add borders for visual separation */
+@media (forced-colors: active) {
+  .shadow-sm,
+  .shadow-lg,
+  .shadow-xl {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* --- Accessibility: prefers-reduced-transparency --- */
+/* Replace translucent overlays with more opaque backgrounds */
+@media (prefers-reduced-transparency: reduce) {
+  [popover]::backdrop,
+  dialog::backdrop {
+    backdrop-filter: none;
+    background-color: rgb(0 0 0 / 0.85);
+  }
+}
