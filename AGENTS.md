@@ -11,8 +11,8 @@ This repo is a **single Go module** (`github.com/larsartmann/templ-components`) 
 | `forms`             | 21 components                              | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                    |
 | `layout`            | 6 components                               | Page shell, theme toggle, CSP-safe script/style tags                                                    |
 | `navigation`        | 12 components                              | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                   |
-| `htmx`              | 7 components                               | HTMX loading, error handling, OOB swaps                                                                 |
-| `icons`             | 101 named SVG icons                        | Heroicons v2 outline + Spinner                                                                          |
+| `htmx`              | 8 components                               | HTMX loading, error handling, OOB swaps, View Transitions                                               |
+| `icons`             | 102 named SVG icons                        | Heroicons v2 outline + Spinner                                                                          |
 | `errorpage`         | 4 components + handler                     | Error pages, 404, go-error-family integration                                                           |
 | `utils`             | BaseProps, Class(), EnsureID, test helpers | Shared utilities                                                                                        |
 | `internal/svg`      | SVG path constants                         | Single source of truth for inline SVG paths                                                             |

@@ -317,7 +317,7 @@ Nav bars, breadcrumbs, pagination, mobile menus, sidebar navigation, and cursor-
 })
 ```
 
-### `icons` — SVG Icons (101 icons)
+### `icons` — SVG Icons (102 icons)
 
 Typed icon constants, no icon library dependency.
 
@@ -326,11 +326,11 @@ Typed icon constants, no icon library dependency.
 @icons.Icon(icons.Check, "h-6 w-6 text-green-500")
 ```
 
-101 named icons (100 path icons + Spinner) covering navigation, UI actions, communication, media, status, and admin/security. See `icons/icon_names.go` for the full list.
+102 named icons (101 path icons + Spinner) covering navigation, UI actions, communication, media, status, and admin/security. See `icons/icon_names.go` for the full list.
 
-### `htmx` — HTMX Integration (7 components)
+### `htmx` — HTMX Integration (8 components)
 
-Loading indicators, error handling, CSRF protection, and out-of-band swaps.
+Loading indicators, error handling, CSRF protection, out-of-band swaps, and View Transitions.
 
 ```templ
 @htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
@@ -343,7 +343,7 @@ Loading indicators, error handling, CSRF protection, and out-of-band swaps.
 
 ## Design Principles
 
-**Type-safe.** 26 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 37 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation (modal focus trap, dropdown arrows, tabs), and screen-reader text across all interactive components.
 
@@ -463,11 +463,11 @@ Wiring up HTMX error feedback in a server-rendered app? See [`docs/recipes/serve
 
 | Metric       | Value                                               |
 | ------------ | --------------------------------------------------- |
-| Components   | 84                                                  |
-| SVG icons    | 101                                                 |
-| Typed enums  | 35                                                  |
-| Packages     | 11                                                  |
-| Tests        | ~850 functions + ~1,700 subtests                    |
+| Components   | 97                                                  |
+| SVG icons    | 102                                                 |
+| Typed enums  | 37                                                  |
+| Packages     | 9                                                   |
+| Tests        | ~990 functions + ~1,140 subtests                    |
 | Coverage     | ~75% (72–79% per package)                           |
 | Dependencies | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 

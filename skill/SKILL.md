@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-93 components across 9 packages + 101 icons. If you're about to hand-roll
+97 components across 9 packages + 102 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -128,7 +128,7 @@ Don't know what to look for? Find your page type:
 | `ProgressBar`      | `ProgressBar(props ProgressBarProps)`       | Progress indicator — 3 sizes, indeterminate, label  |
 | `StepIndicator`    | `StepIndicator(props StepIndicatorProps)`   | Horizontal/vertical step progress                   |
 
-#### `layout` — 5 components
+#### `layout` — 6 components
 
 | Component     | Signature                              | One-liner                                                   |
 | ------------- | -------------------------------------- | ----------------------------------------------------------- |
@@ -155,7 +155,7 @@ Don't know what to look for? Find your page type:
 | `EndOfList`        | `EndOfList(props EndOfListProps)`                       | "You've reached the end" indicator — companion to LoadMore/Pagination        |
 | `Footer`           | `Footer(props FooterProps)`                             | Simple footer with copyright                                                 |
 
-#### `htmx` — 7 components
+#### `htmx` — 8 components
 
 | Component              | Signature                                                 | One-liner                   |
 | ---------------------- | --------------------------------------------------------- | --------------------------- |
@@ -180,7 +180,7 @@ Don't know what to look for? Find your page type:
 | `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/code/why/fix from error                                      |
 | `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family                                   |
 
-#### `icons` — 101 icons + 2 functions
+#### `icons` — 102 icons + 3 functions
 
 | Function                                        | One-liner                                          |
 | ----------------------------------------------- | -------------------------------------------------- |

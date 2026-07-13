@@ -12,8 +12,8 @@ The library is feature-complete for production server-rendered Go web apps.
 
 | Pillar        | Status                                                                                                                                                                                                                                                                  |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Components    | **93** across 9 packages (display, feedback, forms, layout, navigation, htmx, errorpage, icons, utils)                                                                                                                                                                  |
-| Icons         | **101** named SVG icons (Heroicons v2 outline + Spinner), typed `icons.Name` constants                                                                                                                                                                                  |
+| Components    | **97** across 9 packages (display, feedback, forms, layout, navigation, htmx, errorpage, icons, utils)                                                                                                                                                                  |
+| Icons         | **102** named SVG icons (Heroicons v2 outline + Spinner), typed `icons.Name` constants                                                                                                                                                                                  |
 | Typed enums   | 30+ closed-set enums, each with `IsValid()` + test coverage; `map[X]string` + `utils.Lookup` everywhere                                                                                                                                                                 |
 | RTL / i18n    | All CSS uses logical properties (`ms-`/`me-`/`start-`/`end-`); auto-mirrors under `dir="rtl"`                                                                                                                                                                           |
 | Dark mode     | Full `dark:` variant coverage on all components; enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` (failing CI tests). Class-based strategy via `layout.ThemeScript()` + `layout.ThemeToggle()`. `color-scheme: light/dark` for native form controls. |
@@ -47,7 +47,6 @@ changes require a v2.0 major bump.
 | Direction                    | Description                                                                        |
 | ---------------------------- | ---------------------------------------------------------------------------------- |
 | Compound components          | `Trigger` / `Content` / `Close` sub-component pattern for Modal, Drawer, Dropdown. |
-| Native `<dialog>`            | Modal/Drawer migrate to native `HTMLDialogElement`, reducing JS surface.           |
 | Headless / unstyled variants | Components that emit semantics + ARIA without Tailwind classes.                    |
 | CLI scaffolding tool         | `templ-components add <component>` — Go binary, no Node.                           |
 | Demo / showcase site         | A hosted site rendering every component with live props.                           |

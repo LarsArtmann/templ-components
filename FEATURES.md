@@ -15,12 +15,12 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `errorpage`  | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                                                                                         |
 | `feedback`   | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                                                                                    |
 | `forms`      | 21            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, sliders, ratings, file inputs, date pickers, comboboxes, filter dropdowns, tags input, calendar, validation                                                                                  |
-| `htmx`       | 7             | HTMX integration: loading indicators, error handling, helpers                                                                                                                                                                                                        |
-| `icons`      | 2 (101 icons) | SVG icon system with typed name constants                                                                                                                                                                                                                            |
+| `htmx`       | 8             | HTMX integration: loading indicators, error handling, helpers, View Transitions                                                                                                                                                                                      |
+| `icons`      | 3 (102 icons) | SVG icon system with typed name constants, RTL mirroring                                                                                                                                                                                                             |
 | `layout`     | 6             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags                                                                                                                                                                                          |
 | `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                     |
 
-**Totals:** 93 templ components, 101 icon names, 36 typed enums (36 with `IsValid()`), 74 generated `*_templ.go` files, ~30,000 lines of Go/templ source
+**Totals:** 97 templ components, 102 icon names, 37 typed enums (37 with `IsValid()`), 75 generated `*_templ.go` files, ~30,000 lines of Go/templ source
 
 ---
 
@@ -298,6 +298,7 @@ _(None currently)_
 | `SwapOOB`              | FULLY_FUNCTIONAL | Out-of-band swap wrapper   | For updating multiple elements per response                                                         |
 | `CSRFToken`            | FULLY_FUNCTIONAL | Hidden CSRF input          | Configurable name via `CSRFTokenName` field (defaults to `csrf_token`)                              |
 | `GlobalErrorHandling`  | FULLY_FUNCTIONAL | HTMX error handler         | Network errors, response errors, auto-retry, toast integration, family-aware error parsing          |
+| `ViewTransitions`      | FULLY_FUNCTIONAL | View Transitions API       | Native browser animations for HTMX swaps, `prefers-reduced-motion` support, graceful degradation    |
 
 ### Known Issues
 
@@ -309,14 +310,15 @@ _(None currently)_
 
 ### Components
 
-| Component             | Status           | Description      | Key Features                                        |
-| --------------------- | ---------------- | ---------------- | --------------------------------------------------- |
-| `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 101 named icons, custom class, currentColor theming |
-| `IconWithStrokeWidth` | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)         |
+| Component             | Status           | Description      | Key Features                                                         |
+| --------------------- | ---------------- | ---------------- | -------------------------------------------------------------------- |
+| `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 102 named icons, custom class, currentColor theming                  |
+| `IconWithStrokeWidth` | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)                          |
+| `IconRTL`             | FULLY_FUNCTIONAL | RTL mirror icon  | Directional icons auto-mirror under `dir="rtl"` via CSS `scaleX(-1)` |
 
-### Icon Names (101)
+### Icon Names (102)
 
-100 path icons + Spinner covering navigation, UI actions, chevrons/arrows, communication, media, and status. See `icons/icon_names.go` for the complete list.
+101 path icons + Spinner covering navigation, UI actions, chevrons/arrows, communication, media, and status. See `icons/icon_names.go` for the complete list.
 
 ### Functions
 
