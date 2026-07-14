@@ -91,7 +91,7 @@ jobs:
         env:
           GOEXPERIMENT: jsonv2
         run: |
-          echo "$(go env GOPATH)/bin" >> "$GITHUB_PATH"
+          export PATH="$(go env GOPATH)/bin:$PATH"
           go install github.com/a-h/templ/cmd/templ@v0.3.1020
           templ generate ./examples/demo/...
           docker build -t us-central1-docker.pkg.dev/lars-software/templcomponents/demo:latest \
