@@ -10,8 +10,8 @@ The `htmx` package provides first-class HTMX integration for server-rendered Go 
 ## Loading Indicators
 
 ```templ
-@htmx.LoadingIndicator(feedback.Spinner(feedback.SpinnerMD, "text-blue-600"))
-@htmx.InlineLoadingOverlay("form-loading", feedback.Spinner(feedback.SpinnerSM, "text-white"))
+@htmx.LoadingIndicator(feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600"}))
+@htmx.InlineLoadingOverlay("form-loading", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-white"}))
 ```
 
 Pair `InlineLoadingOverlay` with HTMX's `hx-indicator` attribute:
@@ -29,7 +29,7 @@ Pair `InlineLoadingOverlay` with HTMX's `hx-indicator` attribute:
 @htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
 ```
 
-When the server returns structured JSON with a `family` field, the toast type is automatically mapped (e.g., `rejection` → warning, `not_found` → info).
+When the server returns structured JSON with a `family` field, the toast type is automatically mapped (e.g., `rejection` → warning, `transient` → info).
 
 Configure via `ErrorHandlingConfig`:
 
@@ -53,8 +53,8 @@ Renders a hidden `<input>` with the token. Use `forms.FormProps.CSRFToken` for f
 
 ```templ
 @htmx.SwapOOB(htmx.SwapOOBProps{
-    Style:   htmx.SwapOuterHTML,
-    Selector: "#user-count",
+    SwapStyle: htmx.SwapOuterHTML,
+    Selector:  "#user-count",
 })
 ```
 

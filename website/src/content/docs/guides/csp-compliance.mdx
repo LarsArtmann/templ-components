@@ -23,7 +23,7 @@ Generate a nonce per-request and pass it through:
 func handler(w http.ResponseWriter, r *http.Request) {
     nonce := generateNonce() // crypto/rand
     component := layout.Base(layout.PageProps{
-        BaseProps: utils.BaseProps{Nonce: nonce},
+        Nonce: nonce,
     })
     // ...
 }
@@ -41,7 +41,7 @@ w.Header().Set("Content-Security-Policy",
 
 ## Integration Test
 
-The `integration` package contains `TestCSPNonce` which renders every inline-script component and asserts every `<script>` tag has `nonce=`. This prevents CSP regressions.
+The `integration` package contains `TestAllInlineScriptsHaveNonce` which renders every inline-script component and asserts every `<script>` tag has `nonce=`. This prevents CSP regressions.
 
 ```bash
 go test ./integration/... -run TestCSPNonce
