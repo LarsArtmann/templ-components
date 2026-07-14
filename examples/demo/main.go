@@ -31,6 +31,13 @@ func main() {
 
 	mux := http.NewServeMux()
 
+	// Health check endpoint for Cloud Run / container orchestration
+	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write([]byte(`{"status":"ok"}`))
+	})
+
 	// Serve pre-compiled CSS (embedded in binary, no CDN dependency)
 	mux.HandleFunc("/css/app.css", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/css; charset=utf-8")

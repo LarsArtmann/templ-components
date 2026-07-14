@@ -1,10 +1,15 @@
 @import "tailwindcss" source(none);
 
+/* Component-specific CSS (dialog animations, stylable select, etc.) */
+@import "../../templates/custom.css";
+
 /*
- * Scan all .templ files in the project for Tailwind class names.
- * Run from the project root: tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css --minify
+ * Scan ALL .templ files in the repo — not just demo files, but every component
+ * package (display, forms, feedback, layout, navigation, htmx, errorpage, icons, utils).
+ * Without this, component classes are missing from the compiled CSS.
+ * Path is relative to this CSS file (examples/demo/), so ../../ reaches the repo root.
  */
-@source "./**/*.templ";
+@source "../../**/*.templ";
 
 /* Class-based dark mode — required for ThemeScript/ThemeToggle */
 @custom-variant dark (&:where(.dark, .dark *));

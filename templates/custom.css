@@ -1,0 +1,417 @@
+/*
+ * templ-components custom CSS — component-specific styles.
+ *
+ * This file contains CSS for features Tailwind utilities can't express:
+ * native <dialog> overlay animations, stylable <select>, auto-grow
+ * textarea, scroll-snap carousel, accordion chevron, and more.
+ *
+ * Both templates/app.css (consumer entry point) and examples/demo/demo.css
+ * import this file so the custom CSS stays in one place.
+ */
+
+@layer utilities {
+  /* RTL icon mirroring — flip directional icons in RTL contexts */
+  [dir="rtl"] [data-tc-dir-icon] {
+    transform: scaleX(-1);
+  }
+}
+
+/*
+ * Modern Browser Capabilities — progressive enhancement layer.
+ * These features gracefully degrade in older browsers.
+ * See: docs/research/modern-browser-capabilities.md
+ */
+
+/* --- Popover API backdrop (Dropdown, Popover, ContextMenu) --- */
+[popover]::backdrop {
+  background-color: transparent;
+}
+
+/*
+ * Native <dialog> overlay system (Modal, Drawer).
+ *
+ * The <dialog> element gives us: top-layer rendering (no z-index wars),
+ * native focus trap, native Escape-to-close, native focus restore, and
+ * ::backdrop for the dimming layer — all without JavaScript.
+ *
+ * CSS animations use @starting-style (entrance) and transition-behavior:
+ * allow-discrete on display+overlay (exit) to animate to/from display:none.
+ * Graceful degradation: browsers without allow-discrete snap instantly.
+ */
+@layer components {
+  /* Reset browser dialog defaults so Tailwind classes control everything */
+  dialog.tc-overlay {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    color: inherit;
+  }
+
+  /* Backdrop: shared by modal and drawer, animated via background-color */
+  dialog.tc-overlay::backdrop {
+    background-color: rgb(0 0 0 / 0%);
+    backdrop-filter: blur(2px);
+    transition:
+      background-color 200ms ease-out,
+      overlay 200ms allow-discrete,
+      display 200ms allow-discrete;
+  }
+
+  dialog.tc-overlay[open]::backdrop {
+    background-color: rgb(0 0 0 / 50%);
+  }
+
+  @starting-style {
+    dialog.tc-overlay[open]::backdrop {
+      background-color: rgb(0 0 0 / 0%);
+    }
+  }
+
+  /* --- Modal: centered, scale + fade animation --- */
+  dialog.tc-modal {
+    opacity: 0;
+    transform: scale(0.95);
+    transition:
+      opacity 200ms ease-out,
+      transform 200ms ease-out,
+      overlay 200ms allow-discrete,
+      display 200ms allow-discrete;
+  }
+
+  dialog.tc-modal[open] {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  @starting-style {
+    dialog.tc-modal[open] {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+
+  /* --- Drawer: side panel, slide animation --- */
+  dialog.tc-drawer {
+    margin-block: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    opacity: 0;
+    transform: translateX(0);
+    transition:
+      opacity 200ms ease-out,
+      transform 200ms ease-out,
+      overlay 200ms allow-discrete,
+      display 200ms allow-discrete;
+  }
+
+  /* Position: logical properties auto-mirror in RTL (dir="rtl") */
+  dialog.tc-drawer[data-side="left"] {
+    margin-inline: 0 auto;
+  }
+
+  dialog.tc-drawer[data-side="right"] {
+    margin-inline: auto 0;
+  }
+
+  /* Closed state: slide off-screen in the right direction */
+  dialog.tc-drawer[data-side="left"]:not([open]) {
+    transform: translateX(-100%);
+  }
+
+  dialog.tc-drawer[data-side="right"]:not([open]) {
+    transform: translateX(100%);
+  }
+
+  dialog.tc-drawer[open] {
+    opacity: 1;
+    transform: translateX(0);
+  }
+
+  @starting-style {
+    dialog.tc-drawer[data-side="left"][open] {
+      opacity: 0;
+      transform: translateX(-100%);
+    }
+
+    dialog.tc-drawer[data-side="right"][open] {
+      opacity: 0;
+      transform: translateX(100%);
+    }
+  }
+}
+
+/* --- Reduced motion: disable overlay transitions --- */
+@media (prefers-reduced-motion: reduce) {
+  dialog.tc-overlay,
+  dialog.tc-overlay::backdrop {
+    transition: none;
+  }
+}
+
+/* --- content-visibility: auto — skip rendering off-screen content --- */
+/* Apply to long lists/tables for 2-5x faster initial render. */
+@layer utilities {
+  .tc-content-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 48px;
+  }
+  .tc-content-auto-compact {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 40px;
+  }
+}
+
+/* --- scroll-snap carousel helpers --- */
+@layer utilities {
+  .tc-snap-x {
+    scroll-snap-type: x mandatory;
+  }
+  .tc-snap-center {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+  .tc-no-scrollbar {
+    scrollbar-width: none;
+  }
+  .tc-no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+/* --- <details> marker reset (Accordion) --- */
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+
+/* Accordion chevron rotation — reacts to native <details> open attribute */
+[data-tc-chevron] {
+  transition: transform 200ms ease;
+}
+details[open] [data-tc-chevron] {
+  transform: rotate(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-tc-chevron] {
+    transition: none;
+  }
+}
+
+/* --- Typography: balanced headlines, clean paragraphs --- */
+/* text-wrap: balance limits to 6 lines — safe for headings */
+/* text-wrap: pretty prevents orphan words in body copy */
+@layer base {
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+}
+
+/* --- Native form control accent color --- */
+/* accent-color styles checkboxes, radios, range inputs, and progress bars */
+/* Override per-component with Tailwind's accent-* utilities if needed */
+@layer base {
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  progress {
+    accent-color: rgb(37 99 235); /* blue-600 */
+  }
+  .dark input[type="checkbox"],
+  .dark input[type="radio"],
+  .dark input[type="range"],
+  .dark progress {
+    accent-color: rgb(96 165 250); /* blue-400 */
+  }
+}
+
+/* --- Form validation: CSS-only post-interaction feedback --- */
+/* :user-valid / :user-invalid fire ONLY after user interacts — unlike */
+/* :valid/:invalid which fire immediately on page load */
+@layer components {
+  input:user-invalid,
+  textarea:user-invalid,
+  select:user-invalid {
+    border-color: rgb(220 38 38); /* red-600 */
+  }
+  input:user-valid,
+  textarea:user-valid,
+  select:user-valid {
+    border-color: rgb(22 163 74); /* green-600 */
+  }
+}
+
+/* --- Stylable <select> (appearance: base-select) --- */
+/* Progressive enhancement: Chrome 135+, Safari 27+, Edge 135+. */
+/* Non-supporting browsers render a normal native <select>. */
+/* The .tc-select class + <button><selectedcontent> structure are emitted */
+/* by forms.Select when Stylable: true. */
+@supports (appearance: base-select) {
+  select.tc-select,
+  select.tc-select::picker(select) {
+    appearance: base-select;
+  }
+
+  select.tc-select {
+    background-color: rgb(255 255 255);
+    border: 1px solid rgb(209 213 219); /* gray-300 */
+    border-radius: 0.5rem;
+    padding: 0.625rem 2.5rem 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(17 24 39); /* gray-900 */
+    cursor: pointer;
+    transition:
+      border-color 150ms ease,
+      box-shadow 150ms ease;
+  }
+
+  select.tc-select:hover {
+    border-color: rgb(107 114 128); /* gray-500 */
+  }
+
+  select.tc-select:focus,
+  select.tc-select:focus-visible {
+    outline: none;
+    border-color: rgb(59 130 246); /* blue-500 */
+    box-shadow: 0 0 0 2px rgb(59 130 246 / 0.3);
+  }
+
+  select.tc-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  /* Dropdown arrow via picker-icon pseudo-element */
+  select.tc-select::picker-icon {
+    width: 1.25rem;
+    height: 1.25rem;
+    color: rgb(107 114 128); /* gray-500 */
+    transition: rotate 200ms ease;
+  }
+
+  select.tc-select:open::picker-icon {
+    rotate: 180deg;
+  }
+
+  /* Dropdown container */
+  select.tc-select::picker(select) {
+    background-color: rgb(255 255 255);
+    border: 1px solid rgb(209 213 219); /* gray-300 */
+    border-radius: 0.5rem;
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1);
+    padding: 0.25rem;
+    margin-block: 0.25rem;
+    max-height: 20rem;
+    overflow: auto;
+  }
+
+  /* Options */
+  select.tc-select option {
+    padding: 0.5rem 0.75rem;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    color: rgb(17 24 39); /* gray-900 */
+    cursor: pointer;
+    transition: background-color 100ms ease;
+  }
+
+  select.tc-select option:hover,
+  select.tc-select option:focus {
+    background-color: rgb(243 244 246); /* gray-100 */
+  }
+
+  select.tc-select option:checked {
+    background-color: rgb(219 234 254); /* blue-100 */
+    font-weight: 500;
+  }
+
+  /* Dark mode */
+  .dark select.tc-select {
+    background-color: rgb(17 24 39); /* gray-900 */
+    border-color: rgb(75 85 99); /* gray-600 */
+    color: rgb(255 255 255);
+  }
+
+  .dark select.tc-select:hover {
+    border-color: rgb(156 163 175); /* gray-400 */
+  }
+
+  .dark select.tc-select:focus,
+  .dark select.tc-select:focus-visible {
+    border-color: rgb(96 165 250); /* blue-400 */
+    box-shadow: 0 0 0 2px rgb(96 165 250 / 0.3);
+  }
+
+  .dark select.tc-select::picker-icon {
+    color: rgb(156 163 175); /* gray-400 */
+  }
+
+  .dark select.tc-select::picker(select) {
+    background-color: rgb(31 41 55); /* gray-800 */
+    border-color: rgb(75 85 99); /* gray-600 */
+    box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.3);
+  }
+
+  .dark select.tc-select option {
+    color: rgb(255 255 255);
+  }
+
+  .dark select.tc-select option:hover,
+  .dark select.tc-select option:focus {
+    background-color: rgb(55 65 81); /* gray-700 */
+  }
+
+  .dark select.tc-select option:checked {
+    background-color: rgb(30 58 138); /* blue-900 */
+  }
+}
+
+/* --- Auto-growing textarea (field-sizing) --- */
+/* Progressive enhancement: grows textarea to fit content */
+@layer utilities {
+  .tc-auto-grow {
+    field-sizing: content;
+    min-height: 2.5rem;
+    max-height: 20rem;
+  }
+}
+
+/* --- interpolate-size: enable animating to/from height:auto --- */
+/* Eliminates need for grid-rows hack or max-height hack */
+/* Graceful degradation: unsupported browsers just snap */
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+}
+
+/* --- Accessibility: forced-colors (Windows High Contrast) --- */
+/* box-shadow is forced to 'none' — add borders for visual separation */
+@media (forced-colors: active) {
+  .shadow-sm,
+  .shadow-lg,
+  .shadow-xl {
+    border: 1px solid CanvasText;
+  }
+}
+
+/* --- Accessibility: prefers-reduced-transparency --- */
+/* Replace translucent overlays with more opaque backgrounds */
+@media (prefers-reduced-transparency: reduce) {
+  [popover]::backdrop,
+  dialog.tc-overlay[open]::backdrop {
+    backdrop-filter: none;
+    background-color: rgb(0 0 0 / 0.85);
+  }
+}
