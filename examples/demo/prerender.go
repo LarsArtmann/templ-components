@@ -37,7 +37,7 @@ func prerender(outputDir string) error {
 		props.HeadContent = cssHead
 
 		outPath := filepath.Join(outputDir, page.filename)
-		if err := os.MkdirAll(filepath.Dir(outPath), 0755); err != nil {
+		if err := os.MkdirAll(filepath.Dir(outPath), 0o755); err != nil {
 			return fmt.Errorf("create dir for %s: %w", page.filename, err)
 		}
 

@@ -12,7 +12,11 @@ import (
 )
 
 func main() {
-	prerenderDir := flag.String("prerender", "", "Pre-render demo pages to static HTML in the given directory instead of starting a server")
+	prerenderDir := flag.String(
+		"prerender",
+		"",
+		"Pre-render demo pages to static HTML in the given directory instead of starting a server",
+	)
 	flag.Parse()
 
 	if *prerenderDir != "" {
