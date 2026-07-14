@@ -53,22 +53,13 @@ jobs:
         run: npx html-validate --config .htmlvalidate.json "dist/**/*.html"
         continue-on-error: true
 
-      - name: Pre-render demo to static HTML
-        working-directory: .
-        env:
-          GOEXPERIMENT: jsonv2
-        run: |
-          go install github.com/a-h/templ/cmd/templ@latest
-          templ generate ./examples/demo/...
-          go run ./examples/demo/ -prerender website/dist/demo/
-
       - uses: actions/upload-artifact@v4
         with:
           name: website-dist
           path: website/dist/
 
   deploy-website:
-    name: Deploy Website
+    name: Deploy Website + Demo
     needs: build-website
     if: github.event_name == 'push' && github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -84,11 +75,45 @@ jobs:
           name: website-dist
           path: website/dist/
 
+      - name: Authenticate to Google Cloud
+        id: auth
+        uses: google-github-actions/auth@v2
+        with:
+          credentials_json: ${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEMPLCOMPONENTS }}
+
+      - name: Set up Cloud SDK
+        uses: google-github-actions/setup-gcloud@v2
+
+      - name: Configure Docker for Artifact Registry
+        run: gcloud auth configure-docker us-central1-docker.pkg.dev --quiet
+
+      - name: Build and push demo image
+        env:
+          GOEXPERIMENT: jsonv2
+        run: |
+          go install github.com/a-h/templ/cmd/templ@v0.3.1020
+          templ generate ./examples/demo/...
+          docker build -t us-central1-docker.pkg.dev/lars-software/templcomponents/demo:latest \
+            -f examples/demo/Dockerfile .
+          docker push us-central1-docker.pkg.dev/lars-software/templcomponents/demo:latest
+
+      - name: Deploy demo to Cloud Run
+        run: |
+          gcloud run deploy templcomponents-demo \
+            --image=us-central1-docker.pkg.dev/lars-software/templcomponents/demo:latest \
+            --region=us-central1 \
+            --project=lars-software \
+            --port=8080 \
+            --min-instances=0 \
+            --max-instances=1 \
+            --memory=256Mi \
+            --cpu=1 \
+            --timeout=60 \
+            --ingress=all \
+            --allow-unauthenticated
+
       - name: Deploy to Firebase Hosting
         working-directory: website
         run: |
           npm install -g firebase-tools
-          echo "${{ secrets.FIREBASE_SERVICE_ACCOUNT_TEMPLCOMPONENTS }}" > "$RUNNER_TEMP/gcp-key.json"
           firebase deploy --only hosting:templcomponents --project lars-software
-        env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ runner.temp }}/gcp-key.json

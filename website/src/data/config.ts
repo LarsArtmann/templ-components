@@ -4,6 +4,7 @@ export const siteConfig = {
   description:
     "A pure Tailwind CSS v4 component library for Go's templ engine with first-class HTMX integration. No DaisyUI, no Node.js, no framework lock-in.",
   siteUrl: "https://templcomponents.lars.software",
+  demoUrl: "https://templcomponents-demo-132045829579.us-central1.run.app",
   github: "https://github.com/larsartmann/templ-components",
   author: {
     name: "LarsArtmann",

@@ -36,7 +36,7 @@ jobs:
           go-version: "1.26"
 
       - name: Install templ
-        run: go install github.com/a-h/templ/cmd/templ@latest
+        run: go install github.com/a-h/templ/cmd/templ@v0.3.1020
 
       - name: Generate templ files
         run: templ generate

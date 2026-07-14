@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"strconv"
 	"time"
 
 	"github.com/larsartmann/templ-components/layout"
@@ -28,6 +29,23 @@ func main() {
 	}
 
 	mux := http.NewServeMux()
+
+	// Mock HTMX endpoints for interactive demo components
+	mux.HandleFunc("/api/load-more", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, `<div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+			<p class="text-sm text-gray-600 dark:text-gray-400">Loaded via HTMX! This item was fetched from the server.</p>
+		</div>`)
+	})
+
+	mux.HandleFunc("/api/delete", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(w, `<div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
+			<p class="text-sm text-green-800 dark:text-green-200">Item deleted successfully (mock endpoint).</p>
+		</div>`)
+	})
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/forms" {
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
@@ -61,15 +79,22 @@ func main() {
 	})
 
 	//nolint:exhaustruct // Demo code - HTTP server for demonstration only
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+	if _, err := strconv.Atoi(port); err != nil {
+		port = "8080"
+	}
 	server := &http.Server{
-		Addr:         ":8080",
+		Addr:         ":" + port,
 		Handler:      mux,
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  60 * time.Second,
 	}
 
-	fmt.Println("Demo running at http://localhost:8080")
+	fmt.Printf("Demo running at http://localhost:%s\n", port)
 	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
 		fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
 	}
