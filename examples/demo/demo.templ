@@ -14,50 +14,106 @@ templ demoPage(props layout.PageProps) {
 
 templ tailwindV4CDN(nonce string) {
 	<script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4" nonce={ nonce }></script>
+	<link rel="preconnect" href="https://fonts.googleapis.com" nonce={ nonce }/>
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" nonce={ nonce }/>
+	<link
+		href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+		rel="stylesheet"
+		nonce={ nonce }
+	/>
+	<style type="text/tailwindcss" nonce={ nonce }>
+		@theme {
+			--font-sans: "Inter", system-ui, -apple-system, sans-serif;
+			--font-mono: "JetBrains Mono", monospace;
+
+			--color-gray-50: #fafaf9;
+			--color-gray-100: #f5f5f4;
+			--color-gray-200: #e7e5e4;
+			--color-gray-300: #d6d3d1;
+			--color-gray-400: #a8a29e;
+			--color-gray-500: #78716c;
+			--color-gray-600: #57534e;
+			--color-gray-700: #44403c;
+			--color-gray-800: #292524;
+			--color-gray-900: #1c1917;
+			--color-gray-950: #0c0a09;
+
+			--color-blue-50: #eef2ff;
+			--color-blue-100: #e0e7ff;
+			--color-blue-200: #c7d2fe;
+			--color-blue-300: #a5b4fc;
+			--color-blue-400: #818cf8;
+			--color-blue-500: #6366f1;
+			--color-blue-600: #4f46e5;
+			--color-blue-700: #4338ca;
+			--color-blue-800: #3730a3;
+			--color-blue-900: #312e81;
+			--color-blue-950: #1e1b4b;
+
+			--radius-md: 0.5rem;
+			--radius-lg: 0.75rem;
+		}
+
+		body {
+			font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+			-webkit-font-smoothing: antialiased;
+			text-rendering: optimizeLegibility;
+		}
+
+		h1, h2, h3, h4 {
+			font-family: "Space Grotesk", "Inter", system-ui, sans-serif;
+			letter-spacing: -0.025em;
+		}
+	</style>
 }
 
 templ demoContent() {
-	<div class="max-w-5xl mx-auto px-4 py-8">
-		<div class="flex items-center justify-between mb-8">
-			<div>
-				<h1 class="text-3xl font-bold text-gray-900 dark:text-white">templ-components Demo</h1>
-				<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">All { componentCount } components across 9 packages.</p>
+	<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
+		<div class="max-w-6xl mx-auto px-6 py-12">
+			<div class="flex items-center justify-between mb-10 pb-6 border-b border-gray-200 dark:border-gray-800">
+				<div>
+					<p class="text-xs font-mono font-medium text-blue-600 dark:text-blue-400 mb-1 tracking-wider uppercase">Live Demo</p>
+					<h1 class="text-4xl font-bold text-gray-900 dark:text-white tracking-tight">templ-components</h1>
+					<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">{ componentCount } components across 9 packages — all interactive, all rendered server-side.</p>
+				</div>
+				@layout.ThemeToggle("Toggle dark mode", "")
 			</div>
-			@layout.ThemeToggle("Toggle dark mode", "")
+			{{
+				tocLinks := []struct{ Label, Anchor string }{
+					{"Display", "display-cards"},
+					{"Feedback", "feedback-alerts"},
+					{"Forms", "forms-controls"},
+					{"Navigation", "nav-simplenav"},
+					{"HTMX", "htmx-loading-indicator"},
+					{"Error Pages", "errorpage-404"},
+					{"Icons", "icons-all"},
+				}
+			}}
+			<nav class="flex flex-wrap gap-2 mb-12" aria-label="Demo sections">
+				for _, link := range tocLinks {
+					<a href={ templ.SafeURL("#" + link.Anchor) } class="px-3 py-1.5 rounded-lg text-sm font-medium text-gray-600 dark:text-gray-400 bg-white dark:bg-gray-900 border border-gray-200 dark:border-gray-800 hover:border-blue-300 dark:hover:border-blue-700 hover:text-blue-600 dark:hover:text-blue-400 transition-all motion-reduce:transition-none motion-reduce:duration-0">{ link.Label }</a>
+				}
+			</nav>
+			@displayDemo()
+			@feedbackDemo()
+			@formsDemoSection()
+			@navigationDemo()
+			@htmxDemo()
+			@errorpageDemo()
+			@iconsDemo()
 		</div>
-		{{
-			tocLinks := []struct{ Label, Anchor string }{
-				{"Display", "display-cards"},
-				{"Feedback", "feedback-alerts"},
-				{"Forms", "forms-controls"},
-				{"Navigation", "nav-simplenav"},
-				{"HTMX", "htmx-loading-indicator"},
-				{"Error Pages", "errorpage-404"},
-				{"Icons", "icons-all"},
-			}
-		}}
-		<nav class="flex flex-wrap gap-2 mb-8 text-sm" aria-label="Demo sections">
-			for _, link := range tocLinks {
-				<a href={ templ.SafeURL("#" + link.Anchor) } class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">{ link.Label }</a>
-			}
-		</nav>
-		@displayDemo()
-		@feedbackDemo()
-		@formsDemoSection()
-		@navigationDemo()
-		@htmxDemo()
-		@errorpageDemo()
-		@iconsDemo()
 	</div>
 }
 
 const componentCount = 97
 
 templ demoSection(title, anchor string) {
-	<section class="mt-12 scroll-mt-8" id={ anchor }>
-		<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
-			{ title }
+	<section class="mt-16 scroll-mt-8" id={ anchor }>
+		<h2 class="text-lg font-semibold text-gray-900 dark:text-white mb-6 font-mono tracking-tight">
+			<span class="text-blue-500 dark:text-blue-400">#</span> { title }
 		</h2>
-		{ children... }
+		<div class="space-y-4">
+			{ children... }
+		</div>
 	</section>
 }
