@@ -45,6 +45,13 @@ func main() {
 		_, _ = w.Write(embeddedCSS)
 	})
 
+	// SVG favicon (matches indigo theme)
+	mux.HandleFunc("/favicon.svg", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "image/svg+xml")
+		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
+		fmt.Fprint(w, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#4f46e5"/><text x="50" y="70" font-size="56" font-weight="bold" text-anchor="middle" fill="white" font-family="sans-serif">tc</text></svg>`)
+	})
+
 	// Mock HTMX endpoints for interactive demo components
 	mux.HandleFunc("/api/load-more", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
