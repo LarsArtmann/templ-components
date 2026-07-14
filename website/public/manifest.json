@@ -1,0 +1,16 @@
+{
+  "name": "templ-components",
+  "short_name": "templ-components",
+  "description": "Server-rendered UI components for Go — templ, HTMX, Tailwind CSS v4",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0a0908",
+  "theme_color": "#2563eb",
+  "icons": [
+    {
+      "src": "/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

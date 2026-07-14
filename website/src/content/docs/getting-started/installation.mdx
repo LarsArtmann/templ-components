@@ -1,0 +1,61 @@
+---
+title: Installation
+description: Install templ-components in your Go project.
+---
+
+## Requirements
+
+- **Go** 1.26+
+- **templ** CLI ([install](https://templ.guide/quick-start/installation))
+- **Tailwind CSS** 4.x+
+- **HTMX** 2.x (optional, for the `htmx` package)
+- `GOEXPERIMENT=jsonv2` environment variable (until Go 1.27 makes it stable)
+
+## Install
+
+Run this in your project directory:
+
+```bash
+go get github.com/larsartmann/templ-components@latest
+```
+
+## Tailwind CSS Setup
+
+Since this is a Go module (not an npm package), you need to vendor the dependency so Tailwind can scan the `.templ` source files for class names.
+
+```bash
+go mod vendor
+```
+
+Then in your CSS entry point:
+
+```css
+/* app.css */
+@import "tailwindcss";
+
+/* Scan templ-components for class names */
+@source "../vendor/github.com/larsartmann/templ-components";
+
+/* Enable class-based dark mode toggle */
+@custom-variant dark (&:where(.dark, .dark *));
+```
+
+Build with the Tailwind CLI:
+
+```bash
+tailwindcss -i app.css -o styles.css --minify
+```
+
+If your project uses [BuildFlow](https://github.com/larsartmann/buildflow), the `tailwind-build` provider handles vendoring + scanning automatically.
+
+## Verify Installation
+
+```bash
+go list -m github.com/larsartmann/templ-components
+```
+
+## Next Steps
+
+- Follow the [Quick Start](/getting-started/quick-start/) for a complete page example
+- Learn about [Theming](/guides/theming/) to customize colors
+- See [HTMX Integration](/guides/htmx-integration/) for server-rendered interactivity

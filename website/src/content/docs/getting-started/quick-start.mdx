@@ -1,0 +1,122 @@
+---
+title: Quick Start
+description: Build a complete page with templ-components in minutes.
+---
+
+## A Complete Page
+
+```templ
+package main
+
+import (
+    "github.com/larsartmann/templ-components/layout"
+    "github.com/larsartmann/templ-components/display"
+    "github.com/larsartmann/templ-components/feedback"
+    "github.com/larsartmann/templ-components/forms"
+    "github.com/larsartmann/templ-components/icons"
+)
+
+templ Dashboard() {
+    @layout.Base(layout.DefaultPageProps()) {
+        @layout.ThemeScript("")
+        @display.PageHeader(display.PageHeaderProps{
+            Title:    "Dashboard",
+            Subtitle: "Welcome back",
+        })
+        @display.Grid(display.GridProps{Cols: display.GridCols3}) {
+            @display.StatCard(display.StatCardProps{
+                Label: "Revenue",
+                Value: "$42,189",
+                Icon:  icons.CurrencyDollar,
+                Trend: display.TrendUp,
+            })
+            @display.StatCard(display.StatCardProps{
+                Label: "Users",
+                Value: "1,204",
+                Icon:  icons.Users,
+                Trend: display.TrendUp,
+            })
+            @display.StatCard(display.StatCardProps{
+                Label: "Churn",
+                Value: "2.1%",
+                Icon:  icons.ChartBar,
+                Trend: display.TrendDown,
+            })
+        }
+        @display.Card(display.CardProps{Title: "Add user"}) {
+            @forms.Input(forms.InputProps{
+                Name:  "email",
+                Type:  forms.InputEmail,
+                Label: "Email address",
+            })
+            @forms.Select(forms.SelectProps{
+                Name:  "role",
+                Label: "Role",
+                Options: []forms.SelectOption{
+                    {Value: "admin", Label: "Admin"},
+                    {Value: "user",  Label: "User"},
+                },
+            })
+        }
+    }
+}
+```
+
+## Generate and Run
+
+```bash
+templ generate && go run .
+```
+
+## Key Patterns
+
+### Typed Props
+
+Every component takes a typed props struct. Invalid values are compile-time errors:
+
+```templ
+@display.Badge(display.BadgeProps{
+    Text: "Active",
+    Type: display.BadgeSuccess,  // typed enum, not a string
+    Dot:  true,
+})
+```
+
+### Component Slots
+
+Most components accept children via `{ children... }`:
+
+```templ
+@display.Card(display.CardProps{Title: "Settings"}) {
+    <p>Any templ content here</p>
+}
+```
+
+### Class Override
+
+Pass `Class` in any props struct to add or override Tailwind classes:
+
+```templ
+@display.Button(display.ButtonProps{
+    Text:  "Click me",
+    Class: "w-full",
+})
+```
+
+### Package-Level Imports
+
+Import only what you need:
+
+```go
+import (
+    "github.com/larsartmann/templ-components/display"   // cards, tables, modals
+    "github.com/larsartmann/templ-components/feedback"   // alerts, toasts, spinners
+    "github.com/larsartmann/templ-components/forms"      // inputs, selects, toggles
+)
+```
+
+## Next Steps
+
+- [Theming](/guides/theming/) — customize colors without touching component code
+- [Dark Mode](/guides/dark-mode/) — built-in dark mode with FOUC prevention
+- [Accessibility](/guides/accessibility/) — ARIA, keyboard nav, and screen reader support

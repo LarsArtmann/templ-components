@@ -1,0 +1,73 @@
+---
+title: API Reference
+description: Package-level overview and links to full godoc.
+---
+
+## Packages
+
+| Package      | Components | Purpose                                                                    |
+| ------------ | ---------- | -------------------------------------------------------------------------- |
+| `display`    | 30         | Cards, tables, modals, badges, buttons, avatars, carousel, tabs, accordion |
+| `feedback`   | 13         | Alerts, toasts, spinners, skeletons, progress bars                         |
+| `forms`      | 21         | Inputs, selects, toggles, combobox, slider, rating, tags input             |
+| `layout`     | 6          | Page shell, theme toggle, CSP-safe script/style tags                       |
+| `navigation` | 12         | Nav bars, pagination, breadcrumbs, sidebar, load-more                      |
+| `htmx`       | 8          | Loading, error handling, OOB swaps, View Transitions                       |
+| `icons`      | 102        | Heroicons v2 outline + Spinner                                             |
+| `errorpage`  | 4          | Error pages, 404, go-error-family integration                              |
+| `utils`      | —          | BaseProps, Class(), EnsureID, test helpers                                 |
+
+## Full Godoc
+
+Complete API documentation is available on [pkg.go.dev](https://pkg.go.dev/github.com/larsartmann/templ-components).
+
+## Key Types
+
+### BaseProps
+
+Every props struct embeds `utils.BaseProps`:
+
+```go
+type BaseProps struct {
+    ID        string
+    Class     string
+    Attrs     templ.Attributes
+    AriaLabel string
+    Nonce     string
+}
+```
+
+### Typed Enums
+
+34 typed string enums make invalid states unrepresentable. Each ships with an `IsValid()` method.
+
+```go
+type BadgeType string
+const (
+    BadgeDefault BadgeType = "default"
+    BadgeSuccess BadgeType = "success"
+    BadgeWarning BadgeType = "warning"
+    BadgeError   BadgeType = "error"
+    BadgeInfo    BadgeType = "info"
+)
+```
+
+### Lookup Maps
+
+All style lookups use typed maps with `utils.Lookup()` fallback — no switches, no panics on unknown values.
+
+## Import Paths
+
+```go
+import (
+    "github.com/larsartmann/templ-components/display"
+    "github.com/larsartmann/templ-components/feedback"
+    "github.com/larsartmann/templ-components/forms"
+    "github.com/larsartmann/templ-components/layout"
+    "github.com/larsartmann/templ-components/navigation"
+    "github.com/larsartmann/templ-components/htmx"
+    "github.com/larsartmann/templ-components/icons"
+    "github.com/larsartmann/templ-components/errorpage"
+    "github.com/larsartmann/templ-components/utils"
+)
+```

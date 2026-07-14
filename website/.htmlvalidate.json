@@ -1,0 +1,10 @@
+{
+  "extends": ["html-validate:recommended"],
+  "rules": {
+    "attribute-boolean-style": ["error", "empty"],
+    "attribute-empty-style": ["error", "nokey"],
+    "void-style": ["warn", "void"],
+    "no-trailing-whitespace": "error",
+    "attr-quotes": ["error", "double"]
+  }
+}

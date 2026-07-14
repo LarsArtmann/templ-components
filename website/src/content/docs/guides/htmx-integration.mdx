@@ -1,0 +1,75 @@
+---
+title: HTMX Integration
+description: Server-rendered HTMX patterns with loading indicators, error handling, and out-of-band swaps.
+---
+
+## Overview
+
+The `htmx` package provides first-class HTMX integration for server-rendered Go apps. HTMX follows HATEOAS — HTML is the source of truth, JavaScript enhances it rather than replacing it.
+
+## Loading Indicators
+
+```templ
+@htmx.LoadingIndicator(feedback.Spinner(feedback.SpinnerMD, "text-blue-600"))
+@htmx.InlineLoadingOverlay("form-loading", feedback.Spinner(feedback.SpinnerSM, "text-white"))
+```
+
+Pair `InlineLoadingOverlay` with HTMX's `hx-indicator` attribute:
+
+```html
+<button hx-post="/api/save" hx-indicator="#form-loading">Save</button>
+<div id="form-loading" class="htmx-indicator">
+  <!-- InlineLoadingOverlay renders here -->
+</div>
+```
+
+## Error Handling
+
+```templ
+@htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
+```
+
+When the server returns structured JSON with a `family` field, the toast type is automatically mapped (e.g., `rejection` → warning, `not_found` → info).
+
+Configure via `ErrorHandlingConfig`:
+
+```go
+htmx.ErrorHandlingConfig{
+    MaxErrorHistory: 10,
+    MaxRetries:      3,
+    RetryDelayMS:    1000,
+}
+```
+
+## CSRF Protection
+
+```templ
+@htmx.CSRFToken("your-csrf-token-value")
+```
+
+Renders a hidden `<input>` with the token. Use `forms.FormProps.CSRFToken` for form-based submissions.
+
+## Out-of-Band Swaps
+
+```templ
+@htmx.SwapOOB(htmx.SwapOOBProps{
+    Style:   htmx.SwapOuterHTML,
+    Selector: "#user-count",
+})
+```
+
+## View Transitions
+
+```templ
+@htmx.ViewTransitions(htmx.ViewTransitionsProps{Global: true})
+```
+
+Enables native View Transitions for HTMX swaps. Graceful degradation — browsers without View Transitions do instant swaps.
+
+## Per-Element Retry
+
+```html
+<button hx-post="/api/save" data-tc-retry="0">Save</button>
+```
+
+The retry counter is set on the triggering element (`event.detail.elt`), not the swap target.
