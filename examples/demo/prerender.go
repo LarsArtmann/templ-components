@@ -19,7 +19,7 @@ type prerenderPage struct {
 
 func prerender(outputDir string) error {
 	nonce := "demo-nonce"
-	cssHead := tailwindV4CDN(nonce)
+	cssHead := demoFonts(nonce)
 
 	pages := []prerenderPage{
 		{"index.html", "templ-components Demo", "Showcase of all templ-components", demoPage},
