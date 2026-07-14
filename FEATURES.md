@@ -394,7 +394,7 @@ _(None currently)_
 - **Type Safety:** 34 typed string enums (33 with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
 - **Test Coverage:** 74% average across packages, BDD + snapshot + a11y + benchmark + integration tests
 - **Theming:** Tailwind v4 `@theme` override support via `templ-components-theme.css`. Components emit standard utility classes (`bg-blue-600`, `text-gray-900`) — consumers override `--color-*` variables to theme globally without touching component code.
-- **CSS Automation:** `templates/app.css` starter entry-point + BuildFlow `tailwind-build` provider (auto-discovers CSS entry-points, compiles via `tailwindcss` in the DAG). See `docs/tailwind-v4-adoption-guide.md`.
+- **CSS Automation:** `templates/app.css` + `templates/custom.css` starter entry-point + BuildFlow `tailwind-build` provider (auto-discovers CSS entry-points, compiles via `tailwindcss` in the DAG). See `docs/tailwind-v4-adoption-guide.md`.
 - **RTL/i18n:** All CSS uses logical properties (`ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`). Components auto-mirror in `dir="rtl"` contexts. Keyboard nav (Tabs, Dropdown) swaps ArrowLeft/Right in RTL.
 
 ---
@@ -426,4 +426,4 @@ See `TODO_LIST.md` for the full verified inventory. Highlights:
 | `<search>` landmark       | Input (InputSearch)       | ✅ `DONE` | Auto-wraps search inputs in semantic `<search>` element               |
 | Image responsive delivery | `ImageProps.SrcSet/Sizes` | ✅ `DONE` | Typed fields replace `Attrs` workaround                               |
 | Table content-visibility  | `TableProps.LazyRows`     | ✅ `DONE` | `content-visibility: auto` on body rows, compact variant included     |
-| Global `accent-color`     | `templates/app.css`       | ✅ `DONE` | Native form controls get library blue accent                          |
+| Global `accent-color`     | `templates/custom.css`    | ✅ `DONE` | Native form controls get library blue accent                          |

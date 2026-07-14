@@ -29,7 +29,7 @@ CSP that allows only `style-src 'self'`.
 Instead of the manual 7-step process below, use one of these shortcuts:
 
 - **BuildFlow:** If using BuildFlow, the `tailwind-build` provider does everything automatically.
-- **Starter template:** Copy [`templates/app.css`](../../templates/app.css) as your entry point, run `go mod vendor`, then build with the Tailwind CLI.
+- **Starter template:** Copy [`templates/app.css`](../../templates/app.css) and [`templates/custom.css`](../../templates/custom.css) as your entry point (both files needed — `app.css` imports `custom.css`), run `go mod vendor`, then build with the Tailwind CLI.
 
 ---
 

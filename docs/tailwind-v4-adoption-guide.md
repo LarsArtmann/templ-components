@@ -33,12 +33,14 @@ Just ensure a CSS file with `@import "tailwindcss"` exists. No `go:generate` dir
 
 ### Option B: Starter template
 
-Copy [`templates/app.css`](../templates/app.css) into your project as a ready-to-use entry point, then build:
+Copy [`templates/app.css`](../templates/app.css) and [`templates/custom.css`](../templates/custom.css) into your project as a ready-to-use entry point, then build:
 
 ```bash
 go mod vendor
 tailwindcss -i app.css -o styles.css --minify
 ```
+
+`app.css` contains the Tailwind directives (`@import`, `@source`, `@theme`, `@custom-variant`). `custom.css` contains component-specific styles (dialog animations, stylable select, auto-grow textarea, etc.) and is imported by `app.css` via `@import "./custom.css"`. Copy both files to the same directory.
 
 ---
 
