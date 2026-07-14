@@ -1,0 +1,69 @@
+package main
+
+import "github.com/larsartmann/templ-components/feedback"
+
+templ feedbackDemo() {
+	@demoSection("Alerts", "feedback-alerts")
+	<div class="space-y-4">
+		@feedback.Alert(feedback.AlertProps{Title: "Success", Message: "Operation completed.", Type: feedback.FeedbackSuccess})
+		@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong.", Type: feedback.FeedbackError})
+		@feedback.Alert(feedback.AlertProps{Title: "Warning", Message: "Check your input.", Type: feedback.FeedbackWarning})
+		@feedback.Alert(feedback.AlertProps{Title: "Info", Message: "Here is some information.", Type: feedback.FeedbackInfo})
+	</div>
+	@demoSection("Toast (auto-generated ID, auto-dismiss)", "feedback-toast")
+	<div class="space-y-3">
+		<p class="text-sm text-gray-500 dark:text-gray-400">Toasts render into ToastContainer. Each auto-dismisses after 5s.</p>
+		@feedback.Toast(feedback.ToastProps{Message: "Settings saved!", Type: feedback.FeedbackSuccess, Duration: 5000})
+		@feedback.Toast(feedback.ToastProps{Message: "Upload failed.", Type: feedback.FeedbackError, Title: "Error"})
+		@feedback.Toast(feedback.ToastProps{Message: "Storage almost full.", Type: feedback.FeedbackWarning})
+		@feedback.Toast(feedback.ToastProps{Message: "New version available.", Type: feedback.FeedbackInfo})
+	</div>
+	@demoSection("Inline Feedback", "feedback-inline")
+	<div class="space-y-2">
+		@feedback.InlineError("Email is required")
+		@feedback.InlineSuccess("Username is available")
+		@feedback.InlineLoading("Saving...")
+	</div>
+	@demoSection("Spinners", "feedback-spinners")
+	<div class="flex items-center gap-8">
+		@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-blue-600 dark:text-blue-400"})
+		@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-gray-600 dark:text-gray-400"})
+		@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-red-600 dark:text-red-400"})
+	</div>
+	@demoSection("Progress Bars", "feedback-progress")
+	<div class="space-y-4 max-w-md">
+		@feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100, Label: "Uploading...", ShowLabel: true})
+		@feedback.ProgressBar(feedback.ProgressBarProps{Current: 100, Total: 100, Label: "Complete", ShowLabel: true, Color: "bg-emerald-600 dark:bg-emerald-500"})
+		@feedback.ProgressBar(feedback.ProgressBarProps{Indeterminate: true, Label: "Processing..."})
+	</div>
+	@demoSection("Step Indicator", "feedback-step-indicator")
+	<div class="space-y-6">
+		@feedback.StepIndicator(feedback.StepIndicatorProps{
+			Steps:       []string{"Details", "Review", "Confirm", "Done"},
+			CurrentStep: 1,
+		})
+		@feedback.StepIndicator(feedback.StepIndicatorProps{
+			Steps:       []string{"Step 1", "Step 2", "Step 3"},
+			CurrentStep: 2,
+			Orientation: feedback.StepVertical,
+		})
+	</div>
+	@demoSection("Skeletons", "feedback-skeletons")
+	<div class="space-y-4">
+		<div class="flex gap-4">
+			@feedback.Skeleton(feedback.SkeletonAvatar)
+			<div class="space-y-2">
+				@feedback.Skeleton(feedback.SkeletonTitle)
+				@feedback.Skeleton(feedback.SkeletonText)
+				@feedback.Skeleton(feedback.SkeletonTextShort)
+			</div>
+		</div>
+		@feedback.SkeletonGroup([]feedback.SkeletonVariant{
+			feedback.SkeletonTableRow,
+			feedback.SkeletonTableRow,
+			feedback.SkeletonTableRow,
+		})
+	</div>
+	@demoSection("Skeleton Card Grid", "feedback-skeleton-grid")
+	@feedback.SkeletonCardGrid(3)
+}

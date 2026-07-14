@@ -1,20 +1,13 @@
 package main
 
 import (
-	"time"
-
-	"github.com/larsartmann/templ-components/display"
-	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/feedback"
-	"github.com/larsartmann/templ-components/forms"
-	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/layout"
-	"github.com/larsartmann/templ-components/navigation"
-	"github.com/larsartmann/templ-components/utils"
 )
 
 templ demoPage(props layout.PageProps) {
 	@layout.Base(props) {
+		@feedback.ToastContainer("demo-nonce")
 		@demoContent()
 	}
 }
@@ -26,23 +19,21 @@ templ tailwindV4CDN(nonce string) {
 templ demoContent() {
 	<div class="max-w-5xl mx-auto px-4 py-8">
 		<div class="flex items-center justify-between mb-8">
-			<h1 class="text-3xl font-bold text-gray-900 dark:text-white">templ-components Demo</h1>
+			<div>
+				<h1 class="text-3xl font-bold text-gray-900 dark:text-white">templ-components Demo</h1>
+				<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">All { componentCount } components across 9 packages.</p>
+			</div>
 			@layout.ThemeToggle("Toggle dark mode", "")
 		</div>
 		{{
 			tocLinks := []struct{ Label, Anchor string }{
-				{"Navigation", "nav"},
-				{"Alerts", "alerts"},
-				{"Stat Cards", "stat-cards"},
-				{"Badges", "badges"},
-				{"Icons", "icons"},
-				{"Avatar", "avatar"},
-				{"Buttons", "buttons"},
-				{"Forms", "forms"},
-				{"Table", "table"},
-				{"Loading", "loading"},
-				{"Skeletons", "skeletons"},
-				{"404", "404"},
+				{"Display", "display-cards"},
+				{"Feedback", "feedback-alerts"},
+				{"Forms", "forms-controls"},
+				{"Navigation", "nav-simplenav"},
+				{"HTMX", "htmx-loading-indicator"},
+				{"Error Pages", "errorpage-404"},
+				{"Icons", "icons-all"},
 			}
 		}}
 		<nav class="flex flex-wrap gap-2 mb-8 text-sm" aria-label="Demo sections">
@@ -50,335 +41,23 @@ templ demoContent() {
 				<a href={ templ.SafeURL("#" + link.Anchor) } class="px-3 py-1 rounded-md bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors motion-reduce:transition-none motion-reduce:duration-0">{ link.Label }</a>
 			}
 		</nav>
-		@demoSection("Navigation", "nav")
-		@navigation.Nav(navigation.NavProps{
-			Sticky:      false,
-			CurrentPath: "/",
-			Links: []navigation.NavLinkProps{
-				{Href: "/", Text: "Home"},
-				{Href: "/about", Text: "About"},
-				{Href: "/contact", Text: "Contact"},
-			},
-		})
-		@demoSection("Alerts", "alerts")
-		<div class="space-y-4">
-			@feedback.Alert(feedback.AlertProps{Title: "Success", Message: "Operation completed.", Type: feedback.FeedbackSuccess})
-			@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong.", Type: feedback.FeedbackError})
-			@feedback.Alert(feedback.AlertProps{Title: "Warning", Message: "Check your input.", Type: feedback.FeedbackWarning})
-			@feedback.Alert(feedback.AlertProps{Title: "Info", Message: "Here is some information.", Type: feedback.FeedbackInfo})
-		</div>
-		@demoSection("Stat Cards", "stat-cards")
-		@display.Grid(display.GridProps{Cols: display.GridCols3}) {
-			@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp, Href: "/users"})
-			@display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Icon: icons.Chart, Change: "-3%", Trend: display.TrendDown, Href: "/revenue"})
-			@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Icon: icons.CheckCircle, Trend: display.TrendNone})
-		}
-		@demoSection("Badges", "badges")
-		<div class="flex flex-wrap gap-2">
-			@display.Badge(display.BadgeProps{Text: "Default"})
-			@display.Badge(display.BadgeProps{Text: "Success", Type: display.BadgeSuccess})
-			@display.Badge(display.BadgeProps{Text: "Error", Type: display.BadgeError})
-			@display.Badge(display.BadgeProps{Text: "Warning", Type: display.BadgeWarning})
-			@display.Badge(display.BadgeProps{Text: "Info", Type: display.BadgeInfo})
-		</div>
-		@demoSection("Icons", "icons")
-		<div class="flex flex-wrap gap-4">
-			for _, name := range []icons.Name{
-					icons.Home, icons.Users, icons.Folder, icons.Document,
-					icons.Search, icons.Settings, icons.Mail, icons.Bell,
-					icons.Plus, icons.Refresh, icons.Check, icons.X,
-					icons.BuildingOffice2, icons.Key, icons.ArrowRightOnRectangle,
-				} {
-				<div class="flex flex-col items-center gap-1">
-					@icons.Icon(name, "h-6 w-6 text-gray-600 dark:text-gray-400")
-					<span class="text-xs text-gray-500 dark:text-gray-400">{ string(name) }</span>
-				</div>
-			}
-		</div>
-		@demoSection("Avatar", "avatar")
-		<div class="flex items-center gap-4">
-			@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=JD", Alt: "John Doe", Size: display.AvatarSizeSM})
-			@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=AB", Alt: "Alice Brown", Size: display.AvatarSizeMD, Status: display.AvatarStatusOnline})
-			@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=CD", Alt: "Charlie Day", Size: display.AvatarSizeLG, Status: display.AvatarStatusOffline})
-		</div>
-		@demoSection("Loading", "loading")
-		<div class="flex items-center gap-8">
-			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-blue-600 dark:text-blue-400"})
-			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-gray-600 dark:text-gray-400"})
-			@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-red-600 dark:text-red-400"})
-			@feedback.InlineLoading("Saving...")
-		</div>
-		@demoSection("Accordion", "accordion")
-		@display.Accordion(display.AccordionProps{
-			Items: []display.AccordionItem{
-				{ID: "demo-1", Title: "What is templ-components?", Open: true},
-				{ID: "demo-2", Title: "How do I install it?"},
-				{ID: "demo-3", Title: "Is it production-ready?"},
-			},
-		}) {
-			<template data-content="demo-1">
-				<p class="text-gray-600 dark:text-gray-400">A Go library of reusable UI components built with templ and Tailwind CSS.</p>
-			</template>
-			<template data-content="demo-2">
-				<p class="text-gray-600 dark:text-gray-400">Run <code>go get github.com/larsartmann/templ-components</code> to add it to your project.</p>
-			</template>
-			<template data-content="demo-3">
-				<p class="text-gray-600 dark:text-gray-400">It's in active development (v0.x). The API may change before v1.0.</p>
-			</template>
-		}
-		@demoSection("Pagination", "pagination")
-		@navigation.Pagination(navigation.PaginationProps{
-			CurrentPage: 3,
-			TotalPages:  10,
-			BaseURL:     "/users",
-		})
-		@demoSection("Breadcrumbs", "breadcrumbs")
-		@navigation.Breadcrumbs(navigation.BreadcrumbsProps{Items: []navigation.BreadcrumbItem{
-			{Text: "Home", Href: "/"},
-			{Text: "Users", Href: "/users"},
-			{Text: "John Doe"},
-		}})
-		@demoSection("Tooltip", "tooltip")
-		<div class="flex items-center gap-4 pt-2">
-			@display.Tooltip(display.TooltipProps{BaseProps: utils.BaseProps{ID: "tooltip-1"}, Text: "Edit this item"}) {
-				@display.Button(display.ButtonProps{Text: "Edit"})
-			}
-			@display.Tooltip(display.TooltipProps{Text: "Delete permanently", Position: display.TooltipPositionBottom, BaseProps: utils.BaseProps{ID: "tooltip-2"}}) {
-				@display.Button(display.ButtonProps{Text: "Delete", Variant: display.ButtonDanger})
-			}
-		</div>
-		@demoSection("Buttons", "buttons")
-		<div class="flex flex-wrap items-center gap-3">
-			@display.Button(display.ButtonProps{Text: "Primary"})
-			@display.Button(display.ButtonProps{Text: "Secondary", Variant: display.ButtonSecondary})
-			@display.Button(display.ButtonProps{Text: "Danger", Variant: display.ButtonDanger})
-			@display.Button(display.ButtonProps{Text: "Ghost", Variant: display.ButtonGhost})
-			@display.Button(display.ButtonProps{Text: "Link", Variant: display.ButtonLink})
-			@display.Button(display.ButtonProps{Text: "Small", Size: display.ButtonSizeSM})
-			@display.Button(display.ButtonProps{Text: "Large", Size: display.ButtonSizeLG})
-			@display.Button(display.ButtonProps{Text: "Disabled", Disabled: true})
-			@display.Button(display.ButtonProps{Text: "External", Href: "https://example.com", External: true})
-		</div>
-		@demoSection("Form Controls", "forms")
-		<div class="space-y-6 max-w-md">
-			@forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email address", Required: true})
-			@forms.InputGroup(forms.InputGroupProps{
-				LeftAddon: icons.Icon(icons.Search, "h-5 w-5 text-gray-400 dark:text-gray-500"),
-			}) {
-				@forms.Input(forms.InputProps{Name: "search", Type: forms.InputSearch, Placeholder: "Search...", BaseProps: utils.BaseProps{Class: "pl-10"}})
-			}
-			@forms.Select(forms.SelectProps{
-				Name:  "country",
-				Label: "Country",
-				Options: []forms.SelectOption{
-					{Value: "de", Label: "Germany"},
-					{Value: "at", Label: "Austria"},
-				},
-			})
-			@forms.Textarea(forms.TextareaProps{Name: "bio", Label: "Bio", Rows: 4})
-			@forms.Checkbox(forms.CheckboxProps{BaseProps: utils.BaseProps{ID: "terms"}, Name: "terms", Label: "I agree to the terms"})
-			@forms.RadioGroup(forms.RadioGroupProps{
-				BaseProps: utils.BaseProps{ID: "plan"},
-				Name:      "plan",
-				Label:     "Select a plan",
-				Options: []forms.RadioOption{
-					{Value: "free", Label: "Free"},
-					{Value: "pro", Label: "Pro ($9/mo)"},
-					{Value: "enterprise", Label: "Enterprise ($49/mo)", Disabled: true},
-				},
-			})
-			@forms.Toggle(forms.ToggleProps{Name: "notifications", Label: "Enable notifications", Checked: true})
-			@forms.FileInput(forms.FileInputProps{Name: "avatar", Label: "Upload avatar", Accept: "image/*"})
-		</div>
-		@demoSection("Error Alerts", "error-alerts")
-		<div class="space-y-4">
-			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyRejection, Title: "Invalid Input", Message: "The email address format is invalid.", Fix: "Enter a valid email address."})
-			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyConflict, Title: "Version Conflict", Message: "Someone else modified this resource.", Fix: "Refresh and try again."})
-			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyTransient, Title: "Temporary Error", Message: "A temporary error occurred. Please try again.", Fix: "Wait a moment and retry.", Dismissible: true})
-			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyCorruption, Title: "Data Corrupted", Message: "Configuration file is unreadable.", Fix: "Check the file format."})
-			@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyInfrastructure, Title: "Service Unavailable", Message: "The service is currently down."})
-		</div>
-		@demoSection("Error Details", "error-details")
-		<div class="space-y-4">
-			@errorpage.ErrorDetail(errorpage.ErrorDetailProps{
-				Family:  errorpage.FamilyCorruption,
-				Code:    "data.parse_failed",
-				Title:   "Parse Failed",
-				Message: "config.yaml contains invalid syntax at line 42.",
-				Fix:     "Check the YAML syntax and fix the indentation.",
-				Context: []errorpage.ContextPair{{Key: "file", Value: "config.yaml"}, {Key: "line", Value: "42"}},
-			})
-			@errorpage.ErrorDetail(errorpage.ErrorDetailProps{
-				Family:     errorpage.FamilyTransient,
-				Code:       "db.timeout",
-				Title:      "Database Timeout",
-				Message:    "Query took too long.",
-				CauseChain: []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}, {Message: "timeout after 30s", Code: "db.timeout"}},
-			})
-		</div>
-		@demoSection("PageHeader", "pageheader")
-		@display.PageHeader(display.PageHeaderProps{
-			Title:    "User Settings",
-			Subtitle: "Manage your account preferences and security options",
-		})
-		@demoSection("Definition List", "definition-list")
-		<div class="max-w-md">
-			@display.DefinitionList(display.DefinitionListProps{
-				Items: []display.DefinitionItem{
-					{Term: "User ID", Detail: "usr_01JXEXAMPLE"},
-					{Term: "Email", Detail: "admin@example.com"},
-					{Term: "Plan", Detail: "Enterprise"},
-				},
-			})
-		</div>
-		@demoSection("List Note", "list-note")
-		@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
-		@demoSection("Sidebar Nav", "sidebar-nav")
-		<div class="w-64 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
-			@navigation.SidebarNav(navigation.SidebarNavProps{
-				Brand: templ.Raw(`<span class="font-bold text-white">Demo App</span>`),
-				Items: []navigation.SidebarNavItem{
-					{Label: "Dashboard", Href: "#", Icon: icons.Squares2x2, Active: true},
-					{Label: "Users", Href: "#", Icon: icons.Users},
-					{Label: "Settings", Href: "#", Icon: icons.Settings},
-				},
-				Footer: templ.Raw(`<span>v` + utils.Version + `</span>`),
-			})
-		</div>
-		@demoSection("New Components (Session 7)", "session7")
-		<div class="space-y-6">
-			@display.CopyButton(display.CopyButtonProps{Text: "go get github.com/larsartmann/templ-components", Label: "Copy install command"})
-			<div class="flex items-center gap-4">
-				<span class="text-sm text-gray-500 dark:text-gray-400">Relative time:</span>
-				@display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(-2 * time.Hour)})
-			</div>
-			<div class="flex items-center gap-4">
-				<span class="text-sm text-gray-500 dark:text-gray-400">Count badge:</span>
-				@display.CountBadge(display.CountBadgeProps{Count: 12}) {
-					@icons.Icon(icons.Bell, "h-6 w-6 text-gray-600 dark:text-gray-400")
-				}
-				@display.CountBadge(display.CountBadgeProps{Count: 150}) {
-					@icons.Icon(icons.Mail, "h-6 w-6 text-gray-600 dark:text-gray-400")
-				}
-				@display.CountBadge(display.CountBadgeProps{Count: 0}) {
-					@icons.Icon(icons.Bell, "h-6 w-6 text-gray-600 dark:text-gray-400")
-				}
-			</div>
-			@display.DefinitionGrid(display.DefinitionGridProps{
-				Cols: display.GridCols3,
-				Items: []display.DefinitionItem{
-					{Term: "CPU", Detail: "42%"},
-					{Term: "Memory", Detail: "8.2 GB"},
-					{Term: "Disk", Detail: "156 GB"},
-					{Term: "Uptime", Detail: "99.9%"},
-					{Term: "Requests", Detail: "1.2K/s"},
-					{Term: "Latency", Detail: "12ms"},
-				},
-			})
-			@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo", Alt: "Demo image", Width: 96, Height: 96})
-			@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "next-page"})
-		</div>
-		@demoSection("Sortable Table", "table")
-		@display.Table(display.TableProps{
-			TypedHeaders: []display.TableHeader{
-				{Label: "Name", Sortable: true, SortDirection: display.SortAsc},
-				{Label: "Email", Sortable: true, SortDirection: display.SortNone},
-				{Label: "Role"},
-			},
-			Rows: []display.TableRow{
-				display.SimpleTableRow("Alice Smith", "alice@example.com", "Admin"),
-				display.SimpleTableRow("Bob Jones", "bob@example.com", "User"),
-			},
-			Striped: true,
-			Hover:   true,
-		})
-		@demoSection("Table in Card (Flush + Compact)", "table-in-card")
-		@display.Card(display.CardProps{
-			Title:   "Recent Users",
-			Padding: display.CardPaddingNone,
-		}) {
-			@display.Table(display.TableProps{
-				Headers: []string{"Name", "Email", "Status"},
-				Rows: []display.TableRow{
-					display.SimpleTableRow("Alice Smith", "alice@example.com", "Active"),
-					display.SimpleTableRow("Bob Jones", "bob@example.com", "Invited"),
-					display.SimpleTableRow("Carol Wu", "carol@example.com", "Active"),
-				},
-				Flush:       true,
-				Hover:       true,
-				CellPadding: display.TableCellPaddingCompact,
-			})
-		}
-		@demoSection("Inline Form (Filter Bar)", "inline-form")
-		@forms.Form(forms.FormProps{Action: "/filter", Method: forms.FormGet, Inline: true}) {
-			@forms.Select(forms.SelectProps{
-				Name:  "status",
-				Label: "Status",
-				Options: []forms.SelectOption{
-					{Value: "all", Label: "All"},
-					{Value: "active", Label: "Active"},
-					{Value: "inactive", Label: "Inactive"},
-				},
-			})
-			@display.Button(display.ButtonProps{Text: "Filter", Type: display.ButtonHTMLSubmit})
-		}
-		@demoSection("Container Query Grid", "container-grid")
-		<div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4">
-			@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerResponsive: true}) {
-				@display.StatCard(display.StatCardProps{Value: "42", Label: "Requests/s"})
-				@display.StatCard(display.StatCardProps{Value: "12ms", Label: "Latency"})
-				@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime"})
-			}
-		</div>
-		@demoSection("404 Page Preview", "404")
-		<div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
-			@errorpage.NotFound404(errorpage.NotFound404Props{
-				Numeral:    "404",
-				Title:      "Page not found",
-				Message:    "The page you're looking for doesn't exist or has been moved.",
-				GoHomeHref: "/",
-				ShowGoBack: false,
-			})
-		</div>
-		@demoSection("Table Body Slot", "table-body")
-		@display.Table(display.TableProps{
-			Headers: []string{"Message", "Author", "Status"},
-			Body:    demoTableBody(),
-		})
-		@demoSection("Loading State (SkeletonCardGrid)", "skeletons")
-		@feedback.SkeletonCardGrid(3)
+		@displayDemo()
+		@feedbackDemo()
+		@formsDemoSection()
+		@navigationDemo()
+		@htmxDemo()
+		@errorpageDemo()
+		@iconsDemo()
 	</div>
 }
 
+const componentCount = 97
+
 templ demoSection(title, anchor string) {
-	<section class="mt-12" id={ anchor }>
+	<section class="mt-12 scroll-mt-8" id={ anchor }>
 		<h2 class="text-xl font-semibold text-gray-900 dark:text-white mb-4 border-b border-gray-200 dark:border-gray-700 pb-2">
 			{ title }
 		</h2>
 		{ children... }
 	</section>
-}
-
-templ demoTableBody() {
-	<tr>
-		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">Deployment succeeded</td>
-		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">ci-bot</td>
-		<td class="px-4 py-3">
-			@display.Badge(display.BadgeProps{Text: "Success", Type: display.BadgeSuccess})
-		</td>
-	</tr>
-	<tr>
-		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">Build failed on stage 2</td>
-		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">ci-bot</td>
-		<td class="px-4 py-3">
-			@display.Badge(display.BadgeProps{Text: "Failed", Type: display.BadgeError})
-		</td>
-	</tr>
-	<tr>
-		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">Tests passed (142/142)</td>
-		<td class="px-4 py-3 text-gray-700 dark:text-gray-300">test-runner</td>
-		<td class="px-4 py-3">
-			@display.Badge(display.BadgeProps{Text: "Passed", Type: display.BadgeSuccess})
-		</td>
-	</tr>
 }

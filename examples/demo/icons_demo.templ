@@ -1,0 +1,20 @@
+package main
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/icons"
+)
+
+templ iconsDemo() {
+	{{ iconNames := icons.AllIconNames() }}
+	@demoSection(fmt.Sprintf("All Icons (%d)", len(iconNames)), "icons-all")
+	<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+		for _, name := range iconNames {
+			<div class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors motion-reduce:transition-none motion-reduce:duration-0">
+				@icons.Icon(name, "h-6 w-6 text-gray-600 dark:text-gray-400")
+				<span class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-full">{ string(name) }</span>
+			</div>
+		}
+	</div>
+}

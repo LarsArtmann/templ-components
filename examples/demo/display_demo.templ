@@ -1,0 +1,326 @@
+package main
+
+import (
+	"time"
+
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+templ displayDemo() {
+	@demoSection("Cards", "display-cards")
+	<div class="grid gap-4 sm:grid-cols-2">
+		@display.Card(display.CardProps{
+			Title:    "Standard Card",
+			Subtitle: "With title, subtitle, and body",
+		}) {
+			<p class="text-gray-600 dark:text-gray-400">This is a standard card with header and content.</p>
+		}
+		@display.SimpleCard(display.SimpleCardProps{}) {
+			<p class="text-gray-600 dark:text-gray-400">SimpleCard — no header, just content.</p>
+		}
+	</div>
+	@demoSection("Stat Cards", "display-stat-cards")
+	@display.Grid(display.GridProps{Cols: display.GridCols3}) {
+		@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp, Href: "/users"})
+		@display.StatCard(display.StatCardProps{Value: "$45.2K", Label: "Revenue", Icon: icons.Chart, Change: "-3%", Trend: display.TrendDown})
+		@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Icon: icons.CheckCircle, Trend: display.TrendNone})
+		@display.StatCard(display.StatCardProps{Value: "42", Label: "Active", Trend: display.TrendWarn})
+	}
+	@demoSection("Badges", "display-badges")
+	<div class="flex flex-wrap gap-2">
+		@display.Badge(display.BadgeProps{Text: "Default"})
+		@display.Badge(display.BadgeProps{Text: "Success", Type: display.BadgeSuccess})
+		@display.Badge(display.BadgeProps{Text: "Error", Type: display.BadgeError})
+		@display.Badge(display.BadgeProps{Text: "Warning", Type: display.BadgeWarning})
+		@display.Badge(display.BadgeProps{Text: "Info", Type: display.BadgeInfo})
+		@display.Badge(display.BadgeProps{Text: "Pill", Type: display.BadgeSuccess, Pill: true})
+		@display.Badge(display.BadgeProps{Text: "Dot", Type: display.BadgeInfo, Dot: true})
+	</div>
+	<div class="flex flex-wrap gap-2 mt-3">
+		@display.StatusBadge("healthy")
+		@display.StatusBadge("degraded")
+		@display.StatusBadge("down")
+		@display.StatusBadge("pending")
+		@display.StatusBadge("active")
+	</div>
+	@demoSection("Buttons", "display-buttons")
+	<div class="flex flex-wrap items-center gap-3">
+		@display.Button(display.ButtonProps{Text: "Primary"})
+		@display.Button(display.ButtonProps{Text: "Secondary", Variant: display.ButtonSecondary})
+		@display.Button(display.ButtonProps{Text: "Danger", Variant: display.ButtonDanger})
+		@display.Button(display.ButtonProps{Text: "Ghost", Variant: display.ButtonGhost})
+		@display.Button(display.ButtonProps{Text: "Link", Variant: display.ButtonLink})
+		@display.Button(display.ButtonProps{Text: "Small", Size: display.ButtonSizeSM})
+		@display.Button(display.ButtonProps{Text: "Large", Size: display.ButtonSizeLG})
+		@display.Button(display.ButtonProps{Text: "Disabled", Disabled: true})
+		@display.Button(display.ButtonProps{Text: "External Link", Href: "https://example.com", External: true})
+		@display.Button(display.ButtonProps{Text: "With Icon", Icon: icons.Icon(icons.Plus, "h-5 w-5")})
+	</div>
+	@demoSection("Avatars", "display-avatars")
+	<div class="flex items-center gap-4">
+		@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=JD", Alt: "John Doe", Size: display.AvatarSizeSM})
+		@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=AB", Alt: "Alice Brown", Size: display.AvatarSizeMD, Status: display.AvatarStatusOnline})
+		@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=CD", Alt: "Charlie Day", Size: display.AvatarSizeLG, Status: display.AvatarStatusOffline})
+	</div>
+	@demoSection("Modal (native dialog)", "display-modal")
+	<div class="flex gap-3">
+		<button class="inline-flex items-center gap-2 rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0" onclick="tcOpenOverlay('demo-modal')">
+			Open Modal
+		</button>
+	</div>
+	@display.Modal(display.ModalProps{
+		BaseProps: utils.BaseProps{ID: "demo-modal", Nonce: "demo-nonce"},
+		Title:     "Demo Modal",
+		Size:      display.ModalSizeMD,
+	}) {
+		<p class="text-gray-600 dark:text-gray-400">This modal uses the native <code>&lt;dialog&gt;</code> element with showModal(). Press Escape or click backdrop to close.</p>
+	}
+	@demoSection("Drawer (native dialog)", "display-drawer")
+	<button class="inline-flex items-center gap-2 rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0" onclick="tcOpenOverlay('demo-drawer')">
+		Open Drawer
+	</button>
+	@display.Drawer(display.DrawerProps{
+		BaseProps: utils.BaseProps{ID: "demo-drawer", Nonce: "demo-nonce"},
+		Title:     "Demo Drawer",
+		Side:      display.DrawerRight,
+	}) {
+		<p class="text-gray-600 dark:text-gray-400">Drawer slides in from the side using native <code>&lt;dialog&gt;</code>.</p>
+	}
+	@demoSection("Dropdown", "display-dropdown")
+	@display.Dropdown(display.DropdownProps{
+		Label: "Actions",
+		Items: []display.DropdownItem{
+			{Text: "Edit", Href: "#", Icon: icons.Edit},
+			{Text: "Duplicate", Href: "#", Icon: icons.DocumentDuplicate},
+			{Text: "Delete", Href: "#", Icon: icons.Trash},
+		},
+	})
+	@demoSection("Tooltip", "display-tooltip")
+	<div class="flex items-center gap-4 pt-2">
+		@display.Tooltip(display.TooltipProps{BaseProps: utils.BaseProps{ID: "tt-1"}, Text: "Edit this item"}) {
+			@display.Button(display.ButtonProps{Text: "Hover me (top)"})
+		}
+		@display.Tooltip(display.TooltipProps{Text: "More details here", Position: display.TooltipPositionBottom, BaseProps: utils.BaseProps{ID: "tt-2"}}) {
+			@display.Button(display.ButtonProps{Text: "Hover me (bottom)"})
+		}
+	</div>
+	@demoSection("Popover", "display-popover")
+	@display.Popover(display.PopoverProps{
+		BaseProps:   utils.BaseProps{ID: "pop-1", Nonce: "demo-nonce"},
+		TriggerText: "Show details",
+	}) {
+		<div class="p-3">
+			<p class="font-semibold text-gray-900 dark:text-white">Popover content</p>
+			<p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Any content can go here.</p>
+		</div>
+	}
+	@demoSection("Accordion (native details)", "display-accordion")
+	@display.Accordion(display.AccordionProps{
+		Items: []display.AccordionItem{
+			{ID: "acc-1", Title: "What is templ-components?", Open: true},
+			{ID: "acc-2", Title: "How do I install it?"},
+			{ID: "acc-3", Title: "Is it production-ready?"},
+		},
+	}) {
+		<template data-content="acc-1">
+			<p class="text-gray-600 dark:text-gray-400">A Go library of reusable UI components built with templ and Tailwind CSS.</p>
+		</template>
+		<template data-content="acc-2">
+			<p class="text-gray-600 dark:text-gray-400">Run <code>go get github.com/larsartmann/templ-components</code> to add it to your project.</p>
+		</template>
+		<template data-content="acc-3">
+			<p class="text-gray-600 dark:text-gray-400">It's in active development (v0.x). The API may change before v1.0.</p>
+		</template>
+	}
+	@demoSection("Tabs", "display-tabs")
+	@display.Tabs(display.TabsProps{
+		Tabs: []display.Tab{
+			{ID: "tab-overview", Label: "Overview"},
+			{ID: "tab-settings", Label: "Settings"},
+			{ID: "tab-activity", Label: "Activity"},
+		},
+		ActiveTabID: "tab-overview",
+		ClientSide:  true,
+		BaseProps:   utils.BaseProps{Nonce: "demo-nonce"},
+	})
+	@demoSection("Tabs (Pills variant)", "display-tabs-pills")
+	@display.Tabs(display.TabsProps{
+		Tabs: []display.Tab{
+			{ID: "pill-1", Label: "First"},
+			{ID: "pill-2", Label: "Second"},
+		},
+		ActiveTabID: "pill-1",
+		Variant:     display.TabsPills,
+		ClientSide:  true,
+		BaseProps:   utils.BaseProps{Nonce: "demo-nonce"},
+	})
+	@demoSection("Table", "display-table")
+	@display.Table(display.TableProps{
+		TypedHeaders: []display.TableHeader{
+			{Label: "Name", Sortable: true, SortDirection: display.SortAsc},
+			{Label: "Email", Sortable: true, SortDirection: display.SortNone},
+			{Label: "Role"},
+		},
+		Rows: []display.TableRow{
+			display.SimpleTableRow("Alice Smith", "alice@example.com", "Admin"),
+			display.SimpleTableRow("Bob Jones", "bob@example.com", "User"),
+		},
+		Striped: true,
+		Hover:   true,
+	})
+	@demoSection("Table in Card (Flush + Compact)", "display-table-card")
+	@display.Card(display.CardProps{Title: "Recent Users", Padding: display.CardPaddingNone}) {
+		@display.Table(display.TableProps{
+			Headers: []string{"Name", "Email", "Status"},
+			Rows: []display.TableRow{
+				display.SimpleTableRow("Alice Smith", "alice@example.com", "Active"),
+				display.SimpleTableRow("Bob Jones", "bob@example.com", "Invited"),
+			},
+			Flush:       true,
+			Hover:       true,
+			CellPadding: display.TableCellPaddingCompact,
+		})
+	}
+	@demoSection("DataTable (sort + pagination)", "display-data-table")
+	@display.DataTable(display.DataTableProps{
+		Columns: []display.DataTableColumn{
+			{Label: "Name", Sortable: true},
+			{Label: "Email", Sortable: true, SortKey: "email"},
+		},
+		ActiveSortColumn: "Name",
+		ActiveSortDir:    display.SortAsc,
+		SortBaseURL:      "/users",
+		Rows: []display.TableRow{
+			display.SimpleTableRow("Alice", "alice@example.com"),
+			display.SimpleTableRow("Bob", "bob@example.com"),
+		},
+	})
+	@demoSection("PageHeader", "display-page-header")
+	@display.PageHeader(display.PageHeaderProps{
+		Title:    "User Settings",
+		Subtitle: "Manage your account preferences and security options",
+	})
+	@demoSection("Definition List", "display-definition-list")
+	<div class="max-w-md">
+		@display.DefinitionList(display.DefinitionListProps{
+			Items: []display.DefinitionItem{
+				{Term: "User ID", Detail: "usr_01JXEXAMPLE"},
+				{Term: "Email", Detail: "admin@example.com"},
+				{Term: "Plan", Detail: "Enterprise"},
+			},
+		})
+	</div>
+	@demoSection("Definition Grid", "display-definition-grid")
+	@display.DefinitionGrid(display.DefinitionGridProps{
+		Cols: display.GridCols3,
+		Items: []display.DefinitionItem{
+			{Term: "CPU", Detail: "42%"},
+			{Term: "Memory", Detail: "8.2 GB"},
+			{Term: "Disk", Detail: "156 GB"},
+			{Term: "Uptime", Detail: "99.9%"},
+			{Term: "Requests", Detail: "1.2K/s"},
+			{Term: "Latency", Detail: "12ms"},
+		},
+	})
+	@demoSection("Grid + Container Query Grid", "display-grid")
+	@display.Grid(display.GridProps{Cols: display.GridCols3, Gap: display.GridGapLG}) {
+		@display.StatCard(display.StatCardProps{Value: "42", Label: "Normal grid"})
+		@display.StatCard(display.StatCardProps{Value: "12ms", Label: "Responsive"})
+		@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "To viewport"})
+	}
+	<div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mt-4">
+		<p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Container-responsive (resize this box):</p>
+		@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerResponsive: true}) {
+			@display.StatCard(display.StatCardProps{Value: "42", Label: "Requests/s"})
+			@display.StatCard(display.StatCardProps{Value: "12ms", Label: "Latency"})
+			@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime"})
+		}
+	</div>
+	@demoSection("Empty States", "display-empty-state")
+	<div class="grid gap-4 sm:grid-cols-2">
+		@display.EmptyState(display.EmptyStateProps{
+			Title:       "No users found",
+			Description: "Try adjusting your search or filters.",
+			Icon:        icons.Users,
+			ActionText:  "Add user",
+			ActionHref:  "#",
+		})
+		@display.SimpleEmptyState("No data to display.")
+	</div>
+	@demoSection("CopyButton", "display-copy-button")
+	@display.CopyButton(display.CopyButtonProps{Text: "go get github.com/larsartmann/templ-components", Label: "Copy install command"})
+	@demoSection("RelativeTime", "display-relative-time")
+	<div class="flex items-center gap-4">
+		<span class="text-sm text-gray-500 dark:text-gray-400">2 hours ago:</span>
+		@display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(-2 * time.Hour)})
+		<span class="text-sm text-gray-500 dark:text-gray-400 ml-4">1 day ago:</span>
+		@display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(-24 * time.Hour)})
+	</div>
+	@demoSection("CountBadge", "display-count-badge")
+	<div class="flex items-center gap-4">
+		@display.CountBadge(display.CountBadgeProps{Count: 12}) {
+			@icons.Icon(icons.Bell, "h-6 w-6 text-gray-600 dark:text-gray-400")
+		}
+		@display.CountBadge(display.CountBadgeProps{Count: 150}) {
+			@icons.Icon(icons.Mail, "h-6 w-6 text-gray-600 dark:text-gray-400")
+		}
+		@display.CountBadge(display.CountBadgeProps{Count: 0}) {
+			@icons.Icon(icons.Bell, "h-6 w-6 text-gray-600 dark:text-gray-400")
+		}
+	</div>
+	@demoSection("ListNote", "display-list-note")
+	@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
+	@demoSection("Image", "display-image")
+	<div class="flex items-center gap-4">
+		@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo&size=96", Alt: "Demo", Width: 96, Height: 96})
+		@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Round&size=96", Alt: "Rounded", Width: 96, Height: 96, Rounded: true, FallbackSrc: "https://ui-avatars.com/api/?name=Fallback"})
+	</div>
+	@demoSection("HoverCard", "display-hover-card")
+	@display.HoverCard(display.HoverCardProps{
+		BaseProps: utils.BaseProps{ID: "hc-1"},
+		Position:  display.HoverCardPositionTop,
+		Content:   hoverCardContent(),
+	}) {
+		@display.Button(display.ButtonProps{Text: "Hover or focus me"})
+	}
+	@demoSection("ContextMenu", "display-context-menu")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Right-click the area below:</p>
+	@display.ContextMenu(display.ContextMenuProps{
+		BaseProps: utils.BaseProps{ID: "ctx-1", Nonce: "demo-nonce"},
+		Items: []display.ContextMenuItem{
+			{Text: "Copy", Href: "#"},
+			{Text: "Share", Href: "#"},
+			{Text: "Delete", Href: "#"},
+		},
+	}) {
+		<div class="border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg p-8 text-center text-gray-500 dark:text-gray-400">
+			Right-click here for context menu
+		</div>
+	}
+	@demoSection("Carousel", "display-carousel")
+	@display.Carousel(display.CarouselProps{
+		BaseProps:      utils.BaseProps{Nonce: "demo-nonce"},
+		ShowIndicators: true,
+		ShowArrows:     true,
+		Slides: []display.CarouselSlide{
+			{Content: carouselSlide("Slide 1", "bg-blue-600 dark:bg-blue-500")},
+			{Content: carouselSlide("Slide 2", "bg-emerald-600 dark:bg-emerald-500")},
+			{Content: carouselSlide("Slide 3", "bg-purple-600 dark:bg-purple-500")},
+		},
+	})
+}
+
+templ carouselSlide(label, colorClass string) {
+	<div class={ utils.Class("flex items-center justify-center h-32 rounded-lg text-white font-bold text-lg", colorClass) }>
+		{ label }
+	</div>
+}
+
+templ hoverCardContent() {
+	<div class="p-4">
+		<p class="font-semibold text-gray-900 dark:text-white">Hover details</p>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Shows on hover or focus.</p>
+	</div>
+}

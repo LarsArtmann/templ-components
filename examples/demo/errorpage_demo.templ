@@ -1,0 +1,50 @@
+package main
+
+import "github.com/larsartmann/templ-components/errorpage"
+
+templ errorpageDemo() {
+	@demoSection("NotFound404", "errorpage-404")
+	<div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+		@errorpage.NotFound404(errorpage.NotFound404Props{
+			Numeral:    "404",
+			Title:      "Page not found",
+			Message:    "The page you're looking for doesn't exist or has been moved.",
+			GoHomeHref: "/",
+			ShowGoBack: false,
+		})
+	</div>
+	@demoSection("ErrorPage", "errorpage-error-page")
+	<div class="border border-gray-200 dark:border-gray-700 rounded-lg overflow-hidden">
+		@errorpage.ErrorPage(errorpage.ErrorPageProps{
+			Family: errorpage.FamilyRejection,
+			Why:    "The resource was not found",
+			Fix:    "Check the URL or return to the homepage.",
+		})
+	</div>
+	@demoSection("ErrorAlert (by family)", "errorpage-alerts")
+	<div class="space-y-4">
+		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyRejection, Title: "Invalid Input", Message: "The email address format is invalid.", Fix: "Enter a valid email address."})
+		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyConflict, Title: "Version Conflict", Message: "Someone else modified this resource.", Fix: "Refresh and try again."})
+		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyTransient, Title: "Temporary Error", Message: "A temporary error occurred.", Fix: "Wait a moment and retry.", Dismissible: true})
+		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyCorruption, Title: "Data Corrupted", Message: "Configuration file is unreadable."})
+		@errorpage.ErrorAlert(errorpage.ErrorAlertProps{Family: errorpage.FamilyInfrastructure, Title: "Service Unavailable", Message: "The service is currently down."})
+	</div>
+	@demoSection("ErrorDetail (with context + cause chain)", "errorpage-details")
+	<div class="space-y-4">
+		@errorpage.ErrorDetail(errorpage.ErrorDetailProps{
+			Family:  errorpage.FamilyCorruption,
+			Code:    "data.parse_failed",
+			Title:   "Parse Failed",
+			Message: "config.yaml contains invalid syntax at line 42.",
+			Fix:     "Check the YAML syntax.",
+			Context: []errorpage.ContextPair{{Key: "file", Value: "config.yaml"}, {Key: "line", Value: "42"}},
+		})
+		@errorpage.ErrorDetail(errorpage.ErrorDetailProps{
+			Family:     errorpage.FamilyTransient,
+			Code:       "db.timeout",
+			Title:      "Database Timeout",
+			Message:    "Query took too long.",
+			CauseChain: []errorpage.CauseItem{{Message: "connection pool exhausted", Code: "db.pool"}, {Message: "timeout after 30s", Code: "db.timeout"}},
+		})
+	</div>
+}

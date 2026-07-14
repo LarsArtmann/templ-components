@@ -1,0 +1,33 @@
+package main
+
+import (
+	"github.com/larsartmann/templ-components/feedback"
+	"github.com/larsartmann/templ-components/htmx"
+)
+
+templ htmxDemo() {
+	@demoSection("HTMX LoadingIndicator", "htmx-loading-indicator")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Global HTMX loading overlay (shows during any htmx request):</p>
+	@htmx.LoadingIndicator(feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"}))
+	@demoSection("HTMX InlineLoadingOverlay", "htmx-inline-overlay")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Per-target loading indicator (shown via <code>hx-indicator</code>):</p>
+	@htmx.InlineLoadingOverlay("demo-form-loading", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-white"}))
+	@demoSection("HTMX LoadingButton", "htmx-loading-button")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Button swaps text during htmx request:</p>
+	@htmx.LoadingButton("Save changes", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-white"}))
+	@demoSection("HTMX ConfirmDelete", "htmx-confirm-delete")
+	@htmx.ConfirmDelete(htmx.ConfirmDeleteProps{
+		Delete:  "/api/items/123",
+		Target:  "#item-123",
+		Confirm: "Are you sure you want to delete this item?",
+	})
+	@demoSection("HTMX CSRFToken", "htmx-csrf")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Renders a hidden CSRF input field:</p>
+	@htmx.CSRFToken("demo-csrf-token-value")
+	@demoSection("HTMX SwapOOB", "htmx-swap-oob")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Out-of-band swap element (processed by HTMX after a response):</p>
+	@htmx.SwapOOB(htmx.SwapOOBProps{SwapStyle: htmx.SwapOuterHTML, Selector: "#oob-target"})
+	@demoSection("HTMX GlobalErrorHandling", "htmx-error-handling")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Wires up htmx:responseError and htmx:beforeOnError events:</p>
+	@htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
+}

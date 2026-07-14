@@ -126,6 +126,12 @@ func allIconNames() []Name {
 	return names
 }
 
+// AllIconNames returns all available icon names, sorted alphabetically.
+// Useful for icon galleries, demos, and documentation.
+func AllIconNames() []Name {
+	return allIconNames()
+}
+
 // NameIsValid reports whether v is one of the defined icon names.
 func NameIsValid(v Name) bool {
 	if v == Spinner {

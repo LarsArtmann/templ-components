@@ -1,0 +1,64 @@
+package main
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/navigation"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+templ navigationDemo() {
+	@demoSection("SimpleNav", "nav-simplenav")
+	@navigation.SimpleNav(navigation.SimpleNavProps{
+		BrandText:   "Demo App",
+		BrandHref:   "/",
+		CurrentPath: "/",
+		Links: []navigation.NavLinkProps{
+			{Href: "/", Text: "Home"},
+			{Href: "/about", Text: "About"},
+			{Href: "/contact", Text: "Contact"},
+		},
+		RightItems: layout.ThemeToggle("Toggle dark mode", ""),
+	})
+	@demoSection("Full Nav", "nav-full")
+	@navigation.Nav(navigation.NavProps{
+		CurrentPath: "/",
+		Links: []navigation.NavLinkProps{
+			{Href: "/", Text: "Home"},
+			{Href: "/about", Text: "About"},
+			{Href: "/contact", Text: "Contact"},
+		},
+	})
+	@demoSection("SidebarNav", "nav-sidebar")
+	<div class="w-64 rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700">
+		@navigation.SidebarNav(navigation.SidebarNavProps{
+			Brand: templ.Raw(`<span class="font-bold text-white">Demo App</span>`),
+			Items: []navigation.SidebarNavItem{
+				{Label: "Dashboard", Href: "#", Icon: icons.Squares2x2, Active: true},
+				{Label: "Users", Href: "#", Icon: icons.Users},
+				{Label: "Settings", Href: "#", Icon: icons.Settings},
+			},
+			Footer: templ.Raw(`<span>v` + utils.Version + `</span>`),
+		})
+	</div>
+	@demoSection("Breadcrumbs", "nav-breadcrumbs")
+	@navigation.Breadcrumbs(navigation.BreadcrumbsProps{Items: []navigation.BreadcrumbItem{
+		{Text: "Home", Href: "/"},
+		{Text: "Users", Href: "/users"},
+		{Text: "John Doe"},
+	}})
+	@demoSection("Pagination", "nav-pagination")
+	@navigation.Pagination(navigation.PaginationProps{
+		CurrentPage: 3,
+		TotalPages:  10,
+		BaseURL:     "/users",
+	})
+	@demoSection("LoadMore", "nav-load-more")
+	@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "next-page"})
+	@demoSection("LoadMore (Infinite Scroll)", "nav-load-more-infinite")
+	@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "next-page-2", InfiniteScroll: true})
+	@demoSection("EndOfList", "nav-end-of-list")
+	@navigation.EndOfList(navigation.EndOfListProps{})
+	@demoSection("Footer", "nav-footer")
+	@navigation.Footer(navigation.FooterProps{BrandText: "templ-components v" + utils.Version})
+}

@@ -77,12 +77,26 @@ reports/
 *.out
 go.work
 go.work.sum
-!go.work
-!go.work.sum
 
 ## Nix
 result-*
 .envrc
 .direnv/
+
+## Javascript and typescript
+dist/
+build/
+*.tsbuildinfo
+.next/
+.nuxt/
+.docusaurus/
+.eslintcache
+.cache/
+.parcel-cache/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
 # <<< buildflow-managed (.gitignore) <<<
+
 examples/demo/demo
