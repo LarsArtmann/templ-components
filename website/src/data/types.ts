@@ -54,6 +54,7 @@ export const uiIconKeys = [
   "sun",
   "moon",
   "star",
+  "eye",
 ] as const;
 export type UIIcon = (typeof uiIconKeys)[number];
 

@@ -2,6 +2,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"net/http"
 	"os"
@@ -11,6 +12,17 @@ import (
 )
 
 func main() {
+	prerenderDir := flag.String("prerender", "", "Pre-render demo pages to static HTML in the given directory instead of starting a server")
+	flag.Parse()
+
+	if *prerenderDir != "" {
+		if err := prerender(*prerenderDir); err != nil {
+			fmt.Fprintf(os.Stderr, "Pre-render error: %v\n", err)
+			os.Exit(1)
+		}
+		return
+	}
+
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		if r.URL.Path == "/forms" {
