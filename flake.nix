@@ -38,6 +38,7 @@
               name = "run-tests";
               runtimeInputs = [ pkgs.go_1_26 ];
               text = ''
+                export GOEXPERIMENT=jsonv2
                 go test ./... -count=1 -race
               '';
             };
@@ -65,6 +66,7 @@
                 pkgs.templ
               ];
               text = ''
+                export GOEXPERIMENT=jsonv2
                 find . -name '*_templ.go' -print0 | xargs -0 rm
                 templ generate ./...
                 go build ./...
@@ -84,6 +86,7 @@
                 pkgs.templ
               ];
               text = ''
+                export GOEXPERIMENT=jsonv2
                 echo "==> Regenerating templ..."
                 find . -name '*_templ.go' -print0 | xargs -0 rm
                 templ generate ./...
@@ -105,6 +108,7 @@
               name = "run-coverage";
               runtimeInputs = [ pkgs.go_1_26 ];
               text = ''
+                export GOEXPERIMENT=jsonv2
                 go test ./... -count=1 -coverprofile=coverage.out
                 go tool cover -func=coverage.out | tail -1
               '';
