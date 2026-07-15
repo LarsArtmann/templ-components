@@ -20,7 +20,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `layout`     | 6             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags                                                                                                                                                                                          |
 | `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                     |
 
-**Totals:** 97 templ components, 102 icon names, 37 typed enums (37 with `IsValid()`), 75 generated `*_templ.go` files, ~30,000 lines of Go/templ source
+**Totals:** 94 templ components, 102 icon names, 37 typed enums (37 with `IsValid()`), 82 generated `*_templ.go` files, ~30,000 lines of Go/templ source
 
 ---
 

@@ -1,9 +1,22 @@
 # TODO List — templ-components
 
-**Updated:** 2026-07-12 | **Version:** 0.17.0
+**Updated:** 2026-07-15 | **Version:** 0.17.0
 
 > Built from 42 `docs/**/2026-07-0*` files + code verification. Each item is verified against
 > the actual codebase. Statuses: ✅ done, ⬜ deferred, ⚫ blocked (needs external resources).
+
+---
+
+## P0 — Current session: doc count drift and website newsletter
+
+| #   | Task                                                                                       | Status  | Evidence                                                                         | Source           |
+| --- | ------------------------------------------------------------------------------------------ | ------- | -------------------------------------------------------------------------------- | ---------------- |
+| 53  | Fix `docs/DOMAIN_LANGUAGE.md` broken glossary table (malformed separator, IconPath pipe)   | ✅ DONE | `docs/DOMAIN_LANGUAGE.md` now renders correctly; pipe removed from cell content  | self-review      |
+| 54  | Align component count across `FEATURES.md`, `SKILL.md`, `AGENTS.md`, website from 97 to 94 | ✅ DONE | All files now state 94 exported templ functions                                  | self-review      |
+| 55  | Align generated `*_templ.go` file count from 75 to 82 in `FEATURES.md` and `AGENTS.md`     | ✅ DONE | Both files now state 82 generated files                                          | self-review      |
+| 56  | Align website enum count from 34 to 37 in `website/src/data/sections.ts`                   | ✅ DONE | `sections.ts` now states 37 typed string enums                                   | self-review      |
+| 57  | Add newsletter signup component to website footer                                          | ✅ DONE | `website/src/components/Newsletter.astro` created and imported in `Footer.astro` | previous session |
+| 58  | Bump nixpkgs in `flake.lock`                                                               | ✅ DONE | `flake.lock` updated to latest nixos-unstable                                    | previous session |
 
 ---
 
@@ -70,14 +83,14 @@
 
 ## P3 — Polish & community
 
-| #   | Task                                                             | Status      | Evidence                                                                                       | Source            |
-| --- | ---------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------- | ----------------- |
-| 27  | Demo site / showcase (live rendered components)                  | ⚫ BLOCKED  | Requires deployment infra ( hosting, domain)                                                   | multiple-feedback |
-| 28  | `awesome-templ` PR submission (updated component count)          | ⚫ BLOCKED  | External repo submission — needs maintainer approval                                           | session10:161     |
-| 29  | `templ.guide` listing submission                                 | ⚫ BLOCKED  | External repo submission — needs maintainer approval                                           | session10:162     |
-| 30  | Configure SSH tag signing (`gpg.ssh.allowedSignersFile`)         | ⚫ BLOCKED  | Requires user's local git config + SSH key setup                                               | v0.8-release:82   |
-| 31  | Blocks/composition examples (dashboard, login, settings layouts) | ⬜ DEFERRED | Deferred to v1.0 — needs design review for composition API                                     | research:74       |
-| 32  | Standalone `/forms` quickstart demo route                        | ✅ DONE     | `examples/demo` — `/forms` route shipped in v0.17.0 with all form components + HTMX filter bar | v0.17.0           |
+| #   | Task                                                             | Status      | Evidence                                                                                                       | Source            |
+| --- | ---------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------- | ----------------- |
+| 27  | Demo site / showcase (live rendered components)                  | ✅ DONE     | `examples/demo` serves a live component showcase; Docker + Cloud Run deployment in place; README links to demo | multiple-feedback |
+| 28  | `awesome-templ` PR submission (updated component count)          | ⚫ BLOCKED  | External repo submission — needs maintainer approval                                                           | session10:161     |
+| 29  | `templ.guide` listing submission                                 | ⚫ BLOCKED  | External repo submission — needs maintainer approval                                                           | session10:162     |
+| 30  | Configure SSH tag signing (`gpg.ssh.allowedSignersFile`)         | ⚫ BLOCKED  | Requires user's local git config + SSH key setup                                                               | v0.8-release:82   |
+| 31  | Blocks/composition examples (dashboard, login, settings layouts) | ⬜ DEFERRED | Deferred to v1.0 — needs design review for composition API                                                     | research:74       |
+| 32  | Standalone `/forms` quickstart demo route                        | ✅ DONE     | `examples/demo` — `/forms` route shipped in v0.17.0 with all form components + HTMX filter bar                 | v0.17.0           |
 
 ---
 

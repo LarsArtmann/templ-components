@@ -50,7 +50,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 75 generated files across all packages
+- 82 generated files across all packages
 - **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package

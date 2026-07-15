@@ -6,7 +6,7 @@ Inspired by Domain-Driven Design (DDD) Ubiquitous Language.
 ## Glossary
 
 | Term              | Definition                                                                         | Context                          |
-| ----------------- | ---------------------------------------------------------------------------------- | -------------------------------- | -------------------- |
+| ----------------- | ---------------------------------------------------------------------------------- | -------------------------------- |
 | Component         | A reusable UI building block with typed Go props                                   | `display.Card`, `feedback.Alert` |
 | Props             | Typed configuration struct for a component                                         | `CardProps`, `AlertProps`        |
 | BaseProps         | Shared fields (ID, Class, Attrs, AriaLabel, Nonce) embedded in all component props | `utils.BaseProps`                |
@@ -14,9 +14,9 @@ Inspired by Domain-Driven Design (DDD) Ubiquitous Language.
 | FeedbackType      | Enum for visual feedback severity: Success, Error, Warning, Info                   | `feedback.FeedbackType`          |
 | TrendDirection    | Enum for stat change direction: Up, Down, None                                     | `display.TrendDirection`         |
 | FeedbackStyle     | Visual properties (color, icon, border) for a feedback variant                     | `feedback.feedbackStyleSet`      |
-| FillIcon          | SVG rendered with `fill="currentColor"` — used for small 20×20 indicators          | `internal/svg.FillIcon`          |
-| StrokeIcon        | SVG rendered with `stroke="currentColor"` — standard 24×24 UI icons                | `icons.Icon`                     |
-| IconPath          | SVG path data string, multi-path icons separated by `                              | `                                | `icons.iconPathData` |
+| FillIcon          | SVG rendered with `fill="currentColor"`; used for small 20x20 indicators           | `internal/svg.FillIcon`          |
+| StrokeIcon        | SVG rendered with `stroke="currentColor"`; standard 24x24 UI icons                 | `icons.Icon`                     |
+| IconPath          | SVG path data string; multi-path icons use a pipe separator                        | `icons.iconPathData`             |
 | CardShell         | Shared CSS class for consistent card appearance (border, shadow, radius)           | `display.cardShellClass`         |
 | ThemeColor        | CSS custom property for light/dark mode theming                                    | `layout.DefaultThemeColor`       |
 | CSP Nonce         | Cryptographic nonce for Content Security Policy compliance                         | All `<script>` tags              |
