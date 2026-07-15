@@ -9,14 +9,15 @@
 
 ## P0 — Current session: doc count drift and website newsletter
 
-| #   | Task                                                                                       | Status  | Evidence                                                                         | Source           |
-| --- | ------------------------------------------------------------------------------------------ | ------- | -------------------------------------------------------------------------------- | ---------------- |
-| 53  | Fix `docs/DOMAIN_LANGUAGE.md` broken glossary table (malformed separator, IconPath pipe)   | ✅ DONE | `docs/DOMAIN_LANGUAGE.md` now renders correctly; pipe removed from cell content  | self-review      |
-| 54  | Align component count across `FEATURES.md`, `SKILL.md`, `AGENTS.md`, website from 97 to 94 | ✅ DONE | All files now state 94 exported templ functions                                  | self-review      |
-| 55  | Align generated `*_templ.go` file count from 75 to 82 in `FEATURES.md` and `AGENTS.md`     | ✅ DONE | Both files now state 82 generated files                                          | self-review      |
-| 56  | Align website enum count from 34 to 37 in `website/src/data/sections.ts`                   | ✅ DONE | `sections.ts` now states 37 typed string enums                                   | self-review      |
-| 57  | Add newsletter signup component to website footer                                          | ✅ DONE | `website/src/components/Newsletter.astro` created and imported in `Footer.astro` | previous session |
-| 58  | Bump nixpkgs in `flake.lock`                                                               | ✅ DONE | `flake.lock` updated to latest nixos-unstable                                    | previous session |
+| #   | Task                                                                                       | Status  | Evidence                                                                                               | Source           |
+| --- | ------------------------------------------------------------------------------------------ | ------- | ------------------------------------------------------------------------------------------------------ | ---------------- |
+| 53  | Fix `docs/DOMAIN_LANGUAGE.md` broken glossary table (malformed separator, IconPath pipe)   | ✅ DONE | `docs/DOMAIN_LANGUAGE.md` now renders correctly; pipe removed from cell content                        | self-review      |
+| 54  | Align component count across `FEATURES.md`, `SKILL.md`, `AGENTS.md`, website from 97 to 94 | ✅ DONE | All files now state 94 exported templ functions                                                        | self-review      |
+| 55  | Align generated `*_templ.go` file count from 75 to 82 in `FEATURES.md` and `AGENTS.md`     | ✅ DONE | Both files now state 82 generated files                                                                | self-review      |
+| 56  | Align website enum count from 34 to 37 in `website/src/data/sections.ts`                   | ✅ DONE | `sections.ts` now states 37 typed string enums                                                         | self-review      |
+| 57  | Add newsletter signup component to website footer                                          | ✅ DONE | `website/src/components/Newsletter.astro` created and imported in `Footer.astro`                       | previous session |
+| 58  | Bump nixpkgs in `flake.lock`                                                               | ✅ DONE | `flake.lock` updated to latest nixos-unstable                                                          | previous session |
+| 59  | Add `TestDocsCountDrift` to guard component/generated-file/enum counts in docs             | ✅ DONE | `utils/docs_count_test.go` asserts counts in FEATURES.md, AGENTS.md, SKILL.md, and website sections.ts | self-review      |
 
 ---
 
@@ -148,6 +149,18 @@
 | Image `SrcSet`/`Sizes` responsive delivery          | `ImageProps.SrcSet/Sizes` | ✅ DONE |
 | Table `content-visibility: auto` (LazyRows)         | `TableProps.LazyRows`     | ✅ DONE |
 | Global `accent-color` CSS                           | `templates/app.css`       | ✅ DONE |
+
+---
+
+## P1 — Next high-impact improvements (from Pareto plan)
+
+| #   | Task                                                                                | Status      | Evidence                                                            | Source      |
+| --- | ----------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------- | ----------- |
+| 60  | Remove deprecated aliases (`AlertType`, `ToastType`, `FamilyFromErrorFamily`)       | ⬜ DEFERRED | Already listed in v1.0 section; low-effort breaking cleanup         | pareto-plan |
+| 61  | Add docs-health CI check                                                            | ⬜ DEFERRED | New CI step that runs docs-count drift assertions                   | pareto-plan |
+| 62  | Add `Validate()` methods to top 5 props structs (Card, Button, Input, Alert, Table) | ⬜ DEFERRED | `Validate() error` added behind v1.0 flag                           | pareto-plan |
+| 63  | Self-host HTMX as default (ADR 0007)                                                | ⬜ DEFERRED | `layout/sri.go` currently defaults to CDN; ADR documents the switch | pareto-plan |
+| 64  | Prototype compound components for Modal/Drawer (Trigger/Content/Close)              | ⬜ DEFERRED | Existing monolithic Modal/Drawer in `display/`                      | pareto-plan |
 
 ---
 
