@@ -59,6 +59,45 @@ func TestCardRender(t *testing.T) {
 	})
 }
 
+func TestCardClassOverrides(t *testing.T) {
+	t.Parallel()
+
+	t.Run("title class overrides default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Card(CardProps{
+			Title:      "Users",
+			TitleClass: "text-2xl text-indigo-600",
+			Padding:    CardPaddingMD,
+		}))
+		utils.AssertContains(t, output, "text-2xl")
+		utils.AssertContains(t, output, "text-indigo-600")
+		utils.AssertContains(t, output, "Users")
+	})
+
+	t.Run("header class overrides default wrapper", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Card(CardProps{
+			Title:       "Users",
+			HeaderClass: "items-start bg-gray-50 dark:bg-gray-900/50",
+			Padding:     CardPaddingMD,
+		}))
+		utils.AssertContains(t, output, "items-start")
+		utils.AssertContains(t, output, "bg-gray-50")
+	})
+
+	t.Run("title class does not affect subtitle", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Card(CardProps{
+			Title:      "Users",
+			Subtitle:   "Manage your team",
+			TitleClass: "text-indigo-600",
+			Padding:    CardPaddingMD,
+		}))
+		utils.AssertContains(t, output, "Manage your team")
+		utils.AssertContains(t, output, "text-indigo-600")
+	})
+}
+
 func TestStatCardRender(t *testing.T) {
 	t.Parallel()
 

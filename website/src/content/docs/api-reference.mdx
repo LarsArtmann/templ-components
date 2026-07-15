@@ -37,6 +37,22 @@ type BaseProps struct {
 }
 ```
 
+### Override Props
+
+Some components expose additional typed class overrides so you can tweak their
+internal layout without replacing the whole component. For example, `CardProps`
+includes `TitleClass` and `HeaderClass`:
+
+```templ
+@display.Card(display.CardProps{
+    Title:       "Users",
+    TitleClass:  "text-indigo-600",
+    HeaderClass: "bg-gray-50 dark:bg-gray-900/50",
+}) {
+    <p>Card content</p>
+}
+```
+
 ### Typed Enums
 
 34 typed string enums make invalid states unrepresentable. Each ships with an `IsValid()` method.

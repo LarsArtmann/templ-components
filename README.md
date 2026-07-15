@@ -90,6 +90,14 @@ Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, toolt
     <p>Card content</p>
 }
 
+@display.Card(display.CardProps{
+    Title:       "Users",
+    TitleClass:  "text-indigo-600",
+    HeaderClass: "bg-gray-50 dark:bg-gray-900/50",
+}) {
+    <p>Override title and header classes without replacing the whole header.</p>
+}
+
 @display.StatCard(display.StatCardProps{Label: "Users", Value: "1,204", Icon: icons.Users, Change: "12%", Trend: display.TrendUp})
 
 @display.Grid(display.GridProps{Cols: display.GridCols3, Gap: display.GridGapLG}) {

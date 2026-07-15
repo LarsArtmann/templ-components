@@ -36,6 +36,12 @@ type CardProps struct {
 	// composition. If both are set, Body takes precedence.
 	Body    templ.Component
 	Padding CardPadding
+	// TitleClass, when set, overrides the default <h3> title classes. Consumer
+	// classes are merged LAST so they win via tailwind-merge.
+	TitleClass string
+	// HeaderClass, when set, overrides the default header wrapper classes.
+	// Consumer classes are merged LAST so they win via tailwind-merge.
+	HeaderClass string
 }
 
 // DefaultCardProps returns sensible defaults
@@ -62,14 +68,14 @@ templ Card(props CardProps) {
 		{ props.Attrs... }
 	>
 		if props.Header != nil {
-			<div class="flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+			<div class={ utils.Class("flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
 				@props.Header
 			</div>
 		} else if props.Title != "" || props.HeaderAction != nil {
-			<div class="flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+			<div class={ utils.Class("flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
 				<div>
 					if props.Title != "" {
-						<h3 class="text-base font-semibold leading-6 text-gray-900 dark:text-white">{ props.Title }</h3>
+						<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h3>
 					}
 					if props.Subtitle != "" {
 						<p class={ utils.Class(mutedTextClass, "mt-1") }>{ props.Subtitle }</p>
