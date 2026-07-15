@@ -141,23 +141,23 @@ These make the library production-grade, well-tested, and consumable.
 
 #### Validation & Robustness
 
-| #    | Task                                                               | Impact                   | CV  | Effort | Score   | File(s)                     | Time                |
+| # | Task | Impact | CV | Effort | Score | File(s) | Time |
 | ---- | ------------------------------------------------------------------ | ------------------------ | --- | ------ | ------- | --------------------------- | ------------------- | --- |
-| 4.11 | Validate SelectOption contradiction (Disabled + Selected)          | 2                        | 2   | 1      | **4.0** | forms/select.templ          | 10m                 |
-| 4.12 | Validate SwapOOB swapStyle parameter                               | 2                        | 2   | 1      | **4.0** | htmx/helpers.templ          | 10m                 |
-| 4.13 | Validate `                                                         | ` separator in SVG paths | 2   | 2      | 1       | **4.0**                     | icons/icon_paths.go | 10m |
-| 4.14 | Replace DropdownItem empty-Href with typed `DropdownItemKind` enum | 3                        | 2   | 3      | **2.0** | display/dropdown.templ      | 1h                  |
-| 4.15 | Make GlobalErrorHandling config configurable                       | 2                        | 2   | 2      | **2.0** | htmx/error_handling.templ   | 30m                 |
-| 4.16 | Extract error handling magic numbers                               | 2                        | 2   | 1      | **4.0** | htmx/error_handling.templ   | 10m                 |
-| 4.17 | SimpleCard should compose through Card internally                  | 2                        | 2   | 2      | **2.0** | display/card.templ          | 30m                 |
-| 4.18 | Toast duration configurable per-toast                              | 2                        | 3   | 2      | **3.0** | feedback/toast.templ        | 30m                 |
-| 4.19 | Pagination ellipsis for large ranges                               | 2                        | 3   | 2      | **3.0** | navigation/pagination.templ | 30m                 |
-| 4.20 | Use `net/url` for pagination URL construction                      | 2                        | 2   | 2      | **2.0** | navigation/pagination.templ | 30m                 |
-| 4.21 | Make `PageProps` zero-value safe                                   | 2                        | 2   | 2      | **2.0** | layout/base.templ           | 30m                 |
-| 4.22 | Extract theme colors to named constants (`#4f46e5`, `#1e1b4b`)     | 2                        | 2   | 1      | **4.0** | layout/base.templ           | 10m                 |
-| 4.23 | Auto-generate `allIconNames()` from `iconPathData`                 | 2                        | 2   | 2      | **2.0** | icons/icon_paths.go         | 30m                 |
-| 4.24 | Replace StepIndicator checkmark SVG with icon system               | 2                        | 2   | 1      | **4.0** | feedback/progress.templ     | 10m                 |
-| 4.25 | Add `uint` type to Pagination fields                               | 2                        | 2   | 1      | **4.0** | navigation/pagination.templ | 10m                 |
+| 4.11 | Validate SelectOption contradiction (Disabled + Selected) | 2 | 2 | 1 | **4.0** | forms/select.templ | 10m |
+| 4.12 | Validate SwapOOB swapStyle parameter | 2 | 2 | 1 | **4.0** | htmx/helpers.templ | 10m |
+| 4.13 | Validate `                                                        |` separator in SVG paths | 2 | 2 | 1 | **4.0** | icons/icon_paths.go | 10m |
+| 4.14 | Replace DropdownItem empty-Href with typed `DropdownItemKind` enum | 3 | 2 | 3 | **2.0** | display/dropdown.templ | 1h |
+| 4.15 | Make GlobalErrorHandling config configurable | 2 | 2 | 2 | **2.0** | htmx/error_handling.templ | 30m |
+| 4.16 | Extract error handling magic numbers | 2 | 2 | 1 | **4.0** | htmx/error_handling.templ | 10m |
+| 4.17 | SimpleCard should compose through Card internally | 2 | 2 | 2 | **2.0** | display/card.templ | 30m |
+| 4.18 | Toast duration configurable per-toast | 2 | 3 | 2 | **3.0** | feedback/toast.templ | 30m |
+| 4.19 | Pagination ellipsis for large ranges | 2 | 3 | 2 | **3.0** | navigation/pagination.templ | 30m |
+| 4.20 | Use `net/url` for pagination URL construction | 2 | 2 | 2 | **2.0** | navigation/pagination.templ | 30m |
+| 4.21 | Make `PageProps` zero-value safe | 2 | 2 | 2 | **2.0** | layout/base.templ | 30m |
+| 4.22 | Extract theme colors to named constants (`#4f46e5`, `#1e1b4b`) | 2 | 2 | 1 | **4.0** | layout/base.templ | 10m |
+| 4.23 | Auto-generate `allIconNames()` from `iconPathData` | 2 | 2 | 2 | **2.0** | icons/icon_paths.go | 30m |
+| 4.24 | Replace StepIndicator checkmark SVG with icon system | 2 | 2 | 1 | **4.0** | feedback/progress.templ | 10m |
+| 4.25 | Add `uint` type to Pagination fields | 2 | 2 | 1 | **4.0** | navigation/pagination.templ | 10m |
 
 #### Accessibility
 

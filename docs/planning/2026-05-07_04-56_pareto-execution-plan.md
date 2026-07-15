@@ -294,77 +294,77 @@ graph TD
 
 ## Task Breakdown (15min each, up to 150 tasks)
 
-| #   | Task ID | Task                                                                            | Est.      | Impact | Effort | Depends |
+| # | Task ID | Task | Est. | Impact | Effort | Depends |
 | --- | ------- | ------------------------------------------------------------------------------- | --------- | ------ | ------ | ------- | --- |
-| 1   | T1a     | Fix README.md StatCard example (old API → new struct)                           | 5min      | HIGH   | LOW    | —       |
-| 2   | T1b     | Fix README.md Dropdown example (add ID field)                                   | 5min      | HIGH   | LOW    | —       |
-| 3   | T1c     | Scan README.md for all other stale API references                               | 5min      | MED    | LOW    | T1a     |
-| 4   | T2a     | Update CONTEXT.md Key Patterns with feedbackStyleSet                            | 5min      | HIGH   | LOW    | —       |
-| 5   | T2b     | Update CONTEXT.md with iconPathData map pattern                                 | 5min      | MED    | LOW    | —       |
-| 6   | T2c     | Update CONTEXT.md Naming Conventions (AvatarStatus, TrendDirection, BoolString) | 5min      | MED    | LOW    | —       |
-| 7   | T2d     | Update CONTEXT.md Architecture Decisions with new items                         | 5min      | MED    | LOW    | —       |
-| 8   | T3a     | Run `golangci-lint run ./...`, capture all issues                               | 5min      | HIGH   | LOW    | —       |
-| 9   | T3b     | Fix `feedback/styles.go` package comment                                        | 3min      | LOW    | LOW    | T3a     |
-| 10  | T3c     | Fix any other lint issues found in T3a                                          | 10min     | MED    | LOW    | T3a     |
-| 11  | T3d     | Re-run lint to verify zero issues                                               | 2min      | LOW    | LOW    | T3c     |
-| 12  | T4a     | Add AvatarStatus, TrendDirection to FEATURES.md enums                           | 5min      | MED    | LOW    | —       |
-| 13  | T4b     | Add BoolString to FEATURES.md utils Functions table                             | 3min      | LOW    | LOW    | —       |
-| 14  | T4c     | Update Avatar description in FEATURES.md                                        | 3min      | LOW    | LOW    | T4a     |
-| 15  | T5      | Add package comment to feedback/styles.go                                       | 3min      | LOW    | LOW    | —       |
-| 16  | T6a     | Change SecurityHeaders default to true in DefaultPageProps                      | 5min      | HIGH   | LOW    | —       |
-| 17  | T6b     | Update layout snapshot tests for new SecurityHeaders default                    | 5min      | MED    | LOW    | T6a     |
-| 18  | T6c     | Add test: SecurityHeaders=false omits meta tags                                 | 5min      | MED    | LOW    | T6a     |
-| 19  | T7a     | Create `forms/errorAttrs()` helper in helpers.go                                | 10min     | MED    | LOW    | —       |
-| 20  | T7b     | Refactor input.templ to use errorAttrs                                          | 5min      | LOW    | LOW    | T7a     |
-| 21  | T7c     | Refactor select.templ to use errorAttrs                                         | 5min      | LOW    | LOW    | T7a     |
-| 22  | T7d     | Refactor textarea.templ to use errorAttrs                                       | 5min      | LOW    | LOW    | T7a     |
-| 23  | T7e     | Refactor checkbox in input.templ to use errorAttrs                              | 5min      | LOW    | LOW    | T7a     |
-| 24  | T7f     | Run tests to verify form refactoring                                            | 3min      | LOW    | LOW    | T7e     |
-| 25  | T8      | Add DefaultStatCardProps() constructor                                          | 5min      | LOW    | LOW    | —       |
-| 26  | T9a     | Create testdata/ dirs in display/, feedback/, forms/                            | 3min      | MED    | LOW    | —       |
-| 27  | T9b     | Write golden file generation helper in utils/                                   | 10min     | MED    | LOW    | —       |
-| 28  | T9c     | Generate golden files for display components                                    | 10min     | MED    | LOW    | T9b     |
-| 29  | T9d     | Generate golden files for feedback components                                   | 5min      | MED    | LOW    | T9b     |
-| 30  | T9e     | Generate golden files for navigation components                                 | 5min      | MED    | LOW    | T9b     |
-| 31  | T9f     | Write TestGolden\_\* tests comparing output to golden                           | 10min     | MED    | MED    | T9c     |
-| 32  | T10a    | Change emptyStateIconMap keys from string to icons.Name                         | 10min     | LOW    | LOW    | —       |
-| 33  | T10b    | Update mapEmptyStateIcon to use icons.Name                                      | 5min      | LOW    | LOW    | T10a    |
-| 34  | T11a    | Write composition test: Card with Badge                                         | 5min      | MED    | LOW    | —       |
-| 35  | T11b    | Write composition test: Nav with Avatar                                         | 5min      | MED    | LOW    | —       |
-| 36  | T11c    | Write composition test: Table with Content cells                                | 5min      | MED    | LOW    | —       |
-| 37  | T11d    | Write composition test: Modal with form inputs                                  | 5min      | MED    | LOW    | —       |
-| 38  | T12a    | Identify 9 test clone groups with dupl                                          | 5min      | LOW    | LOW    | —       |
-| 39  | T12b    | Refactor test clone group 1-3                                                   | 10min     | LOW    | LOW    | T12a    |
-| 40  | T12c    | Refactor test clone group 4-6                                                   | 10min     | LOW    | LOW    | T12a    |
-| 41  | T12d    | Refactor test clone group 7-9                                                   | 10min     | LOW    | LOW    | T12a    |
-| 42  | T13a    | Create examples/demo/main.go with all component imports                         | 15min     | HIGH   | MED    | —       |
-| 43  | T13b    | Add demo page using layout.Base with all packages                               | 15min     | MED    | MED    | T13a    |
-| 44  | T13c    | Add demo section: feedback (alerts, toasts, spinners)                           | 10min     | MED    | LOW    | T13a    |
-| 45  | T13d    | Add demo section: display (cards, badges, tables)                               | 10min     | MED    | LOW    | T13a    |
-| 46  | T14     | Write docs/migration/v0.1-to-v0.2.md                                            | 15min     | MED    | LOW    | —       |
-| 47  | T15     | Create test file that imports README examples literally                         | 10min     | MED    | LOW    | T1a     |
-| 48  | T16     | Write AGENTS.md with project-specific conventions                               | 15min     | MED    | LOW    | T2a     |
-| 49  | T17a    | Write integration test: Base + Nav + Content + Footer                           | 15min     | HIGH   | MED    | —       |
-| 50  | T17b    | Write integration test: Base with SecurityHeaders                               | 5min      | MED    | LOW    | T17a    |
-| 51  | T18a    | Add benchmark for Icon render                                                   | 5min      | LOW    | LOW    | —       |
-| 52  | T18b    | Add benchmark for Card render                                                   | 5min      | LOW    | LOW    | —       |
-| 53  | T18c    | Add benchmark for Table render                                                  | 5min      | LOW    | LOW    | —       |
-| 54  | T18d    | Add benchmark for Nav render                                                    | 5min      | LOW    | LOW    | —       |
-| 55  | T19     | Add doc comment to icon_paths.go explaining                                     | separator | 5min   | LOW    | LOW     | —   |
-| 56  | T20     | Add doc comment to TableCell about Content priority                             | 5min      | LOW    | LOW    | —       |
-| 57  | T21a    | Create .goreleaser.yml with basic config                                        | 10min     | MED    | LOW    | —       |
-| 58  | T21b    | Add goreleaser config for brew, scoop, etc.                                     | 10min     | LOW    | LOW    | T21a    |
-| 59  | T21c    | Test goreleaser config with `goreleaser check`                                  | 5min      | LOW    | LOW    | T21a    |
-| 60  | T22a    | Create flake.nix with devShell (templ, go, golangci-lint)                       | 15min     | MED    | MED    | —       |
-| 61  | T22b    | Add build and test apps to flake.nix                                            | 10min     | MED    | LOW    | T22a    |
-| 62  | T22c    | Test nix build                                                                  | 5min      | MED    | LOW    | T22b    |
-| 63  | T23     | Update TODO_LIST.md with session results                                        | 10min     | LOW    | LOW    | —       |
-| 64  | T24     | Update CHANGELOG.md with new session work                                       | 10min     | LOW    | LOW    | —       |
-| 65  | T25a    | Run full build: templ generate + go build ./...                                 | 5min      | HIGH   | LOW    | ALL     |
-| 66  | T25b    | Run full test: go test ./...                                                    | 5min      | HIGH   | LOW    | T25a    |
-| 67  | T25c    | Run full lint: golangci-lint run ./...                                          | 5min      | HIGH   | LOW    | T25b    |
-| 68  | T26     | Git commit + push                                                               | 5min      | HIGH   | LOW    | T25c    |
-| 69  | T27     | Investigate doc site options (templ-doc, pkgsite, etc.)                         | 15min     | LOW    | LOW    | —       |
+| 1 | T1a | Fix README.md StatCard example (old API → new struct) | 5min | HIGH | LOW | — |
+| 2 | T1b | Fix README.md Dropdown example (add ID field) | 5min | HIGH | LOW | — |
+| 3 | T1c | Scan README.md for all other stale API references | 5min | MED | LOW | T1a |
+| 4 | T2a | Update CONTEXT.md Key Patterns with feedbackStyleSet | 5min | HIGH | LOW | — |
+| 5 | T2b | Update CONTEXT.md with iconPathData map pattern | 5min | MED | LOW | — |
+| 6 | T2c | Update CONTEXT.md Naming Conventions (AvatarStatus, TrendDirection, BoolString) | 5min | MED | LOW | — |
+| 7 | T2d | Update CONTEXT.md Architecture Decisions with new items | 5min | MED | LOW | — |
+| 8 | T3a | Run `golangci-lint run ./...`, capture all issues | 5min | HIGH | LOW | — |
+| 9 | T3b | Fix `feedback/styles.go` package comment | 3min | LOW | LOW | T3a |
+| 10 | T3c | Fix any other lint issues found in T3a | 10min | MED | LOW | T3a |
+| 11 | T3d | Re-run lint to verify zero issues | 2min | LOW | LOW | T3c |
+| 12 | T4a | Add AvatarStatus, TrendDirection to FEATURES.md enums | 5min | MED | LOW | — |
+| 13 | T4b | Add BoolString to FEATURES.md utils Functions table | 3min | LOW | LOW | — |
+| 14 | T4c | Update Avatar description in FEATURES.md | 3min | LOW | LOW | T4a |
+| 15 | T5 | Add package comment to feedback/styles.go | 3min | LOW | LOW | — |
+| 16 | T6a | Change SecurityHeaders default to true in DefaultPageProps | 5min | HIGH | LOW | — |
+| 17 | T6b | Update layout snapshot tests for new SecurityHeaders default | 5min | MED | LOW | T6a |
+| 18 | T6c | Add test: SecurityHeaders=false omits meta tags | 5min | MED | LOW | T6a |
+| 19 | T7a | Create `forms/errorAttrs()` helper in helpers.go | 10min | MED | LOW | — |
+| 20 | T7b | Refactor input.templ to use errorAttrs | 5min | LOW | LOW | T7a |
+| 21 | T7c | Refactor select.templ to use errorAttrs | 5min | LOW | LOW | T7a |
+| 22 | T7d | Refactor textarea.templ to use errorAttrs | 5min | LOW | LOW | T7a |
+| 23 | T7e | Refactor checkbox in input.templ to use errorAttrs | 5min | LOW | LOW | T7a |
+| 24 | T7f | Run tests to verify form refactoring | 3min | LOW | LOW | T7e |
+| 25 | T8 | Add DefaultStatCardProps() constructor | 5min | LOW | LOW | — |
+| 26 | T9a | Create testdata/ dirs in display/, feedback/, forms/ | 3min | MED | LOW | — |
+| 27 | T9b | Write golden file generation helper in utils/ | 10min | MED | LOW | — |
+| 28 | T9c | Generate golden files for display components | 10min | MED | LOW | T9b |
+| 29 | T9d | Generate golden files for feedback components | 5min | MED | LOW | T9b |
+| 30 | T9e | Generate golden files for navigation components | 5min | MED | LOW | T9b |
+| 31 | T9f | Write TestGolden\_\* tests comparing output to golden | 10min | MED | MED | T9c |
+| 32 | T10a | Change emptyStateIconMap keys from string to icons.Name | 10min | LOW | LOW | — |
+| 33 | T10b | Update mapEmptyStateIcon to use icons.Name | 5min | LOW | LOW | T10a |
+| 34 | T11a | Write composition test: Card with Badge | 5min | MED | LOW | — |
+| 35 | T11b | Write composition test: Nav with Avatar | 5min | MED | LOW | — |
+| 36 | T11c | Write composition test: Table with Content cells | 5min | MED | LOW | — |
+| 37 | T11d | Write composition test: Modal with form inputs | 5min | MED | LOW | — |
+| 38 | T12a | Identify 9 test clone groups with dupl | 5min | LOW | LOW | — |
+| 39 | T12b | Refactor test clone group 1-3 | 10min | LOW | LOW | T12a |
+| 40 | T12c | Refactor test clone group 4-6 | 10min | LOW | LOW | T12a |
+| 41 | T12d | Refactor test clone group 7-9 | 10min | LOW | LOW | T12a |
+| 42 | T13a | Create examples/demo/main.go with all component imports | 15min | HIGH | MED | — |
+| 43 | T13b | Add demo page using layout.Base with all packages | 15min | MED | MED | T13a |
+| 44 | T13c | Add demo section: feedback (alerts, toasts, spinners) | 10min | MED | LOW | T13a |
+| 45 | T13d | Add demo section: display (cards, badges, tables) | 10min | MED | LOW | T13a |
+| 46 | T14 | Write docs/migration/v0.1-to-v0.2.md | 15min | MED | LOW | — |
+| 47 | T15 | Create test file that imports README examples literally | 10min | MED | LOW | T1a |
+| 48 | T16 | Write AGENTS.md with project-specific conventions | 15min | MED | LOW | T2a |
+| 49 | T17a | Write integration test: Base + Nav + Content + Footer | 15min | HIGH | MED | — |
+| 50 | T17b | Write integration test: Base with SecurityHeaders | 5min | MED | LOW | T17a |
+| 51 | T18a | Add benchmark for Icon render | 5min | LOW | LOW | — |
+| 52 | T18b | Add benchmark for Card render | 5min | LOW | LOW | — |
+| 53 | T18c | Add benchmark for Table render | 5min | LOW | LOW | — |
+| 54 | T18d | Add benchmark for Nav render | 5min | LOW | LOW | — |
+| 55 | T19 | Add doc comment to icon_paths.go explaining | separator | 5min | LOW | LOW | — |
+| 56 | T20 | Add doc comment to TableCell about Content priority | 5min | LOW | LOW | — |
+| 57 | T21a | Create .goreleaser.yml with basic config | 10min | MED | LOW | — |
+| 58 | T21b | Add goreleaser config for brew, scoop, etc. | 10min | LOW | LOW | T21a |
+| 59 | T21c | Test goreleaser config with `goreleaser check` | 5min | LOW | LOW | T21a |
+| 60 | T22a | Create flake.nix with devShell (templ, go, golangci-lint) | 15min | MED | MED | — |
+| 61 | T22b | Add build and test apps to flake.nix | 10min | MED | LOW | T22a |
+| 62 | T22c | Test nix build | 5min | MED | LOW | T22b |
+| 63 | T23 | Update TODO_LIST.md with session results | 10min | LOW | LOW | — |
+| 64 | T24 | Update CHANGELOG.md with new session work | 10min | LOW | LOW | — |
+| 65 | T25a | Run full build: templ generate + go build ./... | 5min | HIGH | LOW | ALL |
+| 66 | T25b | Run full test: go test ./... | 5min | HIGH | LOW | T25a |
+| 67 | T25c | Run full lint: golangci-lint run ./... | 5min | HIGH | LOW | T25b |
+| 68 | T26 | Git commit + push | 5min | HIGH | LOW | T25c |
+| 69 | T27 | Investigate doc site options (templ-doc, pkgsite, etc.) | 15min | LOW | LOW | — |
 
 **Total estimated time:** ~8.5 hours  
 **Parallelizable tasks:** Many Phase 4 tasks can run in parallel
