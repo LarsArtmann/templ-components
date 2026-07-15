@@ -3,18 +3,74 @@ package main
 import (
 	"fmt"
 
+	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 templ iconsDemo() {
 	{{ iconNames := icons.AllIconNames() }}
 	@demoSection(fmt.Sprintf("All Icons (%d)", len(iconNames)), "icons-all")
-	<div class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
-		for _, name := range iconNames {
-			<div class="flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors motion-reduce:transition-none motion-reduce:duration-0">
-				@icons.Icon(name, "h-6 w-6 text-gray-600 dark:text-gray-400")
-				<span class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-full">{ string(name) }</span>
-			</div>
-		}
+	<div class="space-y-4">
+		<p class="text-sm text-gray-500 dark:text-gray-400">Search the icon library by name. Click an icon to copy its Go constant name.</p>
+		@forms.Input(forms.InputProps{
+			BaseProps: utils.BaseProps{
+				ID:        "icon-search",
+				AriaLabel: "Search icons",
+			},
+			Name:        "icon-search",
+			Type:        forms.InputSearch,
+			Placeholder: "Search icons (e.g. arrow, user, check)...",
+		})
+		<div id="icon-grid" class="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
+			for _, name := range iconNames {
+				@iconTile(name)
+			}
+		</div>
+		@iconSearchScript(len(iconNames))
 	</div>
+}
+
+templ iconTile(name icons.Name) {
+	<button
+		type="button"
+		class="icon-tile flex flex-col items-center gap-2 p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors motion-reduce:transition-none motion-reduce:duration-0 text-center w-full"
+		data-icon-name={ string(name) }
+		data-tc-copy={ "icons." + string(name) }
+		data-tc-copy-label="Copied!"
+		aria-label={ "Copy icons." + string(name) }
+	>
+		@icons.Icon(name, "h-6 w-6 text-gray-600 dark:text-gray-400")
+		<span class="text-xs text-gray-500 dark:text-gray-400 truncate max-w-full">{ string(name) }</span>
+	</button>
+}
+
+templ iconSearchScript(iconCount int) {
+	<script nonce="demo-nonce">
+		document.addEventListener('DOMContentLoaded', function() {
+			var input = document.getElementById('icon-search');
+			var grid = document.getElementById('icon-grid');
+			if (!input || !grid) return;
+			var tiles = grid.querySelectorAll('.icon-tile');
+			var emptyState = document.createElement('p');
+			emptyState.className = 'text-sm text-gray-500 dark:text-gray-400 col-span-full text-center py-8';
+			emptyState.textContent = 'No icons match your search.';
+			input.addEventListener('input', function() {
+				var term = input.value.trim().toLowerCase();
+				var visible = 0;
+				tiles.forEach(function(tile) {
+					var name = tile.getAttribute('data-icon-name').toLowerCase();
+					var match = !term || name.indexOf(term) !== -1;
+					tile.style.display = match ? '' : 'none';
+					if (match) visible++;
+				});
+				var existing = grid.querySelector('.icon-empty-state');
+				if (existing) existing.remove();
+				if (visible === 0) {
+					emptyState.classList.add('icon-empty-state');
+					grid.appendChild(emptyState);
+				}
+			});
+		});
+	</script>
 }

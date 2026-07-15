@@ -10,6 +10,7 @@ templ feedbackDemo() {
 		@feedback.Alert(feedback.AlertProps{Title: "Warning", Message: "Check your input.", Type: feedback.FeedbackWarning})
 		@feedback.Alert(feedback.AlertProps{Title: "Info", Message: "Here is some information.", Type: feedback.FeedbackInfo})
 	</div>
+	@demoCodeSnippet("Go", `feedback.Alert(feedback.AlertProps{Title: "Saved", Message: "Changes saved.", Type: feedback.FeedbackSuccess})`)
 	@demoSection("Toast (auto-generated ID, auto-dismiss)", "feedback-toast")
 	<div class="space-y-3">
 		<p class="text-sm text-gray-500 dark:text-gray-400">Toasts render into ToastContainer. Each auto-dismisses after 5s.</p>
@@ -18,6 +19,7 @@ templ feedbackDemo() {
 		@feedback.Toast(feedback.ToastProps{Message: "Storage almost full.", Type: feedback.FeedbackWarning})
 		@feedback.Toast(feedback.ToastProps{Message: "New version available.", Type: feedback.FeedbackInfo})
 	</div>
+	@demoCodeSnippet("Go", `feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.FeedbackSuccess, Duration: 5000})`)
 	@demoSection("Inline Feedback", "feedback-inline")
 	<div class="space-y-2">
 		@feedback.InlineError("Email is required")

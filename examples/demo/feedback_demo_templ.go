@@ -59,6 +59,10 @@ func feedbackDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = demoCodeSnippet("Go", `feedback.Alert(feedback.AlertProps{Title: "Saved", Message: "Changes saved.", Type: feedback.FeedbackSuccess})`).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = demoSection("Toast (auto-generated ID, auto-dismiss)", "feedback-toast").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -84,6 +88,10 @@ func feedbackDemo() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = demoCodeSnippet("Go", `feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.FeedbackSuccess, Duration: 5000})`).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -73,6 +73,7 @@ templ formsDemoSection() {
 			MaxTags:   5,
 		})
 	</div>
+	@demoCodeSnippet("Go", `forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email"})`)
 	@demoSection("Calendar", "forms-calendar")
 	<div class="max-w-sm">
 		@forms.Calendar(forms.CalendarProps{

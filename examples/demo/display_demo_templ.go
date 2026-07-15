@@ -96,6 +96,12 @@ func displayDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = demoCodeSnippet("Go", `display.Card(display.CardProps{Title: "Users", Subtitle: "Manage your team"}) {
+	<p>Card content</p>
+}`).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = demoSection("Stat Cards", "display-stat-cards").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -262,6 +268,10 @@ func displayDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = demoCodeSnippet("Go", `display.Button(display.ButtonProps{Text: "Save", Variant: display.ButtonPrimary})`).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = demoSection("Avatars", "display-avatars").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -317,6 +327,12 @@ func displayDemo() templ.Component {
 			Title:     "Demo Modal",
 			Size:      display.ModalSizeMD,
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var5), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = demoCodeSnippet("Go", `@display.Modal(display.ModalProps{Title: "Confirm", Size: display.ModalSizeMD}) {
+	<p>Are you sure?</p>
+}`).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -540,6 +556,17 @@ func displayDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = demoCodeSnippet("Go", `display.Table(display.TableProps{
+	Headers: []string{"Name", "Email", "Role"},
+	Rows: []display.TableRow{
+		display.SimpleTableRow("Alice", "alice@example.com", "Admin"),
+	},
+	Striped: true,
+	Hover:   true,
+})`).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Err = demoSection("Table in Card (Flush + Compact)", "display-table-card").Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -731,6 +758,14 @@ func displayDemo() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = demoCodeSnippet("Go", `display.Grid(display.GridProps{Cols: display.GridCols3, Gap: display.GridGapLG}) {
+	for _, u := range users {
+		@display.Card(display.CardProps{Title: u.Name}) { <p>{ u.Email }</p> }
+	}
+}`).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1032,7 +1067,7 @@ func carouselSlide(label, colorClass string) templ.Component {
 		var templ_7745c5c3_Var22 string
 		templ_7745c5c3_Var22, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 317, Col: 9}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/display_demo.templ`, Line: 337, Col: 9}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var22))
 		if templ_7745c5c3_Err != nil {

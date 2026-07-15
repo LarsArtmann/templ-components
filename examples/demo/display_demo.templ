@@ -21,6 +21,9 @@ templ displayDemo() {
 			<p class="text-gray-600 dark:text-gray-400">SimpleCard — no header, just content.</p>
 		}
 	</div>
+	@demoCodeSnippet("Go", `display.Card(display.CardProps{Title: "Users", Subtitle: "Manage your team"}) {
+	<p>Card content</p>
+}`)
 	@demoSection("Stat Cards", "display-stat-cards")
 	@display.Grid(display.GridProps{Cols: display.GridCols3}) {
 		@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Change: "12%", Trend: display.TrendUp, Href: "/users"})
@@ -58,6 +61,7 @@ templ displayDemo() {
 		@display.Button(display.ButtonProps{Text: "External Link", Href: "https://example.com", External: true})
 		@display.Button(display.ButtonProps{Text: "With Icon", Icon: icons.Icon(icons.Plus, "h-5 w-5")})
 	</div>
+	@demoCodeSnippet("Go", `display.Button(display.ButtonProps{Text: "Save", Variant: display.ButtonPrimary})`)
 	@demoSection("Avatars", "display-avatars")
 	<div class="flex items-center gap-4">
 		@display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=JD", Alt: "John Doe", Size: display.AvatarSizeSM})
@@ -77,6 +81,9 @@ templ displayDemo() {
 	}) {
 		<p class="text-gray-600 dark:text-gray-400">This modal uses the native <code>&lt;dialog&gt;</code> element with showModal(). Press Escape or click backdrop to close.</p>
 	}
+	@demoCodeSnippet("Go", `@display.Modal(display.ModalProps{Title: "Confirm", Size: display.ModalSizeMD}) {
+	<p>Are you sure?</p>
+}`)
 	@demoSection("Drawer (native dialog)", "display-drawer")
 	<button class="inline-flex items-center gap-2 rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0" onclick="tcOpenOverlay('demo-drawer')">
 		Open Drawer
@@ -170,6 +177,14 @@ templ displayDemo() {
 		Striped: true,
 		Hover:   true,
 	})
+	@demoCodeSnippet("Go", `display.Table(display.TableProps{
+	Headers: []string{"Name", "Email", "Role"},
+	Rows: []display.TableRow{
+		display.SimpleTableRow("Alice", "alice@example.com", "Admin"),
+	},
+	Striped: true,
+	Hover:   true,
+})`)
 	@demoSection("Table in Card (Flush + Compact)", "display-table-card")
 	@display.Card(display.CardProps{Title: "Recent Users", Padding: display.CardPaddingNone}) {
 		@display.Table(display.TableProps{
@@ -238,6 +253,11 @@ templ displayDemo() {
 			@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime"})
 		}
 	</div>
+	@demoCodeSnippet("Go", `display.Grid(display.GridProps{Cols: display.GridCols3, Gap: display.GridGapLG}) {
+	for _, u := range users {
+		@display.Card(display.CardProps{Title: u.Name}) { <p>{ u.Email }</p> }
+	}
+}`)
 	@demoSection("Empty States", "display-empty-state")
 	<div class="grid gap-4 sm:grid-cols-2">
 		@display.EmptyState(display.EmptyStateProps{

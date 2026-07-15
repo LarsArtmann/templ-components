@@ -15,6 +15,13 @@ Native `<dialog>` for Modal/Drawer, stylable `<select>`, auto-growing Textarea, 
 
 ### Added
 
+- `display.CardProps.TitleClass` and `HeaderClass` — consumer-supplied classes that override the default `<h3>` title and header wrapper classes respectively. Useful when the default header layout works but the typography or spacing needs adjustment without replacing the entire header via the `Header` slot.
+- Demo site overhaul: new hero section with library stats, copy-to-clipboard install command, and documentation link; sticky section navigation with live section filtering; copy-paste Go code snippets for representative components; searchable icon gallery with empty-state feedback.
+
+### Fixed
+
+- `flake.nix` apps (`build`, `test`, `verify`, `coverage`) now export `GOEXPERIMENT=jsonv2` so the Nix-provided tooling matches the pre-commit hook and the library's `encoding/json/v2` usage.
+
 - `forms.SelectProps.Stylable` — opts into the modern customizable `<select>` API (`appearance: base-select`). Emits `<button><selectedcontent></selectedcontent></button>` structure for full CSS styling of the button, dropdown picker, options, checkmark, and arrow icon. Progressive enhancement: non-supporting browsers (Firefox, iOS Safari) ignore the structure and render a normal native `<select>`. Requires `.tc-select` CSS from `templates/custom.css`.
 - `forms.TextareaProps.AutoGrow` (default `true`) — uses CSS `field-sizing: content` to auto-grow the textarea to fit content without JavaScript. Set `AutoGrow: false` to disable.
 - `forms.TextareaProps.EnterKeyHint` + `forms.EnterKeyHintType` typed enum — sets the mobile keyboard's Enter key label. Constants: `EnterKeyHintSend` (chat), `EnterKeyHintDone`, `EnterKeyHintGo`, `EnterKeyHintNext`, `EnterKeyHintPrevious`, `EnterKeyHintSearch`, `EnterKeyHintEnter`. `EnterKeyHintTypeIsValid` included. `forms.InputProps.EnterKeyHint` uses the same enum — explicit override takes priority; otherwise auto-derived from `InputType` (email→next, search→search, etc.).

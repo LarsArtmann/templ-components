@@ -49,23 +49,32 @@ func main() {
 	mux.HandleFunc("/favicon.svg", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "image/svg+xml")
 		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-		fmt.Fprint(w, `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#4f46e5"/><text x="50" y="70" font-size="56" font-weight="bold" text-anchor="middle" fill="white" font-family="sans-serif">tc</text></svg>`)
+		fmt.Fprint(
+			w,
+			`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" rx="20" fill="#4f46e5"/><text x="50" y="70" font-size="56" font-weight="bold" text-anchor="middle" fill="white" font-family="sans-serif">tc</text></svg>`,
+		)
 	})
 
 	// Mock HTMX endpoints for interactive demo components
 	mux.HandleFunc("/api/load-more", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		fmt.Fprint(w, `<div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
+		fmt.Fprint(
+			w,
+			`<div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
 			<p class="text-sm text-gray-600 dark:text-gray-400">Loaded via HTMX! This item was fetched from the server.</p>
-		</div>`)
+		</div>`,
+		)
 	})
 
 	mux.HandleFunc("/api/delete", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(http.StatusOK)
-		fmt.Fprint(w, `<div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
+		fmt.Fprint(
+			w,
+			`<div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
 			<p class="text-sm text-green-800 dark:text-green-200">Item deleted successfully (mock endpoint).</p>
-		</div>`)
+		</div>`,
+		)
 	})
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -102,7 +111,12 @@ func main() {
 	}
 }
 
-func renderPage(w http.ResponseWriter, r *http.Request, title, description string, page func(layout.PageProps) templ.Component) {
+func renderPage(
+	w http.ResponseWriter,
+	r *http.Request,
+	title, description string,
+	page func(layout.PageProps) templ.Component,
+) {
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	props := layout.DefaultPageProps()
 	props.Title = title
