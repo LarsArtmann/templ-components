@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Code Quality Scan — templ-components 2026-07-18</title>
+    <style>
+      /* Bauhaus Dark dashboard — self-contained, zero external deps.
+         Token vocabulary kept in sync with html-report-kit / prior reports. */
+      :root {
+        --surface: #0e0e10;
+        --surface-raised: #18181d;
+        --surface-sunken: #16161a;
+        --text: #f4f4f0;
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: rgba(244, 244, 240, 0.12);
+        --border-strong: rgba(244, 244, 240, 0.25);
+        --accent: #ffb347;
+        --problem: #ff6b6b;
+        --solution: #6eb5ff;
+        --warning: #f4d35e;
+        --emerald: #4ade80;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        line-height: 1.55;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1080px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+      header h1 {
+        font-size: 1.9rem;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.01em;
+      }
+      header .sub {
+        color: var(--text-muted);
+        font-size: 0.98rem;
+        margin-bottom: 2rem;
+      }
+      .meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        color: var(--text-faint);
+        font-size: 0.85rem;
+        margin-bottom: 2.5rem;
+      }
+      .meta span b {
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 1rem;
+        margin: 2rem 0;
+      }
+      .stat {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.25rem;
+      }
+      .stat .label {
+        color: var(--text-faint);
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .stat .value {
+        font-size: 1.85rem;
+        font-weight: 700;
+        margin-top: 0.25rem;
+      }
+      .stat .value.ok {
+        color: var(--emerald);
+      }
+      .stat .value.warn {
+        color: var(--warning);
+      }
+      .stat .value.bad {
+        color: var(--problem);
+      }
+      .stat .note {
+        color: var(--text-muted);
+        font-size: 0.82rem;
+        margin-top: 0.15rem;
+      }
+
+      section {
+        margin: 2.75rem 0;
+      }
+      h2 {
+        font-size: 1.25rem;
+        margin: 0 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      h3 {
+        font-size: 1.02rem;
+        margin: 1.5rem 0 0.5rem;
+        color: var(--text);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.7rem 0.85rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        color: var(--text-faint);
+        font-weight: 600;
+        font-size: 0.78rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      td.loc {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        color: var(--solution);
+        white-space: nowrap;
+        font-size: 0.85rem;
+      }
+      .sev {
+        display: inline-block;
+        padding: 0.12rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .sev.medium {
+        background: color-mix(in srgb, var(--warning) 18%, transparent);
+        color: var(--warning);
+      }
+      .sev.low {
+        background: color-mix(in srgb, var(--accent) 18%, transparent);
+        color: var(--accent);
+      }
+      .sev.info {
+        background: color-mix(in srgb, var(--solution) 18%, transparent);
+        color: var(--solution);
+      }
+
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.9rem 1rem;
+        overflow-x: auto;
+        font-size: 0.82rem;
+      }
+      code {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      p,
+      li {
+        color: var(--text-muted);
+      }
+      a {
+        color: var(--solution);
+      }
+
+      .pill {
+        display: inline-block;
+        padding: 0.15rem 0.6rem;
+        border-radius: 999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+      }
+      .pill.green {
+        background: color-mix(in srgb, var(--emerald) 16%, transparent);
+        color: var(--emerald);
+      }
+
+      .callout {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 3px solid var(--accent);
+        border-radius: 8px;
+        padding: 1rem 1.25rem;
+        margin: 1rem 0;
+      }
+      .callout .h {
+        color: var(--text);
+        font-weight: 600;
+        margin-bottom: 0.25rem;
+      }
+
+      footer {
+        color: var(--text-faint);
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Code Quality Scan — templ-components</h1>
+        <div class="sub">
+          Build, lint, test, and duplication analysis across all 14 Go packages.
+        </div>
+        <div class="meta">
+          <span><b>Date:</b> 2026-07-18</span>
+          <span><b>Version:</b> 0.18.0</span>
+          <span><b>Head:</b> 042954d</span>
+          <span><b>Toolchain:</b> Go 1.26 · GOEXPERIMENT=jsonv2 · golangci-lint · art-dupl</span>
+        </div>
+      </header>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Build</div>
+          <div class="value ok">PASS</div>
+          <div class="note">14 / 14 packages compile</div>
+        </div>
+        <div class="stat">
+          <div class="label">Lint issues</div>
+          <div class="value ok">0</div>
+          <div class="note">golangci-lint clean</div>
+        </div>
+        <div class="stat">
+          <div class="label">Test packages</div>
+          <div class="value ok">14 / 14</div>
+          <div class="note">all green, -count=1</div>
+        </div>
+        <div class="stat">
+          <div class="label">New duplication</div>
+          <div class="value ok">0</div>
+          <div class="note">art-dupl vs baseline (17 accepted)</div>
+        </div>
+        <div class="stat">
+          <div class="label">Script defects</div>
+          <div class="value warn">3</div>
+          <div class="note">in scripts/release.sh (see below)</div>
+        </div>
+      </div>
+
+      <p>
+        The Go codebase is in excellent shape: a clean build, zero lint findings, a fully green test
+        suite, and no new duplication since the last baseline. The only actionable defects surfaced
+        by this scan live in the release-cut shell script
+        <code>scripts/release.sh</code>, identified by the v0.18.0 release post-mortem
+        (<code>docs/status/2026-07-18_09-29_v0.18.0-release-postmortem.md</code>) and still unfixed
+        at HEAD.
+      </p>
+
+      <section>
+        <h2>Findings</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Severity</th>
+              <th>Location</th>
+              <th>Issue</th>
+              <th>Suggested fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><span class="sev medium">Medium</span></td>
+              <td class="loc">scripts/release.sh:137</td>
+              <td>
+                Duplicated release-summary line. <code>RELEASE_BODY</code> starts with
+                <code>${RELEASE_SUMMARY}</code>, and the commit subject (<code
+                  >release: … — ${RELEASE_SUMMARY}</code
+                >, line 145) repeats it. Every script-cut release gets a verbatim-duplicated first
+                body line.
+              </td>
+              <td>
+                Drop the leading <code>${RELEASE_SUMMARY}</code> from <code>RELEASE_BODY</code>;
+                keep only the "rolls up changes since…" paragraph and the footers.
+              </td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><span class="sev medium">Medium</span></td>
+              <td class="loc">scripts/release.sh:143</td>
+              <td>
+                Hardcoded wrong attribution <code>Assisted-by: Crush:MiniMax-M3</code>. The v0.18.0
+                tag now falsely claims MiniMax-M3 cut the release; the actual model was
+                <code>glm-5.2</code>. v0.17.0 was attributed correctly by hand.
+              </td>
+              <td>
+                Read the model from <code>crush_info</code> (or a <code>CRUSH_MODEL</code> env var),
+                or omit the line and let the operator add it. Never hardcode a model name.
+              </td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><span class="sev low">Low</span></td>
+              <td class="loc">scripts/release.sh:102-109</td>
+              <td>
+                Hostile interactive stdin prompt for release notes. Feeding empty stdin (the
+                automation-friendly path) produces an anemic commit body that violates the
+                3-paragraph AGENTS.md release spec. The script never derives notes from the
+                CHANGELOG <code>[Unreleased]</code> section.
+              </td>
+              <td>
+                Add a <code>--notes-file</code> flag, or auto-derive the commit body from the
+                CHANGELOG <code>[Unreleased]</code> block when stdin is empty.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Verification detail</h2>
+        <h3>Build</h3>
+        <pre><code>$ go build ./...
+(exit 0) — 14 / 14 packages</code></pre>
+
+        <h3>Lint</h3>
+        <pre><code>$ golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... \
+                ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+0 issues.</code></pre>
+
+        <h3>Tests</h3>
+        <pre><code>$ GOEXPERIMENT=jsonv2 go test ./... -count=1
+ok  github.com/larsartmann/templ-components/display      0.059s
+ok  github.com/larsartmann/templ-components/errorpage    0.021s
+ok  github.com/larsartmann/templ-components/feedback     0.019s
+ok  github.com/larsartmann/templ-components/forms        0.056s
+ok  github.com/larsartmann/templ-components/htmx         0.012s
+ok  github.com/larsartmann/templ-components/icons        0.017s
+ok  github.com/larsartmann/templ-components/integration  0.042s
+ok  github.com/larsartmann/templ-components/layout       0.301s
+ok  github.com/larsartmann/templ-components/navigation   0.028s
+ok  github.com/larsartmann/templ-components/utils        0.071s
+(+ internal/contract, internal/golden, internal/svg — all ok)</code></pre>
+
+        <h3>Duplication</h3>
+        <pre><code>$ art-dupl check . --baseline-path .art-dupl-baseline.json --quiet
+Found total 0 clone groups.
+✅ No new clones detected (baseline: 17 groups).</code></pre>
+        <p>
+          The 17 accepted clone groups are documented and justified in
+          <a href="../../adr/0009-accepted-clones.md">ADR 0009 (Accepted Code Duplication)</a>
+          — intentional idiomatic UI layout, templ-DSL requirements, and demo content.
+        </p>
+      </section>
+
+      <section>
+        <h2>Drift-guard tests</h2>
+        <p>All enforced invariants pass — these block CI on regression:</p>
+        <div class="callout">
+          <div class="h">Passing guards</div>
+          <code>TestVersionMatchesChangelog</code> · <code>TestVersionMatchesFeatures</code> ·
+          <code>TestDocsCountDrift</code> (94 components / 82 generated files / 37 enums) ·
+          <code>TestSkillComponentCount</code> · <code>TestDarkModeCompliance</code> ·
+          <code>TestDarkModeSemanticColors</code> · <code>TestMotionReduceCompliance</code>
+        </div>
+      </section>
+
+      <section>
+        <h2>Recommendation</h2>
+        <p>
+          Fix the three <code>scripts/release.sh</code> defects before cutting v0.19.0. They are the
+          only blocking items from this scan; all Go source, generated templ output, tests, and
+          documentation counts are clean. Consider adding a release-commit-body drift guard
+          (asserting <code>No breaking changes</code>, a component-count delta, and that the
+          <code>Assisted-by</code> model matches the active session) to prevent recurrence — as
+          recommended by the v0.18.0 post-mortem.
+        </p>
+      </section>
+
+      <footer>
+        Generated 2026-07-18 by the code-quality-scan skill. Point-in-time snapshot; the
+        authoritative current state lives in the living docs (CHANGELOG.md, FEATURES.md,
+        utils/version.go) and CI.
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,372 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Go Modularize Assessment — templ-components 2026-07-18</title>
+    <style>
+      :root {
+        --surface: #0e0e10;
+        --surface-raised: #18181d;
+        --surface-sunken: #16161a;
+        --text: #f4f4f0;
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: rgba(244, 244, 240, 0.12);
+        --accent: #ffb347;
+        --problem: #ff6b6b;
+        --solution: #6eb5ff;
+        --warning: #f4d35e;
+        --emerald: #4ade80;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+      header h1 {
+        font-size: 1.9rem;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.01em;
+      }
+      header .sub {
+        color: var(--text-muted);
+        font-size: 0.98rem;
+        margin-bottom: 1rem;
+      }
+      .meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        color: var(--text-faint);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+      }
+      .verdict {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        padding: 1.1rem 1.3rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-left: 4px solid var(--warning);
+        border-radius: 10px;
+      }
+      .verdict .big {
+        font-size: 1.3rem;
+        font-weight: 800;
+        color: var(--warning);
+        white-space: nowrap;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .stat {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1rem 1.2rem;
+      }
+      .stat .label {
+        color: var(--text-faint);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .stat .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 0.15rem;
+      }
+      .stat .value.ok {
+        color: var(--emerald);
+      }
+      .stat .value.warn {
+        color: var(--warning);
+      }
+      section {
+        margin: 2.5rem 0;
+      }
+      h2 {
+        font-size: 1.2rem;
+        margin: 0 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.6rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        color: var(--text-faint);
+        font-weight: 600;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      code {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      .tag {
+        display: inline-block;
+        padding: 0.1rem 0.45rem;
+        border-radius: 4px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .tag.high {
+        background: color-mix(in srgb, var(--problem) 18%, transparent);
+        color: var(--problem);
+      }
+      .tag.med {
+        background: color-mix(in srgb, var(--warning) 18%, transparent);
+        color: var(--warning);
+      }
+      .tag.no {
+        background: color-mix(in srgb, var(--text-faint) 16%, transparent);
+        color: var(--text-faint);
+      }
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.3rem;
+        margin: 1rem 0;
+      }
+      .card.note {
+        border-left: 3px solid var(--accent);
+      }
+      .card .h {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+      footer {
+        color: var(--text-faint);
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Go Modularize Assessment — templ-components</h1>
+        <div class="sub">
+          Decision framework: should this single-module library split into per-package go.mod files
+          now?
+        </div>
+        <div class="meta">
+          <span><b>Date:</b> 2026-07-18</span>
+          <span><b>Version:</b> 0.18.0 (pre-1.0)</span>
+          <span><b>Prior proposal:</b> docs/modularization/PROPOSAL.md (2026-05-14, deferred)</span>
+        </div>
+      </header>
+
+      <div class="verdict">
+        <div class="big">DEFER</div>
+        <div>
+          <b>Do not modularize now.</b> The scoring is borderline-proceed, but the public API is
+          still unfrozen (pre-v1.0), which makes independent versioning — the primary benefit — moot
+          and would saddle the library with 10 go.mod files through API churn. Re-evaluate at v1.0
+          API freeze. This confirms the prior proposal's conclusion.
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">go.mod files</div>
+          <div class="value">1</div>
+          <div class="note">single module</div>
+        </div>
+        <div class="stat">
+          <div class="label">Packages</div>
+          <div class="value">13</div>
+          <div class="note">10 public + 3 internal</div>
+        </div>
+        <div class="stat">
+          <div class="label">External deps</div>
+          <div class="value ok">3</div>
+          <div class="note">tiny surface</div>
+        </div>
+        <div class="stat">
+          <div class="label">Co-change (last 30)</div>
+          <div class="value ok">low</div>
+          <div class="note">packages change independently</div>
+        </div>
+        <div class="stat">
+          <div class="label">API frozen?</div>
+          <div class="value warn">No</div>
+          <div class="note">pre-1.0</div>
+        </div>
+      </div>
+
+      <section>
+        <h2>"When NOT to Modularize" scoring (skill decision table)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Signal</th>
+              <th>Weight</th>
+              <th>Applies here?</th>
+              <th>Score</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Small project</td>
+              <td>High (under 10 pkgs)</td>
+              <td>13 packages — slightly over the threshold</td>
+              <td><span class="tag med">Medium</span></td>
+            </tr>
+            <tr>
+              <td>No external consumers</td>
+              <td>Medium</td>
+              <td>FALSE — published on pkg.go.dev; consumers exist (cqrs-htmx/adminui)</td>
+              <td><span class="tag no">0</span></td>
+            </tr>
+            <tr>
+              <td>Prototype / spike</td>
+              <td>High</td>
+              <td>FALSE — v0.18.0, stable, feature-complete</td>
+              <td><span class="tag no">0</span></td>
+            </tr>
+            <tr>
+              <td>All packages change together</td>
+              <td>High</td>
+              <td>
+                FALSE — recent commits touch docs/website/examples; Go packages change independently
+                (display ×3, utils ×2 in last 30 commits)
+              </td>
+              <td><span class="tag no">0</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          <b>Raw score: 1 Medium signal</b> → table says "Proceed with full modularization." But the
+          scoring omits the dominant factor below.
+        </p>
+      </section>
+
+      <section>
+        <h2>The deciding factor the table doesn't capture: API stability</h2>
+        <div class="card note">
+          <div class="h">Pre-1.0 means per-module APIs are unfrozen</div>
+          <p>
+            The skill's own principle states "Modularize after the design stabilizes, not before."
+            The biggest payoff of a split is <b>independent versioning</b> (icons v1.x while display
+            is v0.x). That payoff requires each module's API to be frozen — otherwise you're
+            versioning a moving target. templ-components is at v0.18.0 with the ROADMAP explicitly
+            reserving v1.0 as the API freeze. Splitting now would mean maintaining 10 go.mod files
+            in lockstep through ongoing API evolution, with none of the versioning benefit.
+          </p>
+          <p>
+            Additionally, <code>internal/svg</code> would be promoted to a public
+            <code>svg</code> module in a split — an irreversible public-API expansion that should
+            wait for the v1.0 decision, not precede it.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Cost / benefit at the current state</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Dimension</th>
+              <th>Now (single module)</th>
+              <th>Split now (pre-1.0)</th>
+              <th>Split at v1.0</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>go.mod overhead</td>
+              <td>1 file</td>
+              <td>10 files through API churn</td>
+              <td>10 files, stable</td>
+            </tr>
+            <tr>
+              <td>Selective imports</td>
+              <td>whole-tree go get (source only, no binary bloat)</td>
+              <td>per-package — but no frozen API to version against</td>
+              <td>per-package, versioned, meaningful</td>
+            </tr>
+            <tr>
+              <td>Boundary enforcement</td>
+              <td>internal/ convention (works)</td>
+              <td>real compile errors</td>
+              <td>real compile errors</td>
+            </tr>
+            <tr>
+              <td>Consumer friction</td>
+              <td>low</td>
+              <td>high (cross-package imports get awkward mid-freeze)</td>
+              <td>acceptable</td>
+            </tr>
+            <tr>
+              <td>Verdict</td>
+              <td><span class="tag med">correct today</span></td>
+              <td><span class="tag high">premature</span></td>
+              <td><span class="tag med">revisit</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Recommendation</h2>
+        <p>
+          <b>No action now.</b> Keep the single-module shape through v0.x. The prior proposal
+          (docs/modularization/PROPOSAL.md) and the architecture review
+          (docs/architecture-understanding/2026-07-18_09-50_modularity-and-composability.html) both
+          reach the same conclusion. When v1.0 API freeze lands, re-run this skill with the
+          then-current package graph and consumer data — the scoring will likely flip to "proceed"
+          because the versioning benefit becomes real.
+        </p>
+        <p>
+          <b>One thing to preserve in the meantime:</b> the icons-only adoption property (icons
+          transitively depends only on internal/svg + templ + utils, no Tailwind). This is the
+          natural first module seam and should not be broken by letting icons grow a dependency on
+          display or tailwind-merge-go.
+        </p>
+      </section>
+
+      <footer>
+        Go modularize assessment generated 2026-07-18. Direction-neutral outcome: "defer" is a valid
+        result per the skill's "When NOT to Modularize" framework. Confirms the 2026-05-14 proposal.
+      </footer>
+    </div>
+  </body>
+</html>

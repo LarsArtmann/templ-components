@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Naming Review — templ-components 2026-07-18</title>
+    <style>
+      :root {
+        --surface: #0e0e10;
+        --surface-raised: #18181d;
+        --surface-sunken: #16161a;
+        --text: #f4f4f0;
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: rgba(244, 244, 240, 0.12);
+        --accent: #ffb347;
+        --problem: #ff6b6b;
+        --solution: #6eb5ff;
+        --warning: #f4d35e;
+        --emerald: #4ade80;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+      header h1 {
+        font-size: 1.9rem;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.01em;
+      }
+      header .sub {
+        color: var(--text-muted);
+        font-size: 0.98rem;
+        margin-bottom: 1rem;
+      }
+      .meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        color: var(--text-faint);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+      }
+      .score-bar {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        padding: 1rem 1.25rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+      .score-bar .big {
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: var(--emerald);
+        line-height: 1;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .stat {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.25rem;
+      }
+      .stat .label {
+        color: var(--text-faint);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .stat .value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-top: 0.2rem;
+      }
+      .stat .value.ok {
+        color: var(--emerald);
+      }
+      .stat .value.warn {
+        color: var(--warning);
+      }
+      .stat .note {
+        color: var(--text-muted);
+        font-size: 0.78rem;
+      }
+      section {
+        margin: 2.5rem 0;
+      }
+      h2 {
+        font-size: 1.25rem;
+        margin: 0 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.3rem;
+        margin: 1rem 0;
+      }
+      .card.warning {
+        border-left: 3px solid var(--warning);
+      }
+      .card.solution {
+        border-left: 3px solid var(--solution);
+      }
+      .card .h {
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+        color: var(--text);
+      }
+      .card.solution .h {
+        color: var(--solution);
+      }
+      .card.warning .h {
+        color: var(--warning);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.6rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        color: var(--text-faint);
+        font-weight: 600;
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      td.loc {
+        font-family: ui-monospace, Menlo, monospace;
+        color: var(--solution);
+        font-size: 0.82rem;
+        white-space: nowrap;
+      }
+      code {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      .sev {
+        display: inline-block;
+        padding: 0.12rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .sev.low {
+        background: color-mix(in srgb, var(--accent) 18%, transparent);
+        color: var(--accent);
+      }
+      .sev.ok {
+        background: color-mix(in srgb, var(--emerald) 18%, transparent);
+        color: var(--emerald);
+      }
+      footer {
+        color: var(--text-faint);
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Naming Review — templ-components</h1>
+        <div class="sub">
+          Identifier honesty, clarity, domain alignment, consistency across all packages.
+        </div>
+        <div class="meta">
+          <span><b>Date:</b> 2026-07-18</span>
+          <span><b>Version:</b> 0.18.0</span>
+          <span><b>Language:</b> Go 1.26 + templ</span>
+        </div>
+      </header>
+
+      <div class="score-bar">
+        <div class="big">9 / 10</div>
+        <div class="lbl">
+          <b>Naming health.</b> Identifiers are honest, domain-aligned, and highly consistent. Zero
+          vague-noun/verb types, zero Manager/Handler/Impl, zero I-prefix interfaces, and a single
+          uniform constructor convention (<code>Default*Props</code>, 69 functions). Two
+          Low-severity stylistic notes that are both defensible.
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Automated lint findings</div>
+          <div class="value ok">0</div>
+          <div class="note">golangci-lint clean</div>
+        </div>
+        <div class="stat">
+          <div class="label">Vague-noun types</div>
+          <div class="value ok">0</div>
+          <div class="note">no Data/Info/Handler/Manager</div>
+        </div>
+        <div class="stat">
+          <div class="label">Impl / I-prefix / Abstract</div>
+          <div class="value ok">0</div>
+          <div class="note">no leakage</div>
+        </div>
+        <div class="stat">
+          <div class="label">Constructor consistency</div>
+          <div class="value ok">100%</div>
+          <div class="note">69/69 Default*Props</div>
+        </div>
+        <div class="stat">
+          <div class="label">Actionable issues</div>
+          <div class="value warn">0</div>
+          <div class="note">2 Low stylistic notes</div>
+        </div>
+      </div>
+
+      <section>
+        <h2>Smell scan results</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Category</th>
+              <th>Pattern searched</th>
+              <th>Hits</th>
+              <th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Vague nouns</td>
+              <td><code>type *(Data|Info|Record|Item|Object|Thing)</code></td>
+              <td>1</td>
+              <td>
+                <code>CauseItem</code> — domain-honest (item in a cause chain); see note below
+              </td>
+            </tr>
+            <tr>
+              <td>Trash-can types</td>
+              <td><code>type *(Manager|Handler|Processor|Helper|Util|Utility)</code></td>
+              <td>0</td>
+              <td><span class="sev ok">Clean</span></td>
+            </tr>
+            <tr>
+              <td>Impl suffix</td>
+              <td><code>type *Impl</code></td>
+              <td>0</td>
+              <td><span class="sev ok">Clean</span></td>
+            </tr>
+            <tr>
+              <td>I-prefix interfaces</td>
+              <td><code>type I* interface</code></td>
+              <td>0</td>
+              <td><span class="sev ok">Clean</span></td>
+            </tr>
+            <tr>
+              <td>Abstract/Base prefix</td>
+              <td><code>type (Abstract|Base)*</code></td>
+              <td>1</td>
+              <td>
+                <code>utils.BaseProps</code> — legitimate embedded-common-fields; not inheritance
+                leakage
+              </td>
+            </tr>
+            <tr>
+              <td>Vague verbs</td>
+              <td><code>func (Do|Handle|Process|Manage|Perform)*</code></td>
+              <td>0</td>
+              <td><span class="sev ok">Clean</span></td>
+            </tr>
+            <tr>
+              <td>Constructor drift</td>
+              <td><code>func New*</code> vs <code>func Default*</code></td>
+              <td>0 / 69</td>
+              <td>100% on <code>Default*Props()</code> convention</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Notes (Low severity — defensible, no rename recommended)</h2>
+
+        <div class="card warning">
+          <div class="h">
+            N1 · <code>errorpage.CauseItem</code> — borderline "Item" suffix
+            <span class="sev low">Low</span>
+          </div>
+          <p>
+            <code>errorpage/styles.go:150</code> — <code>CauseItem{Message, Code}</code> represents
+            one error in a cause chain. "Item" is normally a vague-noun smell, but here
+            <code>[]CauseItem</code> reads naturally as "the list of items in the cause chain" and
+            the alternatives (<code>Cause</code>, <code>CauseEntry</code>) are either more ambiguous
+            or no clearer. <b>Verdict: keep.</b> Flagged only for completeness.
+          </p>
+        </div>
+
+        <div class="card warning">
+          <div class="h">
+            N2 · Adjective boolean fields (<code>Active</code>, <code>Bordered</code>,
+            <code>Checked</code>) <span class="sev low">Low</span>
+          </div>
+          <p>
+            The "booleans should read as yes/no questions" rule would rename these to
+            <code>IsActive</code>/<code>HasBorder</code>/<code>IsChecked</code>. However
+            <code>Checked</code>, <code>AutoFocus</code>, <code>AutoGrow</code> deliberately mirror
+            the HTML attributes they emit (<code>&lt;input checked&gt;</code>,
+            <code>&lt;input autofocus&gt;</code>), which aids discoverability in a form library.
+            <code>Active</code> is the established term for nav/breadcrumb current-page state.
+            <b>Verdict: keep</b> — HTML-attribute parity is the stronger convention here.
+          </p>
+        </div>
+
+        <div class="card warning">
+          <div class="h">
+            N3 · single-letter <code>icons.X</code> <span class="sev low">Low</span>
+          </div>
+          <p>
+            <code>icons/icon_names.go:20</code> — <code>X Name = "x"</code> (the close icon).
+            Single-letter identifiers are normally a smell, but this is the canonical Heroicons name
+            for the close/X glyph. A <code>Close</code> alias (same value) was already added as the
+            preferred discoverable name. <b>Verdict: already mitigated</b> — prefer
+            <code>icons.Close</code> in new code; <code>X</code> kept for parity with Heroicons.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Strengths to preserve</h2>
+        <div class="card solution">
+          <div class="h">Domain-honest typed enums</div>
+          <p>
+            37 enums named for their domain, not their implementation:
+            <code>Family</code> (rejection/conflict/transient/corruption/infrastructure),
+            <code>OverlayKind</code>, <code>FeedbackType</code>, <code>TableCellPadding</code>,
+            <code>SortDirection</code>, <code>TrendDirection</code>. No
+            <code>TypeEnum</code>/<code>StatusCode</code>-style type encoding.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Uniform constructor vocabulary</div>
+          <p>
+            Every component with non-zero defaults has a <code>DefaultXProps()</code> constructor —
+            69 of them, 0 exceptions. No <code>New</code>/<code>Create</code>/<code>Make</code>
+            drift. This is unusually consistent for a library this size.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Private helpers named for shape, not mystery</div>
+          <p>
+            <code>overlayDialogJS</code>, <code>overlayShellProps</code>,
+            <code>feedbackStyle</code>, <code>tableCellPaddingClass</code>,
+            <code>navLinkAnchor</code> — private functions read as full sentences about what they
+            produce. No <code>doStuff</code>/<code>handleIt</code>.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Prior hygiene held</div>
+          <p>
+            The AGENTS.md naming-hygiene notes (radio_go.go→radio.go, errMsg→errorMessage,
+            cleanMessage→sanitizeErrorMessage, htmxMainSRIDefault→sriHTMXMainDefault) are all still
+            in place. No regression.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Recommendation</h2>
+        <p>
+          No renames required. The two Low notes are both defensible and renaming them would either
+          reduce clarity (<code>Checked</code>→<code>IsChecked</code> breaks HTML-attribute parity)
+          or be cosmetic (<code>CauseItem</code>). The naming quality is a strength of this codebase
+          — preserve the existing conventions: typed enums, <code>Default*Props</code> constructors,
+          HTML-attribute boolean names.
+        </p>
+      </section>
+
+      <footer>
+        Naming review generated 2026-07-18. Automated detection via golangci-lint (0) + naming-smell
+        greps. Point-in-time snapshot; conventions are documented in AGENTS.md.
+      </footer>
+    </div>
+  </body>
+</html>

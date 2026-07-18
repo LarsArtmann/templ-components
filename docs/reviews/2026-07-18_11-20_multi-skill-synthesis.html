@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Multi-Skill Review Synthesis — templ-components 2026-07-18</title>
+    <style>
+      :root {
+        --surface: #0e0e10;
+        --surface-raised: #18181d;
+        --surface-sunken: #16161a;
+        --text: #f4f4f0;
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: rgba(244, 244, 240, 0.12);
+        --accent: #ffb347;
+        --problem: #ff6b6b;
+        --solution: #6eb5ff;
+        --warning: #f4d35e;
+        --emerald: #4ade80;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1140px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+      header h1 {
+        font-size: 2rem;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.01em;
+      }
+      header .sub {
+        color: var(--text-muted);
+        font-size: 1rem;
+        margin-bottom: 1rem;
+      }
+      .meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        color: var(--text-faint);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+      }
+      .hero-score {
+        display: flex;
+        align-items: baseline;
+        gap: 1.2rem;
+        margin: 1.5rem 0 2rem;
+        padding: 1.25rem 1.5rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+      }
+      .hero-score .big {
+        font-size: 3rem;
+        font-weight: 800;
+        color: var(--emerald);
+        line-height: 1;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .stat {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.25rem;
+      }
+      .stat .label {
+        color: var(--text-faint);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .stat .value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-top: 0.15rem;
+      }
+      .stat .value.ok {
+        color: var(--emerald);
+      }
+      .stat .value.warn {
+        color: var(--warning);
+      }
+      .stat .value.bad {
+        color: var(--problem);
+      }
+      .stat .note {
+        color: var(--text-muted);
+        font-size: 0.78rem;
+      }
+      section {
+        margin: 2.75rem 0;
+      }
+      h2 {
+        font-size: 1.3rem;
+        margin: 0 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      h3 {
+        font-size: 1.02rem;
+        margin: 1.4rem 0 0.5rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.6rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        color: var(--text-faint);
+        font-weight: 600;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      td.loc {
+        font-family: ui-monospace, Menlo, monospace;
+        color: var(--solution);
+        font-size: 0.82rem;
+        white-space: nowrap;
+      }
+      code {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+        font-size: 0.85em;
+      }
+      .sev {
+        display: inline-block;
+        padding: 0.12rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+      }
+      .sev.high {
+        background: color-mix(in srgb, var(--problem) 18%, transparent);
+        color: var(--problem);
+      }
+      .sev.medium {
+        background: color-mix(in srgb, var(--warning) 18%, transparent);
+        color: var(--warning);
+      }
+      .sev.low {
+        background: color-mix(in srgb, var(--accent) 18%, transparent);
+        color: var(--accent);
+      }
+      .sev.ok {
+        background: color-mix(in srgb, var(--emerald) 18%, transparent);
+        color: var(--emerald);
+      }
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.3rem;
+        margin: 1rem 0;
+      }
+      .card.problem {
+        border-left: 3px solid var(--problem);
+      }
+      .card.solution {
+        border-left: 3px solid var(--solution);
+      }
+      .card.warning {
+        border-left: 3px solid var(--warning);
+      }
+      .card .h {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+      .card.problem .h {
+        color: var(--problem);
+      }
+      .card.solution .h {
+        color: var(--solution);
+      }
+      .card.warning .h {
+        color: var(--warning);
+      }
+      a {
+        color: var(--solution);
+      }
+      .pill {
+        display: inline-block;
+        padding: 0.15rem 0.55rem;
+        border-radius: 999px;
+        font-size: 0.72rem;
+        font-weight: 600;
+      }
+      .pill.green {
+        background: color-mix(in srgb, var(--emerald) 16%, transparent);
+        color: var(--emerald);
+      }
+      ul.tight {
+        margin: 0.3rem 0;
+        padding-left: 1.2rem;
+      }
+      ul.tight li {
+        color: var(--text-muted);
+        margin: 0.2rem 0;
+      }
+      footer {
+        color: var(--text-faint);
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Multi-Skill Review — Synthesis</h1>
+        <div class="sub">
+          13 skills run across docs, code, architecture, naming, data model, duplication,
+          modularization, nix, copy, and design.
+        </div>
+        <div class="meta">
+          <span><b>Date:</b> 2026-07-18</span>
+          <span><b>Project:</b> templ-components v0.18.0</span>
+          <span><b>Head:</b> 042954d → working tree (uncommitted fixes)</span>
+          <span><b>Outcome:</b> clean codebase, docs de-drifted, 3 actionable defects</span>
+        </div>
+      </header>
+
+      <div class="hero-score">
+        <div class="big">9 / 10</div>
+        <div>
+          <b>Overall project health.</b> The Go/templ source is in excellent shape (0 lint, 0 new
+          duplication, 13/13 packages green, 0 TODO debt). Documentation drift was found and fixed
+          across the README, website, and living docs. The only blocking items are three defects in
+          the release-cut shell script. No refactor, no redesign, no rename is warranted.
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Skills run</div>
+          <div class="value">13</div>
+          <div class="note">all completed</div>
+        </div>
+        <div class="stat">
+          <div class="label">Build / lint / tests</div>
+          <div class="value ok">14/14</div>
+          <div class="note">green; 0 lint issues</div>
+        </div>
+        <div class="stat">
+          <div class="label">Docs fixed</div>
+          <div class="value warn">~15</div>
+          <div class="note">count drift + stale headers</div>
+        </div>
+        <div class="stat">
+          <div class="label">Reports written</div>
+          <div class="value">8</div>
+          <div class="note">HTML + 2 D2 diagrams</div>
+        </div>
+        <div class="stat">
+          <div class="label">Actionable defects</div>
+          <div class="value warn">3</div>
+          <div class="note">all in scripts/release.sh</div>
+        </div>
+        <div class="stat">
+          <div class="label">Renames / redesigns</div>
+          <div class="value ok">0</div>
+          <div class="note">not warranted</div>
+        </div>
+      </div>
+
+      <section>
+        <h2>Skill-by-skill outcomes</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Skill</th>
+              <th>Outcome</th>
+              <th>Score / verdict</th>
+              <th>Artifact</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>docs-health</td>
+              <td>
+                Fixed 6 drift items: stale icon count, TODO version header, "unreleased"→shipped, 3
+                dup TODO items, README badge, ROADMAP enum count
+              </td>
+              <td><span class="sev ok">fresh</span></td>
+              <td>inline fixes</td>
+            </tr>
+            <tr>
+              <td>update-old-docs</td>
+              <td>
+                100+ historical docs reviewed; <b>all left alone</b> (dated snapshots, living docs
+                carry current state — restraint applied)
+              </td>
+              <td><span class="sev ok">correct</span></td>
+              <td>decision recorded</td>
+            </tr>
+            <tr>
+              <td>code-quality-scan</td>
+              <td>Build ✓ · lint 0 · tests 14/14 · 0 new clones · 3 release.sh defects surfaced</td>
+              <td><span class="sev ok">9/10</span></td>
+              <td><a href="../../reviews/2026-07-18_09-45_code-quality-scan.html">HTML</a></td>
+            </tr>
+            <tr>
+              <td>architecture-review</td>
+              <td>Layered, acyclic, max fan-out 5, 3 external deps, utils as leaf hub</td>
+              <td><span class="sev ok">9/10</span></td>
+              <td>
+                <a
+                  href="../../architecture-understanding/2026-07-18_09-50_modularity-and-composability.html"
+                  >HTML</a
+                >
+              </td>
+            </tr>
+            <tr>
+              <td>architecture-visualization</td>
+              <td>Current-state + target-state D2 diagrams rendered to SVG</td>
+              <td><span class="sev ok">done</span></td>
+              <td>
+                <a href="../../architecture-understanding/2026-07-18_10-05-current-state.d2">.d2</a>
+                + .svg
+              </td>
+            </tr>
+            <tr>
+              <td>full-code-review</td>
+              <td>
+                0 TODO debt, 0 stringly-typed logic, 0 split brains, 0 dead code; only release.sh
+                defects
+              </td>
+              <td><span class="sev ok">9/10</span></td>
+              <td><a href="../../reviews/2026-07-18_10-15_full-code-review.html">HTML</a></td>
+            </tr>
+            <tr>
+              <td>naming-review</td>
+              <td>
+                0 vague-noun/verb types, uniform Default*Props constructors (69), 2 defensible Low
+                notes
+              </td>
+              <td><span class="sev ok">9/10</span></td>
+              <td><a href="../../reviews/2026-07-18_10-30_naming-review.html">HTML</a></td>
+            </tr>
+            <tr>
+              <td>data-model-review</td>
+              <td>
+                74 props structs, 0 pointer-as-state fields, 41 typed enums; model fits purpose, no
+                redesign
+              </td>
+              <td><span class="sev ok">9/10</span></td>
+              <td><a href="../../reviews/2026-07-18_10-40_data-model-review.html">HTML</a></td>
+            </tr>
+            <tr>
+              <td>deduplicate-code</td>
+              <td>
+                Zero harmful duplication; 3 threshold-3 groups all acceptable (test infra + demo)
+              </td>
+              <td><span class="sev ok">clean</span></td>
+              <td>inline verdict</td>
+            </tr>
+            <tr>
+              <td>go-modularize</td>
+              <td>
+                Defer to v1.0 — pre-freeze API makes the versioning benefit moot; confirms
+                2026-05-14 proposal
+              </td>
+              <td><span class="sev low">defer</span></td>
+              <td><a href="../../modularization/2026-07-18_10-50_assessment.html">HTML</a></td>
+            </tr>
+            <tr>
+              <td>nix-flake-migration</td>
+              <td>
+                Already on flake-parts; add treefmt-nix + checks (website already has treefmt)
+              </td>
+              <td><span class="sev low">refine</span></td>
+              <td><a href="../../proposals/2026-07-18_10-55_nix-flake-migration.html">HTML</a></td>
+            </tr>
+            <tr>
+              <td>copywriting</td>
+              <td>
+                Tightened README headline; fixed 9 stale counts (97→94, 34→37) across README +
+                website hero/features/OG/api-reference
+              </td>
+              <td><span class="sev ok">improved</span></td>
+              <td>inline fixes</td>
+            </tr>
+            <tr>
+              <td>frontend-design</td>
+              <td>
+                Site already distinctive (warm stone, Space Grotesk, disciplined motion); one push:
+                commit to amber signature accent
+              </td>
+              <td><span class="sev ok">strong</span></td>
+              <td>
+                <a href="../../reviews/2026-07-18_11-10_frontend-design-assessment.html">HTML</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Fixes applied in this session (working tree)</h2>
+        <div class="card solution">
+          <div class="h">Documentation de-drift (committed-ready)</div>
+          <ul class="tight">
+            <li><code>AGENTS.md</code> — icon count "101 total" → "102 total" + alias detail</li>
+            <li>
+              <code>TODO_LIST.md</code> — version 0.17.0 → 0.18.0; "Modern web standards — Shipped
+              (unreleased)" → "Shipped in v0.18.0"; removed 3 duplicate items (#60/#63/#64 = dups of
+              #38/#35/#39)
+            </li>
+            <li>
+              <code>README.md</code> — version badge v0.17.0 → v0.18.0; headline tightened; 97→94
+              components, 34→37 enums (4 places)
+            </li>
+            <li><code>ROADMAP.md</code> — "30+ enums" → "37 enums"</li>
+            <li>
+              <code>website/src/components/HeroSection.astro</code> — metrics 97→94, 34→37; subhead
+              97→94
+            </li>
+            <li>
+              <code>website/src/data/features.ts</code>,
+              <code>website/src/pages/og/[...slug].ts</code>,
+              <code>website/src/content/docs/api-reference.mdx</code> — 34→37 / 97→94
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <section>
+        <h2>The 3 actionable defects (the only blockers)</h2>
+        <p>
+          All three live in <code>scripts/release.sh</code>, identified by the v0.18.0 release
+          post-mortem and confirmed still present at HEAD. They are the only items blocking a
+          "clean" bill of health.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Severity</th>
+              <th>Location</th>
+              <th>Defect</th>
+              <th>Fix</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>1</td>
+              <td><span class="sev medium">Medium</span></td>
+              <td class="loc">scripts/release.sh:137</td>
+              <td>Duplicated release-summary line in commit body (also in subject)</td>
+              <td>Drop leading <code>${RELEASE_SUMMARY}</code> from <code>RELEASE_BODY</code></td>
+            </tr>
+            <tr>
+              <td>2</td>
+              <td><span class="sev medium">Medium</span></td>
+              <td class="loc">scripts/release.sh:143</td>
+              <td>
+                Hardcoded wrong attribution <code>Assisted-by: Crush:MiniMax-M3</code> (v0.18.0 tag
+                falsely claims MiniMax-M3)
+              </td>
+              <td>Read model from <code>crush_info</code> / env var, or omit the line</td>
+            </tr>
+            <tr>
+              <td>3</td>
+              <td><span class="sev low">Low</span></td>
+              <td class="loc">scripts/release.sh:102-109</td>
+              <td>
+                Hostile stdin prompt; empty stdin → anemic commit body violating AGENTS.md spec
+              </td>
+              <td>
+                Add <code>--notes-file</code> or auto-derive from CHANGELOG
+                <code>[Unreleased]</code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Optional improvements (no urgency)</h2>
+        <div class="card warning">
+          <div class="h">Flake standardization (~30 min)</div>
+          <p>
+            Add <code>treefmt-nix</code> (nixfmt + gofumpt + goimports + templ) and a
+            <code>checks</code> block to the root <code>flake.nix</code>, matching what
+            <code>website/flake.nix</code> already does. Do NOT add git-hooks.nix — BuildFlow owns
+            pre-commit.
+          </p>
+        </div>
+        <div class="card warning">
+          <div class="h">Website amber signature accent (design)</div>
+          <p>
+            Commit to <code>--color-amber</code> as the marketing-site signature (eyebrows, metric
+            numbers, hover states), keeping blue as the installable-library brand color. First step:
+            recolor hero metrics + eyebrow to amber.
+          </p>
+        </div>
+        <div class="card warning">
+          <div class="h">Validate() — scoped, not blanket (data model)</div>
+          <p>
+            Update TODO_LIST #62: do NOT add <code>Validate()</code> to all 74 props structs. Keep
+            render-time fallback for presentational props; add <code>Validate()</code> only to
+            <code>errorpage.ErrorPageProps</code> where invalid config produces a broken page.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>What the codebase gets right (preserve)</h2>
+        <div class="card solution">
+          <div class="h">Drift-guard tests block regression</div>
+          <p>
+            Version ↔ CHANGELOG ↔ FEATURES counts, dark-mode compliance, motion-reduce compliance,
+            CSP nonce, docs-count — all enforced by failing tests. This is why the library stayed
+            clean through 18 releases.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Type safety is taken seriously</div>
+          <p>
+            37 closed-set enums with IsValid(), typed lookup maps, zero interface{} in prod,
+            surgical generics. No stringly-typed domain logic.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Native web platform over JS</div>
+          <p>
+            Modal/Drawer on &lt;dialog&gt;, Accordion on &lt;details&gt;, Carousel on scroll-snap,
+            Textarea on field-sizing. ~200 lines of focus-trap JS eliminated in v0.18.0.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Tiny, intentional dependency surface</div>
+          <p>
+            3 external repos (templ, tailwind-merge-go, go-error-family). No HTTP framework, no ORM,
+            no logging lib. icons-only adoption is a free emergent property.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Verification</h2>
+        <p>
+          After all edits: <span class="pill green">go build ./... ✓</span>
+          <span class="pill green">golangci-lint 0 issues ✓</span>
+          <span class="pill green">go test ./... 13/13 packages ✓</span>
+          <span class="pill green">all drift-guard tests ✓</span>
+        </p>
+      </section>
+
+      <footer>
+        Synthesis generated 2026-07-18. 13 skills executed; this is the roll-up. Per-skill HTML
+        reports linked above. Point-in-time snapshot; living state in CI + AGENTS.md + CHANGELOG.md.
+        Note: edits are uncommitted in the working tree per the "never commit unless asked" rule.
+      </footer>
+    </div>
+  </body>
+</html>

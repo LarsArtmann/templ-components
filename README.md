@@ -3,9 +3,9 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/larsartmann/templ-components/ci.yaml?branch=master&style=flat-square)](https://github.com/larsartmann/templ-components/actions)
 [![Go Reference](https://img.shields.io/badge/go-pkg.go.dev-blue?style=flat-square)](https://pkg.go.dev/github.com/larsartmann/templ-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://github.com/larsartmann/templ-components/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/version-v0.17.0-blue?style=flat-square)](https://github.com/larsartmann/templ-components/releases)
+[![Version](https://img.shields.io/badge/version-v0.18.0-blue?style=flat-square)](https://github.com/larsartmann/templ-components/releases)
 
-**Server-rendered UI components for Go web apps — built on [templ](https://templ.guide), [HTMX](https://htmx.org), and [Tailwind CSS v4](https://tailwindcss.com).**
+**Server-rendered Go components that ship real HTML — no JavaScript framework required. Built on [templ](https://templ.guide), [HTMX](https://htmx.org), and [Tailwind CSS v4](https://tailwindcss.com).**
 
 [Documentation](https://templcomponents.lars.software) · [Quick Start](#quick-start) · [Component Catalog](#component-catalog)
 
@@ -15,7 +15,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-97 server-rendered components. 34 typed string enums. 102 SVG icons. Zero client-side framework.
+94 server-rendered components. 37 typed string enums. 102 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -24,8 +24,8 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **CSS approach**       | Tailwind v4 (CSS-first)    | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
 | **JavaScript**         | HATEOAS (enhances HTML)    | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js**   | No                         | No                            | Yes                                            |
-| **Components**         | 97                         | 40+                           | —                                              |
-| **Typed props**        | 34 enums                   | —                             | —                                              |
+| **Components**         | 94                         | 40+                           | —                                              |
+| **Typed props**        | 37 enums                   | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)          | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts) | Yes                           | —                                              |
 | **HTMX integration**   | Built-in package           | —                             | —                                              |
@@ -188,7 +188,7 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 ## Design Principles
 
-**Type-safe.** 34 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 37 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 
@@ -245,7 +245,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 
 | Metric       | Value                                               |
 | ------------ | --------------------------------------------------- |
-| Components   | 97                                                  |
+| Components   | 94                                                  |
 | SVG icons    | 102                                                 |
 | Typed enums  | 34                                                  |
 | Packages     | 9                                                   |

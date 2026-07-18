@@ -10,7 +10,7 @@ const pages = {
     data: {
       title: "templ-components",
       description:
-        "97 server-rendered Go UI components. templ + HTMX + Tailwind v4. Zero JavaScript framework.",
+        "94 server-rendered Go UI components. templ + HTMX + Tailwind v4. Zero JavaScript framework.",
     },
   },
 };

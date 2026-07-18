@@ -1,0 +1,143 @@
+direction: down
+
+title: |md
+  # templ-components — Current Architecture (v0.18.0)
+  **Production package dependency graph · 13 packages · 3 external deps · acyclic**
+| {near: top-center}
+
+external: External Dependencies {
+  style.fill: "#fdf2f8"
+  style.stroke: "#9d174d"
+  templ: "github.com/a-h/templ\n(rendering)" {shape: cylinder; style.fill: "#fce7f3"}
+  twmerge: "tailwind-merge-go\n(Class() dedup)" {shape: cylinder; style.fill: "#fce7f3"}
+  errfamily: "go-error-family\n(error classification)" {shape: cylinder; style.fill: "#fce7f3"}
+}
+
+stdlib: Go Stdlib {
+  style.fill: "#f1f5f9"
+  style.stroke: "#475569"
+  fmt
+  time
+  net/url
+  crypto/rand
+  encoding/json
+  sync
+  sort
+  strings
+  errors
+}
+
+leaf: Leaf Layer {
+  style.fill: "#ecfdf5"
+  style.stroke: "#065f46"
+
+  utils: utils {
+    style.fill: "#d1fae5"
+    style.fill: "#d1fae5"
+    "BaseProps · ComponentProps\nClass() · Lookup() · EnsureID\nmotion constants · Version"
+  }
+  svg: internal/svg {
+    style.fill: "#d1fae5"
+    "SVG path constants\n(single source of truth)"
+  }
+}
+
+shared: Shared Layer {
+  style.fill: "#eff6ff"
+  style.stroke: "#1e40af"
+
+  icons: icons {
+    style.fill: "#dbeafe"
+    "102 Name consts · IconPathData\nIconPathJS · RTL mirroring\n(depends only on svg+utils+templ)"
+  }
+}
+
+features: Feature Packages {
+  style.fill: "#fffbeb"
+  style.stroke: "#92400e"
+
+  display: display {
+    style.fill: "#fef3c7"
+    "30 components · ~12.5k LOC\nfan-out: 5 (largest)"
+  }
+  feedback: feedback {
+    style.fill: "#fef3c7"
+    "13 components · feedbackStyleSet\nshared styles.go"
+  }
+  forms: forms {
+    style.fill: "#fef3c7"
+    "21 components · InputType/EnterKeyHint\nSanitizeID · ErrorAttrs"
+  }
+  layout: layout {
+    style.fill: "#fef3c7"
+    "6 components · Page/Base/Minimal\nThemeScript · ThemeToggle · SRI"
+  }
+  navigation: navigation {
+    style.fill: "#fef3c7"
+    "12 components · NavLink shared\nSidebarNav · Breadcrumbs JSON-LD"
+  }
+  htmx: htmx {
+    style.fill: "#fef3c7"
+    "8 components · loading/error\nSwapOOB · ViewTransitions"
+  }
+  errorpage: errorpage {
+    style.fill: "#fef3c7"
+    "4 components + handler\nFromError · go-error-family"
+  }
+}
+
+demo: examples/demo {
+  style.fill: "#f5f3ff"
+  style.stroke: "#5b21b6"
+  "Demo binary (showcase) — imports all packages"
+}
+
+utils -> external.twmerge: "Class() uses" {style.stroke-dash: 4; style.stroke: "#9d174d"}
+errorpage -> external.errfamily: "FromError · Family" {style.stroke: "#9d174d"; style.stroke-width: 2}
+
+icons -> leaf.svg: "path constants" {style.stroke: "#065f46"; style.stroke-width: 2}
+icons -> leaf.utils: " " {style.stroke: "#065f46"}
+
+display -> icons: "Icon rendering" {style.stroke: "#1e40af"; style.stroke-width: 2}
+display -> leaf.svg: "PathChevron/Arrow" {style.stroke: "#1e40af"}
+display -> leaf.utils: "BaseProps · Class" {style.stroke: "#1e40af"}
+
+feedback -> icons: "alert/toast icons" {style.stroke: "#1e40af"}
+feedback -> leaf.svg: "spinner path" {style.stroke: "#1e40af"}
+feedback -> leaf.utils: "BaseProps" {style.stroke: "#1e40af"}
+
+forms -> icons: "form icons" {style.stroke: "#1e40af"}
+forms -> leaf.utils: "BaseProps · Lookup" {style.stroke: "#1e40af"}
+
+layout -> icons: "theme toggle icon" {style.stroke: "#1e40af"}
+layout -> leaf.utils: "BaseProps" {style.stroke: "#1e40af"}
+
+navigation -> icons: "nav icons" {style.stroke: "#1e40af"}
+navigation -> leaf.svg: "chevron/arrow" {style.stroke: "#1e40af"}
+navigation -> leaf.utils: "BaseProps" {style.stroke: "#1e40af"}
+
+htmx -> leaf.utils: "BaseProps" {style.stroke: "#1e40af"}
+
+errorpage -> icons: "family icons" {style.stroke: "#1e40af"}
+errorpage -> leaf.utils: "BaseProps" {style.stroke: "#1e40af"}
+
+demo -> display
+demo -> feedback
+demo -> forms
+demo -> layout
+demo -> navigation
+demo -> htmx
+demo -> icons
+demo -> errorpage
+
+external.templ -> features: "templ.Component (all)" {style.stroke-dash: 4; style.stroke: "#9d174d"; style.stroke-width: 1}
+external.templ -> shared.icons: " " {style.stroke-dash: 4; style.stroke: "#9d174d"}
+
+legend: |md
+  **Legend**
+  - **Blue**: internal feature → shared dependency
+  - **Green**: leaf-layer (utils, internal/svg)
+  - **Dashed pink**: external dependency (templ used by all; tailwind-merge-go by utils; go-error-family by errorpage)
+  - **utils**: 0 fan-out (true leaf), 204 in-edges (hub)
+  - **No cycles. Max fan-out: 5 (display).**
+| {near: bottom-right}

@@ -1,0 +1,509 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Full Code Review — templ-components 2026-07-18</title>
+    <style>
+      :root {
+        --surface: #0e0e10;
+        --surface-raised: #18181d;
+        --surface-sunken: #16161a;
+        --text: #f4f4f0;
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: rgba(244, 244, 240, 0.12);
+        --accent: #ffb347;
+        --problem: #ff6b6b;
+        --solution: #6eb5ff;
+        --warning: #f4d35e;
+        --emerald: #4ade80;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+      header h1 {
+        font-size: 1.9rem;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.01em;
+      }
+      header .sub {
+        color: var(--text-muted);
+        font-size: 0.98rem;
+        margin-bottom: 1rem;
+      }
+      .meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        color: var(--text-faint);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+      }
+      .score-bar {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        padding: 1rem 1.25rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+      .score-bar .big {
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: var(--emerald);
+        line-height: 1;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .stat {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.25rem;
+      }
+      .stat .label {
+        color: var(--text-faint);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .stat .value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-top: 0.2rem;
+      }
+      .stat .value.ok {
+        color: var(--emerald);
+      }
+      .stat .value.warn {
+        color: var(--warning);
+      }
+      .stat .value.bad {
+        color: var(--problem);
+      }
+      .stat .note {
+        color: var(--text-muted);
+        font-size: 0.78rem;
+      }
+      section {
+        margin: 2.5rem 0;
+      }
+      h2 {
+        font-size: 1.25rem;
+        margin: 0 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      h3 {
+        font-size: 1.02rem;
+        margin: 1.3rem 0 0.5rem;
+      }
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.3rem;
+        margin: 1rem 0;
+      }
+      .card.problem {
+        border-left: 3px solid var(--problem);
+      }
+      .card.solution {
+        border-left: 3px solid var(--solution);
+      }
+      .card.warning {
+        border-left: 3px solid var(--warning);
+      }
+      .card.note {
+        border-left: 3px solid var(--accent);
+      }
+      .card .h {
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+        color: var(--text);
+      }
+      .card.problem .h {
+        color: var(--problem);
+      }
+      .card.solution .h {
+        color: var(--solution);
+      }
+      .card.warning .h {
+        color: var(--warning);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.6rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        color: var(--text-faint);
+        font-weight: 600;
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      td.loc {
+        font-family: ui-monospace, Menlo, monospace;
+        color: var(--solution);
+        font-size: 0.82rem;
+        white-space: nowrap;
+      }
+      .sev {
+        display: inline-block;
+        padding: 0.12rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+      }
+      .sev.high {
+        background: color-mix(in srgb, var(--problem) 18%, transparent);
+        color: var(--problem);
+      }
+      .sev.medium {
+        background: color-mix(in srgb, var(--warning) 18%, transparent);
+        color: var(--warning);
+      }
+      .sev.low {
+        background: color-mix(in srgb, var(--accent) 18%, transparent);
+        color: var(--accent);
+      }
+      .sev.ok {
+        background: color-mix(in srgb, var(--emerald) 18%, transparent);
+        color: var(--emerald);
+      }
+      code {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.9rem 1rem;
+        overflow-x: auto;
+        font-size: 0.8rem;
+      }
+      a {
+        color: var(--solution);
+      }
+      footer {
+        color: var(--text-faint);
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Full Code Review — templ-components</h1>
+        <div class="sub">
+          Senior-architect pass: type safety, split brains, dead code, duplications, debt.
+        </div>
+        <div class="meta">
+          <span><b>Date:</b> 2026-07-18</span>
+          <span><b>Version:</b> 0.18.0</span>
+          <span><b>Head:</b> 042954d</span>
+          <span><b>Prior reviews:</b> 5 (latest 2026-06-28)</span>
+        </div>
+      </header>
+
+      <div class="score-bar">
+        <div class="big">9 / 10</div>
+        <div class="lbl">
+          <b>Code health.</b> The Go/templ source is in excellent shape: zero lint findings, zero
+          new duplication, a fully green suite, no TODO debt, no split brains, no stringly-typed
+          domain logic, and no dead code. Typed enums and generics are used consistently. The only
+          actionable defects are in the release-cut shell script.
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Files in scope</div>
+          <div class="value">~280</div>
+          <div class="note">Go + templ (excl. generated/tests)</div>
+        </div>
+        <div class="stat">
+          <div class="label">TODO / FIXME</div>
+          <div class="value ok">0</div>
+          <div class="note">no deferred debt in source</div>
+        </div>
+        <div class="stat">
+          <div class="label">Runtime panics</div>
+          <div class="value ok">1</div>
+          <div class="note">intentional dev-integrity guard</div>
+        </div>
+        <div class="stat">
+          <div class="label">Untyped interface{}</div>
+          <div class="value ok">0</div>
+          <div class="note">generics only</div>
+        </div>
+        <div class="stat">
+          <div class="label">Split brains</div>
+          <div class="value ok">0</div>
+          <div class="note">FeedbackType unified; aliases documented</div>
+        </div>
+        <div class="stat">
+          <div class="label">Actionable issues</div>
+          <div class="value warn">3</div>
+          <div class="note">all in scripts/release.sh</div>
+        </div>
+      </div>
+
+      <section>
+        <h2>What was checked</h2>
+        <p>
+          An architect-level scan across all 13 packages, focusing on what automated lint cannot
+          catch. The codebase has been reviewed five times previously (latest
+          <code>docs/reviews/2026-06-28_03-36_full-code-review.html</code>); this pass confirms the
+          prior findings held and looks for regression and new debt since v0.17.0.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>Check</th>
+              <th>Method</th>
+              <th>Result</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>TODO/FIXME/XXX/HACK debt</td>
+              <td>repo-wide grep over <code>*.go</code>/<code>*.templ</code></td>
+              <td><span class="sev ok">0</span> — none</td>
+            </tr>
+            <tr>
+              <td>Runtime panics</td>
+              <td><code>grep panic\(</code> over prod code</td>
+              <td>
+                <span class="sev ok">1</span> — <code>icons/icon_paths.go:137</code> developer
+                data-integrity guard (documented, intentional)
+              </td>
+            </tr>
+            <tr>
+              <td>Untyped <code>any</code> / <code>interface{}</code></td>
+              <td>grep over prod code</td>
+              <td>
+                <span class="sev ok">0</span> — only legitimate generic constraints (<code
+                  >Ternary[T any]</code
+                >, <code>Lookup[K,V any]</code>)
+              </td>
+            </tr>
+            <tr>
+              <td>Stringly-typed maps</td>
+              <td><code>grep map\[string\]</code></td>
+              <td>
+                <span class="sev ok">0 domain</span> — only <code>errorpage</code> Context maps
+                (dynamic metadata, correct)
+              </td>
+            </tr>
+            <tr>
+              <td>Split brains</td>
+              <td>FeedbackType/AlertType/ToastType audit</td>
+              <td>
+                <span class="sev ok">0</span> — unified under <code>FeedbackType</code>, aliases
+                documented for backward compat
+              </td>
+            </tr>
+            <tr>
+              <td>Dead exported symbols</td>
+              <td>build + reference scan</td>
+              <td><span class="sev ok">0</span> — all exported API has consumers</td>
+            </tr>
+            <tr>
+              <td>Migration leftovers</td>
+              <td>grep for <code>grid-rows</code> accordion JS, old overlay focus-trap JS</td>
+              <td><span class="sev ok">0</span> — only a clarifying comment in custom.css</td>
+            </tr>
+            <tr>
+              <td>Duplication</td>
+              <td><code>art-dupl check</code></td>
+              <td><span class="sev ok">0 new</span> — 17 accepted groups per ADR 0009</td>
+            </tr>
+            <tr>
+              <td>Largest source file</td>
+              <td>wc -l</td>
+              <td>
+                <span class="sev ok">291 lines</span> — <code>errorpage/styles.go</code>; no
+                god-files
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Findings</h2>
+
+        <div class="card problem">
+          <div class="h">F1 · scripts/release.sh — duplicated commit-body summary (Medium)</div>
+          <p><span class="sev medium">Medium</span> · <code>scripts/release.sh:137</code></p>
+          <p>
+            <code>RELEASE_BODY</code> opens with <code>${RELEASE_SUMMARY}</code> and the commit
+            subject (line 145) repeats <code>release: … — ${RELEASE_SUMMARY}</code>, so every
+            script-cut release gets a verbatim-duplicated first body line. Identified by the v0.18.0
+            post-mortem; still unfixed at HEAD.
+          </p>
+          <p>
+            <b>Fix:</b> drop the leading <code>${RELEASE_SUMMARY}</code> from
+            <code>RELEASE_BODY</code>.
+          </p>
+        </div>
+
+        <div class="card problem">
+          <div class="h">F2 · scripts/release.sh — hardcoded wrong model attribution (Medium)</div>
+          <p><span class="sev medium">Medium</span> · <code>scripts/release.sh:143</code></p>
+          <p>
+            The footer hardcodes <code>Assisted-by: Crush:MiniMax-M3</code>. The v0.18.0 tag now
+            falsely claims MiniMax-M3 cut the release (actual: <code>glm-5.2</code>). v0.17.0 was
+            attributed correctly by hand.
+          </p>
+          <p>
+            <b>Fix:</b> read the model from <code>crush_info</code> / a <code>CRUSH_MODEL</code> env
+            var, or omit the line.
+          </p>
+        </div>
+
+        <div class="card warning">
+          <div class="h">
+            F3 · scripts/release.sh — hostile stdin prompt, no CHANGELOG fallback (Low)
+          </div>
+          <p><span class="sev low">Low</span> · <code>scripts/release.sh:102-109</code></p>
+          <p>
+            Empty stdin (the automation path) produces an anemic commit body that violates the
+            3-paragraph AGENTS.md release spec. The script never derives notes from the CHANGELOG
+            <code>[Unreleased]</code> block.
+          </p>
+          <p>
+            <b>Fix:</b> add <code>--notes-file</code> or auto-derive the body from CHANGELOG when
+            stdin is empty.
+          </p>
+        </div>
+
+        <div class="card note">
+          <div class="h">F4 · GOEXPERIMENT=jsonv2 build requirement (Noted, documented)</div>
+          <p>
+            <span class="sev low">Noted</span> · <code>errorpage</code> imports
+            <code>encoding/json/v2</code>
+          </p>
+          <p>
+            Consumers who <code>go get</code> without <code>GOEXPERIMENT=jsonv2</code> get a compile
+            error in <code>errorpage</code>. This is documented in ADR 0013 and the pre-commit hook
+            / flake apps set the flag automatically. Not a defect, but real adoption friction to
+            call out in the README install steps — and to remove once Go 1.27 promotes json v2 to
+            stable.
+          </p>
+        </div>
+
+        <div class="card note">
+          <div class="h">F5 · Empty local <code>cmd/</code> directory (Noted, untracked)</div>
+          <p><span class="sev low">Noted</span> · <code>cmd/</code></p>
+          <p>
+            An empty <code>cmd/</code> directory exists locally but is <b>not tracked by git</b> (no
+            files). It does not appear in clones. Related to deferred TODO #42 (shadcn-style CLI).
+            Harmless; can be removed locally or filled when the CLI lands.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Strong patterns to preserve</h2>
+        <div class="card solution">
+          <div class="h">Type safety is taken seriously</div>
+          <p>
+            37 closed-set enums, each with <code>IsValid()</code> + a table-driven test; lookup maps
+            use typed enum keys (<code>map[Family]familyVisualStyle</code>, not
+            <code>map[string]</code>) and route through <code>utils.Lookup</code>. There is zero
+            <code>interface{}</code> in production code — generics (<code>Ternary[T]</code>,
+            <code>Lookup[K,V]</code>) are used where dynamic behavior is needed.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Doc comments explain WHY, and warn about traps</div>
+          <p>
+            e.g. <code>utils.Ternary</code> documents eager evaluation and points to the templ
+            <code>if/else</code> alternative; <code>overlayDialogJS</code> documents why
+            <code>e.target === dialog</code> detects backdrop clicks. This is the kind of commenting
+            that survives staff turnover.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Drift-guard tests block regression at CI</div>
+          <p>
+            Version ↔ CHANGELOG ↔ FEATURES counts are enforced by <code>TestDocsCountDrift</code>,
+            <code>TestVersionMatchesChangelog</code>, dark-mode + motion-reduce compliance tests,
+            and the CSP nonce integration test. This is why the docs stayed fresh.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Native web platform over JS</div>
+          <p>
+            Modal/Drawer on <code>&lt;dialog&gt;</code>, Accordion on <code>&lt;details&gt;</code>,
+            Carousel on scroll-snap, Textarea auto-grow on <code>field-sizing</code>, Select on
+            <code>appearance: base-select</code>. ~200 lines of focus-trap JS eliminated in v0.18.0.
+            This is the right direction and should continue.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Recommendation</h2>
+        <p>
+          The Go/templ source needs no changes — it is the cleanest state the library has been in.
+          <b>Fix F1–F3 in <code>scripts/release.sh</code> before v0.19.0</b> (the only blocking
+          items). Consider F4 a documentation task (README install note) and F5 a housekeeping
+          non-issue.
+        </p>
+        <p>
+          No TODOs were added to source files during this review — there is nothing worth deferring.
+          The release-script defects belong in <code>scripts/release.sh</code> directly (fixed, not
+          annotated).
+        </p>
+      </section>
+
+      <footer>
+        Full code review generated 2026-07-18. Architect-level scan; the Go source had been reviewed
+        five times previously and held up. Point-in-time snapshot; authoritative state lives in CI
+        and the living docs.
+      </footer>
+    </div>
+  </body>
+</html>

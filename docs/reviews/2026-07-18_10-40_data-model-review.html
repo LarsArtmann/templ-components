@@ -1,0 +1,474 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Data Model Review — templ-components 2026-07-18</title>
+    <style>
+      :root {
+        --surface: #0e0e10;
+        --surface-raised: #18181d;
+        --surface-sunken: #16161a;
+        --text: #f4f4f0;
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: rgba(244, 244, 240, 0.12);
+        --accent: #ffb347;
+        --problem: #ff6b6b;
+        --solution: #6eb5ff;
+        --warning: #f4d35e;
+        --emerald: #4ade80;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+      header h1 {
+        font-size: 1.9rem;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.01em;
+      }
+      header .sub {
+        color: var(--text-muted);
+        font-size: 0.98rem;
+        margin-bottom: 1rem;
+      }
+      .meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        color: var(--text-faint);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+      }
+      .score-bar {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        padding: 1rem 1.25rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+      .score-bar .big {
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: var(--emerald);
+        line-height: 1;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .stat {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.25rem;
+      }
+      .stat .label {
+        color: var(--text-faint);
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .stat .value {
+        font-size: 1.6rem;
+        font-weight: 700;
+        margin-top: 0.2rem;
+      }
+      .stat .value.ok {
+        color: var(--emerald);
+      }
+      .stat .value.warn {
+        color: var(--warning);
+      }
+      .stat .note {
+        color: var(--text-muted);
+        font-size: 0.78rem;
+      }
+      section {
+        margin: 2.5rem 0;
+      }
+      h2 {
+        font-size: 1.25rem;
+        margin: 0 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      h3 {
+        font-size: 1.02rem;
+        margin: 1.3rem 0 0.5rem;
+      }
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.3rem;
+        margin: 1rem 0;
+      }
+      .card.problem {
+        border-left: 3px solid var(--problem);
+      }
+      .card.solution {
+        border-left: 3px solid var(--solution);
+      }
+      .card.warning {
+        border-left: 3px solid var(--warning);
+      }
+      .card.note {
+        border-left: 3px solid var(--accent);
+      }
+      .card .h {
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+        color: var(--text);
+      }
+      .card.problem .h {
+        color: var(--problem);
+      }
+      .card.solution .h {
+        color: var(--solution);
+      }
+      .card.warning .h {
+        color: var(--warning);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.6rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        color: var(--text-faint);
+        font-weight: 600;
+        font-size: 0.74rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      code {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.9rem 1rem;
+        overflow-x: auto;
+        font-size: 0.8rem;
+      }
+      .sev {
+        display: inline-block;
+        padding: 0.12rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .sev.na {
+        background: color-mix(in srgb, var(--text-faint) 18%, transparent);
+        color: var(--text-faint);
+      }
+      .sev.ok {
+        background: color-mix(in srgb, var(--emerald) 18%, transparent);
+        color: var(--emerald);
+      }
+      .sev.warn {
+        background: color-mix(in srgb, var(--warning) 18%, transparent);
+        color: var(--warning);
+      }
+      footer {
+        color: var(--text-faint);
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Data Model Review — templ-components</h1>
+        <div class="sub">
+          First-principles type-system review of the component Props model. Note: this is a UI
+          configuration library, not a domain model — the checklist is applied with that lens.
+        </div>
+        <div class="meta">
+          <span><b>Date:</b> 2026-07-18</span>
+          <span><b>Version:</b> 0.18.0</span>
+          <span><b>Model class:</b> Component Props (config structs, not domain entities)</span>
+        </div>
+      </header>
+
+      <div class="score-bar">
+        <div class="big">9 / 10</div>
+        <div class="lbl">
+          <b>Model health.</b> The Props model is appropriate for a server-rendered UI library:
+          typed enums everywhere, zero pointer-as-state fields, composition via
+          <code>BaseProps</code> embedding, and a uniform <code>ComponentProps</code> contract. No
+          first-principles redesign is warranted — the model already uses Go's type system well for
+          its purpose. One deliberate design decision (validate-vs-fallback) is discussed below.
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Props structs</div>
+          <div class="value">74</div>
+          <div class="note">the data model</div>
+        </div>
+        <div class="stat">
+          <div class="label">Pointer fields in props</div>
+          <div class="value ok">0</div>
+          <div class="note">no *T-as-optional encoding</div>
+        </div>
+        <div class="stat">
+          <div class="label">Typed enums</div>
+          <div class="value ok">41</div>
+          <div class="note">string/int, all with IsValid()</div>
+        </div>
+        <div class="stat">
+          <div class="label">IsValid() methods</div>
+          <div class="value ok">42</div>
+          <div class="note">enum-level validation</div>
+        </div>
+        <div class="stat">
+          <div class="label">ComponentProps satisfiers</div>
+          <div class="value ok">26+</div>
+          <div class="note">via BaseProps promotion</div>
+        </div>
+        <div class="stat">
+          <div class="label">Untyped interface{}</div>
+          <div class="value ok">0</div>
+          <div class="note">generics only</div>
+        </div>
+      </div>
+
+      <section>
+        <h2>Problem catalog (P1–P12) — applied to a UI library</h2>
+        <p>
+          The skill's 12 problems are calibrated for <b>domain/business models</b> (UserID branded
+          types, Order lifecycles, foreign-key relationships). A component-props library is a
+          different shape: it is configuration data consumed once at render time, with no
+          persistence, no lifecycle, and no cross-entity relationships. The table below records each
+          problem honestly rather than manufacturing redesigns that don't fit the model class.
+        </p>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Problem</th>
+              <th>Status here</th>
+              <th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>P1</td>
+              <td>Stringly-typed everything</td>
+              <td>41 typed enums; no raw <code>string</code> domain fields</td>
+              <td><span class="sev ok">Handled</span></td>
+            </tr>
+            <tr>
+              <td>P2</td>
+              <td>Pointer fields as state encoding</td>
+              <td>0 pointer fields in any Props struct</td>
+              <td><span class="sev ok">N/A — clean</span></td>
+            </tr>
+            <tr>
+              <td>P3</td>
+              <td>No validation at type level</td>
+              <td>Enum-level IsValid() yes; no Props-level Validate() (see decision D1)</td>
+              <td><span class="sev warn">Deliberate</span></td>
+            </tr>
+            <tr>
+              <td>P4</td>
+              <td>Primitive obsession (Email, UserID)</td>
+              <td>Props are config (Value, Label, Href) — not domain identities</td>
+              <td><span class="sev na">N/A</span></td>
+            </tr>
+            <tr>
+              <td>P5</td>
+              <td>Missing interface unions</td>
+              <td>
+                <code>ComponentProps</code> interface + BaseProps composition; structural variants
+                use if-branches (TabsVariant, DrawerSide)
+              </td>
+              <td><span class="sev ok">Appropriate</span></td>
+            </tr>
+            <tr>
+              <td>P6</td>
+              <td>No composition, only embedding</td>
+              <td>
+                <code>BaseProps</code> embedding IS composition; <code>ComponentProps</code> is a
+                true interface
+              </td>
+              <td><span class="sev ok">Handled</span></td>
+            </tr>
+            <tr>
+              <td>P7</td>
+              <td>Implicit relationships (FKs)</td>
+              <td>No entity relationships — config structs only</td>
+              <td><span class="sev na">N/A</span></td>
+            </tr>
+            <tr>
+              <td>P8</td>
+              <td>No versioning / lifecycle</td>
+              <td>No CreatedAt/UpdatedAt — correct for render-once config</td>
+              <td><span class="sev na">N/A</span></td>
+            </tr>
+            <tr>
+              <td>P9</td>
+              <td>Duplicated logic across types</td>
+              <td>
+                Enum lookups centralized via <code>utils.Lookup[K,V]</code>; feedback styles via
+                shared <code>feedbackStyleSet</code>
+              </td>
+              <td><span class="sev ok">Handled</span></td>
+            </tr>
+            <tr>
+              <td>P10</td>
+              <td>Weak collection types</td>
+              <td>
+                Slices of typed structs (<code>[]TableHeader</code>, <code>[]CauseItem</code>); no
+                nil/empty confusion (zero-length renders empty state)
+              </td>
+              <td><span class="sev ok">Handled</span></td>
+            </tr>
+            <tr>
+              <td>P11</td>
+              <td>No generic parameterization</td>
+              <td>
+                Generics used where they pay (<code>Ternary[T]</code>, <code>Lookup[K,V]</code>,
+                <code>lookupFeedbackStyle[T]</code>); props don't need it
+              </td>
+              <td><span class="sev ok">Appropriate</span></td>
+            </tr>
+            <tr>
+              <td>P12</td>
+              <td>Missing error models</td>
+              <td>
+                <code>errorpage</code> has a full typed error model (<code>Family</code>,
+                <code>ErrorPageProps</code>, go-error-family integration)
+              </td>
+              <td><span class="sev ok">Handled</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>The one design decision worth discussing</h2>
+        <div class="card warning">
+          <div class="h">
+            D1 · Props have no <code>Validate() error</code> — render-time fallback instead
+          </div>
+          <p>
+            Tracked as TODO_LIST #33 / #62 (deferred). The library normalizes bad input at render
+            time (unknown enum → fallback value, negative progress → clamped to 0) rather than
+            rejecting it upfront. This is the <b>correct tradeoff for a UI library</b>: a component
+            must never crash a page render because a consumer passed an unexpected enum value.
+            Crashing is worse than rendering a fallback style.
+          </p>
+          <p>
+            <b>Recommendation:</b> keep render-time fallback for presentational props. Add
+            <code>Validate()</code> <i>only</i> where invalid config produces a broken page that the
+            user can't recover from — e.g. <code>errorpage.ErrorPageProps</code> rendering a
+            malformed error page. Do not blanket-add <code>Validate()</code> to all 74 structs; that
+            is the TODO's "design decision needed" and the answer is "mostly no."
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>What the model gets right</h2>
+        <div class="card solution">
+          <div class="h">Impossible states are largely unrepresentable</div>
+          <p>
+            Closed-set enums (<code>Family</code>, <code>OverlayKind</code>,
+            <code>TableCellPadding</code>, <code>SortDirection</code>) mean a prop can only hold a
+            documented value or the fallback — never an arbitrary string.
+            <code>HxSwap htmx.SwapStyle</code> is a typed enum, not a raw string.
+            <code>DrawerSide</code> constrains side to left/right.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Composition without inheritance</div>
+          <p>
+            Every props struct embeds <code>utils.BaseProps</code> and auto-satisfies
+            <code>ComponentProps</code> via promoted pointer-receiver methods
+            (<code>GetBaseProps</code>/<code>SetBaseProps</code>). This is struct embedding as
+            composition — no <code>AbstractProps</code>/<code>BasePropsImpl</code> hierarchy. New
+            components get the full BaseProps contract (Class/Attrs/ID/AriaLabel/Nonce propagation)
+            for free.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">Generics where they earn their keep</div>
+          <p>
+            <code>utils.Lookup[K comparable, V any]</code> eliminated the per-enum
+            <code>if ok</code> boilerplate across all 41 lookup maps.
+            <code>lookupFeedbackStyle[T]() </code> shares the feedback style resolution across
+            Alert/Toast/ErrorAlert. <code>Ternary[T]</code> for templ conditional rendering.
+            Generics are used surgically, not fashionably.
+          </p>
+        </div>
+        <div class="card solution">
+          <div class="h">The errorpage model is genuinely well-typed</div>
+          <p>
+            <code>Family</code> (5 typed values) → <code>familyStyleMap</code> → distinct visual
+            treatment. <code>StatusCode int</code> overrides family-derived defaults explicitly.
+            <code>CauseChain []CauseItem</code>, <code>Context []ContextPair</code>.
+            <code>FromError()</code> bridges go-error-family with <code>errors.AsType</code>. This
+            is the strongest part of the model.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Conclusion</h2>
+        <p>
+          No redesign is warranted. The Props model is already a good fit for a server-rendered UI
+          library: typed enums, composition-via-embedding, surgical generics, and crash-safe
+          render-time fallback. The single open design question (D1) has a clear answer:
+          <b>keep fallback for rendering, add Validate() only for the errorpage handler.</b> Update
+          TODO_LIST #62 to reflect that decision rather than treating it as a 74-struct migration.
+        </p>
+      </section>
+
+      <footer>
+        Data model review generated 2026-07-18. The skill's domain-model checklist is applied with
+        the lens that this is a component-configuration library, not a business domain model.
+        Point-in-time snapshot.
+      </footer>
+    </div>
+  </body>
+</html>

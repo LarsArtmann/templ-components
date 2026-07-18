@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Architecture Review — templ-components 2026-07-18</title>
+    <style>
+      :root {
+        --surface: #0e0e10;
+        --surface-raised: #18181d;
+        --surface-sunken: #16161a;
+        --text: #f4f4f0;
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: rgba(244, 244, 240, 0.12);
+        --border-strong: rgba(244, 244, 240, 0.25);
+        --accent: #ffb347;
+        --problem: #ff6b6b;
+        --solution: #6eb5ff;
+        --warning: #f4d35e;
+        --emerald: #4ade80;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1100px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+      header h1 {
+        font-size: 1.9rem;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.01em;
+      }
+      header .sub {
+        color: var(--text-muted);
+        font-size: 0.98rem;
+        margin-bottom: 1rem;
+      }
+      .meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        color: var(--text-faint);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+      }
+      .score-bar {
+        display: flex;
+        align-items: baseline;
+        gap: 1rem;
+        margin: 1.5rem 0;
+        padding: 1rem 1.25rem;
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+      }
+      .score-bar .big {
+        font-size: 2.4rem;
+        font-weight: 800;
+        color: var(--emerald);
+        line-height: 1;
+      }
+      .score-bar .lbl {
+        color: var(--text-muted);
+      }
+
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .stat {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.25rem;
+      }
+      .stat .label {
+        color: var(--text-faint);
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .stat .value {
+        font-size: 1.7rem;
+        font-weight: 700;
+        margin-top: 0.2rem;
+      }
+      .stat .value.ok {
+        color: var(--emerald);
+      }
+      .stat .value.warn {
+        color: var(--warning);
+      }
+      .stat .value.bad {
+        color: var(--problem);
+      }
+      .stat .note {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        margin-top: 0.1rem;
+      }
+
+      section {
+        margin: 2.5rem 0;
+      }
+      h2 {
+        font-size: 1.25rem;
+        margin: 0 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      h3 {
+        font-size: 1.02rem;
+        margin: 1.4rem 0 0.5rem;
+      }
+
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.3rem;
+        margin: 1rem 0;
+      }
+      .card.problem {
+        border-left: 3px solid var(--problem);
+      }
+      .card.solution {
+        border-left: 3px solid var(--solution);
+      }
+      .card.note {
+        border-left: 3px solid var(--accent);
+      }
+      .card .h {
+        font-weight: 600;
+        margin-bottom: 0.35rem;
+        color: var(--text);
+      }
+      .card.problem .h {
+        color: var(--problem);
+      }
+      .card.solution .h {
+        color: var(--solution);
+      }
+      .card p {
+        margin: 0.3rem 0;
+        color: var(--text-muted);
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.6rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        color: var(--text-faint);
+        font-weight: 600;
+        font-size: 0.76rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      td.num {
+        font-family: ui-monospace, Menlo, monospace;
+        text-align: right;
+        color: var(--text);
+      }
+      td.loc {
+        font-family: ui-monospace, Menlo, monospace;
+        color: var(--solution);
+        font-size: 0.84rem;
+      }
+      code {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.9rem 1rem;
+        overflow-x: auto;
+        font-size: 0.8rem;
+      }
+      a {
+        color: var(--solution);
+      }
+      .steps {
+        counter-reset: step;
+        list-style: none;
+        padding: 0;
+      }
+      .steps li {
+        counter-increment: step;
+        position: relative;
+        padding: 0.6rem 0 0.6rem 2.5rem;
+        border-bottom: 1px solid var(--border);
+        color: var(--text-muted);
+      }
+      .steps li::before {
+        content: counter(step);
+        position: absolute;
+        left: 0;
+        top: 0.55rem;
+        width: 1.6rem;
+        height: 1.6rem;
+        background: var(--accent);
+        color: var(--surface);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 0.8rem;
+      }
+      footer {
+        color: var(--text-faint);
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Architecture Review — templ-components</h1>
+        <div class="sub">
+          Modularity, coupling, composability, and service-orientation of the Go UI library.
+        </div>
+        <div class="meta">
+          <span><b>Date:</b> 2026-07-18</span>
+          <span><b>Version:</b> 0.18.0</span>
+          <span><b>Focus:</b> modularity &amp; composability</span>
+        </div>
+      </header>
+
+      <div class="score-bar">
+        <div class="big">9 / 10</div>
+        <div class="lbl">
+          <b>Architecture health.</b> Layered, acyclic, tiny dependency surface, strong
+          compositional seams. No blocking issues; one optional evolution path (package-level
+          modularization) documented and deferred to post-v1.0.
+        </div>
+      </div>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">Go packages</div>
+          <div class="value">13</div>
+          <div class="note">10 public + 3 internal</div>
+        </div>
+        <div class="stat">
+          <div class="label">External deps</div>
+          <div class="value ok">3</div>
+          <div class="note">templ, tailwind-merge-go, go-error-family</div>
+        </div>
+        <div class="stat">
+          <div class="label">Max fan-out</div>
+          <div class="value ok">5</div>
+          <div class="note">display — low coupling</div>
+        </div>
+        <div class="stat">
+          <div class="label">Circular imports</div>
+          <div class="value ok">0</div>
+          <div class="note">acyclic graph</div>
+        </div>
+        <div class="stat">
+          <div class="label">Hub package</div>
+          <div class="value">utils</div>
+          <div class="note">204 in-edges, fan-out 0 (leaf)</div>
+        </div>
+        <div class="stat">
+          <div class="label">Largest package</div>
+          <div class="value warn">display</div>
+          <div class="note">~12.5k LOC (prod+templ)</div>
+        </div>
+      </div>
+
+      <section>
+        <h2>1. How scalable &amp; modular is the current architecture?</h2>
+        <p>
+          <b>Verdict: highly modular and scalable.</b> The library is a single Go module organized
+          into 13 packages with a strictly layered, acyclic dependency graph. There are no
+          god-objects, no circular imports, and the external dependency surface is deliberately
+          minimal (three repos). For a server-rendered component library this is the right shape.
+        </p>
+
+        <h3>Dependency graph (production)</h3>
+        <pre><code>                    ┌─────────┐
+                    │  utils   │  leaf · fan-out 0 · 204 in-edges (BaseProps, Class(), Lookup, EnsureID)
+                    └────┬────┘
+          ┌──────────────┼──────────────┐
+     ┌────┴───┐   ┌──────┴─────┐   ┌────┴──────┐
+     │ forms  │   │ navigation │   │ feedback  │   each fan-out ≤ 4
+     └────────┘   └────────────┘   └─────┬─────┘
+                                         │
+              ┌──────────────────────────┴───┐
+              │ display (fan-out 5)   htmx   │   display = largest, most connected
+              │ errorpage  layout            │
+              └──────────────────────────────┘
+              │
+         ┌────┴──────────┐
+         │ internal/svg  │  leaf (shared SVG path constants)
+         └──────┬────────┘
+                │ icons (fan-out 2: svg + utils)  ← icons-only adoption is free</code></pre>
+
+        <div class="card solution">
+          <div class="h">Wins</div>
+          <p>
+            • <b>Layered &amp; acyclic.</b> <code>utils</code> is a true leaf; nothing depends
+            upward into feature packages. Import order is deterministic.
+          </p>
+          <p>
+            • <b>Tiny, intentional dependency surface.</b> 3 external repos — templ (rendering),
+            tailwind-merge-go (class dedup), go-error-family (error classification). No HTTP
+            framework, no ORM, no logging lib. Zero supply-chain risk surface.
+          </p>
+          <p>
+            • <b>icons-only adoption is emergent.</b> <code>icons</code> transitively depends only
+            on <code>internal/svg</code> + <code>templ</code> + <code>utils</code> — no CSS
+            framework, no tailwind-merge-go. Consumers can adopt just the icon system without the
+            rest (see <code>docs/icons-only-adoption.md</code>).
+          </p>
+          <p>
+            • <b>No split brains.</b> Each concept lives in one package; shared SVG paths have a
+            single source of truth in <code>internal/svg</code>.
+          </p>
+        </div>
+
+        <div class="card problem">
+          <div class="h">Watch items (non-blocking)</div>
+          <p>
+            • <b><code>display</code> is the heaviest package</b> (~12.5k LOC, 30 components,
+            fan-out 5). It is cohesive — every member is a presentational component — but it is the
+            natural seam if the library ever needs a finer split.
+          </p>
+          <p>
+            • <b><code>utils</code> is a 204-edge hub.</b> Acceptable because it is a thin leaf
+            (BaseProps, Class(), Lookup, EnsureID, motion constants), not a god-package. But any new
+            global added there is immediately inherited by every consumer — keep it deliberately
+            small.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>2. Composability &amp; service-orientation</h2>
+        <p>
+          <b>Service-orientation does not map onto a UI library</b> — there are no services. The
+          directly analogous property is <b>composability</b>, and here the library is strong.
+        </p>
+
+        <h3>Composability seams</h3>
+        <table>
+          <thead>
+            <tr>
+              <th>Seam</th>
+              <th>Mechanism</th>
+              <th>Where it shows up</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Uniform props contract</td>
+              <td>
+                <code>utils.ComponentProps</code> interface + <code>BaseProps</code> embedding
+              </td>
+              <td>All 26+ props structs auto-satisfy via pointer-receiver promotion</td>
+            </tr>
+            <tr>
+              <td>Render slots</td>
+              <td><code>templ.Component</code> fields on props</td>
+              <td>
+                <code>Card.Body</code>, <code>Card.Header</code>, <code>Table.Body</code>,
+                <code>SimpleCard.Body</code>, <code>PageHeader.Breadcrumb/Action</code>,
+                <code>SidebarNav.Brand/Footer</code>
+              </td>
+            </tr>
+            <tr>
+              <td>Children pass-through</td>
+              <td><code>{ children... }</code></td>
+              <td>
+                <code>Grid</code>, <code>Form.Content</code>, composition tests in
+                <code>integration/</code>
+              </td>
+            </tr>
+            <tr>
+              <td>Typed enum extension</td>
+              <td><code>map[EnumType]string</code> + <code>utils.Lookup</code></td>
+              <td>37 closed-set enums, all with <code>IsValid()</code>; fallback-safe</td>
+            </tr>
+            <tr>
+              <td>HTMX as opt-in layer</td>
+              <td>typed <code>HxGet/HxTarget/HxSwap</code> fields, omitted when empty</td>
+              <td>StatCard, LoadMore, Form, FilterDropdown — works without HTMX present</td>
+            </tr>
+            <tr>
+              <td>CSS theming without Go changes</td>
+              <td>Tailwind v4 <code>@theme</code> override</td>
+              <td>
+                <code>templ-components-theme.css</code> semantic aliases;
+                <code>--color-blue-600</code>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="card solution">
+          <div class="h">Why this composes well</div>
+          <p>
+            Every component speaks the same contract (BaseProps → Class/Attrs/ID/AriaLabel/Nonce
+            propagation), so components nest arbitrarily and consumer overrides always win via
+            <code>utils.Class()</code> tailwind-merge resolution. Slots
+            (<code>templ.Component</code>) are the primary composition primitive — no framework
+            lock-in, no runtime DI.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Recommendations &amp; roadmap</h2>
+        <ol class="steps">
+          <li>
+            <b>Hold the module split until v1.0.</b> A full per-package <code>go.mod</code> +
+            <code>go.work</code> split was prototyped on <code>modularize/strategic-split</code> and
+            analyzed in <code>docs/modularization/PROPOSAL.md</code>. Benefit: selective imports,
+            enforced boundaries, independent versioning. Cost: 10 go.mod files to keep in lockstep,
+            consumer friction, tooling overhead. The current single-module shape is correct while
+            the API is still pre-1.0. Re-evaluate at v1.0.
+          </li>
+          <li>
+            <b>Keep <code>utils</code> on a diet.</b> Its 204 in-edges make it the highest-leverage
+            package in the library. Any new export is a commitment. Prefer a feature-local helper
+            unless ≥2 packages need it (the existing ADR 0010 sub-template extraction rule
+            generalizes here).
+          </li>
+          <li>
+            <b>Watch <code>display</code> for a future split.</b> If it grows past ~40 components,
+            consider extracting <code>display/overlay</code> (Modal, Drawer, Dropdown, Popover,
+            ContextMenu, HoverCard, Tooltip) and <code>display/data</code> (Table, DataTable,
+            DefinitionList, Grid) into siblings. Not needed today.
+          </li>
+          <li>
+            <b>Preserve the icons-only property.</b> The fact that <code>icons</code> carries no
+            CSS/Tailwind dependency is a real adoption path. Do not let icons grow a dependency on
+            <code>display</code> or <code>tailwind-merge-go</code>.
+          </li>
+          <li>
+            <b>Document the composition contract in one place.</b> The BaseProps/slot/enum patterns
+            are described across AGENTS.md and ADRs. A single <code>docs/composition.md</code> (or a
+            recipes entry) would make the composability story discoverable for new consumers.
+          </li>
+        </ol>
+      </section>
+
+      <section>
+        <h2>Before / after: single module vs. proposed split</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Property</th>
+              <th>Today (single module)</th>
+              <th>Post-v1.0 split (proposed)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Selective imports</td>
+              <td>Whole-tree <code>go get</code>; unused packages add source, not binary</td>
+              <td>Per-package <code>go get</code>; consumers pull exactly what they use</td>
+            </tr>
+            <tr>
+              <td>Boundary enforcement</td>
+              <td><code>internal/</code> convention</td>
+              <td>Real module boundaries (compile errors on leakage)</td>
+            </tr>
+            <tr>
+              <td>Versioning</td>
+              <td>One tag for the whole library</td>
+              <td>icons/utils can version independently</td>
+            </tr>
+            <tr>
+              <td>Tooling cost</td>
+              <td>1 go.mod, trivial</td>
+              <td>10 go.mod + go.work coordination, higher maintenance</td>
+            </tr>
+            <tr>
+              <td>Verdict</td>
+              <td><span style="color: var(--emerald)">Correct for pre-1.0</span></td>
+              <td><span style="color: var(--warning)">Revisit at v1.0</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <footer>
+        Architecture review generated 2026-07-18 by the architecture-review skill. Current-state
+        data computed from HEAD (042954d). Modularization context from
+        <code>docs/modularization/PROPOSAL.md</code>. Point-in-time snapshot; living architecture
+        facts live in <code>AGENTS.md</code>.
+      </footer>
+    </div>
+  </body>
+</html>

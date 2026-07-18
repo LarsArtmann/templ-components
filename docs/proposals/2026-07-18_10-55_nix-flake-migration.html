@@ -1,0 +1,475 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Nix Flake Standardization Proposal — templ-components 2026-07-18</title>
+    <style>
+      :root {
+        --surface: #0e0e10;
+        --surface-raised: #18181d;
+        --surface-sunken: #16161a;
+        --text: #f4f4f0;
+        --text-muted: rgba(244, 244, 240, 0.72);
+        --text-faint: rgba(244, 244, 240, 0.45);
+        --border: rgba(244, 244, 240, 0.12);
+        --accent: #ffb347;
+        --problem: #ff6b6b;
+        --solution: #6eb5ff;
+        --warning: #f4d35e;
+        --emerald: #4ade80;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--text);
+        font-family:
+          ui-sans-serif,
+          system-ui,
+          -apple-system,
+          "Segoe UI",
+          Roboto,
+          sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .wrap {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+      header h1 {
+        font-size: 1.9rem;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.01em;
+      }
+      header .sub {
+        color: var(--text-muted);
+        font-size: 0.98rem;
+        margin-bottom: 1rem;
+      }
+      .meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        color: var(--text-faint);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+      }
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .stat {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1rem 1.2rem;
+      }
+      .stat .label {
+        color: var(--text-faint);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .stat .value {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-top: 0.15rem;
+      }
+      .stat .value.ok {
+        color: var(--emerald);
+      }
+      .stat .value.warn {
+        color: var(--warning);
+      }
+      .stat .value.bad {
+        color: var(--problem);
+      }
+      section {
+        margin: 2.5rem 0;
+      }
+      h2 {
+        font-size: 1.2rem;
+        margin: 0 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+      }
+      h3 {
+        font-size: 1rem;
+        margin: 1.2rem 0 0.4rem;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.55rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        color: var(--text-faint);
+        font-weight: 600;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      code {
+        font-family: ui-monospace, "SF Mono", Menlo, monospace;
+      }
+      pre {
+        background: var(--surface-sunken);
+        border: 1px solid var(--border);
+        border-radius: 8px;
+        padding: 0.9rem 1rem;
+        overflow-x: auto;
+        font-size: 0.8rem;
+        line-height: 1.45;
+      }
+      pre .k {
+        color: #ff79c6;
+      }
+      pre .s {
+        color: #f1fa8c;
+      }
+      pre .c {
+        color: #6272a4;
+        font-style: italic;
+      }
+      pre .fn {
+        color: #50fa7b;
+      }
+      pre .v {
+        color: #8be9fd;
+      }
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 10px;
+        padding: 1.1rem 1.3rem;
+        margin: 1rem 0;
+      }
+      .card.solution {
+        border-left: 3px solid var(--solution);
+      }
+      .card.warning {
+        border-left: 3px solid var(--warning);
+      }
+      .card.note {
+        border-left: 3px solid var(--accent);
+      }
+      .card .h {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+      .card.solution .h {
+        color: var(--solution);
+      }
+      .card.warning .h {
+        color: var(--warning);
+      }
+      .tag {
+        display: inline-block;
+        padding: 0.1rem 0.45rem;
+        border-radius: 4px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .tag.ok {
+        background: color-mix(in srgb, var(--emerald) 18%, transparent);
+        color: var(--emerald);
+      }
+      .tag.warn {
+        background: color-mix(in srgb, var(--warning) 18%, transparent);
+        color: var(--warning);
+      }
+      .tag.no {
+        background: color-mix(in srgb, var(--problem) 18%, transparent);
+        color: var(--problem);
+      }
+      .checklist {
+        list-style: none;
+        padding: 0;
+      }
+      .checklist li {
+        padding: 0.4rem 0 0.4rem 1.8rem;
+        position: relative;
+        color: var(--text-muted);
+        border-bottom: 1px solid var(--border);
+      }
+      .checklist li::before {
+        content: "☐";
+        position: absolute;
+        left: 0;
+        color: var(--accent);
+        font-size: 1.1rem;
+      }
+      .checklist li.done::before {
+        content: "✓";
+        color: var(--emerald);
+      }
+      .checklist li.done {
+        color: var(--text);
+      }
+      footer {
+        color: var(--text-faint);
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Nix Flake Standardization Proposal</h1>
+        <div class="sub">
+          Migration type: ad-hoc <code>flake.nix</code> → standard stack (<code>treefmt-nix</code> +
+          <code>checks</code>). The hard part (<code>flake-parts</code>) is already done.
+        </div>
+        <div class="meta">
+          <span><b>Date:</b> 2026-07-18</span>
+          <span><b>Version:</b> 0.18.0</span>
+          <span><b>Scope:</b> root <code>flake.nix</code></span>
+        </div>
+      </header>
+
+      <div class="stat-grid">
+        <div class="stat">
+          <div class="label">flake-parts</div>
+          <div class="value ok">✓</div>
+          <div class="note">already adopted</div>
+        </div>
+        <div class="stat">
+          <div class="label">systems input</div>
+          <div class="value ok">✓</div>
+          <div class="note">already adopted</div>
+        </div>
+        <div class="stat">
+          <div class="label">nixos-unstable</div>
+          <div class="value ok">✓</div>
+          <div class="note">already adopted</div>
+        </div>
+        <div class="stat">
+          <div class="label">mkShellNoCC</div>
+          <div class="value ok">✓</div>
+          <div class="note">already adopted</div>
+        </div>
+        <div class="stat">
+          <div class="label">treefmt-nix</div>
+          <div class="value warn">✗</div>
+          <div class="note">website has it; root doesn't</div>
+        </div>
+        <div class="stat">
+          <div class="label">checks</div>
+          <div class="value warn">✗</div>
+          <div class="note">no flake checks defined</div>
+        </div>
+        <div class="stat">
+          <div class="label">git-hooks.nix</div>
+          <div class="value bad">skip</div>
+          <div class="note">BuildFlow owns pre-commit</div>
+        </div>
+      </div>
+
+      <section>
+        <h2>Current state</h2>
+        <p>
+          The project is already on the standard flake foundation — <code>flake-parts</code>,
+          <code>systems</code>, <code>nixos-unstable</code>, <code>mkShellNoCC</code>, and five
+          <code>apps</code> (build/test/lint/verify/coverage).
+          <code>nix flake check --no-build</code> passes. There is no <code>justfile</code> or
+          <code>Makefile</code>. The migration is therefore a <b>refinement</b>, not a from-scratch
+          migration.
+        </p>
+        <p>
+          Notably, the <code>website/flake.nix</code> already uses <code>treefmt-nix</code> — so the
+          pattern is proven in this repo. The root flake just hasn't adopted it yet.
+        </p>
+      </section>
+
+      <section>
+        <h2>Gaps vs. the ecosystem standard</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Standard element</th>
+              <th>Root flake</th>
+              <th>Recommendation</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>flake-parts</code></td>
+              <td><span class="tag ok">present</span></td>
+              <td>Keep</td>
+            </tr>
+            <tr>
+              <td><code>systems</code> input</td>
+              <td><span class="tag ok">present</span></td>
+              <td>Keep</td>
+            </tr>
+            <tr>
+              <td><code>treefmt-nix</code> (nixfmt + gofumpt + goimports + templ)</td>
+              <td><span class="tag warn">absent</span></td>
+              <td>
+                <b>Add</b> — matches website/flake.nix; replaces lone
+                <code>formatter = pkgs.nixfmt</code>
+              </td>
+            </tr>
+            <tr>
+              <td><code>checks</code> (format, build, test, lint)</td>
+              <td><span class="tag warn">absent</span></td>
+              <td><b>Add</b> — makes <code>nix flake check</code> meaningful for CI</td>
+            </tr>
+            <tr>
+              <td><code>git-hooks.nix</code></td>
+              <td><span class="tag no">n/a</span></td>
+              <td>
+                <b>Do NOT add</b> — BuildFlow (<code>.buildflow.yml</code>) already owns the
+                pre-commit hook; two systems would conflict
+              </td>
+            </tr>
+            <tr>
+              <td><code>packages.default</code> via <code>buildGoModule</code></td>
+              <td><span class="tag no">n/a</span></td>
+              <td>
+                <b>Optional</b> — this is a library; only <code>examples/demo</code> is a binary.
+                Defer unless the demo is published as a Nix package.
+              </td>
+            </tr>
+            <tr>
+              <td><code>just</code> in devShell</td>
+              <td><span class="tag ok">not present</span></td>
+              <td>Already clean — nothing to remove</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section>
+        <h2>Proposed flake.nix additions</h2>
+        <p>
+          Add <code>treefmt-nix</code> as an input and a <code>treefmt</code> module +
+          <code>checks</code> block inside <code>perSystem</code>. Below is the delta (not a full
+          rewrite — the existing apps/devShell stay).
+        </p>
+
+        <h3>1. New inputs</h3>
+        <pre><span class="c"># add to inputs:</span>
+<span class="k">treefmt-nix</span> = {
+  <span class="v">url</span> = <span class="s">"github:numtide/treefmt-nix"</span>;
+  <span class="v">inputs.nixpkgs.follows</span> = <span class="s">"nixpkgs"</span>;
+};</pre>
+
+        <h3>2. Module import + treefmt config + checks (inside mkFlake)</h3>
+        <pre><span class="k">flake-parts.lib.mkFlake</span> { <span class="v">inherit</span> inputs; } {
+  <span class="v">systems</span> = <span class="k">import</span> inputs.systems;
+  <span class="v">imports</span> = [ inputs.treefmt-nix.flakeModule ];  <span class="c"># NEW</span>
+
+  <span class="v">perSystem</span> = { config, pkgs, ... }: {
+    <span class="c"># ... existing devShells / apps unchanged ...</span>
+
+    <span class="c"># NEW: replaces the bare `formatter = pkgs.nixfmt;`</span>
+    <span class="fn">treefmt</span> = {
+      <span class="v">projectRootFile</span> = <span class="s">"go.mod"</span>;
+      <span class="v">programs</span> = {
+        <span class="fn">gofumpt</span>.<span class="v">enable</span> = <span class="k">true</span>;
+        <span class="fn">goimports</span>.<span class="v">enable</span> = <span class="k">true</span>;
+        <span class="fn">nixfmt</span>.<span class="v">enable</span> = <span class="k">true</span>;
+        <span class="fn">templ</span>.<span class="v">enable</span> = <span class="k">true</span>;
+      };
+    };
+
+    <span class="c"># NEW: make `nix flake check` meaningful</span>
+    <span class="fn">checks</span> = {
+      <span class="v">format</span> = config.treefmt.build.check self;
+      <span class="v">build</span> = pkgs.runCommand <span class="s">"tc-build-check"</span> {
+        <span class="v">nativeBuildInputs</span> = [ pkgs.go_1_26 pkgs.templ ];
+        <span class="v">GOWORK</span> = <span class="s">"off"</span>; <span class="v">GOEXPERIMENT</span> = <span class="s">"jsonv2"</span>;
+      } <span class="s">''
+        cp -r ''${src}/* .
+        find . -name '*_templ.go' -delete
+        templ generate ./...
+        go build ./...
+        touch $out
+      ''</span>;
+    };
+  };
+};</pre>
+        <div class="card note">
+          <div class="h">Note on the <code>build</code> check</div>
+          <p>
+            The <code>src</code> for the build check should use <code>lib.fileset</code> to avoid
+            copying <code>website/</code>, <code>docs/</code>, <code>.git</code>. The skeleton above
+            is illustrative; the real implementation should mirror the fileset discipline from the
+            skill's Go template.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Why NOT git-hooks.nix</h2>
+        <div class="card warning">
+          <div class="h">BuildFlow already owns pre-commit</div>
+          <p>
+            <code>.git/hooks/pre-commit</code> is a BuildFlow-generated hook (<code
+              >buildflow precommit install</code
+            >) running BuildFlow in pre-commit mode with a 60s budget.
+            <code>git-hooks.nix</code> would install a second, competing pre-commit system. Pick
+            one. BuildFlow is already configured and working, with library-specific checks (templ
+            generate, the GOEXPERIMENT=jsonv2 guard, dupl_threshold). Keep BuildFlow; do not add
+            git-hooks.nix.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Post-migration checklist</h2>
+        <ul class="checklist">
+          <li class="done"><code>nix flake check --no-build</code> passes (already true)</li>
+          <li class="done"><code>flake-parts</code> used (not flake-utils)</li>
+          <li class="done"><code>systems</code> input used (not hardcoded list)</li>
+          <li class="done"><code>mkShellNoCC</code> for shells</li>
+          <li class="done"><code>just</code> not present in devShell</li>
+          <li><code>treefmt-nix</code> imported with nixfmt + gofumpt + goimports + templ</li>
+          <li><code>checks.format</code> and <code>checks.build</code> defined</li>
+          <li><code>nix fmt</code> formats nix + go + templ files</li>
+          <li><code>nix build</code> not required (library; demo binary optional)</li>
+          <li>
+            Verify BuildFlow pre-commit still runs after treefmt is added (no conflict — treefmt is
+            <code>nix fmt</code>, BuildFlow is git-hook)
+          </li>
+        </ul>
+      </section>
+
+      <section>
+        <h2>Recommendation</h2>
+        <p>
+          <b>Low-priority refinement.</b> The flake is already valid and the dev workflow works. The
+          two additions (<code>treefmt-nix</code> + <code>checks</code>) are pure improvements that
+          bring the root flake to the same standard the website flake already meets, and make
+          <code>nix flake check</code> + <code>nix fmt</code> meaningful for CI. Estimated effort:
+          ~30 minutes. No urgency — schedule alongside the next flake touch.
+        </p>
+      </section>
+
+      <footer>
+        Nix flake standardization proposal generated 2026-07-18. The project is already on the
+        standard foundation; this refines the remaining gaps. BuildFlow (not git-hooks.nix) owns
+        pre-commit by deliberate choice.
+      </footer>
+    </div>
+  </body>
+</html>

@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-07-15 | **Version:** 0.17.0
+**Updated:** 2026-07-18 | **Version:** 0.18.0
 
 > Built from 42 `docs/**/2026-07-0*` files + code verification. Each item is verified against
 > the actual codebase. Statuses: ✅ done, ⬜ deferred, ⚫ blocked (needs external resources).
@@ -136,7 +136,7 @@
 
 ---
 
-## Modern web standards — Shipped (unreleased, `[Unreleased]` in CHANGELOG)
+## Modern web standards — Shipped in v0.18.0 (2026-07-18)
 
 | Feature                                             | Component                 | Status  |
 | --------------------------------------------------- | ------------------------- | ------- |
@@ -154,13 +154,12 @@
 
 ## P1 — Next high-impact improvements (from Pareto plan)
 
-| #   | Task                                                                                | Status      | Evidence                                                            | Source      |
-| --- | ----------------------------------------------------------------------------------- | ----------- | ------------------------------------------------------------------- | ----------- |
-| 60  | Remove deprecated aliases (`AlertType`, `ToastType`, `FamilyFromErrorFamily`)       | ⬜ DEFERRED | Already listed in v1.0 section; low-effort breaking cleanup         | pareto-plan |
-| 61  | Add docs-health CI check                                                            | ⬜ DEFERRED | New CI step that runs docs-count drift assertions                   | pareto-plan |
-| 62  | Add `Validate()` methods to top 5 props structs (Card, Button, Input, Alert, Table) | ⬜ DEFERRED | `Validate() error` added behind v1.0 flag                           | pareto-plan |
-| 63  | Self-host HTMX as default (ADR 0007)                                                | ⬜ DEFERRED | `layout/sri.go` currently defaults to CDN; ADR documents the switch | pareto-plan |
-| 64  | Prototype compound components for Modal/Drawer (Trigger/Content/Close)              | ⬜ DEFERRED | Existing monolithic Modal/Drawer in `display/`                      | pareto-plan |
+Items #60, #63, #64 were removed as duplicates of #38, #35, #39 (see v1.0/v2.0 sections above).
+
+| #   | Task                                                                                | Status      | Evidence                                          | Source      |
+| --- | ----------------------------------------------------------------------------------- | ----------- | ------------------------------------------------- | ----------- |
+| 61  | Add docs-health CI check                                                            | ⬜ DEFERRED | New CI step that runs docs-count drift assertions | pareto-plan |
+| 62  | Add `Validate()` methods to top 5 props structs (Card, Button, Input, Alert, Table) | ⬜ DEFERRED | `Validate() error` added behind v1.0 flag         | pareto-plan |
 
 ---
 

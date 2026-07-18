@@ -1,0 +1,390 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>Frontend Design Assessment — templ-components 2026-07-18</title>
+    <style>
+      :root {
+        --surface: #0a0908;
+        --surface-raised: #161413;
+        --surface-sunken: #1c1917;
+        --text: #f5f5f4;
+        --text-secondary: #a8a29e;
+        --text-muted: #78716c;
+        --border: rgba(41, 37, 36, 0.5);
+        --border-hover: rgba(68, 62, 58, 0.8);
+        --accent: #2563eb;
+        --amber: #fbbf24;
+        --emerald: #4ade80;
+      }
+      * {
+        box-sizing: border-box;
+      }
+      body {
+        margin: 0;
+        background: var(--surface);
+        color: var(--text);
+        font-family: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+        line-height: 1.6;
+        -webkit-font-smoothing: antialiased;
+      }
+      .mono {
+        font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+      }
+      .wrap {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 3rem 1.5rem 5rem;
+      }
+      header h1 {
+        font-size: 2rem;
+        margin: 0 0 0.25rem;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+      }
+      header .sub {
+        color: var(--text-secondary);
+        font-size: 0.98rem;
+        margin-bottom: 1rem;
+      }
+      .meta {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap;
+        color: var(--text-muted);
+        font-size: 0.85rem;
+        margin-bottom: 2rem;
+        font-family: ui-monospace, Menlo, monospace;
+      }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+      .stat {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.1rem 1.25rem;
+      }
+      .stat .label {
+        color: var(--text-muted);
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+      }
+      .stat .value {
+        font-size: 1.3rem;
+        font-weight: 700;
+        margin-top: 0.15rem;
+      }
+      .swatch-row {
+        display: flex;
+        gap: 0.5rem;
+        flex-wrap: wrap;
+        margin-top: 0.4rem;
+      }
+      .swatch {
+        width: 22px;
+        height: 22px;
+        border-radius: 6px;
+        border: 1px solid var(--border);
+      }
+      section {
+        margin: 2.5rem 0;
+      }
+      h2 {
+        font-size: 1.2rem;
+        margin: 0 0 1rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 1px solid var(--border);
+        font-weight: 600;
+      }
+      h3 {
+        font-size: 1rem;
+        margin: 1.2rem 0 0.4rem;
+      }
+      .card {
+        background: var(--surface-raised);
+        border: 1px solid var(--border);
+        border-radius: 12px;
+        padding: 1.1rem 1.3rem;
+        margin: 1rem 0;
+      }
+      .card.win {
+        border-left: 3px solid var(--emerald);
+      }
+      .card.risk {
+        border-left: 3px solid var(--amber);
+      }
+      .card.note {
+        border-left: 3px solid var(--accent);
+      }
+      .card .h {
+        font-weight: 600;
+        margin-bottom: 0.3rem;
+      }
+      .card.win .h {
+        color: var(--emerald);
+      }
+      .card.risk .h {
+        color: var(--amber);
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.88rem;
+      }
+      th,
+      td {
+        text-align: left;
+        padding: 0.55rem 0.8rem;
+        border-bottom: 1px solid var(--border);
+        vertical-align: top;
+      }
+      th {
+        color: var(--text-muted);
+        font-weight: 600;
+        font-size: 0.72rem;
+        text-transform: uppercase;
+        letter-spacing: 0.06em;
+      }
+      code {
+        font-family: ui-monospace, "JetBrains Mono", Menlo, monospace;
+        font-size: 0.85em;
+        background: var(--surface-sunken);
+        padding: 0.1em 0.35em;
+        border-radius: 4px;
+      }
+      .tag {
+        display: inline-block;
+        padding: 0.1rem 0.5rem;
+        border-radius: 4px;
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+      }
+      .tag.good {
+        background: rgba(74, 222, 128, 0.16);
+        color: var(--emerald);
+      }
+      .tag.risk {
+        background: rgba(251, 191, 36, 0.16);
+        color: var(--amber);
+      }
+      footer {
+        color: var(--text-muted);
+        font-size: 0.8rem;
+        margin-top: 3rem;
+        padding-top: 1.5rem;
+        border-top: 1px solid var(--border);
+      }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <header>
+        <h1>Frontend Design Assessment</h1>
+        <div class="sub">
+          Distinctiveness + intentionality review of the templ-components marketing site &amp;
+          component aesthetic.
+        </div>
+        <div class="meta">
+          <span>DATE: 2026-07-18</span>
+          <span>SUBJECT: templcomponents.lars.software</span>
+          <span>SURFACE: dark (default), warm stone</span>
+        </div>
+      </header>
+
+      <div class="grid">
+        <div class="stat">
+          <div class="label">Palette</div>
+          <div class="value" style="color: var(--text)">warm stone</div>
+          <div class="swatch-row">
+            <span class="swatch" style="background: #0a0908"></span
+            ><span class="swatch" style="background: #1c1917"></span
+            ><span class="swatch" style="background: #a8a29e"></span
+            ><span class="swatch" style="background: #2563eb"></span
+            ><span class="swatch" style="background: #fbbf24"></span>
+          </div>
+        </div>
+        <div class="stat">
+          <div class="label">Display face</div>
+          <div class="value" style="color: var(--text)">Space Grotesk</div>
+          <div class="label" style="margin-top: 0.3rem">code: JetBrains Mono</div>
+        </div>
+        <div class="stat">
+          <div class="label">Default-ness</div>
+          <div class="value" style="color: var(--emerald)">low</div>
+          <div class="label">avoids the 3 AI templates</div>
+        </div>
+        <div class="stat">
+          <div class="label">A11y floor</div>
+          <div class="value" style="color: var(--emerald)">met</div>
+          <div class="label">focus-visible · reduce-motion</div>
+        </div>
+      </div>
+
+      <p>
+        This is a <b>critique of an already-strong design</b>, not a rebuild. The site makes
+        deliberate choices and does not read as templated. The notes below confirm what is working
+        and identify the one place to spend more boldness.
+      </p>
+
+      <section>
+        <h2>What is working (preserve this)</h2>
+
+        <div class="card win">
+          <div class="h">
+            Warm stone neutrals, not zinc/slate <span class="tag good">distinctive</span>
+          </div>
+          <p>
+            The dark base is <code>#0a0908</code> (warm near-black) with
+            <code>#a8a29e</code> (stone-400) secondary text. This is <b>not</b> the generic
+            <code>zinc-950</code>/<code>slate-900</code> every AI dark site reaches for. The warmth
+            gives the page a tactile, considered feel. Keep this — it is the foundation of the
+            identity.
+          </p>
+        </div>
+
+        <div class="card win">
+          <div class="h">
+            Space Grotesk + JetBrains Mono is a real pairing
+            <span class="tag good">distinctive</span>
+          </div>
+          <p>
+            Space Grotesk is a characterful geometric sans with personality at display sizes;
+            pairing it with JetBrains Mono for code/data is a deliberate choice, not the default
+            Inter/system-ui. The <code>clamp()</code> fluid type scale in the hero (<code
+              >clamp(2.75rem, 8vw, 4.5rem)</code
+            >) reads as intentional. Typography is carrying its share of the personality — exactly
+            what the skill asks for.
+          </p>
+        </div>
+
+        <div class="card win">
+          <div class="h">
+            Motion is disciplined, reduce-motion respected
+            <span class="tag good">quality floor</span>
+          </div>
+          <p>
+            Three named keyframes (<code>fade-in</code>, <code>fade-in-up</code>,
+            <code>pulse-dot</code>) used sparingly, with a <code>prefers-reduced-motion</code> block
+            that disables transforms. <code>:focus-visible</code> rings and branded
+            <code>::selection</code> are present. This is the unannounced quality floor the skill
+            calls for.
+          </p>
+        </div>
+
+        <div class="card win">
+          <div class="h">
+            The hero code block IS the thesis <span class="tag good">correct instinct</span>
+          </div>
+          <p>
+            The hero opens with a live templ code sample, not a generic big-number + gradient. For a
+            developer library, showing real usage IS the most characteristic thing in the subject's
+            world. This is the right call.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>The one risk worth taking</h2>
+        <div class="card risk">
+          <div class="h">
+            Commit to amber as the marketing-site signature accent
+            <span class="tag risk">push further</span>
+          </div>
+          <p>
+            The token system already defines <code>--color-amber: #fbbf24</code> and uses it
+            tentatively — string highlighting in the hero code, one step variant in
+            <code>HowItWorksSection</code>, the <code>~</code> in <code>ComparisonSection</code>. It
+            reads as incidental, not intentional.
+          </p>
+          <p>
+            <b>The move:</b> make amber the consistent voice of the marketing site — section
+            eyebrows, the stat numbers in the metrics row, hover/emphasis states — while
+            <b>blue stays the library's component-brand color</b>. This creates a clean separation:
+            <i>blue = the product you install, amber = the site selling it</i>. Right now both
+            accents compete weakly; committing to amber as the signature gives the page the one
+            memorable thing the skill asks for ("spend your boldness in one place").
+          </p>
+          <p>
+            Concrete first step: recolor the hero metrics numbers (<code>94 · 102 · 37 · 9</code>)
+            and the "Server-rendered UI for Go" eyebrow from neutral/blue to amber. Low-risk,
+            high-distinctiveness payoff.
+          </p>
+        </div>
+      </section>
+
+      <section>
+        <h2>Default-ness check vs. the three AI templates</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>AI default template</th>
+              <th>This site</th>
+              <th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>Warm cream (#F4F1EA) + serif + terracotta</td>
+              <td>Warm dark graphite + grotesk + blue/amber</td>
+              <td><span class="tag good">avoided</span></td>
+            </tr>
+            <tr>
+              <td>Near-black + single acid-green/vermilion accent</td>
+              <td>Near-black warm + blue (brand-coherent) + amber</td>
+              <td>
+                <span class="tag good">avoided</span> — blue is justified by library theming, not a
+                default
+              </td>
+            </tr>
+            <tr>
+              <td>Broadsheet hairline, zero radius, dense columns</td>
+              <td>Rounded cards (12px), generous spacing, centered hero</td>
+              <td><span class="tag good">avoided</span></td>
+            </tr>
+          </tbody>
+        </table>
+        <p>
+          The site clears the default-ness bar on all three. The only soft spot is that blue-600 as
+          the primary accent is the <i>safe</i> choice (justified by brand coherence) — which is
+          exactly why leaning into amber as the signature is the right risk.
+        </p>
+      </section>
+
+      <section>
+        <h2>Component library aesthetic (brief)</h2>
+        <p>
+          The <b>library</b> itself is intentionally neutral — it emits standard Tailwind utility
+          classes (<code>bg-blue-600</code>, <code>text-gray-500</code>) and lets consumers theme
+          via <code>@theme</code> overrides. That is the correct posture for a component library: do
+          not impose a visual identity on consumers. The dark-mode convention (<code>-600</code>
+          light / <code>-500</code> dark backgrounds, <code>-600</code> / <code>-400</code> text) is
+          consistent and tested. No change recommended here — the library's job is to be a neutral,
+          themable substrate, and it is.
+        </p>
+      </section>
+
+      <section>
+        <h2>Summary</h2>
+        <p>
+          The marketing site is genuinely well-designed and distinctive — warm palette, real type
+          pairing, disciplined motion, a hero built around real code. <b>No rebuild needed.</b> The
+          single recommendation is to commit harder to the amber secondary accent as the site's
+          signature, separating it from the blue that represents the installable library. Everything
+          else is preservation.
+        </p>
+      </section>
+
+      <footer>
+        Frontend design assessment generated 2026-07-18. Critique of the existing design using this
+        skill's token system / signature framework. Built with the site's own design tokens.
+      </footer>
+    </div>
+  </body>
+</html>

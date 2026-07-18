@@ -1,0 +1,167 @@
+direction: down
+
+title: |md
+  # templ-components — Target Architecture (post-v1.0)
+  **Per-package go.mod coordinated by go.work · selective imports · enforced boundaries**
+| {near: top-center}
+
+workspace: "go.work (workspace coordinator)" {
+  style.fill: "#f5f3ff"
+  style.stroke: "#5b21b6"
+  shape: package
+}
+
+mod_icons: "icons module" {
+  style.fill: "#ecfdf5"
+  style.stroke: "#065f46"
+  style.multiple: true
+
+  go.mod_icons: "go.mod\nmodule .../icons" {shape: page; style.fill: "#d1fae5"}
+  icons_pkg: icons {
+    style.fill: "#d1fae5"
+    "102 Name consts · IconPathData\n(standalone-importable)"
+  }
+}
+
+mod_utils: "utils module" {
+  style.fill: "#ecfdf5"
+  style.stroke: "#065f46"
+  style.multiple: true
+
+  go.mod_utils: "go.mod\nmodule .../utils" {shape: page; style.fill: "#d1fae5"}
+  utils_pkg: utils {
+    style.fill: "#d1fae5"
+    "BaseProps · Class · Lookup · EnsureID"
+  }
+}
+
+mod_svg: "svg module (was internal/)" {
+  style.fill: "#ecfdf5"
+  style.stroke: "#065f46"
+  style.multiple: true
+
+  go.mod_svg: "go.mod\nmodule .../svg" {shape: page; style.fill: "#d1fae5"}
+  svg_pkg: svg {
+    style.fill: "#d1fae5"
+    "SVG path constants (promoted from internal/)"
+  }
+}
+
+mod_display: "display module" {
+  style.fill: "#fffbeb"
+  style.stroke: "#92400e"
+  style.multiple: true
+
+  go.mod_display: "go.mod\nmodule .../display" {shape: page; style.fill: "#fef3c7"}
+  display_pkg: display {
+    style.fill: "#fef3c7"
+    "30 components (largest)"
+  }
+}
+
+mod_forms: "forms module" {
+  style.fill: "#fffbeb"
+  style.stroke: "#92400e"
+  style.multiple: true
+  go.mod_forms: "go.mod" {shape: page; style.fill: "#fef3c7"}
+  forms_pkg: forms {style.fill: "#fef3c7"; "21 components"}
+}
+
+mod_layout: "layout module" {
+  style.fill: "#fffbeb"
+  style.stroke: "#92400e"
+  style.multiple: true
+  go.mod_layout: "go.mod" {shape: page; style.fill: "#fef3c7"}
+  layout_pkg: layout {style.fill: "#fef3c7"; "6 components · theme · SRI"}
+}
+
+mod_nav: "navigation module" {
+  style.fill: "#fffbeb"
+  style.stroke: "#92400e"
+  style.multiple: true
+  go.mod_nav: "go.mod" {shape: page; style.fill: "#fef3c7"}
+  nav_pkg: navigation {style.fill: "#fef3c7"; "12 components"}
+}
+
+mod_feedback: "feedback module" {
+  style.fill: "#fffbeb"
+  style.stroke: "#92400e"
+  style.multiple: true
+  go.mod_feedback: "go.mod" {shape: page; style.fill: "#fef3c7"}
+  feedback_pkg: feedback {style.fill: "#fef3c7"; "13 components"}
+}
+
+mod_htmx: "htmx module" {
+  style.fill: "#fffbeb"
+  style.stroke: "#92400e"
+  style.multiple: true
+  go.mod_htmx: "go.mod" {shape: page; style.fill: "#fef3c7"}
+  htmx_pkg: htmx {style.fill: "#fef3c7"; "8 components"}
+}
+
+mod_errorpage: "errorpage module" {
+  style.fill: "#fffbeb"
+  style.stroke: "#92400e"
+  style.multiple: true
+  go.mod_errorpage: "go.mod" {shape: page; style.fill: "#fef3c7"}
+  errorpage_pkg: errorpage {style.fill: "#fef3c7"; "4 components + handler"}
+}
+
+workspace -> mod_icons: "coordinates" {style.stroke-dash: 3; style.stroke: "#5b21b6"}
+workspace -> mod_utils: " " {style.stroke-dash: 3; style.stroke: "#5b21b6"}
+workspace -> mod_svg: " " {style.stroke-dash: 3; style.stroke: "#5b21b6"}
+workspace -> mod_display: " " {style.stroke-dash: 3; style.stroke: "#5b21b6"}
+workspace -> mod_forms: " " {style.stroke-dash: 3; style.stroke: "#5b21b6"}
+workspace -> mod_layout: " " {style.stroke-dash: 3; style.stroke: "#5b21b6"}
+workspace -> mod_nav: " " {style.stroke-dash: 3; style.stroke: "#5b21b6"}
+workspace -> mod_feedback: " " {style.stroke-dash: 3; style.stroke: "#5b21b6"}
+workspace -> mod_htmx: " " {style.stroke-dash: 3; style.stroke: "#5b21b6"}
+workspace -> mod_errorpage: " " {style.stroke-dash: 3; style.stroke: "#5b21b6"}
+
+mod_icons -> mod_svg: "go.mod require" {style.stroke: "#065f46"; style.stroke-width: 2}
+mod_icons -> mod_utils: "go.mod require" {style.stroke: "#065f46"; style.stroke-width: 2}
+
+mod_display -> mod_icons: "require" {style.stroke: "#1e40af"}
+mod_display -> mod_svg: "require" {style.stroke: "#1e40af"}
+mod_display -> mod_utils: "require" {style.stroke: "#1e40af"}
+
+mod_feedback -> mod_icons: "require" {style.stroke: "#1e40af"}
+mod_feedback -> mod_svg: "require" {style.stroke: "#1e40af"}
+mod_feedback -> mod_utils: "require" {style.stroke: "#1e40af"}
+
+mod_forms -> mod_icons: "require" {style.stroke: "#1e40af"}
+mod_forms -> mod_utils: "require" {style.stroke: "#1e40af"}
+
+mod_layout -> mod_icons: "require" {style.stroke: "#1e40af"}
+mod_layout -> mod_utils: "require" {style.stroke: "#1e40af"}
+
+mod_nav -> mod_icons: "require" {style.stroke: "#1e40af"}
+mod_nav -> mod_svg: "require" {style.stroke: "#1e40af"}
+mod_nav -> mod_utils: "require" {style.stroke: "#1e40af"}
+
+mod_htmx -> mod_utils: "require" {style.stroke: "#1e40af"}
+
+mod_errorpage -> mod_icons: "require" {style.stroke: "#1e40af"}
+mod_errorpage -> mod_utils: "require" {style.stroke: "#1e40af"}
+
+consumer: "Consumer app" {
+  style.fill: "#fdf2f8"
+  style.stroke: "#9d174d"
+  shape: person
+  "go get github.com/larsartmann/templ-components/icons  (selective!)"
+}
+
+consumer -> mod_icons: "imports ONLY what it needs\n(no display/tailwind-merge-go pulled)" {style.stroke: "#9d174d"; style.stroke-width: 2}
+
+gains: |md
+  ## What this buys
+  - **Selective imports** — `go get .../icons` no longer pulls display/forms/tailwind-merge-go
+  - **Enforced boundaries** — `internal/svg` becomes a real module (leakage = compile error)
+  - **Independent versioning** — icons/utils can tag v1.x while display is still v0.x
+  - **Smaller CI surface** — only changed modules rebuild
+  ## What it costs
+  - 10 go.mod files to keep in lockstep (automate via tooling)
+  - Slightly more consumer friction for cross-package imports
+  ## When
+  - **Post-v1.0 API freeze** — not before the public API stabilizes
+| {near: bottom-right}

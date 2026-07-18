@@ -4,7 +4,7 @@ export const features: Feature[] = [
   {
     icon: "shield",
     title: "Type-Safe Props",
-    desc: "34 typed string enums make invalid states unrepresentable. Every props struct embeds BaseProps for consistent ID, class, ARIA, and CSP nonce propagation.",
+    desc: "37 typed string enums make invalid states unrepresentable. Every props struct embeds BaseProps for consistent ID, class, ARIA, and CSP nonce propagation.",
   },
   {
     icon: "lightning",
