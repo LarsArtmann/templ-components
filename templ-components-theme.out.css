@@ -1,0 +1,18 @@
+/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+:root {
+  color-scheme: light dark;
+}
+.dark {
+  color-scheme: dark;
+  scrollbar-color: var(--color-gray-600) var(--color-gray-900);
+  --color-tc-surface: var(--color-gray-900);
+  --color-tc-surface-elevated: var(--color-gray-800);
+  --color-tc-text: var(--color-gray-100);
+  --color-tc-text-muted: var(--color-gray-400);
+  --color-tc-border: var(--color-gray-700);
+}
+@media (prefers-reduced-transparency) {
+  .dark {
+    scrollbar-color: var(--color-gray-600) var(--color-gray-900);
+  }
+}

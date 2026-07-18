@@ -1,0 +1,549 @@
+/*! tailwindcss v4.3.2 | MIT License | https://tailwindcss.com */
+@layer theme {
+  :root,
+  :host {
+    --font-sans:
+      ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+      "Segoe UI Symbol", "Noto Color Emoji";
+    --font-mono:
+      ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New",
+      monospace;
+    --default-font-family: var(--font-sans);
+    --default-mono-font-family: var(--font-mono);
+  }
+}
+@layer base {
+  *,
+  :after,
+  :before,
+  ::backdrop {
+    box-sizing: border-box;
+    border: 0 solid;
+    margin: 0;
+    padding: 0;
+  }
+  ::file-selector-button {
+    box-sizing: border-box;
+    border: 0 solid;
+    margin: 0;
+    padding: 0;
+  }
+  html,
+  :host {
+    -webkit-text-size-adjust: 100%;
+    tab-size: 4;
+    line-height: 1.5;
+    font-family: var(
+      --default-font-family,
+      ui-sans-serif,
+      system-ui,
+      sans-serif,
+      "Apple Color Emoji",
+      "Segoe UI Emoji",
+      "Segoe UI Symbol",
+      "Noto Color Emoji"
+    );
+    font-feature-settings: var(--default-font-feature-settings, normal);
+    font-variation-settings: var(--default-font-variation-settings, normal);
+    -webkit-tap-highlight-color: transparent;
+  }
+  hr {
+    height: 0;
+    color: inherit;
+    border-top-width: 1px;
+  }
+  abbr:where([title]) {
+    -webkit-text-decoration: underline dotted;
+    text-decoration: underline dotted;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-size: inherit;
+    font-weight: inherit;
+  }
+  a {
+    color: inherit;
+    -webkit-text-decoration: inherit;
+    -webkit-text-decoration: inherit;
+    -webkit-text-decoration: inherit;
+    text-decoration: inherit;
+  }
+  b,
+  strong {
+    font-weight: bolder;
+  }
+  code,
+  kbd,
+  samp,
+  pre {
+    font-family: var(
+      --default-mono-font-family,
+      ui-monospace,
+      SFMono-Regular,
+      Menlo,
+      Monaco,
+      Consolas,
+      "Liberation Mono",
+      "Courier New",
+      monospace
+    );
+    font-feature-settings: var(--default-mono-font-feature-settings, normal);
+    font-variation-settings: var(--default-mono-font-variation-settings, normal);
+    font-size: 1em;
+  }
+  small {
+    font-size: 80%;
+  }
+  sub,
+  sup {
+    vertical-align: baseline;
+    font-size: 75%;
+    line-height: 0;
+    position: relative;
+  }
+  sub {
+    bottom: -0.25em;
+  }
+  sup {
+    top: -0.5em;
+  }
+  table {
+    text-indent: 0;
+    border-color: inherit;
+    border-collapse: collapse;
+  }
+  :-moz-focusring {
+    outline: auto;
+  }
+  progress {
+    vertical-align: baseline;
+  }
+  summary {
+    display: list-item;
+  }
+  ol,
+  ul,
+  menu {
+    list-style: none;
+  }
+  img,
+  svg,
+  video,
+  canvas,
+  audio,
+  iframe,
+  embed,
+  object {
+    vertical-align: middle;
+    display: block;
+  }
+  img,
+  video {
+    max-width: 100%;
+    height: auto;
+  }
+  button,
+  input,
+  select,
+  optgroup,
+  textarea {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    opacity: 1;
+    background-color: #0000;
+    border-radius: 0;
+  }
+  ::file-selector-button {
+    font: inherit;
+    font-feature-settings: inherit;
+    font-variation-settings: inherit;
+    letter-spacing: inherit;
+    color: inherit;
+    opacity: 1;
+    background-color: #0000;
+    border-radius: 0;
+  }
+  :where(select:is([multiple], [size])) optgroup {
+    font-weight: bolder;
+  }
+  :where(select:is([multiple], [size])) optgroup option {
+    padding-inline-start: 20px;
+  }
+  ::file-selector-button {
+    margin-inline-end: 4px;
+  }
+  ::placeholder {
+    opacity: 1;
+  }
+  @supports (not ((-webkit-appearance: -apple-pay-button))) or (contain-intrinsic-size: 1px) {
+    ::placeholder {
+      color: currentColor;
+    }
+    @supports (color: color-mix(in lab, red, red)) {
+      ::placeholder {
+        color: color-mix(in oklab, currentcolor 50%, transparent);
+      }
+    }
+  }
+  textarea {
+    resize: vertical;
+  }
+  ::-webkit-search-decoration {
+    -webkit-appearance: none;
+  }
+  ::-webkit-date-and-time-value {
+    min-height: 1lh;
+    text-align: inherit;
+  }
+  ::-webkit-datetime-edit {
+    display: inline-flex;
+  }
+  ::-webkit-datetime-edit-fields-wrapper {
+    padding: 0;
+  }
+  ::-webkit-datetime-edit {
+    padding-block: 0;
+  }
+  ::-webkit-datetime-edit-year-field {
+    padding-block: 0;
+  }
+  ::-webkit-datetime-edit-month-field {
+    padding-block: 0;
+  }
+  ::-webkit-datetime-edit-day-field {
+    padding-block: 0;
+  }
+  ::-webkit-datetime-edit-hour-field {
+    padding-block: 0;
+  }
+  ::-webkit-datetime-edit-minute-field {
+    padding-block: 0;
+  }
+  ::-webkit-datetime-edit-second-field {
+    padding-block: 0;
+  }
+  ::-webkit-datetime-edit-millisecond-field {
+    padding-block: 0;
+  }
+  ::-webkit-datetime-edit-meridiem-field {
+    padding-block: 0;
+  }
+  ::-webkit-calendar-picker-indicator {
+    line-height: 1;
+  }
+  :-moz-ui-invalid {
+    box-shadow: none;
+  }
+  button,
+  input:where([type="button"], [type="reset"], [type="submit"]) {
+    appearance: button;
+  }
+  ::file-selector-button {
+    appearance: button;
+  }
+  ::-webkit-inner-spin-button {
+    height: auto;
+  }
+  ::-webkit-outer-spin-button {
+    height: auto;
+  }
+  [hidden]:where(:not([hidden="until-found"])) {
+    display: none !important;
+  }
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    text-wrap: balance;
+  }
+  p {
+    text-wrap: pretty;
+  }
+  input[type="checkbox"],
+  input[type="radio"],
+  input[type="range"],
+  progress {
+    accent-color: #2563eb;
+  }
+  .dark input[type="checkbox"],
+  .dark input[type="radio"],
+  .dark input[type="range"],
+  .dark progress {
+    accent-color: #60a5fa;
+  }
+}
+@layer components {
+  dialog.tc-overlay {
+    color: inherit;
+    background: 0 0;
+    border: 0;
+    padding: 0;
+  }
+  dialog.tc-overlay::backdrop {
+    -webkit-backdrop-filter: blur(2px);
+    backdrop-filter: blur(2px);
+    transition:
+      background-color 0.2s ease-out,
+      overlay 0.2s allow-discrete,
+      display 0.2s allow-discrete;
+    background-color: #0000;
+  }
+  dialog.tc-overlay[open]::backdrop {
+    background-color: #00000080;
+  }
+  @starting-style {
+    dialog.tc-overlay[open]::backdrop {
+      background-color: #0000;
+    }
+  }
+  dialog.tc-modal {
+    opacity: 0;
+    transition:
+      opacity 0.2s ease-out,
+      transform 0.2s ease-out,
+      overlay 0.2s allow-discrete,
+      display 0.2s allow-discrete;
+    transform: scale(0.95);
+  }
+  dialog.tc-modal[open] {
+    opacity: 1;
+    transform: scale(1);
+  }
+  @starting-style {
+    dialog.tc-modal[open] {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+  }
+  dialog.tc-drawer {
+    opacity: 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    transition:
+      opacity 0.2s ease-out,
+      transform 0.2s ease-out,
+      overlay 0.2s allow-discrete,
+      display 0.2s allow-discrete;
+    margin-block: 0;
+    transform: translate(0);
+  }
+  dialog.tc-drawer[data-side="left"] {
+    margin-inline: 0 auto;
+  }
+  dialog.tc-drawer[data-side="right"] {
+    margin-inline: auto 0;
+  }
+  dialog.tc-drawer[data-side="left"]:not([open]) {
+    transform: translate(-100%);
+  }
+  dialog.tc-drawer[data-side="right"]:not([open]) {
+    transform: translate(100%);
+  }
+  dialog.tc-drawer[open] {
+    opacity: 1;
+    transform: translate(0);
+  }
+  @starting-style {
+    dialog.tc-drawer[data-side="left"][open] {
+      opacity: 0;
+      transform: translate(-100%);
+    }
+    dialog.tc-drawer[data-side="right"][open] {
+      opacity: 0;
+      transform: translate(100%);
+    }
+  }
+  :is(input:user-invalid, textarea:user-invalid, select:user-invalid) {
+    border-color: #dc2626;
+  }
+  :is(input:user-valid, textarea:user-valid, select:user-valid) {
+    border-color: #16a34a;
+  }
+}
+@layer utilities {
+  [dir="rtl"] [data-tc-dir-icon] {
+    transform: scaleX(-1);
+  }
+  .tc-content-auto {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 48px;
+  }
+  .tc-content-auto-compact {
+    content-visibility: auto;
+    contain-intrinsic-size: auto 40px;
+  }
+  .tc-snap-x {
+    scroll-snap-type: x mandatory;
+  }
+  .tc-snap-center {
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
+  }
+  .tc-no-scrollbar {
+    scrollbar-width: none;
+  }
+  .tc-no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+  .tc-auto-grow {
+    field-sizing: content;
+    min-height: 2.5rem;
+    max-height: 20rem;
+  }
+}
+[popover]::backdrop {
+  background-color: #0000;
+}
+@media (prefers-reduced-motion: reduce) {
+  dialog.tc-overlay,
+  dialog.tc-overlay::backdrop {
+    transition: none;
+  }
+}
+summary {
+  list-style: none;
+}
+summary::-webkit-details-marker {
+  display: none;
+}
+[data-tc-chevron] {
+  transition: transform 0.2s;
+}
+details[open] [data-tc-chevron] {
+  transform: rotate(180deg);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-tc-chevron] {
+    transition: none;
+  }
+}
+@supports (appearance: base-select) {
+  select.tc-select {
+    appearance: base-select;
+  }
+  select.tc-select::picker(select) {
+    appearance: base-select;
+  }
+  select.tc-select {
+    color: #111827;
+    cursor: pointer;
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    padding: 0.625rem 2.5rem 0.625rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition:
+      border-color 0.15s,
+      box-shadow 0.15s;
+  }
+  select.tc-select:hover {
+    border-color: #6b7280;
+  }
+  select.tc-select:focus,
+  select.tc-select:focus-visible {
+    border-color: #3b82f6;
+    outline: none;
+    box-shadow: 0 0 0 2px #3b82f64d;
+  }
+  select.tc-select:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+  select.tc-select::picker-icon {
+    color: #6b7280;
+    width: 1.25rem;
+    height: 1.25rem;
+    transition: rotate 0.2s;
+  }
+  select.tc-select:open::picker-icon {
+    rotate: 180deg;
+  }
+  select.tc-select::picker(select) {
+    background-color: #fff;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    max-height: 20rem;
+    margin-block: 0.25rem;
+    padding: 0.25rem;
+    overflow: auto;
+    box-shadow: 0 10px 15px -3px #0000001a;
+  }
+  select.tc-select option {
+    color: #111827;
+    cursor: pointer;
+    border-radius: 0.375rem;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition: background-color 0.1s;
+  }
+  select.tc-select option:hover,
+  select.tc-select option:focus {
+    background-color: #f3f4f6;
+  }
+  select.tc-select option:checked {
+    background-color: #dbeafe;
+    font-weight: 500;
+  }
+  .dark select.tc-select {
+    color: #fff;
+    background-color: #111827;
+    border-color: #4b5563;
+  }
+  .dark select.tc-select:hover {
+    border-color: #9ca3af;
+  }
+  .dark select.tc-select:focus,
+  .dark select.tc-select:focus-visible {
+    border-color: #60a5fa;
+    box-shadow: 0 0 0 2px #60a5fa4d;
+  }
+  .dark select.tc-select::picker-icon {
+    color: #9ca3af;
+  }
+  .dark select.tc-select::picker(select) {
+    background-color: #1f2937;
+    border-color: #4b5563;
+    box-shadow: 0 10px 15px -3px #0000004d;
+  }
+  .dark select.tc-select option {
+    color: #fff;
+  }
+  .dark select.tc-select option:hover,
+  .dark select.tc-select option:focus {
+    background-color: #374151;
+  }
+  .dark select.tc-select option:checked {
+    background-color: #1e3a8a;
+  }
+}
+@supports (interpolate-size: allow-keywords) {
+  :root {
+    interpolate-size: allow-keywords;
+  }
+}
+@media (forced-colors: active) {
+  .shadow-sm,
+  .shadow-lg,
+  .shadow-xl {
+    border: 1px solid canvastext;
+  }
+}
+@media (prefers-reduced-transparency: reduce) {
+  [popover]::backdrop,
+  dialog.tc-overlay[open]::backdrop {
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+    background-color: #000000d9;
+  }
+}
