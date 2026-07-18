@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.18.1] — 2026-07-18
+
 ### Fixed
 
 - **`scripts/release.sh` — 3 release-integrity defects repaired** (identified in the v0.18.0 release postmortem, same-day fix). (1) Release commit body no longer duplicates the one-line summary as its first line — the body now carries the multi-paragraph release notes (`${RELEASE_NOTES}`), while the subject carries the summary. (2) Model attribution is no longer hardcoded to `MiniMax-M3` — now reads `${CRUSH_MODEL:-unknown}` so the `Assisted-by:` trailer is honest under any model. (3) The hostile stdin read loop (`while IFS= read -r line`) is gone — release notes now auto-extract from `CHANGELOG.md [Unreleased]` (the project's canonical source per the "[Unreleased] must be warm at all times" rule), - **`scripts/release.sh` — 3 more release defects repaired** (surfaced when cutting v0.18.1; the script failed verify and left the tree dirty). (4) `FEATURES.md` version was never bumped — the script bumped `utils.Version` and `CHANGELOG.md` but not `FEATURES.md`, despite AGENTS.md mandating all three move together and `utils.TestVersionMatchesFeatures` enforcing it; now bumps both `**Version:**` and `**Updated:**` date. (5) A failed `go test ./...` aborted via `set -e` with **no rollback**, leaving a dirty tree (only the changelog drift-guard had rollback); now an `EXIT` trap (`release_rollback`) restores all three version files on any failure between bump and commit. (6) Replaced the banned `git checkout --` with `git restore` (AGENTS.md prohibits `git checkout`). The drift-guard test now asserts 6 invariants (the original 3 plus these).
