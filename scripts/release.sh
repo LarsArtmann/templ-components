@@ -140,6 +140,19 @@ fi
 # Trim leading/trailing blank lines for clean commit body + CHANGELOG formatting.
 RELEASE_NOTES="$(printf '%s\n' "$RELEASE_NOTES" | awk 'NF{p=1} p{lines[++n]=$0} END{while(n>0 && lines[n]~/^[[:space:]]*$/) n--; for(i=1;i<=n;i++) print lines[i]}')"
 
+# Rollback guard: if anything between here and the release commit fails (verify,
+# drift-guard, etc.), restore the version files this script mutated so the tree
+# is left clean for retry. RELEASE_COMMITTED is flipped to 1 once the commit
+# lands, so a later tag failure keeps the commit (only the tag needs retrying).
+RELEASE_COMMITTED=0
+release_rollback() {
+    if [ "$RELEASE_COMMITTED" = "0" ]; then
+        echo "Release aborted; rolling back utils/version.go, CHANGELOG.md, FEATURES.md..." >&2
+        git restore utils/version.go CHANGELOG.md FEATURES.md 2>/dev/null || true
+    fi
+}
+trap release_rollback EXIT
+
 # 5. Bump utils.Version.
 sed -i.bak -E "s|^(const[[:space:]]+Version[[:space:]]+=[[:space:]]+\")[^\"]+(\")|\1${NEW_VERSION}\2|" utils/version.go
 rm -f utils/version.go.bak
@@ -166,6 +179,17 @@ awk -v NEW_VERSION="$NEW_VERSION" -v TODAY="$TODAY" -v RELEASE_NOTES="$RELEASE_N
 mv "$CHANGELOG_TMP" CHANGELOG.md
 echo "Updated CHANGELOG.md: moved [Unreleased] body under [${NEW_VERSION}] heading."
 
+# 6b. Bump FEATURES.md version + date.
+#     AGENTS.md mandates utils.Version, CHANGELOG heading, and FEATURES.md
+#     version move together; utils.TestVersionMatchesFeatures enforces it.
+if [ -f FEATURES.md ]; then
+    sed -i.bak -E "s#(\*\*Updated:\*\* )[0-9]{4}-[0-9]{2}-[0-9]{2}([[:space:]]*\|[[:space:]]*\*\*Version:\*\* )[0-9]+\.[0-9]+\.[0-9]+#\1${TODAY}\2${NEW_VERSION}#" FEATURES.md
+    rm -f FEATURES.md.bak
+    echo "Bumped FEATURES.md version to $NEW_VERSION (date $TODAY)."
+else
+    echo "Warning: FEATURES.md not found; skipped its version bump." >&2
+fi
+
 # 7. Run full verify.
 echo "Running full verify (templ generate + build + test + lint)..."
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
@@ -174,15 +198,17 @@ go build ./...
 go test ./... -count=1 -race
 golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
 
-# Drift-guard test must pass (utils.Version matches CHANGELOG first non-Unreleased).
-if ! go test ./utils/... -run TestVersionMatchesChangelog -count=1 >/dev/null 2>&1; then
-    echo "Error: version drift-guard test failed. CHANGELOG heading does not match utils.Version." >&2
-    git checkout -- utils/version.go CHANGELOG.md
+# Drift-guard: version files must agree with utils.Version (CHANGELOG heading
+# AND FEATURES.md version). The full suite ran above; this surfaces a targeted
+# message on mismatch. Rollback is handled by the EXIT trap (release_rollback),
+# so no ad-hoc git restore is needed here.
+if ! go test ./utils/... -run 'TestVersionMatches(Changelog|Features)' -count=1 >/dev/null 2>&1; then
+    echo "Error: version drift-guard failed. utils.Version, CHANGELOG heading, and FEATURES.md version must all agree." >&2
     exit 1
 fi
 
 # 8. Stage and commit.
-git add utils/version.go CHANGELOG.md
+git add utils/version.go CHANGELOG.md FEATURES.md
 git add -u  # any verified updates
 
 # Commit body = the release notes (multi-paragraph), NOT a duplicate of the
@@ -201,6 +227,7 @@ ${RELEASE_BODY}
 
 Co-Authored-By: Crush <noreply@crush.lars.software>"
 
+RELEASE_COMMITTED=1  # commit landed; EXIT trap no longer rolls back
 RELEASE_COMMIT="$(git rev-parse HEAD)"
 
 # 9. Annotated, SSH-signed tag.
