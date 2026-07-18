@@ -156,10 +156,10 @@
 
 Items #60, #63, #64 were removed as duplicates of #38, #35, #39 (see v1.0/v2.0 sections above).
 
-| #   | Task                                                                                | Status      | Evidence                                          | Source      |
-| --- | ----------------------------------------------------------------------------------- | ----------- | ------------------------------------------------- | ----------- |
-| 61  | Add docs-health CI check                                                            | ⬜ DEFERRED | New CI step that runs docs-count drift assertions | pareto-plan |
-| 62  | Add `Validate()` methods to top 5 props structs (Card, Button, Input, Alert, Table) | ⬜ DEFERRED | `Validate() error` added behind v1.0 flag         | pareto-plan |
+| #   | Task                                                                                                                                                                                                           | Status      | Evidence                                                                                                                    | Source            |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| 61  | Add docs-health CI check                                                                                                                                                                                       | ⬜ DEFERRED | New CI step that runs docs-count drift assertions                                                                           | pareto-plan       |
+| 62  | Add `Validate()` to `errorpage.ErrorPageProps` only (catches invalid `StatusCode`/`Family` combos that produce wrong HTTP responses). Other props use graceful `utils.Lookup` fallback — no `Validate` needed. | ⬜ DEFERRED | Scoped from "top 5 props" (over-engineering) to the one struct where invalid input changes HTTP behavior. Behind v1.0 flag. | data-model-review |
 
 ---
 

@@ -41,6 +41,14 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 go get github.com/larsartmann/templ-components
 ```
 
+> **Build flag required:** this library uses `encoding/json/v2` (via
+> `errorpage`). Set `GOEXPERIMENT=jsonv2` when building until Go 1.27 ships it
+> as stable:
+>
+> ```bash
+> export GOEXPERIMENT=jsonv2
+> ```
+
 **2. Build a page**
 
 ```templ

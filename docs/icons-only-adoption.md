@@ -5,10 +5,11 @@
 > CSS-agnostic (pure SVG data), which makes it useful in any Go project — but
 > this is a natural property of icons, not a portability strategy.
 
-The `icons` package provides 101 named SVG icons (100 Heroicons v2 outline paths
-
-- 1 animated Spinner). It depends only on `github.com/a-h/templ` and the internal
-  SVG path constants — no Tailwind, no CSS framework.
+The `icons` package provides 102 named SVG icons (101 Heroicons v2 outline
+path-icon constants + 1 animated Spinner; 5 discoverability aliases like
+`Close`→`X` resolve to canonical paths). It depends only on
+`github.com/a-h/templ` and the internal SVG path constants — no Tailwind, no
+CSS framework.
 
 ## Three API levels
 
@@ -58,7 +59,7 @@ icons.IconPathJS(icons.Home)
 
 ## Full icon catalog
 
-101 icons (100 path + 1 animated Spinner). Typed constants prevent typos:
+102 icons (101 path-icon constants + 1 animated Spinner). Typed constants prevent typos:
 
 ```go
 icons.Users          // multi-person

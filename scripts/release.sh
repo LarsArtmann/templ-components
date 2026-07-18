@@ -2,17 +2,22 @@
 # scripts/release.sh — cut a templ-components release in one command.
 #
 # Usage:
-#   scripts/release.sh <new-version> <release-summary>
+#   scripts/release.sh <new-version> <release-summary> [--notes-file FILE]
 #
-# Example:
+# Examples:
 #   scripts/release.sh 0.7.0 "typed HTMX retry policies, Drawer motion-reduce"
+#   scripts/release.sh 0.7.0 "typed HTMX retry" --notes-file /tmp/release-notes.md
+#
+# Release notes source (first found wins):
+#   --notes-file FILE   read notes from FILE (markdown)
+#   (default)           extract from CHANGELOG.md [Unreleased] section
 #
 # What it does:
 #   1. Validates the working tree is clean and on master
 #   2. Confirms the new version is greater than the current one
 #   3. Bumps utils.Version
-#   4. Inserts a new CHANGELOG heading (replaces [Unreleased], adds fresh [Unreleased] above)
-#   5. Asks for the release notes (multi-line) and writes them into the CHANGELOG entry
+#   4. Collects release notes (--notes-file or CHANGELOG [Unreleased])
+#   5. Moves notes from [Unreleased] to a new versioned heading (inserts fresh [Unreleased])
 #   6. Regenerates *_templ.go and runs the full verify suite
 #   7. Stages and commits as `release: <version> — <summary>` (one-commit convention)
 #   8. Creates an annotated, SSH-signed tag `v<version>: <summary>`
@@ -22,14 +27,52 @@
 
 set -euo pipefail
 
-if [ $# -ne 2 ]; then
-    echo "Usage: $0 <new-version> <release-summary>" >&2
+NEW_VERSION=""
+RELEASE_SUMMARY=""
+NOTES_FILE=""
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --notes-file)
+            if [ $# -lt 2 ]; then
+                echo "Error: --notes-file requires a path argument." >&2
+                exit 1
+            fi
+            NOTES_FILE="$2"
+            shift 2
+            ;;
+        --help|-h)
+            echo "Usage: $0 <new-version> <release-summary> [--notes-file FILE]"
+            echo "Example: $0 0.7.0 'typed HTMX retry policies, Drawer motion-reduce'"
+            echo ""
+            echo "Release notes source (first found wins):"
+            echo "  --notes-file FILE   read notes from FILE (markdown)"
+            echo "  (default)           extract from CHANGELOG.md [Unreleased] section"
+            exit 0
+            ;;
+        -*)
+            echo "Error: unknown flag: $1" >&2
+            exit 1
+            ;;
+        *)
+            if [ -z "$NEW_VERSION" ]; then
+                NEW_VERSION="$1"
+            elif [ -z "$RELEASE_SUMMARY" ]; then
+                RELEASE_SUMMARY="$1"
+            else
+                echo "Error: unexpected positional argument: $1" >&2
+                exit 1
+            fi
+            shift
+            ;;
+    esac
+done
+
+if [ -z "$NEW_VERSION" ] || [ -z "$RELEASE_SUMMARY" ]; then
+    echo "Usage: $0 <new-version> <release-summary> [--notes-file FILE]" >&2
     echo "Example: $0 0.7.0 'typed HTMX retry policies, Drawer motion-reduce'" >&2
     exit 1
 fi
-
-NEW_VERSION="$1"
-RELEASE_SUMMARY="$2"
 TODAY="$(date -u +%Y-%m-%d)"
 
 export GOWORK=off
@@ -67,53 +110,61 @@ if [ "$SORTED_LOWER" != "$CURRENT_VERSION" ]; then
     exit 1
 fi
 
-# 4. Verify [Unreleased] has content (not just an empty placeholder).
-#    Look for the first non-empty, non-heading line after ## [Unreleased].
-UNRELEASED_BODY="$(awk '/^## \[Unreleased\]$/ {found=1; next} found && /^## \[/ {exit} found && /^### / {has_heading=1; next} found && has_heading && NF > 0 {print; exit}' CHANGELOG.md)"
-if [ -z "$UNRELEASED_BODY" ]; then
-    echo "Error: [Unreleased] section in CHANGELOG.md is empty." >&2
-    echo "Add changelog entries to [Unreleased] before cutting a release." >&2
-    exit 1
+# 4. Collect release notes.
+#    Source priority: --notes-file > CHANGELOG [Unreleased] body.
+#    Project rule: "[Unreleased] must be warm at all times" — the notes already
+#    live in CHANGELOG, so we extract them rather than forcing the user to retype
+#    them into a hostile stdin prompt with no editing or file input.
+if [ -n "$NOTES_FILE" ]; then
+    if [ ! -f "$NOTES_FILE" ]; then
+        echo "Error: --notes-file '$NOTES_FILE' does not exist." >&2
+        exit 1
+    fi
+    RELEASE_NOTES="$(cat "$NOTES_FILE")"
+    echo "Using release notes from $NOTES_FILE"
+else
+    RELEASE_NOTES="$(awk '
+        /^## \[Unreleased\]$/ { unreleased=1; next }
+        unreleased && /^## \[/ { exit }
+        unreleased { print }
+    ' CHANGELOG.md)"
+    if [ -z "$RELEASE_NOTES" ]; then
+        echo "Error: [Unreleased] section in CHANGELOG.md is empty." >&2
+        echo "Add changelog entries to [Unreleased] before cutting a release," >&2
+        echo "or pass --notes-file FILE with the release notes." >&2
+        exit 1
+    fi
+    echo "Extracted release notes from CHANGELOG.md [Unreleased] section."
 fi
-echo "[Unreleased] section has content — proceeding."
+
+# Trim leading/trailing blank lines for clean commit body + CHANGELOG formatting.
+RELEASE_NOTES="$(printf '%s\n' "$RELEASE_NOTES" | awk 'NF{p=1} p{lines[++n]=$0} END{while(n>0 && lines[n]~/^[[:space:]]*$/) n--; for(i=1;i<=n;i++) print lines[i]}')"
 
 # 5. Bump utils.Version.
 sed -i.bak -E "s|^(const[[:space:]]+Version[[:space:]]+=[[:space:]]+\")[^\"]+(\")|\1${NEW_VERSION}\2|" utils/version.go
 rm -f utils/version.go.bak
 echo "Bumped utils.Version to $NEW_VERSION"
 
-# 6. Insert CHANGELOG heading. The pattern is:
-#      ## [Unreleased]
-#      <empty>
-#      ## [OLD_VERSION] — <old-date>
-#      ...
-# We want:
-#      ## [Unreleased]
-#      <empty>
-#      ## [NEW_VERSION] — <TODAY>
-#      ### Added
-#      ### Changed
-#      ### Fixed
-#      (release notes inserted below)
-#      ...
-#      ## [OLD_VERSION] — <old-date>
-#      ...
-
-echo "Collecting release notes. Press Ctrl-D on an empty line to finish."
-echo "(Markdown formatting OK. Tip: use '### Added', '### Changed', '### Fixed'.)"
-RELEASE_NOTES=""
-while IFS= read -r line; do
-    [ -z "$line" ] && break
-    RELEASE_NOTES="${RELEASE_NOTES}${line}"$'\n'
-done
-
-# Replace the first occurrence of '## [Unreleased]' with new structure.
+# 6. Move release notes from [Unreleased] to the new version heading.
+#    On encountering [Unreleased]: emit fresh-empty [Unreleased], then the new
+#    version heading with the (trimmed) notes body. Skip the ORIGINAL [Unreleased]
+#    body until the next ## [ heading so notes are not duplicated.
 CHANGELOG_TMP="$(mktemp)"
-{
-    awk '/^## \[Unreleased\]$/ {print; print ""; in_unreleased=1; next} in_unreleased && /^$/ {print; printf "## [%s] — %s\n\n", "'"$NEW_VERSION"'", "'"$TODAY"'"; print RELEASE_NOTES; print ""; in_unreleased=0; next} {print}' RELEASE_NOTES="$RELEASE_NOTES" CHANGELOG.md
-} > "$CHANGELOG_TMP"
+awk -v NEW_VERSION="$NEW_VERSION" -v TODAY="$TODAY" -v RELEASE_NOTES="$RELEASE_NOTES" '
+    /^## \[Unreleased\]$/ {
+        print; print ""
+        printf "## [%s] — %s\n\n", NEW_VERSION, TODAY
+        print RELEASE_NOTES
+        print ""
+        skip=1
+        next
+    }
+    skip && /^## \[/ { skip=0 }
+    skip { next }
+    { print }
+' CHANGELOG.md > "$CHANGELOG_TMP"
 mv "$CHANGELOG_TMP" CHANGELOG.md
-echo "Updated CHANGELOG.md with $NEW_VERSION heading"
+echo "Updated CHANGELOG.md: moved [Unreleased] body under [${NEW_VERSION}] heading."
 
 # 7. Run full verify.
 echo "Running full verify (templ generate + build + test + lint)..."
@@ -134,13 +185,15 @@ fi
 git add utils/version.go CHANGELOG.md
 git add -u  # any verified updates
 
-RELEASE_BODY="${RELEASE_SUMMARY}
-
-This release rolls up all changes since v${CURRENT_VERSION}.
+# Commit body = the release notes (multi-paragraph), NOT a duplicate of the
+# one-line summary. The subject already carries the summary; the body carries
+# the detail. Model attribution is parameterized so the script works under any
+# Crush model (export CRUSH_MODEL before invoking, else falls back to "unknown").
+RELEASE_BODY="${RELEASE_NOTES}
 
 💘 Generated with Crush
 
-Assisted-by: Crush:MiniMax-M3"
+Assisted-by: Crush:${CRUSH_MODEL:-unknown}"
 
 git commit -m "release: ${NEW_VERSION} — ${RELEASE_SUMMARY}
 

@@ -41,6 +41,28 @@ golangci-lint run ./...
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./...
 ```
 
+### Nix flake commands
+
+```bash
+# Format all .nix (nixfmt) + .go (gofmt + goimports) files.
+# Generated *_templ.go, website/, and demo static/ are excluded.
+nix fmt
+
+# Run all flake checks (currently: treefmt format verification).
+nix flake check
+
+# Flake apps (export GOEXPERIMENT=jsonv2 automatically)
+nix run .#build     # templ generate + go build
+nix run .#test      # go test -race
+nix run .#lint      # golangci-lint
+nix run .#verify    # generate + build + test + lint
+nix run .#coverage  # go test -coverprofile
+```
+
+The flake uses `flake-parts` + `treefmt-nix` (mirrors `website/flake.nix`). The
+`formatter` output is provided by treefmt-nix's flakeModule (replaces the former
+bare `formatter = pkgs.nixfmt;`). BuildFlow still owns the pre-commit hook.
+
 ## CRITICAL: Generated `*_templ.go` Files MUST Be Committed
 
 This is a **templ library**, not an application. The Go module proxy (proxy.golang.org) fetches
