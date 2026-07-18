@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.18.0] — 2026-07-18
+
 Native `<dialog>` for Modal/Drawer, stylable `<select>`, auto-growing Textarea, responsive Image srcset, semantic `<search>` landmark, `hx-validate` on Form, and `content-visibility: auto` for large tables. All progressive enhancement — zero breaking changes.
 
 ### Changed
