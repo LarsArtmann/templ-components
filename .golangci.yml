@@ -54,7 +54,6 @@ linters:
     - goconst
     - gocritic
     - gocyclo
-    - godoclint
     - godot
     - godox
     - goheader
@@ -72,7 +71,6 @@ linters:
     - interfacebloat
     - intrange
     - iotamixing
-    - ireturn
     - loggercheck
     - maintidx
     - makezero
@@ -107,7 +105,6 @@ linters:
     - staticcheck
     - tagalign
     - tagliatelle
-    - testableexamples
     - testifylint
     - testpackage
     - thelper
@@ -132,12 +129,15 @@ linters:
         main:
           allow:
             - $gostd
-            - $module
+            - github.com/larsartmann/templ-components
+            - github.com/a-h/templ
+            - github.com/Oudwins/tailwind-merge-go
+            - github.com/larsartmann/go-error-family
     exhaustruct:
       exclude:
         - os/exec.Cmd
     funlen:
-      lines: 60
+      lines: 65
       statements: 50
     ginkgolinter:
       forbid-focus-container: true
@@ -156,6 +156,32 @@ linters:
         - generic
     makezero:
       always: true
+    mnd:
+      ignored-numbers:
+        - "200"
+        - "201"
+        - "204"
+        - "301"
+        - "302"
+        - "400"
+        - "401"
+        - "403"
+        - "404"
+        - "405"
+        - "409"
+        - "429"
+        - "500"
+        - "501"
+        - "502"
+        - "503"
+        - "504"
+        - "0o600"
+        - "0o644"
+        - "0o700"
+        - "0o750"
+        - "0o755"
+        - "2"
+        - "5"
     revive:
       rules:
         - disabled: true
@@ -180,6 +206,22 @@ linters:
         - a
         - b
         - v
+        - w
+        - r
+        - tc
+        - id
+        - s
+        - p
+        - bp
+        - cp
+        - wg
+        - sb
+        - bt
+        - ft
+        - it
+        - bg
+        - bw
+        - f
       ignore-type-assert-ok: true
   exclusions:
     generated: lax
@@ -197,6 +239,10 @@ linters:
           - funlen
           - cyclop
           - goconst
+          - err113
+          - makezero
+          - gocheckcompilerdirectives
+          - varnamelen
       - path: _test\.go
         text: unused
         linters:

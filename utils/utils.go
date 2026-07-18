@@ -22,7 +22,7 @@ type BaseProps struct {
 // and wrapper functions across the entire component library.
 type ComponentProps interface {
 	GetBaseProps() BaseProps
-	SetBaseProps(BaseProps)
+	SetBaseProps(props BaseProps)
 }
 
 // GetBaseProps returns the embedded BaseProps. This method is promoted to all

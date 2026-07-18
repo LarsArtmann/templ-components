@@ -10,6 +10,7 @@ import (
 // ValidateID returns an error if id is empty, using componentName in the message.
 func ValidateID(componentName, id string) error {
 	if id == "" {
+		//nolint:err113 // dynamic: message embeds caller componentName + id
 		return fmt.Errorf("%s: id=%q cannot be empty", componentName, id)
 	}
 
