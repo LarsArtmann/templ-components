@@ -344,14 +344,15 @@ What it does:
 
 1. Validates the working tree is clean and on `master`
 2. Confirms the new version is greater than the current one (via `sort -V`)
-3. Bumps `utils.Version` via in-place sed
-4. Inserts a new `## [<version>] — YYYY-MM-DD` heading into CHANGELOG, replacing
-   `[Unreleased]` and adding a fresh empty `[Unreleased]` block above
-5. Prompts for release notes on stdin (Ctrl-D on an empty line to finish)
-6. Regenerates `*_templ.go` and runs the full verify suite (build + test + lint)
-7. Asserts the version drift-guard test passes (CHANGELOG heading matches `utils.Version`)
-8. Stages and commits as `release: <version> — <summary>` (one-commit convention)
-9. Creates an annotated, SSH-signed tag `v<version>: <summary>`
+3. Collects release notes (`--notes-file FILE`, or auto-extracted from CHANGELOG `[Unreleased]`)
+4. Installs an `EXIT`-trap rollback (`release_rollback`) that restores `utils/version.go`, `CHANGELOG.md`, and `FEATURES.md` if any later step fails — so a failed verify never leaves a dirty tree
+5. Bumps `utils.Version` via in-place sed
+6. Moves the `[Unreleased]` body under a new `## [<version>] — YYYY-MM-DD` heading (inserts a fresh empty `[Unreleased]` above)
+7. Bumps `FEATURES.md` `**Version:**` + `**Updated:**` date (the three version files must move together; `utils.TestVersionMatchesFeatures` enforces it)
+8. Regenerates `*_templ.go` and runs the full verify suite (build + test + lint)
+9. Asserts the version drift-guard (`TestVersionMatches(Changelog|Features)`)
+10. Stages and commits as `release: <version> — <summary>` (one-commit convention; body carries the release notes, `Assisted-by: Crush:${CRUSH_MODEL}`)
+11. Creates an annotated, SSH-signed tag `v<version>: <summary>`
 
 The script does **not** push. House rule: "NEVER PUSH TO REMOTE". Push manually
 after reviewing the release commit and tag with `git show v<version>` and
@@ -363,6 +364,14 @@ after reviewing the release commit and tag with `git show v<version>` and
 # examples/ excluded via .golangci.yml paths exclusion
 golangci-lint run ./...
 ```
+
+**Disabled linters (do NOT re-enable — fundamentally incompatible with this codebase):**
+
+- `ireturn` — every component returns `templ.Component` (an interface) by design; the linter's premise is antithetical to templ.
+- `godoclint` — demands exactly one `// Package` godoc per package, but the repo intentionally documents per-file.
+- `testableexamples` — `Example*` funcs render HTML that is verbose and version-dependent; output isn't asserted.
+
+**Reconciled at v0.18.1:** commit 73395d9 expanded to 67 linters but left `golangci-lint run` failing (187 findings, CI would have gone red on first push). The config now uses an explicit depguard allow-list (the `$module` token did not resolve — use literal `github.com/larsartmann/templ-components` + the three runtime deps), extends `varnamelen`/`mnd` ignore lists, and excludes test files from `err113`/`makezero`/`varnamelen`/`gocheckcompilerdirectives`. If you add a linter, run `golangci-lint run` to 0 findings before committing.
 
 ## `encoding/json/v2` Adoption
 
