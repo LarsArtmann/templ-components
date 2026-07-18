@@ -15,15 +15,18 @@ import (
 
 func TestWriteFallbackError(t *testing.T) {
 	t.Parallel()
+
 	w := httptest.NewRecorder()
 	writeFallbackError(w, http.StatusNotFound)
 
 	if w.Code != http.StatusNotFound {
 		t.Errorf("expected status 404, got %d", w.Code)
 	}
+
 	if ct := w.Header().Get("Content-Type"); ct != "text/plain; charset=utf-8" {
 		t.Errorf("expected text/plain, got %s", ct)
 	}
+
 	if body := w.Body.String(); body == "" {
 		t.Error("expected non-empty body")
 	}
@@ -35,6 +38,7 @@ func TestWriteFallbackError(t *testing.T) {
 
 func TestWriteJSONErrorWithContext(t *testing.T) {
 	t.Parallel()
+
 	w := httptest.NewRecorder()
 	writeJSONError(w, http.StatusBadRequest, ErrorPageProps{
 		Family:  FamilyRejection,
@@ -48,9 +52,11 @@ func TestWriteJSONErrorWithContext(t *testing.T) {
 			{Key: "value", Value: "not-an-email"},
 		},
 	})
+
 	if w.Code != http.StatusBadRequest {
 		t.Errorf("expected 400, got %d", w.Code)
 	}
+
 	body := w.Body.String()
 	utils.AssertContainsAll(t, body, "validation_failed", "Email is invalid", "field", "email")
 }
@@ -61,6 +67,7 @@ func TestWriteJSONErrorWithContext(t *testing.T) {
 
 func TestErrorPageAllFamilies(t *testing.T) {
 	t.Parallel()
+
 	for _, family := range []Family{
 		FamilyRejection, FamilyConflict, FamilyTransient, FamilyCorruption, FamilyInfrastructure,
 	} {
@@ -150,6 +157,7 @@ func TestErrorDetailFullProps(t *testing.T) {
 
 func TestErrorDetailAllFamilies(t *testing.T) {
 	t.Parallel()
+
 	for _, family := range []Family{
 		FamilyRejection, FamilyConflict, FamilyTransient, FamilyCorruption, FamilyInfrastructure,
 	} {
@@ -189,6 +197,7 @@ func TestErrorAlertFullProps(t *testing.T) {
 
 func TestErrorAlertAllFamilies(t *testing.T) {
 	t.Parallel()
+
 	for _, family := range []Family{
 		FamilyRejection, FamilyConflict, FamilyTransient, FamilyCorruption, FamilyInfrastructure,
 	} {
@@ -260,6 +269,7 @@ func TestNotFound404CustomLinks(t *testing.T) {
 
 func TestErrorHandlerHTMLShellMode(t *testing.T) {
 	t.Parallel()
+
 	handler := ErrorHandler(nil, ErrorHandlerConfig{
 		HTMLShell: true,
 		Nonce:     "test-nonce",
@@ -267,23 +277,28 @@ func TestErrorHandlerHTMLShellMode(t *testing.T) {
 	w := httptest.NewRecorder()
 	r := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
 	handler.ServeHTTP(w, r)
+
 	if w.Code != http.StatusServiceUnavailable {
 		t.Errorf("expected 503, got %d", w.Code)
 	}
+
 	utils.AssertContainsAll(t, w.Body.String(), "<!DOCTYPE html>", "<html")
 }
 
 func TestErrorHandlerJSONMode(t *testing.T) {
 	t.Parallel()
+
 	handler := ErrorHandler(nil, ErrorHandlerConfig{
 		JSON: true,
 	})
 	w := httptest.NewRecorder()
 	r := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
 	handler.ServeHTTP(w, r)
+
 	if w.Code != http.StatusServiceUnavailable {
 		t.Errorf("expected 503, got %d", w.Code)
 	}
+
 	ct := w.Header().Get("Content-Type")
 	if ct != "application/json; charset=utf-8" {
 		t.Errorf("expected application/json, got %s", ct)
@@ -296,12 +311,15 @@ func TestErrorHandlerJSONMode(t *testing.T) {
 
 func TestWriteErrorPageExplicitStatus(t *testing.T) {
 	t.Parallel()
+
 	w := httptest.NewRecorder()
 	r := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
 	WriteErrorPage(w, r, http.StatusTeapot, NotFound(), "")
+
 	if w.Code != http.StatusTeapot {
 		t.Errorf("expected 418, got %d", w.Code)
 	}
+
 	utils.AssertContains(t, w.Body.String(), "not found")
 }
 
@@ -311,6 +329,7 @@ func TestWriteErrorPageExplicitStatus(t *testing.T) {
 
 func TestFamilyStatusCodeAllFamilies(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		family Family
 		code   int
@@ -339,9 +358,11 @@ func TestFamilyStatusCodeAllFamilies(t *testing.T) {
 
 func TestWriteErrorConvenience(t *testing.T) {
 	t.Parallel()
+
 	w := httptest.NewRecorder()
 	r := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
 	WriteError(w, r, nil, "test-nonce")
+
 	if w.Code != http.StatusServiceUnavailable {
 		t.Errorf("expected 503, got %d", w.Code)
 	}
@@ -351,6 +372,7 @@ func TestConstructorsAllRender(t *testing.T) {
 	t.Parallel()
 	t.Run("NotFound", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, ErrorPage(NotFound()))
 		if len(output) == 0 {
 			t.Error("empty output")
@@ -358,6 +380,7 @@ func TestConstructorsAllRender(t *testing.T) {
 	})
 	t.Run("Forbidden", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, ErrorPage(Forbidden()))
 		if len(output) == 0 {
 			t.Error("empty output")
@@ -365,6 +388,7 @@ func TestConstructorsAllRender(t *testing.T) {
 	})
 	t.Run("BadRequest", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, ErrorPage(BadRequest("bad input")))
 		if len(output) == 0 {
 			t.Error("empty output")
@@ -372,6 +396,7 @@ func TestConstructorsAllRender(t *testing.T) {
 	})
 	t.Run("Conflict", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, ErrorPage(Conflict("duplicate")))
 		if len(output) == 0 {
 			t.Error("empty output")
@@ -379,6 +404,7 @@ func TestConstructorsAllRender(t *testing.T) {
 	})
 	t.Run("ServiceUnavailable", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, ErrorPage(ServiceUnavailable()))
 		if len(output) == 0 {
 			t.Error("empty output")
@@ -386,6 +412,7 @@ func TestConstructorsAllRender(t *testing.T) {
 	})
 	t.Run("InternalError", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, ErrorPage(InternalError()))
 		if len(output) == 0 {
 			t.Error("empty output")

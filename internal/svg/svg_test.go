@@ -48,6 +48,7 @@ func TestSpinnerSVGRender(t *testing.T) {
 
 func TestPathConstants(t *testing.T) {
 	t.Parallel()
+
 	paths := []struct {
 		name string
 		path string
@@ -63,6 +64,7 @@ func TestPathConstants(t *testing.T) {
 	for _, p := range paths {
 		t.Run(p.name+" is non-empty", func(t *testing.T) {
 			t.Parallel()
+
 			if p.path == "" {
 				t.Errorf("%s is empty", p.name)
 			}

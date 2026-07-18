@@ -29,16 +29,20 @@ func TestVersionMatchesChangelog(t *testing.T) {
 		}
 		// line looks like: ## [0.4.0] — 2026-06-27
 		start := strings.Index(line, "[") + 1
+
 		end := strings.Index(line, "]")
 		if start < 1 || end <= start {
 			t.Fatalf("could not parse version heading: %q", line)
 		}
+
 		want := line[start:end]
 		if want != Version {
 			t.Errorf("utils.Version = %q, but CHANGELOG.md latest release is %q", Version, want)
 		}
+
 		return
 	}
+
 	t.Fatalf("no released version heading found in CHANGELOG.md")
 }
 
@@ -61,8 +65,10 @@ func TestVersionMatchesFeatures(t *testing.T) {
 			if want != Version {
 				t.Errorf("utils.Version = %q, but FEATURES.md declares %q", Version, want)
 			}
+
 			return
 		}
 	}
+
 	t.Fatalf("no **Version:** marker found in FEATURES.md")
 }

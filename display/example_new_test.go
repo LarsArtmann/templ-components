@@ -14,6 +14,7 @@ func ExampleCopyButton() {
 	props.Label = "Copy command"
 
 	var buf bytes.Buffer
+
 	_ = display.CopyButton(props).Render(context.Background(), &buf)
 }
 
@@ -23,6 +24,7 @@ func ExampleRelativeTime() {
 	}
 
 	var buf bytes.Buffer
+
 	_ = display.RelativeTime(props).Render(context.Background(), &buf)
 }
 
@@ -30,6 +32,7 @@ func ExampleCountBadge() {
 	props := display.CountBadgeProps{Count: 12, Max: 99}
 
 	var buf bytes.Buffer
+
 	_ = display.CountBadge(props).Render(context.Background(), &buf)
 }
 
@@ -43,6 +46,7 @@ func ExampleDefinitionGrid() {
 	}
 
 	var buf bytes.Buffer
+
 	_ = display.DefinitionGrid(props).Render(context.Background(), &buf)
 }
 
@@ -56,5 +60,6 @@ func ExampleImage() {
 	}
 
 	var buf bytes.Buffer
+
 	_ = display.Image(props).Render(context.Background(), &buf)
 }

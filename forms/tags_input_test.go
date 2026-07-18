@@ -9,6 +9,7 @@ import (
 
 func TestDefaultTagsInputProps(t *testing.T) {
 	t.Parallel()
+
 	_ = DefaultTagsInputProps()
 }
 
@@ -207,9 +208,11 @@ func TestTagsInputSnapshot(t *testing.T) {
 
 func TestTagsInputContainerClass(t *testing.T) {
 	t.Parallel()
+
 	if got := tagsInputContainerClass(false); got == "" {
 		t.Error("expected non-empty class string")
 	}
+
 	if got := tagsInputContainerClass(true); got == "" {
 		t.Error("expected non-empty error class string")
 	}

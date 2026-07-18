@@ -12,6 +12,7 @@ func TestAlertRender(t *testing.T) {
 	t.Parallel()
 	t.Run("error alert", func(t *testing.T) {
 		t.Parallel()
+
 		props := AlertProps{
 			Title:   "Error",
 			Message: "Something failed",
@@ -26,6 +27,7 @@ func TestAlertRender(t *testing.T) {
 
 	t.Run("dismissible alert", func(t *testing.T) {
 		t.Parallel()
+
 		props := AlertProps{
 			Title:       "Warning",
 			Type:        AlertWarning,
@@ -47,6 +49,7 @@ func TestToastContainerRender(t *testing.T) {
 
 func TestToastRender(t *testing.T) {
 	t.Parallel()
+
 	props := ToastProps{
 		Message: "Saved!",
 		Type:    ToastSuccess,
@@ -168,6 +171,7 @@ func TestSkeletonCardGridRender(t *testing.T) {
 
 	t.Run("non-positive count renders a single placeholder", func(t *testing.T) {
 		t.Parallel()
+
 		for _, n := range []int{0, -1, -10} {
 			output := utils.Render(t, SkeletonCardGrid(n))
 			if got := strings.Count(output, "h-48"); got != 1 {
@@ -210,10 +214,12 @@ func TestStepIndicatorRender(t *testing.T) {
 
 func TestDefaultProgressBarProps(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultProgressBarProps()
 	if props.Size != ProgressBarSizeMD {
 		t.Errorf("Size = %q, want %q", props.Size, ProgressBarSizeMD)
 	}
+
 	if props.Color == "" {
 		t.Error("Color should not be empty")
 	}
@@ -261,6 +267,7 @@ func TestSkeletonVariants(t *testing.T) {
 
 func TestToastAllTypes(t *testing.T) {
 	t.Parallel()
+
 	for _, tt := range []ToastType{ToastSuccess, ToastError, ToastWarning, ToastInfo} {
 		t.Run("toast type "+string(tt), func(t *testing.T) {
 			t.Parallel()
@@ -293,6 +300,7 @@ func TestDefaultPropsConstructors(t *testing.T) {
 	t.Parallel()
 	t.Run("DefaultAlertProps", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultAlertProps()
 		if props.Type != AlertInfo {
 			t.Errorf("DefaultAlertProps().Type = %q, want %q", props.Type, AlertInfo)
@@ -300,6 +308,7 @@ func TestDefaultPropsConstructors(t *testing.T) {
 	})
 	t.Run("DefaultToastProps", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultToastProps()
 		if props.Type != ToastInfo {
 			t.Errorf("DefaultToastProps().Type = %q, want %q", props.Type, ToastInfo)
@@ -307,6 +316,7 @@ func TestDefaultPropsConstructors(t *testing.T) {
 	})
 	t.Run("DefaultStepIndicatorProps", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultStepIndicatorProps()
 		if props.Steps != nil {
 			t.Error("DefaultStepIndicatorProps().Steps should be nil")
@@ -314,16 +324,19 @@ func TestDefaultPropsConstructors(t *testing.T) {
 	})
 	t.Run("DefaultLoadingOverlayProps", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultLoadingOverlayProps()
 		if props.Message != "" {
 			t.Errorf("DefaultLoadingOverlayProps().Message = %q, want empty", props.Message)
 		}
+
 		if props.ShowProgress {
 			t.Error("DefaultLoadingOverlayProps().ShowProgress = true, want false")
 		}
 	})
 	t.Run("DefaultProgressBarProps", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultProgressBarProps()
 		if props.Current != 0 || props.Total != 0 {
 			t.Errorf(
@@ -363,6 +376,7 @@ func TestInlineSuccessEmptyMessage(t *testing.T) {
 
 func TestDefaultSpinnerProps(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultSpinnerProps()
 	if props.Size != SpinnerMD {
 		t.Errorf("Size = %q, want %q", props.Size, SpinnerMD)

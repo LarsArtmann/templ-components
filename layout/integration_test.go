@@ -12,6 +12,7 @@ func TestIntegrationFullPageRender(t *testing.T) {
 
 	t.Run("base renders complete HTML document", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.Title = testPage
 		props.Description = "A test page"
@@ -20,6 +21,7 @@ func TestIntegrationFullPageRender(t *testing.T) {
 		if !strings.HasPrefix(strings.ToLower(output), "<!doctype html>") {
 			t.Error("output should start with <!DOCTYPE html>")
 		}
+
 		for _, check := range []struct {
 			contains string
 			message  string
@@ -48,6 +50,7 @@ func TestIntegrationFullPageRender(t *testing.T) {
 
 	t.Run("base with HTMX SRI renders integrity attributes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.HTMXUseSRI = true
 		output := utils.Render(t, Base(props))
@@ -58,6 +61,7 @@ func TestIntegrationFullPageRender(t *testing.T) {
 
 	t.Run("base without HTMX SRI omits integrity", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.HTMXUseSRI = false
 		output := utils.Render(t, Base(props))
@@ -67,6 +71,7 @@ func TestIntegrationFullPageRender(t *testing.T) {
 
 	t.Run("base with CSS path renders stylesheet", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.CSSPath = "/custom.css"
 		output := utils.Render(t, Base(props))
@@ -77,6 +82,7 @@ func TestIntegrationFullPageRender(t *testing.T) {
 
 	t.Run("base with OG image renders meta", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.OGImage = "/og.png"
 		output := utils.Render(t, Base(props))

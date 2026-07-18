@@ -163,6 +163,18 @@ Items #60, #63, #64 were removed as duplicates of #38, #35, #39 (see v1.0/v2.0 s
 
 ---
 
+## P0 — release.sh repair follow-ups (from 2026-07-18 self-review)
+
+Commit `f1a2592` fixed the 3 release.sh defects but introduced 3 new ones (see `docs/status/2026-07-18_20-27_release-sh-repair-brutal-self-review.md`). These track the recovery.
+
+| #   | Task                                                                                     | Status      | Evidence                                                          | Source      |
+| --- | ---------------------------------------------------------------------------------------- | ----------- | ----------------------------------------------------------------- | ----------- |
+| 65  | Update AGENTS.md "Release Script" section — still describes the old hostile stdin prompt | ⬜ DEFERRED | AGENTS.md:339-360 references "Prompts for release notes on stdin" | self-review |
+| 66  | Update AGENTS.md "Release Convention: One-Commit Release" section — references old flow  | ⬜ DEFERRED | Same section, stale step descriptions                             | self-review |
+| 67  | Switch treefmt `gofmt` → `gofumpt` in flake.nix — latent conflict with golangci-lint     | ⬜ DEFERRED | flake.nix:142 `gofmt.enable` vs .golangci.yml:134 `gofumpt`       | self-review |
+
+---
+
 ## Done — Verified complete (not actionable)
 
 These were frequently listed as open in older reports but are confirmed DONE:

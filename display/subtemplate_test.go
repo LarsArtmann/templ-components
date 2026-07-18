@@ -18,6 +18,7 @@ func TestDefinitionDetailContentSubTemplate(t *testing.T) {
 			{Term: "Name", Detail: "Alice"},
 		},
 	}
+
 	result := utils.Render(t, DefinitionList(props))
 	if !strings.Contains(result, "Alice") {
 		t.Error("definitionDetailContent: text detail not rendered")
@@ -33,6 +34,7 @@ func TestDefinitionDetailContentComponentSlot(t *testing.T) {
 			{Term: "Status", Detail: "Fallback text"},
 		},
 	}
+
 	result := utils.Render(t, DefinitionList(props))
 	if !strings.Contains(result, "Fallback text") {
 		t.Error("definitionDetailContent: Detail fallback text not rendered")
@@ -50,10 +52,12 @@ func TestDefinitionGridDetailContent(t *testing.T) {
 			{Term: "License", Detail: "MIT"},
 		},
 	}
+
 	result := utils.Render(t, DefinitionGrid(props))
 	if !strings.Contains(result, "0.9.0") {
 		t.Error("definitionDetailContent in grid: detail not rendered")
 	}
+
 	if !strings.Contains(result, "MIT") {
 		t.Error("definitionDetailContent in grid: second detail not rendered")
 	}

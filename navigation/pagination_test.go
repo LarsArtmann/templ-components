@@ -9,6 +9,7 @@ import (
 
 func TestPaginationRange(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name       string
 		current    uint
@@ -26,6 +27,7 @@ func TestPaginationRange(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			start, end := paginationRange(tt.current, tt.total, tt.maxVisible)
 			if start != tt.wantStart || end != tt.wantEnd {
 				t.Errorf("paginationRange(%d, %d, %d) = (%d, %d), want (%d, %d)",
@@ -123,6 +125,7 @@ func TestPaginationRender(t *testing.T) {
 
 func renderPagination(t *testing.T, currentPage, totalPages uint, baseURL string) string {
 	t.Helper()
+
 	return utils.Render(t, Pagination(PaginationProps{
 		CurrentPage: currentPage,
 		TotalPages:  totalPages,
@@ -132,6 +135,7 @@ func renderPagination(t *testing.T, currentPage, totalPages uint, baseURL string
 
 func assertEmptyPaginationOutput(t *testing.T, currentPage, totalPages uint, baseURL string) {
 	t.Helper()
+
 	output := renderPagination(t, currentPage, totalPages, baseURL)
 	if output != "" {
 		t.Errorf("expected empty output, got: %s", output)

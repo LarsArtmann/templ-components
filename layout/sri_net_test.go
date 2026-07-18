@@ -18,6 +18,7 @@ import (
 // it never causes spurious CI failures — it is a safety net, not a gate.
 func TestPinnedSRIMatchesCDN(t *testing.T) {
 	t.Parallel()
+
 	if testing.Short() {
 		t.Skip("skipping CDN SRI verification in -short mode")
 	}
@@ -44,14 +45,17 @@ func TestPinnedSRIMatchesCDN(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
+
 			req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, tc.url, nil)
 			if err != nil {
 				t.Skipf("error building request for %s: %v", tc.url, err)
 			}
+
 			resp, err := client.Do(req)
 			if err != nil {
 				t.Skipf("network error fetching %s: %v", tc.url, err)
 			}
+
 			defer func() {
 				_ = resp.Body.Close()
 			}()

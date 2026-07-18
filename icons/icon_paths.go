@@ -147,15 +147,19 @@ func init() {
 func iconPaths(name Name) []string {
 	if specialIcons[name] {
 		d := iconPathData[Question]
+
 		return strings.Split(d, "|")
 	}
+
 	if alias, ok := iconAliases[name]; ok {
 		name = alias
 	}
+
 	d, ok := iconPathData[name]
 	if !ok {
 		d = iconPathData[Question]
 	}
+
 	return strings.Split(d, "|")
 }
 
@@ -175,11 +179,13 @@ func IconPathData(name Name) []string {
 // suitable for use in JavaScript-generated icons.
 func IconPathJS(name Name) string {
 	paths := iconPaths(name)
+
 	var b strings.Builder
 	for _, p := range paths {
 		b.WriteString(`<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="`)
 		b.WriteString(p)
 		b.WriteString(`"/>`)
 	}
+
 	return b.String()
 }

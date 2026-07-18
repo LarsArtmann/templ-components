@@ -251,6 +251,7 @@ func TestErrorAlertUserSeesFamilyAlert(t *testing.T) {
 
 	t.Run("each family has distinct styling", func(t *testing.T) {
 		t.Parallel()
+
 		for _, tt := range []struct {
 			family    Family
 			wantColor string
@@ -281,6 +282,7 @@ func TestFamilyStyleLogic(t *testing.T) {
 
 	t.Run("all five families are valid", func(t *testing.T) {
 		t.Parallel()
+
 		families := []Family{FamilyRejection, FamilyConflict, FamilyTransient, FamilyCorruption, FamilyInfrastructure}
 		for _, f := range families {
 			if !FamilyIsValid(f) {
@@ -291,6 +293,7 @@ func TestFamilyStyleLogic(t *testing.T) {
 
 	t.Run("unknown family is not valid", func(t *testing.T) {
 		t.Parallel()
+
 		if FamilyIsValid("unknown") {
 			t.Error("expected unknown family to be invalid")
 		}
@@ -298,6 +301,7 @@ func TestFamilyStyleLogic(t *testing.T) {
 
 	t.Run("unknown family gets default icon", func(t *testing.T) {
 		t.Parallel()
+
 		icon := FamilyIcon("nonexistent")
 		if icon == "" {
 			t.Error("expected default icon for unknown family")
@@ -306,12 +310,15 @@ func TestFamilyStyleLogic(t *testing.T) {
 
 	t.Run("each family has a unique color scheme", func(t *testing.T) {
 		t.Parallel()
+
 		seen := map[string]Family{}
+
 		for _, f := range []Family{FamilyRejection, FamilyConflict, FamilyTransient, FamilyCorruption, FamilyInfrastructure} {
 			style := lookupFamilyStyle(f)
 			if existing, ok := seen[style.BG]; ok {
 				t.Errorf("families %q and %q share background color %q", existing, f, style.BG)
 			}
+
 			seen[style.BG] = f
 		}
 	})

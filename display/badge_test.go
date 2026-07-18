@@ -37,6 +37,7 @@ func testBadgeProps(text string, badgeType BadgeType) BadgeProps {
 
 func TestBadgeRender(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name        string
 		props       BadgeProps
@@ -94,6 +95,7 @@ func TestBadgeRender(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			output := utils.Render(t, Badge(tt.props))
 			for _, want := range tt.wantContain {
 				utils.AssertContains(t, output, want)
@@ -104,6 +106,7 @@ func TestBadgeRender(t *testing.T) {
 
 func TestStatusBadgeRender(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name   string
 		status string
@@ -148,6 +151,7 @@ func TestBadgeFeatures(t *testing.T) {
 
 	t.Run("all badge types render", func(t *testing.T) {
 		t.Parallel()
+
 		for _, bt := range []BadgeType{BadgePrimary, BadgeSuccess, BadgeWarning, BadgeError, BadgeInfo, BadgeNeutral} {
 			output := utils.Render(t, Badge(BadgeProps{
 				Text: string(bt),

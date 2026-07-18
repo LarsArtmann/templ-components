@@ -27,6 +27,7 @@ func TestIconRender(t *testing.T) {
 			output := utils.Render(t, Icon(tt.icon, tt.class))
 			utils.AssertContains(t, output, "<svg")
 			utils.AssertContains(t, output, "</svg>")
+
 			if tt.class != "" {
 				for c := range strings.FieldsSeq(tt.class) {
 					utils.AssertContains(t, output, c)
@@ -38,6 +39,7 @@ func TestIconRender(t *testing.T) {
 
 func TestAllIconsRender(t *testing.T) {
 	t.Parallel()
+
 	for _, name := range allIconNames() {
 		t.Run(string(name), func(t *testing.T) {
 			t.Parallel()
@@ -95,10 +97,12 @@ func TestIconRTL(t *testing.T) {
 
 	t.Run("all path icons render with data-tc-dir-icon", func(t *testing.T) {
 		t.Parallel()
+
 		for _, name := range allIconNames() {
 			if name == Spinner {
 				continue
 			}
+
 			output := utils.Render(t, IconRTL(name, "h-5 w-5"))
 			utils.AssertContains(t, output, "data-tc-dir-icon")
 		}
@@ -109,6 +113,7 @@ func TestIconPathJS(t *testing.T) {
 	t.Parallel()
 	t.Run("known icon produces path elements", func(t *testing.T) {
 		t.Parallel()
+
 		result := IconPathJS(Home)
 		if result == "" {
 			t.Error("IconPathJS(Home) returned empty string")
@@ -116,6 +121,7 @@ func TestIconPathJS(t *testing.T) {
 	})
 	t.Run("multi-path icon produces multiple paths", func(t *testing.T) {
 		t.Parallel()
+
 		result := IconPathJS(ChevronDown)
 		if result == "" {
 			t.Error("IconPathJS(ChevronDown) returned empty string")
@@ -127,6 +133,7 @@ func TestIconPathData(t *testing.T) {
 	t.Parallel()
 	t.Run("known icon returns non-empty raw path data", func(t *testing.T) {
 		t.Parallel()
+
 		paths := IconPathData(Home)
 		if len(paths) == 0 || paths[0] == "" {
 			t.Error("IconPathData(Home) returned empty")
@@ -134,7 +141,9 @@ func TestIconPathData(t *testing.T) {
 	})
 	t.Run("unknown icon falls back to Question", func(t *testing.T) {
 		t.Parallel()
+
 		paths := IconPathData(Name("nonexistent"))
+
 		questionPaths := IconPathData(Question)
 		if len(paths) != len(questionPaths) || paths[0] != questionPaths[0] {
 			t.Error("IconPathData with unknown name should fall back to Question")
@@ -142,10 +151,12 @@ func TestIconPathData(t *testing.T) {
 	})
 	t.Run("returns raw d-strings without path wrapper", func(t *testing.T) {
 		t.Parallel()
+
 		paths := IconPathData(Users)
 		if len(paths) == 0 {
 			t.Fatal("IconPathData(Users) returned no paths")
 		}
+
 		for _, p := range paths {
 			if strings.Contains(p, "<path") {
 				t.Errorf("IconPathData should return raw d-strings, got markup: %q", p)

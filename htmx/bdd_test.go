@@ -13,6 +13,7 @@ import (
 
 func renderLoadingIndicator(t *testing.T) string {
 	t.Helper()
+
 	return utils.Render(
 		t,
 		LoadingIndicator(
@@ -60,6 +61,7 @@ func TestInlineLoadingOverlayUserSeesLocalLoadingState(t *testing.T) {
 
 func renderConfirmDelete(t *testing.T, endpoint, target, confirmMsg string) string {
 	t.Helper()
+
 	return utils.Render(t, ConfirmDelete(ConfirmDeleteProps{Delete: endpoint, Target: target, Confirm: confirmMsg}))
 }
 
@@ -74,6 +76,7 @@ func assertConfirmDeleteContains(
 	utils.AssertContains(t, output, `hx-target="`+target+`"`)
 	utils.AssertContains(t, output, confirmMsg)
 	utils.AssertContains(t, output, "Delete")
+
 	for _, s := range extraContains {
 		utils.AssertContains(t, output, s)
 	}
@@ -97,6 +100,7 @@ func TestConfirmDeleteUserGetsConfirmationDialog(t *testing.T) {
 
 func renderCSRFToken(t *testing.T, token string) string {
 	t.Helper()
+
 	return utils.Render(t, CSRFToken(token))
 }
 
@@ -139,6 +143,7 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 
 	t.Run("all HTMX components render without errors", func(t *testing.T) {
 		t.Parallel()
+
 		components := []struct {
 			name string
 			comp func() templ.Component
@@ -182,6 +187,7 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 		for _, tc := range components {
 			t.Run(tc.name, func(t *testing.T) {
 				t.Parallel()
+
 				output := utils.Render(t, tc.comp())
 				if !strings.Contains(output, "<") {
 					t.Errorf(

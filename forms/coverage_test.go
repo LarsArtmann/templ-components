@@ -9,6 +9,7 @@ import (
 
 func TestDefaultRadioProps(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultRadioProps()
 	if props.Value != "" {
 		t.Error("expected empty default value")
@@ -17,6 +18,7 @@ func TestDefaultRadioProps(t *testing.T) {
 
 func TestDefaultRadioGroupProps(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultRadioGroupProps()
 	if props.Name != "" {
 		t.Error("expected empty default name")
@@ -348,6 +350,7 @@ func TestInputGroupWithBothAddons(t *testing.T) {
 
 func TestFormFieldWrapperEmptyLabel(t *testing.T) {
 	t.Parallel()
+
 	output := utils.Render(t, FormFieldWrapper(FormFieldProps{}))
 	if output != "" {
 		t.Errorf("expected empty output, got %q", output)
@@ -400,6 +403,7 @@ func TestValidationSummaryWithErrors(t *testing.T) {
 
 func TestValidationSummaryEmpty(t *testing.T) {
 	t.Parallel()
+
 	output := utils.Render(t, ValidationSummary(ValidationSummaryProps{
 		Errors: []ValidationError{},
 	}))

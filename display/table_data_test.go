@@ -9,13 +9,16 @@ import (
 
 func TestDefaultDataTableProps(t *testing.T) {
 	t.Parallel()
+
 	p := DefaultDataTableProps()
 	if !p.Striped {
 		t.Error("expected Striped=true by default")
 	}
+
 	if p.SortParam != "sort" {
 		t.Error("expected SortParam='sort' by default")
 	}
+
 	if p.DirParam != "dir" {
 		t.Error("expected DirParam='dir' by default")
 	}
@@ -213,6 +216,7 @@ func TestDataTableCaptionRendered(t *testing.T) {
 
 func TestToggleSortDir(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input SortDirection
 		want  SortDirection

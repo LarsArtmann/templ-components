@@ -22,6 +22,7 @@ func TestRadioGroupRequiredPropagatesToInputs(t *testing.T) {
 	}
 
 	var buf strings.Builder
+
 	_ = RadioGroup(props).Render(t.Context(), &buf)
 	html := buf.String()
 
@@ -43,6 +44,7 @@ func TestRadioOptionCheckedPreSelects(t *testing.T) {
 	}
 
 	var buf strings.Builder
+
 	_ = RadioGroup(props).Render(t.Context(), &buf)
 	html := buf.String()
 
@@ -59,6 +61,7 @@ func TestInputGroupRightAddonHasPointerEventsNone(t *testing.T) {
 	}
 
 	var buf strings.Builder
+
 	_ = InputGroup(props).Render(t.Context(), &buf)
 	html := buf.String()
 
@@ -71,6 +74,7 @@ func TestFieldErrorHasRoleAlert(t *testing.T) {
 	t.Parallel()
 
 	var buf strings.Builder
+
 	_ = FieldError("email", "Required").Render(t.Context(), &buf)
 	html := buf.String()
 
@@ -83,6 +87,7 @@ func TestFieldErrorEmptyMessageRendersNothing(t *testing.T) {
 	t.Parallel()
 
 	var buf strings.Builder
+
 	_ = FieldError("email", "").Render(t.Context(), &buf)
 	html := buf.String()
 
@@ -112,6 +117,7 @@ func TestRadioGroupErrorPropagatesAriaToInputs(t *testing.T) {
 	}
 
 	var buf strings.Builder
+
 	_ = RadioGroup(props).Render(t.Context(), &buf)
 	html := buf.String()
 
@@ -146,6 +152,7 @@ func TestRadioGroupHelpTextPropagatesAriaToInputs(t *testing.T) {
 	}
 
 	var buf strings.Builder
+
 	_ = RadioGroup(props).Render(t.Context(), &buf)
 	html := buf.String()
 
@@ -171,6 +178,7 @@ func TestRadioGroupNoErrorNoAriaOnInputs(t *testing.T) {
 	}
 
 	var buf strings.Builder
+
 	_ = RadioGroup(props).Render(t.Context(), &buf)
 	html := buf.String()
 

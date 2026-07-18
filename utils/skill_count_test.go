@@ -26,13 +26,16 @@ func TestSkillComponentCount(t *testing.T) {
 		files, err := filepath.Glob(filepath.Join(root, pkg, "*.templ"))
 		if err != nil {
 			t.Logf("glob error for %s: %v", pkg, err)
+
 			continue
 		}
+
 		for _, file := range files {
 			data, readErr := os.ReadFile(file) //nolint:gosec // test scans package files
 			if readErr != nil {
 				continue
 			}
+
 			for line := range strings.SplitSeq(string(data), "\n") {
 				if templFuncRe.MatchString(line) {
 					count++
@@ -46,10 +49,12 @@ func TestSkillComponentCount(t *testing.T) {
 	if err != nil {
 		t.Skipf("SKILL.md not found: %v", err)
 	}
+
 	skill := string(skillData)
 
 	// The first line with "N components" is the documented count
 	countRe := regexp.MustCompile(`(\d+)\s+components`)
+
 	matches := countRe.FindStringSubmatch(skill)
 	if len(matches) < 2 {
 		t.Skip("could not find component count in SKILL.md")

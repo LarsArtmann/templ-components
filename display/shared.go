@@ -78,6 +78,7 @@ type overlayShellProps struct {
 func overlayDialogJS(id, componentName string) string {
 	guard := "window.tcOverlay" + componentName + "Attached"
 	escapedID := strconv.Quote(id)
+
 	return "if(!" + guard + "){" + guard + "=true;" +
 		"window.tcOpen" + componentName + "=function(id){" +
 		"var d=document.getElementById(id);" +
@@ -107,10 +108,12 @@ func overlayDialogJS(id, componentName string) string {
 // wrapped error message for debugging.
 func scriptComponent(nonce, js, errLabel string) templ.Component {
 	escapedNonce := html.EscapeString(nonce)
+
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, js); err != nil {
 			return fmt.Errorf("write %s: %w", errLabel, err)
 		}
+
 		return nil
 	})
 }

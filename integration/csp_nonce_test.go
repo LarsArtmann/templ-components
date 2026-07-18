@@ -18,6 +18,7 @@ import (
 // CSP regressions where a new or refactored component forgets the nonce.
 func TestAllInlineScriptsHaveNonce(t *testing.T) {
 	t.Parallel()
+
 	const testNonce = "test-csp-nonce-12345"
 
 	// Each entry renders a component that emits at least one inline <script>.
@@ -86,10 +87,12 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 	for _, r := range renderings {
 		t.Run(r.name, func(t *testing.T) {
 			t.Parallel()
+
 			scriptCount := strings.Count(r.html, "<script")
 			if scriptCount == 0 {
 				t.Skipf("no inline scripts in output")
 			}
+
 			nonceCount := strings.Count(r.html, `nonce="`+testNonce+`"`)
 			if nonceCount < scriptCount {
 				t.Errorf("%s: found %d <script> tags but only %d have nonce=%q\n%s",

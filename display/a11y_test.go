@@ -24,6 +24,7 @@ func TestA11yAttributes(t *testing.T) {
 
 	t.Run("modal uses native dialog element", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultModalProps()
 		props.ID = "test-modal"
 		props.Title = "Test"
@@ -95,6 +96,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("badge has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultBadgeProps()
 		props.Text = activeBadgeText
 		output := utils.Render(t, Badge(props))
@@ -134,26 +136,31 @@ func TestDefaultPropsConstructors(t *testing.T) {
 
 	t.Run("DefaultCardProps returns valid props", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultCardProps()
 		if props.Padding != CardPaddingMD {
 			t.Errorf("Padding = %q, want %q", props.Padding, CardPaddingMD)
 		}
+
 		output := utils.Render(t, Card(props))
 		utils.AssertContains(t, output, "<div")
 	})
 
 	t.Run("DefaultBadgeProps returns valid props", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultBadgeProps()
 		if props.Type != BadgeNeutral {
 			t.Errorf("Type = %q, want %q", props.Type, BadgeNeutral)
 		}
+
 		output := utils.Render(t, Badge(props))
 		utils.AssertContains(t, output, "<span")
 	})
 
 	t.Run("DefaultModalProps returns valid props", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultModalProps()
 		if props.Size != ModalSizeMD {
 			t.Errorf("Size = %q, want %q", props.Size, ModalSizeMD)
@@ -166,6 +173,7 @@ func TestDropdownXSSSafety(t *testing.T) {
 
 	t.Run("ID with special chars is safely interpolated", func(t *testing.T) {
 		t.Parallel()
+
 		maliciousID := `<script>alert('xss')</script>`
 		output := utils.Render(t, Dropdown(DropdownProps{
 			BaseProps: utils.BaseProps{ID: maliciousID},

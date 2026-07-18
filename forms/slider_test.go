@@ -8,6 +8,7 @@ import (
 
 func TestDefaultSliderProps(t *testing.T) {
 	t.Parallel()
+
 	p := DefaultSliderProps()
 	if p.Min != 0 || p.Max != 100 || p.Step != 1 {
 		t.Error("expected default Min=0, Max=100, Step=1")

@@ -13,6 +13,7 @@ func TestCardRender(t *testing.T) {
 	t.Parallel()
 	t.Run("basic card with title", func(t *testing.T) {
 		t.Parallel()
+
 		props := CardProps{
 			Title:   cardTitleUsers,
 			Padding: CardPaddingMD,
@@ -25,6 +26,7 @@ func TestCardRender(t *testing.T) {
 
 	t.Run("card with custom class and id", func(t *testing.T) {
 		t.Parallel()
+
 		props := CardProps{
 			BaseProps: utils.BaseProps{
 				ID:    "my-card",
@@ -47,6 +49,7 @@ func TestCardRender(t *testing.T) {
 
 	t.Run("simple card with custom class and id", func(t *testing.T) {
 		t.Parallel()
+
 		props := SimpleCardProps{
 			BaseProps: utils.BaseProps{
 				ID:    "simple-card",
@@ -153,6 +156,7 @@ func TestStatCardRender(t *testing.T) {
 
 	t.Run("default props has TrendNone", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultStatCardProps()
 		if props.Trend != TrendNone {
 			t.Errorf("DefaultStatCardProps().Trend = %q, want %q", props.Trend, TrendNone)
@@ -228,6 +232,7 @@ func TestEmptyStateRender(t *testing.T) {
 	t.Parallel()
 	t.Run("with action link", func(t *testing.T) {
 		t.Parallel()
+
 		props := EmptyStateProps{
 			BaseProps:   utils.BaseProps{},
 			Title:       "No repos",
@@ -272,6 +277,7 @@ func TestEmptyStateRender(t *testing.T) {
 
 	t.Run("default props", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultEmptyStateProps()
 		if props.Icon != icons.Inbox {
 			t.Errorf("DefaultEmptyStateProps().Icon = %q, want %q", props.Icon, icons.Inbox)
@@ -313,6 +319,7 @@ func TestEmptyStateRender(t *testing.T) {
 
 func TestNormalizeTrend(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input TrendDirection
 		want  TrendDirection
@@ -327,6 +334,7 @@ func TestNormalizeTrend(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(string(tt.input), func(t *testing.T) {
 			t.Parallel()
+
 			got := normalizeTrend(tt.input)
 			if got != tt.want {
 				t.Errorf("normalizeTrend(%q) = %q, want %q", tt.input, got, tt.want)

@@ -3,18 +3,21 @@ package display
 // BadgeTypeIsValid reports whether v is one of the defined BadgeType constants.
 func BadgeTypeIsValid(v BadgeType) bool {
 	_, ok := badgeStyleMap[v]
+
 	return ok
 }
 
 // BadgeSizeIsValid reports whether v is one of the defined BadgeSize constants.
 func BadgeSizeIsValid(v BadgeSize) bool {
 	_, ok := badgeSizeLookup[v]
+
 	return ok
 }
 
 // CardPaddingIsValid reports whether v is one of the defined CardPadding constants.
 func CardPaddingIsValid(v CardPadding) bool {
 	_, ok := cardPaddingLookup[v]
+
 	return ok
 }
 
@@ -23,13 +26,16 @@ func GridColsIsValid(v GridCols) bool {
 	if v == GridColsAutoFit {
 		return true
 	}
+
 	_, ok := gridColsLookup[v]
+
 	return ok
 }
 
 // GridGapIsValid reports whether v is one of the defined GridGap constants.
 func GridGapIsValid(v GridGap) bool {
 	_, ok := gridGapLookup[v]
+
 	return ok
 }
 
@@ -41,18 +47,21 @@ func TrendDirectionIsValid(v TrendDirection) bool {
 // AvatarSizeIsValid reports whether v is one of the defined AvatarSize constants.
 func AvatarSizeIsValid(v AvatarSize) bool {
 	_, ok := avatarSizeLookup[v]
+
 	return ok
 }
 
 // TooltipPositionIsValid reports whether v is one of the defined TooltipPosition constants.
 func TooltipPositionIsValid(v TooltipPosition) bool {
 	_, ok := tooltipPositionMap[v]
+
 	return ok
 }
 
 // PopoverPositionIsValid reports whether v is one of the defined PopoverPosition constants.
 func PopoverPositionIsValid(v PopoverPosition) bool {
 	_, ok := popoverPositionMap[v]
+
 	return ok
 }
 
@@ -119,12 +128,14 @@ func OverlayKindIsValid(v OverlayKind) bool {
 // ButtonSizeIsValid reports whether v is one of the defined ButtonSize constants.
 func ButtonSizeIsValid(v ButtonSize) bool {
 	_, ok := buttonSizeLookup[v]
+
 	return ok
 }
 
 // ButtonHTMLTypeIsValid reports whether v is one of the defined ButtonHTMLType constants.
 func ButtonHTMLTypeIsValid(v ButtonHTMLType) bool {
 	_, ok := buttonHTMLTypeLookup[v]
+
 	return ok
 }
 
@@ -141,5 +152,6 @@ func SortDirectionIsValid(v SortDirection) bool {
 // TableCellPaddingIsValid reports whether v is one of the defined TableCellPadding constants.
 func TableCellPaddingIsValid(v TableCellPadding) bool {
 	_, ok := tableCellPaddingLookup[v]
+
 	return ok
 }

@@ -9,6 +9,7 @@ import (
 
 func TestInputFullCoverage(t *testing.T) {
 	t.Parallel()
+
 	for _, it := range []InputType{InputText, InputEmail, InputPassword, InputNumber, InputTel, InputURL, InputSearch} {
 		t.Run(string(it)+" with error and help", func(t *testing.T) {
 			t.Parallel()
@@ -26,6 +27,7 @@ func TestInputFullCoverage(t *testing.T) {
 			utils.AssertContains(t, output, string(it)+" field")
 		})
 	}
+
 	t.Run("disabled and readonly", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Input(InputProps{
@@ -120,6 +122,7 @@ func TestTextareaComprehensive(t *testing.T) {
 
 func TestToggleFullCoverage(t *testing.T) {
 	t.Parallel()
+
 	for _, size := range []ToggleSize{ToggleSizeSM, ToggleSizeMD, ToggleSizeLG} {
 		t.Run("size_"+string(size)+" checked", func(t *testing.T) {
 			t.Parallel()

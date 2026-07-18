@@ -52,6 +52,7 @@ func isDarkModeException(path, line string) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -78,6 +79,7 @@ func isWithinDarkVariant(line string, idx int) bool {
 			return true
 		}
 	}
+
 	return false
 }
 
@@ -89,11 +91,14 @@ func allColorsInDarkVariant(line string, matches []string) bool {
 		if idx < 0 {
 			continue
 		}
+
 		if isWithinDarkVariant(line, idx) {
 			continue
 		}
+
 		return false
 	}
+
 	return true
 }
 
@@ -104,20 +109,25 @@ func checkLineForDarkModeGap(path, line string, colorRe *regexp.Regexp) bool {
 	if commentRe.MatchString(line) {
 		return false
 	}
+
 	matches := colorRe.FindAllString(line, -1)
 	if len(matches) == 0 {
 		return false
 	}
+
 	darkRe := regexp.MustCompile(`dark:`)
 	if darkRe.MatchString(line) {
 		return false
 	}
+
 	if isDarkModeException(path, line) {
 		return false
 	}
+
 	if allColorsInDarkVariant(line, matches) {
 		return false
 	}
+
 	return true
 }
 
@@ -125,6 +135,7 @@ func checkLineForDarkModeGap(path, line string, colorRe *regexp.Regexp) bool {
 // for color classes without dark: variants, reporting violations.
 func scanDarkMode(t *testing.T, dirs []string, colorRe *regexp.Regexp) {
 	t.Helper()
+
 	violations := 0
 
 	for _, dir := range dirs {
@@ -132,9 +143,11 @@ func scanDarkMode(t *testing.T, dirs []string, colorRe *regexp.Regexp) {
 			if err != nil || info.IsDir() {
 				return err
 			}
+
 			if !strings.HasSuffix(path, ".templ") && !strings.HasSuffix(path, ".go") {
 				return nil
 			}
+
 			if strings.HasSuffix(path, "_templ.go") || strings.HasSuffix(path, "_test.go") {
 				return nil
 			}
@@ -147,15 +160,18 @@ func scanDarkMode(t *testing.T, dirs []string, colorRe *regexp.Regexp) {
 			for line := range strings.SplitSeq(string(data), "\n") {
 				if checkLineForDarkModeGap(path, line, colorRe) {
 					violations++
+
 					t.Errorf("dark mode gap in %s:\n  %s", path, strings.TrimSpace(line))
 				}
 			}
+
 			return nil
 		})
 		if err != nil {
 			t.Logf("walk error for %s: %v", dir, err)
 		}
 	}
+
 	if violations > 0 {
 		t.Errorf("found %d dark mode compliance violations", violations)
 	}
@@ -166,6 +182,7 @@ func scanDarkMode(t *testing.T, dirs []string, colorRe *regexp.Regexp) {
 // and .go source files has a corresponding dark: variant on the same line.
 func TestDarkModeCompliance(t *testing.T) {
 	t.Parallel()
+
 	dirs := []string{"display", "feedback", "forms", "navigation", "errorpage", "layout", "htmx", "examples/demo"}
 	neutralColorRe := regexp.MustCompile(
 		`(text-gray-[0-9]+|bg-white|bg-gray-[0-9]+|border-gray-[0-9]+|divide-gray-[0-9]+|ring-gray-[0-9]+)`,
@@ -178,6 +195,7 @@ func TestDarkModeCompliance(t *testing.T) {
 // files have corresponding dark: variants on the same line.
 func TestDarkModeSemanticColors(t *testing.T) {
 	t.Parallel()
+
 	dirs := []string{"display", "feedback", "forms", "navigation", "errorpage", "layout", "htmx", "examples/demo"}
 	semanticColorRe := regexp.MustCompile(
 		`(bg-(blue|red|green|amber|orange|gray)-[0-9]+|text-(blue|red|green|amber|orange)-[0-9]+)`,

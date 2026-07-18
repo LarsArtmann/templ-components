@@ -21,6 +21,7 @@ func TestNameIsValid(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := NameIsValid(tt.n); got != tt.want {
 				t.Errorf("NameIsValid(%q) = %v, want %v", tt.n, got, tt.want)
 			}

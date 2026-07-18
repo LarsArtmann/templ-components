@@ -9,6 +9,7 @@ import (
 
 func TestTextareaAutoGrowDefaultTrue(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultTextareaProps()
 	if !props.AutoGrow {
 		t.Error("DefaultTextareaProps should have AutoGrow=true")
@@ -17,9 +18,11 @@ func TestTextareaAutoGrowDefaultTrue(t *testing.T) {
 
 func TestTextareaAutoGrowAddsClass(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultTextareaProps()
 	props.ID = "bio"
 	props.Name = "bio"
+
 	html := utils.Render(t, Textarea(props))
 	if !strings.Contains(html, "tc-auto-grow") {
 		t.Error("AutoGrow=true should add tc-auto-grow class")
@@ -28,10 +31,12 @@ func TestTextareaAutoGrowAddsClass(t *testing.T) {
 
 func TestTextareaAutoGrowFalseOmitsClass(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultTextareaProps()
 	props.AutoGrow = false
 	props.ID = "bio"
 	props.Name = "bio"
+
 	html := utils.Render(t, Textarea(props))
 	if strings.Contains(html, "tc-auto-grow") {
 		t.Error("AutoGrow=false should not add tc-auto-grow class")
@@ -40,10 +45,12 @@ func TestTextareaAutoGrowFalseOmitsClass(t *testing.T) {
 
 func TestTextareaEnterKeyHint(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultTextareaProps()
 	props.ID = "chat"
 	props.Name = "message"
 	props.EnterKeyHint = EnterKeyHintSend
+
 	html := utils.Render(t, Textarea(props))
 	if !strings.Contains(html, `enterkeyhint="send"`) {
 		t.Error("EnterKeyHint=Send should emit enterkeyhint=\"send\"")
@@ -52,9 +59,11 @@ func TestTextareaEnterKeyHint(t *testing.T) {
 
 func TestTextareaEnterKeyHintEmpty(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultTextareaProps()
 	props.ID = "bio"
 	props.Name = "bio"
+
 	html := utils.Render(t, Textarea(props))
 	if strings.Contains(html, "enterkeyhint") {
 		t.Error("Empty EnterKeyHint should not emit enterkeyhint attribute")
@@ -63,6 +72,7 @@ func TestTextareaEnterKeyHintEmpty(t *testing.T) {
 
 func TestInputSearchWrapsInSearchElement(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Input(InputProps{
 		BaseProps: utils.BaseProps{ID: "q"},
 		Type:      InputSearch,
@@ -71,6 +81,7 @@ func TestInputSearchWrapsInSearchElement(t *testing.T) {
 	if !strings.Contains(html, "<search") {
 		t.Error("InputSearch should wrap input in <search> element")
 	}
+
 	if !strings.Contains(html, `type="search"`) {
 		t.Error("InputSearch should emit type=\"search\"")
 	}
@@ -78,6 +89,7 @@ func TestInputSearchWrapsInSearchElement(t *testing.T) {
 
 func TestInputTextDoesNotWrapInSearchElement(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Input(InputProps{
 		BaseProps: utils.BaseProps{ID: "name"},
 		Type:      InputText,
@@ -90,6 +102,7 @@ func TestInputTextDoesNotWrapInSearchElement(t *testing.T) {
 
 func TestFormValidate(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Form(FormProps{
 		Action:   "/submit",
 		Validate: true,
@@ -101,6 +114,7 @@ func TestFormValidate(t *testing.T) {
 
 func TestFormValidateFalseOmits(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Form(FormProps{Action: "/submit"}))
 	if strings.Contains(html, "hx-validate") {
 		t.Error("Validate=false should not emit hx-validate")
@@ -109,6 +123,7 @@ func TestFormValidateFalseOmits(t *testing.T) {
 
 func TestInputEnterKeyHintExplicitOverridesAuto(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Input(InputProps{
 		BaseProps:    utils.BaseProps{ID: "msg"},
 		Type:         InputText,
@@ -122,6 +137,7 @@ func TestInputEnterKeyHintExplicitOverridesAuto(t *testing.T) {
 
 func TestInputEnterKeyHintAutoDerived(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Input(InputProps{
 		BaseProps: utils.BaseProps{ID: "email"},
 		Type:      InputEmail,
@@ -134,6 +150,7 @@ func TestInputEnterKeyHintAutoDerived(t *testing.T) {
 
 func TestSelectStylableEmitsSelectedContent(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Select(SelectProps{
 		BaseProps: utils.BaseProps{ID: "country"},
 		Name:      "country",
@@ -145,9 +162,11 @@ func TestSelectStylableEmitsSelectedContent(t *testing.T) {
 	if !strings.Contains(html, "tc-select") {
 		t.Error("Stylable=true should add tc-select class")
 	}
+
 	if !strings.Contains(html, "<selectedcontent>") {
 		t.Error("Stylable=true should emit <selectedcontent> element")
 	}
+
 	if !strings.Contains(html, "<button>") {
 		t.Error("Stylable=true should emit <button> wrapper")
 	}
@@ -155,6 +174,7 @@ func TestSelectStylableEmitsSelectedContent(t *testing.T) {
 
 func TestSelectNotStylableOmitsSelectedContent(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Select(SelectProps{
 		BaseProps: utils.BaseProps{ID: "country"},
 		Name:      "country",
@@ -165,6 +185,7 @@ func TestSelectNotStylableOmitsSelectedContent(t *testing.T) {
 	if strings.Contains(html, "tc-select") {
 		t.Error("Stylable=false should not add tc-select class")
 	}
+
 	if strings.Contains(html, "<selectedcontent>") {
 		t.Error("Stylable=false should not emit <selectedcontent>")
 	}

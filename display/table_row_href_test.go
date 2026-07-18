@@ -26,6 +26,7 @@ func TestTableRowHref(t *testing.T) {
 
 	t.Run("row without href has no clickable attributes", func(t *testing.T) {
 		t.Parallel()
+
 		html := utils.Render(t, Table(TableProps{
 			Headers: []string{"Name"},
 			Rows: []TableRow{
@@ -35,6 +36,7 @@ func TestTableRowHref(t *testing.T) {
 		if strings.Contains(html, "data-tc-row-href") {
 			t.Error("non-clickable row should not have data-tc-row-href")
 		}
+
 		if strings.Contains(html, "cursor-pointer") {
 			t.Error("non-clickable row should not have cursor-pointer")
 		}
@@ -55,6 +57,7 @@ func TestTableRowHref(t *testing.T) {
 
 	t.Run("non-clickable table omits script", func(t *testing.T) {
 		t.Parallel()
+
 		html := utils.Render(t, Table(TableProps{
 			Headers: []string{"X"},
 			Rows: []TableRow{
@@ -81,6 +84,7 @@ func TestTableRowHref(t *testing.T) {
 
 func TestTableHasRowHref(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name string
 		rows []TableRow
@@ -94,6 +98,7 @@ func TestTableHasRowHref(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := tableHasRowHref(tt.rows); got != tt.want {
 				t.Errorf("tableHasRowHref() = %v, want %v", got, tt.want)
 			}

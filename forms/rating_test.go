@@ -8,6 +8,7 @@ import (
 
 func TestDefaultRatingProps(t *testing.T) {
 	t.Parallel()
+
 	p := DefaultRatingProps()
 	if p.Max != 5 || p.Size != RatingSizeMD {
 		t.Error("expected default Max=5, Size=MD")
@@ -16,15 +17,19 @@ func TestDefaultRatingProps(t *testing.T) {
 
 func TestRatingSizeIsValid(t *testing.T) {
 	t.Parallel()
+
 	if !RatingSizeIsValid(RatingSizeSM) {
 		t.Error("SM should be valid")
 	}
+
 	if !RatingSizeIsValid(RatingSizeMD) {
 		t.Error("MD should be valid")
 	}
+
 	if !RatingSizeIsValid(RatingSizeLG) {
 		t.Error("LG should be valid")
 	}
+
 	if RatingSizeIsValid(RatingSize("xl")) {
 		t.Error("XL should be invalid")
 	}
@@ -125,6 +130,7 @@ func TestRatingReadOnlyZeroValue(t *testing.T) {
 
 func TestRatingSizes(t *testing.T) {
 	t.Parallel()
+
 	for _, size := range []RatingSize{RatingSizeSM, RatingSizeMD, RatingSizeLG} {
 		output := utils.Render(t, Rating(RatingProps{
 			Value:    3,
@@ -140,14 +146,17 @@ func TestRatingSizes(t *testing.T) {
 //nolint:unparam // substr is always type="radio" but kept for flexibility
 func substringCount(s, substr string) int {
 	count := 0
+
 	for {
 		idx := indexOf(s, substr)
 		if idx == -1 {
 			break
 		}
+
 		count++
 		s = s[idx+len(substr):]
 	}
+
 	return count
 }
 
@@ -157,5 +166,6 @@ func indexOf(s, substr string) int {
 			return i
 		}
 	}
+
 	return -1
 }

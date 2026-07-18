@@ -8,6 +8,7 @@ import (
 
 func TestDefaultFilterDropdownProps(t *testing.T) {
 	t.Parallel()
+
 	_ = DefaultFilterDropdownProps()
 }
 
@@ -134,6 +135,7 @@ func TestFilterDropdownNoLabel(t *testing.T) {
 
 func TestFilterDropdownPreselectEmpty(t *testing.T) {
 	t.Parallel()
+
 	opts := []SelectOption{
 		{Value: "a", Label: "A"},
 		{Value: "b", Label: "B", Selected: true},
@@ -147,14 +149,17 @@ func TestFilterDropdownPreselectEmpty(t *testing.T) {
 
 func TestFilterDropdownPreselectMatch(t *testing.T) {
 	t.Parallel()
+
 	opts := []SelectOption{
 		{Value: "a", Label: "A"},
 		{Value: "b", Label: "B", Selected: true},
 	}
+
 	result := filterDropdownPreselect(opts, "a")
 	if !result[0].Selected {
 		t.Error("expected option 'a' to be Selected")
 	}
+
 	if result[1].Selected {
 		t.Error("expected option 'b' to NOT be Selected")
 	}

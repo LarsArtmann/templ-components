@@ -12,6 +12,7 @@ func ValidateID(componentName, id string) error {
 	if id == "" {
 		return fmt.Errorf("%s: id=%q cannot be empty", componentName, id)
 	}
+
 	return nil
 }
 
@@ -31,10 +32,13 @@ func EnsureID(prefix, id string) string {
 	if id != "" {
 		return id
 	}
+
 	var b [8]byte
 	if _, err := rand.Read(b[:]); err != nil {
 		c := ensureIDCounter.Add(1)
+
 		return fmt.Sprintf("tc-%s-%d-%d", prefix, time.Now().UnixNano(), c)
 	}
+
 	return fmt.Sprintf("tc-%s-%x", prefix, b[:])
 }

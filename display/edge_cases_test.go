@@ -12,6 +12,7 @@ func TestModalEdgeCases(t *testing.T) {
 
 	t.Run("modal without title renders no header", func(t *testing.T) {
 		t.Parallel()
+
 		props := ModalProps{
 			BaseProps: utils.BaseProps{ID: "no-title-modal"},
 			Open:      true,
@@ -25,6 +26,7 @@ func TestModalEdgeCases(t *testing.T) {
 
 	t.Run("dropdown with empty items list renders button only", func(t *testing.T) {
 		t.Parallel()
+
 		props := DropdownProps{
 			BaseProps: utils.BaseProps{ID: "empty-dd"},
 			Items:     []DropdownItem{},
@@ -36,6 +38,7 @@ func TestModalEdgeCases(t *testing.T) {
 
 	t.Run("dropdown item with both Href and action renders link", func(t *testing.T) {
 		t.Parallel()
+
 		props := DropdownProps{
 			BaseProps: utils.BaseProps{ID: "both-dd"},
 			Items: []DropdownItem{
@@ -52,6 +55,7 @@ func TestAccordionEdgeCases(t *testing.T) {
 
 	t.Run("empty item ID auto-generates", func(t *testing.T) {
 		t.Parallel()
+
 		props := AccordionProps{
 			Items: []AccordionItem{
 				{ID: "", Title: "Missing"},
@@ -63,6 +67,7 @@ func TestAccordionEdgeCases(t *testing.T) {
 
 	t.Run("empty items list renders container only", func(t *testing.T) {
 		t.Parallel()
+
 		props := AccordionProps{
 			Items: []AccordionItem{},
 		}
@@ -131,6 +136,7 @@ func TestEmptyStateEdgeCases(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, EmptyState(tt.props))
 			utils.AssertContainsAll(t, output, tt.want...)
+
 			for _, nw := range tt.notWant {
 				utils.AssertNotContains(t, output, nw)
 			}
@@ -156,6 +162,7 @@ func TestCardEdgeCases(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Card(tt.props))
 			utils.AssertContainsAll(t, output, tt.want...)
+
 			for _, nw := range tt.notWant {
 				utils.AssertNotContains(t, output, nw)
 			}
@@ -248,6 +255,7 @@ func TestTableEdgeCases(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Table(tt.props))
 			utils.AssertContainsAll(t, output, tt.want...)
+
 			for _, nw := range tt.notWant {
 				utils.AssertNotContains(t, output, nw)
 			}
@@ -311,6 +319,7 @@ func TestTooltipEdgeCases(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Tooltip(tt.props))
 			utils.AssertContainsAll(t, output, tt.want...)
+
 			for _, nw := range tt.notWant {
 				utils.AssertNotContains(t, output, nw)
 			}
@@ -320,6 +329,7 @@ func TestTooltipEdgeCases(t *testing.T) {
 
 func TestAriaLabelPropagation(t *testing.T) {
 	t.Parallel()
+
 	label := "Custom aria label"
 
 	tests := []struct {
@@ -385,7 +395,9 @@ func TestAriaLabelPropagation(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			var output string
+
 			switch p := tt.props.(type) {
 			case CardProps:
 				output = utils.Render(t, Card(p))
@@ -402,6 +414,7 @@ func TestAriaLabelPropagation(t *testing.T) {
 			case TabsProps:
 				output = utils.Render(t, Tabs(p))
 			}
+
 			utils.AssertContains(t, output, `aria-label="`+label+`"`)
 		})
 	}

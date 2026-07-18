@@ -71,6 +71,7 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 
 		if cfg.JSON {
 			writeJSONError(w, statusCode, props)
+
 			return
 		}
 
@@ -79,19 +80,24 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 			if title == "" {
 				title = fmt.Sprintf("Error %d", statusCode)
 			}
+
 			lang := cfg.Lang
 			if lang == "" {
 				lang = "en"
 			}
+
 			html, renderErr := renderShellToBuffer(r.Context(), title, lang, props)
 			if renderErr != nil {
 				slog.Error("error page render failed", "error", renderErr, "original_error", err)
 				writeFallbackError(w, statusCode)
+
 				return
 			}
+
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			w.WriteHeader(statusCode)
 			_, _ = w.Write(html)
+
 			return
 		}
 
@@ -99,8 +105,10 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 		if renderErr != nil {
 			slog.Error("error page render failed", "error", renderErr, "original_error", err)
 			writeFallbackError(w, statusCode)
+
 			return
 		}
+
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(statusCode)
 		_, _ = w.Write(buf)
@@ -122,15 +130,19 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 	if statusCode == 0 {
 		statusCode = FamilyStatusCode(props.Family)
 	}
+
 	if nonce != "" {
 		props.Nonce = nonce
 	}
+
 	buf, renderErr := renderToBuffer(r.Context(), ErrorPage(props)) //nolint:contextcheck // intentional passthrough
 	if renderErr != nil {
 		slog.Error("error page render failed", "error", renderErr, "status_code", statusCode)
 		writeFallbackError(w, statusCode)
+
 		return
 	}
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(statusCode)
 	_, _ = w.Write(buf)
@@ -149,12 +161,15 @@ func WriteNotFound404(w http.ResponseWriter, r *http.Request, props NotFound404P
 	if nonce != "" {
 		props.Nonce = nonce
 	}
+
 	buf, renderErr := renderToBuffer(r.Context(), NotFound404(props)) //nolint:contextcheck // intentional passthrough
 	if renderErr != nil {
 		slog.Error("not found 404 page render failed", "error", renderErr)
 		writeFallbackError(w, http.StatusNotFound)
+
 		return
 	}
+
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusNotFound)
 	_, _ = w.Write(buf)
@@ -174,11 +189,13 @@ func writeJSONError(w http.ResponseWriter, statusCode int, props ErrorPageProps)
 		for _, p := range props.Context {
 			ctx[p.Key] = p.Value
 		}
+
 		resp.Context = ctx
 	}
 
 	w.Header().Set("Content-Type", "application/json; charset=utf-8")
 	w.WriteHeader(statusCode)
+
 	enc := jsontext.NewEncoder(w)
 	if err := json.MarshalEncode(enc, resp); err != nil {
 		slog.Error("JSON error response encode failed", "error", err)
@@ -194,6 +211,7 @@ func renderToBuffer(ctx context.Context, comp templ.Component) ([]byte, error) {
 	if err := comp.Render(ctx, &buf); err != nil {
 		return nil, fmt.Errorf("render component: %w", err)
 	}
+
 	return buf.Bytes(), nil
 }
 
@@ -208,17 +226,22 @@ func renderShellToBuffer(ctx context.Context, title, lang string, props ErrorPag
 		_, _ = fmt.Fprint(bw, `<meta name="viewport" content="width=device-width, initial-scale=1.0">`)
 		_, _ = fmt.Fprintf(bw, `<title>%s</title>`, html.EscapeString(title))
 		_, _ = fmt.Fprint(bw, `</head><body>`)
+
 		renderErr := ErrorPage(props).Render(ctx, bw) //nolint:contextcheck // intentional passthrough
 		if renderErr != nil {
 			return fmt.Errorf("render error page: %w", renderErr)
 		}
+
 		_, _ = fmt.Fprint(bw, `</body></html>`)
+
 		return nil
 	})
+
 	var buf bytes.Buffer
 	if err := shell.Render(ctx, &buf); err != nil {
 		return nil, fmt.Errorf("render error page shell (title=%q): %w", title, err)
 	}
+
 	return buf.Bytes(), nil
 }
 

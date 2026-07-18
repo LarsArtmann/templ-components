@@ -163,11 +163,13 @@ func TestNavDarkMode(t *testing.T) {
 
 func renderFooter(t *testing.T) string {
 	t.Helper()
+
 	return utils.Render(t, Footer(FooterProps{BrandText: "MyApp"}))
 }
 
 func assertFooterContainsAll(t *testing.T, contains ...string) {
 	t.Helper()
+
 	output := renderFooter(t)
 	for _, s := range contains {
 		utils.AssertContains(t, output, s)
@@ -176,10 +178,12 @@ func assertFooterContainsAll(t *testing.T, contains ...string) {
 
 func TestAriaLabelOverride(t *testing.T) {
 	t.Parallel()
+
 	customLabel := "Custom navigation label"
 
 	t.Run("Nav AriaLabel overrides default", func(t *testing.T) {
 		t.Parallel()
+
 		props := NavProps{
 			Links:     testNavLinks,
 			BaseProps: utils.BaseProps{AriaLabel: customLabel},
@@ -191,6 +195,7 @@ func TestAriaLabelOverride(t *testing.T) {
 
 	t.Run("Breadcrumbs AriaLabel overrides default", func(t *testing.T) {
 		t.Parallel()
+
 		props := BreadcrumbsProps{
 			Items:     breadcrumbHomeOnly(),
 			BaseProps: utils.BaseProps{AriaLabel: customLabel},
@@ -202,6 +207,7 @@ func TestAriaLabelOverride(t *testing.T) {
 
 	t.Run("Pagination AriaLabel overrides default", func(t *testing.T) {
 		t.Parallel()
+
 		props := PaginationProps{
 			CurrentPage: 1,
 			TotalPages:  5,
@@ -214,6 +220,7 @@ func TestAriaLabelOverride(t *testing.T) {
 
 	t.Run("NavLink AriaLabel renders", func(t *testing.T) {
 		t.Parallel()
+
 		props := NavLinkProps{
 			Href:      "/",
 			Text:      "Home",
@@ -229,6 +236,7 @@ func TestPaginationDarkMode(t *testing.T) {
 
 	t.Run("pagination has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPaginationProps()
 		props.CurrentPage = 1
 		props.TotalPages = 5

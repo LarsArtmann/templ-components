@@ -92,6 +92,7 @@ func TestDropdownRender(t *testing.T) {
 
 	t.Run("default props", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultDropdownProps()
 		if props.Label != "" {
 			t.Errorf("DefaultDropdownProps().Label = %q, want empty", props.Label)

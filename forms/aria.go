@@ -20,11 +20,14 @@ func ErrorAttrs(id, errorMessage, helpTextID string) templ.Attributes {
 		if helpTextID != "" {
 			return templ.Attributes{ariaDescribedBy: helpTextID}
 		}
+
 		return nil
 	}
+
 	attrs := templ.Attributes{
 		ariaInvalid: ariaTrue,
 	}
+
 	switch {
 	case id != "" && helpTextID != "":
 		attrs[ariaDescribedBy] = id + errorIDSuffix + " " + helpTextID
@@ -33,5 +36,6 @@ func ErrorAttrs(id, errorMessage, helpTextID string) templ.Attributes {
 	case helpTextID != "":
 		attrs[ariaDescribedBy] = helpTextID
 	}
+
 	return attrs
 }

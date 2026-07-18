@@ -9,6 +9,7 @@ import (
 
 func TestTooltipRender(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name     string
 		text     string
@@ -45,6 +46,7 @@ func TestTooltipRender(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			output := utils.Render(t, Tooltip(TooltipProps{
 				Text:     tt.text,
 				Position: tt.position,
@@ -58,6 +60,7 @@ func TestTooltipRender(t *testing.T) {
 
 func TestDefaultTooltipProps(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultTooltipProps()
 	if props.Position != TooltipPositionTop {
 		t.Errorf("DefaultTooltipProps().Position = %q, want %q", props.Position, TooltipPositionTop)

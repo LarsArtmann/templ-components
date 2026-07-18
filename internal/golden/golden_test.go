@@ -48,6 +48,7 @@ func TestDiffOutput(t *testing.T) {
 	if got == "" {
 		t.Error("expected non-empty diff for different inputs")
 	}
+
 	if !strings.Contains(got, "--- line2") || !strings.Contains(got, "+++ changed") {
 		t.Errorf("unexpected diff output:\n%s", got)
 	}
@@ -58,6 +59,7 @@ func TestNormalizeClasses(t *testing.T) {
 
 	input := `class="c-b c-a c-c"`
 	want := `class="c-a c-b c-c"`
+
 	got := normalizeClasses(input)
 	if got != want {
 		t.Errorf("normalizeClasses(%q) = %q, want %q", input, got, want)
@@ -68,6 +70,7 @@ func TestNormalizeClassesMultiple(t *testing.T) {
 	t.Parallel()
 
 	input := `<div class="z-50 flex items-center">text</div>`
+
 	got := normalizeClasses(input)
 	if got != `<div class="flex items-center z-50">text</div>` {
 		t.Errorf("unexpected: %s", got)

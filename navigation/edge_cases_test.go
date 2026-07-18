@@ -59,6 +59,7 @@ func TestNavWithManyLinksWraps(t *testing.T) {
 	output := utils.Render(t, Nav(NavProps{Links: links, CurrentPath: "/pageA"}))
 
 	utils.AssertContainsAll(t, output, "flex-wrap", "gap-x-8", "gap-y-2")
+
 	for _, link := range links {
 		utils.AssertContains(t, output, link.Text)
 	}

@@ -41,6 +41,7 @@ func TestViewTransitionsRender(t *testing.T) {
 
 	t.Run("default props global is true", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultViewTransitionsProps()
 		if !props.Global {
 			t.Error("expected Global=true by default")

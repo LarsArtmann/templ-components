@@ -13,6 +13,7 @@ import (
 
 func TestInputAllTypes(t *testing.T) {
 	t.Parallel()
+
 	for _, itype := range []InputType{
 		InputText, InputEmail, InputPassword, InputNumber,
 		InputTel, InputURL, InputSearch,
@@ -88,6 +89,7 @@ func TestInputErrorAndHelpText(t *testing.T) {
 
 func TestToggleAllSizes(t *testing.T) {
 	t.Parallel()
+
 	for _, size := range []ToggleSize{ToggleSizeSM, ToggleSizeMD, ToggleSizeLG} {
 		output := utils.Render(t, Toggle(ToggleProps{
 			Label: "Switch",
@@ -182,17 +184,20 @@ func TestSelectFullProps(t *testing.T) {
 
 func TestSelectMultipleSelectedOnlyFirstKept(t *testing.T) {
 	t.Parallel()
+
 	opts := normalizeSelectOptions([]SelectOption{
 		{Value: "a", Label: "A", Selected: true},
 		{Value: "b", Label: "B", Selected: true},
 		{Value: "c", Label: "C"},
 	})
 	selected := 0
+
 	for _, o := range opts {
 		if o.Selected {
 			selected++
 		}
 	}
+
 	if selected != 1 {
 		t.Errorf("expected exactly 1 selected option, got %d", selected)
 	}
@@ -200,6 +205,7 @@ func TestSelectMultipleSelectedOnlyFirstKept(t *testing.T) {
 
 func TestSelectDisabledSelectedCleared(t *testing.T) {
 	t.Parallel()
+
 	opts := normalizeSelectOptions([]SelectOption{
 		{Value: "x", Label: "X", Disabled: true, Selected: true},
 	})

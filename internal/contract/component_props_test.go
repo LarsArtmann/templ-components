@@ -117,6 +117,7 @@ func TestAllComponentPropsSatisfyInterface(t *testing.T) {
 	t.Parallel()
 
 	componentInterface := reflect.TypeFor[utils.ComponentProps]()
+
 	required := componentTypes()
 	if len(required) == 0 {
 		t.Fatal("componentTypes() returned an empty list; the inventory is broken")
@@ -125,6 +126,7 @@ func TestAllComponentPropsSatisfyInterface(t *testing.T) {
 	for _, sample := range required {
 		t.Run(reflect.TypeOf(sample).Name(), func(t *testing.T) {
 			t.Parallel()
+
 			ptrType := reflect.PointerTo(reflect.TypeOf(sample))
 
 			if !ptrType.Implements(componentInterface) {
@@ -152,12 +154,15 @@ func TestComponentPropsInterfaceContract(t *testing.T) {
 	if iface.NumMethod() != 2 {
 		t.Errorf("ComponentProps interface has %d methods, want 2 (GetBaseProps, SetBaseProps)", iface.NumMethod())
 	}
+
 	for _, name := range []string{"GetBaseProps", "SetBaseProps"} {
 		m, ok := iface.MethodByName(name)
 		if !ok {
 			t.Errorf("ComponentProps interface missing method %q", name)
+
 			continue
 		}
+
 		mt := m.Type
 		if mt.IsVariadic() {
 			t.Errorf("%s must not be variadic", name)
@@ -171,18 +176,21 @@ func embedsBaseProps(typ reflect.Type) bool {
 	if typ.Kind() != reflect.Struct {
 		return false
 	}
-	for f := range typ.Fields() {
 
+	for f := range typ.Fields() {
 		if !f.Anonymous {
 			continue
 		}
+
 		ft := f.Type
 		if ft.Kind() == reflect.Pointer {
 			ft = ft.Elem()
 		}
+
 		if ft.Name() == "BaseProps" && ft.PkgPath() == "github.com/larsartmann/templ-components/utils" {
 			return true
 		}
 	}
+
 	return false
 }

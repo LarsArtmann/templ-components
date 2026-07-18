@@ -15,6 +15,7 @@ func TestGlobalErrorHandlingCoverageGaps(t *testing.T) {
 
 	t.Run("renders with custom config", func(t *testing.T) {
 		t.Parallel()
+
 		cfg := DefaultErrorHandlingConfig()
 		cfg.MaxErrorHistory = 10
 		cfg.MaxRetries = 5

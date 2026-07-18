@@ -15,5 +15,6 @@ func HelpTextID(id string) string {
 	if id == "" {
 		return ""
 	}
+
 	return id + "-help"
 }

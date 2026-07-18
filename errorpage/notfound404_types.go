@@ -25,6 +25,7 @@ type NotFoundLink struct {
 
 type NotFound404Props struct {
 	utils.BaseProps
+
 	Numeral           string
 	Title             string
 	Message           string

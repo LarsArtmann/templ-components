@@ -19,10 +19,12 @@ func TestErrorHeaderSubTemplate(t *testing.T) {
 		Title:     "Test Error",
 		Message:   "Something broke",
 	}
+
 	result := utils.Render(t, ErrorPage(props))
 	if !strings.Contains(result, "Test Error") {
 		t.Error("errorHeader: title not rendered")
 	}
+
 	if !strings.Contains(result, "Something broke") {
 		t.Error("errorHeader: message not rendered")
 	}
@@ -36,10 +38,12 @@ func TestActionLinkBodySubTemplate(t *testing.T) {
 		WayOut:     "Go home",
 		WayOutHref: "/",
 	}
+
 	result := utils.Render(t, ErrorPage(props))
 	if !strings.Contains(result, "Go home") {
 		t.Error("actionLinkBody: text not rendered")
 	}
+
 	if !strings.Contains(result, "<svg") {
 		t.Error("actionLinkBody: arrow icon SVG not rendered")
 	}
@@ -53,10 +57,12 @@ func TestGoBackScriptSubTemplate(t *testing.T) {
 		BaseProps: utils.BaseProps{Nonce: "test-nonce-123"},
 		WayOut:    "Go back",
 	}
+
 	result := utils.Render(t, ErrorPage(props))
 	if !strings.Contains(result, "test-nonce-123") {
 		t.Error("goBackScript: nonce not propagated")
 	}
+
 	if !strings.Contains(result, "history.back") {
 		t.Error("goBackScript: history.back() not present")
 	}
@@ -70,10 +76,12 @@ func TestNotFound404GoBackScript(t *testing.T) {
 		ShowGoBack: true,
 		BaseProps:  utils.BaseProps{Nonce: "404-nonce"},
 	}
+
 	result := utils.Render(t, NotFound404(props))
 	if !strings.Contains(result, "404-nonce") {
 		t.Error("NotFound404: nonce not rendered in goBackScript")
 	}
+
 	if !strings.Contains(result, "history.back") {
 		t.Error("NotFound404: history.back() not present")
 	}

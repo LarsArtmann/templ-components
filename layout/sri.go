@@ -61,6 +61,7 @@ func resolveCDNBase(cdnBase string) string {
 	if cdnBase == "" {
 		cdnBase = defaultCDNBase
 	}
+
 	return strings.TrimRight(cdnBase, "/")
 }
 
@@ -72,10 +73,12 @@ func htmxCDNOrigin(cdnBase string) string {
 	if !strings.HasPrefix(base, "http://") && !strings.HasPrefix(base, "https://") {
 		return ""
 	}
+
 	idx := strings.Index(base[8:], "/")
 	if idx < 0 {
 		return base
 	}
+
 	return base[:8+idx]
 }
 

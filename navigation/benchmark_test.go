@@ -17,18 +17,24 @@ func BenchmarkNavigationRenders(b *testing.B) {
 
 	b.Run("Nav render", func(b *testing.B) {
 		props := NavProps{Links: links}
+
 		b.ResetTimer()
+
 		for b.Loop() {
 			var buf bytes.Buffer
+
 			_ = Nav(props).Render(context.Background(), &buf)
 		}
 	})
 
 	b.Run("Pagination render", func(b *testing.B) {
 		props := PaginationProps{CurrentPage: 5, TotalPages: 20, BaseURL: "/items"}
+
 		b.ResetTimer()
+
 		for b.Loop() {
 			var buf bytes.Buffer
+
 			_ = Pagination(props).Render(context.Background(), &buf)
 		}
 	})
@@ -41,9 +47,12 @@ func BenchmarkNavigationRenders(b *testing.B) {
 				{Text: "Profile"},
 			},
 		}
+
 		b.ResetTimer()
+
 		for b.Loop() {
 			var buf bytes.Buffer
+
 			_ = Breadcrumbs(props).Render(context.Background(), &buf)
 		}
 	})
@@ -54,9 +63,12 @@ func BenchmarkNavigationRenders(b *testing.B) {
 			Endpoint:  "/items",
 			Cursor:    "abc",
 		}
+
 		b.ResetTimer()
+
 		for b.Loop() {
 			var buf bytes.Buffer
+
 			_ = LoadMore(props).Render(context.Background(), &buf)
 		}
 	})

@@ -54,6 +54,7 @@ func TestAllIconsRenderSuccessfully(t *testing.T) {
 	for _, name := range allIconNames() {
 		t.Run("icon "+string(name)+" renders SVG", func(t *testing.T) {
 			t.Parallel()
+
 			output := utils.Render(t, Icon(name, "h-5 w-5"))
 			if !strings.Contains(output, "<svg") {
 				t.Errorf(
@@ -62,6 +63,7 @@ func TestAllIconsRenderSuccessfully(t *testing.T) {
 					output[:min(len(output), 100)],
 				)
 			}
+
 			if !strings.Contains(output, "<path") && name != Spinner {
 				t.Errorf("expected path element for icon %s", name)
 			}
@@ -77,6 +79,7 @@ func TestUnknownIconFallback(t *testing.T) {
 	t.Run("unknown icon name falls back to Question icon without panic", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Icon("nonexistent-icon", "h-5 w-5"))
+
 		questionOutput := utils.Render(t, Icon(Question, "h-5 w-5"))
 		if output != questionOutput {
 			t.Error("unknown icon should render the Question fallback icon")

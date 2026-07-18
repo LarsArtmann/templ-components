@@ -100,6 +100,7 @@ func TestRelativeTimeBehavior(t *testing.T) {
 
 	t.Run("renders time element with datetime attribute", func(t *testing.T) {
 		t.Parallel()
+
 		ts := time.Date(2025, 1, 15, 10, 30, 0, 0, time.UTC)
 		output := utils.Render(t, RelativeTime(RelativeTimeProps{Time: ts}))
 		utils.AssertContains(t, output, "<time")
@@ -108,6 +109,7 @@ func TestRelativeTimeBehavior(t *testing.T) {
 
 	t.Run("shows just now for recent time", func(t *testing.T) {
 		t.Parallel()
+
 		now := time.Now()
 		output := utils.Render(t, RelativeTime(RelativeTimeProps{Time: now}))
 		utils.AssertContains(t, output, "just now")
@@ -115,6 +117,7 @@ func TestRelativeTimeBehavior(t *testing.T) {
 
 	t.Run("shows absolute title for hover", func(t *testing.T) {
 		t.Parallel()
+
 		ts := time.Date(2025, 1, 15, 10, 30, 0, 0, time.UTC)
 		output := utils.Render(t, RelativeTime(RelativeTimeProps{Time: ts}))
 		utils.AssertContains(t, output, `title="Jan 15, 2025`)
@@ -122,6 +125,7 @@ func TestRelativeTimeBehavior(t *testing.T) {
 
 	t.Run("auto-refresh is on by default (progressive enhancement)", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultRelativeTimeProps()
 		props.Time = time.Now().Add(-1 * time.Hour)
 		props.Nonce = "n1"
@@ -224,6 +228,7 @@ func TestImageBehavior(t *testing.T) {
 
 	t.Run("lazy by default", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultImageProps()
 		props.Src = "/x.jpg"
 		output := utils.Render(t, Image(props))

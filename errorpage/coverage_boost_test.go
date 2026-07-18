@@ -86,6 +86,7 @@ func TestErrorPageFullCoverage(t *testing.T) {
 
 	t.Run("all families render without error", func(t *testing.T) {
 		t.Parallel()
+
 		for _, family := range []Family{
 			FamilyRejection,
 			FamilyConflict,

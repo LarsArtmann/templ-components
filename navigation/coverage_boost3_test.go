@@ -11,6 +11,7 @@ import (
 
 func TestDefaultLoadMoreProps(t *testing.T) {
 	t.Parallel()
+
 	p := DefaultLoadMoreProps()
 	if p.Label != "Load more" {
 		t.Errorf("DefaultLoadMoreProps().Label = %q, want %q", p.Label, "Load more")
@@ -19,6 +20,7 @@ func TestDefaultLoadMoreProps(t *testing.T) {
 
 func TestDefaultFooterProps(t *testing.T) {
 	t.Parallel()
+
 	p := DefaultFooterProps()
 	if p.BrandText != "" {
 		t.Error("DefaultFooterProps should have empty BrandText")
@@ -27,6 +29,7 @@ func TestDefaultFooterProps(t *testing.T) {
 
 func TestDefaultSidebarNavProps(t *testing.T) {
 	t.Parallel()
+
 	p := DefaultSidebarNavProps()
 	if len(p.Items) != 0 {
 		t.Error("DefaultSidebarNavProps should have empty Items")
@@ -105,6 +108,7 @@ func TestResolveBreadcrumbURLCoverage(t *testing.T) {
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got := resolveBreadcrumbURL(tt.href, tt.baseURL)
 			if got != tt.want {
 				t.Errorf("resolveBreadcrumbURL(%q, %q) = %q, want %q", tt.href, tt.baseURL, got, tt.want)

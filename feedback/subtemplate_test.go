@@ -16,6 +16,7 @@ func TestSkeletonContainerSubTemplate(t *testing.T) {
 	if !strings.Contains(result, `role="status"`) {
 		t.Error("skeletonContainer: role=status not found")
 	}
+
 	if !strings.Contains(result, "Loading") {
 		t.Error("skeletonContainer: loading label not found")
 	}

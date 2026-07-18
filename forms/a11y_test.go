@@ -11,6 +11,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("input has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultInputProps()
 		props.Name = "test"
 		output := utils.Render(t, Input(props))
@@ -19,6 +20,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("select has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultSelectProps()
 		props.Name = "test"
 		output := utils.Render(t, Select(props))
@@ -27,6 +29,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("textarea has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultTextareaProps()
 		props.Name = "test"
 		output := utils.Render(t, Textarea(props))
@@ -35,6 +38,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("checkbox has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultCheckboxProps()
 		props.Name = "test"
 		output := utils.Render(t, Checkbox(props))
@@ -43,6 +47,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("toggle has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultToggleProps()
 		props.Name = "test"
 		output := utils.Render(t, Toggle(props))
@@ -51,6 +56,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("fileinput has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultFileInputProps()
 		props.Name = "test"
 		output := utils.Render(t, FileInput(props))

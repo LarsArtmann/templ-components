@@ -23,6 +23,7 @@ func TestPaginationEllipsisCoverage(t *testing.T) {
 
 	t.Run("edge cases", func(t *testing.T) {
 		t.Parallel()
+
 		for _, tt := range []struct {
 			name        string
 			currentPage uint

@@ -95,6 +95,7 @@ func TestWriteJSONErrorCoverage(t *testing.T) {
 
 	t.Run("with context", func(t *testing.T) {
 		t.Parallel()
+
 		w := httptest.NewRecorder()
 		writeJSONError(w, http.StatusConflict, ErrorPageProps{
 			Family:  FamilyConflict,
@@ -107,13 +108,16 @@ func TestWriteJSONErrorCoverage(t *testing.T) {
 				{Key: "resource", Value: "user@example.com"},
 			},
 		})
+
 		if w.Code != http.StatusConflict {
 			t.Errorf("status = %d, want %d", w.Code, http.StatusConflict)
 		}
+
 		ct := w.Header().Get("Content-Type")
 		if ct != "application/json; charset=utf-8" {
 			t.Errorf("content-type = %q", ct)
 		}
+
 		body := w.Body.String()
 		utils.AssertContains(t, body, "conflict")
 		utils.AssertContains(t, body, "user@example.com")
@@ -121,6 +125,7 @@ func TestWriteJSONErrorCoverage(t *testing.T) {
 
 	t.Run("without context", func(t *testing.T) {
 		t.Parallel()
+
 		w := httptest.NewRecorder()
 		writeJSONError(w, http.StatusBadRequest, ErrorPageProps{
 			Family:  FamilyRejection,

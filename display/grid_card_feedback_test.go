@@ -63,6 +63,7 @@ func TestGridAutoFitTakesPrecedenceOverContainerResponsive(t *testing.T) {
 
 func TestCardHeaderSlotReplacesDefaultHeader(t *testing.T) {
 	t.Parallel()
+
 	customHeader := templ.Raw("<div data-test='custom-header'><h2>My Header</h2></div>")
 	output := utils.Render(t, Card(CardProps{
 		Header: customHeader,
@@ -73,6 +74,7 @@ func TestCardHeaderSlotReplacesDefaultHeader(t *testing.T) {
 
 func TestCardHeaderSlotSkipsDefaultTitle(t *testing.T) {
 	t.Parallel()
+
 	customHeader := templ.Raw("<div data-test='custom-header'>Custom</div>")
 	output := utils.Render(t, Card(CardProps{
 		Title:  "This Should Not Appear",

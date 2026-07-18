@@ -77,6 +77,7 @@ func TestAccordionRender(t *testing.T) {
 
 	t.Run("default props", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultAccordionProps()
 		if props.Items != nil {
 			t.Error("DefaultAccordionProps().Items should be nil")

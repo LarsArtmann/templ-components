@@ -16,16 +16,19 @@ func TestGoldenUpdateFlag(t *testing.T) {
 
 	origUpdate := update
 	defer func() { update = origUpdate }()
+
 	update = new(true)
 
 	content := "<div class=\"b a\">Hello</div>"
 	assertInDir(t, dir, "test_update", content)
 
 	goldenPath := filepath.Join(dir, "test_update.golden")
+
 	data, err := os.ReadFile(goldenPath) //nolint:gosec // test temp dir
 	if err != nil {
 		t.Fatalf("golden file not written: %v", err)
 	}
+
 	if !strings.Contains(string(data), "a b") {
 		t.Errorf("golden file should have sorted classes, got: %s", string(data))
 	}
@@ -37,8 +40,10 @@ func TestGoldenUpdateFlag(t *testing.T) {
 func TestGoldenUpdateFlagMkdir(t *testing.T) {
 	// NOT parallel — modifies the global `update` flag
 	dir := t.TempDir()
+
 	origUpdate := update
 	defer func() { update = origUpdate }()
+
 	update = new(true)
 
 	nestedDir := filepath.Join(dir, "nested", "deep")
@@ -85,6 +90,7 @@ func TestNormalizeClassesEdgeCases(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got := normalizeClasses(tt.html)
 			if got != tt.want {
 				t.Errorf("normalizeClasses:\n got: %s\nwant: %s", got, tt.want)

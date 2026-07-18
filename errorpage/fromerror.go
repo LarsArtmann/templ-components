@@ -63,12 +63,15 @@ func familyFromError(err error) Family {
 	if classified, ok := errors.AsType[errorfamily.Classified](err); ok {
 		return FromErrorFamily(classified.ErrorFamily())
 	}
+
 	if c, ok := err.(interface{ ErrorFamily() Family }); ok {
 		return c.ErrorFamily()
 	}
+
 	if c, ok := err.(interface{ ErrorFamily() string }); ok {
 		return ParseFamily(c.ErrorFamily())
 	}
+
 	return FamilyCorruption
 }
 
@@ -79,6 +82,7 @@ func sanitizeErrorMessage(err error) string {
 	if m, ok := err.(messenger); ok {
 		return m.Message()
 	}
+
 	return err.Error()
 }
 
@@ -89,6 +93,7 @@ func errorTimestamp(err error) string {
 	if ts, ok := err.(timestamper); ok {
 		return ts.Timestamp().UTC().Format(time.RFC3339)
 	}
+
 	return time.Now().UTC().Format(time.RFC3339)
 }
 

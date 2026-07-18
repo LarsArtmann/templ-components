@@ -95,6 +95,7 @@ func TestBadgeHrefRendersAsAnchor(t *testing.T) {
 
 	t.Run("all types with href", func(t *testing.T) {
 		t.Parallel()
+
 		for _, bt := range []BadgeType{BadgePrimary, BadgeSuccess, BadgeWarning, BadgeError, BadgeInfo, BadgeNeutral} {
 			output := utils.Render(t, Badge(BadgeProps{
 				Text: string(bt),
@@ -108,6 +109,7 @@ func TestBadgeHrefRendersAsAnchor(t *testing.T) {
 
 	t.Run("sizes with href", func(t *testing.T) {
 		t.Parallel()
+
 		for _, size := range []BadgeSize{BadgeSizeSM, BadgeSizeMD, BadgeSizeLG} {
 			output := utils.Render(t, Badge(BadgeProps{
 				Text: "Sized",
@@ -134,6 +136,7 @@ func TestBadgeHrefRendersAsAnchor(t *testing.T) {
 
 func TestGridResponsiveClasses(t *testing.T) {
 	t.Parallel()
+
 	cases := []struct {
 		name    string
 		cols    GridCols
@@ -170,11 +173,15 @@ func TestGridEmptyColsFallsBackToDefault(t *testing.T) {
 
 func TestGridRendersChildren(t *testing.T) {
 	t.Parallel()
+
 	child := templ.Raw(`<div data-test="child">cell</div>`)
+
 	var buf bytes.Buffer
+
 	_ = Grid(GridProps{Cols: GridCols2}).Render(
 		templ.WithChildren(context.Background(), child), &buf,
 	)
+
 	output := strings.TrimSpace(buf.String())
 	if !strings.Contains(output, `data-test="child"`) {
 		t.Errorf("expected children in output, got: %s", output)
@@ -197,6 +204,7 @@ func TestGridPropagatesBaseProps(t *testing.T) {
 
 func TestDefaultGridPropsValue(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultGridProps()
 	if props.Cols != GridColsDefault {
 		t.Errorf("DefaultGridProps().Cols = %q, want %q", props.Cols, GridColsDefault)
@@ -213,10 +221,12 @@ func TestGridContainerResponsive(t *testing.T) {
 	})
 	t.Run("default does not wrap", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, Grid(GridProps{Cols: GridCols3}))
 		if strings.Contains(output, "@container") {
 			t.Error("non-container-responsive grid should not contain @container")
 		}
+
 		utils.AssertContains(t, output, "lg:grid-cols-3")
 	})
 	t.Run("container 2 col uses @sm", func(t *testing.T) {
@@ -232,6 +242,7 @@ func TestButtonIcon(t *testing.T) {
 	t.Parallel()
 	t.Run("button with icon component", func(t *testing.T) {
 		t.Parallel()
+
 		icon := icons.Icon(icons.Plus, "h-4 w-4")
 		output := utils.Render(t, Button(ButtonProps{
 			Text: "Add",
@@ -243,6 +254,7 @@ func TestButtonIcon(t *testing.T) {
 
 	t.Run("link button with icon", func(t *testing.T) {
 		t.Parallel()
+
 		icon := icons.Icon(icons.ArrowRight, "h-4 w-4")
 		output := utils.Render(t, Button(ButtonProps{
 			Text: "Next",
@@ -375,11 +387,14 @@ func TestDropdownButtonItems(t *testing.T) {
 
 	t.Run("IsLink with explicit kind", func(t *testing.T) {
 		t.Parallel()
+
 		linkItem := DropdownItem{Kind: DropdownItemLink, Text: "Link"}
 		btnItem := DropdownItem{Kind: DropdownItemButton, Text: "Btn"}
+
 		if !linkItem.IsLink() {
 			t.Error("expected DropdownItemLink to be link")
 		}
+
 		if btnItem.IsLink() {
 			t.Error("expected DropdownItemButton to not be link")
 		}
@@ -455,6 +470,7 @@ func TestDropdownButtonItems(t *testing.T) {
 
 func TestModalSizes(t *testing.T) {
 	t.Parallel()
+
 	for _, size := range []ModalSize{ModalSizeSM, ModalSizeMD, ModalSizeLG, ModalSizeXL, ModalSize2XL, ModalSizeFull} {
 		t.Run("size_"+string(size), func(t *testing.T) {
 			t.Parallel()
@@ -616,6 +632,7 @@ func TestAvatarFallbackSVG(t *testing.T) {
 
 	t.Run("all sizes", func(t *testing.T) {
 		t.Parallel()
+
 		for _, size := range []AvatarSize{AvatarSizeXS, AvatarSizeSM, AvatarSizeMD, AvatarSizeLG, AvatarSizeXL} {
 			output := utils.Render(t, Avatar(AvatarProps{
 				Initials: "AB",
@@ -729,6 +746,7 @@ func TestTableCaption(t *testing.T) {
 
 func TestTableWrapperClassCoverage(t *testing.T) {
 	t.Parallel()
+
 	flush := tableWrapperClass(true)
 	utils.AssertContains(t, flush, "overflow-x-auto")
 	utils.AssertNotContains(t, flush, "border")
@@ -742,6 +760,7 @@ func TestTableWrapperClassCoverage(t *testing.T) {
 
 func TestTableCellPaddingClassCoverage(t *testing.T) {
 	t.Parallel()
+
 	comfortable := tableCellPaddingClass(TableCellPaddingComfortable)
 	utils.AssertEqual(t, "comfortable", comfortable, "px-4 py-3")
 
@@ -804,6 +823,7 @@ func TestDrawerRender(t *testing.T) {
 
 	t.Run("all sizes", func(t *testing.T) {
 		t.Parallel()
+
 		for _, size := range []DrawerSize{DrawerSizeSM, DrawerSizeMD, DrawerSizeLG, DrawerSizeXL, DrawerSize2XL, DrawerFull} {
 			output := utils.Render(t, Drawer(DrawerProps{
 				BaseProps: utils.BaseProps{ID: "size-" + string(size)},
@@ -843,10 +863,12 @@ func TestDrawerRender(t *testing.T) {
 
 	t.Run("default props", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultDrawerProps()
 		if props.Side != DrawerRight {
 			t.Error("expected right side default")
 		}
+
 		if props.Size != DrawerSizeMD {
 			t.Error("expected MD size default")
 		}

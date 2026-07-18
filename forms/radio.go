@@ -6,9 +6,10 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-// RadioProps configures a single radio button input
+// RadioProps configures a single radio button input.
 type RadioProps struct {
 	utils.BaseProps
+
 	Name     string
 	Value    string
 	Label    string
@@ -17,12 +18,12 @@ type RadioProps struct {
 	Disabled bool
 }
 
-// DefaultRadioProps returns sensible defaults
+// DefaultRadioProps returns sensible defaults.
 func DefaultRadioProps() RadioProps {
 	return RadioProps{} //nolint:exhaustruct // intentionally minimal defaults
 }
 
-// RadioOption represents a single option in a radio group
+// RadioOption represents a single option in a radio group.
 type RadioOption struct {
 	Value    string
 	Label    string
@@ -30,9 +31,10 @@ type RadioOption struct {
 	Disabled bool
 }
 
-// RadioGroupProps configures a group of radio buttons
+// RadioGroupProps configures a group of radio buttons.
 type RadioGroupProps struct {
 	utils.BaseProps
+
 	Name     string
 	Label    string // renders as <legend>
 	Options  []RadioOption
@@ -42,7 +44,7 @@ type RadioGroupProps struct {
 	Required bool
 }
 
-// DefaultRadioGroupProps returns sensible defaults
+// DefaultRadioGroupProps returns sensible defaults.
 func DefaultRadioGroupProps() RadioGroupProps {
 	return RadioGroupProps{} //nolint:exhaustruct // intentionally minimal defaults
 }
@@ -61,8 +63,10 @@ func radioItemProps(groupID, name string, opt RadioOption, required bool, ariaAt
 	if groupID != "" {
 		p.ID = groupID + "-" + SanitizeID(opt.Value)
 	}
+
 	if len(ariaAttrs) > 0 {
 		p.Attrs = ariaAttrs
 	}
+
 	return p
 }

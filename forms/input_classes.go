@@ -7,5 +7,6 @@ func baseInputClass(hasError bool) string {
 	if hasError {
 		return base + " ring-red-300 focus:ring-red-500 dark:ring-red-700 dark:focus:ring-red-500"
 	}
+
 	return base + " ring-gray-300 focus:ring-blue-600 dark:focus:ring-blue-500"
 }

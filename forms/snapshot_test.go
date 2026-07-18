@@ -268,15 +268,19 @@ func TestInputGroupRender(t *testing.T) {
 
 func TestInputGroupPaddingClass(t *testing.T) {
 	t.Parallel()
+
 	if got := InputGroupPaddingClass(true, false); got != "ps-10" {
 		t.Errorf("InputGroupPaddingClass(true,false) = %q, want ps-10", got)
 	}
+
 	if got := InputGroupPaddingClass(false, true); got != "pe-10" {
 		t.Errorf("InputGroupPaddingClass(false,true) = %q, want pe-10", got)
 	}
+
 	if got := InputGroupPaddingClass(true, true); got != "ps-10 pe-10" {
 		t.Errorf("InputGroupPaddingClass(true,true) = %q, want ps-10 pe-10", got)
 	}
+
 	if got := InputGroupPaddingClass(false, false); got != "" {
 		t.Errorf("InputGroupPaddingClass(false,false) = %q, want empty", got)
 	}
@@ -284,10 +288,12 @@ func TestInputGroupPaddingClass(t *testing.T) {
 
 func TestDefaultInputGroupProps(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultInputGroupProps()
 	if props.LeftAddon != nil {
 		t.Error("LeftAddon should be nil")
 	}
+
 	if props.RightAddon != nil {
 		t.Error("RightAddon should be nil")
 	}
@@ -295,6 +301,7 @@ func TestDefaultInputGroupProps(t *testing.T) {
 
 func TestDefaultValidationSummaryProps(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultValidationSummaryProps()
 	if props.Errors != nil {
 		t.Error("Errors should be nil")

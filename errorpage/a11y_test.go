@@ -102,6 +102,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("errorpage has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultErrorPageProps()
 		props.Code = "ERR_001"
 		props.Title = "Error"
@@ -111,6 +112,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("errordetail has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultErrorDetailProps()
 		props.Code = "ERR_002"
 		props.Title = "Detail"
@@ -120,6 +122,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("erroralert has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultErrorAlertProps()
 		props.Title = "Alert"
 		props.Message = "Something happened"

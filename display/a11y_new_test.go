@@ -50,6 +50,7 @@ func TestRelativeTimeA11y(t *testing.T) {
 
 	t.Run("has machine-readable datetime", func(t *testing.T) {
 		t.Parallel()
+
 		ts := time.Date(2025, 6, 15, 12, 0, 0, 0, time.UTC)
 		output := utils.Render(t, RelativeTime(RelativeTimeProps{Time: ts}))
 		utils.AssertContains(t, output, `datetime="2025-06-15T12:00:00Z"`)
@@ -57,6 +58,7 @@ func TestRelativeTimeA11y(t *testing.T) {
 
 	t.Run("has title for hover context", func(t *testing.T) {
 		t.Parallel()
+
 		ts := time.Date(2025, 6, 15, 12, 0, 0, 0, time.UTC)
 		output := utils.Render(t, RelativeTime(RelativeTimeProps{Time: ts}))
 		utils.AssertContains(t, output, `title="Jun 15, 2025`)

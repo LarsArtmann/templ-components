@@ -13,6 +13,7 @@ import (
 
 func TestPopoverRender(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name    string
 		props   PopoverProps
@@ -48,6 +49,7 @@ func TestPopoverRender(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			output := utils.Render(t, Popover(tt.props))
 			for _, want := range tt.wantAll {
 				utils.AssertContains(t, output, want)
@@ -60,8 +62,11 @@ func TestPopoverWithContent(t *testing.T) {
 	t.Parallel()
 	t.Run("renders child content in panel", func(t *testing.T) {
 		t.Parallel()
+
 		child := templ.Raw(`<p data-test="content">Popover body</p>`)
+
 		var buf bytes.Buffer
+
 		_ = Popover(PopoverProps{TriggerText: "Open"}).Render(
 			templ.WithChildren(context.Background(), child), &buf,
 		)
@@ -73,6 +78,7 @@ func TestPopoverWithContent(t *testing.T) {
 
 func TestDefaultPopoverProps(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultPopoverProps()
 	if props.Position != PopoverPositionBottom {
 		t.Errorf("DefaultPopoverProps().Position = %q, want %q", props.Position, PopoverPositionBottom)

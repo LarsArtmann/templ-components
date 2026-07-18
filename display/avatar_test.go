@@ -56,6 +56,7 @@ func TestAvatarRender(t *testing.T) {
 
 	t.Run("all size variants render", func(t *testing.T) {
 		t.Parallel()
+
 		for _, size := range []AvatarSize{AvatarSizeXS, AvatarSizeSM, AvatarSizeMD, AvatarSizeLG, AvatarSizeXL} {
 			output := utils.Render(t, Avatar(AvatarProps{
 				Src:   "/a.jpg",
@@ -80,6 +81,7 @@ func TestAvatarRender(t *testing.T) {
 
 	t.Run("default props", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultAvatarProps()
 		if props.Size != AvatarSizeMD {
 			t.Errorf("DefaultAvatarProps().Size = %q, want %q", props.Size, AvatarSizeMD)
@@ -96,6 +98,7 @@ func TestAvatarRender(t *testing.T) {
 
 	t.Run("all size variants with status dot", func(t *testing.T) {
 		t.Parallel()
+
 		for _, size := range []AvatarSize{AvatarSizeXS, AvatarSizeSM, AvatarSizeMD, AvatarSizeLG, AvatarSizeXL} {
 			output := utils.Render(t, Avatar(AvatarProps{
 				Src:    "/a.jpg",

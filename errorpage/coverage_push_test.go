@@ -14,6 +14,7 @@ import (
 // BaseProps.AriaLabel branches in the templ templates — previously untested.
 func TestErrorPageWithClassAndAriaLabel(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, ErrorPage(ErrorPageProps{
 		BaseProps: utils.BaseProps{Class: "my-error", AriaLabel: "Error dialog", Nonce: "n"},
 		Family:    FamilyInfrastructure,
@@ -26,6 +27,7 @@ func TestErrorPageWithClassAndAriaLabel(t *testing.T) {
 
 func TestErrorDetailWithNonceAndClass(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, ErrorDetail(ErrorDetailProps{
 		BaseProps: utils.BaseProps{Class: "detail-cls", Nonce: "x", AriaLabel: "Detail"},
 		Family:    FamilyTransient,
@@ -37,6 +39,7 @@ func TestErrorDetailWithNonceAndClass(t *testing.T) {
 
 func TestErrorAlertDismissibleFalse(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, ErrorAlert(ErrorAlertProps{
 		Family:      FamilyCorruption,
 		Title:       "Bug",
@@ -49,8 +52,10 @@ func TestErrorAlertDismissibleFalse(t *testing.T) {
 
 func TestNotFound404NoSearchInput(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultNotFound404Props()
 	props.SearchAction = ""
+
 	html := utils.Render(t, NotFound404(props))
 	if strings.Contains(html, "<form") {
 		t.Error("Empty SearchAction should not render search form")
@@ -59,14 +64,17 @@ func TestNotFound404NoSearchInput(t *testing.T) {
 
 func TestNotFound404WithSearchPlaceholder(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultNotFound404Props()
 	props.SearchAction = "/api/search"
 	props.SearchPlaceholder = "Type to search..."
 	props.SearchInputName = "query"
+
 	html := utils.Render(t, NotFound404(props))
 	if !strings.Contains(html, "Type to search...") {
 		t.Error("SearchPlaceholder should render")
 	}
+
 	if !strings.Contains(html, `name="query"`) {
 		t.Error("SearchInputName should set the input name")
 	}
@@ -74,16 +82,19 @@ func TestNotFound404WithSearchPlaceholder(t *testing.T) {
 
 func TestErrorHandlerWithOverrideNonNil(t *testing.T) {
 	t.Parallel()
+
 	w := httptest.NewRecorder()
 	r := httptest.NewRequestWithContext(t.Context(), "GET", "/", nil)
 	h := ErrorHandler(errors.New("boom"), ErrorHandlerConfig{
 		Nonce: "n",
 		Override: func(err error, p ErrorPageProps) *ErrorPageProps {
 			p.Title = "Overridden"
+
 			return &p
 		},
 	})
 	h.ServeHTTP(w, r)
+
 	if !strings.Contains(w.Body.String(), "Overridden") {
 		t.Error("Override should replace title")
 	}
@@ -91,6 +102,7 @@ func TestErrorHandlerWithOverrideNonNil(t *testing.T) {
 
 func TestErrorHandlerWithOverrideNilResult(t *testing.T) {
 	t.Parallel()
+
 	w := httptest.NewRecorder()
 	r := httptest.NewRequestWithContext(t.Context(), "GET", "/", nil)
 	h := ErrorHandler(errors.New("boom"), ErrorHandlerConfig{
@@ -100,6 +112,7 @@ func TestErrorHandlerWithOverrideNilResult(t *testing.T) {
 		},
 	})
 	h.ServeHTTP(w, r)
+
 	if w.Code < 400 {
 		t.Error("Should still return error status")
 	}
@@ -107,12 +120,14 @@ func TestErrorHandlerWithOverrideNilResult(t *testing.T) {
 
 func TestWriteErrorPageDerivesStatusCodeFromFamily(t *testing.T) {
 	t.Parallel()
+
 	w := httptest.NewRecorder()
 	r := httptest.NewRequestWithContext(t.Context(), "GET", "/", nil)
 	props := DefaultErrorPageProps()
 	props.Family = FamilyRejection
 	props.StatusCode = 0
 	WriteErrorPage(w, r, 0, props, "nonce")
+
 	if w.Code != http.StatusBadRequest {
 		t.Errorf("FamilyRejection should derive 400, got %d", w.Code)
 	}
@@ -120,6 +135,7 @@ func TestWriteErrorPageDerivesStatusCodeFromFamily(t *testing.T) {
 
 func TestParseFamilyCaseInsensitive(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input string
 		want  Family
@@ -142,6 +158,7 @@ func TestParseFamilyCaseInsensitive(t *testing.T) {
 
 func TestExtractCauseChainNilError(t *testing.T) {
 	t.Parallel()
+
 	chain := ExtractCauseChain(nil, 5)
 	if len(chain) != 0 {
 		t.Errorf("Expected 0 causes for nil error, got %d", len(chain))
@@ -150,6 +167,7 @@ func TestExtractCauseChainNilError(t *testing.T) {
 
 func TestAllConstructorsRenderWithCoverage(t *testing.T) {
 	t.Parallel()
+
 	constructors := []struct {
 		name  string
 		props ErrorPageProps

@@ -9,6 +9,7 @@ import (
 
 func TestGridGapIsValid(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name string
 		gap  GridGap
@@ -25,6 +26,7 @@ func TestGridGapIsValid(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if got := GridGapIsValid(tt.gap); got != tt.want {
 				t.Errorf("GridGapIsValid(%q) = %v, want %v", tt.gap, got, tt.want)
 			}
@@ -34,6 +36,7 @@ func TestGridGapIsValid(t *testing.T) {
 
 func TestGridGapClass(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name string
 		gap  GridGap

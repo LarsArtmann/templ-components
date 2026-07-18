@@ -103,6 +103,7 @@ func TestCountBadgeMaxOverflow(t *testing.T) {
 
 func TestFormatRelativeTimeBoundaries(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name string
 		from time.Time
@@ -120,6 +121,7 @@ func TestFormatRelativeTimeBoundaries(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got := formatRelativeTime(tt.from, time.Now())
 			if got != tt.want {
 				t.Errorf("formatRelativeTime() = %q, want %q", got, tt.want)

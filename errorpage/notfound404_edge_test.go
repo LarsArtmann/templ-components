@@ -75,10 +75,12 @@ func TestNotFound404EdgeCases(t *testing.T) {
 
 	t.Run("many links render in grid", func(t *testing.T) {
 		t.Parallel()
+
 		links := make([]NotFoundLink, 6)
 		for i := range links {
 			links[i] = NotFoundLink{Text: "Link " + strconv.Itoa(i+1), Href: "/" + strconv.Itoa(i+1)}
 		}
+
 		output := utils.Render(t, NotFound404(NotFound404Props{Links: links}))
 		for i := 1; i <= 6; i++ {
 			utils.AssertContains(t, output, "Link "+strconv.Itoa(i))
@@ -109,10 +111,12 @@ func TestNotFound404_SearchInputNameDefault(t *testing.T) {
 
 func TestDefaultNotFoundLinksReturnsValues(t *testing.T) {
 	t.Parallel()
+
 	links := DefaultNotFoundLinks()
 	if len(links) < 2 {
 		t.Fatalf("expected at least 2 default links, got %d", len(links))
 	}
+
 	for _, link := range links {
 		if link.Text == "" || link.Href == "" {
 			t.Errorf("default link has empty Text or Href: %+v", link)

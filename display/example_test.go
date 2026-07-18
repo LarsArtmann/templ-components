@@ -14,6 +14,7 @@ func ExampleBadge() {
 	props.Type = display.BadgeInfo
 
 	var buf bytes.Buffer
+
 	_ = display.Badge(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 	// Output will contain the badge text and Tailwind classes
@@ -24,6 +25,7 @@ func ExampleCard() {
 	props.Title = "Hello World"
 
 	var buf bytes.Buffer
+
 	_ = display.Card(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
@@ -36,6 +38,7 @@ func ExampleStatCard() {
 	props.Change = "+12.5%"
 
 	var buf bytes.Buffer
+
 	_ = display.StatCard(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
@@ -44,6 +47,7 @@ func ExampleGrid() {
 	props := display.DefaultGridProps()
 
 	var buf bytes.Buffer
+
 	_ = display.Grid(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 	// Output will contain responsive grid classes
@@ -57,7 +61,9 @@ func ExampleTable() {
 			display.SimpleTableRow("Bob", "bob@example.com", "User"),
 		},
 	}
+
 	var buf bytes.Buffer
+
 	_ = display.Table(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
@@ -80,7 +86,9 @@ func ExampleDataTable() {
 		ActiveSortDir:    display.SortAsc,
 		SortBaseURL:      "/users",
 	}
+
 	var buf bytes.Buffer
+
 	_ = display.DataTable(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
@@ -95,7 +103,9 @@ func ExampleTable_flushInCard() {
 		Flush:       true,
 		CellPadding: display.TableCellPaddingCompact,
 	}
+
 	var buf bytes.Buffer
+
 	_ = display.Table(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }

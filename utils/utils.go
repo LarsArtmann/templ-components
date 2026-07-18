@@ -8,7 +8,7 @@ import (
 	"github.com/a-h/templ"
 )
 
-// BaseProps provides common configurable attributes for all components
+// BaseProps provides common configurable attributes for all components.
 type BaseProps struct {
 	ID        string
 	Class     string
@@ -46,10 +46,11 @@ var classMu sync.Mutex
 func Class(classes ...string) string {
 	classMu.Lock()
 	defer classMu.Unlock()
+
 	return twmerge.Merge(classes...)
 }
 
-// CurrentYear returns the current year as a string
+// CurrentYear returns the current year as a string.
 func CurrentYear() string {
 	return time.Now().Format("2006")
 }
@@ -57,11 +58,12 @@ func CurrentYear() string {
 // Ternary returns a if condition is true, otherwise b.
 // Note: both a and b are eagerly evaluated (this is a function, not a macro),
 // so callers passing function calls or side-effecting expressions should use
-// inline if/else in templ instead: { if cond }...{ else }...{ end }
+// inline if/else in templ instead: { if cond }...{ else }...{ end }.
 func Ternary[T any](condition bool, a, b T) T {
 	if condition {
 		return a
 	}
+
 	return b
 }
 
@@ -71,6 +73,7 @@ func Lookup[K comparable, V any](m map[K]V, key K, fallback V) V {
 	if v, ok := m[key]; ok {
 		return v
 	}
+
 	return fallback
 }
 

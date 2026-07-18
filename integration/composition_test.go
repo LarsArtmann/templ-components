@@ -40,12 +40,15 @@ func TestFullPageComposition(t *testing.T) {
 	if !strings.Contains(output, "TestApp") {
 		t.Error("expected nav brand in output")
 	}
+
 	if !strings.Contains(output, "Welcome") {
 		t.Error("expected card title in output")
 	}
+
 	if !strings.Contains(output, "Heads up") {
 		t.Error("expected alert title in output")
 	}
+
 	if !strings.Contains(output, `name="email"`) {
 		t.Error("expected input name in output")
 	}
@@ -267,6 +270,7 @@ func TestBasePropsPropagation(t *testing.T) {
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
 			t.Parallel()
+
 			output := tc.render()
 			for _, check := range tc.checks {
 				if !strings.Contains(output, check) {
@@ -336,6 +340,7 @@ func TestTableInCardNoDoubleBorder(t *testing.T) {
 		if roundedCount != 1 {
 			t.Errorf("expected exactly 1 rounded-lg (from card shell), got %d.\nOutput:\n%s", roundedCount, output)
 		}
+
 		utils.AssertContainsAll(t, output, "Alice", "px-4", "py-2")
 	})
 
@@ -349,6 +354,7 @@ func TestTableInCardNoDoubleBorder(t *testing.T) {
 				Rows:    []display.TableRow{display.SimpleTableRow("Alice")},
 			}),
 		}))
+
 		roundedCount := strings.Count(output, "rounded-lg")
 		if roundedCount != 2 {
 			t.Errorf(

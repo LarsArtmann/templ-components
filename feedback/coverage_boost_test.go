@@ -8,6 +8,7 @@ import (
 
 func TestAlertFullCoverage(t *testing.T) {
 	t.Parallel()
+
 	for _, ft := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
 		t.Run(string(ft)+" dismissible with BaseProps", func(t *testing.T) {
 			t.Parallel()
@@ -30,6 +31,7 @@ func TestAlertFullCoverage(t *testing.T) {
 
 func TestToastFullCoverage(t *testing.T) {
 	t.Parallel()
+
 	for _, ft := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
 		t.Run(string(ft)+" toast", func(t *testing.T) {
 			t.Parallel()
@@ -47,6 +49,7 @@ func TestToastFullCoverage(t *testing.T) {
 
 func TestSpinnerFullCoverage(t *testing.T) {
 	t.Parallel()
+
 	for _, size := range []SpinnerSize{SpinnerSM, SpinnerMD, SpinnerLG} {
 		t.Run("size_"+string(size), func(t *testing.T) {
 			t.Parallel()
@@ -80,6 +83,7 @@ func TestProgressBarFullCoverage(t *testing.T) {
 		}))
 		utils.AssertContains(t, output, "aria-busy")
 	})
+
 	for _, size := range []ProgressBarSize{ProgressBarSizeSM, ProgressBarSizeMD, ProgressBarSizeLG} {
 		t.Run("size_"+string(size), func(t *testing.T) {
 			t.Parallel()
@@ -127,12 +131,14 @@ func TestLoadingOverlayFullCoverage(t *testing.T) {
 
 func TestSkeletonFullCoverage(t *testing.T) {
 	t.Parallel()
+
 	for _, v := range []SkeletonVariant{SkeletonText, SkeletonTextShort, SkeletonTitle, SkeletonAvatar, SkeletonImage, SkeletonCard, SkeletonTableRow} {
 		t.Run(string(v), func(t *testing.T) {
 			t.Parallel()
 			utils.Render(t, Skeleton(v))
 		})
 	}
+
 	t.Run("skeleton group", func(t *testing.T) {
 		t.Parallel()
 		utils.Render(t, SkeletonGroup([]SkeletonVariant{SkeletonText, SkeletonAvatar, SkeletonCard}))

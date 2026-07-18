@@ -59,6 +59,7 @@ func TestBaseNoHTMX(t *testing.T) {
 
 func TestBaseWithHTMXCustomCDN(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultPageProps()
 	props.Title = "Custom CDN"
 	props.HTMXCDN = "https://unpkg.com"
@@ -77,6 +78,7 @@ func TestBaseWithHTMXNoResponseTargets(t *testing.T) {
 
 func TestBaseWithHTMXSRI(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultPageProps()
 	props.Title = "SRI"
 	props.HTMXUseSRI = true
@@ -259,6 +261,7 @@ func TestStylesheetEmptyHref(t *testing.T) {
 
 func TestBaseHTMXCDNOverrides(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultPageProps()
 	props.Title = "Self-hosted"
 	props.HTMXCDN = "https://cdn.example.com"

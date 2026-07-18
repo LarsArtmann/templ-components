@@ -30,6 +30,7 @@ func TestNotFound404MainLandmark(t *testing.T) {
 // TestErrorPageHasNoRoleRegion ensures no regression to role="region".
 func TestErrorPageHasNoRoleRegion(t *testing.T) {
 	t.Parallel()
+
 	for _, family := range []Family{FamilyRejection, FamilyConflict, FamilyTransient, FamilyCorruption, FamilyInfrastructure} {
 		output := utils.Render(t, ErrorPage(ErrorPageProps{
 			Family:  family,
@@ -44,6 +45,7 @@ func TestErrorPageHasNoRoleRegion(t *testing.T) {
 // TestFromErrorFallbackFamily verifies unknown errors return FamilyCorruption (→500).
 func TestFromErrorFallbackFamily(t *testing.T) {
 	t.Parallel()
+
 	props := FromError(&testError{msg: "unknown error"})
 	if props.Family != FamilyCorruption {
 		t.Errorf("Family = %q, want %q", props.Family, FamilyCorruption)

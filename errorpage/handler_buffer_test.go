@@ -31,6 +31,7 @@ func TestWriteErrorPageDerivesStatusFromFamily(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			req := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
 			rec := httptest.NewRecorder()
 			props := ErrorPageProps{
@@ -79,6 +80,7 @@ func (f *failingWriter) Header() http.Header {
 	if f.header == nil {
 		f.header = make(http.Header)
 	}
+
 	return f.header
 }
 
@@ -86,7 +88,9 @@ func (f *failingWriter) Write(p []byte) (int, error) {
 	if f.written {
 		return len(p), nil
 	}
+
 	f.written = true
+
 	return 0, f.failErr
 }
 
@@ -106,6 +110,7 @@ func TestErrorHandlerBufferBeforeWrite(t *testing.T) {
 
 	t.Run("failing writer triggers plain-text fallback with correct status", func(t *testing.T) {
 		t.Parallel()
+
 		fw := &failingWriter{failErr: errors.New("connection closed")}
 		req := httptest.NewRequestWithContext(context.Background(), "GET", "/", nil)
 
@@ -210,6 +215,7 @@ func strMin(a, b int) int {
 	if a < b {
 		return a
 	}
+
 	return b
 }
 
@@ -220,10 +226,12 @@ func TestRenderToBufferPropagatesError(t *testing.T) {
 	t.Parallel()
 
 	failComp := failingComponent{}
+
 	_, err := renderToBuffer(context.Background(), failComp)
 	if err == nil {
 		t.Fatal("expected error from failing component, got nil")
 	}
+
 	if !strings.Contains(err.Error(), "render component") {
 		t.Errorf("expected error to mention render, got: %v", err)
 	}

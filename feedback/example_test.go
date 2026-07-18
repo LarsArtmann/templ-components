@@ -15,6 +15,7 @@ func ExampleAlert() {
 	props.Message = "Your changes have been saved."
 
 	var buf bytes.Buffer
+
 	_ = feedback.Alert(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
@@ -26,12 +27,14 @@ func ExampleToast() {
 	props.Message = "You have a new message."
 
 	var buf bytes.Buffer
+
 	_ = feedback.Toast(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
 
 func ExampleSpinner() {
 	var buf bytes.Buffer
+
 	_ = feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600"}).
 		Render(context.Background(), &buf)
 	fmt.Println(buf.String())
@@ -39,6 +42,7 @@ func ExampleSpinner() {
 
 func ExampleSkeletonCardGrid() {
 	var buf bytes.Buffer
+
 	_ = feedback.SkeletonCardGrid(6).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 	// Output will contain a responsive grid of skeleton loading cards

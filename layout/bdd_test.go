@@ -11,13 +11,16 @@ import (
 
 func renderBaseWithSecurity(t *testing.T, enabled bool) string {
 	t.Helper()
+
 	props := DefaultPageProps()
 	props.SecurityHeaders = enabled
+
 	return utils.Render(t, Base(props))
 }
 
 func assertSecurityHeadersPresent(t *testing.T, enabled bool) {
 	t.Helper()
+
 	output := renderBaseWithSecurity(t, enabled)
 	if enabled {
 		utils.AssertContains(t, output, `http-equiv="X-Content-Type-Options"`)
@@ -30,8 +33,10 @@ func assertSecurityHeadersPresent(t *testing.T, enabled bool) {
 
 func renderBaseWithNonce(t *testing.T, nonce string) string {
 	t.Helper()
+
 	props := DefaultPageProps()
 	props.Nonce = nonce
+
 	return utils.Render(t, Base(props))
 }
 
@@ -42,6 +47,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 
 	t.Run("user sees page title in HTML head", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.Title = "My Application"
 		output := utils.Render(t, Base(props))
@@ -50,6 +56,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 
 	t.Run("user sees meta description for SEO", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.Description = "A beautiful web application"
 		output := utils.Render(t, Base(props))
@@ -59,6 +66,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 
 	t.Run("user sees HTMX script with correct version", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.HTMXVersion = defaultHTMXVersion
 		output := utils.Render(t, Base(props))
@@ -67,6 +75,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 
 	t.Run("user sees HTMX loaded with SRI when enabled", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.HTMXUseSRI = true
 		output := utils.Render(t, Base(props))
@@ -75,6 +84,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 
 	t.Run("user sees OG meta tags when OG image is set", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.OGImage = "https://example.com/og.png"
 		output := utils.Render(t, Base(props))
@@ -84,6 +94,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 
 	t.Run("user sees custom CSS path", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		props.CSSPath = "/custom.css"
 		output := utils.Render(t, Base(props))
@@ -157,16 +168,20 @@ func TestDefaultPagePropsProvidesSensibleDefaults(t *testing.T) {
 
 	t.Run("defaults include locale, HTMX version, and security", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPageProps()
 		if props.Locale != "en" {
 			t.Errorf("expected Locale 'en', got %q", props.Locale)
 		}
+
 		if props.HTMXVersion != defaultHTMXVersion {
 			t.Errorf("expected HTMXVersion %q, got %q", defaultHTMXVersion, props.HTMXVersion)
 		}
+
 		if !props.SecurityHeaders {
 			t.Error("expected SecurityHeaders to be true")
 		}
+
 		if !props.HTMXUseSRI {
 			t.Error("expected HTMXUseSRI to be true")
 		}

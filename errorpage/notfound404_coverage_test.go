@@ -47,6 +47,7 @@ func TestNotFound404Coverage(t *testing.T) {
 
 	t.Run("go home with default href from DefaultNotFound404Props", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultNotFound404Props()
 		output := utils.Render(t, NotFound404(props))
 		utils.AssertContains(t, output, `href="/"`)
@@ -56,25 +57,32 @@ func TestNotFound404Coverage(t *testing.T) {
 
 func TestNotFound404DefaultPropsValues(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultNotFound404Props()
 	if props.Numeral != "404" {
 		t.Errorf("Numeral = %q, want %q", props.Numeral, "404")
 	}
+
 	if props.Title != "Page not found" {
 		t.Errorf("Title = %q, want %q", props.Title, "Page not found")
 	}
+
 	if props.Message == "" {
 		t.Error("Message should not be empty")
 	}
+
 	if props.SearchInputName != "q" {
 		t.Errorf("SearchInputName = %q, want %q", props.SearchInputName, "q")
 	}
+
 	if props.GoHomeHref != "/" {
 		t.Errorf("GoHomeHref = %q, want %q", props.GoHomeHref, "/")
 	}
+
 	if props.GoHomeText != "Go to homepage" {
 		t.Errorf("GoHomeText = %q, want %q", props.GoHomeText, "Go to homepage")
 	}
+
 	if !props.ShowGoBack {
 		t.Error("ShowGoBack should be true")
 	}

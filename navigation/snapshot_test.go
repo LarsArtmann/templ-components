@@ -243,9 +243,11 @@ func TestTwoNavsProduceUniqueMenuIDs(t *testing.T) {
 	out2 := utils.Render(t, Nav(NavProps{Links: testNavLinks, CurrentPath: "/"}))
 	idCount1 := strings.Count(out1, `id="tc-mobile-menu-`)
 	idCount2 := strings.Count(out2, `id="tc-mobile-menu-`)
+
 	if idCount1 != 2 {
 		t.Errorf("expected 2 mobile-menu ids (toggle + menu) in first Nav, got %d", idCount1)
 	}
+
 	if idCount2 != 2 {
 		t.Errorf("expected 2 mobile-menu ids (toggle + menu) in second Nav, got %d", idCount2)
 	}

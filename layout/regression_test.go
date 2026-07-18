@@ -18,6 +18,7 @@ func TestThemeScriptHasNonce(t *testing.T) {
 // try/catch for Safari private mode (QuotaExceededError).
 func TestThemeScriptHasLocalStorageTryCatch(t *testing.T) {
 	t.Parallel()
+
 	output := utils.Render(t, ThemeScript(""))
 	if !strings.Contains(output, "try") || !strings.Contains(output, "catch") {
 		t.Error("expected localStorage wrapped in try/catch")
@@ -81,12 +82,15 @@ func TestThemeToggleSyncRunsOutsideSingletonGuard(t *testing.T) {
 	// The syncToggleAria forEach must appear BEFORE the tcThemeToggleAttached check
 	syncIdx := strings.Index(output, "forEach(syncToggleAria)")
 	guardIdx := strings.Index(output, "tcThemeToggleAttached")
+
 	if syncIdx == -1 {
 		t.Fatal("expected forEach(syncToggleAria) in output")
 	}
+
 	if guardIdx == -1 {
 		t.Fatal("expected tcThemeToggleAttached guard in output")
 	}
+
 	if syncIdx > guardIdx {
 		t.Error(
 			"aria-checked sync should run BEFORE the singleton guard so HTMX-swapped buttons are corrected on every render",

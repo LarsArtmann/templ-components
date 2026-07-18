@@ -116,6 +116,7 @@ func TestSelectDoesNotMutateCallerOptions(t *testing.T) {
 	if !opts[0].Selected || !opts[0].Disabled {
 		t.Error("normalizeSelectOptions mutated caller's slice: opts[0] changed")
 	}
+
 	if !opts[1].Selected {
 		t.Error("normalizeSelectOptions mutated caller's slice: opts[1].Selected was cleared")
 	}
@@ -259,6 +260,7 @@ func TestFormRender(t *testing.T) {
 
 	t.Run("default props uses POST", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultFormProps()
 		if props.Method != FormPost {
 			t.Errorf("DefaultFormProps().Method = %q, want %q", props.Method, FormPost)

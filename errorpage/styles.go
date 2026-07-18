@@ -127,6 +127,7 @@ func FamilyIcon(f Family) icons.Name {
 // FamilyIsValid reports whether the Family value is one of the five defined constants.
 func FamilyIsValid(f Family) bool {
 	_, ok := familyStyleMap[f]
+
 	return ok
 }
 
@@ -137,6 +138,7 @@ func ParseFamily(s string) Family {
 	if FamilyIsValid(f) {
 		return f
 	}
+
 	return FamilyTransient
 }
 
@@ -155,6 +157,7 @@ type CauseItem struct {
 // ErrorPageProps configures a full-page error view.
 type ErrorPageProps struct {
 	utils.BaseProps
+
 	Family        Family
 	StatusCode    int
 	Code          Code
@@ -180,6 +183,7 @@ func DefaultErrorPageProps() ErrorPageProps {
 // ErrorDetailProps configures an inline error detail card.
 type ErrorDetailProps struct {
 	utils.BaseProps
+
 	Family     Family
 	Code       Code
 	Title      string
@@ -200,6 +204,7 @@ func DefaultErrorDetailProps() ErrorDetailProps {
 // ErrorAlertProps configures an alert banner derived from an error family.
 type ErrorAlertProps struct {
 	utils.BaseProps
+
 	Family      Family
 	Title       string
 	Message     string
@@ -235,10 +240,12 @@ func ContextMap(m map[string]string) []ContextPair {
 	if len(m) == 0 {
 		return nil
 	}
+
 	pairs := make([]ContextPair, 0, len(m))
 	for k, v := range m {
 		pairs = append(pairs, ContextPair{Key: k, Value: v})
 	}
+
 	return pairs
 }
 
@@ -251,17 +258,22 @@ func ExtractCauseChain(err error, maxDepth int) []CauseItem {
 	if err == nil || maxDepth <= 0 {
 		return nil
 	}
+
 	var chain []CauseItem
+
 	current := err
 	for range maxDepth {
 		unwrapped := errors.Unwrap(current)
 		if unwrapped == nil {
 			chain = appendJoinSiblings(chain, current, maxDepth)
+
 			break
 		}
+
 		chain = append(chain, causeItemFromError(unwrapped))
 		current = unwrapped
 	}
+
 	return chain
 }
 
@@ -272,12 +284,15 @@ func appendJoinSiblings(chain []CauseItem, current error, maxDepth int) []CauseI
 	if !ok {
 		return chain
 	}
+
 	for _, sibling := range joiner.Unwrap() {
 		if len(chain) >= maxDepth {
 			break
 		}
+
 		chain = append(chain, causeItemFromError(sibling))
 	}
+
 	return chain
 }
 
@@ -287,5 +302,6 @@ func causeItemFromError(err error) CauseItem {
 	if c, ok := err.(interface{ ErrorCode() string }); ok {
 		item.Code = Code(c.ErrorCode())
 	}
+
 	return item
 }

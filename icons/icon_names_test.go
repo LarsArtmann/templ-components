@@ -11,6 +11,7 @@ func TestIconNames(t *testing.T) {
 	for _, name := range allIconNames() {
 		t.Run(string(name), func(t *testing.T) {
 			t.Parallel()
+
 			if name == "" {
 				t.Errorf("icon name should not be empty")
 			}
@@ -32,10 +33,12 @@ func TestIconCount(t *testing.T) {
 
 func TestAllIconNamesCoversIconPathData(t *testing.T) {
 	t.Parallel()
+
 	nameSet := make(map[Name]bool, len(allIconNames()))
 	for _, n := range allIconNames() {
 		nameSet[n] = true
 	}
+
 	for name := range iconPathData {
 		if !nameSet[name] {
 			t.Errorf("iconPathData has %q but allIconNames does not", name)
@@ -45,6 +48,7 @@ func TestAllIconNamesCoversIconPathData(t *testing.T) {
 
 func TestIconPathsNoEmptySegments(t *testing.T) {
 	t.Parallel()
+
 	for name, data := range iconPathData {
 		parts := strings.SplitSeq(data, "|")
 		for p := range parts {
@@ -57,10 +61,12 @@ func TestIconPathsNoEmptySegments(t *testing.T) {
 
 func TestIconPathDataNoPipeInSVGPaths(t *testing.T) {
 	t.Parallel()
+
 	for name, data := range iconPathData {
 		if strings.HasPrefix(data, "|") || strings.HasSuffix(data, "|") {
 			t.Errorf("icon %q has leading/trailing | separator: %q", name, data)
 		}
+
 		if strings.Contains(data, "||") {
 			t.Errorf("icon %q has double | separator: %q", name, data)
 		}
@@ -69,11 +75,13 @@ func TestIconPathDataNoPipeInSVGPaths(t *testing.T) {
 
 func TestIconPathJSProducesValidHTML(t *testing.T) {
 	t.Parallel()
+
 	for name := range iconPathData {
 		result := IconPathJS(name)
 		if !strings.HasPrefix(result, `<path`) {
 			t.Errorf("IconPathJS(%q) should start with <path, got: %s", name, result[:50])
 		}
+
 		if !strings.HasSuffix(result, `"/>`) {
 			t.Errorf("IconPathJS(%q) should end with \"/>, got: %s", name, result[len(result)-20:])
 		}
@@ -82,7 +90,9 @@ func TestIconPathJSProducesValidHTML(t *testing.T) {
 
 func TestIconPathsFallbackOnUnknown(t *testing.T) {
 	t.Parallel()
+
 	paths := iconPaths(Name("nonexistent"))
+
 	questionPaths := iconPaths(Question)
 	if len(paths) != len(questionPaths) {
 		t.Errorf("unknown icon should fall back to Question, got %d paths, want %d", len(paths), len(questionPaths))
@@ -91,10 +101,13 @@ func TestIconPathsFallbackOnUnknown(t *testing.T) {
 
 func TestSpinnerIsSpecialAndFallsBackToQuestion(t *testing.T) {
 	t.Parallel()
+
 	if !specialIcons[Spinner] {
 		t.Fatal("Spinner must be in specialIcons so it doesn't silently return wrong path data")
 	}
+
 	spinnerPaths := IconPathData(Spinner)
+
 	questionPaths := IconPathData(Question)
 	if len(spinnerPaths) != len(questionPaths) {
 		t.Errorf(
@@ -103,6 +116,7 @@ func TestSpinnerIsSpecialAndFallsBackToQuestion(t *testing.T) {
 			len(questionPaths),
 		)
 	}
+
 	for i, p := range spinnerPaths {
 		if p != questionPaths[i] {
 			t.Errorf("IconPathData(Spinner)[%d] = %q, want Question fallback %q", i, p, questionPaths[i])
@@ -121,14 +135,17 @@ func TestAllExportedNameConstsHavePathDataOrAreSpecial(t *testing.T) {
 		if specialIcons[name] {
 			continue
 		}
+
 		if _, ok := iconPathData[name]; ok {
 			continue
 		}
+
 		if alias, ok := iconAliases[name]; ok {
 			if _, ok := iconPathData[alias]; ok {
 				continue
 			}
 		}
+
 		t.Errorf(
 			"Name const %q has no iconPathData entry and is not special — would silently fall back to Question",
 			name,

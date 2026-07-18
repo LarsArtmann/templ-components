@@ -10,6 +10,7 @@ import (
 
 func ExampleErrorPage() {
 	var buf bytes.Buffer
+
 	_ = errorpage.ErrorPage(errorpage.ErrorPageProps{
 		Family:     errorpage.FamilyRejection,
 		Code:       "page.not_found",
@@ -19,12 +20,14 @@ func ExampleErrorPage() {
 		WayOut:     "Go home",
 		WayOutHref: "/",
 	}).Render(context.Background(), &buf)
+
 	fmt.Println("renders full-page error view")
 	// Output: renders full-page error view
 }
 
 func ExampleErrorDetail() {
 	var buf bytes.Buffer
+
 	_ = errorpage.ErrorDetail(errorpage.ErrorDetailProps{
 		Family:  errorpage.FamilyCorruption,
 		Code:    "data.parse_failed",
@@ -36,18 +39,21 @@ func ExampleErrorDetail() {
 			{Key: "line", Value: "42"},
 		},
 	}).Render(context.Background(), &buf)
+
 	fmt.Println("renders inline error detail card")
 	// Output: renders inline error detail card
 }
 
 func ExampleErrorAlert() {
 	var buf bytes.Buffer
+
 	_ = errorpage.ErrorAlert(errorpage.ErrorAlertProps{
 		Family:  errorpage.FamilyTransient,
 		Title:   "Temporary Error",
 		Message: "Please try again shortly.",
 		Fix:     "Wait a moment and retry.",
 	}).Render(context.Background(), &buf)
+
 	fmt.Println("renders family-aware alert banner")
 	// Output: renders family-aware alert banner
 }

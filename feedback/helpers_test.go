@@ -22,6 +22,7 @@ const (
 
 func TestSpinnerSizeClass(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		size SpinnerSize
 		want string
@@ -49,6 +50,7 @@ func assertStyleFunc4(
 	funcName, border, bg, text, icon, wantBorder, wantIconColor string,
 ) {
 	t.Helper()
+
 	if border == "" || bg == "" || text == "" || icon == "" {
 		t.Errorf(
 			"%s returned empty value: border=%q bg=%q text=%q icon=%q",
@@ -59,9 +61,11 @@ func assertStyleFunc4(
 			icon,
 		)
 	}
+
 	if wantBorder != "" && border != wantBorder {
 		t.Errorf("%s border = %q, want %q", funcName, border, wantBorder)
 	}
+
 	if wantIconColor != "" && icon != wantIconColor {
 		t.Errorf("%s icon = %q, want %q", funcName, icon, wantIconColor)
 	}
@@ -69,6 +73,7 @@ func assertStyleFunc4(
 
 func TestToastStyles(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		typ           ToastType
 		wantBorder    string
@@ -90,6 +95,7 @@ func TestToastStyles(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(string(tt.typ), func(t *testing.T) {
 			t.Parallel()
+
 			s := feedbackStyle(tt.typ)
 			assertStyleFunc4(
 				t,
@@ -107,12 +113,14 @@ func TestToastStyles(t *testing.T) {
 
 func TestToastStylesDefault(t *testing.T) {
 	t.Parallel()
+
 	s := feedbackStyle("unknown")
 	assertStyleFunc4(t, "feedbackStyle(unknown)", s.Border, s.BG, s.Text, s.Icon, "", "")
 }
 
 func TestAlertStyles(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		typ           AlertType
 		wantBorder    string
@@ -126,6 +134,7 @@ func TestAlertStyles(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(string(tt.typ), func(t *testing.T) {
 			t.Parallel()
+
 			s := feedbackStyle(tt.typ)
 			assertStyleFunc4(
 				t,
@@ -143,6 +152,7 @@ func TestAlertStyles(t *testing.T) {
 
 func TestProgressHeightClass(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		size ProgressBarSize
 		want string
@@ -166,6 +176,7 @@ func TestProgressHeightClass(t *testing.T) {
 
 func TestStepLineClass(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		step, current int
 		want          string
@@ -188,13 +199,16 @@ func TestStepLineClass(t *testing.T) {
 
 func TestDismissScript(t *testing.T) {
 	t.Parallel()
+
 	s := utils.DismissScript()
 	if s == "" {
 		t.Error("utils.DismissScript() returned empty string")
 	}
+
 	if !strings.Contains(s, "tcDismissAttached") {
 		t.Error("utils.DismissScript() missing tcDismissAttached guard")
 	}
+
 	if !strings.Contains(s, "data-dismiss") {
 		t.Error("utils.DismissScript() missing data-dismiss selector")
 	}
@@ -202,6 +216,7 @@ func TestDismissScript(t *testing.T) {
 
 func TestFeedbackIcon(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name string
 		typ  FeedbackType
@@ -214,6 +229,7 @@ func TestFeedbackIcon(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got := feedbackIcon(tt.typ)
 			if got != tt.want {
 				t.Errorf("feedbackIcon(%q) = %q, want %q", tt.typ, got, tt.want)
@@ -224,6 +240,7 @@ func TestFeedbackIcon(t *testing.T) {
 
 func TestStepCircleClass(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		step, current int
 		want          string

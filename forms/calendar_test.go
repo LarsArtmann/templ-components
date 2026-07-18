@@ -10,7 +10,9 @@ import (
 
 func TestDefaultCalendarProps(t *testing.T) {
 	t.Parallel()
+
 	p := DefaultCalendarProps()
+
 	now := time.Now()
 	if p.Year != now.Year() || p.Month != now.Month() {
 		t.Error("expected current year/month defaults")
@@ -64,6 +66,7 @@ func TestCalendarPrevNextLinks(t *testing.T) {
 
 func TestCalendarSelectedDate(t *testing.T) {
 	t.Parallel()
+
 	selected := time.Date(2026, 7, 15, 0, 0, 0, 0, time.UTC)
 	output := utils.Render(t, Calendar(CalendarProps{
 		Year:         2026,
@@ -76,6 +79,7 @@ func TestCalendarSelectedDate(t *testing.T) {
 
 func TestCalendarMinMaxDates(t *testing.T) {
 	t.Parallel()
+
 	minDate := time.Date(2026, 7, 10, 0, 0, 0, 0, time.UTC)
 	maxDate := time.Date(2026, 7, 20, 0, 0, 0, 0, time.UTC)
 	output := utils.Render(t, Calendar(CalendarProps{
@@ -121,15 +125,19 @@ func TestCalendarEdgeCases(t *testing.T) {
 
 func TestCalendarDayClassHelpers(t *testing.T) {
 	t.Parallel()
+
 	if got := calendarDayClass(false, false, false); got == "" {
 		t.Error("expected non-empty class")
 	}
+
 	if got := calendarDayClass(true, false, false); got == "" {
 		t.Error("expected non-empty selected class")
 	}
+
 	if got := calendarDayClass(false, true, false); got == "" {
 		t.Error("expected non-empty disabled class")
 	}
+
 	if got := calendarDayClass(false, false, true); got == "" {
 		t.Error("expected non-empty today class")
 	}
@@ -137,6 +145,7 @@ func TestCalendarDayClassHelpers(t *testing.T) {
 
 func TestCalendarReplacePlaceholders(t *testing.T) {
 	t.Parallel()
+
 	got := calendarReplacePlaceholders("/cal?y={year}&m={month}&d={day}", 2026, 7, 15)
 	if got != "/cal?y=2026&m=7&d=15" {
 		t.Errorf("got %q", got)

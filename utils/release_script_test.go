@@ -22,6 +22,7 @@ func TestReleaseScriptInvariants(t *testing.T) {
 	if err != nil {
 		t.Skipf("scripts/release.sh not found (running outside repo root?): %v", err)
 	}
+
 	script := string(data)
 
 	checkContains(t, script, `RELEASE_BODY="${RELEASE_NOTES}`, "commit body must use ${RELEASE_NOTES}")
@@ -37,6 +38,7 @@ func TestReleaseScriptInvariants(t *testing.T) {
 
 func checkContains(t *testing.T, script, needle, msg string) {
 	t.Helper()
+
 	if !strings.Contains(script, needle) {
 		t.Errorf("release.sh invariant failed: %s (missing %q)", msg, needle)
 	}
@@ -44,6 +46,7 @@ func checkContains(t *testing.T, script, needle, msg string) {
 
 func checkAbsent(t *testing.T, script, needle, msg string) {
 	t.Helper()
+
 	if strings.Contains(script, needle) {
 		t.Errorf("release.sh invariant failed: %s (found forbidden %q)", msg, needle)
 	}

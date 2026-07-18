@@ -42,6 +42,7 @@ func TestLoadingButtonHidesDefaultText(t *testing.T) {
 // TestLoadingButtonNilSpinner does not panic with nil spinner.
 func TestLoadingButtonNilSpinner(t *testing.T) {
 	t.Parallel()
+
 	output := utils.Render(t, LoadingButton("Save", "Saving...", nil))
 	if output == "" {
 		t.Error("expected non-empty output")

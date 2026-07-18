@@ -14,7 +14,9 @@ func ExamplePagination() {
 		TotalPages:  10,
 		BaseURL:     "/items?page=",
 	}
+
 	var buf bytes.Buffer
+
 	_ = navigation.Pagination(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
@@ -24,7 +26,9 @@ func ExampleNavLink() {
 		Href: "/dashboard",
 		Text: "Dashboard",
 	}
+
 	var buf bytes.Buffer
+
 	_ = navigation.NavLink(props, "/dashboard").Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
@@ -37,7 +41,9 @@ func ExampleBreadcrumbs() {
 			{Text: "Laptops"},
 		},
 	}
+
 	var buf bytes.Buffer
+
 	_ = navigation.Breadcrumbs(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }
@@ -46,7 +52,9 @@ func ExampleLoadMore() {
 	props := navigation.DefaultLoadMoreProps()
 	props.Endpoint = "/api/items"
 	props.Cursor = "eyJwYWdlIjoyfQ=="
+
 	var buf bytes.Buffer
+
 	_ = navigation.LoadMore(props).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 }

@@ -117,6 +117,7 @@ func TestRatingUserCanSelectStars(t *testing.T) {
 			Name: "quality",
 			Max:  5,
 		}))
+
 		count := substringCount(output, `type="radio"`)
 		if count != 5 {
 			t.Errorf("expected 5 radio inputs, got %d", count)
@@ -153,6 +154,7 @@ func TestFilterDropdownEdgeCases(t *testing.T) {
 
 	t.Run("preselect does not mutate caller slice", func(t *testing.T) {
 		t.Parallel()
+
 		opts := []SelectOption{
 			{Value: "a", Label: "A"},
 			{Value: "b", Label: "B", Selected: true},
@@ -162,6 +164,7 @@ func TestFilterDropdownEdgeCases(t *testing.T) {
 		if !opts[1].Selected {
 			t.Error("preselect mutated caller slice: B.Selected should still be true")
 		}
+
 		if opts[0].Selected {
 			t.Error("preselect mutated caller slice: A.Selected should still be false")
 		}
@@ -169,14 +172,17 @@ func TestFilterDropdownEdgeCases(t *testing.T) {
 
 	t.Run("preselect with no matching value clears all selections", func(t *testing.T) {
 		t.Parallel()
+
 		opts := []SelectOption{
 			{Value: "a", Label: "A"},
 			{Value: "b", Label: "B", Selected: true},
 		}
+
 		result := filterDropdownPreselect(opts, "nonexistent")
 		if result[0].Selected {
 			t.Error("A should not be selected")
 		}
+
 		if result[1].Selected {
 			t.Error("B should not be selected after non-matching preselect")
 		}
@@ -184,6 +190,7 @@ func TestFilterDropdownEdgeCases(t *testing.T) {
 
 	t.Run("empty value returns same slice identity", func(t *testing.T) {
 		t.Parallel()
+
 		opts := []SelectOption{
 			{Value: "a", Label: "A"},
 		}
@@ -192,6 +199,7 @@ func TestFilterDropdownEdgeCases(t *testing.T) {
 		if len(result) != len(opts) {
 			t.Errorf("expected same length, got result=%d opts=%d", len(result), len(opts))
 		}
+
 		if result[0].Selected != opts[0].Selected {
 			t.Error("values should match when value is empty")
 		}
@@ -331,6 +339,7 @@ func TestRatingEdgeCases(t *testing.T) {
 			Value: 1,
 			Max:   1,
 		}))
+
 		count := substringCount(output, `type="radio"`)
 		if count != 1 {
 			t.Errorf("expected 1 radio input, got %d", count)
@@ -373,6 +382,7 @@ func TestRatingEdgeCases(t *testing.T) {
 
 func TestRatingSizeClass(t *testing.T) {
 	t.Parallel()
+
 	for _, tt := range []struct {
 		size RatingSize
 		want string
@@ -391,9 +401,11 @@ func TestRatingSizeClass(t *testing.T) {
 
 func TestPluralStars(t *testing.T) {
 	t.Parallel()
+
 	if got := pluralStars(1); got != "" {
 		t.Errorf("pluralStars(1) = %q, want empty", got)
 	}
+
 	if got := pluralStars(2); got != "s" {
 		t.Errorf("pluralStars(2) = %q, want %q", got, "s")
 	}

@@ -24,6 +24,7 @@ func TestGoldenCopyButton(t *testing.T) {
 
 func TestGoldenRelativeTime(t *testing.T) {
 	t.Parallel()
+
 	ts := time.Date(2025, 1, 15, 10, 30, 0, 0, time.UTC)
 	output := utils.Render(t, RelativeTime(RelativeTimeProps{
 		Time: ts,
@@ -98,6 +99,7 @@ func TestGoldenCardBodySlot(t *testing.T) {
 
 func TestGoldenCardHeaderSlot(t *testing.T) {
 	t.Parallel()
+
 	customHeader := `<div class="flex items-center gap-2">` +
 		`<h2 class="text-lg font-bold">Custom Header</h2>` +
 		`<span class="badge">New</span></div>`

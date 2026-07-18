@@ -17,6 +17,7 @@ const (
 
 func TestMapStatusToBadgeType(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		status string
 		want   BadgeType
@@ -47,6 +48,7 @@ func TestMapStatusToBadgeType(t *testing.T) {
 
 func TestBadgeSizeClass(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		size BadgeSize
 		want string
@@ -71,6 +73,7 @@ func TestBadgeSizeClass(t *testing.T) {
 
 func TestCardPaddingClass(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		padding CardPadding
 		want    string

@@ -79,6 +79,7 @@ func TestProgressBarInvalidSizeFallback(t *testing.T) {
 
 func TestProgressBarAllSizes(t *testing.T) {
 	t.Parallel()
+
 	for _, size := range []ProgressBarSize{ProgressBarSizeSM, ProgressBarSizeMD, ProgressBarSizeLG} {
 		output := utils.Render(t, ProgressBar(ProgressBarProps{
 			Current: 50,
@@ -184,6 +185,7 @@ func TestSkeletonCardGridNormal(t *testing.T) {
 
 func TestSkeletonCardGridZeroOrNegative(t *testing.T) {
 	t.Parallel()
+
 	for _, count := range []int{0, -1, -5} {
 		output := utils.Render(t, SkeletonCardGrid(count))
 		// Should fall back to 1 card, not panic
@@ -250,6 +252,7 @@ func TestStepIndicatorLastStep(t *testing.T) {
 
 func TestAlertAllTypes(t *testing.T) {
 	t.Parallel()
+
 	for _, atype := range []AlertType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
 		output := utils.Render(t, Alert(AlertProps{
 			Message: "Test message",
@@ -276,6 +279,7 @@ func TestAlertDismissibleWithNonce(t *testing.T) {
 
 func TestToastEachType(t *testing.T) {
 	t.Parallel()
+
 	for _, ttype := range []ToastType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
 		output := utils.Render(t, Toast(ToastProps{
 			Message: "Notification",
@@ -312,6 +316,7 @@ func TestSkeletonUnknownVariantDefault(t *testing.T) {
 
 func TestSkeletonAllVariants(t *testing.T) {
 	t.Parallel()
+
 	for _, v := range []SkeletonVariant{
 		SkeletonText, SkeletonTextShort, SkeletonTitle,
 		SkeletonAvatar, SkeletonImage, SkeletonCard, SkeletonTableRow,

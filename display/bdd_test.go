@@ -28,6 +28,7 @@ func TestBadgeUserSeesCorrectVisualFeedback(t *testing.T) {
 
 	t.Run("user sees pill-shaped badge when pill is enabled", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultBadgeProps()
 		props.Text = activeBadgeText
 		props.Pill = true
@@ -38,6 +39,7 @@ func TestBadgeUserSeesCorrectVisualFeedback(t *testing.T) {
 
 	t.Run("user sees dot indicator on badge", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultBadgeProps()
 		props.Text = "Live"
 		props.Dot = true
@@ -82,6 +84,7 @@ func TestCardUserCanComposeContent(t *testing.T) {
 
 	t.Run("user sees card with title and content", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultCardProps()
 		props.Title = "Dashboard"
 		output := utils.Render(t, Card(props))
@@ -90,6 +93,7 @@ func TestCardUserCanComposeContent(t *testing.T) {
 
 	t.Run("user sees card with subtitle", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultCardProps()
 		props.Title = cardTitleUsers
 		props.Subtitle = "Manage your team"
@@ -106,6 +110,7 @@ func TestModalUserCanOpenAndClose(t *testing.T) {
 
 	t.Run("modal renders with accessible dialog element", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultModalProps()
 		props.ID = "bdd-modal"
 		props.Title = "Confirm Action"
@@ -116,6 +121,7 @@ func TestModalUserCanOpenAndClose(t *testing.T) {
 
 	t.Run("modal renders in open state", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultModalProps()
 		props.ID = "bdd-modal-open"
 		props.Open = true

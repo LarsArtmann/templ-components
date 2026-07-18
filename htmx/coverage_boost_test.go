@@ -47,6 +47,7 @@ func TestConfirmDeleteCoverage(t *testing.T) {
 
 func TestSwapOOBCoverage(t *testing.T) {
 	t.Parallel()
+
 	for _, style := range []SwapStyle{
 		SwapInnerHTML, SwapOuterHTML, SwapBeforeBegin, SwapAfterBegin,
 		SwapBeforeEnd, SwapAfterEnd, SwapDelete, SwapNone,
@@ -60,6 +61,7 @@ func TestSwapOOBCoverage(t *testing.T) {
 			utils.AssertContains(t, output, string(style)+":#target")
 		})
 	}
+
 	t.Run("invalid style falls back", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SwapOOB(SwapOOBProps{

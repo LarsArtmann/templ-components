@@ -8,6 +8,7 @@ import (
 
 func TestValidHexColor(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name  string
 		input string
@@ -49,6 +50,7 @@ func TestValidHexColor(t *testing.T) {
 
 func TestThemeColor(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input string
 		want  string
@@ -67,6 +69,7 @@ func TestThemeColor(t *testing.T) {
 
 func TestDarkThemeColor(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input string
 		want  string

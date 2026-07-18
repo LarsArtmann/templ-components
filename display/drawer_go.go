@@ -4,7 +4,7 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-// DrawerSide defines which side the drawer slides in from
+// DrawerSide defines which side the drawer slides in from.
 type DrawerSide string
 
 const (
@@ -12,7 +12,7 @@ const (
 	DrawerRight DrawerSide = "right"
 )
 
-// DrawerSize defines the width of the drawer panel
+// DrawerSize defines the width of the drawer panel.
 type DrawerSize string
 
 // Drawer size constants. DrawerSize2XL is the largest size (max-w-2xl);
@@ -26,16 +26,17 @@ const (
 	DrawerFull    DrawerSize = "full" // Deprecated: use DrawerSize2XL
 )
 
-// DrawerProps configures a drawer (side panel) component
+// DrawerProps configures a drawer (side panel) component.
 type DrawerProps struct {
 	utils.BaseProps
+
 	Title string
 	Open  bool
 	Side  DrawerSide
 	Size  DrawerSize
 }
 
-// DefaultDrawerProps returns sensible defaults
+// DefaultDrawerProps returns sensible defaults.
 func DefaultDrawerProps() DrawerProps {
 	return DrawerProps{ //nolint:exhaustruct // intentionally minimal defaults
 		Side: DrawerRight,
@@ -68,6 +69,7 @@ func drawerSizeClass(size DrawerSize) string {
 // DrawerSizeIsValid reports whether s is one of the defined DrawerSize constants.
 func DrawerSizeIsValid(s DrawerSize) bool {
 	_, ok := drawerSizeLookup[s]
+
 	return ok
 }
 

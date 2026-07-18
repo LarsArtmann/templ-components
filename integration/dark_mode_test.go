@@ -81,6 +81,7 @@ func TestDarkModeVariantsPresent(t *testing.T) {
 // CSS for native form control rendering in both light and dark modes.
 func TestBasePageHasColorScheme(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, layout.Base(layout.DefaultPageProps()))
 	if !strings.Contains(html, "color-scheme") {
 		t.Error("layout.Base output does not contain color-scheme CSS")

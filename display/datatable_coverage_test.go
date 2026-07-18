@@ -209,16 +209,20 @@ func TestDataTableTypedHeadersDefaults(t *testing.T) {
 			SimpleTableRow("Alice"),
 		},
 	}
+
 	headers := dataTableTypedHeaders(props)
 	if len(headers) != 1 {
 		t.Fatalf("expected 1 header, got %d", len(headers))
 	}
+
 	if !headers[0].Sortable {
 		t.Error("expected header to be sortable")
 	}
+
 	if headers[0].SortDirection != SortAsc {
 		t.Error("expected SortDirection=SortAsc")
 	}
+
 	utils.AssertContains(t, headers[0].Href, "sort=name")
 	utils.AssertContains(t, headers[0].Href, "dir=desc")
 }

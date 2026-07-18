@@ -55,6 +55,7 @@ func TestNavFullCoverage(t *testing.T) {
 	t.Parallel()
 	t.Run("with all props", func(t *testing.T) {
 		t.Parallel()
+
 		brand := templ.Raw(`<span>Brand</span>`)
 		output := utils.Render(t, Nav(NavProps{
 			BaseProps:   utils.BaseProps{ID: "main-nav", Class: "shadow", AriaLabel: "Main"},

@@ -12,6 +12,7 @@ func TestGlobalErrorHandlingA11y(t *testing.T) {
 
 	t.Run("script uses nonce", func(t *testing.T) {
 		t.Parallel()
+
 		cfg := ErrorHandlingConfig{Nonce: "secure-nonce"}
 		output := utils.Render(t, GlobalErrorHandling(cfg))
 		utils.AssertContains(t, output, `nonce="secure-nonce"`)

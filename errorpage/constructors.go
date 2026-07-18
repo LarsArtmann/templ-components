@@ -56,6 +56,7 @@ func BadRequest(message string) ErrorPageProps {
 	if message == "" {
 		message = msgBadRequestDefault
 	}
+
 	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
 		Family:        FamilyRejection,
 		Code:          CodeBadRequest,
@@ -72,6 +73,7 @@ func Conflict(message string) ErrorPageProps {
 	if message == "" {
 		message = msgConflictDefault
 	}
+
 	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
 		Family:        FamilyConflict,
 		Code:          CodeConflict,

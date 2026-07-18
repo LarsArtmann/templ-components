@@ -33,6 +33,7 @@ func TestSelectGroups(t *testing.T) {
 
 	t.Run("flat options when Groups is empty", func(t *testing.T) {
 		t.Parallel()
+
 		html := utils.Render(t, Select(SelectProps{
 			Name:      "country",
 			BaseProps: utils.BaseProps{ID: "ctry"},
@@ -41,6 +42,7 @@ func TestSelectGroups(t *testing.T) {
 		if strings.Contains(html, "<optgroup") {
 			t.Error("flat options should not render optgroup")
 		}
+
 		utils.AssertContains(t, html, `value="de"`)
 	})
 
@@ -60,6 +62,7 @@ func TestSelectGroups(t *testing.T) {
 		if strings.Contains(html, `value="a"`) && strings.Contains(html, `value="a" selected`) {
 			t.Error("disabled option should not be selected")
 		}
+
 		utils.AssertContains(t, html, `value="b" selected`)
 	})
 }

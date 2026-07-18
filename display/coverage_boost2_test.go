@@ -211,6 +211,7 @@ func TestSimpleCardBodySlotCoverage(t *testing.T) {
 
 func TestGridAllGapVariants(t *testing.T) {
 	t.Parallel()
+
 	for _, gap := range []GridGap{GridGapSM, GridGapMD, GridGapLG, GridGapXL} {
 		output := utils.Render(t, Grid(GridProps{Cols: GridCols2, Gap: gap}))
 		switch gap {
@@ -228,6 +229,7 @@ func TestGridAllGapVariants(t *testing.T) {
 
 func TestGridAllColsVariants(t *testing.T) {
 	t.Parallel()
+
 	for _, cols := range []GridCols{GridCols1, GridCols2, GridCols3, GridCols4, GridCols5, GridCols6} {
 		output := utils.Render(t, Grid(GridProps{Cols: cols}))
 		utils.AssertContains(t, output, "grid")
@@ -403,6 +405,7 @@ func TestDefinitionListDetailComponent(t *testing.T) {
 
 func TestAvatarAllSizesAndShapes(t *testing.T) {
 	t.Parallel()
+
 	for _, size := range []AvatarSize{AvatarSizeXS, AvatarSizeSM, AvatarSizeMD, AvatarSizeLG} {
 		output := utils.Render(t, Avatar(AvatarProps{
 			Initials: "JD",
@@ -415,6 +418,7 @@ func TestAvatarAllSizesAndShapes(t *testing.T) {
 
 func TestBadgeAllTypesAndSizes(t *testing.T) {
 	t.Parallel()
+
 	for _, btype := range []BadgeType{BadgePrimary, BadgeSuccess, BadgeError, BadgeWarning, BadgeInfo, BadgeNeutral} {
 		output := utils.Render(t, Badge(BadgeProps{
 			Text: "Test",

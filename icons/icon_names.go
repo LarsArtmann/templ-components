@@ -3,10 +3,10 @@ package icons
 
 import "sort"
 
-// Name represents a named icon from the library
+// Name represents a named icon from the library.
 type Name string
 
-// Icon name constants for use with the Icon component
+// Icon name constants for use with the Icon component.
 const (
 	Home                  Name = "home"
 	Users                 Name = "users"
@@ -119,10 +119,12 @@ func allIconNames() []Name {
 	for name := range iconPathData {
 		names = append(names, name)
 	}
+
 	names = append(names, Spinner)
 	sort.Slice(names, func(i, j int) bool {
 		return string(names[i]) < string(names[j])
 	})
+
 	return names
 }
 
@@ -137,6 +139,8 @@ func NameIsValid(v Name) bool {
 	if v == Spinner {
 		return true
 	}
+
 	_, ok := iconPathData[v]
+
 	return ok
 }

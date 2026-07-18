@@ -11,6 +11,7 @@ func TestCompositionCardWithBadge(t *testing.T) {
 	t.Parallel()
 	t.Run("card header action renders badge", func(t *testing.T) {
 		t.Parallel()
+
 		badge := Badge(BadgeProps{
 			Text: activeBadgeText,
 			Type: BadgeSuccess,
@@ -51,6 +52,7 @@ func TestCompositionCardWithStatCards(t *testing.T) {
 	t.Parallel()
 	t.Run("card title and stat card render independently", func(t *testing.T) {
 		t.Parallel()
+
 		statProps := StatCardProps{
 			Value:  "1,234",
 			Label:  "Total Users",
@@ -121,6 +123,7 @@ func TestCompositionCardWithCopyButton(t *testing.T) {
 	t.Parallel()
 	t.Run("card body renders a CopyButton", func(t *testing.T) {
 		t.Parallel()
+
 		copyBtn := CopyButton(CopyButtonProps{Text: "npm install foo"})
 		output := utils.Render(t, Card(CardProps{
 			Title: "Install",

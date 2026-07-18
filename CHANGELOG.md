@@ -6,6 +6,25 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`scripts/release.sh` — 3 release-integrity defects repaired** (identified in the v0.18.0 release postmortem, same-day fix). (1) Release commit body no longer duplicates the one-line summary as its first line — the body now carries the multi-paragraph release notes (`${RELEASE_NOTES}`), while the subject carries the summary. (2) Model attribution is no longer hardcoded to `MiniMax-M3` — now reads `${CRUSH_MODEL:-unknown}` so the `Assisted-by:` trailer is honest under any model. (3) The hostile stdin read loop (`while IFS= read -r line`) is gone — release notes now auto-extract from `CHANGELOG.md [Unreleased]` (the project's canonical source per the "[Unreleased] must be warm at all times" rule), with a `--notes-file FILE` override for edge cases.
+
+### Added
+
+- `scripts/release.sh --notes-file FILE` flag — accepts a path to a markdown file as the release-notes source, overriding the default CHANGELOG `[Unreleased]` extraction. Useful for scripted releases or when notes are authored separately.
+- `utils/release_script_test.go` (`TestReleaseScriptInvariants`) — static-analysis drift guard that reads `scripts/release.sh` as text and asserts the 3 fixed invariants hold (body uses `${RELEASE_NOTES}` not `${RELEASE_SUMMARY}`; no hardcoded `MiniMax-M3`; no stdin read loop; `--notes-file` and `[Unreleased]` extraction present). Fails CI if any defect creeps back.
+- `flake.nix` adopted `treefmt-nix` (mirrors `website/flake.nix`) — `nix fmt` formats `.nix` (nixfmt) + `.go` (gofmt + goimports); `nix flake check` runs the format verification as a CI gate. Generated `*_templ.go` files, `website/`, and `examples/demo/static/` are excluded to avoid churn against the generator. Replaces the former bare `formatter = pkgs.nixfmt;`. BuildFlow still owns the pre-commit hook.
+- README Quick Start now documents the `GOEXPERIMENT=jsonv2` build flag required until Go 1.27 stabilizes it.
+
+### Changed
+
+- `.art-dupl-baseline.json` regenerated: the stale baseline recorded 17 clone groups from 2026-06-28, but the codebase now has 0 (refactored away). Regenerated to 0 groups so the `art-dupl check` "no new clones" CI gate reflects reality.
+- `docs/icons-only-adoption.md` icon count corrected from 101 to 102 (101 path-icon `Name` constants + 1 animated Spinner; 5 discoverability aliases like `Close`→`X` resolve to canonical paths). Broken markdown list (orphaned Spinner bullet) also fixed.
+- `TODO_LIST` #62 rescoped: "Add `Validate()` to top 5 props structs" was over-engineering — now scoped to `errorpage.ErrorPageProps` only (the one struct where invalid `StatusCode`/`Family` combos produce wrong HTTP responses; other props use graceful `utils.Lookup` fallback and need no `Validate`).
+- v0.18.0 release postmortem annotated with `## Resolution (2026-07-18)` appendix answering the 3 open questions (Q1: don't rewrite published tag history; Q2: keep `Assisted-by:` but parameterize; Q3: CHANGELOG `[Unreleased]` is the canonical notes source) and recording what shipped.
+- `AGENTS.md` Build & Test section: added Nix flake commands subsection documenting `nix fmt`, `nix flake check`, and the flake apps.
+
 ## [0.18.0] — 2026-07-18
 
 Native `<dialog>` for Modal/Drawer, stylable `<select>`, auto-growing Textarea, responsive Image srcset, semantic `<search>` landmark, `hx-validate` on Form, and `content-visibility: auto` for large tables. All progressive enhancement — zero breaking changes.

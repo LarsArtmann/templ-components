@@ -11,6 +11,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("alert has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultAlertProps()
 		props.Title = "Test"
 		props.Message = "Message"
@@ -20,6 +21,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("toast has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultToastProps()
 		props.Message = "Test"
 		output := utils.Render(t, Toast(props))
@@ -28,6 +30,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("loadingoverlay has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultLoadingOverlayProps()
 		props.Message = "Loading"
 		output := utils.Render(t, LoadingOverlay(props))
@@ -36,6 +39,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("progressbar has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultProgressBarProps()
 		props.Current = 50
 		props.Total = 100
@@ -45,6 +49,7 @@ func TestDarkModeClasses(t *testing.T) {
 
 	t.Run("stepindicator has dark mode classes", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultStepIndicatorProps()
 		props.Steps = []string{"A", "B", "C"}
 		props.CurrentStep = 1

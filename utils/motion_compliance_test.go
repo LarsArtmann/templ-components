@@ -34,23 +34,28 @@ func TestMotionReduceCompliance(t *testing.T) {
 	)
 
 	violations := 0
+
 	for _, dir := range dirs {
 		err := filepath.Walk(filepath.Join(root, dir), func(path string, info os.FileInfo, err error) error {
 			if err != nil || info.IsDir() {
 				return err
 			}
+
 			if !strings.HasSuffix(path, ".templ") {
 				return nil
 			}
+
 			data, readErr := os.ReadFile(path) //nolint:gosec // test scans templ files
 			if readErr != nil {
 				return fmt.Errorf("read file: %w", readErr)
 			}
+
 			content := string(data)
 
 			// Check each line that has transition or animate
 			for line := range strings.SplitSeq(content, "\n") {
 				hasTransition := transitionRe.MatchString(line)
+
 				hasAnimate := animateRe.MatchString(line)
 				if !hasTransition && !hasAnimate {
 					continue
@@ -67,8 +72,10 @@ func TestMotionReduceCompliance(t *testing.T) {
 				// Allow multi-line class strings — check if motion-reduce appears
 				// within the same class attribute context. For single-line violations:
 				violations++
+
 				t.Errorf("motion-reduce gap in %s:\n  %s", path, strings.TrimSpace(line))
 			}
+
 			return nil
 		})
 		if err != nil {

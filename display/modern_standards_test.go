@@ -9,6 +9,7 @@ import (
 
 func TestImageSrcSet(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Image(ImageProps{
 		Src:    "/photo.jpg",
 		Alt:    "A photo",
@@ -18,6 +19,7 @@ func TestImageSrcSet(t *testing.T) {
 	if !strings.Contains(html, `srcset="/photo-480w.jpg 480w, /photo-800w.jpg 800w"`) {
 		t.Error("SrcSet should emit srcset attribute")
 	}
+
 	if !strings.Contains(html, `sizes="(max-width: 600px) 480px, 800px"`) {
 		t.Error("Sizes should emit sizes attribute")
 	}
@@ -25,6 +27,7 @@ func TestImageSrcSet(t *testing.T) {
 
 func TestImageSrcSetEmptyOmitted(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Image(ImageProps{
 		Src: "/photo.jpg",
 		Alt: "A photo",
@@ -32,6 +35,7 @@ func TestImageSrcSetEmptyOmitted(t *testing.T) {
 	if strings.Contains(html, "srcset") {
 		t.Error("Empty SrcSet should not emit srcset attribute")
 	}
+
 	if strings.Contains(html, "sizes=") {
 		t.Error("Empty Sizes should not emit sizes attribute")
 	}
@@ -39,6 +43,7 @@ func TestImageSrcSetEmptyOmitted(t *testing.T) {
 
 func TestTableLazyRows(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Table(TableProps{
 		Headers:  []string{"Name", "Email"},
 		Striped:  true,
@@ -55,6 +60,7 @@ func TestTableLazyRows(t *testing.T) {
 
 func TestTableLazyRowsFalseOmits(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Table(TableProps{
 		Headers: []string{"Name", "Email"},
 		Rows: []TableRow{
@@ -68,6 +74,7 @@ func TestTableLazyRowsFalseOmits(t *testing.T) {
 
 func TestTableLazyRowsCompactUsesCompactVariant(t *testing.T) {
 	t.Parallel()
+
 	html := utils.Render(t, Table(TableProps{
 		Headers:     []string{"Name", "Email"},
 		LazyRows:    true,
@@ -79,6 +86,7 @@ func TestTableLazyRowsCompactUsesCompactVariant(t *testing.T) {
 	if strings.Contains(html, "tc-content-auto\"") {
 		t.Error("LazyRows+Compact should NOT use tc-content-auto (should use tc-content-auto-compact)")
 	}
+
 	if !strings.Contains(html, "tc-content-auto-compact") {
 		t.Error("LazyRows+Compact should use tc-content-auto-compact class")
 	}

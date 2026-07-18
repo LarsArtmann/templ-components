@@ -6,10 +6,10 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-// ButtonType defines the visual style of a button
+// ButtonType defines the visual style of a button.
 type ButtonType string
 
-// Button variant constants
+// Button variant constants.
 const (
 	ButtonPrimary   ButtonType = "primary"
 	ButtonSecondary ButtonType = "secondary"
@@ -18,10 +18,10 @@ const (
 	ButtonLink      ButtonType = "link"
 )
 
-// ButtonSize defines the size of a button
+// ButtonSize defines the size of a button.
 type ButtonSize string
 
-// Button size constants
+// Button size constants.
 const (
 	ButtonSizeSM ButtonSize = "sm"
 	ButtonSizeMD ButtonSize = "md"
@@ -31,7 +31,7 @@ const (
 // ButtonHTMLType is the HTML type attribute for a <button> element.
 type ButtonHTMLType string
 
-// Button HTML type constants
+// Button HTML type constants.
 const (
 	ButtonHTMLButton ButtonHTMLType = "button"
 	ButtonHTMLSubmit ButtonHTMLType = "submit"
@@ -52,9 +52,10 @@ func buttonHTMLType(t ButtonHTMLType) string {
 	return utils.Lookup(buttonHTMLTypeLookup, t, string(ButtonHTMLButton))
 }
 
-// ButtonProps configures a button or link styled as a button
+// ButtonProps configures a button or link styled as a button.
 type ButtonProps struct {
 	utils.BaseProps
+
 	Text     string
 	Type     ButtonHTMLType // button, submit, reset (default: button; ignored when Href is set)
 	Href     string         // if set, renders as <a> instead of <button>
@@ -65,7 +66,7 @@ type ButtonProps struct {
 	External bool // adds target="_blank" and rel="noopener noreferrer" for links
 }
 
-// DefaultButtonProps returns sensible defaults
+// DefaultButtonProps returns sensible defaults.
 func DefaultButtonProps() ButtonProps {
 	return ButtonProps{ //nolint:exhaustruct // intentionally minimal defaults
 		Type:    ButtonHTMLButton,
@@ -92,6 +93,7 @@ func buttonVariantClasses(v ButtonType) string {
 // ButtonTypeIsValid reports whether v is one of the defined ButtonType constants.
 func ButtonTypeIsValid(v ButtonType) bool {
 	_, ok := buttonVariantLookup[v]
+
 	return ok
 }
 
@@ -106,5 +108,5 @@ func buttonSizeClasses(s ButtonSize) string {
 	return utils.Lookup(buttonSizeLookup, s, buttonSizeLookup[ButtonSizeMD])
 }
 
-// buttonBaseClass returns the shared base classes for all buttons
+// buttonBaseClass returns the shared base classes for all buttons.
 const buttonBaseClass = "inline-flex items-center justify-center rounded-md font-semibold transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 disabled:opacity-50 disabled:cursor-not-allowed cursor-pointer"

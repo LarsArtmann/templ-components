@@ -20,7 +20,9 @@ const (
 
 func TestCurrentYear(t *testing.T) {
 	t.Parallel()
+
 	got := CurrentYear()
+
 	want := time.Now().Format("2006")
 	if got != want {
 		t.Errorf("CurrentYear() = %q, want %q", got, want)
@@ -29,6 +31,7 @@ func TestCurrentYear(t *testing.T) {
 
 func TestTernary(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name      string
 		condition bool
@@ -41,6 +44,7 @@ func TestTernary(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got := Ternary(tt.condition, tt.a, tt.b)
 			if got != tt.want {
 				t.Errorf("Ternary() = %q, want %q", got, tt.want)
@@ -51,6 +55,7 @@ func TestTernary(t *testing.T) {
 
 func TestClass(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name           string
 		classes        []string
@@ -85,12 +90,14 @@ func TestClass(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got := Class(tt.classes...)
 			for _, want := range tt.wantContain {
 				if !containsWord(got, want) {
 					t.Errorf("Class(%v) = %q, want to contain %q", tt.classes, got, want)
 				}
 			}
+
 			for _, notWant := range tt.wantNotContain {
 				if containsWord(got, notWant) {
 					t.Errorf("Class(%v) = %q, should not contain %q", tt.classes, got, notWant)
@@ -117,8 +124,11 @@ func TestLookup(t *testing.T) {
 
 	t.Run("string-keyed map with struct value", func(t *testing.T) {
 		t.Parallel()
+
 		type style struct{ Class string }
+
 		m := map[string]style{"a": {"bold"}, "b": {"italic"}}
+
 		got := Lookup(m, "a", style{"fallback"})
 		if got.Class != "bold" {
 			t.Errorf("Lookup() = %+v, want bold", got)
@@ -127,7 +137,9 @@ func TestLookup(t *testing.T) {
 
 	t.Run("typed-key map with string value", func(t *testing.T) {
 		t.Parallel()
+
 		m := map[testEnum]string{testEnumA: "found"}
+
 		got := Lookup(m, testEnumA, "fallback")
 		if got != "found" {
 			t.Errorf("Lookup() = %q, want %q", got, "found")
@@ -136,7 +148,9 @@ func TestLookup(t *testing.T) {
 
 	t.Run("missing key returns fallback", func(t *testing.T) {
 		t.Parallel()
+
 		m := map[string]int{"a": 1}
+
 		got := Lookup(m, "z", 99)
 		if got != 99 {
 			t.Errorf("Lookup() = %d, want 99", got)
@@ -145,7 +159,9 @@ func TestLookup(t *testing.T) {
 
 	t.Run("empty map returns fallback", func(t *testing.T) {
 		t.Parallel()
+
 		m := map[string]string{}
+
 		got := Lookup(m, "anything", "default")
 		if got != "default" {
 			t.Errorf("Lookup() = %q, want %q", got, "default")
@@ -157,6 +173,7 @@ func TestRender(t *testing.T) {
 	t.Parallel()
 	t.Run("renders component to string", func(t *testing.T) {
 		t.Parallel()
+
 		c := templ.Raw("<div>hello</div>")
 		got := Render(t, c)
 		AssertContains(t, got, "<div>hello</div>")
@@ -202,19 +219,23 @@ func TestBasePropsImplementsComponentProps(t *testing.T) {
 
 	// Verify GetBaseProps returns the correct values.
 	bp := &BaseProps{ID: "test-id", Class: "test-class", AriaLabel: "test-label"}
+
 	got := bp.GetBaseProps()
 	if got.ID != "test-id" {
 		t.Errorf("GetBaseProps().ID = %q, want %q", got.ID, "test-id")
 	}
+
 	if got.Class != "test-class" {
 		t.Errorf("GetBaseProps().Class = %q, want %q", got.Class, "test-class")
 	}
+
 	if got.AriaLabel != "test-label" {
 		t.Errorf("GetBaseProps().AriaLabel = %q, want %q", got.AriaLabel, "test-label")
 	}
 
 	// Verify SetBaseProps updates the struct.
 	bp.SetBaseProps(BaseProps{ID: "new-id"})
+
 	if bp.ID != "new-id" {
 		t.Errorf("after SetBaseProps, ID = %q, want %q", bp.ID, "new-id")
 	}
@@ -227,6 +248,7 @@ func TestComponentPropsInterfacePromoted(t *testing.T) {
 
 	type testComponentProps struct {
 		BaseProps
+
 		Text string
 	}
 
@@ -240,6 +262,7 @@ func TestComponentPropsInterfacePromoted(t *testing.T) {
 
 	// SetBaseProps updates the embedded BaseProps.
 	cp.SetBaseProps(BaseProps{Class: "updated"})
+
 	updated := cp.GetBaseProps()
 	if updated.Class != "updated" {
 		t.Errorf("expected class %q, got %q", "updated", updated.Class)
@@ -248,6 +271,7 @@ func TestComponentPropsInterfacePromoted(t *testing.T) {
 
 func TestClassConcurrentAccess(t *testing.T) {
 	t.Parallel()
+
 	var wg sync.WaitGroup
 	for i := range 100 {
 		wg.Go(func() {
@@ -257,6 +281,7 @@ func TestClassConcurrentAccess(t *testing.T) {
 			}
 		})
 	}
+
 	wg.Wait()
 }
 
@@ -264,6 +289,7 @@ func TestValidateID(t *testing.T) {
 	t.Parallel()
 	t.Run("empty ID returns error", func(t *testing.T) {
 		t.Parallel()
+
 		err := ValidateID("modal", "")
 		if err == nil {
 			t.Error("expected error for empty ID")
@@ -271,6 +297,7 @@ func TestValidateID(t *testing.T) {
 	})
 	t.Run("non-empty ID returns nil", func(t *testing.T) {
 		t.Parallel()
+
 		err := ValidateID("modal", "my-modal")
 		if err != nil {
 			t.Errorf("unexpected error: %v", err)
@@ -282,6 +309,7 @@ func TestEnsureID(t *testing.T) {
 	t.Parallel()
 	t.Run("returns existing ID unchanged", func(t *testing.T) {
 		t.Parallel()
+
 		got := EnsureID("modal", "my-modal")
 		if got != "my-modal" {
 			t.Errorf("EnsureID() = %q, want %q", got, "my-modal")
@@ -289,17 +317,21 @@ func TestEnsureID(t *testing.T) {
 	})
 	t.Run("generates prefixed ID when empty", func(t *testing.T) {
 		t.Parallel()
+
 		got := EnsureID("drawer", "")
 		if !strings.HasPrefix(got, "tc-drawer-") {
 			t.Errorf("EnsureID() = %q, want prefix %q", got, "tc-drawer-")
 		}
+
 		if len(got) <= len("tc-drawer-") {
 			t.Errorf("EnsureID() = %q, expected non-empty hex suffix", got)
 		}
 	})
 	t.Run("generates unique IDs", func(t *testing.T) {
 		t.Parallel()
+
 		a := EnsureID("modal", "")
+
 		b := EnsureID("modal", "")
 		if a == b {
 			t.Errorf("EnsureID() generated duplicate IDs: %q == %q", a, b)
@@ -309,16 +341,20 @@ func TestEnsureID(t *testing.T) {
 
 func TestDismissScript(t *testing.T) {
 	t.Parallel()
+
 	s := DismissScript()
 	if s == "" {
 		t.Fatal("DismissScript() returned empty string")
 	}
+
 	if !strings.Contains(s, "tcDismissAttached") {
 		t.Error("DismissScript() must contain the global guard variable")
 	}
+
 	if !strings.Contains(s, "data-dismiss") {
 		t.Error("DismissScript() must contain the data-dismiss selector")
 	}
+
 	if !strings.Contains(s, "role=\"alert\"") {
 		t.Error("DismissScript() must target role=alert elements")
 	}
@@ -328,6 +364,7 @@ func TestRenderAll(t *testing.T) {
 	t.Parallel()
 	t.Run("renders multiple components", func(t *testing.T) {
 		t.Parallel()
+
 		got := RenderAll(t, testComponent("first"), testComponent("second"))
 		if !strings.Contains(got, "first") || !strings.Contains(got, "second") {
 			t.Errorf("RenderAll() = %q, expected both 'first' and 'second'", got)
@@ -335,6 +372,7 @@ func TestRenderAll(t *testing.T) {
 	})
 	t.Run("empty input returns empty string", func(t *testing.T) {
 		t.Parallel()
+
 		got := RenderAll(t)
 		if got != "" {
 			t.Errorf("RenderAll() with no components = %q, want empty", got)
@@ -345,6 +383,7 @@ func TestRenderAll(t *testing.T) {
 func testComponent(content string) templ.Component {
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 		_, err := io.WriteString(w, "<div>"+content+"</div>")
+
 		return err //nolint:wrapcheck // test helper, direct passthrough
 	})
 }

@@ -121,6 +121,7 @@ func TestContextMapEdgeCases(t *testing.T) {
 
 	t.Run("nil map returns nil", func(t *testing.T) {
 		t.Parallel()
+
 		if ContextMap(nil) != nil {
 			t.Error("expected nil for nil map")
 		}
@@ -128,6 +129,7 @@ func TestContextMapEdgeCases(t *testing.T) {
 
 	t.Run("empty map returns nil", func(t *testing.T) {
 		t.Parallel()
+
 		if ContextMap(map[string]string{}) != nil {
 			t.Error("expected nil for empty map")
 		}
@@ -135,6 +137,7 @@ func TestContextMapEdgeCases(t *testing.T) {
 
 	t.Run("preserves all pairs", func(t *testing.T) {
 		t.Parallel()
+
 		result := ContextMap(map[string]string{"host": "db.internal", "port": "5432"})
 		if len(result) != 2 {
 			t.Fatalf("expected 2 pairs, got %d", len(result))
@@ -147,6 +150,7 @@ func TestExtractCauseChainEdgeCases(t *testing.T) {
 
 	t.Run("nil error returns nil", func(t *testing.T) {
 		t.Parallel()
+
 		if ExtractCauseChain(nil, 5) != nil {
 			t.Error("expected nil for nil error")
 		}
@@ -154,6 +158,7 @@ func TestExtractCauseChainEdgeCases(t *testing.T) {
 
 	t.Run("zero depth returns nil", func(t *testing.T) {
 		t.Parallel()
+
 		if ExtractCauseChain(&testError{msg: "err"}, 0) != nil {
 			t.Error("expected nil for zero depth")
 		}
@@ -161,6 +166,7 @@ func TestExtractCauseChainEdgeCases(t *testing.T) {
 
 	t.Run("no unwrap returns empty", func(t *testing.T) {
 		t.Parallel()
+
 		if len(ExtractCauseChain(&testError{msg: "leaf"}, 5)) != 0 {
 			t.Error("expected empty for leaf error")
 		}
@@ -168,13 +174,16 @@ func TestExtractCauseChainEdgeCases(t *testing.T) {
 
 	t.Run("follows chain", func(t *testing.T) {
 		t.Parallel()
+
 		inner := &testError{msg: "inner"}
 		middle := &testError{msg: "middle", cause: inner}
 		outer := &testError{msg: "outer", cause: middle}
+
 		result := ExtractCauseChain(outer, 10)
 		if len(result) != 2 {
 			t.Fatalf("expected 2 items, got %d", len(result))
 		}
+
 		if result[0].Message != "middle" {
 			t.Errorf("first cause = %q, want %q", result[0].Message, "middle")
 		}
@@ -182,8 +191,10 @@ func TestExtractCauseChainEdgeCases(t *testing.T) {
 
 	t.Run("extracts code from coded errors", func(t *testing.T) {
 		t.Parallel()
+
 		inner := &testCodedError{msg: "coded", code: "db.timeout"}
 		outer := &testError{msg: "outer", cause: inner}
+
 		result := ExtractCauseChain(outer, 10)
 		if result[0].Code != "db.timeout" {
 			t.Errorf("code = %q, want %q", result[0].Code, "db.timeout")
@@ -192,6 +203,7 @@ func TestExtractCauseChainEdgeCases(t *testing.T) {
 
 	t.Run("errors.Join siblings are flattened into the chain", func(t *testing.T) {
 		t.Parallel()
+
 		sibling1 := &testError{msg: "sibling-1"}
 		sibling2 := &testCodedError{msg: "sibling-2", code: "net.timeout"}
 		joined := joinErrorOf(sibling1, sibling2)
@@ -200,9 +212,11 @@ func TestExtractCauseChainEdgeCases(t *testing.T) {
 		if len(result) != 2 {
 			t.Fatalf("expected 2 siblings, got %d: %+v", len(result), result)
 		}
+
 		if result[0].Message != "sibling-1" {
 			t.Errorf("result[0] = %q, want %q", result[0].Message, "sibling-1")
 		}
+
 		if result[1].Code != "net.timeout" {
 			t.Errorf("result[1].Code = %q, want %q", result[1].Code, "net.timeout")
 		}
@@ -230,6 +244,7 @@ func TestExtractCauseChainEdgeCases(t *testing.T) {
 
 	t.Run("errors.Join siblings respect maxDepth", func(t *testing.T) {
 		t.Parallel()
+
 		siblings := []*testError{
 			{msg: "a"}, {msg: "b"}, {msg: "c"}, {msg: "d"},
 		}
@@ -247,6 +262,7 @@ func TestFamilyStatusCodeEdgeCases(t *testing.T) {
 
 	t.Run("known families map correctly", func(t *testing.T) {
 		t.Parallel()
+
 		expected := map[Family]int{
 			FamilyRejection: 400, FamilyConflict: 409, FamilyTransient: 503,
 			FamilyCorruption: 500, FamilyInfrastructure: 503,
@@ -260,6 +276,7 @@ func TestFamilyStatusCodeEdgeCases(t *testing.T) {
 
 	t.Run("unknown family returns 500", func(t *testing.T) {
 		t.Parallel()
+
 		if got := FamilyStatusCode("unknown"); got != 500 {
 			t.Errorf("FamilyStatusCode(unknown) = %d, want 500", got)
 		}
@@ -296,6 +313,7 @@ func (j *joinError) Error() string {
 	for i, s := range j.siblings {
 		msgs[i] = s.Error()
 	}
+
 	return "joined: " + strings.Join(msgs, "; ")
 }
 
@@ -310,5 +328,6 @@ func toAny(errs []*testError) []error {
 	for i, e := range errs {
 		out[i] = e
 	}
+
 	return out
 }

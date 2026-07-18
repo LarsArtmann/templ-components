@@ -23,6 +23,7 @@ func TestConstructorStatusCodes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if tt.wantCode > 0 && tt.props.StatusCode != tt.wantCode {
 				t.Errorf("StatusCode = %d, want %d", tt.props.StatusCode, tt.wantCode)
 			}

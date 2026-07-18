@@ -345,6 +345,7 @@ func TestLabelUserSeesFieldLabels(t *testing.T) {
 
 func TestFieldErrorUserSeesValidationFeedback(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name    string
 		fieldID string
@@ -398,6 +399,7 @@ func TestSelectEdgeCases(t *testing.T) {
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			output := utils.Render(t, Select(tt.props))
 			for _, want := range tt.contains {
 				utils.AssertContains(t, output, want)
@@ -442,6 +444,7 @@ func TestCheckboxEdgeCases(t *testing.T) {
 	} {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			output := utils.Render(t, Checkbox(tt.props))
 			for _, want := range tt.contains {
 				utils.AssertContains(t, output, want)
@@ -452,6 +455,7 @@ func TestCheckboxEdgeCases(t *testing.T) {
 
 func TestLabelEdgeCases(t *testing.T) {
 	t.Parallel()
+
 	for _, tt := range []struct {
 		name        string
 		id          string

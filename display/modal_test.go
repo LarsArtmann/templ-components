@@ -12,6 +12,7 @@ func TestModalRender(t *testing.T) {
 	t.Parallel()
 	t.Run("closed modal renders dialog element", func(t *testing.T) {
 		t.Parallel()
+
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
 				ID:    "test-modal",
@@ -32,6 +33,7 @@ func TestModalRender(t *testing.T) {
 
 	t.Run("open modal has data-tc-open attribute", func(t *testing.T) {
 		t.Parallel()
+
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
 				ID: "open-modal",
@@ -56,6 +58,7 @@ func TestModalRender(t *testing.T) {
 		for size, want := range sizes {
 			t.Run(string(size), func(t *testing.T) {
 				t.Parallel()
+
 				props := ModalProps{
 					BaseProps: utils.BaseProps{
 						ID: "sz-modal",
@@ -72,6 +75,7 @@ func TestModalRender(t *testing.T) {
 
 	t.Run("special chars in ID are JS-escaped", func(t *testing.T) {
 		t.Parallel()
+
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
 				ID:    "modal-with-'quotes'",
@@ -87,6 +91,7 @@ func TestModalRender(t *testing.T) {
 
 	t.Run("JS uses native showModal API", func(t *testing.T) {
 		t.Parallel()
+
 		props := ModalProps{
 			BaseProps: utils.BaseProps{
 				ID:    "dialog-modal",
@@ -109,6 +114,7 @@ func TestModalRender(t *testing.T) {
 
 	t.Run("no title omits aria-labelledby (no dangling ref)", func(t *testing.T) {
 		t.Parallel()
+
 		props := ModalProps{
 			BaseProps: utils.BaseProps{ID: "notitle-modal"},
 			Title:     "",
@@ -120,6 +126,7 @@ func TestModalRender(t *testing.T) {
 
 	t.Run("with title emits aria-labelledby", func(t *testing.T) {
 		t.Parallel()
+
 		props := ModalProps{
 			BaseProps: utils.BaseProps{ID: "titled-modal"},
 			Title:     "Titled",
@@ -131,6 +138,7 @@ func TestModalRender(t *testing.T) {
 
 	t.Run("closed dialog has no data-tc-open", func(t *testing.T) {
 		t.Parallel()
+
 		props := ModalProps{
 			BaseProps: utils.BaseProps{ID: "closed-modal"},
 			Title:     "Closed",
@@ -142,6 +150,7 @@ func TestModalRender(t *testing.T) {
 
 	t.Run("open dialog has data-tc-open for auto-open", func(t *testing.T) {
 		t.Parallel()
+
 		props := ModalProps{
 			BaseProps: utils.BaseProps{ID: "open-modal-a11y"},
 			Title:     "Open",

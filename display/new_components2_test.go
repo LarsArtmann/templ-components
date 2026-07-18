@@ -12,6 +12,7 @@ import (
 
 func TestDefaultHoverCardProps(t *testing.T) {
 	t.Parallel()
+
 	p := DefaultHoverCardProps()
 	if p.Position != HoverCardPositionBottom {
 		t.Error("expected default position Bottom")
@@ -20,11 +21,13 @@ func TestDefaultHoverCardProps(t *testing.T) {
 
 func TestHoverCardPositionIsValid(t *testing.T) {
 	t.Parallel()
+
 	for _, pos := range []HoverCardPosition{HoverCardPositionTop, HoverCardPositionBottom, HoverCardPositionStart, HoverCardPositionEnd} {
 		if !HoverCardPositionIsValid(pos) {
 			t.Errorf("expected %q to be valid", pos)
 		}
 	}
+
 	if HoverCardPositionIsValid(HoverCardPosition("invalid")) {
 		t.Error("expected invalid to be invalid")
 	}
@@ -106,6 +109,7 @@ func TestHoverCardEdgeCases(t *testing.T) {
 
 func TestDefaultContextMenuProps(t *testing.T) {
 	t.Parallel()
+
 	_ = DefaultContextMenuProps()
 }
 
@@ -172,6 +176,7 @@ func TestContextMenuEdgeCases(t *testing.T) {
 
 func TestDefaultCarouselProps(t *testing.T) {
 	t.Parallel()
+
 	p := DefaultCarouselProps()
 	if !p.ShowArrows {
 		t.Error("expected ShowArrows=true by default")

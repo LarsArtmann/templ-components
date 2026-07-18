@@ -37,6 +37,7 @@ func TestNavUserCanNavigateBetweenPages(t *testing.T) {
 				CurrentPath: tt.currentPath,
 			}))
 			utils.AssertContains(t, output, tt.want)
+
 			if tt.currentPath == "/" {
 				utils.AssertContains(t, output, navItemAbout)
 			}
@@ -82,6 +83,7 @@ func TestNavLinkUserSeesLinkStates(t *testing.T) {
 
 	t.Run("user sees active link for current page", func(t *testing.T) {
 		t.Parallel()
+
 		props := NavLinkProps{Href: "/dashboard", Text: "Dashboard"}
 		output := utils.Render(t, NavLink(props, "/dashboard"))
 		utils.AssertContains(t, output, "Dashboard")
@@ -90,6 +92,7 @@ func TestNavLinkUserSeesLinkStates(t *testing.T) {
 
 	t.Run("user sees external link with security attributes", func(t *testing.T) {
 		t.Parallel()
+
 		props := NavLinkProps{Href: navHrefExternal, Text: navItemExternal, External: true}
 		output := utils.Render(t, NavLink(props, ""))
 		utils.AssertContains(t, output, `target="_blank"`)
@@ -108,6 +111,7 @@ func breadcrumbHomeAndCurrent() []BreadcrumbItem {
 
 func renderBreadcrumbs(t *testing.T, items []BreadcrumbItem) string {
 	t.Helper()
+
 	return utils.Render(t, Breadcrumbs(BreadcrumbsProps{Items: items}))
 }
 
@@ -162,10 +166,12 @@ func TestBreadcrumbsUserCanSeeWhereTheyAre(t *testing.T) {
 
 func renderDefaultPagination(t *testing.T, currentPage, totalPages uint) string {
 	t.Helper()
+
 	props := DefaultPaginationProps()
 	props.CurrentPage = currentPage
 	props.TotalPages = totalPages
 	props.BaseURL = testItemsPath
+
 	return utils.Render(t, Pagination(props))
 }
 
@@ -198,6 +204,7 @@ func TestPaginationUserCanBrowsePages(t *testing.T) {
 
 	t.Run("user can customize query parameter name", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultPaginationProps()
 		props.CurrentPage = 1
 		props.TotalPages = 3

@@ -85,5 +85,6 @@ func feedbackIcon(t FeedbackType) icons.Name {
 // four defined constants (Success, Error, Warning, Info).
 func FeedbackTypeIsValid(t FeedbackType) bool {
 	_, ok := feedbackStyleMap[t]
+
 	return ok
 }

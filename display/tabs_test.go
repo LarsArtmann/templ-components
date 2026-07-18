@@ -82,6 +82,7 @@ func TestTabsRender(t *testing.T) {
 
 	t.Run("default props has TabsDefault variant", func(t *testing.T) {
 		t.Parallel()
+
 		props := DefaultTabsProps()
 		if props.Variant != TabsDefault {
 			t.Errorf("DefaultTabsProps().Variant = %q, want %q", props.Variant, TabsDefault)

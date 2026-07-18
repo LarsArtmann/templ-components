@@ -11,6 +11,7 @@ func TestBaseFullCoverage(t *testing.T) {
 	t.Parallel()
 	t.Run("with all props", func(t *testing.T) {
 		t.Parallel()
+
 		headContent := templ.Raw(`<meta name="custom" content="test">`)
 		footer := templ.Raw(`<script>console.log("footer")</script>`)
 		output := utils.Render(t, Base(PageProps{

@@ -3,6 +3,7 @@ package forms
 // ToggleSizeIsValid reports whether v is one of the defined ToggleSize constants.
 func ToggleSizeIsValid(v ToggleSize) bool {
 	_, ok := toggleSizeMap[v]
+
 	return ok
 }
 

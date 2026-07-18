@@ -28,6 +28,7 @@ func TestThemeToggleRender(t *testing.T) {
 
 func TestBaseRender(t *testing.T) {
 	t.Parallel()
+
 	props := PageProps{
 		Title:          testPage,
 		Description:    "",
@@ -54,6 +55,7 @@ func TestBaseRender(t *testing.T) {
 
 func TestBaseRenderFullProps(t *testing.T) {
 	t.Parallel()
+
 	props := PageProps{
 		Title:               "Full Page",
 		Description:         "A test page",
@@ -93,6 +95,7 @@ func TestMinimalRender(t *testing.T) {
 
 func TestBaseWithFooter(t *testing.T) {
 	t.Parallel()
+
 	props := PageProps{
 		Title:     testPage,
 		BodyClass: "bg-white",
@@ -109,6 +112,7 @@ func footerTestComponent() templ.Component {
 
 func TestDefaultMinimalProps(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultMinimalProps()
 	if props.Locale != "en" {
 		t.Errorf("DefaultMinimalProps().Locale = %q, want %q", props.Locale, "en")

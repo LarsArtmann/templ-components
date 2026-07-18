@@ -14,6 +14,7 @@ func TestPaginationEllipsis(t *testing.T) {
 	t.Parallel()
 	t.Run("ellipsis at start and end", func(t *testing.T) {
 		t.Parallel()
+
 		for _, tc := range []struct {
 			name        string
 			currentPage uint
@@ -38,6 +39,7 @@ func TestPaginationEllipsis(t *testing.T) {
 
 	t.Run("rel attributes on arrows", func(t *testing.T) {
 		t.Parallel()
+
 		for _, tc := range []struct {
 			name        string
 			currentPage uint
@@ -93,6 +95,7 @@ func TestPaginationEllipsis(t *testing.T) {
 
 	t.Run("boundary pages disable arrows", func(t *testing.T) {
 		t.Parallel()
+
 		for _, tc := range []struct {
 			name        string
 			currentPage uint
@@ -256,10 +259,12 @@ func TestFooterMinimal(t *testing.T) {
 
 func TestDefaultPaginationProps(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultPaginationProps()
 	if props.QueryParam != "page" {
 		t.Errorf("QueryParam = %q, want %q", props.QueryParam, "page")
 	}
+
 	if props.MaxVisible != 5 {
 		t.Errorf("MaxVisible = %d, want 5", props.MaxVisible)
 	}

@@ -43,6 +43,7 @@ func assertInDir(t *testing.T, dir, name, got string) {
 	// Guard against path traversal: name must be a base filename, not a path.
 	if strings.ContainsAny(name, `/\`) || filepath.Clean(name) != name {
 		t.Fatalf("golden: invalid name %q (must not contain path separators or ..)", name)
+
 		return
 	}
 
@@ -54,10 +55,13 @@ func assertInDir(t *testing.T, dir, name, got string) {
 		if err := os.MkdirAll(filepath.Dir(goldenPath), 0o750); err != nil {
 			t.Fatalf("golden: create golden dir: %v", err)
 		}
+
 		if err := os.WriteFile(goldenPath, []byte(normalized), 0o600); err != nil {
 			t.Fatalf("golden: write %s: %v", goldenPath, err)
 		}
+
 		t.Logf("golden: updated %s", goldenPath)
+
 		return
 	}
 
@@ -86,8 +90,10 @@ func normalizeClasses(html string) string {
 		if len(sub) < 2 {
 			return match
 		}
+
 		classes := strings.Fields(sub[1])
 		sort.Strings(classes)
+
 		return `class="` + strings.Join(classes, " ") + `"`
 	})
 }
@@ -100,8 +106,10 @@ func diff(want, got string) string {
 	maxLen := max(len(gotLines), len(wantLines))
 
 	var b strings.Builder
+
 	for i := range maxLen {
 		w := lineAt(wantLines, i)
+
 		g := lineAt(gotLines, i)
 		if w != g {
 			b.WriteString("--- ")
@@ -111,6 +119,7 @@ func diff(want, got string) string {
 			b.WriteString("\n")
 		}
 	}
+
 	return b.String()
 }
 
@@ -118,5 +127,6 @@ func lineAt(lines []string, i int) string {
 	if i < len(lines) {
 		return lines[i]
 	}
+
 	return ""
 }

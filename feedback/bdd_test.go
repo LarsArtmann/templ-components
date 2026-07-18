@@ -11,6 +11,7 @@ import (
 
 func renderLoadingOverlayWithProgress(t *testing.T, message string, progress int) string {
 	t.Helper()
+
 	return utils.Render(t, LoadingOverlay(LoadingOverlayProps{
 		Message:      message,
 		ShowProgress: true,
@@ -168,6 +169,7 @@ func TestProgressBarUserSeesCompletion(t *testing.T) {
 
 	t.Run("progress bar clamps overflow to 100 percent", func(t *testing.T) {
 		t.Parallel()
+
 		for _, tt := range []struct {
 			name    string
 			current int
@@ -185,6 +187,7 @@ func TestProgressBarUserSeesCompletion(t *testing.T) {
 				}))
 				utils.AssertContains(t, output, "100%")
 				utils.AssertNotContains(t, output, "150%")
+
 				if tt.extra != "" {
 					utils.AssertContains(t, output, tt.extra)
 				}
@@ -227,6 +230,7 @@ func TestSkeletonCardGridUserSeesLoadingState(t *testing.T) {
 
 	t.Run("zero count falls back to single placeholder", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, SkeletonCardGrid(0))
 		if got := strings.Count(output, "h-48"); got != 1 {
 			t.Errorf("expected 1 fallback card, got %d", got)
