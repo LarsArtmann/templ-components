@@ -825,7 +825,10 @@
         <div class="hero">
           <div class="hero-badge">Pareto plan</div>
           <h1>templ-components — next steps sorted by impact vs effort</h1>
-          <p class="hero-subtitle">Focus on the 20% of work that drives 80% of the value, then tackle the remaining architecture bets.</p>
+          <p class="hero-subtitle">
+            Focus on the 20% of work that drives 80% of the value, then tackle the remaining
+            architecture bets.
+          </p>
         </div>
 
         <nav class="toc">
@@ -861,15 +864,25 @@
         <h2 id="tiers"><span class="num">01</span>Pareto tiers</h2>
         <div class="card card-solution">
           <h4>1% — immediate wins (do first)</h4>
-          <p>Keep the docs-drift guard green, remove deprecated aliases, add a docs-health CI check, and land external listings. These are low effort and prevent future rot.</p>
+          <p>
+            Keep the docs-drift guard green, remove deprecated aliases, add a docs-health CI check,
+            and land external listings. These are low effort and prevent future rot.
+          </p>
         </div>
         <div class="card card-warning">
           <h4>4% — high-leverage architecture</h4>
-          <p>Add Validate() methods to the top props structs, self-host HTMX by default, and add compound-component patterns for Modal/Drawer. These change the API surface and improve consumer trust.</p>
+          <p>
+            Add Validate() methods to the top props structs, self-host HTMX by default, and add
+            compound-component patterns for Modal/Drawer. These change the API surface and improve
+            consumer trust.
+          </p>
         </div>
         <div class="card">
           <h4>20% — strategic bets</h4>
-          <p>Semantic token layer, headless/unstyled variants, CLI tool, E2E tests, and visual regression. These are larger investments that shape the library's long-term positioning.</p>
+          <p>
+            Semantic token layer, headless/unstyled variants, CLI tool, E2E tests, and visual
+            regression. These are larger investments that shape the library's long-term positioning.
+          </p>
         </div>
 
         <h2 id="tasks"><span class="num">02</span>Task table</h2>
@@ -1033,13 +1046,14 @@
           <span class="node">Compound components</span>
         </div>
         <div class="callout callout-warning">
-          <strong>Order matters</strong> Validate methods and self-host HTMX are consumer-facing changes that should land before the larger compound-component and semantic-token redesigns.
+          <strong>Order matters</strong> Validate methods and self-host HTMX are consumer-facing
+          changes that should land before the larger compound-component and semantic-token
+          redesigns.
         </div>
 
         <footer class="footer">
           Generated 2026-07-16 &middot; Impact scores are relative (impact 1-3 / effort 1-3)
         </footer>
-
       </main>
     </div>
 
