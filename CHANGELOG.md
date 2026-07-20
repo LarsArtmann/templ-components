@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`docs/recipes/horizontal-filter-bar.md` — two HTMX filter-bar footguns documented**, plus a production-grade pattern. Both bugs are silent (the filter bar looks correct until a user combines filters in a specific order) and were hit in production by DiscordSync (the heaviest `templ-components` consumer): (1) **Silent query-param drop** — HTMX serializes only controls that exist in the form, so a param your handler reads but that has no form control (e.g. `author_id` arriving via a row-click link rather than a visible `<select>`) is silently dropped the moment the user changes _any_ filter; fix is a hidden `<input>`. (2) **Checkbox trigger bug** — the natural `hx-trigger="change"` (or `change from:find select`) fires only for `<select>` changes, so a `filterCheckbox` toggle does nothing; fix is `change from:find select, change from:find input[type=checkbox]`. The new "Production-grade pattern" section shows the hardened `filterBar` shape (robust `hx-trigger`, `hx-disabled-elt` to prevent stacking changes on a pending request, a Reset link, and an `htmx-indicator` `Spinner`). Footgun #1 is fundamentally **not enforceable in a library component** — only the consumer knows which params their handler reads — so this is a doc fix rather than a new `forms.FilterForm` component (which would also duplicate the existing `forms.FilterDropdown` and contradict the recipe's "thin custom helper" guidance).
+
 ## [0.18.1] — 2026-07-18
 
 ### Fixed
