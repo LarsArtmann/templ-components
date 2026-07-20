@@ -17,10 +17,10 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `forms`      | 21            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, sliders, ratings, file inputs, date pickers, comboboxes, filter dropdowns, tags input, calendar, validation                                                                                  |
 | `htmx`       | 8             | HTMX integration: loading indicators, error handling, helpers, View Transitions                                                                                                                                                                                      |
 | `icons`      | 3 (102 icons) | SVG icon system with typed name constants, RTL mirroring                                                                                                                                                                                                             |
-| `layout`     | 6             | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags                                                                                                                                                                                          |
+| `layout`     | 10            | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                                                                                           |
 | `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                     |
 
-**Totals:** 94 templ components, 102 icon names, 37 typed enums (37 with `IsValid()`), 82 generated `*_templ.go` files, ~30,000 lines of Go/templ source
+**Totals:** 98 templ components, 102 icon names, 43 typed enums (43 with `IsValid()`), 87 generated `*_templ.go` files, ~30,000 lines of Go/templ source
 
 ---
 
@@ -364,19 +364,19 @@ _(None currently)_
 
 ### Components
 
-| Component          | Status           | Description               | Key Features                                                                                                          |
-| ------------------ | ---------------- | ------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `Nav`              | FULLY_FUNCTIONAL | Responsive navigation bar | Brand, links, right items, sticky option, mobile menu                                                                 |
-| `SimpleNav`        | FULLY_FUNCTIONAL | Simplified nav            | Text brand, sticky by default                                                                                         |
-| `NavLink`          | FULLY_FUNCTIONAL | Desktop nav link          | Active state styling via currentPath                                                                                  |
-| `MobileNavLink`    | FULLY_FUNCTIONAL | Mobile nav link           | Border-left active indicator                                                                                          |
-| `Breadcrumbs`      | FULLY_FUNCTIONAL | Breadcrumb navigation     | Chevron separators, active state, optional custom `Separator`, JSON-LD structured data, `rel` support                 |
-| `Pagination`       | FULLY_FUNCTIONAL | Page navigation           | Mobile/desktop layouts, prev/next arrows, page range, query param, `rel="prev"/"next"/"canonical"` for SEO            |
-| `MobileMenu`       | FULLY_FUNCTIONAL | Collapsible mobile menu   | JS toggle, nonce-based CSP                                                                                            |
-| `MobileMenuToggle` | FULLY_FUNCTIONAL | Hamburger button          | Conditional visibility                                                                                                |
-| `Footer`           | FULLY_FUNCTIONAL | Simple footer             | `FooterProps` with `BaseProps`, copyright with dynamic year                                                           |
-| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav      | Brand/footer slots, icons, active-route detection                                                                     |
-| `LoadMore`         | FULLY_FUNCTIONAL | Cursor pagination button  | hx-get + hx-swap outerHTML, cursor as query param, centered layout, optional `InfiniteScroll` (hx-trigger="revealed") |
+| Component          | Status           | Description                 | Key Features                                                                                                                                                                                                     |
+| ------------------ | ---------------- | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Nav`              | FULLY_FUNCTIONAL | Responsive navigation bar   | Brand, links, right items, sticky option, mobile menu                                                                                                                                                            |
+| `SimpleNav`        | FULLY_FUNCTIONAL | Simplified nav              | Text brand, sticky by default                                                                                                                                                                                    |
+| `NavLink`          | FULLY_FUNCTIONAL | Desktop nav link            | Active state styling via currentPath                                                                                                                                                                             |
+| `MobileNavLink`    | FULLY_FUNCTIONAL | Mobile nav link             | Border-left active indicator                                                                                                                                                                                     |
+| `Breadcrumbs`      | FULLY_FUNCTIONAL | Breadcrumb navigation       | Chevron separators, active state, optional custom `Separator`, JSON-LD structured data, `rel` support                                                                                                            |
+| `Pagination`       | FULLY_FUNCTIONAL | Page navigation             | Mobile/desktop layouts, prev/next arrows, page range, query param, `rel="prev"/"next"/"canonical"` for SEO                                                                                                       |
+| `MobileMenu`       | FULLY_FUNCTIONAL | Collapsible mobile menu     | JS toggle, nonce-based CSP                                                                                                                                                                                       |
+| `MobileMenuToggle` | FULLY_FUNCTIONAL | Hamburger button            | Conditional visibility                                                                                                                                                                                           |
+| `Footer`           | FULLY_FUNCTIONAL | Footer (legacy + multi-col) | `FooterProps` with `BaseProps`; legacy single-row when `Columns` empty; multi-column grid (`grid-cols-2 md:grid-cols-4`) with `Columns []FooterColumn` + optional brand + `BottomBar` slot. Backward compatible. |
+| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav        | Brand/footer slots, icons, active-route detection                                                                                                                                                                |
+| `LoadMore`         | FULLY_FUNCTIONAL | Cursor pagination button    | hx-get + hx-swap outerHTML, cursor as query param, centered layout, optional `InfiniteScroll` (hx-trigger="revealed")                                                                                            |
 
 ### Known Issues
 

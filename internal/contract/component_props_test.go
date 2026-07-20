@@ -12,6 +12,7 @@ import (
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/htmx"
+	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
 	"github.com/larsartmann/templ-components/utils"
 )
@@ -83,6 +84,12 @@ func componentTypes() []any {
 		feedback.ToastProps{},
 		feedback.ProgressBarProps{},
 		feedback.StepIndicatorProps{},
+
+		// layout (4 new body-layout primitives; Base/Minimal/PageProps excluded per AGENTS.md)
+		layout.ContainerProps{},
+		layout.AppShellProps{},
+		layout.StackProps{},
+		layout.SplitProps{},
 
 		// navigation (8)
 		navigation.NavProps{},

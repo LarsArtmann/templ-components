@@ -1,0 +1,55 @@
+package layout
+
+import "github.com/larsartmann/templ-components/utils"
+
+// containerPadClass is the responsive horizontal padding applied by Container
+// when Pad is true. Matches the convention used across the demo and is the
+// single source of truth for "page gutter" width.
+const containerPadClass = "px-4 sm:px-6 lg:px-8"
+
+// Container renders a centered max-width wrapper with responsive horizontal
+// padding. Use it as the single source of truth for page content width and
+// page gutter — replacing the hand-rolled
+// `max-w-6xl mx-auto px-4 sm:px-6 lg:px-8` snippet repeated in every consumer.
+//
+// # Defaults
+//
+// Width=ContainerWidthLG (max-w-7xl), Pad=true (px-4 sm:px-6 lg:px-8).
+//
+// # Examples
+//
+// Default dashboard width:
+//
+//	@layout.Container(layout.DefaultContainerProps()) {
+//	   @display.Grid(display.DefaultGridProps()) { ... }
+//	}
+//
+// Long-form article:
+//
+//	@layout.Container(layout.ContainerProps{Width: layout.ContainerWidthProse}) {
+//	   { articleBody }
+//	}
+//
+// Edge-to-edge map or chart (consumer manages padding):
+//
+//	@layout.Container(layout.ContainerProps{Width: layout.ContainerWidthFull, Pad: false}) {
+//	   { mapComponent }
+//	}
+templ Container(props ContainerProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class(
+			"mx-auto w-full " + containerWidthClass(props.Width),
+			utils.Ternary(props.Pad, containerPadClass, ""),
+			props.Class,
+		) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ children... }
+	</div>
+}

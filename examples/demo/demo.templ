@@ -10,7 +10,7 @@ import (
 )
 
 const (
-	componentCount = "97"
+	componentCount = "98"
 	iconCount      = "102"
 	packageCount   = "9"
 )
@@ -35,15 +35,18 @@ templ demoContent() {
 	<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 		@demoHero()
 		@demoStickyNav()
-		<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8" id="demo-sections">
-			@displayDemo()
-			@feedbackDemo()
-			@formsDemoSection()
-			@navigationDemo()
-			@htmxDemo()
-			@errorpageDemo()
-			@iconsDemo()
-		</div>
+		@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-8"}, Pad: true}) {
+			<div id="demo-sections">
+				@layoutDemo()
+				@displayDemo()
+				@feedbackDemo()
+				@formsDemoSection()
+				@navigationDemo()
+				@htmxDemo()
+				@errorpageDemo()
+				@iconsDemo()
+			</div>
+		}
 		@demoFilterScript()
 	</div>
 }

@@ -41,6 +41,60 @@ func formMethod(m FormMethod) string {
 	return string(m)
 }
 
+// FormLayout is a typed enum controlling the visual layout of a Form. Unknown
+// values fall back to FormLayoutStack. See ADR-0016 for when to use each.
+type FormLayout string
+
+const (
+	// FormLayoutStack — vertical column with space-y-6 between fields. The
+	// default; use for data-entry forms where each field gets its own row.
+	FormLayoutStack FormLayout = "stack"
+	// FormLayoutInline — horizontal flex-wrap row with gap-3. Use for filter
+	// bars and toolbars where fields are short and should sit on one line.
+	// Deprecated in favor of FormLayoutGrid when label alignment matters
+	// across wrapped rows (flex-wrap misaligns labels).
+	FormLayoutInline FormLayout = "inline"
+	// FormLayoutGrid — horizontal grid with auto-sized label column and a
+	// flexible value column. Use for settings forms and admin panels where
+	// labels must stay aligned even when fields wrap.
+	// Emits: grid grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4 gap-y-3
+	FormLayoutGrid FormLayout = "grid"
+	// FormLayoutDefault is the canonical default (Stack).
+	FormLayoutDefault FormLayout = FormLayoutStack
+)
+
+// FormLayoutIsValid reports whether l is a recognized FormLayout.
+func FormLayoutIsValid(l FormLayout) bool {
+	return l == FormLayoutStack || l == FormLayoutInline || l == FormLayoutGrid
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for form layouts
+var formLayoutLookup = map[FormLayout]string{
+	FormLayoutStack:  "space-y-6",
+	FormLayoutInline: "flex flex-wrap items-end gap-3",
+	FormLayoutGrid:   "grid grid-cols-1 sm:grid-cols-[auto_minmax(0,1fr)] items-start gap-x-4 gap-y-3",
+}
+
+// formLayoutClass returns the Tailwind layout class for a FormLayout. Falls
+// back to FormLayoutDefault for unknown values.
+func formLayoutClass(l FormLayout) string {
+	return utils.Lookup(formLayoutLookup, l, formLayoutLookup[FormLayoutDefault])
+}
+
+// formLayoutEffective resolves the effective FormLayout, honoring backward
+// compatibility with the legacy Inline bool field. When Layout is explicitly
+// set (non-empty) and valid, it wins. When Layout is empty and Inline==true,
+// the effective layout is Inline. Otherwise falls back to Default.
+func formLayoutEffective(props FormProps) FormLayout {
+	if props.Layout != "" && FormLayoutIsValid(props.Layout) {
+		return props.Layout
+	}
+	if props.Inline {
+		return FormLayoutInline
+	}
+	return FormLayoutDefault
+}
+
 // FormProps configures a form wrapper
 type FormProps struct {
 	utils.BaseProps
@@ -48,8 +102,18 @@ type FormProps struct {
 	Method        FormMethod
 	CSRFToken     string
 	CSRFTokenName string // Hidden input name attribute; defaults to "csrf_token"
-	Inline        bool   // When true, renders as flex flex-wrap (horizontal) instead of space-y-6 (vertical)
-	Validate      bool   // When true, adds hx-validate="true" for HTML5 constraint validation before HTMX submit
+	// Inline is the legacy boolean for horizontal layout. Prefer Layout.
+	// When true AND Layout is empty, selects FormLayoutInline. When Layout
+	// is set, Layout wins and Inline is ignored.
+	// Deprecated: Use Layout: forms.FormLayoutInline instead.
+	Inline bool
+	// Layout selects the visual layout: Stack (default), Inline (horizontal
+	// flex-wrap), or Grid (aligned label/value columns). When empty, the
+	// legacy Inline bool is consulted for backward compatibility.
+	Layout FormLayout
+	// Validate, when true, adds hx-validate="true" for HTML5 constraint
+	// validation before HTMX submit.
+	Validate bool
 }
 
 // DefaultFormProps returns sensible defaults
@@ -86,7 +150,7 @@ func Form(props FormProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		var templ_7745c5c3_Var2 = []any{utils.Class(utils.Ternary(props.Inline, "flex flex-wrap items-end gap-3", "space-y-6"), props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class(formLayoutClass(formLayoutEffective(props)), props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
@@ -103,7 +167,7 @@ func Form(props FormProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 63, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 127, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -121,7 +185,7 @@ func Form(props FormProps) templ.Component {
 		var templ_7745c5c3_Var4 templ.SafeURL
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinURLErrs(props.Action)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 65, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 129, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -134,7 +198,7 @@ func Form(props FormProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(formMethod(props.Method))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 66, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 130, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -175,7 +239,7 @@ func Form(props FormProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 72, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 136, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -203,7 +267,7 @@ func Form(props FormProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 78, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 142, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {
@@ -216,7 +280,7 @@ func Form(props FormProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.CSRFToken)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 78, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 142, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {

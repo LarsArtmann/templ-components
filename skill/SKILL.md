@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-94 components across 9 packages + 102 icons. If you're about to hand-roll
+98 components across 9 packages + 102 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -36,16 +36,16 @@ Don't know what to look for? Find your page type:
 
 | You're building...             | Reach for                                                                                                                                                                                                                          |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Dashboard / metrics page**   | `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`                                                                                                                                                        |
+| **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`                                                                                                                               |
 | **List / table page**          | `Table` (`Flush` for card nesting, `CellPadding` for compact rows, `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `ListNote` |
-| **Detail page**                | `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `Breadcrumbs`                                                                                                                                                    |
+| **Detail page**                | `Split`, `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `Breadcrumbs`                                                                                                                                           |
 | **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`                                                                                                   |
 | **Filter bar (horizontal)**    | Thin custom helper (see `docs/recipes/horizontal-filter-bar.md`) — `forms.Form` targets vertical                                                                                                                                   |
 | **Feedback / notifications**   | `Toast`, `ToastContainer`, `Alert`, `Spinner`, `ProgressBar`, `GlobalErrorHandling`                                                                                                                                                |
 | **Navigation**                 | `Nav`, `SimpleNav`, `SidebarNav`, `Breadcrumbs`, `Pagination`, `MobileMenu`                                                                                                                                                        |
 | **Modal / overlay**            | `Modal`, `Drawer`, `Dropdown`, `Tooltip`, `Popover`, `Accordion`                                                                                                                                                                   |
 | **Error pages**                | `ErrorPage`, `NotFound404`, `ErrorDetail`, `ErrorAlert`, `ErrorHandler`                                                                                                                                                            |
-| **Full page shell**            | `Base`, `Minimal`, `ThemeScript`, `ThemeToggle`, `Script`                                                                                                                                                                          |
+| **Full page shell**            | `Base`, `Minimal`, `ThemeScript`, `ThemeToggle`, `Script`, `AppShell` (admin shell), `Container` (content width), `Split` (main+aside), `Stack` (vertical rhythm)                                                                  |
 
 ### By package (import path reference)
 
@@ -128,15 +128,20 @@ Don't know what to look for? Find your page type:
 | `ProgressBar`      | `ProgressBar(props ProgressBarProps)`       | Progress indicator — 3 sizes, indeterminate, label  |
 | `StepIndicator`    | `StepIndicator(props StepIndicatorProps)`   | Horizontal/vertical step progress                   |
 
-#### `layout` — 6 components
+#### `layout` — 10 components
 
-| Component     | Signature                              | One-liner                                                   |
-| ------------- | -------------------------------------- | ----------------------------------------------------------- |
-| `Base`        | `Base(props PageProps)`                | Full HTML5 shell — head, meta, theme, HTMX, CSS auto-inject |
-| `Minimal`     | `Minimal(props MinimalProps)`          | Minimal HTML doc — no dependencies, for static/PDF          |
-| `ThemeScript` | `ThemeScript(nonce string)`            | Dark mode script — prevents FOUC, include in `<head>`       |
-| `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                |
-| `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                |
+| Component     | Signature                              | One-liner                                                                      |
+| ------------- | -------------------------------------- | ------------------------------------------------------------------------------ |
+| `Base`        | `Base(props PageProps)`                | Full HTML5 shell — head, meta, theme, HTMX, CSS auto-inject                    |
+| `Minimal`     | `Minimal(props MinimalProps)`          | Minimal HTML doc — no dependencies, for static/PDF                             |
+| `ThemeScript` | `ThemeScript(nonce string)`            | Dark mode script — prevents FOUC, include in `<head>`                          |
+| `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                                   |
+| `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                                   |
+| `Stylesheet`  | `Stylesheet(href, attrs)`              | CSP-safe `<link rel="stylesheet">`                                             |
+| `AppShell`    | `AppShell(props AppShellProps)`        | Sidebar + header + main app shell — the #1 admin dashboard pattern             |
+| `Container`   | `Container(props ContainerProps)`      | Centered max-width wrapper — replaces `max-w-Nxl mx-auto px-4 sm:px-6 lg:px-8` |
+| `Split`       | `Split(props SplitProps)`              | 2-col content+aside — article+sidebar, detail+metadata (RTL-aware)             |
+| `Stack`       | `Stack(props StackProps)`              | Vertical rhythm — typed Gap enum, replaces repeated `space-y-N`                |
 
 #### `navigation` — 12 components
 

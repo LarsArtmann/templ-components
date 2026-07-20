@@ -1,0 +1,91 @@
+package forms
+
+import (
+	"strings"
+	"testing"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+func TestFormLayout(t *testing.T) {
+	t.Parallel()
+
+	t.Run("default layout is Stack (space-y-6)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/x"}))
+		utils.AssertContains(t, output, "space-y-6")
+	})
+
+	t.Run("Layout: Stack emits space-y-6", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/x", Layout: FormLayoutStack}))
+		utils.AssertContains(t, output, "space-y-6")
+	})
+
+	t.Run("Layout: Inline emits flex flex-wrap items-end gap-3", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/x", Layout: FormLayoutInline}))
+		utils.AssertContainsAll(t, output, "flex", "flex-wrap", "items-end", "gap-3")
+	})
+
+	t.Run("Layout: Grid emits aligned grid with minmax(0,1fr) blowout guard", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/x", Layout: FormLayoutGrid}))
+		utils.AssertContainsAll(t, output,
+			"grid", "grid-cols-1", "sm:grid-cols-[auto_minmax(0,1fr)]", "items-start", "gap-x-4", "gap-y-3",
+		)
+	})
+
+	t.Run("unknown Layout falls back to Stack", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/x", Layout: FormLayout("bogus")}))
+		utils.AssertContains(t, output, "space-y-6")
+	})
+
+	t.Run("legacy Inline==true selects Inline layout (backward compat)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/x", Inline: true}))
+		utils.AssertContainsAll(t, output, "flex", "flex-wrap", "gap-3")
+
+		if strings.Contains(output, "space-y-6") {
+			t.Errorf("Inline=true must not emit space-y-6")
+		}
+	})
+
+	t.Run("Layout wins over legacy Inline bool when both set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Action: "/x",
+			Inline: true,           // legacy says inline
+			Layout: FormLayoutGrid, // modern says grid — must win
+		}))
+		utils.AssertContains(t, output, "sm:grid-cols-[auto_minmax(0,1fr)]")
+
+		if strings.Contains(output, "flex-wrap") {
+			t.Errorf("Layout=Grid must override Inline=true; flex-wrap still present")
+		}
+	})
+
+	t.Run("Layout=Inline explicit overrides default Stack", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, Form(FormProps{Action: "/x", Layout: FormLayoutInline}))
+		if strings.Contains(output, "space-y-6") {
+			t.Errorf("explicit Inline must not emit space-y-6")
+		}
+	})
+}
+
+func TestFormLayoutIsValid(t *testing.T) {
+	t.Parallel()
+
+	for _, l := range []FormLayout{FormLayoutStack, FormLayoutInline, FormLayoutGrid} {
+		if !FormLayoutIsValid(l) {
+			t.Errorf("FormLayoutIsValid(%q) = false; want true", l)
+		}
+	}
+
+	if FormLayoutIsValid(FormLayout("bogus")) {
+		t.Errorf("FormLayoutIsValid(\"bogus\") = true; want false")
+	}
+}

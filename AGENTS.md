@@ -4,22 +4,22 @@
 
 This repo is a **single Go module** (`github.com/larsartmann/templ-components`) with 14 packages:
 
-| Package             | Contains                                   | Purpose                                                                                                 |
-| ------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
-| `display`           | 30 UI components                           | Cards, tables (Table + DataTable), modals, badges, buttons, avatars, carousel, context menu, hover card |
-| `feedback`          | 13 components                              | Alerts, toasts, spinners, skeletons, progress bars                                                      |
-| `forms`             | 21 components                              | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                    |
-| `layout`            | 6 components                               | Page shell, theme toggle, CSP-safe script/style tags                                                    |
-| `navigation`        | 12 components                              | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                   |
-| `htmx`              | 8 components                               | HTMX loading, error handling, OOB swaps, View Transitions                                               |
-| `icons`             | 102 named SVG icons                        | Heroicons v2 outline + Spinner                                                                          |
-| `errorpage`         | 4 components + handler                     | Error pages, 404, go-error-family integration                                                           |
-| `utils`             | BaseProps, Class(), EnsureID, test helpers | Shared utilities                                                                                        |
-| `internal/svg`      | SVG path constants                         | Single source of truth for inline SVG paths                                                             |
-| `internal/golden`   | Golden file testing                        | CSS-normalized HTML snapshot comparison                                                                 |
-| `internal/contract` | Contract tests                             | Cross-package interface verification                                                                    |
-| `integration`       | CSP nonce tests                            | Asserts nonce on all inline scripts                                                                     |
-| `examples/demo`     | Demo binary                                | Showcases components                                                                                    |
+| Package             | Contains                                   | Purpose                                                                                                             |
+| ------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
+| `display`           | 30 UI components                           | Cards, tables (Table + DataTable), modals, badges, buttons, avatars, carousel, context menu, hover card             |
+| `feedback`          | 13 components                              | Alerts, toasts, spinners, skeletons, progress bars                                                                  |
+| `forms`             | 21 components                              | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                                |
+| `layout`            | 10 components                              | Page shell, theme toggle, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack |
+| `navigation`        | 12 components                              | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                               |
+| `htmx`              | 8 components                               | HTMX loading, error handling, OOB swaps, View Transitions                                                           |
+| `icons`             | 102 named SVG icons                        | Heroicons v2 outline + Spinner                                                                                      |
+| `errorpage`         | 4 components + handler                     | Error pages, 404, go-error-family integration                                                                       |
+| `utils`             | BaseProps, Class(), EnsureID, test helpers | Shared utilities                                                                                                    |
+| `internal/svg`      | SVG path constants                         | Single source of truth for inline SVG paths                                                                         |
+| `internal/golden`   | Golden file testing                        | CSS-normalized HTML snapshot comparison                                                                             |
+| `internal/contract` | Contract tests                             | Cross-package interface verification                                                                                |
+| `integration`       | CSP nonce tests                            | Asserts nonce on all inline scripts                                                                                 |
+| `examples/demo`     | Demo binary                                | Showcases components                                                                                                |
 
 > **Note:** A multi-module workspace split was prototyped on the `modularize/strategic-split`
 > branch but was never merged to `master`. The split may be re-attempted post-v1.0 if the
@@ -72,7 +72,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 82 generated files across all packages
+- 87 generated files across all packages
 - **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package

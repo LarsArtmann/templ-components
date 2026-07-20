@@ -113,10 +113,32 @@ templ simpleBrand(text, href string) {
 	<a href={ templ.SafeURL(href) } class="text-xl font-bold text-blue-600 dark:text-blue-400">{ text }</a>
 }
 
-// FooterProps configures a simple footer.
+// FooterLink is one link in a FooterColumn.
+type FooterLink struct {
+	Text string
+	Href string
+}
+
+// FooterColumn is a titled group of links in a multi-column footer.
+type FooterColumn struct {
+	Title string
+	Links []FooterLink
+}
+
+// FooterProps configures a footer. When Columns is empty, Footer renders the
+// legacy single-row brand+copyright layout (backward compatible). When
+// Columns has entries, Footer renders a responsive multi-column grid with an
+// optional brand column and a bottom bar.
 type FooterProps struct {
 	utils.BaseProps
 	BrandText string
+	// Columns renders titled link groups in a responsive grid. When non-empty,
+	// switches to multi-column layout. The first column is preceded by a brand
+	// block showing BrandText (if set). Empty = legacy single-row layout.
+	Columns []FooterColumn
+	// BottomBar renders below the columns (or below the legacy single-row when
+	// Columns is empty). Use it for legal links, copyright, or fine print.
+	BottomBar templ.Component
 }
 
 // DefaultFooterProps returns sensible defaults
@@ -124,9 +146,23 @@ func DefaultFooterProps() FooterProps {
 	return FooterProps{}
 }
 
-// Footer renders a simple footer
+// Footer renders a site footer. Two layouts:
+//
+//  1. Legacy single-row (backward compat) — when Columns is empty. Centered
+//     "© Year BrandText. All rights reserved." line.
+//  2. Multi-column grid — when Columns is non-empty. Responsive grid of
+//     titled link columns (`grid grid-cols-2 md:grid-cols-4 gap-8`) with an
+//     optional brand block and a BottomBar slot for legal/copyright.
 //
 //	@navigation.Footer(navigation.FooterProps{BrandText: "MyApp"})
+//	@navigation.Footer(navigation.FooterProps{
+//	   BrandText: "Acme",
+//	   Columns: []navigation.FooterColumn{
+//	     {Title: "Product", Links: []navigation.FooterLink{{"Features", "/features"}}},
+//	     {Title: "Company", Links: []navigation.FooterLink{{"About", "/about"}}},
+//	   },
+//	   BottomBar: templ.Raw(`<p>© 2026 Acme</p>`),
+//	})
 templ Footer(props FooterProps) {
 	<footer
 		if props.ID != "" {
@@ -135,13 +171,58 @@ templ Footer(props FooterProps) {
 		class={ utils.Class("border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900", props.Class) }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
+		} else {
+			aria-label="Footer"
 		}
 		{ props.Attrs... }
 	>
-		<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
-			<p class="text-center text-sm text-gray-500 dark:text-gray-400">
-				&copy; { utils.CurrentYear() } { props.BrandText }. All rights reserved.
-			</p>
-		</div>
+		if len(props.Columns) == 0 {
+			<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+				<p class="text-center text-sm text-gray-500 dark:text-gray-400">
+					&copy; { utils.CurrentYear() } { props.BrandText }. All rights reserved.
+				</p>
+				if props.BottomBar != nil {
+					<div class="mt-4 text-center text-xs text-gray-400 dark:text-gray-500">
+						@props.BottomBar
+					</div>
+				}
+			</div>
+		} else {
+			<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+				<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+					if props.BrandText != "" {
+						<div class="col-span-2 md:col-span-1">
+							<p class="text-lg font-semibold text-gray-900 dark:text-white">{ props.BrandText }</p>
+						</div>
+					}
+					for _, col := range props.Columns {
+						<div>
+							if col.Title != "" {
+								<h3 class="text-sm font-semibold text-gray-900 dark:text-white">{ col.Title }</h3>
+							}
+							<ul class="mt-4 space-y-3">
+								for _, link := range col.Links {
+									<li>
+										<a
+											href={ templ.SafeURL(link.Href) }
+											class={ "text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white " + utils.TransitionColors }
+										>
+											{ link.Text }
+										</a>
+									</li>
+								}
+							</ul>
+						</div>
+					}
+				</div>
+				if props.BottomBar != nil {
+					<div class="mt-8 border-t border-gray-200 pt-6 dark:border-gray-800">
+						<div class="text-xs text-gray-400 dark:text-gray-500">
+							@props.BottomBar
+						</div>
+					</div>
+				}
+			</div>
+		}
 	</footer>
 }

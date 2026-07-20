@@ -1,0 +1,139 @@
+package main
+
+import (
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/navigation"
+)
+
+templ layoutDemo() {
+	@demoSection("Layout Primitives", "layout-primitives")
+	<div class="space-y-12">
+		@layoutContainerDemo()
+		@layoutStackDemo()
+		@layoutSplitDemo()
+		@layoutAppShellDemo()
+		@layoutFooterDemo()
+	</div>
+}
+
+templ layoutContainerDemo() {
+	<div>
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Container (width variants)</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Centered max-width wrapper with responsive padding. Replaces the repeated <code class="text-xs">max-w-Nxl mx-auto px-4 sm:px-6 lg:px-8</code> snippet.</p>
+		<div class="space-y-3">
+			for _, w := range []struct{ name string; width layout.ContainerWidth }{
+				{"SM (max-w-3xl)", layout.ContainerWidthSM},
+				{"MD (max-w-5xl)", layout.ContainerWidthMD},
+				{"LG (max-w-7xl, default)", layout.ContainerWidthLG},
+				{"Prose (max-w-prose)", layout.ContainerWidthProse},
+			} {
+				@layout.Container(layout.ContainerProps{Width: w.width}) {
+					<div class="rounded-md border border-dashed border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-gray-800 px-3 py-2 text-xs font-mono text-gray-600 dark:text-gray-400">
+						{ w.name }
+					</div>
+				}
+			}
+		</div>
+	</div>
+}
+
+templ layoutStackDemo() {
+	<div>
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Stack (vertical rhythm)</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Typed gap enum replaces repeated <code class="text-xs">space-y-N</code> strings. 1D vertical (flex, not grid).</p>
+		@layout.Stack(layout.StackProps{Gap: layout.StackGapLG}) {
+			@demoCard("Stack item 1", layout.StackGapSM)
+			@demoCard("Stack item 2", layout.StackGapMD)
+			@demoCard("Stack item 3 — each child gets consistent spacing", layout.StackGapLG)
+		}
+	</div>
+}
+
+templ layoutSplitDemo() {
+	<div>
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Split (content + aside)</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">2-column grid for article+sidebar / detail+metadata. RTL-aware logical positioning (Start/End). Stacks below md.</p>
+		<div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+			@layout.Split(layout.SplitProps{
+				Ratio:  layout.SplitRatio1To3,
+				Main:   templ.Raw(`<div class="p-6 bg-white dark:bg-gray-900"><h4 class="font-semibold text-gray-900 dark:text-white">Main content (2/3)</h4><p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Article body, detail view, or primary content lives here.</p></div>`),
+				Aside:  templ.Raw(`<div class="p-6 bg-gray-50 dark:bg-gray-800 h-full"><h4 class="font-semibold text-gray-900 dark:text-white text-sm">Aside (1/3)</h4><p class="mt-2 text-xs text-gray-500 dark:text-gray-400">Related links, metadata, TOC.</p></div>`),
+			})
+		</div>
+	</div>
+}
+
+templ layoutAppShellDemo() {
+	<div>
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">AppShell (sidebar + header + main)</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">The #1 admin dashboard pattern. Uses <code class="text-xs">minmax(0,1fr)</code> to prevent grid blowout from wide tables. Sidebar hidden on mobile (use MobileNav slot for drawer).</p>
+		<div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden" style="min-height: 320px;">
+			@layout.AppShell(layout.AppShellProps{
+				SidebarWidth: layout.SidebarWidthSM,
+				StickyHeader: false,
+				Container:    false,
+				Sidebar:      appShellDemoSidebar(),
+				Header:       appShellDemoHeader(),
+				Content:      appShellDemoContent(),
+			})
+		</div>
+	</div>
+}
+
+templ appShellDemoSidebar() {
+	@navigation.SidebarNav(navigation.SidebarNavProps{
+		Brand: templ.Raw(`<span class="font-bold text-white text-sm">Demo</span>`),
+		Items: []navigation.SidebarNavItem{
+			{Label: "Dashboard", Href: "#", Active: true},
+			{Label: "Users", Href: "#"},
+			{Label: "Settings", Href: "#"},
+		},
+	})
+}
+
+templ appShellDemoHeader() {
+	<div class="px-4 py-3 bg-white dark:bg-gray-900">
+		<span class="text-sm font-medium text-gray-700 dark:text-gray-300">Header (sticky-capable)</span>
+	</div>
+}
+
+templ appShellDemoContent() {
+	<div class="p-6">
+		<h4 class="font-semibold text-gray-900 dark:text-white">Main content area</h4>
+		<p class="mt-2 text-sm text-gray-500 dark:text-gray-400">Wide tables, grids, and content live here. <code class="text-xs">minmax(0,1fr)</code> prevents this column from blowing out the viewport.</p>
+		@display.Grid(display.GridProps{Cols: display.GridCols2}) {
+			@demoCard("Stat card", layout.StackGapSM)
+			@demoCard("Stat card", layout.StackGapSM)
+		}
+	</div>
+}
+
+templ layoutFooterDemo() {
+	<div>
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-3">Footer (multi-column grid)</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">Backward-compatible extension: <code class="text-xs">Columns</code> empty = legacy single-row. Non-empty = responsive multi-column grid with optional brand + BottomBar.</p>
+		<div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden">
+			@navigation.Footer(navigation.FooterProps{
+				BrandText: "templ-components",
+				Columns: []navigation.FooterColumn{
+				{Title: "Docs", Links: []navigation.FooterLink{
+					{Text: "Getting Started", Href: "#"},
+					{Text: "Components", Href: "#"},
+				}},
+				{Title: "Community", Links: []navigation.FooterLink{
+					{Text: "GitHub", Href: "#"},
+					{Text: "Discussions", Href: "#"},
+				}},
+				},
+				BottomBar: templ.Raw(`<p>© 2026 templ-components. Built with templ + HTMX + Tailwind v4.</p>`),
+			})
+		</div>
+	</div>
+}
+
+templ demoCard(text string, _ layout.StackGap) {
+	<div class="rounded-md border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 px-4 py-3">
+		<p class="text-sm text-gray-700 dark:text-gray-300">{ text }</p>
+	</div>
+}
