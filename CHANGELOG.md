@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.21.0] — 2026-07-21
+
 ### Added
 
 - **`recipes/` composition package (ADR-0019).** Three screen-level components that compose existing primitives into complete layouts: `recipes.Dashboard` (AppShell + PageHeader + StatCard grid + chart slots), `recipes.SettingsLayout` (Container + Split + Card stack with section anchors), `recipes.LoginCard` (centered Card with form body + OAuth divider + footer). Every variable part is a `templ.Component` slot — recipes provide the scaffold only. Resolves TODO #31 ("blocks/composition examples," deferred since v0.12). New `docs/recipes/{dashboard,settings,login}.md` with copy-paste examples.
