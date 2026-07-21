@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.22.0] — 2026-07-21
+
 ### Added
 
 - **Semantic token layer (ADR-0008 implementation).** New `templates/templ-components-theme.css` aliases every Tailwind palette color used by the library (`blue-600`, `red-600`, `green-600`, etc.) to semantic tokens (`--color-tc-primary`, `--color-tc-danger`, `--color-tc-success`, etc.). `templates/app.css` now imports it by default. Consumers override one token (`--color-tc-primary: #4f46e5`) to re-skin every component — buttons, links, focus rings, toasts — without touching any `.templ source. New `docs/theming.md` documents the three-tier theming model (semantic tokens, direct palette override, per-component Class).
