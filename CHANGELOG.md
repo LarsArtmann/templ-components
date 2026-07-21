@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.19.0] — 2026-07-21
+
 ### Fixed
 
 - **`.golangci.yml` lint gate repaired** — the three linters documented as "disabled" in AGENTS.md (`ireturn`, `godoclint`, `testableexamples`) were never actually removed from the `enable:` list, producing 68 findings that would have failed CI on the next push. Removed all three from the enable list and deleted the dead `ireturn:` settings block. `golangci-lint run` now exits 0 as the v0.18.1 CHANGELOG originally claimed.
