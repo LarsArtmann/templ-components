@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [0.20.0] — 2026-07-21
+
 ### Changed
 
 - **Popover API migration (ADR-0017).** `Dropdown`, `Popover`, and `ContextMenu` now use the native HTML `popover` attribute (`popover="auto"`) with declarative `popovertarget` invokers. This deletes ~70 lines of singleton JS across the three components and replaces custom click-outside / Escape / focus-management logic with native browser behavior (light-dismiss, top-layer rendering, focus restore). `Popover` is now **zero-JS** — entirely native. `Dropdown` keeps a thin singleton (~25 lines, down from ~50) for WAI-ARIA menu keyboard nav (ArrowUp/Down + RTL mapping) and first-item focus on open. `ContextMenu` keeps a thin singleton (~6 lines, down from ~12) for the `contextmenu` event → `showPopover()` call. Browser support: Popover API is Baseline 2024 (Chrome 114+, Safari 17+, Firefox 125+). See `docs/adr/0017-popover-api-migration.md` and `docs/research/popover-api.md`.
