@@ -275,7 +275,7 @@ templ displayDemo() {
 	<div class="flex items-center gap-4">
 		<span class="text-sm text-gray-500 dark:text-gray-400">2 hours ago:</span>
 		@display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(-2 * time.Hour)})
-		<span class="text-sm text-gray-500 dark:text-gray-400 ml-4">1 day ago:</span>
+		<span class="text-sm text-gray-500 dark:text-gray-400 ms-4">1 day ago:</span>
 		@display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(-24 * time.Hour)})
 	</div>
 	@demoSection("CountBadge", "display-count-badge")

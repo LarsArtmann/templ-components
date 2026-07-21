@@ -1,8 +1,10 @@
 package layout
 
 import (
+	"strings"
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -45,6 +47,37 @@ func TestSecurityHeaders(t *testing.T) {
 		utils.AssertContains(t, output, "sr-only")
 		utils.AssertContains(t, output, `id="main-content"`)
 	})
+}
+
+// TestBodyPrimitivesDoNotEmitMain is a contract guard: layout body primitives
+// (AppShell, Split, Stack, Container) must NEVER emit their own <main> element.
+// Base owns the singleton <main> landmark (WCAG 2.4.1 Bypass Blocks); nested
+// <main> is invalid HTML and breaks screen-reader navigation. This test would
+// have caught the original Split <main> regression.
+func TestBodyPrimitivesDoNotEmitMain(t *testing.T) {
+	t.Parallel()
+
+	props := DefaultAppShellProps()
+	props.Content = Container(DefaultContainerProps())
+
+	for _, tc := range []struct {
+		name string
+		comp templ.Component
+	}{
+		{"AppShell", AppShell(props)},
+		{"Split", Split(DefaultSplitProps())},
+		{"Stack", Stack(DefaultStackProps())},
+		{"Container", Container(DefaultContainerProps())},
+	} {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			output := utils.Render(t, tc.comp)
+			if strings.Contains(output, "<main") {
+				t.Errorf("%s must not emit <main> — Base owns the main landmark", tc.name)
+			}
+		})
+	}
 }
 
 func TestDefaultPageProps(t *testing.T) {

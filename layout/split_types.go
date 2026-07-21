@@ -35,8 +35,8 @@ var splitRatioLookup = map[SplitRatio]string{
 	SplitRatio1To4: "md:grid-cols-4",
 }
 
-// splitRatioMainSpan returns the grid column span class for the Main column
-// at each ratio. Falls back to SplitRatioDefault.
+// splitRatioCols returns the grid-template-columns class for a ratio (e.g.
+// md:grid-cols-2). Falls back to SplitRatioDefault.
 func splitRatioCols(r SplitRatio) string {
 	return utils.Lookup(splitRatioLookup, r, splitRatioLookup[SplitRatioDefault])
 }

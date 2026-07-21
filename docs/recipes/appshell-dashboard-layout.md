@@ -115,6 +115,64 @@ require importing `display` from `layout`, breaking the import graph
 (`layout → icons,utils` only). The `MobileNav` slot gives you full control
 over mobile UX while keeping the layout package dependency-free.
 
+### Full mobile-drawer example
+
+Here is a complete `display.Drawer` wired to a hamburger button, suitable for
+the `MobileNav` slot. The Drawer reuses the same `SidebarNavItems` as the
+desktop sidebar so there is a single source of truth for navigation:
+
+```templ
+import (
+    "github.com/larsartmann/templ-components/display"
+    "github.com/larsartmann/templ-components/icons"
+    "github.com/larsartmann/templ-components/navigation"
+)
+
+var sidebarItems = []navigation.SidebarNavItem{
+    {Label: "Dashboard", Href: "/", Icon: icons.Home},
+    {Label: "Users", Href: "/users", Icon: icons.Users},
+    {Label: "Settings", Href: "/settings", Icon: icons.Settings},
+}
+
+templ mobileNav(currentPath string) {
+    <!-- Hamburger button — visible only below lg -->
+    <button
+        class="lg:hidden inline-flex items-center justify-center p-2 rounded-md text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-white"
+        onclick="tcOpenOverlay('mobile-drawer')"
+        aria-label="Open navigation menu"
+    >
+        @icons.Icon(icons.Bars3, "h-6 w-6")
+    </button>
+    <!-- Drawer with the same sidebar items -->
+    @display.Drawer(display.DrawerProps{
+        BaseProps: utils.BaseProps{ID: "mobile-drawer"},
+        Title:     "Menu",
+        Side:      display.DrawerLeft,
+    }) {
+        @navigation.SidebarNav(navigation.SidebarNavProps{
+            Items:       sidebarItems,
+            CurrentPath: currentPath,
+        })
+    }
+}
+```
+
+Then wire it into AppShell:
+
+```templ
+@layout.AppShell(layout.AppShellProps{
+    Sidebar:   @desktopSidebar(currentPath),
+    MobileNav: @mobileNav(currentPath),
+    Header:    navigation.Nav(navigation.DefaultNavProps()),
+    Content:   @dashboardContent(),
+})
+```
+
+The `tcOpenOverlay('mobile-drawer')` call is the thin JS wrapper around
+`dialog.showModal()` provided by the overlay system. The Drawer's native
+`<dialog>` handles focus trapping, Escape-to-close, backdrop click, and
+focus restore automatically — zero custom JS needed.
+
 ## Skip link and main landmark
 
 AppShell does NOT emit its own `<main>` or skip-link — `layout.Base` owns

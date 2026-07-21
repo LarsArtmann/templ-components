@@ -53,7 +53,7 @@ templ demoContent() {
 
 templ demoHero() {
 	<div class="relative overflow-hidden border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
-		<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16 lg:py-20">
+		@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-12 sm:py-16 lg:py-20"}}) {
 			<div class="grid lg:grid-cols-2 gap-10 items-center">
 				<div>
 					<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/30 text-xs font-medium text-blue-700 dark:text-blue-300 mb-5">
@@ -84,7 +84,7 @@ templ demoHero() {
 					@demoStatCard(packageCount, "Packages")
 				</div>
 			</div>
-		</div>
+		}
 	</div>
 }
 
@@ -108,7 +108,7 @@ templ demoStickyNav() {
 		}
 	}}
 	<div class="sticky top-0 z-30 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur-xs">
-		<div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
+		@layout.Container(layout.ContainerProps{BaseProps: utils.BaseProps{Class: "max-w-6xl py-3"}}) {
 			<div class="flex flex-col sm:flex-row sm:items-center gap-3 sm:gap-4">
 				<nav class="flex flex-wrap items-center gap-2" aria-label="Demo sections">
 					for _, link := range tocLinks {
@@ -129,7 +129,7 @@ templ demoStickyNav() {
 				</div>
 				@layout.ThemeToggle("Toggle dark mode", "")
 			</div>
-		</div>
+		}
 	</div>
 }
 

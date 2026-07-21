@@ -415,3 +415,28 @@ details[open] [data-tc-chevron] {
     background-color: rgb(0 0 0 / 0.85);
   }
 }
+
+/* --- AppShell sidebar width CSS variable --- */
+/*
+ * --tc-sidebar-w is the CSS custom property that drives the AppShell desktop
+ * sidebar column width. The grid template is:
+ *   grid-template-columns: var(--tc-sidebar-w) minmax(0,1fr);
+ *
+ * AppShell sets this INLINE on its root div (per-instance), but a :root
+ * fallback is provided here so consumers can:
+ *   1. Reference var(--tc-sidebar-w) in their own CSS (e.g. matching widths)
+ *   2. Override the global default by setting --tc-sidebar-w in their @theme
+ *
+ * Values map to the SidebarWidth enum:
+ *   SidebarWidthSM  = 12rem   (w-48, compact icon sidebars)
+ *   SidebarWidthMD  = 16rem   (w-64, default — matches SidebarNav)
+ *   SidebarWidthLG  = 20rem   (w-80, wide sidebars with descriptions)
+ *   SidebarWidthAuto = auto   (sidebar sizes itself)
+ *
+ * Note: AppShell's inline style takes precedence over this :root fallback
+ * (inline > :root specificity). To override AppShell's width, use the
+ * SidebarWidth prop or pass a custom value via props.Attrs.
+ */
+:root {
+  --tc-sidebar-w: 16rem;
+}

@@ -70,7 +70,7 @@ func formsDemoSection() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = forms.Input(forms.InputProps{Name: "grouped-search", Type: forms.InputSearch, Placeholder: "Search with icon...", BaseProps: utils.BaseProps{Class: "pl-10"}}).Render(ctx, templ_7745c5c3_Buffer)
+			templ_7745c5c3_Err = forms.Input(forms.InputProps{Name: "grouped-search", Type: forms.InputSearch, Placeholder: "Search with icon...", BaseProps: utils.BaseProps{Class: "ps-10"}}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

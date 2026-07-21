@@ -70,6 +70,7 @@ func TestFormLayout(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, Form(FormProps{Action: "/x", Layout: FormLayoutInline}))
+
 		if strings.Contains(output, "space-y-6") {
 			t.Errorf("explicit Inline must not emit space-y-6")
 		}
