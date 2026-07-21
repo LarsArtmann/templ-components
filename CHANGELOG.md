@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.1.0] — 2026-07-21
+
 ### Added
 
 - **`tc` CLI scaffolding tool.** New binary at `cmd/tc/` — install with `go install github.com/larsartmann/templ-components/cmd/tc@latest`. Three commands: `tc init` (scaffold `app.css` + `custom.css`), `tc ls` (list every component by package), `tc add <component> [--out DIR]` (copy a component's `.templ` + `_types.go` source to your project for customization). Embeds the library's `.templ` sources at build time via `go:embed`. New `docs/cli.md` documents the full usage. Non-breaking addition.
