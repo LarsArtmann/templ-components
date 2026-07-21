@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.0.0] — 2026-07-21
+
 ### Removed (breaking — v1.0)
 
 - **`display.ModalSizeFull`** — deprecated alias for `ModalSize2XL` (same `max-w-4xl` width). Replace with `display.ModalSize2XL`.
