@@ -163,19 +163,24 @@ func TestPopoverEdgeCases(t *testing.T) {
 		utils.AssertContains(t, output, `aria-label="More info popover"`)
 	})
 
-	t.Run("nonce appears in script tag", func(t *testing.T) {
+	t.Run("nonce has no script tag (popover API is JS-free)", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Popover(PopoverProps{
 			BaseProps:   utils.BaseProps{Nonce: "test-nonce-123"},
 			TriggerText: "X",
 		}))
-		utils.AssertContains(t, output, `nonce="test-nonce-123"`)
+		utils.AssertNotContains(t, output, "<script")
+		utils.AssertNotContains(t, output, "test-nonce-123")
 	})
 
-	t.Run("trigger has data-tc-popover-trigger attribute", func(t *testing.T) {
+	t.Run("trigger has popovertarget attribute (native invoker)", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Popover(PopoverProps{TriggerText: "X"}))
-		utils.AssertContains(t, output, "data-tc-popover-trigger=")
+		output := utils.Render(t, Popover(PopoverProps{
+			BaseProps:   utils.BaseProps{ID: "native-pop"},
+			TriggerText: "X",
+		}))
+		utils.AssertContains(t, output, `popovertarget="native-pop-content"`)
+		utils.AssertContains(t, output, `popover="auto"`)
 	})
 }
 

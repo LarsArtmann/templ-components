@@ -23,8 +23,11 @@ func DefaultContextMenuProps() ContextMenuProps {
 }
 
 // ContextMenu wraps children in a container that shows a custom context
-// menu on right-click. A CSP-safe singleton script handles the positioning,
-// Escape-to-dismiss, and click-outside-close.
+// menu on right-click. Uses the native Popover API (popover="auto") for
+// light-dismiss, Escape-to-close, and top-layer rendering. A small
+// CSP-safe singleton script handles the contextmenu event → showPopover()
+// call and positions the menu at the cursor (via style.inset).
+// See ADR-0017 for the migration strategy.
 //
 //	@display.ContextMenu(display.ContextMenuProps{Items: []display.ContextMenuItem{
 //	   {Text: "Edit", Href: "/edit"},
@@ -44,8 +47,9 @@ templ ContextMenu(props ContextMenuProps) {
 	if props.Nonce != "" {
 		<div
 			id={ id }
+			popover="auto"
 			role="menu"
-			class="hidden fixed z-50 min-w-[160px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 py-1"
+			class="min-w-[160px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 py-1"
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
@@ -76,19 +80,19 @@ templ ContextMenu(props ContextMenuProps) {
 			}
 		</div>
 		<script nonce={ props.Nonce }>
-			(function(){if(window.tcCtxMenuAttached)return;window.tcCtxMenuAttached=true;
-			document.addEventListener('contextmenu',function(e){
-			var trigger=e.target.closest('[data-tc-ctxmenu-trigger]');if(!trigger)return;
-			e.preventDefault();
-			var id=trigger.getAttribute('data-tc-ctxmenu-trigger');
-			var menu=document.getElementById(id);if(!menu)return;
-			menu.style.left=e.pageX+'px';menu.style.top=e.pageY+'px';
-			menu.classList.remove('hidden');
-			});
-			document.addEventListener('click',function(e){
-			if(!e.target.closest('[data-tc-ctxmenu-trigger]')){
-			var menus=document.querySelectorAll('[role=menu]');menus.forEach(function(m){m.classList.add('hidden');});}});
-			document.addEventListener('keydown',function(e){if(e.key==='Escape'){var menus=document.querySelectorAll('[role=menu]');menus.forEach(function(m){m.classList.add('hidden');});}});
+			(function(){
+				if (window.tcCtxMenuAttached) return;
+				window.tcCtxMenuAttached = true;
+				document.addEventListener('contextmenu', function(e) {
+					var trigger = e.target.closest('[data-tc-ctxmenu-trigger]');
+					if (!trigger) return;
+					e.preventDefault();
+					var id = trigger.getAttribute('data-tc-ctxmenu-trigger');
+					var menu = document.getElementById(id);
+					if (!menu) return;
+					menu.style.inset = e.clientY + 'px auto auto ' + e.clientX + 'px';
+					menu.showPopover();
+				});
 			})();
 		</script>
 	}

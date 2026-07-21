@@ -31,8 +31,11 @@ func DefaultContextMenuProps() ContextMenuProps {
 }
 
 // ContextMenu wraps children in a container that shows a custom context
-// menu on right-click. A CSP-safe singleton script handles the positioning,
-// Escape-to-dismiss, and click-outside-close.
+// menu on right-click. Uses the native Popover API (popover="auto") for
+// light-dismiss, Escape-to-close, and top-layer rendering. A small
+// CSP-safe singleton script handles the contextmenu event → showPopover()
+// call and positions the menu at the cursor (via style.inset).
+// See ADR-0017 for the migration strategy.
 //
 //	@display.ContextMenu(display.ContextMenuProps{Items: []display.ContextMenuItem{
 //	   {Text: "Edit", Href: "/edit"},
@@ -87,7 +90,7 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 39, Col: 30}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 42, Col: 30}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -121,13 +124,13 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 46, Col: 10}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 49, Col: 10}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\" role=\"menu\" class=\"hidden fixed z-50 min-w-[160px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 py-1\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\" popover=\"auto\" role=\"menu\" class=\"min-w-[160px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 py-1\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -139,7 +142,7 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 50, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 54, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 				if templ_7745c5c3_Err != nil {
@@ -163,7 +166,7 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 					var templ_7745c5c3_Var7 templ.SafeURL
 					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(item.Href))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 56, Col: 37}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 60, Col: 37}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 					if templ_7745c5c3_Err != nil {
@@ -186,7 +189,7 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 					var templ_7745c5c3_Var8 string
 					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(item.Text)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 63, Col: 17}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 67, Col: 17}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 					if templ_7745c5c3_Err != nil {
@@ -214,7 +217,7 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 					var templ_7745c5c3_Var9 string
 					templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(item.Text)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 73, Col: 17}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 77, Col: 17}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 					if templ_7745c5c3_Err != nil {
@@ -233,13 +236,13 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 78, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 82, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\">\n\t\t\t(function(){if(window.tcCtxMenuAttached)return;window.tcCtxMenuAttached=true;\n\t\t\tdocument.addEventListener('contextmenu',function(e){\n\t\t\tvar trigger=e.target.closest('[data-tc-ctxmenu-trigger]');if(!trigger)return;\n\t\t\te.preventDefault();\n\t\t\tvar id=trigger.getAttribute('data-tc-ctxmenu-trigger');\n\t\t\tvar menu=document.getElementById(id);if(!menu)return;\n\t\t\tmenu.style.left=e.pageX+'px';menu.style.top=e.pageY+'px';\n\t\t\tmenu.classList.remove('hidden');\n\t\t\t});\n\t\t\tdocument.addEventListener('click',function(e){\n\t\t\tif(!e.target.closest('[data-tc-ctxmenu-trigger]')){\n\t\t\tvar menus=document.querySelectorAll('[role=menu]');menus.forEach(function(m){m.classList.add('hidden');});}});\n\t\t\tdocument.addEventListener('keydown',function(e){if(e.key==='Escape'){var menus=document.querySelectorAll('[role=menu]');menus.forEach(function(m){m.classList.add('hidden');});}});\n\t\t\t})();\n\t\t</script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\">\n\t\t\t(function(){\n\t\t\t\tif (window.tcCtxMenuAttached) return;\n\t\t\t\twindow.tcCtxMenuAttached = true;\n\t\t\t\tdocument.addEventListener('contextmenu', function(e) {\n\t\t\t\t\tvar trigger = e.target.closest('[data-tc-ctxmenu-trigger]');\n\t\t\t\t\tif (!trigger) return;\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tvar id = trigger.getAttribute('data-tc-ctxmenu-trigger');\n\t\t\t\t\tvar menu = document.getElementById(id);\n\t\t\t\t\tif (!menu) return;\n\t\t\t\t\tmenu.style.inset = e.clientY + 'px auto auto ' + e.clientX + 'px';\n\t\t\t\t\tmenu.showPopover();\n\t\t\t\t});\n\t\t\t})();\n\t\t</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

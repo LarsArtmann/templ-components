@@ -99,7 +99,11 @@ templ dropdownItemLink(item DropdownItem) {
 	}
 }
 
-// Dropdown renders a button-triggered action menu
+// Dropdown renders a button-triggered action menu. Uses the native Popover
+// API (popover="auto") for click-toggle via popovertarget, light-dismiss,
+// Escape-to-close, and top-layer rendering. A thin singleton script handles
+// WAI-ARIA menu keyboard nav (ArrowUp/Down + RTL mapping) and focuses the
+// first menuitem on open. See ADR-0017.
 //
 //	@display.Dropdown(display.DropdownProps{
 //	   Label: "Actions",
@@ -122,6 +126,7 @@ templ Dropdown(props DropdownProps) {
 			<button
 				type="button"
 				id={ id + "-button" }
+				popovertarget={ id + "-menu" }
 				class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white shadow-xs ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
 				aria-expanded="false"
 				aria-haspopup="true"
@@ -134,7 +139,8 @@ templ Dropdown(props DropdownProps) {
 		</div>
 		<div
 			id={ id + "-menu" }
-			class="hidden absolute z-10 mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 focus:outline-hidden"
+			popover="auto"
+			class="mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 focus:outline-hidden"
 			role="menu"
 			aria-orientation="vertical"
 			aria-labelledby={ id + "-button" }
@@ -171,33 +177,11 @@ templ Dropdown(props DropdownProps) {
 	<script nonce={ props.Nonce }>
 		if (!window.tcDropdownAttached) {
 			window.tcDropdownAttached = true;
-			function tcCloseDropdown(menu, btn) {
-				menu.classList.add('hidden');
-				btn.setAttribute('aria-expanded', 'false');
-				btn.focus();
-			}
-			function tcOpenDropdown(menu, btn) {
-				menu.classList.remove('hidden');
-				btn.setAttribute('aria-expanded', 'true');
-				var first = menu.querySelector('[role="menuitem"]');
+			document.addEventListener('toggle', function(e) {
+				var menu = e.target;
+				if (menu.tagName !== 'DIV' || menu.getAttribute('role') !== 'menu' || e.newState !== 'open') return;
+				var first = menu.querySelector('[role="menuitem"]:not([disabled])');
 				if (first) first.focus();
-			}
-			document.addEventListener('click', function(e) {
-				var btn = e.target.closest('[data-dropdown-trigger]');
-				if (btn) {
-					e.stopPropagation();
-					var id = btn.getAttribute('data-dropdown-trigger');
-					var menu = document.getElementById(id + '-menu');
-					if (!menu) return;
-					if (btn.getAttribute('aria-expanded') === 'true') tcCloseDropdown(menu, btn);
-					else tcOpenDropdown(menu, btn);
-					return;
-				}
-				document.querySelectorAll('[data-dropdown-trigger][aria-expanded="true"]').forEach(function(b) {
-					var mid = b.getAttribute('data-dropdown-trigger');
-					var m = document.getElementById(mid + '-menu');
-					if (m && !m.contains(e.target)) tcCloseDropdown(m, b);
-				});
 			});
 			document.addEventListener('keydown', function(e) {
 				var menu = e.target.closest('[role="menu"]');
@@ -205,19 +189,13 @@ templ Dropdown(props DropdownProps) {
 				var items = Array.from(menu.querySelectorAll('[role="menuitem"]'));
 				if (items.length === 0) return;
 				var idx = items.indexOf(document.activeElement);
-				if (e.key === 'Escape') {
-					var btnId = menu.getAttribute('aria-labelledby');
-					var b = document.getElementById(btnId);
-					if (b) tcCloseDropdown(menu, b);
-				} else {
-					var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
-					var nextKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
-					var prevKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-					if (e.key === 'ArrowDown' || e.key === nextKey) {
-						e.preventDefault(); items[(idx + 1) % items.length].focus();
-					} else if (e.key === 'ArrowUp' || e.key === prevKey) {
-						e.preventDefault(); items[(idx - 1 + items.length) % items.length].focus();
-					}
+				var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+				var nextKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+				var prevKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
+				if (e.key === 'ArrowDown' || e.key === nextKey) {
+					e.preventDefault(); items[(idx + 1) % items.length].focus();
+				} else if (e.key === 'ArrowUp' || e.key === prevKey) {
+					e.preventDefault(); items[(idx - 1 + items.length) % items.length].focus();
 				}
 			});
 		}

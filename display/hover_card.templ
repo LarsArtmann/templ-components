@@ -33,6 +33,8 @@ func hoverCardPositionClass(pos HoverCardPosition) string {
 // HoverCardProps configures a hover-activated card with rich content.
 // The card appears on hover and focus, using pure CSS (no JavaScript).
 // Accessible: the card content is linked to the trigger via aria-describedby.
+// This is the reference implementation for the CSS-only overlay pattern —
+// see ADR-0017 for the broader Popover API migration strategy.
 type HoverCardProps struct {
 	utils.BaseProps
 	Content  templ.Component

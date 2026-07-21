@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Popover API migration (ADR-0017).** `Dropdown`, `Popover`, and `ContextMenu` now use the native HTML `popover` attribute (`popover="auto"`) with declarative `popovertarget` invokers. This deletes ~70 lines of singleton JS across the three components and replaces custom click-outside / Escape / focus-management logic with native browser behavior (light-dismiss, top-layer rendering, focus restore). `Popover` is now **zero-JS** — entirely native. `Dropdown` keeps a thin singleton (~25 lines, down from ~50) for WAI-ARIA menu keyboard nav (ArrowUp/Down + RTL mapping) and first-item focus on open. `ContextMenu` keeps a thin singleton (~6 lines, down from ~12) for the `contextmenu` event → `showPopover()` call. Browser support: Popover API is Baseline 2024 (Chrome 114+, Safari 17+, Firefox 125+). See `docs/adr/0017-popover-api-migration.md` and `docs/research/popover-api.md`.
+
+### Removed
+
+- **`Tooltip` singleton script** — the `tooltipScriptComponent` / `tooltipJS` / `window.tcTooltipAttached` machinery in `display/shared.go` is deleted. `Tooltip` is now pure CSS (it already used `:hover` / `:focus-within`; the JS only added touch click-toggle, Escape-dismiss, and `aria-describedby` propagation). Trade-off: tooltips no longer toggle on touch-tap, and `aria-describedby` is no longer auto-propagated to focusable children — consumers should set `aria-describedby` directly on the focusable trigger element. Tooltips remain hover/focus-only on desktop, which matches their role as progressive enhancement. Documented in ADR-0017 and in the `TooltipProps` godoc.
+
 ## [0.19.0] — 2026-07-21
 
 ### Fixed

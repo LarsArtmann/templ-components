@@ -58,6 +58,9 @@ func popoverLookupPosition(pos PopoverPosition) popoverPositionStyles {
 }
 
 // Popover renders a button-triggered floating panel with arbitrary content.
+// Uses the native Popover API (popover="auto") for click-toggle via
+// popovertarget, light-dismiss, Escape-to-close, and top-layer rendering.
+// No JavaScript is emitted. See ADR-0017 for the migration strategy.
 //
 //	@display.Popover(display.PopoverProps{TriggerText: "Details"}) {
 //	   <p class="text-sm">Popover content goes here.</p>
@@ -76,19 +79,20 @@ templ Popover(props PopoverProps) {
 		<button
 			type="button"
 			id={ id + "-trigger" }
+			popovertarget={ id + "-content" }
 			class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white shadow-xs ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
 			aria-expanded="false"
 			aria-haspopup="dialog"
 			aria-controls={ id + "-content" }
-			data-tc-popover-trigger={ id }
 		>
 			{ props.TriggerText }
 			@svg.FillIcon("-me-1 h-5 w-5 text-gray-400 dark:text-gray-500", svg.PathChevronSmall, false)
 		</button>
 		<div
 			id={ id + "-content" }
+			popover="auto"
 			class={ utils.Class(
-				"absolute z-20 hidden w-72 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 p-4 text-sm text-gray-900 dark:text-white",
+				"w-72 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 p-4 text-sm text-gray-900 dark:text-white",
 				pos.Panel,
 			) }
 			role="dialog"
@@ -97,45 +101,4 @@ templ Popover(props PopoverProps) {
 			{ children... }
 		</div>
 	</div>
-	<script nonce={ props.Nonce }>
-		if (!window.tcPopoverAttached) {
-			window.tcPopoverAttached = true;
-			function tcClosePopover(panel, trigger) {
-				panel.classList.add('hidden');
-				trigger.setAttribute('aria-expanded', 'false');
-				trigger.focus();
-			}
-			function tcOpenPopover(panel, trigger) {
-				panel.classList.remove('hidden');
-				trigger.setAttribute('aria-expanded', 'true');
-				var focusable = panel.querySelectorAll('a[href], button:not([disabled]), textarea, input, select, [tabindex]:not([tabindex="-1"])');
-				if (focusable.length) focusable[0].focus();
-			}
-			document.addEventListener('click', function(e) {
-				var trigger = e.target.closest('[data-tc-popover-trigger]');
-				if (trigger) {
-					e.stopPropagation();
-					var id = trigger.getAttribute('data-tc-popover-trigger');
-					var panel = document.getElementById(id + '-content');
-					if (!panel) return;
-					if (trigger.getAttribute('aria-expanded') === 'true') tcClosePopover(panel, trigger);
-					else tcOpenPopover(panel, trigger);
-					return;
-				}
-				document.querySelectorAll('[data-tc-popover-trigger][aria-expanded="true"]').forEach(function(t) {
-					var pid = t.getAttribute('data-tc-popover-trigger');
-					var p = document.getElementById(pid + '-content');
-					if (p && !p.contains(e.target)) tcClosePopover(p, t);
-				});
-			});
-			document.addEventListener('keydown', function(e) {
-				if (e.key !== 'Escape') return;
-				document.querySelectorAll('[data-tc-popover-trigger][aria-expanded="true"]').forEach(function(t) {
-					var pid = t.getAttribute('data-tc-popover-trigger');
-					var p = document.getElementById(pid + '-content');
-					if (p && (p.contains(e.target) || e.target === t)) tcClosePopover(p, t);
-				});
-			});
-		}
-	</script>
 }

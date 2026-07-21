@@ -12,7 +12,14 @@ const (
 	TooltipPositionRight  TooltipPosition = "right"
 )
 
-// TooltipProps configures a tooltip component
+// TooltipProps configures a tooltip component.
+//
+// The tooltip shows on :hover and :focus-within via pure CSS — no JavaScript.
+// For accessibility, set aria-describedby on the focusable trigger element
+// (e.g. the <button>) pointing to the tooltip's id, OR wrap the trigger with
+// the Tooltip component and it will set aria-describedby on the wrapper div.
+// For full screen-reader support, prefer setting aria-describedby directly
+// on the focusable trigger.
 type TooltipProps struct {
 	utils.BaseProps
 	Text     string
@@ -55,11 +62,12 @@ func tooltipLookupPosition(pos TooltipPosition) tooltipPositionStyles {
 	return utils.Lookup(tooltipPositionMap, pos, tooltipPositionMap[TooltipPositionTop])
 }
 
-// Tooltip wraps content in a hover-activated tooltip
+// Tooltip wraps content in a hover/focus-activated tooltip. Pure CSS, no JS.
+// Shows on :hover and :focus-within; hides on blur/mouse-leave.
 //
 //	@display.Tooltip(display.TooltipProps{Text: "More info"}) {
 //	   <button>Hover me</button>
-//	 }
+//	}
 templ Tooltip(props TooltipProps) {
 	{{ id := utils.EnsureID("tooltip", props.ID) }}
 	{{ pos := tooltipLookupPosition(props.Position) }}
@@ -84,5 +92,4 @@ templ Tooltip(props TooltipProps) {
 			<div class={ "absolute h-0 w-0 border-4 border-transparent", pos.Arrow }></div>
 		</div>
 	</div>
-	@tooltipScriptComponent(props.Nonce)
 }

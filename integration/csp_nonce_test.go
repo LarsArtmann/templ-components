@@ -43,6 +43,10 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 			Label:     "Menu",
 			Items:     []display.DropdownItem{{Text: "X", Href: "/x"}},
 		}))},
+		{"ContextMenu", utils.Render(t, display.ContextMenu(display.ContextMenuProps{
+			BaseProps: utils.BaseProps{ID: "cm", Nonce: testNonce},
+			Items:     []display.ContextMenuItem{{Text: "Edit", Href: "/edit"}},
+		}))},
 		{"Tabs", utils.Render(t, display.Tabs(display.TabsProps{
 			BaseProps:  utils.BaseProps{Nonce: testNonce},
 			Tabs:       []display.Tab{{ID: "t1", Label: "Tab1"}},

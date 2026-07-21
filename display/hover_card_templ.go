@@ -41,6 +41,8 @@ func hoverCardPositionClass(pos HoverCardPosition) string {
 // HoverCardProps configures a hover-activated card with rich content.
 // The card appears on hover and focus, using pure CSS (no JavaScript).
 // Accessible: the card content is linked to the trigger via aria-describedby.
+// This is the reference implementation for the CSS-only overlay pattern —
+// see ADR-0017 for the broader Popover API migration strategy.
 type HoverCardProps struct {
 	utils.BaseProps
 	Content  templ.Component
@@ -116,7 +118,7 @@ func HoverCard(props HoverCardProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 64, Col: 24}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 66, Col: 24}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -149,7 +151,7 @@ func HoverCard(props HoverCardProps) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 70, Col: 10}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 72, Col: 10}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
@@ -180,7 +182,7 @@ func HoverCard(props HoverCardProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 77, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/hover_card.templ`, Line: 79, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {
