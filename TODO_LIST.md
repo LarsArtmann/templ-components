@@ -84,14 +84,14 @@
 
 ## P3 — Polish & community
 
-| #   | Task                                                             | Status      | Evidence                                                                                                       | Source            |
-| --- | ---------------------------------------------------------------- | ----------- | -------------------------------------------------------------------------------------------------------------- | ----------------- |
-| 27  | Demo site / showcase (live rendered components)                  | ✅ DONE     | `examples/demo` serves a live component showcase; Docker + Cloud Run deployment in place; README links to demo | multiple-feedback |
-| 28  | `awesome-templ` PR submission (updated component count)          | ⚫ BLOCKED  | External repo submission — needs maintainer approval                                                           | session10:161     |
-| 29  | `templ.guide` listing submission                                 | ⚫ BLOCKED  | External repo submission — needs maintainer approval                                                           | session10:162     |
-| 30  | Configure SSH tag signing (`gpg.ssh.allowedSignersFile`)         | ⚫ BLOCKED  | Requires user's local git config + SSH key setup                                                               | v0.8-release:82   |
-| 31  | Blocks/composition examples (dashboard, login, settings layouts) | ⬜ DEFERRED | Deferred to v1.0 — needs design review for composition API                                                     | research:74       |
-| 32  | Standalone `/forms` quickstart demo route                        | ✅ DONE     | `examples/demo` — `/forms` route shipped in v0.17.0 with all form components + HTMX filter bar                 | v0.17.0           |
+| #   | Task                                                             | Status     | Evidence                                                                                                            | Source            |
+| --- | ---------------------------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| 27  | Demo site / showcase (live rendered components)                  | ✅ DONE    | `examples/demo` serves a live component showcase; Docker + Cloud Run deployment in place; README links to demo      | multiple-feedback |
+| 28  | `awesome-templ` PR submission (updated component count)          | ⚫ BLOCKED | External repo submission — needs maintainer approval                                                                | session10:161     |
+| 29  | `templ.guide` listing submission                                 | ⚫ BLOCKED | External repo submission — needs maintainer approval                                                                | session10:162     |
+| 30  | Configure SSH tag signing (`gpg.ssh.allowedSignersFile`)         | ⚫ BLOCKED | Requires user's local git config + SSH key setup                                                                    | v0.8-release:82   |
+| 31  | Blocks/composition examples (dashboard, login, settings layouts) | ✅ DONE    | `recipes/` package shipped in v0.21.0 — Dashboard, SettingsLayout, LoginCard; demo routes `/recipes/*` added v1.1.1 | v0.21.0           |
+| 32  | Standalone `/forms` quickstart demo route                        | ✅ DONE    | `examples/demo` — `/forms` route shipped in v0.17.0 with all form components + HTMX filter bar                      | v0.17.0           |
 
 ---
 
@@ -110,12 +110,12 @@
 
 ## v2.0 — Architectural changes
 
-| #   | Task                                                            | Status      | Evidence                                                                                                          | Source         |
-| --- | --------------------------------------------------------------- | ----------- | ----------------------------------------------------------------------------------------------------------------- | -------------- |
-| 39  | Compound component pattern (Trigger/Content/Close) for overlays | ⬜ DEFERRED | Current Modal/Drawer are monolithic                                                                               | research:70    |
-| 40  | Native `<dialog>` element for Modal/Drawer                      | ✅ DONE     | `display/shared.templ` — `<dialog>` + `showModal()`/`close()`, ~200 lines of JS eliminated, `@starting-style` CSS | session:dialog |
-| 41  | Headless/unstyled component variants (Radix UI model)           | ⬜ DEFERRED | All components ship with Tailwind classes                                                                         | session8:126   |
-| 42  | CLI tool (`templ-components add <component>`, shadcn-style)     | ⬜ DEFERRED | No CLI exists                                                                                                     | session8:127   |
+| #   | Task                                                            | Status      | Evidence                                                                                                                     | Source         |
+| --- | --------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| 39  | Compound component pattern (Trigger/Content/Close) for overlays | ⬜ DEFERRED | Current Modal/Drawer are monolithic                                                                                          | research:70    |
+| 40  | Native `<dialog>` element for Modal/Drawer                      | ✅ DONE     | `display/shared.templ` — `<dialog>` + `showModal()`/`close()`, ~200 lines of JS eliminated, `@starting-style` CSS            | session:dialog |
+| 41  | Headless/unstyled component variants (Radix UI model)           | ❌ WONTFIX  | ADR-0021 evaluated 3 options; existing `Class` override accepted. Closed v1.1.0                                              | session8:126   |
+| 42  | CLI tool (`templ-components add <component>`, shadcn-style)     | ✅ DONE     | `cmd/tc/` shipped in v1.1.0 — `tc init`, `tc ls`, `tc add <component>` with embedded `.templ` sources and dependency warning | v1.1.0         |
 
 ---
 
@@ -156,10 +156,10 @@
 
 Items #60, #63, #64 were removed as duplicates of #38, #35, #39 (see v1.0/v2.0 sections above).
 
-| #   | Task                                                                                                                                                                                                           | Status      | Evidence                                                                                                                    | Source            |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------- | --------------------------------------------------------------------------------------------------------------------------- | ----------------- |
-| 61  | Add docs-health CI check                                                                                                                                                                                       | ⬜ DEFERRED | New CI step that runs docs-count drift assertions                                                                           | pareto-plan       |
-| 62  | Add `Validate()` to `errorpage.ErrorPageProps` only (catches invalid `StatusCode`/`Family` combos that produce wrong HTTP responses). Other props use graceful `utils.Lookup` fallback — no `Validate` needed. | ⬜ DEFERRED | Scoped from "top 5 props" (over-engineering) to the one struct where invalid input changes HTTP behavior. Behind v1.0 flag. | data-model-review |
+| #   | Task                                                                                                                                                                                                           | Status  | Evidence                                                                         | Source |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- | -------------------------------------------------------------------------------- | ------ |
+| 61  | Add docs-health CI check                                                                                                                                                                                       | ✅ DONE | `.github/workflows/ci.yaml` runs `TestDocsCountDrift` since v1.0.0               | v1.0.0 |
+| 62  | Add `Validate()` to `errorpage.ErrorPageProps` only (catches invalid `StatusCode`/`Family` combos that produce wrong HTTP responses). Other props use graceful `utils.Lookup` fallback — no `Validate` needed. | ✅ DONE | `ErrorPageProps.Validate()` shipped in v1.0.0 — 3 sentinel errors + 8 sub-tests. | v1.0.0 |
 
 ---
 

@@ -50,15 +50,29 @@ Immutable configuration objects.
 | AvatarStatus    | Online state: online, offline, none                      | `display.AvatarStatus`       |
 | CardPadding     | Internal spacing: none, sm, md, lg                       | `display.CardPadding`        |
 
+## Platform terms (v0.20.0+)
+
+| Term           | Description                                                                                       | Where defined                                         |
+| -------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| ContainerAware | Opt-in flag making a component respond to its parent container width via `@container` queries     | `NavProps.ContainerAware`, `CardProps.ContainerAware` |
+| Recipe         | Pre-composed screen layout built from primitives (Dashboard, SettingsLayout, LoginCard)           | `recipes/` package                                    |
+| Semantic Token | CSS variable alias mapping a Tailwind palette color to a role (`--color-tc-primary` etc.)         | `templates/templ-components-theme.css`                |
+| Theme Preset   | Drop-in CSS file with a complete `@theme` palette override (default, minimal, glass)              | `templates/presets/`                                  |
+| HTMXSrc        | `PageProps` field for self-hosting htmx; suppresses CDN preconnect, SRI, and response-targets ext | `layout.PageProps.HTMXSrc`                            |
+| Popover API    | Native HTML `popover="auto"` attribute for click-toggle panels with light-dismiss + top-layer     | `display/Popover`, ADR-0017                           |
+| tc CLI         | Scaffolding tool: `tc init`, `tc ls`, `tc add <component>` — copies `.templ` to a consumer dir    | `cmd/tc/`                                             |
+
 ## Bounded Contexts
 
-| Context    | Description                                                       | Key Types                                         |
-| ---------- | ----------------------------------------------------------------- | ------------------------------------------------- |
-| Display    | Visual data presentation (cards, tables, badges, avatars, tabs)   | Card, Table, Badge, Avatar, Tabs                  |
-| Feedback   | User-facing notifications (alerts, toasts, progress, spinners)    | Alert, Toast, ProgressBar, Spinner                |
-| Forms      | User input controls (text, select, checkbox, radio, toggle, file) | Input, Select, Textarea, Radio, Toggle, FileInput |
-| Navigation | Page navigation (nav bars, pagination, breadcrumbs)               | Nav, Pagination, Breadcrumbs                      |
-| Layout     | Page-level structure (base HTML, theme, minimal)                  | Base, Minimal, ThemeScript                        |
-| HTMX       | HTMX integration (loading, error handling, CSRF)                  | LoadingIndicator, GlobalErrorHandling, SwapOOB    |
-| Icons      | SVG icon rendering with typed names                               | Icon, IconWithStrokeWidth                         |
-| ErrorPage  | Structured error presentation (page, detail, alert)               | ErrorPage, ErrorDetail, ErrorAlert                |
+| Context    | Description                                                         | Key Types                                         |
+| ---------- | ------------------------------------------------------------------- | ------------------------------------------------- |
+| Display    | Visual data presentation (cards, tables, badges, avatars, tabs)     | Card, Table, Badge, Avatar, Tabs                  |
+| Feedback   | User-facing notifications (alerts, toasts, progress, spinners)      | Alert, Toast, ProgressBar, Spinner                |
+| Forms      | User input controls (text, select, checkbox, radio, toggle, file)   | Input, Select, Textarea, Radio, Toggle, FileInput |
+| Navigation | Page navigation (nav bars, pagination, breadcrumbs)                 | Nav, Pagination, Breadcrumbs                      |
+| Layout     | Page-level structure (base HTML, theme, minimal)                    | Base, Minimal, ThemeScript                        |
+| HTMX       | HTMX integration (loading, error handling, CSRF)                    | LoadingIndicator, GlobalErrorHandling, SwapOOB    |
+| Icons      | SVG icon rendering with typed names                                 | Icon, IconWithStrokeWidth                         |
+| ErrorPage  | Structured error presentation (page, detail, alert)                 | ErrorPage, ErrorDetail, ErrorAlert                |
+| Recipes    | Top-of-DAG composition layer (Dashboard, SettingsLayout, LoginCard) | Dashboard, SettingsLayout, LoginCard              |
+| CLI        | Scaffolding tool for copying components into consumer projects      | `tc` binary (`cmd/tc/`)                           |

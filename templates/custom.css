@@ -22,9 +22,34 @@
  * See: docs/research/modern-browser-capabilities.md
  */
 
-/* --- Popover API backdrop (Dropdown, Popover, ContextMenu) --- */
+/* --- Popover API backdrop + entrance/exit animation (Dropdown, Popover, ContextMenu) --- */
 [popover]::backdrop {
   background-color: transparent;
+}
+
+[popover] {
+  transition:
+    opacity 150ms ease-out,
+    transform 150ms ease-out,
+    overlay 150ms allow-discrete,
+    display 150ms allow-discrete;
+}
+
+[popover]:popover-open {
+  opacity: 1;
+  transform: scale(1);
+}
+
+@starting-style {
+  [popover]:popover-open {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+
+[popover]:not(:popover-open) {
+  opacity: 0;
+  transform: scale(0.96);
 }
 
 /*
