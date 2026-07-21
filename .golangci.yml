@@ -54,7 +54,6 @@ linters:
     - goconst
     - gocritic
     - gocyclo
-    - godoclint
     - godot
     - godox
     - goheader
@@ -72,7 +71,6 @@ linters:
     - interfacebloat
     - intrange
     - iotamixing
-    - ireturn
     - loggercheck
     - maintidx
     - makezero
@@ -107,7 +105,6 @@ linters:
     - staticcheck
     - tagalign
     - tagliatelle
-    - testableexamples
     - testifylint
     - testpackage
     - thelper
@@ -150,13 +147,6 @@ linters:
         - ifElseChain
     gomoddirectives:
       replace-local: true
-    ireturn:
-      allow:
-        - error
-        - empty
-        - anon
-        - stdlib
-        - generic
     makezero:
       always: true
     mnd:

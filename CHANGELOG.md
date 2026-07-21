@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`.golangci.yml` lint gate repaired** — the three linters documented as "disabled" in AGENTS.md (`ireturn`, `godoclint`, `testableexamples`) were never actually removed from the `enable:` list, producing 68 findings that would have failed CI on the next push. Removed all three from the enable list and deleted the dead `ireturn:` settings block. `golangci-lint run` now exits 0 as the v0.18.1 CHANGELOG originally claimed.
+
 ### Added
 
 - **`layout.AppShell` — the #1 admin dashboard pattern, now a first-class component.** Sidebar + sticky header + main content shell using `lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh`. The sidebar is `hidden lg:block`; an optional `MobileNav templ.Component` slot accepts any component (typically `display.Drawer`) for mobile navigation — keeping the `layout` package's deps minimal (`utils`, `icons` only; no `layout → display` import cycle). `SidebarWidth` typed enum (SM/MD/LG/Auto) drives the `--tc-sidebar-w` CSS variable. Renders _inside_ `Base`'s `<main>` — does NOT emit its own `<main>` or skip-link (nested `<main>` is invalid HTML; Base owns both per WCAG 2.4.1 Bypass Blocks). Recipe: `docs/recipes/appshell-dashboard-layout.md`.
