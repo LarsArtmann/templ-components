@@ -1,274 +1,274 @@
 version: "2"
 run:
-    timeout: 5m
-    go: 1.26.4
-    build-tags:
-        - goexperiment.arenas
-        - goexperiment.goroutineleakprofile
-        - goexperiment.jsonv2
-        - goexperiment.runtimesecret
-        - goexperiment.simd
-    allow-parallel-runners: true
-    allow-serial-runners: true
-    issues-exit-code: 1
+  timeout: 5m
+  go: 1.26.4
+  build-tags:
+    - goexperiment.arenas
+    - goexperiment.goroutineleakprofile
+    - goexperiment.jsonv2
+    - goexperiment.runtimesecret
+    - goexperiment.simd
+  allow-parallel-runners: true
+  allow-serial-runners: true
+  issues-exit-code: 1
 output:
-    formats: {}
+  formats: {}
 linters:
-    enable:
-        - arangolint
-        - asasalint
-        - asciicheck
-        - bidichk
-        - bodyclose
-        - canonicalheader
-        - clickhouselint
-        - containedctx
-        - contextcheck
-        - copyloopvar
-        - cyclop
-        - decorder
-        - depguard
-        - dogsled
-        - dupl
-        - dupword
-        - durationcheck
-        - embeddedstructfieldcheck
-        - err113
-        - errcheck
-        - errchkjson
-        - errname
-        - errorlint
-        - exhaustive
-        - exhaustruct
-        - exptostd
-        - fatcontext
-        - forbidigo
-        - forcetypeassert
-        - funlen
-        - ginkgolinter
-        - gocheckcompilerdirectives
-        - gochecknoglobals
-        - gochecknoinits
-        - gochecksumtype
-        - gocognit
-        - goconst
-        - gocritic
-        - gocyclo
-        - godoclint
-        - godot
-        - godox
-        - goheader
-        - gomoddirectives
-        - gomodguard_v2
-        - goprintffuncname
-        - gosec
-        - gosmopolitan
-        - govet
-        - grouper
-        - iface
-        - importas
-        - inamedparam
-        - ineffassign
-        - interfacebloat
-        - intrange
-        - iotamixing
-        - ireturn
-        - loggercheck
-        - maintidx
-        - makezero
-        - mirror
-        - misspell
-        - mnd
-        - modernize
-        - musttag
-        - nakedret
-        - nestif
-        - nilerr
-        - nilnesserr
-        - nilnil
-        - nlreturn
-        - noctx
-        - nolintlint
-        - nonamedreturns
-        - nosprintfhostport
-        - paralleltest
-        - perfsprint
-        - prealloc
-        - predeclared
-        - promlinter
-        - protogetter
-        - reassign
-        - recvcheck
-        - revive
-        - rowserrcheck
-        - sloglint
-        - spancheck
-        - sqlclosecheck
-        - staticcheck
-        - tagalign
-        - tagliatelle
-        - testableexamples
-        - testifylint
-        - testpackage
-        - thelper
-        - tparallel
-        - unconvert
-        - unparam
-        - unqueryvet
-        - unused
-        - usestdlibvars
-        - usetesting
-        - varnamelen
-        - wastedassign
-        - whitespace
-        - wrapcheck
-        - wsl_v5
-        - zerologlint
-    settings:
-        cyclop:
-            max-complexity: 12
-        depguard:
-            rules:
-                main:
-                    allow:
-                        - $gostd
-                        - github.com/larsartmann/templ-components
-                        - github.com/a-h/templ
-                        - github.com/Oudwins/tailwind-merge-go
-                        - github.com/larsartmann/go-error-family
-        exhaustruct:
-            exclude:
-                - os/exec.Cmd
-        funlen:
-            lines: 65
-            statements: 50
-        ginkgolinter:
-            forbid-focus-container: true
-            forbid-spec-pollution: true
-        gocritic:
-            disabled-checks:
-                - ifElseChain
-        gomoddirectives:
-            replace-local: true
-        ireturn:
-            allow:
-                - error
-                - empty
-                - anon
-                - stdlib
-                - generic
-        makezero:
-            always: true
-        mnd:
-            ignored-numbers:
-                - "200"
-                - "201"
-                - "204"
-                - "301"
-                - "302"
-                - "400"
-                - "401"
-                - "403"
-                - "404"
-                - "405"
-                - "409"
-                - "429"
-                - "500"
-                - "501"
-                - "502"
-                - "503"
-                - "504"
-                - "0o600"
-                - "0o644"
-                - "0o700"
-                - "0o750"
-                - "0o755"
-                - "2"
-                - "5"
-        revive:
-            rules:
-                - disabled: true
-                  name: exported
-                - disabled: true
-                  name: package-comments
-        testifylint:
-            disable:
-                - go-require
-            enable-all: true
-        varnamelen:
-            ignore-map-index-ok: true
-            ignore-names:
-                - err
-                - ok
-                - tt
-                - fn
-                - t
-                - i
-                - m
-                - g
-                - a
-                - b
-                - v
-                - w
-                - r
-                - tc
-                - id
-                - s
-                - p
-                - bp
-                - cp
-                - wg
-                - sb
-                - bt
-                - ft
-                - it
-                - bg
-                - bw
-                - f
-            ignore-type-assert-ok: true
-    exclusions:
-        generated: lax
-        rules:
-            - path: _test\.go$
-              linters:
-                - exhaustruct
-                - funlen
-                - goconst
-            - path: _test\.go
-              linters:
-                - exhaustruct
-                - testpackage
-                - gochecknoglobals
-                - funlen
-                - cyclop
-                - goconst
-                - err113
-                - makezero
-                - gocheckcompilerdirectives
-                - varnamelen
-            - path: _test\.go
-              text: unused
-              linters:
-                - unused
-        paths:
-            - \.gen\.go$
-            - _templ\.go$
-            - vendor/
-            - examples/
+  enable:
+    - arangolint
+    - asasalint
+    - asciicheck
+    - bidichk
+    - bodyclose
+    - canonicalheader
+    - clickhouselint
+    - containedctx
+    - contextcheck
+    - copyloopvar
+    - cyclop
+    - decorder
+    - depguard
+    - dogsled
+    - dupl
+    - dupword
+    - durationcheck
+    - embeddedstructfieldcheck
+    - err113
+    - errcheck
+    - errchkjson
+    - errname
+    - errorlint
+    - exhaustive
+    - exhaustruct
+    - exptostd
+    - fatcontext
+    - forbidigo
+    - forcetypeassert
+    - funlen
+    - ginkgolinter
+    - gocheckcompilerdirectives
+    - gochecknoglobals
+    - gochecknoinits
+    - gochecksumtype
+    - gocognit
+    - goconst
+    - gocritic
+    - gocyclo
+    - godoclint
+    - godot
+    - godox
+    - goheader
+    - gomoddirectives
+    - gomodguard_v2
+    - goprintffuncname
+    - gosec
+    - gosmopolitan
+    - govet
+    - grouper
+    - iface
+    - importas
+    - inamedparam
+    - ineffassign
+    - interfacebloat
+    - intrange
+    - iotamixing
+    - ireturn
+    - loggercheck
+    - maintidx
+    - makezero
+    - mirror
+    - misspell
+    - mnd
+    - modernize
+    - musttag
+    - nakedret
+    - nestif
+    - nilerr
+    - nilnesserr
+    - nilnil
+    - nlreturn
+    - noctx
+    - nolintlint
+    - nonamedreturns
+    - nosprintfhostport
+    - paralleltest
+    - perfsprint
+    - prealloc
+    - predeclared
+    - promlinter
+    - protogetter
+    - reassign
+    - recvcheck
+    - revive
+    - rowserrcheck
+    - sloglint
+    - spancheck
+    - sqlclosecheck
+    - staticcheck
+    - tagalign
+    - tagliatelle
+    - testableexamples
+    - testifylint
+    - testpackage
+    - thelper
+    - tparallel
+    - unconvert
+    - unparam
+    - unqueryvet
+    - unused
+    - usestdlibvars
+    - usetesting
+    - varnamelen
+    - wastedassign
+    - whitespace
+    - wrapcheck
+    - wsl_v5
+    - zerologlint
+  settings:
+    cyclop:
+      max-complexity: 12
+    depguard:
+      rules:
+        main:
+          allow:
+            - $gostd
+            - github.com/larsartmann/templ-components
+            - github.com/a-h/templ
+            - github.com/Oudwins/tailwind-merge-go
+            - github.com/larsartmann/go-error-family
+    exhaustruct:
+      exclude:
+        - os/exec.Cmd
+    funlen:
+      lines: 65
+      statements: 50
+    ginkgolinter:
+      forbid-focus-container: true
+      forbid-spec-pollution: true
+    gocritic:
+      disabled-checks:
+        - ifElseChain
+    gomoddirectives:
+      replace-local: true
+    ireturn:
+      allow:
+        - error
+        - empty
+        - anon
+        - stdlib
+        - generic
+    makezero:
+      always: true
+    mnd:
+      ignored-numbers:
+        - "200"
+        - "201"
+        - "204"
+        - "301"
+        - "302"
+        - "400"
+        - "401"
+        - "403"
+        - "404"
+        - "405"
+        - "409"
+        - "429"
+        - "500"
+        - "501"
+        - "502"
+        - "503"
+        - "504"
+        - "0o600"
+        - "0o644"
+        - "0o700"
+        - "0o750"
+        - "0o755"
+        - "2"
+        - "5"
+    revive:
+      rules:
+        - disabled: true
+          name: exported
+        - disabled: true
+          name: package-comments
+    testifylint:
+      disable:
+        - go-require
+      enable-all: true
+    varnamelen:
+      ignore-map-index-ok: true
+      ignore-names:
+        - err
+        - ok
+        - tt
+        - fn
+        - t
+        - i
+        - m
+        - g
+        - a
+        - b
+        - v
+        - w
+        - r
+        - tc
+        - id
+        - s
+        - p
+        - bp
+        - cp
+        - wg
+        - sb
+        - bt
+        - ft
+        - it
+        - bg
+        - bw
+        - f
+      ignore-type-assert-ok: true
+  exclusions:
+    generated: lax
+    rules:
+      - path: _test\.go$
+        linters:
+          - exhaustruct
+          - funlen
+          - goconst
+      - path: _test\.go
+        linters:
+          - exhaustruct
+          - testpackage
+          - gochecknoglobals
+          - funlen
+          - cyclop
+          - goconst
+          - err113
+          - makezero
+          - gocheckcompilerdirectives
+          - varnamelen
+      - path: _test\.go
+        text: unused
+        linters:
+          - unused
+    paths:
+      - \.gen\.go$
+      - _templ\.go$
+      - vendor/
+      - examples/
 formatters:
-    enable:
-        - gci
-        - goimports
-        - gofumpt
-        - golines
-    settings:
-        golines:
-            max-len: 120
-    exclusions:
-        generated: lax
-        paths:
-            - _templ\.go$
-            - _templ\\.go$
+  enable:
+    - gci
+    - goimports
+    - gofumpt
+    - golines
+  settings:
+    golines:
+      max-len: 120
+  exclusions:
+    generated: lax
+    paths:
+      - _templ\.go$
+      - _templ\\.go$
 issues:
-    max-issues-per-linter: 50
-    max-same-issues: 10
+  max-issues-per-linter: 50
+  max-same-issues: 10
