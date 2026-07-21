@@ -1,0 +1,43 @@
+/*
+ * templ-components preset: glass
+ *
+ * Frosted-glass surfaces — translucent panels, blurred backdrops, vibrant
+ * accent. Best on photographic or gradient backgrounds where cards can
+ * "float" over the content. Components keep their layout; surfaces get
+ * semi-transparent fills + backdrop-blur.
+ *
+ * Usage:
+ *   @import "tailwindcss" source(none);
+ *   @import "./templ-components-theme.css";
+ *   @import "./presets/glass.css";
+ *   @import "./custom.css";
+ *
+ * Note: this preset overrides --color-tc-* tokens only. For the frosted
+ * panel effect, also add `backdrop-blur` + translucent bg classes on
+ * the component instances (Tailwind utilities). The tokens below shift
+ * the primary palette to violet for a more "glassy" feel.
+ */
+@theme {
+  --color-tc-primary: var(--color-violet-600);
+  --color-tc-primary-hover: var(--color-violet-700);
+  --color-tc-primary-fg: var(--color-white);
+  --color-tc-danger: var(--color-rose-600);
+  --color-tc-danger-hover: var(--color-rose-700);
+  --color-tc-success: var(--color-emerald-600);
+  --color-tc-warning: var(--color-amber-500);
+  --color-tc-info: var(--color-sky-500);
+}
+
+/*
+ * Surface helpers — apply via Class on Cards/Panels for the glass effect.
+ *   class="tc-glass"
+ */
+@utility tc-glass {
+  background-color: rgb(255 255 255 / 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.dark .tc-glass {
+  background-color: rgb(17 24 39 / 0.6);
+}

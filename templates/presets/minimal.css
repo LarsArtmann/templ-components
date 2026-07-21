@@ -1,0 +1,23 @@
+/*
+ * templ-components preset: minimal
+ *
+ * A muted, lower-saturation palette with reduced visual noise. Uses
+ * neutral grays and a single subdued accent. Good for content-heavy
+ * apps (docs, admin tools) where the UI should recede.
+ *
+ * Usage:
+ *   @import "tailwindcss" source(none);
+ *   @import "./templ-components-theme.css";
+ *   @import "./presets/minimal.css";
+ *   @import "./custom.css";
+ */
+@theme {
+  --color-tc-primary: var(--color-slate-700);
+  --color-tc-primary-hover: var(--color-slate-800);
+  --color-tc-primary-fg: var(--color-white);
+  --color-tc-danger: var(--color-rose-700);
+  --color-tc-danger-hover: var(--color-rose-800);
+  --color-tc-success: var(--color-emerald-700);
+  --color-tc-warning: var(--color-amber-600);
+  --color-tc-info: var(--color-slate-500);
+}

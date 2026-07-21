@@ -69,6 +69,13 @@ type PageProps struct {
 	// a different CDN, or a self-hosted origin. Both the htmx main script and
 	// the response-targets extension derive their URLs from this value.
 	HTMXCDN string
+	// HTMXSrc, when non-empty, switches the htmx main script from the CDN URL
+	// to a self-hosted path. The value becomes the <script src> attribute verbatim.
+	// Example: "/static/htmx.min.js". When set, HTMXVersion/HTMXCDN/HTMXUseSRI
+	// are ignored for the main script (no SRI is emitted because the asset is
+	// same-origin). The response-targets extension still uses HTMXCDN unless
+	// HTMXResponseTargets is false. See ADR-0007.
+	HTMXSrc string
 	// HTMXResponseTargets controls whether the htmx response-targets extension
 	// is loaded alongside htmx. Defaults to true for backward compatibility;
 	// set to false to skip the extra request when you don't use it.
@@ -165,13 +172,15 @@ templ Base(props PageProps) {
 			if props.CSSPath != "" {
 				<link rel="stylesheet" href={ props.CSSPath }/>
 			}
-			if props.HTMXVersion != "" {
+			if props.HTMXVersion != "" || props.HTMXSrc != "" {
 				{{ cdnOrigin := htmxCDNOrigin(props.HTMXCDN) }}
-				if cdnOrigin != "" {
+				if cdnOrigin != "" && props.HTMXSrc == "" {
 					<link rel="preconnect" href={ cdnOrigin } crossorigin/>
 					<link rel="dns-prefetch" href={ cdnOrigin }/>
 				}
-				if props.HTMXUseSRI {
+				if props.HTMXSrc != "" {
+					<script src={ props.HTMXSrc }></script>
+				} else if props.HTMXUseSRI {
 					{{ mainSRI := htmxMainSRI(props.HTMXVersion) }}
 					if mainSRI != "" {
 						<script src={ htmxScriptURL(props.HTMXVersion, props.HTMXCDN) } integrity={ mainSRI } crossorigin="anonymous"></script>

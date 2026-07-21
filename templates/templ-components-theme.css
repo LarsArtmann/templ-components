@@ -1,0 +1,61 @@
+/*
+ * templ-components semantic token layer — ADR-0008 implementation.
+ *
+ * Import this file from your app.css to alias Tailwind palette colors to
+ * semantic names (tc-primary, tc-danger, tc-success, etc.). Once imported,
+ * you can override --color-tc-primary in your @theme block to re-skin every
+ * component that uses bg-blue-600 / text-blue-600 / etc. — without touching
+ * any .templ source.
+ *
+ * Usage:
+ *   @import "tailwindcss" source(none);
+ *   @import "./templ-components-theme.css";   <-- this file
+ *   @import "./custom.css";
+ *
+ * Override:
+ *   @theme {
+ *     --color-tc-primary: #4f46e5;   (indigo instead of blue)
+ *   }
+ *
+ * Then every bg-blue-600 / text-blue-600 / border-blue-600 in the library
+ * silently becomes your brand color, because blue-600 IS tc-primary.
+ *
+ * This file is OPT-IN. The library works without it — the @theme block
+ * below only aliases names, it does not change any visible color until you
+ * override --color-tc-primary.
+ */
+
+@theme {
+  /* Primary (default: blue) — buttons, links, active states, focus rings */
+  --color-tc-primary: var(--color-blue-600);
+  --color-tc-primary-hover: var(--color-blue-700);
+  --color-tc-primary-fg: var(--color-white);
+
+  /* Danger (default: red) — destructive actions, errors, validation */
+  --color-tc-danger: var(--color-red-600);
+  --color-tc-danger-hover: var(--color-red-700);
+
+  /* Success (default: green) — confirmation, positive feedback */
+  --color-tc-success: var(--color-green-600);
+
+  /* Warning (default: amber) — caution, holding states */
+  --color-tc-warning: var(--color-amber-500);
+
+  /* Info (default: blue) — informational feedback */
+  --color-tc-info: var(--color-blue-500);
+
+  /*
+   * Semantic palette → Tailwind palette binding.
+   *
+   * The components reference bg-blue-600, text-red-600, etc. By aliasing
+   * those Tailwind palette names back to the semantic names above, a
+   * single override of --color-tc-primary cascades to every component.
+   */
+  --color-blue-600: var(--color-tc-primary);
+  --color-blue-700: var(--color-tc-primary-hover);
+  --color-blue-500: var(--color-tc-info);
+  --color-red-600: var(--color-tc-danger);
+  --color-red-700: var(--color-tc-danger-hover);
+  --color-green-600: var(--color-tc-success);
+  --color-amber-500: var(--color-tc-warning);
+}

@@ -268,3 +268,33 @@ func TestBaseHTMXCDNOverrides(t *testing.T) {
 	output := utils.Render(t, Base(props))
 	utils.AssertContains(t, output, "cdn.example.com")
 }
+
+// TestBaseHTMXSrcSelfHost verifies the HTMXSrc field switches the htmx main
+// script from the CDN URL to a self-hosted path, emits no SRI (same-origin),
+// and skips the CDN preconnect (ADR-0007).
+func TestBaseHTMXSrcSelfHost(t *testing.T) {
+	t.Parallel()
+
+	t.Run("HTMXSrc emits self-hosted script and skips CDN", func(t *testing.T) {
+		t.Parallel()
+
+		props := DefaultPageProps()
+		props.HTMXSrc = "/static/htmx.min.js"
+		props.HTMXResponseTargets = false // self-hoster skips CDN extension too
+		output := utils.Render(t, Base(props))
+		utils.AssertContains(t, output, `src="/static/htmx.min.js"`)
+		utils.AssertNotContains(t, output, "cdn.jsdelivr.net")
+		utils.AssertNotContains(t, output, "preconnect")
+		utils.AssertNotContains(t, output, "integrity=")
+	})
+
+	t.Run("HTMXSrc with empty Version still emits script", func(t *testing.T) {
+		t.Parallel()
+
+		props := DefaultPageProps()
+		props.HTMXVersion = ""
+		props.HTMXSrc = "/vendor/htmx.js"
+		output := utils.Render(t, Base(props))
+		utils.AssertContains(t, output, `src="/vendor/htmx.js"`)
+	})
+}

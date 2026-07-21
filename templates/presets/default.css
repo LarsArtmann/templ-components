@@ -1,0 +1,24 @@
+/*
+ * templ-components preset: default
+ *
+ * The library defaults. Import this file when you want the "stock" look:
+ * blue primary, standard gray neutrals. This file effectively no-ops (it
+ * re-declares the same values as the library's defaults) but is useful as
+ * a base to copy and modify.
+ *
+ * Usage:
+ *   @import "tailwindcss" source(none);
+ *   @import "./templ-components-theme.css";
+ *   @import "./presets/default.css";
+ *   @import "./custom.css";
+ */
+@theme {
+  --color-tc-primary: var(--color-blue-600);
+  --color-tc-primary-hover: var(--color-blue-700);
+  --color-tc-primary-fg: var(--color-white);
+  --color-tc-danger: var(--color-red-600);
+  --color-tc-danger-hover: var(--color-red-700);
+  --color-tc-success: var(--color-green-600);
+  --color-tc-warning: var(--color-amber-500);
+  --color-tc-info: var(--color-blue-500);
+}

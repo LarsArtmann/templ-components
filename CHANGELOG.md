@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Semantic token layer (ADR-0008 implementation).** New `templates/templ-components-theme.css` aliases every Tailwind palette color used by the library (`blue-600`, `red-600`, `green-600`, etc.) to semantic tokens (`--color-tc-primary`, `--color-tc-danger`, `--color-tc-success`, etc.). `templates/app.css` now imports it by default. Consumers override one token (`--color-tc-primary: #4f46e5`) to re-skin every component — buttons, links, focus rings, toasts — without touching any `.templ source. New `docs/theming.md` documents the three-tier theming model (semantic tokens, direct palette override, per-component Class).
+- **Theme presets.** Three starter CSS files in `templates/presets/`: `default.css` (library stock), `minimal.css` (muted slate/emerald palette, reduced saturation), `glass.css` (violet + frosted-glass surface helper). Import one from `app.css` to switch palette without redefining every token.
+- **Self-host HTMX opt-in (ADR-0007 implementation).** New `PageProps.HTMXSrc string` field switches the htmx main script from the CDN URL to a self-hosted path (e.g. `/static/htmx.min.js`). When set: the CDN preconnect is skipped, no SRI hash is emitted (same-origin), and `HTMXVersion`/`HTMXCDN`/`HTMXUseSRI` are ignored for the main script. The response-targets extension still uses CDN unless `HTMXResponseTargets: false`. CDN remains the default — flip to self-host as default is planned for v1.0.
+
 ## [0.21.0] — 2026-07-21
 
 ### Added
