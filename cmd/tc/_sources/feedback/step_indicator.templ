@@ -1,0 +1,114 @@
+package feedback
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// StepIndicatorOrientation defines the layout direction of a step indicator
+type StepIndicatorOrientation string
+
+const (
+	StepHorizontal StepIndicatorOrientation = "horizontal"
+	StepVertical   StepIndicatorOrientation = "vertical"
+)
+
+// StepIndicatorProps configures a step/progress indicator
+type StepIndicatorProps struct {
+	utils.BaseProps
+	Steps       []string
+	CurrentStep int
+	Orientation StepIndicatorOrientation
+}
+
+// DefaultStepIndicatorProps returns sensible defaults
+func DefaultStepIndicatorProps() StepIndicatorProps {
+	return StepIndicatorProps{}
+}
+
+// StepIndicator renders a step indicator (horizontal or vertical)
+//
+//	@feedback.StepIndicator(feedback.StepIndicatorProps{Steps: []string{"Details", "Review", "Confirm"}, CurrentStep: 1})
+templ StepIndicator(props StepIndicatorProps) {
+	<nav
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Progress") }
+		class={ utils.Class("", props.Class) }
+		{ props.Attrs... }
+	>
+		if props.Orientation == StepVertical {
+			<ol class="flex flex-col space-y-4">
+				for i, step := range props.Steps {
+					<li class="flex items-start">
+						<div class="flex flex-col items-center">
+							@stepCircle(i, props.CurrentStep)
+							if i < len(props.Steps)-1 {
+								<div class={ "w-0.5 h-8", stepLineClass(i+1, props.CurrentStep) }></div>
+							}
+						</div>
+						<span class={ "ms-3 text-sm font-medium mt-1", stepLabelClass(i, props.CurrentStep) }>{ step }</span>
+					</li>
+				}
+			</ol>
+		} else {
+			<ol class="flex items-center w-full">
+				for i, step := range props.Steps {
+					<li class={ "flex-1 flex items-center", templ.KV("", i == len(props.Steps)-1) }>
+						if i > 0 {
+							<div class={ "flex-1 h-0.5 mx-2", stepLineClass(i, props.CurrentStep) }></div>
+						}
+						<div class="flex flex-col items-center">
+							@stepCircle(i, props.CurrentStep)
+							<span class={ "mt-2 text-xs font-medium", stepLabelClass(i, props.CurrentStep) }>{ step }</span>
+						</div>
+					</li>
+				}
+			</ol>
+		}
+	</nav>
+}
+
+// stepCircle renders the numbered circle (or check icon when complete) shared by
+// both the vertical and horizontal step layouts.
+templ stepCircle(stepIndex, currentStep int) {
+	<div
+		class={ "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold " + utils.TransitionColors, stepCircleClass(stepIndex, currentStep) }
+		if stepIndex == currentStep {
+			aria-current="step"
+		}
+	>
+		if stepIndex < currentStep {
+			@icons.Icon(icons.Check, "w-4 h-4")
+		} else {
+			{ fmt.Sprintf("%d", stepIndex+1) }
+		}
+	</div>
+}
+
+func stepLineClass(stepIndex, currentStep int) string {
+	if stepIndex <= currentStep {
+		return "bg-blue-600 dark:bg-blue-500"
+	}
+	return "bg-gray-200 dark:bg-gray-700"
+}
+
+func stepCircleClass(stepIndex, currentStep int) string {
+	if stepIndex < currentStep {
+		return "bg-blue-600 text-white dark:bg-blue-500"
+	}
+	if stepIndex == currentStep {
+		return "bg-white dark:bg-gray-800 border-2 border-blue-600 text-blue-600 dark:border-blue-400 dark:text-blue-400"
+	}
+	return "bg-gray-100 text-gray-500 dark:bg-gray-800 dark:text-gray-400"
+}
+
+func stepLabelClass(stepIndex, currentStep int) string {
+	if stepIndex <= currentStep {
+		return "text-blue-600 dark:text-blue-400"
+	}
+	return "text-gray-500 dark:text-gray-400"
+}

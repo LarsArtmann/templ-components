@@ -1,0 +1,257 @@
+package navigation
+
+import "github.com/larsartmann/templ-components/utils"
+
+// NavProps configures a navigation bar.
+//
+// Set ContainerAware: true to make the bar collapse to its hamburger menu
+// based on its parent container's width (CSS @container) instead of the
+// viewport. Useful when Nav is placed inside a sidebar, drawer, or other
+// constrained layout. See ADR-0018.
+type NavProps struct {
+	utils.BaseProps
+	Brand       templ.Component
+	Links       []NavLinkProps
+	RightItems  templ.Component
+	CurrentPath string
+	Sticky      bool
+	// ContainerAware, when true, wraps the nav in a @container div and swaps
+	// sm:/lg: breakpoint classes for @sm:/@lg: so the nav responds to its
+	// container width, not the viewport. Default false (viewport breakpoints).
+	ContainerAware bool
+}
+
+// DefaultNavProps returns sensible defaults
+func DefaultNavProps() NavProps {
+	return NavProps{
+		Sticky: true,
+	}
+}
+
+// navDesktopLinksClass returns the responsive class for the desktop links
+// container, swapping viewport-keyed (sm:) for container-keyed (@sm:) when
+// the nav is container-aware. Both strings are complete Tailwind literals.
+func navDesktopLinksClass(containerAware bool) string {
+	if containerAware {
+		return "hidden @sm:ms-6 @sm:flex @sm:flex-wrap @sm:gap-x-8 @sm:gap-y-2"
+	}
+	return "hidden sm:ms-6 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-2"
+}
+
+// Nav renders a responsive navigation bar
+//
+//	@navigation.Nav(navigation.NavProps{
+//	   Brand: @myLogo(),
+//	   Links: []navigation.NavLinkProps{
+//	     {Href: "/", Text: "Home"},
+//	     {Href: "/about", Text: "About"},
+//	   },
+//	   CurrentPath: "/",
+//	})
+templ Nav(props NavProps) {
+	{{ menuID := utils.EnsureID("mobile-menu", props.ID) }}
+	if props.ContainerAware {
+		<div class="@container">
+			@navInner(props, menuID)
+		</div>
+	} else {
+		@navInner(props, menuID)
+	}
+}
+
+templ navInner(props NavProps, menuID string) {
+	<nav
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Main navigation") }
+		class={ utils.Class("z-40 border-b border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900", props.Class),
+			templ.KV("sticky top-0", props.Sticky) }
+		{ props.Attrs... }
+	>
+		<div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+			<div class="flex min-h-16 items-center justify-between">
+				<div class="flex">
+					if props.Brand != nil {
+						<div class="flex flex-shrink-0 items-center">
+							@props.Brand
+						</div>
+					}
+					<div class={ navDesktopLinksClass(props.ContainerAware) }>
+						for _, link := range props.Links {
+							@NavLink(link, props.CurrentPath)
+						}
+					</div>
+				</div>
+				if props.RightItems != nil {
+					<div class="flex items-center gap-2">
+						@props.RightItems
+					</div>
+				}
+				@MobileMenuToggle(len(props.Links) > 0, menuID, props.ContainerAware)
+			</div>
+		</div>
+		@MobileMenu(props.Links, props.CurrentPath, props.Nonce, menuID, props.ContainerAware)
+	</nav>
+}
+
+// SimpleNavProps configures a minimal navigation with a text brand
+type SimpleNavProps struct {
+	utils.BaseProps
+	BrandText string
+	BrandHref string
+	Links     []NavLinkProps
+	// RightItems is rendered on the right side of the bar (e.g. a ThemeToggle,
+	// a sign-in button, a user menu). Forwarded to Nav.RightItems. Optional.
+	RightItems  templ.Component
+	CurrentPath string
+	Sticky      bool
+}
+
+// DefaultSimpleNavProps returns sensible defaults
+func DefaultSimpleNavProps() SimpleNavProps {
+	return SimpleNavProps{ //nolint:exhaustruct // intentionally minimal defaults
+		BrandHref: "/",
+		Sticky:    true,
+	}
+}
+
+// SimpleNav renders a minimal navigation with text brand
+//
+//	@navigation.SimpleNav(navigation.SimpleNavProps{
+//	   BrandText: "MyApp",
+//	   BrandHref: "/",
+//	   Links: []navigation.NavLinkProps{
+//	     {Href: "/", Text: "Home"},
+//	   },
+//	   RightItems: @layout.ThemeToggle("Toggle theme", ""),
+//	   CurrentPath: "/",
+//	})
+templ SimpleNav(props SimpleNavProps) {
+	@Nav(NavProps{
+		BaseProps:   props.GetBaseProps(),
+		Brand:       simpleBrand(props.BrandText, props.BrandHref),
+		Links:       props.Links,
+		RightItems:  props.RightItems,
+		CurrentPath: props.CurrentPath,
+		Sticky:      props.Sticky,
+	})
+}
+
+templ simpleBrand(text, href string) {
+	<a href={ templ.SafeURL(href) } class="text-xl font-bold text-blue-600 dark:text-blue-400">{ text }</a>
+}
+
+// FooterLink is one link in a FooterColumn.
+type FooterLink struct {
+	Text string
+	Href string
+}
+
+// FooterColumn is a titled group of links in a multi-column footer.
+type FooterColumn struct {
+	Title string
+	Links []FooterLink
+}
+
+// FooterProps configures a footer. When Columns is empty, Footer renders the
+// legacy single-row brand+copyright layout (backward compatible). When
+// Columns has entries, Footer renders a responsive multi-column grid with an
+// optional brand column and a bottom bar.
+type FooterProps struct {
+	utils.BaseProps
+	BrandText string
+	// Columns renders titled link groups in a responsive grid. When non-empty,
+	// switches to multi-column layout. The first column is preceded by a brand
+	// block showing BrandText (if set). Empty = legacy single-row layout.
+	Columns []FooterColumn
+	// BottomBar renders below the columns (or below the legacy single-row when
+	// Columns is empty). Use it for legal links, copyright, or fine print.
+	BottomBar templ.Component
+}
+
+// DefaultFooterProps returns sensible defaults
+func DefaultFooterProps() FooterProps {
+	return FooterProps{}
+}
+
+// Footer renders a site footer. Two layouts:
+//
+//  1. Legacy single-row (backward compat) — when Columns is empty. Centered
+//     "© Year BrandText. All rights reserved." line.
+//  2. Multi-column grid — when Columns is non-empty. Responsive grid of
+//     titled link columns (`grid grid-cols-2 md:grid-cols-4 gap-8`) with an
+//     optional brand block and a BottomBar slot for legal/copyright.
+//
+//	@navigation.Footer(navigation.FooterProps{BrandText: "MyApp"})
+//	@navigation.Footer(navigation.FooterProps{
+//	   BrandText: "Acme",
+//	   Columns: []navigation.FooterColumn{
+//	     {Title: "Product", Links: []navigation.FooterLink{{"Features", "/features"}}},
+//	     {Title: "Company", Links: []navigation.FooterLink{{"About", "/about"}}},
+//	   },
+//	   BottomBar: templ.Raw(`<p>© 2026 Acme</p>`),
+//	})
+templ Footer(props FooterProps) {
+	<footer
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		} else {
+			aria-label="Footer"
+		}
+		{ props.Attrs... }
+	>
+		if len(props.Columns) == 0 {
+			<div class="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
+				<p class="text-center text-sm text-gray-500 dark:text-gray-400">
+					&copy; { utils.CurrentYear() } { props.BrandText }. All rights reserved.
+				</p>
+				if props.BottomBar != nil {
+					<div class="mt-4 text-center text-xs text-gray-400 dark:text-gray-500">
+						@props.BottomBar
+					</div>
+				}
+			</div>
+		} else {
+			<div class="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
+				<div class="grid grid-cols-2 md:grid-cols-4 gap-8">
+					if props.BrandText != "" {
+						<div class="col-span-2 md:col-span-1">
+							<p class="text-lg font-semibold text-gray-900 dark:text-white">{ props.BrandText }</p>
+						</div>
+					}
+					for _, col := range props.Columns {
+						<div>
+							if col.Title != "" {
+								<h3 class="text-sm font-semibold text-gray-900 dark:text-white">{ col.Title }</h3>
+							}
+							<ul class="mt-4 space-y-3">
+								for _, link := range col.Links {
+									<li>
+										<a
+											href={ templ.SafeURL(link.Href) }
+											class={ "text-sm text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white " + utils.TransitionColors }
+										>
+											{ link.Text }
+										</a>
+									</li>
+								}
+							</ul>
+						</div>
+					}
+				</div>
+				if props.BottomBar != nil {
+					<div class="mt-8 border-t border-gray-200 pt-6 dark:border-gray-800">
+						<div class="text-xs text-gray-400 dark:text-gray-500">
+							@props.BottomBar
+						</div>
+					</div>
+				}
+			</div>
+		}
+	</footer>
+}

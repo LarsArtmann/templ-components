@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`tc` CLI scaffolding tool.** New binary at `cmd/tc/` — install with `go install github.com/larsartmann/templ-components/cmd/tc@latest`. Three commands: `tc init` (scaffold `app.css` + `custom.css`), `tc ls` (list every component by package), `tc add <component> [--out DIR]` (copy a component's `.templ` + `_types.go` source to your project for customization). Embeds the library's `.templ` sources at build time via `go:embed`. New `docs/cli.md` documents the full usage. Non-breaking addition.
+- **Two new ADRs**: [`0020-per-package-modules-split.md`](docs/adr/0020-per-package-modules-split.md) (modules split — **deferred until consumer demand**, full design documented) and [`0021-headless-variants-defer.md`](docs/adr/0021-headless-variants-defer.md) (headless variants — **deferred indefinitely**, three options evaluated and rejected).
+- **CI lint scope narrowed** — `golangci-lint run` now takes an explicit package list (`./display/... ./forms/...` etc.) excluding `cmd/tc/`. The CLI tool uses different conventions (intentional path traversal for `--out`, globals for embed registry, Print to stdout) than library code. Documented in AGENTS.md lint section.
+
 ## [1.0.0] — 2026-07-21
 
 ### Removed (breaking — v1.0)

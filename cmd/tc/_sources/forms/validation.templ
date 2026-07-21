@@ -1,0 +1,73 @@
+package forms
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// FieldError represents a single field validation error
+type ValidationError struct {
+	Field   string // HTML element ID (e.g. "email", "user_name") — used as the anchor href target
+	Message string
+}
+
+// ValidationSummaryProps configures a form validation error summary
+type ValidationSummaryProps struct {
+	utils.BaseProps
+	Errors []ValidationError
+}
+
+// DefaultValidationSummaryProps returns sensible defaults
+func DefaultValidationSummaryProps() ValidationSummaryProps {
+	return ValidationSummaryProps{}
+}
+
+// ValidationSummary renders an accessible error summary for form validation
+//
+//	@forms.ValidationSummary(forms.ValidationSummaryProps{
+//	   Errors: []forms.ValidationError{
+//	     {Field: "email", Message: "Email is required"},
+//	     {Field: "name", Message: "Name must be at least 2 characters"},
+//	   },
+//	})
+templ ValidationSummary(props ValidationSummaryProps) {
+	if len(props.Errors) > 0 {
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("rounded-md bg-red-50 dark:bg-red-900/30 p-4 border border-red-200 dark:border-red-800", props.Class) }
+			role="alert"
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			<div class="flex">
+				<div class="flex-shrink-0">
+					@icons.Icon(icons.ExclamationCircle, "h-5 w-5 text-red-400 dark:text-red-500")
+				</div>
+				<div class="ms-3">
+					<h3 class="text-sm font-medium text-red-800 dark:text-red-300">
+						{ fmt.Sprintf("%d error%s found", len(props.Errors), utils.Ternary(len(props.Errors) == 1, "", "s")) }
+					</h3>
+					<div class="mt-2 text-sm text-red-700 dark:text-red-400">
+						<ul class="list-disc space-y-1 ps-5">
+							for _, err := range props.Errors {
+								<li>
+									if err.Field != "" {
+										<a href={ "#" + err.Field } class="text-red-700 dark:text-red-400 underline hover:text-red-600 dark:hover:text-red-300">{ err.Message }</a>
+									} else {
+										{ err.Message }
+									}
+								</li>
+							}
+						</ul>
+					</div>
+				</div>
+			</div>
+		</div>
+	}
+}

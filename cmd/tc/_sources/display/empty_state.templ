@@ -1,0 +1,98 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// EmptyStateProps configures an empty state illustration
+type EmptyStateProps struct {
+	utils.BaseProps
+	Title       string
+	Description string
+	Icon        icons.Name
+	ActionText  string
+	ActionHref  string
+	ActionAttrs templ.Attributes
+}
+
+// DefaultEmptyStateProps returns sensible defaults
+func DefaultEmptyStateProps() EmptyStateProps {
+	return EmptyStateProps{
+		Icon: icons.Inbox,
+	}
+}
+
+// emptyStateActionClass is the shared class for empty state action buttons/links
+const emptyStateActionClass = "inline-flex items-center rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-500 dark:bg-blue-500 dark:hover:bg-blue-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+
+// emptyStateAction renders an action link or button for the empty state.
+// When href is non-empty it renders an anchor; otherwise it renders a button.
+templ emptyStateAction(text string, href string, attrs templ.Attributes) {
+	if href != "" {
+		<a
+			href={ templ.SafeURL(href) }
+			class={ emptyStateActionClass }
+			{ attrs... }
+		>
+			{ text }
+		</a>
+	} else {
+		<button
+			type="button"
+			class={ emptyStateActionClass }
+			{ attrs... }
+		>
+			{ text }
+		</button>
+	}
+}
+
+// EmptyState renders a centered empty state with icon, title, description, and optional action
+//
+//	@display.EmptyState(display.EmptyStateProps{
+//	   Title: "No repositories",
+//	   Description: "Connect your first repository to get started.",
+//	   Icon: "folder",
+//	   ActionText: "Connect Repository",
+//	   ActionHref: "/repos/connect",
+//	})
+templ EmptyState(props EmptyStateProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("text-center py-12 px-4 sm:py-16", props.Class) }
+		role="status"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<div class="mx-auto max-w-md">
+			if props.Icon != "" {
+				<div class="mx-auto flex h-12 w-12 items-center justify-center rounded-lg bg-gray-100 dark:bg-gray-800">
+					@icons.Icon(props.Icon, "h-6 w-6 text-gray-600 dark:text-gray-400")
+				</div>
+			}
+			<h3 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h3>
+			if props.Description != "" {
+				<p class={ utils.Class(mutedTextClass, "mt-2") }>{ props.Description }</p>
+			}
+			if props.ActionText != "" {
+				<div class="mt-6">
+					@emptyStateAction(props.ActionText, props.ActionHref, props.ActionAttrs)
+				</div>
+			}
+		</div>
+	</div>
+}
+
+// SimpleEmptyState is a minimal empty state for inline use
+//
+//	@display.SimpleEmptyState("No items found")
+templ SimpleEmptyState(message string) {
+	<div class="text-center py-8">
+		<p class="text-sm text-gray-500 dark:text-gray-400">{ message }</p>
+	</div>
+}

@@ -1,0 +1,108 @@
+package feedback
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// ProgressBarSize defines the height of a progress bar
+type ProgressBarSize string
+
+const (
+	ProgressBarSizeSM ProgressBarSize = "sm"
+	ProgressBarSizeMD ProgressBarSize = "md"
+	ProgressBarSizeLG ProgressBarSize = "lg"
+)
+
+// ProgressBarProps configures a progress bar
+type ProgressBarProps struct {
+	utils.BaseProps
+	Current       int
+	Total         int
+	Label         string
+	Size          ProgressBarSize
+	Color         string
+	ShowLabel     bool
+	Indeterminate bool
+}
+
+// DefaultProgressBarProps returns sensible defaults
+func DefaultProgressBarProps() ProgressBarProps {
+	return ProgressBarProps{
+		Size:  ProgressBarSizeMD,
+		Color: "bg-blue-600 dark:bg-blue-500",
+	}
+}
+
+// ProgressBar renders a progress indicator
+//
+//	@feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100, Label: "Uploading"})
+templ ProgressBar(props ProgressBarProps) {
+	{{
+		percent := 0.0
+		if props.Total > 0 {
+			percent = float64(props.Current) * 100.0 / float64(props.Total)
+		}
+		percent = max(0, min(100, percent))
+		clamped := max(0, props.Current)
+		if props.Total > 0 && clamped > props.Total {
+			clamped = props.Total
+		}
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("w-full", props.Class) }
+		{ props.Attrs... }
+	>
+		if props.ShowLabel || props.Label != "" {
+			<div class="flex justify-between text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
+				<span>{ props.Label }</span>
+				if !props.Indeterminate {
+					<span>{ fmt.Sprintf("%.0f%%", percent) }</span>
+				}
+			</div>
+		}
+		<div class={ progressTrackClass(props.Size) }>
+			if props.Indeterminate {
+				<div
+					class={ "rounded-full animate-indeterminate-progress motion-reduce:animate-none", progressHeightClass(props.Size), props.Color }
+					role="progressbar"
+					aria-busy="true"
+					if props.AriaLabel != "" {
+						aria-label={ props.AriaLabel }
+					}
+				></div>
+			} else {
+				<div
+					class={ "rounded-full transition-all duration-300 ease-out motion-reduce:transition-none", progressHeightClass(props.Size), props.Color }
+					style={ fmt.Sprintf("width: %.0f%%;", percent) }
+					role="progressbar"
+					aria-valuenow={ fmt.Sprintf("%d", clamped) }
+					aria-valuemin="0"
+					aria-valuemax={ fmt.Sprintf("%d", props.Total) }
+					if props.AriaLabel != "" {
+						aria-label={ props.AriaLabel }
+					}
+				></div>
+			}
+		</div>
+	</div>
+}
+
+func progressTrackClass(size ProgressBarSize) string {
+	return "w-full bg-gray-200 dark:bg-gray-700 rounded-full " + progressHeightClass(size)
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for progress bar heights
+var progressHeightLookup = map[ProgressBarSize]string{
+	ProgressBarSizeSM: "h-1.5",
+	ProgressBarSizeMD: "h-2.5",
+	ProgressBarSizeLG: "h-4",
+}
+
+func progressHeightClass(size ProgressBarSize) string {
+	return utils.Lookup(progressHeightLookup, size, "h-2.5")
+}

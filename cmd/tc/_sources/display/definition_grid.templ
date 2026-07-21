@@ -1,0 +1,65 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// DefinitionGridProps configures a responsive grid of definition items. Unlike
+// DefinitionList (which renders a single two-column table), DefinitionGrid lays
+// out each term-detail pair as a card in a responsive grid — ideal for
+// dashboards and settings pages where many key-value pairs need to be scanned
+// side by side.
+type DefinitionGridProps struct {
+	utils.BaseProps
+	// Items are the term-detail pairs to render.
+	Items []DefinitionItem
+	// Cols controls the responsive column count. Defaults to GridCols3 when
+	// empty or unknown.
+	Cols GridCols
+}
+
+// DefaultDefinitionGridProps returns sensible defaults.
+func DefaultDefinitionGridProps() DefinitionGridProps {
+	return DefinitionGridProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Cols: GridColsDefault,
+	}
+}
+
+// DefinitionGrid renders term-detail pairs in a responsive grid. Each pair is
+// wrapped in a SimpleCard so the grid shows a clean dashboard of key-value
+// tiles. Composes through Grid internally for consistent responsive behavior.
+//
+//	@display.DefinitionGrid(display.DefinitionGridProps{
+//	   Cols: display.GridCols2,
+//	   Items: []display.DefinitionItem{
+//	     {Term: "CPU", Detail: "42%"},
+//	     {Term: "Memory", Detail: "8.2 GB"},
+//	   },
+//	})
+templ DefinitionGrid(props DefinitionGridProps) {
+	{{
+		cols := props.Cols
+		if cols == "" {
+			cols = GridColsDefault
+		}
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class(gridClass(cols), gridGapClass(GridGapDefault), props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		for _, item := range props.Items {
+			@SimpleCard(SimpleCardProps{Padding: CardPaddingSM}) {
+				<dl class="space-y-1">
+					<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{ item.Term }</dt>
+					<dd class="text-sm font-semibold text-gray-900 dark:text-white m-0">
+						@definitionDetailContent(item)
+					</dd>
+				</dl>
+			}
+		}
+	</div>
+}

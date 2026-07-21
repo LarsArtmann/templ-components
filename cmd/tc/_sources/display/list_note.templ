@@ -1,0 +1,38 @@
+package display
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// ListNoteProps configures a "Showing N of M" truncation notice.
+type ListNoteProps struct {
+	utils.BaseProps
+	// Shown is the number of items currently rendered.
+	Shown int
+	// Total is the unfiltered/cap-exceeding match count.
+	Total int
+}
+
+// ListNote renders a "Showing N of M" hint when a list is truncated (Total > Shown).
+// Renders nothing when all rows fit.
+//
+//	@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
+templ ListNote(props ListNoteProps) {
+	if props.Total > props.Shown {
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("border-t border-gray-200 dark:border-gray-700 px-4 py-2.5 text-xs text-gray-500 dark:text-gray-400", props.Class) }
+			role="status"
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			{ fmt.Sprintf("Showing %d of %d. Narrow your search to see more.", props.Shown, props.Total) }
+		</div>
+	}
+}

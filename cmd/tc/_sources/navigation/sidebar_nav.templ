@@ -1,0 +1,102 @@
+package navigation
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// SidebarNavItem is one link in a vertical sidebar navigation.
+type SidebarNavItem struct {
+	Label  string
+	Href   string
+	Icon   icons.Name // optional; renders before the label if set
+	Active bool
+}
+
+// SidebarNavProps configures a vertical sidebar navigation panel.
+type SidebarNavProps struct {
+	utils.BaseProps
+	// Brand renders at the top of the sidebar (optional).
+	Brand templ.Component
+	// Items are the navigation links.
+	Items []SidebarNavItem
+	// Footer renders at the bottom of the sidebar (optional).
+	Footer templ.Component
+	// CurrentPath auto-detects the active item when set. An item is active when
+	// its Href matches CurrentPath. Explicit Active=true on an item takes priority.
+	CurrentPath string
+}
+
+// DefaultSidebarNavProps returns sensible defaults
+func DefaultSidebarNavProps() SidebarNavProps {
+	return SidebarNavProps{}
+}
+
+// sidebarItemActive returns true when the item should be highlighted.
+// Explicit Active=true takes priority; otherwise the item is active when its
+// Href exactly matches CurrentPath (unified with NavLink via IsActive).
+func sidebarItemActive(item SidebarNavItem, currentPath string) bool {
+	if item.Active {
+		return true
+	}
+	if currentPath == "" || item.Href == "" {
+		return false
+	}
+	return IsActive(item.Href, currentPath)
+}
+
+// SidebarNav renders a vertical sidebar with brand, nav links (each with an
+// optional icon), and a footer slot. Designed for admin panels and dashboards.
+//
+//	@navigation.SidebarNav(navigation.SidebarNavProps{
+//	   Brand: templ.Raw(`<span class="font-bold text-white">MyApp</span>`),
+//	   Items: []navigation.SidebarNavItem{
+//	     {Label: "Dashboard", Href: "/", Icon: icons.Squares2x2, Active: true},
+//	     {Label: "Users", Href: "/users", Icon: icons.Users},
+//	   },
+//	   CurrentPath: "/users",
+//	})
+templ SidebarNav(props SidebarNavProps) {
+	<aside
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("flex h-full w-64 flex-col bg-gray-900 dark:bg-black", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		} else {
+			aria-label="Sidebar"
+		}
+		{ props.Attrs... }
+	>
+		if props.Brand != nil {
+			<div class="flex items-center gap-2.5 px-4 py-5">
+				@props.Brand
+			</div>
+		}
+		<nav class="flex flex-1 flex-col gap-1 px-3 py-2" aria-label="Sidebar navigation">
+			for _, item := range props.Items {
+				{{ active := sidebarItemActive(item, props.CurrentPath) }}
+				<a
+					href={ templ.SafeURL(item.Href) }
+					class={ "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium " + utils.TransitionColors,
+						templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
+						templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active) }
+					if active {
+						aria-current="page"
+					}
+				>
+					if item.Icon != "" {
+						@icons.Icon(item.Icon, "h-5 w-5 flex-shrink-0")
+					}
+					{ item.Label }
+				</a>
+			}
+		</nav>
+		if props.Footer != nil {
+			<div class="px-4 py-3 text-xs text-gray-500 dark:text-gray-400">
+				@props.Footer
+			</div>
+		}
+	</aside>
+}

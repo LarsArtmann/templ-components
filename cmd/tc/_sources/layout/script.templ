@@ -1,0 +1,16 @@
+package layout
+
+// Script renders a CSP-safe external `<script src="...">` tag with the nonce
+// applied automatically. Use it instead of a raw `<script>` tag so the nonce
+// can never be forgotten — under a strict Content-Security-Policy a forgotten
+// nonce silently breaks the script in the browser with no error in your logs.
+//
+// Pass optional attributes (async, defer, type="module", crossorigin, …) via
+// attrs. Do not pass `nonce` via attrs; the nonce parameter owns it.
+//
+//	@layout.Script(nonce, "/static/app.js", nil)
+//	@layout.Script(nonce, "/static/app.js", templ.Attributes{"defer": true})
+//	@layout.Script(nonce, "/static/tailwind.min.js", templ.Attributes{"type": "module"})
+templ Script(nonce string, src string, attrs templ.Attributes) {
+	<script src={ src } nonce={ nonce } { attrs... }></script>
+}

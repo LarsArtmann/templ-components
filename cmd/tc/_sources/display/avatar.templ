@@ -1,0 +1,145 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// AvatarSize defines the size of an avatar
+type AvatarSize string
+
+const (
+	AvatarSizeXS AvatarSize = "xs"
+	AvatarSizeSM AvatarSize = "sm"
+	AvatarSizeMD AvatarSize = "md"
+	AvatarSizeLG AvatarSize = "lg"
+	AvatarSizeXL AvatarSize = "xl"
+)
+
+// AvatarShape defines the shape of an avatar
+type AvatarShape string
+
+const (
+	AvatarShapeCircle AvatarShape = "circle"
+	AvatarShapeSquare AvatarShape = "square"
+)
+
+// AvatarStatus represents the online status indicator for an avatar
+type AvatarStatus string
+
+const (
+	AvatarStatusNone    AvatarStatus = ""
+	AvatarStatusOnline  AvatarStatus = "online"
+	AvatarStatusOffline AvatarStatus = "offline"
+)
+
+// AvatarProps configures an avatar component
+type AvatarProps struct {
+	utils.BaseProps
+	Src      string
+	Alt      string
+	Initials string
+	Size     AvatarSize
+	Shape    AvatarShape
+	Status   AvatarStatus
+}
+
+// DefaultAvatarProps returns sensible defaults
+func DefaultAvatarProps() AvatarProps {
+	return AvatarProps{
+		Size:   AvatarSizeMD,
+		Shape:  AvatarShapeCircle,
+		Status: AvatarStatusNone,
+	}
+}
+
+//nolint:gochecknoglobals // Package-level lookup tables for avatar sizes
+var avatarSizeLookup = map[AvatarSize]string{
+	AvatarSizeXS: "h-6 w-6 text-xs",
+	AvatarSizeSM: "h-8 w-8 text-sm",
+	AvatarSizeLG: "h-12 w-12 text-lg",
+	AvatarSizeXL: "h-14 w-14 text-xl",
+}
+
+var avatarDotSizeLookup = map[AvatarSize]string{
+	AvatarSizeXS: "h-1.5 w-1.5",
+	AvatarSizeSM: "h-2 w-2",
+	AvatarSizeLG: "h-3 w-3",
+	AvatarSizeXL: "h-3.5 w-3.5",
+}
+
+func avatarSizeClass(size AvatarSize) string {
+	return utils.Lookup(avatarSizeLookup, size, "h-10 w-10 text-base")
+}
+
+func avatarDotSizeClass(size AvatarSize) string {
+	return utils.Lookup(avatarDotSizeLookup, size, "h-2.5 w-2.5")
+}
+
+func avatarShapeClass(shape AvatarShape) string {
+	if shape == AvatarShapeSquare {
+		return "rounded-lg"
+	}
+	return "rounded-full"
+}
+
+// Avatar renders a user avatar with image, initials, or fallback
+//
+//	@display.Avatar(display.AvatarProps{Src: "/avatar.jpg", Alt: "Alice"})
+templ Avatar(props AvatarProps) {
+	if props.Src != "" {
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("relative inline-block", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			<img
+				src={ props.Src }
+				alt={ props.Alt }
+				class={ utils.Class("inline-block object-cover bg-gray-100 dark:bg-gray-800", avatarSizeClass(props.Size), avatarShapeClass(props.Shape)) }
+			/>
+			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
+				<span
+					class={ "absolute bottom-0 end-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
+						avatarDotSizeClass(props.Size),
+						templ.KV("bg-green-400 dark:bg-green-500", props.Status == AvatarStatusOnline),
+						templ.KV("bg-gray-400 dark:bg-gray-500", props.Status == AvatarStatusOffline) }
+					aria-hidden="true"
+				></span>
+			}
+		</div>
+	} else {
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("relative inline-flex items-center justify-center bg-blue-600 text-white dark:bg-blue-500 font-medium", avatarSizeClass(props.Size), avatarShapeClass(props.Shape), props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			if props.Initials != "" {
+				{ props.Initials }
+			} else {
+				<svg class="h-1/2 w-1/2 text-blue-200" fill="currentColor" viewBox="0 0 24 24">
+					<path d={ svg.PathAvatarFill }></path>
+				</svg>
+			}
+			if props.Status == AvatarStatusOnline || props.Status == AvatarStatusOffline {
+				<span
+					class={ "absolute bottom-0 end-0 block rounded-full ring-2 ring-white dark:ring-gray-900",
+						avatarDotSizeClass(props.Size),
+						templ.KV("bg-green-400 dark:bg-green-500", props.Status == AvatarStatusOnline),
+						templ.KV("bg-gray-400 dark:bg-gray-500", props.Status == AvatarStatusOffline) }
+					aria-hidden="true"
+				></span>
+			}
+		</div>
+	}
+}

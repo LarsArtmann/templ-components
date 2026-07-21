@@ -1,0 +1,299 @@
+// Package display provides data display components like Table, Card, Badge, and Tabs.
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// TableCell represents a single cell in a table row.
+// When Content is set, it takes priority over Text for rendering.
+type TableCell struct {
+	Text    string
+	Content templ.Component
+}
+
+// SortDirection defines the sort order for a table column.
+type SortDirection string
+
+const (
+	SortNone SortDirection = ""
+	SortAsc  SortDirection = "asc"
+	SortDesc SortDirection = "desc"
+)
+
+// TableHeader defines a typed column header with optional sort capabilities.
+// When TypedHeaders is set on TableProps, it takes precedence over Headers.
+type TableHeader struct {
+	Label         string
+	Sortable      bool
+	SortDirection SortDirection
+	Href          string // When set with Sortable=true, renders as <a> for server-side sorting
+}
+
+// ariaSortValue maps SortDirection to the WAI-ARIA aria-sort attribute value.
+func ariaSortValue(d SortDirection) string {
+	switch d {
+	case SortAsc:
+		return "ascending"
+	case SortDesc:
+		return "descending"
+	default:
+		return "none"
+	}
+}
+
+// sortIndicator returns the visual indicator character for a sort direction.
+func sortIndicator(d SortDirection) string {
+	switch d {
+	case SortAsc:
+		return " \u2191" // ↑
+	case SortDesc:
+		return " \u2193" // ↓
+	default:
+		return ""
+	}
+}
+
+func tableBorderedClass(bordered bool) string {
+	if bordered {
+		return "border border-gray-200 dark:border-gray-700"
+	}
+	return ""
+}
+
+// tableWrapperClass returns the class string for the table's scroll wrapper div.
+// When flush is true (table nested in a Card with CardPaddingNone), the border
+// and rounded corners are suppressed so the table sits flush against the card
+// shell — avoiding the double-border defect. The overflow-x-auto scroll
+// wrapper is always retained.
+func tableWrapperClass(flush bool) string {
+	if flush {
+		return "overflow-x-auto"
+	}
+	return "overflow-x-auto rounded-lg border border-gray-200 dark:border-gray-700"
+}
+
+// TableCellPadding controls the vertical density of header and body cells.
+type TableCellPadding string
+
+const (
+	// TableCellPaddingComfortable is the default cell padding (px-4 py-3) —
+	// suitable for general-purpose tables and content pages.
+	TableCellPaddingComfortable TableCellPadding = "comfortable"
+	// TableCellPaddingCompact reduces vertical padding (px-4 py-2) for
+	// data-heavy dashboards and admin panels where rows should feel tighter.
+	TableCellPaddingCompact TableCellPadding = "compact"
+)
+
+//nolint:gochecknoglobals // Package-level lookup table for table cell padding
+var tableCellPaddingLookup = map[TableCellPadding]string{
+	TableCellPaddingComfortable: "px-4 py-3",
+	TableCellPaddingCompact:     "px-4 py-2",
+}
+
+// tableCellPaddingClass returns the padding classes for the given cell padding,
+// falling back to comfortable when unset or invalid.
+func tableCellPaddingClass(p TableCellPadding) string {
+	return utils.Lookup(tableCellPaddingLookup, p, tableCellPaddingLookup[TableCellPaddingComfortable])
+}
+
+// TableRow represents a single row in a table.
+// When Href is set, the row becomes clickable (navigates on click/Enter).
+// A CSP-safe singleton script handles click delegation and keyboard navigation.
+// Clicks on interactive elements inside the row (links, buttons) are not hijacked.
+type TableRow struct {
+	Cells []TableCell
+	// Href, when non-empty, makes the entire row clickable. The row gets
+	// data-tc-row-href, role="link", tabindex="0", and cursor-pointer.
+	Href string
+}
+
+// SimpleTableRow creates a row from string values for convenience
+func SimpleTableRow(values ...string) TableRow {
+	r := TableRow{Cells: make([]TableCell, len(values))}
+	for i, v := range values {
+		r.Cells[i] = TableCell{Text: v}
+	}
+	return r
+}
+
+// tableRowCells returns cells for a row, padded or truncated to match
+// the header count. If headers is 0, returns cells as-is.
+func tableRowCells(row TableRow, headerCount int) []TableCell {
+	if headerCount == 0 {
+		return row.Cells
+	}
+	cells := row.Cells
+	if len(cells) >= headerCount {
+		return cells[:headerCount]
+	}
+	padded := make([]TableCell, headerCount)
+	copy(padded, cells)
+	return padded
+}
+
+// tableHasRowHref reports whether any row in the slice has Href set.
+// Used to conditionally include the singleton click-delegation script.
+func tableHasRowHref(rows []TableRow) bool {
+	for _, r := range rows {
+		if r.Href != "" {
+			return true
+		}
+	}
+	return false
+}
+
+// tableHeaderCount returns the number of headers to align cells against.
+// TypedHeaders takes precedence over Headers when set.
+func tableHeaderCount(props TableProps) int {
+	if len(props.TypedHeaders) > 0 {
+		return len(props.TypedHeaders)
+	}
+	return len(props.Headers)
+}
+
+// TableProps configures a data table
+type TableProps struct {
+	utils.BaseProps
+	Caption      string
+	Headers      []string
+	TypedHeaders []TableHeader // When set, takes precedence over Headers for sortable column rendering
+	Rows         []TableRow
+	Striped      bool
+	Hover        bool
+	Bordered     bool
+	// Flush, when true, suppresses the wrapper div's border and rounded corners.
+	// Use this when the table is nested inside a Card(CardPaddingNone) to avoid
+	// a double border — the card provides the outer border, and the table sits
+	// flush against it. The overflow-x-auto scroll wrapper is always retained.
+	Flush bool
+	// CellPadding controls the vertical density of header and body cells.
+	// Defaults to TableCellPaddingComfortable (px-4 py-3). Set to
+	// TableCellPaddingCompact (px-4 py-2) for data-heavy dashboards and admin
+	// panels where rows should feel tighter.
+	CellPadding TableCellPadding
+	// LazyRows, when true, applies content-visibility: auto to body rows.
+	// The browser skips rendering off-screen rows, giving 2-5x faster initial
+	// render for tables with 100+ rows. Uses contain-intrinsic-size so the
+	// scrollbar stays accurate. Recommended for large data tables.
+	LazyRows bool
+	// Body, when set, overrides Rows for the <tbody> content. The component
+	// should render <tr> elements directly — ideal for templ loops where each
+	// row needs custom cell rendering:
+	//
+	//	@display.Table(display.TableProps{
+	//	    Headers: headers,
+	//	    Body:    messageRows(messages),
+	//	})
+	//	templ messageRows(messages []Message) {
+	//	    for _, m := range messages {
+	//	        <tr><td>{ m.Text }</td><td>{ m.Author }</td></tr>
+	//	    }
+	//	}
+	Body templ.Component
+}
+
+// DefaultTableProps returns sensible defaults
+func DefaultTableProps() TableProps {
+	return TableProps{
+		Striped: true,
+	}
+}
+
+// Table renders a responsive data table
+//
+//	@display.Table(display.TableProps{
+//	   Headers: []string{"Name", "Email", "Role"},
+//	   Rows: []display.TableRow{
+//	     display.SimpleTableRow("Alice", "alice@example.com", "Admin"),
+//	     display.SimpleTableRow("Bob", "bob@example.com", "User"),
+//	   },
+//	})
+//
+// For custom cell rendering, set Body to a component that renders <tr> elements
+// directly — see the Body field on TableProps.
+templ Table(props TableProps) {
+	<div class={ tableWrapperClass(props.Flush) }>
+		<table
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("min-w-full divide-y divide-gray-200 dark:divide-gray-700 text-sm", tableBorderedClass(props.Bordered), props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			if props.Caption != "" {
+				<caption class="sr-only">{ props.Caption }</caption>
+			}
+			if len(props.Headers) > 0 || len(props.TypedHeaders) > 0 {
+				<thead class="bg-gray-50 dark:bg-gray-800">
+					<tr>
+						if len(props.TypedHeaders) > 0 {
+							for _, th := range props.TypedHeaders {
+								<th
+									scope="col"
+									if th.Sortable {
+										aria-sort={ ariaSortValue(th.SortDirection) }
+									}
+									class={ utils.Class(tableCellPaddingClass(props.CellPadding), "text-start font-semibold text-gray-900 dark:text-white") }
+								>
+									if th.Sortable && th.Href != "" {
+										<a href={ templ.SafeURL(th.Href) } class="inline-flex items-center gap-1 hover:text-blue-600 dark:hover:text-blue-400">
+											{ th.Label }{ sortIndicator(th.SortDirection) }
+										</a>
+									} else {
+										{ th.Label }{ sortIndicator(th.SortDirection) }
+									}
+								</th>
+							}
+						} else {
+							for _, h := range props.Headers {
+								<th
+									scope="col"
+									class={ utils.Class(tableCellPaddingClass(props.CellPadding), "text-start font-semibold text-gray-900 dark:text-white") }
+								>
+									{ h }
+								</th>
+							}
+						}
+					</tr>
+				</thead>
+			}
+			<tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+				if props.Body != nil {
+					@props.Body
+				} else {
+					for i, row := range props.Rows {
+						<tr
+							if row.Href != "" {
+								data-tc-row-href={ row.Href }
+								role="link"
+								tabindex="0"
+							}
+							class={
+								templ.KV("tc-content-auto", props.LazyRows && props.CellPadding != TableCellPaddingCompact),
+								templ.KV("tc-content-auto-compact", props.LazyRows && props.CellPadding == TableCellPaddingCompact),
+								templ.KV("bg-gray-50 dark:bg-gray-800/50", props.Striped && i%2 == 1),
+								templ.KV("hover:bg-gray-100 dark:hover:bg-gray-800", props.Hover || row.Href != ""),
+								templ.KV("cursor-pointer", row.Href != ""),
+							}
+						>
+							for _, cell := range tableRowCells(row, tableHeaderCount(props)) {
+								<td class={ utils.Class(tableCellPaddingClass(props.CellPadding), "text-gray-700 dark:text-gray-300") }>
+									if cell.Content != nil {
+										@cell.Content
+									} else {
+										{ cell.Text }
+									}
+								</td>
+							}
+						</tr>
+					}
+				}
+			</tbody>
+		</table>
+	</div>
+	if tableHasRowHref(props.Rows) {
+		@tableRowHrefScriptComponent(props.Nonce)
+	}
+}

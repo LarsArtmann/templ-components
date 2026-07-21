@@ -1,0 +1,63 @@
+package forms
+
+import "github.com/larsartmann/templ-components/utils"
+
+// DatePickerProps configures a native HTML date input
+type DatePickerProps struct {
+	utils.BaseProps
+	Name     string
+	Value    string
+	Label    string
+	Min      string
+	Max      string
+	Required bool
+	Disabled bool
+	Error    string
+	HelpText string
+}
+
+// DefaultDatePickerProps returns sensible defaults
+func DefaultDatePickerProps() DatePickerProps {
+	return DatePickerProps{}
+}
+
+// DatePicker renders a labeled date input with optional min/max constraints,
+// error, and help text
+//
+//	@forms.DatePicker(forms.DatePickerProps{
+//	   Name: "birthday",
+//	   ID: "birthday",
+//	   Label: "Date of Birth",
+//	   Required: true,
+//	})
+templ DatePicker(props DatePickerProps) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+		<input
+			type="date"
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			value={ props.Value }
+			if props.Min != "" {
+				min={ props.Min }
+			}
+			if props.Max != "" {
+				max={ props.Max }
+			}
+			class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
+			if props.Required {
+				required
+				aria-required="true"
+			}
+			if props.Disabled {
+				disabled
+			}
+			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		/>
+	}
+}

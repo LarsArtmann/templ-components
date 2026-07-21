@@ -1,0 +1,228 @@
+package feedback
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// SpinnerSize defines the size of a loading spinner
+type SpinnerSize string
+
+const (
+	SpinnerSM SpinnerSize = "sm"
+	SpinnerMD SpinnerSize = "md"
+	SpinnerLG SpinnerSize = "lg"
+)
+
+//nolint:gochecknoglobals // Package-level lookup table for spinner sizes
+var spinnerSizeLookup = map[SpinnerSize]string{
+	SpinnerSM: "h-4 w-4",
+	SpinnerMD: "h-6 w-6",
+	SpinnerLG: "h-8 w-8",
+}
+
+func spinnerSizeClass(s SpinnerSize) string {
+	return utils.Lookup(spinnerSizeLookup, s, "h-6 w-6")
+}
+
+// SkeletonVariant defines the shape of a skeleton placeholder
+type SkeletonVariant string
+
+const (
+	SkeletonText      SkeletonVariant = "text"
+	SkeletonTextShort SkeletonVariant = "text-short"
+	SkeletonTitle     SkeletonVariant = "title"
+	SkeletonAvatar    SkeletonVariant = "avatar"
+	SkeletonImage     SkeletonVariant = "image"
+	SkeletonCard      SkeletonVariant = "card"
+	SkeletonTableRow  SkeletonVariant = "table-row"
+)
+
+// SpinnerProps configures a loading spinner component
+type SpinnerProps struct {
+	utils.BaseProps
+	Size  SpinnerSize
+	Color string
+}
+
+// DefaultSpinnerProps returns sensible defaults
+func DefaultSpinnerProps() SpinnerProps {
+	return SpinnerProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Size: SpinnerMD,
+	}
+}
+
+// Spinner renders a simple animated loading spinner
+//
+//	@feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"})
+templ Spinner(props SpinnerProps) {
+	<svg
+		class={ utils.Class("animate-spin motion-reduce:animate-none", spinnerSizeClass(props.Size), props.Color, props.Class) }
+		xmlns="http://www.w3.org/2000/svg"
+		fill="none"
+		viewBox="0 0 24 24"
+		if props.AriaLabel == "" {
+			aria-hidden="true"
+		} else {
+			role="img"
+		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		{ props.Attrs... }
+	>
+		@svg.SpinnerSVG()
+	</svg>
+}
+
+// LoadingOverlayProps configures a full-screen loading overlay
+type LoadingOverlayProps struct {
+	utils.BaseProps
+	Message      string
+	ShowProgress bool
+	Progress     int
+}
+
+// DefaultLoadingOverlayProps returns sensible defaults
+func DefaultLoadingOverlayProps() LoadingOverlayProps {
+	return LoadingOverlayProps{}
+}
+
+// LoadingOverlay renders a full-screen loading overlay
+//
+//	@feedback.LoadingOverlay(feedback.LoadingOverlayProps{Message: "Loading...", ShowProgress: true, Progress: 45})
+templ LoadingOverlay(props LoadingOverlayProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("fixed inset-0 bg-black/50 z-50 flex items-center justify-center", props.Class) }
+		{ props.Attrs... }
+		role="dialog"
+		aria-modal="true"
+		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, props.Message) }
+	>
+		<div class="bg-white dark:bg-gray-800 rounded-lg shadow-xl dark:shadow-black/20 p-8 max-w-sm w-full mx-4">
+			<div class="text-center">
+				<div class="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 dark:bg-blue-900/30 mb-4">
+					@Spinner(SpinnerProps{Size: SpinnerMD, Color: "text-blue-600 dark:text-blue-400"})
+				</div>
+				<h3 class="text-lg font-medium text-gray-900 dark:text-white mb-2">{ props.Message }</h3>
+				if props.ShowProgress {
+					{{ clamped := max(0, min(100, props.Progress)) }}
+					<div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2 mb-2">
+						<div
+							class="bg-blue-600 dark:bg-blue-500 h-2 rounded-full transition-all duration-300 ease-out motion-reduce:transition-none motion-reduce:duration-0"
+							style={ fmt.Sprintf("width: %d%%", clamped) }
+						></div>
+					</div>
+					<p class="text-sm text-gray-500 dark:text-gray-400">{ fmt.Sprintf("%d%%", clamped) }</p>
+				} else {
+					<p class="text-sm text-gray-500 dark:text-gray-400">Please wait...</p>
+				}
+			</div>
+		</div>
+	</div>
+}
+
+// InlineLoading renders a compact inline loading indicator
+//
+//	@feedback.InlineLoading("Saving...")
+templ InlineLoading(message string) {
+	<div class="inline-flex items-center gap-2" aria-live="polite">
+		@Spinner(SpinnerProps{Size: SpinnerSM, Color: "text-blue-600 dark:text-blue-400"})
+		<span class="text-sm text-gray-600 dark:text-gray-400">{ message }</span>
+	</div>
+}
+
+// Skeleton renders a pulsing placeholder for loading content
+//
+//	@feedback.Skeleton("text")
+templ Skeleton(variant SkeletonVariant) {
+	<div aria-busy="true" role="status" aria-label="Loading" class="contents">
+		@skeletonBody(variant)
+	</div>
+}
+
+// skeletonBody renders the visual placeholder without aria annotations, so
+// SkeletonGroup can compose many variants under a single role="status"
+// announcement instead of N+1 redundant "Loading" reads.
+templ skeletonBody(variant SkeletonVariant) {
+	switch variant {
+		case SkeletonText:
+			<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+		case SkeletonTextShort:
+			<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+		case SkeletonTitle:
+			<div class="animate-pulse motion-reduce:animate-none h-6 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+		case SkeletonAvatar:
+			<div class="animate-pulse motion-reduce:animate-none h-10 w-10 bg-gray-200 dark:bg-gray-700 rounded-full"></div>
+		case SkeletonImage:
+			<div class="animate-pulse motion-reduce:animate-none h-48 bg-gray-200 dark:bg-gray-700 rounded-lg w-full"></div>
+		case SkeletonCard:
+			<div class="animate-pulse motion-reduce:animate-none space-y-4">
+				<div class="h-48 bg-gray-200 dark:bg-gray-700 rounded-lg"></div>
+				<div class="space-y-3">
+					<div class="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4"></div>
+					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+				</div>
+			</div>
+		case SkeletonTableRow:
+			<div class="animate-pulse motion-reduce:animate-none grid grid-cols-4 gap-4 mb-3">
+				for range 4 {
+					<div class="h-3 bg-gray-200 dark:bg-gray-700 rounded"></div>
+				}
+			</div>
+		default:
+			<div class="animate-pulse motion-reduce:animate-none h-4 bg-gray-200 dark:bg-gray-700 rounded w-full"></div>
+	}
+}
+
+// skeletonContainer renders the shared aria shell for skeleton groups:
+// a single `role="status"` + `aria-busy="true"` wrapper with pulse animation.
+// Both SkeletonGroup and SkeletonCardGrid compose through it to avoid
+// duplicating the accessibility annotations.
+templ skeletonContainer(layoutClass string, label string) {
+	<div class={ layoutClass, "animate-pulse motion-reduce:animate-none" } aria-busy="true" role="status" aria-label={ label }>
+		{ children... }
+	</div>
+}
+
+// SkeletonGroup renders multiple skeleton placeholders under a single
+// role="status" announcement to avoid redundant screen-reader reads.
+//
+//	@feedback.SkeletonGroup([]string{"title", "text", "text", "text"})
+templ SkeletonGroup(variants []SkeletonVariant) {
+	@skeletonContainer("space-y-3", "Loading content") {
+		for _, v := range variants {
+			@skeletonBody(v)
+		}
+	}
+}
+
+// SkeletonCardGrid renders a responsive grid of N skeleton cards — the common
+// "loading state" for a dashboard card list. It wraps SkeletonGroup so the
+// whole grid shares one `role="status"` announcement, and uses the same
+// responsive grid classes as display.Grid. Negative or zero counts render a
+// single placeholder card so consumers never see an empty container.
+//
+//	@feedback.SkeletonCardGrid(6)
+//	@feedback.SkeletonCardGrid(12)  // 3x4 grid at lg breakpoint
+templ SkeletonCardGrid(count int) {
+	{{
+		n := count
+		if n <= 0 {
+			n = 1
+		}
+	}}
+	@skeletonContainer("grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4", "Loading cards") {
+		for range n {
+			@skeletonBody(SkeletonCard)
+		}
+	}
+}

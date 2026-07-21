@@ -1,0 +1,107 @@
+package layout
+
+import "github.com/larsartmann/templ-components/utils"
+
+// appshellShellClass is the outer grid wrapper. min-h-dvh ensures the shell
+// fills the viewport height; the grid is lg-gated so mobile collapses to a
+// single column (sidebar hidden, content full-width). The main column uses
+// minmax(0, 1fr) — never bare 1fr — to prevent grid blowout when a wide
+// <table>, long URL, or <pre> lives in the content (see ADR-0016).
+const appshellShellClass = "lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh"
+
+// appshellSidebarWrapperClass hides the sidebar below lg so it doesn't take
+// up mobile real estate. The sidebar slot itself (e.g. SidebarNav) renders
+// its own <aside>; this wrapper is a positioning shell only.
+const appshellSidebarWrapperClass = "hidden lg:block"
+
+// appshellContentColumnClass makes the content column a flex container so
+// the (optional) header can be sticky while Content scrolls. min-w-0 is the
+// flex-blowout guard (complements minmax(0,1fr) on the grid).
+const appshellContentColumnClass = "flex min-w-0 flex-col"
+
+// AppShell renders a sidebar + header + content application shell. It is the
+// 2D layout primitive for admin panels and dashboards: a fixed-width sidebar
+// on desktop, an optional sticky header, and a flexible main area. Use it to
+// replace the hand-rolled `grid lg:grid-cols-[16rem_1fr]` snippet every
+// consumer rebuilds.
+//
+// AppShell renders INSIDE the `<main>` landmark provided by `layout.Base` —
+// it does NOT emit its own `<main>` or skip-link (Base owns those, including
+// the WCAG 2.4.1 Bypass Block requirement).
+//
+//	@layout.Base(props) {
+//	   @layout.AppShell(layout.AppShellProps{
+//	      Sidebar:  navSidebar,
+//	      Header:   navHeader,
+//	      Content:  dashboardContent(),
+//	   })
+//	}
+//
+// # Mobile navigation
+//
+// The desktop Sidebar is `hidden lg:block` — invisible on mobile. Pass a
+// `display.Drawer` (or any mobile nav pattern) to MobileNav and AppShell will
+// render it below lg only. This keeps layout free of the display import
+// (respecting the import graph: layout → icons,utils only).
+//
+// # Grid-blowout safety
+//
+// The main column is `minmax(0, 1fr)` (not bare `1fr`). Without the `minmax`,
+// a wide `<table>` or long URL in the content forces the column wider than
+// the viewport, causing page-wide horizontal scroll. See ADR-0016 and the
+// "minmax(0, 1fr) grid blowout footgun" recipe.
+templ AppShell(props AppShellProps) {
+	{{ sidebarW := sidebarWidthValue(props.SidebarWidth) }}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class(appshellShellClass, props.Class) }
+		style={ "--tc-sidebar-w: " + sidebarW }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if props.Sidebar != nil {
+			<div class={ appshellSidebarWrapperClass }>
+				@props.Sidebar
+			</div>
+		}
+		if props.MobileNav != nil {
+			<div class="lg:hidden">
+				@props.MobileNav
+			</div>
+		}
+		<div class={ appshellContentColumnClass }>
+			if props.Header != nil {
+				<header
+					class={ utils.Class(
+						"border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900",
+						utils.Ternary(props.StickyHeader, "sticky top-0 z-40", ""),
+					) }
+				>
+					@props.Header
+				</header>
+			}
+			<div class="flex-1 min-w-0">
+				if props.Container && props.Content != nil {
+					@Container(ContainerProps{
+						BaseProps: utils.BaseProps{},
+						Width:     props.ContainerWidth,
+						Pad:       true,
+					}) {
+						@props.Content
+					}
+				} else if props.Content != nil {
+					@props.Content
+				}
+			</div>
+			if props.Footer != nil {
+				<footer class="mt-auto">
+					@props.Footer
+				</footer>
+			}
+		</div>
+	</div>
+}

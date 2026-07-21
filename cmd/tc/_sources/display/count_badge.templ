@@ -1,0 +1,71 @@
+package display
+
+import (
+	"strconv"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// CountBadgeProps configures an icon or element with a notification count
+// badge overlaid in the top-right corner. Use it to show unread counts,
+// pending items, or any numeric indicator on top of a bell icon, avatar, etc.
+type CountBadgeProps struct {
+	utils.BaseProps
+	// Count is the number to display in the badge.
+	Count int
+	// Max is the overflow threshold. When Count > Max, the badge shows
+	// "Max+" instead of the raw number (e.g. Max=99, Count=150 → "99+").
+	// Defaults to 99. Set to 0 to disable overflow.
+	Max int
+}
+
+// CountBadgeDefaultMax is the standard overflow threshold (99).
+const CountBadgeDefaultMax = 99
+
+// DefaultCountBadgeProps returns sensible defaults.
+func DefaultCountBadgeProps() CountBadgeProps {
+	return CountBadgeProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Max: CountBadgeDefaultMax,
+	}
+}
+
+// CountBadge renders its children with a count notification badge overlaid in
+// the top-right corner. When Count is 0 the badge is hidden (no element). When
+// Count exceeds Max, the badge displays "Max+" to prevent layout overflow.
+//
+//	@display.CountBadge(display.CountBadgeProps{Count: 5}) {
+//	   @icons.Icon(icons.Bell, "h-6 w-6")
+//	}
+templ CountBadge(props CountBadgeProps) {
+	{{
+		maxVal := props.Max
+		if maxVal == 0 {
+			maxVal = CountBadgeDefaultMax
+		}
+		showBadge := props.Count > 0
+		display := strconv.Itoa(props.Count)
+		if props.Count > maxVal {
+			display = strconv.Itoa(maxVal) + "+"
+		}
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("relative inline-flex", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ children... }
+		if showBadge {
+			<span
+				class="absolute -top-1 -end-1 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-bold leading-none text-white ring-2 ring-white dark:ring-gray-800"
+				aria-hidden="true"
+			>
+				{ display }
+			</span>
+		}
+	</div>
+}

@@ -1,0 +1,106 @@
+package forms
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// SliderProps configures a range input slider.
+type SliderProps struct {
+	utils.BaseProps
+	Name     string
+	Label    string
+	Min      float64
+	Max      float64
+	Value    float64
+	Step     float64
+	Required bool
+	Disabled bool
+	HelpText string
+	Error    string
+	// ShowValue displays the current value next to the label.
+	ShowValue bool
+}
+
+// DefaultSliderProps returns sensible defaults.
+func DefaultSliderProps() SliderProps {
+	return SliderProps{
+		Min:  0,
+		Max:  100,
+		Step: 1,
+	}
+}
+
+// sliderInputClass returns the Tailwind classes for the range input.
+func sliderInputClass() string {
+	return "w-full h-2 bg-gray-200 dark:bg-gray-700 rounded-lg appearance-none cursor-pointer accent-blue-600 dark:accent-blue-400 focus:outline-none focus:ring-2 focus:ring-blue-600 dark:focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed"
+}
+
+// Slider renders a labeled range input with accessible labeling.
+//
+//	@forms.Slider(forms.SliderProps{
+//	   Name:  "volume",
+//	   Label: "Volume",
+//	   Min:   0,
+//	   Max:   100,
+//	   Value: 50,
+//	   Step:  5,
+//	})
+templ Slider(props SliderProps) {
+	{{
+		step := props.Step
+		if step == 0 {
+			step = 1
+		}
+	}}
+	<div class={ utils.Class("space-y-1", props.Class) } { props.Attrs... }>
+		if props.Label != "" {
+			<div class="flex items-center justify-between">
+				<label
+					if props.ID != "" {
+						for={ props.ID }
+					}
+					class="text-sm font-medium text-gray-900 dark:text-white"
+				>
+					{ props.Label }
+					if props.Required {
+						<span class="text-red-500 dark:text-red-400 ms-0.5" aria-hidden="true">*</span>
+					}
+				</label>
+				if props.ShowValue {
+					<span class="text-sm font-medium text-gray-500 dark:text-gray-400" data-slider-value>{ fmt.Sprintf("%g", props.Value) }</span>
+				}
+			</div>
+		}
+		<input
+			type="range"
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			min={ fmt.Sprintf("%g", props.Min) }
+			max={ fmt.Sprintf("%g", props.Max) }
+			value={ fmt.Sprintf("%g", props.Value) }
+			step={ fmt.Sprintf("%g", step) }
+			class={ sliderInputClass() }
+			if props.Disabled {
+				disabled
+			}
+			if props.Required {
+				required
+			}
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+			{ props.Attrs... }
+		/>
+		if props.Error != "" {
+			@FieldError(props.ID, props.Error)
+		}
+		if props.HelpText != "" {
+			@helpText(props.ID, props.HelpText)
+		}
+	</div>
+}

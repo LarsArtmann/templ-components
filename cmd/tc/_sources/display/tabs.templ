@@ -1,0 +1,186 @@
+package display
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// Tab represents a single tab panel
+type Tab struct {
+	ID      string
+	Label   string
+	Content templ.Component
+}
+
+// TabsVariant defines the visual style of tabs
+type TabsVariant string
+
+const (
+	TabsDefault TabsVariant = "default"
+	TabsPills   TabsVariant = "pills"
+)
+
+// TabsProps configures a tab component
+type TabsProps struct {
+	utils.BaseProps
+	Tabs        []Tab
+	ActiveTabID string
+	Variant     TabsVariant
+	ClientSide  bool
+}
+
+// DefaultTabsProps returns sensible defaults
+func DefaultTabsProps() TabsProps {
+	return TabsProps{
+		Variant: TabsDefault,
+	}
+}
+
+// isActiveTab returns true if the given tab ID matches the active tab
+func isActiveTab(tabID, activeTabID string) bool {
+	return tabID == activeTabID && tabID != ""
+}
+
+// ensureTabIDs generates stable IDs for tabs that omit them, preventing
+// invalid HTML (duplicate id="" attributes) and JS selector crashes in
+// client-side mode.
+func ensureTabIDs(tabs []Tab) []Tab {
+	for i := range tabs {
+		if tabs[i].ID == "" {
+			tabs[i].ID = utils.EnsureID("tab", "")
+		}
+	}
+	return tabs
+}
+
+// resolveActiveTabID returns activeTabID if set, otherwise defaults to the
+// first tab so that exactly one tab is keyboard-focusable (tabindex=0) per
+// the WAI-ARIA tab pattern.
+func resolveActiveTabID(activeTabID string, tabs []Tab) string {
+	if activeTabID != "" {
+		return activeTabID
+	}
+	if len(tabs) > 0 {
+		return tabs[0].ID
+	}
+	return ""
+}
+
+// tabLink renders a single tab link with the given class based on active state
+templ tabLink(tab Tab, isActive bool, activeClass, inactiveClass string) {
+	<a
+		id={ tab.ID + "-tab" }
+		href={ templ.SafeURL("#" + tab.ID) }
+		role="tab"
+		aria-selected={ fmt.Sprintf("%t", isActive) }
+		aria-controls={ tab.ID }
+		tabindex={ utils.Ternary(isActive, 0, -1) }
+		class={ utils.Ternary(isActive, activeClass, inactiveClass) }
+	>
+		{ tab.Label }
+	</a>
+}
+
+// Tabs renders a tabbed interface with accessible markup
+//
+//	@display.Tabs(display.TabsProps{
+//	   ActiveTabID: "users",
+//	   Tabs: []display.Tab{
+//	     {ID: "users", Label: "Users"},
+//	     {ID: "settings", Label: "Settings"},
+//	   },
+//	})
+templ Tabs(props TabsProps) {
+	{{ tabs := ensureTabIDs(props.Tabs) }}
+	{{ activeID := resolveActiveTabID(props.ActiveTabID, tabs) }}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("w-full", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		if props.ClientSide {
+			data-tc-tabs=""
+		}
+		{ props.Attrs... }
+	>
+		<div role="tablist" aria-label="Tabs" class="border-b border-gray-200 dark:border-gray-700">
+			<div
+				class={ "-mb-px flex space-x-8", templ.KV("space-x-2", props.Variant == TabsPills) }
+			>
+				for _, tab := range tabs {
+					{{ active := isActiveTab(tab.ID, activeID) }}
+					if props.Variant == TabsPills {
+						@tabLink(tab, active,
+							"rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-2 text-sm font-medium text-white",
+							"rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
+						)
+					} else {
+						@tabLink(tab, active,
+							"whitespace-nowrap border-b-2 border-blue-500 px-1 py-4 text-sm font-medium text-blue-600 dark:text-blue-400",
+							"whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200",
+						)
+					}
+				}
+			</div>
+		</div>
+		for _, tab := range tabs {
+			if tab.Content != nil {
+				<div
+					id={ tab.ID }
+					role="tabpanel"
+					aria-labelledby={ tab.ID + "-tab" }
+					if !isActiveTab(tab.ID, activeID) {
+						hidden
+					}
+					class="mt-4"
+				>
+					@tab.Content
+				</div>
+			}
+		}
+		if props.ClientSide {
+			<script nonce={ props.Nonce }>
+				if (!window.tcTabsAttached) {
+					window.tcTabsAttached = true;
+					document.addEventListener('click', function(e) {
+						var link = e.target.closest('[data-tc-tabs] [role="tab"]');
+						if (!link) return;
+						e.preventDefault();
+						activateTab(link);
+					});
+					document.addEventListener('keydown', function(e) {
+						var tab = e.target.closest('[data-tc-tabs] [role="tab"]');
+						if (!tab) return;
+						var tabs = Array.from(tab.closest('[role="tablist"]').querySelectorAll('[role="tab"]'));
+						var idx = tabs.indexOf(tab);
+						var next = -1;
+						var rtl = document.documentElement.getAttribute('dir') === 'rtl';
+						var nextKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+						var prevKey = rtl ? 'ArrowRight' : 'ArrowLeft';
+						if (e.key === nextKey || e.key === 'ArrowDown') { next = (idx + 1) % tabs.length; }
+						else if (e.key === prevKey || e.key === 'ArrowUp') { next = (idx - 1 + tabs.length) % tabs.length; }
+						else if (e.key === 'Home') { next = 0; }
+						else if (e.key === 'End') { next = tabs.length - 1; }
+						if (next >= 0) { e.preventDefault(); tabs[next].focus(); activateTab(tabs[next]); }
+					});
+				}
+				function activateTab(link) {
+					var container = link.closest('[data-tc-tabs]');
+					container.querySelectorAll('[role="tab"]').forEach(function(t) {
+						t.setAttribute('aria-selected','false');
+						t.setAttribute('tabindex','-1');
+					});
+					link.setAttribute('aria-selected','true');
+					link.setAttribute('tabindex','0');
+					container.querySelectorAll('[role="tabpanel"]').forEach(function(p) { p.hidden = true; });
+					var panel = container.querySelector('#' + link.getAttribute('aria-controls'));
+					if (panel) panel.hidden = false;
+				}
+			</script>
+		}
+	</div>
+}

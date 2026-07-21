@@ -1,0 +1,151 @@
+package display
+
+import (
+	"strings"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// BadgeType defines the visual style of a badge
+type BadgeType string
+
+const (
+	BadgePrimary BadgeType = "primary"
+	BadgeSuccess BadgeType = "success"
+	BadgeWarning BadgeType = "warning"
+	BadgeError   BadgeType = "error"
+	BadgeInfo    BadgeType = "info"
+	BadgeNeutral BadgeType = "neutral"
+)
+
+// BadgeSize defines the size of a badge
+type BadgeSize string
+
+const (
+	BadgeSizeSM BadgeSize = "sm"
+	BadgeSizeMD BadgeSize = "md"
+	BadgeSizeLG BadgeSize = "lg"
+)
+
+// BadgeProps configures a status badge
+type BadgeProps struct {
+	utils.BaseProps
+	Text string
+	Type BadgeType
+	Size BadgeSize
+	Pill bool
+	Dot  bool
+	Href string
+}
+
+// DefaultBadgeProps returns sensible defaults
+func DefaultBadgeProps() BadgeProps {
+	return BadgeProps{
+		Type: BadgeNeutral,
+		Size: BadgeSizeMD,
+	}
+}
+
+// Badge renders a compact status label
+//
+//	@display.Badge(display.BadgeProps{Text: "Active", Type: display.BadgeSuccess, Dot: true})
+templ Badge(props BadgeProps) {
+	if props.Href != "" {
+		<a
+			href={ templ.SafeURL(props.Href) }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("inline-flex items-center font-medium", badgeSizeClass(props.Size), badgeShapeClass(props.Pill), badgeColorClass(props.Type), props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			if props.Dot {
+				<span class={ "me-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>
+			}
+			{ props.Text }
+		</a>
+	} else {
+		<span
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("inline-flex items-center font-medium", badgeSizeClass(props.Size), badgeShapeClass(props.Pill), badgeColorClass(props.Type), props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			if props.Dot {
+				<span class={ "me-1.5 h-1.5 w-1.5 rounded-full", badgeDotColorClass(props.Type) } aria-hidden="true"></span>
+			}
+			{ props.Text }
+		</span>
+	}
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for badge sizes
+var badgeSizeLookup = map[BadgeSize]string{
+	BadgeSizeSM: "px-2 py-0.5 text-xs",
+	BadgeSizeMD: "px-2.5 py-0.5 text-xs",
+	BadgeSizeLG: "px-3 py-1 text-sm",
+}
+
+func badgeSizeClass(s BadgeSize) string {
+	return utils.Lookup(badgeSizeLookup, s, badgeSizeLookup[BadgeSizeMD])
+}
+
+func badgeShapeClass(pill bool) string {
+	if pill {
+		return "rounded-full"
+	}
+	return "rounded-md"
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for badge styles
+type badgeStyle struct {
+	BG  string
+	Dot string
+}
+
+var badgeStyleMap = map[BadgeType]badgeStyle{
+	BadgePrimary: {"bg-blue-100 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300", "bg-blue-500"},
+	BadgeSuccess: {"bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-300", "bg-green-500"},
+	BadgeWarning: {"bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-300", "bg-yellow-500"},
+	BadgeError:   {"bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-300", "bg-red-500"},
+	BadgeInfo:    {"bg-blue-50 text-blue-800 dark:bg-blue-900/30 dark:text-blue-300", "bg-blue-500"},
+	BadgeNeutral: {"bg-gray-100 text-gray-800 dark:bg-gray-800 dark:text-gray-300", "bg-gray-500"},
+}
+
+func badgeLookupStyle(t BadgeType) badgeStyle {
+	return utils.Lookup(badgeStyleMap, t, badgeStyleMap[BadgeNeutral])
+}
+
+func badgeColorClass(t BadgeType) string    { return badgeLookupStyle(t).BG }
+func badgeDotColorClass(t BadgeType) string { return badgeLookupStyle(t).Dot }
+
+// StatusBadge is a convenience wrapper for common status values
+// Maps status strings to badge types automatically
+//
+//	@display.StatusBadge("active")
+templ StatusBadge(status string) {
+	{{ mapped := mapStatusToBadgeType(status) }}
+	@Badge(BadgeProps{Text: status, Type: mapped, Dot: true})
+}
+
+func mapStatusToBadgeType(status string) BadgeType {
+	return utils.Lookup(statusToBadgeMap, strings.ToLower(status), BadgeNeutral)
+}
+
+var statusToBadgeMap = map[string]BadgeType{
+	"active": BadgeSuccess, "healthy": BadgeSuccess, "success": BadgeSuccess,
+	"completed": BadgeSuccess, "done": BadgeSuccess, "passed": BadgeSuccess, "green": BadgeSuccess,
+	"pending": BadgeWarning, "warning": BadgeWarning, "degraded": BadgeWarning,
+	"yellow": BadgeWarning, "in_progress": BadgeWarning,
+	"error": BadgeError, "failed": BadgeError, "critical": BadgeError,
+	"unhealthy": BadgeError, "red": BadgeError, "down": BadgeError,
+	"info": BadgeInfo, "blue": BadgeInfo, "running": BadgeInfo,
+	"primary": BadgePrimary, "default": BadgeNeutral,
+}

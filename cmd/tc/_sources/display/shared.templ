@@ -1,0 +1,63 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// overlayShell renders a native <dialog>-based overlay shell shared by Modal
+// and Drawer. The <dialog> element provides top-layer rendering, focus trapping,
+// Escape-to-close, focus restore, and ::backdrop — all native, no JS needed
+// for those behaviors. CSS animations handle open/close via @starting-style
+// and allow-discrete display transitions (defined in app.css).
+//
+// The dialog element IS the visual panel: dialogClass carries the Tailwind
+// classes for background, border-radius, shadow, and sizing. A dialogClass
+// prefix (tc-modal / tc-drawer) selects the animation profile in app.css.
+templ overlayShell(p overlayShellProps) {
+	{{ labelledBy := "" }}
+	{{
+		if p.title != "" {
+			labelledBy = p.id + "-title"
+		}
+	}}
+	<dialog
+		id={ p.id }
+		class={ utils.Class("tc-overlay", p.dialogClass) }
+		if labelledBy != "" {
+			aria-labelledby={ labelledBy }
+		}
+		if p.ariaLabel != "" {
+			aria-label={ p.ariaLabel }
+		}
+		if p.open {
+			data-tc-open="true"
+		}
+		if p.kind == OverlayDrawer && p.side != "" {
+			data-side={ string(p.side) }
+		}
+		{ p.attrs... }
+	>
+		@dialogHeader(p.title, p.id+"-title", p.kind)
+		<div class="px-4 py-4 sm:px-6">
+			{ children... }
+		</div>
+	</dialog>
+	@overlayScriptComponent(p.nonce, p.id, p.kind.componentName())
+}
+
+templ dialogHeader(title, titleID string, kind OverlayKind) {
+	if title != "" {
+		<div class="flex items-center justify-between px-4 py-3 sm:px-6 border-b border-gray-200 dark:border-gray-700">
+			<h2 id={ titleID } class="text-base font-semibold text-gray-900 dark:text-white">{ title }</h2>
+			<button
+				type="button"
+				class="rounded-md text-gray-400 dark:text-gray-500 hover:text-gray-500 dark:hover:text-gray-300 focus:outline-hidden focus:ring-2 focus:ring-blue-500 dark:focus:ring-blue-400"
+				data-tc-close={ string(kind) }
+				aria-label="Close"
+			>
+				@icons.Icon(icons.X, "h-5 w-5")
+			</button>
+		</div>
+	}
+}

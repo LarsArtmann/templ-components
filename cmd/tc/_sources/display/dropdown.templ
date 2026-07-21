@@ -1,0 +1,203 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// DropdownItemKind determines how a dropdown item is rendered
+type DropdownItemKind string
+
+const (
+	// DropdownItemLink renders the item as an anchor (<a>) element
+	DropdownItemLink DropdownItemKind = "link"
+	// DropdownItemButton renders the item as a <button> element
+	DropdownItemButton DropdownItemKind = "button"
+)
+
+// DropdownItem represents a single action in a dropdown menu
+type DropdownItem struct {
+	Text     string
+	Href     string
+	Icon     icons.Name
+	Kind     DropdownItemKind
+	External bool
+	Disabled bool
+	Attrs    templ.Attributes
+}
+
+// IsLink returns true if the item should render as a link.
+// When Kind is unset, falls back to Href-based discrimination for backward compat.
+func (item DropdownItem) IsLink() bool {
+	if item.Kind != "" {
+		return item.Kind == DropdownItemLink
+	}
+	return item.Href != ""
+}
+
+// DropdownPosition defines where the dropdown menu appears
+type DropdownPosition string
+
+const (
+	DropdownPositionLeft  DropdownPosition = "left"
+	DropdownPositionRight DropdownPosition = "right"
+)
+
+// DropdownProps configures a dropdown action menu
+type DropdownProps struct {
+	utils.BaseProps
+	Label    string
+	Items    []DropdownItem
+	Position DropdownPosition
+}
+
+// DefaultDropdownProps returns sensible defaults
+func DefaultDropdownProps() DropdownProps {
+	return DropdownProps{
+		Position: DropdownPositionLeft,
+	}
+}
+
+// dropdownItemClass returns the shared class for all dropdown items
+const dropdownItemClass = "block px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 hover:text-gray-900 dark:hover:text-white"
+
+// dropdownItemDisabledClass appends disabled styling
+const dropdownItemDisabledClass = " opacity-50 cursor-not-allowed pointer-events-none"
+
+// dropdownItemLink renders an anchor dropdown item
+templ dropdownItemLink(item DropdownItem) {
+	if item.Disabled {
+		<span
+			class={ dropdownItemClass + dropdownItemDisabledClass }
+			role="menuitem"
+			aria-disabled="true"
+			tabindex="-1"
+			{ item.Attrs... }
+		>
+			if item.Icon != "" {
+				@icons.Icon(item.Icon, "me-3 h-4 w-4 text-gray-400 dark:text-gray-500")
+			}
+			{ item.Text }
+		</span>
+	} else {
+		<a
+			href={ templ.SafeURL(item.Href) }
+			if item.External {
+				target="_blank"
+				rel="noopener noreferrer"
+			}
+			class={ dropdownItemClass }
+			role="menuitem"
+			{ item.Attrs... }
+		>
+			if item.Icon != "" {
+				@icons.Icon(item.Icon, "me-3 h-4 w-4 text-gray-400 dark:text-gray-500")
+			}
+			{ item.Text }
+		</a>
+	}
+}
+
+// Dropdown renders a button-triggered action menu. Uses the native Popover
+// API (popover="auto") for click-toggle via popovertarget, light-dismiss,
+// Escape-to-close, and top-layer rendering. A thin singleton script handles
+// WAI-ARIA menu keyboard nav (ArrowUp/Down + RTL mapping) and focuses the
+// first menuitem on open. See ADR-0017.
+//
+//	@display.Dropdown(display.DropdownProps{
+//	   Label: "Actions",
+//	   Items: []display.DropdownItem{
+//	     {Text: "Edit", Href: "/edit"},
+//	     {Text: "Delete", Href: "/delete"},
+//	   },
+//	})
+templ Dropdown(props DropdownProps) {
+	{{ id := utils.EnsureID("dropdown", props.ID) }}
+	<div
+		id={ id }
+		class={ utils.Class("relative inline-block text-start", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<div>
+			<button
+				type="button"
+				id={ id + "-button" }
+				popovertarget={ id + "-menu" }
+				class="inline-flex w-full justify-center gap-x-1.5 rounded-md bg-white dark:bg-gray-800 px-3 py-2 text-sm font-semibold text-gray-900 dark:text-white shadow-xs ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700"
+				aria-expanded="false"
+				aria-haspopup="true"
+				data-dropdown-trigger={ id }
+				aria-label={ props.Label }
+			>
+				{ props.Label }
+				@svg.FillIcon("-me-1 h-5 w-5 text-gray-400 dark:text-gray-500", svg.PathChevronSmall, false)
+			</button>
+		</div>
+		<div
+			id={ id + "-menu" }
+			popover="auto"
+			class="mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 focus:outline-hidden"
+			role="menu"
+			aria-orientation="vertical"
+			aria-labelledby={ id + "-button" }
+			tabindex="-1"
+			if props.Position == DropdownPositionRight {
+				data-dropdown-align="right"
+			}
+		>
+			<div class="py-1" role="none">
+				for _, item := range props.Items {
+					if item.IsLink() {
+						@dropdownItemLink(item)
+					} else {
+						<button
+							type="button"
+							class={ utils.Class("block w-full text-start", dropdownItemClass, utils.Ternary(item.Disabled, dropdownItemDisabledClass, "")) }
+							role="menuitem"
+							if item.Disabled {
+								disabled
+								aria-disabled="true"
+							}
+							{ item.Attrs... }
+						>
+							if item.Icon != "" {
+								@icons.Icon(item.Icon, "me-3 h-4 w-4 text-gray-400 dark:text-gray-500")
+							}
+							{ item.Text }
+						</button>
+					}
+				}
+			</div>
+		</div>
+	</div>
+	<script nonce={ props.Nonce }>
+		if (!window.tcDropdownAttached) {
+			window.tcDropdownAttached = true;
+			document.addEventListener('toggle', function(e) {
+				var menu = e.target;
+				if (menu.tagName !== 'DIV' || menu.getAttribute('role') !== 'menu' || e.newState !== 'open') return;
+				var first = menu.querySelector('[role="menuitem"]:not([disabled])');
+				if (first) first.focus();
+			});
+			document.addEventListener('keydown', function(e) {
+				var menu = e.target.closest('[role="menu"]');
+				if (!menu) return;
+				var items = Array.from(menu.querySelectorAll('[role="menuitem"]'));
+				if (items.length === 0) return;
+				var idx = items.indexOf(document.activeElement);
+				var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
+				var nextKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
+				var prevKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
+				if (e.key === 'ArrowDown' || e.key === nextKey) {
+					e.preventDefault(); items[(idx + 1) % items.length].focus();
+				} else if (e.key === 'ArrowUp' || e.key === prevKey) {
+					e.preventDefault(); items[(idx - 1 + items.length) % items.length].focus();
+				}
+			});
+		}
+	</script>
+}

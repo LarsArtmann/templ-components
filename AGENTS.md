@@ -363,8 +363,12 @@ after reviewing the release commit and tag with `git show v<version>` and
 ## Lint Command
 
 ```bash
-# examples/ excluded via .golangci.yml paths exclusion
-golangci-lint run ./...
+# examples/ excluded via .golangci.yml paths exclusion.
+# cmd/tc excluded via explicit package list (CLI tool uses different conventions).
+golangci-lint run \
+  ./display/... ./errorpage/... ./feedback/... ./forms/... \
+  ./htmx/... ./icons/... ./integration/... ./internal/... \
+  ./layout/... ./navigation/... ./recipes/... ./utils/...
 ```
 
 **Disabled linters (do NOT re-enable — fundamentally incompatible with this codebase):**

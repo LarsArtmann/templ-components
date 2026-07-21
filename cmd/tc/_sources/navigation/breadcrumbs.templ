@@ -1,0 +1,161 @@
+package navigation
+
+import (
+	"encoding/json"
+	"fmt"
+	"net/url"
+	"strings"
+
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// BreadcrumbItem represents a single breadcrumb segment
+type BreadcrumbItem struct {
+	Text   string
+	Href   string
+	Active bool
+}
+
+// BreadcrumbsProps configures a breadcrumb navigation component
+type BreadcrumbsProps struct {
+	utils.BaseProps
+	Items     []BreadcrumbItem
+	Separator string
+	JSONLD    bool
+	// BaseURL is used to resolve relative Hrefs into absolute URLs for
+	// JSON-LD structured data (schema.org requires absolute URLs).
+	BaseURL string
+	// CurrentPath enables auto-detection of the active breadcrumb.
+	// When set, the crumb whose Href matches CurrentPath is auto-highlighted.
+	// Explicit Active=true on an item always takes priority.
+	// When empty, active state falls back to the manual Active flag or
+	// an empty Href (terminal crumb).
+	CurrentPath string
+}
+
+// breadcrumbItemActive determines whether a crumb should render as active.
+// Priority: explicit Active flag > empty Href (terminal crumb) > CurrentPath match.
+func breadcrumbItemActive(item BreadcrumbItem, currentPath string) bool {
+	if item.Active {
+		return true
+	}
+	if item.Href == "" {
+		return true
+	}
+	if currentPath == "" {
+		return false
+	}
+	return IsActive(item.Href, currentPath)
+}
+
+// DefaultBreadcrumbsProps returns sensible defaults
+func DefaultBreadcrumbsProps() BreadcrumbsProps {
+	return BreadcrumbsProps{}
+}
+
+// breadcrumbJSONLD generates JSON-LD structured data for breadcrumbs.
+// Relative Hrefs are resolved against baseURL (schema.org requires absolute URLs).
+func breadcrumbJSONLD(items []BreadcrumbItem, baseURL string) string {
+	type ListItem struct {
+		Type     string `json:"@type"`
+		Position int    `json:"position"`
+		Name     string `json:"name"`
+		Item     string `json:"item,omitempty"`
+	}
+	type BreadcrumbList struct {
+		Context string     `json:"@context"`
+		Type    string     `json:"@type"`
+		Items   []ListItem `json:"itemListElement"`
+	}
+
+	list := BreadcrumbList{
+		Context: "https://schema.org",
+		Type:    "BreadcrumbList",
+		Items:   make([]ListItem, 0, len(items)),
+	}
+	for i, item := range items {
+		entry := ListItem{
+			Type:     "ListItem",
+			Position: i + 1,
+			Name:     item.Text,
+		}
+		if item.Href != "" {
+			entry.Item = resolveBreadcrumbURL(item.Href, baseURL)
+		}
+		list.Items = append(list.Items, entry)
+	}
+
+	data, err := json.Marshal(list)
+	if err != nil {
+		return ""
+	}
+	return string(data)
+}
+
+// resolveBreadcrumbURL joins a relative Href to baseURL for JSON-LD output.
+// Absolute Hrefs (with a scheme) and protocol-relative URLs (//host) are
+// returned unchanged.
+func resolveBreadcrumbURL(href, baseURL string) string {
+	if href == "" {
+		return ""
+	}
+	parsed, err := url.Parse(href)
+	if err != nil || parsed.IsAbs() || strings.HasPrefix(href, "//") {
+		return href
+	}
+	if baseURL == "" {
+		return href
+	}
+	return strings.TrimRight(baseURL, "/") + "/" + strings.TrimLeft(href, "/")
+}
+
+// breadcrumbSeparator renders the separator between breadcrumb items
+templ breadcrumbSeparator(custom string) {
+	if custom != "" {
+		<span class="mx-2 text-gray-400 dark:text-gray-500" aria-hidden="true">{ custom }</span>
+	} else {
+		@icons.IconRTL(icons.ChevronRight, "h-4 w-4 text-gray-400 dark:text-gray-500")
+	}
+}
+
+// Breadcrumbs renders a horizontal breadcrumb navigation
+//
+//	@navigation.Breadcrumbs(navigation.BreadcrumbsProps{
+//	   Items: []navigation.BreadcrumbItem{
+//	     {Text: "Home", Href: "/"},
+//	     {Text: "Users", Href: "/users"},
+//	     {Text: "Edit", Active: true},
+//	   },
+//	})
+templ Breadcrumbs(props BreadcrumbsProps) {
+	<nav
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("flex", props.Class) }
+		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Breadcrumb") }
+		{ props.Attrs... }
+	>
+		<ol class="inline-flex items-center space-x-1 md:space-x-3">
+			for i, item := range props.Items {
+				<li class="inline-flex items-center">
+					if i > 0 {
+						@breadcrumbSeparator(props.Separator)
+					}
+					@activeSpanOrLink(
+						breadcrumbItemActive(item, props.CurrentPath),
+						item.Href,
+						item.Text,
+						"text-sm font-medium text-gray-500 dark:text-gray-400",
+						"text-sm font-medium text-gray-700 hover:text-blue-600 dark:text-gray-400 dark:hover:text-white",
+						"",
+					)
+				</li>
+			}
+		</ol>
+	</nav>
+	if props.JSONLD && len(props.Items) > 0 {
+		@templ.Raw(fmt.Sprintf(`<script type="application/ld+json">%s</script>`, breadcrumbJSONLD(props.Items, props.BaseURL)))
+	}
+}

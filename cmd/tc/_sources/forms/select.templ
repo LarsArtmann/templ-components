@@ -1,0 +1,162 @@
+package forms
+
+import "github.com/larsartmann/templ-components/utils"
+
+// SelectOption represents a single option in a select.
+// If both Disabled and Selected are true, Selected is cleared because a
+// disabled option cannot be meaningfully pre-selected by the user.
+type SelectOption struct {
+	Value    string
+	Label    string
+	Disabled bool
+	Selected bool
+}
+
+// SelectGroup represents an <optgroup> with a label and its options.
+// When SelectProps.Groups is non-empty, options are rendered as optgroups
+// instead of a flat list. Use this for logically grouping options (e.g.
+// channels by category, cities by country).
+type SelectGroup struct {
+	Label   string
+	Options []SelectOption
+}
+
+// normalizeSelectOptions returns a defensive copy of opts with contradictions
+// resolved: Disabled+Selected clears Selected, and only the first Selected option
+// is kept (a single-value <select> cannot have multiple pre-selected options —
+// browsers resolve the ambiguity inconsistently). The caller's slice is never
+// mutated, so reusing the same []SelectOption across renders is safe.
+func normalizeSelectOptions(opts []SelectOption) []SelectOption {
+	out := make([]SelectOption, len(opts))
+	copy(out, opts)
+	firstSelected := true
+	for i := range out {
+		if out[i].Disabled && out[i].Selected {
+			out[i].Selected = false
+			continue
+		}
+		if out[i].Selected {
+			if !firstSelected {
+				out[i].Selected = false
+			}
+			firstSelected = false
+		}
+	}
+	return out
+}
+
+// SelectProps configures a select dropdown.
+// Set Groups to render <optgroup> elements; Options is ignored when Groups is non-empty.
+type SelectProps struct {
+	utils.BaseProps
+	Name    string
+	Label   string
+	Options []SelectOption
+	// Groups, when non-empty, renders <optgroup> elements instead of a flat
+	// Options list. Each group has its own label. Options is ignored when
+	// Groups is set.
+	Groups   []SelectGroup
+	Required bool
+	Disabled bool
+	// Stylable, when true, opts into the modern customizable <select> API
+	// (appearance: base-select). Emits a <button><selectedcontent> structure
+	// inside the select for CSS styling. Non-supporting browsers ignore
+	// these elements — progressive enhancement, no breaking changes.
+	// Requires the .tc-select CSS from templates/app.css.
+	Stylable bool
+	Error    string
+	HelpText string
+}
+
+// DefaultSelectProps returns sensible defaults
+func DefaultSelectProps() SelectProps {
+	return SelectProps{}
+}
+
+// Select renders a labeled select dropdown
+//
+//	@forms.Select(forms.SelectProps{
+//	   Name: "country",
+//	   Label: "Country",
+//	   Options: []forms.SelectOption{
+//	     {Value: "de", Label: "Germany"},
+//	     {Value: "at", Label: "Austria"},
+//	   },
+//	})
+//	// Grouped options (renders <optgroup>):
+//	//
+//	@forms.Select(forms.SelectProps{
+//	   Name: "channel",
+//	   Label: "Channel",
+//	   Groups: []forms.SelectGroup{
+//	     {Label: "Text Channels", Options: []forms.SelectOption{
+//	       {Value: "general", Label: "#general"},
+//	       {Value: "random", Label: "#random"},
+//	     }},
+//	     {Label: "Voice Channels", Options: []forms.SelectOption{
+//	       {Value: "voice-1", Label: "🔊 Lounge"},
+//	     }},
+//	   },
+//	})
+templ Select(props SelectProps) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+		<select
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class(baseInputClass(props.Error != ""), utils.Ternary(props.Stylable, "tc-select", ""), props.Class) }
+			if props.Required {
+				required
+				aria-required="true"
+			}
+			if props.Disabled {
+				disabled
+			}
+			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			if props.Stylable {
+				<button><selectedcontent></selectedcontent></button>
+			}
+			if len(props.Groups) > 0 {
+				for _, grp := range props.Groups {
+					{{ opts := normalizeSelectOptions(grp.Options) }}
+					<optgroup label={ grp.Label }>
+						for _, opt := range opts {
+							<option
+								value={ opt.Value }
+								if opt.Disabled {
+									disabled
+								}
+								if opt.Selected {
+									selected
+								}
+							>
+								{ opt.Label }
+							</option>
+						}
+					</optgroup>
+				}
+			} else {
+				{{ options := normalizeSelectOptions(props.Options) }}
+				for _, opt := range options {
+					<option
+						value={ opt.Value }
+						if opt.Disabled {
+							disabled
+						}
+						if opt.Selected {
+							selected
+						}
+					>
+						{ opt.Label }
+					</option>
+				}
+			}
+		</select>
+	}
+}

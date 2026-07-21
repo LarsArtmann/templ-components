@@ -1,0 +1,97 @@
+package feedback
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// AlertType represents the visual style of an alert
+// Deprecated: Use FeedbackType instead. Will be removed in v1.0.
+type AlertType = FeedbackType
+
+const (
+	AlertSuccess = FeedbackSuccess
+	AlertError   = FeedbackError
+	AlertWarning = FeedbackWarning
+	AlertInfo    = FeedbackInfo
+)
+
+// AlertProps configures an alert banner
+type AlertProps struct {
+	utils.BaseProps
+	Title       string
+	Message     string
+	Type        AlertType
+	Dismissible bool
+}
+
+// DefaultAlertProps returns sensible defaults
+func DefaultAlertProps() AlertProps {
+	return AlertProps{
+		Type: AlertInfo,
+	}
+}
+
+// Alert renders a full-width alert banner
+//
+//	@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong", Type: feedback.AlertError})
+//
+// The dismiss control markup is shared via utils.DismissButton; only the style
+// classes differ from errorpage.ErrorAlert. JS behaviour is shared via
+// utils.DismissScript().
+templ Alert(props AlertProps) {
+	{{ s := feedbackStyle(props.Type) }}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("rounded-md border p-4", s.Border, s.BG, props.Class) }
+		role="alert"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<div class="flex">
+			<div class="flex-shrink-0">
+				@icons.Icon(feedbackIcon(props.Type), utils.Class("h-5 w-5", s.Icon))
+			</div>
+			<div class="ms-3 flex-1">
+				if props.Title != "" {
+					<h3 class={ "text-sm font-medium", s.Text }>{ props.Title }</h3>
+				}
+				<div class={ "text-sm", s.Text }>
+					<p>{ props.Message }</p>
+				</div>
+			</div>
+			if props.Dismissible {
+				@utils.DismissButton(s.BG, s.Text)
+			}
+		</div>
+		if props.Dismissible {
+			@templ.Raw("<script nonce=\"" + props.Nonce + "\">" + utils.DismissScript() + "</script>")
+		}
+	</div>
+}
+
+// inlineMessage renders a compact inline status message with icon
+templ inlineMessage(message string, colorClass string, role string, icon templ.Component) {
+	<div class={ "mt-2 flex items-center gap-1.5 text-sm", colorClass } role={ role } aria-live="polite">
+		@icon
+		<span>{ message }</span>
+	</div>
+}
+
+// InlineError renders a compact inline error message for forms
+//
+//	@feedback.InlineError("This field is required")
+templ InlineError(message string) {
+	@inlineMessage(message, "text-red-600 dark:text-red-400", "alert", icons.Icon(icons.ExclamationTriangle, "h-4 w-4 flex-shrink-0"))
+}
+
+// InlineSuccess renders a compact inline success message
+//
+//	@feedback.InlineSuccess("Saved successfully")
+templ InlineSuccess(message string) {
+	@inlineMessage(message, "text-green-600 dark:text-green-400", "status", icons.Icon(icons.Check, "h-4 w-4 flex-shrink-0"))
+}

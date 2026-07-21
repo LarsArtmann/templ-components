@@ -1,0 +1,84 @@
+package layout
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// ThemeScript renders the inline script that sets the dark mode class before paint.
+// Also sets `color-scheme` so native scrollbars, form controls, and <details>
+// match the active theme. Include this in your base template head to prevent FOUC.
+//
+// Only needed for the TOGGLE dark mode strategy (user-controlled .dark class).
+// If you use OS-following (prefers-color-scheme), you do NOT need this script —
+// Tailwind v4's default dark: variant handles it automatically.
+templ ThemeScript(nonce string) {
+	<script nonce={ nonce }>
+		(function() {
+			var theme;
+			try { theme = localStorage.getItem('theme'); } catch(e) {}
+			var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+			var isDark = theme === 'dark' || (!theme && prefersDark);
+			if (isDark) {
+				document.documentElement.classList.add('dark');
+			}
+			document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+		})();
+	</script>
+}
+
+// ThemeToggle renders a theme toggle button with sun/moon icons.
+// Uses role="switch" + aria-checked so screen-reader users know the active mode.
+// Requires Tailwind CSS dark: variants and the ThemeScript in your base layout.
+//
+// Only needed for the TOGGLE dark mode strategy (user-controlled .dark class).
+// If you use OS-following (prefers-color-scheme), dark mode is automatic —
+// there is nothing to toggle and this component is unnecessary.
+//
+//	@layout.ThemeToggle("Toggle theme", nonce)
+templ ThemeToggle(ariaLabel string, nonce string) {
+	<button
+		type="button"
+		class={ "rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-500 dark:hover:text-gray-300 " + utils.TransitionColors }
+		data-theme-toggle
+		role="switch"
+		aria-checked="false"
+		aria-label={ utils.Ternary(ariaLabel != "", ariaLabel, "Toggle theme") }
+	>
+		@icons.Icon(icons.Moon, "h-5 w-5 dark:hidden")
+		@icons.Icon(icons.Sun, "hidden h-5 w-5 dark:block")
+	</button>
+	<script nonce={ nonce }>
+		(function() {
+			var html = document.documentElement;
+
+			function syncToggleAria(btn) {
+				if (btn) btn.setAttribute('aria-checked', String(html.classList.contains('dark')));
+			}
+
+			// Always sync aria-checked, even after htmx swap re-injects a button
+			// with the hardcoded aria-checked="false". This runs on every render;
+			// the click listener below is guarded so it only attaches once.
+			document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
+
+			if (!window.tcThemeToggleAttached) {
+				window.tcThemeToggleAttached = true;
+
+				document.addEventListener('click', function(e) {
+				var btn = e.target.closest('[data-theme-toggle]');
+				if (!btn) return;
+				var isDark = html.classList.contains('dark');
+				if (isDark) {
+					html.classList.remove('dark');
+					try { localStorage.setItem('theme', 'light'); } catch(e) {}
+				} else {
+					html.classList.add('dark');
+					try { localStorage.setItem('theme', 'dark'); } catch(e) {}
+				}
+				html.style.colorScheme = isDark ? 'light' : 'dark';
+				document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
+				});
+			}
+		})();
+	</script>
+}

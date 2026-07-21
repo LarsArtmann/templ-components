@@ -1,0 +1,55 @@
+package errorpage
+
+import "github.com/larsartmann/templ-components/utils"
+
+templ ErrorAlert(props ErrorAlertProps) {
+	// ErrorAlert renders a family-aware inline alert for use on error-rendering paths.
+	//
+	// The dismiss control markup is shared via utils.DismissButton; only the
+	// style classes differ from feedback.Alert. JS behaviour is shared via
+	// utils.DismissScript().
+	{{ style := lookupFamilyStyle(props.Family) }}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("rounded-md border p-4", style.Border, style.BG, props.Class) }
+		role="alert"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<div class="flex">
+			<div class="flex-shrink-0">
+				@familyIcon(style)
+			</div>
+			<div class="ms-3 flex-1">
+				<div class="flex items-center gap-2">
+					if props.Title != "" {
+						<h3 class={ "text-sm font-medium", style.Text }>{ props.Title }</h3>
+					}
+					@familyBadge(props.Family, style)
+				</div>
+				<div class={ "mt-1 text-sm", style.Text }>
+					if props.Message != "" {
+						<p>{ props.Message }</p>
+					}
+				</div>
+				if props.Fix != "" {
+					<div class="mt-2">
+						<p class="text-sm text-gray-600 dark:text-gray-400">
+							<span class="font-medium">{ props.Fix }</span>
+						</p>
+					</div>
+				}
+			</div>
+			if props.Dismissible {
+				@utils.DismissButton(style.BG, style.Text)
+			}
+		</div>
+		if props.Dismissible {
+			@templ.Raw("<script nonce=\"" + props.Nonce + "\">" + utils.DismissScript() + "</script>")
+		}
+	</div>
+}

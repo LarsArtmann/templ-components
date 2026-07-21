@@ -1,0 +1,192 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// GridCols is a typed enum for the responsive column count of a Grid. Unknown
+// values fall back to GridCols3 (graceful degradation — never panic).
+type GridCols string
+
+const (
+	GridCols1 GridCols = "1"
+	GridCols2 GridCols = "2"
+	GridCols3 GridCols = "3"
+	GridCols4 GridCols = "4"
+	GridCols5 GridCols = "5"
+	GridCols6 GridCols = "6"
+	// GridColsAutoFit uses CSS auto-fit + minmax() instead of fixed breakpoints.
+	// The grid responds to container width, not viewport. Requires MinColWidth.
+	GridColsAutoFit GridCols = "auto-fit"
+	// GridColsDefault is the canonical default (3 columns at the lg breakpoint).
+	GridColsDefault GridCols = GridCols3
+)
+
+// GridGap is a typed enum for the gap spacing between grid items.
+// Unknown values fall back to GridGapMD (graceful degradation — never panic).
+type GridGap string
+
+const (
+	GridGapSM GridGap = "sm" // gap-2 (0.5rem)
+	GridGapMD GridGap = "md" // gap-4 (1rem) — default
+	GridGapLG GridGap = "lg" // gap-6 (1.5rem)
+	GridGapXL GridGap = "xl" // gap-8 (2rem)
+	// GridGapDefault is the canonical default.
+	GridGapDefault GridGap = GridGapMD
+)
+
+// gridGapLookup maps each GridGap value to its Tailwind gap utility class.
+var gridGapLookup = map[GridGap]string{
+	GridGapSM: "gap-2",
+	GridGapMD: "gap-4",
+	GridGapLG: "gap-6",
+	GridGapXL: "gap-8",
+}
+
+func gridGapClass(gap GridGap) string {
+	return utils.Lookup(gridGapLookup, gap, gridGapLookup[GridGapDefault])
+}
+
+// gridColsLookup maps each GridCols value to the responsive Tailwind classes
+// that stack on mobile and expand at sm/lg breakpoints. This is a pure class
+// lookup, so the map+fallback pattern applies.
+var gridColsLookup = map[GridCols]string{
+	GridCols1: "grid grid-cols-1",
+	GridCols2: "grid grid-cols-1 sm:grid-cols-2",
+	GridCols3: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3",
+	GridCols4: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4",
+	GridCols5: "grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5",
+	GridCols6: "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6",
+}
+
+// gridColsContainerLookup maps each GridCols value to container-query-based
+// Tailwind classes (@sm:, @lg:) that respond to the parent container's width
+// instead of the browser viewport. Used when ContainerResponsive is true.
+var gridColsContainerLookup = map[GridCols]string{
+	GridCols1: "grid grid-cols-1",
+	GridCols2: "grid grid-cols-1 @sm:grid-cols-2",
+	GridCols3: "grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3",
+	GridCols4: "grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4",
+	GridCols5: "grid grid-cols-1 @sm:grid-cols-2 @md:grid-cols-3 @lg:grid-cols-4 @xl:grid-cols-5",
+	GridCols6: "grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 @xl:grid-cols-6",
+}
+
+// gridClass returns the responsive Tailwind class string for a column count,
+// falling back to GridColsDefault for unknown values.
+func gridClass(cols GridCols) string {
+	if s, ok := gridColsLookup[cols]; ok {
+		return s
+	}
+	return gridColsLookup[GridColsDefault]
+}
+
+// gridAutoFitClass generates a CSS auto-fit/minmax template class for
+// container-width-responsive grids. The minColWidth should include units
+// (e.g., "190px", "12rem"). Falls back to a 240px default if empty.
+func gridAutoFitClass(minColWidth string) string {
+	if minColWidth == "" {
+		minColWidth = "240px"
+	}
+	return "grid [grid-template-columns:repeat(auto-fit,minmax(" + minColWidth + ",1fr))]"
+}
+
+// gridContainerClass returns the container-query-based Tailwind class string
+// for a column count, falling back to GridColsDefault for unknown values.
+func gridContainerClass(cols GridCols) string {
+	if s, ok := gridColsContainerLookup[cols]; ok {
+		return s
+	}
+	return gridColsContainerLookup[GridColsDefault]
+}
+
+// GridProps configures a responsive grid layout. Use Grid to lay out cards,
+// stat cards, or any repeating content with consistent responsive breakpoints
+// without repeating the long `grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3`
+// utility string on every page.
+type GridProps struct {
+	utils.BaseProps
+	// Cols controls the responsive column count. Defaults to GridCols3 when
+	// empty or unknown.
+	Cols GridCols
+	// Gap controls the spacing between grid items. Defaults to GridGapMD (gap-4).
+	Gap GridGap
+	// ContainerResponsive, when true, renders the grid inside an @container
+	// wrapper so column counts respond to the container's width instead of
+	// the browser viewport. Useful for grids placed in sidebars, cards, or
+	// other constrained layouts. Defaults to false (viewport breakpoints).
+	ContainerResponsive bool
+	// MinColWidth sets the minimum column width for auto-fit grids. Used only
+	// when Cols is GridColsAutoFit. Generates a CSS auto-fit/minmax template
+	// that responds to container width. Example: "190px" produces
+	// grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)).
+	// Ignored for fixed column counts. When Cols is GridColsAutoFit,
+	// ContainerResponsive is ignored (auto-fit already responds to container
+	// width via CSS minmax).
+	MinColWidth string
+}
+
+// DefaultGridProps returns sensible defaults (GridCols3).
+func DefaultGridProps() GridProps {
+	return GridProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Cols: GridColsDefault,
+	}
+}
+
+// Grid renders a responsive grid container that stacks on mobile and expands
+// at sm/lg breakpoints. Pass grid items as children.
+//
+//	@display.Grid(display.GridProps{Cols: display.GridCols3}) {
+//	   for _, u := range users {
+//	     @display.Card(display.CardProps{Title: u.Name}) { <p>{ u.Email }</p> }
+//	   }
+//	}
+//
+// For container-query-based responsiveness (grid adapts to its parent container,
+// not the viewport):
+//
+//	@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerResponsive: true}) {
+//	   // items
+//	}
+templ Grid(props GridProps) {
+	{{
+		cols := props.Cols
+		if cols == "" {
+			cols = GridColsDefault
+		}
+		gap := gridGapClass(props.Gap)
+		baseGrid := gridClass(cols)
+		if cols == GridColsAutoFit {
+			baseGrid = gridAutoFitClass(props.MinColWidth)
+		} else if props.ContainerResponsive {
+			baseGrid = gridContainerClass(cols)
+		}
+		gridClasses := utils.Class(baseGrid, gap, props.Class)
+	}}
+	if props.ContainerResponsive {
+		<div class="@container">
+			<div
+				if props.ID != "" {
+					id={ props.ID }
+				}
+				class={ gridClasses }
+				if props.AriaLabel != "" {
+					aria-label={ props.AriaLabel }
+				}
+				{ props.Attrs... }
+			>
+				{ children... }
+			</div>
+		</div>
+	} else {
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ gridClasses }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			{ children... }
+		</div>
+	}
+}

@@ -1,0 +1,75 @@
+package forms
+
+// Label renders a form label with optional required indicator
+//
+//	@forms.Label("email", "Email address", true)
+templ Label(forID, text string, required bool) {
+	<label
+		if forID != "" {
+			for={ forID }
+		}
+		class="block text-sm font-medium leading-6 text-gray-900 dark:text-white"
+	>
+		{ text }
+		if required {
+			<span class="text-red-500 dark:text-red-400 ms-0.5" aria-hidden="true">*</span>
+		}
+	</label>
+}
+
+// helpText renders the shared help text paragraph for form fields
+templ helpText(id, text string) {
+	if text != "" {
+		<p
+			if HelpTextID(id) != "" {
+				id={ HelpTextID(id) }
+			}
+			class="mt-1 text-sm text-gray-500 dark:text-gray-400"
+		>{ text }</p>
+	}
+}
+
+// FieldError renders a field-level validation error
+//
+//	@forms.FieldError("email", "This field is required")
+templ FieldError(fieldID, message string) {
+	if message != "" {
+		<p
+			class="mt-2 text-sm text-red-600 dark:text-red-400"
+			role="alert"
+			if fieldID != "" {
+				id={ fieldID + errorIDSuffix }
+			}
+		>{ message }</p>
+	}
+}
+
+// FormFieldProps configures the standard form field wrapper structure.
+// Used by FormFieldWrapper to DRY up all form control components.
+type FormFieldProps struct {
+	ID       string
+	Label    string
+	Required bool
+	Error    string
+	HelpText string
+}
+
+// FormFieldWrapper renders the standard form field structure:
+// optional Label, children (input/select/textarea), optional Error, optional HelpText.
+// Use this to DRY up all form control components.
+//
+//	@forms.FormFieldWrapper(forms.FormFieldProps{ID: "email", Label: "Email", Required: true, Error: "Invalid", HelpText: "Use work email"}) {
+//	   <input type="email" name="email" />
+//	}
+templ FormFieldWrapper(props FormFieldProps) {
+	if props.Label != "" {
+		@Label(props.ID, props.Label, props.Required)
+	}
+	{ children... }
+	if props.Error != "" {
+		@FieldError(props.ID, props.Error)
+	}
+	if props.HelpText != "" {
+		@helpText(props.ID, props.HelpText)
+	}
+}

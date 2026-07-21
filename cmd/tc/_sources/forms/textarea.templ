@@ -1,0 +1,112 @@
+package forms
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// EnterKeyHintType defines valid HTML enterkeyhint values for the mobile
+// keyboard Enter key label. See:
+// https://developer.mozilla.org/en-US/docs/Web/HTML/Global_attributes/enterkeyhint
+type EnterKeyHintType string
+
+const (
+	EnterKeyHintEnter    EnterKeyHintType = "enter"
+	EnterKeyHintDone     EnterKeyHintType = "done"
+	EnterKeyHintGo       EnterKeyHintType = "go"
+	EnterKeyHintNext     EnterKeyHintType = "next"
+	EnterKeyHintPrevious EnterKeyHintType = "previous"
+	EnterKeyHintSearch   EnterKeyHintType = "search"
+	EnterKeyHintSend     EnterKeyHintType = "send"
+)
+
+//nolint:gochecknoglobals // Package-level validation set for enterkeyhint
+var validEnterKeyHints = map[EnterKeyHintType]bool{
+	EnterKeyHintEnter: true, EnterKeyHintDone: true, EnterKeyHintGo: true,
+	EnterKeyHintNext: true, EnterKeyHintPrevious: true,
+	EnterKeyHintSearch: true, EnterKeyHintSend: true,
+}
+
+// EnterKeyHintTypeIsValid returns true if v is a recognized enterkeyhint value.
+func EnterKeyHintTypeIsValid(v EnterKeyHintType) bool { return validEnterKeyHints[v] }
+
+// TextareaProps configures a textarea. AutoGrow (default true) uses the
+// modern CSS field-sizing: content property to grow the textarea to fit its
+// content without JavaScript. EnterKeyHint sets the mobile keyboard's Enter
+// key label (e.g. "send" for chat, "done", "go", "next", "previous", "search").
+type TextareaProps struct {
+	utils.BaseProps
+	Name         string
+	Value        string
+	Placeholder  string
+	Label        string
+	Rows         int
+	Required     bool
+	Disabled     bool
+	ReadOnly     bool
+	MaxLength    int
+	AutoGrow     bool
+	EnterKeyHint EnterKeyHintType
+	Error        string
+	HelpText     string
+}
+
+// DefaultTextareaProps returns sensible defaults
+func DefaultTextareaProps() TextareaProps {
+	return TextareaProps{
+		Rows:     4,
+		AutoGrow: true,
+	}
+}
+
+// Textarea renders a labeled textarea
+//
+//	@forms.Textarea(forms.TextareaProps{
+//	   Name: "bio",
+//	   Label: "Bio",
+//	   Rows: 4,
+//	   Placeholder: "Tell us about yourself...",
+//	})
+templ Textarea(props TextareaProps) {
+	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+		<textarea
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			if props.Placeholder != "" {
+				placeholder={ props.Placeholder }
+			}
+			if props.Rows > 0 {
+				rows={ fmt.Sprintf("%d", props.Rows) }
+			} else {
+				rows="4"
+			}
+			class={ utils.Class(baseInputClass(props.Error != ""), utils.Ternary(props.AutoGrow, "tc-auto-grow", ""), props.Class) }
+			if props.EnterKeyHint != "" {
+				enterkeyhint={ props.EnterKeyHint }
+			}
+			if props.Required {
+				required
+				aria-required="true"
+			}
+			if props.Disabled {
+				disabled
+			}
+			if props.ReadOnly {
+				readonly
+			}
+			if props.MaxLength > 0 {
+				maxlength={ fmt.Sprintf("%d", props.MaxLength) }
+			}
+			{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			{ props.Value }
+		</textarea>
+	}
+}

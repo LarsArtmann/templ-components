@@ -1,0 +1,48 @@
+package navigation
+
+import "github.com/larsartmann/templ-components/utils"
+
+// EndOfListProps configures the "no more items" indicator shown at the
+// bottom of a list when all items have been loaded (cursor exhausted,
+// last page reached, etc.).
+type EndOfListProps struct {
+	utils.BaseProps
+	// Message overrides the default "You've reached the end" text.
+	Message string
+}
+
+// defaultEndOfListMessage is the fallback message when Message is empty.
+const defaultEndOfListMessage = "You've reached the end"
+
+// DefaultEndOfListProps returns sensible defaults.
+func DefaultEndOfListProps() EndOfListProps {
+	return EndOfListProps{}
+}
+
+// EndOfList renders a subtle "no more items" indicator for the bottom of
+// a list. Pair it with LoadMore or Pagination to signal that the cursor
+// is exhausted or the last page has been reached.
+//
+//	@navigation.EndOfList(navigation.DefaultEndOfListProps())
+//	@navigation.EndOfList(navigation.EndOfListProps{Message: "No more battles"})
+templ EndOfList(props EndOfListProps) {
+	{{
+		message := props.Message
+		if message == "" {
+			message = defaultEndOfListMessage
+		}
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("py-6 text-center text-sm text-gray-500 dark:text-gray-400", props.Class) }
+		role="status"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ message }
+	</div>
+}

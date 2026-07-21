@@ -1,0 +1,180 @@
+package htmx
+
+// ErrorHandlingConfig configures the global HTMX error handling behavior
+type ErrorHandlingConfig struct {
+	// Nonce is the CSP nonce for inline scripts
+	Nonce string
+	// MaxErrorHistory is the maximum number of errors to track (default: 10)
+	MaxErrorHistory int
+	// MaxRetries is the maximum number of retry attempts for server errors (default: 2)
+	MaxRetries int
+	// RetryDelayMS is the base delay in milliseconds between retries, multiplied by retry count (default: 1000)
+	RetryDelayMS int
+}
+
+// DefaultErrorHandlingConfig returns sensible defaults for error handling
+func DefaultErrorHandlingConfig() ErrorHandlingConfig {
+	return ErrorHandlingConfig{
+		MaxErrorHistory: 10,
+		MaxRetries:      2,
+		RetryDelayMS:    1000,
+	}
+}
+
+func (c *ErrorHandlingConfig) normalize() {
+	if c.MaxErrorHistory <= 0 {
+		c.MaxErrorHistory = 10
+	}
+	if c.MaxRetries <= 0 {
+		c.MaxRetries = 2
+	}
+	if c.RetryDelayMS <= 0 {
+		c.RetryDelayMS = 1000
+	}
+}
+
+// GlobalErrorHandling renders a comprehensive global HTMX error handling script.
+// Include this once in your base layout, ideally at the end of the body.
+// Requires feedback.ToastContainer on the page for accessible error announcements (aria-live).
+// If ToastContainer is not present, errors are only logged to the console.
+//
+// Typical layout wiring:
+//
+//	@layout.Base(layout.PageProps{...}) {
+//	    @feedback.ToastContainer(nonce)  // must be present for toast error feedback
+//	    // ... page content ...
+//	    @htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
+//	}
+templ GlobalErrorHandling(cfg ErrorHandlingConfig) {
+	{{ cfg.normalize() }}
+	<div id="tc-error-announcer" aria-live="polite" class="sr-only"></div>
+	<script nonce={ cfg.Nonce }>
+		(function() {
+			'use strict';
+
+			var MAX_ERROR_HISTORY = {{ cfg.MaxErrorHistory }};
+			var MAX_RETRIES = {{ cfg.MaxRetries }};
+			var RETRY_DELAY_MS = {{ cfg.RetryDelayMS }};
+
+			const errorHistory = [];
+
+			// Family-aware toast type mapping
+			var tcFamilyToastMap = {
+				'rejection': 'warning',
+				'conflict': 'warning',
+				'transient': 'info',
+				'corruption': 'error',
+				'infrastructure': 'error'
+			};
+
+			function tcParseErrorBody(xhr) {
+				if (!xhr || !xhr.responseText) return null;
+				try {
+					var body = JSON.parse(xhr.responseText);
+					if (body && (body.family || body.code || body.message)) return body;
+				} catch (e) {}
+				return null;
+			}
+
+			function tcHandleHTMXError(event, type) {
+				var xhr = event.detail.xhr;
+
+				console.error('HTMX Error:', {
+					type: type,
+					status: xhr ? xhr.status : 0,
+					statusText: xhr ? xhr.statusText : '',
+					url: xhr ? xhr.responseURL : 'unknown',
+					timestamp: new Date().toISOString()
+				});
+
+				errorHistory.unshift({
+					type: type,
+					status: xhr ? xhr.status : 0,
+					url: xhr ? xhr.responseURL : '',
+					timestamp: Date.now()
+				});
+				if (errorHistory.length > MAX_ERROR_HISTORY) {
+					errorHistory.length = MAX_ERROR_HISTORY;
+				}
+
+				if (typeof tcShowToast === 'function') {
+					var message, toastType, title;
+					var structured = tcParseErrorBody(xhr);
+
+					if (type === 'network' || !xhr || xhr.status === 0) {
+						message = 'Network error. Check your connection.';
+						toastType = 'error';
+						title = 'Connection Lost';
+					} else if (structured && structured.family) {
+						message = structured.message || 'An error occurred.';
+						toastType = tcFamilyToastMap[structured.family] || 'error';
+						title = structured.title || (structured.code || 'Error');
+						if (structured.fix) message += ' ' + structured.fix;
+					} else if (xhr.status >= 500) {
+						message = 'Server error. Please try again.';
+						toastType = 'error';
+						title = 'Server Error';
+					} else if (xhr.status === 404) {
+						message = 'Requested resource not found.';
+						toastType = 'warning';
+						title = 'Not Found';
+					} else if (xhr.status === 403) {
+						message = 'You do not have permission to perform this action.';
+						toastType = 'warning';
+						title = 'Access Denied';
+					} else if (xhr.status === 401) {
+						message = 'Your session has expired. Please refresh the page.';
+						toastType = 'error';
+						title = 'Authentication Required';
+						setTimeout(function() { window.location.reload(); }, 3000);
+					} else if (xhr.status >= 400) {
+						message = 'Request failed. Please try again.';
+						if (structured && structured.message) message = structured.message;
+						toastType = 'error';
+						title = structured && structured.code ? structured.code : 'Request Failed';
+					} else {
+						message = 'An unexpected error occurred.';
+						toastType = 'error';
+						title = 'Error';
+					}
+					tcShowToast(message, toastType, title, 5000);
+				}
+				var announcer = document.getElementById('tc-error-announcer');
+				if (announcer) announcer.textContent = message || 'An error occurred.';
+			}
+
+			document.addEventListener('htmx:sendError', function(event) {
+				tcHandleHTMXError(event, 'network');
+			});
+
+			document.addEventListener('htmx:responseError', function(event) {
+				var xhr = event.detail.xhr;
+				var elt = event.detail.elt;
+				if (xhr && (xhr.status >= 500 || xhr.status === 0) && elt) {
+					var retries = parseInt(elt.getAttribute('data-tc-retry') || '0');
+					if (retries < MAX_RETRIES) {
+						elt.setAttribute('data-tc-retry', String(retries + 1));
+						setTimeout(function() {
+							var triggerSpec = elt.getAttribute('hx-trigger');
+							var eventName = triggerSpec ? triggerSpec.split(' ')[0].trim() : 'click';
+							htmx.trigger(elt, eventName);
+						}, RETRY_DELAY_MS * (retries + 1));
+						return;
+					}
+					elt.removeAttribute('data-tc-retry');
+				}
+				tcHandleHTMXError(event, 'response');
+			});
+
+			document.addEventListener('htmx:afterRequest', function(event) {
+				var xhr = event.detail.xhr;
+				if (xhr && xhr.status >= 200 && xhr.status < 300) {
+					var elt = event.detail.elt;
+					if (elt) elt.removeAttribute('data-tc-retry');
+				}
+			});
+
+			window.htmxErrorHistory = function() { return errorHistory; };
+		})();
+	</script>
+}

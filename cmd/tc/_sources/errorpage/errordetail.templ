@@ -1,0 +1,28 @@
+package errorpage
+
+import "github.com/larsartmann/templ-components/utils"
+
+templ ErrorDetail(props ErrorDetailProps) {
+	// ErrorDetail renders a compact inline error card for a single classified error.
+	//
+	// The header (icon + badge + title + message) is rendered through @errorHeader
+	// in compact mode; ErrorPage reuses the same template in full mode.
+	{{ style := lookupFamilyStyle(props.Family) }}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("rounded-lg border overflow-hidden", style.Border, style.BG, props.Class) }
+		role="alert"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<div class="px-4 py-3 sm:px-5">
+			@errorHeader("gap-3", "flex-shrink-0 mt-0.5", style, props.Family, props.Code, props.Title, "h3", "mt-1.5 text-sm font-semibold text-gray-900 dark:text-white", props.Message, utils.Class("mt-1 text-sm", style.Text))
+			@diagnosticSection(props.Fix, props.Context, props.CauseChain, "mt-3 ms-8", "Caused by")
+		</div>
+		@timestampFooter(props.Timestamp, "px-4 py-2 sm:px-5")
+	</div>
+}

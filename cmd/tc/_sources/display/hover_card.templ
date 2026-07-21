@@ -1,0 +1,87 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// HoverCardPosition defines where the hover card appears relative to the trigger.
+type HoverCardPosition string
+
+const (
+	HoverCardPositionTop    HoverCardPosition = "top"
+	HoverCardPositionBottom HoverCardPosition = "bottom"
+	HoverCardPositionStart  HoverCardPosition = "start"
+	HoverCardPositionEnd    HoverCardPosition = "end"
+)
+
+//nolint:gochecknoglobals // Package-level lookup table
+var hoverCardPositionMap = map[HoverCardPosition]string{
+	HoverCardPositionTop:    "bottom-full left-1/2 -translate-x-1/2 mb-2",
+	HoverCardPositionBottom: "top-full left-1/2 -translate-x-1/2 mt-2",
+	HoverCardPositionStart:  "end-full top-1/2 -translate-y-1/2 me-2",
+	HoverCardPositionEnd:    "start-full top-1/2 -translate-y-1/2 ms-2",
+}
+
+// HoverCardPositionIsValid reports whether v is one of the defined HoverCardPosition constants.
+func HoverCardPositionIsValid(v HoverCardPosition) bool {
+	_, ok := hoverCardPositionMap[v]
+	return ok
+}
+
+func hoverCardPositionClass(pos HoverCardPosition) string {
+	return utils.Lookup(hoverCardPositionMap, pos, hoverCardPositionMap[HoverCardPositionBottom])
+}
+
+// HoverCardProps configures a hover-activated card with rich content.
+// The card appears on hover and focus, using pure CSS (no JavaScript).
+// Accessible: the card content is linked to the trigger via aria-describedby.
+// This is the reference implementation for the CSS-only overlay pattern —
+// see ADR-0017 for the broader Popover API migration strategy.
+type HoverCardProps struct {
+	utils.BaseProps
+	Content  templ.Component
+	Position HoverCardPosition
+}
+
+// DefaultHoverCardProps returns sensible defaults.
+func DefaultHoverCardProps() HoverCardProps {
+	return HoverCardProps{
+		Position: HoverCardPositionBottom,
+	}
+}
+
+// HoverCard wraps a trigger element in a hover-activated card with rich content.
+// The card appears on :hover and :focus-within, using pure CSS opacity transitions.
+//
+//	@display.HoverCard(display.HoverCardProps{Position: display.HoverCardPositionTop}) {
+//	   <button>Hover me</button>
+//	}
+//	@display.HoverCard.HoverCardContent(display.HoverCardProps{Content: ...})
+templ HoverCard(props HoverCardProps) {
+	{{ id := utils.EnsureID("hovercard", props.ID) }}
+	<div
+		class={ utils.Class("relative inline-block", props.Class) }
+		{ props.Attrs... }
+	>
+		<div
+			class="peer"
+			aria-describedby={ id }
+			tabindex="0"
+		>
+			{ children... }
+		</div>
+		<div
+			id={ id }
+			role="tooltip"
+			class={ utils.Class(
+				hoverCardPositionClass(props.Position),
+				"absolute z-50 w-64 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4 shadow-lg dark:shadow-black/20 opacity-0 invisible peer-hover:opacity-100 peer-hover:visible peer-focus-within:opacity-100 peer-focus-within:visible transition-opacity motion-reduce:transition-none motion-reduce:duration-0",
+			) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+		>
+			if props.Content != nil {
+				@props.Content
+			}
+		</div>
+	</div>
+}

@@ -1,0 +1,73 @@
+package forms
+
+import "github.com/larsartmann/templ-components/utils"
+
+// InputGroupProps configures an input group with optional left/right addons
+//
+// Use with Input, Select, or Textarea. When using an addon, add padding
+// to the input so the content doesn't overlap:
+//   - Left addon  → add "ps-10" to input Class
+//   - Right addon → add "pe-10" to input Class
+//   - Both        → add "ps-10 pe-10"
+type InputGroupProps struct {
+	utils.BaseProps
+	LeftAddon  templ.Component
+	RightAddon templ.Component
+}
+
+// DefaultInputGroupProps returns sensible defaults
+func DefaultInputGroupProps() InputGroupProps {
+	return InputGroupProps{}
+}
+
+// InputGroupPaddingClass returns the appropriate padding class for an input
+// that lives inside an InputGroup with the given addons. Call this from your
+// input's Class field to avoid manual padding:
+//
+//	@forms.InputGroup(forms.InputGroupProps{LeftAddon: icon}) {
+//	   @forms.Input(forms.InputProps{Class: forms.InputGroupPaddingClass(true, false)})
+//	}
+func InputGroupPaddingClass(left, right bool) string {
+	switch {
+	case left && right:
+		return "ps-10 pe-10"
+	case left:
+		return "ps-10"
+	case right:
+		return "pe-10"
+	default:
+		return ""
+	}
+}
+
+// InputGroup renders a form control with optional left/right addons.
+// Addons are absolutely positioned inside the input area.
+//
+//	@forms.InputGroup(forms.InputGroupProps{
+//	   LeftAddon: icons.Icon(icons.Search, "h-5 w-5 text-gray-400 dark:text-gray-500"),
+//	}) {
+//	   @forms.Input(forms.InputProps{Class: "ps-10"})
+//	}
+templ InputGroup(props InputGroupProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("relative flex items-center", props.Class) }
+		{ props.Attrs... }
+	>
+		if props.LeftAddon != nil {
+			<div class="pointer-events-none absolute inset-y-0 start-0 flex items-center ps-3">
+				@props.LeftAddon
+			</div>
+		}
+		<div class="w-full">
+			{ children... }
+		</div>
+		if props.RightAddon != nil {
+			<div class="pointer-events-none absolute inset-y-0 end-0 flex items-center pe-3">
+				@props.RightAddon
+			</div>
+		}
+	</div>
+}

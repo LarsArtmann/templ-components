@@ -1,0 +1,102 @@
+package forms
+
+import "github.com/larsartmann/templ-components/utils"
+
+// radioInputClass returns the shared Tailwind classes for radio inputs
+func radioInputClass() string {
+	return "h-4 w-4 border-gray-300 text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-blue-600"
+}
+
+// Radio renders a single radio button with label
+//
+//	@forms.Radio(forms.RadioProps{
+//	   ID: "plan-pro",
+//	   Name: "plan",
+//	   Value: "pro",
+//	   Label: "Pro Plan",
+//	   Checked: true,
+//	})
+templ Radio(props RadioProps) {
+	<div class={ utils.Class("flex items-center", props.Class) }>
+		<input
+			type="radio"
+			name={ props.Name }
+			value={ props.Value }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ radioInputClass() }
+			if props.Checked {
+				checked
+			}
+			if props.Required {
+				required
+			}
+			if props.Disabled {
+				disabled
+			}
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		/>
+		if props.Label != "" {
+			<label
+				if props.ID != "" {
+					for={ props.ID }
+				}
+				class="ms-3 text-sm font-medium text-gray-900 dark:text-white"
+			>
+				{ props.Label }
+			</label>
+		}
+	</div>
+}
+
+// RadioGroup renders a fieldset of radio buttons with legend, error, and help text
+//
+//	@forms.RadioGroup(forms.RadioGroupProps{
+//	   Name: "plan",
+//	   Label: "Select a plan",
+//	   Options: []forms.RadioOption{
+//	     {Value: "free", Label: "Free"},
+//	     {Value: "pro", Label: "Pro"},
+//	   },
+//	})
+templ RadioGroup(props RadioGroupProps) {
+	{{ errorAttrs := ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), "")) }}
+	<fieldset
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		if props.Required {
+			aria-required="true"
+		}
+		{ errorAttrs... }
+		{ props.Attrs... }
+	>
+		if props.Label != "" {
+			<legend class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
+				{ props.Label }
+				if props.Required {
+					<span class="text-red-500 dark:text-red-400 ms-0.5" aria-hidden="true">*</span>
+				}
+			</legend>
+		}
+		<div class={ utils.Ternary(props.Inline, "mt-2 flex space-x-6", "mt-2 space-y-2") }>
+			for _, opt := range props.Options {
+				@Radio(radioItemProps(props.ID, props.Name, opt, props.Required, errorAttrs))
+			}
+		</div>
+		if props.Error != "" {
+			@FieldError(props.ID, props.Error)
+		}
+		if props.HelpText != "" {
+			@helpText(props.ID, props.HelpText)
+		}
+	</fieldset>
+}

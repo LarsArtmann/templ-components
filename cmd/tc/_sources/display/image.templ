@@ -1,0 +1,96 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// ImageProps configures an <img> element with lazy loading, aspect-ratio
+// dimensions, and optional fallback source. The fallback is handled via a
+// CSP-safe singleton script (no inline onerror handler) that swaps the src
+// when the original fails to load.
+type ImageProps struct {
+	utils.BaseProps
+	// Src is the primary image URL.
+	Src string
+	// Alt text for accessibility. Required for non-decorative images.
+	Alt string
+	// SrcSet defines multiple image sources for responsive delivery.
+	// Example: "photo-1x.jpg 1x, photo-2x.jpg 2x" or
+	// "photo-480w.jpg 480w, photo-800w.jpg 800w".
+	SrcSet string
+	// Sizes defines the intended display width at different breakpoints.
+	// Example: "(max-width: 600px) 480px, 800px".
+	// Pair with a width-descriptor srcset for responsive images.
+	Sizes string
+	// Width in CSS pixels. When set, the img tag includes a width attribute
+	// and helps prevent layout shift (CLS).
+	Width int
+	// Height in CSS pixels. When set, the img tag includes a height attribute.
+	Height int
+	// FallbackSrc, when non-empty, is used if Src fails to load. Handled via
+	// a CSP-safe event-delegation script — no inline onerror handler.
+	FallbackSrc string
+	// Lazy controls the loading attribute. When true (default), uses
+	// loading="lazy". Set to false for above-the-fold images.
+	Lazy bool
+	// Rounded, when true, adds rounded-full for circular images (avatars, icons).
+	// Defaults to false (rounded-md).
+	Rounded bool
+}
+
+// DefaultImageProps returns sensible defaults.
+func DefaultImageProps() ImageProps {
+	return ImageProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Lazy: true,
+	}
+}
+
+// Image renders an <img> with lazy loading, optional dimensions, and optional
+// fallback source. The fallback swap is CSP-safe: a data-tc-img-fallback
+// attribute on the img tag is consumed by a singleton error-capture listener.
+//
+// For responsive images with multiple resolutions, use SrcSet and Sizes:
+//
+//	@display.Image(display.ImageProps{
+//	    Src:    "/photo.jpg",
+//	    SrcSet: "/photo-480w.jpg 480w, /photo-800w.jpg 800w",
+//	    Sizes:  "(max-width: 600px) 480px, 800px",
+//	    Alt:    "Profile photo",
+//	})
+//
+//	@display.Image(display.ImageProps{Src: "/photo.jpg", Alt: "Profile photo", Width: 128, Height: 128, FallbackSrc: "/placeholder.jpg"})
+templ Image(props ImageProps) {
+	if props.Src != "" {
+		<img
+			src={ props.Src }
+			alt={ props.Alt }
+			if props.SrcSet != "" {
+				srcset={ props.SrcSet }
+			}
+			if props.Sizes != "" {
+				sizes={ props.Sizes }
+			}
+			loading={ utils.Ternary(props.Lazy, "lazy", "eager") }
+			decoding="async"
+			fetchpriority={ utils.Ternary(props.Lazy, "low", "high") }
+			if props.Width > 0 {
+				width={ props.Width }
+			}
+			if props.Height > 0 {
+				height={ props.Height }
+			}
+			if props.FallbackSrc != "" {
+				data-tc-img-fallback={ props.FallbackSrc }
+			}
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class(utils.Ternary(props.Rounded, "max-w-full h-auto rounded-full", "max-w-full h-auto rounded-md"), props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		/>
+	}
+	if props.FallbackSrc != "" {
+		@imageFallbackScriptComponent(props.Nonce)
+	}
+}

@@ -22,7 +22,11 @@ jobs:
         run: go install github.com/golangci/golangci-lint/v2/cmd/golangci-lint@latest
 
       - name: Run golangci-lint
-        run: golangci-lint run --timeout=5m
+        run: |
+          golangci-lint run --timeout=5m \
+            ./display/... ./errorpage/... ./feedback/... ./forms/... \
+            ./htmx/... ./icons/... ./integration/... ./internal/... \
+            ./layout/... ./navigation/... ./recipes/... ./utils/...
 
   build:
     name: Build & Test

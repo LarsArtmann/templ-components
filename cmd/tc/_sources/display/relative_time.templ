@@ -1,0 +1,119 @@
+package display
+
+import (
+	"strconv"
+	"time"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// RelativeTimeProps configures a human-readable relative timestamp.
+// The server renders the initial relative string ("2 hours ago"); the
+// machine-readable datetime attribute is always present for screen readers
+// and search engines.
+type RelativeTimeProps struct {
+	utils.BaseProps
+	// Time is the timestamp to display relative to now.
+	Time time.Time
+	// Title, when non-empty, overrides the default title (absolute time shown
+	// on hover). Set to "" to use the formatted absolute timestamp.
+	Title string
+	// AutoRefresh defaults to true — the component injects a singleton script
+	// that uses the native Intl.RelativeTimeFormat API to live-update the text
+	// every 30 seconds. Also listens to htmx:afterSettle so newly-swapped
+	// <time> elements are formatted immediately. This is progressive enhancement:
+	// the server-rendered text is correct without JS; the script just keeps it
+	// fresh. Set to false for static contexts (PDF, email, SEO-only).
+	AutoRefresh bool
+}
+
+// DefaultRelativeTimeProps returns sensible defaults. Time defaults to now,
+// AutoRefresh defaults to true (live-updating via Intl.RelativeTimeFormat).
+func DefaultRelativeTimeProps() RelativeTimeProps {
+	return RelativeTimeProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Time:        time.Now(),
+		AutoRefresh: true,
+	}
+}
+
+// RelativeTime renders a <time> element with a human-readable relative
+// timestamp (e.g. "2 hours ago", "just now", "3 days ago"). The datetime
+// attribute carries the RFC 3339 timestamp for accessibility and SEO.
+//
+//	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt})
+//	@display.RelativeTime(display.RelativeTimeProps{Time: createdAt, AutoRefresh: false}) // static
+templ RelativeTime(props RelativeTimeProps) {
+	{{
+		relative := formatRelativeTime(props.Time, time.Now())
+		title := props.Title
+		if title == "" {
+			title = props.Time.Format("Jan 2, 2006 3:04 PM MST")
+		}
+	}}
+	<time
+		datetime={ props.Time.Format(time.RFC3339) }
+		title={ title }
+		if props.AutoRefresh {
+			data-tc-relative
+		}
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("text-sm text-gray-500 dark:text-gray-400", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ relative }
+	</time>
+	if props.AutoRefresh {
+		@relativeTimeScriptComponent(props.Nonce)
+	}
+}
+
+// formatRelativeTime returns a human-readable string describing how far ago
+// (or how far from now) t is relative to now. Examples: "just now",
+// "5 minutes ago", "3 hours ago", "2 days ago", "1 week ago", "Jan 5, 2025".
+func formatRelativeTime(t, now time.Time) string {
+	d := now.Sub(t)
+	if d < 0 {
+		d = -d
+	}
+
+	switch {
+	case d < time.Minute:
+		return "just now"
+	case d < time.Hour:
+		mins := int(d / time.Minute)
+		if mins == 1 {
+			return "1 minute ago"
+		}
+		return formatRelativeAgo(mins, "minutes")
+	case d < 24*time.Hour:
+		hours := int(d / time.Hour)
+		if hours == 1 {
+			return "1 hour ago"
+		}
+		return formatRelativeAgo(hours, "hours")
+	case d < 7*24*time.Hour:
+		days := int(d / (24 * time.Hour))
+		if days == 1 {
+			return "1 day ago"
+		}
+		return formatRelativeAgo(days, "days")
+	case d < 30*24*time.Hour:
+		weeks := int(d / (7 * 24 * time.Hour))
+		if weeks == 1 {
+			return "1 week ago"
+		}
+		return formatRelativeAgo(weeks, "weeks")
+	default:
+		return t.Format("Jan 2, 2006")
+	}
+}
+
+// formatRelativeAgo returns "<n> <unit> ago".
+func formatRelativeAgo(n int, unit string) string {
+	return strconv.Itoa(n) + " " + unit + " ago"
+}

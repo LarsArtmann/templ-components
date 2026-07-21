@@ -1,0 +1,375 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/htmx"
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs"
+
+// CardPadding defines the internal padding of a card
+type CardPadding string
+
+const (
+	CardPaddingNone CardPadding = "none"
+	CardPaddingSM   CardPadding = "sm"
+	CardPaddingMD   CardPadding = "md"
+	CardPaddingLG   CardPadding = "lg"
+)
+
+// CardProps configures a card container.
+//
+// Set ContainerAware: true to make padding adapt to the card's parent
+// container width (CSS @container) instead of the viewport. Useful when Card
+// is placed inside a sidebar, grid cell, or other constrained layout. See
+// ADR-0018.
+type CardProps struct {
+	utils.BaseProps
+	Title        string
+	Subtitle     string
+	Footer       templ.Component
+	HeaderAction templ.Component
+	// Header, when set, replaces the entire default header section (title,
+	// subtitle, header action). Use this for custom header layouts that the
+	// Title/Subtitle/HeaderAction fields can't express. When nil, the default
+	// header renders if Title or HeaderAction is set.
+	Header templ.Component
+	// Body, when set, overrides children for the card's main content area.
+	// Use this for struct-based composition; pass children for templ-block
+	// composition. If both are set, Body takes precedence.
+	Body    templ.Component
+	Padding CardPadding
+	// TitleClass, when set, overrides the default <h3> title classes. Consumer
+	// classes are merged LAST so they win via tailwind-merge.
+	TitleClass string
+	// HeaderClass, when set, overrides the default header wrapper classes.
+	// Consumer classes are merged LAST so they win via tailwind-merge.
+	HeaderClass string
+	// ContainerAware, when true, wraps the card in a @container div and swaps
+	// sm: breakpoint classes for @sm: so padding adapts to container width,
+	// not the viewport. Default false (viewport breakpoints).
+	ContainerAware bool
+}
+
+// DefaultCardProps returns sensible defaults
+func DefaultCardProps() CardProps {
+	return CardProps{
+		Padding: CardPaddingMD,
+	}
+}
+
+// cardHeaderPaddingClass returns the responsive padding for the card header.
+// Container-aware variant swaps sm: for @sm: (complete Tailwind literals).
+func cardHeaderPaddingClass(containerAware bool) string {
+	if containerAware {
+		return "px-4 py-4 @sm:px-6"
+	}
+	return "px-4 py-4 sm:px-6"
+}
+
+// cardFooterPaddingClass returns the responsive padding for the card footer.
+func cardFooterPaddingClass(containerAware bool) string {
+	if containerAware {
+		return "px-4 py-3 @sm:px-6"
+	}
+	return "px-4 py-3 sm:px-6"
+}
+
+// Card renders a bordered card with optional header and footer
+//
+//	@display.Card(display.CardProps{Title: "Users", Subtitle: "Manage your users"}) {
+//	   <p>Card content goes here</p>
+//	 }
+templ Card(props CardProps) {
+	if props.ContainerAware {
+		<div class="@container">
+			@cardInner(props) {
+				{ children... }
+			}
+		</div>
+	} else {
+		@cardInner(props) {
+			{ children... }
+		}
+	}
+}
+
+templ cardInner(props CardProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class(cardShellClass+" overflow-hidden", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if props.Header != nil {
+			<div class={ utils.Class("flex items-center justify-between "+cardHeaderPaddingClass(props.ContainerAware)+" border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
+				@props.Header
+			</div>
+		} else if props.Title != "" || props.HeaderAction != nil {
+			<div class={ utils.Class("flex items-center justify-between "+cardHeaderPaddingClass(props.ContainerAware)+" border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
+				<div>
+					if props.Title != "" {
+						<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h3>
+					}
+					if props.Subtitle != "" {
+						<p class={ utils.Class(mutedTextClass, "mt-1") }>{ props.Subtitle }</p>
+					}
+				</div>
+				if props.HeaderAction != nil {
+					<div class="flex-shrink-0">
+						@props.HeaderAction
+					</div>
+				}
+			</div>
+		}
+		if props.Padding == CardPaddingNone {
+			if props.Body != nil {
+				@props.Body
+			} else {
+				{ children... }
+			}
+		} else {
+			<div class={ cardPaddingClass(props.Padding, props.ContainerAware) }>
+				if props.Body != nil {
+					@props.Body
+				} else {
+					{ children... }
+				}
+			</div>
+		}
+		if props.Footer != nil {
+			<div class={ cardFooterPaddingClass(props.ContainerAware) + " bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700" }>
+				@props.Footer
+			</div>
+		}
+	</div>
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for card padding
+var cardPaddingLookup = map[CardPadding]string{
+	CardPaddingNone: "",
+	CardPaddingSM:   "px-3 py-3",
+	CardPaddingMD:   "px-4 py-5 sm:p-6",
+	CardPaddingLG:   "px-6 py-6",
+}
+
+// cardPaddingLookupContainer mirrors cardPaddingLookup with @container-keyed
+// breakpoints (@sm:) so container-aware cards adapt padding to their parent's
+// width instead of the viewport.
+var cardPaddingLookupContainer = map[CardPadding]string{
+	CardPaddingNone: "",
+	CardPaddingSM:   "px-3 py-3",
+	CardPaddingMD:   "px-4 py-5 @sm:p-6",
+	CardPaddingLG:   "px-6 py-6",
+}
+
+func cardPaddingClass(p CardPadding, containerAware bool) string {
+	if containerAware {
+		return utils.Lookup(cardPaddingLookupContainer, p, cardPaddingLookupContainer[CardPaddingMD])
+	}
+	return utils.Lookup(cardPaddingLookup, p, cardPaddingLookup[CardPaddingMD])
+}
+
+// SimpleCardProps configures a simple card without header/footer
+type SimpleCardProps struct {
+	utils.BaseProps
+	Padding CardPadding
+	// Body, when set, overrides children — same pattern as CardProps.Body.
+	Body templ.Component
+}
+
+// DefaultSimpleCardProps returns sensible defaults
+func DefaultSimpleCardProps() SimpleCardProps {
+	return SimpleCardProps{
+		Padding: CardPaddingSM,
+	}
+}
+
+// SimpleCard renders a card without header/footer for quick use.
+// Internally composes through Card for consistent shell styling.
+//
+//	@display.SimpleCard(display.SimpleCardProps{}) {
+//	   <p>Content</p>
+//	 }
+templ SimpleCard(props SimpleCardProps) {
+	@Card(CardProps{
+		BaseProps: props.BaseProps,
+		Padding:   props.Padding,
+		Body:      props.Body,
+	}) {
+		{ children... }
+	}
+}
+
+// TrendDirection represents the direction of a stat change
+type TrendDirection string
+
+const (
+	TrendUp   TrendDirection = "up"
+	TrendDown TrendDirection = "down"
+	TrendWarn TrendDirection = "warn"
+	TrendNone TrendDirection = "none"
+)
+
+// StatCardProps configures a dashboard stat card
+type StatCardProps struct {
+	utils.BaseProps
+	Value  string
+	Label  string
+	Change string
+	Trend  TrendDirection
+	// Icon optionally renders a leading icon tile (e.g. icons.Users).
+	Icon icons.Name
+	// Href, when non-empty, wraps the whole card in an <a> so the card acts
+	// as a clickable navigation/filter link. Use this for dashboard stat cards
+	// that drill down into a filtered view.
+	Href string
+	// HxGet, when set, adds hx-get to the card for HTMX-driven updates.
+	// Mutually independent of Href — Href navigates, HxGet fetches partial HTML.
+	HxGet string
+	// HxTarget specifies the hx-target attribute (CSS selector for the swap target).
+	HxTarget string
+	// HxSwap specifies the hx-swap attribute (e.g. htmx.SwapInnerHTML, htmx.SwapOuterHTML).
+	HxSwap htmx.SwapStyle
+}
+
+// DefaultStatCardProps returns sensible defaults
+func DefaultStatCardProps() StatCardProps {
+	return StatCardProps{ //nolint:exhaustruct // intentionally minimal defaults
+		Trend: TrendNone,
+	}
+}
+
+// validTrendDirections is the set of allowed TrendDirection values.
+var validTrendDirections = map[TrendDirection]bool{
+	TrendUp:   true,
+	TrendDown: true,
+	TrendWarn: true,
+	TrendNone: true,
+}
+
+// normalizeTrend returns the trend if valid, or TrendNone for invalid values.
+func normalizeTrend(t TrendDirection) TrendDirection {
+	if validTrendDirections[t] {
+		return t
+	}
+	return TrendNone
+}
+
+// StatCard renders a dashboard stat card with value, label, optional change
+// indicator, and an optional leading icon tile. When Href is set, the whole
+// card is wrapped in an <a> so it acts as a clickable navigation link.
+//
+//	@display.StatCard(display.StatCardProps{Label: "Users", Value: "1,204", Icon: icons.Users})
+//	@display.StatCard(display.StatCardProps{Label: "Active", Value: "42", Href: "/?activity=active"})
+templ StatCard(props StatCardProps) {
+	if props.Href != "" {
+		<a
+			href={ templ.SafeURL(props.Href) }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class(cardShellClass+" p-5 transition-shadow motion-reduce:transition-none motion-reduce:duration-0 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 hover:shadow-md dark:hover:shadow-black/20 cursor-pointer", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			if props.HxGet != "" {
+				hx-get={ props.HxGet }
+			}
+			if props.HxTarget != "" {
+				hx-target={ props.HxTarget }
+			}
+			if props.HxSwap != "" {
+				hx-swap={ props.HxSwap }
+			}
+			{ props.Attrs... }
+		>
+			@statCardInner(props)
+		</a>
+	} else {
+		<div
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class(cardShellClass+" p-5", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			if props.HxGet != "" {
+				hx-get={ props.HxGet }
+			}
+			if props.HxTarget != "" {
+				hx-target={ props.HxTarget }
+			}
+			if props.HxSwap != "" {
+				hx-swap={ props.HxSwap }
+			}
+			{ props.Attrs... }
+		>
+			@statCardInner(props)
+		</div>
+	}
+}
+
+// statCardInner renders the icon/value/label body shared by both the linked
+// and unlinked StatCard layouts.
+templ statCardInner(props StatCardProps) {
+	if props.Icon != "" {
+		<div class="flex items-center gap-4">
+			<div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/30">
+				@icons.Icon(props.Icon, "h-6 w-6 text-blue-600 dark:text-blue-400")
+			</div>
+			<dl class="min-w-0 flex-1">
+				@statCardFigures(props)
+			</dl>
+		</div>
+	} else {
+		<dl>
+			@statCardFigures(props)
+		</dl>
+	}
+}
+
+// statCardFigures renders the label, value, and optional change indicator shared
+// by both the icon and no-icon StatCard layouts.
+templ statCardFigures(props StatCardProps) {
+	{{ trend := normalizeTrend(props.Trend) }}
+	<dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{ props.Label }</dt>
+	<div class="mt-1 flex items-baseline">
+		<dd class="text-2xl font-semibold text-gray-900 dark:text-white">{ props.Value }</dd>
+		if props.Change != "" {
+			<div
+				class={ "ms-2 flex items-baseline text-sm font-semibold",
+				templ.KV("text-green-600 dark:text-green-400", trend == TrendUp),
+				templ.KV("text-red-600 dark:text-red-400", trend == TrendDown),
+				templ.KV("text-amber-600 dark:text-amber-400", trend == TrendWarn) }
+			>
+				switch trend {
+					case TrendUp:
+						@svg.FillIcon("self-center flex-shrink-0 h-4 w-4 text-green-500 dark:text-green-400", svg.PathArrowUp, false)
+					case TrendDown:
+						@svg.FillIcon("self-center flex-shrink-0 h-4 w-4 text-red-500 dark:text-red-400", svg.PathArrowDown, false)
+					case TrendWarn:
+						@svg.FillIcon("self-center flex-shrink-0 h-4 w-4 text-amber-500 dark:text-amber-400", svg.PathArrowRight, false)
+				}
+				<span class="sr-only">
+					switch trend {
+						case TrendUp:
+							Increased by
+						case TrendDown:
+							Decreased by
+						case TrendWarn:
+							Holding at
+					}
+				</span>
+				{ props.Change }
+			</div>
+		}
+	</div>
+}

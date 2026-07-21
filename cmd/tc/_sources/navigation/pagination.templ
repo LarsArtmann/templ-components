@@ -1,0 +1,223 @@
+package navigation
+
+import (
+	"fmt"
+	"net/url"
+	"strconv"
+
+	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// inactivePageLinkClass is the shared class for a non-current pagination page link.
+const inactivePageLinkClass = "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0"
+
+// PaginationProps configures a pagination component
+type PaginationProps struct {
+	utils.BaseProps
+	CurrentPage uint
+	TotalPages  uint
+	BaseURL     string
+	QueryParam  string
+	MaxVisible  uint
+}
+
+// DefaultPaginationProps returns sensible defaults
+func DefaultPaginationProps() PaginationProps {
+	return PaginationProps{
+		QueryParam: "page",
+		MaxVisible: 5,
+	}
+}
+
+func (p *PaginationProps) normalize() {
+	if p.CurrentPage == 0 {
+		p.CurrentPage = 1
+	}
+	if p.QueryParam == "" {
+		p.QueryParam = "page"
+	}
+	if p.MaxVisible == 0 {
+		p.MaxVisible = 5
+	}
+}
+
+func (p PaginationProps) pageURL(page uint) string {
+	u, err := url.Parse(p.BaseURL)
+	if err != nil {
+		return fmt.Sprintf("%s?%s=%d", p.BaseURL, p.QueryParam, page)
+	}
+	q := u.Query()
+	q.Set(p.QueryParam, strconv.FormatUint(uint64(page), 10))
+	u.RawQuery = q.Encode()
+	return u.String()
+}
+
+func paginationRange(current, total, maxVisible uint) (start, end uint) {
+	if maxVisible == 0 {
+		maxVisible = 5
+	}
+	if total <= maxVisible {
+		return 1, total
+	}
+	half := maxVisible / 2
+	if current > half {
+		start = current - half
+		end = current + half
+		if maxVisible%2 == 0 {
+			end--
+		}
+	} else {
+		start = 1
+		end = maxVisible
+	}
+	if end > total {
+		end = total
+		start = total - maxVisible + 1
+	}
+	return start, end
+}
+
+// mobilePageButton renders an enabled link or disabled span for mobile pagination
+templ mobilePageButton(enabled bool, href string, marginClass string, text string) {
+	if enabled {
+		<a
+			href={ templ.SafeURL(href) }
+			class={ "relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-800 px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700", marginClass }
+		>
+			{ text }
+		</a>
+	} else {
+		<span class={ "relative inline-flex items-center rounded-md border border-gray-300 dark:border-gray-600 bg-gray-100 dark:bg-gray-900 px-4 py-2 text-sm font-medium text-gray-400 dark:text-gray-500 cursor-not-allowed", marginClass }>{ text }</span>
+	}
+}
+
+// paginationArrowIcon renders the shared icon content for pagination arrows
+templ paginationArrowIcon(srText string, svgPath string) {
+	<span class="sr-only">{ srText }</span>
+	@svg.FillIcon("h-5 w-5", svgPath, false)
+}
+
+// paginationArrow renders a previous/next arrow button for desktop pagination.
+// roundedClass is the complete border-radius utility (e.g. "rounded-s-md") —
+// passed as a literal so Tailwind's content scanner can detect it.
+templ paginationArrow(enabled bool, href string, roundedClass string, ariaLabel string, srText string, svgPath string, rel string) {
+	if enabled {
+		<a
+			href={ templ.SafeURL(href) }
+			class={ "relative inline-flex items-center px-2 py-2 text-gray-400 dark:text-gray-500 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0", roundedClass }
+			aria-label={ ariaLabel }
+			if rel != "" {
+				rel={ rel }
+			}
+		>
+			@paginationArrowIcon(srText, svgPath)
+		</a>
+	} else {
+		<span class={ "relative inline-flex items-center px-2 py-2 text-gray-300 dark:text-gray-600 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 cursor-not-allowed", roundedClass } aria-disabled="true" tabindex="-1">
+			@paginationArrowIcon(srText, svgPath)
+		</span>
+	}
+}
+
+// paginationEllipsis renders a "..." indicator for truncated page ranges
+templ paginationEllipsis() {
+	<span class="relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-300 ring-1 ring-inset ring-gray-300 dark:ring-gray-600">
+		&hellip;
+	</span>
+}
+
+// paginationPageItem renders a single page number inside a list item.
+// rel, when non-empty, adds a rel attribute to the link (e.g. "canonical" for page 1).
+templ paginationPageItem(isActive bool, href string, text string, activeClass string, rel string) {
+	<li>
+		@activeSpanOrLink(isActive, href, text, activeClass, inactivePageLinkClass, rel)
+	</li>
+}
+
+// paginationEllipsisItem renders an ellipsis indicator inside a list item.
+templ paginationEllipsisItem() {
+	<li>
+		@paginationEllipsis()
+	</li>
+}
+
+// Pagination renders a page navigation bar
+//
+//	@navigation.Pagination(navigation.PaginationProps{
+//	   CurrentPage: 3,
+//	   TotalPages: 10,
+//	   BaseURL: "/users",
+//	})
+templ Pagination(props PaginationProps) {
+	{{ props.normalize() }}
+	if props.TotalPages > 1 {
+		<nav
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Pagination") }
+			class={ utils.Class("flex items-center justify-between", props.Class) }
+			{ props.Attrs... }
+		>
+			<div class="flex flex-1 justify-between sm:hidden">
+				@mobilePageButton(props.CurrentPage > 1, props.pageURL(props.CurrentPage-1), "", "Previous")
+				@mobilePageButton(props.CurrentPage < props.TotalPages, props.pageURL(props.CurrentPage+1), "ms-3", "Next")
+			</div>
+			<div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+				<div>
+					<p class="text-sm text-gray-700 dark:text-gray-300">
+						Showing page
+						<span class="font-medium">{ fmt.Sprintf("%d", props.CurrentPage) }</span>
+						of
+						<span class="font-medium">{ fmt.Sprintf("%d", props.TotalPages) }</span>
+					</p>
+				</div>
+				<div>
+					<ol class="isolate inline-flex -space-x-px rounded-md shadow-xs" aria-label="Pagination">
+						<li>
+							@paginationArrow(
+								props.CurrentPage > 1,
+								props.pageURL(props.CurrentPage-1),
+								"rounded-s-md",
+								"Previous page",
+								"Previous",
+								svg.PathArrowLeft,
+								"prev",
+							)
+						</li>
+						{{ start, end := paginationRange(props.CurrentPage, props.TotalPages, props.MaxVisible) }}
+						if start > 1 {
+							@paginationPageItem(false, props.pageURL(1), "1", "", "canonical")
+							@paginationEllipsisItem()
+						}
+						for p := start; p <= end; p++ {
+							@paginationPageItem(
+								p == props.CurrentPage,
+								props.pageURL(p),
+								fmt.Sprintf("%d", p),
+								"relative z-10 inline-flex items-center bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-semibold text-white focus:z-20 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500",
+								"",
+							)
+						}
+						if end < props.TotalPages {
+							@paginationEllipsisItem()
+							@paginationPageItem(false, props.pageURL(props.TotalPages), fmt.Sprintf("%d", props.TotalPages), "", "")
+						}
+						<li>
+							@paginationArrow(
+								props.CurrentPage < props.TotalPages,
+								props.pageURL(props.CurrentPage+1),
+								"rounded-e-md",
+								"Next page",
+								"Next",
+								svg.PathArrowRight,
+								"next",
+							)
+						</li>
+					</ol>
+				</div>
+			</div>
+		</nav>
+	}
+}

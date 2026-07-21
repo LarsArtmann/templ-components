@@ -1,0 +1,63 @@
+package recipes
+
+import (
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// LoginCard renders a centered sign-in card with a header, form body, optional
+// OAuth divider + buttons, and a footer. The canonical login screen.
+//
+// Pass a forms.Form as FormBody (typically with Layout: forms.FormLayoutStack
+// for vertical label-above-input layout). Pass display.Button components in
+// OAuthButtons for "Continue with X" options.
+//
+//	@recipes.LoginCard(recipes.LoginCardProps{
+//	   Title:    "Sign in to Acme",
+//	   Subtitle: "Welcome back",
+//	   FormBody: signInForm,
+//	   OAuthButtons: templ.Raw(`<div class="grid grid-cols-2 gap-3">…</div>`),
+//	   Footer:   templ.Raw(`<p>Need an account? <a href="/signup">Sign up</a></p>`),
+//	})
+templ LoginCard(props LoginCardProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("min-h-dvh flex items-center justify-center px-4 py-12", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		@layout.Container(layout.ContainerProps{Width: layout.ContainerWidthSM, Pad: false}) {
+			@display.Card(display.CardProps{
+				Title:    props.Title,
+				Subtitle: props.Subtitle,
+				Padding:  display.CardPaddingMD,
+				Body:     loginBody(props),
+				Footer:   props.Footer,
+			})
+		}
+	</div>
+}
+
+templ loginBody(props LoginCardProps) {
+	<div class="space-y-4">
+		if props.FormBody != nil {
+			@props.FormBody
+		}
+		if props.OAuthButtons != nil {
+			<div class="relative py-2">
+				<div class="absolute inset-0 flex items-center" aria-hidden="true">
+					<div class="w-full border-t border-gray-200 dark:border-gray-700"></div>
+				</div>
+				<div class="relative flex justify-center">
+					<span class={ "bg-white dark:bg-gray-800 px-2 text-xs text-gray-500 dark:text-gray-400" }>OR</span>
+				</div>
+			</div>
+			@props.OAuthButtons
+		}
+	</div>
+}

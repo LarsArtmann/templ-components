@@ -1,0 +1,99 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// ContextMenuItem represents a single item in a context menu.
+type ContextMenuItem struct {
+	Text     string
+	Href     string // when set, renders an <a>
+	Disabled bool
+}
+
+// ContextMenuProps configures a right-click context menu.
+// The menu is positioned at the cursor on right-click within the
+// container element. Items render as links or buttons.
+type ContextMenuProps struct {
+	utils.BaseProps
+	Items []ContextMenuItem
+}
+
+// DefaultContextMenuProps returns sensible defaults.
+func DefaultContextMenuProps() ContextMenuProps {
+	return ContextMenuProps{} //nolint:exhaustruct // intentionally minimal
+}
+
+// ContextMenu wraps children in a container that shows a custom context
+// menu on right-click. Uses the native Popover API (popover="auto") for
+// light-dismiss, Escape-to-close, and top-layer rendering. A small
+// CSP-safe singleton script handles the contextmenu event → showPopover()
+// call and positions the menu at the cursor (via style.inset).
+// See ADR-0017 for the migration strategy.
+//
+//	@display.ContextMenu(display.ContextMenuProps{Items: []display.ContextMenuItem{
+//	   {Text: "Edit", Href: "/edit"},
+//	   {Text: "Delete", Href: "/delete"},
+//	}}) {
+//	   <div class="p-4">Right-click me</div>
+//	}
+templ ContextMenu(props ContextMenuProps) {
+	{{ id := utils.EnsureID("ctxmenu", props.ID) }}
+	<div
+		class={ utils.Class("relative inline-block", props.Class) }
+		data-tc-ctxmenu-trigger={ id }
+		{ props.Attrs... }
+	>
+		{ children... }
+	</div>
+	if props.Nonce != "" {
+		<div
+			id={ id }
+			popover="auto"
+			role="menu"
+			class="min-w-[160px] rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 py-1"
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+		>
+			for _, item := range props.Items {
+				if item.Href != "" {
+					<a
+						href={ templ.SafeURL(item.Href) }
+						role="menuitem"
+						class="block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+						if item.Disabled {
+							class="opacity-50 pointer-events-none"
+						}
+					>
+						{ item.Text }
+					</a>
+				} else {
+					<span
+						role="menuitem"
+						class="block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300"
+						if item.Disabled {
+							class="opacity-50 pointer-events-none"
+						}
+					>
+						{ item.Text }
+					</span>
+				}
+			}
+		</div>
+		<script nonce={ props.Nonce }>
+			(function(){
+				if (window.tcCtxMenuAttached) return;
+				window.tcCtxMenuAttached = true;
+				document.addEventListener('contextmenu', function(e) {
+					var trigger = e.target.closest('[data-tc-ctxmenu-trigger]');
+					if (!trigger) return;
+					e.preventDefault();
+					var id = trigger.getAttribute('data-tc-ctxmenu-trigger');
+					var menu = document.getElementById(id);
+					if (!menu) return;
+					menu.style.inset = e.clientY + 'px auto auto ' + e.clientX + 'px';
+					menu.showPopover();
+				});
+			})();
+		</script>
+	}
+}

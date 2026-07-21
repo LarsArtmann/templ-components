@@ -1,0 +1,30 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// Drawer renders an accessible side panel using the native <dialog> element.
+//
+//	@display.Drawer(display.DrawerProps{Title: "Settings", ID: "settings-drawer", Side: display.DrawerRight, Open: true, Nonce: nonce}) {
+//	   <p>Drawer content</p>
+//	}
+//
+// The native <dialog> element provides focus trapping, Escape-to-close,
+// top-layer rendering, and ::backdrop. CSS handles slide animations based
+// on the data-side attribute. The tc-drawer class selects the slide
+// animation profile in app.css.
+templ Drawer(props DrawerProps) {
+	{{ id := utils.EnsureID("drawer", props.ID) }}
+	@overlayShell(overlayShellProps{
+		id:          id,
+		open:        props.Open,
+		title:       props.Title,
+		ariaLabel:   props.AriaLabel,
+		kind:        OverlayDrawer,
+		nonce:       props.Nonce,
+		dialogClass: utils.Class("tc-drawer bg-white dark:bg-gray-900 shadow-xl dark:shadow-black/20 overflow-y-auto", drawerSizeClass(props.Size), props.Class),
+		side:        props.Side,
+		attrs:       props.Attrs,
+	}) {
+		{ children... }
+	}
+}

@@ -1,0 +1,125 @@
+package forms
+
+import "github.com/larsartmann/templ-components/utils"
+
+// FilterDropdownProps configures a compact select dropdown purpose-built
+// for HTMX filter bars. On change, it auto-submits a GET request to HxGet
+// and swaps the results into HxTarget — no manual form wiring needed.
+//
+// Typical use: a filter bar with status, date-range, and sort dropdowns.
+// Each FilterDropdown independently triggers a server-side filter refresh
+// via HTMX without a full page reload or a wrapping <form>.
+type FilterDropdownProps struct {
+	utils.BaseProps
+	Name    string
+	Label   string
+	Options []SelectOption
+	// Value pre-selects the option whose Value matches. Use this to
+	// preserve the user's last filter selection across HTMX re-renders.
+	Value string
+	// HxGet is the server endpoint to fetch filtered results.
+	HxGet string
+	// HxTarget is the CSS selector for the element to swap results into.
+	HxTarget string
+	// HxSwap controls how the response is swapped (default: "innerHTML").
+	HxSwap string
+	// HxTrigger overrides the default "change" trigger. Use e.g.
+	// "change delay:500ms" for debounced filtering.
+	HxTrigger string
+	// HxInclude is a CSS selector or keyword (e.g. "closest form") to
+	// include additional form values in the request.
+	HxInclude string
+	// HxIndicator is a CSS selector for the element to show while loading.
+	HxIndicator string
+	// HelpText shows a small caption below the select.
+	HelpText string
+}
+
+// DefaultFilterDropdownProps returns sensible defaults.
+func DefaultFilterDropdownProps() FilterDropdownProps {
+	return FilterDropdownProps{}
+}
+
+// filterDropdownInputClass returns the Tailwind classes for the select element.
+func filterDropdownInputClass() string {
+	return "block rounded-md border-0 py-1.5 ps-3 pe-8 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-blue-600 dark:focus:ring-blue-500 caret-blue-600 dark:caret-blue-400"
+}
+
+// filterDropdownPreselect returns a copy of opts with the option matching value
+// marked as Selected. All other Selected flags are cleared. When value is empty,
+// opts is returned unchanged.
+func filterDropdownPreselect(opts []SelectOption, value string) []SelectOption {
+	if value == "" {
+		return opts
+	}
+	out := make([]SelectOption, len(opts))
+	copy(out, opts)
+	for i := range out {
+		out[i].Selected = out[i].Value == value
+	}
+	return out
+}
+
+// FilterDropdown renders a compact labeled select with HTMX auto-submit.
+// It is designed for filter bars where each dropdown independently triggers
+// a server-side filter refresh on change.
+//
+//	@forms.FilterDropdown(forms.FilterDropdownProps{
+//	   Name:    "status",
+//	   Label:   "Status",
+//	   Value:   "active",
+//	   HxGet:   "/api/users",
+//	   HxTarget: "#user-list",
+//	   Options: []forms.SelectOption{
+//	     {Value: "", Label: "All"},
+//	     {Value: "active", Label: "Active"},
+//	     {Value: "inactive", Label: "Inactive"},
+//	   },
+//	})
+templ FilterDropdown(props FilterDropdownProps) {
+	{{ opts := normalizeSelectOptions(filterDropdownPreselect(props.Options, props.Value)) }}
+	<div class={ utils.Class("inline-flex flex-col", props.Class) } { props.Attrs... }>
+		if props.Label != "" {
+			<label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+				{ props.Label }
+			</label>
+		}
+		<select
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ filterDropdownInputClass() }
+			hx-get={ templ.SafeURL(props.HxGet) }
+			hx-target={ props.HxTarget }
+			hx-trigger={ utils.Ternary(props.HxTrigger != "", props.HxTrigger, "change") }
+			if props.HxSwap != "" {
+				hx-swap={ props.HxSwap }
+			}
+			if props.HxInclude != "" {
+				hx-include={ props.HxInclude }
+			}
+			if props.HxIndicator != "" {
+				hx-indicator={ props.HxIndicator }
+			}
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+		>
+			for _, opt := range opts {
+				<option
+					value={ opt.Value }
+					if opt.Disabled {
+						disabled
+					}
+					if opt.Selected {
+						selected
+					}
+				>{ opt.Label }</option>
+			}
+		</select>
+		if props.HelpText != "" {
+			<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+		}
+	</div>
+}

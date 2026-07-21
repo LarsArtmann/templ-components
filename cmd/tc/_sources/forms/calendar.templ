@@ -1,0 +1,146 @@
+package forms
+
+import (
+	"fmt"
+	"strings"
+	"time"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// CalendarProps configures a month-view calendar for date selection.
+// Navigation is server-side via HrefPrev/HrefNext links.
+type CalendarProps struct {
+	utils.BaseProps
+	// Year and Month define which month to display.
+	Year  int
+	Month time.Month
+	// SelectedDate highlights the matching day.
+	SelectedDate *time.Time
+	// HrefBase is the URL pattern for day links. Use {year}, {month}, {day} as placeholders.
+	// Example: "/calendar?year={year}&month={month}&day={day}"
+	HrefBase string
+	// HrefPrev/HrefNext are URLs for the prev/next month navigation links.
+	HrefPrev string
+	HrefNext string
+	// MinDate/MaxDate disable days outside the range.
+	MinDate *time.Time
+	MaxDate *time.Time
+}
+
+// DefaultCalendarProps returns sensible defaults (current month).
+func DefaultCalendarProps() CalendarProps {
+	now := time.Now()
+	return CalendarProps{
+		Year:  now.Year(),
+		Month: now.Month(),
+	}
+}
+
+// calendarDayClass returns the classes for a single day cell.
+func calendarDayClass(selected, disabled, isToday bool) string {
+	base := "flex h-9 w-9 items-center justify-center rounded-md text-sm transition-colors motion-reduce:transition-none"
+	if disabled {
+		return base + " text-gray-300 dark:text-gray-600 cursor-not-allowed"
+	}
+	if selected {
+		return base + " bg-blue-600 dark:bg-blue-500 text-white font-semibold"
+	}
+	if isToday {
+		return base + " ring-1 ring-inset ring-blue-600 dark:ring-blue-500 text-blue-600 dark:text-blue-400 font-medium hover:bg-blue-50 dark:hover:bg-blue-900/30"
+	}
+	return base + " text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+}
+
+// calendarReplacePlaceholders replaces {year}, {month}, {day} in href.
+func calendarReplacePlaceholders(href string, year int, month time.Month, day int) string {
+	r := strings.NewReplacer("{year}", fmt.Sprintf("%d", year), "{month}", fmt.Sprintf("%d", int(month)), "{day}", fmt.Sprintf("%d", day))
+	return r.Replace(href)
+}
+
+// Calendar renders a month-view calendar with server-side navigation.
+// Each day is a link (when HrefBase is set) or a span.
+//
+//	@forms.Calendar(forms.CalendarProps{
+//	   Year:  2026, Month: time.July,
+//	   SelectedDate: &someDate,
+//	   HrefBase: "/calendar?y={year}&m={month}&d={day}",
+//	   HrefPrev: "/calendar?y=2026&m=6",
+//	   HrefNext: "/calendar?y=2026&m=8",
+//	})
+templ Calendar(props CalendarProps) {
+	{{
+		firstOfDay := time.Date(props.Year, props.Month, 1, 0, 0, 0, 0, time.UTC)
+		daysInMonth := firstOfDay.AddDate(0, 1, -1).Day()
+		startWeekday := int(firstOfDay.Weekday())
+		today := time.Now()
+		isToday := func(day int) bool {
+			return today.Year() == props.Year && today.Month() == props.Month && today.Day() == day
+		}
+		isDisabled := func(day int) bool {
+			d := time.Date(props.Year, props.Month, day, 0, 0, 0, 0, time.UTC)
+			if props.MinDate != nil && d.Before(*props.MinDate) {
+				return true
+			}
+			if props.MaxDate != nil && d.After(*props.MaxDate) {
+				return true
+			}
+			return false
+		}
+		isSelected := func(day int) bool {
+			if props.SelectedDate == nil {
+				return false
+			}
+			return props.SelectedDate.Year() == props.Year && props.SelectedDate.Month() == props.Month && props.SelectedDate.Day() == day
+		}
+		monthName := props.Month.String()
+	}}
+	<div class={ utils.Class("inline-block rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4", props.Class) } { props.Attrs... }>
+		<div class="flex items-center justify-between mb-4">
+			if props.HrefPrev != "" {
+				<a href={ templ.SafeURL(props.HrefPrev) } class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Previous month">
+					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"></path></svg>
+				</a>
+			} else {
+				<span class="w-7"></span>
+			}
+			<h3 class="text-sm font-semibold text-gray-900 dark:text-white">{ monthName } { fmt.Sprintf("%d", props.Year) }</h3>
+			if props.HrefNext != "" {
+				<a href={ templ.SafeURL(props.HrefNext) } class="p-1 rounded-md text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700" aria-label="Next month">
+					<svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"></path></svg>
+				</a>
+			} else {
+				<span class="w-7"></span>
+			}
+		</div>
+		<div class="grid grid-cols-7 gap-1 mb-1">
+			for _, dow := range []string{"Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"} {
+				<div class="flex h-8 w-9 items-center justify-center text-xs font-medium text-gray-500 dark:text-gray-400">{ dow }</div>
+			}
+		</div>
+		<div class="grid grid-cols-7 gap-1" role="grid" aria-label={ monthName }>
+			for _ = range startWeekday {
+				<div class="h-9 w-9"></div>
+			}
+			for day := 1; day <= daysInMonth; day++ {
+				{{ selected := isSelected(day) }}
+				{{ disabled := isDisabled(day) }}
+				{{ dayHref := "" }}
+				if props.HrefBase != "" && !disabled {
+					{{ dayHref = calendarReplacePlaceholders(props.HrefBase, props.Year, props.Month, day) }}
+				}
+				<div role="gridcell" class="flex justify-center">
+					if dayHref != "" {
+						<a href={ templ.SafeURL(dayHref) } class={ calendarDayClass(selected, false, isToday(day)) }>
+							{ fmt.Sprintf("%d", day) }
+						</a>
+					} else {
+						<span class={ calendarDayClass(selected, disabled, isToday(day)) }>
+							{ fmt.Sprintf("%d", day) }
+						</span>
+					}
+				</div>
+			}
+		</div>
+	</div>
+}

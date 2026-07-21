@@ -1,0 +1,66 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// Button renders a button or link styled as a button.
+// When Href is set, renders as an anchor tag; otherwise renders as a button element.
+//
+//	@display.Button(display.DefaultButtonProps())
+//	@display.Button(display.ButtonProps{Text: "Save", Type: display.ButtonHTMLSubmit})
+//	@display.Button(display.ButtonProps{Text: "Docs", Href: "/docs", Variant: display.ButtonSecondary})
+templ Button(props ButtonProps) {
+	{{
+		classes := utils.Class(
+			buttonBaseClass,
+			buttonVariantClasses(props.Variant),
+			buttonSizeClasses(props.Size),
+			props.Class,
+		)
+	}}
+	if props.Href != "" {
+		<a
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			href={ templ.SafeURL(props.Href) }
+			class={ utils.Class(classes, utils.Ternary(props.Disabled, "pointer-events-none opacity-50", "")) }
+			if props.Disabled {
+				aria-disabled="true"
+				tabindex="-1"
+			}
+			if props.External {
+				target="_blank"
+				rel="noopener noreferrer"
+			}
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			if props.Icon != nil {
+				@props.Icon
+			}
+			{ props.Text }
+		</a>
+	} else {
+		<button
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			type={ buttonHTMLType(props.Type) }
+			class={ classes }
+			if props.Disabled {
+				disabled
+			}
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			if props.Icon != nil {
+				@props.Icon
+			}
+			{ props.Text }
+		</button>
+	}
+}

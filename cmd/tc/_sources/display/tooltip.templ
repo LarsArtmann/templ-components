@@ -1,0 +1,95 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// TooltipPosition defines where the tooltip appears relative to the trigger
+type TooltipPosition string
+
+const (
+	TooltipPositionTop    TooltipPosition = "top"
+	TooltipPositionBottom TooltipPosition = "bottom"
+	TooltipPositionLeft   TooltipPosition = "left"
+	TooltipPositionRight  TooltipPosition = "right"
+)
+
+// TooltipProps configures a tooltip component.
+//
+// The tooltip shows on :hover and :focus-within via pure CSS — no JavaScript.
+// For accessibility, set aria-describedby on the focusable trigger element
+// (e.g. the <button>) pointing to the tooltip's id, OR wrap the trigger with
+// the Tooltip component and it will set aria-describedby on the wrapper div.
+// For full screen-reader support, prefer setting aria-describedby directly
+// on the focusable trigger.
+type TooltipProps struct {
+	utils.BaseProps
+	Text     string
+	Position TooltipPosition
+}
+
+// DefaultTooltipProps returns sensible defaults
+func DefaultTooltipProps() TooltipProps {
+	return TooltipProps{
+		Position: TooltipPositionTop,
+	}
+}
+
+type tooltipPositionStyles struct {
+	Tooltip string
+	Arrow   string
+}
+
+//nolint:gochecknoglobals // Package-level lookup table for tooltip position styles
+var tooltipPositionMap = map[TooltipPosition]tooltipPositionStyles{
+	TooltipPositionTop: {
+		Tooltip: "bottom-full left-1/2 -translate-x-1/2 mb-2",
+		Arrow:   "top-full left-1/2 -translate-x-1/2 border-t-gray-900 dark:border-t-gray-700",
+	},
+	TooltipPositionBottom: {
+		Tooltip: "top-full left-1/2 -translate-x-1/2 mt-2",
+		Arrow:   "bottom-full left-1/2 -translate-x-1/2 border-b-gray-900 dark:border-b-gray-700",
+	},
+	TooltipPositionLeft: {
+		Tooltip: "right-full top-1/2 -translate-y-1/2 me-2",
+		Arrow:   "left-full top-1/2 -translate-y-1/2 border-s-gray-900 dark:border-s-gray-700",
+	},
+	TooltipPositionRight: {
+		Tooltip: "left-full top-1/2 -translate-y-1/2 ms-2",
+		Arrow:   "right-full top-1/2 -translate-y-1/2 border-e-gray-900 dark:border-e-gray-700",
+	},
+}
+
+func tooltipLookupPosition(pos TooltipPosition) tooltipPositionStyles {
+	return utils.Lookup(tooltipPositionMap, pos, tooltipPositionMap[TooltipPositionTop])
+}
+
+// Tooltip wraps content in a hover/focus-activated tooltip. Pure CSS, no JS.
+// Shows on :hover and :focus-within; hides on blur/mouse-leave.
+//
+//	@display.Tooltip(display.TooltipProps{Text: "More info"}) {
+//	   <button>Hover me</button>
+//	}
+templ Tooltip(props TooltipProps) {
+	{{ id := utils.EnsureID("tooltip", props.ID) }}
+	{{ pos := tooltipLookupPosition(props.Position) }}
+	<div
+		id={ id }
+		data-tc-tooltip
+		class={ utils.Class("group relative inline-flex", props.Class) }
+		aria-describedby={ id + "-tooltip" }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ children... }
+		<div
+			id={ id + "-tooltip" }
+			class={ "absolute z-20 hidden group-hover:block group-focus-within:block whitespace-nowrap rounded-md bg-gray-900 dark:bg-gray-700 px-2 py-1 text-xs font-medium text-white shadow-xs",
+				pos.Tooltip }
+			role="tooltip"
+		>
+			{ props.Text }
+			<div class={ "absolute h-0 w-0 border-4 border-transparent", pos.Arrow }></div>
+		</div>
+	</div>
+}

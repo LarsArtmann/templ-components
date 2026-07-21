@@ -1,0 +1,135 @@
+package feedback
+
+import (
+	"fmt"
+	"strings"
+
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// ToastType represents the visual style of a toast
+// Deprecated: Use FeedbackType instead. Will be removed in v1.0.
+type ToastType = FeedbackType
+
+const (
+	ToastSuccess = FeedbackSuccess
+	ToastError   = FeedbackError
+	ToastWarning = FeedbackWarning
+	ToastInfo    = FeedbackInfo
+)
+
+// ToastProps configures a toast notification
+type ToastProps struct {
+	utils.BaseProps
+	Message  string
+	Title    string
+	Type     ToastType
+	Duration int // milliseconds, 0 for no auto-dismiss
+}
+
+// Default toast durations
+const (
+	ToastDurationShort  = 3000
+	ToastDurationMedium = 5000
+	ToastDurationLong   = 8000
+)
+
+// toastJSStyles generates the JS color map string from the Go style definitions
+func toastJSStyles() string {
+	var b strings.Builder
+	b.WriteString("var tcToastColors = {")
+	for _, t := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
+		s := feedbackStyleMap[t]
+		fmt.Fprintf(&b, "'%s': {border:'%s',bg:'%s',text:'%s',icon:'%s'},", t, s.Border, s.BG, s.Text, s.Icon)
+	}
+	b.WriteString("};")
+	return b.String()
+}
+
+func toastJSIconPaths() string {
+	var b strings.Builder
+	b.WriteString("var tcToastIcons = {")
+	for _, t := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
+		fmt.Fprintf(&b, "'%s':'%s',", t, icons.IconPathJS(feedbackIconMap[t]))
+	}
+	fmt.Fprintf(&b, "dismiss:'%s'", icons.IconPathJS(icons.X))
+	b.WriteString("};")
+	return b.String()
+}
+
+// toastContainerScript builds the entire <script> tag as raw HTML.
+// This bypasses templ's ScriptContentOutsideStringLiteral which would
+// JSON-marshal the JS string content inside {{ }} expressions.
+func toastContainerScript(nonce string) templ.Component {
+	return templ.Raw(fmt.Sprintf(`<script nonce="%s">%s\n%s\nfunction tcShowToast(message, type, title, duration) {\nvar container = document.getElementById('tc-toast-container');\nif (!container) return;\nvar toast = document.createElement('div');\nvar typeKey = type || 'info';\nvar style = tcToastColors[typeKey] || tcToastColors.info;\ntoast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;\nvar inner = document.createElement('div');\ninner.className = 'flex items-start gap-3';\nvar svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\nsvgEl.setAttribute('class', 'h-5 w-5 flex-shrink-0 mt-0.5 ' + style.icon);\nsvgEl.setAttribute('fill', 'none');\nsvgEl.setAttribute('viewBox', '0 0 24 24');\nsvgEl.setAttribute('stroke', 'currentColor');\nsvgEl.innerHTML = (tcToastIcons[typeKey] || tcToastIcons.info);\ninner.appendChild(svgEl);\nvar content = document.createElement('div');\ncontent.className = 'flex-1 min-w-0';\nif (title) {\nvar titleEl = document.createElement('div');\ntitleEl.className = 'text-sm font-semibold';\ntitleEl.textContent = title;\ncontent.appendChild(titleEl);\n}\nvar msgEl = document.createElement('div');\nmsgEl.className = 'text-sm';\nmsgEl.textContent = message;\ncontent.appendChild(msgEl);\ninner.appendChild(content);\nvar btn = document.createElement('button');\nbtn.className = 'flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0';\nbtn.setAttribute('aria-label', 'Dismiss');\nbtn.addEventListener('click', function() { this.closest('.pointer-events-auto').remove(); });\nbtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (tcToastIcons.dismiss || '') + '</svg>';\ninner.appendChild(btn);\ntoast.appendChild(inner);\ncontainer.appendChild(toast);\nrequestAnimationFrame(function() { toast.classList.remove('translate-x-full'); });\nif (duration && duration > 0) {\nsetTimeout(function() {\ntoast.classList.add('translate-x-full');\nsetTimeout(function() { toast.remove(); }, 300);\n}, duration);\n}\n}</script>`, nonce, toastJSStyles(), toastJSIconPaths()))
+}
+
+// toastDismissScript builds the dismiss <script> tag as raw HTML.
+func toastDismissScript(nonce, toastID string, duration int) templ.Component {
+	js := utils.DismissScript()
+	if duration > 0 {
+		js += fmt.Sprintf("setTimeout(function(){var t=document.getElementById('%s');if(t)t.remove();},%d);", toastID, duration)
+	}
+	return templ.Raw(fmt.Sprintf(`<script nonce="%s">%s</script>`, nonce, js))
+}
+
+// DefaultToastProps returns sensible defaults
+func DefaultToastProps() ToastProps {
+	return ToastProps{
+		Type:     ToastInfo,
+		Duration: ToastDurationMedium,
+	}
+}
+
+// ToastContainer renders the fixed-position container for toasts
+// Place this once near the top of your body
+//
+//	@feedback.ToastContainer()
+templ ToastContainer(nonce string) {
+	<div id="tc-toast-container" class="fixed bottom-4 end-4 z-50 flex flex-col gap-2 pointer-events-none" aria-live="polite" aria-atomic="true">
+		<!-- Toasts are injected here -->
+	</div>
+	@toastContainerScript(nonce)
+}
+
+// Toast renders a single toast notification (server-side rendered)
+// For HTMX responses, use ToastContainer + the tcShowToast() JS function
+//
+//	@feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.ToastSuccess})
+templ Toast(props ToastProps) {
+	{{ toastID := utils.EnsureID("toast", props.ID) }}
+	{{ s := feedbackStyle(props.Type) }}
+	<div
+		id={ toastID }
+		class={ utils.Class("max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0", s.Border, s.BG, props.Class) }
+		role="status"
+		aria-live="polite"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		<div class="flex items-start gap-3">
+			@icons.Icon(feedbackIcon(props.Type), utils.Class("h-5 w-5 flex-shrink-0 mt-0.5", s.Icon))
+			<div class="flex-1 min-w-0">
+				if props.Title != "" {
+					<div class={ "text-sm font-semibold", s.Text }>{ props.Title }</div>
+				}
+				<div class={ "text-sm", s.Text }>{ props.Message }</div>
+			</div>
+			<button
+				data-dismiss="toast"
+				class={ "flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 " + utils.TransitionColors }
+				aria-label="Dismiss"
+			>
+				@icons.Icon(icons.X, "h-4 w-4")
+			</button>
+		</div>
+	</div>
+	if props.Duration > 0 {
+		@toastDismissScript(props.Nonce, toastID, props.Duration)
+	} else {
+		@toastDismissScript(props.Nonce, toastID, 0)
+	}
+}

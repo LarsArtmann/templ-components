@@ -1,0 +1,96 @@
+package navigation
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// mobileMenuToggleClass swaps viewport-keyed (sm:hidden) for container-keyed
+// (@sm:hidden) when containerAware is true. Both strings are complete Tailwind
+// literals so the content scanner picks them up.
+func mobileMenuToggleClass(containerAware bool) string {
+	if containerAware {
+		return "flex items-center @sm:hidden"
+	}
+	return "flex items-center sm:hidden"
+}
+
+// mobileMenuClass swaps the wrapper's hidden/visible breakpoint the same way.
+func mobileMenuClass(containerAware bool) string {
+	if containerAware {
+		return "hidden @sm:hidden"
+	}
+	return "hidden sm:hidden"
+}
+
+// MobileMenuToggle renders the hamburger button for mobile menus.
+// menuID uniquely identifies the menu this toggle controls, so multiple Nav
+// instances on one page don't collide on a hardcoded ID.
+// containerAware swaps the breakpoint from viewport (sm:hidden) to container
+// (@sm:hidden); defaults to false (viewport).
+//
+//	@navigation.MobileMenuToggle(true, "abc123", false)
+templ MobileMenuToggle(show bool, menuID string, containerAware bool) {
+	if show {
+		<div class={ mobileMenuToggleClass(containerAware) }>
+			<button
+				type="button"
+				class={ "inline-flex items-center justify-center rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:focus:ring-blue-400 dark:hover:bg-gray-800 dark:hover:text-gray-300 " + utils.TransitionColors }
+				aria-controls={ menuID }
+				aria-expanded="false"
+				data-mobile-menu-toggle={ menuID }
+			>
+				<span class="sr-only">Open main menu</span>
+				@icons.Icon(icons.Menu, "tc-menu-open block h-6 w-6")
+				@icons.Icon(icons.X, "tc-menu-close hidden h-6 w-6")
+			</button>
+		</div>
+	}
+}
+
+// MobileMenu renders the collapsible mobile navigation menu.
+// menuID uniquely identifies this menu; the toggle uses the same ID so the
+// aria-controls relationship stays valid even with multiple Navs on a page.
+// containerAware swaps the breakpoint from viewport (sm:hidden) to container
+// (@sm:hidden); defaults to false (viewport).
+//
+//	@navigation.MobileMenu(links, "/", "", "abc123", false)
+templ MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID string, containerAware bool) {
+	if len(links) > 0 {
+		<div class={ mobileMenuClass(containerAware) } id={ menuID } data-mobile-menu-id={ menuID }>
+			<div class="space-y-1 pb-3 pt-2 border-t border-gray-200 dark:border-gray-800">
+				for _, link := range links {
+					@MobileNavLink(link, currentPath)
+				}
+			</div>
+		</div>
+		<script nonce={ nonce }>
+			if (!window.tcMobileMenuAttached) {
+				window.tcMobileMenuAttached = true;
+				document.addEventListener('click', function(e) {
+					var btn = e.target.closest('[data-mobile-menu-toggle]');
+					if (!btn) return;
+					var menuId = btn.getAttribute('data-mobile-menu-toggle');
+					var nav = btn.closest('nav');
+					if (!nav) return;
+					var menu = nav.querySelector('[data-mobile-menu-id="' + menuId + '"]');
+					var openIcon = nav.querySelector('.tc-menu-open');
+					var closeIcon = nav.querySelector('.tc-menu-close');
+					if (!menu || !openIcon || !closeIcon) return;
+					var isHidden = menu.classList.contains('hidden');
+					if (isHidden) {
+						menu.classList.remove('hidden');
+						openIcon.classList.add('hidden');
+						closeIcon.classList.remove('hidden');
+						btn.setAttribute('aria-expanded', 'true');
+					} else {
+						menu.classList.add('hidden');
+						openIcon.classList.remove('hidden');
+						closeIcon.classList.add('hidden');
+						btn.setAttribute('aria-expanded', 'false');
+					}
+				});
+			}
+		</script>
+	}
+}

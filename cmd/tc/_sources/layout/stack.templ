@@ -1,0 +1,31 @@
+package layout
+
+import "github.com/larsartmann/templ-components/utils"
+
+// Stack renders a vertical flex container with typed gap spacing. It is the
+// single source of truth for vertical rhythm — replacing the repeated
+// `space-y-4` / `space-y-6` strings scattered across consumer pages.
+//
+// Stack is the 1D vertical counterpart to Grid. Use Stack when only the
+// vertical axis matters (a column of cards, a list of form fields, a stack
+// of alerts). Use Grid when both rows AND columns matter (card dashboards,
+// multi-column layouts). See ADR-0016.
+//
+//	@layout.Stack(layout.DefaultStackProps()) {
+//	   @display.Card(...)
+//	   @display.Card(...)
+//	}
+templ Stack(props StackProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("flex flex-col", stackGapClass(props.Gap), props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ children... }
+	</div>
+}

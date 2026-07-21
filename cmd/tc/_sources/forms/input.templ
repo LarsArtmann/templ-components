@@ -1,0 +1,263 @@
+package forms
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// InputType defines HTML input types
+type InputType string
+
+const (
+	InputText     InputType = "text"
+	InputEmail    InputType = "email"
+	InputPassword InputType = "password"
+	InputNumber   InputType = "number"
+	InputTel      InputType = "tel"
+	InputURL      InputType = "url"
+	InputDate     InputType = "date"
+	InputTime     InputType = "time"
+	InputDatetime InputType = "datetime-local"
+	InputSearch   InputType = "search"
+	InputHidden   InputType = "hidden"
+)
+
+//nolint:gochecknoglobals // Package-level validation set for input types
+var validInputTypes = map[InputType]bool{
+	InputText: true, InputEmail: true, InputPassword: true,
+	InputNumber: true, InputTel: true, InputURL: true,
+	InputDate: true, InputTime: true, InputDatetime: true,
+	InputSearch: true, InputHidden: true,
+}
+
+// inputType returns the HTML input type string. Unknown values fall back
+// to "text" — matching the HTML spec behavior where unknown types default
+// to text. This aligns with the map+fallback convention used by all other
+// enums in the library.
+func inputType(t InputType) string {
+	if t == "" {
+		return string(InputText)
+	}
+	if !validInputTypes[t] {
+		return string(InputText)
+	}
+	return string(t)
+}
+
+// enterKeyHintForType maps InputType to the optimal mobile keyboard Enter
+// key label. Returns "" when no hint applies (text, password, hidden, date/time).
+//
+//nolint:gochecknoglobals // Mobile UX lookup table
+var enterKeyHintForType = map[InputType]string{
+	InputEmail:  "next",
+	InputNumber: "next",
+	InputTel:    "next",
+	InputURL:    "next",
+	InputSearch: "search",
+}
+
+// inputModeForType maps InputType to the optimal mobile keyboard layout.
+// Returns "" when the native type attribute already provides the correct
+// keyboard (text, password, date, time, datetime-local, hidden).
+//
+//nolint:gochecknoglobals // Mobile UX lookup table
+var inputModeForType = map[InputType]string{
+	InputEmail:  "email",
+	InputNumber: "decimal",
+	InputTel:    "tel",
+	InputURL:    "url",
+	InputSearch: "search",
+}
+
+// enterKeyHintValue returns the explicit EnterKeyHint if set and valid,
+// otherwise falls back to the auto-derived value from InputType. This
+// unifies the EnterKeyHint API: Input uses the same EnterKeyHintType enum
+// as Textarea, with auto-derivation as a smart default.
+func enterKeyHintValue(props InputProps) string {
+	if props.EnterKeyHint != "" && EnterKeyHintTypeIsValid(props.EnterKeyHint) {
+		return string(props.EnterKeyHint)
+	}
+	if ekh, ok := enterKeyHintForType[props.Type]; ok {
+		return ekh
+	}
+	return ""
+}
+
+// InputProps configures a text input. EnterKeyHint, when set, overrides the
+// auto-derived mobile keyboard hint. Uses the same EnterKeyHintType enum as
+// Textarea for a unified API across form components.
+type InputProps struct {
+	utils.BaseProps
+	Type         InputType
+	Name         string
+	Value        string
+	Placeholder  string
+	Label        string
+	Required     bool
+	Disabled     bool
+	ReadOnly     bool
+	AutoFocus    bool
+	MaxLength    int
+	EnterKeyHint EnterKeyHintType
+	Error        string
+	HelpText     string
+}
+
+// DefaultInputProps returns sensible defaults
+func DefaultInputProps() InputProps {
+	return InputProps{
+		Type: InputText,
+	}
+}
+
+// Input renders a labeled text input with optional error and help text
+//
+//	@forms.Input(forms.InputProps{
+//	   Name: "email",
+//	   Type: forms.InputEmail,
+//	   Label: "Email address",
+//	   Required: true,
+//	})
+templ Input(props InputProps) {
+	if props.Type == InputHidden {
+		<input
+			type="hidden"
+			name={ props.Name }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			value={ props.Value }
+			{ props.Attrs... }
+		/>
+	} else {
+		@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
+			if props.Type == InputSearch {
+				<search class="relative">
+					@inputElement(props)
+				</search>
+			} else {
+				<div class="relative">
+					@inputElement(props)
+				</div>
+			}
+		}
+	}
+}
+
+// inputElement renders the visible <input> element with all shared attributes.
+// Extracted per ADR 0010 (2 callers, 30+ lines, clear domain name) to eliminate
+// the duplication between the <search> and <div> wrapper branches.
+templ inputElement(props InputProps) {
+	<input
+		type={ inputType(props.Type) }
+		name={ props.Name }
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		value={ props.Value }
+		if props.Placeholder != "" {
+			placeholder={ props.Placeholder }
+		}
+		if eh := enterKeyHintValue(props); eh != "" {
+			enterkeyhint={ eh }
+		}
+		if im, ok := inputModeForType[props.Type]; ok {
+			inputmode={ im }
+		}
+		class={ utils.Class(baseInputClass(props.Error != ""), props.Class) }
+		if props.Required {
+			required
+			aria-required="true"
+		}
+		if props.Disabled {
+			disabled
+		}
+		if props.ReadOnly {
+			readonly
+		}
+		if props.AutoFocus {
+			autofocus
+		}
+		if props.MaxLength > 0 {
+			maxlength={ fmt.Sprintf("%d", props.MaxLength) }
+		}
+		{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	/>
+}
+
+// CheckboxProps configures a checkbox input
+type CheckboxProps struct {
+	utils.BaseProps
+	Name     string
+	Value    string
+	Label    string
+	Checked  bool
+	Required bool
+	Disabled bool
+	Error    string
+	HelpText string
+}
+
+// DefaultCheckboxProps returns sensible defaults
+func DefaultCheckboxProps() CheckboxProps {
+	return CheckboxProps{}
+}
+
+// checkboxLabel renders the label and optional help text for a checkbox
+templ checkboxLabel(id, label, helpMsg string) {
+	<div class="ms-3 text-sm leading-6">
+		if label != "" {
+			if id != "" {
+				<label for={ id } class="font-medium text-gray-900 dark:text-white">{ label }</label>
+			} else {
+				<span class="font-medium text-gray-900 dark:text-white">{ label }</span>
+			}
+		}
+		@helpText(id, helpMsg)
+	</div>
+}
+
+// Checkbox renders a checkbox with label
+//
+//	@forms.Checkbox(forms.CheckboxProps{Name: "terms", ID: "terms", Label: "I agree to the terms"})
+templ Checkbox(props CheckboxProps) {
+	<div class="flex items-start">
+		<div class="flex h-6 items-center">
+			<input
+				if props.ID != "" {
+					id={ props.ID }
+				}
+				name={ props.Name }
+				if props.Value != "" {
+					value={ props.Value }
+				}
+				type="checkbox"
+				class={ utils.Class("h-4 w-4 rounded border-gray-300 text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-blue-600", props.Class) }
+				if props.Checked {
+					checked
+				}
+				if props.Required {
+					required
+					aria-required="true"
+				}
+				if props.Disabled {
+					disabled
+				}
+				{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
+				if props.AriaLabel != "" {
+					aria-label={ props.AriaLabel }
+				}
+				{ props.Attrs... }
+			/>
+		</div>
+		@checkboxLabel(props.ID, props.Label, props.HelpText)
+	</div>
+	if props.Error != "" {
+		@FieldError(props.ID, props.Error)
+	}
+}

@@ -1,0 +1,109 @@
+package htmx
+
+import "github.com/larsartmann/templ-components/utils"
+
+// SwapStyle is an HTMX swap style for out-of-band updates.
+type SwapStyle string
+
+// HTMX swap styles (https://htmx.org/attributes/hx-swap/).
+const (
+	SwapInnerHTML   SwapStyle = "innerHTML"
+	SwapOuterHTML   SwapStyle = "outerHTML"
+	SwapBeforeBegin SwapStyle = "beforebegin"
+	SwapAfterBegin  SwapStyle = "afterbegin"
+	SwapBeforeEnd   SwapStyle = "beforeend"
+	SwapAfterEnd    SwapStyle = "afterend"
+	SwapDelete      SwapStyle = "delete"
+	SwapNone        SwapStyle = "none"
+)
+
+// validSwapStyles are the allowed HTMX swap styles for out-of-band updates.
+//
+//nolint:gochecknoglobals // Package-level validation set
+var validSwapStyles = map[SwapStyle]bool{
+	SwapInnerHTML: true, SwapOuterHTML: true, SwapBeforeBegin: true,
+	SwapAfterBegin: true, SwapBeforeEnd: true, SwapAfterEnd: true,
+	SwapDelete: true, SwapNone: true,
+}
+
+// normalizeSwapStyle returns style if valid, otherwise falls back to outerHTML.
+func normalizeSwapStyle(style SwapStyle) SwapStyle {
+	if validSwapStyles[style] {
+		return style
+	}
+	return SwapOuterHTML
+}
+
+// ConfirmDeleteProps configures a confirmation delete button.
+type ConfirmDeleteProps struct {
+	utils.BaseProps
+	Delete  string
+	Target  string
+	Confirm string
+}
+
+// ConfirmDelete renders a button with a confirmation dialog for destructive actions
+//
+//	@htmx.ConfirmDelete(htmx.ConfirmDeleteProps{Delete: "/delete/123", Target: "#item-123", Confirm: "Are you sure?"})
+templ ConfirmDelete(props ConfirmDeleteProps) {
+	<button
+		type="button"
+		class={ utils.Class("text-red-600 hover:text-red-900 dark:text-red-400 dark:hover:text-red-300", props.Class) }
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		hx-delete={ props.Delete }
+		hx-target={ props.Target }
+		hx-swap="outerHTML"
+		if props.Confirm != "" {
+			hx-confirm={ props.Confirm }
+		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		Delete
+	</button>
+}
+
+// SwapOOBProps configures an out-of-band swap wrapper.
+type SwapOOBProps struct {
+	utils.BaseProps
+	Selector  string
+	SwapStyle SwapStyle
+}
+
+// SwapOOB renders an out-of-band swap wrapper for HTMX responses.
+// Use this to update multiple elements in a single response. Invalid swap
+// styles fall back to outerHTML.
+//
+//	@htmx.SwapOOB(htmx.SwapOOBProps{Selector: "#toast-container", SwapStyle: htmx.SwapBeforeEnd}) {
+//	   @feedback.Toast(props)
+//	 }
+templ SwapOOB(props SwapOOBProps) {
+	{{ style := normalizeSwapStyle(props.SwapStyle) }}
+	{{
+		oobAttr := string(style)
+		if props.Selector != "" {
+			oobAttr += ":" + props.Selector
+		}
+	}}
+	<div
+		hx-swap-oob={ oobAttr }
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ props.Class }
+		{ props.Attrs... }
+	>
+		{ children... }
+	</div>
+}
+
+// CSRFToken renders a hidden input for HTMX forms with CSRF protection
+//
+//	@htmx.CSRFToken("csrf_token_value")
+templ CSRFToken(token string) {
+	<input type="hidden" name="csrf_token" value={ token }/>
+}

@@ -1,0 +1,60 @@
+package layout
+
+import "github.com/larsartmann/templ-components/utils"
+
+// Split renders a 2-column main + aside layout. It is the second most common
+// 2D pattern after AppShell: article+sidebar, detail+metadata, primary
+// content + related links.
+//
+// Both columns use minmax(0,1fr) per grid track to prevent grid blowout
+// (see ADR-0016). The layout stacks to a single column below md (mobile).
+//
+// # RTL / logical ordering
+//
+// AsidePosition uses logical (Start/End) names, not physical (Left/Right).
+// In LTR: Start=left, End=right. In RTL (dir="rtl"): Start=right, End=left.
+// Source order + CSS grid auto-placement handles the mirror — no physical
+// left/right utilities are emitted.
+//
+//	@layout.Split(layout.SplitProps{
+//	   Main:   articleBody,
+//	   Aside:  tocWidget,
+//	   Ratio:  layout.SplitRatio1To3,
+//	})
+templ Split(props SplitProps) {
+	{{ gap := props.Gap }}
+	if gap == "" {
+		{{ gap = "gap-6" }}
+	}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class(
+			"grid grid-cols-1",
+			splitRatioCols(props.Ratio),
+			gap,
+			props.Class,
+		) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if props.AsidePosition == AsidePositionStart && props.Aside != nil {
+			<aside class="md:col-span-1 min-w-0">
+				@props.Aside
+			</aside>
+		}
+		if props.Main != nil {
+			<div class={ utils.Class("min-w-0", splitRatioMainSpan(props.Ratio)) }>
+				@props.Main
+			</div>
+		}
+		if props.AsidePosition != AsidePositionStart && props.Aside != nil {
+			<aside class="md:col-span-1 min-w-0">
+				@props.Aside
+			</aside>
+		}
+	</div>
+}

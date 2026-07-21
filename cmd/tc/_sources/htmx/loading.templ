@@ -1,0 +1,56 @@
+package htmx
+
+// defaultSpinner returns the provided spinner, or a no-op component when nil,
+// so callers can safely pass a zero-value templ.Component without a render panic.
+func defaultSpinner(spinner templ.Component) templ.Component {
+	if spinner != nil {
+		return spinner
+	}
+	return templ.NopComponent
+}
+
+// LoadingIndicator renders a fixed-position HTMX loading indicator.
+// Accepts a spinner component for decoupled loading animation.
+//
+//	@htmx.LoadingIndicator(feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-blue-600 dark:text-blue-400"}))
+templ LoadingIndicator(spinner templ.Component) {
+	<div id="tc-loading-indicator" class="htmx-indicator fixed inset-0 z-50 flex items-center justify-center bg-white/80 dark:bg-gray-950/80 backdrop-blur-xs opacity-0 pointer-events-none transition-opacity duration-200 motion-reduce:transition-none motion-reduce:duration-0" role="status" aria-live="polite">
+		<span class="sr-only">Loading…</span>
+		<div class="flex flex-col items-center gap-3">
+			@defaultSpinner(spinner)
+		</div>
+	</div>
+}
+
+// InlineLoadingOverlay renders a localized loading overlay for HTMX targets.
+// Accepts a spinner component for decoupled loading animation.
+//
+//	@htmx.InlineLoadingOverlay("tc-form-loading", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"}))
+templ InlineLoadingOverlay(id string, spinner templ.Component) {
+	<div
+		id={ id }
+		class="htmx-indicator absolute inset-0 z-40 flex items-center justify-center bg-white/80 dark:bg-gray-900/80 backdrop-blur-xs rounded-lg"
+		role="status"
+		aria-live="polite"
+	>
+		<span class="sr-only">Loading…</span>
+		@defaultSpinner(spinner)
+	</div>
+}
+
+// LoadingButton renders a button with built-in loading state.
+// The default text hides during an HTMX request (htmx-request on the form
+// toggles htmx-indicator visibility); loadingText is the htmx-indicator.
+//
+//	<button class="btn-primary" hx-post="/save" hx-indicator=".tc-btn-loading">
+//	   @htmx.LoadingButton("Save", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "htmx-indicator"}))
+//	</button>
+templ LoadingButton(defaultText, loadingText string, spinner templ.Component) {
+	<span class="tc-btn-loading">
+		<span class="inline-flex items-center gap-2">
+			@defaultSpinner(spinner)
+			<span class="htmx-indicator">{ loadingText }</span>
+			<span class="[.htmx-request_&]:hidden">{ defaultText }</span>
+		</span>
+	</span>
+}

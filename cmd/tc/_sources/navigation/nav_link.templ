@@ -1,0 +1,99 @@
+package navigation
+
+import "github.com/larsartmann/templ-components/utils"
+
+// navLinkBaseClass is the shared class prefix for active and inactive nav links.
+const navLinkBaseClass = "inline-flex items-center border-b-2 px-1 pt-1 text-sm font-medium " + utils.TransitionColors
+
+func navLinkClasses(isActive bool) string {
+	if isActive {
+		return navLinkBaseClass + " border-blue-500 text-gray-900 dark:text-white"
+	}
+	return navLinkBaseClass + " border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200"
+}
+
+func mobileNavLinkClass(isActive bool) string {
+	base := "block border-s-4 py-2 ps-3 pe-4 text-base font-medium " + utils.TransitionColors
+	if isActive {
+		return base + " border-blue-500 bg-blue-50 text-blue-700 dark:bg-blue-900/20 dark:text-blue-300"
+	}
+	return base + " border-transparent text-gray-500 hover:border-gray-300 hover:bg-gray-50 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:bg-gray-800 dark:hover:text-gray-200"
+}
+
+// IsActive returns true when href matches currentPath exactly. Shared by NavLink
+// and SidebarNav so active-state detection stays consistent across the package.
+func IsActive(href, currentPath string) bool {
+	return href == currentPath
+}
+
+// NavLinkProps configures a single navigation link
+type NavLinkProps struct {
+	utils.BaseProps
+	Href     string
+	Text     string
+	External bool
+}
+
+// DefaultNavLinkProps returns sensible defaults
+func DefaultNavLinkProps() NavLinkProps {
+	return NavLinkProps{}
+}
+
+// activeSpanOrLink renders a span with aria-current when active, or a link when inactive.
+// rel, when non-empty, adds a rel attribute to the <a> (e.g. "canonical", "prev", "next").
+templ activeSpanOrLink(isActive bool, href string, text string, activeClass string, inactiveClass string, rel string) {
+	if isActive {
+		<span aria-current="page" class={ activeClass }>{ text }</span>
+	} else {
+		<a
+			href={ templ.SafeURL(href) }
+			class={ inactiveClass }
+			if rel != "" {
+				rel={ rel }
+			}
+		>{ text }</a>
+	}
+}
+
+// navLinkAnchor renders the common anchor element shared by NavLink and
+// MobileNavLink. The caller supplies the component-specific base class
+// (active/inactive variant); consumer overrides from props.Class are merged
+// via utils.Class so conflicting Tailwind utilities resolve correctly.
+templ navLinkAnchor(props NavLinkProps, isActive bool, baseClass string) {
+	<a
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		href={ templ.SafeURL(props.Href) }
+		class={ utils.Class(baseClass, props.Class) }
+		if isActive {
+			aria-current="page"
+		}
+		if props.External {
+			target="_blank"
+			rel="noopener noreferrer"
+		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ props.Text }
+	</a>
+}
+
+// NavLink renders a single navigation link with active state styling
+//
+//	@navigation.NavLink(navigation.NavLinkProps{Href: "/", Text: "Home"}, "/")
+templ NavLink(props NavLinkProps, currentPath string) {
+	{{ isActive := IsActive(props.Href, currentPath) }}
+	@navLinkAnchor(props, isActive, navLinkClasses(isActive))
+}
+
+// MobileNavLink renders a mobile-friendly navigation link
+//
+//	@navigation.MobileNavLink(navigation.NavLinkProps{Href: "/", Text: "Home"}, "/")
+templ MobileNavLink(props NavLinkProps, currentPath string) {
+	{{ isActive := IsActive(props.Href, currentPath) }}
+	@navLinkAnchor(props, isActive, mobileNavLinkClass(isActive))
+}
