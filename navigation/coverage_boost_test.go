@@ -92,7 +92,7 @@ func TestMobileMenuFullCoverage(t *testing.T) {
 		output := utils.Render(t, MobileMenu([]NavLinkProps{
 			{Href: "/a", Text: "Page A"},
 			{Href: "/b", Text: "Page B"},
-		}, "/a", "nonce-m", "cov-menu"))
+		}, "/a", "nonce-m", "cov-menu", false))
 		utils.AssertContains(t, output, "Page A")
 	})
 }

@@ -90,7 +90,7 @@ func TestCardPaddingClass(t *testing.T) {
 			utils.AssertEqual(
 				t,
 				fmt.Sprintf("cardPaddingClass(%q)", tt.padding),
-				cardPaddingClass(tt.padding),
+				cardPaddingClass(tt.padding, false),
 				tt.want,
 			)
 		})

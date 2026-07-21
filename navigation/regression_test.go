@@ -126,7 +126,7 @@ func TestFooterAcceptsBaseProps(t *testing.T) {
 // "tc-mobile-menu-<hex>", so the template must not prepend it again.
 func TestMobileMenuNoDoublePrefix(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, MobileMenu(testNavLinks, "/", "nonce", "my-menu-id"))
+	output := utils.Render(t, MobileMenu(testNavLinks, "/", "nonce", "my-menu-id", false))
 	utils.AssertContains(t, output, `id="my-menu-id"`)
 	utils.AssertNotContains(t, output, "tc-mobile-menu-tc-mobile-menu-")
 	utils.AssertNotContains(t, output, "tc-mobile-menu-my-menu-id")
@@ -136,7 +136,7 @@ func TestMobileMenuNoDoublePrefix(t *testing.T) {
 // the menu ID without a double prefix.
 func TestMobileMenuToggleNoDoublePrefix(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, MobileMenuToggle(true, "my-menu-id"))
+	output := utils.Render(t, MobileMenuToggle(true, "my-menu-id", false))
 	utils.AssertContains(t, output, `aria-controls="my-menu-id"`)
 	utils.AssertNotContains(t, output, "tc-mobile-menu-my-menu-id")
 }

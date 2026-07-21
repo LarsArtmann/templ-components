@@ -13,12 +13,32 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+// mobileMenuToggleClass swaps viewport-keyed (sm:hidden) for container-keyed
+// (@sm:hidden) when containerAware is true. Both strings are complete Tailwind
+// literals so the content scanner picks them up.
+func mobileMenuToggleClass(containerAware bool) string {
+	if containerAware {
+		return "flex items-center @sm:hidden"
+	}
+	return "flex items-center sm:hidden"
+}
+
+// mobileMenuClass swaps the wrapper's hidden/visible breakpoint the same way.
+func mobileMenuClass(containerAware bool) string {
+	if containerAware {
+		return "hidden @sm:hidden"
+	}
+	return "hidden sm:hidden"
+}
+
 // MobileMenuToggle renders the hamburger button for mobile menus.
 // menuID uniquely identifies the menu this toggle controls, so multiple Nav
 // instances on one page don't collide on a hardcoded ID.
+// containerAware swaps the breakpoint from viewport (sm:hidden) to container
+// (@sm:hidden); defaults to false (viewport).
 //
-//	@navigation.MobileMenuToggle(true, "abc123")
-func MobileMenuToggle(show bool, menuID string) templ.Component {
+//	@navigation.MobileMenuToggle(true, "abc123", false)
+func MobileMenuToggle(show bool, menuID string, containerAware bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -40,16 +60,12 @@ func MobileMenuToggle(show bool, menuID string) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		if show {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"flex items-center sm:hidden\">")
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
-			var templ_7745c5c3_Var2 = []any{"inline-flex items-center justify-center rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:focus:ring-blue-400 dark:hover:bg-gray-800 dark:hover:text-gray-300 " + utils.TransitionColors}
+			var templ_7745c5c3_Var2 = []any{mobileMenuToggleClass(containerAware)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<button type=\"button\" class=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -62,33 +78,55 @@ func MobileMenuToggle(show bool, menuID string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\" aria-controls=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var4 string
-			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 19, Col: 26}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
+			var templ_7745c5c3_Var4 = []any{"inline-flex items-center justify-center rounded-md p-2 text-gray-400 dark:text-gray-500 hover:bg-gray-100 hover:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-inset focus:ring-blue-500 dark:focus:ring-blue-400 dark:hover:bg-gray-800 dark:hover:text-gray-300 " + utils.TransitionColors}
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var4...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" aria-expanded=\"false\" data-mobile-menu-toggle=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<button type=\"button\" class=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var5 string
-			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
+			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var4).String())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 21, Col: 36}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 1, Col: 0}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\"><span class=\"sr-only\">Open main menu</span>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" aria-controls=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var6 string
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 39, Col: 26}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\" aria-expanded=\"false\" data-mobile-menu-toggle=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var7 string
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 41, Col: 36}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\"><span class=\"sr-only\">Open main menu</span>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -100,7 +138,7 @@ func MobileMenuToggle(show bool, menuID string) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</button></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</button></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -112,9 +150,11 @@ func MobileMenuToggle(show bool, menuID string) templ.Component {
 // MobileMenu renders the collapsible mobile navigation menu.
 // menuID uniquely identifies this menu; the toggle uses the same ID so the
 // aria-controls relationship stays valid even with multiple Navs on a page.
+// containerAware swaps the breakpoint from viewport (sm:hidden) to container
+// (@sm:hidden); defaults to false (viewport).
 //
-//	@navigation.MobileMenu(links, "/", "", "abc123")
-func MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID string) templ.Component {
+//	@navigation.MobileMenu(links, "/", "", "abc123", false)
+func MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID string, containerAware bool) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -130,39 +170,57 @@ func MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID s
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var6 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var6 == nil {
-			templ_7745c5c3_Var6 = templ.NopComponent
+		templ_7745c5c3_Var8 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var8 == nil {
+			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		if len(links) > 0 {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div class=\"hidden sm:hidden\" id=\"")
+			var templ_7745c5c3_Var9 = []any{mobileMenuClass(containerAware)}
+			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var9...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var7 string
-			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 38, Col: 43}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div class=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\" data-mobile-menu-id=\"")
+			var templ_7745c5c3_Var10 string
+			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var9).String())
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 1, Col: 0}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var8 string
-			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
-			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 38, Col: 74}
-			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\" id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\"><div class=\"space-y-1 pb-3 pt-2 border-t border-gray-200 dark:border-gray-800\">")
+			var templ_7745c5c3_Var11 string
+			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 60, Col: 60}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "\" data-mobile-menu-id=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var12 string
+			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(menuID)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 60, Col: 91}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\"><div class=\"space-y-1 pb-3 pt-2 border-t border-gray-200 dark:border-gray-800\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -172,20 +230,20 @@ func MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID s
 					return templ_7745c5c3_Err
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</div></div><script nonce=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</div></div><script nonce=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var9 string
-			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
+			var templ_7745c5c3_Var13 string
+			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 45, Col: 23}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/mobile_menu.templ`, Line: 67, Col: 23}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\">\n\t\t\tif (!window.tcMobileMenuAttached) {\n\t\t\t\twindow.tcMobileMenuAttached = true;\n\t\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\t\tvar btn = e.target.closest('[data-mobile-menu-toggle]');\n\t\t\t\t\tif (!btn) return;\n\t\t\t\t\tvar menuId = btn.getAttribute('data-mobile-menu-toggle');\n\t\t\t\t\tvar nav = btn.closest('nav');\n\t\t\t\t\tif (!nav) return;\n\t\t\t\t\tvar menu = nav.querySelector('[data-mobile-menu-id=\"' + menuId + '\"]');\n\t\t\t\t\tvar openIcon = nav.querySelector('.tc-menu-open');\n\t\t\t\t\tvar closeIcon = nav.querySelector('.tc-menu-close');\n\t\t\t\t\tif (!menu || !openIcon || !closeIcon) return;\n\t\t\t\t\tvar isHidden = menu.classList.contains('hidden');\n\t\t\t\t\tif (isHidden) {\n\t\t\t\t\t\tmenu.classList.remove('hidden');\n\t\t\t\t\t\topenIcon.classList.add('hidden');\n\t\t\t\t\t\tcloseIcon.classList.remove('hidden');\n\t\t\t\t\t\tbtn.setAttribute('aria-expanded', 'true');\n\t\t\t\t\t} else {\n\t\t\t\t\t\tmenu.classList.add('hidden');\n\t\t\t\t\t\topenIcon.classList.remove('hidden');\n\t\t\t\t\t\tcloseIcon.classList.add('hidden');\n\t\t\t\t\t\tbtn.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t}\n\t\t</script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\">\n\t\t\tif (!window.tcMobileMenuAttached) {\n\t\t\t\twindow.tcMobileMenuAttached = true;\n\t\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\t\tvar btn = e.target.closest('[data-mobile-menu-toggle]');\n\t\t\t\t\tif (!btn) return;\n\t\t\t\t\tvar menuId = btn.getAttribute('data-mobile-menu-toggle');\n\t\t\t\t\tvar nav = btn.closest('nav');\n\t\t\t\t\tif (!nav) return;\n\t\t\t\t\tvar menu = nav.querySelector('[data-mobile-menu-id=\"' + menuId + '\"]');\n\t\t\t\t\tvar openIcon = nav.querySelector('.tc-menu-open');\n\t\t\t\t\tvar closeIcon = nav.querySelector('.tc-menu-close');\n\t\t\t\t\tif (!menu || !openIcon || !closeIcon) return;\n\t\t\t\t\tvar isHidden = menu.classList.contains('hidden');\n\t\t\t\t\tif (isHidden) {\n\t\t\t\t\t\tmenu.classList.remove('hidden');\n\t\t\t\t\t\topenIcon.classList.add('hidden');\n\t\t\t\t\t\tcloseIcon.classList.remove('hidden');\n\t\t\t\t\t\tbtn.setAttribute('aria-expanded', 'true');\n\t\t\t\t\t} else {\n\t\t\t\t\t\tmenu.classList.add('hidden');\n\t\t\t\t\t\topenIcon.classList.remove('hidden');\n\t\t\t\t\t\tcloseIcon.classList.add('hidden');\n\t\t\t\t\t\tbtn.setAttribute('aria-expanded', 'false');\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t}\n\t\t</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

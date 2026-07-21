@@ -1,0 +1,69 @@
+package recipes
+
+import (
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/layout"
+)
+
+// Dashboard renders a complete dashboard screen: AppShell with a sidebar,
+// sticky header, a page header (title + optional actions), a responsive stat
+// card grid, and a charts grid. Every slot is consumer-supplied via
+// templ.Component — Dashboard provides the scaffold only.
+//
+// Pass components for Sidebar (typically navigation.SidebarNav), Header
+// (typically navigation.Nav), StatCards (display.StatCard instances), and
+// Charts (display.Card-wrapped visualizations). Charts and StatCards slices
+// may be empty.
+//
+//	@recipes.Dashboard(recipes.DashboardProps{
+//	   Title:       "Overview",
+//	   Subtitle:    "Last 30 days",
+//	   Sidebar:     navSidebar,
+//	   Header:      navHeader,
+//	   StatCards:   []templ.Component{stat1, stat2, stat3, stat4},
+//	   Charts:      []templ.Component{chart1, chart2},
+//	});
+templ Dashboard(props DashboardProps) {
+	@layout.AppShell(layout.AppShellProps{
+		BaseProps:      props.GetBaseProps(),
+		Sidebar:        props.Sidebar,
+		MobileNav:      props.MobileNav,
+		Header:         props.Header,
+		SidebarWidth:   props.SidebarWidth,
+		StickyHeader:   true,
+		Container:      true,
+		ContainerWidth: layout.ContainerWidthDefault,
+		Content:        dashboardContent(props),
+	})
+}
+
+templ dashboardContent(props DashboardProps) {
+	<div class="py-6 space-y-6">
+		@display.PageHeader(display.PageHeaderProps{
+			Title:     props.Title,
+			Subtitle:  props.Subtitle,
+			Breadcrumb: props.Breadcrumb,
+			Action:    props.HeaderActions,
+		})
+		if len(props.StatCards) > 0 {
+			@display.Grid(display.GridProps{
+				Cols: display.GridCols4,
+				Gap:  display.GridGapMD,
+			}) {
+				for _, card := range props.StatCards {
+					@card
+				}
+			}
+		}
+		if len(props.Charts) > 0 {
+			@display.Grid(display.GridProps{
+				Cols: display.GridCols2,
+				Gap:  display.GridGapLG,
+			}) {
+				for _, chart := range props.Charts {
+					@chart
+				}
+			}
+		}
+	</div>
+}

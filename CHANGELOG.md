@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`recipes/` composition package (ADR-0019).** Three screen-level components that compose existing primitives into complete layouts: `recipes.Dashboard` (AppShell + PageHeader + StatCard grid + chart slots), `recipes.SettingsLayout` (Container + Split + Card stack with section anchors), `recipes.LoginCard` (centered Card with form body + OAuth divider + footer). Every variable part is a `templ.Component` slot — recipes provide the scaffold only. Resolves TODO #31 ("blocks/composition examples," deferred since v0.12). New `docs/recipes/{dashboard,settings,login}.md` with copy-paste examples.
+- **Container-aware components (ADR-0018).** `navigation.Nav.ContainerAware bool` makes the bar collapse to its hamburger menu based on its parent container width (`@container` + `@sm:`/`@lg:`) instead of the viewport. `display.Card.ContainerAware bool` swaps padding breakpoints `sm:` → `@sm:` the same way. Both default to `false` (viewport breakpoints) — zero behavior change unless opted in. Mirrors the existing `display.Grid.ContainerResponsive` pattern.
+- Two new ADRs: [`0018-container-query-native-contract.md`](docs/adr/0018-container-query-native-contract.md) and [`0019-recipes-package.md`](docs/adr/0019-recipes-package.md).
+- Component count: 98 → 101. Package count: 14 → 15 (recipes added). Generated file count: 87 → 90.
+
 ## [0.20.0] — 2026-07-21
 
 ### Changed

@@ -191,14 +191,14 @@ func TestMobileMenuToggleRender(t *testing.T) {
 	t.Parallel()
 	t.Run("shown", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, MobileMenuToggle(true, "test-menu"))
+		output := utils.Render(t, MobileMenuToggle(true, "test-menu", false))
 		utils.AssertContains(t, output, `data-mobile-menu-toggle="test-menu"`)
 		utils.AssertContains(t, output, `aria-controls="test-menu"`)
 		utils.AssertContains(t, output, `aria-expanded="false"`)
 	})
 	t.Run("hidden", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, MobileMenuToggle(false, "test-menu"))
+		output := utils.Render(t, MobileMenuToggle(false, "test-menu", false))
 		utils.AssertNotContains(t, output, "button")
 	})
 }
@@ -210,7 +210,7 @@ var testNavLinks = []NavLinkProps{
 
 func TestMobileMenuRender(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, MobileMenu(testNavLinks, "/", "test-nonce", "test-menu"))
+	output := utils.Render(t, MobileMenu(testNavLinks, "/", "test-nonce", "test-menu", false))
 	utils.AssertContains(t, output, "Home")
 	utils.AssertContains(t, output, navItemAbout)
 	utils.AssertContains(t, output, `id="test-menu"`)
@@ -254,4 +254,32 @@ func TestTwoNavsProduceUniqueMenuIDs(t *testing.T) {
 	// Both should have valid (non-empty, non-hardcoded) IDs
 	utils.AssertContains(t, out1, `data-mobile-menu-id="tc-mobile-menu-`)
 	utils.AssertContains(t, out2, `data-mobile-menu-id="tc-mobile-menu-`)
+}
+
+func TestNavContainerAware(t *testing.T) {
+	t.Parallel()
+
+	t.Run("viewport breakpoints by default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Nav(NavProps{
+			BaseProps: utils.BaseProps{ID: "vnav"},
+			Links:     []NavLinkProps{{Href: "/", Text: "Home"}},
+		}))
+		utils.AssertNotContains(t, output, "@container")
+		utils.AssertContains(t, output, "sm:flex")
+		utils.AssertNotContains(t, output, "@sm:flex")
+	})
+
+	t.Run("container breakpoints when flag set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Nav(NavProps{
+			BaseProps:      utils.BaseProps{ID: "cnav"},
+			Links:          []NavLinkProps{{Href: "/", Text: "Home"}},
+			ContainerAware: true,
+		}))
+		utils.AssertContains(t, output, "@container")
+		utils.AssertContains(t, output, "@sm:flex")
+		utils.AssertContains(t, output, "@sm:hidden")
+		utils.AssertNotContains(t, output, " sm:flex")
+	})
 }

@@ -1,0 +1,62 @@
+package recipes
+
+import (
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// SettingsLayout renders a titled page with a section-nav aside and a stack
+// of Card-wrapped form sections in the main column. The canonical admin
+// settings page.
+//
+//	@recipes.SettingsLayout(recipes.SettingsLayoutProps{
+//	   Title:    "Account settings",
+//	   Subtitle: "Manage your profile and preferences",
+//	   Aside:    sectionNav,
+//	   Sections: []recipes.SettingsSection{
+//	     {ID: "profile", Title: "Profile", Body: profileForm},
+//	     {ID: "security", Title: "Security", Body: securityForm},
+//	   },
+//	})
+templ SettingsLayout(props SettingsLayoutProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("py-6", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		@layout.Container(layout.ContainerProps{Width: layout.ContainerWidthDefault, Pad: true}) {
+			<div class="mb-6">
+				<h1 class="text-2xl font-bold text-gray-900 dark:text-white">{ props.Title }</h1>
+				if props.Subtitle != "" {
+					<p class={ utils.Class(mutedSettingsSubtitle, "mt-1") }>{ props.Subtitle }</p>
+				}
+			</div>
+			@layout.Split(layout.SplitProps{
+				Ratio:         layout.SplitRatio1To3,
+				Aside:         props.Aside,
+				Main:          settingsMain(props.Sections),
+			})
+		}
+	</div>
+}
+
+const mutedSettingsSubtitle = "text-sm text-gray-500 dark:text-gray-400"
+
+templ settingsMain(sections []SettingsSection) {
+	<div class="space-y-6">
+		for _, section := range sections {
+			@display.Card(display.CardProps{
+				BaseProps: utils.BaseProps{ID: section.ID},
+				Title:     section.Title,
+				Subtitle:  section.Subtitle,
+				Body:      section.Body,
+			})
+		}
+	</div>
+}

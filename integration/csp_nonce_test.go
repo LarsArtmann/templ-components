@@ -71,7 +71,7 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 		}))},
 		{"ThemeScript", utils.Render(t, layout.ThemeScript(testNonce))},
 		{"ThemeToggle", utils.Render(t, layout.ThemeToggle("Toggle theme", testNonce))},
-		{"MobileMenu", utils.Render(t, navigation.MobileMenu(nil, "/", testNonce, "mm"))},
+		{"MobileMenu", utils.Render(t, navigation.MobileMenu(nil, "/", testNonce, "mm", false))},
 		{"ErrorPage", utils.Render(t, errorpage.ErrorPage(errorpage.ErrorPageProps{
 			BaseProps: utils.BaseProps{Nonce: testNonce},
 			Title:     "Error",

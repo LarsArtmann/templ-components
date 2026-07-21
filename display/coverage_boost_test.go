@@ -262,3 +262,29 @@ func TestTooltipFullCoverage(t *testing.T) {
 		})
 	}
 }
+
+func TestCardContainerAware(t *testing.T) {
+	t.Parallel()
+
+	t.Run("viewport breakpoints by default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Card(CardProps{Title: "T", Padding: CardPaddingMD}))
+		utils.AssertNotContains(t, output, "@container")
+		utils.AssertContains(t, output, "sm:p-6")
+		utils.AssertContains(t, output, "sm:px-6")
+		utils.AssertNotContains(t, output, "@sm:")
+	})
+
+	t.Run("container breakpoints when flag set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Card(CardProps{
+			Title:          "T",
+			Padding:        CardPaddingMD,
+			ContainerAware: true,
+		}))
+		utils.AssertContains(t, output, "@container")
+		utils.AssertContains(t, output, "@sm:p-6")
+		utils.AssertContains(t, output, "@sm:px-6")
+		utils.AssertNotContains(t, output, " sm:")
+	})
+}

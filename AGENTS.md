@@ -2,7 +2,7 @@
 
 ## Module Structure (single module)
 
-This repo is a **single Go module** (`github.com/larsartmann/templ-components`) with 14 packages:
+This repo is a **single Go module** (`github.com/larsartmann/templ-components`) with 15 packages:
 
 | Package             | Contains                                   | Purpose                                                                                                             |
 | ------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
@@ -14,6 +14,7 @@ This repo is a **single Go module** (`github.com/larsartmann/templ-components`) 
 | `htmx`              | 8 components                               | HTMX loading, error handling, OOB swaps, View Transitions                                                           |
 | `icons`             | 102 named SVG icons                        | Heroicons v2 outline + Spinner                                                                                      |
 | `errorpage`         | 4 components + handler                     | Error pages, 404, go-error-family integration                                                                       |
+| `recipes`           | 3 composition screens                      | Dashboard, SettingsLayout, LoginCard — screen-level compositions of display/forms/layout/navigation (ADR-0019)      |
 | `utils`             | BaseProps, Class(), EnsureID, test helpers | Shared utilities                                                                                                    |
 | `internal/svg`      | SVG path constants                         | Single source of truth for inline SVG paths                                                                         |
 | `internal/golden`   | Golden file testing                        | CSS-normalized HTML snapshot comparison                                                                             |
@@ -72,7 +73,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 87 generated files across all packages
+- 90 generated files across all packages
 - **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
 
 **Why this matters:** The Go module proxy serves source as-is. Consumers who `go get` this package

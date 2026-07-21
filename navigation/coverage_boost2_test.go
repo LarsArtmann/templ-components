@@ -335,18 +335,19 @@ func TestMobileMenuFullRender(t *testing.T) {
 		"/about",
 		"nonce-abc",
 		"mobile-menu-1",
+		false,
 	))
 	utils.AssertContainsAll(t, output, "Home", "About", "mobile-menu-1")
 }
 
 func TestMobileMenuToggleShown(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, MobileMenuToggle(true, "mm-1"))
+	output := utils.Render(t, MobileMenuToggle(true, "mm-1", false))
 	utils.AssertContains(t, output, "mm-1")
 }
 
 func TestMobileMenuToggleHidden(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, MobileMenuToggle(false, "mm-2"))
+	output := utils.Render(t, MobileMenuToggle(false, "mm-2", false))
 	_ = output // should not panic when hidden
 }

@@ -19,7 +19,12 @@ const (
 	CardPaddingLG   CardPadding = "lg"
 )
 
-// CardProps configures a card container
+// CardProps configures a card container.
+//
+// Set ContainerAware: true to make padding adapt to the card's parent
+// container width (CSS @container) instead of the viewport. Useful when Card
+// is placed inside a sidebar, grid cell, or other constrained layout. See
+// ADR-0018.
 type CardProps struct {
 	utils.BaseProps
 	Title        string
@@ -42,6 +47,10 @@ type CardProps struct {
 	// HeaderClass, when set, overrides the default header wrapper classes.
 	// Consumer classes are merged LAST so they win via tailwind-merge.
 	HeaderClass string
+	// ContainerAware, when true, wraps the card in a @container div and swaps
+	// sm: breakpoint classes for @sm: so padding adapts to container width,
+	// not the viewport. Default false (viewport breakpoints).
+	ContainerAware bool
 }
 
 // DefaultCardProps returns sensible defaults
@@ -51,12 +60,43 @@ func DefaultCardProps() CardProps {
 	}
 }
 
+// cardHeaderPaddingClass returns the responsive padding for the card header.
+// Container-aware variant swaps sm: for @sm: (complete Tailwind literals).
+func cardHeaderPaddingClass(containerAware bool) string {
+	if containerAware {
+		return "px-4 py-4 @sm:px-6"
+	}
+	return "px-4 py-4 sm:px-6"
+}
+
+// cardFooterPaddingClass returns the responsive padding for the card footer.
+func cardFooterPaddingClass(containerAware bool) string {
+	if containerAware {
+		return "px-4 py-3 @sm:px-6"
+	}
+	return "px-4 py-3 sm:px-6"
+}
+
 // Card renders a bordered card with optional header and footer
 //
 //	@display.Card(display.CardProps{Title: "Users", Subtitle: "Manage your users"}) {
 //	   <p>Card content goes here</p>
 //	 }
 templ Card(props CardProps) {
+	if props.ContainerAware {
+		<div class="@container">
+			@cardInner(props) {
+				{ children... }
+			}
+		</div>
+	} else {
+		@cardInner(props) {
+			{ children... }
+		}
+	}
+}
+
+templ cardInner(props CardProps) {
 	<div
 		if props.ID != "" {
 			id={ props.ID }
@@ -68,11 +108,11 @@ templ Card(props CardProps) {
 		{ props.Attrs... }
 	>
 		if props.Header != nil {
-			<div class={ utils.Class("flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
+			<div class={ utils.Class("flex items-center justify-between "+cardHeaderPaddingClass(props.ContainerAware)+" border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
 				@props.Header
 			</div>
 		} else if props.Title != "" || props.HeaderAction != nil {
-			<div class={ utils.Class("flex items-center justify-between px-4 py-4 sm:px-6 border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
+			<div class={ utils.Class("flex items-center justify-between "+cardHeaderPaddingClass(props.ContainerAware)+" border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
 				<div>
 					if props.Title != "" {
 						<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h3>
@@ -95,7 +135,7 @@ templ Card(props CardProps) {
 				{ children... }
 			}
 		} else {
-			<div class={ cardPaddingClass(props.Padding) }>
+			<div class={ cardPaddingClass(props.Padding, props.ContainerAware) }>
 				if props.Body != nil {
 					@props.Body
 				} else {
@@ -104,7 +144,7 @@ templ Card(props CardProps) {
 			</div>
 		}
 		if props.Footer != nil {
-			<div class="px-4 py-3 sm:px-6 bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700">
+			<div class={ cardFooterPaddingClass(props.ContainerAware) + " bg-gray-50 dark:bg-gray-900/50 border-t border-gray-200 dark:border-gray-700" }>
 				@props.Footer
 			</div>
 		}
@@ -119,7 +159,20 @@ var cardPaddingLookup = map[CardPadding]string{
 	CardPaddingLG:   "px-6 py-6",
 }
 
-func cardPaddingClass(p CardPadding) string {
+// cardPaddingLookupContainer mirrors cardPaddingLookup with @container-keyed
+// breakpoints (@sm:) so container-aware cards adapt padding to their parent's
+// width instead of the viewport.
+var cardPaddingLookupContainer = map[CardPadding]string{
+	CardPaddingNone: "",
+	CardPaddingSM:   "px-3 py-3",
+	CardPaddingMD:   "px-4 py-5 @sm:p-6",
+	CardPaddingLG:   "px-6 py-6",
+}
+
+func cardPaddingClass(p CardPadding, containerAware bool) string {
+	if containerAware {
+		return utils.Lookup(cardPaddingLookupContainer, p, cardPaddingLookupContainer[CardPaddingMD])
+	}
 	return utils.Lookup(cardPaddingLookup, p, cardPaddingLookup[CardPaddingMD])
 }
 
