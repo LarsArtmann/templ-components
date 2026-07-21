@@ -90,7 +90,7 @@ templ formsDemoSection() {
 		},
 	})
 	@demoSection("Inline Form (Filter Bar)", "forms-inline")
-	@forms.Form(forms.FormProps{Action: "/filter", Method: forms.FormGet, Inline: true}) {
+	@forms.Form(forms.FormProps{Action: "/filter", Method: forms.FormGet, Layout: forms.FormLayoutInline}) {
 		@forms.Select(forms.SelectProps{
 			Name:  "status",
 			Label: "Status",

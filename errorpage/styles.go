@@ -2,6 +2,7 @@ package errorpage
 
 import (
 	"errors"
+	"fmt"
 	"strings"
 
 	"github.com/larsartmann/templ-components/icons"
@@ -172,6 +173,43 @@ type ErrorPageProps struct {
 	Timestamp     string
 	ShowTimestamp bool
 }
+
+// errBlankNonRejection is the Validate error returned when the props would
+// render as an empty error card.
+var errBlankNonRejection = errValidateBlank
+
+// Validate verifies that the props form a coherent error page. Returns an
+// error when:
+//   - Family is not one of the five defined constants (FamilyIsValid).
+//   - StatusCode is set but outside the HTTP error range [400, 599].
+//   - The page has no Title AND no Message AND no CauseChain (would render
+//     as an empty error card — likely a caller bug).
+//
+// Validate is intentionally permissive about optional fields (Why, Fix,
+// WayOut, Context) — those are presentation, not correctness.
+func (p ErrorPageProps) Validate() error {
+	if !FamilyIsValid(p.Family) {
+		return fmt.Errorf("%w: %q", errValidateFamily, p.Family)
+	}
+
+	if p.StatusCode != 0 && (p.StatusCode < 400 || p.StatusCode > 599) {
+		return fmt.Errorf("%w: %d", errValidateStatusRange, p.StatusCode)
+	}
+
+	if p.Title == "" && p.Message == "" && len(p.CauseChain) == 0 {
+		return errBlankNonRejection
+	}
+
+	return nil
+}
+
+// Validation errors. Kept as package-level errors so callers can errors.Is
+// against them.
+var (
+	errValidateFamily      = errors.New("errorpage: invalid Family")
+	errValidateStatusRange = errors.New("errorpage: StatusCode must be in [400, 599]")
+	errValidateBlank       = errors.New("errorpage: at least one of Title, Message, CauseChain must be set")
+)
 
 // DefaultErrorPageProps returns sensible defaults.
 func DefaultErrorPageProps() ErrorPageProps {

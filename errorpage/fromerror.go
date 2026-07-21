@@ -97,12 +97,6 @@ func errorTimestamp(err error) string {
 	return time.Now().UTC().Format(time.RFC3339)
 }
 
-// FamilyFromErrorFamily is a deprecated alias for FromErrorFamily.
-// Kept for backward compatibility; will be removed in v1.0.
-//
-// Deprecated: Use FromErrorFamily instead.
-var FamilyFromErrorFamily = FromErrorFamily //nolint:gochecknoglobals // deprecated alias for backward compat
-
 // errorResponse is the JSON structure returned when ErrorHandlerConfig.JSON is true.
 type errorResponse struct {
 	Family  string            `json:"family"`

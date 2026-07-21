@@ -15,15 +15,13 @@ const (
 // DrawerSize defines the width of the drawer panel.
 type DrawerSize string
 
-// Drawer size constants. DrawerSize2XL is the largest size (max-w-2xl);
-// DrawerFull is a deprecated alias kept for backward compatibility.
+// Drawer size constants. DrawerSize2XL is the largest size (max-w-2xl).
 const (
 	DrawerSizeSM  DrawerSize = "sm"
 	DrawerSizeMD  DrawerSize = "md"
 	DrawerSizeLG  DrawerSize = "lg"
 	DrawerSizeXL  DrawerSize = "xl"
-	DrawerSize2XL DrawerSize = "2xl"  // largest available width (max-w-2xl)
-	DrawerFull    DrawerSize = "full" // Deprecated: use DrawerSize2XL
+	DrawerSize2XL DrawerSize = "2xl" // largest available width (max-w-2xl)
 )
 
 // DrawerProps configures a drawer (side panel) component.
@@ -59,7 +57,6 @@ var drawerSizeLookup = map[DrawerSize]string{
 	DrawerSizeLG:  maxWLG,
 	DrawerSizeXL:  maxWXL,
 	DrawerSize2XL: maxW2XL,
-	DrawerFull:    maxW2XL, // Deprecated alias (value "full")
 }
 
 func drawerSizeClass(size DrawerSize) string {

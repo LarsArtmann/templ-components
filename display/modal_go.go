@@ -8,15 +8,13 @@ import (
 // ModalSize defines the width of a modal dialog.
 type ModalSize string
 
-// Modal size constants. ModalSize2XL is the largest size (max-w-4xl);
-// ModalSizeFull is a deprecated alias kept for backward compatibility.
+// Modal size constants. ModalSize2XL is the largest size (max-w-4xl).
 const (
-	ModalSizeSM   ModalSize = "sm"
-	ModalSizeMD   ModalSize = "md"
-	ModalSizeLG   ModalSize = "lg"
-	ModalSizeXL   ModalSize = "xl"
-	ModalSize2XL  ModalSize = "2xl"  // largest available width (max-w-4xl)
-	ModalSizeFull ModalSize = "full" // Deprecated: use ModalSize2XL
+	ModalSizeSM  ModalSize = "sm"
+	ModalSizeMD  ModalSize = "md"
+	ModalSizeLG  ModalSize = "lg"
+	ModalSizeXL  ModalSize = "xl"
+	ModalSize2XL ModalSize = "2xl" // largest available width (max-w-4xl)
 )
 
 // ModalProps configures a modal dialog.
@@ -35,14 +33,13 @@ func DefaultModalProps() ModalProps {
 	}
 }
 
-//nolint:gochecknoglobals,goconst // Package-level lookup table; Tailwind class strings are intentionally inline
+//nolint:gochecknoglobals // Package-level lookup table; Tailwind class strings are intentionally inline
 var modalSizeLookup = map[ModalSize]string{
-	ModalSizeSM:   "max-w-sm",
-	ModalSizeMD:   "max-w-md",
-	ModalSizeLG:   "max-w-lg",
-	ModalSizeXL:   "max-w-xl",
-	ModalSize2XL:  "max-w-4xl",
-	ModalSizeFull: "max-w-4xl", // Deprecated alias (value "full")
+	ModalSizeSM:  "max-w-sm",
+	ModalSizeMD:  "max-w-md",
+	ModalSizeLG:  "max-w-lg",
+	ModalSizeXL:  "max-w-xl",
+	ModalSize2XL: "max-w-4xl",
 }
 
 func modalSizeClass(size ModalSize) string {

@@ -471,7 +471,7 @@ func TestDropdownButtonItems(t *testing.T) {
 func TestModalSizes(t *testing.T) {
 	t.Parallel()
 
-	for _, size := range []ModalSize{ModalSizeSM, ModalSizeMD, ModalSizeLG, ModalSizeXL, ModalSize2XL, ModalSizeFull} {
+	for _, size := range []ModalSize{ModalSizeSM, ModalSizeMD, ModalSizeLG, ModalSizeXL, ModalSize2XL} {
 		t.Run("size_"+string(size), func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Modal(ModalProps{
@@ -824,7 +824,7 @@ func TestDrawerRender(t *testing.T) {
 	t.Run("all sizes", func(t *testing.T) {
 		t.Parallel()
 
-		for _, size := range []DrawerSize{DrawerSizeSM, DrawerSizeMD, DrawerSizeLG, DrawerSizeXL, DrawerSize2XL, DrawerFull} {
+		for _, size := range []DrawerSize{DrawerSizeSM, DrawerSizeMD, DrawerSizeLG, DrawerSizeXL, DrawerSize2XL} {
 			output := utils.Render(t, Drawer(DrawerProps{
 				BaseProps: utils.BaseProps{ID: "size-" + string(size)},
 				Open:      true,

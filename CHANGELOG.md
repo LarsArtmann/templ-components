@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Removed (breaking — v1.0)
+
+- **`display.ModalSizeFull`** — deprecated alias for `ModalSize2XL` (same `max-w-4xl` width). Replace with `display.ModalSize2XL`.
+- **`display.DrawerFull`** — deprecated alias for `DrawerSize2XL` (same `max-w-2xl` width). Replace with `display.DrawerSize2XL`.
+- **`errorpage.FamilyFromErrorFamily`** — deprecated alias for `FromErrorFamily`. Replace with `errorpage.FromErrorFamily`.
+- **`forms.FormProps.Inline bool`** — deprecated legacy field. Replace with `Layout: forms.FormLayoutInline`.
+
+See [`docs/migration/v0.22-to-v1.0.md`](docs/migration/v0.22-to-v1.0.md) for the full migration guide.
+
+### Added
+
+- **`errorpage.ErrorPageProps.Validate() error`** — verifies Family is valid, StatusCode (when set) is in `[400, 599]`, and the page has at least one of Title/Message/CauseChain. Opt-in; the renderer does not call it automatically. Call it explicitly in handlers where you want to catch programmer errors.
+- **CI docs-health drift guard** — `.github/workflows/ci.yaml` now runs `go test ./utils/... -run TestDocsCountDrift` on every push and PR. Catches drift between component/generated/enum counts in FEATURES.md, AGENTS.md, SKILL.md, and website sections.ts.
+
+### Changed
+
+- **Default flip deferred to v2.0.** The planned v1.0 flip of HTMX self-host (CDN → self-host default) and semantic tokens (opt-in → default) is deferred to v2.0. Rationale: both shipped opt-in in v0.22.0 and a single minor cycle is insufficient deprecation time. Consumers upgrading to v1.0 see no change to default behavior.
+
 ## [0.22.0] — 2026-07-21
 
 ### Added

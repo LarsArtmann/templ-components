@@ -48,12 +48,11 @@ func TestModalRender(t *testing.T) {
 
 	t.Run("size variants", func(t *testing.T) {
 		sizes := map[ModalSize]string{
-			ModalSizeSM:   "max-w-sm",
-			ModalSizeMD:   "max-w-md",
-			ModalSizeLG:   "max-w-lg",
-			ModalSizeXL:   "max-w-xl",
-			ModalSize2XL:  "max-w-4xl",
-			ModalSizeFull: "max-w-4xl",
+			ModalSizeSM:  "max-w-sm",
+			ModalSizeMD:  "max-w-md",
+			ModalSizeLG:  "max-w-lg",
+			ModalSizeXL:  "max-w-xl",
+			ModalSize2XL: "max-w-4xl",
 		}
 		for size, want := range sizes {
 			t.Run(string(size), func(t *testing.T) {

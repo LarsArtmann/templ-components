@@ -70,6 +70,9 @@ jobs:
       - name: Test
         run: go test -race -coverprofile=coverage.out $(go list ./... | grep -v examples)
 
+      - name: Docs-health drift guard
+        run: go test ./utils/... -run TestDocsCountDrift
+
       - name: Check coverage threshold
         run: |
           COVERAGE=$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | tr -d '%')

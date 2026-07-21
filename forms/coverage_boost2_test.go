@@ -413,7 +413,7 @@ func TestFormInline(t *testing.T) {
 	output := utils.Render(t, Form(FormProps{
 		Action: "/search",
 		Method: FormGet,
-		Inline: true,
+		Layout: FormLayoutInline,
 	}))
 	utils.AssertContainsAll(t, output,
 		`action="/search"`,

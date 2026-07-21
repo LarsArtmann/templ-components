@@ -42,30 +42,6 @@ func TestFormLayout(t *testing.T) {
 		utils.AssertContains(t, output, "space-y-6")
 	})
 
-	t.Run("legacy Inline==true selects Inline layout (backward compat)", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Form(FormProps{Action: "/x", Inline: true}))
-		utils.AssertContainsAll(t, output, "flex", "flex-wrap", "gap-3")
-
-		if strings.Contains(output, "space-y-6") {
-			t.Errorf("Inline=true must not emit space-y-6")
-		}
-	})
-
-	t.Run("Layout wins over legacy Inline bool when both set", func(t *testing.T) {
-		t.Parallel()
-		output := utils.Render(t, Form(FormProps{
-			Action: "/x",
-			Inline: true,           // legacy says inline
-			Layout: FormLayoutGrid, // modern says grid — must win
-		}))
-		utils.AssertContains(t, output, "sm:grid-cols-[auto_minmax(0,1fr)]")
-
-		if strings.Contains(output, "flex-wrap") {
-			t.Errorf("Layout=Grid must override Inline=true; flex-wrap still present")
-		}
-	})
-
 	t.Run("Layout=Inline explicit overrides default Stack", func(t *testing.T) {
 		t.Parallel()
 

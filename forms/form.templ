@@ -73,16 +73,12 @@ func formLayoutClass(l FormLayout) string {
 	return utils.Lookup(formLayoutLookup, l, formLayoutLookup[FormLayoutDefault])
 }
 
-// formLayoutEffective resolves the effective FormLayout, honoring backward
-// compatibility with the legacy Inline bool field. When Layout is explicitly
-// set (non-empty) and valid, it wins. When Layout is empty and Inline==true,
-// the effective layout is Inline. Otherwise falls back to Default.
+// formLayoutEffective resolves the effective FormLayout. When Layout is
+// explicitly set (non-empty) and valid, it wins. Otherwise falls back to
+// Default.
 func formLayoutEffective(props FormProps) FormLayout {
 	if props.Layout != "" && FormLayoutIsValid(props.Layout) {
 		return props.Layout
-	}
-	if props.Inline {
-		return FormLayoutInline
 	}
 	return FormLayoutDefault
 }
@@ -94,14 +90,8 @@ type FormProps struct {
 	Method        FormMethod
 	CSRFToken     string
 	CSRFTokenName string // Hidden input name attribute; defaults to "csrf_token"
-	// Inline is the legacy boolean for horizontal layout. Prefer Layout.
-	// When true AND Layout is empty, selects FormLayoutInline. When Layout
-	// is set, Layout wins and Inline is ignored.
-	// Deprecated: Use Layout: forms.FormLayoutInline instead.
-	Inline bool
 	// Layout selects the visual layout: Stack (default), Inline (horizontal
-	// flex-wrap), or Grid (aligned label/value columns). When empty, the
-	// legacy Inline bool is consulted for backward compatibility.
+	// flex-wrap), or Grid (aligned label/value columns).
 	Layout FormLayout
 	// Validate, when true, adds hx-validate="true" for HTML5 constraint
 	// validation before HTMX submit.
