@@ -60,9 +60,12 @@ func TooltipPositionIsValid(v TooltipPosition) bool {
 
 // PopoverPositionIsValid reports whether v is one of the defined PopoverPosition constants.
 func PopoverPositionIsValid(v PopoverPosition) bool {
-	_, ok := popoverPositionMap[v]
+	switch v {
+	case PopoverPositionTop, PopoverPositionBottom, PopoverPositionLeft, PopoverPositionRight:
+		return true
+	}
 
-	return ok
+	return false
 }
 
 // AvatarShapeIsValid reports whether v is one of the defined AvatarShape constants.

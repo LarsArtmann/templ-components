@@ -24,6 +24,9 @@ func prerender(outputDir string) error {
 	pages := []prerenderPage{
 		{"index.html", "templ-components Demo", "Showcase of all templ-components", demoPage},
 		{"forms/index.html", "Forms Demo - templ-components", "Complete form showcase with validation", formsDemoPage},
+		{"recipes/dashboard.html", "Dashboard Recipe - templ-components", "Dashboard recipe demo", recipesDashboardPage},
+		{"recipes/settings.html", "Settings Recipe - templ-components", "Settings recipe demo", recipesSettingsPage},
+		{"recipes/login.html", "Login Recipe - templ-components", "Login card recipe demo", recipesLoginPage},
 	}
 
 	ctx := context.Background()

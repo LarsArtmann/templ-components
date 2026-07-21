@@ -6,7 +6,27 @@
 
 ## Status
 
-Accepted
+Accepted (revised 2026-07-21 — see Revision below)
+
+## Revision (2026-07-21)
+
+The original ADR claimed that CSS class-based positioning (`top-full left-1/2`,
+etc.) "continues to work because the popover element remains a DOM descendant
+of the relatively-positioned trigger wrapper." **This was wrong.** The Popover
+API promotes the panel to the **top layer**, where the UA stylesheet forces
+`position: fixed; inset: 0` — the panel is detached from its trigger's DOM
+subtree, so CSS classes resolve against the viewport, not the trigger.
+
+The fix: a shared singleton script (`popoverPositionJS` in `display/shared.go`)
+reads the trigger's `getBoundingClientRect()` on every `toggle` open and sets
+`style.left/top` with viewport clamping. This mirrors the proven
+`ContextMenu` cursor-positioning pattern. Popover and Dropdown now emit this
+positioner (Popover: ~30 lines shared; Dropdown: positioner + ~25 lines
+keyboard nav).
+
+Additionally, the `Tooltip` `aria-describedby` propagation was restored via a
+small singleton script (`tooltipAriaJS`) rather than left as consumer
+responsibility — the regression was not acceptable for existing consumers.
 
 ## Context
 
@@ -37,13 +57,13 @@ Migrate `Dropdown`, `Popover`, and `ContextMenu` to the native Popover API. Remo
 
 ### Per-component mode
 
-| Component   | `popover` value      | Trigger mechanism                                     | JS remaining                                               |
-| ----------- | -------------------- | ----------------------------------------------------- | ---------------------------------------------------------- |
-| Tooltip     | _(none — CSS only)_  | `:hover` / `:focus-within` (existing CSS)             | **0** (was ~20)                                            |
-| HoverCard   | _(none — unchanged)_ | `:hover` / `:focus-within` (existing CSS)             | 0                                                          |
-| ContextMenu | `popover="auto"`     | `contextmenu` event → `showPopover()` + `style.inset` | ~6 (was ~12)                                               |
-| Popover     | `popover="auto"`     | `<button popovertarget="id">` (native click-toggle)   | **0** (was ~40)                                            |
-| Dropdown    | `popover="auto"`     | `<button popovertarget="id">` (native click-toggle)   | ~25 (was ~50, kept for ArrowUp/Down/Home/End keyboard nav) |
+| Component   | `popover` value          | Trigger mechanism                                     | JS remaining                                                            |
+| ----------- | ------------------------ | ----------------------------------------------------- | ----------------------------------------------------------------------- |
+| Tooltip     | _(none — CSS show/hide)_ | `:hover` / `:focus-within` (existing CSS)             | ~10 (`tooltipAriaJS` — aria-describedby propagation to focusable child) |
+| HoverCard   | _(none — unchanged)_     | `:hover` / `:focus-within` (existing CSS)             | 0                                                                       |
+| ContextMenu | `popover="auto"`         | `contextmenu` event → `showPopover()` + `style.inset` | ~6 (cursor positioning, was ~12)                                        |
+| Popover     | `popover="auto"`         | `<button popovertarget="id">` (native click-toggle)   | ~30 (`popoverPositionJS` — top-layer positioning, shared singleton)     |
+| Dropdown    | `popover="auto"`         | `<button popovertarget="id">` (native click-toggle)   | ~25 keyboard nav + shared positioner (was ~50)                          |
 
 **Why `popover="auto"` (not `manual`) for all three:** light-dismiss (click-outside, Escape)
 is the correct UX for menus and click-triggered floating panels. `popover="manual"` is for
@@ -81,12 +101,29 @@ delegation. See implementation in `display/context_menu.templ`.)
 
 ### Positioning strategy
 
-We do **not** adopt CSS Anchor Positioning in this migration. The current CSS class-based
-positioning (`bottom-full left-1/2 -translate-x-1/2`, etc.) continues to work for `Popover` and
-`Dropdown` because the popover element remains a DOM descendant of the relatively-positioned
-trigger wrapper. Anchor Positioning is Baseline 2026 but offers no clear win over the existing
-class-based positioning for these components. We may revisit Anchor for `ContextMenu` (where
-cursor-relative `inset` is required) in a future enhancement.
+The native Popover API promotes the panel to the **top layer**, where the UA
+stylesheet forces `position: fixed; inset: 0`. The panel is therefore detached
+from its trigger's DOM subtree — CSS classes like `top-full left-1/2` resolve
+against the **viewport**, not the trigger, producing a panel at the wrong
+location.
+
+Three positioning approaches were considered:
+
+1. **CSS Anchor Positioning** (`anchor-name` + `position-area`): the declarative
+   ideal, but Baseline 2026 (Chrome-only as of 2026). Too new for a library
+   targeting all evergreen browsers.
+2. **JavaScript `getBoundingClientRect()` positioning**: read the trigger rect on
+   `toggle` open, set `style.left/top`, clamp to viewport. Works in every
+   browser that supports the Popover API (Baseline 2024). **Adopted.**
+3. **Hybrid (Anchor + `@supports` JS fallback)**: forward-looking but doubles
+   the maintenance surface. Deferred until Anchor Positioning reaches
+   Baseline-wide.
+
+The shared positioner (`popoverPositionJS`) is a singleton in
+`display/shared.go`. It handles four positions (top/bottom/left/right) and
+three alignments (start/center/end) with viewport clamping and scroll/resize
+repositioning. `ContextMenu` uses a separate cursor-positioning path
+(`clientX/clientY`) because it anchors to the mouse, not an element.
 
 ### Fallback for older browsers
 
@@ -96,32 +133,34 @@ trade-off because the Baseline (April 2024) is now ~2 years old.
 
 ### CSP implications
 
-- Popover and Dropdown lose their inline `<script>` tags entirely → **CSP surface shrinks**.
-- The `integration/csp_nonce_test.go` tripwire still passes (ContextMenu and Dropdown still
-  emit scripts for keyboard / right-click handlers).
-- Add new CSP test entries for `Tooltip` and `Popover` as **negative** assertions (verify no
-  `<script>` tag is emitted).
+- Dropdown and Popover emit a shared positioner `<script nonce>` (singleton,
+  injected once per page).
+- Tooltip emits an aria-describedby propagation `<script nonce>` (singleton).
+- ContextMenu still emits its cursor-positioning script.
+- The `integration/csp_nonce_test.go` tripwire asserts every `<script>` tag
+  carries the nonce — verified for all five components.
 
 ## Consequences
 
 **Positive:**
 
-- ~70 lines of JS deleted across 3 components.
-- `Popover` becomes the first component with **zero** JS — entirely native.
-- `Tooltip` becomes pure CSS — no more singleton in `shared.go`.
-- Native light-dismiss, Escape, focus, and top-layer rendering replace fragile custom JS.
-- CSP audit story improves (fewer inline scripts).
+- ~40 lines of JS deleted net (the old show/hide/state logic is gone; replaced
+  by smaller positioning + aria scripts).
+- Native light-dismiss, Escape, focus, and top-layer rendering replace fragile
+  custom show/hide JS.
+- `Tooltip` show/hide is pure CSS; only the small aria-propagation script
+  remains.
 - Matches the `<dialog>` migration precedent (ADR-0014): platform over JS.
 
 **Negative:**
 
-- `Tooltip` no longer supports click-toggle on touch devices. Trade-off accepted: tooltips
-  are non-critical progressive enhancement; the hover/focus CSS still works on desktop.
-- `aria-describedby` is no longer auto-propagated from the Tooltip wrapper to its first
-  focusable child. **Consumer responsibility:** set `aria-describedby` directly on the
-  focusable trigger element. Documented in godoc on `TooltipProps`.
-- Older browsers (pre-2023) render popover content inline — visible-but-unstyled popovers.
-  Accepted given Baseline 2024.
+- Popover and Dropdown require a positioning script (the top layer detaches
+  them from the trigger). This is unavoidable until CSS Anchor Positioning is
+  Baseline-wide.
+- `Tooltip` no longer supports click-toggle on touch devices (show/hide is
+  CSS-only). Trade-off accepted: tooltips are progressive enhancement.
+- Older browsers (pre-2023) render popover content inline — visible-but-
+  unstyled. Accepted given Baseline 2024.
 
 **Migration path for consumers:**
 

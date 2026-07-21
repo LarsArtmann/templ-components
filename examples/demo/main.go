@@ -78,15 +78,20 @@ func main() {
 	})
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path == "/forms" {
+		switch r.URL.Path {
+		case "/forms":
 			renderPage(w, r, "Forms Demo - templ-components", "Complete form showcase with validation", formsDemoPage)
-			return
-		}
-		if r.URL.Path != "/" {
+		case "/recipes/dashboard":
+			renderPage(w, r, "Dashboard Recipe - templ-components", "Dashboard recipe demo", recipesDashboardPage)
+		case "/recipes/settings":
+			renderPage(w, r, "Settings Recipe - templ-components", "Settings recipe demo", recipesSettingsPage)
+		case "/recipes/login":
+			renderPage(w, r, "Login Recipe - templ-components", "Login card recipe demo", recipesLoginPage)
+		case "/":
+			renderPage(w, r, "templ-components Demo", "Showcase of all templ-components", demoPage)
+		default:
 			http.NotFound(w, r)
-			return
 		}
-		renderPage(w, r, "templ-components Demo", "Showcase of all templ-components", demoPage)
 	})
 
 	//nolint:exhaustruct // Demo code - HTTP server for demonstration only

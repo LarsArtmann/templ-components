@@ -27,23 +27,23 @@ func TestPopoverRender(t *testing.T) {
 				`role="dialog"`,
 				`aria-expanded="false"`,
 				`aria-haspopup="dialog"`,
-				"top-full",
+				`data-tc-position="bottom"`,
 			},
 		},
 		{
 			name:    "top position",
 			props:   PopoverProps{TriggerText: "Info", Position: PopoverPositionTop},
-			wantAll: []string{"bottom-full"},
+			wantAll: []string{`data-tc-position="top"`},
 		},
 		{
 			name:    "left position",
 			props:   PopoverProps{TriggerText: "Left", Position: PopoverPositionLeft},
-			wantAll: []string{"right-full"},
+			wantAll: []string{`data-tc-position="left"`},
 		},
 		{
 			name:    "right position",
 			props:   PopoverProps{TriggerText: "Right", Position: PopoverPositionRight},
-			wantAll: []string{"left-full"},
+			wantAll: []string{`data-tc-position="right"`},
 		},
 	}
 	for _, tt := range tests {
@@ -142,7 +142,7 @@ func TestPopoverEdgeCases(t *testing.T) {
 			TriggerText: "X",
 			Position:    PopoverPosition("bogus"),
 		}))
-		utils.AssertContains(t, output, "top-full")
+		utils.AssertContains(t, output, `data-tc-position="bottom"`)
 	})
 
 	t.Run("custom class on root element", func(t *testing.T) {
@@ -163,14 +163,14 @@ func TestPopoverEdgeCases(t *testing.T) {
 		utils.AssertContains(t, output, `aria-label="More info popover"`)
 	})
 
-	t.Run("nonce has no script tag (popover API is JS-free)", func(t *testing.T) {
+	t.Run("nonce on positioner script", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Popover(PopoverProps{
 			BaseProps:   utils.BaseProps{Nonce: "test-nonce-123"},
 			TriggerText: "X",
 		}))
-		utils.AssertNotContains(t, output, "<script")
-		utils.AssertNotContains(t, output, "test-nonce-123")
+		utils.AssertContains(t, output, `<script nonce="test-nonce-123">`)
+		utils.AssertContains(t, output, "tcPositionPopover")
 	})
 
 	t.Run("trigger has popovertarget attribute (native invoker)", func(t *testing.T) {

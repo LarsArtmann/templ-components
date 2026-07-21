@@ -1,0 +1,97 @@
+package main
+
+import (
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/recipes"
+)
+
+templ recipesLoginPage(props layout.PageProps) {
+	@layout.Base(props) {
+		@recipes.LoginCard(recipes.LoginCardProps{
+			Title:    "Sign in",
+			Subtitle: "Welcome back. Enter your credentials to continue.",
+			FormBody: templ.Raw(`<form class="space-y-4"><div><label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label><input type="email" id="email" name="email" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-xs focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-white" placeholder="you@example.com"/></div><div><label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label><input type="password" id="password" name="password" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-xs focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-white" placeholder="••••••••"/></div><button type="submit" class="w-full flex justify-center rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-500 dark:hover:bg-blue-400">Sign in</button></form>`),
+			Footer:   templ.Raw(`<p class="text-center text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a href="#" class="font-medium text-blue-600 dark:text-blue-400 hover:underline">Sign up</a></p>`),
+		})
+	}
+}
+
+templ recipesSettingsPage(props layout.PageProps) {
+	@layout.Base(props) {
+		<div class="max-w-3xl mx-auto px-4 py-8">
+			<div class="mb-8 flex items-center justify-between">
+				<div>
+					<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Settings</h1>
+					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Recipe: recipes.SettingsLayout</p>
+				</div>
+				<a href="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Back to demo</a>
+			</div>
+			@recipes.SettingsLayout(recipes.SettingsLayoutProps{
+				Aside: templ.Raw(`<nav class="space-y-1"><a href="#profile" class="block rounded-md bg-blue-50 dark:bg-blue-900/20 px-3 py-2 text-sm font-medium text-blue-700 dark:text-blue-300">Profile</a><a href="#security" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">Security</a><a href="#notifications" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">Notifications</a></nav>`),
+				Sections: []recipes.SettingsSection{
+					{ID: "profile", Title: "Profile", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Update your profile information, avatar, and display name.</p>`)},
+					{ID: "security", Title: "Security", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Change your password and enable two-factor authentication.</p>`)},
+					{ID: "notifications", Title: "Notifications", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Choose what you get notified about and how.</p>`)},
+				},
+			})
+		</div>
+	}
+}
+
+templ recipesDashboardPage(props layout.PageProps) {
+	@layout.Base(props) {
+		<div class="px-4 py-8">
+			<div class="mb-8 flex items-center justify-between">
+				<div>
+					<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Dashboard</h1>
+					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">Recipe: recipes.Dashboard</p>
+				</div>
+				<a href="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Back to demo</a>
+			</div>
+			@recipes.Dashboard(recipes.DashboardProps{
+				Title:    "Overview",
+				Subtitle: "Your account at a glance",
+				StatCards: []templ.Component{
+					revenueStatCard(),
+					usersStatCard(),
+					churnStatCard(),
+				},
+				Charts: []templ.Component{
+					revenueTrendCard(),
+					recentActivityCard(),
+				},
+			})
+		</div>
+	}
+}
+
+templ revenueTrendCard() {
+	@display.Card(display.CardProps{Title: "Revenue trend"}) {
+		<div class="h-40 flex items-end justify-between gap-2">
+			<div class="flex-1 bg-blue-600 dark:bg-blue-500 rounded-t" style="height: 40%"></div>
+			<div class="flex-1 bg-blue-600 dark:bg-blue-500 rounded-t" style="height: 65%"></div>
+			<div class="flex-1 bg-blue-600 dark:bg-blue-500 rounded-t" style="height: 50%"></div>
+			<div class="flex-1 bg-blue-600 dark:bg-blue-500 rounded-t" style="height: 80%"></div>
+			<div class="flex-1 bg-blue-600 dark:bg-blue-500 rounded-t" style="height: 95%"></div>
+		</div>
+	}
+}
+
+templ recentActivityCard() {
+	@display.Card(display.CardProps{Title: "Recent activity"}) {
+		<p class="text-sm text-gray-500 dark:text-gray-400">No recent activity to show.</p>
+	}
+}
+
+templ revenueStatCard() {
+	@display.StatCard(display.StatCardProps{Label: "Revenue", Value: "$48,250", Trend: display.TrendUp, Change: "+12.5%"})
+}
+
+templ usersStatCard() {
+	@display.StatCard(display.StatCardProps{Label: "Users", Value: "2,840", Trend: display.TrendUp, Change: "+4.3%"})
+}
+
+templ churnStatCard() {
+	@display.StatCard(display.StatCardProps{Label: "Churn", Value: "1.8%", Trend: display.TrendDown, Change: "-0.4%"})
+}

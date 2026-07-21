@@ -73,7 +73,7 @@ func TestDropdownRender(t *testing.T) {
 			Position:  DropdownPositionRight,
 			Items:     []DropdownItem{{Text: "Item", Href: "/x"}},
 		}))
-		utils.AssertContains(t, output, `data-dropdown-align="right"`)
+		utils.AssertContains(t, output, `data-tc-align="end"`)
 	})
 
 	t.Run("with icon items", func(t *testing.T) {

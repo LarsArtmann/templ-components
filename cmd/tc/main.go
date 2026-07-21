@@ -191,6 +191,18 @@ func cmdAdd(r *registry, args []string) {
 			status("wrote", dest)
 		}
 	}
+
+	// Warn: a .templ file references package-level helpers (class lookups,
+	// enums, utils, sub-templates) defined in sibling .go files that are NOT
+	// embedded or copied. The output will not compile standalone.
+	pkg := r.pkg[name]
+	fmt.Fprintf(os.Stderr,
+		"tc: note: '%s.templ' is part of the '%s' package and references helpers\n"+
+			"    (class lookups, enums, sub-templates) defined in sibling .go files\n"+
+			"    that were NOT copied. The output will not compile standalone.\n"+
+			"    For a working component, vendor the full package:\n"+
+			"      go get github.com/larsartmann/templ-components/%s\n",
+		name, pkg, pkg)
 }
 
 func parseAddArgs(args []string) (out string, positional []string) {

@@ -22,12 +22,10 @@ const (
 
 // TooltipProps configures a tooltip component.
 //
-// The tooltip shows on :hover and :focus-within via pure CSS — no JavaScript.
-// For accessibility, set aria-describedby on the focusable trigger element
-// (e.g. the <button>) pointing to the tooltip's id, OR wrap the trigger with
-// the Tooltip component and it will set aria-describedby on the wrapper div.
-// For full screen-reader support, prefer setting aria-describedby directly
-// on the focusable trigger.
+// The tooltip shows on :hover and :focus-within via pure CSS. A tiny
+// singleton script (tooltipAriaScriptComponent) propagates aria-describedby
+// from the non-focusable wrapper <div> to the first focusable child so
+// screen readers announce the tooltip text on focus.
 type TooltipProps struct {
 	utils.BaseProps
 	Text     string
@@ -70,8 +68,9 @@ func tooltipLookupPosition(pos TooltipPosition) tooltipPositionStyles {
 	return utils.Lookup(tooltipPositionMap, pos, tooltipPositionMap[TooltipPositionTop])
 }
 
-// Tooltip wraps content in a hover/focus-activated tooltip. Pure CSS, no JS.
-// Shows on :hover and :focus-within; hides on blur/mouse-leave.
+// Tooltip wraps content in a hover/focus-activated tooltip. Pure CSS for
+// show/hide (group-hover/group-focus-within); a singleton script propagates
+// aria-describedby to the focusable trigger for screen-reader support.
 //
 //	@display.Tooltip(display.TooltipProps{Text: "More info"}) {
 //	   <button>Hover me</button>
@@ -111,7 +110,7 @@ func Tooltip(props TooltipProps) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tooltip.templ`, Line: 75, Col: 9}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tooltip.templ`, Line: 74, Col: 9}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -137,7 +136,7 @@ func Tooltip(props TooltipProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(id + "-tooltip")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tooltip.templ`, Line: 78, Col: 36}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tooltip.templ`, Line: 77, Col: 36}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -155,7 +154,7 @@ func Tooltip(props TooltipProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tooltip.templ`, Line: 80, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tooltip.templ`, Line: 79, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -191,7 +190,7 @@ func Tooltip(props TooltipProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(id + "-tooltip")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tooltip.templ`, Line: 86, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tooltip.templ`, Line: 85, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
@@ -217,7 +216,7 @@ func Tooltip(props TooltipProps) templ.Component {
 		var templ_7745c5c3_Var10 string
 		templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(props.Text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tooltip.templ`, Line: 91, Col: 15}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tooltip.templ`, Line: 90, Col: 15}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 		if templ_7745c5c3_Err != nil {
@@ -242,6 +241,10 @@ func Tooltip(props TooltipProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\"></div></div></div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = tooltipAriaScriptComponent(props.Nonce).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -101,9 +101,10 @@ templ dropdownItemLink(item DropdownItem) {
 
 // Dropdown renders a button-triggered action menu. Uses the native Popover
 // API (popover="auto") for click-toggle via popovertarget, light-dismiss,
-// Escape-to-close, and top-layer rendering. A thin singleton script handles
-// WAI-ARIA menu keyboard nav (ArrowUp/Down + RTL mapping) and focuses the
-// first menuitem on open. See ADR-0017.
+// Escape-to-close, and top-layer rendering. A shared singleton positioner
+// (popoverPositionScriptComponent) anchors the menu to the trigger via
+// getBoundingClientRect(); a thin keyboard-nav script handles ArrowUp/Down
+// (with RTL mapping) and focuses the first menuitem on open. See ADR-0017.
 //
 //	@display.Dropdown(display.DropdownProps{
 //	   Label: "Actions",
@@ -140,14 +141,14 @@ templ Dropdown(props DropdownProps) {
 		<div
 			id={ id + "-menu" }
 			popover="auto"
-			class="mt-2 w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 focus:outline-hidden"
+			data-tc-anchor={ id + "-button" }
+			data-tc-position="bottom"
+			data-tc-align={ utils.Ternary(props.Position == DropdownPositionRight, "end", "start") }
+			class="w-56 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 focus:outline-hidden"
 			role="menu"
 			aria-orientation="vertical"
 			aria-labelledby={ id + "-button" }
 			tabindex="-1"
-			if props.Position == DropdownPositionRight {
-				data-dropdown-align="right"
-			}
 		>
 			<div class="py-1" role="none">
 				for _, item := range props.Items {
@@ -200,4 +201,5 @@ templ Dropdown(props DropdownProps) {
 			});
 		}
 	</script>
+	@popoverPositionScriptComponent(props.Nonce)
 }

@@ -257,3 +257,87 @@ func tableRowHrefJS() string {
 func tableRowHrefScriptComponent(nonce string) templ.Component {
 	return scriptComponent(nonce, tableRowHrefJS(), "table row href script")
 }
+
+// popoverPositionJS returns the singleton JavaScript that positions a
+// [popover] panel relative to its trigger element. The native Popover API
+// promotes the panel to the top layer with position:fixed (UA stylesheet),
+// which detaches it from the trigger DOM subtree, so CSS classes like
+// top-full/left-1/2 resolve against the viewport, not the trigger. This
+// script reads the trigger getBoundingClientRect() on every open and sets
+// style.left/top (with viewport clamping). Used by Popover and Dropdown.
+// See ADR-0017.
+func popoverPositionJS() string {
+	return `if(!window.tcPopoverPositionAttached){window.tcPopoverPositionAttached=true;` +
+		`function tcPositionPopover(p){` +
+		`var aid=p.getAttribute("data-tc-anchor");` +
+		`var t=aid?document.getElementById(aid):null;` +
+		`if(!t)return;` +
+		`var pos=p.getAttribute("data-tc-position")||"bottom";` +
+		`var align=p.getAttribute("data-tc-align")||"center";` +
+		`var gap=8;` +
+		`var r=t.getBoundingClientRect();` +
+		`var w=p.offsetWidth,h=p.offsetHeight;` +
+		`var vw=window.innerWidth,vh=window.innerHeight;` +
+		`var left,top;` +
+		`if(align==="start"){left=r.left}` +
+		`else if(align==="end"){left=r.right-w}` +
+		`else{left=r.left+r.width/2-w/2}` +
+		`if(pos==="top"){top=r.top-h-gap}` +
+		`else if(pos==="left"){top=r.top+r.height/2-h/2;left=r.left-w-gap}` +
+		`else if(pos==="right"){top=r.top+r.height/2-h/2;left=r.right+gap}` +
+		`else{top=r.bottom+gap}` +
+		`left=Math.max(gap,Math.min(left,vw-w-gap));` +
+		`top=Math.max(gap,Math.min(top,vh-h-gap));` +
+		`p.style.inset="auto";p.style.left=left+"px";p.style.top=top+"px";p.style.margin="0";` +
+		`}` +
+		`document.addEventListener("toggle",function(e){` +
+		`var el=e.target;` +
+		`if(el&&el.hasAttribute&&el.hasAttribute("popover")&&el.getAttribute("data-tc-anchor")&&e.newState==="open"){` +
+		`tcPositionPopover(el);` +
+		`}` +
+		`});` +
+		`window.addEventListener("resize",function(){` +
+		`document.querySelectorAll("[popover]:popover-open[data-tc-anchor]").forEach(tcPositionPopover);` +
+		`});` +
+		`document.addEventListener("scroll",function(){` +
+		`document.querySelectorAll("[popover]:popover-open[data-tc-anchor]").forEach(tcPositionPopover);` +
+		`},true);` +
+		`}` +
+		"\n"
+}
+
+// popoverPositionScriptComponent renders the popover-positioning JS in a
+// CSP-safe <script nonce> tag. Singleton, shared by Popover and Dropdown.
+func popoverPositionScriptComponent(nonce string) templ.Component {
+	return scriptComponent(nonce, popoverPositionJS(), "popover position script")
+}
+
+// tooltipAriaJS returns the singleton JavaScript that propagates
+// aria-describedby from a [data-tc-tooltip] wrapper to its first focusable
+// descendant. A <div> is not focusable, so screen readers ignore
+// aria-describedby set on the wrapper; copying it to the focusable trigger
+// (button, link, input) restores the association. Runs on load and on
+// htmx:afterSettle for dynamically swapped content.
+func tooltipAriaJS() string {
+	return `if(!window.tcTooltipAriaAttached){window.tcTooltipAriaAttached=true;` +
+		`function tcTooltipAriaSync(){` +
+		`document.querySelectorAll("[data-tc-tooltip]").forEach(function(wrap){` +
+		`var desc=wrap.getAttribute("aria-describedby");` +
+		`if(!desc)return;` +
+		`var focusable=wrap.querySelector("button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])");` +
+		`if(focusable&&!focusable.hasAttribute("aria-describedby")){` +
+		`focusable.setAttribute("aria-describedby",desc);` +
+		`}` +
+		`});` +
+		`}` +
+		`tcTooltipAriaSync();` +
+		`document.body.addEventListener("htmx:afterSettle",tcTooltipAriaSync);` +
+		`}` +
+		"\n"
+}
+
+// tooltipAriaScriptComponent renders the tooltip aria-describedby
+// propagation JS. Singleton, injected by the first Tooltip on the page.
+func tooltipAriaScriptComponent(nonce string) templ.Component {
+	return scriptComponent(nonce, tooltipAriaJS(), "tooltip aria script")
+}

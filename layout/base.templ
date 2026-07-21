@@ -73,12 +73,14 @@ type PageProps struct {
 	// to a self-hosted path. The value becomes the <script src> attribute verbatim.
 	// Example: "/static/htmx.min.js". When set, HTMXVersion/HTMXCDN/HTMXUseSRI
 	// are ignored for the main script (no SRI is emitted because the asset is
-	// same-origin). The response-targets extension still uses HTMXCDN unless
-	// HTMXResponseTargets is false. See ADR-0007.
+	// same-origin). The CDN response-targets extension is also suppressed — a
+	// self-hoster manages extensions too. Add your own <script> tag for it if
+	// needed. See ADR-0007.
 	HTMXSrc string
 	// HTMXResponseTargets controls whether the htmx response-targets extension
-	// is loaded alongside htmx. Defaults to true for backward compatibility;
-	// set to false to skip the extra request when you don't use it.
+	// is loaded from the CDN alongside htmx. Defaults to true for backward
+	// compatibility; set to false to skip the extra request. Ignored when
+	// HTMXSrc is set (self-host implies you manage extensions).
 	HTMXResponseTargets bool
 	BodyClass           string
 	Nonce               string
@@ -190,7 +192,7 @@ templ Base(props PageProps) {
 				} else {
 					<script src={ htmxScriptURL(props.HTMXVersion, props.HTMXCDN) }></script>
 				}
-				if props.HTMXResponseTargets {
+				if props.HTMXResponseTargets && props.HTMXSrc == "" {
 					if props.HTMXUseSRI {
 						<script src={ responseTargetsURL(props.HTMXCDN) } integrity={ sriResponseTargets } crossorigin="anonymous"></script>
 					} else {

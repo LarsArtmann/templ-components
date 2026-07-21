@@ -289,7 +289,7 @@ func TestDropdownEdgeCases(t *testing.T) {
 		props DropdownProps
 		want  []string
 	}{
-		{"right position", DropdownProps{BaseProps: utils.BaseProps{ID: "dd"}, Label: "A", Position: DropdownPositionRight}, []string{`data-dropdown-align="right"`}},
+		{"right position", DropdownProps{BaseProps: utils.BaseProps{ID: "dd"}, Label: "A", Position: DropdownPositionRight}, []string{`data-tc-align="end"`}},
 		{"left position", DropdownProps{BaseProps: utils.BaseProps{ID: "dd"}, Label: "A", Position: DropdownPositionLeft}, []string{"hidden"}},
 		{"default position", DropdownProps{BaseProps: utils.BaseProps{ID: "dd"}, Label: "A"}, []string{"hidden"}},
 		{"item with icon", DropdownProps{BaseProps: utils.BaseProps{ID: "dd"}, Label: "A", Items: []DropdownItem{{Text: "Edit", Href: "/edit", Icon: icons.Edit}}}, []string{"Edit"}},
