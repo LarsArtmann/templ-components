@@ -97,6 +97,15 @@ func TestSidebarNavRender(t *testing.T) {
 		utils.AssertContains(t, output, `aria-label="Sidebar"`)
 	})
 
+	t.Run("nav has scroll classes for overflow", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SidebarNav(SidebarNavProps{
+			Items: []SidebarNavItem{{Label: "Home", Href: "/"}},
+		}))
+		utils.AssertContains(t, output, "overflow-y-auto")
+		utils.AssertContains(t, output, "min-h-0")
+	})
+
 	t.Run("propagates BaseProps", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, SidebarNav(SidebarNavProps{
