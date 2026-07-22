@@ -143,7 +143,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - Feedback styles: shared `feedbackStyleSet` struct + `lookupFeedbackStyle[T]()` generic + `feedbackIconName()` + `dismissScript()` in `feedback/styles.go`
 - FeedbackType: canonical `FeedbackType` enum (`FeedbackSuccess/Error/Warning/Info`); `AlertType` and `ToastType` are type aliases for backward compat
 - Icons: `iconPathData` map with `|` separator for multi-path icons. `iconPaths()` validates no empty segments (panics on stray `|`). `allIconNames()` auto-generated from `iconPathData` + Spinner — no manual list to maintain.
-- Form errors: `ErrorAttrs(id, errMsg, helpTextID)` helper returns `templ.Attributes` for aria-invalid/aria-described
+- Form errors: `ErrorAttrs(id, errMsg, helpTextID)` helper returns `templ.Attributes` for aria-invalid/aria-describedby
 - Shared constants: `cardShellClass`, `mutedTextClass` (in `display/shared.go`) — use for consistent card styling and secondary-text pattern.
 - `PageProps.HTMXCDN` overrides the CDN base URL (defaults to `https://cdn.jsdelivr.net/npm`).
 - Modal/Drawer: native `<dialog>` element provides focus trapping, Escape-to-close, focus restore, top-layer rendering, and `::backdrop` — zero JS for those behaviors. CSS `@starting-style` + `allow-discrete` handle open/close animations (defined in `templates/custom.css` under `.tc-modal` / `.tc-drawer`). `tcOpenModal(id)` / `tcCloseModal(id)` are thin wrappers around `dialog.showModal()` / `dialog.close()` for backward compat. Backdrop click detection: `e.target === dialog` (the backdrop is a pseudo-element of dialog, so clicks register on the dialog itself).
