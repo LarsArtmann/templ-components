@@ -15,7 +15,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-94 server-rendered components. 37 typed string enums. 102 SVG icons. Zero client-side framework.
+98 server-rendered components. 43 typed string enums. 102 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -24,8 +24,8 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **CSS approach**       | Tailwind v4 (CSS-first)    | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
 | **JavaScript**         | HATEOAS (enhances HTML)    | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js**   | No                         | No                            | Yes                                            |
-| **Components**         | 94                         | 40+                           | —                                              |
-| **Typed props**        | 37 enums                   | —                             | —                                              |
+| **Components**         | 98                         | 40+                           | —                                              |
+| **Typed props**        | 43 enums                   | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)          | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts) | Yes                           | —                                              |
 | **HTMX integration**   | Built-in package           | —                             | —                                              |
