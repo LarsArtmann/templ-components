@@ -2,7 +2,7 @@ package errorpage
 
 import (
 	"context"
-	"encoding/json"
+	"encoding/json/v2"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -619,7 +619,7 @@ func TestErrorHandlerJSON(t *testing.T) {
 		}
 
 		var resp errorResponse
-		if err := json.NewDecoder(rec.Body).Decode(&resp); err != nil {
+		if err := json.UnmarshalRead(rec.Body, &resp); err != nil {
 			t.Fatalf("failed to decode JSON: %v", err)
 		}
 
@@ -648,7 +648,7 @@ func TestErrorHandlerJSON(t *testing.T) {
 		handler.ServeHTTP(rec, req)
 
 		var resp errorResponse
-		if err := json.NewDecoder(rec.Body).Decode(&resp); err != nil {
+		if err := json.UnmarshalRead(rec.Body, &resp); err != nil {
 			t.Fatalf("failed to decode JSON: %v", err)
 		}
 
