@@ -176,7 +176,7 @@ func SidebarNav(props SidebarNavProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<nav class=\"flex flex-1 flex-col gap-1 px-3 py-2\" aria-label=\"Sidebar navigation\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "<nav class=\"flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-3 py-2\" aria-label=\"Sidebar navigation\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
