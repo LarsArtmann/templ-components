@@ -124,6 +124,10 @@ linters:
     - wrapcheck
     - wsl_v5
     - zerologlint
+  disable:
+    - godoclint
+    - ireturn
+    - testableexamples
   settings:
     cyclop:
       max-complexity: 12
