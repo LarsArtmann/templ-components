@@ -196,7 +196,7 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 ## Design Principles
 
-**Type-safe.** 37 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 43 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 
@@ -253,10 +253,10 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 
 | Metric       | Value                                               |
 | ------------ | --------------------------------------------------- |
-| Components   | 94                                                  |
+| Components   | 98                                                  |
 | SVG icons    | 102                                                 |
-| Typed enums  | 34                                                  |
-| Packages     | 9                                                   |
+| Typed enums  | 43                                                  |
+| Packages     | 15                                                  |
 | Tests        | ~890 functions + ~1,650 subtests                    |
 | Dependencies | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
