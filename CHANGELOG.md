@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-### Fixed (post-v1.1.0 patch — not yet released)
+### Fixed
 
 - **Popover/Dropdown top-layer positioning bug (ADR-0017 revision).** The original Popover API migration assumed CSS class-based positioning (`top-full left-1/2`) would continue to anchor to the trigger. **This was wrong:** `popover="auto"` promotes the panel to the top layer where the UA stylesheet forces `position: fixed; inset: 0`, detaching it from the trigger's DOM subtree. CSS classes therefore resolved against the viewport, placing panels at the wrong location. Fixed via a shared singleton `popoverPositionJS` (in `display/shared.go`) that reads `getBoundingClientRect()` on `toggle` open and sets `style.left/top` with viewport clamping. Used by both `Popover` and `Dropdown`. `ContextMenu` already positioned via JS `inset` and was unaffected. ADR-0017 revised with a full explanation of the three approaches considered (Anchor Positioning, JS rect, hybrid) and why JS rect was chosen.
 - **Tooltip `aria-describedby` propagation restored.** The v0.20.0 Popover migration deleted the singleton script that propagated `aria-describedby` from the non-focusable wrapper `<div>` to the first focusable child (button/link/input). Screen readers therefore stopped announcing tooltip text on focus. Fixed via `tooltipAriaJS` singleton that re-runs on load and `htmx:afterSettle`. Tooltip show/hide remains pure CSS.
@@ -14,11 +14,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`tc add` now warns about companion `.go` dependencies.** A `.templ` file references package-level helpers (class lookups, enums, sub-templates) defined in sibling `.go` files that are not embedded or copied. The CLI now prints a clear note after copy pointing the consumer to `go get` the full package for a working component.
 - **Popover entrance/exit animations** via `@starting-style` + `allow-discrete` in `templates/custom.css`. Panels fade + scale in/out gracefully. Browsers without `allow-discrete` support snap instantly.
 
-### Added (post-v1.1.0)
+### Added
 
 - **Demo routes for recipes** — `/recipes/dashboard`, `/recipes/settings`, `/recipes/login` in `examples/demo`. The three recipes are now visually showcaseable, not just documented.
+- **`navigation.SidebarNav` — vertical sidebar navigation for admin panels and dashboards.** Renders a brand slot (top), nav links (each with an optional `icons.Name` icon), and a footer slot (bottom). `CurrentPath` auto-detects the active item via the shared `IsActive` matcher (unified with `NavLink`); explicit `Active=true` on an item takes priority. Permanently-dark surface for the persistent-sidebar pattern.
 - **`DOMAIN_LANGUAGE.md` platform terms** — ContainerAware, Recipe, Semantic Token, Theme Preset, HTMXSrc, Popover API, tc CLI added to the glossary.
 - **`ROADMAP.md` reconciled** — v1.0 marked SHIPPED, v1.1+ platform work documented, headless variants moved to Explicitly NOT Planned.
+
+### Changed
+
+- **`go-error-family` bumped to v0.8.0.** Internal dependency update — no API changes affect this library.
+- **`.golangci.yml` — `depguard` linter removed.** The allow-list (stdlib + the three runtime deps) duplicated the module's existing import discipline with no additional safety; maintaining it added churn on every dependency change.
 
 ## [1.1.0] — 2026-07-21
 
