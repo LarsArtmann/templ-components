@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.2.0] — 2026-07-23
+
 ### Fixed
 
 - **Popover/Dropdown top-layer positioning bug (ADR-0017 revision).** The original Popover API migration assumed CSS class-based positioning (`top-full left-1/2`) would continue to anchor to the trigger. **This was wrong:** `popover="auto"` promotes the panel to the top layer where the UA stylesheet forces `position: fixed; inset: 0`, detaching it from the trigger's DOM subtree. CSS classes therefore resolved against the viewport, placing panels at the wrong location. Fixed via a shared singleton `popoverPositionJS` (in `display/shared.go`) that reads `getBoundingClientRect()` on `toggle` open and sets `style.left/top` with viewport clamping. Used by both `Popover` and `Dropdown`. `ContextMenu` already positioned via JS `inset` and was unaffected. ADR-0017 revised with a full explanation of the three approaches considered (Anchor Positioning, JS rect, hybrid) and why JS rect was chosen.
