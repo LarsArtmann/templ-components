@@ -27,7 +27,6 @@ linters:
     - copyloopvar
     - cyclop
     - decorder
-    - depguard
     - dogsled
     - dupl
     - dupword
@@ -125,21 +124,10 @@ linters:
     - wsl_v5
     - zerologlint
   disable:
-    - godoclint
-    - ireturn
-    - testableexamples
+    - depguard
   settings:
     cyclop:
       max-complexity: 12
-    depguard:
-      rules:
-        main:
-          allow:
-            - $gostd
-            - github.com/larsartmann/templ-components
-            - github.com/a-h/templ
-            - github.com/Oudwins/tailwind-merge-go
-            - github.com/larsartmann/go-error-family
     exhaustruct:
       exclude:
         - os/exec.Cmd
