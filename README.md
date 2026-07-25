@@ -238,8 +238,8 @@ Components emit standard Tailwind classes (`bg-blue-600`, `text-gray-900`). Over
 
 ```css
 @theme {
-  --color-blue-600: #4f46e5;
-  --color-blue-500: #6366f1;
+	--color-blue-600: #4f46e5;
+	--color-blue-500: #6366f1;
 }
 ```
 
