@@ -10,7 +10,7 @@ import (
 )
 
 // Family classifies an error's behavioral profile for web presentation.
-// Mirrors the go-error-family library's 5 families — consumers bridge with trivial string constants.
+// Mirrors the go-error-family library's 6 families — consumers bridge with trivial string constants.
 //
 // Each family maps to a distinct visual treatment (color, icon, tone) that communicates
 // the error's nature to the user without technical jargon.
@@ -36,6 +36,10 @@ const (
 	// FamilyInfrastructure indicates the system cannot serve.
 	// Tone: apologetic. Visual: gray.
 	FamilyInfrastructure Family = "infrastructure"
+
+	// FamilyOrchestration indicates an internal coordination failure (bug, misconfiguration).
+	// Tone: factual. Visual: purple.
+	FamilyOrchestration Family = "orchestration"
 )
 
 // familyVisualStyle holds the CSS classes and icon for a family's visual treatment.
@@ -102,6 +106,16 @@ var familyStyleMap = map[Family]familyVisualStyle{
 		AccentText:   "text-gray-700 dark:text-gray-300",
 		ActionButton: "bg-gray-600 hover:bg-gray-500 dark:bg-gray-500 dark:hover:bg-gray-400 focus-visible:ring-gray-500 dark:focus-visible:ring-gray-400 text-white",
 	},
+	FamilyOrchestration: {
+		Border:       "border-purple-200 dark:border-purple-800",
+		BG:           "bg-purple-50 dark:bg-purple-900/20",
+		Text:         "text-purple-800 dark:text-purple-200",
+		IconColor:    "text-purple-500 dark:text-purple-400",
+		Icon:         icons.ExclamationTriangle,
+		AccentBG:     "bg-purple-100 dark:bg-purple-900/30",
+		AccentText:   "text-purple-700 dark:text-purple-300",
+		ActionButton: "bg-purple-600 hover:bg-purple-500 dark:bg-purple-500 dark:hover:bg-purple-400 focus-visible:ring-purple-500 dark:focus-visible:ring-purple-400 text-white",
+	},
 }
 
 //nolint:gochecknoglobals // Package-level default fallback
@@ -125,7 +139,7 @@ func FamilyIcon(f Family) icons.Name {
 	return lookupFamilyStyle(f).Icon
 }
 
-// FamilyIsValid reports whether the Family value is one of the five defined constants.
+// FamilyIsValid reports whether the Family value is one of the six defined constants.
 func FamilyIsValid(f Family) bool {
 	_, ok := familyStyleMap[f]
 

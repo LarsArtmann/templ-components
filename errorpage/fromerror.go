@@ -8,9 +8,26 @@ import (
 )
 
 // FromErrorFamily converts a go-error-family Family to an errorpage Family.
-// Returns FamilyTransient for unrecognized values.
+// Uses a typed switch (not string round-trip) so that any rename or removal
+// of a Family constant in go-error-family becomes a compile error here,
+// not a silent runtime collapse to FamilyTransient.
 func FromErrorFamily(f errorfamily.Family) Family {
-	return ParseFamily(f.String())
+	switch f {
+	case errorfamily.Rejection:
+		return FamilyRejection
+	case errorfamily.Conflict:
+		return FamilyConflict
+	case errorfamily.Transient:
+		return FamilyTransient
+	case errorfamily.Corruption:
+		return FamilyCorruption
+	case errorfamily.Infrastructure:
+		return FamilyInfrastructure
+	case errorfamily.Orchestration:
+		return FamilyOrchestration
+	default:
+		return FamilyTransient
+	}
 }
 
 // FromError converts any error into ErrorPageProps.
