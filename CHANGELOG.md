@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Type-erasure fix in `FromErrorFamily`** (`errorpage/fromerror.go`) — replaced the `ParseFamily(f.String())` string round-trip with a typed `switch` on `errorfamily.Family`. Any future rename or addition of a family constant in go-error-family is now caught at compile time instead of silently collapsing to `FamilyTransient`. Added the `Orchestration` case plus a `FamilyOrchestration` constant and purple visual style in `familyStyleMap`.
+
+### Added
+
+- **Rename-safety test** (`errorpage/fromerror_safety_test.go`) — verifies every `errorfamily.Family` maps to a valid, distinct `Family` output (totality, correctness, injectivity), so a missing switch case fails loudly rather than silently rendering every error as Transient.
+
 ## [1.2.0] — 2026-07-23
 
 ### Fixed
