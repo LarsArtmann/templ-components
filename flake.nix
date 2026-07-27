@@ -39,7 +39,14 @@
               tailwindcss_4
             ];
             shellHook = ''
+              # GOEXPERIMENT=jsonv2: required until Go 1.27 stabilizes it.
+              # GOWORK=off: the root go.work references an absolute path to
+              # go-error-family (Lars' machine only). Setting GOWORK=off in the
+              # devShell ensures `go build ./...`, `go generate ./...`, and
+              # BuildFlow all operate on the main module standalone. The
+              # visualtest module builds via its own go.mod with a local replace.
               export GOEXPERIMENT=jsonv2
+              export GOWORK=off
             '';
           };
 

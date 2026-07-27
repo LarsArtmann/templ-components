@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-07-27 | **Version:** 1.2.0
+**Updated:** 2026-07-28 | **Version:** 1.2.0
 
 > Only open, actionable items. Completed work is tracked in CHANGELOG.md.
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
@@ -11,7 +11,6 @@
 
 | #   | Task                                                                         | Notes                                                                                                                                                                                                                                                           |
 | --- | ---------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 70  | Set `GOWORK=off` in `flake.nix` devShell `shellHook`                         | Parent `/home/lars/projects/go.work` breaks `go generate ./...` and BuildFlow pre-commit in this repo. Recurring across 3 sessions.                                                                                                                             |
 | 71  | Investigate GitHub Dependabot alert                                          | "1 moderate vulnerability" reported but never investigated. Check `https://github.com/LarsArtmann/templ-components/security/dependabot`.                                                                                                                        |
 | 72  | Add demo CSS rebuild to `scripts/release.sh` (or document Docker handles it) | Release script runs `templ generate` but not the Tailwind CSS build. `examples/demo/static/app.css` may be stale after component class changes. Docker 3-stage build overwrites it, but local `go run` does not.                                                |
 | 73  | Convert assertion-based tests to golden files (navigation, feedback, forms)  | Recurring from Pareto plan. Per-package, bounded. Golden files improve diff readability and reduce brittle substring checks. Start with `navigation` (highest value).                                                                                           |

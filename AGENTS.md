@@ -334,11 +334,9 @@ This library uses `encoding/json/v2` + `encoding/json/jsontext` (Go 1.26+ with
 `GOEXPERIMENT=jsonv2`). The pre-commit hook (`scripts/pre-commit.sh`) sets
 `GOEXPERIMENT=jsonv2` automatically. The `.golangci.yml` enables the
 `goexperiment.jsonv2` build tag. The `flake.nix` devShell exports
-`GOEXPERIMENT=jsonv2` via `shellHook`, so any subprocess (BuildFlow, manual
-`go` commands) inherits it when run inside `nix develop`. **Always run
-BuildFlow from within `nix develop`** — outside the devShell the env var is
-absent and 5 packages fail to compile (`encoding/json/v2` build constraints
-excluded).
+`GOEXPERIMENT=jsonv2` + `GOWORK=off` via `shellHook`. **`.envrc`** (direnv) sets
+both vars repo-wide for ALL tools — go, gopls, BuildFlow, shell, IDE — without
+needing `nix develop`. Run `direnv allow` once after cloning.
 
 **Consumers** must set `GOEXPERIMENT=jsonv2` when building (or wait for Go 1.27
 where it becomes stable). The `errorpage` package uses `json.MarshalEncode` +
