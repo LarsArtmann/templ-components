@@ -13,8 +13,8 @@
 // (set automatically by `nix run .#visual`), or they skip gracefully:
 //
 //	nix run .#visual                      # run all visual tests
-//	go test ./... -tags=visual            # run with an explicit browser
-//	go test ./... -tags=visual -update    # regenerate golden PNGs
+//	go test ./...                         # run with an explicit browser (from visualtest/)
+//	go test ./... -update                 # regenerate golden PNGs
 //
 // The -update flag rewrites every golden with the current render, just like
 // internal/golden. Review the diff before committing.

@@ -1,11 +1,8 @@
 package visualtest
 
 import (
-	"bytes"
 	"context"
 	"fmt"
-	"image"
-	"image/png"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -139,9 +136,3 @@ const (
 	captureTimeout = 20 * time.Second
 	settleDelay    = 200 * time.Millisecond
 )
-
-// decodePNG is a small helper for tests in this package that need to inspect a
-// captured image directly.
-func decodePNG(b []byte) (image.Image, error) { //nolint:unused // helper for future test introspection
-	return png.Decode(bytes.NewReader(b))
-}
