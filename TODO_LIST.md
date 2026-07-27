@@ -17,7 +17,6 @@
 | 75  | Visual regression tests for highest-risk components                          | Cover Modal, Drawer, Dropdown, Input, Select. Currently 4/15 packages have goldens (Button/Alert/Badge/Card). Interactive overlays are the highest regression risk (JS + top-layer + animations). Source: visual-testing report (2026-07-27).                   |
 | 76  | Share one Chromium process across visual tests (tabs, not processes)         | Current harness launches a browser per test (~1s startup × N). Scales poorly: 100 tests = 100 launches. First design tried this but hit a context-cancellation bug. Source: visual-testing report e.2.                                                          |
 | 77  | Add the first RTL visual test                                                | `Options.RTL` exists and works but has zero users — logical-property mirroring (`ms-`/`me-`/`start-`/`end-`) is completely unverified at the pixel level. Tiny, high-value. Source: visual-testing report b/P0#4.                                               |
-| 78  | Lint test: Tailwind-class lookup maps must live in `.templ` files            | Tailwind v4's scanner only reads `*.templ`, not `*.go`. A `map[X]string` of class strings in a `.go` file produces silently-missing CSS (caught this session: Split's container classes compiled to nothing). Source: container-query report d/e.1.             |
 
 ---
 

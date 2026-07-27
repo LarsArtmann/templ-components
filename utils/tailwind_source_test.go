@@ -13,7 +13,7 @@ import (
 // familyStyleMap, modalSizeLookup, etc.). Without scanning .go files, those
 // classes produce silently-missing CSS.
 //
-// Bug history (2026-07-28): errorpage family classes (amber/orange/purple)
+// History (2026-07-28): errorpage family classes (amber/orange/purple)
 // were entirely missing from the compiled CSS because familyStyleMap lived in
 // errorpage/styles.go and the CSS only scanned *.templ.
 func TestTailwindGoSourceScanning(t *testing.T) {

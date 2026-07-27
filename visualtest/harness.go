@@ -33,7 +33,7 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 		t.Fatalf("visualtest[%s]: build page: %v", name, err)
 	}
 
-	ctx, cancel := newBrowser(t)
+	ctx, cancel := newTab(t)
 	defer cancel()
 
 	actual, err := capture(ctx, page, o)

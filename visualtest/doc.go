@@ -30,42 +30,79 @@ package visualtest
 import (
 	"context"
 	"os"
+	"sync"
 	"testing"
 
 	"github.com/chromedp/chromedp"
 )
 
-// newBrowser launches a dedicated Chromium process for one test and returns a
-// tab context plus its cancel func (which also stops that browser). If no
-// browser binary is available the test is skipped. One process per test keeps
-// failures isolated and avoids cross-test tab interference; startup is ~1s.
-func newBrowser(t *testing.T) (context.Context, context.CancelFunc) {
+var (
+	allocatorOnce  sync.Once
+	sharedAllocCtx context.Context
+	allocCancel    context.CancelFunc
+	browserReady   bool
+)
+
+// ensureAllocator launches a single shared Chromium process on first use.
+// Subsequent calls reuse the same allocator — each test gets a new tab
+// (chromedp.NewContext) which is lightweight (~10ms) compared to a full
+// browser launch (~1s). The browser process lives for the entire test run
+// and is cleaned up by TestMain.
+func ensureAllocator(t *testing.T) {
 	t.Helper()
 
-	chromePath := os.Getenv("CHROMEDP_CHROME_PATH")
-	if chromePath == "" {
-		t.Skipf("visual tests skipped: %v (set CHROMEDP_CHROME_PATH to a Chromium binary)", errNoBrowser)
+	allocatorOnce.Do(func() {
+		chromePath := os.Getenv("CHROMEDP_CHROME_PATH")
+		if chromePath == "" {
+			return
+		}
+
+		if _, err := os.Stat(chromePath); err != nil {
+			return
+		}
+
+		opts := append(chromedp.DefaultExecAllocatorOptions[:],
+			chromedp.ExecPath(chromePath),
+			chromedp.NoSandbox,
+			chromedp.DisableGPU,
+			chromedp.Flag("font-render-hinting", "none"),
+			chromedp.Flag("disable-background-timer-throttling", true),
+		)
+
+		sharedAllocCtx, allocCancel = chromedp.NewExecAllocator(context.Background(), opts...)
+		browserReady = true
+	})
+
+	if !browserReady {
+		chromePath := os.Getenv("CHROMEDP_CHROME_PATH")
+
+		if chromePath == "" {
+			t.Skipf("visual tests skipped: %v (set CHROMEDP_CHROME_PATH)", errNoBrowser)
+
+			return
+		}
+
+		t.Skipf("visual tests skipped: CHROMEDP_CHROME_PATH %q not accessible", chromePath)
 	}
+}
 
-	if _, err := os.Stat(chromePath); err != nil {
-		t.Skipf("visual tests skipped: CHROMEDP_CHROME_PATH %q not accessible: %v", chromePath, err)
-	}
+// newTab returns a fresh tab context derived from the shared Chromium
+// allocator. Each call creates a new browser tab (~10ms). The cancel func
+// closes only the tab, not the browser process.
+func newTab(t *testing.T) (context.Context, context.CancelFunc) {
+	t.Helper()
 
-	opts := append(chromedp.DefaultExecAllocatorOptions[:],
-		chromedp.ExecPath(chromePath),
-		chromedp.NoSandbox, // required inside Nix builds / containers
-		chromedp.DisableGPU,
-		chromedp.Flag("font-render-hinting", "none"), // deterministic text rasterization
-		chromedp.Flag("disable-background-timer-throttling", true),
-	)
-	allocCtx, allocCancel := chromedp.NewExecAllocator(context.Background(), opts...)
-	ctx, cancel := chromedp.NewContext(allocCtx)
+	ensureAllocator(t)
 
-	// Combine cancels so one defer tears down both the tab and the process.
-	combinedCancel := func() {
-		cancel()
+	ctx, cancel := chromedp.NewContext(sharedAllocCtx)
+
+	return ctx, cancel
+}
+
+// ShutdownBrowser closes the shared Chromium process. Called by TestMain
+// after all tests complete.
+func ShutdownBrowser() {
+	if allocCancel != nil {
 		allocCancel()
 	}
-
-	return ctx, combinedCancel
 }
