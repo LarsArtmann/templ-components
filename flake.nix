@@ -124,6 +124,28 @@
                 '';
               };
             };
+
+            visual = {
+              type = "app";
+              meta.description = "Run pixel-level visual regression tests (headless Chromium via chromedp)";
+              program = pkgs.writeShellApplication {
+                name = "run-visual";
+                runtimeInputs = [
+                  pkgs.go_1_26
+                  pkgs.chromium
+                ];
+                text = ''
+                  export GOEXPERIMENT=jsonv2
+                  # visualtest is its own module with a local replace directive;
+                  # the parent go.work would shadow it, so disable workspace mode.
+                  export GOWORK=off
+                  export CHROMEDP_CHROME_PATH="${pkgs.chromium}/bin/chromium"
+                  cd visualtest
+                  # Forward extra args (e.g. -update, -run TestButtons) to go test.
+                  go test ./... -count=1 "$@"
+                '';
+              };
+            };
           };
 
           # treefmt: format .nix (nixfmt) and .go (gofmt + goimports).

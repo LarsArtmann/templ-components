@@ -41,3 +41,27 @@ func TestFormMethod(t *testing.T) {
 		utils.AssertContains(t, output, `value="abc"`)
 	})
 }
+
+func TestFormContainerAware(t *testing.T) {
+	t.Parallel()
+
+	t.Run("viewport breakpoints by default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/save", Layout: FormLayoutGrid}))
+		utils.AssertNotContains(t, output, "@container")
+		utils.AssertContains(t, output, "sm:grid-cols-")
+		utils.AssertNotContains(t, output, "@sm:")
+	})
+
+	t.Run("container breakpoints when flag set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Action:         "/save",
+			Layout:         FormLayoutGrid,
+			ContainerAware: true,
+		}))
+		utils.AssertContains(t, output, "@container")
+		utils.AssertContains(t, output, "@sm:grid-cols-")
+		utils.AssertNotContains(t, output, " sm:")
+	})
+}

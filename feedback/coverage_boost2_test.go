@@ -325,3 +325,25 @@ func TestSkeletonAllVariants(t *testing.T) {
 		utils.AssertContains(t, output, "animate-pulse")
 	}
 }
+
+func TestSkeletonCardGridContainerAware(t *testing.T) {
+	t.Parallel()
+
+	t.Run("viewport breakpoints by default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: 3}))
+		utils.AssertNotContains(t, output, "@container")
+		utils.AssertContains(t, output, "sm:grid-cols-2")
+		utils.AssertContains(t, output, "lg:grid-cols-3")
+		utils.AssertNotContains(t, output, "@sm:")
+	})
+
+	t.Run("container breakpoints when flag set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: 3, ContainerAware: true}))
+		utils.AssertContains(t, output, "@container")
+		utils.AssertContains(t, output, "@sm:grid-cols-2")
+		utils.AssertContains(t, output, "@lg:grid-cols-3")
+		utils.AssertNotContains(t, output, " sm:")
+	})
+}

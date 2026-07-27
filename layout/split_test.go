@@ -201,6 +201,7 @@ func TestAsidePositionIsValid(t *testing.T) {
 
 func TestSplitContainerAware(t *testing.T) {
 	t.Parallel()
+
 	main := templ.Raw("<p>main</p>")
 	aside := templ.Raw("<p>aside</p>")
 

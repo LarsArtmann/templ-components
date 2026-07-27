@@ -38,6 +38,8 @@ var splitRatioLookup = map[SplitRatio]string{
 // splitRatioLookupContainer mirrors splitRatioLookup with @container-keyed
 // breakpoints (@md:) so container-aware Splits respond to their parent's
 // width instead of the viewport. See ADR-0018.
+//
+//nolint:gochecknoglobals // Package-level lookup table for container-aware variant
 var splitRatioLookupContainer = map[SplitRatio]string{
 	SplitRatio1To2: "@md:grid-cols-2",
 	SplitRatio1To3: "@md:grid-cols-3",
@@ -52,6 +54,7 @@ func splitRatioCols(r SplitRatio, containerAware bool) string {
 	if containerAware {
 		return utils.Lookup(splitRatioLookupContainer, r, splitRatioLookupContainer[SplitRatioDefault])
 	}
+
 	return utils.Lookup(splitRatioLookup, r, splitRatioLookup[SplitRatioDefault])
 }
 
@@ -84,6 +87,7 @@ func splitRatioMainSpan(r SplitRatio, containerAware bool) string {
 	if containerAware {
 		return utils.Lookup(splitRatioMainSpanLookupContainer, r, splitRatioMainSpanLookupContainer[SplitRatio1To3])
 	}
+
 	return utils.Lookup(splitRatioMainSpanLookup, r, splitRatioMainSpanLookup[SplitRatio1To3])
 }
 
@@ -93,6 +97,7 @@ func splitAsideSpan(containerAware bool) string {
 	if containerAware {
 		return "@md:col-span-1"
 	}
+
 	return "md:col-span-1"
 }
 

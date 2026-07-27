@@ -288,3 +288,31 @@ func TestCardContainerAware(t *testing.T) {
 		utils.AssertNotContains(t, output, " sm:")
 	})
 }
+
+func TestDefinitionGridContainerAware(t *testing.T) {
+	t.Parallel()
+
+	items := []DefinitionItem{
+		{Term: "CPU", Detail: "42%"},
+		{Term: "RAM", Detail: "8GB"},
+	}
+
+	t.Run("viewport breakpoints by default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, DefinitionGrid(DefinitionGridProps{Items: items}))
+		utils.AssertNotContains(t, output, "@container")
+		utils.AssertContains(t, output, "lg:grid-cols-3")
+		utils.AssertNotContains(t, output, "@lg:")
+	})
+
+	t.Run("container breakpoints when flag set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, DefinitionGrid(DefinitionGridProps{
+			Items:          items,
+			ContainerAware: true,
+		}))
+		utils.AssertContains(t, output, "@container")
+		utils.AssertContains(t, output, "@lg:grid-cols-3")
+		utils.AssertNotContains(t, output, " lg:")
+	})
+}
