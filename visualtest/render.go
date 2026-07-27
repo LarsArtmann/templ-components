@@ -14,6 +14,19 @@ type Viewport struct {
 	Height int
 }
 
+// InteractionState selects an interactive state to apply to #tc-root before
+// capturing, so hover/focus styles are covered by golden screenshots.
+type InteractionState int
+
+const (
+	// StateRest is the default: no interaction.
+	StateRest InteractionState = iota
+	// StateHover moves the mouse over #tc-root, triggering :hover styles.
+	StateHover
+	// StateFocus focuses #tc-root, triggering :focus-visible styles.
+	StateFocus
+)
+
 // Options configures how a component is rendered and captured.
 type Options struct {
 	// Dark renders with the .dark class on <html> (the library's dark-mode
@@ -24,13 +37,15 @@ type Options struct {
 	// Viewport sets the emulated window size. Defaults to 1280x800.
 	Viewport Viewport
 	// MaxMismatch is the largest fraction of mismatched pixels (0–1) that
-	// still passes. Defaults to 0.001 (0.1%). Anti-aliasing noise stays well
-	// below this; a real regression blows past it.
+	// still passes. Defaults to 0.001 (0.1%). Anti-aliasing noise is filtered
+	// out by pixelmatch; a real regression blows past this.
 	MaxMismatch float64
-	// PerPixelTolerance is the max per-channel difference (0–255) that still
-	// counts as a matching pixel. Defaults to 32, absorbing subpixel font
-	// rasterization differences across Chromium builds.
-	PerPixelTolerance uint8
+	// Threshold is the pixelmatch perceptual color-distance threshold (0–1).
+	// Pixels whose YIQ distance is below it count as identical. Default 0.1;
+	// raise it to tolerate more rendering noise, lower it for stricter checks.
+	Threshold float64
+	// State applies an interaction (hover/focus) to #tc-root before capture.
+	State InteractionState
 }
 
 // defaultOptions fills zero values with sensible defaults.
@@ -45,6 +60,10 @@ func defaultOptions(o Options) Options {
 
 	if o.MaxMismatch == 0 {
 		o.MaxMismatch = 0.001
+	}
+
+	if o.Threshold == 0 {
+		o.Threshold = 0.1
 	}
 
 	return o
