@@ -59,18 +59,25 @@ and CI docs-health drift guard. See `CHANGELOG.md` for the full entry.
 | `navigation.SidebarNav`      | ✅ DONE    | v1.2.0         | Vertical sidebar nav for admin panels. Permanently-dark surface.                                                                                                          |
 | Recipe demo routes           | ✅ DONE    | v1.2.0         | `/recipes/{dashboard,settings,login}` in `examples/demo`.                                                                                                                 |
 | Container query expansion    | ✅ DONE    | `[Unreleased]` | Extended `ContainerAware` from 3 → 8 components (added Split, Form, Pagination, DefinitionGrid, SkeletonCardGrid). ADR-0018.                                              |
-| Visual regression framework  | ✅ DONE    | `[Unreleased]` | `visualtest/` module — chromedp + pixelmatch, separate module (no consumer dep pollution), `nix run .#visual`, CI job. 15 baseline goldens. See `docs/visual-testing.md`. |
+| Visual regression framework  | ✅ DONE    | `[Unreleased]` | `visualtest/` module — chromedp + pixelmatch, separate module (no consumer dep pollution), `nix run .#visual`, CI job. 15 goldens (Button, Alert, Badge, Card, Modal, Drawer, Input, Select, RTL). Shared Chromium process (one browser, per-test tabs). See `docs/visual-testing.md`. |
+| CSS source scanning fix      | ✅ DONE    | `[Unreleased]` | `@source "**/*.go"` added to CSS templates — Tailwind v4 now scans Go files for class lookup maps. Previously, errorpage family classes (amber/orange/purple) were silently missing from compiled CSS. Enforced by `TestTailwindGoSourceScanning`. |
+| Generated-file sync guard    | ✅ DONE    | `[Unreleased]` | `TestTemplGeneratedInSync` verifies every `*_templ.go` file's imports match its `.templ` source. Prevents stale generated artifacts (breadcrumbs drift: json v2 vs v1). |
+| Container-query compliance   | ✅ DONE    | `[Unreleased]` | `TestContainerQueryCompliance` scans `.templ` for structural viewport breakpoints without `ContainerAware`. Mirrors dark-mode/motion-reduce compliance scanners. |
+| Lint-config regression guard | ✅ DONE    | `[Unreleased]` | 3-layer prevention for the recurring `.golangci.yml` linter regression (5 occurrences): `TestGolangciDisabledLinters` (CI), `scripts/check-lint-config.sh` (pre-commit), CI lint-config guard step. Root cause documented in AGENTS.md. |
+| GOWORK=off + .envrc          | ✅ DONE    | `[Unreleased]` | `GOWORK=off` in devShell `shellHook` + `.envrc` (direnv) sets `GOEXPERIMENT=jsonv2` repo-wide for all tools (go, gopls, BuildFlow, IDE). |
 
 ---
 
 ## v2.0+ — Research (no timeline)
 
-| Direction                 | Description                                                                                                                                                                                                                    |
-| ------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Compound components       | `Trigger` / `Content` / `Close` sub-component pattern for Modal, Drawer, Dropdown.                                                                                                                                             |
-| Per-package modules split | Independently importable packages. ADR-0020 written; deferred until consumer demand.                                                                                                                                           |
-| Default flip              | Self-host HTMX becomes default (CDN opt-in); semantic tokens become default; `ContainerAware` flips to opt-out for components commonly placed in constrained containers (Grid, Card, Split). All shipped opt-in. See TODO #35. |
-| Demo / showcase site      | A hosted site rendering every component with live props.                                                                                                                                                                       |
+| Direction                        | Description                                                                                                                                                                                                                    |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Compound components             | `Trigger` / `Content` / `Close` sub-component pattern for Modal, Drawer, Dropdown.                                                                                                                                             |
+| Per-package modules split       | Independently importable packages. ADR-0020 written; deferred until consumer demand.                                                                                                                                           |
+| Default flip                    | Self-host HTMX becomes default (CDN opt-in); semantic tokens become default; `ContainerAware` flips to opt-out for components commonly placed in constrained containers (Grid, Card, Split). All shipped opt-in. See TODO #35. |
+| Demo / showcase site            | A hosted site rendering every component with live props.                                                                                                                                                                       |
+| Visual test open-state coverage | Add `StateClick` to the visual test harness to capture Dropdown/Popover/ContextMenu in their open state. Currently 15 goldens cover static and hover/focus states only.                                                        |
+| Visualtest API improvements     | `Options` struct uses `*bool` for optional booleans (current `bool` zero-value conflates "false" with "unset"). `State.String()` for error messages. Viewport presets (iPhone, iPad, desktop). MaxMismatch calibration tool. |
 
 ---
 
