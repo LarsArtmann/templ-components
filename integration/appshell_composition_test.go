@@ -103,11 +103,8 @@ func TestStackWithFeedbackComponents(t *testing.T) {
 		Gap:       layout.StackGapMD,
 	}))
 
-	if !strings.Contains(output, "flex flex-col") {
-		t.Error("Stack must emit flex flex-col (1D, not grid)")
-	}
-
-	if !strings.Contains(output, "space-y-4") {
-		t.Error("StackGapMD must emit space-y-4")
-	}
+	// utils.Class (tailwind-merge) reorders classes non-deterministically, so the
+	// tokens must be checked individually — never assert an ordered substring
+	// like "flex flex-col". See AGENTS.md and stack_test.go for the convention.
+	utils.AssertContainsAll(t, output, "flex", "flex-col", "space-y-4")
 }
