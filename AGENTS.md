@@ -326,6 +326,8 @@ golangci-lint run \
 
 **Reconciled at v0.18.1:** commit 73395d9 expanded to 67 linters but left `golangci-lint run` failing (187 findings, CI would have gone red on first push). The config now uses an explicit depguard allow-list (the `$module` token did not resolve — use literal `github.com/larsartmann/templ-components` + the three runtime deps), extends `varnamelen`/`mnd` ignore lists, and excludes test files from `err113`/`makezero`/`varnamelen`/`gocheckcompilerdirectives`. If you add a linter, run `golangci-lint run` to 0 findings before committing.
 
+**`.golangci.yml` regression root cause (identified 2026-07-28, T1):** The 3 disabled linters re-entered the enable list **5 times** across sessions. Root cause: the AI agent's working tree holds a stale `.golangci.yml`, and broad `git add` for docs work silently stages the stale file. BuildFlow's pre-commit hook has a 60s budget and does NOT run `go test ./...`, so `TestGolangciDisabledLinters` only fires in CI, not at commit time. **Prevention (3 layers):** (1) `TestGolangciDisabledLinters` in `utils/lint_config_test.go` catches in CI via `go test ./...`; (2) `scripts/check-lint-config.sh` is a <50ms standalone grep guard wired into `.git/hooks/pre-commit` BEFORE BuildFlow runs; (3) CI step "Lint-config guard" in `.github/workflows/ci.yaml` runs the script before `golangci-lint` even installs. If you must modify `.golangci.yml`, run `scripts/check-lint-config.sh` to verify.
+
 ## `encoding/json/v2` Adoption
 
 This library uses `encoding/json/v2` + `encoding/json/jsontext` (Go 1.26+ with
