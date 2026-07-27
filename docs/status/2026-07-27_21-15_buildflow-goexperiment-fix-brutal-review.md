@@ -194,3 +194,17 @@ A generated file had an uncommitted change (json v2 → v1 regeneration) that I 
 **Why I need to know:** The committed version imports `encoding/json/v2` but the source `breadcrumbs.templ` line 4 imports `encoding/json` (v1). The uncommitted change fixes this (regenerated from source). This is a correct change, but it's a generated file — I want to confirm you want it committed before I touch it, given the repo's strict "generated files must be committed" policy.
 
 **What I tried:** Verified the source `.templ` uses v1. Verified the generated file was stale. I cannot determine when or why the generated file drifted from its source — it may have been a manual edit to the generated file, or a `templ generate` run with a different config.
+
+---
+
+## Resolution (2026-07-27, later session)
+
+Partial resolution since this report. Status of the open items:
+
+| Item (this report) | Resolution |
+| --- | --- |
+| Q2 — uncommitted `FEATURES.md`/`ROADMAP.md`/`TODO_LIST.md`/`.golangci.yml` | **RESOLVED.** Working tree is clean; all committed. |
+| e.7/Q2 — `.golangci.yml` removes `godoclint`/`ireturn`/`testableexamples` | **DONE + guarded.** The removal landed, then **regressed a 4th time** (auto-commit daemon), then was re-fixed with `TestGolangciDisabledLinters` (`utils/lint_config_test.go`) preventing recurrence. `golangci-lint run` exits 0. |
+| a.2 — `flake.nix` devShell `shellHook` exports `GOEXPERIMENT=jsonv2` | **DONE.** Verified present (`flake.nix:42`). Documented in CHANGELOG `[Unreleased]` Fixed. |
+| P1/b.1 — root-cause GOEXPERIMENT fix (`.envrc` / `.buildflow.yml` env / BuildFlow fix) | **STILL OPEN.** The `shellHook` is still a band-aid: it only fires inside `nix develop`. BuildFlow invoked from the user's normal shell still runs without `GOEXPERIMENT`. No `.envrc` exists. The "always run buildflow from nix develop" instruction remains the only mitigation. |
+| c.4/Q3 — `navigation/breadcrumbs_templ.go` drift (imports `json/v2`, source imports `json` v1) | **STILL PRESENT.** Committed generated file still imports `encoding/json/v2` while `breadcrumbs.templ:4` imports `encoding/json` (v1). Functionally inert under `GOEXPERIMENT=jsonv2`, but a `templ generate` from source would produce a diff. Needs investigation (manual edit vs stale regen) — not touched by the docs-health pass. |

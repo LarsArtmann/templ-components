@@ -27,7 +27,8 @@ func TestGolangciDisabledLinters(t *testing.T) {
 			// list-item form so a name appearing only in a comment or doc
 			// string does not trip the guard.
 			if strings.EqualFold(trimmed, "- "+name) {
-				t.Errorf(".golangci.yml re-enables disabled linter %q — this is a documented regression (AGENTS.md). Remove it from the enable list.", name)
+				t.Errorf(".golangci.yml re-enables disabled linter %q — a documented regression (AGENTS.md). "+
+					"Remove it from the enable list.", name)
 			}
 		}
 	}

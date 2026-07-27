@@ -221,3 +221,19 @@ The docs-health skill says "Print an inline summary table to the conversation (d
 ## TL;DR
 
 All 10 `2026-07-2*` files annotated with resolution appendices citing concrete commits. 4 living docs rebuilt: TODO_LIST (removed resolved #30, merged #36→#35, harvested 4 open items), ROADMAP (v0.x→v1.x, added v1.2.0 + v2.0 rows), FEATURES (biggest split brain fixed: tokens/self-host PLANNED→DONE), CHANGELOG (verified warm). Drift-guard tests green. **But: I didn't run the full quality gate, a concurrent session clobbered my `git status` snapshot, the daemon committed my work with a hallucinated message, and I skipped the formal health-report table.** Next: run `nix run .#verify`, print the health report, commit FEATURES.md properly.
+
+---
+
+## Resolution (2026-07-27, later sessions)
+
+The gaps in sections b/c/d above were re-checked by two follow-up docs-health sessions (21:16 and a later pass). Status of this report's own "next steps" (section f):
+
+| Item | Resolution |
+| --- | --- |
+| f.1 — run the full quality gate (`nix run .#verify` / `golangci-lint`) | **DONE (later sessions).** `go build ./...`, `go test ./...`, `golangci-lint run` (exit 0), `nix flake check`, and drift tests all pass. |
+| f.2 — re-read all 10 annotated files post-reformatting | **DONE (21:16 session).** Older `2026-07-2*` annotations survived the daemon's table reformatting. |
+| f.3 — print the formal Documentation Health Report | **DONE (21:16 session).** |
+| f.4-7 — GOWORK, Dependabot, demo CSS, golden files | **HARVESTED.** Routed to TODO_LIST #70-73. #70 (GOWORK=off in devShell `shellHook`) verified still genuinely open — `GOWORK=off` exists only in the `visual` nix app, not the devShell `shellHook` (which sets only `GOEXPERIMENT`). |
+| d.2 — `.golangci.yml` not run | **DONE + guarded.** A 4th recurrence of the disabled-linter regression was found and fixed; `TestGolangciDisabledLinters` (`utils/lint_config_test.go`) now prevents a 5th. See the 21:16 report's Resolution for detail. |
+
+The 4 core living docs remain accurate: doc/code counts match (98 components, 43 `IsValid` enums, 102 icons, 91 generated files, v1.2.0). The README stale version badge (v0.18.0 → v1.2.0) flagged by this report's d.4 was fixed in the later pass.

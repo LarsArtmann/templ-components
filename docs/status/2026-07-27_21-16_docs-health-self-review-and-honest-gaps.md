@@ -5,6 +5,8 @@
 **Actual scope:** No `2026-07-26*` files exist; pivoted (without asking) to the 3 `2026-07-27*` reports + 4 living docs + code verification.
 **Outcome:** 4 living docs updated and drift-guard-green; `.golangci.yml` lint gate repaired (exit 1 → 0); 5 TODO items harvested. **But:** scope violation, 3 living docs untouched, no prevention test for the linter regression, and a false finding published in the health report.
 
+> **Update 2026-07-27 (later session):** the "lint gate repaired (exit 1 → 0)" claim above **regressed after this commit** — the three disabled linters (`ireturn`/`godoclint`/`testableexamples`) re-entered `.golangci.yml` a fourth time (auto-commit daemon), sending `golangci-lint run` back to exit 1 / 71 findings. A later session re-removed them **and** added `TestGolangciDisabledLinters` (`utils/lint_config_test.go`) — the prevention test this report's d.4/e.4 demanded — so the regression can no longer recur. The README stale version badge (v0.18.0 → v1.2.0) was also fixed. The other gaps (SKILL.md ContainerAware per-row, DOMAIN_LANGUAGE visual-testing vocab, website cross-check) remain open. Full item-by-item status in [Resolution](#resolution-2026-07-27-later-session) below.
+
 ---
 
 ## a) FULLY DONE
@@ -224,3 +226,22 @@ These are all living docs with factual gaps (not structural decay). The docs-hea
 ## TL;DR
 
 4 living docs updated + drift-guard-green; `.golangci.yml` lint gate repaired (exit 1 → 0, 71 → 0 issues); 5 TODO items harvested from 2 new reports; older report annotations verified intact. **But:** I violated the scope rule (pivoted without asking when no `2026-07-26*` files existed), published a false finding in the health report (enum count — my grep included test files), skipped `nix flake check` before declaring done (ran it during self-review instead), fixed a twice-recurring linter regression without adding a prevention test, and left 3 living docs (SKILL.md, DOMAIN_LANGUAGE.md, README.md) with clear gaps untouched. The work is substantively correct; the process has 5 honest gaps that this report exists to surface.
+
+---
+
+## Resolution (2026-07-27, later session)
+
+A follow-up docs-health session re-verified every gap listed in section c above and addressed the highest-severity ones. Status:
+
+| Report gap | Resolution |
+| --- | --- |
+| c.4 — `TestGolangciDisabledLinters` prevention test missing | **DONE.** Added `utils/lint_config_test.go` — asserts `ireturn`/`godoclint`/`testableexamples` are absent from `.golangci.yml` enable list and that no `ireturn:` settings block remains. This was the report's #1 critical recommendation (d.4/e.4). |
+| d.2 / outcome — `.golangci.yml` "repaired" claim regressed | **DONE (4th recurrence fixed + guarded).** The three linters had re-entered the enable list again; removed them and the dead `ireturn:` block. `golangci-lint run` exits 0 / 0 issues. CHANGELOG `[Unreleased]` Fixed entry updated to record the prevention test. |
+| README stale version badge | **DONE.** `v0.18.0` → `v1.2.0` in `README.md` (the drift the brutal self-review flagged). |
+| c.1 — `skill/SKILL.md` ContainerAware per-row docs | **OPEN.** 8 components have the flag; 0 document it per-row. |
+| c.2 — `docs/DOMAIN_LANGUAGE.md` visual-testing vocabulary | **OPEN.** Zero visual-testing terms (`visualtest`, `Golden`, `chromedp`, `pixelmatch`). |
+| c.3 — README visual testing + container queries mentions | **PARTIAL.** Badge fixed; feature mentions still absent. |
+| c.5 — read `docs/visual-testing.md` for accuracy | **OPEN.** |
+| c.6 — `website/` docs cross-check | **OPEN.** |
+
+The 4 core living docs (TODO_LIST, ROADMAP, FEATURES, CHANGELOG) are verified accurate: all doc/code counts match (98 components, 43 `IsValid` enums, 102 icons, 91 generated files, v1.2.0), drift-guard tests pass, and `golangci-lint run` exits 0.

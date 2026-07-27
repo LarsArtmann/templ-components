@@ -213,3 +213,18 @@ The pre-commit hook (`scripts/pre-commit.sh`) currently runs `templ generate` + 
 ### 3. How should we handle the `SkeletonCardGrid` breaking API change in release notes?
 
 `SkeletonCardGrid(count int)` → `SkeletonCardGrid(SkeletonCardGridProps{Count: N})` is a breaking change. Pre-v1.0, breaking changes are acceptable, but consumers who upgrade will get compile errors. Should we: (a) provide a temporary `SkeletonCardGridSimple(count int)` compatibility wrapper that delegates to the new API, (b) just document the migration in CHANGELOG with a `sed` one-liner, or (c) defer the API change to v1.0 and use a different approach for now?
+
+---
+
+## Resolution (2026-07-27, later session)
+
+The 5 new container-aware components described in section a **shipped** in CHANGELOG `[Unreleased]` (Added) — `layout.Split`, `display.DefinitionGrid`, `forms.Form`, `navigation.Pagination`, `feedback.SkeletonCardGrid` all carry the `ContainerAware` opt-in, bringing the total to 8 (with `Grid.ContainerResponsive`, `Card`, `Nav`). The breaking `SkeletonCardGridProps` change is documented in `[Unreleased]` (Changed) with a migration one-liner (option (b) above was chosen). Forward items from section f were routed:
+
+| Forward item (this report) | Routed to |
+| --- | --- |
+| Container-query compliance scanner (`utils.TestContainerQueryCompliance`) | TODO_LIST #74 |
+| Lint test: Tailwind lookup maps must live in `.templ` files (the d "scanner mistake") | TODO_LIST #78 |
+| `Container.ContainerAware`, `Breadcrumbs.ContainerAware`, `EmptyState.ContainerAware`, `NotFound404.ContainerAware`, `Footer.ContainerAware` | Remain as ROADMAP directions (not yet actionable TODOs) |
+| `containerAwareWrapper` shared sub-template (8× boilerplate) | Remain as ROADMAP architecture direction |
+
+The critical "lookup-map-in-`.go`-not-`.templ`" failure (section d) is now the highest-priority new TODO (#78): it produced silently-missing CSS and was only caught by manually diffing the compiled output.
