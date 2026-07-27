@@ -53,7 +53,7 @@ Don't know what to look for? Find your page type:
 
 | Component          | Signature                                   | One-liner                                                                                                                                        |
 | ------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Card`             | `Card(props CardProps)`                     | Bordered card with title, subtitle, footer, header action, 4 padding sizes                                                                       |
+| `Card`             | `Card(props CardProps)`                     | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`                                                                    |
 | `SimpleCard`       | `SimpleCard(props SimpleCardProps)`         | Minimal card — children only, no header/footer                                                                                                   |
 | `StatCard`         | `StatCard(props StatCardProps)`             | Dashboard metric card with value, label, change, trend, icon, optional `Href` link                                                               |
 | `Grid`             | `Grid(props GridProps)`                     | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerResponsive`                                                                   |
@@ -78,7 +78,7 @@ Don't know what to look for? Find your page type:
 | `CopyButton`       | `CopyButton(props CopyButtonProps)`         | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant                                                            |
 | `RelativeTime`     | `RelativeTime(props RelativeTimeProps)`     | `<time datetime>` with relative text ("2 hours ago")                                                                                             |
 | `CountBadge`       | `CountBadge(props CountBadgeProps)`         | Icon + notification count overlay — overflow "N+"                                                                                                |
-| `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards                                                                                                             |
+| `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards, `ContainerAware`                                                                                          |
 | `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback, `SrcSet`/`Sizes` for responsive delivery, optional `Rounded`                                         |
 | `HoverCard`        | `HoverCard(props HoverCardProps)`           | CSS-only hover-activated card — 4 positions, focus-within support                                                                                |
 | `ContextMenu`      | `ContextMenu(props ContextMenuProps)`       | Right-click context menu — CSP-safe JS, role=menu, Escape/click-outside dismiss                                                                  |
@@ -98,7 +98,7 @@ Don't know what to look for? Find your page type:
 | `Combobox`          | `Combobox(props ComboboxProps)`                   | Autocomplete input with filterable dropdown                                                                   |
 | `DatePicker`        | `DatePicker(props DatePickerProps)`               | Date input with label                                                                                         |
 | `FileInput`         | `FileInput(props FileInputProps)`                 | File upload input with label, accept types                                                                    |
-| `Form`              | `Form(props FormProps)`                           | Form wrapper with action, method, CSRF token                                                                  |
+| `Form`              | `Form(props FormProps)`                           | Form wrapper with action, method, CSRF token, `ContainerAware`                                                                  |
 | `Label`             | `Label(forID, text string, required bool)`        | Form label element                                                                                            |
 | `FieldError`        | `FieldError(fieldID, message string)`             | Inline field error message                                                                                    |
 | `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                                     |
@@ -140,20 +140,20 @@ Don't know what to look for? Find your page type:
 | `Stylesheet`  | `Stylesheet(href, attrs)`              | CSP-safe `<link rel="stylesheet">`                                             |
 | `AppShell`    | `AppShell(props AppShellProps)`        | Sidebar + header + main app shell — the #1 admin dashboard pattern             |
 | `Container`   | `Container(props ContainerProps)`      | Centered max-width wrapper — replaces `max-w-Nxl mx-auto px-4 sm:px-6 lg:px-8` |
-| `Split`       | `Split(props SplitProps)`              | 2-col content+aside — article+sidebar, detail+metadata (RTL-aware)             |
+| `Split`       | `Split(props SplitProps)`              | 2-col content+aside — article+sidebar, detail+metadata (RTL-aware), `ContainerAware`             |
 | `Stack`       | `Stack(props StackProps)`              | Vertical rhythm — typed Gap enum, replaces repeated `space-y-N`                |
 
 #### `navigation` — 12 components
 
 | Component          | Signature                                               | One-liner                                                                    |
 | ------------------ | ------------------------------------------------------- | ---------------------------------------------------------------------------- |
-| `Nav`              | `Nav(props NavProps)`                                   | Full nav bar — brand, links, right items slot, mobile menu                   |
+| `Nav`              | `Nav(props NavProps)`                                   | Full nav bar — brand, links, right items slot, mobile menu, `ContainerAware` (hamburger by container width)      |
 | `SimpleNav`        | `SimpleNav(props SimpleNavProps)`                       | Simplified nav — text brand, links, `RightItems` slot                        |
 | `NavLink`          | `NavLink(props NavLinkProps, currentPath string)`       | Single nav link with active detection                                        |
 | `MobileNavLink`    | `MobileNavLink(props NavLinkProps, currentPath string)` | Mobile menu link                                                             |
 | `MobileMenu`       | `MobileMenu(links, currentPath, nonce, menuID)`         | Responsive mobile menu                                                       |
 | `MobileMenuToggle` | `MobileMenuToggle(show bool, menuID string)`            | Hamburger toggle button                                                      |
-| `Pagination`       | `Pagination(props PaginationProps)`                     | Page-number pagination — ellipsis, prev/next, SEO rel                        |
+| `Pagination`       | `Pagination(props PaginationProps)`                     | Page-number pagination — ellipsis, prev/next, SEO rel, `ContainerAware`                                      |
 | `Breadcrumbs`      | `Breadcrumbs(props BreadcrumbsProps)`                   | Breadcrumb trail — separator, JSON-LD                                        |
 | `SidebarNav`       | `SidebarNav(props SidebarNavProps)`                     | Vertical sidebar — brand, icon+label items, footer slot                      |
 | `LoadMore`         | `LoadMore(props LoadMoreProps)`                         | Cursor-based "Load more" button — hx-get, hx-swap, optional `InfiniteScroll` |
