@@ -167,14 +167,14 @@ Local `master` diverged from `origin/master` (3 commits with different SHAs due 
 
 ## Resolution (2026-07-27)
 
-| Item | Claim in report | Resolution |
-| ---- | --------------- | ---------- |
-| §b.1 Git push | "Not pushed — house rule says NEVER PUSH" | **DONE.** Pushed; `origin/master` up to date through v1.2.0. |
-| §b.1 Force-push | "diverged, needs `--force-with-lease`" | **Resolved.** History was reconciled; all tags v0.18.1→v1.2.0 on remote. |
-| §c.1 Golden file adoption | "Not started — lower priority" | **OPEN:** See TODO_LIST #73 (start with navigation package). |
-| §c.2 Dependabot vulnerability | "Never investigated" | **OPEN:** See TODO_LIST #71. |
-| §c.3 gofmt → gofumpt | "Deferred" | **OPEN:** See TODO_LIST #67. |
-| §c.4 Pareto 20% tier | "All unstarted" | Folded into TODO_LIST / ROADMAP as appropriate. |
+| Item                          | Claim in report                           | Resolution                                                               |
+| ----------------------------- | ----------------------------------------- | ------------------------------------------------------------------------ |
+| §b.1 Git push                 | "Not pushed — house rule says NEVER PUSH" | **DONE.** Pushed; `origin/master` up to date through v1.2.0.             |
+| §b.1 Force-push               | "diverged, needs `--force-with-lease`"    | **Resolved.** History was reconciled; all tags v0.18.1→v1.2.0 on remote. |
+| §c.1 Golden file adoption     | "Not started — lower priority"            | **OPEN:** See TODO_LIST #73 (start with navigation package).             |
+| §c.2 Dependabot vulnerability | "Never investigated"                      | **OPEN:** See TODO_LIST #71.                                             |
+| §c.3 gofmt → gofumpt          | "Deferred"                                | **OPEN:** See TODO_LIST #67.                                             |
+| §c.4 Pareto 20% tier          | "All unstarted"                           | Folded into TODO_LIST / ROADMAP as appropriate.                          |
 
 ### 2. Is BuildFlow's auto-commit behavior intended or should it be fixed?
 

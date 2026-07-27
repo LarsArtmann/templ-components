@@ -312,11 +312,11 @@ The work is done. The commit is waiting on Q2.
 
 ## Resolution (2026-07-27)
 
-| Item | Claim in report | Resolution |
-| ---- | --------------- | ---------- |
-| TL;DR / §c | "Nothing is committed" | **SHIPPED as v0.19.0** (commit `2314f26`, tag `v0.19.0`). CHANGELOG `[Unreleased]` warmed; release script ran clean. |
-| Q1 Release version | "v0.19.0 now, or hold for v1.0?" | **v0.19.0** was cut. v1.0.0 followed later the same day. |
-| Q2 Commit granularity | "one commit or split?" | Shipped as one commit (`2314f26`). |
-| Q3 Prior session report | "commit or trash?" | Committed alongside this report. |
-| §f.1–f.5 Next actions | CHANGELOG, nix fmt, demo CSS, release | **All DONE** — shipped in v0.19.0. |
-| §f.6 Real HTTP smoke test | "fetch the actual HTTP response" | **Still OPEN** — no HTTP smoke test harness. Demo verified via Docker build only. |
+| Item                      | Claim in report                       | Resolution                                                                                                           |
+| ------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| TL;DR / §c                | "Nothing is committed"                | **SHIPPED as v0.19.0** (commit `2314f26`, tag `v0.19.0`). CHANGELOG `[Unreleased]` warmed; release script ran clean. |
+| Q1 Release version        | "v0.19.0 now, or hold for v1.0?"      | **v0.19.0** was cut. v1.0.0 followed later the same day.                                                             |
+| Q2 Commit granularity     | "one commit or split?"                | Shipped as one commit (`2314f26`).                                                                                   |
+| Q3 Prior session report   | "commit or trash?"                    | Committed alongside this report.                                                                                     |
+| §f.1–f.5 Next actions     | CHANGELOG, nix fmt, demo CSS, release | **All DONE** — shipped in v0.19.0.                                                                                   |
+| §f.6 Real HTTP smoke test | "fetch the actual HTTP response"      | **Still OPEN** — no HTTP smoke test harness. Demo verified via Docker build only.                                    |

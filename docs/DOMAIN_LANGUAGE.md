@@ -52,15 +52,15 @@ Immutable configuration objects.
 
 ## Platform terms (v0.20.0+)
 
-| Term           | Description                                                                                       | Where defined                                         |
-| -------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
-| ContainerAware | Opt-in flag making a component respond to its parent container width via `@container` queries     | `NavProps.ContainerAware`, `CardProps.ContainerAware` |
-| Recipe         | Pre-composed screen layout built from primitives (Dashboard, SettingsLayout, LoginCard)           | `recipes/` package                                    |
-| Semantic Token | CSS variable alias mapping a Tailwind palette color to a role (`--color-tc-primary` etc.)         | `templates/templ-components-theme.css`                |
-| Theme Preset   | Drop-in CSS file with a complete `@theme` palette override (default, minimal, glass)              | `templates/presets/`                                  |
-| HTMXSrc        | `PageProps` field for self-hosting htmx; suppresses CDN preconnect, SRI, and response-targets ext | `layout.PageProps.HTMXSrc`                            |
-| Popover API    | Native HTML `popover="auto"` attribute for click-toggle panels with light-dismiss + top-layer     | `display/Popover`, ADR-0017                           |
-| tc CLI         | Scaffolding tool: `tc init`, `tc ls`, `tc add <component>` — copies `.templ` to a consumer dir    | `cmd/tc/`                                             |
+| Term           | Description                                                                                       | Where defined                                                                                                                                                                                                                  |
+| -------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ContainerAware | Opt-in flag making a component respond to its parent container width via `@container` queries     | `NavProps.ContainerAware`, `CardProps.ContainerAware`, `SplitProps.ContainerAware`, `FormProps.ContainerAware`, `PaginationProps.ContainerAware`, `DefinitionGridProps.ContainerAware`, `SkeletonCardGridProps.ContainerAware` |
+| Recipe         | Pre-composed screen layout built from primitives (Dashboard, SettingsLayout, LoginCard)           | `recipes/` package                                                                                                                                                                                                             |
+| Semantic Token | CSS variable alias mapping a Tailwind palette color to a role (`--color-tc-primary` etc.)         | `templates/templ-components-theme.css`                                                                                                                                                                                         |
+| Theme Preset   | Drop-in CSS file with a complete `@theme` palette override (default, minimal, glass)              | `templates/presets/`                                                                                                                                                                                                           |
+| HTMXSrc        | `PageProps` field for self-hosting htmx; suppresses CDN preconnect, SRI, and response-targets ext | `layout.PageProps.HTMXSrc`                                                                                                                                                                                                     |
+| Popover API    | Native HTML `popover="auto"` attribute for click-toggle panels with light-dismiss + top-layer     | `display/Popover`, ADR-0017                                                                                                                                                                                                    |
+| tc CLI         | Scaffolding tool: `tc init`, `tc ls`, `tc add <component>` — copies `.templ` to a consumer dir    | `cmd/tc/`                                                                                                                                                                                                                      |
 
 ## Bounded Contexts
 

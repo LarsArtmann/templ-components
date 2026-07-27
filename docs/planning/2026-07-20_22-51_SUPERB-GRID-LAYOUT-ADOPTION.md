@@ -366,11 +366,11 @@ Before tagging the release that includes these primitives:
 
 **This plan was fully executed and shipped as v0.19.0** (commit `2314f26`, tag `v0.19.0`). All 18 medium-grain tasks (M1–M18) completed:
 
-| Phase | Tasks | Outcome |
-| ----- | ----- | ------- |
-| Tier 1% (M1–M2) | AppShell, Container | Shipped. `minmax(0,1fr)` baked in. |
-| Tier 4% (M3–M6) | Split, Footer multi-col, Form.Layout, Stack | Shipped. 6 new typed enums. |
-| Tier 20% (M7–M14) | FormLayout, dark+RTL+a11y tests, ADR-0016, 2 recipes, demo, catalogue, scanners | Shipped. `TestRTLLogicalProperties` + `<main>` contract + cross-package composition tests added. |
-| Remaining (M15–M18) | Flex audit (48/48 keep), website, container-query investigation, subgrid research | Tracked in `docs/research/css-subgrid.md`. Website update deferred. |
+| Phase               | Tasks                                                                             | Outcome                                                                                          |
+| ------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Tier 1% (M1–M2)     | AppShell, Container                                                               | Shipped. `minmax(0,1fr)` baked in.                                                               |
+| Tier 4% (M3–M6)     | Split, Footer multi-col, Form.Layout, Stack                                       | Shipped. 6 new typed enums.                                                                      |
+| Tier 20% (M7–M14)   | FormLayout, dark+RTL+a11y tests, ADR-0016, 2 recipes, demo, catalogue, scanners   | Shipped. `TestRTLLogicalProperties` + `<main>` contract + cross-package composition tests added. |
+| Remaining (M15–M18) | Flex audit (48/48 keep), website, container-query investigation, subgrid research | Tracked in `docs/research/css-subgrid.md`. Website update deferred.                              |
 
 See CHANGELOG `[0.19.0]` for the full release notes. The polish-pass session (`docs/status/2026-07-21_02-16`) closed the CHANGELOG hard-miss and added the RTL scanner.

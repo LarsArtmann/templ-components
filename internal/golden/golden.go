@@ -65,7 +65,7 @@ func assertInDir(t *testing.T, dir, name, got string) {
 		return
 	}
 
-	want, err := os.ReadFile(goldenPath) //nolint:gosec // testdata path is test-controlled
+	want, err := os.ReadFile(goldenPath)
 	if err != nil {
 		t.Fatalf(
 			"golden: read %s: %v\nHint: run with -update to create golden files",

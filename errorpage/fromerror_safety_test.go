@@ -95,6 +95,7 @@ func TestFromErrorFamilyCoversAllValidFamilies(t *testing.T) {
 	t.Parallel()
 
 	validCount := 0
+
 	for f := errorfamily.Rejection; f <= errorfamily.Orchestration; f++ {
 		if f.IsValid() {
 			validCount++
@@ -107,6 +108,7 @@ func TestFromErrorFamilyCoversAllValidFamilies(t *testing.T) {
 		if !f.IsValid() {
 			continue
 		}
+
 		got := FromErrorFamily(f)
 		if !FamilyIsValid(got) {
 			t.Errorf("family %v dropped: FromErrorFamily returns invalid %q", f, got)

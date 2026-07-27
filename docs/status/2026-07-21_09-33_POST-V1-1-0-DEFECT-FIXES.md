@@ -443,16 +443,16 @@ verify in a browser and leave it at that?
 
 ## Resolution (2026-07-27)
 
-| Item | Claim in report | Resolution |
-| ---- | --------------- | ---------- |
-| A1–A4 Defects D1/D3/D4/D6 | "Fixed, committed to master" | **SHIPPED in v1.2.0** (`1abb2f7`). `popoverPositionJS` (D1), `tooltipAriaJS` (D3), `HTMXSrc` CDN suppression (D4), `tc add` warning (D6). Pushed to remote. |
-| B4 / TL;DR No patch release | "Consumers `go get`-ing at v1.1.0 do NOT get these fixes" | **RESOLVED.** Folded into v1.2.0 (not v1.1.1). v1.2.0 pushed; proxy serving it. |
-| E2 Tags unpushed | "v0.20.0 through v1.1.0 tagged but not pushed" | **DONE.** All tags v0.18.1→v1.2.0 pushed to `origin`. |
-| E3 Known-disabled linters | "still enabled in .golangci.yml, 71 findings" | **FIXED.** `godoclint`, `ireturn`, `testableexamples` in `disable:` list. `golangci-lint run` = 0 findings. |
-| E1 / C4 No browser verification | "D1 fix SSR-verified only" | **Still OPEN** — no Playwright harness. See TODO_LIST #13 (blocked on Node.js). |
-| C1 `internal/testutil/` | "Entirely skipped" | **OPEN:** See TODO_LIST #34. |
-| C2 gofumpt / release.sh | "Not done" | **OPEN:** See TODO_LIST #67. |
-| G1 Cut v1.1.1? | "fixes unreachable via go get" | **RESOLVED** — folded into v1.2.0 instead. |**
+| Item                            | Claim in report                                           | Resolution                                                                                                                                                  |
+| ------------------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| A1–A4 Defects D1/D3/D4/D6       | "Fixed, committed to master"                              | **SHIPPED in v1.2.0** (`1abb2f7`). `popoverPositionJS` (D1), `tooltipAriaJS` (D3), `HTMXSrc` CDN suppression (D4), `tc add` warning (D6). Pushed to remote. |
+| B4 / TL;DR No patch release     | "Consumers `go get`-ing at v1.1.0 do NOT get these fixes" | **RESOLVED.** Folded into v1.2.0 (not v1.1.1). v1.2.0 pushed; proxy serving it.                                                                             |
+| E2 Tags unpushed                | "v0.20.0 through v1.1.0 tagged but not pushed"            | **DONE.** All tags v0.18.1→v1.2.0 pushed to `origin`.                                                                                                       |
+| E3 Known-disabled linters       | "still enabled in .golangci.yml, 71 findings"             | **FIXED.** `godoclint`, `ireturn`, `testableexamples` in `disable:` list. `golangci-lint run` = 0 findings.                                                 |
+| E1 / C4 No browser verification | "D1 fix SSR-verified only"                                | **Still OPEN** — no Playwright harness. See TODO_LIST #13 (blocked on Node.js).                                                                             |
+| C1 `internal/testutil/`         | "Entirely skipped"                                        | **OPEN:** See TODO_LIST #34.                                                                                                                                |
+| C2 gofumpt / release.sh         | "Not done"                                                | **OPEN:** See TODO_LIST #67.                                                                                                                                |
+| G1 Cut v1.1.1?                  | "fixes unreachable via go get"                            | **RESOLVED** — folded into v1.2.0 instead.                                                                                                                  | **  |
 
 ---
 

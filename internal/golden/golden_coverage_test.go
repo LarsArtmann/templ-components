@@ -24,7 +24,7 @@ func TestGoldenUpdateFlag(t *testing.T) {
 
 	goldenPath := filepath.Join(dir, "test_update.golden")
 
-	data, err := os.ReadFile(goldenPath) //nolint:gosec // test temp dir
+	data, err := os.ReadFile(goldenPath)
 	if err != nil {
 		t.Fatalf("golden file not written: %v", err)
 	}

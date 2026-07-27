@@ -22,12 +22,15 @@ var (
 func loadCSS() ([]byte, error) {
 	cssOnce.Do(func() {
 		path := cssPath()
+
 		cssData, cssErr = os.ReadFile(path)
 		if cssErr == nil {
 			return
 		}
+
 		cssErr = &cssLoadError{path: path, err: cssErr}
 	})
+
 	return cssData, cssErr
 }
 
@@ -38,6 +41,7 @@ func cssPath() string {
 	_, file, _, _ := runtime.Caller(0) // visualtest/css.go
 	// file = <repo>/visualtest/css.go
 	repoRoot := filepath.Dir(file)
+
 	return filepath.Join(repoRoot, "..", "examples", "demo", "static", "app.css")
 }
 

@@ -38,12 +38,15 @@ func defaultOptions(o Options) Options {
 	if o.Viewport.Width == 0 {
 		o.Viewport.Width = 1280
 	}
+
 	if o.Viewport.Height == 0 {
 		o.Viewport.Height = 800
 	}
+
 	if o.MaxMismatch == 0 {
 		o.MaxMismatch = 0.001
 	}
+
 	return o
 }
 
@@ -63,10 +66,12 @@ func renderHTML(component templ.Component, opts Options) (string, error) {
 
 	htmlClass := ""
 	bodyClass := "bg-white text-gray-900"
+
 	if opts.Dark {
 		htmlClass = ` class="dark"`
 		bodyClass = "bg-gray-900 text-gray-100"
 	}
+
 	dir := ""
 	if opts.RTL {
 		dir = ` dir="rtl"`
@@ -78,7 +83,7 @@ func renderHTML(component templ.Component, opts Options) (string, error) {
 // pageTemplate is the isolated document shell. The CSS is inlined so the page
 // is fully self-contained (no HTTP server needed for static renders).
 //
-//nolint:goconst // template literal, not repeated string
+
 const pageTemplate = `<!DOCTYPE html>
 <html lang="en"%s%s>
 <head>

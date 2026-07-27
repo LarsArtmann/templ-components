@@ -4,23 +4,24 @@
 
 This repo is a **single Go module** (`github.com/larsartmann/templ-components`) with 15 packages:
 
-| Package             | Contains                                   | Purpose                                                                                                             |
-| ------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------- |
-| `display`           | 30 UI components                           | Cards, tables (Table + DataTable), modals, badges, buttons, avatars, carousel, context menu, hover card             |
-| `feedback`          | 13 components                              | Alerts, toasts, spinners, skeletons, progress bars                                                                  |
-| `forms`             | 21 components                              | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                                |
-| `layout`            | 10 components                              | Page shell, theme toggle, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack |
-| `navigation`        | 12 components                              | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                               |
-| `htmx`              | 8 components                               | HTMX loading, error handling, OOB swaps, View Transitions                                                           |
-| `icons`             | 102 named SVG icons                        | Heroicons v2 outline + Spinner                                                                                      |
-| `errorpage`         | 4 components + handler                     | Error pages, 404, go-error-family integration                                                                       |
-| `recipes`           | 3 composition screens                      | Dashboard, SettingsLayout, LoginCard — screen-level compositions of display/forms/layout/navigation (ADR-0019)      |
-| `utils`             | BaseProps, Class(), EnsureID, test helpers | Shared utilities                                                                                                    |
-| `internal/svg`      | SVG path constants                         | Single source of truth for inline SVG paths                                                                         |
-| `internal/golden`   | Golden file testing                        | CSS-normalized HTML snapshot comparison                                                                             |
-| `internal/contract` | Contract tests                             | Cross-package interface verification                                                                                |
-| `integration`       | CSP nonce tests                            | Asserts nonce on all inline scripts                                                                                 |
-| `examples/demo`     | Demo binary                                | Showcases components                                                                                                |
+| Package             | Contains                                                  | Purpose                                                                                                             |
+| ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `display`           | 30 UI components                                          | Cards, tables (Table + DataTable), modals, badges, buttons, avatars, carousel, context menu, hover card             |
+| `feedback`          | 13 components                                             | Alerts, toasts, spinners, skeletons, progress bars                                                                  |
+| `forms`             | 21 components                                             | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                                |
+| `layout`            | 10 components                                             | Page shell, theme toggle, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack |
+| `navigation`        | 12 components                                             | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                               |
+| `htmx`              | 8 components                                              | HTMX loading, error handling, OOB swaps, View Transitions                                                           |
+| `icons`             | 102 named SVG icons                                       | Heroicons v2 outline + Spinner                                                                                      |
+| `errorpage`         | 4 components + handler                                    | Error pages, 404, go-error-family integration                                                                       |
+| `recipes`           | 3 composition screens                                     | Dashboard, SettingsLayout, LoginCard — screen-level compositions of display/forms/layout/navigation (ADR-0019)      |
+| `utils`             | BaseProps, Class(), EnsureID, test helpers                | Shared utilities                                                                                                    |
+| `internal/svg`      | SVG path constants                                        | Single source of truth for inline SVG paths                                                                         |
+| `internal/golden`   | Golden file testing                                       | CSS-normalized HTML snapshot comparison                                                                             |
+| `internal/contract` | Contract tests                                            | Cross-package interface verification                                                                                |
+| `integration`       | CSP nonce tests                                           | Asserts nonce on all inline scripts                                                                                 |
+| `examples/demo`     | Demo binary                                               | Showcases components                                                                                                |
+| `visualtest`        | **Separate module** — pixel-level visual regression tests | chromedp + headless Chromium; `nix run .#visual`. See `docs/visual-testing.md`                                      |
 
 > **Note:** A multi-module workspace split was prototyped on the `modularize/strategic-split`
 > branch but was never merged to `master`. The split may be re-attempted post-v1.0 if the
@@ -58,6 +59,7 @@ nix run .#test      # go test -race
 nix run .#lint      # golangci-lint
 nix run .#verify    # generate + build + test + lint
 nix run .#coverage  # go test -coverprofile
+nix run .#visual    # pixel-level visual regression tests (headless Chromium). See docs/visual-testing.md
 ```
 
 The flake uses `flake-parts` + `treefmt-nix` (mirrors `website/flake.nix`). The
@@ -172,6 +174,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - **Drawer:** `display.Drawer` — accessible side panel rendered as a native `<dialog>` with `data-side="left"`/`"right"`. CSS positions the dialog via `margin-inline-*` (auto-mirrors in RTL) and animates via `translateX`. Side positioning is in `templates/custom.css` under `dialog.tc-drawer[data-side=...]`.
 - **ValidationSummary:** `forms.ValidationSummary` — accessible error summary with icon, error count, linked field errors, `role="alert"`.
 - **Golden testing:** `internal/golden.Assert(t, name, got)` — golden file comparison with CSS class normalization. Supports `-update` flag.
+- **Visual regression testing:** `visualtest.AssertScreenshot(t, name, component, opts...)` — renders a component in headless Chromium (chromedp) and diffs pixels against a committed PNG in `visualtest/testdata/`. Catches what HTML-string golden tests cannot: layout shifts, dark-mode color regressions, RTL mirroring. Supports `Dark`, `RTL`, `Viewport`, `MaxMismatch` (default 0.1%), and `-update`. Run via `nix run .#visual` (Nix provides Chromium; tests skip if no browser). Lives in a **separate Go module** (`visualtest/go.mod` with a local replace) so chromedp never pollutes the library's consumer dependency graph. See `docs/visual-testing.md`.
 - **Error sub-templates:** 6 shared private sub-templates in `errorpage/shared.templ` (familyIcon, fixCard, causeList, contextTable, timestampFooter, familyBadge)
 - HTMX retry: per-element `data-tc-retry` attribute (no shared counter)
 - HTMX error handling: family-aware — when server returns structured JSON with `family` field, toast type is mapped. `ErrorHandlerConfig{JSON: true}` produces the JSON format that HTMX consumes.

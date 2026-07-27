@@ -27,16 +27,18 @@ func comparePixels(golden, actual image.Image, tolerance uint8, maxMismatchPct f
 	}
 
 	w, h := ab.Dx(), ab.Dy()
+
 	total := w * h
 	if total == 0 {
 		return diffResult{Match: true}, nil
 	}
 
 	var diffImg *image.RGBA
+
 	mismatched := 0
 
-	for y := 0; y < h; y++ {
-		for x := 0; x < w; x++ {
+	for y := range h {
+		for x := range w {
 			gr, gg, gb0, _ := golden.At(gb.Min.X+x, gb.Min.Y+y).RGBA()
 			ar, ag, ab1, _ := actual.At(ab.Min.X+x, ab.Min.Y+y).RGBA()
 
@@ -45,9 +47,11 @@ func comparePixels(golden, actual image.Image, tolerance uint8, maxMismatchPct f
 				channelDiff(gg, ag, tolerance) ||
 				channelDiff(gb0, ab1, tolerance) {
 				mismatched++
+
 				if diffImg == nil {
 					diffImg = image.NewRGBA(image.Rect(0, 0, w, h))
 				}
+
 				diffImg.SetRGBA(x, y, color.RGBA{R: 255, G: 0, B: 0, A: 255})
 			} else if diffImg != nil {
 				diffImg.SetRGBA(x, y, color.RGBA{R: 0, G: 0, B: 0, A: 255})
@@ -56,6 +60,7 @@ func comparePixels(golden, actual image.Image, tolerance uint8, maxMismatchPct f
 	}
 
 	pct := float64(mismatched) / float64(total) * 100
+
 	return diffResult{
 		Match:       pct <= maxMismatchPct,
 		MismatchPct: pct,
@@ -68,6 +73,8 @@ func comparePixels(golden, actual image.Image, tolerance uint8, maxMismatchPct f
 // 8-bit tolerance (scaled up).
 func channelDiff(a, b uint32, tolerance uint8) bool {
 	const scale = 0x101 // 0xff -> 0xffff
+
 	t := uint32(tolerance) * scale
+
 	return uint32(math.Abs(float64(a)-float64(b))) > t
 }

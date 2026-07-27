@@ -24,6 +24,7 @@ import (
 //	must not contain path separators other than a single subdirectory level.
 func AssertScreenshot(t *testing.T, name string, component templ.Component, opts ...Options) {
 	t.Helper()
+
 	o := resolveOptions(opts)
 
 	// Build the page once (also validates CSS + component render early).
@@ -42,6 +43,7 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 
 	if *update {
 		writeGolden(t, name, actual)
+
 		return
 	}
 
@@ -49,6 +51,7 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 	if !exists {
 		writeGolden(t, name, actual)
 		t.Errorf("visualtest[%s]: no golden yet — wrote %s (re-run without -update to verify)", name, goldenPath(name))
+
 		return
 	}
 
@@ -58,14 +61,17 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 	}
 
 	maxMismatchPct := o.MaxMismatch * 100
+
 	result, diff := comparePixels(golden, actualImg, o.PerPixelTolerance, maxMismatchPct)
 	if !result.Match {
 		writeFailureArtifacts(t, name, actual, diff)
 		t.Errorf("visualtest[%s]: visual mismatch — %dx%d, %.4f%% pixels differ (max %.4f%%).\n"+
 			"Inspect testdata/.fail/%s.{actual,diff}.png, then run `go test -tags=visual -update` if the change is intended.",
 			name, result.Width, result.Height, result.MismatchPct, maxMismatchPct, name)
+
 		return
 	}
+
 	t.Logf("visualtest[%s]: OK (%.4f%% mismatched, threshold %.4f%%)", name, result.MismatchPct, maxMismatchPct)
 }
 
@@ -74,20 +80,25 @@ func resolveOptions(opts []Options) Options {
 	merged := Options{}
 	for _, o := range opts {
 		merged.Dark = merged.Dark || o.Dark
+
 		merged.RTL = merged.RTL || o.RTL
 		if o.Viewport.Width != 0 {
 			merged.Viewport.Width = o.Viewport.Width
 		}
+
 		if o.Viewport.Height != 0 {
 			merged.Viewport.Height = o.Viewport.Height
 		}
+
 		if o.MaxMismatch != 0 {
 			merged.MaxMismatch = o.MaxMismatch
 		}
+
 		if o.PerPixelTolerance != 0 {
 			merged.PerPixelTolerance = o.PerPixelTolerance
 		}
 	}
+
 	return defaultOptions(merged)
 }
 
@@ -107,6 +118,7 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	defer cancel()
 
 	var screenshot []byte
+
 	tasks := []chromedp.Action{
 		chromedp.EmulateViewport(int64(opts.Viewport.Width), int64(opts.Viewport.Height)),
 		chromedp.Navigate(srv.URL),
@@ -119,6 +131,7 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	if err := chromedp.Run(timeoutCtx, tasks...); err != nil {
 		return nil, fmt.Errorf("chromedp actions: %w", err)
 	}
+
 	return screenshot, nil
 }
 

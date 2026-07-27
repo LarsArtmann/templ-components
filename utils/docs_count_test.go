@@ -47,7 +47,7 @@ func countExportedTemplFunctions(t *testing.T, root string) int {
 		}
 
 		for _, file := range files {
-			//nolint:gosec // test reads known package files
+
 			data, err := os.ReadFile(file)
 			if err != nil {
 				t.Fatalf("read %s: %v", file, err)
@@ -145,7 +145,7 @@ func readDoc(t *testing.T, parts ...string) []byte {
 	t.Helper()
 
 	path := filepath.Join(parts...)
-	//nolint:gosec // test reads known documentation files
+
 	data, err := os.ReadFile(filepath.Join("..", path))
 	if err != nil {
 		t.Fatalf("read %s: %v", path, err)

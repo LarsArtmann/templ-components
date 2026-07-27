@@ -95,6 +95,27 @@ primary intended use case.
 Both ship in this phase (v0.21.0). `Form.Inline` is a possible future candidate (decision
 deferred until a clear container-driven behavior emerges).
 
+### Extended candidates (v1.3.0)
+
+After the initial Nav + Card rollout, the pattern was extended to 5 more components
+that meet all three ADR criteria (viewport responsive behavior, plausible constrained
+placement, clear named behavior change):
+
+| Component          | Container-aware behavior                                                      |
+| ------------------ | ----------------------------------------------------------------------------- |
+| `Split`            | Main+aside collapses to stacked below `@md:` instead of `md:`                 |
+| `DefinitionGrid`   | Term-detail card grid column count adapts via `@sm:`/`@lg:`                   |
+| `Form`             | Grid layout label/value columns adapt below `@sm:`                            |
+| `Pagination`       | Mobile prev/next vs full page numbers by container width (`@sm:` on nav root) |
+| `SkeletonCardGrid` | Loading skeleton grid matches `Grid.ContainerResponsive` (`@sm:`/`@lg:`)      |
+
+`Pagination` uses a slight variation: instead of a `<div class="@container">` wrapper,
+it adds `@container` directly to the `<nav>` root element. This is valid because the
+responsive classes are on child `<div>`s, not on the nav itself — the children query
+the nav as their container ancestor. Components whose own root has the responsive
+classes (Grid, Card, Form, Split, DefinitionGrid, SkeletonCardGrid) still use the
+wrapper-div pattern because an element cannot query its own containment context.
+
 ## Consequences
 
 **Positive:**

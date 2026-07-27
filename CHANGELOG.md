@@ -12,6 +12,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Container-aware components (ADR-0018 extension).** Extended the `ContainerAware` opt-in pattern to 5 more components so they adapt to their parent container's width instead of the viewport:
+  - `layout.Split.ContainerAware` — main+aside collapses to stacked by container width (`@md:` variants)
+  - `display.DefinitionGrid.ContainerAware` — term-detail card grid column count adapts (`@sm:`/`@lg:`)
+  - `forms.Form.ContainerAware` — Grid layout label/value columns adapt (`@sm:`), ideal for forms in modals/drawers
+  - `navigation.Pagination.ContainerAware` — mobile/desktop controls switch by container width (`@sm:` on nav root)
+  - `feedback.SkeletonCardGrid` — converted from `count int` to `SkeletonCardGridProps{Count, ContainerAware}` for API consistency; loading skeletons now match `Grid.ContainerResponsive` behavior
+  - All follow the exact ADR-0018 contract: opt-in flag, `@container` wrapper (or root class), lookup-map class swap, default-off backward compat. Tested per the established pattern.
 - **Rename-safety test** (`errorpage/fromerror_safety_test.go`) — verifies every `errorfamily.Family` maps to a valid, distinct `Family` output (totality, correctness, injectivity), so a missing switch case fails loudly rather than silently rendering every error as Transient.
 
 ## [1.2.0] — 2026-07-23

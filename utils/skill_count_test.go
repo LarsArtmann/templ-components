@@ -31,7 +31,7 @@ func TestSkillComponentCount(t *testing.T) {
 		}
 
 		for _, file := range files {
-			data, readErr := os.ReadFile(file) //nolint:gosec // test scans package files
+			data, readErr := os.ReadFile(file)
 			if readErr != nil {
 				continue
 			}

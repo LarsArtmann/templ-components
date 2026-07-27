@@ -45,6 +45,65 @@ compatible with all existing consumers.
 
 Tailwind v4 supports `@container` natively — no plugin or config needed.
 
+## All container-aware components
+
+Every component with a `ContainerAware` (or `ContainerResponsive`) flag follows the
+same contract (ADR-0018): opt-in, default off, emits `@container` wrapper or root
+class, swaps viewport breakpoints (`sm:`/`md:`/`lg:`) for container variants
+(`@sm:`/`@md:`/`@lg:`).
+
+| Component                   | Flag                  | What adapts                                              |
+| --------------------------- | --------------------- | -------------------------------------------------------- |
+| `display.Grid`              | `ContainerResponsive` | Column count (1→2→3→N)                                   |
+| `display.Card`              | `ContainerAware`      | Padding (compact below `@sm:`)                           |
+| `display.DefinitionGrid`    | `ContainerAware`      | Term-detail card grid column count                       |
+| `navigation.Nav`            | `ContainerAware`      | Collapse to hamburger below `@sm:`                       |
+| `navigation.Pagination`     | `ContainerAware`      | Mobile prev/next vs full page numbers                    |
+| `layout.Split`              | `ContainerAware`      | 2-col main+aside collapses to stacked below `@md:`       |
+| `forms.Form`                | `ContainerAware`      | Grid layout label/value columns below `@sm:`             |
+| `feedback.SkeletonCardGrid` | `ContainerAware`      | Loading skeleton grid matches `Grid.ContainerResponsive` |
+
+### Split — article+sidebar in a constrained container
+
+```go
+@layout.Split(layout.SplitProps{
+    Main:           articleBody,
+    Aside:          tocWidget,
+    ContainerAware: true,
+})
+```
+
+### Form — settings form in a modal or drawer
+
+```go
+@forms.Form(forms.FormProps{
+    Layout:         forms.FormLayoutGrid,
+    ContainerAware: true,
+}) {
+    @forms.Input(forms.InputProps{Name: "email"})
+}
+```
+
+### Pagination — in a card footer
+
+```go
+@navigation.Pagination(navigation.PaginationProps{
+    CurrentPage:   3,
+    TotalPages:    10,
+    BaseURL:       "/users",
+    ContainerAware: true,
+})
+```
+
+### SkeletonCardGrid — loading state for a container-aware grid
+
+```go
+@feedback.SkeletonCardGrid(feedback.SkeletonCardGridProps{
+    Count:          6,
+    ContainerAware: true,
+})
+```
+
 ## Container query size reference
 
 | Variant | Min width     | Equivalent viewport |

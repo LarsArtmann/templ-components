@@ -46,6 +46,7 @@ func newBrowser(t *testing.T) (context.Context, context.CancelFunc) {
 	if chromePath == "" {
 		t.Skipf("visual tests skipped: %v (set CHROMEDP_CHROME_PATH to a Chromium binary)", errNoBrowser)
 	}
+
 	if _, err := os.Stat(chromePath); err != nil {
 		t.Skipf("visual tests skipped: CHROMEDP_CHROME_PATH %q not accessible: %v", chromePath, err)
 	}
@@ -65,5 +66,6 @@ func newBrowser(t *testing.T) (context.Context, context.CancelFunc) {
 		cancel()
 		allocCancel()
 	}
+
 	return ctx, combinedCancel
 }
