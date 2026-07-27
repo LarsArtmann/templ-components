@@ -6,7 +6,7 @@ in a single session. ~30.5 hours of planned work compressed into one run.
 
 **Baseline:** v0.19.0 (98 components, 43 enums, 87 generated files)
 **Final:** v1.1.0 (101 components + 3 recipes, 43 enums, 90 generated files)
-**Releases cut:** v0.20.0, v0.21.0, v0.22.0, v1.0.0, v1.1.0 (5 tags, all SSH-signed, none pushed)
+**Releases cut:** v0.20.0, v0.21.0, v0.22.0, v1.0.0, v1.1.0 (5 tags, all SSH-signed). ~~none pushed~~ **All PUSHED** (through v1.2.0). See [Resolution](#resolution-2026-07-27).
 **Verify gate:** build green, all tests pass, 0 lint findings (on library packages)
 
 ---
@@ -316,4 +316,4 @@ The recipes are the highest customer-value-per-line addition (TODO #31, deferred
 
 ## TL;DR
 
-5 phases shipped, 5 releases tagged, build green, tests pass, lint clean. **But the Popover API migration (Phase 1, the headline feature) is probably visually broken in real browsers because top-layer rendering breaks CSS class positioning.** Fix D1 before pushing anything. The rest is completable polish.
+5 phases shipped, 5 releases tagged, build green, tests pass, lint clean. ~~**But the Popover API migration (Phase 1, the headline feature) is probably visually broken in real browsers because top-layer rendering breaks CSS class positioning.**~~ **The D1 top-layer positioning bug was confirmed real and FIXED in v1.2.0** (`1abb2f7`) via a shared `popoverPositionJS` singleton that reads `getBoundingClientRect()`. All defects D1/D3/D4/D6 resolved. See [Resolution](#resolution-2026-07-27).

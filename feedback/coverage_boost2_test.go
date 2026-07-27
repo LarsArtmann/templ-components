@@ -179,7 +179,7 @@ func TestSpinnerCustomColor(t *testing.T) {
 
 func TestSkeletonCardGridNormal(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, SkeletonCardGrid(3))
+	output := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: 3}))
 	utils.AssertContains(t, output, "role=\"status\"")
 }
 
@@ -187,7 +187,7 @@ func TestSkeletonCardGridZeroOrNegative(t *testing.T) {
 	t.Parallel()
 
 	for _, count := range []int{0, -1, -5} {
-		output := utils.Render(t, SkeletonCardGrid(count))
+		output := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: count}))
 		// Should fall back to 1 card, not panic
 		utils.AssertContains(t, output, "role=\"status\"")
 	}

@@ -81,6 +81,6 @@ func TestGoldenSkeleton(t *testing.T) {
 
 func TestGoldenSkeletonCardGrid(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, SkeletonCardGrid(3))
+	output := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: 3}))
 	golden.Assert(t, "skeleton_card_grid", output)
 }

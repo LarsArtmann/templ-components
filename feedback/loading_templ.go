@@ -645,15 +645,42 @@ func SkeletonGroup(variants []SkeletonVariant) templ.Component {
 	})
 }
 
+// SkeletonCardGridProps configures a responsive grid of skeleton cards —
+// the common "loading state" for a dashboard card list.
+type SkeletonCardGridProps struct {
+	// Count is the number of skeleton cards to render. Negative or zero
+	// renders a single placeholder so consumers never see an empty container.
+	Count int
+	// ContainerAware, when true, wraps the grid in a @container div and uses
+	// container-query variants (@sm:, @lg:) so the skeleton grid matches the
+	// behavior of display.Grid with ContainerResponsive: true. Useful when
+	// the skeleton grid is placed inside a sidebar, card, or other constrained
+	// layout. Default false (viewport breakpoints). See ADR-0018.
+	ContainerAware bool
+}
+
+// DefaultSkeletonCardGridProps returns sensible defaults.
+func DefaultSkeletonCardGridProps() SkeletonCardGridProps {
+	return SkeletonCardGridProps{}
+}
+
+// skeletonCardGridClassViewport is the viewport-keyed grid class for the
+// skeleton card grid (matches GridCols3 in gridColsLookup).
+const skeletonCardGridClassViewport = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+
+// skeletonCardGridClassContainer mirrors skeletonCardGridClassViewport with
+// @container-keyed breakpoints (matches GridCols3 in gridColsContainerLookup).
+const skeletonCardGridClassContainer = "grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-4"
+
 // SkeletonCardGrid renders a responsive grid of N skeleton cards — the common
 // "loading state" for a dashboard card list. It wraps SkeletonGroup so the
 // whole grid shares one `role="status"` announcement, and uses the same
 // responsive grid classes as display.Grid. Negative or zero counts render a
 // single placeholder card so consumers never see an empty container.
 //
-//	@feedback.SkeletonCardGrid(6)
-//	@feedback.SkeletonCardGrid(12)  // 3x4 grid at lg breakpoint
-func SkeletonCardGrid(count int) templ.Component {
+//	@feedback.SkeletonCardGrid(feedback.SkeletonCardGridProps{Count: 6})
+//	@feedback.SkeletonCardGrid(feedback.SkeletonCardGridProps{Count: 12, ContainerAware: true})
+func SkeletonCardGrid(props SkeletonCardGridProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -674,33 +701,72 @@ func SkeletonCardGrid(count int) templ.Component {
 			templ_7745c5c3_Var24 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		n := count
+		n := props.Count
 		if n <= 0 {
 			n = 1
 		}
-		templ_7745c5c3_Var25 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
-			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
-			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
-			if !templ_7745c5c3_IsBuffer {
-				defer func() {
-					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
-					if templ_7745c5c3_Err == nil {
-						templ_7745c5c3_Err = templ_7745c5c3_BufErr
-					}
-				}()
+		gridClass := skeletonCardGridClassViewport
+		if props.ContainerAware {
+			gridClass = skeletonCardGridClassContainer
+		}
+		if props.ContainerAware {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 44, "<div class=\"@container\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
 			}
-			ctx = templ.InitializeContext(ctx)
-			for range n {
-				templ_7745c5c3_Err = skeletonBody(SkeletonCard).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
+			templ_7745c5c3_Var25 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+				if !templ_7745c5c3_IsBuffer {
+					defer func() {
+						templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err == nil {
+							templ_7745c5c3_Err = templ_7745c5c3_BufErr
+						}
+					}()
 				}
+				ctx = templ.InitializeContext(ctx)
+				for range n {
+					templ_7745c5c3_Err = skeletonBody(SkeletonCard).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
+				return nil
+			})
+			templ_7745c5c3_Err = skeletonContainer(gridClass, "Loading cards").Render(templ.WithChildren(ctx, templ_7745c5c3_Var25), templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
 			}
-			return nil
-		})
-		templ_7745c5c3_Err = skeletonContainer("grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4", "Loading cards").Render(templ.WithChildren(ctx, templ_7745c5c3_Var25), templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 45, "</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Var26 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+				templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+				templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+				if !templ_7745c5c3_IsBuffer {
+					defer func() {
+						templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+						if templ_7745c5c3_Err == nil {
+							templ_7745c5c3_Err = templ_7745c5c3_BufErr
+						}
+					}()
+				}
+				ctx = templ.InitializeContext(ctx)
+				for range n {
+					templ_7745c5c3_Err = skeletonBody(SkeletonCard).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
+				return nil
+			})
+			templ_7745c5c3_Err = skeletonContainer(gridClass, "Loading cards").Render(templ.WithChildren(ctx, templ_7745c5c3_Var26), templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		return nil
 	})

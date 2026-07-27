@@ -223,7 +223,7 @@ func TestSkeletonCardGridUserSeesLoadingState(t *testing.T) {
 
 	t.Run("user sees 6 skeleton cards while loading", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, SkeletonCardGrid(6))
+		output := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: 6}))
 		utils.AssertContains(t, output, `role="status"`)
 		utils.AssertContains(t, output, "lg:grid-cols-3")
 	})
@@ -231,7 +231,7 @@ func TestSkeletonCardGridUserSeesLoadingState(t *testing.T) {
 	t.Run("zero count falls back to single placeholder", func(t *testing.T) {
 		t.Parallel()
 
-		output := utils.Render(t, SkeletonCardGrid(0))
+		output := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: 0}))
 		if got := strings.Count(output, "h-48"); got != 1 {
 			t.Errorf("expected 1 fallback card, got %d", got)
 		}

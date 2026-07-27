@@ -5,9 +5,11 @@ go 1.26.4
 require (
 	github.com/a-h/templ v0.3.1020
 	github.com/chromedp/chromedp v0.13.6
+	github.com/larsartmann/templ-components v0.0.0-00010101000000-000000000000
 )
 
 require (
+	github.com/Oudwins/tailwind-merge-go v0.2.2 // indirect
 	github.com/chromedp/cdproto v0.0.0-20250403032234-65de8f5d025b // indirect
 	github.com/chromedp/sysutil v1.1.0 // indirect
 	github.com/go-json-experiment/json v0.0.0-20250211171154-1ae217ad3535 // indirect

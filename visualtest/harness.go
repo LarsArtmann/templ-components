@@ -6,7 +6,9 @@ import (
 	"fmt"
 	"image"
 	"image/png"
-	"strings"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"testing"
 	"time"
 
@@ -89,10 +91,17 @@ func resolveOptions(opts []Options) Options {
 	return defaultOptions(merged)
 }
 
-// capture navigates to the page (served over data: URL for self-containment),
-// waits for fonts/layout to settle, and screenshots the #tc-root element.
+// capture serves the page on an ephemeral in-process HTTP server (a data:
+// URL cannot hold the ~80KB compiled CSS), waits for layout to settle, and
+// screenshots the #tc-root element.
 func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	const rootSel = "#tc-root"
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = io.WriteString(w, page)
+	}))
+	defer srv.Close()
 
 	timeoutCtx, cancel := context.WithTimeout(ctx, captureTimeout)
 	defer cancel()
@@ -100,8 +109,7 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	var screenshot []byte
 	tasks := []chromedp.Action{
 		chromedp.EmulateViewport(int64(opts.Viewport.Width), int64(opts.Viewport.Height)),
-		// data: URLs keep the test hermetic — no HTTP server, no port races.
-		chromedp.Navigate("data:text/html," + dataURLEncode(page)),
+		chromedp.Navigate(srv.URL),
 		// Wait for the root to exist and the document to finish loading so web
 		// fonts / CSS settle before the screenshot.
 		chromedp.WaitVisible(rootSel, chromedp.ByQuery),
@@ -116,21 +124,8 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 
 const (
 	captureTimeout = 20 * time.Second
-	settleDelay    = 150 * time.Millisecond
+	settleDelay    = 200 * time.Millisecond
 )
-
-// dataURLEncode percent-encodes characters that break a data: URL so the page
-// HTML survives being inlined into Navigate. We only need to escape '#', '%',
-// and newlines; the rest is safe inside a data URL per RFC 2397.
-func dataURLEncode(s string) string {
-	r := strings.NewReplacer(
-		"%", "%25",
-		"#", "%23",
-		"\n", "%0A",
-		"\r", "%0D",
-	)
-	return r.Replace(s)
-}
 
 // decodePNG is a small helper for tests in this package that need to inspect a
 // captured image directly.

@@ -157,7 +157,7 @@ func TestSkeletonCardGridRender(t *testing.T) {
 
 	t.Run("renders N cards in a responsive grid", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, SkeletonCardGrid(6))
+		output := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: 6}))
 		utils.AssertContains(t, output, "grid")
 		utils.AssertContains(t, output, "sm:grid-cols-2")
 		utils.AssertContains(t, output, "lg:grid-cols-3")
@@ -173,7 +173,7 @@ func TestSkeletonCardGridRender(t *testing.T) {
 		t.Parallel()
 
 		for _, n := range []int{0, -1, -10} {
-			output := utils.Render(t, SkeletonCardGrid(n))
+			output := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: n}))
 			if got := strings.Count(output, "h-48"); got != 1 {
 				t.Errorf("count=%d: expected 1 fallback card, got %d", n, got)
 			}
@@ -182,7 +182,7 @@ func TestSkeletonCardGridRender(t *testing.T) {
 
 	t.Run("preserves motion-reduce variant", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, SkeletonCardGrid(3))
+		output := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: 3}))
 		utils.AssertContains(t, output, "motion-reduce:animate-none")
 	})
 }

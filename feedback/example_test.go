@@ -43,7 +43,7 @@ func ExampleSpinner() {
 func ExampleSkeletonCardGrid() {
 	var buf bytes.Buffer
 
-	_ = feedback.SkeletonCardGrid(6).Render(context.Background(), &buf)
+	_ = feedback.SkeletonCardGrid(feedback.SkeletonCardGridProps{Count: 6}).Render(context.Background(), &buf)
 	fmt.Println(buf.String())
 	// Output will contain a responsive grid of skeleton loading cards
 }

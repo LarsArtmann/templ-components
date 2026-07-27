@@ -2,7 +2,7 @@
 
 **Date:** 2026-07-22 18:51  
 **Session:** Post-stash-cleanup Pareto plan execution  
-**Branch:** `master` (diverged from `origin/master` — 3 local vs 3 remote, different SHAs)
+**Branch:** `master` — ~~diverged from `origin/master`~~ **PUSHED** (up to date as of v1.2.0). See [Resolution](#resolution-2026-07-27).
 
 ---
 
@@ -162,6 +162,19 @@ Local `master` diverged from `origin/master` (3 commits with different SHAs due 
 - (a) Squash all 3 into 1 clean commit with a proper message, then force-push?
 - (b) Force-push as-is (author fixed, messages still bad)?
 - (c) Leave it and you'll handle the push yourself?
+
+---
+
+## Resolution (2026-07-27)
+
+| Item | Claim in report | Resolution |
+| ---- | --------------- | ---------- |
+| §b.1 Git push | "Not pushed — house rule says NEVER PUSH" | **DONE.** Pushed; `origin/master` up to date through v1.2.0. |
+| §b.1 Force-push | "diverged, needs `--force-with-lease`" | **Resolved.** History was reconciled; all tags v0.18.1→v1.2.0 on remote. |
+| §c.1 Golden file adoption | "Not started — lower priority" | **OPEN:** See TODO_LIST #73 (start with navigation package). |
+| §c.2 Dependabot vulnerability | "Never investigated" | **OPEN:** See TODO_LIST #71. |
+| §c.3 gofmt → gofumpt | "Deferred" | **OPEN:** See TODO_LIST #67. |
+| §c.4 Pareto 20% tier | "All unstarted" | Folded into TODO_LIST / ROADMAP as appropriate. |
 
 ### 2. Is BuildFlow's auto-commit behavior intended or should it be fixed?
 

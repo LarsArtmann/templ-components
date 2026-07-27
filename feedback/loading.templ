@@ -205,24 +205,65 @@ templ SkeletonGroup(variants []SkeletonVariant) {
 	}
 }
 
+// SkeletonCardGridProps configures a responsive grid of skeleton cards —
+// the common "loading state" for a dashboard card list.
+type SkeletonCardGridProps struct {
+	// Count is the number of skeleton cards to render. Negative or zero
+	// renders a single placeholder so consumers never see an empty container.
+	Count int
+	// ContainerAware, when true, wraps the grid in a @container div and uses
+	// container-query variants (@sm:, @lg:) so the skeleton grid matches the
+	// behavior of display.Grid with ContainerResponsive: true. Useful when
+	// the skeleton grid is placed inside a sidebar, card, or other constrained
+	// layout. Default false (viewport breakpoints). See ADR-0018.
+	ContainerAware bool
+}
+
+// DefaultSkeletonCardGridProps returns sensible defaults.
+func DefaultSkeletonCardGridProps() SkeletonCardGridProps {
+	return SkeletonCardGridProps{}
+}
+
+// skeletonCardGridClassViewport is the viewport-keyed grid class for the
+// skeleton card grid (matches GridCols3 in gridColsLookup).
+const skeletonCardGridClassViewport = "grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4"
+
+// skeletonCardGridClassContainer mirrors skeletonCardGridClassViewport with
+// @container-keyed breakpoints (matches GridCols3 in gridColsContainerLookup).
+const skeletonCardGridClassContainer = "grid grid-cols-1 @sm:grid-cols-2 @lg:grid-cols-3 gap-4"
+
 // SkeletonCardGrid renders a responsive grid of N skeleton cards — the common
 // "loading state" for a dashboard card list. It wraps SkeletonGroup so the
 // whole grid shares one `role="status"` announcement, and uses the same
 // responsive grid classes as display.Grid. Negative or zero counts render a
 // single placeholder card so consumers never see an empty container.
 //
-//	@feedback.SkeletonCardGrid(6)
-//	@feedback.SkeletonCardGrid(12)  // 3x4 grid at lg breakpoint
-templ SkeletonCardGrid(count int) {
+//	@feedback.SkeletonCardGrid(feedback.SkeletonCardGridProps{Count: 6})
+//	@feedback.SkeletonCardGrid(feedback.SkeletonCardGridProps{Count: 12, ContainerAware: true})
+templ SkeletonCardGrid(props SkeletonCardGridProps) {
 	{{
-		n := count
+		n := props.Count
 		if n <= 0 {
 			n = 1
 		}
+		gridClass := skeletonCardGridClassViewport
+		if props.ContainerAware {
+			gridClass = skeletonCardGridClassContainer
+		}
 	}}
-	@skeletonContainer("grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4", "Loading cards") {
-		for range n {
-			@skeletonBody(SkeletonCard)
+	if props.ContainerAware {
+		<div class="@container">
+			@skeletonContainer(gridClass, "Loading cards") {
+				for range n {
+					@skeletonBody(SkeletonCard)
+				}
+			}
+		</div>
+	} else {
+		@skeletonContainer(gridClass, "Loading cards") {
+			for range n {
+				@skeletonBody(SkeletonCard)
+			}
 		}
 	}
 }

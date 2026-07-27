@@ -12,7 +12,7 @@ import (
 func TestSkeletonContainerSubTemplate(t *testing.T) {
 	t.Parallel()
 
-	result := utils.Render(t, SkeletonCardGrid(3))
+	result := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: 3}))
 	if !strings.Contains(result, `role="status"`) {
 		t.Error("skeletonContainer: role=status not found")
 	}
@@ -26,7 +26,7 @@ func TestSkeletonContainerSubTemplate(t *testing.T) {
 func TestSkeletonContainerZeroCount(t *testing.T) {
 	t.Parallel()
 
-	result := utils.Render(t, SkeletonCardGrid(0))
+	result := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: 0}))
 	if !strings.Contains(result, `role="status"`) {
 		t.Error("skeletonContainer: role=status missing on zero count")
 	}
@@ -36,7 +36,7 @@ func TestSkeletonContainerZeroCount(t *testing.T) {
 func TestSkeletonContainerNegativeCount(t *testing.T) {
 	t.Parallel()
 
-	result := utils.Render(t, SkeletonCardGrid(-5))
+	result := utils.Render(t, SkeletonCardGrid(SkeletonCardGridProps{Count: -5}))
 	if !strings.Contains(result, `role="status"`) {
 		t.Error("skeletonContainer: role=status missing on negative count")
 	}
