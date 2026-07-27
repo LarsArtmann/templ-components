@@ -260,12 +260,12 @@ Sorted by **impact / effort** (P0 = do first):
 
 The `visualtest/` framework described in section a **shipped** in CHANGELOG `[Unreleased]` (Added) — separate Go module, chromedp + pixelmatch, `nix run .#visual`, CI job, 15 baseline goldens. The forward work from section f was routed:
 
-| Forward item (this report, P0/P1) | Routed to |
-| --- | --- |
-| Visual tests for Modal/Drawer/Dropdown/Input/Select (highest regression risk) | TODO_LIST #75 |
-| Share one Chromium process across tests (15s→2s) | TODO_LIST #76 |
-| First RTL visual test (`Options.RTL` exists, 0 users) | TODO_LIST #77 |
-| `StateHover` target first interactive child, not wrapper center (e.6) | Remains open (not yet a TODO) |
+| Forward item (this report, P0/P1)                                                              | Routed to                     |
+| ---------------------------------------------------------------------------------------------- | ----------------------------- |
+| Visual tests for Modal/Drawer/Dropdown/Input/Select (highest regression risk)                  | TODO_LIST #75                 |
+| Share one Chromium process across tests (15s→2s)                                               | TODO_LIST #76                 |
+| First RTL visual test (`Options.RTL` exists, 0 users)                                          | TODO_LIST #77                 |
+| `StateHover` target first interactive child, not wrapper center (e.6)                          | Remains open (not yet a TODO) |
 | `MaxMismatch` calibration, `Viewport*` presets, `InteractionState.String()`, `*bool` tri-state | Remains as ROADMAP directions |
 
 Coverage stands at 4 of 15 packages (Button/Alert/Badge/Card). The 11 untested packages — especially the interactive overlays (Modal/Drawer/Dropdown/Combobox) that depend on JS + top-layer + animations — are the highest-value next work (TODO #75).

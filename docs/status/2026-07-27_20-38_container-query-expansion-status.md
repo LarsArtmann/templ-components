@@ -220,11 +220,11 @@ The pre-commit hook (`scripts/pre-commit.sh`) currently runs `templ generate` + 
 
 The 5 new container-aware components described in section a **shipped** in CHANGELOG `[Unreleased]` (Added) — `layout.Split`, `display.DefinitionGrid`, `forms.Form`, `navigation.Pagination`, `feedback.SkeletonCardGrid` all carry the `ContainerAware` opt-in, bringing the total to 8 (with `Grid.ContainerResponsive`, `Card`, `Nav`). The breaking `SkeletonCardGridProps` change is documented in `[Unreleased]` (Changed) with a migration one-liner (option (b) above was chosen). Forward items from section f were routed:
 
-| Forward item (this report) | Routed to |
-| --- | --- |
-| Container-query compliance scanner (`utils.TestContainerQueryCompliance`) | TODO_LIST #74 |
-| Lint test: Tailwind lookup maps must live in `.templ` files (the d "scanner mistake") | TODO_LIST #78 |
+| Forward item (this report)                                                                                                                   | Routed to                                               |
+| -------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Container-query compliance scanner (`utils.TestContainerQueryCompliance`)                                                                    | TODO_LIST #74                                           |
+| Lint test: Tailwind lookup maps must live in `.templ` files (the d "scanner mistake")                                                        | TODO_LIST #78                                           |
 | `Container.ContainerAware`, `Breadcrumbs.ContainerAware`, `EmptyState.ContainerAware`, `NotFound404.ContainerAware`, `Footer.ContainerAware` | Remain as ROADMAP directions (not yet actionable TODOs) |
-| `containerAwareWrapper` shared sub-template (8× boilerplate) | Remain as ROADMAP architecture direction |
+| `containerAwareWrapper` shared sub-template (8× boilerplate)                                                                                 | Remain as ROADMAP architecture direction                |
 
 The critical "lookup-map-in-`.go`-not-`.templ`" failure (section d) is now the highest-priority new TODO (#78): it produced silently-missing CSS and was only caught by manually diffing the compiled output.

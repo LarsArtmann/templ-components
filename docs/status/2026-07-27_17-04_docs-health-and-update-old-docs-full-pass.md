@@ -228,12 +228,12 @@ All 10 `2026-07-2*` files annotated with resolution appendices citing concrete c
 
 The gaps in sections b/c/d above were re-checked by two follow-up docs-health sessions (21:16 and a later pass). Status of this report's own "next steps" (section f):
 
-| Item | Resolution |
-| --- | --- |
-| f.1 — run the full quality gate (`nix run .#verify` / `golangci-lint`) | **DONE (later sessions).** `go build ./...`, `go test ./...`, `golangci-lint run` (exit 0), `nix flake check`, and drift tests all pass. |
-| f.2 — re-read all 10 annotated files post-reformatting | **DONE (21:16 session).** Older `2026-07-2*` annotations survived the daemon's table reformatting. |
-| f.3 — print the formal Documentation Health Report | **DONE (21:16 session).** |
-| f.4-7 — GOWORK, Dependabot, demo CSS, golden files | **HARVESTED.** Routed to TODO_LIST #70-73. #70 (GOWORK=off in devShell `shellHook`) verified still genuinely open — `GOWORK=off` exists only in the `visual` nix app, not the devShell `shellHook` (which sets only `GOEXPERIMENT`). |
-| d.2 — `.golangci.yml` not run | **DONE + guarded.** A 4th recurrence of the disabled-linter regression was found and fixed; `TestGolangciDisabledLinters` (`utils/lint_config_test.go`) now prevents a 5th. See the 21:16 report's Resolution for detail. |
+| Item                                                                   | Resolution                                                                                                                                                                                                                           |
+| ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| f.1 — run the full quality gate (`nix run .#verify` / `golangci-lint`) | **DONE (later sessions).** `go build ./...`, `go test ./...`, `golangci-lint run` (exit 0), `nix flake check`, and drift tests all pass.                                                                                             |
+| f.2 — re-read all 10 annotated files post-reformatting                 | **DONE (21:16 session).** Older `2026-07-2*` annotations survived the daemon's table reformatting.                                                                                                                                   |
+| f.3 — print the formal Documentation Health Report                     | **DONE (21:16 session).**                                                                                                                                                                                                            |
+| f.4-7 — GOWORK, Dependabot, demo CSS, golden files                     | **HARVESTED.** Routed to TODO_LIST #70-73. #70 (GOWORK=off in devShell `shellHook`) verified still genuinely open — `GOWORK=off` exists only in the `visual` nix app, not the devShell `shellHook` (which sets only `GOEXPERIMENT`). |
+| d.2 — `.golangci.yml` not run                                          | **DONE + guarded.** A 4th recurrence of the disabled-linter regression was found and fixed; `TestGolangciDisabledLinters` (`utils/lint_config_test.go`) now prevents a 5th. See the 21:16 report's Resolution for detail.            |
 
 The 4 core living docs remain accurate: doc/code counts match (98 components, 43 `IsValid` enums, 102 icons, 91 generated files, v1.2.0). The README stale version badge (v0.18.0 → v1.2.0) flagged by this report's d.4 was fixed in the later pass.
