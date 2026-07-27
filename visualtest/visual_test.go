@@ -16,7 +16,6 @@ func TestButtons(t *testing.T) {
 	primary := display.DefaultButtonProps()
 	primary.Text = "Save changes"
 	visualtest.AssertScreenshot(t, "button/primary_light", display.Button(primary))
-
 	visualtest.AssertScreenshot(t, "button/primary_dark", display.Button(primary), visualtest.Options{Dark: true})
 
 	danger := display.DefaultButtonProps()
@@ -28,6 +27,23 @@ func TestButtons(t *testing.T) {
 	secondary.Text = "Cancel"
 	secondary.Variant = display.ButtonSecondary
 	visualtest.AssertScreenshot(t, "button/secondary_dark", display.Button(secondary), visualtest.Options{Dark: true})
+}
+
+// TestButtonStates covers the interactive states that are invisible to HTML
+// golden tests: hover (color shift) and focus-visible (focus ring), plus the
+// disabled (greyed-out) variant.
+func TestButtonStates(t *testing.T) {
+	t.Parallel()
+
+	primary := display.DefaultButtonProps()
+	primary.Text = "Save changes"
+	visualtest.AssertScreenshot(t, "button/primary_hover", display.Button(primary), visualtest.Options{State: visualtest.StateHover})
+	visualtest.AssertScreenshot(t, "button/primary_focus", display.Button(primary), visualtest.Options{State: visualtest.StateFocus})
+
+	disabled := display.DefaultButtonProps()
+	disabled.Text = "Save changes"
+	disabled.Disabled = true
+	visualtest.AssertScreenshot(t, "button/primary_disabled", display.Button(disabled))
 }
 
 // TestAlerts covers all four feedback types with icons and colors.
@@ -78,4 +94,16 @@ func TestCard(t *testing.T) {
 	card.Title = "Monthly revenue"
 	visualtest.AssertScreenshot(t, "card/basic_light", display.Card(card))
 	visualtest.AssertScreenshot(t, "card/basic_dark", display.Card(card), visualtest.Options{Dark: true})
+}
+
+// TestResponsiveViewport captures a card at a mobile viewport width to catch
+// responsive breakpoint regressions (padding collapses, text wrapping).
+func TestResponsiveViewport(t *testing.T) {
+	t.Parallel()
+
+	card := display.DefaultCardProps()
+	card.Title = "Monthly revenue"
+	card.Subtitle = "Net of taxes and fees"
+	visualtest.AssertScreenshot(t, "card/mobile", display.Card(card),
+		visualtest.Options{Viewport: visualtest.Viewport{Width: 375, Height: 667}}) // iPhone SE width
 }

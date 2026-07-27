@@ -1,8 +1,10 @@
 package visualtest
 
 import (
+	"bytes"
 	"context"
 	"fmt"
+	"image/png"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -10,6 +12,7 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
+	"github.com/chromedp/cdproto/input"
 	"github.com/chromedp/chromedp"
 )
 
@@ -59,12 +62,12 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 
 	maxMismatchPct := o.MaxMismatch * 100
 
-	result, diff := comparePixels(golden, actualImg, o.PerPixelTolerance, maxMismatchPct)
+	result, diff := comparePixels(golden, actualImg, o.Threshold, maxMismatchPct)
 	if !result.Match {
 		writeFailureArtifacts(t, name, actual, diff)
-		t.Errorf("visualtest[%s]: visual mismatch — %dx%d, %.4f%% pixels differ (max %.4f%%).\n"+
-			"Inspect testdata/.fail/%s.{actual,diff}.png, then run `go test -tags=visual -update` if the change is intended.",
-			name, result.Width, result.Height, result.MismatchPct, maxMismatchPct, name)
+		t.Errorf("visualtest[%s]: visual mismatch — %s (max %.4f%%).\n"+
+			"Inspect testdata/.fail/%s.{actual,diff}.png, then run `go test -update` if the change is intended.",
+			name, result, maxMismatchPct, name)
 
 		return
 	}
@@ -73,6 +76,8 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 }
 
 // resolveOptions merges the variadic option list into one Options with defaults.
+// Later options win for non-bool fields; bools OR together so composing
+// {Dark:true} with {RTL:true} yields dark+RTL.
 func resolveOptions(opts []Options) Options {
 	merged := Options{}
 	for _, o := range opts {
@@ -91,8 +96,12 @@ func resolveOptions(opts []Options) Options {
 			merged.MaxMismatch = o.MaxMismatch
 		}
 
-		if o.PerPixelTolerance != 0 {
-			merged.PerPixelTolerance = o.PerPixelTolerance
+		if o.Threshold != 0 {
+			merged.Threshold = o.Threshold
+		}
+
+		if o.State != StateRest {
+			merged.State = o.State
 		}
 	}
 
@@ -122,9 +131,21 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 		// Wait for the root to exist and the document to finish loading so web
 		// fonts / CSS settle before the screenshot.
 		chromedp.WaitVisible(rootSel, chromedp.ByQuery),
+	}
+
+	// Apply the requested interaction state before settling + capture so
+	// :hover / :focus-visible styles are baked into the screenshot.
+	switch opts.State {
+	case StateHover:
+		tasks = append(tasks, hoverAction(rootSel))
+	case StateFocus:
+		tasks = append(tasks, chromedp.Focus(rootSel, chromedp.ByQuery))
+	}
+
+	tasks = append(tasks,
 		chromedp.Sleep(settleDelay),
 		chromedp.Screenshot(rootSel, &screenshot, chromedp.ByQuery, chromedp.NodeVisible),
-	}
+	)
 	if err := chromedp.Run(timeoutCtx, tasks...); err != nil {
 		return nil, fmt.Errorf("chromedp actions: %w", err)
 	}
@@ -136,3 +157,28 @@ const (
 	captureTimeout = 20 * time.Second
 	settleDelay    = 200 * time.Millisecond
 )
+
+// hoverAction returns a chromedp action that moves the mouse to the center of
+// the element matching sel, triggering real :hover styles (synthetic
+// mouseover events do not). The element's bounding box is read via JS so the
+// coordinates are correct regardless of scroll position.
+func hoverAction(sel string) chromedp.Action {
+	return chromedp.ActionFunc(func(ctx context.Context) error {
+		js := `(() => {
+			const e = document.querySelector(arguments[0]);
+			if (!e) return null;
+			const r = e.getBoundingClientRect();
+			return [r.x + r.width/2, r.y + r.height/2];
+		})(` + fmt.Sprintf("%q", sel) + `)`
+
+		var coords []float64
+		if err := chromedp.Evaluate(js, &coords).Do(ctx); err != nil {
+			return fmt.Errorf("hover: get %s rect: %w", sel, err)
+		}
+		if len(coords) != 2 {
+			return fmt.Errorf("hover: element %q not found", sel)
+		}
+
+		return input.DispatchMouseEvent(input.MouseMoved, coords[0], coords[1]).Do(ctx)
+	})
+}
