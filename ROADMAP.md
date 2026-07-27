@@ -6,13 +6,13 @@ listed under v1.0 is a **freeze**, not a redesign.
 
 ---
 
-## v0.x — Current (shipped)
+## v1.x — Current (shipped)
 
 The library is feature-complete for production server-rendered Go web apps.
 
 | Pillar        | Status                                                                                                                                                                                                                                                                  |
 | ------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Components    | **98** across 9 packages (display, feedback, forms, layout, navigation, htmx, errorpage, icons, utils)                                                                                                                                                                  |
+| Components    | **98** across 9 packages (display, feedback, forms, layout, navigation, htmx, errorpage, icons, utils) + 3 recipe screens                                                                                                                                                |
 | Icons         | **102** named SVG icons (Heroicons v2 outline + Spinner), typed `icons.Name` constants                                                                                                                                                                                  |
 | Typed enums   | 43 closed-set enums, each with `IsValid()` + test coverage; `map[X]string` + `utils.Lookup` everywhere                                                                                                                                                                  |
 | Layout        | Grid-first 2D layout primitives: `AppShell`, `Container`, `Split`, `Stack` + multi-column `Footer` + `Form.Layout` enum. Rule: grid = 2D, flex = 1D (ADR-0016). `minmax(0,1fr)` mandatory on all flexible grid columns.                                                 |
@@ -22,6 +22,7 @@ The library is feature-complete for production server-rendered Go web apps.
 | CSP safety    | Every inline script carries `nonce={ props.Nonce }`; integration test guards regressions                                                                                                                                                                                |
 | Accessibility | `motion-reduce:*` on all transitions/animations, `aria-sort`, focus trap, `aria-live` regions                                                                                                                                                                           |
 | Error pages   | `errorpage` package: 404, full-page, inline detail, family-aware alert, `http.Handler` integration                                                                                                                                                                      |
+| Theming       | Semantic token layer (`templ-components-theme.css`) + 3 presets, opt-in (v0.22.0). Self-host HTMX opt-in via `PageProps.HTMXSrc`.                                                                                                                                       |
 
 **Current version:** see [`utils/version.go`](utils/version.go) and the latest
 heading in [`CHANGELOG.md`](CHANGELOG.md).
@@ -52,6 +53,9 @@ and CI docs-health drift guard. See `CHANGELOG.md` for the full entry.
 | Recipes package              | ✅ DONE    | v0.21.0 | `recipes.Dashboard/SettingsLayout/LoginCard`. See ADR-0019.           |
 | `tc` CLI scaffolding tool    | ✅ DONE    | v1.1.0  | `tc init/ls/add` with embedded sources. See `docs/cli.md`.            |
 | Headless / unstyled variants | ❌ WONTFIX | v1.1.0  | ADR-0021 evaluated 3 options; existing `Class` override accepted.     |
+| Post-v1.1.0 defect fixes     | ✅ DONE    | v1.2.0  | Popover top-layer positioning (D1), Tooltip aria-describedby (D3), HTMXSrc CDN leak (D4), `tc add` dependency warning (D6). |
+| `navigation.SidebarNav`      | ✅ DONE    | v1.2.0  | Vertical sidebar nav for admin panels. Permanently-dark surface.      |
+| Recipe demo routes           | ✅ DONE    | v1.2.0  | `/recipes/{dashboard,settings,login}` in `examples/demo`.             |
 
 ---
 
@@ -61,6 +65,7 @@ and CI docs-health drift guard. See `CHANGELOG.md` for the full entry.
 | ------------------------- | ------------------------------------------------------------------------------------ |
 | Compound components       | `Trigger` / `Content` / `Close` sub-component pattern for Modal, Drawer, Dropdown.   |
 | Per-package modules split | Independently importable packages. ADR-0020 written; deferred until consumer demand. |
+| Default flip              | Self-host HTMX becomes default (CDN opt-in); semantic tokens become default. Both shipped opt-in in v0.22.0. See TODO #35. |
 | Demo / showcase site      | A hosted site rendering every component with live props.                             |
 
 ---

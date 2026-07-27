@@ -388,11 +388,11 @@ _(None currently)_
 ## Cross-Cutting Features
 
 - **CSP Compliance:** All inline scripts use `nonce` attribute
-- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 88 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
+- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 98 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first designs with `sm:` breakpoints
-- **Type Safety:** 34 typed string enums (33 with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
+- **Type Safety:** 43 typed string enums (all with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
 - **Test Coverage:** 74% average across packages, BDD + snapshot + a11y + benchmark + integration tests
 - **Theming:** Tailwind v4 `@theme` override support via `templ-components-theme.css`. Components emit standard utility classes (`bg-blue-600`, `text-gray-900`) — consumers override `--color-*` variables to theme globally without touching component code.
 - **CSS Automation:** `templates/app.css` + `templates/custom.css` starter entry-point + BuildFlow `tailwind-build` provider (auto-discovers CSS entry-points, compiles via `tailwindcss` in the DAG). See `docs/tailwind-v4-adoption-guide.md`.
@@ -400,31 +400,35 @@ _(None currently)_
 
 ---
 
-## Planned / Not Yet Implemented
+## Modern Web Standards (all shipped)
 
-See `TODO_LIST.md` for the full verified inventory. Highlights:
+| Feature                   | Component                 | Version  | Notes                                                                 |
+| ------------------------- | ------------------------- | -------- | --------------------------------------------------------------------- |
+| Stylable `<select>` API   | `SelectProps.Stylable`    | v1.1.0+  | `appearance: base-select` + `<button><selectedcontent>` (ADR 0015)    |
+| Auto-growing Textarea     | `TextareaProps.AutoGrow`  | v1.1.0+  | CSS `field-sizing: content`, default true                             |
+| Unified EnterKeyHint      | Input, Textarea           | v1.1.0+  | `EnterKeyHintType` enum, auto-derive on Input, explicit override both |
+| Form `hx-validate`        | `FormProps.Validate`      | v1.1.0+  | HTML5 constraint validation before HTMX submit                        |
+| `<search>` landmark       | Input (InputSearch)       | v1.1.0+  | Auto-wraps search inputs in semantic `<search>` element               |
+| Image responsive delivery | `ImageProps.SrcSet/Sizes` | v1.1.0+  | Typed fields replace `Attrs` workaround                               |
+| Table content-visibility  | `TableProps.LazyRows`     | v1.1.0+  | `content-visibility: auto` on body rows, compact variant included     |
+| Global `accent-color`     | `templates/custom.css`    | v1.1.0+  | Native form controls get library blue accent                          |
 
-| Feature / Component    | Package  | Status       | Notes                                                             |
-| ---------------------- | -------- | ------------ | ----------------------------------------------------------------- |
-| `DataTable`            | display  | ✅ `DONE`    | High-level sortable/pagination/empty-state wrapper around `Table` |
-| `FilterDropdown`       | forms    | ✅ `DONE`    | Purpose-built for HTMX filter bars                                |
-| `Validate() error`     | all      | ⚪ `PLANNED` | v1.0 — design decision needed (88 components)                     |
-| `internal/testutil/`   | internal | ⚪ `PLANNED` | v1.0 — move test helpers (70+ files depend on exports)            |
-| Semantic token layer   | all      | ⚪ `PLANNED` | v1.0 — `bg-tc-primary` aliases (ADR 0008, 256 color refs)         |
-| Self-host htmx default | layout   | ⚪ `PLANNED` | v1.0 — breaking CSP change (ADR 0007)                             |
-| Native `<dialog>`      | display  | ✅ `DONE`    | Modal/Drawer use native `<dialog>` + `showModal()` (ADR 0014)     |
-| Compound components    | display  | —            | v2.0 — Trigger/Content/Close API for overlays                     |
-| Docs/showcase site     | —        | ⚪ `PLANNED` | Live rendered component catalog                                   |
+---
 
-## Modern Web Standards (Unreleased — `[Unreleased]` in CHANGELOG)
+## Planned / Deferred / Not Yet Implemented
 
-| Feature                   | Component                 | Status    | Notes                                                                 |
-| ------------------------- | ------------------------- | --------- | --------------------------------------------------------------------- |
-| Stylable `<select>` API   | `SelectProps.Stylable`    | ✅ `DONE` | `appearance: base-select` + `<button><selectedcontent>` (ADR 0015)    |
-| Auto-growing Textarea     | `TextareaProps.AutoGrow`  | ✅ `DONE` | CSS `field-sizing: content`, default true                             |
-| Unified EnterKeyHint      | Input, Textarea           | ✅ `DONE` | `EnterKeyHintType` enum, auto-derive on Input, explicit override both |
-| Form `hx-validate`        | `FormProps.Validate`      | ✅ `DONE` | HTML5 constraint validation before HTMX submit                        |
-| `<search>` landmark       | Input (InputSearch)       | ✅ `DONE` | Auto-wraps search inputs in semantic `<search>` element               |
-| Image responsive delivery | `ImageProps.SrcSet/Sizes` | ✅ `DONE` | Typed fields replace `Attrs` workaround                               |
-| Table content-visibility  | `TableProps.LazyRows`     | ✅ `DONE` | `content-visibility: auto` on body rows, compact variant included     |
-| Global `accent-color`     | `templates/custom.css`    | ✅ `DONE` | Native form controls get library blue accent                          |
+See `TODO_LIST.md` for the full verified inventory and `ROADMAP.md` for long-term direction.
+
+| Feature / Component          | Package  | Status        | Notes                                                                              |
+| ---------------------------- | -------- | ------------- | ---------------------------------------------------------------------------------- |
+| `DataTable`                  | display  | ✅ DONE       | High-level sortable/pagination/empty-state wrapper around `Table` (v0.18.0)        |
+| `FilterDropdown`             | forms    | ✅ DONE       | Purpose-built for HTMX filter bars                                                 |
+| Native `<dialog>`            | display  | ✅ DONE       | Modal/Drawer use native `<dialog>` + `showModal()` (ADR 0014, v0.17.0)             |
+| Semantic token layer         | all      | ✅ DONE       | `templ-components-theme.css` + 3 presets, opt-in (v0.22.0, ADR 0008). Default flip deferred to v2.0. |
+| Self-host HTMX               | layout   | ✅ DONE       | `PageProps.HTMXSrc` opt-in (v0.22.0, ADR 0007). Default flip (CDN → self-host) deferred to v2.0.    |
+| `Validate() error`           | all      | 🟡 PARTIAL    | `ErrorPageProps.Validate()` shipped v1.0.0. Other props use graceful `utils.Lookup` fallback — no `Validate` needed unless invalid states are representable. |
+| `internal/testutil/`         | internal | ⬜ DEFERRED   | Move test helpers behind re-exports. 70+ test imports affected; deferred post-v1.0 (TODO #34). |
+| Compound components          | display  | ⬜ v2.0       | Trigger/Content/Close sub-component API for overlays (TODO #39)                    |
+| Per-package modules split    | all      | ⬜ v2.0       | Independently importable packages. ADR-0020 written; deferred until consumer demand. |
+| Docs/showcase site           | —        | ⬜ PLANNED    | Live rendered component catalog                                                   |
+| Remove `AlertType`/`ToastType` aliases | feedback | ⬜ DEFERRED | Backward-compat type aliases for `FeedbackType`. Other aliases (ModalSizeFull, DrawerFull, FamilyFromErrorFamily, FormProps.Inline) removed in v1.0.0. (TODO #38) |
