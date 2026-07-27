@@ -198,3 +198,32 @@ func TestAsidePositionIsValid(t *testing.T) {
 		t.Errorf("AsidePositionIsValid(\"middle\") = true; want false")
 	}
 }
+
+func TestSplitContainerAware(t *testing.T) {
+	t.Parallel()
+	main := templ.Raw("<p>main</p>")
+	aside := templ.Raw("<p>aside</p>")
+
+	t.Run("viewport breakpoints by default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Split(SplitProps{Main: main, Aside: aside}))
+		utils.AssertNotContains(t, output, "@container")
+		utils.AssertContains(t, output, "md:grid-cols-3")
+		utils.AssertContains(t, output, "md:col-span-2")
+		utils.AssertNotContains(t, output, "@md:")
+	})
+
+	t.Run("container breakpoints when flag set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Split(SplitProps{
+			Main:           main,
+			Aside:          aside,
+			ContainerAware: true,
+		}))
+		utils.AssertContains(t, output, "@container")
+		utils.AssertContains(t, output, "@md:grid-cols-3")
+		utils.AssertContains(t, output, "@md:col-span-2")
+		utils.AssertContains(t, output, "@md:col-span-1")
+		utils.AssertNotContains(t, output, " md:")
+	})
+}

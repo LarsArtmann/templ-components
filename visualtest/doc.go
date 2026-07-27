@@ -30,66 +30,40 @@ package visualtest
 import (
 	"context"
 	"os"
-	"sync"
 	"testing"
-	"time"
 
 	"github.com/chromedp/chromedp"
 )
 
-// browserAllocator is shared across all tests in a run: one Chromium process,
-// many tabs (one per test). Created lazily so tests without a browser skip
-// instead of failing at init.
-var (
-	browserOnce sync.Once
-	allocCtx    context.Context
-	allocCancel context.CancelFunc
-	browserErr  error
-)
-
-// newBrowser prepares the shared Chromium allocator and returns a fresh tab
-// context plus its cancel func. The test's cleanup is the caller's
-// responsibility. If no browser is available the test is skipped.
+// newBrowser launches a dedicated Chromium process for one test and returns a
+// tab context plus its cancel func (which also stops that browser). If no
+// browser binary is available the test is skipped. One process per test keeps
+// failures isolated and avoids cross-test tab interference; startup is ~1s.
 func newBrowser(t *testing.T) (context.Context, context.CancelFunc) {
 	t.Helper()
 
-	browserOnce.Do(func() {
-		chromePath := os.Getenv("CHROMEDP_CHROME_PATH")
-		if chromePath == "" {
-			browserErr = errNoBrowser
-			return
-		}
-		if _, err := os.Stat(chromePath); err != nil {
-			browserErr = errNoBrowser
-			return
-		}
-
-		opts := append(chromedp.DefaultExecAllocatorOptions[:],
-			chromedp.ExecPath(chromePath),
-			chromedp.NoSandbox, // required inside Nix builds / containers
-			chromedp.DisableGPU,
-			chromedp.Flag("font-render-hinting", "none"), // deterministic text rasterization
-			chromedp.Flag("disable-background-timer-throttling", true),
-		)
-		allocCtx, allocCancel = chromedp.NewExecAllocator(context.Background(), opts...)
-	})
-
-	if browserErr != nil {
-		t.Skipf("visual tests skipped: %v (set CHROMEDP_CHROME_PATH to a Chromium binary)", browserErr)
+	chromePath := os.Getenv("CHROMEDP_CHROME_PATH")
+	if chromePath == "" {
+		t.Skipf("visual tests skipped: %v (set CHROMEDP_CHROME_PATH to a Chromium binary)", errNoBrowser)
+	}
+	if _, err := os.Stat(chromePath); err != nil {
+		t.Skipf("visual tests skipped: CHROMEDP_CHROME_PATH %q not accessible: %v", chromePath, err)
 	}
 
-	tabCtx, tabCancel := chromedp.NewContext(allocCtx)
-	// Warm up: ensure the first tab is ready before returning so navigation
-	// actions do not race the browser startup.
-	timeoutCtx, timeoutCancel := context.WithTimeout(tabCtx, browserStartupTimeout)
-	if err := chromedp.Run(timeoutCtx); err != nil {
-		tabCancel()
-		timeoutCancel()
-		t.Fatalf("visualtest: start browser tab: %v", err)
-	}
-	timeoutCancel()
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.ExecPath(chromePath),
+		chromedp.NoSandbox, // required inside Nix builds / containers
+		chromedp.DisableGPU,
+		chromedp.Flag("font-render-hinting", "none"), // deterministic text rasterization
+		chromedp.Flag("disable-background-timer-throttling", true),
+	)
+	allocCtx, allocCancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	ctx, cancel := chromedp.NewContext(allocCtx)
 
-	return tabCtx, tabCancel
+	// Combine cancels so one defer tears down both the tab and the process.
+	combinedCancel := func() {
+		cancel()
+		allocCancel()
+	}
+	return ctx, combinedCancel
 }
-
-const browserStartupTimeout = 30 * time.Second

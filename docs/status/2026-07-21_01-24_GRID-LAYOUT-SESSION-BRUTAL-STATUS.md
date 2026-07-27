@@ -253,7 +253,7 @@ I cannot pick because it depends on your theming philosophy (CSS vars vs. utilit
 
 **Shipped:** 4 new layout components + 2 backward-compatible extensions + ADR + 2 recipes + demo wiring. Tests green, lint clean, pushed to master.
 
-**Hard miss:** CHANGELOG `[Unreleased]` not updated — release script will fail until fixed.
+~~**Hard miss:** CHANGELOG `[Unreleased]` not updated — release script will fail until fixed.~~ **Fixed** — CHANGELOG warmed in the polish-pass session (#6) and shipped as v0.19.0 (`2314f26`). See [Resolution](#resolution-2026-07-27).
 
 **Soft misses:** No RTL scanner (skipped from plan), demo binary never smoke-tested, hero/sticky-nav still have hand-rolled Container snippets, AppShell recipe lacks a mobile-drawer example.
 
@@ -261,6 +261,12 @@ I cannot pick because it depends on your theming philosophy (CSS vars vs. utilit
 
 **Recommended next 3 actions:**
 
-1. Update `CHANGELOG.md [Unreleased]` (blocks next release).
-2. Smoke-test the demo binary (`nix run .#build && ./result/bin/demo`).
-3. Write `utils.TestRTLLogicalProperties` scanner (skipped from plan, protects RTL correctness).
+1. ~~Update `CHANGELOG.md [Unreleased]` (blocks next release).~~ **DONE.**
+2. ~~Smoke-test the demo binary (`nix run .#build && ./result/bin/demo`).~~ Deferred (no HTTP smoke harness; TODO_LIST #13).
+3. ~~Write `utils.TestRTLLogicalProperties` scanner (skipped from plan, protects RTL correctness).~~ **DONE** — written in the polish-pass session (#6).
+
+---
+
+## Resolution (2026-07-27)
+
+All work shipped as v0.19.0 (commit `2314f26`, tag `v0.19.0`). The polish-pass session (`2026-07-21_02-16`) resolved the CHANGELOG hard-miss, wrote the RTL scanner, and added the cross-package integration + `<main>` contract tests. The grid-layout primitives (AppShell, Container, Split, Stack) are FULLY_FUNCTIONAL in FEATURES.md.
