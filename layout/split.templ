@@ -9,6 +9,11 @@ import "github.com/larsartmann/templ-components/utils"
 // Both columns use minmax(0,1fr) per grid track to prevent grid blowout
 // (see ADR-0016). The layout stacks to a single column below md (mobile).
 //
+// Set ContainerAware: true to make the 2-column collapse respond to the
+// parent container's width (CSS @container) instead of the viewport. Useful
+// when Split is placed inside a sidebar, card body, drawer, or other
+// constrained layout. See ADR-0018.
+//
 // # RTL / logical ordering
 //
 // AsidePosition uses logical (Start/End) names, not physical (Left/Right).
@@ -22,6 +27,16 @@ import "github.com/larsartmann/templ-components/utils"
 //	   Ratio:  layout.SplitRatio1To3,
 //	})
 templ Split(props SplitProps) {
+	if props.ContainerAware {
+		<div class="@container">
+			@splitInner(props)
+		</div>
+	} else {
+		@splitInner(props)
+	}
+}
+
+templ splitInner(props SplitProps) {
 	{{ gap := props.Gap }}
 	if gap == "" {
 		{{ gap = "gap-6" }}
@@ -32,7 +47,7 @@ templ Split(props SplitProps) {
 		}
 		class={ utils.Class(
 			"grid grid-cols-1",
-			splitRatioCols(props.Ratio),
+			splitRatioCols(props.Ratio, props.ContainerAware),
 			gap,
 			props.Class,
 		) }
@@ -42,17 +57,17 @@ templ Split(props SplitProps) {
 		{ props.Attrs... }
 	>
 		if props.AsidePosition == AsidePositionStart && props.Aside != nil {
-			<aside class="md:col-span-1 min-w-0">
+			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") }>
 				@props.Aside
 			</aside>
 		}
 		if props.Main != nil {
-			<div class={ utils.Class("min-w-0", splitRatioMainSpan(props.Ratio)) }>
+			<div class={ utils.Class("min-w-0", splitRatioMainSpan(props.Ratio, props.ContainerAware)) }>
 				@props.Main
 			</div>
 		}
 		if props.AsidePosition != AsidePositionStart && props.Aside != nil {
-			<aside class="md:col-span-1 min-w-0">
+			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") }>
 				@props.Aside
 			</aside>
 		}

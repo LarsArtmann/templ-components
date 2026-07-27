@@ -35,28 +35,65 @@ var splitRatioLookup = map[SplitRatio]string{
 	SplitRatio1To4: "md:grid-cols-4",
 }
 
+// splitRatioLookupContainer mirrors splitRatioLookup with @container-keyed
+// breakpoints (@md:) so container-aware Splits respond to their parent's
+// width instead of the viewport. See ADR-0018.
+var splitRatioLookupContainer = map[SplitRatio]string{
+	SplitRatio1To2: "@md:grid-cols-2",
+	SplitRatio1To3: "@md:grid-cols-3",
+	SplitRatio1To4: "@md:grid-cols-4",
+}
+
 // splitRatioCols returns the grid-template-columns class for a ratio (e.g.
-// md:grid-cols-2). Falls back to SplitRatioDefault.
-func splitRatioCols(r SplitRatio) string {
+// md:grid-cols-2). Falls back to SplitRatioDefault. When containerAware is
+// true, returns @container-keyed variants so the layout responds to the
+// parent container's width, not the viewport.
+func splitRatioCols(r SplitRatio, containerAware bool) string {
+	if containerAware {
+		return utils.Lookup(splitRatioLookupContainer, r, splitRatioLookupContainer[SplitRatioDefault])
+	}
 	return utils.Lookup(splitRatioLookup, r, splitRatioLookup[SplitRatioDefault])
 }
 
-// splitRatioMainSpan returns the md:col-span-N class for the Main column.
+// splitRatioMainSpanLookup maps each SplitRatio to the Main column's span
+// class. Complete Tailwind literals (never dynamically concatenated —
+// Tailwind's content scanner needs the full token).
+//
+//nolint:gochecknoglobals // Package-level lookup table
+var splitRatioMainSpanLookup = map[SplitRatio]string{
+	SplitRatio1To2: "md:col-span-1",
+	SplitRatio1To3: "md:col-span-2",
+	SplitRatio1To4: "md:col-span-3",
+}
+
+// splitRatioMainSpanLookupContainer mirrors splitRatioMainSpanLookup with
+// @container-keyed breakpoints (@md:). See ADR-0018.
+//
+//nolint:gochecknoglobals // Package-level lookup table
+var splitRatioMainSpanLookupContainer = map[SplitRatio]string{
+	SplitRatio1To2: "@md:col-span-1",
+	SplitRatio1To3: "@md:col-span-2",
+	SplitRatio1To4: "@md:col-span-3",
+}
+
+// splitRatioMainSpan returns the col-span-N class for the Main column.
 // At 1To3 (3 cols), Main spans 2. At 1To4 (4 cols), Main spans 3. At 1To2,
 // Main spans 1 (equal). Both Main and Aside use minmax(0,1fr) per track to
 // guard against grid blowout from wide content (ADR-0016).
-//
-//nolint:exhaustive // SplitRatio1To3 and SplitRatioDefault share the default branch intentionally
-func splitRatioMainSpan(r SplitRatio) string {
-	switch r {
-	case SplitRatio1To4:
-		return "md:col-span-3"
-	case SplitRatio1To2:
-		return "md:col-span-1"
-	default:
-		// SplitRatio1To3 and SplitRatioDefault both use span-2.
-		return "md:col-span-2"
+func splitRatioMainSpan(r SplitRatio, containerAware bool) string {
+	if containerAware {
+		return utils.Lookup(splitRatioMainSpanLookupContainer, r, splitRatioMainSpanLookupContainer[SplitRatio1To3])
 	}
+	return utils.Lookup(splitRatioMainSpanLookup, r, splitRatioMainSpanLookup[SplitRatio1To3])
+}
+
+// splitAsideSpan returns the col-span-1 class for the Aside column, swapping
+// viewport-keyed (md:) for container-keyed (@md:) when container-aware.
+func splitAsideSpan(containerAware bool) string {
+	if containerAware {
+		return "@md:col-span-1"
+	}
+	return "md:col-span-1"
 }
 
 // AsidePosition controls whether the Aside renders before (start) or after
@@ -103,6 +140,12 @@ type SplitProps struct {
 	Ratio SplitRatio
 	// Gap controls spacing between the two columns. Default GridGapLG (1.5rem).
 	Gap string
+	// ContainerAware, when true, wraps the Split in a @container div and swaps
+	// md: breakpoint classes for @md: so the 2-column collapse responds to the
+	// parent container's width, not the viewport. Useful when Split is placed
+	// inside a sidebar, card body, drawer, or other constrained layout. Default
+	// false (viewport breakpoints). See ADR-0018.
+	ContainerAware bool
 }
 
 // DefaultSplitProps returns sensible defaults: aside at end, 1To3 ratio, gap-6.

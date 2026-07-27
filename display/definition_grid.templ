@@ -7,6 +7,11 @@ import "github.com/larsartmann/templ-components/utils"
 // out each term-detail pair as a card in a responsive grid — ideal for
 // dashboards and settings pages where many key-value pairs need to be scanned
 // side by side.
+//
+// Set ContainerAware: true to make the column count respond to the parent
+// container's width (CSS @container) instead of the viewport. Useful when
+// DefinitionGrid is placed inside a sidebar, card body, or other constrained
+// layout. See ADR-0018.
 type DefinitionGridProps struct {
 	utils.BaseProps
 	// Items are the term-detail pairs to render.
@@ -14,6 +19,10 @@ type DefinitionGridProps struct {
 	// Cols controls the responsive column count. Defaults to GridCols3 when
 	// empty or unknown.
 	Cols GridCols
+	// ContainerAware, when true, wraps the grid in a @container div and uses
+	// container-query variants (@sm:, @lg:) instead of viewport breakpoints.
+	// Default false (viewport breakpoints).
+	ContainerAware bool
 }
 
 // DefaultDefinitionGridProps returns sensible defaults.
@@ -40,26 +49,56 @@ templ DefinitionGrid(props DefinitionGridProps) {
 		if cols == "" {
 			cols = GridColsDefault
 		}
+		gridBase := gridClass(cols)
+		if props.ContainerAware {
+			gridBase = gridContainerClass(cols)
+		}
 	}}
-	<div
-		if props.ID != "" {
-			id={ props.ID }
-		}
-		class={ utils.Class(gridClass(cols), gridGapClass(GridGapDefault), props.Class) }
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
-		}
-		{ props.Attrs... }
-	>
-		for _, item := range props.Items {
-			@SimpleCard(SimpleCardProps{Padding: CardPaddingSM}) {
-				<dl class="space-y-1">
-					<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{ item.Term }</dt>
-					<dd class="text-sm font-semibold text-gray-900 dark:text-white m-0">
-						@definitionDetailContent(item)
-					</dd>
-				</dl>
+	if props.ContainerAware {
+		<div class="@container">
+			<div
+				if props.ID != "" {
+					id={ props.ID }
+				}
+				class={ utils.Class(gridBase, gridGapClass(GridGapDefault), props.Class) }
+				if props.AriaLabel != "" {
+					aria-label={ props.AriaLabel }
+				}
+				{ props.Attrs... }
+			>
+				for _, item := range props.Items {
+					@SimpleCard(SimpleCardProps{Padding: CardPaddingSM}) {
+						<dl class="space-y-1">
+							<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{ item.Term }</dt>
+							<dd class="text-sm font-semibold text-gray-900 dark:text-white m-0">
+								@definitionDetailContent(item)
+							</dd>
+						</dl>
+					}
+				}
+			</div>
+		</div>
+	} else {
+		<div
+			if props.ID != "" {
+				id={ props.ID }
 			}
-		}
-	</div>
+			class={ utils.Class(gridBase, gridGapClass(GridGapDefault), props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			for _, item := range props.Items {
+				@SimpleCard(SimpleCardProps{Padding: CardPaddingSM}) {
+					<dl class="space-y-1">
+						<dt class="text-xs font-medium uppercase tracking-wide text-gray-500 dark:text-gray-400">{ item.Term }</dt>
+						<dd class="text-sm font-semibold text-gray-900 dark:text-white m-0">
+							@definitionDetailContent(item)
+						</dd>
+					</dl>
+				}
+			}
+		</div>
+	}
 }
