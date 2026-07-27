@@ -37,8 +37,18 @@ func TestButtonStates(t *testing.T) {
 
 	primary := display.DefaultButtonProps()
 	primary.Text = "Save changes"
-	visualtest.AssertScreenshot(t, "button/primary_hover", display.Button(primary), visualtest.Options{State: visualtest.StateHover})
-	visualtest.AssertScreenshot(t, "button/primary_focus", display.Button(primary), visualtest.Options{State: visualtest.StateFocus})
+	visualtest.AssertScreenshot(
+		t,
+		"button/primary_hover",
+		display.Button(primary),
+		visualtest.Options{State: visualtest.StateHover},
+	)
+	visualtest.AssertScreenshot(
+		t,
+		"button/primary_focus",
+		display.Button(primary),
+		visualtest.Options{State: visualtest.StateFocus},
+	)
 
 	disabled := display.DefaultButtonProps()
 	disabled.Text = "Save changes"

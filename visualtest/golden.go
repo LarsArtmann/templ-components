@@ -104,6 +104,6 @@ func goldenPath(name string) string {
 // genuinely-failing tests leave artifacts behind.
 func cleanFailureArtifacts(name string) {
 	for _, suffix := range []string{".actual.png", ".diff.png"} {
-		_ = os.Remove(filepath.Join(goldenDir, ".fail", name+suffix)) //nolint:errcheck // best-effort cleanup
+		_ = os.Remove(filepath.Join(goldenDir, ".fail", name+suffix))
 	}
 }

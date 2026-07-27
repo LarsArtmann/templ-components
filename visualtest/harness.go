@@ -178,6 +178,7 @@ func hoverAction(sel string) chromedp.Action {
 		if err := chromedp.Evaluate(js, &coords).Do(ctx); err != nil {
 			return fmt.Errorf("hover: get %s rect: %w", sel, err)
 		}
+
 		if len(coords) != 2 {
 			return fmt.Errorf("hover: element %q not found", sel)
 		}
@@ -199,13 +200,16 @@ func focusAction(sel string) chromedp.Action {
 			if (f) { f.focus(); return true; }
 			return false;
 		})()`
+
 		var focused bool
 		if err := chromedp.Evaluate(js, &focused).Do(ctx); err != nil {
 			return fmt.Errorf("focus: query %s: %w", sel, err)
 		}
+
 		if !focused {
 			return fmt.Errorf("focus: no focusable element under %q", sel)
 		}
+
 		return nil
 	})
 }

@@ -48,6 +48,7 @@ func comparePixels(
 	}
 
 	var diffImg image.Image
+
 	mismatched, err := pixelmatch.MatchPixel(
 		golden,
 		actual,
@@ -62,10 +63,12 @@ func comparePixels(
 	}
 
 	pct := float64(mismatched) / float64(total) * 100
+
 	var rgba *image.RGBA
 	if d, ok := diffImg.(*image.RGBA); ok {
 		rgba = d
 	}
+
 	return diffResult{
 		Match:       pct <= maxMismatchPct,
 		MismatchPct: pct,

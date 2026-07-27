@@ -47,7 +47,6 @@ func countExportedTemplFunctions(t *testing.T, root string) int {
 		}
 
 		for _, file := range files {
-
 			data, err := os.ReadFile(file)
 			if err != nil {
 				t.Fatalf("read %s: %v", file, err)
