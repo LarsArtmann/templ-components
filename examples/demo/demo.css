@@ -4,12 +4,15 @@
 @import "../../templates/custom.css";
 
 /*
- * Scan ALL .templ files in the repo — not just demo files, but every component
- * package (display, forms, feedback, layout, navigation, htmx, errorpage, icons, utils).
- * Without this, component classes are missing from the compiled CSS.
+ * Scan ALL .templ AND .go files in the repo — not just demo files, but every
+ * component package (display, forms, feedback, layout, navigation, htmx,
+ * errorpage, icons, utils). Many components define Tailwind class lookup maps
+ * in Go source (buttonVariantLookup, feedbackStyleMap, familyStyleMap). Without
+ * scanning .go files, those classes produce silently-missing CSS.
  * Path is relative to this CSS file (examples/demo/), so ../../ reaches the repo root.
  */
 @source "../../**/*.templ";
+@source "../../**/*.go";
 
 /* Class-based dark mode — required for ThemeScript/ThemeToggle */
 @custom-variant dark (&:where(.dark, .dark *));

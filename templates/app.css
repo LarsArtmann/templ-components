@@ -16,9 +16,16 @@
 /*
  * @source directives tell Tailwind where to scan for class names.
  * Adjust the vendored path to match your module layout.
+ *
+ * .templ files are the primary source. .go files are also scanned because
+ * many components define Tailwind class lookup maps in Go source (e.g.,
+ * buttonVariantLookup, feedbackStyleMap, familyStyleMap). Without scanning
+ * .go files, classes defined only in Go produce silently-missing CSS.
  */
 @source "**/*.templ";
+@source "**/*.go";
 @source "vendor/github.com/larsartmann/templ-components/**/*.templ";
+@source "vendor/github.com/larsartmann/templ-components/**/*.go";
 
 /*
  * Class-based dark mode — required for layout.ThemeScript() / layout.ThemeToggle().

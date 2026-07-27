@@ -55,9 +55,9 @@ func scanContainerQuery(
 		dirPath := filepath.Join("..", dir)
 
 		err := filepath.Walk(dirPath, func(path string, info os.FileInfo, err error) error {
-		return checkContainerQueryFile(
-			t, path, info, err, structuralRe, containerAwareRe, &violations,
-		)
+			return checkContainerQueryFile(
+				t, path, info, err, structuralRe, containerAwareRe, &violations,
+			)
 		})
 		if err != nil {
 			t.Logf("walk error for %s: %v", dir, err)
