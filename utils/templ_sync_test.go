@@ -20,6 +20,7 @@ func TestTemplGeneratedInSync(t *testing.T) {
 	t.Parallel()
 
 	root := ".."
+
 	packages := []string{
 		"display", "errorpage", "feedback", "forms",
 		"htmx", "layout", "navigation", "recipes",
@@ -29,6 +30,7 @@ func TestTemplGeneratedInSync(t *testing.T) {
 
 	for _, pkg := range packages {
 		pkgDir := filepath.Join(root, pkg)
+
 		templFiles, err := filepath.Glob(filepath.Join(pkgDir, "*.templ"))
 		if err != nil {
 			t.Fatalf("glob %s: %v", pkgDir, err)
@@ -36,6 +38,7 @@ func TestTemplGeneratedInSync(t *testing.T) {
 
 		for _, templFile := range templFiles {
 			genFile := strings.TrimSuffix(templFile, ".templ") + "_templ.go"
+
 			t.Run(pkg+"/"+filepath.Base(templFile), func(t *testing.T) {
 				t.Parallel()
 
@@ -43,6 +46,7 @@ func TestTemplGeneratedInSync(t *testing.T) {
 				if err != nil {
 					t.Fatalf("read %s: %v", templFile, err)
 				}
+
 				gen, err := os.ReadFile(genFile)
 				if err != nil {
 					t.Fatalf("read %s: %v", genFile, err)
@@ -52,14 +56,16 @@ func TestTemplGeneratedInSync(t *testing.T) {
 				genImports := extractImports(string(gen), importRe)
 
 				for imp := range srcImports {
-					if !genImports[imp] {
-						t.Errorf(
-							"%s imports %q but %s does not — run `templ generate` to sync",
-							filepath.Base(templFile),
-							imp,
-							filepath.Base(genFile),
-						)
+					if genImports[imp] {
+						continue
 					}
+
+					t.Errorf(
+						"%s imports %q but %s does not — run `templ generate` to sync",
+						filepath.Base(templFile),
+						imp,
+						filepath.Base(genFile),
+					)
 				}
 			})
 		}
@@ -67,8 +73,8 @@ func TestTemplGeneratedInSync(t *testing.T) {
 }
 
 // extractImports pulls quoted import paths from the import section of a Go or
-// templ source file. It scans only `import (...)` blocks and single-line
-// `import "..."` declarations, excluding templ's own runtime imports
+// templ source file. It scans only import (...) blocks and single-line
+// import "..." declarations, excluding templ's own runtime imports
 // (github.com/a-h/templ and github.com/a-h/templ/runtime) which are always
 // injected by the generator.
 func extractImports(src string, re *regexp.Regexp) map[string]bool {
@@ -77,21 +83,27 @@ func extractImports(src string, re *regexp.Regexp) map[string]bool {
 	importBlockRe := regexp.MustCompile(
 		`(?s)import\s*\(([^)]*)\)|import\s*"([^"]+)"`,
 	)
+
 	for _, match := range importBlockRe.FindAllStringSubmatch(src, -1) {
 		var block string
+
 		if match[1] != "" {
 			block = match[1]
 		} else {
 			block = match[2]
 		}
+
 		for _, imp := range re.FindAllStringSubmatch(block, -1) {
 			path := imp[1]
+
 			if strings.HasPrefix(path, "github.com/a-h/templ") {
 				continue
 			}
+
 			result[path] = true
 		}
 	}
+
 	return result
 }
 
@@ -101,15 +113,20 @@ func TestTemplGeneratedInSyncCoverage(t *testing.T) {
 	t.Parallel()
 
 	root := ".."
-	count := 0
+
 	packages := []string{
 		"display", "errorpage", "feedback", "forms",
 		"htmx", "layout", "navigation", "recipes",
 	}
+
+	count := 0
+
 	for _, pkg := range packages {
 		files, _ := filepath.Glob(filepath.Join(root, pkg, "*.templ"))
+
 		count += len(files)
 	}
+
 	if count < 50 {
 		t.Errorf("expected >=50 .templ files across packages, found %d", count)
 	}
