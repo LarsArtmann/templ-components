@@ -5,6 +5,7 @@ import (
 
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
+	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/visualtest"
 )
 
@@ -116,4 +117,101 @@ func TestResponsiveViewport(t *testing.T) {
 	card.Subtitle = "Net of taxes and fees"
 	visualtest.AssertScreenshot(t, "card/mobile", display.Card(card),
 		visualtest.Options{Viewport: visualtest.Viewport{Width: 375, Height: 667}}) // iPhone SE width
+}
+
+// TestModal covers the native <dialog> modal in both light and dark mode.
+// The modal is rendered with Open=true so the dialog is visible.
+func TestModal(t *testing.T) {
+	t.Parallel()
+
+	modal := display.DefaultModalProps()
+	modal.Title = "Delete project"
+	modal.Open = true
+	visualtest.AssertScreenshot(t, "modal/open_light", display.Modal(modal))
+	visualtest.AssertScreenshot(t, "modal/open_dark", display.Modal(modal), visualtest.Options{Dark: true})
+}
+
+// TestDrawer covers the native <dialog> drawer on both sides.
+func TestDrawer(t *testing.T) {
+	t.Parallel()
+
+	right := display.DefaultDrawerProps()
+	right.Title = "Settings"
+	right.Open = true
+	visualtest.AssertScreenshot(t, "drawer/right_light", display.Drawer(right))
+
+	left := display.DefaultDrawerProps()
+	left.Title = "Filters"
+	left.Open = true
+	left.Side = display.DrawerLeft
+	visualtest.AssertScreenshot(
+		t,
+		"drawer/left_dark",
+		display.Drawer(left),
+		visualtest.Options{Dark: true},
+	)
+}
+
+// TestInput covers text, error, and disabled states of the most-used form input.
+func TestInput(t *testing.T) {
+	t.Parallel()
+
+	basic := forms.DefaultInputProps()
+	basic.Label = "Email address"
+	basic.Placeholder = "you@example.com"
+	visualtest.AssertScreenshot(t, "input/text_light", forms.Input(basic))
+	visualtest.AssertScreenshot(t, "input/text_dark", forms.Input(basic), visualtest.Options{Dark: true})
+
+	withError := forms.DefaultInputProps()
+	withError.Label = "Email address"
+	withError.Value = "not-an-email"
+	withError.Error = "Please enter a valid email address"
+	visualtest.AssertScreenshot(t, "input/error_light", forms.Input(withError))
+
+	disabled := forms.DefaultInputProps()
+	disabled.Label = "API key"
+	disabled.Value = "sk-••••••••"
+	disabled.Disabled = true
+	visualtest.AssertScreenshot(t, "input/disabled_light", forms.Input(disabled))
+}
+
+// TestSelect covers the select component with options.
+func TestSelect(t *testing.T) {
+	t.Parallel()
+
+	sel := forms.DefaultSelectProps()
+	sel.Label = "Country"
+	sel.Options = []forms.SelectOption{
+		{Value: "us", Label: "United States"},
+		{Value: "de", Label: "Germany"},
+		{Value: "jp", Label: "Japan"},
+	}
+	visualtest.AssertScreenshot(t, "select/basic_light", forms.Select(sel))
+	visualtest.AssertScreenshot(t, "select/basic_dark", forms.Select(sel), visualtest.Options{Dark: true})
+}
+
+// TestRTL verifies that logical CSS properties (ms-, me-, ps-, pe-, start-,
+// end-) correctly mirror in right-to-left mode. Uses Button and Card — the
+// most common components where RTL breakage is user-visible.
+func TestRTL(t *testing.T) {
+	t.Parallel()
+
+	primary := display.DefaultButtonProps()
+	primary.Text = "Save changes"
+	visualtest.AssertScreenshot(
+		t,
+		"button/primary_rtl",
+		display.Button(primary),
+		visualtest.Options{RTL: true},
+	)
+
+	card := display.DefaultCardProps()
+	card.Title = "Monthly revenue"
+	card.Subtitle = "Net of taxes and fees"
+	visualtest.AssertScreenshot(
+		t,
+		"card/basic_rtl",
+		display.Card(card),
+		visualtest.Options{RTL: true},
+	)
 }
