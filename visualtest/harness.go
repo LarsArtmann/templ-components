@@ -72,6 +72,7 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 		return
 	}
 
+	cleanFailureArtifacts(name)
 	t.Logf("visualtest[%s]: OK (%.4f%% mismatched, threshold %.4f%%)", name, result.MismatchPct, maxMismatchPct)
 }
 

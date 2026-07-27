@@ -98,3 +98,12 @@ func writeFailureArtifacts(t *testing.T, name string, actual []byte, diff *image
 func goldenPath(name string) string {
 	return filepath.Join(goldenDir, name+".png")
 }
+
+// cleanFailureArtifacts removes stale actual/diff images from a previous
+// failing run once the test passes again. Keeps testdata/.fail/ honest — only
+// genuinely-failing tests leave artifacts behind.
+func cleanFailureArtifacts(name string) {
+	for _, suffix := range []string{".actual.png", ".diff.png"} {
+		_ = os.Remove(filepath.Join(goldenDir, ".fail", name+suffix)) //nolint:errcheck // best-effort cleanup
+	}
+}

@@ -124,7 +124,7 @@ Don't know what to look for? Find your page type:
 | `InlineLoading`    | `InlineLoading(message string)`             | Inline "Saving..." indicator                        |
 | `Skeleton`         | `Skeleton(variant SkeletonVariant)`         | Pulsing placeholder — 7 variants                    |
 | `SkeletonGroup`    | `SkeletonGroup(variants []SkeletonVariant)` | Multiple skeletons under single `role="status"`     |
-| `SkeletonCardGrid` | `SkeletonCardGrid(count int)`               | N skeleton cards in responsive grid — loading state |
+| `SkeletonCardGrid` | `SkeletonCardGrid(props SkeletonCardGridProps)` | N skeleton cards in responsive grid — loading state, optional `ContainerAware` |
 | `ProgressBar`      | `ProgressBar(props ProgressBarProps)`       | Progress indicator — 3 sizes, indeterminate, label  |
 | `StepIndicator`    | `StepIndicator(props StepIndicatorProps)`   | Horizontal/vertical step progress                   |
 

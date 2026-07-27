@@ -135,7 +135,7 @@ Alerts, toasts, spinners, progress bars, skeletons, step indicators, loading sta
 @feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.ToastSuccess})
 @feedback.Alert(feedback.AlertProps{Title: "Warning", Type: feedback.AlertWarning})
 @feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100})
-@feedback.SkeletonCardGrid(6)
+@feedback.SkeletonCardGrid(feedback.SkeletonCardGridProps{Count: 6})
 ```
 
 ### `forms` — Form Controls (21 components)
