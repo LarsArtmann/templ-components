@@ -10,6 +10,68 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import "github.com/larsartmann/templ-components/utils"
 
+// Lookup maps live in this .templ file (not split_types.go) so Tailwind's
+// content scanner detects the class strings — it only scans *.templ files.
+
+//nolint:gochecknoglobals // Package-level lookup table for split ratios
+var splitRatioLookup = map[SplitRatio]string{
+	SplitRatio1To2: "md:grid-cols-2",
+	SplitRatio1To3: "md:grid-cols-3",
+	SplitRatio1To4: "md:grid-cols-4",
+}
+
+// splitRatioLookupContainer mirrors splitRatioLookup with @container-keyed
+// breakpoints (@md:) so container-aware Splits respond to their parent's
+// width instead of the viewport. See ADR-0018.
+//
+//nolint:gochecknoglobals // Package-level lookup table for container-aware variant
+var splitRatioLookupContainer = map[SplitRatio]string{
+	SplitRatio1To2: "@md:grid-cols-2",
+	SplitRatio1To3: "@md:grid-cols-3",
+	SplitRatio1To4: "@md:grid-cols-4",
+}
+
+// splitRatioCols returns the grid-template-columns class for a ratio.
+func splitRatioCols(r SplitRatio, containerAware bool) string {
+	if containerAware {
+		return utils.Lookup(splitRatioLookupContainer, r, splitRatioLookupContainer[SplitRatioDefault])
+	}
+
+	return utils.Lookup(splitRatioLookup, r, splitRatioLookup[SplitRatioDefault])
+}
+
+//nolint:gochecknoglobals // Package-level lookup table
+var splitRatioMainSpanLookup = map[SplitRatio]string{
+	SplitRatio1To2: "md:col-span-1",
+	SplitRatio1To3: "md:col-span-2",
+	SplitRatio1To4: "md:col-span-3",
+}
+
+//nolint:gochecknoglobals // Package-level lookup table
+var splitRatioMainSpanLookupContainer = map[SplitRatio]string{
+	SplitRatio1To2: "@md:col-span-1",
+	SplitRatio1To3: "@md:col-span-2",
+	SplitRatio1To4: "@md:col-span-3",
+}
+
+// splitRatioMainSpan returns the col-span-N class for the Main column.
+func splitRatioMainSpan(r SplitRatio, containerAware bool) string {
+	if containerAware {
+		return utils.Lookup(splitRatioMainSpanLookupContainer, r, splitRatioMainSpanLookupContainer[SplitRatio1To3])
+	}
+
+	return utils.Lookup(splitRatioMainSpanLookup, r, splitRatioMainSpanLookup[SplitRatio1To3])
+}
+
+// splitAsideSpan returns the col-span-1 class for the Aside column.
+func splitAsideSpan(containerAware bool) string {
+	if containerAware {
+		return "@md:col-span-1"
+	}
+
+	return "md:col-span-1"
+}
+
 // Split renders a 2-column main + aside layout. It is the second most common
 // 2D pattern after AppShell: article+sidebar, detail+metadata, primary
 // content + related links.
@@ -125,7 +187,7 @@ func splitInner(props SplitProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/split.templ`, Line: 46, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/split.templ`, Line: 108, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -161,7 +223,7 @@ func splitInner(props SplitProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/split.templ`, Line: 55, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/split.templ`, Line: 117, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {

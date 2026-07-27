@@ -139,7 +139,7 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	case StateHover:
 		tasks = append(tasks, hoverAction(rootSel))
 	case StateFocus:
-		tasks = append(tasks, chromedp.Focus(rootSel, chromedp.ByQuery))
+		tasks = append(tasks, focusAction(rootSel))
 	}
 
 	tasks = append(tasks,
@@ -164,12 +164,14 @@ const (
 // coordinates are correct regardless of scroll position.
 func hoverAction(sel string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
+		// sel is interpolated as a quoted JS string literal; querySelector needs
+		// no arguments object (arrow functions don't bind `arguments`).
 		js := `(() => {
-			const e = document.querySelector(arguments[0]);
+			const e = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
 			if (!e) return null;
 			const r = e.getBoundingClientRect();
 			return [r.x + r.width/2, r.y + r.height/2];
-		})(` + fmt.Sprintf("%q", sel) + `)`
+		})()`
 
 		var coords []float64
 		if err := chromedp.Evaluate(js, &coords).Do(ctx); err != nil {
@@ -180,5 +182,29 @@ func hoverAction(sel string) chromedp.Action {
 		}
 
 		return input.DispatchMouseEvent(input.MouseMoved, coords[0], coords[1]).Do(ctx)
+	})
+}
+
+// focusAction focuses the first focusable descendant of the element matching
+// sel. The wrapper (#tc-root) is a <div> and not itself focusable, so we
+// descend to the interactive element (button/a/input) it wraps. No-op if no
+// focusable element exists.
+func focusAction(sel string) chromedp.Action {
+	return chromedp.ActionFunc(func(ctx context.Context) error {
+		js := `(() => {
+			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
+			if (!root) return false;
+			const f = root.querySelector('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+			if (f) { f.focus(); return true; }
+			return false;
+		})()`
+		var focused bool
+		if err := chromedp.Evaluate(js, &focused).Do(ctx); err != nil {
+			return fmt.Errorf("focus: query %s: %w", sel, err)
+		}
+		if !focused {
+			return fmt.Errorf("focus: no focusable element under %q", sel)
+		}
+		return nil
 	})
 }
