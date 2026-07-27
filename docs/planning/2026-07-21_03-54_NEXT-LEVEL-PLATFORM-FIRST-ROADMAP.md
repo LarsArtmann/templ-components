@@ -760,3 +760,19 @@ The single most important sentence in this document:
 
 > **The 1% that delivers 51% is Phase 1: migrate Dropdown, Popover, ContextMenu, HoverCard, and
 > Tooltip to the native Popover API. Everything else is compounding follow-through.**
+
+---
+
+## Resolution (2026-07-27)
+
+**Phases 1–5 executed across v0.20.0 → v1.1.0** (5 releases, all SSH-signed, all pushed to `origin`). The execution status is documented in `docs/status/2026-07-21_07-38_PLATFORM-FIRST-ROADMAP-EXECUTION.md` (with defect fixes annotated in its own Resolution section).
+
+| Phase | Target | Status | Outcome |
+| ----- | ------ | ------ | ------- |
+| 1 — Popover API migration | v0.20.0 | ✅ DONE | Dropdown/Popover/ContextMenu on `popover="auto`. **D1 top-layer positioning bug caught post-ship, fixed in v1.2.0** (`popoverPositionJS`). ADR-0017 revised. |
+| 2 — Container queries + recipes | v0.21.0 | ✅ DONE | `Nav/Card.ContainerAware`, `recipes.Dashboard/SettingsLayout/LoginCard`. ADR-0018, ADR-0019. |
+| 3 — Theming + HTMX | v0.22.0 | ✅ DONE | Semantic token layer (`templ-components-theme.css`), 3 presets, `PageProps.HTMXSrc` self-host opt-in. Both opt-in; default flip deferred to v2.0. |
+| 4 — v1.0 freeze | v1.0.0 | ✅ DONE | `ErrorPageProps.Validate()`, deprecated aliases removed (ModalSizeFull, DrawerFull, FamilyFromErrorFamily, FormProps.Inline), CI docs-health drift guard. `internal/testutil/` deferred (TODO #34). Default flip deferred to v2.0. |
+| 5 — v2.0 independence | v1.1.0 (partial) | 🟡 PARTIAL | `tc` CLI shipped (`tc init/ls/add`). Per-package modules split **deferred** (ADR-0020, awaiting consumer demand). Headless variants **rejected** (ADR-0021). |
+
+**Post-release defect fixes shipped in v1.2.0:** D1 (popover positioning), D3 (tooltip aria), D4 (HTMXSrc CDN leak), D6 (tc add warning), plus `navigation.SidebarNav` and recipe demo routes. See CHANGELOG `[1.2.0]`.
