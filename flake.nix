@@ -38,6 +38,9 @@
               templ
               tailwindcss_4
             ];
+            shellHook = ''
+              export GOEXPERIMENT=jsonv2
+            '';
           };
 
           apps = {

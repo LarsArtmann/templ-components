@@ -23,6 +23,8 @@ The library is feature-complete for production server-rendered Go web apps.
 | Accessibility | `motion-reduce:*` on all transitions/animations, `aria-sort`, focus trap, `aria-live` regions                                                                                                                                                                           |
 | Error pages   | `errorpage` package: 404, full-page, inline detail, family-aware alert, `http.Handler` integration                                                                                                                                                                      |
 | Theming       | Semantic token layer (`templ-components-theme.css`) + 3 presets, opt-in (v0.22.0). Self-host HTMX opt-in via `PageProps.HTMXSrc`.                                                                                                                                       |
+| Container queries | 8 opt-in container-aware components (`Grid.ContainerResponsive`, `Card`/`Nav`/`Split`/`Form`/`Pagination`/`DefinitionGrid`/`SkeletonCardGrid` `.ContainerAware`) adapt to parent width via `@container` instead of the viewport. ADR-0018. Default flip to opt-out is a v2.0 candidate. |
+| Testing & QA  | Golden-file HTML snapshots (`internal/golden`), drift-guard tests (component/enum/version counts), **pixel-level visual regression** (`visualtest/` — chromedp + pixelmatch, `nix run .#visual`), and compliance scanners (dark mode, motion-reduce, RTL logical properties). |
 
 **Current version:** see [`utils/version.go`](utils/version.go) and the latest
 heading in [`CHANGELOG.md`](CHANGELOG.md).
@@ -56,6 +58,8 @@ and CI docs-health drift guard. See `CHANGELOG.md` for the full entry.
 | Post-v1.1.0 defect fixes     | ✅ DONE    | v1.2.0  | Popover top-layer positioning (D1), Tooltip aria-describedby (D3), HTMXSrc CDN leak (D4), `tc add` dependency warning (D6). |
 | `navigation.SidebarNav`      | ✅ DONE    | v1.2.0  | Vertical sidebar nav for admin panels. Permanently-dark surface.                                                            |
 | Recipe demo routes           | ✅ DONE    | v1.2.0  | `/recipes/{dashboard,settings,login}` in `examples/demo`.                                                                   |
+| Container query expansion    | ✅ DONE    | `[Unreleased]` | Extended `ContainerAware` from 3 → 8 components (added Split, Form, Pagination, DefinitionGrid, SkeletonCardGrid). ADR-0018. |
+| Visual regression framework  | ✅ DONE    | `[Unreleased]` | `visualtest/` module — chromedp + pixelmatch, separate module (no consumer dep pollution), `nix run .#visual`, CI job. 15 baseline goldens. See `docs/visual-testing.md`. |
 
 ---
 
@@ -65,7 +69,7 @@ and CI docs-health drift guard. See `CHANGELOG.md` for the full entry.
 | ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
 | Compound components       | `Trigger` / `Content` / `Close` sub-component pattern for Modal, Drawer, Dropdown.                                         |
 | Per-package modules split | Independently importable packages. ADR-0020 written; deferred until consumer demand.                                       |
-| Default flip              | Self-host HTMX becomes default (CDN opt-in); semantic tokens become default. Both shipped opt-in in v0.22.0. See TODO #35. |
+| Default flip              | Self-host HTMX becomes default (CDN opt-in); semantic tokens become default; `ContainerAware` flips to opt-out for components commonly placed in constrained containers (Grid, Card, Split). All shipped opt-in. See TODO #35. |
 | Demo / showcase site      | A hosted site rendering every component with live props.                                                                   |
 
 ---

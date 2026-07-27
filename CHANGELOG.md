@@ -6,12 +6,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-### Changed
-
-- **Type-erasure fix in `FromErrorFamily`** (`errorpage/fromerror.go`) — replaced the `ParseFamily(f.String())` string round-trip with a typed `switch` on `errorfamily.Family`. Any future rename or addition of a family constant in go-error-family is now caught at compile time instead of silently collapsing to `FamilyTransient`. Added the `Orchestration` case plus a `FamilyOrchestration` constant and purple visual style in `familyStyleMap`.
-
 ### Added
 
+- **Visual regression testing framework.** New `visualtest/` module — a **separate Go module** (`visualtest/go.mod` with a local `replace` directive) so `chromedp` never pollutes the library's consumer dependency graph. Renders components in headless Chromium and diffs pixels against committed golden PNGs via `orisano/pixelmatch` (YIQ perceptual distance + anti-alias skip). Public API: `visualtest.AssertScreenshot(t, name, component, opts...)` with `Options{Dark, RTL, Viewport, MaxMismatch, Threshold, State}` (states: `StateHover`, `StateFocus`). Mirrors `internal/golden` DX: `-update` flag regenerates goldens, `.fail/` artifacts (actual + diff PNGs) auto-clean on pass. 15 baseline goldens across Button/Alert/Badge/Card covering light/dark/hover/focus/disabled/mobile. Wired into Nix (`nix run .#visual`) and CI (`.github/workflows/ci.yaml` `visual` job — Nix-based for renderer bit-parity, uploads diff artifacts on failure). Tests skip cleanly when no browser is available. See [`docs/visual-testing.md`](docs/visual-testing.md).
 - **Container-aware components (ADR-0018 extension).** Extended the `ContainerAware` opt-in pattern to 5 more components so they adapt to their parent container's width instead of the viewport:
   - `layout.Split.ContainerAware` — main+aside collapses to stacked by container width (`@md:` variants)
   - `display.DefinitionGrid.ContainerAware` — term-detail card grid column count adapts (`@sm:`/`@lg:`)
@@ -20,6 +17,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   - `feedback.SkeletonCardGrid` — converted from `count int` to `SkeletonCardGridProps{Count, ContainerAware}` for API consistency; loading skeletons now match `Grid.ContainerResponsive` behavior
   - All follow the exact ADR-0018 contract: opt-in flag, `@container` wrapper (or root class), lookup-map class swap, default-off backward compat. Tested per the established pattern.
 - **Rename-safety test** (`errorpage/fromerror_safety_test.go`) — verifies every `errorfamily.Family` maps to a valid, distinct `Family` output (totality, correctness, injectivity), so a missing switch case fails loudly rather than silently rendering every error as Transient.
+
+### Changed
+
+- **`feedback.SkeletonCardGrid` signature changed (breaking).** `SkeletonCardGrid(count int)` is now `SkeletonCardGrid(SkeletonCardGridProps{Count, ContainerAware})` for API consistency with the container-aware pattern and the rest of the library. Migration: `SkeletonCardGrid(6)` → `SkeletonCardGrid(feedback.SkeletonCardGridProps{Count: 6})`. `DefaultSkeletonCardGridProps()` returns sensible defaults. This is a source-level breaking change in a post-v1.0 minor; it is accepted because `SkeletonCardGrid` has no known external consumers yet and the props struct is the forward-compatible shape. Consumers who upgrade will get a clear compile error at the call site.
+- **Type-erasure fix in `FromErrorFamily`** (`errorpage/fromerror.go`) — replaced the `ParseFamily(f.String())` string round-trip with a typed `switch` on `errorfamily.Family`. Any future rename or addition of a family constant in go-error-family is now caught at compile time instead of silently collapsing to `FamilyTransient`. Added the `Orchestration` case plus a `FamilyOrchestration` constant and purple visual style in `familyStyleMap`.
 
 ## [1.2.0] — 2026-07-23
 
