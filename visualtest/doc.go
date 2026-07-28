@@ -69,11 +69,13 @@ func ensureAllocator(t *testing.T) {
 			chromedp.Flag("disable-background-timer-throttling", true),
 		)
 
-		// Use = (not :=) so we assign the package-level sharedAllocCtx and
-		// allocCancel. A := here would shadow them with locals, leaving the
-		// package vars nil — newTab would derive a context from nil and
-		// ShutdownBrowser would never close the browser process.
-		sharedAllocCtx, allocCancel := chromedp.NewExecAllocator(context.Background(), opts...)
+		// Assign through locals so the package-level sharedAllocCtx/allocCancel
+		// receive the allocator (newTab/ShutdownBrowser consume them). Declaring
+		// locals with := and immediately using them avoids both the shadow trap
+		// (a bare := on the package vars) and the "declared and not used" error.
+		allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
+		sharedAllocCtx := allocCtx
+		allocCancel = cancel
 		browserReady = true
 	})
 
