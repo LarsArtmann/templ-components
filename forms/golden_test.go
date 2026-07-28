@@ -95,3 +95,33 @@ func TestGoldenSearchInput(t *testing.T) {
 	}))
 	golden.Assert(t, "search_input", output)
 }
+
+// TestGoldenInputBasic and TestGoldenInputError snapshot the most-used Input
+// render paths: a labelled text input (with help text) and an errored input
+// (aria-invalid + field error). search_input above covers the search variant;
+// together they guard the label/help/error wiring that assertion tests check
+// only piecewise.
+func TestGoldenInputBasic(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Input(InputProps{
+		BaseProps:   utils.BaseProps{ID: "email"},
+		Name:        "email",
+		Label:       "Email address",
+		Value:       "ada@example.com",
+		Placeholder: "you@example.com",
+		HelpText:    "We will never share your email.",
+	}))
+	golden.Assert(t, "input_basic", output)
+}
+
+func TestGoldenInputError(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Input(InputProps{
+		BaseProps: utils.BaseProps{ID: "email"},
+		Name:      "email",
+		Label:     "Email address",
+		Value:     "not-an-email",
+		Error:     "Please enter a valid email address.",
+	}))
+	golden.Assert(t, "input_error", output)
+}

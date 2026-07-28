@@ -23,6 +23,31 @@ func TestGoldenAlertError(t *testing.T) {
 	golden.Assert(t, "alert_error", output)
 }
 
+// TestGoldenAlertSuccess and TestGoldenAlertInfo complete golden coverage of
+// all four FeedbackType variants (error + dismissible-warning already had
+// goldens). Each variant has a distinct icon + color set; a snapshot per type
+// catches a recolor or wrong-icon regression that a single-type snapshot would
+// miss.
+func TestGoldenAlertSuccess(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Alert(AlertProps{
+		Title:   "Saved",
+		Message: "Your changes are stored.",
+		Type:    AlertSuccess,
+	}))
+	golden.Assert(t, "alert_success", output)
+}
+
+func TestGoldenAlertInfo(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Alert(AlertProps{
+		Title:   "Heads up",
+		Message: "A new version is available.",
+		Type:    AlertInfo,
+	}))
+	golden.Assert(t, "alert_info", output)
+}
+
 func TestGoldenAlertDismissible(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Alert(AlertProps{
