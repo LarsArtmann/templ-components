@@ -73,7 +73,7 @@ func ensureAllocator(t *testing.T) {
 		// allocCancel. A := here would shadow them with locals, leaving the
 		// package vars nil — newTab would derive a context from nil and
 		// ShutdownBrowser would never close the browser process.
-		sharedAllocCtx, allocCancel = chromedp.NewExecAllocator(context.Background(), opts...)
+		sharedAllocCtx, allocCancel := chromedp.NewExecAllocator(context.Background(), opts...)
 		browserReady = true
 	})
 
