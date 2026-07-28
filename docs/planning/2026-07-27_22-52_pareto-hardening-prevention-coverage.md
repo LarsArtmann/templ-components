@@ -309,3 +309,38 @@ Each medium task split into atomic ≤12min actions. Sorted within each task by 
 | T11 shared-browser refactor breaks the existing 15 goldens              | Keep `newBrowser()` as fallback; feature-flag the shared path  |
 | T14-T15 golden conversion produces massive diffs                        | Do one package first (navigation), review, then batch the rest |
 | T26 v2.0 design is premature                                            | Timebox to 90min; produce a draft ADR, not a final decision    |
+
+---
+
+## Resolution (2026-07-28)
+
+This plan was executed across the 2026-07-28 sessions. ~20 of 27 tasks shipped; the survivors are routed to the current [`TODO_LIST.md`](../../TODO_LIST.md) / [`ROADMAP.md`](../../ROADMAP.md).
+
+| Task | Status | Outcome |
+| ---- | ------ | ------- |
+| T1   | ✅ DONE | 3-layer guard: `scripts/check-lint-config.sh` + `TestGolangciDisabledLinters` + CI step. Root cause = BuildFlow daemon (separate repo). |
+| T2   | ✅ DONE | `TestTemplGeneratedInSync` + breadcrumbs regenerated. |
+| T3   | ✅ DONE | `GOWORK=off` in devShell `shellHook`. |
+| T4   | ✅ DONE | `.envrc` (direnv) sets `GOEXPERIMENT=jsonv2` + `GOWORK=off`. |
+| T5   | ✅ DONE | `TestContainerQueryCompliance` scanner. |
+| T6   | ✅ DONE | `TestTailwindGoSourceScanning` (`@source "**/*.go"`). |
+| T7   | ✅ DONE | Modal + Drawer visual goldens. |
+| T8   | ✅ DONE | Dropdown/Popover/ContextMenu goldens via `StateClick` (later session). |
+| T9   | ✅ DONE | Input + Select visual goldens. |
+| T10  | ✅ DONE | First RTL visual goldens (button/card). |
+| T11  | ✅ DONE | Shared Chromium process (15 tests → ~2s). |
+| T12  | 🟡 PARTIAL | Some items routed this session; container-aware expansion + visualtest API improvements now in ROADMAP. |
+| T13  | ⚫ BLOCKED | BuildFlow commit-message fix lives in `larsartmann/buildflow` (separate repo). Now TODO #93. |
+| T14–15 | 🟡 PARTIAL | `display`/`navigation`/`feedback`/`forms`/`layout` now have golden snapshots; remaining conversion → TODO #73. |
+| T16  | ✅ DONE | Visual coverage metric test (31/74 = 41.9%). |
+| T17  | ✅ DONE | `TestCSSFreshness` (now CI-failing). |
+| T18  | 🟡 PARTIAL | README updated; a dedicated "Testing" section still missing → TODO #91. |
+| T19  | ⬜ DEFERRED | `website/` docs not audited this cycle. |
+| T20  | ✅ DONE | Markdown link audit — all internal links resolve. |
+| T21  | ✅ DONE | `docs/visual-testing.md` verified + updated. |
+| T22  | 🟡 PARTIAL | `SwapStyleIsValid`/`ContainerWidthIsValid` shipped; SkeletonCardGrid migration doc still open → TODO #90. |
+| T23  | ✅ DONE | Demo CSS compile step in `scripts/release.sh`. |
+| T24  | ✅ DONE | Dependabot investigated — both vulns are `website/`-only (not the library). |
+| T25  | ⬜ DEFERRED | Lint verification in BuildFlow pre-commit (separate repo). |
+| T26  | ✅ DONE | v2.0 default-flip design → ADR-0022. |
+| T27  | ✅ DONE | Compound overlay API design → ADR-0023. |

@@ -3,8 +3,8 @@
 ## Session: Flaky `TestStackWithFeedbackComponents` fix
 
 **Scope:** Single failing test from BuildFlow `test-race`. Root-caused, fixed, verified.
-**Branch:** `master` (working tree dirty — one file changed, **not committed**).
-**Commit:** none yet (rule: never commit without explicit ask).
+**Branch:** `master` (~~working tree dirty — one file changed, **not committed**~~ committed as `da156d6` on 2026-07-27).
+**Commit:** ~~none yet (rule: never commit without explicit ask)~~ `da156d6` — "hell composition integration tests" (BuildFlow-daemon-authored message; the fix itself is correct).
 
 ---
 
@@ -204,3 +204,15 @@ Ordered roughly by impact × ease.
 - **The fix is one line of assertion logic** in `integration/appshell_composition_test.go`.
 - **Not committed** (awaiting explicit go-ahead).
 - **Biggest gap:** I did not check whether _other_ tests share the same anti-pattern — that's the likely-next-flake and the highest-value follow-up.
+
+---
+
+## Resolution (2026-07-28)
+
+The fix shipped as commit `da156d6` (working tree clean). The CHANGELOG `[Unreleased]` now records it ("Flaky `TestStackWithFeedbackComponents` root cause fixed").
+
+**Open items from §4 / §7 that remain open (harvested to TODO_LIST):**
+
+- The repo-wide ordered-Tailwind-substring audit (§4.1 / §7.1–2) was **not** done — it is now **TODO #81** ("Audit repo-wide for ordered-Tailwind-substring test assertions" + `TestNoOrderedTailwindSubstringsInTests` drift-guard).
+- The CHANGELOG entry (§4.2) is now added.
+- Deeper investigations (deterministic `utils.Class`, upstream tailwind-merge-go LRU, ADR for the assertion convention) are deferred — not yet routed to a TODO; see TODO #81 if the audit surfaces a need.
