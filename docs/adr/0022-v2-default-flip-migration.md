@@ -39,11 +39,13 @@ Flip all three defaults in a single major version:
 ### 3. Container-Aware by Default (selective)
 
 Only components commonly placed in constrained containers flip:
+
 - `Grid.ContainerResponsive` → default `true`
 - `Card.ContainerAware` → default `true`
 - `Split.ContainerAware` → default `true`
 
 Components where viewport is usually correct stay viewport-default:
+
 - `Nav`, `Pagination`, `Form`, `DefinitionGrid`, `SkeletonCardGrid` — stay opt-in
 
 - **Migration:** consumers who need viewport behavior set `ContainerAware: false`
@@ -66,11 +68,11 @@ docs/migration/v1-to-v2.md
 
 ## Deprecation Timeline
 
-| Version | Action                                              |
-|---------|-----------------------------------------------------|
-| v1.3.0  | Add `// Deprecated` comments + `HTMXCDN` log warning |
+| Version | Action                                                              |
+| ------- | ------------------------------------------------------------------- |
+| v1.3.0  | Add `// Deprecated` comments + `HTMXCDN` log warning                |
 | v1.4.0  | Default `HTMXSrc = "self"` with CDN opt-in (breaking for CDN users) |
-| v2.0.0  | Full default flip + alias removal                   |
+| v2.0.0  | Full default flip + alias removal                                   |
 
 ## Consequences
 

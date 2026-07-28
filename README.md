@@ -253,15 +253,15 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 
 ## By the Numbers
 
-| Metric       | Value                                               |
-| ------------ | --------------------------------------------------- |
-| Components   | 98                                                  |
-| SVG icons    | 102                                                 |
-| Typed enums  | 43                                                  |
-| Packages     | 15                                                  |
-| Tests        | ~890 functions + ~1,650 subtests                    |
-| Visual goldens | 27 pixel-level regression tests (chromedp)        |
-| Dependencies | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
+| Metric         | Value                                               |
+| -------------- | --------------------------------------------------- |
+| Components     | 98                                                  |
+| SVG icons      | 102                                                 |
+| Typed enums    | 43                                                  |
+| Packages       | 15                                                  |
+| Tests          | ~890 functions + ~1,650 subtests                    |
+| Visual goldens | 27 pixel-level regression tests (chromedp)          |
+| Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---
 

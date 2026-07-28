@@ -16,6 +16,7 @@ display.Modal(display.ModalProps{
 ```
 
 This has limitations:
+
 1. **No composition** — trigger button and content are coupled in one struct
 2. **No flexibility** — custom triggers require duplicating the component
 3. **No nested overlays** — a dropdown inside a modal requires workarounds

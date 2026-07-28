@@ -80,6 +80,7 @@ go.work.sum
 
 ## Nix
 result-*
+.envrc
 .direnv/
 
 ## Javascript and typescript

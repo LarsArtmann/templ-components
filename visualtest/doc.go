@@ -69,7 +69,7 @@ func ensureAllocator(t *testing.T) {
 			chromedp.Flag("disable-background-timer-throttling", true),
 		)
 
-		sharedAllocCtx, allocCancel = chromedp.NewExecAllocator(context.Background(), opts...)
+		sharedAllocCtx, allocCancel := chromedp.NewExecAllocator(context.Background(), opts...)
 		browserReady = true
 	})
 
