@@ -114,6 +114,10 @@
                   go build ./...
                   echo "==> Testing..."
                   go test ./... -count=1
+                  echo "==> Testing visualtest module (separate go.mod)..."
+                  # visualtest is a separate Go module; ./... from repo root skips it.
+                  # Tests skip cleanly when Chromium is absent, so this never red-lines CI.
+                  cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./... && cd ..
                   echo "==> Linting..."
                   golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
                   echo "==> All checks passed."
