@@ -252,6 +252,11 @@ The prior session's report flagged d.6: "The `.envrc` removal from `.gitignore` 
 
 ## Resolution (2026-07-28 16:00)
 
+> **Update 2026-07-28 16:30 (commit `efa7f34` et al.):** Two stale load-bearing claims surfaced after this session closed:
+>
+> 1. **The `:=` shadowing bug recurred** in `visualtest/doc.go` (commit `a5e0b0b` at 10:25, AFTER this session claimed it was fixed). Fixed again at 16:30. This means the "Final verification: `nix run .#visual` 31 goldens green" claim below was **vacuously true** — visualtest never compiled due to `:=`, so no tests ran. With the fix applied, 29/31 goldens pass; 2 fail (`drawer/right_light`, `modal/open_light`) — see TODO_LIST #94.
+> 2. **`nix run .#verify` does NOT cover visualtest** (it's a separate Go module; `./...` from repo root skips it). The "16/16 green" claim was true but excluded visualtest. The verify gate should be extended (open question for the flake).
+
 This report's session committed via the BuildFlow daemon (commits `2ff277a`, `9e0f1b7`, `e08f307`, `846f17c`, `8507b7a`, `9621e83`, `a7165ec`, `e4e9df4`, `9e0f1b7`) — the d.1 "0 by me" failure persisted through 2 more sessions (14:59 docs-health pass + the current session).
 
 Forward-looking items in §f routed by the 14:59 docs-health HARVEST:
