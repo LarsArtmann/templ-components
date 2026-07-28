@@ -80,9 +80,7 @@ go.work.sum
 
 ## Nix
 result-*
-# .envrc is intentionally tracked: it only sets GOEXPERIMENT=jsonv2 and
-# GOWORK=off (no secrets), and direnv needs it present for every clone so all
-# tools (go, gopls, BuildFlow) pick up the flags. TestEnvrcConsistency guards it.
+.envrc
 .direnv/
 
 ## Javascript and typescript

@@ -68,7 +68,7 @@ func TestCSSFreshness(t *testing.T) {
 		if os.Getenv("CI") != "" {
 			t.Error(msg)
 		} else {
-			t.Logf("WARNING: " + msg)
+			t.Logf("WARNING: %s", msg)
 		}
 	}
 }

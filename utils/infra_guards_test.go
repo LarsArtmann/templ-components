@@ -79,9 +79,10 @@ func TestPreCommitHookInstallsGuard(t *testing.T) {
 	// The guard must precede the BuildFlow invocation, not follow it.
 	guardIdx := strings.Index(src, "check-lint-config.sh")
 	buildFlowIdx := strings.Index(src, "buildflow")
+
 	if guardIdx >= 0 && buildFlowIdx >= 0 && guardIdx > buildFlowIdx {
 		t.Errorf(
-			"pre-commit hook runs check-lint-config.sh AFTER buildflow — "+
+			"pre-commit hook runs check-lint-config.sh AFTER buildflow — " +
 				"the guard must run BEFORE BuildFlow so it is not masked by the 60s budget.",
 		)
 	}
