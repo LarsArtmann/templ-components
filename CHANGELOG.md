@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.3.0] — 2026-07-28
+
 ### Added
 
 - **Lint-config regression prevention (3-layer guard).** Root-caused the recurring `.golangci.yml` regression (5th occurrence) to the BuildFlow daemon committing stale working trees. Prevention: (1) `scripts/check-lint-config.sh` — <50ms standalone grep guard wired into `.git/hooks/pre-commit` BEFORE BuildFlow runs; (2) CI step "Lint-config guard" in `.github/workflows/ci.yaml` runs the script before `golangci-lint` even installs; (3) `TestGolangciDisabledLinters` in `utils/lint_config_test.go` catches in CI via `go test ./...`. Root cause and prevention layers documented in AGENTS.md.
