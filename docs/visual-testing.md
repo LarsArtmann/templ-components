@@ -26,14 +26,24 @@ AssertScreenshot(t, "button/primary_dark", display.Button(props), visualtest.Opt
   serve page on an ephemeral httptest.Server
         │
         ▼
-  chromedp: navigate → wait for #tc-root → settle → element screenshot
-        │
+  chromedp: navigate → wait for #tc-root → (apply State) → settle → screenshot
+        │                                                                  (element OR full viewport)
         ▼
   compare PNG pixels against testdata/<name>.png (0.1% threshold)
         │
         ├── match  → pass
         └── differ → fail + write testdata/.fail/<name>.{actual,diff}.png
 ```
+
+### Shared Chromium process
+
+A **single** headless Chromium process is launched lazily on the first
+`AssertScreenshot` call and reused for every test. Each test gets a fresh tab
+(`chromedp.NewContext`, ~10ms) instead of a full browser launch (~1s), so the
+full ~30-test suite finishes in ~4s. `TestMain` tears the process down after
+all tests complete. If `CHROMEDP_CHROME_PATH` is unset or invalid, the
+allocator skips (and every test skips with it) — `go test ./...` stays green
+wherever Chromium is absent.
 
 ## Running
 
@@ -83,13 +93,43 @@ func TestMyComponent(t *testing.T) {
 
 ### Options
 
-| Option              | Default  | Purpose                                                       |
-| ------------------- | -------- | ------------------------------------------------------------- |
-| `Dark`              | false    | Adds `class="dark"` to `<html>` (the library's dark strategy) |
-| `RTL`               | false    | Sets `dir="rtl"` to test logical-property mirroring           |
-| `Viewport`          | 1280×800 | Emulated window size for responsive variants                  |
-| `MaxMismatch`       | 0.001    | Max fraction of mismatched pixels (0–1) that still passes     |
-| `PerPixelTolerance` | 32       | Max per-channel diff (0–255) that counts as a matching pixel  |
+| Option          | Default  | Purpose                                                                                          |
+| --------------- | -------- | ------------------------------------------------------------------------------------------------ |
+| `Dark`          | false    | Adds `class="dark"` to `<html>` (the library's dark strategy)                                   |
+| `RTL`           | false    | Sets `dir="rtl"` to test logical-property mirroring                                              |
+| `Viewport`      | 1280×800 | Emulated window size for responsive variants                                                     |
+| `MaxMismatch`   | 0.001    | Max fraction of mismatched pixels (0–1) that still passes                                         |
+| `Threshold`     | 0.1      | Pixelmatch perceptual color-distance threshold (0–1); higher tolerates more rendering noise       |
+| `State`         | `Rest`   | Interaction to apply before capture: `StateHover`, `StateFocus`, `StateClick`, `StateContext`    |
+| `FullViewport`  | false    | Capture the full viewport instead of the `#tc-root` element (required for top-layer overlays)    |
+| `WaitSelector`  | `""`     | CSS selector to wait for (visible) after applying `State` — e.g. `[popover]` once a menu opens    |
+
+### Testing overlays (Dropdown / Popover / ContextMenu / Modal / Drawer)
+
+Components whose open state renders in the browser **top layer** (native
+Popover API menus and `<dialog>`) paint *outside* `#tc-root`'s bounding box,
+so a normal element screenshot crops them. Use `StateClick` (or
+`StateContext` for right-click menus) with `FullViewport: true` and
+`WaitSelector: "[popover]"`:
+
+```go
+visualtest.AssertScreenshot(t, "dropdown/open_light", display.Dropdown(props),
+    visualtest.Options{
+        State:        visualtest.StateClick,      // click the popovertarget trigger
+        WaitSelector: "[popover]",                // wait for the menu to appear
+        FullViewport: true,                       // capture the top-layer menu
+        Viewport:     visualtest.Viewport{Width: 480, Height: 360},
+        MaxMismatch:  0.02,                       // JS-positioned overlays have ~1px jitter
+    })
+```
+
+- `StateClick` clicks the first `[popovertarget]`/button/link inside `#tc-root`.
+- `StateContext` dispatches a `contextmenu` event (for `ContextMenu`).
+- Raise `MaxMismatch` to ~2% for JS-positioned overlays: the menu is placed
+  from the trigger's `getBoundingClientRect()`, so a 1px layout-timing shift
+  shows up as edge anti-aliasing variance. A real regression blows past 2%.
+- Pass `Nonce` on the component props so positioning scripts (and
+  `ContextMenu`'s menu + handler, which are gated on `Nonce != ""`) render.
 
 ### Golden naming
 

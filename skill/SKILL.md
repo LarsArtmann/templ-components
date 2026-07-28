@@ -470,6 +470,41 @@ that's what made `layout.Script` the worst-tested component in the library.
 Golden tests use `internal/golden.Assert(t, name, got)` with CSS-class normalization; pass
 `-update` to regenerate after an intentional visual change, then review the diff.
 
+## Repo-wide guard & compliance tests
+
+These live in `utils/` (and `integration/`) and enforce cross-cutting invariants
+that per-component tests cannot. They are the reason `go test ./...` stays
+trustworthy across refactors. Know they exist before touching CSS, config, or
+generated files:
+
+| Test | File | What it prevents |
+| ---- | ---- | ---------------- |
+| `TestGolangciDisabledLinters` | `utils/lint_config_test.go` | The recurring regression where `godoclint`/`ireturn`/`testableexamples` re-enter `.golangci.yml`'s enable list (incompatible with a templ library). |
+| `TestTemplGeneratedInSync` | `utils/templ_sync_test.go` | A `.templ` edit committed without regenerating `*_templ.go` (breadcrumbs drift caught here). |
+| `TestContainerQueryCompliance` | `utils/container_query_compliance_test.go` | Structural viewport breakpoints (`sm:`/`md:` grid/flex/hidden) without a `ContainerAware` opt-in. Exemptions must be verified, not assumed. |
+| `TestTailwindGoSourceScanning` | `utils/tailwind_source_test.go` | Tailwind classes hidden in `.go` map literals (not just `.templ`) missing from compiled CSS — the `bg-amber-50` root cause. |
+| `TestCSSFreshness` | `utils/css_freshness_test.go` | Committed demo CSS older than the newest source. **Fails in CI** (`CI` env set), warns locally. |
+| `TestEnvrcConsistency` | `utils/infra_guards_test.go` | `.envrc` losing `GOEXPERIMENT=jsonv2`/`GOWORK=off`, or gaining secrets/machine paths. |
+| `TestPreCommitHookInstallsGuard` | `utils/infra_guards_test.go` | The pre-commit hook dropping the `check-lint-config.sh` guard (or running it after BuildFlow). |
+| `TestDarkModeCompliance` / `…SemanticColors` | `utils/darkmode_compliance_test.go` | Neutral/semantic colors without `dark:` variants. |
+| `TestMotionReduceCompliance` | `utils/motion_compliance_test.go` | `transition-*`/`animate-*` without `motion-reduce:` fallbacks. |
+| `TestRTLLogicalProperties` | `utils/rtl_compliance_test.go` | Physical properties (`ml-`/`mr-`/`left-`) instead of logical (`ms-`/`me-`/`start-`). |
+| `integration` CSP nonce test | `integration/csp_nonce_test.go` | An inline `<script>` without `nonce=`. |
+
+**When you add a new cross-cutting rule, add a guard test here, not just a
+comment.** The BuildFlow auto-commit daemon bypasses the pre-commit hook and
+does not run `go test`, so CI is the only reliable enforcement layer — keep
+these tests fast and deterministic.
+
+### Visual regression tests (`visualtest/`)
+
+Pixel-level checks in a **separate Go module** (`visualtest/go.mod`, local
+replace) so chromedp never pollutes the consumer dependency graph. A single
+shared Chromium process is reused across tests (~4s full suite). Supports
+`State` (`Hover`/`Focus`/`Click`/`Context`), `FullViewport` (top-layer
+overlays), and `WaitSelector`. See `docs/visual-testing.md` and run via
+`nix run .#visual`.
+
 ## Decision trees
 
 ### Map lookup vs if-branch for a variant
