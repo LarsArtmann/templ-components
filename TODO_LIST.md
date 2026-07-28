@@ -2,28 +2,58 @@
 
 **Updated:** 2026-07-28 | **Version:** 1.2.0
 
-> Only open, actionable items. Completed work is tracked in CHANGELOG.md.
+> Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
 
 ---
 
 ## Open — actionable
 
-| #   | Task                                                                         | Notes                                                                                                                                                                                                                                                                          |
-| --- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 71  | Investigate GitHub Dependabot alert                                          | "1 moderate vulnerability" reported but never investigated. Check `https://github.com/LarsArtmann/templ-components/security/dependabot`.                                                                                                                                       |
-| 72  | Add demo CSS rebuild to `scripts/release.sh` (or document Docker handles it) | Release script runs `templ generate` but not the Tailwind CSS build. `examples/demo/static/app.css` may be stale after component class changes. Docker 3-stage build overwrites it, but local `go run` does not.                                                               |
-| 73  | Convert assertion-based tests to golden files (navigation, feedback, forms)  | Recurring from Pareto plan. Per-package, bounded. Golden files improve diff readability and reduce brittle substring checks. Start with `navigation` (highest value).                                                                                                          |
-| 75  | Visual regression tests: Dropdown/Popover/ContextMenu open-state             | Currently 15 goldens cover Button, Alert, Badge, Card, Modal, Drawer, Input, Select, RTL. Dropdown/Popover/ContextMenu need click simulation to capture the open menu — the harness does not yet support `StateClick`. Trigger elements are already covered by Button goldens. |
+### Test infrastructure
+
+| #   | Task                                                                                                              | Notes                                                                                                                                                                                                                                                                     |
+| --- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 73  | Finish converting assertion-based tests to golden files                                                           | `display`/`navigation`/`feedback`/`forms`/`layout` now have golden snapshots; remaining assertion-heavy tests (esp. `htmx`, per-component edge cases) still use brittle substring checks. Golden files improve diff readability and reduce brittle `strings.Contains` checks. |
+| 79  | Visual regression coverage: expand to high-risk components                                                        | 11 component types have goldens (alert/badge/button/card/contextmenu/drawer/dropdown/input/modal/popover/select = 31 PNGs). Add: Combobox, Tabs, Table, Accordion, Tooltip, Carousel, CopyButton, Spinner, Skeleton, ProgressBar, Toast, Avatar, StepIndicator, ErrorPage, NotFound404. Highest regression risk: interactive (Combobox, Tabs, Accordion) + animated (Carousel, ProgressBar). |
+| 80  | Human-eyeball the 4 AI-generated overlay goldens                                                                  | `dropdown` (light/dark), `popover`, `contextmenu` PNGs were captured by the agent but never verified by a human. AI cannot read PNGs — confirm no enshrined rendering bug (e.g. wrong top-layer position). `nix run .#visual` then inspect `visualtest/testdata/{dropdown,popover,contextmenu}/`. |
+| 81  | Audit repo-wide for ordered-Tailwind-substring test assertions                                                    | `utils.Class()` wraps tailwind-merge-go which reorders classes **nondeterministically** (depends on LRU cache state). Any `strings.Contains(out, "flex flex-col")` is a latent flake (~13% under `-race`). Convert each to `utils.AssertContainsAll`. Add `TestNoOrderedTailwindSubstringsInTests` drift-guard. Root cause: `integration/appshell_composition_test.go` was the first found + fixed; others unscanned. |
+| 82  | Calibrate `MaxMismatch` for overlay visual tests empirically                                                      | Current overlay `MaxMismatch` (0.02) is a guess. Run each overlay test 10×, set threshold at p99 of observed mismatch. Prevents both false-negatives (real regressions masked) and false-positives (font AA variance). |
+| 83  | Fix `StateHover` to target first interactive child                                                                | `StateHover` moves the mouse over `#tc-root` center. Components whose hover styles target an inner element (button/link) may not have those styles applied during capture. Descend to the first interactive descendant like `StateFocus` already does (`harness.go:214`). |
+| 84  | Visualtest API: tri-state optionals + viewport presets + state names                                              | `Options.Dark`/`RTL` are `bool` — zero-value conflates "false" with "unset". Change to `*bool` for tri-state. Add `ViewportMobile`/`ViewportTablet`/`ViewportDesktop` presets. Add `InteractionState.String()` for readable failure messages. |
+| 85  | Pin Chromium version in `flake.nix`                                                                               | Visual tests rely on the Nix-provided Chromium; an un-pinned rolling version can shift pixel output across CI runs (font/AA changes). Pin a specific version for reproducibility.                                                                                          |
+
+### Components & recipes
+
+| #   | Task                                              | Notes                                                                                                                                                              |
+| --- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 86  | Add popover edge-flipping to `popoverPositionJS`  | The positioner (`display/shared.go`) handles 4 positions but does **not flip** when the preferred side clips the viewport. Mirror the proven ContextMenu clamping pattern: detect clip, flip to opposite side. SSR-verified only — no browser harness exists yet to confirm positioning fixes. |
+| 87  | Add `recipes.AuthLayout` + `recipes.EmptyState`  | Composition screens companion to the existing Dashboard/SettingsLayout/LoginCard (ADR-0019). AuthLayout: centered card + side-panel split. EmptyState: icon+title+action composition. |
+
+### Tooling
+
+| #   | Task                                                | Notes                                                                                                                                                |
+| --- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 88  | Add `nix run .#css` app                              | Recompiles `examples/demo/static/app.css` via `tailwindcss --minify`. Currently only Docker and `release.sh` rebuild it; local `go run` serves stale CSS after component class changes. |
+| 89  | `tc` CLI: `tc version` + `tc add --list-deps` flag  | `tc version` prints `utils.Version`. `tc add --list-deps <component>` lists sibling `.go` files the component depends on (the silent-incompleteness gap warned about in v1.2.0). |
+| 67  | Switch treefmt `gofmt` → `gofumpt` in `flake.nix`   | Latent conflict with `.golangci.yml` `gofumpt` linter; deferred to avoid formatting churn across the entire codebase.                                 |
+
+### Documentation
+
+| #   | Task                                                                                  | Notes                                                                                                                                                                       |
+| --- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 90  | Write `docs/migration/skeletoncardgrid-api-change.md`                                 | The `[Unreleased]` breaking change (`SkeletonCardGrid(count)` → `SkeletonCardGrid(SkeletonCardGridProps{...})`) has no migration doc. Consumers upgrading will hit a compile error with only the CHANGELOG note to guide them. |
+| 91  | Add "Testing" section to README + `docs/testing-guide.md`                             | README has zero mention of the test strategy (golden HTML snapshots, pixel-level visual regression, drift-guard scanners). A reader evaluating the library cannot tell how it is verified. |
+| 92  | Fix unused `boolPtr` in `internal/golden/golden_coverage_test.go`                     | Dead helper flagged by linters. Trivial removal or wire-up.                                                                                                                 |
 
 ---
 
 ## Blocked — External dependencies
 
-| #   | Task                             | Blocker                   |
-| --- | -------------------------------- | ------------------------- |
-| 28  | `awesome-templ` PR submission    | Needs maintainer approval |
-| 29  | `templ.guide` listing submission | Needs maintainer approval |
+| #   | Task                                          | Blocker                                                                                       |
+| --- | --------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| 28  | `awesome-templ` PR submission                 | Needs upstream maintainer approval.                                                           |
+| 29  | `templ.guide` listing submission              | Needs upstream maintainer approval.                                                           |
+| 93  | BuildFlow daemon: honest commit messages      | 6+ sessions. Daemon commits with hallucinated messages (e.g. "chore: update project configuration") authored as "Unknown Author", and re-introduces stale files via broad `git add -A`. Fix lives in `larsartmann/buildflow` (pre-commit `golangci-lint config verify`, message templates derived from `git diff --stat`, `GOWORK=off`). Blocked on separate-repo work. Mitigated in this repo by `scripts/check-lint-config.sh` + `TestGolangciDisabledLinters`. |
 
 ---
 
@@ -31,9 +61,9 @@
 
 | #   | Task                                                            | Notes                                                                                                                                                                        |
 | --- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 35  | Flip defaults: self-host htmx + semantic tokens → default       | Both shipped opt-in (v0.22.0). `HTMXSrc` opt-in; `templ-components-theme.css` opt-in. Default flip deferred to v2.0 (insufficient deprecation time). See ADR-0007, ADR-0008. |
+| 35  | Flip defaults: self-host htmx + semantic tokens → default       | Both shipped opt-in (v0.22.0). `HTMXSrc` opt-in; `templ-components-theme.css` opt-in. Default flip deferred to v2.0 (insufficient deprecation time). See ADR-0007, ADR-0008, ADR-0022. |
 | 38  | Remove `AlertType` / `ToastType` backward-compat aliases        | Other aliases (`ModalSizeFull`, `DrawerFull`, `FamilyFromErrorFamily`, `FormProps.Inline`) removed in v1.0.0. These two remain as `type X = FeedbackType` aliases.           |
-| 39  | Compound component pattern (Trigger/Content/Close) for overlays | Current Modal/Drawer are monolithic. v2.0 design.                                                                                                                            |
+| 39  | Compound component pattern (Trigger/Content/Close) for overlays | Current Modal/Drawer are monolithic. v2.0 design — ADR-0023 written.                                                                                                          |
 
 ---
 
@@ -43,11 +73,3 @@
 | --- | ----------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 33  | `Validate() error` methods on remaining props structs | `ErrorPageProps.Validate()` shipped v1.0.0. Other props use graceful `utils.Lookup` fallback — add `Validate` only where invalid states are representable. |
 | 34  | Move test helpers to `internal/testutil/`             | 70+ test files depend on exported helpers. Large mechanical migration, deferred post-v1.0.                                                                 |
-
----
-
-## Deferred — Tooling
-
-| #   | Task                                              | Notes                                                                                                            |
-| --- | ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| 67  | Switch treefmt `gofmt` → `gofumpt` in `flake.nix` | Latent conflict with `.golangci.yml` `gofumpt` linter; deferred to avoid formatting churn across entire codebase |
