@@ -261,44 +261,45 @@ This report's session committed via the BuildFlow daemon (commits `2ff277a`, `9e
 
 Forward-looking items in §f routed by the 14:59 docs-health HARVEST:
 
-| §f item | Status (2026-07-28 16:00)                                                                                                          | Where                              |
-| ------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| 1       | OPEN — never-committed-by-author pattern persists; 8+ sessions                                                                     | TODO_LIST #93 (blocked, buildflow) |
-| 2       | DONE — `nix run .#verify` was run as the done-check in the current session (16:00): 16/16 packages OK, 0 lint issues                | current session                    |
-| 3       | DONE — `go test -race ./...` run clean in current session                                                                          | current session                    |
-| 4       | PARTIALLY — daemon-revert mechanism traced (broad `git add -A` on stale working tree), structural fix needs buildflow repo work    | TODO_LIST #93                      |
-| 5       | OPEN — 4 overlay goldens still need human eyeball (AI cannot read PNGs)                                                            | TODO_LIST #80                      |
-| 6       | DEFERRED — `.gitignore` re-ignoring tracked `.envrc` is a BuildFlow behavior; `TestEnvrcConsistency` does not yet check `.gitignore` | TODO_LIST (not yet routed)         |
-| 7       | DEFERRED — amending daemon commits requires rebasing history under a running daemon (unsafe)                                      | —                                  |
-| 8       | DEFERRED — house rule "NEVER PUSH TO REMOTE"                                                                                       | —                                  |
-| 9       | OPEN — CI step for `nix run .#visual` not yet added                                                                                | TODO_LIST (not yet routed)         |
-| 10      | DONE — `TestCSSFreshness` is CI-failing (`CI` env → `t.Errorf`) and points at `nix run .#build` for recompile                      | this session (T17 + 10:14 follow-up) |
-| 11      | WONTFIX — `TestNoDaemonAuthoredCommits` would block legitimate automated commits                                                                                                  | —                                  |
-| 12      | OPEN — `*_templ.go` re-append to `.gitignore` is documented in AGENTS.md BuildFlow gotcha; no test guard yet                       | TODO_LIST (not yet routed)         |
-| 13-25   | OPEN — visual coverage expansion (Combobox/Tabs/Table/Accordion/Tooltip/Carousel/CopyButton/Badge/ProgressBar/Spinner/Skeleton)    | TODO_LIST #79                      |
-| 26-30   | PARTIALLY — navigation pagination + breadcrumbs goldens DONE; nav/alert/input/DataTable/Toast/DefinitionGrid deferred              | TODO_LIST #73                      |
-| 31      | OPEN — `MaxMismatch` for overlays still a guess (0.02)                                                                             | TODO_LIST #82                      |
-| 32      | OPEN — `WaitForSelector` timeout not configurable                                                                                  | TODO_LIST #84                      |
-| 33      | OPEN — viewport presets                                                                                                            | TODO_LIST #84                      |
-| 34      | WONTFIX — `withChildren` single-child pattern is sufficient for current tests                                                      | —                                  |
-| 35      | OPEN — `StateActive` not in harness                                                                                                | TODO_LIST (not yet routed)         |
-| 36      | OPEN — README "Testing" section                                                                                                    | TODO_LIST #91                      |
-| 37      | DONE — `docs/visual-testing.md` has overlay recipe as inline example                                                               | —                                  |
-| 38      | OPEN — `CONTRIBUTING.md` visual-tests section                                                                                      | TODO_LIST #91                      |
-| 39      | OPEN — `docs/migration/skeletoncardgrid-api-change.md`                                                                             | TODO_LIST #90                      |
-| 40      | DONE — daemon-revert problem documented in AGENTS.md "BuildFlow daemon commit messages" subsection                                 | —                                  |
-| 41       | DONE — `map[X]string` lookup maps audited for CSS completeness                                                                     | —                                  |
-| 42       | OPEN — quarterly re-verification of container-query exemptions not scheduled                                                       | TODO_LIST (not yet routed)         |
-| 43       | DONE — `ContainerWidthIsValid` test added                                                                                          | —                                  |
-| 44       | OPEN — Chromium version still un-pinned in `flake.nix`                                                                             | TODO_LIST #85                      |
-| 45       | OPEN — `docs/testing-guide.md` not yet written                                                                                     | TODO_LIST #91                      |
-| 46       | OPEN — visual regression CI badge not in README                                                                                    | TODO_LIST (not yet routed)         |
-| 47       | DONE — `nix run .#visual` runs with race-safe shared Chromium                                                                      | —                                  |
-| 48       | OPEN — `CONTRIBUTING.md` visual-tests section                                                                                      | TODO_LIST #91 (duplicate of #38)   |
-| 49       | OPEN — `nix run .#css` app not in `flake.nix`                                                                                      | TODO_LIST #88                      |
-| 50       | DONE — `boolPtr` unused in `internal/golden/golden_coverage_test.go` verified (still present, zero callers)                        | TODO_LIST #92                      |
+| §f item | Status (2026-07-28 16:00)                                                                                                            | Where                                |
+| ------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| 1       | OPEN — never-committed-by-author pattern persists; 8+ sessions                                                                       | TODO_LIST #93 (blocked, buildflow)   |
+| 2       | DONE — `nix run .#verify` was run as the done-check in the current session (16:00): 16/16 packages OK, 0 lint issues                 | current session                      |
+| 3       | DONE — `go test -race ./...` run clean in current session                                                                            | current session                      |
+| 4       | PARTIALLY — daemon-revert mechanism traced (broad `git add -A` on stale working tree), structural fix needs buildflow repo work      | TODO_LIST #93                        |
+| 5       | OPEN — 4 overlay goldens still need human eyeball (AI cannot read PNGs)                                                              | TODO_LIST #80                        |
+| 6       | DEFERRED — `.gitignore` re-ignoring tracked `.envrc` is a BuildFlow behavior; `TestEnvrcConsistency` does not yet check `.gitignore` | TODO_LIST (not yet routed)           |
+| 7       | DEFERRED — amending daemon commits requires rebasing history under a running daemon (unsafe)                                         | —                                    |
+| 8       | DEFERRED — house rule "NEVER PUSH TO REMOTE"                                                                                         | —                                    |
+| 9       | OPEN — CI step for `nix run .#visual` not yet added                                                                                  | TODO_LIST (not yet routed)           |
+| 10      | DONE — `TestCSSFreshness` is CI-failing (`CI` env → `t.Errorf`) and points at `nix run .#build` for recompile                        | this session (T17 + 10:14 follow-up) |
+| 11      | WONTFIX — `TestNoDaemonAuthoredCommits` would block legitimate automated commits                                                     | —                                    |
+| 12      | OPEN — `*_templ.go` re-append to `.gitignore` is documented in AGENTS.md BuildFlow gotcha; no test guard yet                         | TODO_LIST (not yet routed)           |
+| 13-25   | OPEN — visual coverage expansion (Combobox/Tabs/Table/Accordion/Tooltip/Carousel/CopyButton/Badge/ProgressBar/Spinner/Skeleton)      | TODO_LIST #79                        |
+| 26-30   | PARTIALLY — navigation pagination + breadcrumbs goldens DONE; nav/alert/input/DataTable/Toast/DefinitionGrid deferred                | TODO_LIST #73                        |
+| 31      | OPEN — `MaxMismatch` for overlays still a guess (0.02)                                                                               | TODO_LIST #82                        |
+| 32      | OPEN — `WaitForSelector` timeout not configurable                                                                                    | TODO_LIST #84                        |
+| 33      | OPEN — viewport presets                                                                                                              | TODO_LIST #84                        |
+| 34      | WONTFIX — `withChildren` single-child pattern is sufficient for current tests                                                        | —                                    |
+| 35      | OPEN — `StateActive` not in harness                                                                                                  | TODO_LIST (not yet routed)           |
+| 36      | OPEN — README "Testing" section                                                                                                      | TODO_LIST #91                        |
+| 37      | DONE — `docs/visual-testing.md` has overlay recipe as inline example                                                                 | —                                    |
+| 38      | OPEN — `CONTRIBUTING.md` visual-tests section                                                                                        | TODO_LIST #91                        |
+| 39      | OPEN — `docs/migration/skeletoncardgrid-api-change.md`                                                                               | TODO_LIST #90                        |
+| 40      | DONE — daemon-revert problem documented in AGENTS.md "BuildFlow daemon commit messages" subsection                                   | —                                    |
+| 41      | DONE — `map[X]string` lookup maps audited for CSS completeness                                                                       | —                                    |
+| 42      | OPEN — quarterly re-verification of container-query exemptions not scheduled                                                         | TODO_LIST (not yet routed)           |
+| 43      | DONE — `ContainerWidthIsValid` test added                                                                                            | —                                    |
+| 44      | OPEN — Chromium version still un-pinned in `flake.nix`                                                                               | TODO_LIST #85                        |
+| 45      | OPEN — `docs/testing-guide.md` not yet written                                                                                       | TODO_LIST #91                        |
+| 46      | OPEN — visual regression CI badge not in README                                                                                      | TODO_LIST (not yet routed)           |
+| 47      | DONE — `nix run .#visual` runs with race-safe shared Chromium                                                                        | —                                    |
+| 48      | OPEN — `CONTRIBUTING.md` visual-tests section                                                                                        | TODO_LIST #91 (duplicate of #38)     |
+| 49      | OPEN — `nix run .#css` app not in `flake.nix`                                                                                        | TODO_LIST #88                        |
+| 50      | DONE — `boolPtr` unused in `internal/golden/golden_coverage_test.go` verified (still present, zero callers)                          | TODO_LIST #92                        |
 
 **Question resolutions:**
+
 - Q1 (squash daemon commits): **leave them** — house rule "NEVER PUSH TO REMOTE" + unsafe to rebase under a running daemon.
 - Q2 (overlay PNG correctness): **still open** — TODO_LIST #80, requires human review.
 - Q3 (BuildFlow pre-commit mechanism): **partially traced** — broad `git add -A` on a stale working tree is the symptom; root cause requires `larsartmann/buildflow` source access. Mitigated by `scripts/check-lint-config.sh` + `TestGolangciDisabledLinters` + CI guard.

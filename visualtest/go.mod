@@ -6,7 +6,7 @@ require (
 	github.com/a-h/templ v0.3.1020
 	github.com/chromedp/cdproto v0.0.0-20260719223732-95f6af754cfe
 	github.com/chromedp/chromedp v0.16.0
-	github.com/larsartmann/templ-components v0.0.0-00010101000000-000000000000
+	github.com/larsartmann/templ-components v1.2.0
 	github.com/orisano/pixelmatch v0.0.0-20230914042517-fa304d1dc785
 )
 
