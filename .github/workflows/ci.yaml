@@ -77,6 +77,12 @@ jobs:
       - name: Test
         run: go test -race -coverprofile=coverage.out $(go list ./... | grep -v examples)
 
+      - name: Compile visualtest module (separate go.mod, would otherwise be skipped)
+        run: cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./...
+        # Tests skip cleanly when Chromium is absent, so this never red-lines CI
+        # purely over a missing browser. The check catches compile-only regressions
+        # like the visualtest/doc.go `:=` shadowing bug (2026-07-28).
+
       - name: Docs-health drift guard
         run: go test ./utils/... -run TestDocsCountDrift
 
