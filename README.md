@@ -210,6 +210,15 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 **Pay for what you use.** Import only the packages you need. No monolithic bundle.
 
+**Tested at two layers.** HTML golden-file snapshots (`internal/golden`) catch
+structure/class drift; pixel-level visual regression tests (`visualtest/`, a
+separate Go module so chromedp never pollutes your dependency graph) render each
+component in headless Chromium and diff pixels — catching layout shifts,
+dark-mode color regressions, and RTL mirroring that string tests cannot. The
+visual harness covers rest/hover/focus **and** open states (Dropdown/Popover/
+ContextMenu via native Popover API). Run with `nix run .#visual`. See
+[`docs/visual-testing.md`](docs/visual-testing.md).
+
 ---
 
 ## Tailwind CSS Setup
@@ -260,7 +269,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | Typed enums    | 43                                                  |
 | Packages       | 15                                                  |
 | Tests          | ~890 functions + ~1,650 subtests                    |
-| Visual goldens | 27 pixel-level regression tests (chromedp)          |
+| Visual goldens | 31 pixel-level regression tests (chromedp)          |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---
@@ -271,6 +280,13 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 - **templ** CLI ([install](https://templ.guide/quick-start/installation))
 - **Tailwind CSS** 4.x+
 - **HTMX** 2.x (optional, for `htmx` package)
+
+> **Contributing?** The repo ships a committed `.envrc` for
+> [direnv](https://direnv.net/) that exports `GOEXPERIMENT=jsonv2` and
+> `GOWORK=off` for every tool (go, gopls, IDE) — not just inside
+> `nix develop`. Run `direnv allow` once after cloning. It is tracked (no
+> secrets) and guarded by `TestEnvrcConsistency`. If you skip direnv, set those
+> two env vars manually before building.
 
 ---
 
