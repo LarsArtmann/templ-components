@@ -139,18 +139,21 @@ type containerQueryException struct {
 }
 
 // containerQueryExceptions lists files that use structural viewport
-// breakpoints intentionally without ContainerAware.
+// breakpoints intentionally without ContainerAware. Each entry was verified
+// (2026-07-28) to (a) actually contain a structural breakpoint the scanner
+// would flag, and (b) be a full-page component where container queries do not
+// apply — the component fills the viewport, so "container width" == "viewport
+// width" and a ContainerAware flag would be meaningless.
+//
+// Do NOT add an entry unless the file BOTH trips the scanner AND is genuinely
+// viewport-relative. Pre-emptive exemptions for files that have no structural
+// breakpoint weaken the test (they hide future regressions); such entries were
+// pruned in this pass.
 var containerQueryExceptions = []containerQueryException{
-	// AppShell: full-page layout — always viewport-relative.
-	{"layout/appshell.templ", "full-page shell always viewport-relative"},
-	{"navigation/sidebar_nav.templ", "sidebar is viewport-relative by design"},
-	{"navigation/mobile_menu.templ", "mobile menu is viewport-gated by design"},
-	{"navigation/nav.templ", "responsive nav bar is viewport-relative"},
-	// Error pages — full-page layouts, viewport-relative.
-	{"errorpage/notfound404.templ", "full-page 404 is viewport-relative"},
-	// Demo/recipe pages — viewport-relative by design.
-	{"recipes/dashboard.templ", "dashboard recipe is viewport-relative"},
-	{"recipes/settings_layout.templ", "settings layout is viewport-relative"},
+	{"layout/appshell.templ", "full-page admin shell: sidebar visibility is viewport-gated (lg:block/lg:hidden)"},
+	{"navigation/mobile_menu.templ", "mobile menu: shown/hidden by viewport width (sm:hidden)"},
+	{"navigation/nav.templ", "responsive nav bar: grid layout switches at viewport md: breakpoint"},
+	{"errorpage/notfound404.templ", "full-page 404: link grid columns switch at viewport sm:/lg: breakpoints"},
 }
 
 func isContainerQueryException(path string) bool {
