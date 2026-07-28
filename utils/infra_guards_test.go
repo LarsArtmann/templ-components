@@ -76,9 +76,11 @@ func TestPreCommitHookInstallsGuard(t *testing.T) {
 		)
 	}
 
-	// The guard must precede the BuildFlow invocation, not follow it.
+	// The guard must precede the BuildFlow invocation, not follow it. Match the
+	// actual execution line (buildflow --build-mode), not the word "buildflow"
+	// which also appears in the header comment.
 	guardIdx := strings.Index(src, "check-lint-config.sh")
-	buildFlowIdx := strings.Index(src, "buildflow")
+	buildFlowIdx := strings.Index(src, "buildflow --build-mode")
 
 	if guardIdx >= 0 && buildFlowIdx >= 0 && guardIdx > buildFlowIdx {
 		t.Errorf(
