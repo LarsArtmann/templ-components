@@ -249,8 +249,8 @@ Components emit standard Tailwind classes (`bg-blue-600`, `text-gray-900`). Over
 
 ```css
 @theme {
-	--color-blue-600: #4f46e5;
-	--color-blue-500: #6366f1;
+  --color-blue-600: #4f46e5;
+  --color-blue-500: #6366f1;
 }
 ```
 
@@ -268,7 +268,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | SVG icons      | 102                                                 |
 | Typed enums    | 43                                                  |
 | Packages       | 15                                                  |
-| Tests          | ~890 functions + ~1,650 subtests                    |
+| Tests          | ~1,070 test functions + ~1,240 subtests             |
 | Visual goldens | 31 pixel-level regression tests (chromedp)          |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 

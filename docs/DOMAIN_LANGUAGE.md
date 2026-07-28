@@ -66,14 +66,14 @@ Immutable configuration objects.
 
 A separate Go module (`visualtest/`) renders components in headless Chromium and diffs pixels against committed golden images. It never enters the consumer dependency graph (separate `go.mod` + `replace`). Run via `nix run .#visual`. See `docs/visual-testing.md`.
 
-| Term               | Definition                                                                                                                                                      | Where defined           |
-| ------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
-| Visual Regression  | Detecting unintended pixel-level changes in rendered components (layout shifts, color regressions, dark-mode/RTL breakage) that HTML-string tests miss          | `visualtest/`           |
-| Golden (PNG)       | Committed baseline screenshot a test compares against; regenerated with `-update`                                                                               | `visualtest/testdata/`  |
-| chromedp           | Go bindings for the Chrome DevTools Protocol; drives headless Chromium for capture                                                                              | `visualtest/harness.go` |
-| pixelmatch         | Perceptual pixel-diff algorithm (YIQ color distance + anti-alias skip) via `orisano/pixelmatch`; decides pass/fail against `MaxMismatch` (default 0.1%)         | `visualtest/compare.go` |
-| AssertScreenshot   | Public test API: `AssertScreenshot(t, name, component, opts...)` with `Options{Dark, RTL, Viewport, MaxMismatch, Threshold, State}` (`StateHover`/`StateFocus`) | `visualtest/harness.go` |
-| `.fail/` artifacts | On mismatch, actual + diff PNGs are written to `.fail/` for review and auto-cleaned on pass                                                                     | `visualtest/golden.go`  |
+| Term               | Definition                                                                                                                                                                                              | Where defined           |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| Visual Regression  | Detecting unintended pixel-level changes in rendered components (layout shifts, color regressions, dark-mode/RTL breakage) that HTML-string tests miss                                                  | `visualtest/`           |
+| Golden (PNG)       | Committed baseline screenshot a test compares against; regenerated with `-update`                                                                                                                       | `visualtest/testdata/`  |
+| chromedp           | Go bindings for the Chrome DevTools Protocol; drives headless Chromium for capture                                                                                                                      | `visualtest/harness.go` |
+| pixelmatch         | Perceptual pixel-diff algorithm (YIQ color distance + anti-alias skip) via `orisano/pixelmatch`; decides pass/fail against `MaxMismatch` (default 0.1%)                                                 | `visualtest/compare.go` |
+| AssertScreenshot   | Public test API: `AssertScreenshot(t, name, component, opts...)` with `Options{Dark, RTL, Viewport, MaxMismatch, Threshold, State}` (`StateRest`/`StateHover`/`StateFocus`/`StateClick`/`StateContext`) | `visualtest/harness.go` |
+| `.fail/` artifacts | On mismatch, actual + diff PNGs are written to `.fail/` for review and auto-cleaned on pass                                                                                                             | `visualtest/golden.go`  |
 
 ## Bounded Contexts
 

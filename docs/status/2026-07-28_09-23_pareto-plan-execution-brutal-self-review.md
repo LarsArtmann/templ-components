@@ -18,7 +18,7 @@
 | T5  | `TestContainerQueryCompliance` scanner   | Passes with 7 exemptions, all documented                                                               |
 | T6  | CSS Go-source scanning fix               | **CRITICAL BUG FIX**: `bg-amber-50` had 0 matches → now present. `TestTailwindGoSourceScanning` guards |
 | T11 | Shared Chromium process                  | 15 visual tests in ~2s (was ~10s+), `TestMain` cleanup                                                 |
-| T16 | Visual coverage metric                   | Reports 27 goldens / 74 components = 36.5%                                                             |
+| T16 | Visual coverage metric                   | Reports ~~27 goldens / 74 components = 36.5%~~ 31 goldens / 98 components = 31.6% (recounted 2026-07-28 16:00; `find visualtest/testdata -name '*.png' \| wc -l` = 31). Metric drifted the same day: 4 overlay goldens added in the 10:14 session (T8) + 24 component growth from container-aware + recipes work. The `TestSkillComponentCount` + `ROADMAP.md` golden-count row now hard-code the current figures. |
 | T17 | CSS staleness detection                  | `TestCSSFreshness` informational warning                                                               |
 | T20 | Markdown link audit                      | All internal links resolve, 0 broken                                                                   |
 | T22 | SwapStyleIsValid + ContainerWidthIsValid | Already existed in `htmx/enums_test.go` + `layout/container_test.go`                                   |
@@ -196,3 +196,50 @@ I removed `.envrc` from `.gitignore` because my `.envrc` has no secrets (just tw
 2. **Should I squash the 13 daemon commits into clean conventional-commit messages before pushing?** The daemon's messages are misleading (see section d.1). The CSS bug fix is hidden behind "refactor(css): align styles with container query compliance standards". But squashing rewrites history and the daemon might commit again mid-squash. Or should I just leave the daemon's garbage messages and move forward?
 
 3. **Should the T14-T15 golden file conversions happen at all?** The plan called for converting 50 assertion-based tests to golden files. But assertion tests (`AssertContainsAll`) are fast, readable, and already pass. Golden files add binary artifacts, require `-update` workflow, and produce large diffs. Is the readability gain worth the migration cost, or should golden files be reserved for NEW tests only?
+
+---
+
+## Resolution (2026-07-28 16:00)
+
+This report's session committed its work via the BuildFlow daemon (commits `b355032`, `e3b65a0`, `838016c`, `976f2e1`, `4cb4187`, `c7f5648`, `60790a5`, `6491b04`, `0810fa3`, `c8f5f25`, `044c813`) — the d.1 "0 by me" failure persisted through 3 more sessions and is now `TODO_LIST.md` #93.
+
+Forward-looking items in §f routed by the 14:59 docs-health HARVEST:
+
+| §f item | Status (2026-07-28 16:00)                                                                                                          | Where                              |
+| ------- | ---------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| 1       | OPEN — daemon misattribution, 7+ sessions                                                                                          | TODO_LIST #93 (blocked, buildflow) |
+| 2       | DONE — root cause traced in 10:14 report §d.2 (daemon commits stale working tree via broad `git add -A`)                           | —                                  |
+| 3, 4    | DONE — `StateClick`/`StateContext`/`FullViewport`/`WaitSelector` shipped + 4 overlay goldens captured                              | 10:14 report §a #3, #4             |
+| 5       | OPEN — never-committed-by-author pattern persists into the current session                                                         | TODO_LIST #93                      |
+| 6       | DEFERRED — house rule "NEVER PUSH TO REMOTE"                                                                                       | —                                  |
+| 7-9     | DONE — `TestCSSFreshness` CI-failing (`CI` env → `t.Errorf`), `TestEnvrcConsistency`, `TestPreCommitHookInstallsGuard` all guard   | 10:14 report §a #7-9               |
+| 10      | OPEN — dark-mode Input visual variants                                                                                             | TODO_LIST #79                      |
+| 11      | DONE — container-query exemptions audited, 3 dead pruned, 4 documented                                                             | 10:14 report §a #11                |
+| 12, 13  | DONE — `pagination.golden` + `breadcrumbs.golden` shipped as proof-of-concept                                                      | 10:14 report §a #12, #13           |
+| 14-16   | OPEN — nav/alert/input golden conversions still pending                                                                            | TODO_LIST #73                      |
+| 17-27   | OPEN — Combobox/Tabs/Table/Accordion/Tooltip/Carousel/CopyButton/Badge/ProgressBar/Spinner/Skeleton visual coverage not yet added  | TODO_LIST #79                      |
+| 28      | DONE — `SKILL.md` updated with guard-test table + visual harness section                                                           | 10:14 report §a #28                |
+| 29      | OPEN — `website/src/` zero container-query/visual-testing prose (verified 2026-07-28 16:00: only compiled CSS has `@container`)    | TODO_LIST (not yet routed)         |
+| 30      | DONE — ROADMAP cross-references ADR-0022 (default-flip) + ADR-0023 (compound overlay)                                              | 10:14 report §a #30                |
+| 31      | DONE — README has "Tested at two layers" section + visual-testing row in comparison table                                          | —                                  |
+| 32      | DONE — `docs/visual-testing.md` updated with shared Chromium architecture + overlay testing recipe                                | 10:14 report §a #32                |
+| 33      | DONE — `.envrc`/`direnv` block in README "Requirements" section                                                                   | —                                  |
+| 34      | OPEN — `docs/migration/skeletoncardgrid-api-change.md` not yet written                                                             | TODO_LIST #90                      |
+| 35      | DEFERRED — BuildFlow repo work                                                                                                     | TODO_LIST #93                      |
+| 36      | N/A — `justfile` already removed; `flake.nix` is the only build system                                                             | —                                  |
+| 37      | OPEN — `nix run .#css` app not yet in `flake.nix`                                                                                  | TODO_LIST #88                      |
+| 38      | DONE — `GOWORK=off` is now exported repo-wide via `.envrc` (not per-app)                                                           | —                                  |
+| 39      | OPEN — Chromium version still un-pinned in `flake.nix`                                                                             | TODO_LIST #85                      |
+| 40-42   | DONE — CSS scanning audit complete; `bg-amber-50` root cause + siblings fixed and regression-guarded                               | 10:14 report §a                    |
+| 43, 44  | WONTFIX — test-only `@source` and `input_classes.go` audit deprioritized (no user-visible bug)                                     | —                                  |
+| 45      | N/A — replaced by `nix run .#verify` (already exists)                                                                              | —                                  |
+| 46      | OPEN — visual regression CI badge not yet in README                                                                               | TODO_LIST (not yet routed)         |
+| 47      | DONE — `nix run .#visual` already runs with race-safe shared Chromium                                                              | —                                  |
+| 48      | OPEN — `CONTRIBUTING.md` visual-tests section not yet written                                                                      | TODO_LIST #91                      |
+| 49      | OPEN — `docs/testing-guide.md` not yet written                                                                                     | TODO_LIST #91                      |
+| 50      | DEFERRED — v1.3.0 release planning                                                                                                | ROADMAP.md                         |
+
+**Question resolutions:**
+- Q1 (`.envrc` committed or ignored): **committed is correct** — `TestEnvrcConsistency` guards content, `.envrc` is tracked in this repo. Split-brain (`gitignore` re-ignoring it) was a separate bug, fixed and regressed-against in 10:14.
+- Q2 (squash daemon commits): **leave them** — house rule "NEVER PUSH TO REMOTE" + the daemon's commits are immutable history; squashing mid-daemon-cycle is unsafe.
+- Q3 (golden conversions worth it?): **partial yes** — pagination/breadcrumbs proved the pattern; full conversion deferred to `TODO_LIST #73`. Assertion tests retained for new edge cases.
