@@ -1,23 +1,26 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"strings"
 	"testing"
 )
 
-// TestCSSFreshness warns when the committed demo CSS might be stale — older
-// than the most recently modified .templ or .go source file. A stale CSS
-// means new Tailwind classes added in source may not be in the compiled CSS.
+// TestCSSFreshness warns (or, in CI, FAILS) when the committed demo CSS might
+// be stale — older than the most recently modified .templ or .go source file.
+// A stale CSS means new Tailwind classes added in source may not be in the
+// compiled CSS.
 //
-// This is informational (t.Logf) not failing because:
-// 1. The Dockerfile 3-stage pipeline always recompiles CSS during image build
-// 2. CI runs templ generate + go build independently of CSS
-// 3. Local developers use `nix run .#build` which includes templ generate
-//
-// But a stale CSS committed to the repo means `go run ./examples/demo` serves
-// outdated styles. This test surfaces that gap.
+// Locally this is informational (t.Logf): the Dockerfile pipeline recompiles
+// CSS on every image build, and developers use `nix run .#build`. But a stale
+// CSS COMMITTED to the repo means `go run ./examples/demo` serves outdated
+// styles. In CI (CI env var set, e.g. GitHub Actions), a stale committed CSS
+// is a real regression — the build artifact ships with missing classes — so
+// the test fails there. The root cause of a real stale-CSS incident
+// (bg-amber-50 missing from compiled CSS) is documented in the
+// 2026-07-28 status report, section d.1/838016c.
 func TestCSSFreshness(t *testing.T) {
 	t.Parallel()
 
@@ -54,11 +57,19 @@ func TestCSSFreshness(t *testing.T) {
 	}
 
 	if newestTime.After(cssInfo.ModTime()) {
-		t.Logf(
-			"WARNING: demo CSS (%s) is older than newest source file — "+
-				"recompile with: tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css --minify",
+		msg := fmt.Sprintf(
+			"demo CSS (%s) is older than newest source file — "+
+				"recompile with: nix run .#css  OR  tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css --minify",
 			cssInfo.ModTime().Format("2006-01-02 15:04"),
 		)
+		// In CI a stale committed CSS ships missing classes to consumers; fail
+		// hard. Locally, just warn so `go test ./...` stays green during edits
+		// before a CSS recompile.
+		if os.Getenv("CI") != "" {
+			t.Error(msg)
+		} else {
+			t.Logf("WARNING: " + msg)
+		}
 	}
 }
 

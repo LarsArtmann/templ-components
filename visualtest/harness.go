@@ -149,6 +149,8 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 		tasks = append(tasks, focusAction(rootSel))
 	case StateClick:
 		tasks = append(tasks, clickAction(rootSel))
+	case StateContext:
+		tasks = append(tasks, contextAction(rootSel))
 	}
 
 	// After the interaction, optionally wait for a selector to become visible
@@ -271,5 +273,34 @@ func clickAction(sel string) chromedp.Action {
 
 		return input.DispatchMouseEvent(input.MouseReleased, coords[0], coords[1]).
 			WithButton(input.Left).WithClickCount(1).Do(ctx)
+	})
+}
+
+// contextAction dispatches a contextmenu (right-click) event on the first
+// ContextMenu trigger (or any interactive descendant) under sel. A synthetic
+// MouseEvent('contextmenu') is used because it reliably fires the singleton
+// handler that calls showPopover(); a real right-button press is flaky under
+// headless Chromium.
+func contextAction(sel string) chromedp.Action {
+	return chromedp.ActionFunc(func(ctx context.Context) error {
+		js := `(() => {
+			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
+			if (!root) return false;
+			const t = root.querySelector('[data-tc-ctxmenu-trigger], button, a[href], [tabindex]');
+			if (!t) return false;
+			t.dispatchEvent(new MouseEvent('contextmenu', {bubbles: true, cancelable: true}));
+			return true;
+		})()`
+
+		var ok bool
+		if err := chromedp.Evaluate(js, &ok).Do(ctx); err != nil {
+			return fmt.Errorf("context: query %s: %w", sel, err)
+		}
+
+		if !ok {
+			return fmt.Errorf("context: no trigger element under %q", sel)
+		}
+
+		return nil
 	})
 }

@@ -1,8 +1,11 @@
 package visualtest_test
 
 import (
+	"context"
+	"io"
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
@@ -214,4 +217,102 @@ func TestRTL(t *testing.T) {
 		display.Card(card),
 		visualtest.Options{RTL: true},
 	)
+}
+
+// overlayOpen is the shared option set for components whose open state renders
+// in the browser top layer (Popover API menus, <dialog>): click/context to
+// open, wait for the [popover] panel to appear, then capture the full viewport
+// (the panel paints outside #tc-root's box, so an element screenshot would
+// crop it). Nonce is required so the components render their positioning
+// scripts and — for ContextMenu — the menu + event handler at all.
+func overlayOpen(viewport visualtest.Viewport, state visualtest.InteractionState) visualtest.Options {
+	return visualtest.Options{
+		State:        state,
+		WaitSelector: "[popover]",
+		FullViewport: true,
+		Viewport:     viewport,
+	}
+}
+
+// TestDropdownOpen covers the Dropdown's open state via the native Popover API
+// (popovertarget invoker) in light and dark mode. This was T8 — skipped in the
+// prior session as "needs click simulation"; the harness now supports it.
+func TestDropdownOpen(t *testing.T) {
+	t.Parallel()
+
+	dropdown := func() display.DropdownProps {
+		d := display.DefaultDropdownProps()
+		d.Label = "Options"
+		d.Nonce = "test-nonce"
+		d.Items = []display.DropdownItem{
+			{Text: "Edit", Href: "/edit"},
+			{Text: "Duplicate", Href: "/duplicate"},
+			{Text: "Archive", Href: "/archive"},
+		}
+
+		return d
+	}
+
+	light := overlayOpen(visualtest.Viewport{Width: 480, Height: 360}, visualtest.StateClick)
+	visualtest.AssertScreenshot(t, "dropdown/open_light", display.Dropdown(dropdown()), light)
+
+	dark := light
+	dark.Dark = true
+	visualtest.AssertScreenshot(t, "dropdown/open_dark", display.Dropdown(dropdown()), dark)
+}
+
+// TestPopoverOpen covers the Popover's open state. Popover takes HTML children
+// for its panel content, injected via templ.WithChildren.
+func TestPopoverOpen(t *testing.T) {
+	t.Parallel()
+
+	const content = `<div class="space-y-1">` +
+		`<p class="font-medium text-gray-900 dark:text-white">Popover title</p>` +
+		`<p class="text-gray-500 dark:text-gray-400">Some helpful detail shown in the floating panel.</p>` +
+		`</div>`
+
+	props := display.DefaultPopoverProps()
+	props.TriggerText = "Details"
+	props.Nonce = "test-nonce"
+
+	visualtest.AssertScreenshot(
+		t,
+		"popover/open_light",
+		withChildren(display.Popover(props), templ.Raw(content)),
+		overlayOpen(visualtest.Viewport{Width: 480, Height: 400}, visualtest.StateClick),
+	)
+}
+
+// TestContextMenuOpen covers the ContextMenu's open state. ContextMenu opens on
+// a right-click (contextmenu event), so it uses StateContext rather than
+// StateClick.
+func TestContextMenuOpen(t *testing.T) {
+	t.Parallel()
+
+	const content = `<div class="p-4 rounded-md border border-dashed border-gray-300 dark:border-gray-600 ` +
+		`text-sm text-gray-500 dark:text-gray-400">Right-click this region</div>`
+
+	props := display.DefaultContextMenuProps()
+	props.Nonce = "test-nonce"
+	props.Items = []display.ContextMenuItem{
+		{Text: "Edit", Href: "/edit"},
+		{Text: "Copy", Href: "/copy"},
+		{Text: "Delete", Href: "/delete"},
+	}
+
+	visualtest.AssertScreenshot(
+		t,
+		"contextmenu/open_light",
+		withChildren(display.ContextMenu(props), templ.Raw(content)),
+		overlayOpen(visualtest.Viewport{Width: 480, Height: 360}, visualtest.StateContext),
+	)
+}
+
+// withChildren returns a component that renders parent with the given child
+// injected into the context, so components that consume { children... }
+// (Popover, ContextMenu) show their content in a visual golden.
+func withChildren(parent, child templ.Component) templ.Component {
+	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		return parent.Render(templ.WithChildren(ctx, child), w)
+	})
 }
