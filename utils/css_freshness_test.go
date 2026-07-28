@@ -73,7 +73,8 @@ func isComponentSource(path string) bool {
 	matched := false
 
 	for _, dir := range dirs {
-		if filepath.HasPrefix(path, filepath.Join("..", dir)) {
+		prefix := filepath.Join("..", dir)
+		if strings.HasPrefix(path, prefix) {
 			matched = true
 
 			break
