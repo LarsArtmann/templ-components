@@ -25,6 +25,16 @@ const (
 	StateHover
 	// StateFocus focuses #tc-root, triggering :focus-visible styles.
 	StateFocus
+	// StateClick clicks the first interactive descendant of #tc-root (a
+	// [popovertarget] trigger, button, or link). Use it with FullViewport
+	// and WaitSelector to capture components whose open state renders in the
+	// top layer — Dropdown, Popover, ContextMenu (native Popover API), Modal,
+	// and Drawer (native <dialog>).
+	StateClick
+	// StateContext dispatches a contextmenu (right-click) event on the first
+	// [data-tc-ctxmenu-trigger] (or interactive descendant) of #tc-root. This
+	// opens components that activate on right-click, e.g. ContextMenu.
+	StateContext
 )
 
 // Options configures how a component is rendered and captured.
@@ -44,8 +54,18 @@ type Options struct {
 	// Pixels whose YIQ distance is below it count as identical. Default 0.1;
 	// raise it to tolerate more rendering noise, lower it for stricter checks.
 	Threshold float64
-	// State applies an interaction (hover/focus) to #tc-root before capture.
+	// State applies an interaction (hover/focus/click) to #tc-root before capture.
 	State InteractionState
+	// FullViewport captures the full browser viewport instead of a tightly
+	// cropped #tc-root element. Required for components whose open state
+	// renders in the top layer (Popover API menus, <dialog>), because that
+	// content is painted outside #tc-root's bounding box and would be cropped
+	// by an element screenshot.
+	FullViewport bool
+	// WaitSelector, when set, is waited for (chromedp.WaitVisible) AFTER the
+	// interaction state is applied and BEFORE capture. Use it with StateClick
+	// to wait for an overlay menu to appear, e.g. WaitSelector: "[popover]".
+	WaitSelector string
 }
 
 // defaultOptions fills zero values with sensible defaults.

@@ -104,6 +104,12 @@ func resolveOptions(opts []Options) Options {
 		if o.State != StateRest {
 			merged.State = o.State
 		}
+
+		merged.FullViewport = merged.FullViewport || o.FullViewport
+
+		if o.WaitSelector != "" {
+			merged.WaitSelector = o.WaitSelector
+		}
 	}
 
 	return defaultOptions(merged)
@@ -141,11 +147,27 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 		tasks = append(tasks, hoverAction(rootSel))
 	case StateFocus:
 		tasks = append(tasks, focusAction(rootSel))
+	case StateClick:
+		tasks = append(tasks, clickAction(rootSel))
+	}
+
+	// After the interaction, optionally wait for a selector to become visible
+	// — e.g. an overlay menu opened by StateClick — then settle and capture.
+	if opts.WaitSelector != "" {
+		tasks = append(tasks, chromedp.WaitVisible(opts.WaitSelector, chromedp.ByQuery))
+	}
+
+	capture := chromedp.Action(chromedp.Screenshot(rootSel, &screenshot, chromedp.ByQuery, chromedp.NodeVisible))
+	if opts.FullViewport {
+		// Full-viewport capture: top-layer overlays (Popover API menus,
+		// <dialog>) paint outside #tc-root's box, so an element screenshot
+		// would crop them.
+		capture = chromedp.Action(chromedp.CaptureScreenshot(&screenshot))
 	}
 
 	tasks = append(tasks,
 		chromedp.Sleep(settleDelay),
-		chromedp.Screenshot(rootSel, &screenshot, chromedp.ByQuery, chromedp.NodeVisible),
+		capture,
 	)
 	if err := chromedp.Run(timeoutCtx, tasks...); err != nil {
 		return nil, fmt.Errorf("chromedp actions: %w", err)
@@ -211,5 +233,43 @@ func focusAction(sel string) chromedp.Action {
 		}
 
 		return nil
+	})
+}
+
+// clickAction clicks the first interactive descendant of the element matching
+// sel. It prefers a Popover API trigger ([popovertarget]) so Dropdown/Popover/
+// ContextMenu open natively, then falls back to any button/link. A real mouse
+// click is dispatched at the element's centre so the native :active state and
+// popovertarget invoker both fire (synthetic .click() is enough for the
+// invoker, but a dispatched event also exercises hover/active paint).
+func clickAction(sel string) chromedp.Action {
+	return chromedp.ActionFunc(func(ctx context.Context) error {
+		js := `(() => {
+			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
+			if (!root) return null;
+			const e = root.querySelector('[popovertarget], button, a[href], [role="button"]');
+			if (!e) return null;
+			const r = e.getBoundingClientRect();
+			return [r.x + r.width/2, r.y + r.height/2];
+		})()`
+
+		var coords []float64
+		if err := chromedp.Evaluate(js, &coords).Do(ctx); err != nil {
+			return fmt.Errorf("click: query %s: %w", sel, err)
+		}
+
+		if len(coords) != 2 {
+			return fmt.Errorf("click: no clickable element under %q", sel)
+		}
+
+		// Press + release at centre: this triggers the popovertarget invoker
+		// (opening the menu) and a real :active paint cycle.
+		if err := input.DispatchMouseEvent(input.MousePressed, coords[0], coords[1]).
+			WithButton(input.Left).WithClickCount(1).Do(ctx); err != nil {
+			return fmt.Errorf("click: press: %w", err)
+		}
+
+		return input.DispatchMouseEvent(input.MouseReleased, coords[0], coords[1]).
+			WithButton(input.Left).WithClickCount(1).Do(ctx)
 	})
 }
