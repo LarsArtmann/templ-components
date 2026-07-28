@@ -225,12 +225,19 @@ func TestRTL(t *testing.T) {
 // (the panel paints outside #tc-root's box, so an element screenshot would
 // crop it). Nonce is required so the components render their positioning
 // scripts and — for ContextMenu — the menu + event handler at all.
+//
+// MaxMismatch is raised to 2%: these menus are positioned in JS from the
+// trigger's getBoundingClientRect(), so a 1px layout-timing shift shows up as
+// edge anti-aliasing variance (~0.5-1%). A real regression (missing menu,
+// wrong colors, broken layout) blows far past 2%. Pure-CSS components stay at
+// the strict 0.1% default.
 func overlayOpen(viewport visualtest.Viewport, state visualtest.InteractionState) visualtest.Options {
 	return visualtest.Options{
 		State:        state,
 		WaitSelector: "[popover]",
 		FullViewport: true,
 		Viewport:     viewport,
+		MaxMismatch:  0.02,
 	}
 }
 
