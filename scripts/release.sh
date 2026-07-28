@@ -191,9 +191,20 @@ else
 fi
 
 # 7. Run full verify.
-echo "Running full verify (templ generate + build + test + lint)..."
+echo "Running full verify (templ generate + CSS compile + build + test + lint)..."
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...
+
+# Recompile demo CSS so committed static/app.css includes any new Tailwind
+# classes from source changes. The Dockerfile does this in its 3-stage build,
+# but local `go run` users rely on the committed file being current.
+if command -v tailwindcss &>/dev/null; then
+    tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css --minify
+else
+    echo "Warning: tailwindcss not found — demo CSS not recompiled." >&2
+    echo "Run 'nix run .#build' or install tailwindcss to recompile." >&2
+fi
+
 go build ./...
 go test ./... -count=1 -race
 golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...

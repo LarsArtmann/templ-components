@@ -28,6 +28,8 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **Typed props**        | 43 enums                   | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)          | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts) | Yes                           | —                                              |
+| **Container queries**  | 8 opt-in components        | —                             | —                                              |
+| **Visual regression**  | chromedp pixel tests       | —                             | —                                              |
 | **HTMX integration**   | Built-in package           | —                             | —                                              |
 | **Standalone library** | Yes                        | No                            | No                                             |
 
@@ -258,6 +260,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | Typed enums  | 43                                                  |
 | Packages     | 15                                                  |
 | Tests        | ~890 functions + ~1,650 subtests                    |
+| Visual goldens | 27 pixel-level regression tests (chromedp)        |
 | Dependencies | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---
