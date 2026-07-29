@@ -49,7 +49,7 @@ func TestDiffOutput(t *testing.T) {
 		t.Error("expected non-empty diff for different inputs")
 	}
 
-	if !strings.Contains(got, "--- line2") || !strings.Contains(got, "+++ changed") {
+	if !strings.Contains(got, "--- [2] line2") || !strings.Contains(got, "+++ [2] changed") {
 		t.Errorf("unexpected diff output:\n%s", got)
 	}
 }

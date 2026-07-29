@@ -119,14 +119,66 @@ func TestGoldenDiffMultiLine(t *testing.T) {
 	}
 }
 
-// TestLineAtOutOfRange verifies lineAt returns "" for out-of-range index.
-func TestLineAtOutOfRange(t *testing.T) {
+// TestGoldenDiffLCSAlignment verifies the LCS-based diff correctly handles
+// insertions without cascading changes to subsequent lines.
+func TestGoldenDiffLCSAlignment(t *testing.T) {
 	t.Parallel()
 
-	if lineAt([]string{"a\n", "b\n"}, 5) != "" {
-		t.Error("lineAt(5) should return '' for out-of-range")
+	// Inserting a line in the middle — only the insertion should show, not every line after.
+	got := diff("a\nc\n", "a\nb\nc\n")
+	if !strings.Contains(got, "+++ [2] b") {
+		t.Errorf("diff should show inserted line at position 2, got:\n%s", got)
+	}
+
+	if strings.Contains(got, "---") {
+		t.Errorf("diff should have no deletions for pure insertion, got:\n%s", got)
 	}
 }
 
-//go:fix inline
-func boolPtr(b bool) *bool { return new(b) }
+// TestNormalizeIDs verifies auto-generated EnsureID values are replaced with stable placeholders.
+func TestNormalizeIDs(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		input string
+		want  string
+	}{
+		{
+			name:  "primary hex format",
+			input: `id="tc-modal-a1b2c3d4e5f6a7b8"`,
+			want:  `id="tc-modal-NORMALIZED"`,
+		},
+		{
+			name:  "fallback timestamp format",
+			input: `id="tc-modal-1753897654321234567-1"`,
+			want:  `id="tc-modal-NORMALIZED"`,
+		},
+		{
+			name:  "cross-reference in popovertarget",
+			input: `popovertarget="tc-popover-abcdef0123456789"`,
+			want:  `popovertarget="tc-popover-NORMALIZED"`,
+		},
+		{
+			name:  "explicit ID preserved",
+			input: `id="my-custom-id"`,
+			want:  `id="my-custom-id"`,
+		},
+		{
+			name:  "short hex not matched (too short)",
+			input: `id="tc-modal-abc"`,
+			want:  `id="tc-modal-abc"`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := normalizeIDs(tt.input)
+			if got != tt.want {
+				t.Errorf("normalizeIDs(%q) = %q, want %q", tt.input, got, tt.want)
+			}
+		})
+	}
+}
