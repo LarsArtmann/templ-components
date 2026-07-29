@@ -33,7 +33,7 @@ var update = flag.Bool("update", false, "update golden files instead of comparin
 var classRe = regexp.MustCompile(`class="([^"]*)"`)
 
 // autoIDRe matches EnsureID-generated identifiers (utils.EnsureID):
-n// tc-<prefix>-<digits>-<digits> (fallback: timestamp + counter — tried first because digits are valid hex)
+// tc-<prefix>-<digits>-<digits> (fallback: timestamp + counter — tried first because digits are valid hex)
 // tc-<prefix>-<16 hex chars> (crypto/rand primary path)
 // These are non-deterministic and must be normalized for reproducible golden files.
 var autoIDRe = regexp.MustCompile(`tc-([a-z]+)-(?:\d+-\d+|[a-f0-9]{16})`)
