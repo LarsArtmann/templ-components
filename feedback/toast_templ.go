@@ -70,7 +70,9 @@ func toastJSIconPaths() string {
 // This bypasses templ's ScriptContentOutsideStringLiteral which would
 // JSON-marshal the JS string content inside {{ }} expressions.
 func toastContainerScript(nonce string) templ.Component {
-	return templ.Raw(fmt.Sprintf(`<script nonce="%s">%s\n%s\nfunction tcShowToast(message, type, title, duration) {\nvar container = document.getElementById('tc-toast-container');\nif (!container) return;\nvar toast = document.createElement('div');\nvar typeKey = type || 'info';\nvar style = tcToastColors[typeKey] || tcToastColors.info;\ntoast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;\nvar inner = document.createElement('div');\ninner.className = 'flex items-start gap-3';\nvar svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\nsvgEl.setAttribute('class', 'h-5 w-5 flex-shrink-0 mt-0.5 ' + style.icon);\nsvgEl.setAttribute('fill', 'none');\nsvgEl.setAttribute('viewBox', '0 0 24 24');\nsvgEl.setAttribute('stroke', 'currentColor');\nsvgEl.innerHTML = (tcToastIcons[typeKey] || tcToastIcons.info);\ninner.appendChild(svgEl);\nvar content = document.createElement('div');\ncontent.className = 'flex-1 min-w-0';\nif (title) {\nvar titleEl = document.createElement('div');\ntitleEl.className = 'text-sm font-semibold';\ntitleEl.textContent = title;\ncontent.appendChild(titleEl);\n}\nvar msgEl = document.createElement('div');\nmsgEl.className = 'text-sm';\nmsgEl.textContent = message;\ncontent.appendChild(msgEl);\ninner.appendChild(content);\nvar btn = document.createElement('button');\nbtn.className = 'flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0';\nbtn.setAttribute('aria-label', 'Dismiss');\nbtn.addEventListener('click', function() { this.closest('.pointer-events-auto').remove(); });\nbtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (tcToastIcons.dismiss || '') + '</svg>';\ninner.appendChild(btn);\ntoast.appendChild(inner);\ncontainer.appendChild(toast);\nrequestAnimationFrame(function() { toast.classList.remove('translate-x-full'); });\nif (duration && duration > 0) {\nsetTimeout(function() {\ntoast.classList.add('translate-x-full');\nsetTimeout(function() { toast.remove(); }, 300);\n}, duration);\n}\n}</script>`, nonce, toastJSStyles(), toastJSIconPaths()))
+	script := fmt.Sprintf(`<script nonce="%s">%s\n%s\nfunction tcShowToast(message, type, title, duration) {\nvar container = document.getElementById('tc-toast-container');\nif (!container) return;\nvar toast = document.createElement('div');\nvar typeKey = type || 'info';\nvar style = tcToastColors[typeKey] || tcToastColors.info;\ntoast.className = 'pointer-events-auto max-w-sm w-full rounded-lg border shadow-lg dark:shadow-black/20 px-4 py-3 transform transition-all duration-300 motion-reduce:transition-none motion-reduce:duration-0 translate-x-full ' + style.border + ' ' + style.bg + ' ' + style.text;\nvar inner = document.createElement('div');\ninner.className = 'flex items-start gap-3';\nvar svgEl = document.createElementNS('http://www.w3.org/2000/svg', 'svg');\nsvgEl.setAttribute('class', 'h-5 w-5 flex-shrink-0 mt-0.5 ' + style.icon);\nsvgEl.setAttribute('fill', 'none');\nsvgEl.setAttribute('viewBox', '0 0 24 24');\nsvgEl.setAttribute('stroke', 'currentColor');\nsvgEl.innerHTML = (tcToastIcons[typeKey] || tcToastIcons.info);\ninner.appendChild(svgEl);\nvar content = document.createElement('div');\ncontent.className = 'flex-1 min-w-0';\nif (title) {\nvar titleEl = document.createElement('div');\ntitleEl.className = 'text-sm font-semibold';\ntitleEl.textContent = title;\ncontent.appendChild(titleEl);\n}\nvar msgEl = document.createElement('div');\nmsgEl.className = 'text-sm';\nmsgEl.textContent = message;\ncontent.appendChild(msgEl);\ninner.appendChild(content);\nvar btn = document.createElement('button');\nbtn.className = 'flex-shrink-0 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-200 transition-colors motion-reduce:transition-none motion-reduce:duration-0';\nbtn.setAttribute('aria-label', 'Dismiss');\nbtn.addEventListener('click', function() { this.closest('.pointer-events-auto').remove(); });\nbtn.innerHTML = '<svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">' + (tcToastIcons.dismiss || '') + '</svg>';\ninner.appendChild(btn);\ntoast.appendChild(inner);\ncontainer.appendChild(toast);\nrequestAnimationFrame(function() { toast.classList.remove('translate-x-full'); });\nif (duration && duration > 0) {\nsetTimeout(function() {\ntoast.classList.add('translate-x-full');\nsetTimeout(function() { toast.remove(); }, 300);\n}, duration);\n}\n}</script>`, nonce, toastJSStyles(), toastJSIconPaths())
+	script = strings.ReplaceAll(script, `\n`, "\n")
+	return templ.Raw(script)
 }
 
 // toastDismissScript builds the dismiss <script> tag as raw HTML.
@@ -166,7 +168,7 @@ func Toast(props ToastProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(toastID)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 104, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 106, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -197,7 +199,7 @@ func Toast(props ToastProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 109, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 111, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -250,7 +252,7 @@ func Toast(props ToastProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 117, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 119, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -286,7 +288,7 @@ func Toast(props ToastProps) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(props.Message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 119, Col: 52}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 121, Col: 52}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {
