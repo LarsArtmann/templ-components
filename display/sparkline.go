@@ -44,68 +44,79 @@ func DefaultSparklineProps() SparklineProps {
 }
 
 // sparklinePoints computes the SVG polyline points for the given values.
-func sparklinePoints(values []float64, width, height int, min, max float64) string {
+func sparklinePoints(values []float64, width, height int, minVal, maxVal float64) string {
 	if len(values) < 2 {
 		return ""
 	}
 
-	if max <= min {
-		max = min + 1
+	if maxVal <= minVal {
+		maxVal = minVal + 1
 	}
 
 	stepX := float64(width) / float64(len(values)-1)
-	rangeVal := max - min
+	rangeVal := maxVal - minVal
 	points := make([]string, 0, len(values))
 
 	for i, v := range values {
-		x := i * int(math.Round(stepX))
-		normalized := (v - min) / rangeVal
-		y := height - int(math.Round(normalized*float64(height)))
-		if y < 0 {
-			y = 0
+		xCoord := i * int(math.Round(stepX))
+
+		normalized := (v - minVal) / rangeVal
+
+		yCoord := height - int(math.Round(normalized*float64(height)))
+		if yCoord < 0 {
+			yCoord = 0
 		}
-		if y > height {
-			y = height
+
+		if yCoord > height {
+			yCoord = height
 		}
-		points = append(points, strconv.Itoa(x)+","+strconv.Itoa(y))
+
+		points = append(points, strconv.Itoa(xCoord)+","+strconv.Itoa(yCoord))
 	}
 
 	return strings.Join(points, " ")
 }
 
 // sparklineAreaPath builds a closed SVG path for the filled area beneath the line.
-func sparklineAreaPath(values []float64, width, height int, min, max float64) string {
+func sparklineAreaPath(values []float64, width, height int, minVal, maxVal float64) string {
 	if len(values) < 2 {
 		return ""
 	}
 
-	if max <= min {
-		max = min + 1
+	if maxVal <= minVal {
+		maxVal = minVal + 1
 	}
 
 	stepX := float64(width) / float64(len(values)-1)
-	rangeVal := max - min
+	rangeVal := maxVal - minVal
 
 	var b strings.Builder
+
 	for i, v := range values {
-		x := i * int(math.Round(stepX))
-		normalized := (v - min) / rangeVal
-		y := height - int(math.Round(normalized*float64(height)))
-		if y < 0 {
-			y = 0
+		xCoord := i * int(math.Round(stepX))
+
+		normalized := (v - minVal) / rangeVal
+
+		yCoord := height - int(math.Round(normalized*float64(height)))
+		if yCoord < 0 {
+			yCoord = 0
 		}
-		if y > height {
-			y = height
+
+		if yCoord > height {
+			yCoord = height
 		}
+
 		if i == 0 {
 			b.WriteString("M ")
 		} else {
 			b.WriteString(" L ")
 		}
-		b.WriteString(strconv.Itoa(x))
+
+		b.WriteString(strconv.Itoa(xCoord))
 		b.WriteString(" ")
-		b.WriteString(strconv.Itoa(y))
+		b.WriteString(strconv.Itoa(yCoord))
 	}
+
 	b.WriteString(" L ")
 	b.WriteString(strconv.Itoa(width))
 	b.WriteString(" ")
@@ -124,13 +135,15 @@ func sparklineBounds(props SparklineProps) (float64, float64) {
 		return 0, 1
 	}
 
-	min, max := props.Values[0], props.Values[0]
+	minVal, maxVal := props.Values[0], props.Values[0]
+
 	for _, v := range props.Values[1:] {
-		if v < min {
-			min = v
+		if v < minVal {
+			minVal = v
 		}
-		if v > max {
-			max = v
+
+		if v > maxVal {
+			maxVal = v
 		}
 	}
 
@@ -138,16 +151,17 @@ func sparklineBounds(props SparklineProps) (float64, float64) {
 	if props.Min != 0 || props.Max != 0 {
 		// Only override if non-zero (zero is the sentinel for "auto").
 		if props.Min != 0 {
-			min = props.Min
+			minVal = props.Min
 		}
+
 		if props.Max != 0 {
-			max = props.Max
+			maxVal = props.Max
 		}
 	}
 
-	if max == min {
-		max = min + 1
+	if maxVal == minVal {
+		maxVal = minVal + 1
 	}
 
-	return min, max
+	return minVal, maxVal
 }

@@ -127,7 +127,7 @@ func TestBarChartPercentWidth(t *testing.T) {
 		{100, 100, "100.0%"},
 		{150, 100, "100.0%"},
 		{-10, 100, "0.0%"},
-		{10, 0, "0%"},
+		{10, 0, "0.0%"},
 	}
 	for _, tt := range tests {
 		got := barPercentWidth(tt.value, tt.max)

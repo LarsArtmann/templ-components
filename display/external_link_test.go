@@ -8,10 +8,10 @@ import (
 
 func TestExternalLinkText(t *testing.T) {
 	t.Parallel()
-	output := utils.Render(t, ExternalLink(ExternalLinkProps{
-		Href: "https://example.com",
-		Text: "Visit site",
-	}))
+	props := DefaultExternalLinkProps()
+	props.Href = "https://example.com"
+	props.Text = "Visit site"
+	output := utils.Render(t, ExternalLink(props))
 	utils.AssertContains(t, output, `href="https://example.com"`)
 	utils.AssertContains(t, output, `target="_blank"`)
 	utils.AssertContains(t, output, `rel="noopener noreferrer"`)

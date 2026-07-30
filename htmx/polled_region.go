@@ -2,6 +2,9 @@ package htmx
 
 import "github.com/larsartmann/templ-components/utils"
 
+// defaultPollInterval is the default HTMX polling interval for PolledRegion.
+const defaultPollInterval = "10s"
+
 // PolledLive is the aria-live politeness setting for a polled region.
 type PolledLive string
 
@@ -45,7 +48,7 @@ type PolledRegionProps struct {
 // DefaultPolledRegionProps returns sensible defaults for a polled region.
 func DefaultPolledRegionProps() PolledRegionProps {
 	return PolledRegionProps{ //nolint:exhaustruct // intentionally minimal defaults
-		Every:         "10s",
+		Every:         defaultPollInterval,
 		Swap:          SwapOuterHTML,
 		Live:          PolledLivePolite,
 		ShowTimestamp: true,

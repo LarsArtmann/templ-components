@@ -69,14 +69,22 @@ type BarChartProps struct {
 	EmptyMessage string
 }
 
+const (
+	defaultBarColor   = "bg-blue-600 dark:bg-blue-500"
+	defaultEmptyMsg   = "No data"
+	defaultLabelWidth = "w-32"
+	percentScale      = 100.0
+	percentRound      = 10.0
+)
+
 // DefaultBarChartProps returns sensible defaults for a bar chart.
 func DefaultBarChartProps() BarChartProps {
 	return BarChartProps{ //nolint:exhaustruct // intentionally minimal defaults
 		Orient:       BarHorizontal,
-		BarColor:     "bg-blue-600 dark:bg-blue-500",
-		LabelWidth:   "w-32",
+		BarColor:     defaultBarColor,
+		LabelWidth:   defaultLabelWidth,
 		ShowValues:   true,
-		EmptyMessage: "No data",
+		EmptyMessage: defaultEmptyMsg,
 		ValueFormat:  func(v float64) string { return fmt.Sprintf("%.0f", v) },
 	}
 }
@@ -86,29 +94,37 @@ func barChartMax(bars []BarChartBar, override float64) float64 {
 	if override > 0 {
 		return override
 	}
-	var max float64
+
+	var maxVal float64
+
 	for _, b := range bars {
-		if b.Value > max {
-			max = b.Value
+		if b.Value > maxVal {
+			maxVal = b.Value
 		}
 	}
-	if max == 0 {
+
+	if maxVal == 0 {
 		return 1
 	}
-	return max
+
+	return maxVal
 }
 
 // barPercentWidth returns the CSS width percentage for a bar value.
-func barPercentWidth(value, max float64) string {
-	if max <= 0 {
-		return "0%"
+func barPercentWidth(value, maxVal float64) string {
+	if maxVal <= 0 {
+		return "0.0%"
 	}
-	pct := (value / max) * 100
+
+	pct := (value / maxVal) * percentScale
+
 	if pct < 0 {
 		pct = 0
 	}
-	if pct > 100 {
-		pct = 100
+
+	if pct > percentScale {
+		pct = percentScale
 	}
-	return fmt.Sprintf("%.1f%%", math.Round(pct*10)/10)
+
+	return fmt.Sprintf("%.1f%%", math.Round(pct*percentRound)/percentRound)
 }
