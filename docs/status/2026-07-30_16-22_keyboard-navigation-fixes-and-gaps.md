@@ -61,7 +61,7 @@
 
 1. **The Dropdown Enter/Space handler was a regression I introduced and then had to fix.** In the previous session, I added a custom Enter/Space handler that used `window.location.href = item.href` for `<a>` elements. This was fundamentally broken for HTMX — it bypassed AJAX and caused full page loads. The fix (removing it entirely) was correct, but the bug should never have been introduced. The root cause was implementing keyboard activation without understanding that native browser behavior already handles it and HTMX hooks into native events.
 
-2. **The tooltip quote-style change was initially misdiagnosed.** I initially thought the `'-1'` → `"-1"` change was an unnecessary side effect. Then I "fixed" it by escaping with `\"`, then realized that was ugly, then finally settled on the correct pattern (single-quoted JS string). This took 3 iterations for what should have been a 1-step fix. The original code was actually a latent syntax error (double quotes inside double quotes), so the previous session's change to single quotes was actually a *fix*, not a regression — I was wrong about it being wrong.
+2. **The tooltip quote-style change was initially misdiagnosed.** I initially thought the `'-1'` → `"-1"` change was an unnecessary side effect. Then I "fixed" it by escaping with `\"`, then realized that was ugly, then finally settled on the correct pattern (single-quoted JS string). This took 3 iterations for what should have been a 1-step fix. The original code was actually a latent syntax error (double quotes inside double quotes), so the previous session's change to single quotes was actually a _fix_, not a regression — I was wrong about it being wrong.
 
 3. **BuildFlow daemon commit messages continue to be terrible.** The daemon committed my source fixes with messages like `"ANGELOG.md documentation"` (typo, should be CHANGELOG) and `"refactor(display): consolidate shared component rendering logic"` (hallucinated summary that doesn't mention the HTMX regression fix). These commits are invisible to `git log --grep` for "HTMX" or "Enter/Space". This is a known issue documented in AGENTS.md (T13) but remains unfixed.
 
@@ -191,16 +191,16 @@ ContextMenu is currently mouse-only (right-click). Adding Shift+F10 + arrow key 
 
 ## Session Metrics
 
-| Metric | Value |
-|--------|-------|
-| Files changed (source) | 4 (.templ + .go) |
-| Files changed (generated) | 3 (_templ.go) |
-| Files changed (golden) | 4 (.golden) |
-| Files changed (docs) | 2 (CHANGELOG, AGENTS) |
-| Files changed (tests) | 2 (dropdown_test, tooltip_test) |
-| Tests passing | 16/16 packages |
-| Lint issues | 0 |
-| Commits this session (BuildFlow) | 4 (2 source + 1 docs + 1 status report) |
-| Critical bugs fixed | 2 (HTMX regression, querySelector syntax error) |
-| Known issues remaining | 2 (ContextMenu keyboard, Rating DOM order) |
-| BuildFlow commit message quality | Poor (hallucinated summaries, typo "ANGELOG") |
+| Metric                           | Value                                           |
+| -------------------------------- | ----------------------------------------------- |
+| Files changed (source)           | 4 (.templ + .go)                                |
+| Files changed (generated)        | 3 (_templ.go)                                   |
+| Files changed (golden)           | 4 (.golden)                                     |
+| Files changed (docs)             | 2 (CHANGELOG, AGENTS)                           |
+| Files changed (tests)            | 2 (dropdown_test, tooltip_test)                 |
+| Tests passing                    | 16/16 packages                                  |
+| Lint issues                      | 0                                               |
+| Commits this session (BuildFlow) | 4 (2 source + 1 docs + 1 status report)         |
+| Critical bugs fixed              | 2 (HTMX regression, querySelector syntax error) |
+| Known issues remaining           | 2 (ContextMenu keyboard, Rating DOM order)      |
+| BuildFlow commit message quality | Poor (hallucinated summaries, typo "ANGELOG")   |

@@ -8,6 +8,7 @@
 ## A) FULLY DONE (verified: build + 15/15 tests + 0 lint issues)
 
 ### 1. ContextMenu keyboard accessibility
+
 - **Shift+F10 and the ContextMenu key** now open the menu (positioned at the trigger via `getBoundingClientRect()`, not the cursor — appropriate for keyboard activation)
 - Menuitems gained `tabindex="-1"` (roving tabindex for WAI-ARIA menu pattern)
 - Disabled items expose `aria-disabled="true"` (was just `pointer-events-none` opacity, invisible to AT)
@@ -16,6 +17,7 @@
 - **Files:** `display/context_menu.templ`, `display/context_menu_test.go` (4 new tests)
 
 ### 2. Shared menu keyboard-nav extraction (DRY)
+
 - Extracted Dropdown's 35-line inline `<script>` into `menuKeyboardNavJS()` + `menuKeyboardNavScriptComponent()` in `display/shared.go`
 - Singleton guard: `tcMenuKeyNavAttached`
 - Both Dropdown and ContextMenu now inject the same script via `@menuKeyboardNavScriptComponent(props.Nonce)`
@@ -23,11 +25,13 @@
 - **Files:** `display/shared.go`, `display/dropdown.templ`, `display/dropdown_test.go`
 
 ### 3. Carousel focus-visible outline
+
 - The `tabindex="0"` carousel region now shows `focus-visible:ring-2 focus-visible:ring-blue-500` with ring-offset
 - Keyboard users can now see where focus landed before pressing arrow keys
 - **Files:** `display/carousel.templ`, `display/carousel_test.go`
 
 ### 4. Documentation + infrastructure
+
 - CHANGELOG `[Unreleased]` updated with all changes (Added + Fixed)
 - AGENTS.md updated: Carousel entry (focus ring), Dropdown/ContextMenu entry (shared nav), new Rating DOM-order convention, RTL keyboard mapping updated
 - Demo CSS recompiled via `nix develop -c tailwindcss` (new `flex-row-reverse` class added to compiled output)
@@ -41,12 +45,14 @@
 ### 5. Rating arrow-key direction fix — CORRECT but introduced a FILL BUG
 
 **What's correct:**
+
 - DOM order changed from reverse (5→1) to forward (1→N) — ArrowDown/ArrowRight now increase the value per WAI-ARIA radiogroup pattern ✓
 - Fill classes (`peer-checked:text-amber-400`) moved from the nested `<svg>` to the `<label>` — Tailwind's `peer-checked` `~` combinator now resolves (SVG was a descendant, not a sibling, so it never matched before) ✓
 - `flex-row-reverse` added to the interactive container to reverse the visual layout back to 5-left/1-right (matching the original design's visual order) ✓
 - Read-only mode is unchanged (no flex-row-reverse, normal flow) ✓
 
 **What's BROKEN (see section D below):**
+
 - The cumulative star fill is **INVERTED** for all values except the exact middle. Selecting 1 star fills ALL 5 stars; selecting 5 stars fills only 1 star. Only value=3 out of 5 happens to render correctly by coincidence.
 
 ---
@@ -65,13 +71,13 @@
 
 **Root cause:** I used forward DOM order (1→5) + `flex-row-reverse` + `peer-checked:text-amber-400` on each label. The CSS `.peer:checked ~ .peer-checked\:text-amber-400` matches ALL labels that are siblings AFTER the checked radio in DOM order. With forward DOM:
 
-| Selected value | Labels that match `~` (after checked radio in DOM) | Visual with flex-row-reverse | Expected | Correct? |
-|---|---|---|---|---|
-| 1 | labels 1,2,3,4,5 (ALL after radio-1) | ★★★★★ | ★☆☆☆☆ | **NO** |
-| 2 | labels 2,3,4,5 | ★★★★☆ | ★★☆☆☆ | **NO** |
-| 3 | labels 3,4,5 | ★★★☆☆ | ★★★☆☆ | YES (coincidence) |
-| 4 | labels 4,5 | ★★☆☆☆ | ★★★★☆ | **NO** |
-| 5 | label 5 only | ★☆☆☆☆ | ★★★★★ | **NO** |
+| Selected value | Labels that match `~` (after checked radio in DOM) | Visual with flex-row-reverse | Expected | Correct?          |
+| -------------- | -------------------------------------------------- | ---------------------------- | -------- | ----------------- |
+| 1              | labels 1,2,3,4,5 (ALL after radio-1)               | ★★★★★                        | ★☆☆☆☆    | **NO**            |
+| 2              | labels 2,3,4,5                                     | ★★★★☆                        | ★★☆☆☆    | **NO**            |
+| 3              | labels 3,4,5                                       | ★★★☆☆                        | ★★★☆☆    | YES (coincidence) |
+| 4              | labels 4,5                                         | ★★☆☆☆                        | ★★★★☆    | **NO**            |
+| 5              | label 5 only                                       | ★☆☆☆☆                        | ★★★★★    | **NO**            |
 
 The `peer-checked` `~` combinator only matches **forward siblings** (elements AFTER the checked peer in DOM). For a correct left-fill rating (★★★☆☆), we need the LOWER-value stars to be AFTER the checked radio — which is **reverse DOM order**. But reverse DOM order breaks arrow-key direction. This is a fundamental CSS limitation: `~` cannot match preceding siblings.
 
@@ -80,6 +86,7 @@ The `peer-checked` `~` combinator only matches **forward siblings** (elements AF
 **The old code was also broken** (differently): `peer-checked` classes were on the nested `<svg>` (a descendant of `<label>`, not a sibling of `.peer`), so the `~` combinator never matched and NO star ever filled. My fix moved classes to the label (correct for resolution) but the fill DIRECTION is wrong.
 
 **Correct approaches (not yet implemented):**
+
 1. **Forward DOM + JS singleton** for cumulative fill on `change`/`hover` (most production rating widgets do this)
 2. **Forward DOM + non-cumulative fill** (only the selected star is amber; less pretty but honest)
 3. **Forward DOM + Tailwind `has-*` / arbitrary variant** — e.g. `[&:has(~.peer:checked)]:text-amber-400` checks if a FOLLOWING sibling is checked. But this fills labels BEFORE the checked radio, which is the WRONG direction for forward DOM + left-fill.
@@ -231,15 +238,15 @@ The fill bug went undetected because all tests are string-assertion-only. Buildi
 
 ## Session Metrics
 
-| Metric | Value |
-|---|---|
-| Files modified (source) | 6 (.templ + .go) |
-| Files modified (generated) | 91 (*_templ.go) + 3 golden + 1 demo CSS |
-| Files created | 1 (context_menu_test.go) |
-| Tests added | 7 (Carousel focus, Rating order, ContextMenu ×4, updated Dropdown) |
-| Tests passing | 15/15 packages |
-| Lint issues | 0 |
-| Golden files updated | 3 (rating_interactive, dropdown_basic, carousel_basic) |
-| Known bugs introduced | 1 (Rating fill inversion — see section D) |
-| BuildFlow auto-commits | ~5 (messages are hallucinated per AGENTS.md) |
+| Metric                               | Value                                                                            |
+| ------------------------------------ | -------------------------------------------------------------------------------- |
+| Files modified (source)              | 6 (.templ + .go)                                                                 |
+| Files modified (generated)           | 91 (*_templ.go) + 3 golden + 1 demo CSS                                          |
+| Files created                        | 1 (context_menu_test.go)                                                         |
+| Tests added                          | 7 (Carousel focus, Rating order, ContextMenu ×4, updated Dropdown)               |
+| Tests passing                        | 15/15 packages                                                                   |
+| Lint issues                          | 0                                                                                |
+| Golden files updated                 | 3 (rating_interactive, dropdown_basic, carousel_basic)                           |
+| Known bugs introduced                | 1 (Rating fill inversion — see section D)                                        |
+| BuildFlow auto-commits               | ~5 (messages are hallucinated per AGENTS.md)                                     |
 | Round trips wasted on silly mistakes | 5 (guard name, readonly container, golden name, class assertion, wsl whitespace) |

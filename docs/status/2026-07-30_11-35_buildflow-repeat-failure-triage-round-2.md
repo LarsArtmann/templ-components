@@ -12,13 +12,13 @@ fixes (commit `cb6cf5e`).
 
 **Timeline of the repeat regression:**
 
-| Time | Commit | What happened |
-|------|--------|---------------|
-| ~11:19 | (prev session) | Previous session fixed all 3 failures. Status report written. |
-| 11:23 | `a7f63aa` | "chore(ci): update golangci config" — **RE-INTRODUCED** all 3 disabled linters + `ireturn:` settings block (the exact regression documented in AGENTS.md T1) |
-| 11:25 | `ffbd9e8` | "regenerate breadcrumbs" — **RE-INTRODUCED** the `encoding/json/v2` drift in `breadcrumbs_templ.go` |
-| 11:28 | `cb6cf5e` | BuildFlow daemon committed this session's fixes with a generic hallucinated message |
-| 11:35 | (this report) | Session verifying and documenting |
+| Time   | Commit         | What happened                                                                                                                                                |
+| ------ | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| ~11:19 | (prev session) | Previous session fixed all 3 failures. Status report written.                                                                                                |
+| 11:23  | `a7f63aa`      | "chore(ci): update golangci config" — **RE-INTRODUCED** all 3 disabled linters + `ireturn:` settings block (the exact regression documented in AGENTS.md T1) |
+| 11:25  | `ffbd9e8`      | "regenerate breadcrumbs" — **RE-INTRODUCED** the `encoding/json/v2` drift in `breadcrumbs_templ.go`                                                          |
+| 11:28  | `cb6cf5e`      | BuildFlow daemon committed this session's fixes with a generic hallucinated message                                                                          |
+| 11:35  | (this report)  | Session verifying and documenting                                                                                                                            |
 
 ---
 
@@ -155,6 +155,7 @@ about the actual fixes (shadow bug, disabled linter removal, import sync). `git 
 ## f) Up to 50 Things We Should Get Done Next
 
 ### Critical (root cause fixes)
+
 1. Fix BuildFlow daemon to generate commit messages from `git diff --stat` (repo: `larsartmann/buildflow`)
 2. Fix BuildFlow daemon to run `go test ./...` before committing (currently 60s budget, no tests)
 3. Fix BuildFlow daemon to increase budget beyond 60s for `go test ./...`
@@ -164,6 +165,7 @@ about the actual fixes (shadow bug, disabled linter removal, import sync). `git 
 7. Make `scripts/check-lint-config.sh` auto-fix (strip disabled linters) instead of just reporting
 
 ### Lint config hardening
+
 8. Add a pre-commit hook that STRIPS disabled linters from `.golangci.yml` automatically
 9. Add a `.golangci.yml` golden file test — compare current config against a known-good canonical version
 10. Consider moving the disabled-linter list to a separate `.golangci-disabled.txt` that the hook enforces
@@ -171,18 +173,21 @@ about the actual fixes (shadow bug, disabled linter removal, import sync). `git 
 12. Add `recvcheck` to the disabled list check (future-proof against new incompatible linters)
 
 ### Breadcrumbs / templ sync
+
 13. Add a source-level test asserting `breadcrumbs.templ` imports `encoding/json` (not v2)
 14. Add a CI step that runs `templ generate` and asserts zero diff (catches drift before merge)
 15. Consider pinning all `.templ` imports in a test file (canonical import manifest)
 16. Add a test that `encoding/json/v2` appears ONLY in `errorpage` package, nowhere else
 
 ### visualtest hardening
+
 17. Add a test that `ShutdownBrowser()` actually calls `allocCancel()` (integration test)
 18. Add a test that `newTab()` derives from a non-nil `sharedAllocCtx`
 19. Consider replacing `sync.Once` + package vars with a lazy singleton struct (harder to shadow)
 20. Add a linter rule (via `forbidigo`) that bans `:=` after a comment containing "Use ="
 
 ### BuildFlow daemon investigation
+
 21. Audit all daemon commits from the last 7 days — count how many had generic messages
 22. Check if the daemon is re-applying a stale stash or cached working tree
 23. Check if the daemon runs `templ generate` with the system binary (v0.3.1036) instead of nix (v0.3.1020)
@@ -190,6 +195,7 @@ about the actual fixes (shadow bug, disabled linter removal, import sync). `git 
 25. Add a `BUILDFLOW_COMMIT_PREFIX` env var so daemon commits are identifiable in `git log`
 
 ### Documentation
+
 26. Update AGENTS.md "BuildFlow gotcha" section with the 7th regression incident
 27. Add a "Known Repeat Regressions" table to AGENTS.md with counts and last-occurrence dates
 28. Update `docs/status/` README (if exists) with cross-references between related reports
@@ -197,6 +203,7 @@ about the actual fixes (shadow bug, disabled linter removal, import sync). `git 
 30. Update FEATURES.md if any feature status changed (unlikely this session)
 
 ### Code quality (unrelated to this session's bugs, but noticed)
+
 31. Run `nix run .#verify` to confirm the full pipeline is green at HEAD
 32. Run `nix run .#visual` to confirm visual regression tests pass
 33. Check if any other `*_templ.go` files have import drift (run full `templ generate` and diff)
@@ -204,6 +211,7 @@ about the actual fixes (shadow bug, disabled linter removal, import sync). `git 
 35. Audit `visualtest/go.mod` — the daemon touched it (commit `ffbd9e8`); verify no unwanted deps
 
 ### Test coverage gaps
+
 36. Add a fuzz test for `ensureAllocator` — concurrent calls should all get the same allocator
 37. Add a test for the case where `CHROMEDP_CHROME_PATH` points to a non-executable file
 38. Add a golden test for the breadcrumbs JSON-LD output (currently only string-tested)
@@ -211,6 +219,7 @@ about the actual fixes (shadow bug, disabled linter removal, import sync). `git 
 40. Add a test that `resolveBreadcrumbURL` handles protocol-relative URLs (`//host/path`)
 
 ### Process improvements
+
 41. Add a `make verify` / `nix run .#verify` step to the daemon's pre-commit (if possible)
 42. Consider a Git hook that rejects commits with "Unknown Author" or generic messages
 43. Add a `CONTRIBUTING.md` section on the daemon commit loop and how to break it
@@ -218,6 +227,7 @@ about the actual fixes (shadow bug, disabled linter removal, import sync). `git 
 45. Consider switching from daemon-based auto-commit to pre-push hooks only
 
 ### Nice-to-have
+
 46. Add `git config commit.template` with a structured message format for this repo
 47. Add a `.git-blame-ignore-revs` file to hide pure-formatting daemon commits from blame
 48. Add a CI badge for `test-race` specifically (separate from general test status)
@@ -242,8 +252,8 @@ about the actual fixes (shadow bug, disabled linter removal, import sync). `git 
    `.golangci.yml`" or "fix the daemon's file handling."
 
 3. **Should the `visualtest/doc.go` allocator pattern be rewritten entirely?** The `sync.Once`
-   + package-level vars + `=` (not `:=`) pattern is fragile — it's been broken 3 times. An
-   alternative is a lazy-init struct (e.g., `type browserAllocator struct { once sync.Once;
-   ctx context.Context; cancel context.CancelFunc; init func() (context.Context, context.CancelFunc) }`)
-   which makes shadowing impossible. But this changes the package's public API (`ShutdownBrowser()`
-   signature) and I don't know if external consumers depend on the current API shape.
+   - package-level vars + `=` (not `:=`) pattern is fragile — it's been broken 3 times. An
+     alternative is a lazy-init struct (e.g., `type browserAllocator struct { once sync.Once;
+ctx context.Context; cancel context.CancelFunc; init func() (context.Context, context.CancelFunc) }`)
+     which makes shadowing impossible. But this changes the package's public API (`ShutdownBrowser()`
+     signature) and I don't know if external consumers depend on the current API shape.

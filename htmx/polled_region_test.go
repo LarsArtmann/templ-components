@@ -9,11 +9,11 @@ import (
 func TestPolledRegionRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, PolledRegion(PolledRegionProps{
-		URL:    "/partials/stats",
-		Every:  "10s",
-		Eager:  true,
-		Swap:   SwapInnerHTML,
-		Live:   PolledLiveAssertive,
+		URL:   "/partials/stats",
+		Every: "10s",
+		Eager: true,
+		Swap:  SwapInnerHTML,
+		Live:  PolledLiveAssertive,
 		BaseProps: utils.BaseProps{
 			ID: "stats-region",
 		},
@@ -48,8 +48,8 @@ func TestPolledRegionTimestamp(t *testing.T) {
 	t.Run("hides timestamp when disabled", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, PolledRegion(PolledRegionProps{
-			URL:          "/stats",
-			Every:        "10s",
+			URL:           "/stats",
+			Every:         "10s",
 			ShowTimestamp: false,
 		}))
 		utils.AssertNotContains(t, output, "Updated")
@@ -96,10 +96,10 @@ func TestPolledLiveIsValid(t *testing.T) {
 func TestPolledRegionInvalidValuesFallBack(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, PolledRegion(PolledRegionProps{
-		URL:  "/stats",
+		URL:   "/stats",
 		Every: "1s",
-		Swap: "bogus",
-		Live: "bogus",
+		Swap:  "bogus",
+		Live:  "bogus",
 	}))
 	utils.AssertContains(t, output, `hx-swap="outerHTML"`)
 	utils.AssertContains(t, output, `aria-live="polite"`)

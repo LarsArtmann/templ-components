@@ -1,0 +1,59 @@
+package display
+
+import (
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// Sparkline renders a tiny inline SVG line chart showing a data trend.
+// Pure SVG — no JavaScript. Uses currentColor for stroke so consumers control
+// color via a Tailwind text color class on the parent or the Class prop.
+//
+//	@display.Sparkline(display.SparklineProps{Values: []float64{1, 3, 2, 5, 4, 6, 3}})
+//	@display.Sparkline(display.SparklineProps{Values: rates, Filled: true, Class: "text-green-500 dark:text-green-400"})
+templ Sparkline(props SparklineProps) {
+	{{
+		width := props.Width
+		if width == 0 {
+			width = 120
+		}
+		height := props.Height
+		if height == 0 {
+			height = 30
+		}
+		strokeW := props.StrokeWidth
+		if strokeW == 0 {
+			strokeW = 1.5
+		}
+		min, max := sparklineBounds(props)
+		points := sparklinePoints(props.Values, width, height, min, max)
+	}}
+	if len(props.Values) >= 2 {
+		<svg
+			width={ width }
+			height={ height }
+			class={ utils.Class("overflow-visible", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			} else {
+				aria-hidden="true"
+			}
+		>
+			if props.Filled {
+				<path
+					d={ sparklineAreaPath(props.Values, width, height, min, max) }
+					fill="currentColor"
+					fill-opacity="0.15"
+					class="opacity-50"
+				/>
+			}
+			<polyline
+				points={ points }
+				fill="none"
+				stroke="currentColor"
+				stroke-width={ strokeW }
+				stroke-linecap="round"
+				stroke-linejoin="round"
+			/>
+		</svg>
+	}
+}

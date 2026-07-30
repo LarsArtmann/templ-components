@@ -14,11 +14,11 @@ against WAI-ARIA APG patterns, then implemented keyboard enhancements for **4 co
 
 ### Commits made (by BuildFlow daemon)
 
-| Commit | Files changed | Summary |
-|--------|--------------|---------|
-| `c566ea5` | carousel.templ, dropdown.templ, mobile_menu.templ | Core JS changes (keyboard handlers) |
+| Commit    | Files changed                                                                     | Summary                                   |
+| --------- | --------------------------------------------------------------------------------- | ----------------------------------------- |
+| `c566ea5` | carousel.templ, dropdown.templ, mobile_menu.templ                                 | Core JS changes (keyboard handlers)       |
 | `62c99ad` | shared.go, custom.css, carousel_templ.go, dropdown_templ.go, mobile_menu_templ.go | Tooltip Escape JS + CSS + generated files |
-| `be8b81f` | 4 test files + 7 golden files | Tests + golden updates |
+| `be8b81f` | 4 test files + 7 golden files                                                     | Tests + golden updates                    |
 
 **Uncommitted at session end:** `display/tooltip_test.go` (lint fix), `examples/demo/static/app.css` (CSS recompile), `navigation/mobile_menu_test.go` (untracked).
 
@@ -27,6 +27,7 @@ against WAI-ARIA APG patterns, then implemented keyboard enhancements for **4 co
 ## a) FULLY DONE
 
 ### 1. Carousel keyboard navigation (`display/carousel.templ`)
+
 - **Before:** Click-only. No keyboard way to change slides.
 - **After:**
   - `tabindex="0"` on the carousel `<div>` so it receives keyboard focus
@@ -39,6 +40,7 @@ against WAI-ARIA APG patterns, then implemented keyboard enhancements for **4 co
 - **Confidence:** HIGH. This is the cleanest change. The pattern mirrors Tabs/Dropdown.
 
 ### 2. Dropdown keyboard enhancements (`display/dropdown.templ`)
+
 - **Before:** ArrowDown/ArrowUp + RTL ArrowLeft/ArrowRight only. No Home/End/PageUp/PageDown.
 - **After:**
   - `Home` → first item, `End` → last item
@@ -50,6 +52,7 @@ against WAI-ARIA APG patterns, then implemented keyboard enhancements for **4 co
 - **Confidence:** MEDIUM. See [§d](#d-totally-fucked-up) for the HTMX concern.
 
 ### 3. MobileMenu keyboard navigation (`navigation/mobile_menu.templ`)
+
 - **Before:** Click toggle only. No Escape, no focus management.
 - **After:**
   - Extracted `tcMobileMenuSet(menu, btn, open)` shared function
@@ -61,6 +64,7 @@ against WAI-ARIA APG patterns, then implemented keyboard enhancements for **4 co
 - **Confidence:** HIGH for what was done. See [§c](#c-not-started) for focus trap gap.
 
 ### 4. Tooltip Escape-to-dismiss (`display/shared.go` + `templates/custom.css`)
+
 - **Before:** Pure CSS show/hide via `:hover`/`:focus-within`. No way to dismiss via keyboard.
 - **After:**
   - `Escape` sets `data-tc-tooltip-dismissed="true"` on the wrapper
@@ -76,12 +80,14 @@ against WAI-ARIA APG patterns, then implemented keyboard enhancements for **4 co
 ## b) PARTIALLY DONE
 
 ### Dropdown Enter/Space handling
+
 - **Implemented** but **not verified against HTMX**. Dropdown items with `hx-get`/`hx-post` attributes
   will have their AJAX behavior bypassed by `window.location.href = item.href`. Native `<a>` elements
   already handle Enter natively; the custom handler may be redundant for links and harmful for HTMX links.
 - **Status:** Code is in, tests assert the strings exist, but real-world HTMX interaction is UNTESTED.
 
 ### Tooltip dismissed-state lifecycle
+
 - The `data-tc-tooltip-dismissed` attribute approach works but is fragile:
   - If the user tabs away and back without a `mouseenter` event (keyboard-only), the `focusin` handler
     clears it — which is correct. But if both events fire in unexpected order, state could desync.
@@ -93,16 +99,16 @@ against WAI-ARIA APG patterns, then implemented keyboard enhancements for **4 co
 
 ### Identified in audit but not addressed:
 
-| # | Component | Gap | Priority | Why it matters |
-|---|-----------|-----|----------|----------------|
-| 1 | **ContextMenu** | No keyboard trigger (Shift+F10 / Menu key), no arrow nav, no focus management | HIGH | Completely inaccessible to keyboard-only users |
-| 2 | **Rating** | Radio inputs rendered in reverse DOM order (5→1) so arrow keys go right-to-left | HIGH | Violates WAI-ARIA radiogroup pattern |
-| 3 | **MobileMenu** | No focus trap while open | MEDIUM | Tab escapes the menu into page content |
-| 4 | **MobileMenu** | No arrow-key navigation between items | LOW | Tab works, but arrow keys are the APG pattern |
-| 5 | **Combobox** | No type-ahead (first-letter matching) for listbox options | MEDIUM | Full APG combobox pattern |
-| 6 | **Combobox** | No PageUp/PageDown | LOW | Arrows/Home/End already implemented |
-| 7 | **Tabs** | Server-rendered tabs (ClientSide: false) have no keyboard activation | MEDIUM | Only client-side tabs have arrow-key support |
-| 8 | **Carousel** | No `aria-live` region to announce slide changes | MEDIUM | Screen readers don't announce when slide changes |
+| #   | Component       | Gap                                                                             | Priority | Why it matters                                   |
+| --- | --------------- | ------------------------------------------------------------------------------- | -------- | ------------------------------------------------ |
+| 1   | **ContextMenu** | No keyboard trigger (Shift+F10 / Menu key), no arrow nav, no focus management   | HIGH     | Completely inaccessible to keyboard-only users   |
+| 2   | **Rating**      | Radio inputs rendered in reverse DOM order (5→1) so arrow keys go right-to-left | HIGH     | Violates WAI-ARIA radiogroup pattern             |
+| 3   | **MobileMenu**  | No focus trap while open                                                        | MEDIUM   | Tab escapes the menu into page content           |
+| 4   | **MobileMenu**  | No arrow-key navigation between items                                           | LOW      | Tab works, but arrow keys are the APG pattern    |
+| 5   | **Combobox**    | No type-ahead (first-letter matching) for listbox options                       | MEDIUM   | Full APG combobox pattern                        |
+| 6   | **Combobox**    | No PageUp/PageDown                                                              | LOW      | Arrows/Home/End already implemented              |
+| 7   | **Tabs**        | Server-rendered tabs (ClientSide: false) have no keyboard activation            | MEDIUM   | Only client-side tabs have arrow-key support     |
+| 8   | **Carousel**    | No `aria-live` region to announce slide changes                                 | MEDIUM   | Screen readers don't announce when slide changes |
 
 ---
 
@@ -114,10 +120,10 @@ against WAI-ARIA APG patterns, then implemented keyboard enhancements for **4 co
 attributes. My custom Enter/Space handler does:
 
 ```javascript
-if (item.tagName === 'A' && item.href) {
-    window.location.href = item.href;  // FULL PAGE LOAD
-} else if (item.tagName === 'BUTTON') {
-    item.click();
+if (item.tagName === "A" && item.href) {
+  window.location.href = item.href; // FULL PAGE LOAD
+} else if (item.tagName === "BUTTON") {
+  item.click();
 }
 ```
 
@@ -283,6 +289,7 @@ effect of editing the function rather than a deliberate improvement.
 
 The handler currently does `window.location.href = item.href` for `<a>` elements, which bypasses HTMX.
 Options:
+
 - **A) Remove it entirely** — native Enter on `<a>` + Space/Enter on `<button>` already works, HTMX intercepts natively
 - **B) Keep it but check `item.hasAttribute('hx-get')` etc.** first and skip if HTMX attributes present
 - **C) Keep it but use `item.click()` for both `<a>` and `<button>`** (delegates to native + HTMX)
