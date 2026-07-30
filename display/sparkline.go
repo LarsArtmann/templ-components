@@ -18,7 +18,7 @@ type SparklineProps struct {
 	// Width is the SVG canvas width in pixels. Default: 120.
 	Width int
 
-	// Height is the SVG canvas height in pixels. Default: 30.
+	// Height is the SVG canvas height in pixels. Default: sparklineDefaultHeight.
 	Height int
 
 	// StrokeWidth controls the line thickness. Default: 1.5.
@@ -34,12 +34,19 @@ type SparklineProps struct {
 	Max float64
 }
 
+// Sparkline defaults.
+const (
+	sparklineDefaultWidth  = 120
+	sparklineDefaultHeight = 30
+	sparklineDefaultStroke = 1.5
+)
+
 // DefaultSparklineProps returns sensible defaults for a sparkline.
 func DefaultSparklineProps() SparklineProps {
 	return SparklineProps{ //nolint:exhaustruct // intentionally minimal defaults
-		Width:       120,
-		Height:      30,
-		StrokeWidth: 1.5,
+		Width:       sparklineDefaultWidth,
+		Height:      sparklineDefaultHeight,
+		StrokeWidth: sparklineDefaultStroke,
 	}
 }
 
@@ -62,14 +69,8 @@ func sparklinePoints(values []float64, width, height int, minVal, maxVal float64
 
 		normalized := (v - minVal) / rangeVal
 
-		yCoord := height - int(math.Round(normalized*float64(height)))
-		if yCoord < 0 {
-			yCoord = 0
-		}
-
-		if yCoord > height {
-			yCoord = height
-		}
+		yCoord := max(height-int(math.Round(normalized*float64(height))), 0)
+		yCoord = min(yCoord, height)
 
 		points = append(points, strconv.Itoa(xCoord)+","+strconv.Itoa(yCoord))
 	}
@@ -97,14 +98,8 @@ func sparklineAreaPath(values []float64, width, height int, minVal, maxVal float
 
 		normalized := (v - minVal) / rangeVal
 
-		yCoord := height - int(math.Round(normalized*float64(height)))
-		if yCoord < 0 {
-			yCoord = 0
-		}
-
-		if yCoord > height {
-			yCoord = height
-		}
+		yCoord := max(height-int(math.Round(normalized*float64(height))), 0)
+		yCoord = min(yCoord, height)
 
 		if i == 0 {
 			b.WriteString("M ")

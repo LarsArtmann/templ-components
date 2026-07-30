@@ -75,6 +75,7 @@ const (
 	defaultLabelWidth = "w-32"
 	percentScale      = 100.0
 	percentRound      = 10.0
+	zeroPercent       = "0.0%"
 )
 
 // DefaultBarChartProps returns sensible defaults for a bar chart.
@@ -113,7 +114,7 @@ func barChartMax(bars []BarChartBar, override float64) float64 {
 // barPercentWidth returns the CSS width percentage for a bar value.
 func barPercentWidth(value, maxVal float64) string {
 	if maxVal <= 0 {
-		return "0.0%"
+		return zeroPercent
 	}
 
 	pct := (value / maxVal) * percentScale

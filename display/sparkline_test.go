@@ -68,6 +68,7 @@ func TestSparklineEmptyRendersNothing(t *testing.T) {
 
 func TestSparklinePointsComputes(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		name   string
 		values []float64
@@ -108,6 +109,7 @@ func TestSparklinePointsComputes(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got := sparklinePoints(tt.values, tt.width, tt.height, tt.min, tt.max)
 			if got != tt.want {
 				t.Errorf("sparklinePoints() = %q, want %q", got, tt.want)
@@ -120,35 +122,42 @@ func TestSparklineBounds(t *testing.T) {
 	t.Parallel()
 	t.Run("auto from data", func(t *testing.T) {
 		t.Parallel()
-		min, max := sparklineBounds(SparklineProps{Values: []float64{3, 1, 4, 1, 5, 9, 2, 6}})
-		if min != 1 {
-			t.Errorf("expected min=1, got %f", min)
+
+		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{3, 1, 4, 1, 5, 9, 2, 6}})
+		if minVal != 1 {
+			t.Errorf("expected min=1, got %f", minVal)
 		}
-		if max != 9 {
-			t.Errorf("expected max=9, got %f", max)
+
+		if maxVal != 9 {
+			t.Errorf("expected max=9, got %f", maxVal)
 		}
 	})
 	t.Run("equal values bump max", func(t *testing.T) {
 		t.Parallel()
-		min, max := sparklineBounds(SparklineProps{Values: []float64{5, 5, 5}})
-		if min != 5 {
-			t.Errorf("expected min=5, got %f", min)
+
+		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{5, 5, 5}})
+		if minVal != 5 {
+			t.Errorf("expected min=5, got %f", minVal)
 		}
-		if max != 6 {
-			t.Errorf("expected max=6 (bumped), got %f", max)
+
+		if maxVal != 6 {
+			t.Errorf("expected max=6 (bumped), got %f", maxVal)
 		}
 	})
 }
 
 func TestSparklineDefaults(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultSparklineProps()
 	if props.Width != 120 {
 		t.Errorf("expected Width=120, got %d", props.Width)
 	}
+
 	if props.Height != 30 {
 		t.Errorf("expected Height=30, got %d", props.Height)
 	}
+
 	if props.StrokeWidth != 1.5 {
 		t.Errorf("expected StrokeWidth=1.5, got %f", props.StrokeWidth)
 	}

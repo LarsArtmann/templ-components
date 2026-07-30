@@ -8,6 +8,7 @@ import (
 
 func TestExternalLinkText(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultExternalLinkProps()
 	props.Href = "https://example.com"
 	props.Text = "Visit site"
@@ -53,6 +54,7 @@ func TestExternalLinkSanitizesHref(t *testing.T) {
 
 func TestExternalLinkDefaults(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultExternalLinkProps()
 	if !props.ShowIcon {
 		t.Error("expected ShowIcon=true")

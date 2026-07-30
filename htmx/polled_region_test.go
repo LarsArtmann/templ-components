@@ -58,16 +58,20 @@ func TestPolledRegionTimestamp(t *testing.T) {
 
 func TestPolledRegionDefaults(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultPolledRegionProps()
 	if props.Every != "10s" {
 		t.Errorf("expected Every=10s, got %s", props.Every)
 	}
+
 	if props.Swap != SwapOuterHTML {
 		t.Errorf("expected Swap=outerHTML, got %s", props.Swap)
 	}
+
 	if props.Live != PolledLivePolite {
 		t.Errorf("expected Live=polite, got %s", props.Live)
 	}
+
 	if !props.ShowTimestamp {
 		t.Error("expected ShowTimestamp=true")
 	}
@@ -75,6 +79,7 @@ func TestPolledRegionDefaults(t *testing.T) {
 
 func TestPolledLiveIsValid(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		value PolledLive
 		want  bool

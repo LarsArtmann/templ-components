@@ -101,7 +101,7 @@ templ BarChart(props BarChartProps) {
 // barPercentHeight returns the CSS height percentage for a vertical bar.
 func barPercentHeight(value, maxVal float64) string {
 	if maxVal <= 0 {
-		return "0.0%"
+		return zeroPercent
 	}
 
 	pct := (value / maxVal) * percentScale

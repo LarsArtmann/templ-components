@@ -84,7 +84,7 @@ func TestBarChartHref(t *testing.T) {
 func TestBarChartHideValues(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, BarChart(BarChartProps{
-		Bars: []BarChartBar{{Label: "A", Value: 100}},
+		Bars:       []BarChartBar{{Label: "A", Value: 100}},
 		ShowValues: false,
 	}))
 	utils.AssertNotContains(t, output, `>100<`)
@@ -106,8 +106,10 @@ func TestBarChartMaxOverride(t *testing.T) {
 	t.Parallel()
 	t.Run("override affects width", func(t *testing.T) {
 		t.Parallel()
+
 		max := 200.0
 		value := 100.0
+
 		got := barPercentWidth(value, max)
 		if got != "50.0%" {
 			t.Errorf("expected 50.0%%, got %s", got)
@@ -117,6 +119,7 @@ func TestBarChartMaxOverride(t *testing.T) {
 
 func TestBarChartPercentWidth(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		value float64
 		max   float64
@@ -139,12 +142,15 @@ func TestBarChartPercentWidth(t *testing.T) {
 
 func TestBarOrientIsValid(t *testing.T) {
 	t.Parallel()
+
 	if !BarOrientIsValid(BarHorizontal) {
 		t.Error("BarHorizontal should be valid")
 	}
+
 	if !BarOrientIsValid(BarVertical) {
 		t.Error("BarVertical should be valid")
 	}
+
 	if BarOrientIsValid("diagonal") {
 		t.Error("diagonal should be invalid")
 	}
@@ -152,16 +158,20 @@ func TestBarOrientIsValid(t *testing.T) {
 
 func TestBarChartDefaults(t *testing.T) {
 	t.Parallel()
+
 	props := DefaultBarChartProps()
 	if props.Orient != BarHorizontal {
 		t.Errorf("expected Orient=horizontal")
 	}
+
 	if props.BarColor != "bg-blue-600 dark:bg-blue-500" {
 		t.Errorf("expected default BarColor")
 	}
+
 	if !props.ShowValues {
 		t.Error("expected ShowValues=true")
 	}
+
 	if props.EmptyMessage != "No data" {
 		t.Errorf("expected EmptyMessage=No data")
 	}
@@ -169,6 +179,7 @@ func TestBarChartDefaults(t *testing.T) {
 
 func TestTruncateLabel(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
 		input  string
 		maxLen int
