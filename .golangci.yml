@@ -53,7 +53,7 @@ linters:
     - goconst
     - gocritic
     - gocyclo
-      - godot
+    - godot
     - godox
     - goheader
     - gomoddirectives
@@ -70,7 +70,7 @@ linters:
     - interfacebloat
     - intrange
     - iotamixing
-      - loggercheck
+    - loggercheck
     - maintidx
     - makezero
     - mirror
@@ -104,7 +104,7 @@ linters:
     - staticcheck
     - tagalign
     - tagliatelle
-      - testifylint
+    - testifylint
     - testpackage
     - thelper
     - tparallel
@@ -122,6 +122,9 @@ linters:
     - zerologlint
   disable:
     - depguard
+    - godoclint
+    - ireturn
+    - testableexamples
   settings:
     cyclop:
       max-complexity: 12

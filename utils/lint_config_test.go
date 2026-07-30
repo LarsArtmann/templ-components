@@ -20,17 +20,28 @@ func TestGolangciDisabledLinters(t *testing.T) {
 		t.Fatalf("read .golangci.yml: %v", err)
 	}
 
-	for _, name := range []string{"godoclint", "ireturn", "testableexamples"} {
-		for line := range strings.SplitSeq(string(data), "\n") {
-			trimmed := strings.TrimSpace(line)
-			// A YAML enabled-linter entry looks like "- ireturn". Match the
-			// list-item form so a name appearing only in a comment or doc
-			// string does not trip the guard.
-			if strings.EqualFold(trimmed, "- "+name) {
+	// Track which YAML section we're in so we only flag linters in enable:,
+	// not in disable: (where they belong — disable: is the signal that
+	// golangci-lint-auto-configure repair respects per its 2026-07-25 fix).
+	section := ""
+	for line := range strings.SplitSeq(string(data), "\n") {
+		trimmed := strings.TrimSpace(line)
+
+		if trimmed == "enable:" {
+			section = "enable"
+			continue
+		}
+		if trimmed == "disable:" {
+			section = "disable"
+			continue
+		}
+
+		for _, name := range []string{"godoclint", "ireturn", "testableexamples"} {
+			if section == "enable" && strings.EqualFold(trimmed, "- "+name) {
 				t.Errorf(
-					".golangci.yml re-enables disabled linter %q — "+
+					".golangci.yml re-enables disabled linter %q in the enable list — "+
 						"a documented regression (AGENTS.md). "+
-						"Remove it from the enable list.",
+						"Move it to the disable list instead.",
 					name,
 				)
 			}

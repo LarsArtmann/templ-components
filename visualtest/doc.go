@@ -69,13 +69,8 @@ func ensureAllocator(t *testing.T) {
 			chromedp.Flag("disable-background-timer-throttling", true),
 		)
 
-		// Declare locals with :=, then assign to the package-level vars.
-		// Splitting prevents fatcontext's autofix (fatcontext #100, dup of
-		// #43) from converting = to := and shadowing the package vars —
-		// the autofix is a no-op because := is already present.
-		allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
-		sharedAllocCtx := allocCtx
-		allocCancel = cancel
+		//nolint:fatcontext // intentionally assigning to package-level vars; fatcontext autofix converts = to := which shadows them (#100/#43)
+		sharedAllocCtx, allocCancel = chromedp.NewExecAllocator(context.Background(), opts...)
 		browserReady = true
 	})
 
