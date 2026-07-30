@@ -195,3 +195,45 @@ func mustTime(s string) time.Time {
 
 	return t
 }
+
+func BenchmarkHotPaths_CollapsibleSection_render(b *testing.B) {
+	props := CollapsibleSectionProps{
+		Title: "Advanced Settings",
+		BaseProps: utils.BaseProps{
+			Class: "border border-gray-200",
+		},
+	}
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		var buf bytes.Buffer
+
+		_ = CollapsibleSection(props).Render(context.Background(), &buf)
+	}
+}
+
+func BenchmarkHotPaths_Heatmap_render(b *testing.B) {
+	rows := make([]HeatmapRow, 7)
+	for i := range rows {
+		cells := make([]HeatmapCell, 24)
+		for j := range cells {
+			cells[j] = HeatmapCell{Value: float64(i*24 + j)}
+		}
+
+		rows[i] = HeatmapRow{Label: "Day", Cells: cells}
+	}
+
+	props := HeatmapProps{
+		Rows:          rows,
+		HighlightPeak: true,
+	}
+
+	b.ResetTimer()
+
+	for b.Loop() {
+		var buf bytes.Buffer
+
+		_ = Heatmap(props).Render(context.Background(), &buf)
+	}
+}

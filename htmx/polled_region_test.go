@@ -121,3 +121,15 @@ func TestPolledRegionCustomTimeFormat(t *testing.T) {
 	utils.AssertContains(t, output, "Updated")
 	utils.AssertContains(t, output, "20") // year component appears in the output
 }
+
+func TestPolledRegionCustomTrigger(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, PolledRegion(PolledRegionProps{
+		URL:     "/stats",
+		Trigger: "stats-refresh from:body",
+	}))
+	utils.AssertContains(t, output, `hx-trigger="stats-refresh from:body"`)
+	// Every and Eager should be ignored when Trigger is set
+	utils.AssertNotContains(t, output, "every")
+	utils.AssertNotContains(t, output, "load,")
+}

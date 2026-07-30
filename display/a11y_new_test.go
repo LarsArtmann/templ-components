@@ -263,3 +263,92 @@ func TestExternalLinkA11y(t *testing.T) {
 		utils.AssertContains(t, output, `aria-hidden="true"`)
 	})
 }
+
+// --- CollapsibleSection Accessibility ---
+
+func TestCollapsibleSectionA11y(t *testing.T) {
+	t.Parallel()
+
+	t.Run("uses native details/summary", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CollapsibleSection(CollapsibleSectionProps{
+			Title: "Section",
+		}))
+		utils.AssertContains(t, output, "<details")
+		utils.AssertContains(t, output, "<summary")
+	})
+
+	t.Run("summary has focus-visible ring", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CollapsibleSection(CollapsibleSectionProps{
+			Title: "Section",
+		}))
+		utils.AssertContains(t, output, "focus-visible:ring-2")
+	})
+
+	t.Run("hides default details marker", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CollapsibleSection(CollapsibleSectionProps{
+			Title: "Section",
+		}))
+		utils.AssertContains(t, output, "[&::-webkit-details-marker]:hidden")
+	})
+
+	t.Run("chevron rotates on open", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CollapsibleSection(CollapsibleSectionProps{
+			Title: "Section",
+		}))
+		utils.AssertContains(t, output, "group-open:rotate-180")
+	})
+}
+
+// --- Heatmap Accessibility ---
+
+func TestHeatmapA11y(t *testing.T) {
+	t.Parallel()
+
+	t.Run("uses table semantics", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Heatmap(HeatmapProps{
+			Rows: []HeatmapRow{
+				{Label: "Mon", Cells: []HeatmapCell{{Value: 5}}},
+			},
+			ColumnLabels: []string{"00:00"},
+		}))
+		utils.AssertContains(t, output, "<table")
+		utils.AssertContains(t, output, "<thead")
+		utils.AssertContains(t, output, "<tbody")
+	})
+
+	t.Run("supports aria-label", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Heatmap(HeatmapProps{
+			Rows: []HeatmapRow{
+				{Label: "Mon", Cells: []HeatmapCell{{Value: 5}}},
+			},
+			BaseProps: utils.BaseProps{AriaLabel: "Activity heatmap"},
+		}))
+		utils.AssertContains(t, output, `aria-label="Activity heatmap"`)
+	})
+
+	t.Run("cells have title tooltips", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Heatmap(HeatmapProps{
+			Rows: []HeatmapRow{
+				{Label: "Mon", Cells: []HeatmapCell{
+					{Value: 5, Label: "Mon 00:00 — 5 msgs"},
+				}},
+			},
+		}))
+		utils.AssertContains(t, output, `title="Mon 00:00 — 5 msgs"`)
+	})
+
+	t.Run("empty state has message", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Heatmap(HeatmapProps{
+			EmptyMessage: "No activity data",
+		}))
+		utils.AssertContains(t, output, "No activity data")
+	})
+}

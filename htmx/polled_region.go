@@ -29,7 +29,14 @@ type PolledRegionProps struct {
 
 	// Eager fires the first fetch on initial load in addition to polling.
 	// When false, the first fetch happens after the first interval elapses.
+	// Ignored when Trigger is set.
 	Eager bool
+
+	// Trigger overrides the auto-generated hx-trigger value. When set,
+	// Every and Eager are ignored and this string is used verbatim as
+	// hx-trigger. Useful for custom triggers like SSE events
+	// (e.g. "stats-refresh from:body").
+	Trigger string
 
 	// Swap controls how the fetched content replaces the region.
 	// Defaults to SwapOuterHTML.

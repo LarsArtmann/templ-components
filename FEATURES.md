@@ -1,6 +1,6 @@
 # Features — templ-components
 
-**Updated:** 2026-07-30 | **Version:** 1.4.0
+**Updated:** 2026-07-30 | **Version:** 1.5.0
 
 A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v4](https://tailwindcss.com) for building server-rendered web applications.
 
@@ -21,7 +21,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                     |
 | `recipes`    | 3 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                              |
 
-**Totals:** 102 templ components (primitives) + 3 recipe screens = 101, 102 icon names, 45 typed enums (43 with `IsValid()`), 95 generated `*_templ.go` files, ~30,500 lines of Go/templ source
+**Totals:** 104 templ components (primitives) + 3 recipe screens = 101, 102 icon names, 45 typed enums (43 with `IsValid()`), 97 generated `*_templ.go` files, ~30,500 lines of Go/templ source
 
 ---
 
@@ -392,7 +392,7 @@ _(None currently)_
 ## Cross-Cutting Features
 
 - **CSP Compliance:** All inline scripts use `nonce` attribute
-- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 102 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
+- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 104 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first viewport breakpoints (`sm:`/`md:`/`lg:`) plus opt-in **container queries** — 8 components accept `ContainerAware` (or `Grid.ContainerResponsive`) to adapt to their parent container width via `@container` instead of the viewport (ADR-0018).

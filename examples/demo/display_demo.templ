@@ -365,6 +365,37 @@ templ displayDemo() {
 			ShowIcon: false,
 		})
 	</div>
+	@demoSection("Collapsible Sections", "display-collapsible")
+	<div class="space-y-4">
+		@display.CollapsibleSection(display.CollapsibleSectionProps{
+			Title: "Advanced Settings",
+		}) {
+			<p class="text-sm text-gray-600 dark:text-gray-400">These settings are open by default. Users can collapse this section to focus on the overview.</p>
+		}
+		@display.CollapsibleSection(display.CollapsibleSectionProps{
+			Title:     "Debug Information",
+			Collapsed: true,
+		}) {
+			<pre class="text-xs text-gray-500 dark:text-gray-400">Version: v1.6.0
+Build: 2026-07-30T20:00:00Z</pre>
+		}
+	</div>
+	@demoSection("Heatmap", "display-heatmap")
+	@display.Card(display.CardProps{Title: "Weekly Activity Heatmap"}) {
+		@display.Heatmap(display.HeatmapProps{
+			Rows: []display.HeatmapRow{
+				{Label: "Sun", Cells: []display.HeatmapCell{{Value: 2}, {Value: 1}, {Value: 0}, {Value: 3}, {Value: 8}, {Value: 12}, {Value: 6}}},
+				{Label: "Mon", Cells: []display.HeatmapCell{{Value: 1}, {Value: 0}, {Value: 2}, {Value: 15}, {Value: 20}, {Value: 18}, {Value: 10}}},
+				{Label: "Tue", Cells: []display.HeatmapCell{{Value: 3}, {Value: 2}, {Value: 5}, {Value: 12}, {Value: 25}, {Value: 22}, {Value: 8}}},
+				{Label: "Wed", Cells: []display.HeatmapCell{{Value: 0}, {Value: 1}, {Value: 3}, {Value: 8}, {Value: 15}, {Value: 14}, {Value: 5}}},
+				{Label: "Thu", Cells: []display.HeatmapCell{{Value: 1}, {Value: 0}, {Value: 4}, {Value: 10}, {Value: 18}, {Value: 16}, {Value: 7}}},
+				{Label: "Fri", Cells: []display.HeatmapCell{{Value: 2}, {Value: 1}, {Value: 6}, {Value: 14}, {Value: 22}, {Value: 20}, {Value: 12}}},
+				{Label: "Sat", Cells: []display.HeatmapCell{{Value: 4}, {Value: 3}, {Value: 2}, {Value: 5}, {Value: 9}, {Value: 11}, {Value: 7}}},
+			},
+			ColumnLabels:  []string{"00:00", "04:00", "08:00", "12:00", "16:00", "20:00", "24:00"},
+			HighlightPeak: true,
+		})
+	}
 }
 
 templ carouselSlide(label, colorClass string) {

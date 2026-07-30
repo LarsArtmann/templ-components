@@ -36,9 +36,12 @@ templ PolledRegion(props PolledRegionProps) {
 	{{
 		live := polledLiveValue(props.Live)
 		swap := polledSwapValue(props.Swap)
-		trigger := "every " + props.Every
-		if props.Eager {
-			trigger = "load, every " + props.Every
+		trigger := props.Trigger
+		if trigger == "" {
+			trigger = "every " + props.Every
+			if props.Eager {
+				trigger = "load, every " + props.Every
+			}
 		}
 		updatedAt := time.Now()
 		timeFormat := props.TimeFormat

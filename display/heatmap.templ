@@ -1,0 +1,118 @@
+package display
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// Heatmap renders a CSS-based grid heatmap — no JavaScript, no SVG.
+// Each cell's background opacity reflects its value relative to the maximum.
+// The heatmap is responsive, dark-mode aware, and uses native table semantics
+// for accessibility.
+//
+//	@display.Heatmap(display.HeatmapProps{
+//	   Rows: []display.HeatmapRow{
+//	       {Label: "Mon", Cells: []display.HeatmapCell{
+//	           {Value: 5}, {Value: 12}, {Value: 0}, {Value: 8},
+//	       }},
+//	       {Label: "Tue", Cells: []display.HeatmapCell{
+//	           {Value: 3}, {Value: 20}, {Value: 7}, {Value: 2},
+//	       }},
+//	   },
+//	   ColumnLabels: []string{"00:00", "06:00", "12:00", "18:00"},
+//	   HighlightPeak: true,
+//	})
+templ Heatmap(props HeatmapProps) {
+	{{
+		rows := props.Rows
+		colorVar := props.ColorVar
+		if colorVar == "" {
+			colorVar = defaultHeatmapColorVar
+		}
+		cellSize := props.CellSize
+		if cellSize == "" {
+			cellSize = defaultHeatmapCellSize
+		}
+		emptyMsg := props.EmptyMessage
+		if emptyMsg == "" {
+			emptyMsg = defaultEmptyMsg
+		}
+		valueFmt := props.ValueFormat
+		if valueFmt == nil {
+			valueFmt = func(v float64) string { return fmt.Sprintf("%.0f", v) }
+		}
+		maxVal := heatmapMax(rows, props.Max)
+		peakRow, peakCol := -1, -1
+		if props.HighlightPeak {
+			peakRow, peakCol = heatmapPeakLocation(rows)
+		}
+	}}
+	if len(rows) == 0 {
+		<p class="text-sm text-gray-500 dark:text-gray-400">{ emptyMsg }</p>
+	} else {
+		<div class="overflow-x-auto" role="img" if props.AriaLabel != "" { aria-label={ props.AriaLabel } }>
+			<table class="min-w-full border-collapse text-xs">
+				if len(props.ColumnLabels) > 0 {
+					<thead>
+						<tr>
+							<th class="px-2 py-1"></th>
+							for _, colLabel := range props.ColumnLabels {
+								<th class="px-1 py-1 text-center font-medium text-gray-500 dark:text-gray-400">
+									{ colLabel }
+								</th>
+							}
+						</tr>
+					</thead>
+				}
+				<tbody>
+					for ri, row := range rows {
+						<tr>
+							<td class="whitespace-nowrap px-2 py-1 text-end font-medium text-gray-700 dark:text-gray-300">
+								{ row.Label }
+							</td>
+							for ci, cell := range row.Cells {
+								if cell.Value > 0 {
+									if ri == peakRow && ci == peakCol {
+										<td
+											class={ utils.Class("px-1 py-1 text-center tabular-nums ring-2 ring-[var(--ds-brand)] ring-offset-1", cellSize) }
+											style={ heatmapCellBackground(cell.Value, maxVal, colorVar) }
+											title={ cell.Label }
+										>
+											if props.ShowValues {
+												{ valueFmt(cell.Value) }
+											}
+										</td>
+									} else if cell.Href != "" {
+										<td class="px-1 py-1 text-center">
+											<a
+												href={ templ.SafeURL(cell.Href) }
+												class={ utils.Class("block rounded", cellSize) }
+												style={ heatmapCellBackground(cell.Value, maxVal, colorVar) }
+												title={ cell.Label }
+											></a>
+										</td>
+									} else {
+										<td
+											class={ utils.Class("px-1 py-1 text-center tabular-nums", cellSize) }
+											style={ heatmapCellBackground(cell.Value, maxVal, colorVar) }
+											title={ cell.Label }
+										>
+											if props.ShowValues {
+												{ valueFmt(cell.Value) }
+											}
+										</td>
+									}
+								} else {
+									<td class="px-1 py-1 text-center text-gray-300 dark:text-gray-700" title={ cell.Label }>
+										&middot;
+									</td>
+								}
+							}
+						</tr>
+					}
+				</tbody>
+			</table>
+		</div>
+	}
+}
