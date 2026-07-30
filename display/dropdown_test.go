@@ -131,3 +131,31 @@ func TestDropdownRender(t *testing.T) {
 		utils.AssertNotContains(t, output, "=== '(document.documentElement")
 	})
 }
+
+func TestDropdownKeyboardEnhancements(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, Dropdown(DropdownProps{
+		BaseProps: utils.BaseProps{ID: "kbd-menu", Nonce: "n"},
+		Label:     dropdownLabelMenu,
+		Items: []DropdownItem{
+			{Text: "One", Href: "/1"},
+			{Text: "Two", Href: "/2"},
+			{Text: "Three", Href: "/3"},
+			{Text: "Four", Href: "/4"},
+		},
+	}))
+
+	// Home/End and PageUp/PageDown move focus inside the menu.
+	utils.AssertContains(t, output, "e.key === 'Home'")
+	utils.AssertContains(t, output, "e.key === 'End'")
+	utils.AssertContains(t, output, "e.key === 'PageDown'")
+	utils.AssertContains(t, output, "e.key === 'PageUp'")
+
+	// Disabled items are skipped during keyboard navigation.
+	utils.AssertContains(t, output, `querySelectorAll('[role="menuitem"]:not([disabled])')`)
+
+	// Explicit Enter/Space activation on the focused menuitem.
+	utils.AssertContains(t, output, "e.key === 'Enter'")
+	utils.AssertContains(t, output, "e.key === ' '")
+}

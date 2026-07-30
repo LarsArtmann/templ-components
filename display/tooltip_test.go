@@ -112,3 +112,21 @@ func TestTooltipPositionEdgeCases(t *testing.T) {
 		utils.AssertContains(t, output, `id="my-tip-tooltip"`)
 	})
 }
+
+func TestTooltipEscapeDismiss(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, Tooltip(TooltipProps{
+		BaseProps: utils.BaseProps{Nonce: "n"},
+		Text:      "Dismissible",
+		Position:  TooltipPositionTop,
+	}))
+
+	// Escape on the focusable trigger sets the dismissed state.
+	utils.AssertContains(t, output, `e.key!=="Escape"`)
+	utils.AssertContains(t, output, `data-tc-tooltip-dismissed`)
+
+	// Re-entering/focusing the trigger clears the dismissed state.
+	utils.AssertContains(t, output, `"mouseenter"`)
+	utils.AssertContains(t, output, `"focusin"`)
+}
