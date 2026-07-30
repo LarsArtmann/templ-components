@@ -11,6 +11,7 @@ a div with `hx-get`, `hx-trigger`, `hx-swap`, `aria-live`, and optional
 timestamp.
 
 The key design questions were:
+
 1. Default swap style: `outerHTML` or `innerHTML`?
 2. Should the first poll fire on load (eager) or after the first interval?
 3. How to make polling visible to operators?

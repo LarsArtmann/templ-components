@@ -58,13 +58,13 @@ When `StorageKey` is set, the component emits a `data-collapsible` attribute. A 
 Consumer-side JavaScript (CSP-safe, external script):
 
 ```javascript
-document.querySelectorAll('[data-collapsible]').forEach(el => {
-    const key = el.dataset.collapsible;
-    const saved = localStorage.getItem(key);
-    if (saved === 'closed') el.removeAttribute('open');
-    el.addEventListener('toggle', () => {
-        localStorage.setItem(key, el.open ? 'open' : 'closed');
-    });
+document.querySelectorAll("[data-collapsible]").forEach((el) => {
+  const key = el.dataset.collapsible;
+  const saved = localStorage.getItem(key);
+  if (saved === "closed") el.removeAttribute("open");
+  el.addEventListener("toggle", () => {
+    localStorage.setItem(key, el.open ? "open" : "closed");
+  });
 });
 ```
 

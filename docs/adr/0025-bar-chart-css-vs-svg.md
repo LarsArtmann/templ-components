@@ -20,6 +20,7 @@ and requires no coordinate math.
 polyline rendering at small sizes is essential).
 
 Rationale:
+
 - The primary use case is dashboard stat breakdowns (top-N categories), not
   scientific data visualization.
 - CSS bar charts are inherently responsive — `width: 75%` scales with the

@@ -51,43 +51,43 @@ Don't know what to look for? Find your page type:
 
 #### `display` — 35 components
 
-| Component          | Signature                                   | One-liner                                                                                                                                        |
-| ------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `Card`             | `Card(props CardProps)`                     | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`                                                     |
-| `SimpleCard`       | `SimpleCard(props SimpleCardProps)`         | Minimal card — children only, no header/footer                                                                                                   |
-| `StatCard`         | `StatCard(props StatCardProps)`             | Dashboard metric card with value, label, change, trend, icon, optional `Href` link                                                               |
-| `Grid`             | `Grid(props GridProps)`                     | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerResponsive`                                                                   |
-| `Badge`            | `Badge(props BadgeProps)`                   | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                                                                              |
-| `StatusBadge`      | `StatusBadge(status string)`                | Auto-maps ~20 status strings to badge types                                                                                                      |
-| `Button`           | `Button(props ButtonProps)`                 | Button or link button — variants, sizes, icons, HTMX attrs                                                                                       |
-| `Avatar`           | `Avatar(props AvatarProps)`                 | Image avatar with fallback initials, sizes, status dot                                                                                           |
-| `Modal`            | `Modal(props ModalProps)`                   | Native `<dialog>` overlay — showModal(), focus trap, Escape, backdrop, 5 sizes                                                                   |
-| `Drawer`           | `Drawer(props DrawerProps)`                 | Native `<dialog>` side panel — slide animation, focus trap, Escape, backdrop                                                                     |
-| `Dropdown`         | `Dropdown(props DropdownProps)`             | Button-triggered menu — links, buttons, keyboard nav                                                                                             |
-| `Tooltip`          | `Tooltip(props TooltipProps)`               | Hover tooltip — 4 positions, arrow, touch support                                                                                                |
-| `Popover`          | `Popover(props PopoverProps)`               | Button-triggered floating panel — 4 positions, arbitrary content, click-outside dismiss                                                          |
-| `Accordion`        | `Accordion(props AccordionProps)`           | Collapsible sections — open/closed state, keyboard nav                                                                                           |
-| `Table`            | `Table(props TableProps)`                   | Responsive data table — striping, hover, caption, bordered, `Body` slot, `Row.Href`, `Flush` (card nesting), `CellPadding` (comfortable/compact) |
-| `DataTable`        | `DataTable(props DataTableProps)`           | Data table with integrated sort management, pagination, empty-state — composes `Table` internally                                                |
-| `Tabs`             | `Tabs(props TabsProps)`                     | Tabbed interface — underline/pills, optional client-side JS                                                                                      |
-| `EmptyState`       | `EmptyState(props EmptyStateProps)`         | Empty-data placeholder — icon, title, description, action                                                                                        |
-| `SimpleEmptyState` | `SimpleEmptyState(message string)`          | Minimal empty state — text only                                                                                                                  |
-| `PageHeader`       | `PageHeader(props PageHeaderProps)`         | Page title block — title, subtitle, breadcrumb, action slots                                                                                     |
-| `DefinitionList`   | `DefinitionList(props DefinitionListProps)` | Two-column `<dl>` key/value list                                                                                                                 |
-| `ListNote`         | `ListNote(props ListNoteProps)`             | "Showing N of M" truncation notice                                                                                                               |
-| `CopyButton`       | `CopyButton(props CopyButtonProps)`         | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant                                                            |
-| `RelativeTime`     | `RelativeTime(props RelativeTimeProps)`     | `<time datetime>` with relative text ("2 hours ago")                                                                                             |
-| `CountBadge`       | `CountBadge(props CountBadgeProps)`         | Icon + notification count overlay — overflow "N+"                                                                                                |
-| `DefinitionGrid`   | `DefinitionGrid(props DefinitionGridProps)` | Responsive grid of term-detail cards, `ContainerAware`                                                                                           |
-| `Image`            | `Image(props ImageProps)`                   | Lazy-loaded `<img>` with CSP-safe fallback, `SrcSet`/`Sizes` for responsive delivery, optional `Rounded`                                         |
-| `HoverCard`        | `HoverCard(props HoverCardProps)`           | CSS-only hover-activated card — 4 positions, focus-within support                                                                                |
-| `ContextMenu`      | `ContextMenu(props ContextMenuProps)`       | Right-click context menu — CSP-safe JS, role=menu, Escape/click-outside dismiss                                                                  |
-| `Carousel`         | `Carousel(props CarouselProps)`             | Slide carousel with prev/next arrows and dot indicators                                                                                          |
-| `Sparkline`        | `Sparkline(props SparklineProps)`           | Pure SVG mini line chart — trend visualization, `Filled`, `AriaLabel`, customizable dims                                                         |
-| `BarChart`         | `BarChart(props BarChartProps)`             | CSS bar chart (horizontal/vertical) — per-bar colors, links, value formatting, empty state                                                       |
-| `ExternalLink`     | `ExternalLink(props ExternalLinkProps)`     | Safe off-site link — `target="_blank" rel="noopener"`, URL-sanitized href, optional arrow icon                                               |
-| `CollapsibleSection` | `CollapsibleSection(props CollapsibleSectionProps)` | Native `<details>/<summary>` — configurable heading, open/closed default, optional `StorageKey` for localStorage persistence, chevron rotation |
-| `Heatmap`          | `Heatmap(props HeatmapProps)`               | CSS grid heatmap — row/column labels, opacity-based coloring, peak highlighting, tooltips, empty state                                           |
+| Component            | Signature                                           | One-liner                                                                                                                                        |
+| -------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `Card`               | `Card(props CardProps)`                             | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`                                                     |
+| `SimpleCard`         | `SimpleCard(props SimpleCardProps)`                 | Minimal card — children only, no header/footer                                                                                                   |
+| `StatCard`           | `StatCard(props StatCardProps)`                     | Dashboard metric card with value, label, change, trend, icon, optional `Href` link                                                               |
+| `Grid`               | `Grid(props GridProps)`                             | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerResponsive`                                                                   |
+| `Badge`              | `Badge(props BadgeProps)`                           | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                                                                              |
+| `StatusBadge`        | `StatusBadge(status string)`                        | Auto-maps ~20 status strings to badge types                                                                                                      |
+| `Button`             | `Button(props ButtonProps)`                         | Button or link button — variants, sizes, icons, HTMX attrs                                                                                       |
+| `Avatar`             | `Avatar(props AvatarProps)`                         | Image avatar with fallback initials, sizes, status dot                                                                                           |
+| `Modal`              | `Modal(props ModalProps)`                           | Native `<dialog>` overlay — showModal(), focus trap, Escape, backdrop, 5 sizes                                                                   |
+| `Drawer`             | `Drawer(props DrawerProps)`                         | Native `<dialog>` side panel — slide animation, focus trap, Escape, backdrop                                                                     |
+| `Dropdown`           | `Dropdown(props DropdownProps)`                     | Button-triggered menu — links, buttons, keyboard nav                                                                                             |
+| `Tooltip`            | `Tooltip(props TooltipProps)`                       | Hover tooltip — 4 positions, arrow, touch support                                                                                                |
+| `Popover`            | `Popover(props PopoverProps)`                       | Button-triggered floating panel — 4 positions, arbitrary content, click-outside dismiss                                                          |
+| `Accordion`          | `Accordion(props AccordionProps)`                   | Collapsible sections — open/closed state, keyboard nav                                                                                           |
+| `Table`              | `Table(props TableProps)`                           | Responsive data table — striping, hover, caption, bordered, `Body` slot, `Row.Href`, `Flush` (card nesting), `CellPadding` (comfortable/compact) |
+| `DataTable`          | `DataTable(props DataTableProps)`                   | Data table with integrated sort management, pagination, empty-state — composes `Table` internally                                                |
+| `Tabs`               | `Tabs(props TabsProps)`                             | Tabbed interface — underline/pills, optional client-side JS                                                                                      |
+| `EmptyState`         | `EmptyState(props EmptyStateProps)`                 | Empty-data placeholder — icon, title, description, action                                                                                        |
+| `SimpleEmptyState`   | `SimpleEmptyState(message string)`                  | Minimal empty state — text only                                                                                                                  |
+| `PageHeader`         | `PageHeader(props PageHeaderProps)`                 | Page title block — title, subtitle, breadcrumb, action slots                                                                                     |
+| `DefinitionList`     | `DefinitionList(props DefinitionListProps)`         | Two-column `<dl>` key/value list                                                                                                                 |
+| `ListNote`           | `ListNote(props ListNoteProps)`                     | "Showing N of M" truncation notice                                                                                                               |
+| `CopyButton`         | `CopyButton(props CopyButtonProps)`                 | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant                                                            |
+| `RelativeTime`       | `RelativeTime(props RelativeTimeProps)`             | `<time datetime>` with relative text ("2 hours ago")                                                                                             |
+| `CountBadge`         | `CountBadge(props CountBadgeProps)`                 | Icon + notification count overlay — overflow "N+"                                                                                                |
+| `DefinitionGrid`     | `DefinitionGrid(props DefinitionGridProps)`         | Responsive grid of term-detail cards, `ContainerAware`                                                                                           |
+| `Image`              | `Image(props ImageProps)`                           | Lazy-loaded `<img>` with CSP-safe fallback, `SrcSet`/`Sizes` for responsive delivery, optional `Rounded`                                         |
+| `HoverCard`          | `HoverCard(props HoverCardProps)`                   | CSS-only hover-activated card — 4 positions, focus-within support                                                                                |
+| `ContextMenu`        | `ContextMenu(props ContextMenuProps)`               | Right-click context menu — CSP-safe JS, role=menu, Escape/click-outside dismiss                                                                  |
+| `Carousel`           | `Carousel(props CarouselProps)`                     | Slide carousel with prev/next arrows and dot indicators                                                                                          |
+| `Sparkline`          | `Sparkline(props SparklineProps)`                   | Pure SVG mini line chart — trend visualization, `Filled`, `AriaLabel`, customizable dims                                                         |
+| `BarChart`           | `BarChart(props BarChartProps)`                     | CSS bar chart (horizontal/vertical) — per-bar colors, links, value formatting, empty state                                                       |
+| `ExternalLink`       | `ExternalLink(props ExternalLinkProps)`             | Safe off-site link — `target="_blank" rel="noopener"`, URL-sanitized href, optional arrow icon                                                   |
+| `CollapsibleSection` | `CollapsibleSection(props CollapsibleSectionProps)` | Native `<details>/<summary>` — configurable heading, open/closed default, optional `StorageKey` for localStorage persistence, chevron rotation   |
+| `Heatmap`            | `Heatmap(props HeatmapProps)`                       | CSS grid heatmap — row/column labels, opacity-based coloring, peak highlighting, tooltips, empty state                                           |
 
 #### `forms` — 21 components
 
@@ -167,15 +167,15 @@ Don't know what to look for? Find your page type:
 
 #### `htmx` — 9 components
 
-| Component              | Signature                                                 | One-liner                   |
-| ---------------------- | --------------------------------------------------------- | --------------------------- |
-| `LoadingIndicator`     | `LoadingIndicator(spinner templ.Component)`               | Fixed HTMX loading overlay  |
-| `InlineLoadingOverlay` | `InlineLoadingOverlay(id string, spinner)`                | Per-target loading overlay  |
-| `LoadingButton`        | `LoadingButton(defaultText, loadingText string, spinner)` | Button with loading state   |
-| `ConfirmDelete`        | `ConfirmDelete(props ConfirmDeleteProps)`                 | HTMX delete confirmation    |
-| `SwapOOB`              | `SwapOOB(props SwapOOBProps)`                             | HTMX out-of-band swap       |
-| `CSRFToken`            | `CSRFToken(token string)`                                 | Hidden CSRF input           |
-| `GlobalErrorHandling`  | `GlobalErrorHandling(cfg ErrorHandlingConfig)`            | HTMX error → toast pipeline |
+| Component              | Signature                                                 | One-liner                                                                                 |
+| ---------------------- | --------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `LoadingIndicator`     | `LoadingIndicator(spinner templ.Component)`               | Fixed HTMX loading overlay                                                                |
+| `InlineLoadingOverlay` | `InlineLoadingOverlay(id string, spinner)`                | Per-target loading overlay                                                                |
+| `LoadingButton`        | `LoadingButton(defaultText, loadingText string, spinner)` | Button with loading state                                                                 |
+| `ConfirmDelete`        | `ConfirmDelete(props ConfirmDeleteProps)`                 | HTMX delete confirmation                                                                  |
+| `SwapOOB`              | `SwapOOB(props SwapOOBProps)`                             | HTMX out-of-band swap                                                                     |
+| `CSRFToken`            | `CSRFToken(token string)`                                 | Hidden CSRF input                                                                         |
+| `GlobalErrorHandling`  | `GlobalErrorHandling(cfg ErrorHandlingConfig)`            | HTMX error → toast pipeline                                                               |
 | `PolledRegion`         | `PolledRegion(props PolledRegionProps)`                   | Auto-refreshing HTMX region — interval polling, eager-load, aria-live, optional timestamp |
 
 #### `errorpage` — 4 components + 6 constructors + handler

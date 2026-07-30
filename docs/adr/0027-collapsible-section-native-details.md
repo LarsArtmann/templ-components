@@ -8,6 +8,7 @@
 Dashboard pages accumulate detail-heavy sections (System Health, Phase 2 Entities, Debug Info). Operators need to collapse these to focus on the overview. The previous pattern in DiscordSync used a hand-rolled `<details>/<summary>` wrapper with localStorage persistence.
 
 Options considered:
+
 1. **Custom JS toggle** — div + button + JS state management
 2. **Native `<details>/<summary>`** — browser handles toggle, keyboard, and ARIA
 3. **Accordion component reuse** — the existing Accordion is for multi-panel Q&A, not section collapsing
@@ -15,6 +16,7 @@ Options considered:
 ## Decision
 
 Use native `<details>/<summary>`. The browser handles:
+
 - Toggle state (no JS needed for basic open/close)
 - Keyboard accessibility (Enter/Space on summary)
 - ARIA semantics (summary is implicitly a button)

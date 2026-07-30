@@ -8,6 +8,7 @@
 Activity visualizations need a grid heatmap (e.g. 7-day × 24-hour activity grid, channel × author matrix). The heatmap must be responsive, dark-mode aware, and accessible.
 
 Options considered:
+
 1. **SVG `<rect>` grid** — full control over rendering, but complex for tooltips and responsive sizing
 2. **CSS Grid (`div` cells)** — flexible but loses table semantics
 3. **HTML `<table>` with opacity backgrounds** — native semantics, easy tooltips via `title`, responsive via `overflow-x-auto`
@@ -15,6 +16,7 @@ Options considered:
 ## Decision
 
 Use HTML `<table>` with inline `background-color: rgba(var(--css-var-rgb), opacity)` styles. This provides:
+
 - Native table semantics for screen readers
 - Easy cell tooltips via `title` attribute
 - Responsive scrolling via `overflow-x-auto` wrapper
