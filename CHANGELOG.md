@@ -6,6 +6,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Carousel keyboard navigation.** The carousel region is now focusable (`tabindex="0"`) and responds to ArrowLeft/ArrowRight (prev/next slide), Home (first slide), and End (last slide). RTL-aware: ArrowLeft/Right are swapped in `dir="rtl"`. Follows WAI-ARIA carousel pattern.
+- **MobileMenu keyboard support.** Escape closes the menu and returns focus to the toggle button. Opening the menu moves focus to the first focusable child. Extracted `tcMobileMenuSet(menu, btn, open)` shared helper for consistent open/close + focus management.
+- **Dropdown keyboard enhancements.** Home (first item), End (last item), PageDown/PageUp (jump by quarter of the list) now move focus inside the menu. Disabled items (`[disabled]`) are skipped during navigation. First menuitem is auto-focused when the menu opens (via `toggle` event listener).
+- **Tooltip Escape-to-dismiss.** Pressing Escape while a tooltip trigger has focus hides the tooltip via a `data-tc-tooltip-dismissed` attribute + CSS rule, while keeping focus on the trigger (preserving tab position). Hover or re-focus clears the dismissed state.
+
+### Fixed
+
+- **Dropdown Enter/Space no longer breaks HTMX.** The custom JS handler used `window.location.href = item.href` for `<a>` menuitems, which triggered a full page load and bypassed HTMX's AJAX swap. Removed the handler entirely — native browser behavior activates links/buttons correctly, and HTMX intercepts native events as expected.
+
 ## [1.3.0] — 2026-07-28
 
 ### Added
