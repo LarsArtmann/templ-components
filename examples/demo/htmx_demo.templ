@@ -30,4 +30,15 @@ templ htmxDemo() {
 	@demoSection("HTMX GlobalErrorHandling", "htmx-error-handling")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Wires up htmx:responseError and htmx:beforeOnError events:</p>
 	@htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
+	@demoSection("HTMX PolledRegion", "htmx-polled-region")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Auto-refreshing region (would poll <code>/api/demo-stats</code> every 10s in a real app):</p>
+	@htmx.PolledRegion(htmx.PolledRegionProps{
+		URL:   "/api/demo-stats",
+		Every: "10s",
+		Eager: true,
+	}) {
+		<div class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
+			<p class="text-sm text-gray-600 dark:text-gray-400">Live stats would appear here.</p>
+		</div>
+	}
 }

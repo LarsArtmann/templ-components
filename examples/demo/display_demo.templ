@@ -330,6 +330,41 @@ templ displayDemo() {
 			{Content: carouselSlide("Slide 3", "bg-purple-600 dark:bg-purple-500")},
 		},
 	})
+	@demoSection("Sparklines & Bar Charts", "display-charts")
+	<div class="grid gap-4 sm:grid-cols-2">
+		@display.Card(display.CardProps{Title: "Message Trend"}) {
+			<div class="flex items-center gap-3">
+				@display.Sparkline(display.SparklineProps{
+					Values: []float64{3, 5, 4, 7, 6, 9, 8, 12, 10, 14},
+					Filled: true,
+					BaseProps: utils.BaseProps{Class: "text-blue-600 dark:text-blue-400"},
+				})
+				<span class="text-sm font-medium text-gray-900 dark:text-white">+47%</span>
+			</div>
+		}
+		@display.Card(display.CardProps{Title: "Top Channels"}) {
+			@display.BarChart(display.BarChartProps{
+				Bars: []display.BarChartBar{
+					{Label: "general", Value: 1200},
+					{Label: "random", Value: 800},
+					{Label: "dev", Value: 450},
+					{Label: "gaming", Value: 200},
+				},
+			})
+		}
+	</div>
+	@demoSection("External Links", "display-external-links")
+	<div class="flex flex-wrap gap-4">
+		@display.ExternalLink(display.ExternalLinkProps{
+			Href: "https://github.com/larsartmann/templ-components",
+			Text: "View on GitHub",
+		})
+		@display.ExternalLink(display.ExternalLinkProps{
+			Href:     "https://templ.guide",
+			Text:     "templ docs",
+			ShowIcon: false,
+		})
+	</div>
 }
 
 templ carouselSlide(label, colorClass string) {
