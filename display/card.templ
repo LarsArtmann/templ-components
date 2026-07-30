@@ -41,6 +41,11 @@ type CardProps struct {
 	// composition. If both are set, Body takes precedence.
 	Body    templ.Component
 	Padding CardPadding
+	// TitleTag overrides the heading element for the card title.
+	// Defaults to "h3" when empty. Set to "h2" when the card is the
+	// first heading level after a page <h1> to maintain correct heading
+	// order for screen-reader navigation.
+	TitleTag string
 	// TitleClass, when set, overrides the default <h3> title classes. Consumer
 	// classes are merged LAST so they win via tailwind-merge.
 	TitleClass string
@@ -115,7 +120,11 @@ templ cardInner(props CardProps) {
 			<div class={ utils.Class("flex items-center justify-between "+cardHeaderPaddingClass(props.ContainerAware)+" border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
 				<div>
 					if props.Title != "" {
-						<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h3>
+						if props.TitleTag == "h2" {
+							<h2 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h2>
+						} else {
+							<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h3>
+						}
 					}
 					if props.Subtitle != "" {
 						<p class={ utils.Class(mutedTextClass, "mt-1") }>{ props.Subtitle }</p>

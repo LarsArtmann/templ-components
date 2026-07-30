@@ -9,6 +9,10 @@ import (
 type EmptyStateProps struct {
 	utils.BaseProps
 	Title       string
+	// TitleTag overrides the heading element for the title.
+	// Defaults to "h3" when empty. Set to "h2" when the empty state
+	// is the first heading level after a page <h1>.
+	TitleTag    string
 	Description string
 	Icon        icons.Name
 	ActionText  string
@@ -75,7 +79,11 @@ templ EmptyState(props EmptyStateProps) {
 					@icons.Icon(props.Icon, "h-6 w-6 text-gray-600 dark:text-gray-400")
 				</div>
 			}
-			<h3 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h3>
+			if props.TitleTag == "h2" {
+				<h2 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h2>
+			} else {
+				<h3 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h3>
+			}
 			if props.Description != "" {
 				<p class={ utils.Class(mutedTextClass, "mt-2") }>{ props.Description }</p>
 			}
