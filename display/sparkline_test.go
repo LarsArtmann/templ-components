@@ -144,6 +144,32 @@ func TestSparklineBounds(t *testing.T) {
 			t.Errorf("expected max=6 (bumped), got %f", maxVal)
 		}
 	})
+	t.Run("zero min is respected not treated as auto", func(t *testing.T) {
+		t.Parallel()
+
+		zero := 0.0
+		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{3, 1, 4, 1, 5}, Min: &zero})
+		if minVal != 0 {
+			t.Errorf("expected min=0 (explicit), got %f", minVal)
+		}
+
+		if maxVal != 5 {
+			t.Errorf("expected max=5 (auto from data), got %f", maxVal)
+		}
+	})
+	t.Run("explicit min and max overrides", func(t *testing.T) {
+		t.Parallel()
+
+		minIn, maxIn := -10.0, 10.0
+		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{3, 1, 4, 1, 5}, Min: &minIn, Max: &maxIn})
+		if minVal != -10 {
+			t.Errorf("expected min=-10, got %f", minVal)
+		}
+
+		if maxVal != 10 {
+			t.Errorf("expected max=10, got %f", maxVal)
+		}
+	})
 }
 
 func TestSparklineDefaults(t *testing.T) {

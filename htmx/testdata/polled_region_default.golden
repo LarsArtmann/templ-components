@@ -1,0 +1,1 @@
+<div hx-get="/partials/stats" hx-trigger="every " hx-swap="outerHTML" aria-live="polite" class=""></div>

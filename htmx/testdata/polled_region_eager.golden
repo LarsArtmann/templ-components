@@ -1,0 +1,1 @@
+<div hx-get="/partials/live" hx-trigger="load, every 5s" hx-swap="outerHTML" aria-live="polite" class=""></div>

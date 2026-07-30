@@ -36,7 +36,7 @@ Don't know what to look for? Find your page type:
 
 | You're building...             | Reach for                                                                                                                                                                                                                          |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`                                                                                                                               |
+| **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`, `Sparkline`, `BarChart`, `PolledRegion`                                                                                      |
 | **List / table page**          | `Table` (`Flush` for card nesting, `CellPadding` for compact rows, `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `ListNote` |
 | **Detail page**                | `Split`, `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `Breadcrumbs`                                                                                                                                           |
 | **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`                                                                                                   |
@@ -49,7 +49,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 30 components
+#### `display` — 33 components
 
 | Component          | Signature                                   | One-liner                                                                                                                                        |
 | ------------------ | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -83,6 +83,9 @@ Don't know what to look for? Find your page type:
 | `HoverCard`        | `HoverCard(props HoverCardProps)`           | CSS-only hover-activated card — 4 positions, focus-within support                                                                                |
 | `ContextMenu`      | `ContextMenu(props ContextMenuProps)`       | Right-click context menu — CSP-safe JS, role=menu, Escape/click-outside dismiss                                                                  |
 | `Carousel`         | `Carousel(props CarouselProps)`             | Slide carousel with prev/next arrows and dot indicators                                                                                          |
+| `Sparkline`        | `Sparkline(props SparklineProps)`           | Pure SVG mini line chart — trend visualization, `Filled`, `AriaLabel`, customizable dims                                                         |
+| `BarChart`         | `BarChart(props BarChartProps)`             | CSS bar chart (horizontal/vertical) — per-bar colors, links, value formatting, empty state                                                       |
+| `ExternalLink`     | `ExternalLink(props ExternalLinkProps)`     | Safe off-site link — `target="_blank" rel="noopener"`, URL-sanitized href, optional arrow icon                                               |
 
 #### `forms` — 21 components
 
@@ -160,7 +163,7 @@ Don't know what to look for? Find your page type:
 | `EndOfList`        | `EndOfList(props EndOfListProps)`                       | "You've reached the end" indicator — companion to LoadMore/Pagination                                       |
 | `Footer`           | `Footer(props FooterProps)`                             | Simple footer with copyright                                                                                |
 
-#### `htmx` — 8 components
+#### `htmx` — 9 components
 
 | Component              | Signature                                                 | One-liner                   |
 | ---------------------- | --------------------------------------------------------- | --------------------------- |
@@ -171,6 +174,7 @@ Don't know what to look for? Find your page type:
 | `SwapOOB`              | `SwapOOB(props SwapOOBProps)`                             | HTMX out-of-band swap       |
 | `CSRFToken`            | `CSRFToken(token string)`                                 | Hidden CSRF input           |
 | `GlobalErrorHandling`  | `GlobalErrorHandling(cfg ErrorHandlingConfig)`            | HTMX error → toast pipeline |
+| `PolledRegion`         | `PolledRegion(props PolledRegionProps)`                   | Auto-refreshing HTMX region — interval polling, eager-load, aria-live, optional timestamp |
 
 #### `errorpage` — 4 components + 6 constructors + handler
 

@@ -1,0 +1,1 @@
+<div id="activity-feed" hx-get="/api/activity" hx-trigger="every 30s" hx-swap="outerHTML" aria-live="polite" class=""></div>

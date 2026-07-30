@@ -1,0 +1,1 @@
+<div hx-get="/api/alerts" hx-trigger="every 1s" hx-swap="outerHTML" aria-live="assertive" class=""></div>

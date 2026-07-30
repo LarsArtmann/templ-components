@@ -27,11 +27,11 @@ type SparklineProps struct {
 	// Filled renders a filled area beneath the line (default: false).
 	Filled bool
 
-	// Min overrides the auto-computed minimum value (default: auto from data).
-	Min float64
+	// Min overrides the auto-computed minimum value (nil = auto from data).
+	Min *float64
 
-	// Max overrides the auto-computed maximum value (default: auto from data).
-	Max float64
+	// Max overrides the auto-computed maximum value (nil = auto from data).
+	Max *float64
 }
 
 // Sparkline defaults.
@@ -143,15 +143,12 @@ func sparklineBounds(props SparklineProps) (float64, float64) {
 	}
 
 	// Apply caller overrides.
-	if props.Min != 0 || props.Max != 0 {
-		// Only override if non-zero (zero is the sentinel for "auto").
-		if props.Min != 0 {
-			minVal = props.Min
-		}
+	if props.Min != nil {
+		minVal = *props.Min
+	}
 
-		if props.Max != 0 {
-			maxVal = props.Max
-		}
+	if props.Max != nil {
+		maxVal = *props.Max
 	}
 
 	if maxVal == minVal {
