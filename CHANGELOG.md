@@ -6,6 +6,27 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.6.0] — 2026-07-30
+
+### Added
+
+- **`display.CollapsibleSection`** — native `<details>/<summary>` collapsible region with configurable heading level (h1-h6), open/closed default, optional `StorageKey` for localStorage persistence, and chevron rotation with motion-reduce and dark-mode support. Inspired by DiscordSync's `collapsibleSection` helper.
+- **`display.Heatmap`** — CSS grid heatmap with row/column labels, opacity-based cell coloring, peak highlighting with ring, clickable cells, tooltip support, and empty state. No JavaScript, no SVG. Inspired by DiscordSync's `activityHourlyHeatmap` and `heatmapMatrix`.
+- **`htmx.PolledRegionProps.Trigger`** — first-class `Trigger string` field that overrides the auto-generated `hx-trigger`, enabling custom SSE/WebSocket triggers without clobbering `Attrs`. Eliminates the DiscordSync wrapper hack.
+- Recipe docs: `docs/recipes/collapsible-section.md`, `docs/recipes/heatmap.md`.
+- ADRs: `0027-collapsible-section-native-details.md`, `0028-heatmap-css-table-opacity.md`, `0029-polled-region-trigger-field.md`.
+- Golden snapshot tests (10 baselines), unit tests, a11y tests, and benchmarks for both new components.
+- Demo showcase: CollapsibleSection and Heatmap sections in `examples/demo/display_demo.templ`.
+
+### Changed
+
+- Component count: 33 → 35 display components. Updated SKILL.md, README.md, FEATURES.md, AGENTS.md, website sections.ts.
+- `display/FEATURES.md` version updated to 1.5.0 (was stale at 1.4.0).
+
+### Fixed
+
+- 8th BuildFlow `:=` shadowing regression in `visualtest/doc.go:76` (changing `=` to `:=`, shadowing package-level `sharedAllocCtx`/`allocCancel`).
+
 ## [1.5.0] — 2026-07-30
 
 ### Added
