@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.4.0] — 2026-07-30
+
 ### Added
 
 - **`htmx.PolledRegion`** — auto-refreshing HTMX region for dashboard stats. Polls a URL at a configurable interval, swaps content in place, includes optional eager-load, `aria-live` for screen readers, and a "Updated HH:MM:SS" freshness timestamp. Inspired by DiscordSync's `polledRegion` helper (the #1 dashboard pattern).
