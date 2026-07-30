@@ -155,7 +155,7 @@ func TestDropdownKeyboardEnhancements(t *testing.T) {
 	// Disabled items are skipped during keyboard navigation.
 	utils.AssertContains(t, output, `querySelectorAll('[role="menuitem"]:not([disabled])')`)
 
-	// Explicit Enter/Space activation on the focused menuitem.
-	utils.AssertContains(t, output, "e.key === 'Enter'")
-	utils.AssertContains(t, output, "e.key === ' '")
+	// Enter/Space activation is intentionally left to native browser behavior
+	// so that HTMX-powered links and buttons work correctly.
+	utils.AssertNotContains(t, output, "window.location.href")
 }

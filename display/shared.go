@@ -325,7 +325,7 @@ func tooltipAriaJS() string {
 		`document.querySelectorAll("[data-tc-tooltip]").forEach(function(wrap){` +
 		`var desc=wrap.getAttribute("aria-describedby");` +
 		`if(!desc)return;` +
-		`var focusable=wrap.querySelector("button,a[href],input,select,textarea,[tabindex]:not([tabindex='-1'])");` +
+		`var focusable=wrap.querySelector("button,a[href],input,select,textarea,[tabindex]:not([tabindex=\"-1\"])");` +
 		`if(focusable&&!focusable.hasAttribute("aria-describedby")){` +
 		`focusable.setAttribute("aria-describedby",desc);` +
 		`}` +
