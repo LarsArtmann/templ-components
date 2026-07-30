@@ -175,45 +175,6 @@ templ Dropdown(props DropdownProps) {
 			</div>
 		</div>
 	</div>
-	<script nonce={ props.Nonce }>
-		if (!window.tcDropdownAttached) {
-			window.tcDropdownAttached = true;
-			document.addEventListener('toggle', function(e) {
-				var menu = e.target;
-				if (menu.tagName !== 'DIV' || menu.getAttribute('role') !== 'menu' || e.newState !== 'open') return;
-				var first = menu.querySelector('[role="menuitem"]:not([disabled])');
-				if (first) first.focus();
-			});
-			document.addEventListener('keydown', function(e) {
-				var menu = e.target.closest('[role="menu"]');
-				if (!menu) return;
-				var items = Array.from(menu.querySelectorAll('[role="menuitem"]:not([disabled])'));
-				if (items.length === 0) return;
-				var idx = items.indexOf(document.activeElement);
-				var isRtl = document.documentElement.getAttribute('dir') === 'rtl';
-				var nextKey = isRtl ? 'ArrowLeft' : 'ArrowRight';
-				var prevKey = isRtl ? 'ArrowRight' : 'ArrowLeft';
-				var pageSize = Math.max(1, Math.floor(items.length / 4));
-				var next = -1;
-				if (e.key === 'ArrowDown' || e.key === nextKey) {
-					next = (idx + 1) % items.length;
-				} else if (e.key === 'ArrowUp' || e.key === prevKey) {
-					next = (idx - 1 + items.length) % items.length;
-				} else if (e.key === 'Home') {
-					next = 0;
-				} else if (e.key === 'End') {
-					next = items.length - 1;
-				} else if (e.key === 'PageDown') {
-					next = Math.min(items.length - 1, idx + pageSize);
-				} else if (e.key === 'PageUp') {
-					next = Math.max(0, idx - pageSize);
-				}
-				if (next >= 0) {
-					e.preventDefault();
-					items[next].focus();
-				}
-			});
-		}
-	</script>
+	@menuKeyboardNavScriptComponent(props.Nonce)
 	@popoverPositionScriptComponent(props.Nonce)
 }

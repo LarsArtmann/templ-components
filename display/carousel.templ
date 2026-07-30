@@ -42,7 +42,7 @@ func DefaultCarouselProps() CarouselProps {
 templ Carousel(props CarouselProps) {
 	{{ id := utils.EnsureID("carousel", props.ID) }}
 	<div
-		class={ utils.Class("relative rounded-lg", props.Class) }
+		class={ utils.Class("relative rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900", props.Class) }
 		data-tc-carousel={ id }
 		role="region"
 		aria-roledescription="carousel"

@@ -356,3 +356,47 @@ func tooltipAriaJS() string {
 func tooltipAriaScriptComponent(nonce string) templ.Component {
 	return scriptComponent(nonce, tooltipAriaJS(), "tooltip aria script")
 }
+
+// menuKeyboardNavJS returns the singleton JavaScript implementing the WAI-ARIA
+// menu keyboard interaction shared by Dropdown and ContextMenu. On toggle-open
+// it moves focus to the first enabled menuitem; the keydown handler drives
+// ArrowUp/Down (with RTL-aware ArrowLeft/Right), Home, End, and PageUp/PageDown
+// across [role="menuitem"] elements, skipping disabled and aria-disabled items.
+// Activation (Enter/Space) is intentionally left to the browser so HTMX-powered
+// links and buttons fire correctly — never use window.location here.
+func menuKeyboardNavJS() string {
+	return `if(!window.tcMenuKeyNavAttached){window.tcMenuKeyNavAttached=true;` +
+		`document.addEventListener('toggle',function(e){` +
+		`var m=e.target;` +
+		`if(!m||m.tagName!=='DIV'||m.getAttribute('role')!=='menu'||e.newState!=='open')return;` +
+		`var first=m.querySelector('[role="menuitem"]:not([disabled]):not([aria-disabled="true"])');` +
+		`if(first)first.focus();` +
+		`});` +
+		`document.addEventListener('keydown',function(e){` +
+		`var menu=e.target.closest('[role="menu"]');` +
+		`if(!menu)return;` +
+		`var items=Array.from(menu.querySelectorAll('[role="menuitem"]:not([disabled]):not([aria-disabled="true"])'));` +
+		`if(items.length===0)return;` +
+		`var idx=items.indexOf(document.activeElement);` +
+		`var isRtl=document.documentElement.getAttribute('dir')==='rtl';` +
+		`var nextKey=isRtl?'ArrowLeft':'ArrowRight';` +
+		`var prevKey=isRtl?'ArrowRight':'ArrowLeft';` +
+		`var pageSize=Math.max(1,Math.floor(items.length/4));` +
+		`var next=-1;` +
+		`if(e.key==='ArrowDown'||e.key===nextKey){next=(idx+1)%items.length;}` +
+		`else if(e.key==='ArrowUp'||e.key===prevKey){next=(idx-1+items.length)%items.length;}` +
+		`else if(e.key==='Home'){next=0;}` +
+		`else if(e.key==='End'){next=items.length-1;}` +
+		`else if(e.key==='PageDown'){next=Math.min(items.length-1,idx+pageSize);}` +
+		`else if(e.key==='PageUp'){next=Math.max(0,idx-pageSize);}` +
+		`if(next>=0){e.preventDefault();items[next].focus();}` +
+		`});` +
+		`}` +
+		"\n"
+}
+
+// menuKeyboardNavScriptComponent renders the shared menu keyboard-nav JS in a
+// CSP-safe <script nonce> tag. Singleton, shared by Dropdown and ContextMenu.
+func menuKeyboardNavScriptComponent(nonce string) templ.Component {
+	return scriptComponent(nonce, menuKeyboardNavJS(), "menu keyboard nav script")
+}
