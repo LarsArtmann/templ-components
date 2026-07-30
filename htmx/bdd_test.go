@@ -138,6 +138,49 @@ func TestSwapOOBUpdatesMultipleElements(t *testing.T) {
 
 // --- Edge Cases ---
 
+func TestPolledRegionUserSeesAutoRefreshingContent(t *testing.T) {
+	t.Parallel()
+
+	t.Run("region has hx-trigger for periodic refresh", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PolledRegion(PolledRegionProps{
+			URL:   "/api/live-stats",
+			Every: "10s",
+		}))
+		utils.AssertContains(t, output, `hx-get="/api/live-stats"`)
+		utils.AssertContains(t, output, `hx-trigger="every 10s"`)
+		utils.AssertContains(t, output, `hx-swap="outerHTML"`)
+	})
+
+	t.Run("eager mode fires immediately on load", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PolledRegion(PolledRegionProps{
+			URL:   "/api/dashboard",
+			Every: "30s",
+			Eager: true,
+		}))
+		utils.AssertContains(t, output, `hx-trigger="load, every 30s"`)
+	})
+
+	t.Run("timestamp shows polling is active", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PolledRegion(PolledRegionProps{
+			URL:           "/api/heartbeat",
+			Every:         "5s",
+			ShowTimestamp: true,
+		}))
+		utils.AssertContains(t, output, "Updated")
+		utils.AssertContains(t, output, "<time")
+		utils.AssertContains(t, output, `datetime="`)
+	})
+
+	t.Run("aria-live polite by default for screen readers", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PolledRegion(DefaultPolledRegionProps()))
+		utils.AssertContains(t, output, `aria-live="polite"`)
+	})
+}
+
 func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 	t.Parallel()
 

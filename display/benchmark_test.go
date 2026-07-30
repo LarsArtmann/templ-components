@@ -141,6 +141,50 @@ func BenchmarkHotPaths(b *testing.B) {
 			_ = RelativeTime(props).Render(context.Background(), &buf)
 		}
 	})
+
+	b.Run("Sparkline render", func(b *testing.B) {
+		props := DefaultSparklineProps()
+		props.Values = []float64{1, 3, 2, 5, 4, 6, 3, 7, 5, 8}
+
+		b.ResetTimer()
+
+		for b.Loop() {
+			var buf bytes.Buffer
+
+			_ = Sparkline(props).Render(context.Background(), &buf)
+		}
+	})
+
+	b.Run("BarChart render", func(b *testing.B) {
+		props := DefaultBarChartProps()
+		props.Bars = []BarChartBar{
+			{Label: "general", Value: 1200},
+			{Label: "random", Value: 800},
+			{Label: "dev", Value: 450},
+		}
+
+		b.ResetTimer()
+
+		for b.Loop() {
+			var buf bytes.Buffer
+
+			_ = BarChart(props).Render(context.Background(), &buf)
+		}
+	})
+
+	b.Run("ExternalLink render", func(b *testing.B) {
+		props := DefaultExternalLinkProps()
+		props.Href = "https://example.com"
+		props.Text = "Open"
+
+		b.ResetTimer()
+
+		for b.Loop() {
+			var buf bytes.Buffer
+
+			_ = ExternalLink(props).Render(context.Background(), &buf)
+		}
+	})
 }
 
 func mustTime(s string) time.Time {

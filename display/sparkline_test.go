@@ -149,6 +149,7 @@ func TestSparklineBounds(t *testing.T) {
 
 		zero := 0.0
 		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{3, 1, 4, 1, 5}, Min: &zero})
+
 		if minVal != 0 {
 			t.Errorf("expected min=0 (explicit), got %f", minVal)
 		}
@@ -162,6 +163,7 @@ func TestSparklineBounds(t *testing.T) {
 
 		minIn, maxIn := -10.0, 10.0
 		minVal, maxVal := sparklineBounds(SparklineProps{Values: []float64{3, 1, 4, 1, 5}, Min: &minIn, Max: &maxIn})
+
 		if minVal != -10 {
 			t.Errorf("expected min=-10, got %f", minVal)
 		}

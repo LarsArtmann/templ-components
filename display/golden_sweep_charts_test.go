@@ -84,8 +84,8 @@ func TestGoldenSweepExternalLink(t *testing.T) {
 			ShowIcon: false,
 		}))},
 		{Name: "external_link_custom_class", HTML: utils.Render(t, ExternalLink(ExternalLinkProps{
-			Href:     "https://docs.example.com",
-			Text:     "Documentation",
+			Href: "https://docs.example.com",
+			Text: "Documentation",
 			BaseProps: utils.BaseProps{
 				Class: "text-blue-600 hover:text-blue-500 dark:text-blue-400",
 			},

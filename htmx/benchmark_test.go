@@ -41,4 +41,21 @@ func BenchmarkHTMX(b *testing.B) {
 			_ = SwapOOB(props).Render(context.Background(), &buf)
 		}
 	})
+
+	b.Run("PolledRegion render", func(b *testing.B) {
+		props := PolledRegionProps{
+			URL:           "/api/live-stats",
+			Every:         "10s",
+			Eager:         true,
+			ShowTimestamp: true,
+		}
+
+		b.ResetTimer()
+
+		for b.Loop() {
+			var buf bytes.Buffer
+
+			_ = PolledRegion(props).Render(context.Background(), &buf)
+		}
+	})
 }
