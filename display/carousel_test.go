@@ -33,3 +33,19 @@ func TestCarouselKeyboardNavigation(t *testing.T) {
 	// RTL-aware arrow-key mapping mirrors the spatial direction of the arrows.
 	utils.AssertContains(t, output, "document.documentElement.getAttribute('dir')==='rtl'")
 }
+
+func TestCarouselFocusVisible(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, Carousel(CarouselProps{
+		ShowArrows: true,
+		Slides: []CarouselSlide{
+			{Content: templ.Raw("<div>Slide 1</div>")},
+		},
+	}))
+
+	// The focusable carousel region (tabindex="0") must show a visible focus
+	// ring so keyboard users can see where focus landed before navigating.
+	utils.AssertContains(t, output, "focus-visible:ring-2")
+	utils.AssertContains(t, output, "focus:outline-none")
+}

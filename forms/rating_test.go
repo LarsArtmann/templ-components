@@ -1,6 +1,7 @@
 package forms
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -141,6 +142,37 @@ func TestRatingSizes(t *testing.T) {
 		expected := ratingSizeLookup[size]
 		utils.AssertContains(t, output, expected)
 	}
+}
+
+func TestRatingKeyboardOrder(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, Rating(RatingProps{
+		Name:  "quality",
+		Value: 3,
+		Max:   5,
+	}))
+
+	// Forward DOM order: radio value=1 must precede value=2 so radiogroup arrow
+	// keys (ArrowDown/ArrowRight) move toward increasing value per WAI-ARIA.
+	// The old reversed order (5..1) made arrows decrease the value.
+	idx1 := strings.Index(output, `value="1"`)
+	idx2 := strings.Index(output, `value="2"`)
+	if idx1 < 0 || idx2 < 0 {
+		t.Fatalf("expected value=1 and value=2 radios; got indices %d, %d", idx1, idx2)
+	}
+
+	if idx1 >= idx2 {
+		t.Errorf("expected value=1 before value=2 (forward DOM order); got 1@%d, 2@%d", idx1, idx2)
+	}
+
+	// flex-row-reverse maps the forward DOM back to a correct visual so the
+	// peer-checked ~ fill still lights the leftmost N stars.
+	utils.AssertContains(t, output, "flex-row-reverse")
+
+	// Fill classes live on the <label> (sibling of the .peer radio), not the
+	// nested <svg>, so peer-checked resolves and cumulatively fills the checked
+	// star and every lower-value star.
+	utils.AssertContains(t, output, "peer-checked:text-amber-400")
 }
 
 //nolint:unparam // substr is always type="radio" but kept for flexibility
