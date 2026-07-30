@@ -53,6 +53,7 @@ linters:
     - goconst
     - gocritic
     - gocyclo
+    - godoclint
     - godot
     - godox
     - goheader
@@ -70,6 +71,7 @@ linters:
     - interfacebloat
     - intrange
     - iotamixing
+    - ireturn
     - loggercheck
     - maintidx
     - makezero
@@ -104,6 +106,7 @@ linters:
     - staticcheck
     - tagalign
     - tagliatelle
+    - testableexamples
     - testifylint
     - testpackage
     - thelper
@@ -161,6 +164,13 @@ linters:
       excludes:
         - G304
         - G115
+    ireturn:
+      allow:
+        - error
+        - empty
+        - anon
+        - stdlib
+        - generic
     makezero:
       always: true
     mnd:
