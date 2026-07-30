@@ -1,0 +1,68 @@
+package htmx
+
+import (
+	"time"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// polledLiveValue returns the aria-live value, defaulting to polite.
+func polledLiveValue(live PolledLive) PolledLive {
+	if PolledLiveIsValid(live) {
+		return live
+	}
+	return PolledLivePolite
+}
+
+// polledSwapValue returns the swap style, defaulting to outerHTML.
+func polledSwapValue(swap SwapStyle) SwapStyle {
+	if validSwapStyles[swap] {
+		return swap
+	}
+	return SwapOuterHTML
+}
+
+// PolledRegion renders a div that auto-refreshes its content via HTMX polling
+// on an interval. The region replaces itself (hx-swap="outerHTML") on each
+// poll, which means the children re-render server-side on every request.
+//
+// Include a "Updated HH:MM:SS" timestamp (ShowTimestamp: true) so operators
+// can verify polling is active — if the timestamp freezes, polling has stalled.
+//
+//	@htmx.PolledRegion(htmx.PolledRegionProps{URL: "/partials/stats", Every: "10s", Eager: true}) {
+//	   @display.StatCard(display.StatCardProps{Label: "Messages", Value: "1,234"})
+//	}
+templ PolledRegion(props PolledRegionProps) {
+	{{
+		live := polledLiveValue(props.Live)
+		swap := polledSwapValue(props.Swap)
+		trigger := "every " + props.Every
+		if props.Eager {
+			trigger = "load, every " + props.Every
+		}
+		updatedAt := time.Now()
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		hx-get={ templ.SafeURL(props.URL) }
+		hx-trigger={ trigger }
+		hx-swap={ string(swap) }
+		aria-live={ string(live) }
+		class={ utils.Class("", props.Class) }
+		{ props.Attrs... }
+	>
+		{ children... }
+		if props.ShowTimestamp {
+			<div class="mt-3 flex justify-end">
+				<time
+					class="text-xs tabular-nums text-gray-400 dark:text-gray-500"
+					datetime={ updatedAt.Format(time.RFC3339) }
+				>
+					Updated { updatedAt.Format("15:04:05") }
+				</time>
+			</div>
+		}
+	</div>
+}
