@@ -314,7 +314,8 @@ func popoverPositionScriptComponent(nonce string) templ.Component {
 
 // tooltipAriaJS returns the singleton JavaScript that propagates
 // aria-describedby from a [data-tc-tooltip] wrapper to its first focusable
-// descendant. A <div> is not focusable, so screen readers ignore
+// descendant and allows Escape to dismiss an active tooltip while focus stays
+// on the trigger. A <div> is not focusable, so screen readers ignore
 // aria-describedby set on the wrapper; copying it to the focusable trigger
 // (button, link, input) restores the association. Runs on load and on
 // htmx:afterSettle for dynamically swapped content.
@@ -324,7 +325,7 @@ func tooltipAriaJS() string {
 		`document.querySelectorAll("[data-tc-tooltip]").forEach(function(wrap){` +
 		`var desc=wrap.getAttribute("aria-describedby");` +
 		`if(!desc)return;` +
-		`var focusable=wrap.querySelector("button,a[href],input,select,textarea,[tabindex]:not([tabindex="-1"])");` +
+		`var focusable=wrap.querySelector("button,a[href],input,select,textarea,[tabindex]:not([tabindex='-1'])");` +
 		`if(focusable&&!focusable.hasAttribute("aria-describedby")){` +
 		`focusable.setAttribute("aria-describedby",desc);` +
 		`}` +
@@ -332,6 +333,20 @@ func tooltipAriaJS() string {
 		`}` +
 		`tcTooltipAriaSync();` +
 		`document.body.addEventListener("htmx:afterSettle",tcTooltipAriaSync);` +
+		`document.addEventListener("keydown",function(e){` +
+		`if(e.key!=="Escape")return;` +
+		`var wrap=e.target.closest("[data-tc-tooltip]");` +
+		`if(!wrap)return;` +
+		`wrap.setAttribute("data-tc-tooltip-dismissed","true");` +
+		`});` +
+		`document.addEventListener("mouseenter",function(e){` +
+		`var wrap=e.target.closest("[data-tc-tooltip]");` +
+		`if(wrap)wrap.removeAttribute("data-tc-tooltip-dismissed");` +
+		`},true);` +
+		`document.addEventListener("focusin",function(e){` +
+		`var wrap=e.target.closest("[data-tc-tooltip]");` +
+		`if(wrap)wrap.removeAttribute("data-tc-tooltip-dismissed");` +
+		`});` +
 		`}` +
 		"\n"
 }

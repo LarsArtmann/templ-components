@@ -52,6 +52,11 @@
   transform: scale(0.96);
 }
 
+/* --- Tooltip (pure CSS show/hide + dismissed state via JS) --- */
+[data-tc-tooltip][data-tc-tooltip-dismissed] [role="tooltip"] {
+  display: none !important;
+}
+
 /*
  * Native <dialog> overlay system (Modal, Drawer).
  *
