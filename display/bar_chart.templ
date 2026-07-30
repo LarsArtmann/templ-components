@@ -1,0 +1,122 @@
+package display
+
+import (
+	"fmt"
+	"math"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// BarChart renders a CSS-based bar chart — no JavaScript, no SVG.
+// Horizontal orientation shows label bars; vertical shows columns.
+// The chart is responsive and dark-mode aware.
+//
+//	@display.BarChart(display.BarChartProps{
+//	   Bars: []display.BarChartBar{
+//	       {Label: "general", Value: 1200},
+//	       {Label: "random", Value: 800},
+//	       {Label: "dev", Value: 450},
+//	   },
+//	})
+templ BarChart(props BarChartProps) {
+	{{
+		bars := props.Bars
+		orient := props.Orient
+		if !BarOrientIsValid(orient) {
+			orient = BarHorizontal
+		}
+		barColor := props.BarColor
+		if barColor == "" {
+			barColor = "bg-blue-600 dark:bg-blue-500"
+		}
+		labelWidth := props.LabelWidth
+		if labelWidth == "" {
+			labelWidth = "w-32"
+		}
+		emptyMsg := props.EmptyMessage
+		if emptyMsg == "" {
+			emptyMsg = "No data"
+		}
+		valueFmt := props.ValueFormat
+		if valueFmt == nil {
+			valueFmt = func(v float64) string { return fmt.Sprintf("%.0f", v) }
+		}
+		maxVal := barChartMax(bars, props.Max)
+	}}
+	if len(bars) == 0 {
+		<p class="text-sm text-gray-500 dark:text-gray-400">{ emptyMsg }</p>
+	} else if orient == BarVertical {
+		<div class="flex items-end gap-2 overflow-x-auto" role="img" if props.AriaLabel != "" { aria-label={ props.AriaLabel } }>
+			for _, bar := range bars {
+				<div class="flex w-full min-w-12 flex-col items-center gap-1">
+					if props.ShowValues {
+						<span class="text-xs tabular-nums text-gray-600 dark:text-gray-400">{ valueFmt(bar.Value) }</span>
+					}
+					<div class="flex w-full flex-1 items-end">
+						<div
+							class={ utils.Class("w-full rounded-t bg-blue-600 dark:bg-blue-500", barColor, bar.Color) }
+							style={ "height:" + barPercentHeight(bar.Value, maxVal) }
+						></div>
+					</div>
+					<span class="w-full truncate text-center text-xs text-gray-500 dark:text-gray-400" title={ bar.Label }>
+						{ truncateLabel(bar.Label, 12) }
+					</span>
+				</div>
+			}
+		</div>
+	} else {
+		<div class="space-y-2" role="img" if props.AriaLabel != "" { aria-label={ props.AriaLabel } }>
+			for _, bar := range bars {
+				<div class="flex items-center gap-3">
+					if bar.Href != "" {
+						<a
+							href={ templ.SafeURL(bar.Href) }
+							class={ utils.Class("shrink-0 truncate text-xs font-medium text-gray-700 hover:text-blue-600 dark:text-gray-300 dark:hover:text-blue-400", labelWidth) }
+							title={ bar.Label }
+						>
+							{ truncateLabel(bar.Label, 22) }
+						</a>
+					} else {
+						<span class={ utils.Class("shrink-0 truncate text-xs font-medium text-gray-700 dark:text-gray-300", labelWidth) } title={ bar.Label }>
+							{ truncateLabel(bar.Label, 22) }
+						</span>
+					}
+					<div class="flex-1 overflow-hidden rounded bg-gray-100 dark:bg-gray-800">
+						<div
+							class={ utils.Class("h-5 rounded bg-blue-600 dark:bg-blue-500", barColor, bar.Color) }
+							style={ "width:" + barPercentWidth(bar.Value, maxVal) }
+						></div>
+					</div>
+					if props.ShowValues {
+						<span class="w-16 shrink-0 text-right text-xs tabular-nums text-gray-600 dark:text-gray-400">
+							{ valueFmt(bar.Value) }
+						</span>
+					}
+				</div>
+			}
+		</div>
+	}
+}
+
+// barPercentHeight returns the CSS height percentage for a vertical bar.
+func barPercentHeight(value, max float64) string {
+	if max <= 0 {
+		return "0%"
+	}
+	pct := (value / max) * 100
+	if pct < 0 {
+		pct = 0
+	}
+	if pct > 100 {
+		pct = 100
+	}
+	return fmt.Sprintf("%.1f%%", math.Round(pct*10)/10)
+}
+
+// truncateLabel truncates a string to maxLen characters with an ellipsis.
+func truncateLabel(s string, maxLen int) string {
+	if len(s) <= maxLen {
+		return s
+	}
+	return s[:maxLen-1] + "…"
+}
