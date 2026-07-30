@@ -1,0 +1,1 @@
+<div class="flex items-center relative"><div class="absolute flex inset-y-0 items-center pointer-events-none ps-3 start-0"><span>$</span></div><div class="w-full"></div><div class="absolute end-0 flex inset-y-0 items-center pe-3 pointer-events-none"><span>.00</span></div></div>

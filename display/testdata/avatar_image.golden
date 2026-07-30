@@ -1,0 +1,1 @@
+<div class="inline-block relative"><img src="/img/jane.jpg" alt="Jane Doe" class="bg-gray-100 dark:bg-gray-800 h-10 inline-block object-cover rounded-full text-base w-10"> <span class="absolute bg-green-400 block bottom-0 dark:bg-green-500 dark:ring-gray-900 end-0 h-2.5 ring-2 ring-white rounded-full w-2.5" aria-hidden="true"></span></div>

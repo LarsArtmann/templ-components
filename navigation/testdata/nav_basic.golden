@@ -1,0 +1,28 @@
+<nav aria-label="Main navigation" class="bg-white border-b border-gray-200 dark:bg-gray-900 dark:border-gray-800 z-40"><div class="lg:px-8 max-w-7xl mx-auto px-4 sm:px-6"><div class="flex items-center justify-between min-h-16"><div class="flex"><div class="hidden sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-2 sm:ms-6"><a href="/dashboard" class="border-b-2 border-blue-500 dark:text-white font-medium inline-flex items-center motion-reduce:duration-0 motion-reduce:transition-none pt-1 px-1 text-gray-900 text-sm transition-colors" aria-current="page">Dashboard</a><a href="/projects" class="border-b-2 border-transparent dark:hover:border-gray-600 dark:hover:text-gray-200 dark:text-gray-400 font-medium hover:border-gray-300 hover:text-gray-700 inline-flex items-center motion-reduce:duration-0 motion-reduce:transition-none pt-1 px-1 text-gray-500 text-sm transition-colors">Projects</a><a href="/settings" class="border-b-2 border-transparent dark:hover:border-gray-600 dark:hover:text-gray-200 dark:text-gray-400 font-medium hover:border-gray-300 hover:text-gray-700 inline-flex items-center motion-reduce:duration-0 motion-reduce:transition-none pt-1 px-1 text-gray-500 text-sm transition-colors">Settings</a></div></div><div class="flex items-center sm:hidden"><button type="button" class="dark:focus:ring-blue-400 dark:hover:bg-gray-800 dark:hover:text-gray-300 dark:text-gray-500 focus:outline-hidden focus:ring-2 focus:ring-blue-500 focus:ring-inset hover:bg-gray-100 hover:text-gray-500 inline-flex items-center justify-center motion-reduce:duration-0 motion-reduce:transition-none p-2 rounded-md text-gray-400 transition-colors" aria-controls="tc-mobile-menu-NORMALIZED" aria-expanded="false" data-mobile-menu-toggle="tc-mobile-menu-NORMALIZED"><span class="sr-only">Open main menu</span><svg class="block h-6 tc-menu-open w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"></path></svg><svg class="h-6 hidden tc-menu-close w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg></button></div></div></div><div class="hidden sm:hidden" id="tc-mobile-menu-NORMALIZED" data-mobile-menu-id="tc-mobile-menu-NORMALIZED"><div class="border-gray-200 border-t dark:border-gray-800 pb-3 pt-2 space-y-1"><a href="/dashboard" class="bg-blue-50 block border-blue-500 border-s-4 dark:bg-blue-900/20 dark:text-blue-300 font-medium motion-reduce:duration-0 motion-reduce:transition-none pe-4 ps-3 py-2 text-base text-blue-700 transition-colors" aria-current="page">Dashboard</a><a href="/projects" class="block border-s-4 border-transparent dark:hover:bg-gray-800 dark:hover:border-gray-600 dark:hover:text-gray-200 dark:text-gray-400 font-medium hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 motion-reduce:duration-0 motion-reduce:transition-none pe-4 ps-3 py-2 text-base text-gray-500 transition-colors">Projects</a><a href="/settings" class="block border-s-4 border-transparent dark:hover:bg-gray-800 dark:hover:border-gray-600 dark:hover:text-gray-200 dark:text-gray-400 font-medium hover:bg-gray-50 hover:border-gray-300 hover:text-gray-700 motion-reduce:duration-0 motion-reduce:transition-none pe-4 ps-3 py-2 text-base text-gray-500 transition-colors">Settings</a></div></div><script nonce="">
+			if (!window.tcMobileMenuAttached) {
+				window.tcMobileMenuAttached = true;
+				document.addEventListener('click', function(e) {
+					var btn = e.target.closest('[data-mobile-menu-toggle]');
+					if (!btn) return;
+					var menuId = btn.getAttribute('data-mobile-menu-toggle');
+					var nav = btn.closest('nav');
+					if (!nav) return;
+					var menu = nav.querySelector('[data-mobile-menu-id="' + menuId + '"]');
+					var openIcon = nav.querySelector('.tc-menu-open');
+					var closeIcon = nav.querySelector('.tc-menu-close');
+					if (!menu || !openIcon || !closeIcon) return;
+					var isHidden = menu.classList.contains('hidden');
+					if (isHidden) {
+						menu.classList.remove('hidden');
+						openIcon.classList.add('hidden');
+						closeIcon.classList.remove('hidden');
+						btn.setAttribute('aria-expanded', 'true');
+					} else {
+						menu.classList.add('hidden');
+						openIcon.classList.remove('hidden');
+						closeIcon.classList.add('hidden');
+						btn.setAttribute('aria-expanded', 'false');
+					}
+				});
+			}
+		</script></nav>

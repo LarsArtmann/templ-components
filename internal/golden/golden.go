@@ -35,8 +35,9 @@ var classRe = regexp.MustCompile(`class="([^"]*)"`)
 // autoIDRe matches EnsureID-generated identifiers (utils.EnsureID):
 // tc-<prefix>-<digits>-<digits> (fallback: timestamp + counter — tried first because digits are valid hex)
 // tc-<prefix>-<16 hex chars> (crypto/rand primary path)
+// Prefixes may contain hyphens (e.g. "mobile-menu" in Nav).
 // These are non-deterministic and must be normalized for reproducible golden files.
-var autoIDRe = regexp.MustCompile(`tc-([a-z]+)-(?:\d+-\d+|[a-f0-9]{16})`)
+var autoIDRe = regexp.MustCompile(`tc-([a-z][a-z-]*)-(?:\d+-\d+|[a-f0-9]{16})`)
 
 // Assert compares got against the golden file for the given test name.
 // If the -update flag is set, it writes got to the golden file instead.
@@ -159,23 +160,25 @@ func normalizeClasses(html string) string {
 // diff returns a line-by-line diff between two strings with line numbers.
 // Uses LCS (Longest Common Subsequence) alignment so that insertions and
 // deletions don't cascade into showing every subsequent line as changed.
+//
+//nolint:makezero // pre-allocated DP table is intentional; index assignment follows
 func diff(want, got string) string {
-	w := strings.Split(want, "\n")
-	g := strings.Split(got, "\n")
-	n, m := len(w), len(g)
+	wantLines := strings.Split(want, "\n")
+	gotLines := strings.Split(got, "\n")
+	wantLen, gotLen := len(wantLines), len(gotLines)
 
-	// Build LCS DP table (O(n*m) space — fine for small golden files).
-	dp := make([][]int, n+1)
-	for i := range dp {
-		dp[i] = make([]int, m+1)
+	// Build LCS DP table (O(wantLen*gotLen) space — fine for small golden files).
+	lcs := make([][]int, wantLen+1)
+	for idx := range lcs {
+		lcs[idx] = make([]int, gotLen+1)
 	}
 
-	for i := n - 1; i >= 0; i-- {
-		for j := m - 1; j >= 0; j-- {
-			if w[i] == g[j] {
-				dp[i][j] = dp[i+1][j+1] + 1
+	for wi := wantLen - 1; wi >= 0; wi-- {
+		for gi := gotLen - 1; gi >= 0; gi-- {
+			if wantLines[wi] == gotLines[gi] {
+				lcs[wi][gi] = lcs[wi+1][gi+1] + 1
 			} else {
-				dp[i][j] = max(dp[i+1][j], dp[i][j+1])
+				lcs[wi][gi] = max(lcs[wi+1][gi], lcs[wi][gi+1])
 			}
 		}
 	}
@@ -183,27 +186,27 @@ func diff(want, got string) string {
 	// Backtrack through the LCS to emit only changed lines with line numbers.
 	var b strings.Builder
 
-	i, j := 0, 0
+	wantIdx, gotIdx := 0, 0
 
-	for i < n && j < m {
-		if w[i] == g[j] {
-			i++
-			j++
-		} else if dp[i+1][j] >= dp[i][j+1] {
-			fmt.Fprintf(&b, "--- [%d] %s\n", i+1, w[i])
-			i++
+	for wantIdx < wantLen && gotIdx < gotLen {
+		if wantLines[wantIdx] == gotLines[gotIdx] {
+			wantIdx++
+			gotIdx++
+		} else if lcs[wantIdx+1][gotIdx] >= lcs[wantIdx][gotIdx+1] {
+			fmt.Fprintf(&b, "--- [%d] %s\n", wantIdx+1, wantLines[wantIdx])
+			wantIdx++
 		} else {
-			fmt.Fprintf(&b, "+++ [%d] %s\n", j+1, g[j])
-			j++
+			fmt.Fprintf(&b, "+++ [%d] %s\n", gotIdx+1, gotLines[gotIdx])
+			gotIdx++
 		}
 	}
 
-	for ; i < n; i++ {
-		fmt.Fprintf(&b, "--- [%d] %s\n", i+1, w[i])
+	for ; wantIdx < wantLen; wantIdx++ {
+		fmt.Fprintf(&b, "--- [%d] %s\n", wantIdx+1, wantLines[wantIdx])
 	}
 
-	for ; j < m; j++ {
-		fmt.Fprintf(&b, "+++ [%d] %s\n", j+1, g[j])
+	for ; gotIdx < gotLen; gotIdx++ {
+		fmt.Fprintf(&b, "+++ [%d] %s\n", gotIdx+1, gotLines[gotIdx])
 	}
 
 	return b.String()

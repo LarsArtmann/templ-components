@@ -169,6 +169,11 @@ func TestNormalizeIDs(t *testing.T) {
 			input: `id="tc-modal-abc"`,
 			want:  `id="tc-modal-abc"`,
 		},
+		{
+			name:  "hyphenated prefix (mobile-menu)",
+			input: `id="tc-mobile-menu-614dd71ca7a5c84c"`,
+			want:  `id="tc-mobile-menu-NORMALIZED"`,
+		},
 	}
 
 	for _, tt := range tests {

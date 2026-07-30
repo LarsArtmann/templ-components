@@ -1,0 +1,152 @@
+<label for="tc-combobox-NORMALIZED" class="block dark:text-white font-medium leading-6 text-gray-900 text-sm">Country </label><div class="relative" data-combobox="tc-combobox-NORMALIZED"><input type="text" placeholder="Search countries..." value="" class="bg-white block border-0 caret-blue-600 dark:bg-gray-800 dark:caret-blue-400 dark:focus:ring-blue-500 dark:placeholder:text-gray-500 dark:ring-gray-600 dark:text-white focus:ring-2 focus:ring-blue-600 focus:ring-inset motion-reduce:transition-none placeholder:text-gray-400 px-3 py-2 ring-1 ring-gray-300 ring-inset rounded-md sm:text-sm text-base text-gray-900 transition-shadow w-full" role="combobox" aria-expanded="false" aria-controls="tc-combobox-NORMALIZED-listbox" aria-autocomplete="list" autocomplete="off" data-combobox-input="tc-combobox-NORMALIZED"> <input type="hidden" name="country" value="" data-combobox-value="tc-combobox-NORMALIZED"><ul id="tc-combobox-NORMALIZED-listbox" role="listbox" class="absolute bg-white dark:bg-gray-800 focus:outline-hidden hidden max-h-60 mt-1 overflow-auto py-1 ring-1 ring-black/5 rounded-md shadow-lg sm:text-sm text-base w-full z-10" data-combobox-list="tc-combobox-NORMALIZED"><li role="option" id="tc-combobox-NORMALIZED-option-de" tabindex="-1" aria-selected="false" class="cursor-pointer dark:data-[selected]:bg-gray-700 dark:hover:bg-gray-700 dark:text-white data-[selected]:bg-blue-50 hover:bg-blue-50 pe-9 ps-3 py-2 relative select-none text-gray-900" data-combobox-option="de" data-combobox-label="Germany">Germany</li><li role="option" id="tc-combobox-NORMALIZED-option-at" tabindex="-1" aria-selected="false" class="cursor-pointer dark:data-[selected]:bg-gray-700 dark:hover:bg-gray-700 dark:text-white data-[selected]:bg-blue-50 hover:bg-blue-50 pe-9 ps-3 py-2 relative select-none text-gray-900" data-combobox-option="at" data-combobox-label="Austria">Austria</li><li role="option" id="tc-combobox-NORMALIZED-option-ch" tabindex="-1" aria-selected="false" class="cursor-pointer dark:data-[selected]:bg-gray-700 dark:hover:bg-gray-700 dark:text-white data-[selected]:bg-blue-50 hover:bg-blue-50 pe-9 ps-3 py-2 relative select-none text-gray-900" data-combobox-option="ch" data-combobox-label="Switzerland">Switzerland</li></ul></div><script nonce="">
+		if (!window.tcComboboxAttached) {
+			window.tcComboboxAttached = true;
+			function tcClearComboSelection(opts, input) {
+				opts.forEach(function(o) {
+					o.removeAttribute('data-selected');
+					o.setAttribute('aria-selected', 'false');
+				});
+				input.removeAttribute('aria-activedescendant');
+			}
+			document.addEventListener('input', function(e) {
+				var input = e.target.closest('[data-combobox-input]');
+				if (!input) return;
+				var id = input.getAttribute('data-combobox-input');
+				var list = document.querySelector('[data-combobox-list="' + id + '"]');
+				if (!list) return;
+				var hidden = document.querySelector('[data-combobox-value="' + id + '"]');
+				if (hidden) hidden.value = '';
+				var query = input.value.toLowerCase();
+				var visible = 0;
+				list.querySelectorAll('[data-combobox-option]').forEach(function(opt) {
+					var label = opt.getAttribute('data-combobox-label').toLowerCase();
+					var match = label.includes(query);
+					opt.style.display = match ? '' : 'none';
+					if (match) visible++;
+				});
+				if (visible > 0) {
+					list.classList.remove('hidden');
+					input.setAttribute('aria-expanded', 'true');
+				} else {
+					list.classList.add('hidden');
+					input.setAttribute('aria-expanded', 'false');
+				}
+			});
+			document.addEventListener('click', function(e) {
+				var opt = e.target.closest('[data-combobox-option]');
+				if (opt) {
+					var list = opt.closest('[data-combobox-list]');
+					if (!list) return;
+					var id = list.getAttribute('data-combobox-list');
+					var input = document.querySelector('[data-combobox-input="' + id + '"]');
+					var hidden = document.querySelector('[data-combobox-value="' + id + '"]');
+					var label = opt.getAttribute('data-combobox-label');
+					var value = opt.getAttribute('data-combobox-option');
+					if (input) {
+						input.value = label;
+						input.setAttribute('aria-expanded', 'false');
+					}
+					if (hidden) hidden.value = value;
+					if (list) list.classList.add('hidden');
+				}
+			});
+			document.addEventListener('focusin', function(e) {
+				var input = e.target.closest('[data-combobox-input]');
+				if (!input) return;
+				var id = input.getAttribute('data-combobox-input');
+				var list = document.querySelector('[data-combobox-list="' + id + '"]');
+				if (list && list.querySelector('[data-combobox-option]')) {
+					list.classList.remove('hidden');
+					input.setAttribute('aria-expanded', 'true');
+				}
+			});
+			document.addEventListener('click', function(e) {
+				var input = e.target.closest('[data-combobox-input]');
+				var list = e.target.closest('[data-combobox-list]');
+				if (!input && !list) {
+					document.querySelectorAll('[data-combobox-list]').forEach(function(l) {
+						l.classList.add('hidden');
+					});
+					document.querySelectorAll('[data-combobox-input]').forEach(function(i) {
+						i.setAttribute('aria-expanded', 'false');
+					});
+				}
+			});
+			document.addEventListener('focusout', function(e) {
+				var input = e.target.closest('[data-combobox-input]');
+				if (!input) return;
+				var container = input.closest('[data-combobox]');
+				if (container && container.contains(e.relatedTarget)) return;
+				var id = input.getAttribute('data-combobox-input');
+				var list = document.querySelector('[data-combobox-list="' + id + '"]');
+				if (list) {
+					list.classList.add('hidden');
+					var opts = Array.prototype.slice.call(list.querySelectorAll('[data-combobox-option]'));
+					tcClearComboSelection(opts, input);
+				}
+				input.setAttribute('aria-expanded', 'false');
+			});
+			document.addEventListener('keydown', function(e) {
+				var input = e.target.closest('[data-combobox-input]');
+				if (!input) return;
+				var id = input.getAttribute('data-combobox-input');
+				var list = document.querySelector('[data-combobox-list="' + id + '"]');
+				if (!list) return;
+				var opts = Array.prototype.slice.call(list.querySelectorAll('[data-combobox-option]')).filter(function(o) {
+					return o.style.display !== 'none';
+				});
+				if (e.key === 'Tab') {
+					list.classList.add('hidden');
+					input.setAttribute('aria-expanded', 'false');
+					tcClearComboSelection(opts, input);
+					return;
+				}
+				if (e.key === 'Escape') {
+					list.classList.add('hidden');
+					input.setAttribute('aria-expanded', 'false');
+					tcClearComboSelection(opts, input);
+					return;
+				}
+				if (opts.length === 0) return;
+				if (e.key === 'Enter') {
+					var enterIdx = -1;
+					opts.forEach(function(o, i) { if (o.getAttribute('data-selected') === 'true') enterIdx = i; });
+					if (enterIdx >= 0) {
+						e.preventDefault();
+						var sel = opts[enterIdx];
+						input.value = sel.getAttribute('data-combobox-label');
+						var hidden = document.querySelector('[data-combobox-value="' + id + '"]');
+						if (hidden) hidden.value = sel.getAttribute('data-combobox-option');
+						list.classList.add('hidden');
+						input.setAttribute('aria-expanded', 'false');
+						tcClearComboSelection(opts, input);
+					}
+					return;
+				}
+				if (e.key === 'ArrowDown' || e.key === 'ArrowUp' || e.key === 'Home' || e.key === 'End') {
+					e.preventDefault();
+					list.classList.remove('hidden');
+					input.setAttribute('aria-expanded', 'true');
+				}
+				var currentIdx = -1;
+				opts.forEach(function(o, i) {
+					if (o.getAttribute('data-selected') === 'true') currentIdx = i;
+				});
+				var nextIdx = currentIdx;
+				switch (e.key) {
+					case 'ArrowDown': nextIdx = currentIdx < opts.length - 1 ? currentIdx + 1 : 0; break;
+					case 'ArrowUp':   nextIdx = currentIdx > 0 ? currentIdx - 1 : opts.length - 1; break;
+					case 'Home':      nextIdx = 0; break;
+					case 'End':       nextIdx = opts.length - 1; break;
+				}
+				if (nextIdx !== currentIdx) {
+					tcClearComboSelection(opts, input);
+					var sel = opts[nextIdx];
+					sel.setAttribute('data-selected', 'true');
+					sel.setAttribute('aria-selected', 'true');
+					input.setAttribute('aria-activedescendant', sel.getAttribute('id') || '');
+					sel.scrollIntoView({ block: 'nearest' });
+				}
+			});
+		}
+	</script>
