@@ -43,6 +43,10 @@ type PolledRegionProps struct {
 	// at a glance that polling is active (the timestamp ticks forward on each
 	// successful poll because the whole region re-renders).
 	ShowTimestamp bool
+
+	// TimeFormat is the Go time format string for the timestamp footer.
+	// Default: "15:04:05" (time-only). Use time.RFC3339 for full date+time.
+	TimeFormat string
 }
 
 // DefaultPolledRegionProps returns sensible defaults for a polled region.

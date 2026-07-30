@@ -90,9 +90,9 @@ templ generate && go run .
 
 ## Component Catalog
 
-### `display` — Data Display (30 components)
+### `display` — Data Display (33 components)
 
-Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, and more.
+Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {
@@ -175,9 +175,9 @@ Typed icon constants, no icon library dependency.
 @icons.Icon(icons.Check, "h-6 w-6 text-green-500")
 ```
 
-### `htmx` — HTMX Integration (8 components)
+### `htmx` — HTMX Integration (9 components)
 
-Loading indicators, error handling, CSRF protection, out-of-band swaps, View Transitions.
+Loading indicators, error handling, CSRF protection, out-of-band swaps, View Transitions, polled regions.
 
 ```templ
 @htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())

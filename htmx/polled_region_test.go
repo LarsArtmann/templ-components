@@ -109,3 +109,15 @@ func TestPolledRegionInvalidValuesFallBack(t *testing.T) {
 	utils.AssertContains(t, output, `hx-swap="outerHTML"`)
 	utils.AssertContains(t, output, `aria-live="polite"`)
 }
+
+func TestPolledRegionCustomTimeFormat(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, PolledRegion(PolledRegionProps{
+		URL:          "/stats",
+		Every:        "10s",
+		ShowTimestamp: true,
+		TimeFormat:   "2006-01-02 15:04:05",
+	}))
+	utils.AssertContains(t, output, "Updated")
+	utils.AssertContains(t, output, "20") // year component appears in the output
+}

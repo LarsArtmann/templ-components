@@ -41,6 +41,10 @@ templ PolledRegion(props PolledRegionProps) {
 			trigger = "load, every " + props.Every
 		}
 		updatedAt := time.Now()
+		timeFormat := props.TimeFormat
+		if timeFormat == "" {
+			timeFormat = "15:04:05"
+		}
 	}}
 	<div
 		if props.ID != "" {
@@ -60,7 +64,7 @@ templ PolledRegion(props PolledRegionProps) {
 					class="text-xs tabular-nums text-gray-400 dark:text-gray-500"
 					datetime={ updatedAt.Format(time.RFC3339) }
 				>
-					Updated { updatedAt.Format("15:04:05") }
+					Updated { updatedAt.Format(timeFormat) }
 				</time>
 			</div>
 		}
