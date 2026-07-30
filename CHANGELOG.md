@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.6.0] — 2026-07-30
+
 ### Added
 
 - **`display.CollapsibleSection`** — native `<details>/<summary>` collapsible region with configurable heading level (h1-h6), open/closed default, optional `StorageKey` for localStorage persistence, and chevron rotation with motion-reduce and dark-mode support. Inspired by DiscordSync's `collapsibleSection` helper.
