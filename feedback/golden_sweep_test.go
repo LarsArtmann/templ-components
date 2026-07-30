@@ -13,7 +13,7 @@ func TestGoldenSweepInlineError(t *testing.T) {
 	t.Parallel()
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
-		{"inline_error", utils.Render(t, InlineError("Email is required"))},
+		{Name: "inline_error", HTML: utils.Render(t, InlineError("Email is required"))},
 	})
 }
 
@@ -21,7 +21,7 @@ func TestGoldenSweepInlineSuccess(t *testing.T) {
 	t.Parallel()
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
-		{"inline_success", utils.Render(t, InlineSuccess("Username is available"))},
+		{Name: "inline_success", HTML: utils.Render(t, InlineSuccess("Username is available"))},
 	})
 }
 
@@ -29,7 +29,7 @@ func TestGoldenSweepSkeletonGroup(t *testing.T) {
 	t.Parallel()
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
-		{"skeleton_group", utils.Render(t, SkeletonGroup([]SkeletonVariant{
+		{Name: "skeleton_group", HTML: utils.Render(t, SkeletonGroup([]SkeletonVariant{
 			SkeletonTableRow, SkeletonTableRow, SkeletonTableRow,
 		}))},
 	})
@@ -39,6 +39,6 @@ func TestGoldenSweepToastContainer(t *testing.T) {
 	t.Parallel()
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
-		{"toast_container", utils.Render(t, ToastContainer("test-nonce"))},
+		{Name: "toast_container", HTML: utils.Render(t, ToastContainer("test-nonce"))},
 	})
 }

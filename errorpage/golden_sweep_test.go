@@ -13,13 +13,13 @@ func TestGoldenSweepErrorAlert(t *testing.T) {
 	t.Parallel()
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
-		{"error_alert_rejection", utils.Render(t, ErrorAlert(ErrorAlertProps{
+		{Name: "error_alert_rejection", HTML: utils.Render(t, ErrorAlert(ErrorAlertProps{
 			Family:  FamilyRejection,
 			Title:   "Invalid Input",
 			Message: "The email address format is invalid.",
 			Fix:     "Enter a valid email address like name@example.com.",
 		}))},
-		{"error_alert_transient", utils.Render(t, ErrorAlert(ErrorAlertProps{
+		{Name: "error_alert_transient", HTML: utils.Render(t, ErrorAlert(ErrorAlertProps{
 			Family:  FamilyTransient,
 			Title:   "Service Unavailable",
 			Message: "The database is temporarily unreachable.",
@@ -31,7 +31,7 @@ func TestGoldenSweepErrorDetail(t *testing.T) {
 	t.Parallel()
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
-		{"error_detail_full", utils.Render(t, ErrorDetail(ErrorDetailProps{
+		{Name: "error_detail_full", HTML: utils.Render(t, ErrorDetail(ErrorDetailProps{
 			Family:  FamilyCorruption,
 			Code:    "config.parse_failed",
 			Title:   "Configuration Parse Error",
@@ -47,7 +47,7 @@ func TestGoldenSweepErrorDetail(t *testing.T) {
 			},
 			Timestamp: "2026-07-30T12:00:00Z",
 		}))},
-		{"error_detail_minimal", utils.Render(t, ErrorDetail(ErrorDetailProps{
+		{Name: "error_detail_minimal", HTML: utils.Render(t, ErrorDetail(ErrorDetailProps{
 			Family:  FamilyConflict,
 			Title:   "Version Conflict",
 			Message: "The record was modified by another user.",

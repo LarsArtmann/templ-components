@@ -14,7 +14,7 @@ func TestGoldenSweepNav(t *testing.T) {
 	t.Parallel()
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
-		{"nav_basic", utils.Render(t, Nav(NavProps{
+		{Name: "nav_basic", HTML: utils.Render(t, Nav(NavProps{
 			CurrentPath: "/dashboard",
 			Links: []NavLinkProps{
 				{Href: "/dashboard", Text: "Dashboard"},
@@ -29,7 +29,7 @@ func TestGoldenSweepSimpleNav(t *testing.T) {
 	t.Parallel()
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
-		{"simple_nav", utils.Render(t, SimpleNav(SimpleNavProps{
+		{Name: "simple_nav", HTML: utils.Render(t, SimpleNav(SimpleNavProps{
 			BrandText:   "Demo App",
 			BrandHref:   "/",
 			CurrentPath: "/",
@@ -46,7 +46,7 @@ func TestGoldenSweepFooter(t *testing.T) {
 	t.Parallel()
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
-		{"footer_basic", utils.Render(t, Footer(FooterProps{
+		{Name: "footer_basic", HTML: utils.Render(t, Footer(FooterProps{
 			BrandText: "MyApp",
 		}))},
 	})
@@ -56,8 +56,8 @@ func TestGoldenSweepEndOfList(t *testing.T) {
 	t.Parallel()
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
-		{"end_of_list_default", utils.Render(t, EndOfList(DefaultEndOfListProps()))},
-		{"end_of_list_custom", utils.Render(t, EndOfList(EndOfListProps{
+		{Name: "end_of_list_default", HTML: utils.Render(t, EndOfList(DefaultEndOfListProps()))},
+		{Name: "end_of_list_custom", HTML: utils.Render(t, EndOfList(EndOfListProps{
 			Message: "No more items to load",
 		}))},
 	})
