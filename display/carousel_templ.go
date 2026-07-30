@@ -69,7 +69,7 @@ func Carousel(props CarouselProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		id := utils.EnsureID("carousel", props.ID)
-		var templ_7745c5c3_Var2 = []any{utils.Class("relative rounded-lg", props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("relative rounded-lg focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400 focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-offset-gray-900", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

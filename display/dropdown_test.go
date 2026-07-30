@@ -147,13 +147,15 @@ func TestDropdownKeyboardEnhancements(t *testing.T) {
 	}))
 
 	// Home/End and PageUp/PageDown move focus inside the menu.
-	utils.AssertContains(t, output, "e.key === 'Home'")
-	utils.AssertContains(t, output, "e.key === 'End'")
-	utils.AssertContains(t, output, "e.key === 'PageDown'")
-	utils.AssertContains(t, output, "e.key === 'PageUp'")
+	// Home/End and PageUp/PageDown move focus inside the menu (shared menu-keyboard
+	// nav helper emits compact JS — see display/shared.go menuKeyboardNavJS).
+	utils.AssertContains(t, output, "e.key==='Home'")
+	utils.AssertContains(t, output, "e.key==='End'")
+	utils.AssertContains(t, output, "e.key==='PageDown'")
+	utils.AssertContains(t, output, "e.key==='PageUp'")
 
-	// Disabled items are skipped during keyboard navigation.
-	utils.AssertContains(t, output, `querySelectorAll('[role="menuitem"]:not([disabled])')`)
+	// Disabled and aria-disabled items are both skipped during keyboard navigation.
+	utils.AssertContains(t, output, `[role="menuitem"]:not([disabled]):not([aria-disabled="true"])`)
 
 	// Enter/Space activation is intentionally left to native browser behavior
 	// so that HTMX-powered links and buttons work correctly.

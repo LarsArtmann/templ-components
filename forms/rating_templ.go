@@ -156,7 +156,7 @@ func Rating(props RatingProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div class=\"inline-flex items-center gap-0.5\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<div class=\"inline-flex flex-row-reverse items-center gap-0.5\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -251,7 +251,7 @@ func Rating(props RatingProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			for i := maxStars; i >= 1; i-- {
+			for i := 1; i <= maxStars; i++ {
 				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<input type=\"radio\" name=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
@@ -379,7 +379,7 @@ func Rating(props RatingProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = icons.Icon(icons.Star, ratingSizeClass(props.Size)+" text-gray-300 dark:text-gray-600 peer-checked:text-amber-400 dark:peer-checked:text-amber-400 peer-focus-visible:text-amber-400 dark:peer-focus-visible:text-amber-400 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 dark:peer-focus-visible:ring-amber-400 rounded cursor-pointer hover:text-amber-300 dark:hover:text-amber-300 "+utils.TransitionColors).Render(ctx, templ_7745c5c3_Buffer)
+				templ_7745c5c3_Err = icons.Icon(icons.Star, ratingSizeClass(props.Size)).Render(ctx, templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -407,8 +407,16 @@ func Rating(props RatingProps) templ.Component {
 	})
 }
 
+// ratingStarLabelClass returns the interactive star label classes. Color,
+// hover, checked-fill, and focus-ring utilities live on the <label> (a sibling
+// of the hidden radio .peer) rather than the nested <svg> so that Tailwind's
+// peer-checked combinator (~) resolves: the checked radio fills itself and
+// every label after it in DOM order, which flex-row-reverse maps to the
+// correct left-to-right ★★★☆☆ visual. The SVG inherits color via
+// currentColor. Forward DOM order (1..N) keeps radiogroup arrow-key direction
+// increasing in value per the WAI-ARIA radiogroup pattern.
 func ratingStarLabelClass() string {
-	return "inline-flex cursor-pointer"
+	return "inline-flex cursor-pointer rounded text-gray-300 dark:text-gray-600 peer-checked:text-amber-400 dark:peer-checked:text-amber-400 hover:text-amber-300 dark:hover:text-amber-300 peer-focus-visible:text-amber-400 dark:peer-focus-visible:text-amber-400 peer-focus-visible:ring-2 peer-focus-visible:ring-amber-400 dark:peer-focus-visible:ring-amber-400 " + utils.TransitionColors
 }
 
 func pluralStars(n int) string {

@@ -31,11 +31,12 @@ func DefaultContextMenuProps() ContextMenuProps {
 }
 
 // ContextMenu wraps children in a container that shows a custom context
-// menu on right-click. Uses the native Popover API (popover="auto") for
-// light-dismiss, Escape-to-close, and top-layer rendering. A small
-// CSP-safe singleton script handles the contextmenu event → showPopover()
-// call and positions the menu at the cursor (via style.inset).
-// See ADR-0017 for the migration strategy.
+// menu on right-click or via the keyboard (Shift+F10 / the Menu key). Uses
+// the native Popover API (popover="auto") for light-dismiss,
+// Escape-to-close, and top-layer rendering. CSP-safe singleton scripts handle
+// the contextmenu → showPopover() cursor positioning, the Shift+F10/ContextMenu
+// trigger-position opener, and shared menu keyboard navigation (ArrowUp/Down
+// with RTL mapping, Home/End, focus-first-on-open). See ADR-0017.
 //
 //	@display.ContextMenu(display.ContextMenuProps{Items: []display.ContextMenuItem{
 //	   {Text: "Edit", Href: "/edit"},
@@ -90,7 +91,7 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 42, Col: 30}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 43, Col: 30}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -124,7 +125,7 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(id)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 49, Col: 10}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 50, Col: 10}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -142,7 +143,7 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 				var templ_7745c5c3_Var6 string
 				templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 54, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 55, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 				if templ_7745c5c3_Err != nil {
@@ -159,90 +160,130 @@ func ContextMenu(props ContextMenuProps) templ.Component {
 			}
 			for _, item := range props.Items {
 				if item.Href != "" {
+					var templ_7745c5c3_Var7 = []any{utils.Class("block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700", utils.Ternary(item.Disabled, "opacity-50 pointer-events-none", ""))}
+					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var7...)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
 					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<a href=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					var templ_7745c5c3_Var7 templ.SafeURL
-					templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(item.Href))
+					var templ_7745c5c3_Var8 templ.SafeURL
+					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL(item.Href))
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 60, Col: 37}
-					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\" role=\"menuitem\" class=\"block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700\"")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					if item.Disabled {
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, " class=\"opacity-50 pointer-events-none\"")
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, ">")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					var templ_7745c5c3_Var8 string
-					templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(item.Text)
-					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 67, Col: 17}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 61, Col: 37}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</a>")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-				} else {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<span role=\"menuitem\" class=\"block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300\"")
-					if templ_7745c5c3_Err != nil {
-						return templ_7745c5c3_Err
-					}
-					if item.Disabled {
-						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, " class=\"opacity-50 pointer-events-none\"")
-						if templ_7745c5c3_Err != nil {
-							return templ_7745c5c3_Err
-						}
-					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, ">")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\" role=\"menuitem\" tabindex=\"-1\" class=\"")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 					var templ_7745c5c3_Var9 string
-					templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(item.Text)
+					templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var7).String())
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 77, Col: 17}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 1, Col: 0}
 					}
-					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "</span>")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					if item.Disabled {
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, " aria-disabled=\"true\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, ">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var10 string
+					templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(item.Text)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 69, Col: 17}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</a>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				} else {
+					var templ_7745c5c3_Var11 = []any{utils.Class("block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300", utils.Ternary(item.Disabled, "opacity-50 pointer-events-none", ""))}
+					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var11...)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<span role=\"menuitem\" tabindex=\"-1\" class=\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var12 string
+					templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.CSSClasses(templ_7745c5c3_Var11).String())
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 1, Col: 0}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					if item.Disabled {
+						templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, " aria-disabled=\"true\"")
+						if templ_7745c5c3_Err != nil {
+							return templ_7745c5c3_Err
+						}
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, ">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					var templ_7745c5c3_Var13 string
+					templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(item.Text)
+					if templ_7745c5c3_Err != nil {
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 80, Col: 17}
+					}
+					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "</span>")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</div><script nonce=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div><script nonce=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			var templ_7745c5c3_Var10 string
-			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
+			var templ_7745c5c3_Var14 string
+			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 82, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/context_menu.templ`, Line: 85, Col: 29}
 			}
-			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\">\n\t\t\t(function(){\n\t\t\t\tif (window.tcCtxMenuAttached) return;\n\t\t\t\twindow.tcCtxMenuAttached = true;\n\t\t\t\tdocument.addEventListener('contextmenu', function(e) {\n\t\t\t\t\tvar trigger = e.target.closest('[data-tc-ctxmenu-trigger]');\n\t\t\t\t\tif (!trigger) return;\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tvar id = trigger.getAttribute('data-tc-ctxmenu-trigger');\n\t\t\t\t\tvar menu = document.getElementById(id);\n\t\t\t\t\tif (!menu) return;\n\t\t\t\t\tmenu.style.inset = e.clientY + 'px auto auto ' + e.clientX + 'px';\n\t\t\t\t\tmenu.showPopover();\n\t\t\t\t});\n\t\t\t})();\n\t\t</script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\">\n\t\t\t(function(){\n\t\t\t\tif (window.tcCtxMenuAttached) return;\n\t\t\t\twindow.tcCtxMenuAttached = true;\n\t\t\t\tdocument.addEventListener('contextmenu', function(e) {\n\t\t\t\t\tvar trigger = e.target.closest('[data-tc-ctxmenu-trigger]');\n\t\t\t\t\tif (!trigger) return;\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tvar id = trigger.getAttribute('data-tc-ctxmenu-trigger');\n\t\t\t\t\tvar menu = document.getElementById(id);\n\t\t\t\t\tif (!menu) return;\n\t\t\t\t\tmenu.style.inset = e.clientY + 'px auto auto ' + e.clientX + 'px';\n\t\t\t\t\tmenu.showPopover();\n\t\t\t\t});\n\t\t\t\tdocument.addEventListener('keydown', function(e) {\n\t\t\t\t\tvar isCtxKey = e.key === 'ContextMenu';\n\t\t\t\t\tvar isShiftF10 = e.key === 'F10' && e.shiftKey;\n\t\t\t\t\tif (!isCtxKey && !isShiftF10) return;\n\t\t\t\t\tvar trigger = e.target.closest('[data-tc-ctxmenu-trigger]');\n\t\t\t\t\tif (!trigger) return;\n\t\t\t\t\te.preventDefault();\n\t\t\t\t\tvar id = trigger.getAttribute('data-tc-ctxmenu-trigger');\n\t\t\t\t\tvar menu = document.getElementById(id);\n\t\t\t\t\tif (!menu) return;\n\t\t\t\t\tvar r = trigger.getBoundingClientRect();\n\t\t\t\t\tmenu.style.inset = r.bottom + 'px auto auto ' + r.left + 'px';\n\t\t\t\t\tmenu.showPopover();\n\t\t\t\t});\n\t\t\t})();\n\t\t</script> ")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = menuKeyboardNavScriptComponent(props.Nonce).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
