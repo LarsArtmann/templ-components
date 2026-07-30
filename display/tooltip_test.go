@@ -2,6 +2,8 @@
 package display
 
 import (
+	"os"
+	"path/filepath"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -129,4 +131,12 @@ func TestTooltipEscapeDismiss(t *testing.T) {
 	// Re-entering/focusing the trigger clears the dismissed state.
 	utils.AssertContains(t, output, `"mouseenter"`)
 	utils.AssertContains(t, output, `"focusin"`)
+
+	// The companion CSS hides the tooltip when the dismissed state is active.
+	cssPath := filepath.Join("..", "templates", "custom.css")
+	if css, err := os.ReadFile(cssPath); err != nil {
+		t.Fatalf("read custom.css: %v", err)
+	} else {
+		utils.AssertContains(t, string(css), `[data-tc-tooltip][data-tc-tooltip-dismissed] [role="tooltip"]`)
+	}
 }
