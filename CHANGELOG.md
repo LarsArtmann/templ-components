@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`htmx.PolledRegion`** — auto-refreshing HTMX region for dashboard stats. Polls a URL at a configurable interval, swaps content in place, includes optional eager-load, `aria-live` for screen readers, and a "Updated HH:MM:SS" freshness timestamp. Inspired by DiscordSync's `polledRegion` helper (the #1 dashboard pattern).
+- **`display.Sparkline`** — tiny inline SVG line chart for trend visualization. Pure SVG (no JS), `currentColor` stroke, optional filled area, auto min/max bounds. Inspired by DiscordSync's `sparklineSVG`.
+- **`display.BarChart`** — CSS-based horizontal/vertical bar chart. Per-bar colors, link labels, custom value formatting, empty-state message. No JavaScript, no SVG. Inspired by DiscordSync's 8+ hand-rolled bar chart variants.
+- **`display.ExternalLink`** — safe-by-default off-site link with `target="_blank" rel="noopener noreferrer"`, external-arrow icon, and URL sanitization (plain string href, not `templ.SafeURL`). Inspired by DiscordSync's `externalLink` helper.
 - **Carousel keyboard navigation.** The carousel region is now focusable (`tabindex="0"`) and responds to ArrowLeft/ArrowRight (prev/next slide), Home (first slide), and End (last slide). RTL-aware: ArrowLeft/Right are swapped in `dir="rtl"`. Follows WAI-ARIA carousel pattern.
 - **MobileMenu keyboard support.** Escape closes the menu and returns focus to the toggle button. Opening the menu moves focus to the first focusable child. Extracted `tcMobileMenuSet(menu, btn, open)` shared helper for consistent open/close + focus management.
 - **Dropdown keyboard enhancements.** Home (first item), End (last item), PageDown/PageUp (jump by quarter of the list) now move focus inside the menu. Disabled items (`[disabled]`) are skipped during navigation. First menuitem is auto-focused when the menu opens (via `toggle` event listener).

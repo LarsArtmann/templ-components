@@ -107,10 +107,10 @@ func TestBarChartMaxOverride(t *testing.T) {
 	t.Run("override affects width", func(t *testing.T) {
 		t.Parallel()
 
-		max := 200.0
+		maxVal := 200.0
 		value := 100.0
 
-		got := barPercentWidth(value, max)
+		got := barPercentWidth(value, maxVal)
 		if got != "50.0%" {
 			t.Errorf("expected 50.0%%, got %s", got)
 		}

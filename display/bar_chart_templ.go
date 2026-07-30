@@ -394,7 +394,7 @@ func BarChart(props BarChartProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 				if props.ShowValues {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "<span class=\"w-16 shrink-0 text-right text-xs tabular-nums text-gray-600 dark:text-gray-400\">")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "<span class=\"w-16 shrink-0 text-end text-xs tabular-nums text-gray-600 dark:text-gray-400\">")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
@@ -429,7 +429,7 @@ func BarChart(props BarChartProps) templ.Component {
 // barPercentHeight returns the CSS height percentage for a vertical bar.
 func barPercentHeight(value, maxVal float64) string {
 	if maxVal <= 0 {
-		return "0.0%"
+		return zeroPercent
 	}
 
 	pct := (value / maxVal) * percentScale

@@ -21,7 +21,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                     |
 | `recipes`    | 3 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                              |
 
-**Totals:** 98 templ components (primitives) + 3 recipe screens = 101, 102 icon names, 43 typed enums (43 with `IsValid()`), 91 generated `*_templ.go` files, ~30,500 lines of Go/templ source
+**Totals:** 102 templ components (primitives) + 3 recipe screens = 101, 102 icon names, 45 typed enums (43 with `IsValid()`), 95 generated `*_templ.go` files, ~30,500 lines of Go/templ source
 
 ---
 
@@ -392,11 +392,11 @@ _(None currently)_
 ## Cross-Cutting Features
 
 - **CSP Compliance:** All inline scripts use `nonce` attribute
-- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 98 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
+- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 102 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first viewport breakpoints (`sm:`/`md:`/`lg:`) plus opt-in **container queries** — 8 components accept `ContainerAware` (or `Grid.ContainerResponsive`) to adapt to their parent container width via `@container` instead of the viewport (ADR-0018).
-- **Type Safety:** 43 typed string enums (all with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
+- **Type Safety:** 45 typed string enums (all with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
 - **Test Coverage:** 72.3% total statement coverage across library packages (range 48.2%–81.8%; CI-enforced ≥ 70% via `go test -race -coverprofile=...`; recompute with `nix run .#coverage`). BDD + golden-file HTML snapshots (`internal/golden` in 5 packages) + a11y + benchmark + integration tests, plus pixel-level **visual regression** tests (`visualtest/` — chromedp + pixelmatch, `nix run .#visual`; 31 goldens / 11 component types incl. RTL) and drift-guard tests enforcing doc/code count consistency (component, enum, generated-file, dark-mode, motion-reduce, RTL, container-query, CSS-freshness, lint-config).
 - **Theming:** Tailwind v4 `@theme` override support via `templ-components-theme.css`. Components emit standard utility classes (`bg-blue-600`, `text-gray-900`) — consumers override `--color-*` variables to theme globally without touching component code.
 - **CSS Automation:** `templates/app.css` + `templates/custom.css` starter entry-point + BuildFlow `tailwind-build` provider (auto-discovers CSS entry-points, compiles via `tailwindcss` in the DAG). See `docs/tailwind-v4-adoption-guide.md`.
