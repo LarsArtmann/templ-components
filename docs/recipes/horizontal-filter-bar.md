@@ -223,3 +223,37 @@ Call sites pass `hx-target` and `hx-select` (the results-container id) via
 (footgun #1). The Reset link navigates to the bare `action` URL, clearing all
 filters in one click. The `htmx-indicator` span shows the library `Spinner`
 only while an HTMX request from this form is in flight.
+
+---
+
+## Wrapping the results in PolledRegion
+
+When filter results need to auto-refresh (not just on user interaction), wrap
+the results container in `htmx.PolledRegion`:
+
+```templ
+@htmx.PolledRegion(htmx.PolledRegionProps{
+    URL:   "/messages",
+    Every: "30s",
+    ID:    "message-results",
+}) {
+    @display.Table(display.TableProps{ ... })
+}
+```
+
+The filter form targets `#message-results` via `hx-target`. When the user
+changes a filter, the region re-renders immediately. When the user does
+nothing, the region polls every 30s for fresh data.
+
+## External links in filter results
+
+When filter results contain links to external resources (e.g., a user's
+Discord profile), use `display.ExternalLink` for safe `target="_blank"` with
+tabnabbing prevention:
+
+```templ
+@display.ExternalLink(display.ExternalLinkProps{
+    Href: "https://discord.com/users/" + userID,
+    Text: "View profile",
+})
+```
