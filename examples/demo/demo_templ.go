@@ -18,7 +18,7 @@ import (
 )
 
 const (
-	componentCount = "98"
+	componentCount = "102"
 	iconCount      = "102"
 	packageCount   = "9"
 )
