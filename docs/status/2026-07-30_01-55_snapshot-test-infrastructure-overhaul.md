@@ -13,6 +13,7 @@
 **Problem solved:** `utils.EnsureID` uses `crypto/rand` to generate IDs like `tc-modal-a1b2c3d4e5f6a7b8`. Every render produces different output. The old golden package had NO normalization for this — every EnsureID component required a manual `ID: "something"` in test props or the golden test would fail non-deterministically.
 
 **What was built:**
+
 - `autoIDRe` regex matching both EnsureID formats: `tc-<prefix>-<16hex>` (crypto/rand primary) and `tc-<prefix>-<digits>-<digits>` (fallback timestamp+counter)
 - Supports hyphenated prefixes (`tc-mobile-menu-*` used by Nav)
 - `normalizeIDs()` replaces all matches with `tc-<prefix>-NORMALIZED`
@@ -21,6 +22,7 @@
 - 6 test cases covering: hex format, fallback format, cross-reference attrs, explicit IDs preserved, short hex rejected, hyphenated prefix
 
 **Files changed:**
+
 - `internal/golden/golden.go` — new `normalize()`, `normalizeIDs()`, `autoIDRe`
 - `internal/golden/golden_coverage_test.go` — `TestNormalizeIDs` with 6 subtests, `TestGoldenDiffLCSAlignment`
 
@@ -29,12 +31,14 @@
 **Problem solved:** The old diff was a naive line-by-line comparison (`wantLines[i] != gotLines[i]`). An insertion at line 3 would cascade into showing EVERY subsequent line as "changed" — making diffs nearly unreadable for any non-trivial change.
 
 **What was built:**
+
 - Longest Common Subsequence (LCS) DP table alignment
 - Only actually-changed lines appear in the diff
 - 1-based line numbers on each diff line (`--- [3] <div>` instead of `--- <div>`)
 - `nolint:makezero` for the pre-allocated DP table (intentional index assignment pattern)
 
 **Files changed:**
+
 - `internal/golden/golden.go` — replaced `diff()` and removed `lineAt()`
 - `internal/golden/golden_test.go` — updated `TestDiffOutput` assertions for new format
 - `internal/golden/golden_coverage_test.go` — `TestGoldenDiffLCSAlignment`
@@ -44,12 +48,14 @@
 **Problem solved:** Each golden test was 10-15 lines of boilerplate: `t.Parallel()` + `t.Run("name", func(t *testing.T) { t.Parallel(); output := utils.Render(...); golden.Assert(t, "name", output) })`. Adding 5 variants of a component meant 75 lines.
 
 **What was built:**
+
 - `golden.Snapshot{Name, HTML}` struct
 - `golden.AssertSnapshots(t, []golden.Snapshot{...})` — creates parallel subtests automatically
 - Each snapshot becomes `t.Run(name, func(t *testing.T) { t.Parallel(); Assert(t, name, html) })`
 - Documented with usage examples in the package doc comment
 
 **Files changed:**
+
 - `internal/golden/golden.go` — new `Snapshot` type + `AssertSnapshots` function
 
 ### 4. Golden Test Sweep — 27 Components Covered
@@ -58,17 +64,18 @@
 
 **What was built — 5 new `golden_sweep_test.go` files:**
 
-| Package | New Components Covered | New Golden Files |
-|---------|----------------------|-----------------|
-| `display` | Accordion (2 variants), Tabs (2 variants), Dropdown, Tooltip (2 variants), Carousel, ContextMenu, Avatar (2 variants), EmptyState (2 variants) | 14 |
-| `forms` | Checkbox (3 variants), Toggle (3 variants), RadioGroup (2 variants), Combobox, InputGroup, Form, ValidationSummary, FileInput (2 variants), DatePicker (2 variants) | 16 |
-| `feedback` | InlineError, InlineSuccess, SkeletonGroup, ToastContainer | 4 |
-| `navigation` | Nav, SimpleNav, Footer, EndOfList (2 variants) | 5 |
-| `errorpage` | ErrorAlert (2 variants), ErrorDetail (2 variants) | 4 |
+| Package      | New Components Covered                                                                                                                                              | New Golden Files |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------- |
+| `display`    | Accordion (2 variants), Tabs (2 variants), Dropdown, Tooltip (2 variants), Carousel, ContextMenu, Avatar (2 variants), EmptyState (2 variants)                      | 14               |
+| `forms`      | Checkbox (3 variants), Toggle (3 variants), RadioGroup (2 variants), Combobox, InputGroup, Form, ValidationSummary, FileInput (2 variants), DatePicker (2 variants) | 16               |
+| `feedback`   | InlineError, InlineSuccess, SkeletonGroup, ToastContainer                                                                                                           | 4                |
+| `navigation` | Nav, SimpleNav, Footer, EndOfList (2 variants)                                                                                                                      | 5                |
+| `errorpage`  | ErrorAlert (2 variants), ErrorDetail (2 variants)                                                                                                                   | 4                |
 
 **Total golden files: ~63 → 102 (+39 files, +62%)**
 
 **Files created:**
+
 - `display/golden_sweep_test.go`
 - `forms/golden_sweep_test.go`
 - `feedback/golden_sweep_test.go`
@@ -88,6 +95,7 @@ Replaced the single-line golden testing entry with a comprehensive three-tier sn
 The session focused entirely on HTML golden tests. Visual regression tests (`visualtest`) remain at **10/86 components (12%)** — entirely unchanged. This was the right call for this session (the golden framework needed the ID normalization fix first), but it means the "especially for UI tests" half of the prompt is unaddressed.
 
 **Current visual coverage gaps:**
+
 - 76 components have zero visual tests
 - Entire `navigation` (12) and `layout` (10) packages untested visually
 - Only 2 RTL variants exist (Button + Card), zero RTL+dark combos
@@ -96,6 +104,7 @@ The session focused entirely on HTML golden tests. Visual regression tests (`vis
 ### 2. Golden Coverage — Still Gaps
 
 27 new components got golden tests, but some remain uncovered:
+
 - `layout`: AppShell, Split, Stack, Container, Base, Minimal, ThemeToggle, ThemeScript (only `Script` has a golden)
 - `htmx`: LoadingIndicator, InlineLoadingOverlay, LoadingButton, ConfirmDelete, SwapOOB, CSRFToken, GlobalErrorHandling — ZERO golden tests
 - `display`: SimpleCard, StatCard (has golden but partial), StatusBadge, SimpleEmptyState, HoverCard (only basic variant)

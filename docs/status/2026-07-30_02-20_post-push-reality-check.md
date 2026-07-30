@@ -21,27 +21,28 @@
 
 5 new `golden_sweep_test.go` files across 5 packages:
 
-| Package | New Components | New `.golden` Files |
-|---------|---------------|-------------------|
-| `display` | Accordion, Tabs, Dropdown, Tooltip, Carousel, ContextMenu, Avatar, EmptyState | 14 |
-| `forms` | Checkbox, Toggle, RadioGroup, Combobox, InputGroup, Form, ValidationSummary, FileInput, DatePicker | 16 |
-| `feedback` | InlineError, InlineSuccess, SkeletonGroup, ToastContainer | 4 |
-| `navigation` | Nav, SimpleNav, Footer, EndOfList | 5 |
-| `errorpage` | ErrorAlert, ErrorDetail | 4 |
+| Package      | New Components                                                                                     | New `.golden` Files |
+| ------------ | -------------------------------------------------------------------------------------------------- | ------------------- |
+| `display`    | Accordion, Tabs, Dropdown, Tooltip, Carousel, ContextMenu, Avatar, EmptyState                      | 14                  |
+| `forms`      | Checkbox, Toggle, RadioGroup, Combobox, InputGroup, Form, ValidationSummary, FileInput, DatePicker | 16                  |
+| `feedback`   | InlineError, InlineSuccess, SkeletonGroup, ToastContainer                                          | 4                   |
+| `navigation` | Nav, SimpleNav, Footer, EndOfList                                                                  | 5                   |
+| `errorpage`  | ErrorAlert, ErrorDetail                                                                            | 4                   |
 
 **Total golden files: 63 → 102 (+62%)**
 
 ### 3. Pre-Commit Blockers Fixed
 
-| Issue | Root Cause | Fix |
-|-------|-----------|-----|
-| `.golangci.yml` regression (#6) | ireturn, godoclint, testableexamples re-enabled | Removed from enable list + deleted dead `ireturn:` settings block |
-| `visualtest/doc.go` compile error | `:=` shadowed package-level `sharedAllocCtx`/`allocCancel` inside `sync.Once.Do` | Changed to `=` per existing code comment |
-| gci import ordering in sweep tests | Wrong import grouping | Fixed to match existing pattern |
+| Issue                              | Root Cause                                                                       | Fix                                                               |
+| ---------------------------------- | -------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `.golangci.yml` regression (#6)    | ireturn, godoclint, testableexamples re-enabled                                  | Removed from enable list + deleted dead `ireturn:` settings block |
+| `visualtest/doc.go` compile error  | `:=` shadowed package-level `sharedAllocCtx`/`allocCancel` inside `sync.Once.Do` | Changed to `=` per existing code comment                          |
+| gci import ordering in sweep tests | Wrong import grouping                                                            | Fixed to match existing pattern                                   |
 
 ### 4. Documentation
 
 Updated AGENTS.md with comprehensive three-tier snapshot testing strategy:
+
 1. HTML golden tests (fast, deterministic — the backbone)
 2. Substring assertions (targeted invariant checks)
 3. Visual regression (pixel-level, separate module)
@@ -62,13 +63,14 @@ git status        → clean, pushed to origin/master
 
 **102 golden files across 5 packages, but 3 packages have ZERO golden tests:**
 
-| Package | Components | Golden Files | Coverage |
-|---------|-----------|-------------|----------|
-| `htmx` | 8 | 0 | **0%** |
-| `layout` | 10 | 1 (only `Script`) | **10%** |
-| `recipes` | 3 | 0 | **0%** |
+| Package   | Components | Golden Files      | Coverage |
+| --------- | ---------- | ----------------- | -------- |
+| `htmx`    | 8          | 0                 | **0%**   |
+| `layout`  | 10         | 1 (only `Script`) | **10%**  |
+| `recipes` | 3          | 0                 | **0%**   |
 
 **Remaining gaps in covered packages:**
+
 - `display`: SimpleCard, StatusBadge, SimpleEmptyState (3 missing)
 - `forms`: Label, FieldError, FormFieldWrapper, Radio standalone (4 missing)
 
@@ -76,19 +78,20 @@ git status        → clean, pushed to origin/master
 
 Still 10/86 components have visual tests (12%). The entire session focused on HTML golden tests. Visual coverage gaps:
 
-| Package | Visual Tests | Components |
-|---------|-------------|-----------|
-| `navigation` | 0/12 | Zero |
-| `layout` | 0/10 | Zero |
-| `feedback` | 1/13 | Only Alert |
-| `forms` | 2/21 | Only Input + Select |
-| `display` | 7/30 | Button, Card, Badge, Modal, Drawer, Dropdown, Popover, ContextMenu |
+| Package      | Visual Tests | Components                                                         |
+| ------------ | ------------ | ------------------------------------------------------------------ |
+| `navigation` | 0/12         | Zero                                                               |
+| `layout`     | 0/10         | Zero                                                               |
+| `feedback`   | 1/13         | Only Alert                                                         |
+| `forms`      | 2/21         | Only Input + Select                                                |
+| `display`    | 7/30         | Button, Card, Badge, Modal, Drawer, Dropdown, Popover, ContextMenu |
 
 Only 2 RTL variants (Button + Card). Zero RTL+dark combos. 2 failing visual tests with `.fail/` artifacts.
 
 ### 3. Commit History Quality — Messy
 
 BuildFlow auto-committed several times with low-quality messages:
+
 - `582a0e3` — "Looking at the changes in the internal/golden/ package, I need to generate a detailed commit message explaining the changes." (hallucinated AI thinking leaked into commit message)
 - `3bea5b8` — "test(visualtest): initialize visual testing module with package documentation" (misleading — it was a compile fix, not initialization)
 - Multiple commits for what should have been 2-3 clean commits
@@ -130,6 +133,7 @@ The git index was corrupt (`error: index uses ޓ extension`). I didn't run `git 
 ### 2. BuildFlow Commit Messages — Quality Disaster
 
 The BuildFlow auto-commit daemon produced:
+
 - A commit message that starts with "Looking at the changes..." (AI thinking leaked)
 - Generic "chore: update project configuration" messages
 - Misleading "initialize visual testing module" for what was a bug fix
@@ -143,6 +147,7 @@ These are now permanently in the git history on `origin/master`. Documented in A
 ### 4. First Status Report Was Inaccurate
 
 The `docs/status/2026-07-30_01-55_snapshot-test-infrastructure-overhaul.md` report claimed:
+
 - "All tests pass" — FALSE, `TestGolangciDisabledLinters` was failing
 - "Framework improvements complete" — technically true but couldn't be committed due to corrupt index
 - "Lint clean" — only checked `internal/golden/...`, not the new sweep test files (which had a gci issue)
