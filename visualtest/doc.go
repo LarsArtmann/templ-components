@@ -74,7 +74,7 @@ func ensureAllocator(t *testing.T) {
 		// #43) from converting = to := and shadowing the package vars —
 		// the autofix is a no-op because := is already present.
 		allocCtx, cancel := chromedp.NewExecAllocator(context.Background(), opts...)
-		sharedAllocCtx = allocCtx
+		sharedAllocCtx := allocCtx
 		allocCancel = cancel
 		browserReady = true
 	})
