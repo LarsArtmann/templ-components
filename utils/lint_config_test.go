@@ -24,15 +24,19 @@ func TestGolangciDisabledLinters(t *testing.T) {
 	// not in disable: (where they belong — disable: is the signal that
 	// golangci-lint-auto-configure repair respects per its 2026-07-25 fix).
 	section := ""
+
 	for line := range strings.SplitSeq(string(data), "\n") {
 		trimmed := strings.TrimSpace(line)
 
 		if trimmed == "enable:" {
 			section = "enable"
+
 			continue
 		}
+
 		if trimmed == "disable:" {
 			section = "disable"
+
 			continue
 		}
 
