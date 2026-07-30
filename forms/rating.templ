@@ -81,7 +81,7 @@ templ Rating(props RatingProps) {
 			</span>
 		}
 		<div
-			class="inline-flex flex-row-reverse items-center gap-0.5"
+			class={ utils.Ternary(props.ReadOnly, "inline-flex items-center gap-0.5", "inline-flex flex-row-reverse items-center gap-0.5") }
 			if props.ID != "" {
 				id={ props.ID }
 			}

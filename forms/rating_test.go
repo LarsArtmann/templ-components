@@ -157,6 +157,7 @@ func TestRatingKeyboardOrder(t *testing.T) {
 	// The old reversed order (5..1) made arrows decrease the value.
 	idx1 := strings.Index(output, `value="1"`)
 	idx2 := strings.Index(output, `value="2"`)
+
 	if idx1 < 0 || idx2 < 0 {
 		t.Fatalf("expected value=1 and value=2 radios; got indices %d, %d", idx1, idx2)
 	}

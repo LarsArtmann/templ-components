@@ -74,5 +74,6 @@ func TestContextMenuDisabledItem(t *testing.T) {
 
 	// Disabled items expose aria-disabled so the shared nav selector skips them.
 	utils.AssertContains(t, output, `aria-disabled="true"`)
-	utils.AssertContains(t, output, `opacity-50 pointer-events-none`)
+	// Class order is not asserted (tailwind-merge reorders); check tokens instead.
+	utils.AssertContainsAll(t, output, "opacity-50", "pointer-events-none")
 }
