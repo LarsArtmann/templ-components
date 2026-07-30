@@ -120,10 +120,19 @@ templ cardInner(props CardProps) {
 			<div class={ utils.Class("flex items-center justify-between "+cardHeaderPaddingClass(props.ContainerAware)+" border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
 				<div>
 					if props.Title != "" {
-						if props.TitleTag == "h2" {
-							<h2 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h2>
-						} else {
-							<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h3>
+						switch props.TitleTag {
+							case "h1":
+								<h1 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h1>
+							case "h2":
+								<h2 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h2>
+							case "h4":
+								<h4 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h4>
+							case "h5":
+								<h5 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h5>
+							case "h6":
+								<h6 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h6>
+							default:
+								<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h3>
 						}
 					}
 					if props.Subtitle != "" {

@@ -79,9 +79,18 @@ templ EmptyState(props EmptyStateProps) {
 					@icons.Icon(props.Icon, "h-6 w-6 text-gray-600 dark:text-gray-400")
 				</div>
 			}
-			if props.TitleTag == "h2" {
+			switch props.TitleTag {
+			case "h1":
+				<h1 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h1>
+			case "h2":
 				<h2 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h2>
-			} else {
+			case "h4":
+				<h4 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h4>
+			case "h5":
+				<h5 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h5>
+			case "h6":
+				<h6 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h6>
+			default:
 				<h3 class="mt-4 text-base font-semibold text-gray-900 dark:text-white">{ props.Title }</h3>
 			}
 			if props.Description != "" {

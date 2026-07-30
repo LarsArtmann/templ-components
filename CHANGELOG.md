@@ -12,6 +12,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`display.Sparkline`** — tiny inline SVG line chart for trend visualization. Pure SVG (no JS), `currentColor` stroke, optional filled area, auto min/max bounds. Inspired by DiscordSync's `sparklineSVG`.
 - **`display.BarChart`** — CSS-based horizontal/vertical bar chart. Per-bar colors, link labels, custom value formatting, empty-state message. No JavaScript, no SVG. Inspired by DiscordSync's 8+ hand-rolled bar chart variants.
 - **`display.ExternalLink`** — safe-by-default off-site link with `target="_blank" rel="noopener noreferrer"`, external-arrow icon, and URL sanitization (plain string href, not `templ.SafeURL`). Inspired by DiscordSync's `externalLink` helper.
+- **Golden HTML snapshot tests** for Sparkline, BarChart, ExternalLink, and PolledRegion — every component now has golden baselines matching the library's three-tier testing standard.
+- **BDD, benchmark, and a11y tests** for all 4 new components — PolledRegion BDD in `htmx/bdd_test.go`, benchmarks in both packages, accessibility assertions in `display/a11y_new_test.go`.
+- **Card and EmptyState `TitleTag` now supports h1–h6.** Previously limited to h2/h3; the switch now covers all semantic heading levels for correct a11y heading hierarchy.
+- **PolledRegion `TimeFormat` field.** Configurable Go time format string for the timestamp footer (default: `"15:04:05"`). No more hardcoded format.
+- **Recipe docs** for sparkline, bar-chart, polled-region, external-link.
+- **ADRs** 0024 (PolledRegion design), 0025 (BarChart CSS vs SVG), 0026 (ExternalLink sanitization).
 - **Carousel keyboard navigation.** The carousel region is now focusable (`tabindex="0"`) and responds to ArrowLeft/ArrowRight (prev/next slide), Home (first slide), and End (last slide). RTL-aware: ArrowLeft/Right are swapped in `dir="rtl"`. Follows WAI-ARIA carousel pattern.
 - **MobileMenu keyboard support.** Escape closes the menu and returns focus to the toggle button. Opening the menu moves focus to the first focusable child. Extracted `tcMobileMenuSet(menu, btn, open)` shared helper for consistent open/close + focus management.
 - **Dropdown keyboard enhancements.** Home (first item), End (last item), PageDown/PageUp (jump by quarter of the list) now move focus inside the menu. Disabled items (`[disabled]`) are skipped during navigation. First menuitem is auto-focused when the menu opens (via `toggle` event listener).
@@ -22,6 +28,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Sparkline Min/Max zero-sentinel bug.** Changed `Min`/`Max` from `float64` to `*float64`. Previously, a legitimate min/max of 0.0 was treated as "auto" (sentinel value). Now `nil` means auto-compute from data; a pointer to 0.0 explicitly sets the bound to zero.
 - **Dropdown Enter/Space no longer breaks HTMX.** The custom JS handler used `window.location.href = item.href` for `<a>` menuitems, which triggered a full page load and bypassed HTMX's AJAX swap. Removed the handler entirely — native browser behavior activates links/buttons correctly, and HTMX intercepts native events as expected.
 - **Rating arrow-key direction now matches value.** The interactive Rating rendered its radio inputs in reverse DOM order (5→1) for a CSS-only fill trick, which inverted radiogroup arrow-key behavior (ArrowDown/Right decreased the value). Switched to forward DOM order (1→N) with `flex-row-reverse` for the visual, so arrows increase the value per WAI-ARIA while the `peer-checked` fill still renders ★★★☆☆ correctly. Forward order is used only for the interactive branch; read-only rendering is unchanged.
 - **Rating star fill now renders.** The `peer-checked` fill classes lived on the nested `<svg>` (not a sibling of the hidden `.peer` radio), so Tailwind's `~` combinator never matched and the selected star did not visually fill. Moved the color/checked/hover/focus classes to the `<label>` (the radio's sibling); the SVG inherits color via `currentColor`.
