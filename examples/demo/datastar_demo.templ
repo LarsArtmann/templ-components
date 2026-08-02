@@ -1,0 +1,74 @@
+package main
+
+import (
+	"github.com/larsartmann/templ-components/datastar"
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/feedback"
+)
+
+templ datastarDemo() {
+	@demoSection("Datastar SDKScript", "datastar-sdk-script")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Injects the Datastar runtime as an ES module. Load once per page:
+	</p>
+	@datastar.SDKScript(datastar.SDKScriptProps{BaseProps: demoBaseProps()})
+	@demoSection("Datastar LiveRegion", "datastar-live-region")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		SSE-powered region that auto-connects on page load. The server pushes
+		<code>datastar-merge-fragments</code> events to patch the content in real-time
+		(no polling):
+	</p>
+	@datastar.LiveRegion(datastar.LiveRegionProps{
+		BaseProps: demoBaseProps(),
+		URL:       "/api/datastar/stream",
+		AutoStart: true,
+	}) {
+		<div class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
+			<p class="text-sm text-gray-600 dark:text-gray-400">
+				Waiting for SSE stream...
+			</p>
+		</div>
+	}
+	@demoSection("Datastar Indicator", "datastar-indicator")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Shows/hides based on a Datastar indicator signal. Place
+		<code>data-indicator:fetching</code> on any element that triggers a backend action:
+	</p>
+	<div class="flex items-center gap-3">
+		<button
+			data-on:click={ datastar.Post("/api/datastar/action") }
+			data-indicator:fetching
+			class="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-blue-600 dark:bg-blue-500 rounded-lg hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+		>
+			Trigger Action
+		</button>
+		@datastar.Indicator(datastar.IndicatorProps{
+			BaseProps: demoBaseProps(),
+			Signal:    "fetching",
+			Spinner:   feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-blue-600 dark:text-blue-400"}),
+		})
+	</div>
+	@demoSection("Datastar Action Expressions", "datastar-actions")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Typed helpers for building Datastar action expressions:
+	</p>
+	@demoCodeSnippet(
+		"datastar actions",
+		`datastar.Get("/api/search")       // @get('/api/search')
+datastar.Post("/api/save")      // @post('/api/save')
+datastar.Delete("/api/items/1") // @delete('/api/items/1')`,
+	)
+	@display.Card(display.CardProps{
+		Title: "HTMX vs Datastar",
+	}) {
+		<p class="text-sm text-gray-600 dark:text-gray-400 mb-3">
+			Both work side-by-side. HTMX uses <code>hx-*</code> attributes for
+			hypermedia exchanges. Datastar uses <code>data-*</code> attributes for
+			SSE streaming and reactive signals.
+		</p>
+		<p class="text-sm text-gray-600 dark:text-gray-400">
+			Use HTMX for request-response (forms, navigation, CRUD).
+			Use Datastar for real-time push (dashboards, live feeds, collaborative editing).
+		</p>
+	}
+}

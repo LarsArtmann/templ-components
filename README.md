@@ -24,13 +24,14 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **CSS approach**       | Tailwind v4 (CSS-first)    | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
 | **JavaScript**         | HATEOAS (enhances HTML)    | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js**   | No                         | No                            | Yes                                            |
-| **Components**         | 98                         | 40+                           | —                                              |
-| **Typed props**        | 43 enums                   | —                             | —                                              |
+| **Components**         | 107                        | 40+                           | —                                              |
+| **Typed props**        | 47 enums                   | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)          | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts) | Yes                           | —                                              |
 | **Container queries**  | 8 opt-in components        | —                             | —                                              |
 | **Visual regression**  | chromedp pixel tests       | —                             | —                                              |
 | **HTMX integration**   | Built-in package           | —                             | —                                              |
+| **Datastar support**   | Opt-in package             | —                             | —                                              |
 | **Standalone library** | Yes                        | No                            | No                                             |
 
 ---
@@ -185,6 +186,22 @@ Loading indicators, error handling, CSRF protection, out-of-band swaps, View Tra
 @htmx.ViewTransitions(htmx.ViewTransitionsProps{Global: true})
 ```
 
+### `datastar` — Datastar Integration (3 components)
+
+[Datastar](https://data-star.dev) runtime injection, SSE-powered live regions, and loading indicators. An opt-in complement to HTMX for real-time streaming apps — zero new Go dependencies.
+
+```templ
+@datastar.SDKScript(datastar.DefaultSDKScriptProps())
+
+@datastar.LiveRegion(datastar.LiveRegionProps{URL: "/stream/metrics"}) {
+    @display.StatCard(display.StatCardProps{Label: "Active Users", Value: "—"})
+}
+
+@datastar.Indicator(datastar.IndicatorProps{Signal: "fetching"})
+```
+
+See [`docs/recipes/datastar-integration.md`](docs/recipes/datastar-integration.md) for the HTMX-to-Datastar migration guide.
+
 ### `errorpage` — Error Pages (4 components)
 
 Structured error pages with family-aware styling, HTTP handler integration, dedicated 404.
@@ -198,7 +215,7 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 ## Design Principles
 
-**Type-safe.** 45 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 47 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 
