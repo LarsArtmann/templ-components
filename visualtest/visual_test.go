@@ -123,36 +123,38 @@ func TestResponsiveViewport(t *testing.T) {
 }
 
 // TestModal covers the native <dialog> modal in both light and dark mode.
-// The modal is rendered with Open=true so the dialog is visible.
+// The modal is rendered with Open=true; the auto-open JS calls showModal(),
+// promoting the dialog to the top layer. FullViewport captures it.
 func TestModal(t *testing.T) {
 	t.Parallel()
 
 	modal := display.DefaultModalProps()
 	modal.Title = "Delete project"
 	modal.Open = true
-	visualtest.AssertScreenshot(t, "modal/open_light", display.Modal(modal))
-	visualtest.AssertScreenshot(t, "modal/open_dark", display.Modal(modal), visualtest.Options{Dark: visualtest.Bool(true)})
+	opts := dialogOpen(visualtest.Viewport{Width: 480, Height: 400})
+	visualtest.AssertScreenshot(t, "modal/open_light", display.Modal(modal), opts)
+
+	opts.Dark = visualtest.Bool(true)
+	visualtest.AssertScreenshot(t, "modal/open_dark", display.Modal(modal), opts)
 }
 
 // TestDrawer covers the native <dialog> drawer on both sides.
 func TestDrawer(t *testing.T) {
 	t.Parallel()
 
+	opts := dialogOpen(visualtest.Viewport{Width: 480, Height: 400})
+
 	right := display.DefaultDrawerProps()
 	right.Title = "Settings"
 	right.Open = true
-	visualtest.AssertScreenshot(t, "drawer/right_light", display.Drawer(right))
+	visualtest.AssertScreenshot(t, "drawer/right_light", display.Drawer(right), opts)
 
+	opts.Dark = visualtest.Bool(true)
 	left := display.DefaultDrawerProps()
 	left.Title = "Filters"
 	left.Open = true
 	left.Side = display.DrawerLeft
-	visualtest.AssertScreenshot(
-		t,
-		"drawer/left_dark",
-		display.Drawer(left),
-		visualtest.Options{Dark: visualtest.Bool(true)},
-	)
+	visualtest.AssertScreenshot(t, "drawer/left_dark", display.Drawer(left), opts)
 }
 
 // TestInput covers text, error, and disabled states of the most-used form input.
@@ -235,6 +237,21 @@ func overlayOpen(viewport visualtest.Viewport, state visualtest.InteractionState
 	return visualtest.Options{
 		State:        state,
 		WaitSelector: "[popover]",
+		FullViewport: true,
+		Viewport:     viewport,
+		MaxMismatch:  0.02,
+	}
+}
+
+// dialogOpen returns options for native <dialog>-based overlays (Modal, Drawer)
+// that are server-rendered with Open=true. The auto-open JS calls showModal(),
+// promoting the dialog to the top layer — outside #tc-root's bounding box — so
+// FullViewport is required. WaitSelector: "dialog" ensures the screenshot is
+// taken after showModal() fires. MaxMismatch is raised to 2% to absorb
+// top-layer positioning and backdrop anti-aliasing variance.
+func dialogOpen(viewport visualtest.Viewport) visualtest.Options {
+	return visualtest.Options{
+		WaitSelector: "dialog",
 		FullViewport: true,
 		Viewport:     viewport,
 		MaxMismatch:  0.02,

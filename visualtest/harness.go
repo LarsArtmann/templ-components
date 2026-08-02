@@ -190,16 +190,22 @@ const (
 )
 
 // hoverAction returns a chromedp action that moves the mouse to the center of
-// the element matching sel, triggering real :hover styles (synthetic
-// mouseover events do not). The element's bounding box is read via JS so the
-// coordinates are correct regardless of scroll position.
+// the first interactive descendant of the element matching sel (button, link,
+// etc.), falling back to the root element itself if none is found. This mirrors
+// focusAction: the wrapper (#tc-root) is a plain <div>, so hovering its centre
+// does not trigger :hover styles on the inner button/link that the test intends
+// to capture. A real mouse-move event is dispatched (synthetic mouseover events
+// do not trigger :hover) at the element's centre so coordinates are correct
+// regardless of scroll position.
 func hoverAction(sel string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
-		// sel is interpolated as a quoted JS string literal; querySelector needs
-		// no arguments object (arrow functions don't bind `arguments`).
+		// Descend to the first interactive child like focusAction; fall back to
+		// the root so components with no inner interactive element still get a
+		// hover at the root centre.
 		js := `(() => {
-			const e = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
-			if (!e) return null;
+			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
+			if (!root) return null;
+			const e = root.querySelector('button, a[href], input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])') || root;
 			const r = e.getBoundingClientRect();
 			return [r.x + r.width/2, r.y + r.height/2];
 		})()`
