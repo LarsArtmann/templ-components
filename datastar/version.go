@@ -45,7 +45,7 @@ func resolveDatastarCDN(cdnBase string) string {
 // datastarScriptURL returns the CDN URL for the Datastar runtime at the given
 // version. If cdnBase is empty, defaults to defaultDatastarCDNBase.
 //
-// Example: https://cdn.jsdelivr.net/gh/starfederation/[email protected]/bundles/datastar.js.
+// Example: https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js.
 func datastarScriptURL(version DatastarVersion, cdnBase string) string {
 	v := version
 	if v == "" {

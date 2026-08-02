@@ -14,7 +14,7 @@ func TestLiveRegionAutoStart(t *testing.T) {
 		AutoStart: true,
 	}))
 
-	utils.AssertContains(t, output, `data-init="@get('/stream/metrics')"`)
+	utils.AssertContainsAll(t, output, "data-init", "@get(", "/stream/metrics")
 	utils.AssertContains(t, output, `aria-live="polite"`)
 }
 

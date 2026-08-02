@@ -2,7 +2,7 @@
 
 ## Module Structure (single module)
 
-This repo is a **single Go module** (`github.com/larsartmann/templ-components`) with 15 packages:
+This repo is a **single Go module** (`github.com/larsartmann/templ-components`) with 16 packages:
 
 | Package             | Contains                                                  | Purpose                                                                                                             |
 | ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
@@ -12,6 +12,7 @@ This repo is a **single Go module** (`github.com/larsartmann/templ-components`) 
 | `layout`            | 10 components                                             | Page shell, theme toggle, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack |
 | `navigation`        | 12 components                                             | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                               |
 | `htmx`              | 8 components                                              | HTMX loading, error handling, OOB swaps, View Transitions                                                           |
+| `datastar`          | 3 components + action helpers                             | Datastar SDK runtime injection, SSE-powered LiveRegion, loading Indicator. Opt-in complement to HTMX (ADR-0030)     |
 | `icons`             | 102 named SVG icons                                       | Heroicons v2 outline + Spinner                                                                                      |
 | `errorpage`         | 4 components + handler                                    | Error pages, 404, go-error-family integration                                                                       |
 | `recipes`           | 3 composition screens                                     | Dashboard, SettingsLayout, LoginCard — screen-level compositions of display/forms/layout/navigation (ADR-0019)      |

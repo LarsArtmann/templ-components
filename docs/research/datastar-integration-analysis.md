@@ -203,7 +203,7 @@ HTMX SDK.
 @datastar.SDKScript(datastar.SDKScriptProps{Nonce: nonce})
 
 // Renders:
-// <script type="module" nonce="..." src="https://cdn.jsdelivr.net/gh/starfederation/[email protected]/bundles/datastar.js"></script>
+// <script type="module" nonce="..." src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js"></script>
 ```
 
 Supports `SelfHosted` path (like HTMXCDN override) and version pinning.
