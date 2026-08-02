@@ -193,10 +193,8 @@ func TestDataTableFlushPassedToTable(t *testing.T) {
 		},
 		Flush: true,
 	}))
-	// Flush suppresses the wrapper border — should NOT have rounded-lg border
-	if strings.Contains(output, "rounded-lg border") {
-		t.Error("Flush=true should suppress the table wrapper border")
-	}
+	// Flush suppresses the wrapper border + rounded corners.
+	utils.AssertNotContains(t, output, "rounded-lg")
 }
 
 func TestDataTableCaptionRendered(t *testing.T) {
