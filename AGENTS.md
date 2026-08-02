@@ -76,7 +76,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 97 generated files across all packages
+- 100 generated files across all packages
 - **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
 - **BuildFlow daemon commit messages (identified 2026-07-28, T13):** The auto-commit daemon commits with generic, hallucinated messages (e.g., `"chore: update project configuration and documentation"`) authored as `"Unknown Author <unknown@example.com>"`. These commits are invisible to `git log --grep` for specific features. 5+ sessions have documented this. The daemon also has a 60s budget and does NOT run `go test ./...`, meaning the `TestGolangciDisabledLinters` guard only fires in CI. Root cause: the daemon generates messages from a template, not from `git diff --stat`. Fix requires modifying BuildFlow (`larsartmann/buildflow`). The `.golangci.yml` regression root cause (T1) is directly related — the daemon commits a stale working tree without running tests.
 
@@ -121,7 +121,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - **Dark mode color convention:** Light mode uses `-600` shade for backgrounds (`bg-blue-600`), dark mode uses `-500` (`dark:bg-blue-500`). Light mode uses `-600` for text (`text-blue-600`), dark mode uses `-400` (`dark:text-blue-400`). Neutral text: `text-gray-500` → `dark:text-gray-400`, `text-gray-400` → `dark:text-gray-500`. Every neutral and semantic color class MUST have a `dark:` variant — enforced by `utils.TestDarkModeCompliance` + `utils.TestDarkModeSemanticColors` (both now pass). Exceptions: Toggle thumb (`bg-white` both modes), SidebarNav (permanently dark sidebar), avatar silhouette icon (`text-blue-200` decorative).
 - **Dark mode compliance tests:** `utils.TestDarkModeCompliance` scans all `.templ`/`.go` source files for neutral colors (`text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`, `ring-gray-*`) without `dark:` variants. `utils.TestDarkModeSemanticColors` scans for semantic colors (`bg-blue-600`, `text-red-600`, etc.) without `dark:` variants. Both now pass. Run via `go test ./utils/... -run TestDarkMode`. For the full dark mode strategy analysis (Tailwind v4 default is `prefers-color-scheme`, three consumer paths, `@theme` palette override pattern), see `docs/dark-mode-research.md`.
 - **CI:** `.github/workflows/ci.yaml` — lint (golangci-lint), build+test with `templ generate`, coverage artifact. Pre-commit: `.git/hooks/pre-commit` → `scripts/pre-commit.sh`
-- **Import graph:** `internal/svg` ← `icons`; `utils` (leaf); `icons,internal/svg,utils` ← root packages (display,feedback,forms,layout,navigation,htmx); `icons,utils` ← errorpage; all ← examples/demo. Production deps: `icons → internal/svg`, `display → icons,internal/svg,utils`, `feedback → icons,internal/svg,utils`, `forms → icons,utils`, `layout → icons,utils`, `navigation → icons,internal/svg,utils`, `htmx → utils`, `errorpage → icons,utils`
+- **Import graph:** `internal/svg` ← `icons`; `utils` (leaf); `icons,internal/svg,utils` ← root packages (display,feedback,forms,layout,navigation,htmx,datastar); `icons,utils` ← errorpage; all ← examples/demo. Production deps: `icons → internal/svg`, `display → icons,internal/svg,utils`, `feedback → icons,internal/svg,utils`, `forms → icons,utils`, `layout → icons,utils`, `navigation → icons,internal/svg,utils`, `htmx → utils`, `datastar → utils`, `errorpage → icons,utils`
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
 - **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
@@ -321,7 +321,7 @@ after reviewing the release commit and tag with `git show v<version>` and
 # examples/ excluded via .golangci.yml paths exclusion.
 # cmd/tc excluded via explicit package list (CLI tool uses different conventions).
 golangci-lint run \
-  ./display/... ./errorpage/... ./feedback/... ./forms/... \
+  ./datastar/... ./display/... ./errorpage/... ./feedback/... ./forms/... \
   ./htmx/... ./icons/... ./integration/... ./internal/... \
   ./layout/... ./navigation/... ./recipes/... ./utils/...
 ```

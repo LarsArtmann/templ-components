@@ -26,10 +26,10 @@ func TestDocsCountDrift(t *testing.T) {
 	assertCount(t, agents, `(\d+)\s+generated files across all packages`, "AGENTS.md generated files", actualGenerated)
 
 	skill := readDoc(t, "skill", "SKILL.md")
-	assertCount(t, skill, `(\d+)\s+components across 9 packages`, "SKILL.md components", actualComponents)
+	assertCount(t, skill, `(\d+)\s+components across 10 packages`, "SKILL.md components", actualComponents)
 
 	sections := readDoc(t, "website", "src", "data", "sections.ts")
-	assertCount(t, sections, `(\d+)\s+components across 9 packages`, "website sections.ts components", actualComponents)
+	assertCount(t, sections, `(\d+)\s+components across 10 packages`, "website sections.ts components", actualComponents)
 	assertCount(t, sections, `(\d+)\s+typed string enums`, "website sections.ts typed string enums", actualIsValid)
 }
 
@@ -39,7 +39,7 @@ func countExportedTemplFunctions(t *testing.T, root string) int {
 	templFuncRe := regexp.MustCompile(`^templ\s+([A-Z][A-Za-z0-9]*)\s*\(`)
 	count := 0
 
-	packages := []string{"display", "feedback", "forms", "navigation", "errorpage", "layout", "htmx"}
+	packages := []string{"display", "feedback", "forms", "navigation", "errorpage", "layout", "htmx", "datastar"}
 	for _, pkg := range packages {
 		files, err := filepath.Glob(filepath.Join(root, pkg, "*.templ"))
 		if err != nil {
