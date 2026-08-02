@@ -7,6 +7,7 @@ import (
 	"reflect"
 	"testing"
 
+	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/feedback"
@@ -27,6 +28,11 @@ import (
 // interface contract breakage for consumers using generic wrappers.
 func componentTypes() []any {
 	return []any{
+		// datastar (3)
+		datastar.SDKScriptProps{},
+		datastar.LiveRegionProps{},
+		datastar.IndicatorProps{},
+
 		// display (28)
 		display.BadgeProps{},
 		display.AvatarProps{},

@@ -71,7 +71,7 @@
                 name = "run-lint";
                 runtimeInputs = [ pkgs.golangci-lint ];
                 text = ''
-                  golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+                  golangci-lint run ./datastar/... ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./utils/... ./internal/...
                 '';
               };
             };
@@ -119,7 +119,7 @@
                   # Tests skip cleanly when Chromium is absent, so this never red-lines CI.
                   cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./... && cd ..
                   echo "==> Linting..."
-                  golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+                  golangci-lint run ./datastar/... ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./utils/... ./internal/...
                   echo "==> All checks passed."
                 '';
               };

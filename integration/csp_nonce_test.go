@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/feedback"
@@ -26,6 +27,9 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 		name string
 		html string
 	}{
+		{"DatastarSDKScript", utils.Render(t, datastar.SDKScript(datastar.SDKScriptProps{
+			BaseProps: utils.BaseProps{Nonce: testNonce},
+		}))},
 		{"Accordion", utils.Render(t, display.Accordion(display.AccordionProps{
 			BaseProps: utils.BaseProps{Nonce: testNonce},
 			Items:     []display.AccordionItem{{ID: "a1", Title: "A"}},
