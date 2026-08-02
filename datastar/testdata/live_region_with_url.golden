@@ -1,0 +1,1 @@
+<div data-init="@get(&#39;/stream/metrics&#39;)" aria-live="polite" class=""></div>
