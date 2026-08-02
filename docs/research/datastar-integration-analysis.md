@@ -18,12 +18,12 @@ evolution of the hypermedia approach this library already champions.
 This analysis identifies **four tiers of opportunity**, ranked by value and
 risk:
 
-| Tier | Opportunity                                              | Risk     | Verdict      |
-| ---- | -------------------------------------------------------- | -------- | ------------ |
-| A    | Consumer coexistence docs + recipe                       | None     | **Do now**   |
-| B    | Parallel opt-in `datastar` package (zero new deps)       | Low      | **Do now**   |
-| C    | New SSE/signal-powered capabilities (LiveRegion, etc.)   | Medium   | **Prototype** |
-| D    | Full HTMX → Datastar migration                           | **High** | **Reject**   |
+| Tier | Opportunity                                            | Risk     | Verdict       |
+| ---- | ------------------------------------------------------ | -------- | ------------- |
+| A    | Consumer coexistence docs + recipe                     | None     | **Do now**    |
+| B    | Parallel opt-in `datastar` package (zero new deps)     | Low      | **Do now**    |
+| C    | New SSE/signal-powered capabilities (LiveRegion, etc.) | Medium   | **Prototype** |
+| D    | Full HTMX → Datastar migration                         | **High** | **Reject**    |
 
 **Core recommendation:** Build a `datastar` package that mirrors the existing
 `htmx` package — emitting `data-*` attributes and injecting the runtime with
@@ -157,16 +157,16 @@ The library's 104 components emit standard HTML with Tailwind classes. Most work
 **unchanged** in a Datastar app because they are pure server-rendered HTML. The
 only friction points are components with HTMX-specific attributes:
 
-| Component               | HTMX coupling                        | Datastar equivalent                                  |
-| ----------------------- | ------------------------------------ | ---------------------------------------------------- |
-| `PolledRegion`          | `hx-get`, `hx-trigger="every Ns"`    | `data-on:load="@get('/stream')"` (SSE)               |
-| `LoadMore`              | `hx-get`, `hx-swap`, `hx-trigger`    | `data-on:click="@get('/more')"` + server patches     |
-| `ConfirmDelete`         | `hx-delete`, `hx-confirm`            | `data-on:click="@delete('/item')"` + confirm signal  |
-| `LoadingButton`         | `htmx:balloonBeforeRequest` classes  | `data-indicator` signal                              |
-| `FilterDropdown`        | `hx-get`, `hx-trigger="change"`      | `data-on:change="@get('/filter')"`                   |
-| `GlobalErrorHandling`   | `htmx:responseError` listeners       | Datastar's built-in retry + `data-on-interval`       |
-| `SwapOOB`               | `hx-swap-oob`                        | Server patches target element by ID directly         |
-| `InlineLoadingOverlay`  | `hx-indicator`                       | `data-indicator` signal + `data-show`                |
+| Component              | HTMX coupling                       | Datastar equivalent                                 |
+| ---------------------- | ----------------------------------- | --------------------------------------------------- |
+| `PolledRegion`         | `hx-get`, `hx-trigger="every Ns"`   | `data-on:load="@get('/stream')"` (SSE)              |
+| `LoadMore`             | `hx-get`, `hx-swap`, `hx-trigger`   | `data-on:click="@get('/more')"` + server patches    |
+| `ConfirmDelete`        | `hx-delete`, `hx-confirm`           | `data-on:click="@delete('/item')"` + confirm signal |
+| `LoadingButton`        | `htmx:balloonBeforeRequest` classes | `data-indicator` signal                             |
+| `FilterDropdown`       | `hx-get`, `hx-trigger="change"`     | `data-on:change="@get('/filter')"`                  |
+| `GlobalErrorHandling`  | `htmx:responseError` listeners      | Datastar's built-in retry + `data-on-interval`      |
+| `SwapOOB`              | `hx-swap-oob`                       | Server patches target element by ID directly        |
+| `InlineLoadingOverlay` | `hx-indicator`                      | `data-indicator` signal + `data-show`               |
 
 **Deliverable:** A recipe (`docs/recipes/datastar-integration.md`) documenting
 each mapping with code examples.
@@ -262,13 +262,15 @@ A Datastar-native variant could do this declaratively:
 
 ```html
 <div data-signals="{ query: '', open: false, selected: '' }">
-  <input data-bind:query
-         data-on:input="$open = true"
-         data-on:focus="$open = true"
-         data-on:click__outside="$open = false" />
+  <input
+    data-bind:query
+    data-on:input="$open = true"
+    data-on:focus="$open = true"
+    data-on:click__outside="$open = false"
+  />
   <div data-show="$open">
     for _, opt := range filteredOptions {
-      <button data-on:click="$selected = '...'; $open = false">{ opt.Label }</button>
+    <button data-on:click="$selected = '...'; $open = false">{ opt.Label }</button>
     }
   </div>
 </div>
@@ -324,18 +326,18 @@ Replacing HTMX as the default would:
 
 ### Components That Benefit Most from Datastar
 
-| Component             | Current approach                    | Datastar improvement                          | Impact |
-| --------------------- | ----------------------------------- | --------------------------------------------- | ------ |
-| `PolledRegion`        | HTMX polling (idle waste, latency)  | SSE `LiveRegion` (push, zero idle)            | **High** |
-| `Combobox`            | ~60-line singleton JS               | Signals for filter/open/selected              | **High** |
-| `TagsInput`           | ~50-line singleton JS               | Signals for tag array                         | **High** |
-| `Tabs`                | ~40-line singleton JS               | Signals for active tab                        | Medium |
-| `Carousel`            | ~50-line singleton JS               | Signals for slide index                       | Medium |
-| `Dropdown`/`Popover`  | Popover API + position JS           | Signals for open state                        | Low (already native) |
-| `GlobalErrorHandling` | ~130-line inline JS                 | Built-in retry/indicator lifecycle            | **High** |
-| `LoadingButton`       | `.htmx-request` CSS classes         | `data-indicator` signal                       | Medium |
-| `FilterDropdown`      | `hx-get` on change                  | `data-on:change="@get()"`                     | Low |
-| `LoadMore`            | `hx-get` + `hx-trigger="revealed"`  | `data-on-intersect="@get()"`                  | Low |
+| Component             | Current approach                   | Datastar improvement               | Impact               |
+| --------------------- | ---------------------------------- | ---------------------------------- | -------------------- |
+| `PolledRegion`        | HTMX polling (idle waste, latency) | SSE `LiveRegion` (push, zero idle) | **High**             |
+| `Combobox`            | ~60-line singleton JS              | Signals for filter/open/selected   | **High**             |
+| `TagsInput`           | ~50-line singleton JS              | Signals for tag array              | **High**             |
+| `Tabs`                | ~40-line singleton JS              | Signals for active tab             | Medium               |
+| `Carousel`            | ~50-line singleton JS              | Signals for slide index            | Medium               |
+| `Dropdown`/`Popover`  | Popover API + position JS          | Signals for open state             | Low (already native) |
+| `GlobalErrorHandling` | ~130-line inline JS                | Built-in retry/indicator lifecycle | **High**             |
+| `LoadingButton`       | `.htmx-request` CSS classes        | `data-indicator` signal            | Medium               |
+| `FilterDropdown`      | `hx-get` on change                 | `data-on:change="@get()"`          | Low                  |
+| `LoadMore`            | `hx-get` + `hx-trigger="revealed"` | `data-on-intersect="@get()"`       | Low                  |
 
 ### Components Unaffected by Datastar
 
@@ -401,11 +403,11 @@ management for that component.
 **alternative** for consumers who have opted into Datastar. The existing
 singleton-guard components remain the zero-dependency default.
 
-| Approach          | JS dependency | Custom JS lines | CSP nonce needed |
-| ----------------- | ------------- | --------------- | ---------------- |
-| Singleton-guard   | None          | ~500 (15 scripts) | Yes (per script) |
-| Datastar-native   | ~12 KiB       | 0               | No (module script) |
-| Native HTML only  | None          | 0               | No               |
+| Approach         | JS dependency | Custom JS lines   | CSP nonce needed   |
+| ---------------- | ------------- | ----------------- | ------------------ |
+| Singleton-guard  | None          | ~500 (15 scripts) | Yes (per script)   |
+| Datastar-native  | ~12 KiB       | 0                 | No (module script) |
+| Native HTML only | None          | 0                 | No                 |
 
 ---
 
@@ -439,16 +441,16 @@ for the `forms.*` equivalents.
 
 ## 8. Tradeoffs and Risks
 
-| Concern                          | Assessment                                                                 |
-| -------------------------------- | -------------------------------------------------------------------------- |
-| **Dependency bloat**             | Mitigated: library adds zero deps. Consumer opts in by adding datastar-go. |
-| **SSE infrastructure**           | Real: SSE needs long-lived connections. Not all hosts support it (serverless cold starts). Documented as a consumer responsibility. |
-| **Learning curve**               | Real: Datastar's signal model is new to HTMX users. Mitigated by recipe + attribute helpers. |
-| **Two interactivity models**     | Real: consumers must choose HTMX or Datastar per page. Mitigated by clear decision ladder (JS guide rung 2 vs 7). |
-| **`data-*` attribute collision** | Low: Datastar uses `data-signals`, `data-on`, `data-bind` — distinct from `data-tc-*`. |
+| Concern                          | Assessment                                                                                                                            |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| **Dependency bloat**             | Mitigated: library adds zero deps. Consumer opts in by adding datastar-go.                                                            |
+| **SSE infrastructure**           | Real: SSE needs long-lived connections. Not all hosts support it (serverless cold starts). Documented as a consumer responsibility.   |
+| **Learning curve**               | Real: Datastar's signal model is new to HTMX users. Mitigated by recipe + attribute helpers.                                          |
+| **Two interactivity models**     | Real: consumers must choose HTMX or Datastar per page. Mitigated by clear decision ladder (JS guide rung 2 vs 7).                     |
+| **`data-*` attribute collision** | Low: Datastar uses `data-signals`, `data-on`, `data-bind` — distinct from `data-tc-*`.                                                |
 | **CSP**                          | Non-issue: Datastar loads as `<script type="module" src>` — CSP-safe with `script-src`. No inline handlers needed if using `data-on`. |
-| **Bundle size**                  | ~12 KiB (smaller than HTMX's ~14 KiB). Loads as ES module (deferred by default). |
-| **Maturity**                     | v1.0.2 stable, 501(c)(3) nonprofit governance, 4.8k GitHub stars, 14+ SDKs. Go SDK maintained by the creator. |
+| **Bundle size**                  | ~12 KiB (smaller than HTMX's ~14 KiB). Loads as ES module (deferred by default).                                                      |
+| **Maturity**                     | v1.0.2 stable, 501(c)(3) nonprofit governance, 4.8k GitHub stars, 14+ SDKs. Go SDK maintained by the creator.                         |
 
 ---
 

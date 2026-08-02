@@ -102,8 +102,16 @@ func main() {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
-				fmt.Fprintf(w, "event: datastar-merge-fragments\ndata: <div class=\"rounded-lg bg-gray-50 dark:bg-gray-800 p-4\">\\n")
-				fmt.Fprintf(w, "data:   <p class=\"text-sm text-gray-600 dark:text-gray-400\">SSE update #%d — streamed at %s</p>\\n", i, time.Now().Format("15:04:05"))
+				fmt.Fprintf(
+					w,
+					"event: datastar-merge-fragments\ndata: <div class=\"rounded-lg bg-gray-50 dark:bg-gray-800 p-4\">\\n",
+				)
+				fmt.Fprintf(
+					w,
+					"data:   <p class=\"text-sm text-gray-600 dark:text-gray-400\">SSE update #%d — streamed at %s</p>\\n",
+					i,
+					time.Now().Format("15:04:05"),
+				)
 				fmt.Fprintf(w, "data: </div>\\n\\n")
 				flusher.Flush()
 			}

@@ -13,6 +13,7 @@ evolution of the hypermedia approach this library champions.
 The question: should templ-components adopt Datastar, and if so, how?
 
 The library currently has three interactivity tiers:
+
 1. Native HTML (`<dialog>`, `<details>`, Popover API) — zero JS
 2. HTMX (`hx-*` attributes) — zero JS runtime dependency
 3. Singleton-guard inline JS (15 scripts across interactive components) — zero

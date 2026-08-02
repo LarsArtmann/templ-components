@@ -26,10 +26,10 @@ stale** because the new `datastar_demo.templ` classes haven't been compiled into
 
 ### Critical Fix: Lint Scope Gap (Pre-Phase 2)
 
-| Item | Detail |
-|---|---|
-| `flake.nix` lint scope | Added `./datastar/...`, `./integration/...`, `./recipes/...` to BOTH lint commands (lines 74, 122). The `datastar` package was **never linted** before this session — it was missing from the flake entirely. |
-| 4 pre-existing lint issues | Fixed in `datastar/actions_test.go` (3× wsl_v5) and `datastar/sdk_script_test.go` (1× golines line >120). |
+| Item                       | Detail                                                                                                                                                                                                        |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `flake.nix` lint scope     | Added `./datastar/...`, `./integration/...`, `./recipes/...` to BOTH lint commands (lines 74, 122). The `datastar` package was **never linted** before this session — it was missing from the flake entirely. |
+| 4 pre-existing lint issues | Fixed in `datastar/actions_test.go` (3× wsl_v5) and `datastar/sdk_script_test.go` (1× golines line >120).                                                                                                     |
 
 ### T1: Contract Test — DONE
 

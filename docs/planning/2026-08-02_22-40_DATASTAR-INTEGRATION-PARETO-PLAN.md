@@ -10,15 +10,15 @@
 
 The core Datastar integration is **DONE and verified** (`nix run .#verify` passes):
 
-| #   | Deliverable                                                                              | Status     |
-| --- | ---------------------------------------------------------------------------------------- | ---------- |
+| #   | Deliverable                                                                                              | Status     |
+| --- | -------------------------------------------------------------------------------------------------------- | ---------- |
 | 1   | `datastar` package: `SDKScript`, `LiveRegion`, `Indicator`, action helpers (`Get/Post/Put/Patch/Delete`) | ✅ Shipped |
-| 2   | Deep-research analysis (`docs/research/datastar-integration-analysis.md`)                | ✅ Shipped |
-| 3   | ADR 0030 (`docs/adr/0030-datastar-integration-strategy.md`)                              | ✅ Shipped |
-| 4   | Consumer recipe (`docs/recipes/datastar-integration.md`)                                 | ✅ Shipped |
-| 5   | Golden tests (8 snapshots), unit tests, enum validation (`IsValid`)                      | ✅ Shipped |
-| 6   | Doc updates: AGENTS.md, FEATURES.md, SKILL.md, sections.ts, docs_count_test              | ✅ Shipped |
-| 7   | Zero new `go.mod` dependencies (mirrors `htmx` package pattern)                          | ✅ Shipped |
+| 2   | Deep-research analysis (`docs/research/datastar-integration-analysis.md`)                                | ✅ Shipped |
+| 3   | ADR 0030 (`docs/adr/0030-datastar-integration-strategy.md`)                                              | ✅ Shipped |
+| 4   | Consumer recipe (`docs/recipes/datastar-integration.md`)                                                 | ✅ Shipped |
+| 5   | Golden tests (8 snapshots), unit tests, enum validation (`IsValid`)                                      | ✅ Shipped |
+| 6   | Doc updates: AGENTS.md, FEATURES.md, SKILL.md, sections.ts, docs_count_test                              | ✅ Shipped |
+| 7   | Zero new `go.mod` dependencies (mirrors `htmx` package pattern)                                          | ✅ Shipped |
 
 A consumer can **right now** inject the Datastar runtime, set up an SSE stream
 via `LiveRegion`, use loading indicators via `Indicator`, and use all 107
@@ -31,14 +31,14 @@ existing components unchanged in a Datastar app.
 An audit against every other package reveals **6 missing infrastructure items**.
 The `htmx` package (the direct analog) has all of them; `datastar` has none:
 
-| Infrastructure          | All other packages | `datastar` |
-| ----------------------- | ------------------ | ---------- |
-| `bdd_test.go`           | ✅ 8/8 component packages | ❌     |
-| `benchmark_test.go`     | ✅ 9/9 packages    | ❌         |
-| CSP nonce coverage      | ✅ htmx covered    | ❌         |
-| Contract/BaseProps test | ✅ htmx (2 types)  | ❌         |
-| Demo route              | ✅ htmx endpoints  | ❌         |
-| README mention          | ✅ (htmx implied)  | ❌         |
+| Infrastructure          | All other packages        | `datastar` |
+| ----------------------- | ------------------------- | ---------- |
+| `bdd_test.go`           | ✅ 8/8 component packages | ❌         |
+| `benchmark_test.go`     | ✅ 9/9 packages           | ❌         |
+| CSP nonce coverage      | ✅ htmx covered           | ❌         |
+| Contract/BaseProps test | ✅ htmx (2 types)         | ❌         |
+| Demo route              | ✅ htmx endpoints         | ❌         |
+| README mention          | ✅ (htmx implied)         | ❌         |
 
 ---
 
@@ -69,13 +69,13 @@ believing); the JS guide connects rung 7 to the actual package.
 
 ### Explicitly DEFERRED (Verslimmbessern Risk)
 
-| Item                                   | Why defer                                                                              |
-| -------------------------------------- | -------------------------------------------------------------------------------------- |
-| Reactive `datastar.Combobox` variant   | Existing `forms.Combobox` works in Datastar apps. Parallel impl splits the brain, doubles maintenance. Defer until a consumer requests it. |
-| Reactive `datastar.TagsInput` variant  | Same reasoning. Recipe documents the signal-based pattern.                             |
-| `datastar.LoadMore` / `ConfirmDelete`  | Recipe already maps the HTMX-to-Datastar attribute equivalents. New components would duplicate. |
-| Multi-step form via signals            | YAGNI. No consumer has asked. Document the pattern in the recipe instead.              |
-| Website docs page                      | The recipe + ADR + research doc cover it. Website page is nice-to-have polish.         |
+| Item                                  | Why defer                                                                                                                                  |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| Reactive `datastar.Combobox` variant  | Existing `forms.Combobox` works in Datastar apps. Parallel impl splits the brain, doubles maintenance. Defer until a consumer requests it. |
+| Reactive `datastar.TagsInput` variant | Same reasoning. Recipe documents the signal-based pattern.                                                                                 |
+| `datastar.LoadMore` / `ConfirmDelete` | Recipe already maps the HTMX-to-Datastar attribute equivalents. New components would duplicate.                                            |
+| Multi-step form via signals           | YAGNI. No consumer has asked. Document the pattern in the recipe instead.                                                                  |
+| Website docs page                     | The recipe + ADR + research doc cover it. Website page is nice-to-have polish.                                                             |
 
 **Criterion for un-deferring:** a consumer files an issue saying "I need X
 because Y." Until then, the existing recipe + package are sufficient.
@@ -86,15 +86,15 @@ because Y." Until then, the existing recipe + package are sufficient.
 
 Sorted by importance / impact / effort / customer-value.
 
-| #   | Task                                                        | Impact   | Effort | Est   | Customer Value                        |
-| --- | ----------------------------------------------------------- | -------- | ------ | ----- | ------------------------------------- |
-| T1  | Contract test: add 3 datastar props types to inventory      | HIGH     | LOW    | 15min | Interface compliance guarantee        |
-| T2  | CSP nonce test: add datastar.SDKScript to integration suite | HIGH     | LOW    | 15min | Security guarantee (CSP-safe)         |
-| T3  | BDD test: behavior scenarios for SDKScript + LiveRegion     | MEDIUM   | LOW    | 30min | Behavior verification (Ginkgo)        |
-| T4  | Benchmark suite for datastar package                        | LOW      | LOW    | 20min | Perf baseline (consistency)           |
-| T5  | README: add datastar to component catalogue                 | MEDIUM   | LOW    | 15min | Discoverability for new users         |
-| T6  | Demo: add /demo/datastar route with mock SSE endpoint       | HIGH     | MED    | 45min | "Seeing is believing" adoption driver |
-| T7  | JS guide: cross-reference datastar package in Pattern 4     | LOW      | LOW    | 10min | Connect rung 7 to actual package      |
+| #   | Task                                                        | Impact | Effort | Est   | Customer Value                        |
+| --- | ----------------------------------------------------------- | ------ | ------ | ----- | ------------------------------------- |
+| T1  | Contract test: add 3 datastar props types to inventory      | HIGH   | LOW    | 15min | Interface compliance guarantee        |
+| T2  | CSP nonce test: add datastar.SDKScript to integration suite | HIGH   | LOW    | 15min | Security guarantee (CSP-safe)         |
+| T3  | BDD test: behavior scenarios for SDKScript + LiveRegion     | MEDIUM | LOW    | 30min | Behavior verification (Ginkgo)        |
+| T4  | Benchmark suite for datastar package                        | LOW    | LOW    | 20min | Perf baseline (consistency)           |
+| T5  | README: add datastar to component catalogue                 | MEDIUM | LOW    | 15min | Discoverability for new users         |
+| T6  | Demo: add /demo/datastar route with mock SSE endpoint       | HIGH   | MED    | 45min | "Seeing is believing" adoption driver |
+| T7  | JS guide: cross-reference datastar package in Pattern 4     | LOW    | LOW    | 10min | Connect rung 7 to actual package      |
 
 **Total estimated effort:** ~150min (2.5 hours)
 
@@ -102,24 +102,24 @@ Sorted by importance / impact / effort / customer-value.
 
 ## Phase 2: Micro-Task Breakdown (max 12min each)
 
-| Sub-task                                    | Parent | Est   | Depends on |
-| ------------------------------------------- | ------ | ----- | ---------- |
-| **M1a**: Add datastar import + 3 props to `internal/contract/component_props_test.go` | T1 | 8min  | —          |
-| **M1b**: Run `go test ./internal/contract/...` and fix if needed             | T1     | 7min  | M1a        |
-| **M2a**: Add `datastar.SDKScript` render to `integration/csp_nonce_test.go`  | T2     | 8min  | —          |
-| **M2b**: Run `go test ./integration/...` and verify nonce present            | T2     | 7min  | M2a        |
-| **M3a**: Write BDD Describe structure for SDKScript + LiveRegion + Indicator | T3     | 12min | —          |
-| **M3b**: Write SDKScript scenarios (CDN URL, self-hosted, nonce, version)    | T3     | 12min | M3a        |
-| **M3c**: Write LiveRegion + Indicator scenarios, run and verify              | T3     | 6min  | M3b        |
-| **M4a**: Write benchmark funcs for SDKScript, LiveRegion, Indicator          | T4     | 12min | —          |
-| **M4b**: Run `go test -bench=. -benchmem ./datastar/...` and verify          | T4     | 8min  | M4a        |
-| **M5a**: Add datastar section to README component catalogue                  | T5     | 12min | —          |
-| **M5b**: Verify README renders, run docs drift test                          | T5     | 3min  | M5a        |
-| **M6a**: Add SSE handler function to `examples/demo/main.go`                 | T6     | 12min | —          |
-| **M6b**: Add `/demo/datastar` route + page template (templ)                  | T6     | 12min | M6a        |
-| **M6c**: Wire LiveRegion + StatCard + SDKScript on demo page                 | T6     | 12min | M6b        |
-| **M6d**: Build demo binary and smoke-test the route                          | T6     | 9min  | M6c        |
-| **M7a**: Update JS guide Pattern 4 to cross-reference `datastar` package     | T7     | 10min | —          |
+| Sub-task                                                                              | Parent | Est   | Depends on |
+| ------------------------------------------------------------------------------------- | ------ | ----- | ---------- |
+| **M1a**: Add datastar import + 3 props to `internal/contract/component_props_test.go` | T1     | 8min  | —          |
+| **M1b**: Run `go test ./internal/contract/...` and fix if needed                      | T1     | 7min  | M1a        |
+| **M2a**: Add `datastar.SDKScript` render to `integration/csp_nonce_test.go`           | T2     | 8min  | —          |
+| **M2b**: Run `go test ./integration/...` and verify nonce present                     | T2     | 7min  | M2a        |
+| **M3a**: Write BDD Describe structure for SDKScript + LiveRegion + Indicator          | T3     | 12min | —          |
+| **M3b**: Write SDKScript scenarios (CDN URL, self-hosted, nonce, version)             | T3     | 12min | M3a        |
+| **M3c**: Write LiveRegion + Indicator scenarios, run and verify                       | T3     | 6min  | M3b        |
+| **M4a**: Write benchmark funcs for SDKScript, LiveRegion, Indicator                   | T4     | 12min | —          |
+| **M4b**: Run `go test -bench=. -benchmem ./datastar/...` and verify                   | T4     | 8min  | M4a        |
+| **M5a**: Add datastar section to README component catalogue                           | T5     | 12min | —          |
+| **M5b**: Verify README renders, run docs drift test                                   | T5     | 3min  | M5a        |
+| **M6a**: Add SSE handler function to `examples/demo/main.go`                          | T6     | 12min | —          |
+| **M6b**: Add `/demo/datastar` route + page template (templ)                           | T6     | 12min | M6a        |
+| **M6c**: Wire LiveRegion + StatCard + SDKScript on demo page                          | T6     | 12min | M6b        |
+| **M6d**: Build demo binary and smoke-test the route                                   | T6     | 9min  | M6c        |
+| **M7a**: Update JS guide Pattern 4 to cross-reference `datastar` package              | T7     | 10min | —          |
 
 **Total:** 16 micro-tasks, ~150min.
 
@@ -184,14 +184,14 @@ Before starting ANY task, verify:
 
 ## Deferred Work (Do NOT Implement Without Consumer Request)
 
-| Item                                   | Trigger to un-defer                                  |
-| -------------------------------------- | ---------------------------------------------------- |
-| `datastar.Combobox` (signals-based)    | Consumer issue: "I need a zero-JS combobox in my Datastar app" |
-| `datastar.TagsInput` (signals-based)   | Consumer issue: "I need a zero-JS tags input"        |
-| `datastar.LoadMore`                    | Consumer issue: "I need infinite scroll without HTMX"|
-| `datastar.MultiStepForm`               | Consumer issue: "I need signal-driven step navigation" |
-| Website docs page                      | After v1.0 release, as part of website refresh       |
-| `datastar.PolledRegion` fallback       | Not needed — `LiveRegion` subsumes this use case     |
+| Item                                 | Trigger to un-defer                                            |
+| ------------------------------------ | -------------------------------------------------------------- |
+| `datastar.Combobox` (signals-based)  | Consumer issue: "I need a zero-JS combobox in my Datastar app" |
+| `datastar.TagsInput` (signals-based) | Consumer issue: "I need a zero-JS tags input"                  |
+| `datastar.LoadMore`                  | Consumer issue: "I need infinite scroll without HTMX"          |
+| `datastar.MultiStepForm`             | Consumer issue: "I need signal-driven step navigation"         |
+| Website docs page                    | After v1.0 release, as part of website refresh                 |
+| `datastar.PolledRegion` fallback     | Not needed — `LiveRegion` subsumes this use case               |
 
 ---
 

@@ -94,13 +94,13 @@ func streamMetrics(w http.ResponseWriter, r *http.Request) {
 
 ### Why this is better than PolledRegion
 
-| Aspect           | PolledRegion (HTMX)              | LiveRegion (Datastar SSE)           |
-| ---------------- | -------------------------------- | ----------------------------------- |
-| Requests         | N per minute (every interval)    | 1 long-lived connection             |
-| Latency          | Up to `interval` seconds stale   | Sub-second (push on change)         |
-| Idle traffic     | Full HTML fragment each poll     | Zero (server pushes only on change) |
-| Bandwidth        | Full HTML every poll             | Signal-only patches possible        |
-| Reconnection     | Automatic (next poll)            | Automatic (Last-Event-ID resume)    |
+| Aspect       | PolledRegion (HTMX)            | LiveRegion (Datastar SSE)           |
+| ------------ | ------------------------------ | ----------------------------------- |
+| Requests     | N per minute (every interval)  | 1 long-lived connection             |
+| Latency      | Up to `interval` seconds stale | Sub-second (push on change)         |
+| Idle traffic | Full HTML fragment each poll   | Zero (server pushes only on change) |
+| Bandwidth    | Full HTML every poll           | Signal-only patches possible        |
+| Reconnection | Automatic (next poll)          | Automatic (Last-Event-ID resume)    |
 
 ---
 
@@ -134,17 +134,17 @@ no custom JS needed.
 Most components work unchanged. Only components with `hx-*` attributes need
 Datastar equivalents:
 
-| HTMX                                | Datastar equivalent                                |
-| ----------------------------------- | -------------------------------------------------- |
-| `hx-get="/url"`                     | `data-on:click={ datastar.Get("/url") }`           |
-| `hx-post="/url"`                    | `data-on:click={ datastar.Post("/url") }`          |
-| `hx-delete="/url"`                  | `data-on:click={ datastar.Delete("/url") }`        |
-| `hx-trigger="every 10s"`            | `data-init={ datastar.Get("/stream") }` (SSE)      |
-| `hx-target="#id"`                   | Server patches element by ID (no client-side target) |
-| `hx-swap="outerHTML"`              | Server chooses morph mode per patch                 |
-| `hx-indicator=".loading"`           | `data-indicator:loading` + `data-show="$loading"`   |
-| `hx-confirm="Sure?"`               | `data-on:click="if (confirm('Sure?')) @delete('/url')"` |
-| `hx-swap-oob`                      | Server patches multiple elements in one SSE event   |
+| HTMX                      | Datastar equivalent                                     |
+| ------------------------- | ------------------------------------------------------- |
+| `hx-get="/url"`           | `data-on:click={ datastar.Get("/url") }`                |
+| `hx-post="/url"`          | `data-on:click={ datastar.Post("/url") }`               |
+| `hx-delete="/url"`        | `data-on:click={ datastar.Delete("/url") }`             |
+| `hx-trigger="every 10s"`  | `data-init={ datastar.Get("/stream") }` (SSE)           |
+| `hx-target="#id"`         | Server patches element by ID (no client-side target)    |
+| `hx-swap="outerHTML"`     | Server chooses morph mode per patch                     |
+| `hx-indicator=".loading"` | `data-indicator:loading` + `data-show="$loading"`       |
+| `hx-confirm="Sure?"`      | `data-on:click="if (confirm('Sure?')) @delete('/url')"` |
+| `hx-swap-oob`             | Server patches multiple elements in one SSE event       |
 
 ### Action helper functions
 

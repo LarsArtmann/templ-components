@@ -12,17 +12,17 @@ breaking committed config that is already correct.
 
 ## Timeline (this session only)
 
-| Time | Event |
-|------|-------|
-| ~21:44 | Fixed `visualtest/doc.go` `:=` → `=` and removed 3 linters from `.golangci.yml` enable list |
-| ~21:49 | Wrote first status report |
+| Time   | Event                                                                                                      |
+| ------ | ---------------------------------------------------------------------------------------------------------- |
+| ~21:44 | Fixed `visualtest/doc.go` `:=` → `=` and removed 3 linters from `.golangci.yml` enable list                |
+| ~21:49 | Wrote first status report                                                                                  |
 | ~21:59 | Committed (`d2efac6`). BuildFlow pre-commit immediately re-introduced BOTH regressions in the working tree |
-| ~22:00 | Traced `:=` root cause to fatcontext issue #100 (dup of #43). Applied split-assignment fix. |
-| ~22:10 | `.golangci.yml` regression hit AGAIN (7th+ time). Re-removed linters. |
-| ~22:15 | Filed upstream feedback to golangci-lint-auto-configure repo |
-| ~22:19 | Wrote second status report |
-| ~22:25 | BOTH regressions hit AGAIN. Plus new YAML corruption (indentation broken by repair tool). |
-| ~22:30 | Applied three permanent fixes: `//nolint:fatcontext`, `disable:` list, section-aware test. All verified. |
+| ~22:00 | Traced `:=` root cause to fatcontext issue #100 (dup of #43). Applied split-assignment fix.                |
+| ~22:10 | `.golangci.yml` regression hit AGAIN (7th+ time). Re-removed linters.                                      |
+| ~22:15 | Filed upstream feedback to golangci-lint-auto-configure repo                                               |
+| ~22:19 | Wrote second status report                                                                                 |
+| ~22:25 | BOTH regressions hit AGAIN. Plus new YAML corruption (indentation broken by repair tool).                  |
+| ~22:30 | Applied three permanent fixes: `//nolint:fatcontext`, `disable:` list, section-aware test. All verified.   |
 
 ---
 
@@ -31,6 +31,7 @@ breaking committed config that is already correct.
 ### 1. `visualtest/doc.go` — `//nolint:fatcontext` (permanent fix, 3rd attempt)
 
 **History of attempts this session:**
+
 1. `:=` → `=` — fatcontext autofix reverted it to `:=` on next commit
 2. Split assignment (`allocCtx, cancel := ...` then `sharedAllocCtx = allocCtx`) — fatcontext autofix converted `sharedAllocCtx = allocCtx` to `sharedAllocCtx := allocCtx`, shadowing the package var
 3. `//nolint:fatcontext` comment on the `=` line — suppresses the diagnostic entirely so the autofix never fires
@@ -40,6 +41,7 @@ breaking committed config that is already correct.
 ### 2. `.golangci.yml` — moved 3 linters to `disable:` (permanent fix)
 
 **History:**
+
 1. Removed from `enable` only — repair re-added them (7+ times)
 2. Now added to `disable:` list — repair respects `disable:` per the 2026-07-25 fix in golangci-lint-auto-configure
 
@@ -106,10 +108,12 @@ All three fixes are applied and verified in isolation. However:
 ### Failed to apply permanent fixes on the first attempt
 
 The session went through **three cycles** of the same pattern:
+
 1. Apply symptom fix → BuildFlow reverts → diagnose deeper → apply better fix
 2. Apply better fix → BuildFlow reverts differently → diagnose deeper → apply permanent fix
 
 **What I should have done from the start:**
+
 - For fatcontext: `//nolint:fatcontext` is the standard Go way to suppress a
   linter. I should have used it immediately instead of trying code restructuring
   (split assignment) that the autofix could still target.
@@ -174,10 +178,10 @@ these patterns exist.
 This session spent ~45 minutes fighting two tools that "fix" already-correct
 code. The pattern is now well-understood:
 
-| Tool | Trigger | Fix it applies | Why it's wrong here | Permanent suppression |
-|------|---------|----------------|---------------------|----------------------|
-| fatcontext | `ctx, cancel = ...` | Converts `=` to `:=` | Shadows package-level vars | `//nolint:fatcontext` |
-| golangci-lint-auto-configure repair | Linter absent from `enable` | Re-adds to `enable` | User intentionally disabled | Add to `disable:` |
+| Tool                                | Trigger                     | Fix it applies       | Why it's wrong here         | Permanent suppression |
+| ----------------------------------- | --------------------------- | -------------------- | --------------------------- | --------------------- |
+| fatcontext                          | `ctx, cancel = ...`         | Converts `=` to `:=` | Shadows package-level vars  | `//nolint:fatcontext` |
+| golangci-lint-auto-configure repair | Linter absent from `enable` | Re-adds to `enable`  | User intentionally disabled | Add to `disable:`     |
 
 This playbook should be in AGENTS.md so future sessions don't waste time.
 
@@ -200,6 +204,7 @@ parsing should have been in the original test.
 ## f) Next Steps (Up to 50)
 
 ### Immediate (blocking)
+
 1. **Commit the three fixes** (`visualtest/doc.go`, `.golangci.yml`,
    `lint_config_test.go`) — waiting for user instruction
 2. **Run `go test ./...`** to verify the full suite
@@ -207,6 +212,7 @@ parsing should have been in the original test.
 4. **Run `nix run .#verify`** for the full pipeline
 
 ### Documentation (high value)
+
 5. Update AGENTS.md with fatcontext #100 root cause and `//nolint` workaround
 6. Document the `disable:` pattern for linter suppression in AGENTS.md
 7. Document the section-aware test pattern in AGENTS.md
@@ -215,6 +221,7 @@ parsing should have been in the original test.
 10. Update/reconcile the two earlier status reports from this session
 
 ### Verification
+
 11. Run `golangci-lint run` to confirm 0 findings
 12. Run `scripts/check-lint-config.sh` after `.golangci.yml` edit
 13. Verify `//nolint:fatcontext` survives a BuildFlow pre-commit cycle
@@ -223,6 +230,7 @@ parsing should have been in the original test.
 16. Run `nix flake check` for format verification
 
 ### Upstream
+
 17. Monitor golangci-lint-auto-configure feedback for response
 18. Check if fatcontext #43 has been fixed upstream
 19. Consider contributing a PR to fatcontext (check `TypesInfo.Uses` before converting)
@@ -230,12 +238,14 @@ parsing should have been in the original test.
 21. File feedback to BuildFlow about YAML corruption on repair
 
 ### Testing improvements
+
 22. Add a test verifying `.golangci.yml` `disable:` list contains the 3 linters
 23. Add a test verifying `//nolint:fatcontext` is present on the allocator line
 24. Add an integration test that runs a simulated BuildFlow repair cycle
 25. Consider a `.golangci.yml` schema validation test (catches YAML corruption)
 
 ### Process improvements
+
 26. Add "use `//nolint` for linter autofix suppression, not code restructuring" to personal workflow
 27. Add "apply workarounds immediately, don't offer as questions" to personal workflow
 28. Add "run `git diff` after every BuildFlow commit" to session checklist
@@ -243,6 +253,7 @@ parsing should have been in the original test.
 30. Consider a pre-push hook that runs the full test suite
 
 ### Broader
+
 31. Audit all `//nolint` comments in the codebase for correctness
 32. Audit all `.golangci.yml` entries for potential repair conflicts
 33. Consider whether other linters in the enable list are incompatible with templ
