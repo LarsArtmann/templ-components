@@ -139,6 +139,22 @@
               };
             };
 
+            css = {
+              type = "app";
+              meta.description = "Recompile the demo CSS (examples/demo/static/app.css) via tailwindcss --minify";
+              program = pkgs.writeShellApplication {
+                name = "run-css";
+                runtimeInputs = [ pkgs.tailwindcss_4 ];
+                text = ''
+                  tailwindcss \
+                    --input examples/demo/demo.css \
+                    --output examples/demo/static/app.css \
+                    --minify
+                  echo "CSS compiled: examples/demo/static/app.css"
+                '';
+              };
+            };
+
             visual = {
               type = "app";
               meta.description = "Run pixel-level visual regression tests (headless Chromium via chromedp)";

@@ -291,6 +291,27 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 
 ---
 
+## Testing
+
+The library is verified by a three-tier strategy that catches different classes
+of regression:
+
+| Tier | What | Where | Catches |
+| ---- | ---- | ----- | ------- |
+| **HTML golden** | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `internal/golden` — 102 `.golden` files | Structure, attribute, and class changes |
+| **Drift-guard scanners** | Cross-cutting invariant tests | `utils/` | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
+| **Visual regression** | Pixel-level PNG diff in headless Chromium | `visualtest/` (separate module) | Layout shifts, dark-mode color regressions, RTL mirroring |
+
+```bash
+nix run .#verify   # generate + build + test + lint — the "done" check
+nix run .#visual   # pixel-level visual regression (needs Chromium; skips if absent)
+```
+
+See [docs/testing-guide.md](docs/testing-guide.md) for the full strategy, how to
+update goldens, and how to add coverage for a new component.
+
+---
+
 ## Requirements
 
 - **Go** 1.26+ (`GOEXPERIMENT=jsonv2`)
