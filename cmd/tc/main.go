@@ -15,7 +15,10 @@ import (
 	"io/fs"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
+
+	"github.com/larsartmann/templ-components/utils"
 )
 
 // CLI tool uses different conventions than library code: path traversal is
@@ -74,6 +77,40 @@ func newRegistry() *registry {
 	return r
 }
 
+// packageDeps lists the non-test, non-generated, non-types .go files in each
+// package. These are the sibling files that 'tc add' does NOT copy but that the
+// .templ source references (class lookups, enums, shared helpers, etc.).
+// Use 'tc add <component> --list-deps' to print them.
+var packageDeps = map[string][]string{
+	"display": {
+		"bar_chart.go", "button_go.go", "collapsible_section.go",
+		"drawer_go.go", "enums_go.go", "external_link.go",
+		"heatmap.go", "modal_go.go", "shared.go", "sparkline.go",
+	},
+	"feedback": {"enums_go.go", "styles.go"},
+	"forms": {
+		"aria.go", "enums_go.go", "ids.go",
+		"input_classes.go", "radio.go",
+	},
+	"layout": {
+		"appshell_types.go", "container_types.go",
+		"sri.go", "split_types.go", "stack_types.go",
+	},
+	"navigation": {},
+	"htmx": {
+		"enums_go.go", "polled_region.go",
+		"view_transitions.go",
+	},
+	"errorpage": {
+		"constructors.go", "fromerror.go", "handler.go",
+		"notfound404_types.go", "styles.go",
+	},
+	"recipes": {
+		"dashboard_types.go", "login_card_types.go",
+		"settings_layout_types.go",
+	},
+}
+
 func main() {
 	if len(os.Args) < 2 {
 		usage()
@@ -90,6 +127,8 @@ func main() {
 		cmdList(r, os.Args[2:])
 	case "add":
 		cmdAdd(r, os.Args[2:])
+	case "version", "-v", "--version":
+		fmt.Fprintln(os.Stdout, utils.Version)
 	case "-h", "--help", "help":
 		usage()
 	default:
@@ -156,9 +195,9 @@ func cmdList(r *registry, _ []string) {
 }
 
 func cmdAdd(r *registry, args []string) {
-	out, positional := parseAddArgs(args)
+	out, listDeps, positional := parseAddArgs(args)
 	if len(positional) < 1 {
-		_, _ = fmt.Fprintln(os.Stderr, "tc add <component> [--out DIR]")
+		_, _ = fmt.Fprintln(os.Stderr, "tc add <component> [--out DIR] [--list-deps]")
 
 		return
 	}
@@ -167,6 +206,22 @@ func cmdAdd(r *registry, args []string) {
 	files, ok := r.files[name]
 	if !ok {
 		failf("unknown component %q. Run 'tc ls' for the list.", name)
+	}
+
+	pkg := r.pkg[name]
+
+	if listDeps {
+		deps := packageDeps[pkg]
+		sort.Strings(deps)
+		fmt.Fprintf(os.Stdout, "# sibling .go files in package '%s' needed by '%s':\n", pkg, name)
+		for _, dep := range deps {
+			fmt.Fprintf(os.Stdout, "  %s/%s\n", pkg, dep)
+		}
+		fmt.Fprintf(os.Stderr, "\ntc: %d file(s). These are NOT copied by 'tc add'.\n", len(deps))
+		fmt.Fprintf(os.Stderr, "tc: to get a working component, vendor the full package:\n")
+		fmt.Fprintf(os.Stderr, "      go get github.com/larsartmann/templ-components/%s\n", pkg)
+
+		return
 	}
 
 	if err := os.MkdirAll(out, 0o750); err != nil {
@@ -195,7 +250,6 @@ func cmdAdd(r *registry, args []string) {
 	// Warn: a .templ file references package-level helpers (class lookups,
 	// enums, utils, sub-templates) defined in sibling .go files that are NOT
 	// embedded or copied. The output will not compile standalone.
-	pkg := r.pkg[name]
 	fmt.Fprintf(os.Stderr,
 		"tc: note: '%s.templ' is part of the '%s' package and references helpers\n"+
 			"    (class lookups, enums, sub-templates) defined in sibling .go files\n"+
@@ -205,7 +259,7 @@ func cmdAdd(r *registry, args []string) {
 		name, pkg, pkg)
 }
 
-func parseAddArgs(args []string) (out string, positional []string) {
+func parseAddArgs(args []string) (out string, listDeps bool, positional []string) {
 	out = "./components"
 
 	i := 0
@@ -227,17 +281,20 @@ func parseAddArgs(args []string) (out string, positional []string) {
 		case strings.HasPrefix(a, "-o="):
 			out = strings.TrimPrefix(a, "-o=")
 			i++
+		case a == "--list-deps":
+			listDeps = true
+			i++
 		case a == "-h" || a == "--help":
-			_, _ = fmt.Fprintln(os.Stderr, "tc add <component> [--out DIR]")
+			_, _ = fmt.Fprintln(os.Stderr, "tc add <component> [--out DIR] [--list-deps]")
 
-			return out, positional
+			return out, listDeps, positional
 		default:
 			positional = append(positional, a)
 			i++
 		}
 	}
 
-	return out, positional
+	return out, listDeps, positional
 }
 
 func copyFile(srcEmbed, dest string) {

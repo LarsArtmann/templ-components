@@ -15,6 +15,7 @@ import (
 	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
+	"github.com/larsartmann/templ-components/recipes"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -116,6 +117,12 @@ func componentTypes() []any {
 		errorpage.NotFound404Props{},
 		errorpage.ErrorDetailProps{},
 		errorpage.ErrorAlertProps{},
+
+		// recipes (3)
+		recipes.DashboardProps{},
+		recipes.SettingsLayoutProps{},
+		recipes.LoginCardProps{},
+		recipes.AuthLayoutProps{},
 	}
 }
 

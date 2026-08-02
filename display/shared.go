@@ -286,6 +286,14 @@ func popoverPositionJS() string {
 		`else if(pos==="left"){top=r.top+r.height/2-h/2;left=r.left-w-gap}` +
 		`else if(pos==="right"){top=r.top+r.height/2-h/2;left=r.right+gap}` +
 		`else{top=r.bottom+gap}` +
+		// Flip to the opposite side when the preferred side clips the viewport
+		// and there is room on the opposite side. This mirrors the behaviour
+		// users expect from native select/dropdown elements: if "bottom" clips,
+		// open upward; if "right" clips, open leftward.
+		`if(pos==="bottom"&&top+h>vh-gap&&r.top-gap-h>=gap){top=r.top-h-gap}` +
+		`else if(pos==="top"&&top<gap&&r.bottom+gap+h<=vh-gap){top=r.bottom+gap}` +
+		`else if(pos==="right"&&left+w>vw-gap&&r.left-gap-w>=gap){left=r.left-w-gap}` +
+		`else if(pos==="left"&&left<gap&&r.right+gap+w<=vw-gap){left=r.right+gap}` +
 		`left=Math.max(gap,Math.min(left,vw-w-gap));` +
 		`top=Math.max(gap,Math.min(top,vh-h-gap));` +
 		`p.style.inset="auto";p.style.left=left+"px";p.style.top=top+"px";p.style.margin="0";` +

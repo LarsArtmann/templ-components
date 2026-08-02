@@ -1,0 +1,82 @@
+package recipes
+
+import (
+	"github.com/larsartmann/templ-components/icons"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// AuthLayout renders a split-screen authentication page: a centered auth card
+// on one side and a branding/feature panel on the other. The branding panel
+// hides on mobile (lg: breakpoint), leaving the card centered.
+//
+// Pass a LoginCard (or any Card-wrapped form) as Card. Set PanelTitle,
+// PanelText, and PanelFeatures to fill the branding panel. Set Reverse to flip
+// the column order.
+//
+//	@recipes.AuthLayout(recipes.AuthLayoutProps{
+//	   Card:          loginCard,
+//	   PanelTitle:    "Acme",
+//	   PanelText:     "Build better products, faster.",
+//	   PanelFeatures: []string{"SOC 2 compliant", "99.9% uptime SLA"},
+//	})
+templ AuthLayout(props AuthLayoutProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("min-h-dvh grid lg:grid-cols-2", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if props.Reverse {
+			@authPanel(props)
+			@authCardSide(props)
+		} else {
+			@authCardSide(props)
+			@authPanel(props)
+		}
+	</div>
+}
+
+// authCardSide renders the card column — centered vertically and horizontally.
+templ authCardSide(props AuthLayoutProps) {
+	<div class="flex items-center justify-center px-4 py-12">
+		<div class="w-full max-w-sm">
+			if props.Card != nil {
+				@props.Card
+			}
+		</div>
+	</div>
+}
+
+// authPanel renders the branding column — hidden on mobile, visible from the
+// lg breakpoint. Uses a blue-tinted background that adapts to dark mode.
+templ authPanel(props AuthLayoutProps) {
+	<div class="hidden lg:flex lg:flex-col lg:justify-between bg-blue-600 dark:bg-blue-900 px-12 py-12">
+		<div class="max-w-md space-y-6">
+			if props.PanelTitle != "" {
+				<h2 class="text-3xl font-bold text-white">{ props.PanelTitle }</h2>
+			}
+			if props.PanelText != "" {
+				<p class="text-lg text-blue-100">{ props.PanelText }</p>
+			}
+			if len(props.PanelFeatures) > 0 {
+				<ul class="space-y-3">
+					for _, feature := range props.PanelFeatures {
+						<li class="flex items-start gap-3">
+							@icons.IconWithStrokeWidth(icons.CheckCircle, "w-6 h-6 flex-shrink-0 text-blue-200", 1.5)
+							<span class="text-blue-50">{ feature }</span>
+						</li>
+					}
+				</ul>
+			}
+		</div>
+		if props.PanelFooter != nil {
+			<div class="mt-8">
+				@props.PanelFooter
+			</div>
+		}
+	</div>
+}

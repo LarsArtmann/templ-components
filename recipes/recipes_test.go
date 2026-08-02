@@ -128,3 +128,76 @@ func TestLoginCardRender(t *testing.T) {
 		}
 	})
 }
+
+func TestAuthLayoutRender(t *testing.T) {
+	t.Parallel()
+
+	t.Run("renders card and panel", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, AuthLayout(AuthLayoutProps{
+			Card:          templ.Raw(`<form data-test="login">Login</form>`),
+			PanelTitle:    "Acme Corp",
+			PanelText:     "Build better products.",
+			PanelFeatures: []string{"SOC 2 compliant", "99.9% uptime"},
+		}))
+		utils.AssertContains(t, output, `data-test="login"`)
+		utils.AssertContains(t, output, "Acme Corp")
+		utils.AssertContains(t, output, "Build better products.")
+		utils.AssertContains(t, output, "SOC 2 compliant")
+		utils.AssertContains(t, output, "99.9% uptime")
+		utils.AssertContains(t, output, "lg:grid-cols-2")
+	})
+
+	t.Run("hides panel content on mobile", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, AuthLayout(AuthLayoutProps{
+			Card:       templ.Raw(`<div>card</div>`),
+			PanelTitle: "Branding",
+		}))
+		utils.AssertContains(t, output, "hidden lg:flex")
+	})
+
+	t.Run("reverse flips column order", func(t *testing.T) {
+		t.Parallel()
+		normal := utils.Render(t, AuthLayout(AuthLayoutProps{
+			Card:       templ.Raw(`<div id="card">`),
+			PanelTitle: "Panel",
+		}))
+		reversed := utils.Render(t, AuthLayout(AuthLayoutProps{
+			Card:       templ.Raw(`<div id="card">`),
+			PanelTitle: "Panel",
+			Reverse:    true,
+		}))
+		// In normal mode, card appears before panel in DOM order.
+		// In reverse mode, panel appears before card.
+		normalCardIdx := indexOf(normal, `id="card"`)
+		normalPanelIdx := indexOf(normal, "Panel")
+		if normalCardIdx >= normalPanelIdx {
+			t.Error("normal layout should have card before panel in DOM")
+		}
+
+		reversedCardIdx := indexOf(reversed, `id="card"`)
+		reversedPanelIdx := indexOf(reversed, "Panel")
+		if reversedPanelIdx >= reversedCardIdx {
+			t.Error("reverse layout should have panel before card in DOM")
+		}
+	})
+
+	t.Run("default props", func(t *testing.T) {
+		t.Parallel()
+		p := DefaultAuthLayoutProps()
+		if p.Reverse {
+			t.Error("DefaultAuthLayoutProps().Reverse should be false")
+		}
+	})
+}
+
+func indexOf(s, substr string) int {
+	for i := 0; i <= len(s)-len(substr); i++ {
+		if s[i:i+len(substr)] == substr {
+			return i
+		}
+	}
+
+	return -1
+}
