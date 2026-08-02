@@ -77,14 +77,20 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 }
 
 // resolveOptions merges the variadic option list into one Options with defaults.
-// Later options win for non-bool fields; bools OR together so composing
-// {Dark:true} with {RTL:true} yields dark+RTL.
+// For *bool fields (Dark, RTL), a non-nil value from a later option overrides an
+// earlier one; nil means "unset" so composing {Dark:Bool(true)} with
+// {RTL:Bool(true)} yields dark+RTL. FullViewport ORs together.
 func resolveOptions(opts []Options) Options {
 	merged := Options{}
 	for _, o := range opts {
-		merged.Dark = merged.Dark || o.Dark
+		if o.Dark != nil {
+			merged.Dark = o.Dark
+		}
 
-		merged.RTL = merged.RTL || o.RTL
+		if o.RTL != nil {
+			merged.RTL = o.RTL
+		}
+
 		if o.Viewport.Width != 0 {
 			merged.Viewport.Width = o.Viewport.Width
 		}

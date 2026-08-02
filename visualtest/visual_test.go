@@ -20,7 +20,7 @@ func TestButtons(t *testing.T) {
 	primary := display.DefaultButtonProps()
 	primary.Text = "Save changes"
 	visualtest.AssertScreenshot(t, "button/primary_light", display.Button(primary))
-	visualtest.AssertScreenshot(t, "button/primary_dark", display.Button(primary), visualtest.Options{Dark: true})
+	visualtest.AssertScreenshot(t, "button/primary_dark", display.Button(primary), visualtest.Options{Dark: visualtest.Bool(true)})
 
 	danger := display.DefaultButtonProps()
 	danger.Text = "Delete account"
@@ -30,7 +30,7 @@ func TestButtons(t *testing.T) {
 	secondary := display.DefaultButtonProps()
 	secondary.Text = "Cancel"
 	secondary.Variant = display.ButtonSecondary
-	visualtest.AssertScreenshot(t, "button/secondary_dark", display.Button(secondary), visualtest.Options{Dark: true})
+	visualtest.AssertScreenshot(t, "button/secondary_dark", display.Button(secondary), visualtest.Options{Dark: visualtest.Bool(true)})
 }
 
 // TestButtonStates covers the interactive states that are invisible to HTML
@@ -74,7 +74,7 @@ func TestAlerts(t *testing.T) {
 	errAlert.Title = "Could not save"
 	errAlert.Message = "The server rejected the request. Try again in a moment."
 	errAlert.Type = feedback.AlertError
-	visualtest.AssertScreenshot(t, "alert/error_dark", feedback.Alert(errAlert), visualtest.Options{Dark: true})
+	visualtest.AssertScreenshot(t, "alert/error_dark", feedback.Alert(errAlert), visualtest.Options{Dark: visualtest.Bool(true)})
 
 	warn := feedback.DefaultAlertProps()
 	warn.Title = "Storage almost full"
@@ -97,7 +97,7 @@ func TestBadges(t *testing.T) {
 	errorBadge.Text = "Failed"
 	errorBadge.Type = display.BadgeError
 	errorBadge.Pill = true
-	visualtest.AssertScreenshot(t, "badge/error_pill_dark", display.Badge(errorBadge), visualtest.Options{Dark: true})
+	visualtest.AssertScreenshot(t, "badge/error_pill_dark", display.Badge(errorBadge), visualtest.Options{Dark: visualtest.Bool(true)})
 }
 
 // TestCard covers the structural card with header + body.
@@ -107,7 +107,7 @@ func TestCard(t *testing.T) {
 	card := display.DefaultCardProps()
 	card.Title = "Monthly revenue"
 	visualtest.AssertScreenshot(t, "card/basic_light", display.Card(card))
-	visualtest.AssertScreenshot(t, "card/basic_dark", display.Card(card), visualtest.Options{Dark: true})
+	visualtest.AssertScreenshot(t, "card/basic_dark", display.Card(card), visualtest.Options{Dark: visualtest.Bool(true)})
 }
 
 // TestResponsiveViewport captures a card at a mobile viewport width to catch
@@ -131,7 +131,7 @@ func TestModal(t *testing.T) {
 	modal.Title = "Delete project"
 	modal.Open = true
 	visualtest.AssertScreenshot(t, "modal/open_light", display.Modal(modal))
-	visualtest.AssertScreenshot(t, "modal/open_dark", display.Modal(modal), visualtest.Options{Dark: true})
+	visualtest.AssertScreenshot(t, "modal/open_dark", display.Modal(modal), visualtest.Options{Dark: visualtest.Bool(true)})
 }
 
 // TestDrawer covers the native <dialog> drawer on both sides.
@@ -151,7 +151,7 @@ func TestDrawer(t *testing.T) {
 		t,
 		"drawer/left_dark",
 		display.Drawer(left),
-		visualtest.Options{Dark: true},
+		visualtest.Options{Dark: visualtest.Bool(true)},
 	)
 }
 
@@ -163,7 +163,7 @@ func TestInput(t *testing.T) {
 	basic.Label = "Email address"
 	basic.Placeholder = "you@example.com"
 	visualtest.AssertScreenshot(t, "input/text_light", forms.Input(basic))
-	visualtest.AssertScreenshot(t, "input/text_dark", forms.Input(basic), visualtest.Options{Dark: true})
+	visualtest.AssertScreenshot(t, "input/text_dark", forms.Input(basic), visualtest.Options{Dark: visualtest.Bool(true)})
 
 	withError := forms.DefaultInputProps()
 	withError.Label = "Email address"
@@ -190,7 +190,7 @@ func TestSelect(t *testing.T) {
 		{Value: "jp", Label: "Japan"},
 	}
 	visualtest.AssertScreenshot(t, "select/basic_light", forms.Select(sel))
-	visualtest.AssertScreenshot(t, "select/basic_dark", forms.Select(sel), visualtest.Options{Dark: true})
+	visualtest.AssertScreenshot(t, "select/basic_dark", forms.Select(sel), visualtest.Options{Dark: visualtest.Bool(true)})
 }
 
 // TestRTL verifies that logical CSS properties (ms-, me-, ps-, pe-, start-,
@@ -205,7 +205,7 @@ func TestRTL(t *testing.T) {
 		t,
 		"button/primary_rtl",
 		display.Button(primary),
-		visualtest.Options{RTL: true},
+		visualtest.Options{RTL: visualtest.Bool(true)},
 	)
 
 	card := display.DefaultCardProps()
@@ -215,7 +215,7 @@ func TestRTL(t *testing.T) {
 		t,
 		"card/basic_rtl",
 		display.Card(card),
-		visualtest.Options{RTL: true},
+		visualtest.Options{RTL: visualtest.Bool(true)},
 	)
 }
 
@@ -264,7 +264,7 @@ func TestDropdownOpen(t *testing.T) {
 	visualtest.AssertScreenshot(t, "dropdown/open_light", display.Dropdown(dropdown()), light)
 
 	dark := light
-	dark.Dark = true
+	dark.Dark = visualtest.Bool(true)
 	visualtest.AssertScreenshot(t, "dropdown/open_dark", display.Dropdown(dropdown()), dark)
 }
 

@@ -14,6 +14,14 @@ type Viewport struct {
 	Height int
 }
 
+// Common viewport presets matching real device CSS widths. Use them as
+// Options{Viewport: visualtest.ViewportMobile} to test responsive breakpoints.
+var (
+	ViewportMobile  = Viewport{Width: 375, Height: 667}  // iPhone SE / small phone
+	ViewportTablet  = Viewport{Width: 768, Height: 1024} // iPad portrait
+	ViewportDesktop = Viewport{Width: 1280, Height: 800} // default laptop
+)
+
 // InteractionState selects an interactive state to apply to #tc-root before
 // capturing, so hover/focus styles are covered by golden screenshots.
 type InteractionState int
@@ -37,14 +45,46 @@ const (
 	StateContext
 )
 
+// String returns a human-readable name for the interaction state, used in
+// failure messages and test output for quick diagnosis.
+func (s InteractionState) String() string {
+	switch s {
+	case StateRest:
+		return "rest"
+	case StateHover:
+		return "hover"
+	case StateFocus:
+		return "focus"
+	case StateClick:
+		return "click"
+	case StateContext:
+		return "context"
+	default:
+		return fmt.Sprintf("unknown(%d)", int(s))
+	}
+}
+
+// Bool is a convenience helper for setting *bool option fields. It returns a
+// pointer to b so callers can distinguish "unset" (nil) from an explicit true
+// or false — the tri-state that bare bool fields cannot express.
+//
+//	visualtest.Options{Dark: visualtest.Bool(true)}  // explicit dark mode
+//	visualtest.Options{Dark: visualtest.Bool(false)} // explicit light mode
+//	visualtest.Options{}                             // unset → default (light)
+func Bool(b bool) *bool { return &b }
+
 // Options configures how a component is rendered and captured.
 type Options struct {
 	// Dark renders with the .dark class on <html> (the library's dark-mode
-	// strategy). Default is light mode.
-	Dark bool
+	// strategy). nil or false renders light mode; use Bool(true) for dark.
+	// The pointer (not bare bool) lets callers distinguish "unset" from
+	// "explicitly light" in test metadata.
+	Dark *bool
 	// RTL sets dir="rtl" on <html> to test logical-property mirroring.
-	RTL bool
-	// Viewport sets the emulated window size. Defaults to 1280x800.
+	// nil or false renders LTR; use Bool(true) for RTL.
+	RTL *bool
+	// Viewport sets the emulated window size. Defaults to 1280x800
+	// (ViewportDesktop). See ViewportMobile / ViewportTablet presets.
 	Viewport Viewport
 	// MaxMismatch is the largest fraction of mismatched pixels (0–1) that
 	// still passes. Defaults to 0.001 (0.1%). Anti-aliasing noise is filtered
@@ -71,11 +111,11 @@ type Options struct {
 // defaultOptions fills zero values with sensible defaults.
 func defaultOptions(o Options) Options {
 	if o.Viewport.Width == 0 {
-		o.Viewport.Width = 1280
+		o.Viewport.Width = ViewportDesktop.Width
 	}
 
 	if o.Viewport.Height == 0 {
-		o.Viewport.Height = 800
+		o.Viewport.Height = ViewportDesktop.Height
 	}
 
 	if o.MaxMismatch == 0 {
@@ -88,6 +128,12 @@ func defaultOptions(o Options) Options {
 
 	return o
 }
+
+// isDark reports whether the Dark option is explicitly true.
+func isDark(o Options) bool { return o.Dark != nil && *o.Dark }
+
+// isRTL reports whether the RTL option is explicitly true.
+func isRTL(o Options) bool { return o.RTL != nil && *o.RTL }
 
 // renderHTML wraps a component in a standalone HTML document with the compiled
 // Tailwind CSS inline. The component is placed inside #tc-root so it can be
@@ -106,13 +152,13 @@ func renderHTML(component templ.Component, opts Options) (string, error) {
 	htmlClass := ""
 	bodyClass := "bg-white text-gray-900"
 
-	if opts.Dark {
+	if isDark(opts) {
 		htmlClass = ` class="dark"`
 		bodyClass = "bg-gray-900 text-gray-100"
 	}
 
 	dir := ""
-	if opts.RTL {
+	if isRTL(opts) {
 		dir = ` dir="rtl"`
 	}
 
