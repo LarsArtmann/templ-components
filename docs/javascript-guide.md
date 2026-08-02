@@ -234,6 +234,22 @@ sse.MarshalAndMergeSignals(patchJSON)
 | DOM morphing preserves focus/scroll/input | Newer ecosystem than HTMX               |
 | Signal-only patches (no HTML round-trip)  | `data-*` expressions are JS (escaping!) |
 
+### This Library's `datastar` Package
+
+This library ships a `datastar` package with three components that wire the
+Datastar runtime into templ pages — zero new Go dependencies:
+
+- **`datastar.SDKScript`** — injects the Datastar ES module (CDN or self-hosted, CSP-nonce-safe)
+- **`datastar.LiveRegion`** — SSE-powered region (replaces `htmx.PolledRegion` for real-time push)
+- **`datastar.Indicator`** — loading indicator driven by Datastar indicator signals
+
+Action helpers (`datastar.Get`, `datastar.Post`, `datastar.Put`, `datastar.Patch`,
+`datastar.Delete`) build safe `@method('url')` expressions with single-quote escaping.
+
+See [`docs/recipes/datastar-integration.md`](recipes/datastar-integration.md) for
+the HTMX-to-Datastar migration guide and [`docs/adr/0030-datastar-integration-strategy.md`](adr/0030-datastar-integration-strategy.md)
+for the architectural decision.
+
 ---
 
 ## Pattern 5: React/Vue Islands
