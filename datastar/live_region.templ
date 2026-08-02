@@ -1,0 +1,47 @@
+package datastar
+
+import "github.com/larsartmann/templ-components/utils"
+
+// LiveRegion renders a container that auto-connects to an SSE endpoint and
+// receives server-patched updates. This is the Datastar equivalent of
+// htmx.PolledRegion — but instead of polling on an interval, the server pushes
+// patches over a single long-lived connection.
+//
+// The server endpoint must return a text/event-stream response. Use the
+// datastar-go SDK to patch elements or signals:
+//
+//	func streamHandler(w http.ResponseWriter, r *http.Request) {
+//	    sse := datastar.NewSSE(w, r)
+//	    for {
+//	        sse.PatchElementTempl(metricsCard(currentMetrics()))
+//	        time.Sleep(time.Second)
+//	    }
+//	}
+//
+//	@datastar.LiveRegion(datastar.LiveRegionProps{
+//	    URL:       "/stream/metrics",
+//	    AutoStart: true,
+//	}) {
+//	    @display.StatCard(display.StatCardProps{Label: "Active Users", Value: "—"})
+//	}
+templ LiveRegion(props LiveRegionProps) {
+	{{
+		live := livePolitenessValue(props.Live)
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		if props.AutoStart {
+			data-init={ Get(props.URL) }
+		}
+		aria-live={ string(live) }
+		class={ utils.Class("", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ children... }
+	</div>
+}

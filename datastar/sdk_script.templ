@@ -1,0 +1,15 @@
+package datastar
+
+// SDKScript injects the Datastar runtime as an ES module. Include this once
+// per page in your layout, alongside or instead of the HTMX script.
+//
+// Datastar loads as type="module" (deferred by default — no render-blocking).
+//
+//	@datastar.SDKScript(datastar.DefaultSDKScriptProps())
+//
+// Self-hosting:
+//
+//	@datastar.SDKScript(datastar.SDKScriptProps{Src: "/static/datastar.js", Nonce: nonce})
+templ SDKScript(props SDKScriptProps) {
+	<script type="module" nonce={ props.Nonce } src={ scriptSrc(props) }></script>
+}
