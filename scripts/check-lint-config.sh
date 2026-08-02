@@ -22,8 +22,24 @@ if [ ! -f "$CONFIG" ]; then
     exit 0
 fi
 
-VIOLATIONS=$(grep -nE '^\s*- (godoclint|ireturn|testableexamples)\s*$' "$CONFIG" 2>/dev/null || true)
-IRETURN_BLOCK=$(grep -nE '^\s+ireturn:' "$CONFIG" 2>/dev/null || true)
+# Only flag disabled linters if they appear in the enable: section (not disable:).
+# Uses awk to track which YAML subsection we're in.
+VIOLATIONS=$(awk '
+BEGIN { section = "" }
+/^[[:space:]]{2}enable:[[:space:]]*$/ { section = "enable"; next }
+/^[[:space:]]{2}[a-z]+:[[:space:]]*$/ { section = "" }
+section == "enable" && /[[:space:]]-[[:space:]]*(godoclint|ireturn|testableexamples)[[:space:]]*$/ {
+    printf "%d: %s\n", NR, $0
+}
+' "$CONFIG" 2>/dev/null || true)
+IRETURN_BLOCK=$(awk '
+BEGIN { section = "" }
+/^[[:space:]]{2}enable:[[:space:]]*$/ { section = "enable"; next }
+/^[[:space:]]{2}[a-z]+:[[:space:]]*$/ { section = "" }
+section == "enable" && /^[[:space:]]+ireturn:/ {
+    printf "%d: %s\n", NR, $0
+}
+' "$CONFIG" 2>/dev/null || true)
 
 if [ -n "$VIOLATIONS" ] || [ -n "$IRETURN_BLOCK" ]; then
     if [ "$QUIET" != "--quiet" ]; then
