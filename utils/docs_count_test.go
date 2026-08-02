@@ -26,10 +26,11 @@ func TestDocsCountDrift(t *testing.T) {
 	assertCount(t, agents, `(\d+)\s+generated files across all packages`, "AGENTS.md generated files", actualGenerated)
 
 	skill := readDoc(t, "skill", "SKILL.md")
-	assertCount(t, skill, `(\d+)\s+components across 10 packages`, "SKILL.md components", actualComponents)
+	componentsRe := `(\d+)\s+components across 10 packages`
+	assertCount(t, skill, componentsRe, "SKILL.md components", actualComponents)
 
 	sections := readDoc(t, "website", "src", "data", "sections.ts")
-	assertCount(t, sections, `(\d+)\s+components across 10 packages`, "website sections.ts components", actualComponents)
+	assertCount(t, sections, componentsRe, "website sections.ts components", actualComponents)
 	assertCount(t, sections, `(\d+)\s+typed string enums`, "website sections.ts typed string enums", actualIsValid)
 }
 
