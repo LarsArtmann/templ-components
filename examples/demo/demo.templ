@@ -10,9 +10,9 @@ import (
 )
 
 const (
-	componentCount = "102"
+	componentCount = "107"
 	iconCount      = "102"
-	packageCount   = "9"
+	packageCount   = "10"
 )
 
 templ demoPage(props layout.PageProps) {
@@ -43,6 +43,7 @@ templ demoContent() {
 				@formsDemoSection()
 				@navigationDemo()
 				@htmxDemo()
+			@datastarDemo()
 				@errorpageDemo()
 				@iconsDemo()
 			</div>
@@ -103,6 +104,7 @@ templ demoStickyNav() {
 			{"Forms", "forms-controls"},
 			{"Navigation", "nav-simplenav"},
 			{"HTMX", "htmx-loading-indicator"},
+			{"Datastar", "datastar-sdk-section"},
 			{"Error Pages", "errorpage-404"},
 			{"Icons", "icons-all"},
 		}

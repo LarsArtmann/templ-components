@@ -77,6 +77,50 @@ func main() {
 		)
 	})
 
+	// Mock Datastar SSE endpoint — streams periodic updates in Datastar's
+	// datastar-merge-fragments event format. The LiveRegion component connects
+	// to this via data-init="@get('/api/datastar/stream')" when the Datastar
+	// runtime is loaded.
+	mux.HandleFunc("/api/datastar/stream", func(w http.ResponseWriter, r *http.Request) {
+		flusher, ok := w.(http.Flusher)
+		if !ok {
+			http.Error(w, "streaming not supported", http.StatusInternalServerError)
+
+			return
+		}
+
+		w.Header().Set("Content-Type", "text/event-stream")
+		w.Header().Set("Cache-Control", "no-cache")
+		w.Header().Set("Connection", "keep-alive")
+
+		ctx := r.Context()
+		ticker := time.NewTicker(2 * time.Second)
+		defer ticker.Stop()
+
+		for i := 1; i <= 5; i++ {
+			select {
+			case <-ctx.Done():
+				return
+			case <-ticker.C:
+				fmt.Fprintf(w, "event: datastar-merge-fragments\ndata: <div class=\"rounded-lg bg-gray-50 dark:bg-gray-800 p-4\">\\n")
+				fmt.Fprintf(w, "data:   <p class=\"text-sm text-gray-600 dark:text-gray-400\">SSE update #%d — streamed at %s</p>\\n", i, time.Now().Format("15:04:05"))
+				fmt.Fprintf(w, "data: </div>\\n\\n")
+				flusher.Flush()
+			}
+		}
+	})
+
+	mux.HandleFunc("/api/datastar/action", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.WriteHeader(http.StatusOK)
+		fmt.Fprint(
+			w,
+			`<div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
+			<p class="text-sm text-green-800 dark:text-green-200">Datastar action received (mock endpoint).</p>
+		</div>`,
+		)
+	})
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/forms":
