@@ -12,7 +12,8 @@ func TestSDKScriptDefault(t *testing.T) {
 	output := utils.Render(t, SDKScript(DefaultSDKScriptProps()))
 
 	utils.AssertContains(t, output, `<script type="module"`)
-	utils.AssertContains(t, output, `src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js"`)
+	utils.AssertContains(t, output,
+		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js"`)
 }
 
 func TestSDKScriptSelfHosted(t *testing.T) {

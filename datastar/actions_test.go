@@ -22,6 +22,7 @@ func TestActionExpressions(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			if tt.got != tt.want {
 				t.Errorf("%s(%q) = %q, want %q", tt.name, tt.want, tt.got, tt.want)
 			}
@@ -34,6 +35,7 @@ func TestActionExpressionEscapesSingleQuotes(t *testing.T) {
 
 	got := Get("/api/search?q=it's")
 	want := "@get('/api/search?q=it\\'s')"
+
 	if got != want {
 		t.Errorf("Get with single quote = %q, want %q", got, want)
 	}
@@ -96,6 +98,7 @@ func TestDatastarScriptURL(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got := datastarScriptURL(tt.version, tt.cdn)
 			if got != tt.want {
 				t.Errorf("datastarScriptURL(%q, %q) = %q, want %q", tt.version, tt.cdn, got, tt.want)
