@@ -50,13 +50,13 @@ Pure-SVG pie and donut charts with labels and legend. Zero JavaScript.
 
 ## Props Reference
 
-| Prop           | Type                 | Default | Description                     |
-| -------------- | -------------------- | ------- | ------------------------------- |
-| `Slices`       | `[]PieChartSlice`    | —       | Data (Label, Value, Color)      |
-| `Width`        | `int`                | 400     | SVG canvas width                |
-| `Height`       | `int`                | 300     | SVG canvas height               |
-| `Donut`        | `bool`               | false   | Donut (ring) vs full pie        |
-| `InnerRadius`  | `float64`            | 0.6     | Donut hole size (0.0–1.0)       |
-| `ShowLabels`   | `bool`               | true    | External labels with percentages|
-| `ShowLegend`   | `bool`               | true    | Color-swatch legend             |
-| `CenterLabel`  | `string`             | —       | Center text (donut only)        |
+| Prop          | Type              | Default | Description                      |
+| ------------- | ----------------- | ------- | -------------------------------- |
+| `Slices`      | `[]PieChartSlice` | —       | Data (Label, Value, Color)       |
+| `Width`       | `int`             | 400     | SVG canvas width                 |
+| `Height`      | `int`             | 300     | SVG canvas height                |
+| `Donut`       | `bool`            | false   | Donut (ring) vs full pie         |
+| `InnerRadius` | `float64`         | 0.6     | Donut hole size (0.0–1.0)        |
+| `ShowLabels`  | `bool`            | true    | External labels with percentages |
+| `ShowLegend`  | `bool`            | true    | Color-swatch legend              |
+| `CenterLabel` | `string`          | —       | Center text (donut only)         |

@@ -362,7 +362,7 @@ func TestSpinner(t *testing.T) {
 	spinnerOpts := visualtest.Options{MaxMismatch: 0.05}
 	visualtest.AssertScreenshot(t, "spinner/md_light", feedback.Spinner(feedback.SpinnerProps{}), spinnerOpts)
 
-	spinnerOpts.Dark = visualtest.Bool(true)
+	spinnerOpts.Dark = new(true)
 	visualtest.AssertScreenshot(t, "spinner/md_dark", feedback.Spinner(feedback.SpinnerProps{}), spinnerOpts)
 }
 
@@ -477,7 +477,12 @@ func TestTooltip(t *testing.T) {
 	props.Text = "Helpful information"
 
 	tooltipWithTrigger := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-		ctx = templ.WithChildren(ctx, templ.Raw(`<button class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">Hover for info</button>`))
+		ctx = templ.WithChildren(
+			ctx,
+			templ.Raw(
+				`<button class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">Hover for info</button>`,
+			),
+		)
 
 		return display.Tooltip(props).Render(ctx, w)
 	})
@@ -490,9 +495,21 @@ func TestCarousel(t *testing.T) {
 
 	carousel := display.DefaultCarouselProps()
 	carousel.Slides = []display.CarouselSlide{
-		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-blue-600 text-2xl font-bold text-white">1</div>`)},
-		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-emerald-600 text-2xl font-bold text-white">2</div>`)},
-		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-violet-600 text-2xl font-bold text-white">3</div>`)},
+		{
+			Content: templ.Raw(
+				`<div class="flex h-32 items-center justify-center rounded-xl bg-blue-600 text-2xl font-bold text-white">1</div>`,
+			),
+		},
+		{
+			Content: templ.Raw(
+				`<div class="flex h-32 items-center justify-center rounded-xl bg-emerald-600 text-2xl font-bold text-white">2</div>`,
+			),
+		},
+		{
+			Content: templ.Raw(
+				`<div class="flex h-32 items-center justify-center rounded-xl bg-violet-600 text-2xl font-bold text-white">3</div>`,
+			),
+		},
 	}
 	carousel.ShowIndicators = true
 	carousel.Nonce = "test-nonce"

@@ -70,9 +70,9 @@ library and enabling the `ContainerAware` opt-in.
 
 ## Props reference
 
-| Field            | Type | Default | Description                                                                     |
-| ---------------- | ---- | ------- | ------------------------------------------------------------------------------- |
-| `Count`          | `int` | `0`    | Number of skeleton cards. Negative or zero renders a single placeholder.        |
+| Field            | Type   | Default | Description                                                                     |
+| ---------------- | ------ | ------- | ------------------------------------------------------------------------------- |
+| `Count`          | `int`  | `0`     | Number of skeleton cards. Negative or zero renders a single placeholder.        |
 | `ContainerAware` | `bool` | `false` | Use `@container` breakpoints (`@sm:`/`@lg:`) instead of viewport (`sm:`/`lg:`). |
 
 ## See also

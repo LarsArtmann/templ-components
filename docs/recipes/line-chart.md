@@ -65,15 +65,15 @@ Set `AriaLabel` for screen readers. Without it, the chart is `aria-hidden`
 
 ## Props Reference
 
-| Prop          | Type                          | Default     | Description                        |
-| ------------- | ----------------------------- | ----------- | ---------------------------------- |
-| `Series`      | `[]LineChartSeries`           | —           | Data series (Name, Values, Color)  |
-| `XAxisLabels` | `[]string`                    | —           | Category labels for the X-axis     |
-| `Width`       | `int`                         | 600         | SVG canvas width                   |
-| `Height`      | `int`                         | 300         | SVG canvas height                  |
-| `ShowGrid`    | `bool`                        | true        | Dashed gridlines                   |
-| `ShowDots`    | `bool`                        | true        | Data point circles                 |
-| `ShowLegend`  | `bool`                        | true        | Color-swatch legend (2+ series)    |
-| `Style`       | `LineChartStyle`              | Linear      | Linear or Smooth curves            |
-| `Min`/`Max`   | `*float64`                    | auto        | Y-axis range override              |
-| `ValueFormat` | `func(float64) string`        | FormatTick  | Y-axis tick label formatter        |
+| Prop          | Type                   | Default    | Description                       |
+| ------------- | ---------------------- | ---------- | --------------------------------- |
+| `Series`      | `[]LineChartSeries`    | —          | Data series (Name, Values, Color) |
+| `XAxisLabels` | `[]string`             | —          | Category labels for the X-axis    |
+| `Width`       | `int`                  | 600        | SVG canvas width                  |
+| `Height`      | `int`                  | 300        | SVG canvas height                 |
+| `ShowGrid`    | `bool`                 | true       | Dashed gridlines                  |
+| `ShowDots`    | `bool`                 | true       | Data point circles                |
+| `ShowLegend`  | `bool`                 | true       | Color-swatch legend (2+ series)   |
+| `Style`       | `LineChartStyle`       | Linear     | Linear or Smooth curves           |
+| `Min`/`Max`   | `*float64`             | auto       | Y-axis range override             |
+| `ValueFormat` | `func(float64) string` | FormatTick | Y-axis tick label formatter       |

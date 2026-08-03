@@ -8,23 +8,23 @@
 
 ## A) FULLY DONE (13 items)
 
-| #   | Task | Key changes |
-| --- | ---- | ----------- |
-| 92  | Fix unused `boolPtr` | Already done (removed 2026-07-30). Verified closed. |
-| 81  | Audit ordered-substring assertions + drift-guard | Fixed 1 brittle `strings.Contains(out, "rounded-lg border")` in `display/table_data_test.go:197` → `utils.AssertNotContains`. Added `utils/ordered_substring_test.go` — `TestNoOrderedTailwindSubstringsInTests` scans all library `*_test.go` for multi-token Tailwind class literals in `strings.Contains` calls. |
-| 90  | SkeletonCardGrid migration doc | `docs/migration/skeletoncardgrid-api-change.md` — before/after, why, props reference. |
-| 91  | Testing section + guide | README "Testing" section (3-tier table). `docs/testing-guide.md` — golden, drift-guard, visual regression, how to add tests for new components. |
-| 88  | `nix run .#css` app | `flake.nix` app that runs `tailwindcss --input examples/demo/demo.css --output examples/demo/static/app.css --minify`. Verified working. |
-| 84  | Visualtest API: tri-state + presets + state names | `Options.Dark`/`RTL` → `*bool` (nil=unset, Bool(true)=dark). Added `Bool()` helper, `ViewportMobile`/`ViewportTablet`/`ViewportDesktop`, `InteractionState.String()` (rest/hover/focus/click/context). `options_test.go` — 4 tests covering all new API surface. |
-| 83  | StateHover targets first interactive child | `hoverAction` in `harness.go` now descends to first `button, a[href], input, [role="button"]` etc., falling back to root. Mirrors existing `focusAction`. |
-| 94  | Fix 2 latent visual test failures | Root cause: `<dialog Open=true>` renders in-flow but not top-layer without `showModal()`. Fix: added `dialogOpen()` helper with `FullViewport: true` + `WaitSelector: "dialog"`. Updated modal + drawer tests. Regenerated 4 golden PNGs. All pass at 0% mismatch. |
-| 86  | Popover edge-flipping | `popoverPositionJS` in `display/shared.go`: after computing preferred position, checks all 4 sides for viewport clip + opposite-side room, flips if needed. Updated 2 golden files. |
-| 87  | `recipes.AuthLayout` | New component: split-screen auth (card + branding panel with feature list). `auth_layout.templ`, `auth_layout_types.go`, tests in `recipes_test.go`. Registered in `internal/contract/component_props_test.go`. Container-query exception added (full-page layout). |
-| 89  | tc CLI: version + --list-deps | `tc version` prints `utils.Version`. `tc add <component> --list-deps` lists sibling `.go` files from `packageDeps` map. Updated usage text. |
-| 67  | treefmt gofmt → gofumpt | `flake.nix`: `gofmt.enable` → `gofumpt.enable`. Ran `nix fmt` — 16 files reformatted. Build + all tests pass. |
-| 85  | Pin Chromium version | Added dedicated `nixpkgs-chromium` input (pinned to same revision as current nixpkgs). Visual app uses `inputs'.nixpkgs-chromium` so `nix flake update` no longer shifts Chromium pixel output. Update path documented in flake comment. |
-| 73  | htmx golden snapshots | `htmx/golden_sweep_test.go` — 13 golden snapshots: LoadingIndicator, InlineLoadingOverlay, LoadingButton, CSRFToken, ConfirmDelete (2), SwapOOB (3), GlobalErrorHandling (2), ViewTransitions (2). htmx golden files: 4 → 17. |
-| 79  | Visual regression expansion | Added 12 PNGs across 8 new component types: Spinner (light+dark), ProgressBar (half+indeterminate), Avatar (initials+image), Toast (success+error), Accordion, Tabs, CopyButton, StepIndicator. Total: 31 → 43 PNGs across 19 component types. |
+| #   | Task                                              | Key changes                                                                                                                                                                                                                                                                                                         |
+| --- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 92  | Fix unused `boolPtr`                              | Already done (removed 2026-07-30). Verified closed.                                                                                                                                                                                                                                                                 |
+| 81  | Audit ordered-substring assertions + drift-guard  | Fixed 1 brittle `strings.Contains(out, "rounded-lg border")` in `display/table_data_test.go:197` → `utils.AssertNotContains`. Added `utils/ordered_substring_test.go` — `TestNoOrderedTailwindSubstringsInTests` scans all library `*_test.go` for multi-token Tailwind class literals in `strings.Contains` calls. |
+| 90  | SkeletonCardGrid migration doc                    | `docs/migration/skeletoncardgrid-api-change.md` — before/after, why, props reference.                                                                                                                                                                                                                               |
+| 91  | Testing section + guide                           | README "Testing" section (3-tier table). `docs/testing-guide.md` — golden, drift-guard, visual regression, how to add tests for new components.                                                                                                                                                                     |
+| 88  | `nix run .#css` app                               | `flake.nix` app that runs `tailwindcss --input examples/demo/demo.css --output examples/demo/static/app.css --minify`. Verified working.                                                                                                                                                                            |
+| 84  | Visualtest API: tri-state + presets + state names | `Options.Dark`/`RTL` → `*bool` (nil=unset, Bool(true)=dark). Added `Bool()` helper, `ViewportMobile`/`ViewportTablet`/`ViewportDesktop`, `InteractionState.String()` (rest/hover/focus/click/context). `options_test.go` — 4 tests covering all new API surface.                                                    |
+| 83  | StateHover targets first interactive child        | `hoverAction` in `harness.go` now descends to first `button, a[href], input, [role="button"]` etc., falling back to root. Mirrors existing `focusAction`.                                                                                                                                                           |
+| 94  | Fix 2 latent visual test failures                 | Root cause: `<dialog Open=true>` renders in-flow but not top-layer without `showModal()`. Fix: added `dialogOpen()` helper with `FullViewport: true` + `WaitSelector: "dialog"`. Updated modal + drawer tests. Regenerated 4 golden PNGs. All pass at 0% mismatch.                                                  |
+| 86  | Popover edge-flipping                             | `popoverPositionJS` in `display/shared.go`: after computing preferred position, checks all 4 sides for viewport clip + opposite-side room, flips if needed. Updated 2 golden files.                                                                                                                                 |
+| 87  | `recipes.AuthLayout`                              | New component: split-screen auth (card + branding panel with feature list). `auth_layout.templ`, `auth_layout_types.go`, tests in `recipes_test.go`. Registered in `internal/contract/component_props_test.go`. Container-query exception added (full-page layout).                                                 |
+| 89  | tc CLI: version + --list-deps                     | `tc version` prints `utils.Version`. `tc add <component> --list-deps` lists sibling `.go` files from `packageDeps` map. Updated usage text.                                                                                                                                                                         |
+| 67  | treefmt gofmt → gofumpt                           | `flake.nix`: `gofmt.enable` → `gofumpt.enable`. Ran `nix fmt` — 16 files reformatted. Build + all tests pass.                                                                                                                                                                                                       |
+| 85  | Pin Chromium version                              | Added dedicated `nixpkgs-chromium` input (pinned to same revision as current nixpkgs). Visual app uses `inputs'.nixpkgs-chromium` so `nix flake update` no longer shifts Chromium pixel output. Update path documented in flake comment.                                                                            |
+| 73  | htmx golden snapshots                             | `htmx/golden_sweep_test.go` — 13 golden snapshots: LoadingIndicator, InlineLoadingOverlay, LoadingButton, CSRFToken, ConfirmDelete (2), SwapOOB (3), GlobalErrorHandling (2), ViewTransitions (2). htmx golden files: 4 → 17.                                                                                       |
+| 79  | Visual regression expansion                       | Added 12 PNGs across 8 new component types: Spinner (light+dark), ProgressBar (half+indeterminate), Avatar (initials+image), Toast (success+error), Accordion, Tabs, CopyButton, StepIndicator. Total: 31 → 43 PNGs across 19 component types.                                                                      |
 
 ---
 
@@ -87,6 +87,7 @@ No regressions, no broken builds, no data loss. All 16 packages pass `go test ./
 ## F) Next 50 things to get done
 
 ### High priority (v1.3.0 release blockers)
+
 1. Finish #79: add visual goldens for Combobox, Tooltip, Carousel, Skeleton
 2. Finish #79: add visual goldens for ErrorPage, NotFound404
 3. Finish #82: run each overlay visual test 10×, set MaxMismatch at p99
@@ -99,6 +100,7 @@ No regressions, no broken builds, no data loss. All 16 packages pass `go test ./
 10. Add `recipes.AuthLayout` to the demo (`examples/demo/recipes_demo.templ`)
 
 ### Medium priority (quality + coverage)
+
 11. Add `props.Icon` to `AuthLayoutProps` so consumers can customize the feature-list icon
 12. Add `props.Icon` to `AuthLayoutProps` for the branding panel background (or a `PanelClass` field)
 13. Convert `htmx/polled_region_test.go` assertion checks to golden snapshots (the component has goldens but the test file still uses ~15 substring checks)
@@ -121,6 +123,7 @@ No regressions, no broken builds, no data loss. All 16 packages pass `go test ./
 30. Add `recipes.OAuthCallback` (loading state for OAuth redirect)
 
 ### Lower priority (polish + DX)
+
 31. Add `tc init --force` to overwrite existing files (currently silently skips)
 32. Add `tc ls --json` for machine-readable component listing
 33. Add `tc add <component> --all` to copy all components in a package
@@ -156,16 +159,16 @@ No regressions, no broken builds, no data loss. All 16 packages pass `go test ./
 
 ## Session metrics
 
-| Metric | Value |
-| ------ | ----- |
-| TODO items attempted | 15 |
-| TODO items completed | 13 fully + 2 partially |
-| New files created | ~30 (tests, docs, components, goldens) |
-| Files modified | ~40 |
-| New HTML golden files | 13 (htmx) |
-| New visual PNGs | 12 |
-| Total golden PNGs | 43 (was 31) |
-| Total HTML goldens (htmx) | 17 (was 4) |
-| Test packages green | 16/16 |
-| Visual tests green | 43/43 |
-| BuildFlow auto-commits | ~18 (several with blank messages) |
+| Metric                    | Value                                  |
+| ------------------------- | -------------------------------------- |
+| TODO items attempted      | 15                                     |
+| TODO items completed      | 13 fully + 2 partially                 |
+| New files created         | ~30 (tests, docs, components, goldens) |
+| Files modified            | ~40                                    |
+| New HTML golden files     | 13 (htmx)                              |
+| New visual PNGs           | 12                                     |
+| Total golden PNGs         | 43 (was 31)                            |
+| Total HTML goldens (htmx) | 17 (was 4)                             |
+| Test packages green       | 16/16                                  |
+| Visual tests green        | 43/43                                  |
+| BuildFlow auto-commits    | ~18 (several with blank messages)      |

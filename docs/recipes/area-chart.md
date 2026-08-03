@@ -49,14 +49,14 @@ Pure-SVG area chart — a line chart with semi-transparent filled areas. Zero Ja
 
 ## Props Reference
 
-| Prop           | Type                          | Default | Description                     |
-| -------------- | ----------------------------- | ------- | ------------------------------- |
-| `Series`       | `[]LineChartSeries`           | —       | Data series                     |
-| `XAxisLabels`  | `[]string`                    | —       | Category labels                 |
-| `Width`/`Height` | `int`                       | 600/300 | SVG canvas dimensions           |
-| `ShowGrid`     | `bool`                        | true    | Dashed gridlines                |
-| `ShowDots`     | `bool`                        | false   | Data point circles              |
-| `ShowLegend`   | `bool`                        | true    | Color-swatch legend             |
-| `Style`        | `LineChartStyle`              | Linear  | Linear or Smooth                |
-| `FillOpacity`  | `float64`                     | 0.2     | Area fill transparency (0–1)    |
-| `ValueFormat`  | `func(float64) string`        | auto    | Y-axis tick formatter           |
+| Prop             | Type                   | Default | Description                  |
+| ---------------- | ---------------------- | ------- | ---------------------------- |
+| `Series`         | `[]LineChartSeries`    | —       | Data series                  |
+| `XAxisLabels`    | `[]string`             | —       | Category labels              |
+| `Width`/`Height` | `int`                  | 600/300 | SVG canvas dimensions        |
+| `ShowGrid`       | `bool`                 | true    | Dashed gridlines             |
+| `ShowDots`       | `bool`                 | false   | Data point circles           |
+| `ShowLegend`     | `bool`                 | true    | Color-swatch legend          |
+| `Style`          | `LineChartStyle`       | Linear  | Linear or Smooth             |
+| `FillOpacity`    | `float64`              | 0.2     | Area fill transparency (0–1) |
+| `ValueFormat`    | `func(float64) string` | auto    | Y-axis tick formatter        |

@@ -13,26 +13,26 @@ I did poorly, and what still needs to happen.
 
 ## A) FULLY DONE
 
-| # | Item | Evidence |
-|---|------|----------|
-| 1 | Diagnosed the drift class | `breadcrumbs.templ:4` imports `encoding/json` (v1); the committed `breadcrumbs_templ.go:12` imported `encoding/json/v2` |
-| 2 | Traced the drift's origin through git history | `954a265` (migrate→v2) → `e37975b` (revert→v1) → `3a358e0` (daemon **re-introduces** v2 into the generated file only) |
-| 3 | Fixed the generated file | `templ generate -f navigation/breadcrumbs.templ` produced `encoding/json` (v1), matching source |
-| 4 | Sync test passes | `go test ./utils/ -run TestTemplGeneratedInSync` → `ok` |
-| 5 | Full build passes | `go build ./...` → exit 0 |
-| 6 | Full utils package tests pass | `go test ./utils/` → `ok 0.752s` |
-| 7 | navigation package tests pass | `go test ./navigation/` → `ok 0.010s` |
-| 8 | Confirmed no OTHER drifts exist | Scanned every `*_templ.go`; breadcrumbs was the only v2-in-gen/v1-in-src mismatch |
-| 9 | Change auto-committed by daemon | `10e80ff` authored as Lars Artmann, message `fix(navigation): use stable encoding/json...` |
+| #   | Item                                          | Evidence                                                                                                                |
+| --- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 1   | Diagnosed the drift class                     | `breadcrumbs.templ:4` imports `encoding/json` (v1); the committed `breadcrumbs_templ.go:12` imported `encoding/json/v2` |
+| 2   | Traced the drift's origin through git history | `954a265` (migrate→v2) → `e37975b` (revert→v1) → `3a358e0` (daemon **re-introduces** v2 into the generated file only)   |
+| 3   | Fixed the generated file                      | `templ generate -f navigation/breadcrumbs.templ` produced `encoding/json` (v1), matching source                         |
+| 4   | Sync test passes                              | `go test ./utils/ -run TestTemplGeneratedInSync` → `ok`                                                                 |
+| 5   | Full build passes                             | `go build ./...` → exit 0                                                                                               |
+| 6   | Full utils package tests pass                 | `go test ./utils/` → `ok 0.752s`                                                                                        |
+| 7   | navigation package tests pass                 | `go test ./navigation/` → `ok 0.010s`                                                                                   |
+| 8   | Confirmed no OTHER drifts exist               | Scanned every `*_templ.go`; breadcrumbs was the only v2-in-gen/v1-in-src mismatch                                       |
+| 9   | Change auto-committed by daemon               | `10e80ff` authored as Lars Artmann, message `fix(navigation): use stable encoding/json...`                              |
 
 ---
 
 ## B) PARTIALLY DONE
 
-| Item | What's done | What's missing |
-|------|-------------|----------------|
-| Root-cause explanation | Identified the BuildFlow daemon as the drift reintroducer; cited AGENTS.md T13 (hallucinated messages, no `go test`, 60s budget) | No permanent preventative fix applied — daemon will drift again |
-| Verification | Build + utils + navigation tests green | Did **not** run full `go test ./...` (race), `golangci-lint`, or `nix run .#verify` in this session |
+| Item                   | What's done                                                                                                                      | What's missing                                                                                      |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| Root-cause explanation | Identified the BuildFlow daemon as the drift reintroducer; cited AGENTS.md T13 (hallucinated messages, no `go test`, 60s budget) | No permanent preventative fix applied — daemon will drift again                                     |
+| Verification           | Build + utils + navigation tests green                                                                                           | Did **not** run full `go test ./...` (race), `golangci-lint`, or `nix run .#verify` in this session |
 
 ---
 
@@ -48,6 +48,7 @@ I did poorly, and what still needs to happen.
 These are concrete mistakes and omissions from THIS session. No sugar-coating.
 
 ### D1. I declared "Done" without building.
+
 My first response ended with a confident explanation but I had only run
 `go test ./utils/ -run 'TestTemplGeneratedInSync$'` — a **single test in a
 single package**. The AGENTS.md workflow is explicit:
@@ -60,6 +61,7 @@ I only ran the build **after** the user asked for this report. That is
 backwards. **I shipped confidence I had not earned.**
 
 ### D2. I regenerated a single file instead of the whole module.
+
 I ran `templ generate -f navigation/breadcrumbs.templ`. The documented,
 safe command is `templ generate ./...`. Single-file generation is convenient
 but it's not the project convention, and it means I never confirmed the rest
@@ -67,6 +69,7 @@ of the generated corpus is itself in sync. (The scan in step 8 partially
 covers this, but it is not equivalent to a full regen + diff.)
 
 ### D3. I did not question whether v1 is even the right target.
+
 The breadcrumbs import has now **flip-flopped four times**:
 
 ```
@@ -86,6 +89,7 @@ exactly the "fix at surface, not root cause" anti-pattern my own operating
 principles forbid.
 
 ### D4. I did not add any guard that would stop the recurrence.
+
 `TestTemplGeneratedInSync` exists and works — but it **only fires in CI**,
 because the BuildFlow daemon's 60s budget cannot run `go test ./...`
 (documented in AGENTS.md T1/T13). The repo already has a precedent for a
@@ -95,19 +99,21 @@ would catch this drift class at commit time in the daemon. I did not propose,
 scaffold, or write it. I just explained the problem and moved on.
 
 ### D5. The daemon committed with a hallucinated rationale.
+
 The auto-commit `10e80ff` message says:
 
 > "Prevent build failures due to the v2 package not being enabled via GOEXPERIMENT flag"
 
 This is **false**. `GOEXPERIMENT=jsonv2` IS enabled (`.envrc`, flake devShell,
 pre-commit hook all set it). The build was never failing on the v2 import — it
-was failing the sync *test*. The daemon cannot tell the difference. This is
+was failing the sync _test_. The daemon cannot tell the difference. This is
 the T13 hallucination pattern, live, in a commit I enabled by leaving the fix
 uncommitted. (Per house rules I must not commit myself unless asked — so this
 is unavoidable with the current tooling. But it is still a fuck-up in the
 system I participated in.)
 
 ### D6. I rationalized leaving the change uncommitted.
+
 I wrote "left uncommitted for the auto-commit daemon to pick up" as if that
 were a clean handoff. The cleaner path would have been to flag that the user
 should commit it themselves with an accurate message, OR to note that the
@@ -121,6 +127,7 @@ neater-sounding framing.
 Ordered by impact on preventing this exact failure class from recurring.
 
 ### E1. Add a fast pre-commit templ-sync guard (HIGH — stops the bleeding).
+
 Mirror `scripts/check-lint-config.sh`. A <100ms shell script that, for each
 `*.templ`, checks that the import set in `*_templ.go` is a superset of the
 source imports (the same logic `TestTemplGeneratedInSync` uses, minus Go).
@@ -128,7 +135,9 @@ Wire it into `.git/hooks/pre-commit` **before** BuildFlow runs. This makes
 the daemon unable to commit a drift.
 
 ### E2. Resolve the v1/v2 decision ONCE and document the verdict (HIGH).
+
 Either:
+
 - **(a)** migrate `breadcrumbs.templ` source to `encoding/json/v2` (matches
   `errorpage`, matches the `GOEXPERIMENT=jsonv2` reality, kills the
   flip-flop permanently), **or**
@@ -139,20 +148,24 @@ Currently there is no ADR — only a dangling commit message. An ADR makes the
 choice load-bearing and stops the next daemon/session from "fixing" it again.
 
 ### E3. Fix BuildFlow so the daemon runs `go test ./...` (HIGH, separate repo).
-The 60s budget + no-tests behavior is the single root cause of *multiple*
+
+The 60s budget + no-tests behavior is the single root cause of _multiple_
 documented regressions (T1: `.golangci.yml`, T13: hallucinated messages,
 this session: templ drift). This is in `larsartmann/buildflow`. Until the
 daemon verifies, every drift-class guard lives only in CI.
 
 ### E4. Stop using single-file `templ generate` in patches (MEDIUM).
+
 Use `templ generate ./...` to match convention and catch cross-file drift.
 I violated this.
 
 ### E5. Make the sync test faster + add it to a pre-commit gate (MEDIUM).
+
 The Go test is cheap (7ms) but requires the Go toolchain. A shell equivalent
 (see E1) runs anywhere.
 
 ### E6. Tighten my own verification bar (PROCESS).
+
 After any `.templ` regen: run `go build ./...` + `go test ./utils/` at
 minimum. Do not report "Done" on a single subtest.
 
@@ -236,7 +249,7 @@ integrity story. Roughly Pareto-ordered.
 
 3. **Is the 60s BuildFlow pre-commit budget a hard constraint, or can it be
    raised to accommodate `go test ./utils/` (the cheap, high-signal slice)?**
-   A fast pre-commit *shell* guard (E1) sidesteps this, but if the budget is
+   A fast pre-commit _shell_ guard (E1) sidesteps this, but if the budget is
    flexible, running even a subset of Go tests in the daemon would catch many
    more drift classes than just templ-sync. I don't know if the 60s is a
    BuildFlow design limit or a tunable.
@@ -252,4 +265,4 @@ integrity story. Roughly Pareto-ordered.
   and treating the v1/v2 oscillation as fixed rather than as an unmade
   decision.
 - **Highest-leverage next action:** items #1–#4 (templ-sync pre-commit guard
-  + lock the v1/v2 decision in an ADR).
+  - lock the v1/v2 decision in an ADR).

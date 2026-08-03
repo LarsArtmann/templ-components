@@ -5,13 +5,13 @@ zoom/pan, and legend toggle. Requires ~1MB JS from CDN.
 
 ## When to Choose Tier 1 vs Tier 2
 
-| Use Tier 1 (Native SVG) when...          | Use Tier 2 (ECharts) when...                    |
-| ---------------------------------------- | ----------------------------------------------- |
-| You need zero JavaScript                 | You need interactive tooltips on hover          |
-| CSP-strict environment                   | You need zoom/pan/drag selection                |
-| Static or PDF-rendered charts            | You need legend toggle (show/hide series)       |
-| Simple line/pie/area charts              | You need exotic types (radar, scatter, geo, 3D) |
-| Minimal bundle size is critical          | You need animations and transitions             |
+| Use Tier 1 (Native SVG) when... | Use Tier 2 (ECharts) when...                    |
+| ------------------------------- | ----------------------------------------------- |
+| You need zero JavaScript        | You need interactive tooltips on hover          |
+| CSP-strict environment          | You need zoom/pan/drag selection                |
+| Static or PDF-rendered charts   | You need legend toggle (show/hide series)       |
+| Simple line/pie/area charts     | You need exotic types (radar, scatter, geo, 3D) |
+| Minimal bundle size is critical | You need animations and transitions             |
 
 ## Setup
 

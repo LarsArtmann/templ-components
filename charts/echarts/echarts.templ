@@ -7,14 +7,9 @@ import "github.com/larsartmann/templ-components/utils"
 //
 //	@echarts.SDKScript(echarts.DefaultSDKScriptProps())
 templ SDKScript(props SDKScriptProps) {
-	<script
-		src={ scriptSrc(props) }
-		nonce={ props.Nonce }
-		if props.ID != "" {
-			id={ props.ID }
-		}
-		{ props.Attrs... }
-	></script>
+	<script src={ scriptSrc(props) } nonce={ props.Nonce } if props.ID != "" {
+	id={ props.ID }
+} { props.Attrs... }></script>
 }
 
 // EChart renders an ECharts chart container with the consumer-provided HTML
@@ -28,7 +23,8 @@ templ SDKScript(props SDKScriptProps) {
 //	})
 templ EChart(props EChartsProps) {
 	if props.Element != "" {
-		<div class={ utils.Class("tc-echarts w-full", props.Class) }
+		<div
+			class={ utils.Class("tc-echarts w-full", props.Class) }
 			if props.ID != "" {
 				id={ props.ID }
 			}

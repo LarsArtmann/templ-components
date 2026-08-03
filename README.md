@@ -307,11 +307,11 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 The library is verified by a three-tier strategy that catches different classes
 of regression:
 
-| Tier | What | Where | Catches |
-| ---- | ---- | ----- | ------- |
-| **HTML golden** | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `internal/golden` — 102 `.golden` files | Structure, attribute, and class changes |
-| **Drift-guard scanners** | Cross-cutting invariant tests | `utils/` | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
-| **Visual regression** | Pixel-level PNG diff in headless Chromium | `visualtest/` (separate module) | Layout shifts, dark-mode color regressions, RTL mirroring |
+| Tier                     | What                                                                 | Where                                   | Catches                                                                                                                                         |
+| ------------------------ | -------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `internal/golden` — 102 `.golden` files | Structure, attribute, and class changes                                                                                                         |
+| **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                                | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
+| **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)         | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
 
 ```bash
 nix run .#verify   # generate + build + test + lint — the "done" check

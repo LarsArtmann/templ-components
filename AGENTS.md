@@ -4,26 +4,26 @@
 
 This repo is a **single Go module** (`github.com/larsartmann/templ-components`) with 16 packages:
 
-| Package             | Contains                                                  | Purpose                                                                                                             |
-| ------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Package             | Contains                                                  | Purpose                                                                                                                                                  |
+| ------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `display`           | 38 UI components                                          | Cards, tables (Table + DataTable), modals, badges, buttons, avatars, carousel, context menu, hover card, **SVG charts** (LineChart, PieChart, AreaChart) |
-| `feedback`          | 13 components                                             | Alerts, toasts, spinners, skeletons, progress bars                                                                  |
-| `forms`             | 21 components                                             | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                                |
-| `layout`            | 10 components                                             | Page shell, theme toggle, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack |
-| `navigation`        | 12 components                                             | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                               |
-| `htmx`              | 8 components                                              | HTMX loading, error handling, OOB swaps, View Transitions                                                           |
-| `datastar`          | 3 components + action helpers                             | Datastar SDK runtime injection, SSE-powered LiveRegion, loading Indicator. Opt-in complement to HTMX (ADR-0030)     |
-| `charts/echarts`    | 2 components + dark mode bridge                           | Opt-in ECharts adapter — accepts go-echarts RenderSnippet strings, CSP-safe, dark mode bridge (ADR-0031)             |
-| `icons`             | 102 named SVG icons                                       | Heroicons v2 outline + Spinner                                                                                      |
-| `errorpage`         | 4 components + handler                                    | Error pages, 404, go-error-family integration                                                                       |
-| `recipes`           | 3 composition screens                                     | Dashboard, SettingsLayout, LoginCard — screen-level compositions of display/forms/layout/navigation (ADR-0019)      |
-| `utils`             | BaseProps, Class(), EnsureID, test helpers                | Shared utilities                                                                                                    |
-| `internal/svg`      | SVG path constants                                        | Single source of truth for inline SVG paths                                                                         |
-| `internal/golden`   | Golden file testing                                       | CSS-normalized HTML snapshot comparison                                                                             |
-| `internal/contract` | Contract tests                                            | Cross-package interface verification                                                                                |
-| `integration`       | CSP nonce tests                                           | Asserts nonce on all inline scripts                                                                                 |
-| `examples/demo`     | Demo binary                                               | Showcases components                                                                                                |
-| `visualtest`        | **Separate module** — pixel-level visual regression tests | chromedp + headless Chromium; `nix run .#visual`. See `docs/visual-testing.md`                                      |
+| `feedback`          | 13 components                                             | Alerts, toasts, spinners, skeletons, progress bars                                                                                                       |
+| `forms`             | 21 components                                             | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                                                                     |
+| `layout`            | 10 components                                             | Page shell, theme toggle, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                      |
+| `navigation`        | 12 components                                             | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                                                                    |
+| `htmx`              | 8 components                                              | HTMX loading, error handling, OOB swaps, View Transitions                                                                                                |
+| `datastar`          | 3 components + action helpers                             | Datastar SDK runtime injection, SSE-powered LiveRegion, loading Indicator. Opt-in complement to HTMX (ADR-0030)                                          |
+| `charts/echarts`    | 2 components + dark mode bridge                           | Opt-in ECharts adapter — accepts go-echarts RenderSnippet strings, CSP-safe, dark mode bridge (ADR-0031)                                                 |
+| `icons`             | 102 named SVG icons                                       | Heroicons v2 outline + Spinner                                                                                                                           |
+| `errorpage`         | 4 components + handler                                    | Error pages, 404, go-error-family integration                                                                                                            |
+| `recipes`           | 3 composition screens                                     | Dashboard, SettingsLayout, LoginCard — screen-level compositions of display/forms/layout/navigation (ADR-0019)                                           |
+| `utils`             | BaseProps, Class(), EnsureID, test helpers                | Shared utilities                                                                                                                                         |
+| `internal/svg`      | SVG path constants                                        | Single source of truth for inline SVG paths                                                                                                              |
+| `internal/golden`   | Golden file testing                                       | CSS-normalized HTML snapshot comparison                                                                                                                  |
+| `internal/contract` | Contract tests                                            | Cross-package interface verification                                                                                                                     |
+| `integration`       | CSP nonce tests                                           | Asserts nonce on all inline scripts                                                                                                                      |
+| `examples/demo`     | Demo binary                                               | Showcases components                                                                                                                                     |
+| `visualtest`        | **Separate module** — pixel-level visual regression tests | chromedp + headless Chromium; `nix run .#visual`. See `docs/visual-testing.md`                                                                           |
 
 > **Note:** A multi-module workspace split was prototyped on the `modularize/strategic-split`
 > branch but was never merged to `master`. The split may be re-attempted post-v1.0 if the

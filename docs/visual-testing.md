@@ -16,21 +16,21 @@ Chromium builds while still flagging any real visual change.
 
 ## How it works
 
+render component into an isolated HTML page (compiled Tailwind CSS inlined)
+│
+▼
+serve page on an ephemeral httptest.Server
+│
+▼
+chromedp: navigate → wait for #tc-root → (apply State) → settle → screenshot
+│ (element OR full viewport)
+▼
+compare PNG pixels against testdata/<name>.png (0.1% threshold)
+│
+├── match → pass
+└── differ → fail + write testdata/.fail/<name>.{actual,diff}.png
 
-  render component into an isolated HTML page (compiled Tailwind CSS inlined)
-        │
-        ▼
-  serve page on an ephemeral httptest.Server
-        │
-        ▼
-  chromedp: navigate → wait for #tc-root → (apply State) → settle → screenshot
-        │                                                                  (element OR full viewport)
-        ▼
-  compare PNG pixels against testdata/<name>.png (0.1% threshold)
-        │
-        ├── match  → pass
-        └── differ → fail + write testdata/.fail/<name>.{actual,diff}.png
-```
+````
 
 ### Shared Chromium process
 
@@ -55,7 +55,7 @@ nix run .#visual -- -update
 
 # Run a single test
 nix run .#visual -- -run TestButtons
-```
+````
 
 Without Nix, point `CHROMEDP_CHROME_PATH` at any Chromium/Chrome binary and run
 the module directly (the `GOWORK=off` is required because the repo's parent
@@ -84,10 +84,6 @@ func TestMyComponent(t *testing.T) {
 
 
 ```
-
-
-
-
 
 - `StateClick` clicks the first `[popovertarget]`/button/link inside `#tc-root`.
 - `StateContext` dispatches a `contextmenu` event (for `ContextMenu`).

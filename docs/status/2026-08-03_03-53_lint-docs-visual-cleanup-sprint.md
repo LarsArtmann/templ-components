@@ -6,18 +6,19 @@
 
 ## A. FULLY DONE (Verified Green)
 
-| # | Task | Evidence |
-|---|------|----------|
-| 1 | **34 golangci-lint findings → 0** | Renamed short vars in chart_geometry.go (`n`→`valueCount`, `x`→`posX`, `p0/p1/p2`→`prev/curr/next`), pie_chart.go (`cx`→`centerX`, `x1/y1`→`startX/startY`), removed unused `lineChartFormatFloat`, fixed `modalSizeLookup` goconst (reused `maxWSM`/`maxWXL` from drawer), fixed nlreturn/wsl_v5 whitespace, fixed predeclared `min`→`minVal`, refactored `TestNoOrderedTailwindSubstringsInTests` from gocognit 58→<30 via `scanLinesForOrderedSubstrings` + `isOrderedTailwindSubstring` extraction. `golangci-lint run` → **0 issues**. |
-| 2 | **CHANGELOG `[Unreleased]` populated** | Added 14 entries: AuthLayout, visualtest Bool()/ViewportMobile/Tablet/Desktop, InteractionState.String(), htmx golden tests (13 baselines), `nix run .#css`, `tc version`/`tc add --list-deps`, popover edge-flipping, docs/migration + testing-guide, Chromium pin, gofumpt alignment, dialog visual test fix, SkeletonCardGrid test fix. `[Unreleased]` is warm for release. |
-| 3 | **docs/visual-testing.md updated** | Options table updated for `*bool` tri-state, added `Bool()` section, viewport presets section, `InteractionState.String()`, `<dialog>` overlay testing subsection with `WaitSelector: "dialog"` example. MaxMismatch docs updated from 2%→1%. |
-| 4 | **docs/cli.md updated** | Added `tc version` command and `tc add --list-deps` section with output examples. |
-| 5 | **6 new visual golden tests** | Combobox, Tooltip (with button child via `templ.ComponentFunc`), Carousel (3 slides), Skeleton (SkeletonCardGrid), ErrorPage (full-page), NotFound404 (navigation page). 49 total PNGs (was 43). All pass against committed goldens. |
-| 6 | **MaxMismatch empirical calibration (#82)** | Measured mismatch rates across 5 runs. Spinner: 0–3.57% (5% threshold confirmed). Overlays: 0–0.74% (tightened from 2%→1%). Dialogs: 0% (tightened from 2%→1%). Updated comments with empirical justification. |
-| 7 | **`.envrc` fix** | Restored missing `GOEXPERIMENT=jsonv2` export — pre-existing bug causing `TestEnvrcConsistency` failure. |
-| 8 | **`nix flake check` fix** | treefmt was failing: `flake.nix` `perSystem` needed multi-line form. Ran `nix fmt` → 1 file changed → `nix flake check` → **all checks passed**. |
+| #   | Task                                        | Evidence                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| --- | ------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1   | **34 golangci-lint findings → 0**           | Renamed short vars in chart_geometry.go (`n`→`valueCount`, `x`→`posX`, `p0/p1/p2`→`prev/curr/next`), pie_chart.go (`cx`→`centerX`, `x1/y1`→`startX/startY`), removed unused `lineChartFormatFloat`, fixed `modalSizeLookup` goconst (reused `maxWSM`/`maxWXL` from drawer), fixed nlreturn/wsl_v5 whitespace, fixed predeclared `min`→`minVal`, refactored `TestNoOrderedTailwindSubstringsInTests` from gocognit 58→<30 via `scanLinesForOrderedSubstrings` + `isOrderedTailwindSubstring` extraction. `golangci-lint run` → **0 issues**. |
+| 2   | **CHANGELOG `[Unreleased]` populated**      | Added 14 entries: AuthLayout, visualtest Bool()/ViewportMobile/Tablet/Desktop, InteractionState.String(), htmx golden tests (13 baselines), `nix run .#css`, `tc version`/`tc add --list-deps`, popover edge-flipping, docs/migration + testing-guide, Chromium pin, gofumpt alignment, dialog visual test fix, SkeletonCardGrid test fix. `[Unreleased]` is warm for release.                                                                                                                                                              |
+| 3   | **docs/visual-testing.md updated**          | Options table updated for `*bool` tri-state, added `Bool()` section, viewport presets section, `InteractionState.String()`, `<dialog>` overlay testing subsection with `WaitSelector: "dialog"` example. MaxMismatch docs updated from 2%→1%.                                                                                                                                                                                                                                                                                               |
+| 4   | **docs/cli.md updated**                     | Added `tc version` command and `tc add --list-deps` section with output examples.                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
+| 5   | **6 new visual golden tests**               | Combobox, Tooltip (with button child via `templ.ComponentFunc`), Carousel (3 slides), Skeleton (SkeletonCardGrid), ErrorPage (full-page), NotFound404 (navigation page). 49 total PNGs (was 43). All pass against committed goldens.                                                                                                                                                                                                                                                                                                        |
+| 6   | **MaxMismatch empirical calibration (#82)** | Measured mismatch rates across 5 runs. Spinner: 0–3.57% (5% threshold confirmed). Overlays: 0–0.74% (tightened from 2%→1%). Dialogs: 0% (tightened from 2%→1%). Updated comments with empirical justification.                                                                                                                                                                                                                                                                                                                              |
+| 7   | **`.envrc` fix**                            | Restored missing `GOEXPERIMENT=jsonv2` export — pre-existing bug causing `TestEnvrcConsistency` failure.                                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| 8   | **`nix flake check` fix**                   | treefmt was failing: `flake.nix` `perSystem` needed multi-line form. Ran `nix fmt` → 1 file changed → `nix flake check` → **all checks passed**.                                                                                                                                                                                                                                                                                                                                                                                            |
 
 **Verification commands all green:**
+
 ```
 go build ./... → ok
 go test ./... -count=1 -buildvcs=false → 16/16 packages ok
@@ -30,34 +31,34 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 
 ## B. PARTIALLY DONE
 
-| Item | What's Done | What's Missing |
-|------|-------------|----------------|
-| **Visual test coverage (#79)** | 49 PNGs across 28 test functions covering 24 component families | No dark-mode variants for the 6 new tests (Combobox, Tooltip, Carousel, Skeleton, ErrorPage, NotFound404). Existing pattern tests both light AND dark; new tests are light-only. Only 1 `Bool(true)` call in the entire test file (spinner). |
-| **CHANGELOG** | All session work documented | Chart entries from the parallel process have a typo: "Catull-Rom" should be "Catmull-Rom" (missing 'm'). The entry was there before my session — I didn't introduce it but I should have caught it. |
-| **Doc count sync** | FEATURES.md/AGENTS.md/SKILL.md component counts were synced by prior session | README.md and FEATURES.md still say **31 visual goldens** (actual: 49). README says **43 typed enums** (actual: 45 with IsValid). FEATURES says **51 typed enums, 49 with IsValid** (actual: 45). AGENTS says **102 golden files** (actual: 175). These drifted because chart components added golden files but nobody updated the count. |
+| Item                           | What's Done                                                                  | What's Missing                                                                                                                                                                                                                                                                                                                            |
+| ------------------------------ | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Visual test coverage (#79)** | 49 PNGs across 28 test functions covering 24 component families              | No dark-mode variants for the 6 new tests (Combobox, Tooltip, Carousel, Skeleton, ErrorPage, NotFound404). Existing pattern tests both light AND dark; new tests are light-only. Only 1 `Bool(true)` call in the entire test file (spinner).                                                                                              |
+| **CHANGELOG**                  | All session work documented                                                  | Chart entries from the parallel process have a typo: "Catull-Rom" should be "Catmull-Rom" (missing 'm'). The entry was there before my session — I didn't introduce it but I should have caught it.                                                                                                                                       |
+| **Doc count sync**             | FEATURES.md/AGENTS.md/SKILL.md component counts were synced by prior session | README.md and FEATURES.md still say **31 visual goldens** (actual: 49). README says **43 typed enums** (actual: 45 with IsValid). FEATURES says **51 typed enums, 49 with IsValid** (actual: 45). AGENTS says **102 golden files** (actual: 175). These drifted because chart components added golden files but nobody updated the count. |
 
 ---
 
 ## C. NOT STARTED
 
-| Item | Description |
-|------|-------------|
-| **`nix fmt` verification** | I did NOT run `nix fmt` until the very end when `nix flake check` caught the flake.nix issue. I should have run it at the start of the lint cleanup as part of the standard verify cycle. |
-| **Dark-mode visual variants for new tests** | The 6 new visual tests (Combobox, Tooltip, Carousel, Skeleton, ErrorPage, NotFound404) are light-mode only. Every pre-existing component family has both light and dark goldens. |
-| **Ordered-substring drift-guard negative test** | `TestNoOrderedTailwindSubstringsInTests` scans for violations but has no test proving it actually catches a violation. A negative test (inject a known `strings.Contains(out, "flex flex-col")` and assert it's flagged) would verify the guard works. |
-| **Tooltip test pattern review** | The Tooltip test uses `templ.ComponentFunc` with `io.Writer` to inject children. This works but is unusual — the established pattern in the repo is to test components without children. Worth reviewing whether this is the cleanest approach or if there's a templ-native way. |
-| **Popover edge-flipping browser test** | The popover edge-flipping JS (4 conditions added to `display/shared.go`) was only SSR-verified (golden test). No visual test verifies the flipping actually works in a browser when a popover clips. |
+| Item                                            | Description                                                                                                                                                                                                                                                                      |
+| ----------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **`nix fmt` verification**                      | I did NOT run `nix fmt` until the very end when `nix flake check` caught the flake.nix issue. I should have run it at the start of the lint cleanup as part of the standard verify cycle.                                                                                        |
+| **Dark-mode visual variants for new tests**     | The 6 new visual tests (Combobox, Tooltip, Carousel, Skeleton, ErrorPage, NotFound404) are light-mode only. Every pre-existing component family has both light and dark goldens.                                                                                                 |
+| **Ordered-substring drift-guard negative test** | `TestNoOrderedTailwindSubstringsInTests` scans for violations but has no test proving it actually catches a violation. A negative test (inject a known `strings.Contains(out, "flex flex-col")` and assert it's flagged) would verify the guard works.                           |
+| **Tooltip test pattern review**                 | The Tooltip test uses `templ.ComponentFunc` with `io.Writer` to inject children. This works but is unusual — the established pattern in the repo is to test components without children. Worth reviewing whether this is the cleanest approach or if there's a templ-native way. |
+| **Popover edge-flipping browser test**          | The popover edge-flipping JS (4 conditions added to `display/shared.go`) was only SSR-verified (golden test). No visual test verifies the flipping actually works in a browser when a popover clips.                                                                             |
 
 ---
 
 ## D. TOTALLY FUCKED UP
 
-| Item | What Happened | Impact |
-|------|---------------|--------|
-| **Ignored `nix flake check`** | I ran `go test` and `golangci-lint` but never ran `nix flake check` until the report-gathering phase. It was **failing** the entire session — `flake.nix` had a treefmt formatting violation from the parallel process's `inputs'` migration. CI would have gone red. | **HIGH** — `nix flake check` is in the standard verify cycle (`nix run .#verify`). If this had been pushed, CI would fail. Fixed at the very end, but it should have been the first thing checked. |
-| **gopls stale diagnostics** | 12+ false `IncompatibleAssign` errors on `visualtest/visual_test.go` persisted throughout the entire session. The code compiled and tested fine, but I never restarted gopls to clear them. This made LSP-based diagnostics unreliable and noisy. | **MEDIUM** — wasted context window tokens, couldn't trust diagnostics, had to verify everything via `go build`/`go test` instead of trusting the IDE. |
-| **BuildFlow blank commits** | 3 commits (`b5ef189`, `73056c2`, `01b3917`) have completely blank messages. The BuildFlow daemon committed these during the session. This is the known #93 problem — the daemon generates messages from a template, not from `git diff --stat`. | **LOW** (cosmetic) — git history has 3 unscannable commits. Not actionable without fixing BuildFlow itself. |
-| **Doc count drift not caught** | I updated the CHANGELOG and docs/visual-testing.md but did NOT update the component/golden/enum counts in README.md (31→49 goldens, 43→45 enums), FEATURES.md (31→49 goldens, 51/49→45 enums), or AGENTS.md (102→175 golden files). The `TestDocsCountDrift` test doesn't check visual golden counts, so it didn't catch this. | **MEDIUM** — docs are out of sync. Consumers reading README see stale numbers. |
+| Item                           | What Happened                                                                                                                                                                                                                                                                                                                  | Impact                                                                                                                                                                                             |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Ignored `nix flake check`**  | I ran `go test` and `golangci-lint` but never ran `nix flake check` until the report-gathering phase. It was **failing** the entire session — `flake.nix` had a treefmt formatting violation from the parallel process's `inputs'` migration. CI would have gone red.                                                          | **HIGH** — `nix flake check` is in the standard verify cycle (`nix run .#verify`). If this had been pushed, CI would fail. Fixed at the very end, but it should have been the first thing checked. |
+| **gopls stale diagnostics**    | 12+ false `IncompatibleAssign` errors on `visualtest/visual_test.go` persisted throughout the entire session. The code compiled and tested fine, but I never restarted gopls to clear them. This made LSP-based diagnostics unreliable and noisy.                                                                              | **MEDIUM** — wasted context window tokens, couldn't trust diagnostics, had to verify everything via `go build`/`go test` instead of trusting the IDE.                                              |
+| **BuildFlow blank commits**    | 3 commits (`b5ef189`, `73056c2`, `01b3917`) have completely blank messages. The BuildFlow daemon committed these during the session. This is the known #93 problem — the daemon generates messages from a template, not from `git diff --stat`.                                                                                | **LOW** (cosmetic) — git history has 3 unscannable commits. Not actionable without fixing BuildFlow itself.                                                                                        |
+| **Doc count drift not caught** | I updated the CHANGELOG and docs/visual-testing.md but did NOT update the component/golden/enum counts in README.md (31→49 goldens, 43→45 enums), FEATURES.md (31→49 goldens, 51/49→45 enums), or AGENTS.md (102→175 golden files). The `TestDocsCountDrift` test doesn't check visual golden counts, so it didn't catch this. | **MEDIUM** — docs are out of sync. Consumers reading README see stale numbers.                                                                                                                     |
 
 ---
 
@@ -82,6 +83,7 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 ## F. Up to 50 Things to Get Done Next
 
 ### High Priority (Release Blockers)
+
 1. Fix doc count drift: README visual goldens 31→49, typed enums 43→45
 2. Fix doc count drift: FEATURES visual goldens 31→49, typed enums 51/49→45
 3. Fix doc count drift: AGENTS golden files 102→175
@@ -91,6 +93,7 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 7. Extend `TestDocsCountDrift` to check visual golden count + golden file count
 
 ### Visual Test Coverage Gaps
+
 8. Add visual test for CollapsibleSection (v1.6.0 component — no visual golden)
 9. Add visual test for Heatmap (v1.6.0 component — no visual golden)
 10. Add visual test for PolledRegion (v1.5.0 component — no visual golden)
@@ -106,6 +109,7 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 20. Add hover/focus state tests for interactive components beyond buttons
 
 ### Quality Hardening
+
 21. Add negative test for `TestNoOrderedTailwindSubstringsInTests` (inject known violation, assert flagged)
 22. Add browser test for popover edge-flipping (currently SSR-only)
 23. Review Tooltip test `templ.ComponentFunc` pattern — is there a cleaner way?
@@ -118,6 +122,7 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 30. Review `packageDeps` map in `cmd/tc/main.go` — is it still accurate after chart additions?
 
 ### Documentation
+
 31. Update `docs/recipes/` with AuthLayout recipe documentation
 32. Add chart components to `examples/demo/recipes_demo.templ`
 33. Add AuthLayout to demo showcase
@@ -129,6 +134,7 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 39. Document the `nix run .#css` app in README
 
 ### Infrastructure
+
 40. Fix BuildFlow blank commit messages (#93 — requires BuildFlow repo change)
 41. Consider pinning `nixpkgs-chromium` to a specific older version for long-term stability
 42. Add `nix fmt` to pre-commit hook (or ensure treefmt runs before commit)
@@ -137,6 +143,7 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 45. Consider adding visual test count to CI output for quick drift detection
 
 ### Release Preparation
+
 46. Verify `[Unreleased]` CHANGELOG section is complete for a release cut
 47. Review all 21 unpushed commits for correctness before pushing
 48. Consider cutting v1.7.0 (charts + AuthLayout + visual test expansion + lint cleanup)
@@ -150,6 +157,7 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 ### 1. The chart components (LineChart, PieChart, AreaChart, ECharts) — are these ready for release?
 
 They appeared from a parallel process mid-session. They have golden tests and pass lint/dark-mode/contract tests, but:
+
 - They have **no visual regression tests** (pixel-level)
 - They have **no benchmarks**
 - They have **no fuzz tests** for the geometry math
@@ -161,6 +169,7 @@ They appeared from a parallel process mid-session. They have golden tests and pa
 ### 2. Should I push the 21 unpushed commits now, or wait for the doc-count fixes?
 
 The working tree is clean except `flake.nix` (treefmt fix, not yet committed by BuildFlow). There are 21 commits ahead of origin. The doc count fixes (items #1-4 above) are quick but need committing. Do you want me to:
+
 - **(A)** Fix doc counts + push everything in one batch
 - **(B)** Push now, fix doc counts in a follow-up
 - **(C)** Fix doc counts, cut v1.7.0 release, then push

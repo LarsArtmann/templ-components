@@ -16,61 +16,61 @@ Implemented the **full Tier 1 (native SVG charts)** and **full Tier 2 (ECharts a
 
 ## A) FULLY DONE
 
-| Item | Details | Verification |
-|------|---------|-------------|
-| Chart geometry helpers (`chart_geometry.go`) | `ScalePoints`, `BuildPolylinePath`, `BuildSmoothPath` (Catmull-Rom), `BuildAreaPath`, `ComputeNiceTicks`, `FormatTickValue` | 8 unit tests + 2 benchmarks, all pass |
-| LineChart component | `line_chart.go` + `line_chart.templ` — axes, gridlines, multi-series, dots, legend, linear/smooth, ARIA, empty state | 10 golden baselines + 7 a11y/unit tests, all pass |
-| PieChart component | `pie_chart.go` + `pie_chart.templ` — arc paths, donut, labels, legend, center label, ARIA | 8 golden baselines + 7 a11y/unit tests, all pass |
-| AreaChart component | `area_chart.go` + `area_chart.templ` — filled areas, fill opacity, multi-series, smooth curves | 7 golden baselines + 4 a11y/unit tests, all pass |
-| ECharts adapter package (`charts/echarts/`) | `doc.go`, `types.go`, `echarts.templ`, `dark_mode_bridge.go` — zero-dep wrapper accepting RenderSnippet strings | 13 tests, all pass |
-| 2 typed enums + `IsValid()` | `LineChartStyle` (Linear/Smooth), `PieChartLabelMode` (External/None) | Both in `enums_test.go` TestIsValidEnums table |
-| ADR-0031 | Two-tier chart architecture decision document | `docs/adr/0031-two-tier-chart-architecture.md` |
-| 4 recipe docs | line-chart.md, pie-chart.md, area-chart.md, echarts-adapter.md | `docs/recipes/` |
-| Demo page update | New "SVG Charts (Line, Pie, Area)" section with 5 chart demos | Builds successfully |
-| CHANGELOG entry | Full `[Unreleased]` section with all additions | Written |
-| Doc count sync | FEATURES.md, AGENTS.md, SKILL.md counts updated | `TestDocsCountDrift` passes |
-| Dark mode compliance | All SVG elements use `dark:` variants | `TestDarkModeCompliance` + `TestDarkModeSemanticColors` pass |
-| Motion-reduce compliance | No transitions/animations in charts (static SVG) | `TestMotionReduceCompliance` passes |
-| Full test suite | 17 packages | All pass, 0 failures |
+| Item                                         | Details                                                                                                                     | Verification                                                 |
+| -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| Chart geometry helpers (`chart_geometry.go`) | `ScalePoints`, `BuildPolylinePath`, `BuildSmoothPath` (Catmull-Rom), `BuildAreaPath`, `ComputeNiceTicks`, `FormatTickValue` | 8 unit tests + 2 benchmarks, all pass                        |
+| LineChart component                          | `line_chart.go` + `line_chart.templ` — axes, gridlines, multi-series, dots, legend, linear/smooth, ARIA, empty state        | 10 golden baselines + 7 a11y/unit tests, all pass            |
+| PieChart component                           | `pie_chart.go` + `pie_chart.templ` — arc paths, donut, labels, legend, center label, ARIA                                   | 8 golden baselines + 7 a11y/unit tests, all pass             |
+| AreaChart component                          | `area_chart.go` + `area_chart.templ` — filled areas, fill opacity, multi-series, smooth curves                              | 7 golden baselines + 4 a11y/unit tests, all pass             |
+| ECharts adapter package (`charts/echarts/`)  | `doc.go`, `types.go`, `echarts.templ`, `dark_mode_bridge.go` — zero-dep wrapper accepting RenderSnippet strings             | 13 tests, all pass                                           |
+| 2 typed enums + `IsValid()`                  | `LineChartStyle` (Linear/Smooth), `PieChartLabelMode` (External/None)                                                       | Both in `enums_test.go` TestIsValidEnums table               |
+| ADR-0031                                     | Two-tier chart architecture decision document                                                                               | `docs/adr/0031-two-tier-chart-architecture.md`               |
+| 4 recipe docs                                | line-chart.md, pie-chart.md, area-chart.md, echarts-adapter.md                                                              | `docs/recipes/`                                              |
+| Demo page update                             | New "SVG Charts (Line, Pie, Area)" section with 5 chart demos                                                               | Builds successfully                                          |
+| CHANGELOG entry                              | Full `[Unreleased]` section with all additions                                                                              | Written                                                      |
+| Doc count sync                               | FEATURES.md, AGENTS.md, SKILL.md counts updated                                                                             | `TestDocsCountDrift` passes                                  |
+| Dark mode compliance                         | All SVG elements use `dark:` variants                                                                                       | `TestDarkModeCompliance` + `TestDarkModeSemanticColors` pass |
+| Motion-reduce compliance                     | No transitions/animations in charts (static SVG)                                                                            | `TestMotionReduceCompliance` passes                          |
+| Full test suite                              | 17 packages                                                                                                                 | All pass, 0 failures                                         |
 
 ---
 
 ## B) PARTIALLY DONE
 
-| Item | What's Done | What's Missing |
-|------|-------------|----------------|
-| **Lint compliance** | goconst, gochecknoglobals, intrange, makezero fixed on chart files | `mnd` (magic number) warnings remain in `chart_geometry.go` — the nice-step thresholds (1, 2, 2.5, 5, 10) and large-number thresholds (1_000_000, 10_000, 1_000) are extracted to constants but the constants themselves trigger `mnd` in the switch cases and comparisons. Also `wsl_v5` (whitespace) warnings in test files. The `predeclared` warning on `min` in `chart_geometry.go:133` is stale LSP — the actual code uses `minVal`. **Impact: golangci-lint run has findings on the new files.** |
-| **Visual regression tests** | (Planned as Parent #11) | **NOT STARTED.** No `visualtest/` entries for LineChart, PieChart, AreaChart. The plan called for pixel-level PNG baselines in headless Chromium. Golden snapshot tests cover HTML structure but not visual rendering. |
-| **CSP integration test** | ECharts package has CSP nonce tests in its own test file | NOT added to `integration/csp_nonce_test.go` — the cross-package CSP nonce test that scans ALL inline-script components does not include the ECharts adapter. |
-| **AGENTS.md chart docs** | Module table updated, generated file count updated | Missing architecture-level documentation of the chart geometry helpers, the palette constants, the ECharts dark mode bridge pattern, and how chart components compose the geometry primitives. These should be documented in the Code Conventions section. |
-| **Benchmarks** | `BenchmarkScalePoints` + `BenchmarkBuildPolylinePath` in `chart_geometry_test.go` | No benchmarks for PieChart arc computation or LineChart rendering (the plan's Parent #11.6 called for performance verification). |
+| Item                        | What's Done                                                                       | What's Missing                                                                                                                                                                                                                                                                                                                                                                                                                                                                                          |
+| --------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Lint compliance**         | goconst, gochecknoglobals, intrange, makezero fixed on chart files                | `mnd` (magic number) warnings remain in `chart_geometry.go` — the nice-step thresholds (1, 2, 2.5, 5, 10) and large-number thresholds (1_000_000, 10_000, 1_000) are extracted to constants but the constants themselves trigger `mnd` in the switch cases and comparisons. Also `wsl_v5` (whitespace) warnings in test files. The `predeclared` warning on `min` in `chart_geometry.go:133` is stale LSP — the actual code uses `minVal`. **Impact: golangci-lint run has findings on the new files.** |
+| **Visual regression tests** | (Planned as Parent #11)                                                           | **NOT STARTED.** No `visualtest/` entries for LineChart, PieChart, AreaChart. The plan called for pixel-level PNG baselines in headless Chromium. Golden snapshot tests cover HTML structure but not visual rendering.                                                                                                                                                                                                                                                                                  |
+| **CSP integration test**    | ECharts package has CSP nonce tests in its own test file                          | NOT added to `integration/csp_nonce_test.go` — the cross-package CSP nonce test that scans ALL inline-script components does not include the ECharts adapter.                                                                                                                                                                                                                                                                                                                                           |
+| **AGENTS.md chart docs**    | Module table updated, generated file count updated                                | Missing architecture-level documentation of the chart geometry helpers, the palette constants, the ECharts dark mode bridge pattern, and how chart components compose the geometry primitives. These should be documented in the Code Conventions section.                                                                                                                                                                                                                                              |
+| **Benchmarks**              | `BenchmarkScalePoints` + `BenchmarkBuildPolylinePath` in `chart_geometry_test.go` | No benchmarks for PieChart arc computation or LineChart rendering (the plan's Parent #11.6 called for performance verification).                                                                                                                                                                                                                                                                                                                                                                        |
 
 ---
 
 ## C) NOT STARTED
 
-| Planned Item | Source | Why Not |
-|-------------|--------|---------|
-| **Visual regression tests** (Parent #11) | Plan lines 307-316 | Prioritized working code over test infrastructure. Should be done before release. |
-| **Demo CSS recompile** (Subtask 12.6) | Plan line 327 | The committed `examples/demo/static/app.css` is **STALE** — it does not include the new chart CSS classes (`stroke-gray-200`, `dark:stroke-gray-700`, `fill-gray-500`, etc.). The demo will render charts without gridlines/axis styling until recompiled. **This is a real bug.** |
-| **Website sections.ts update** | `TestDocsCountDrift` checks this | The website sections.ts file was NOT updated with the new chart components. The drift test only checks component count regex, not individual component entries. |
-| **README.md chart mention** | Plan subtask 21.3 | Not updated. |
-| **Coverage boost tests** | Existing pattern in the repo | No coverage_boost_test files for chart geometry edge cases (e.g., negative coordinate ranges, very large datasets). |
-| **Fuzz tests for geometry** | Existing pattern (FuzzInputType etc.) | No fuzz tests for `ScalePoints`, `ComputeNiceTicks`, or `computeArcPath` with arbitrary float inputs. |
-| **SKILL.md Part 2 author guide** | SKILL.md has a Part 2 for component authors | No chart authoring guidance added (how to use geometry helpers, palette constants, how to add a new chart type). |
+| Planned Item                             | Source                                      | Why Not                                                                                                                                                                                                                                                                            |
+| ---------------------------------------- | ------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Visual regression tests** (Parent #11) | Plan lines 307-316                          | Prioritized working code over test infrastructure. Should be done before release.                                                                                                                                                                                                  |
+| **Demo CSS recompile** (Subtask 12.6)    | Plan line 327                               | The committed `examples/demo/static/app.css` is **STALE** — it does not include the new chart CSS classes (`stroke-gray-200`, `dark:stroke-gray-700`, `fill-gray-500`, etc.). The demo will render charts without gridlines/axis styling until recompiled. **This is a real bug.** |
+| **Website sections.ts update**           | `TestDocsCountDrift` checks this            | The website sections.ts file was NOT updated with the new chart components. The drift test only checks component count regex, not individual component entries.                                                                                                                    |
+| **README.md chart mention**              | Plan subtask 21.3                           | Not updated.                                                                                                                                                                                                                                                                       |
+| **Coverage boost tests**                 | Existing pattern in the repo                | No coverage_boost_test files for chart geometry edge cases (e.g., negative coordinate ranges, very large datasets).                                                                                                                                                                |
+| **Fuzz tests for geometry**              | Existing pattern (FuzzInputType etc.)       | No fuzz tests for `ScalePoints`, `ComputeNiceTicks`, or `computeArcPath` with arbitrary float inputs.                                                                                                                                                                              |
+| **SKILL.md Part 2 author guide**         | SKILL.md has a Part 2 for component authors | No chart authoring guidance added (how to use geometry helpers, palette constants, how to add a new chart type).                                                                                                                                                                   |
 
 ---
 
 ## D) TOTALLY FUCKED UP
 
-| Item | What Happened | Severity | Fix Status |
-|------|--------------|----------|------------|
-| **`polarToCartesian` angle convention was wrong** | Initial implementation used `(angleDeg - 180) * degToRad` which placed 0 degrees at the 9 o'clock position (left) instead of 12 o'clock (top). Caught by unit test `TestPolarToCartesian` which expected angle 0 = top. Fixed to `(angleDeg - 90) * degToRad`. | Medium — would have rendered all pie charts rotated 90 degrees clockwise. | **Fixed.** |
-| **`splitBy` test helper caused infinite loop** | The `TestEChartAllScriptsHaveNonce` test used a hand-rolled string splitter (`splitBy`) with a broken loop that never advanced the cursor, causing a 10-minute test timeout. Replaced with `strings.Count` comparison. | Medium — blocked the entire echarts test suite. | **Fixed.** |
-| **templ `<script>` context treats `{ }` as literal text** | Initial `echarts.templ` used `{ templ.Raw(props.Script) }` inside a `<script>` tag. templ's script context sanitizes string interpolation, so the JS was rendered as the literal text `{ props.Script }` instead of executing. Required refactoring to use `@chartScriptComponent` (a Go `templ.Component` that writes directly to the buffer). | High — the ECharts adapter was completely non-functional until fixed. | **Fixed.** |
-| **`templ.Raw()` in `{ }` context doesn't work** | `{ templ.Raw(props.Element) }` inside a `<div>` failed compilation because `templ.Component` doesn't satisfy `templ.stringable`. Required changing to `@templ.Raw(...)` (the `@` syntax for rendering components). | High — build failure. | **Fixed.** |
-| **Pie slice index tracking was broken** | `computeSliceAngles` originally didn't track the original slice index. When zero-value slices were skipped, the loop index no longer matched the `props.Slices` array, causing wrong colors and labels. Fixed by adding `sliceIdx` to `sliceAngleResult`. | Medium — wrong colors/labels when any slice has value 0. | **Fixed.** |
-| **Golden test expected wrong tick values for negative ranges** | `TestComputeNiceTicks` expected [-50, 50] to produce ticks at -50/50 (step 25), but the nice-tick algorithm produces step 20 → ticks at -60/60. Test expectation was wrong, not the algorithm. | Low — test-only bug. | **Fixed.** |
+| Item                                                           | What Happened                                                                                                                                                                                                                                                                                                                                   | Severity                                                                  | Fix Status |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ---------- |
+| **`polarToCartesian` angle convention was wrong**              | Initial implementation used `(angleDeg - 180) * degToRad` which placed 0 degrees at the 9 o'clock position (left) instead of 12 o'clock (top). Caught by unit test `TestPolarToCartesian` which expected angle 0 = top. Fixed to `(angleDeg - 90) * degToRad`.                                                                                  | Medium — would have rendered all pie charts rotated 90 degrees clockwise. | **Fixed.** |
+| **`splitBy` test helper caused infinite loop**                 | The `TestEChartAllScriptsHaveNonce` test used a hand-rolled string splitter (`splitBy`) with a broken loop that never advanced the cursor, causing a 10-minute test timeout. Replaced with `strings.Count` comparison.                                                                                                                          | Medium — blocked the entire echarts test suite.                           | **Fixed.** |
+| **templ `<script>` context treats `{ }` as literal text**      | Initial `echarts.templ` used `{ templ.Raw(props.Script) }` inside a `<script>` tag. templ's script context sanitizes string interpolation, so the JS was rendered as the literal text `{ props.Script }` instead of executing. Required refactoring to use `@chartScriptComponent` (a Go `templ.Component` that writes directly to the buffer). | High — the ECharts adapter was completely non-functional until fixed.     | **Fixed.** |
+| **`templ.Raw()` in `{ }` context doesn't work**                | `{ templ.Raw(props.Element) }` inside a `<div>` failed compilation because `templ.Component` doesn't satisfy `templ.stringable`. Required changing to `@templ.Raw(...)` (the `@` syntax for rendering components).                                                                                                                              | High — build failure.                                                     | **Fixed.** |
+| **Pie slice index tracking was broken**                        | `computeSliceAngles` originally didn't track the original slice index. When zero-value slices were skipped, the loop index no longer matched the `props.Slices` array, causing wrong colors and labels. Fixed by adding `sliceIdx` to `sliceAngleResult`.                                                                                       | Medium — wrong colors/labels when any slice has value 0.                  | **Fixed.** |
+| **Golden test expected wrong tick values for negative ranges** | `TestComputeNiceTicks` expected [-50, 50] to produce ticks at -50/50 (step 25), but the nice-tick algorithm produces step 20 → ticks at -60/60. Test expectation was wrong, not the algorithm.                                                                                                                                                  | Low — test-only bug.                                                      | **Fixed.** |
 
 ---
 
@@ -173,21 +173,21 @@ Implemented the **full Tier 1 (native SVG charts)** and **full Tier 2 (ECharts a
 34. **Add horizontal LineChart variant** (swap axes).
 35. **Add `BarChart` variant using SVG geometry** (for consistent styling with LineChart/PieChart).
 36. **Add scatter plot component** using the same geometry helpers.
-36. **Add candlestick chart** (would need ECharts — good Tier 2 showcase).
-37. **Add radar chart** (would need ECharts).
-38. **Add gauge chart** (would need ECharts).
-39. **Add Treemap component** (SVG-based, could be Tier 1).
-40. **Add Funnel chart component** (SVG-based, could be Tier 1).
-41. **Document the chart color palette** as overridable via `@theme` (like other components).
-42. **Add animation support to SVG charts** (stroke-dashoffset draw-in animation, with `motion-reduce` guard).
-43. **Add `DownloadAsSVG` helper** — since charts are pure SVG, consumers can offer download.
-44. **Add `PrintFriendly` option** — ensure charts render correctly in print CSS.
-45. **Add data label support to LineChart** — value labels above each data point.
-46. **Add data label support to PieChart** — value/percentage inside each slice.
-47. **Add hover highlight to PieChart** — CSS `:hover` scaling on individual slices.
-48. **Add tooltip support to SVG charts** — pure CSS tooltip on hover showing data value.
-49. **Add `Href` support to PieChart slices** — clickable slices linking to detail pages.
-50. **Consider a `Chart` interface** — `type Chart interface { Render() templ.Component }` for polymorphic chart rendering in `recipes.Dashboard.Charts`.
+37. **Add candlestick chart** (would need ECharts — good Tier 2 showcase).
+38. **Add radar chart** (would need ECharts).
+39. **Add gauge chart** (would need ECharts).
+40. **Add Treemap component** (SVG-based, could be Tier 1).
+41. **Add Funnel chart component** (SVG-based, could be Tier 1).
+42. **Document the chart color palette** as overridable via `@theme` (like other components).
+43. **Add animation support to SVG charts** (stroke-dashoffset draw-in animation, with `motion-reduce` guard).
+44. **Add `DownloadAsSVG` helper** — since charts are pure SVG, consumers can offer download.
+45. **Add `PrintFriendly` option** — ensure charts render correctly in print CSS.
+46. **Add data label support to LineChart** — value labels above each data point.
+47. **Add data label support to PieChart** — value/percentage inside each slice.
+48. **Add hover highlight to PieChart** — CSS `:hover` scaling on individual slices.
+49. **Add tooltip support to SVG charts** — pure CSS tooltip on hover showing data value.
+50. **Add `Href` support to PieChart slices** — clickable slices linking to detail pages.
+51. **Consider a `Chart` interface** — `type Chart interface { Render() templ.Component }` for polymorphic chart rendering in `recipes.Dashboard.Charts`.
 
 ---
 

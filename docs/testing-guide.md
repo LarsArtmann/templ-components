@@ -5,11 +5,11 @@ accessible, and does not regress visually.
 
 ## Three-tier strategy
 
-| Tier | Mechanism | Location | Catches | Cost |
-| ---- | --------- | -------- | ------- | ---- |
-| 1. HTML golden | Render component → normalize → diff against `.golden` file | `internal/golden`, `<pkg>/testdata/*.golden` | Structure, attributes, class changes | Fast, deterministic |
-| 2. Drift-guard scanners | Repo-wide invariant tests in `utils/` | `utils/*_compliance_test.go`, `integration/` | Cross-cutting regressions (dark-mode gaps, missing motion-reduce, RTL, CSP) | Fast |
-| 3. Visual regression | Render in headless Chromium → pixel diff against committed PNG | `visualtest/` (separate module) | Layout shifts, color regressions, RTL mirroring | ~4s full suite |
+| Tier                    | Mechanism                                                      | Location                                     | Catches                                                                     | Cost                |
+| ----------------------- | -------------------------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------- | ------------------- |
+| 1. HTML golden          | Render component → normalize → diff against `.golden` file     | `internal/golden`, `<pkg>/testdata/*.golden` | Structure, attributes, class changes                                        | Fast, deterministic |
+| 2. Drift-guard scanners | Repo-wide invariant tests in `utils/`                          | `utils/*_compliance_test.go`, `integration/` | Cross-cutting regressions (dark-mode gaps, missing motion-reduce, RTL, CSP) | Fast                |
+| 3. Visual regression    | Render in headless Chromium → pixel diff against committed PNG | `visualtest/` (separate module)              | Layout shifts, color regressions, RTL mirroring                             | ~4s full suite      |
 
 ### Tier 1 — HTML golden tests
 
@@ -50,18 +50,18 @@ These live in `utils/` (and `integration/`) and enforce cross-cutting invariants
 that per-component tests cannot. They are the reason `go test ./...` stays
 trustworthy across refactors.
 
-| Test | File | Prevents |
-| ---- | ---- | -------- |
-| `TestDarkModeCompliance` / `…SemanticColors` | `utils/darkmode_compliance_test.go` | Neutral/semantic colors without `dark:` variants |
-| `TestMotionReduceCompliance` | `utils/motion_compliance_test.go` | `transition-*`/`animate-*` without `motion-reduce:` |
-| `TestRTLLogicalProperties` | `utils/rtl_compliance_test.go` | Physical properties (`ml-`/`mr-`/`left-`) instead of logical |
-| `TestNoOrderedTailwindSubstringsInTests` | `utils/ordered_substring_test.go` | Brittle ordered-class substring assertions that flake under `utils.Class` reordering |
-| `TestGolangciDisabledLinters` | `utils/lint_config_test.go` | Incompatible linters re-entering `.golangci.yml` |
-| `TestTemplGeneratedInSync` | `utils/templ_sync_test.go` | `.templ` edit committed without regenerating `*_templ.go` |
-| `TestContainerQueryCompliance` | `utils/container_query_compliance_test.go` | Viewport breakpoints without `ContainerAware` opt-in |
-| `TestTailwindGoSourceScanning` | `utils/tailwind_source_test.go` | Tailwind classes in `.go` map literals missing from compiled CSS |
-| `TestCSSFreshness` | `utils/css_freshness_test.go` | Committed demo CSS older than newest source (fails in CI) |
-| CSP nonce test | `integration/csp_nonce_test.go` | Inline `<script>` without `nonce=` |
+| Test                                         | File                                       | Prevents                                                                             |
+| -------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `TestDarkModeCompliance` / `…SemanticColors` | `utils/darkmode_compliance_test.go`        | Neutral/semantic colors without `dark:` variants                                     |
+| `TestMotionReduceCompliance`                 | `utils/motion_compliance_test.go`          | `transition-*`/`animate-*` without `motion-reduce:`                                  |
+| `TestRTLLogicalProperties`                   | `utils/rtl_compliance_test.go`             | Physical properties (`ml-`/`mr-`/`left-`) instead of logical                         |
+| `TestNoOrderedTailwindSubstringsInTests`     | `utils/ordered_substring_test.go`          | Brittle ordered-class substring assertions that flake under `utils.Class` reordering |
+| `TestGolangciDisabledLinters`                | `utils/lint_config_test.go`                | Incompatible linters re-entering `.golangci.yml`                                     |
+| `TestTemplGeneratedInSync`                   | `utils/templ_sync_test.go`                 | `.templ` edit committed without regenerating `*_templ.go`                            |
+| `TestContainerQueryCompliance`               | `utils/container_query_compliance_test.go` | Viewport breakpoints without `ContainerAware` opt-in                                 |
+| `TestTailwindGoSourceScanning`               | `utils/tailwind_source_test.go`            | Tailwind classes in `.go` map literals missing from compiled CSS                     |
+| `TestCSSFreshness`                           | `utils/css_freshness_test.go`              | Committed demo CSS older than newest source (fails in CI)                            |
+| CSP nonce test                               | `integration/csp_nonce_test.go`            | Inline `<script>` without `nonce=`                                                   |
 
 Run all of them: `go test ./utils/... ./integration/...`
 
