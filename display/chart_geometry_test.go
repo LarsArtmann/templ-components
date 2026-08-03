@@ -207,10 +207,10 @@ func TestComputeNiceTicks(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name     string
-		min      float64
-		max      float64
-		count    int
+		name      string
+		min       float64
+		max       float64
+		count     int
 		wantFirst float64
 		wantLast  float64
 		wantSpan  float64

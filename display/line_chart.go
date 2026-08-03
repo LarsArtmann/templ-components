@@ -120,31 +120,31 @@ const (
 	chartPaddingBottom = 30
 	chartPaddingLeft   = 40
 
-	lineChartDotRadius   = 3
-	lineChartTickLen     = 5
-	lineChartMaxTicks    = 8
+	lineChartDotRadius = 3
+	lineChartTickLen   = 5
+	lineChartMaxTicks  = 8
 
 	lineChartDefaultEmptyMsg = "No data"
 
-	lineChartLabelYOffset   = 4.0
-	lineChartFontSize       = "11"
-	lineChartEmptyFontSize  = "14"
-	lineChartXLabelOffset   = 18
-	lineChartLegendCharW    = 7
-	lineChartLegendGap      = 28
-	lineChartLegendY        = 12
+	lineChartLabelYOffset  = 4.0
+	lineChartFontSize      = "11"
+	lineChartEmptyFontSize = "14"
+	lineChartXLabelOffset  = 18
+	lineChartLegendCharW   = 7
+	lineChartLegendGap     = 28
+	lineChartLegendY       = 12
 )
 
 // Shared Tailwind color class constants for chart palettes.
 const (
-	chartColorBlue     = "text-blue-600 dark:text-blue-400"
-	chartColorEmerald  = "text-emerald-600 dark:text-emerald-400"
-	chartColorAmber    = "text-amber-600 dark:text-amber-400"
-	chartColorRose     = "text-rose-600 dark:text-rose-400"
-	chartColorViolet   = "text-violet-600 dark:text-violet-400"
-	chartColorCyan     = "text-cyan-600 dark:text-cyan-400"
-	chartColorOrange   = "text-orange-600 dark:text-orange-400"
-	chartColorPink     = "text-pink-600 dark:text-pink-400"
+	chartColorBlue    = "text-blue-600 dark:text-blue-400"
+	chartColorEmerald = "text-emerald-600 dark:text-emerald-400"
+	chartColorAmber   = "text-amber-600 dark:text-amber-400"
+	chartColorRose    = "text-rose-600 dark:text-rose-400"
+	chartColorViolet  = "text-violet-600 dark:text-violet-400"
+	chartColorCyan    = "text-cyan-600 dark:text-cyan-400"
+	chartColorOrange  = "text-orange-600 dark:text-orange-400"
+	chartColorPink    = "text-pink-600 dark:text-pink-400"
 )
 
 // lineChartPalette is the default color cycle for series without an explicit Color.

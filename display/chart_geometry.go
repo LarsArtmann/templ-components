@@ -26,6 +26,7 @@ const (
 	millionDivisor        = 1_000_000.0
 	decimalPlacesFallback = 1
 	float64Bits           = 64
+	smoothPathMinPoints   = 3
 )
 
 // Point is a coordinate pair in SVG user space.
@@ -49,7 +50,7 @@ func ScalePoints(values []float64, width, height int, minVal, maxVal float64) []
 		maxVal = minVal + scaleRangePad
 	}
 
-	points := make([]Point, n)
+	points := make([]Point, n) //nolint:makezero // pre-allocated with exact size, filled by index
 	rangeVal := maxVal - minVal
 
 	for i, v := range values {
@@ -98,7 +99,7 @@ func BuildPolylinePath(points []Point) string {
 // lines. Falls back to a straight polyline for fewer than 3 points.
 func BuildSmoothPath(points []Point) string {
 	n := len(points)
-	if n < 3 {
+	if n < smoothPathMinPoints {
 		return BuildPolylinePath(points)
 	}
 
@@ -108,7 +109,7 @@ func BuildSmoothPath(points []Point) string {
 
 	tension := 1.0 / splineTension
 
-	for i := 0; i < n-1; i++ {
+	for i := range n - 1 {
 		p0 := points[max(i-1, 0)]
 		p1 := points[i]
 		p2 := points[i+1]
