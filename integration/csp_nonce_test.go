@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/larsartmann/templ-components/charts/echarts"
 	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/errorpage"
@@ -82,6 +83,17 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 		}))},
 		{"NotFound404", utils.Render(t, errorpage.NotFound404(errorpage.NotFound404Props{
 			BaseProps: utils.BaseProps{Nonce: testNonce},
+		}))},
+		{"EChart", utils.Render(t, echarts.EChart(echarts.EChartsProps{
+			BaseProps:      utils.BaseProps{Nonce: testNonce},
+			Element:        `<div id="ec1"></div>`,
+			Script:         `echarts.init(document.getElementById('ec1'));`,
+			Nonce:          testNonce,
+			DarkModeBridge: true,
+		}))},
+		{"EChartsSDKScript", utils.Render(t, echarts.SDKScript(echarts.SDKScriptProps{
+			BaseProps: utils.BaseProps{Nonce: testNonce},
+			Nonce:     testNonce,
 		}))},
 		{"TableWithRowHref", utils.Render(t, display.Table(display.TableProps{
 			BaseProps: utils.BaseProps{Nonce: testNonce},
