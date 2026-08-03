@@ -1,8 +1,6 @@
 package display
 
 import (
-	"fmt"
-
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -188,6 +186,7 @@ func lineChartBounds(series []LineChartSeries, minOverride, maxOverride *float64
 			if !hasData {
 				minVal, maxVal = v, v
 				hasData = true
+
 				continue
 			}
 
@@ -267,9 +266,4 @@ func lineChartTickLabelX(plotW, n, i int) float64 {
 	}
 
 	return float64(i) * float64(plotW) / float64(n-1)
-}
-
-// lineChartFormatFloat is a small helper for formatting coordinates in templates.
-func lineChartFormatFloat(v float64) string {
-	return fmt.Sprintf("%g", v)
 }

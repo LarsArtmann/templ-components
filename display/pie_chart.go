@@ -182,6 +182,7 @@ func computeSliceAngles(slices []PieChartSlice) []sliceAngleResult {
 	}
 
 	results := make([]sliceAngleResult, 0, len(slices))
+
 	var startAngle float64
 
 	for idx, s := range slices {
@@ -220,7 +221,7 @@ func polarToCartesian(cx, cy, radius, angleDeg float64) (float64, float64) {
 // For a full pie: innerRadius = 0. For a donut: innerRadius > 0.
 // When the arc spans 360 degrees (single slice), it renders two half-circle
 // arcs because SVG arc commands cannot represent a full circle in one segment.
-func computeArcPath(cx, cy, radius, innerRadius, startAngle, endAngle float64) string {
+func computeArcPath(centerX, centerY, radius, innerRadius, startAngle, endAngle float64) string {
 	if radius <= 0 {
 		return ""
 	}
@@ -229,11 +230,11 @@ func computeArcPath(cx, cy, radius, innerRadius, startAngle, endAngle float64) s
 	fullCircle := sweep >= pieChartFullCircle-pieChartFullCircleEps
 
 	if fullCircle {
-		return computeFullCirclePath(cx, cy, radius, innerRadius)
+		return computeFullCirclePath(centerX, centerY, radius, innerRadius)
 	}
 
-	x1, y1 := polarToCartesian(cx, cy, radius, startAngle)
-	x2, y2 := polarToCartesian(cx, cy, radius, endAngle)
+	startX, startY := polarToCartesian(centerX, centerY, radius, startAngle)
+	endX, endY := polarToCartesian(centerX, centerY, radius, endAngle)
 
 	largeArc := 0
 	if sweep > pieChartHalfCircle {
@@ -242,36 +243,36 @@ func computeArcPath(cx, cy, radius, innerRadius, startAngle, endAngle float64) s
 
 	if innerRadius <= 0 {
 		return fmt.Sprintf("M %g %g A %g %g 0 %d 1 %g %g L %g %g Z",
-			x1, y1, radius, radius, largeArc, x2, y2, cx, cy)
+			startX, startY, radius, radius, largeArc, endX, endY, centerX, centerY)
 	}
 
-	ix1, iy1 := polarToCartesian(cx, cy, innerRadius, endAngle)
-	ix2, iy2 := polarToCartesian(cx, cy, innerRadius, startAngle)
+	innerStartX, innerStartY := polarToCartesian(centerX, centerY, innerRadius, endAngle)
+	innerEndX, innerEndY := polarToCartesian(centerX, centerY, innerRadius, startAngle)
 
 	return fmt.Sprintf("M %g %g A %g %g 0 %d 1 %g %g L %g %g A %g %g 0 %d 0 %g %g Z",
-		x1, y1, radius, radius, largeArc, x2, y2,
-		ix1, iy1, innerRadius, innerRadius, largeArc, ix2, iy2)
+		startX, startY, radius, radius, largeArc, endX, endY,
+		innerStartX, innerStartY, innerRadius, innerRadius, largeArc, innerEndX, innerEndY)
 }
 
 // computeFullCirclePath builds an SVG path for a full circle (pie or donut).
 // SVG arcs cannot represent a 360° arc in one segment, so we split it into
 // two semicircles.
-func computeFullCirclePath(cx, cy, radius, innerRadius float64) string {
-	x1, y1 := polarToCartesian(cx, cy, radius, 0)
-	x2, y2 := polarToCartesian(cx, cy, radius, pieChartHalfCircle)
+func computeFullCirclePath(centerX, centerY, radius, innerRadius float64) string {
+	startX, startY := polarToCartesian(centerX, centerY, radius, 0)
+	endX, endY := polarToCartesian(centerX, centerY, radius, pieChartHalfCircle)
 
 	if innerRadius <= 0 {
 		return fmt.Sprintf("M %g %g A %g %g 0 1 1 %g %g A %g %g 0 1 1 %g %g Z",
-			x1, y1, radius, radius, x2, y2, radius, radius, x1, y1)
+			startX, startY, radius, radius, endX, endY, radius, radius, startX, startY)
 	}
 
-	ix1, iy1 := polarToCartesian(cx, cy, innerRadius, 0)
-	ix2, iy2 := polarToCartesian(cx, cy, innerRadius, pieChartHalfCircle)
+	innerStartX, innerStartY := polarToCartesian(centerX, centerY, innerRadius, 0)
+	innerEndX, innerEndY := polarToCartesian(centerX, centerY, innerRadius, pieChartHalfCircle)
 
 	return fmt.Sprintf("M %g %g A %g %g 0 1 1 %g %g A %g %g 0 1 1 %g %g "+
 		"L %g %g A %g %g 0 1 0 %g %g A %g %g 0 1 0 %g %g Z",
-		x1, y1, radius, radius, x2, y2, radius, radius, x1, y1,
-		ix1, iy1, innerRadius, innerRadius, ix2, iy2, innerRadius, innerRadius, ix1, iy1)
+		startX, startY, radius, radius, endX, endY, radius, radius, startX, startY,
+		innerStartX, innerStartY, innerRadius, innerRadius, innerEndX, innerEndY, innerRadius, innerRadius, innerStartX, innerStartY)
 }
 
 // pieChartHasData reports whether at least one slice has a positive value.

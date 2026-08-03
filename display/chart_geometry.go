@@ -41,8 +41,8 @@ type Point struct {
 // division by zero. The returned points are relative to the plot area origin
 // (0,0); the caller offsets them by the chart padding.
 func ScalePoints(values []float64, width, height int, minVal, maxVal float64) []Point {
-	n := len(values)
-	if n == 0 {
+	valueCount := len(values)
+	if valueCount == 0 {
 		return nil
 	}
 
@@ -50,13 +50,13 @@ func ScalePoints(values []float64, width, height int, minVal, maxVal float64) []
 		maxVal = minVal + scaleRangePad
 	}
 
-	points := make([]Point, n) //nolint:makezero // pre-allocated with exact size, filled by index
+	points := make([]Point, valueCount) //nolint:makezero // pre-allocated with exact size, filled by index
 	rangeVal := maxVal - minVal
 
 	for i, v := range values {
-		var x float64
-		if n > 1 {
-			x = float64(i) * float64(width) / float64(n-1)
+		var posX float64
+		if valueCount > 1 {
+			posX = float64(i) * float64(width) / float64(valueCount-1)
 		}
 
 		normalized := (v - minVal) / rangeVal
@@ -68,7 +68,7 @@ func ScalePoints(values []float64, width, height int, minVal, maxVal float64) []
 
 		y := float64(height) - normalized*float64(height)
 
-		points[i] = Point{X: x, Y: y}
+		points[i] = Point{X: posX, Y: y}
 	}
 
 	return points
@@ -98,8 +98,8 @@ func BuildPolylinePath(points []Point) string {
 // from a Catmull-Rom spline through the points. This produces visually smooth
 // lines. Falls back to a straight polyline for fewer than 3 points.
 func BuildSmoothPath(points []Point) string {
-	n := len(points)
-	if n < smoothPathMinPoints {
+	pointCount := len(points)
+	if pointCount < smoothPathMinPoints {
 		return BuildPolylinePath(points)
 	}
 
@@ -109,21 +109,21 @@ func BuildSmoothPath(points []Point) string {
 
 	tension := 1.0 / splineTension
 
-	for i := range n - 1 {
-		p0 := points[max(i-1, 0)]
-		p1 := points[i]
-		p2 := points[i+1]
-		p3 := points[min(i+2, n-1)]
+	for i := range pointCount - 1 {
+		prev := points[max(i-1, 0)]
+		curr := points[i]
+		next := points[i+1]
+		afterNext := points[min(i+2, pointCount-1)]
 
-		cp1x := p1.X + (p2.X-p0.X)*tension
-		cp1y := p1.Y + (p2.Y-p0.Y)*tension
-		cp2x := p2.X - (p3.X-p1.X)*tension
-		cp2y := p2.Y - (p3.Y-p1.Y)*tension
+		cp1x := curr.X + (next.X-prev.X)*tension
+		cp1y := curr.Y + (next.Y-prev.Y)*tension
+		cp2x := next.X - (afterNext.X-curr.X)*tension
+		cp2y := next.Y - (afterNext.Y-curr.Y)*tension
 
 		fmt.Fprintf(&b, " C %s %s %s %s %s %s",
 			formatCoord(cp1x), formatCoord(cp1y),
 			formatCoord(cp2x), formatCoord(cp2y),
-			formatCoord(p2.X), formatCoord(p2.Y))
+			formatCoord(next.X), formatCoord(next.Y))
 	}
 
 	return b.String()
@@ -240,5 +240,6 @@ func formatCoord(v float64) string {
 // a value with no floating-point representation artifacts.
 func roundToPrecision(v float64, precision int) float64 {
 	pow := math.Pow(niceStepTen, float64(precision))
+
 	return math.Round(v*pow) / pow
 }
