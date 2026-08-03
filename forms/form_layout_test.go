@@ -31,7 +31,8 @@ func TestFormLayout(t *testing.T) {
 	t.Run("Layout: Grid emits aligned grid with minmax(0,1fr) blowout guard", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Form(FormProps{Action: "/x", Layout: FormLayoutGrid}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			"grid", "grid-cols-1", "sm:grid-cols-[auto_minmax(0,1fr)]", "items-start", "gap-x-4", "gap-y-3",
 		)
 	})

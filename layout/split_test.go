@@ -17,7 +17,8 @@ func TestSplit(t *testing.T) {
 			Main:  templ.Raw(`<div data-test="main">M</div>`),
 			Aside: templ.Raw(`<div data-test="aside">A</div>`),
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			"grid", "grid-cols-1", "md:grid-cols-3", "gap-6",
 			`data-test="main"`, `data-test="aside"`,
 		)
@@ -112,7 +113,8 @@ func TestSplit(t *testing.T) {
 			Main:  templ.Raw(`<div>M</div>`),
 			Aside: templ.Raw(`<div>A</div>`),
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`id="split-1"`, "data-tc-test", `aria-label="Article and TOC"`, `data-testid="split"`,
 		)
 	})

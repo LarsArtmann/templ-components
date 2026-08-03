@@ -173,7 +173,8 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 		capture = chromedp.Action(chromedp.CaptureScreenshot(&screenshot))
 	}
 
-	tasks = append(tasks,
+	tasks = append(
+		tasks,
 		chromedp.Sleep(settleDelay),
 		capture,
 	)

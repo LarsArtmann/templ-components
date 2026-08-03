@@ -31,7 +31,8 @@ func TestFooterMultiColumn(t *testing.T) {
 				{Title: "Company", Links: []FooterLink{{"About", "/about"}}},
 			},
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			"grid", "grid-cols-2", "md:grid-cols-4", "gap-8",
 			"Product", "Features", "/features",
 			"Company", "About", "/about",
@@ -85,7 +86,8 @@ func TestFooterMultiColumn(t *testing.T) {
 				Attrs:     templ.Attributes{"data-testid": "footer"},
 			},
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`id="foot"`, "data-tc-test", `aria-label="Site footer"`, `data-testid="footer"`,
 		)
 	})
@@ -102,7 +104,8 @@ func TestFooterMultiColumn(t *testing.T) {
 			BrandText: "Acme",
 			Columns:   []FooterColumn{{Title: "X", Links: []FooterLink{{"Y", "/y"}}}},
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			"dark:border-gray-800", "dark:bg-gray-900",
 			"dark:text-white", "dark:text-gray-400",
 		)

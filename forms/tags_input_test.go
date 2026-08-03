@@ -195,7 +195,8 @@ func TestTagsInputSnapshot(t *testing.T) {
 			Required:    true,
 			HelpText:    "Add up to 10 keywords",
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			"Go", "HTMX", "Templ",
 			`name="keywords"`,
 			`data-max-tags="10"`,

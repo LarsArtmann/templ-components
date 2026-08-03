@@ -178,7 +178,10 @@
             };
           };
 
-          # treefmt: format .nix (nixfmt) and .go (gofmt + goimports).
+          # treefmt: format .nix (nixfmt) and .go (gofumpt + goimports).
+          # gofumpt (not gofmt) aligns with .golangci.yml's gofumpt linter,
+          # preventing a latent conflict where treefmt and golangci-lint
+          # disagree on formatting.
           # Generated *_templ.go files are excluded — they are templ output and
           # must not be hand-reformatted (would cause perpetual churn vs the
           # generator). Format enforcement runs via `nix flake check` (see checks
@@ -191,7 +194,7 @@
             ];
             programs = {
               nixfmt.enable = true;
-              gofmt.enable = true;
+              gofumpt.enable = true;
               goimports.enable = true;
             };
           };

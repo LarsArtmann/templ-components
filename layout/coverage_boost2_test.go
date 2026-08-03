@@ -27,7 +27,8 @@ func TestBaseFullProps(t *testing.T) {
 		SecurityHeaders: true,
 		HeadContent:     templ.Raw("<meta name=\"custom\" content=\"data\">"),
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		"<title>My Page</title>",
 		"A description",
 		`lang="fr"`,
@@ -98,7 +99,8 @@ func TestBaseWithFooterSlot(t *testing.T) {
 func TestBaseDefaultProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Base(DefaultPageProps()))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`lang="en"`,
 		"/app.css",
 		"htmx.org",
@@ -125,7 +127,8 @@ func TestMinimalFullProps(t *testing.T) {
 		Title:  "Minimal Page",
 		Locale: "de",
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		"<!doctype html>",
 		`lang="de"`,
 		"<title>Minimal Page</title>",
@@ -159,7 +162,8 @@ func TestMinimalEmptyTitle(t *testing.T) {
 func TestThemeScriptWithNonce(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ThemeScript("nonce-123"))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`nonce="nonce-123"`,
 		"<script",
 		"dark",
@@ -179,7 +183,8 @@ func TestThemeScriptEmptyNonce(t *testing.T) {
 func TestThemeToggleWithAriaLabel(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, ThemeToggle("Toggle dark mode", "nonce-abc"))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`aria-label="Toggle dark mode"`,
 		`nonce="nonce-abc"`,
 	)
@@ -198,7 +203,8 @@ func TestThemeToggleDefaultAriaLabel(t *testing.T) {
 func TestScriptWithNonce(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Script("nonce-xyz", "/app.js", nil))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`src="/app.js"`,
 		`nonce="nonce-xyz"`,
 	)
@@ -211,7 +217,8 @@ func TestScriptWithAttrs(t *testing.T) {
 		"async":   true,
 		"data-cf": "none",
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`src="/lib.js"`,
 		"defer",
 		"async",
@@ -232,7 +239,8 @@ func TestScriptEmptySrc(t *testing.T) {
 func TestStylesheetBasic(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Stylesheet("/styles.css", nil))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`rel="stylesheet"`,
 		`href="/styles.css"`,
 	)
@@ -243,7 +251,8 @@ func TestStylesheetWithAttrs(t *testing.T) {
 	output := utils.Render(t, Stylesheet("/print.css", templ.Attributes{
 		"media": "print",
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`href="/print.css"`,
 		`media="print"`,
 	)

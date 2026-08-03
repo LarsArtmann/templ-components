@@ -104,7 +104,8 @@ func TestErrorPageFullProps(t *testing.T) {
 			AriaLabel: "Error page",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="err-page"`,
 		"Access Denied",
 		"You do not have permission",
@@ -147,7 +148,8 @@ func TestErrorDetailFullProps(t *testing.T) {
 			AriaLabel: "Error detail",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="detail-1"`,
 		"Conflict",
 		"Item already exists",
@@ -188,7 +190,8 @@ func TestErrorAlertFullProps(t *testing.T) {
 			Nonce:     "n-123",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="alert-1"`,
 		"Service is degraded",
 		"Try again in a few minutes",
@@ -232,7 +235,8 @@ func TestNotFound404FullProps(t *testing.T) {
 			AriaLabel: "404 error page",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="nf-404"`,
 		"Page Not Found",
 		"Search...",

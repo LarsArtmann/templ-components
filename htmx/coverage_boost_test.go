@@ -22,7 +22,8 @@ func TestConfirmDeleteCoverage(t *testing.T) {
 			Target:  "#row-42",
 			Confirm: "Really delete?",
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`id="del-btn"`,
 			`hx-delete="/api/items/42"`,
 			`hx-target="#row-42"`,

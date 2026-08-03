@@ -146,11 +146,14 @@ Usage:
   tc ls                     Print every component, grouped by package.
   tc add <component>        Copy <component>.templ (and _types.go if present) to ./components/.
   tc add <component> --out DIR   Copy to a custom directory.
+  tc add <component> --list-deps List sibling .go files the component depends on.
+  tc version                Print the library version.
 
 Examples:
   tc init
   tc add button
   tc add dropdown --out ./src/components
+  tc add modal --list-deps
 
 Available components: run 'tc ls' to see them all.`)
 }

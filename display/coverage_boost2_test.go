@@ -75,7 +75,8 @@ func TestCopyButtonAnchorWithBaseProps(t *testing.T) {
 			AriaLabel: "Copy link to clipboard",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="copy-link"`,
 		`aria-label="Copy link to clipboard"`,
 		`href="/copy"`,
@@ -133,7 +134,8 @@ func TestStatCardWithHTMX(t *testing.T) {
 		HxGet:    "/api/stats/revenue",
 		HxTarget: "#stat-container",
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`hx-get="/api/stats/revenue"`,
 		`hx-target="#stat-container"`,
 	)
@@ -147,7 +149,8 @@ func TestStatCardHrefWithHTMX(t *testing.T) {
 		Href:  "/dashboard/revenue",
 		HxGet: "/api/stats/revenue",
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`href="/dashboard/revenue"`,
 		`hx-get="/api/stats/revenue"`,
 	)
@@ -251,7 +254,8 @@ func TestImageFullProps(t *testing.T) {
 			Class: "border-2",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="hero-img"`,
 		`alt="A scenic photo"`,
 		`width="800"`,
@@ -276,7 +280,8 @@ func TestAccordionFullProps(t *testing.T) {
 			Class:     "border rounded-lg",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="accordion-1"`,
 		`aria-label="FAQ accordion"`,
 		"Section 1",
@@ -298,7 +303,8 @@ func TestDropdownFullProps(t *testing.T) {
 			AriaLabel: "Actions menu",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="dd-1"`,
 		"Edit",
 		"Delete",
@@ -317,7 +323,8 @@ func TestButtonAsLinkWithIcon(t *testing.T) {
 			AriaLabel: "Open settings",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`href="/settings"`,
 		`id="settings-link"`,
 		"Settings",
@@ -334,7 +341,8 @@ func TestDrawerFullProps(t *testing.T) {
 			AriaLabel: "Filter drawer",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="drawer-1"`,
 		"Filter Options",
 	)
@@ -350,7 +358,8 @@ func TestModalFullProps(t *testing.T) {
 			AriaLabel: "Confirmation dialog",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="modal-1"`,
 		"Confirm Action",
 	)
@@ -395,7 +404,8 @@ func TestDefinitionListDetailComponent(t *testing.T) {
 			AriaLabel: "User details",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="def-list"`,
 		`aria-label="User details"`,
 		"Active",

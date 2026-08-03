@@ -16,7 +16,8 @@ func TestAppShell(t *testing.T) {
 		output := utils.Render(t, AppShell(AppShellProps{
 			Content: templ.Raw(`<p>body</p>`),
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			"lg:grid",
 			"lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
 			"min-h-dvh",
@@ -64,7 +65,8 @@ func TestAppShell(t *testing.T) {
 			Sidebar: templ.Raw(`<nav data-test="sidebar">SidebarNav</nav>`),
 			Content: templ.Raw(`<p>x</p>`),
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`class="`+appshellSidebarWrapperClass+`"`,
 			`data-test="sidebar"`,
 		)
@@ -76,7 +78,8 @@ func TestAppShell(t *testing.T) {
 			MobileNav: templ.Raw(`<button data-test="mobile">Menu</button>`),
 			Content:   templ.Raw(`<p>x</p>`),
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`class="lg:hidden"`,
 			`data-test="mobile"`,
 		)
@@ -89,7 +92,8 @@ func TestAppShell(t *testing.T) {
 		props.Header = templ.Raw(`<div data-test="hdr">Header</div>`)
 		props.Content = templ.Raw(`<p>x</p>`)
 		output := utils.Render(t, AppShell(props))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			"sticky",
 			"top-0",
 			"z-40",
@@ -117,7 +121,8 @@ func TestAppShell(t *testing.T) {
 		props := DefaultAppShellProps()
 		props.Content = templ.Raw(`<p data-test="body">body</p>`)
 		output := utils.Render(t, AppShell(props))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			"max-w-7xl",
 			"px-4",
 			"sm:px-6",
@@ -155,7 +160,8 @@ func TestAppShell(t *testing.T) {
 			Content: templ.Raw(`<p>x</p>`),
 			Footer:  templ.Raw(`<div data-test="footer">Footer</div>`),
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`<footer`,
 			"mt-auto",
 			`data-test="footer"`,
@@ -175,7 +181,8 @@ func TestAppShell(t *testing.T) {
 			Content: templ.Raw(`<p>x</p>`),
 		}
 		output := utils.Render(t, AppShell(props))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`id="app"`,
 			"data-tc-test",
 			`aria-label="Application"`,
@@ -196,7 +203,8 @@ func TestAppShell(t *testing.T) {
 			Header:  templ.Raw(`<div>x</div>`),
 			Content: templ.Raw(`<p>x</p>`),
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			"dark:border-gray-800",
 			"dark:bg-gray-900",
 		)

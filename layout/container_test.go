@@ -78,7 +78,8 @@ func TestContainer(t *testing.T) {
 			},
 		}
 		output := utils.Render(t, Container(props))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`id="main-wrap"`,
 			"data-tc-test",
 			`aria-label="Main content wrapper"`,

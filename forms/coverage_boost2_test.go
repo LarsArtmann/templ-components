@@ -59,7 +59,8 @@ func TestInputFullProps(t *testing.T) {
 			Class:     "extra-class",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="input-username"`,
 		`name="username"`,
 		`value="alice"`,
@@ -113,7 +114,8 @@ func TestToggleFullProps(t *testing.T) {
 			AriaLabel: "Notifications toggle",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="toggle-1"`,
 		"Enable notifications",
 		"Must accept to continue",
@@ -173,7 +175,8 @@ func TestSelectFullProps(t *testing.T) {
 			{Value: "user", Label: "User", Disabled: true},
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="select-role"`,
 		"Please select a role",
 		"Choose your access level",
@@ -246,7 +249,8 @@ func TestTextareaFullProps(t *testing.T) {
 			AriaLabel: "Biography input",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="textarea-bio"`,
 		`name="bio"`,
 		"Tell us about yourself",
@@ -280,7 +284,8 @@ func TestCheckboxFullProps(t *testing.T) {
 			AriaLabel: "Terms agreement",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="cb-agree"`,
 		"I agree to the terms",
 		"You must agree",
@@ -320,7 +325,8 @@ func TestRadioGroupFullProps(t *testing.T) {
 			{Value: "enterprise", Label: "Enterprise"},
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="rg-plan"`,
 		"Select plan",
 		"Please choose a plan",
@@ -382,7 +388,8 @@ func TestComboboxFullProps(t *testing.T) {
 			{Value: "at", Label: "Austria"},
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		"Country combobox",
 		"Germany",
 		"Austria",
@@ -415,7 +422,8 @@ func TestFormInline(t *testing.T) {
 		Method: FormGet,
 		Layout: FormLayoutInline,
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`action="/search"`,
 		`method="GET"`,
 	)
@@ -428,7 +436,8 @@ func TestFormWithCSRF(t *testing.T) {
 		Method:    FormPost,
 		CSRFToken: "csrf-abc-123",
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`action="/submit"`,
 		`method="POST"`,
 		`value="csrf-abc-123"`,
@@ -508,7 +517,8 @@ func TestValidationSummaryFullProps(t *testing.T) {
 			{Field: "name", Message: "Name required"},
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		"Invalid email",
 		"Name required",
 	)

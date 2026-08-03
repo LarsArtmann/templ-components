@@ -31,7 +31,8 @@ func TestFilterDropdownSnapshot(t *testing.T) {
 				{Value: "banned", Label: "Banned", Disabled: true},
 			},
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`name="status"`,
 			`hx-get="/api/users"`,
 			`hx-target="#user-list"`,
@@ -67,7 +68,8 @@ func TestSliderSnapshot(t *testing.T) {
 			ShowValue: true,
 			HelpText:  "Drag to adjust your budget",
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`type="range"`,
 			`id="price-range"`,
 			`name="max_price"`,
@@ -98,7 +100,8 @@ func TestRatingSnapshot(t *testing.T) {
 			Required:  true,
 			HelpText:  "How would you rate your experience?",
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`role="radiogroup"`,
 			"Rate this product",
 			"required",
@@ -116,7 +119,8 @@ func TestRatingSnapshot(t *testing.T) {
 			Size:      RatingSizeSM,
 			ReadOnly:  true,
 		}))
-		utils.AssertContainsAll(t, output,
+		utils.AssertContainsAll(
+			t, output,
 			`role="img"`,
 			`aria-label="Average customer rating"`,
 			"7 out of 10",

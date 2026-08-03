@@ -137,7 +137,8 @@ func TestNavLinkActiveState(t *testing.T) {
 			AriaLabel: "Dashboard link",
 		},
 	}, "/dashboard"))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="nl-dashboard"`,
 		`aria-label="Dashboard link"`,
 		"Dashboard",
@@ -161,7 +162,8 @@ func TestNavLinkExternalLink(t *testing.T) {
 		Text:     "External",
 		External: true,
 	}, ""))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`href="https://external.com"`,
 		`target="_blank"`,
 		`rel="noopener noreferrer"`,
@@ -196,7 +198,8 @@ func TestNavFullProps(t *testing.T) {
 			AriaLabel: "Main navigation",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="main-nav"`,
 		"MyApp",
 		"Home",
@@ -221,7 +224,8 @@ func TestSimpleNavFullProps(t *testing.T) {
 			AriaLabel: "Top nav",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		"MyApp",
 		"Home",
 		"Docs",
@@ -255,7 +259,8 @@ func TestSidebarNavFullProps(t *testing.T) {
 			AriaLabel: "Main sidebar",
 		},
 	}))
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		`id="sidebar"`,
 		"Dashboard",
 		"Settings",

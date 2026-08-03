@@ -61,7 +61,8 @@ func ensureAllocator(t *testing.T) {
 			return
 		}
 
-		opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		opts := append(
+			chromedp.DefaultExecAllocatorOptions[:],
 			chromedp.ExecPath(chromePath),
 			chromedp.NoSandbox,
 			chromedp.DisableGPU,

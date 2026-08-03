@@ -44,7 +44,8 @@ func TestAppShellCrossPackageComposition(t *testing.T) {
 		Content: content,
 	}))
 
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		"Dashboard", "Users", "Settings",
 		"Home", "Help",
 	)
@@ -81,7 +82,8 @@ func TestSplitWithContentAndAside(t *testing.T) {
 		Ratio: layout.SplitRatio1To3,
 	}))
 
-	utils.AssertContainsAll(t, output,
+	utils.AssertContainsAll(
+		t, output,
 		"Article body", "Metadata",
 		"md:grid-cols-3", "md:col-span-2",
 		"min-w-0",
