@@ -1,0 +1,60 @@
+package echarts
+
+import (
+	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// SDKScript renders a CSP-safe <script src> tag that loads the Apache ECharts
+// runtime from CDN. Include this once per page in your layout.
+//
+//	@echarts.SDKScript(echarts.DefaultSDKScriptProps())
+templ SDKScript(props SDKScriptProps) {
+	<script
+		src={ scriptSrc(props) }
+		nonce={ props.Nonce }
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		{ props.Attrs... }
+	></script>
+}
+
+// EChart renders an ECharts chart container with the consumer-provided HTML
+// element and init script from go-echarts RenderSnippet(). Injects the dark mode
+// bridge script (singleton) when DarkModeBridge is true.
+//
+//	@echarts.EChart(echarts.EChartsProps{
+//	    Element: snippet.Element,
+//	    Script:  snippet.Script,
+//	    Nonce:   nonce,
+//	})
+templ EChart(props EChartsProps) {
+	if props.Element != "" {
+		<div class={ utils.Class("tc-echarts w-full", props.Class) }
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			{ templ.Raw(props.Element) }
+		</div>
+		if props.Script != "" {
+			<script nonce={ props.Nonce }>
+				{ templ.Raw(props.Script) }
+			</script>
+		}
+		if props.DarkModeBridge {
+			@darkModeBridgeScript(props.Nonce)
+		}
+	}
+}
+
+// darkModeBridgeScript is a thin wrapper that renders the singleton dark mode
+// bridge in a CSP-safe <script nonce> tag.
+templ darkModeBridgeScript(nonce string) {
+	@darkModeBridgeComponent(nonce)
+}

@@ -42,8 +42,8 @@ export const comparisons: ComparisonItem[] = [
     variant: "templ-components",
     accent: true,
     pros: [
-      "107 components across 10 packages",
-      "47 typed string enums",
+      "110 components across 10 packages",
+      "49 typed string enums",
       "Tailwind v4 CSS-first config",
       "CSP nonce on every inline script",
       "Built-in HTMX integration package",

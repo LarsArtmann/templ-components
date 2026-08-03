@@ -21,7 +21,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                     |
 | `recipes`    | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                              |
 
-**Totals:** 109 templ components (primitives) + 4 recipe screens = 113, 102 icon names, 49 typed enums (47 with `IsValid()`), 104 generated `*_templ.go` files, ~30,500 lines of Go/templ source
+**Totals:** 110 templ components (primitives) + 4 recipe screens = 114, 102 icon names, 49 typed enums (47 with `IsValid()`), 105 generated `*_templ.go` files, ~30,500 lines of Go/templ source
 
 ---
 
