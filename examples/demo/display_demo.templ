@@ -353,6 +353,55 @@ templ displayDemo() {
 			})
 		}
 	</div>
+	@demoSection("SVG Charts (Line, Pie, Area)", "display-svg-charts")
+	<div class="grid gap-4 sm:grid-cols-2">
+		@display.Card(display.CardProps{Title: "Revenue Trend"}) {
+			@display.LineChart(display.LineChartProps{
+				Series: []display.LineChartSeries{
+					{Name: "Revenue", Values: []float64{10, 25, 40, 35, 60, 55, 80}},
+				},
+				XAxisLabels: []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"},
+				BaseProps:   utils.BaseProps{AriaLabel: "Revenue by day of week"},
+			})
+		}
+		@display.Card(display.CardProps{Title: "Revenue vs Expenses"}) {
+			@display.LineChart(display.LineChartProps{
+				Series: []display.LineChartSeries{
+					{Name: "Revenue", Values: []float64{10, 25, 40, 35, 60, 55, 80}},
+					{Name: "Expenses", Values: []float64{8, 15, 20, 30, 35, 40, 50}},
+				},
+				XAxisLabels: []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"},
+			})
+		}
+		@display.Card(display.CardProps{Title: "Active Users"}) {
+			@display.AreaChart(display.AreaChartProps{
+				Series: []display.LineChartSeries{
+					{Name: "Users", Values: []float64{120, 180, 250, 300, 280, 340}},
+				},
+				XAxisLabels: []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun"},
+			})
+		}
+		@display.Card(display.CardProps{Title: "Traffic Sources"}) {
+			@display.PieChart(display.PieChartProps{
+				Slices: []display.PieChartSlice{
+					{Label: "Direct", Value: 45},
+					{Label: "Organic", Value: 30},
+					{Label: "Referral", Value: 25},
+				},
+				BaseProps: utils.BaseProps{AriaLabel: "Traffic sources breakdown"},
+			})
+		}
+		@display.Card(display.CardProps{Title: "Storage Usage"}) {
+			@display.PieChart(display.PieChartProps{
+				Slices: []display.PieChartSlice{
+					{Label: "Used", Value: 80},
+					{Label: "Free", Value: 48},
+				},
+				Donut:       true,
+				CenterLabel: "128GB",
+			})
+		}
+	</div>
 	@demoSection("External Links", "display-external-links")
 	<div class="flex flex-wrap gap-4">
 		@display.ExternalLink(display.ExternalLinkProps{
