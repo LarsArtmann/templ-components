@@ -15,7 +15,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-102 server-rendered components. 45 typed string enums. 102 SVG icons. Zero client-side framework.
+110 server-rendered components. 51 typed string enums. 102 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -202,6 +202,17 @@ Loading indicators, error handling, CSRF protection, out-of-band swaps, View Tra
 
 See [`docs/recipes/datastar-integration.md`](docs/recipes/datastar-integration.md) for the HTMX-to-Datastar migration guide.
 
+### `charts/echarts` — ECharts Adapter (2 components, opt-in)
+
+CSP-safe wrapper for Apache ECharts interactive charts (tooltips, zoom, 25+ chart types). Follows the same opt-in pattern as `datastar` — does NOT import go-echarts. Consumer builds charts with go-echarts and passes `RenderSnippet()` output.
+
+```templ
+@echarts.SDKScript(echarts.DefaultSDKScriptProps())
+@echarts.EChart(echarts.EChartsProps{Element: snippet.Element, Script: snippet.Script, Nonce: nonce})
+```
+
+See [`docs/recipes/echarts-adapter.md`](docs/recipes/echarts-adapter.md) for the Tier 1 vs Tier 2 guide.
+
 ### `errorpage` — Error Pages (4 components)
 
 Structured error pages with family-aware styling, HTTP handler integration, dedicated 404.
@@ -215,7 +226,7 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 ## Design Principles
 
-**Type-safe.** 47 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 51 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 
