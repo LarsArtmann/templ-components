@@ -91,9 +91,9 @@ templ generate && go run .
 
 ## Component Catalog
 
-### `display` — Data Display (35 components)
+### `display` — Data Display (38 components)
 
-Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, collapsible sections, heatmaps, and more.
+Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, collapsible sections, heatmaps, **native SVG charts** (LineChart, AreaChart, PieChart/Donut), and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {

@@ -36,7 +36,12 @@
       imports = [ inputs.treefmt-nix.flakeModule ];
 
       perSystem =
-        { config, pkgs, inputs', ... }:
+        {
+          config,
+          pkgs,
+          inputs',
+          ...
+        }:
         {
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
