@@ -91,9 +91,10 @@ func TestMyComponent(t *testing.T) {
 
 - `StateClick` clicks the first `[popovertarget]`/button/link inside `#tc-root`.
 - `StateContext` dispatches a `contextmenu` event (for `ContextMenu`).
-- Raise `MaxMismatch` to ~2% for JS-positioned overlays: the menu is placed
+- Raise `MaxMismatch` to ~1% for JS-positioned overlays: the menu is placed
   from the trigger's `getBoundingClientRect()`, so a 1px layout-timing shift
-  shows up as edge anti-aliasing variance. A real regression blows past 2%.
+  shows up as edge anti-aliasing variance (~0.5-0.75% observed empirically). A
+  real regression blows past 1%.
 - Pass `Nonce` on the component props so positioning scripts (and
   `ContextMenu`'s menu + handler, which are gated on `Nonce != ""`) render.
 

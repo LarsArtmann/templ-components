@@ -239,18 +239,18 @@ func TestRTL(t *testing.T) {
 // crop it). Nonce is required so the components render their positioning
 // scripts and — for ContextMenu — the menu + event handler at all.
 //
-// MaxMismatch is raised to 2%: these menus are positioned in JS from the
+// MaxMismatch is raised to 1%: these menus are positioned in JS from the
 // trigger's getBoundingClientRect(), so a 1px layout-timing shift shows up as
-// edge anti-aliasing variance (~0.5-1%). A real regression (missing menu,
-// wrong colors, broken layout) blows far past 2%. Pure-CSS components stay at
-// the strict 0.1% default.
+// edge anti-aliasing variance (~0.5-0.75% observed empirically). A real
+// regression (missing menu, wrong colors, broken layout) blows far past 1%.
+// Pure-CSS components stay at the strict 0.1% default.
 func overlayOpen(viewport visualtest.Viewport, state visualtest.InteractionState) visualtest.Options {
 	return visualtest.Options{
 		State:        state,
 		WaitSelector: "[popover]",
 		FullViewport: true,
 		Viewport:     viewport,
-		MaxMismatch:  0.02,
+		MaxMismatch:  0.01,
 	}
 }
 
@@ -258,14 +258,15 @@ func overlayOpen(viewport visualtest.Viewport, state visualtest.InteractionState
 // that are server-rendered with Open=true. The auto-open JS calls showModal(),
 // promoting the dialog to the top layer — outside #tc-root's bounding box — so
 // FullViewport is required. WaitSelector: "dialog" ensures the screenshot is
-// taken after showModal() fires. MaxMismatch is raised to 2% to absorb
-// top-layer positioning and backdrop anti-aliasing variance.
+// taken after showModal() fires. MaxMismatch is raised to 1% to absorb
+// top-layer positioning and backdrop anti-aliasing variance (0% observed
+// empirically, 1% gives safe headroom).
 func dialogOpen(viewport visualtest.Viewport) visualtest.Options {
 	return visualtest.Options{
 		WaitSelector: "dialog",
 		FullViewport: true,
 		Viewport:     viewport,
-		MaxMismatch:  0.02,
+		MaxMismatch:  0.01,
 	}
 }
 
