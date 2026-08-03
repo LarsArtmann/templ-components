@@ -29,6 +29,19 @@ const (
 	smoothPathMinPoints   = 3
 )
 
+// Shared Tailwind color class constants for chart palettes. Used by LineChart,
+// AreaChart, and PieChart series/slice coloring via currentColor inheritance.
+const (
+	chartColorBlue    = "text-blue-600 dark:text-blue-400"
+	chartColorEmerald = "text-emerald-600 dark:text-emerald-400"
+	chartColorAmber   = "text-amber-600 dark:text-amber-400"
+	chartColorRose    = "text-rose-600 dark:text-rose-400"
+	chartColorViolet  = "text-violet-600 dark:text-violet-400"
+	chartColorCyan    = "text-cyan-600 dark:text-cyan-400"
+	chartColorOrange  = "text-orange-600 dark:text-orange-400"
+	chartColorPink    = "text-pink-600 dark:text-pink-400"
+)
+
 // Point is a coordinate pair in SVG user space.
 type Point struct {
 	X, Y float64

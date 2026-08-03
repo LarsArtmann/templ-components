@@ -81,6 +81,7 @@ func TestEChartAllScriptsHaveNonce(t *testing.T) {
 
 	scriptCount := strings.Count(html, "<script")
 	nonceCount := strings.Count(html, `nonce="csp-nonce"`)
+
 	if scriptCount != nonceCount {
 		t.Errorf("expected %d script tags to all have nonce, got %d nonce attrs", scriptCount, nonceCount)
 	}

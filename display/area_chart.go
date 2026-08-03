@@ -60,9 +60,8 @@ type AreaChartProps struct {
 const (
 	areaChartDefaultWidth   = 600
 	areaChartDefaultHeight  = 300
-	areaChartDefaultFill    = 0.2
-	areaChartDefaultEmpty   = "No data"
-	areaChartFillOpacityMul = 100
+	areaChartDefaultFill  = 0.2
+	areaChartDefaultEmpty = "No data"
 )
 
 // DefaultAreaChartProps returns sensible defaults for an area chart.
