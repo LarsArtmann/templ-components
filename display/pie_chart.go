@@ -83,6 +83,7 @@ const (
 	pieChartDegToRad       = math.Pi / 180.0
 	pieChartFullCircle     = 360.0
 	pieChartHalfCircle     = 180.0
+	pieChartQuarterCircle  = 90.0
 	pieChartFullCircleEps  = 0.01
 	pieChartPercentScale   = 100.0
 	pieChartLabelOffset    = 1.25
@@ -208,7 +209,7 @@ func computeSliceAngles(slices []PieChartSlice) []sliceAngleResult {
 // polarToCartesian converts polar coordinates (angle in degrees from top,
 // radius) to Cartesian coordinates centered at (cx, cy).
 func polarToCartesian(cx, cy, radius, angleDeg float64) (float64, float64) {
-	rad := (angleDeg - pieChartHalfCircle) * pieChartDegToRad
+	rad := (angleDeg - pieChartQuarterCircle) * pieChartDegToRad
 
 	return cx + radius*math.Cos(rad), cy + radius*math.Sin(rad)
 }

@@ -128,7 +128,7 @@ templ PieChart(props PieChartProps) {
 						dominant-baseline="middle"
 						class="fill-gray-600 dark:fill-gray-300"
 						font-size={ pieChartFontSize }
-					>{ props.Slices[i].Label } ({ pieChartFormatPercent(sa.percent) })</text>
+					>{ props.Slices[sa.sliceIdx].Label } ({ pieChartFormatPercent(sa.percent) })</text>
 				}
 			}
 			if props.Donut && props.CenterLabel != "" {
