@@ -7,6 +7,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/visualtest"
@@ -449,4 +450,80 @@ func TestStepIndicator(t *testing.T) {
 	si.Steps = []string{"Account", "Profile", "Confirm"}
 	si.CurrentStep = 1
 	visualtest.AssertScreenshot(t, "step_indicator/light", feedback.StepIndicator(si))
+}
+
+// TestCombobox covers the combobox input with a label and options.
+func TestCombobox(t *testing.T) {
+	t.Parallel()
+
+	cb := forms.DefaultComboboxProps()
+	cb.Label = "Country"
+	cb.Placeholder = "Select a country..."
+	cb.Options = []forms.ComboboxOption{
+		{Label: "United States", Value: "us"},
+		{Label: "Canada", Value: "ca"},
+		{Label: "Germany", Value: "de"},
+	}
+	cb.Nonce = "test-nonce"
+	visualtest.AssertScreenshot(t, "combobox/light", forms.Combobox(cb))
+}
+
+// TestTooltip covers the pure-CSS tooltip wrapping a button trigger.
+func TestTooltip(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultTooltipProps()
+	props.Text = "Helpful information"
+
+	tooltipWithTrigger := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		ctx = templ.WithChildren(ctx, templ.Raw(`<button class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">Hover for info</button>`))
+
+		return display.Tooltip(props).Render(ctx, w)
+	})
+	visualtest.AssertScreenshot(t, "tooltip/light", tooltipWithTrigger)
+}
+
+// TestCarousel covers the scroll-snap carousel with arrows and indicators.
+func TestCarousel(t *testing.T) {
+	t.Parallel()
+
+	carousel := display.DefaultCarouselProps()
+	carousel.Slides = []display.CarouselSlide{
+		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-blue-600 text-2xl font-bold text-white">1</div>`)},
+		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-emerald-600 text-2xl font-bold text-white">2</div>`)},
+		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-violet-600 text-2xl font-bold text-white">3</div>`)},
+	}
+	carousel.ShowIndicators = true
+	carousel.Nonce = "test-nonce"
+	visualtest.AssertScreenshot(t, "carousel/light", display.Carousel(carousel))
+}
+
+// TestSkeleton covers the SkeletonCardGrid loading placeholder.
+func TestSkeleton(t *testing.T) {
+	t.Parallel()
+
+	skeleton := feedback.DefaultSkeletonCardGridProps()
+	skeleton.Count = 3
+	visualtest.AssertScreenshot(t, "skeleton/light", feedback.SkeletonCardGrid(skeleton))
+}
+
+// TestErrorPage covers the full-page error display.
+func TestErrorPage(t *testing.T) {
+	t.Parallel()
+
+	props := errorpage.DefaultErrorPageProps()
+	props.Why = "The database connection timed out after 30 seconds."
+	props.Fix = "Check that the database is running and accessible from the application server."
+	props.Nonce = "test-nonce"
+	visualtest.AssertScreenshot(t, "errorpage/light", errorpage.ErrorPage(props))
+}
+
+// TestNotFound404 covers the dedicated 404 navigation page.
+func TestNotFound404(t *testing.T) {
+	t.Parallel()
+
+	props := errorpage.DefaultNotFound404Props()
+	props.Links = errorpage.DefaultNotFoundLinks()
+	props.Nonce = "test-nonce"
+	visualtest.AssertScreenshot(t, "notfound404/light", errorpage.NotFound404(props))
 }
