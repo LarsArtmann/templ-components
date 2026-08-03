@@ -1,0 +1,218 @@
+package display
+
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// LineChart renders a pure-SVG line chart with Y-axis ticks, optional gridlines,
+// multi-series support, data-point dots, and a legend. Zero JavaScript — all
+// rendering is server-side. Dark-mode aware via Tailwind dark: variants.
+//
+//	@display.LineChart(display.LineChartProps{
+//	    Series: []display.LineChartSeries{
+//	        {Name: "Revenue", Values: []float64{10, 25, 40, 35, 60, 55, 80}},
+//	    },
+//	    XAxisLabels: []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"},
+//	})
+templ LineChart(props LineChartProps) {
+	{{
+		width := props.Width
+		if width == 0 {
+			width = lineChartDefaultWidth
+		}
+		height := props.Height
+		if height == 0 {
+			height = lineChartDefaultHeight
+		}
+		padding := props.Padding
+		if padding == (ChartPadding{}) {
+			padding = DefaultChartPadding()
+		}
+		style := props.Style
+		if style == "" {
+			style = LineChartStyleLinear
+		}
+		emptyMsg := props.EmptyMessage
+		if emptyMsg == "" {
+			emptyMsg = lineChartDefaultEmptyMsg
+		}
+
+		minVal, maxVal := lineChartBounds(props.Series, props.Min, props.Max)
+		plotW := width - padding.Left - padding.Right
+		plotH := height - padding.Top - padding.Bottom
+		ticks := ComputeNiceTicks(minVal, maxVal, lineChartMaxTicks)
+		hasData := lineChartHasData(props.Series)
+		rangeVal := maxVal - minVal
+
+		maxSeriesLen := 0
+		for _, s := range props.Series {
+			if len(s.Values) > maxSeriesLen {
+				maxSeriesLen = len(s.Values)
+			}
+		}
+		labelCount := len(props.XAxisLabels)
+		if labelCount > maxSeriesLen {
+			labelCount = maxSeriesLen
+		}
+
+		type legendItem struct {
+			Name  string
+			Color string
+			X     int
+		}
+		var legendItems []legendItem
+		if props.ShowLegend && len(props.Series) > 1 {
+			lx := padding.Left
+			for i, s := range props.Series {
+				if s.Name == "" {
+					continue
+				}
+				legendItems = append(legendItems, legendItem{
+					Name:  s.Name,
+					Color: lineChartColor(i, s.Color),
+					X:     lx,
+				})
+				lx += len(s.Name)*lineChartLegendCharW + lineChartLegendGap
+			}
+		}
+	}}
+	<svg
+		viewBox={ fmt.Sprintf("0 0 %d %d", width, height) }
+		class={ utils.Class("w-full h-auto", props.Class) }
+		role="img"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		} else {
+			aria-hidden="true"
+		}
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		{ props.Attrs... }
+	>
+		if hasData {
+			for _, tick := range ticks {
+				{{
+					y := float64(padding.Top) + float64(plotH) - ((tick-minVal)/rangeVal)*float64(plotH)
+				}}
+				if props.ShowGrid {
+					<line
+						x1={ padding.Left }
+						y1={ y }
+						x2={ width - padding.Right }
+						y2={ y }
+						class="stroke-gray-200 dark:stroke-gray-700"
+						stroke-width="1"
+						stroke-dasharray="4 4"
+					/>
+				}
+				<text
+					x={ padding.Left - lineChartTickLen }
+					y={ y + lineChartLabelYOffset }
+					text-anchor="end"
+					class="fill-gray-500 dark:fill-gray-400"
+					font-size={ lineChartFontSize }
+				>{ lineChartTickFormat(props.ValueFormat, tick) }</text>
+			}
+			<line
+				x1={ padding.Left }
+				y1={ padding.Top }
+				x2={ padding.Left }
+				y2={ padding.Top + plotH }
+				class="stroke-gray-300 dark:stroke-gray-600"
+				stroke-width="1"
+			/>
+			<line
+				x1={ padding.Left }
+				y1={ padding.Top + plotH }
+				x2={ width - padding.Right }
+				y2={ padding.Top + plotH }
+				class="stroke-gray-300 dark:stroke-gray-600"
+				stroke-width="1"
+			/>
+			if labelCount > 0 {
+				for i := range labelCount {
+					if i < len(props.XAxisLabels) {
+						{{
+							x := padding.Left + int(lineChartTickLabelX(plotW, labelCount, i))
+						}}
+						<text
+							x={ x }
+							y={ padding.Top + plotH + lineChartXLabelOffset }
+							text-anchor="middle"
+							class="fill-gray-500 dark:fill-gray-400"
+							font-size={ lineChartFontSize }
+						>{ props.XAxisLabels[i] }</text>
+					}
+				}
+			}
+			for i, series := range props.Series {
+				if len(series.Values) >= 2 {
+					{{
+						color := lineChartColor(i, series.Color)
+						strokeW := lineChartStrokeWidth(series.StrokeWidth)
+						pts := ScalePoints(series.Values, plotW, plotH, minVal, maxVal)
+						var path string
+						if style == LineChartStyleSmooth {
+							path = BuildSmoothPath(pts)
+						} else {
+							path = BuildPolylinePath(pts)
+						}
+					}}
+					<g
+						class={ color }
+						transform={ fmt.Sprintf("translate(%d,%d)", padding.Left, padding.Top) }
+					>
+						<path
+							d={ path }
+							fill="none"
+							stroke="currentColor"
+							stroke-width={ fmt.Sprintf("%g", strokeW) }
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							if series.Dashed {
+								stroke-dasharray="5 5"
+							}
+						/>
+						if props.ShowDots {
+							for _, p := range pts {
+								<circle cx={ p.X } cy={ p.Y } r={ lineChartDotRadius } fill="currentColor"/>
+							}
+						}
+					</g>
+				}
+			}
+			if len(legendItems) > 0 {
+				for _, li := range legendItems {
+					<g transform={ fmt.Sprintf("translate(%d,%d)", li.X, lineChartLegendY) }>
+						<rect
+							width="14"
+							height="3"
+							y="-2"
+							rx="1"
+							class={ li.Color }
+							fill="currentColor"
+						/>
+						<text
+							x="18"
+							y="2"
+							class="fill-gray-600 dark:fill-gray-300"
+							font-size={ lineChartFontSize }
+						>{ li.Name }</text>
+					</g>
+				}
+			}
+		} else {
+			<text
+				x={ width / 2 }
+				y={ height / 2 }
+				text-anchor="middle"
+				dominant-baseline="middle"
+				class="fill-gray-400 dark:fill-gray-500"
+				font-size={ lineChartEmptyFontSize }
+			>{ emptyMsg }</text>
+		}
+	</svg>
+}

@@ -350,3 +350,103 @@ func withChildren(parent, child templ.Component) templ.Component {
 		return parent.Render(templ.WithChildren(ctx, child), w)
 	})
 }
+
+// TestSpinner covers the loading spinner at different sizes in light and dark.
+// MaxMismatch is raised to 2% because the spinner animates via CSS — the
+// captured frame depends on timing and will not pixel-match between runs.
+func TestSpinner(t *testing.T) {
+	t.Parallel()
+
+	spinnerOpts := visualtest.Options{MaxMismatch: 0.05}
+	visualtest.AssertScreenshot(t, "spinner/md_light", feedback.Spinner(feedback.SpinnerProps{}), spinnerOpts)
+
+	spinnerOpts.Dark = visualtest.Bool(true)
+	visualtest.AssertScreenshot(t, "spinner/md_dark", feedback.Spinner(feedback.SpinnerProps{}), spinnerOpts)
+}
+
+// TestProgressBar covers determinate and indeterminate progress states.
+func TestProgressBar(t *testing.T) {
+	t.Parallel()
+
+	half := feedback.DefaultProgressBarProps()
+	half.Current = 5
+	half.Total = 10
+	half.Label = "Uploading…"
+	visualtest.AssertScreenshot(t, "progressbar/half_light", feedback.ProgressBar(half))
+
+	indeterminate := feedback.DefaultProgressBarProps()
+	indeterminate.Indeterminate = true
+	visualtest.AssertScreenshot(t, "progressbar/indeterminate_light", feedback.ProgressBar(indeterminate))
+}
+
+// TestAvatar covers image and initials fallback modes.
+func TestAvatar(t *testing.T) {
+	t.Parallel()
+
+	initials := display.DefaultAvatarProps()
+	initials.Initials = "JD"
+	visualtest.AssertScreenshot(t, "avatar/initials_light", display.Avatar(initials))
+
+	img := display.DefaultAvatarProps()
+	img.Src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='80' height='80'%3E%3Crect fill='%233b82f6' width='80' height='80'/%3E%3C/svg%3E"
+	img.Alt = "User"
+	visualtest.AssertScreenshot(t, "avatar/image_light", display.Avatar(img))
+}
+
+// TestToast covers the four toast types in light mode.
+func TestToast(t *testing.T) {
+	t.Parallel()
+
+	success := feedback.DefaultToastProps()
+	success.Message = "Saved successfully"
+	visualtest.AssertScreenshot(t, "toast/success_light", feedback.Toast(success))
+
+	errorToast := feedback.DefaultToastProps()
+	errorToast.Type = feedback.FeedbackError
+	errorToast.Message = "Failed to save"
+	visualtest.AssertScreenshot(t, "toast/error_light", feedback.Toast(errorToast))
+}
+
+// TestAccordion covers the native <details>-based accordion.
+func TestAccordion(t *testing.T) {
+	t.Parallel()
+
+	accordion := display.DefaultAccordionProps()
+	accordion.Items = []display.AccordionItem{
+		{Title: "What is templ?", Content: templ.Raw("<p>A templating language for Go.</p>")},
+		{Title: "Is it fast?", Content: templ.Raw("<p>Yes — compiled, not interpreted.</p>")},
+	}
+	visualtest.AssertScreenshot(t, "accordion/light", display.Accordion(accordion))
+}
+
+// TestTabs covers the default underline variant.
+func TestTabs(t *testing.T) {
+	t.Parallel()
+
+	tabs := display.DefaultTabsProps()
+	tabs.Tabs = []display.Tab{
+		{Label: "Overview"},
+		{Label: "Activity"},
+		{Label: "Settings"},
+	}
+	visualtest.AssertScreenshot(t, "tabs/light", display.Tabs(tabs))
+}
+
+// TestCopyButton covers the copy-to-clipboard button.
+func TestCopyButton(t *testing.T) {
+	t.Parallel()
+
+	cb := display.DefaultCopyButtonProps()
+	cb.Text = "npm install templ"
+	visualtest.AssertScreenshot(t, "copybutton/light", display.CopyButton(cb))
+}
+
+// TestStepIndicator covers the horizontal step progress.
+func TestStepIndicator(t *testing.T) {
+	t.Parallel()
+
+	si := feedback.DefaultStepIndicatorProps()
+	si.Steps = []string{"Account", "Profile", "Confirm"}
+	si.CurrentStep = 1
+	visualtest.AssertScreenshot(t, "step_indicator/light", feedback.StepIndicator(si))
+}

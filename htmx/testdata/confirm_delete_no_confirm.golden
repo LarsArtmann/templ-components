@@ -1,0 +1,1 @@
+<button type="button" class="dark:hover:text-red-300 dark:text-red-400 hover:text-red-900 text-red-600" hx-delete="/api/items/42" hx-target="#item-42" hx-swap="outerHTML">Delete</button>

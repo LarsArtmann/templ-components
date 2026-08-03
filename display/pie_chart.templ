@@ -1,0 +1,180 @@
+package display
+
+import (
+	"fmt"
+	"math"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// PieChart renders a pure-SVG pie or donut chart. Zero JavaScript — all
+// rendering is server-side using SVG arc paths. Supports external labels,
+// a legend, and a center label for donut charts. Dark-mode aware.
+//
+//	@display.PieChart(display.PieChartProps{
+//	    Slices: []display.PieChartSlice{
+//	        {Label: "Direct", Value: 45},
+//	        {Label: "Organic", Value: 30},
+//	        {Label: "Referral", Value: 25},
+//	    },
+//	})
+templ PieChart(props PieChartProps) {
+	{{
+		width := props.Width
+		if width == 0 {
+			width = pieChartDefaultWidth
+		}
+		height := props.Height
+		if height == 0 {
+			height = pieChartDefaultHeight
+		}
+		emptyMsg := props.EmptyMessage
+		if emptyMsg == "" {
+			emptyMsg = pieChartDefaultEmpty
+		}
+
+		cx := float64(width) / 2
+		cy := float64(height) / 2
+
+		// Reserve space for labels and legend.
+		chartRadius := math.Min(float64(width), float64(height)) / 2
+
+		showLabels := props.ShowLabels && props.LabelMode == PieChartLabelExternal
+		labelPad := chartRadius * 0.25
+		if !showLabels {
+			labelPad = chartRadius * 0.1
+		}
+
+		legendHeight := 0.0
+		if props.ShowLegend && len(props.Slices) > 0 {
+			legendHeight = float64(len(props.Slices))*pieChartLegendYGap + pieChartLegendYGap
+		}
+
+		radius := math.Min(chartRadius-labelPad, float64(height)/2-legendHeight/2)
+		if radius < 10 {
+			radius = 10
+		}
+
+		innerR := 0.0
+		if props.Donut {
+			innerR = radius * props.InnerRadius
+		}
+
+		hasData := pieChartHasData(props.Slices)
+		angles := computeSliceAngles(props.Slices)
+
+		type legendEntry struct {
+			Label string
+			Color string
+			Y     float64
+		}
+		var legend []legendEntry
+		if props.ShowLegend && len(props.Slices) > 0 {
+			ly := float64(height) - legendHeight + pieChartLegendYGap
+			for i, s := range props.Slices {
+				if s.Value <= 0 {
+					continue
+				}
+				legend = append(legend, legendEntry{
+					Label: s.Label,
+					Color: pieChartColor(i, s.Color),
+					Y:     ly,
+				})
+				ly += pieChartLegendYGap
+			}
+		}
+	}}
+	<svg
+		viewBox={ fmt.Sprintf("0 0 %d %d", width, height) }
+		class={ utils.Class("w-full h-auto", props.Class) }
+		role="img"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		} else {
+			aria-hidden="true"
+		}
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		{ props.Attrs... }
+	>
+		if hasData {
+			for _, sa := range angles {
+				{{
+					color := pieChartColor(sa.sliceIdx, props.Slices[sa.sliceIdx].Color)
+					arcPath := computeArcPath(cx, cy, radius, innerR, sa.startAngle, sa.endAngle)
+				}}
+				<g class={ color }>
+					<path
+						d={ arcPath }
+						fill="currentColor"
+						stroke="white"
+						stroke-width="2"
+						class="dark:stroke-gray-800"
+					/>
+				</g>
+				if showLabels && sa.sliceIdx < len(props.Slices) && props.Slices[sa.sliceIdx].Label != "" {
+					{{
+						labelX, labelY := polarToCartesian(cx, cy, radius*pieChartLabelOffset, sa.midAngle)
+						anchor := "start"
+						if sa.midAngle > 90 && sa.midAngle < 270 {
+							anchor = "end"
+						}
+					}}
+					<text
+						x={ labelX }
+						y={ labelY }
+						text-anchor={ anchor }
+						dominant-baseline="middle"
+						class="fill-gray-600 dark:fill-gray-300"
+						font-size={ pieChartFontSize }
+					>{ props.Slices[i].Label } ({ pieChartFormatPercent(sa.percent) })</text>
+				}
+			}
+			if props.Donut && props.CenterLabel != "" {
+				<text
+					x={ cx }
+					y={ cy }
+					text-anchor="middle"
+					dominant-baseline="middle"
+					class="fill-gray-700 dark:fill-gray-200 font-semibold"
+					font-size={ pieChartCenterFontSize }
+				>{ props.CenterLabel }</text>
+			}
+			if len(legend) > 0 {
+				for _, le := range legend {
+					{{
+						labelText := le.Label
+						if labelText == "" {
+							labelText = "—"
+						}
+					}}
+					<g transform={ fmt.Sprintf("translate(%d,%g)", pieChartLeftPad, le.Y) }>
+						<rect
+							width={ pieChartLegendSwatch }
+							height={ pieChartLegendSwatch }
+							rx="2"
+							class={ le.Color }
+							fill="currentColor"
+						/>
+						<text
+							x={ pieChartLegendSwatch + pieChartLegendGap }
+							y={ pieChartLegendSwatch - 1 }
+							class="fill-gray-600 dark:fill-gray-300"
+							font-size={ pieChartFontSize }
+						>{ labelText }</text>
+					</g>
+				}
+			}
+		} else {
+			<text
+				x={ cx }
+				y={ cy }
+				text-anchor="middle"
+				dominant-baseline="middle"
+				class="fill-gray-400 dark:fill-gray-500"
+				font-size={ pieChartCenterFontSize }
+			>{ emptyMsg }</text>
+		}
+	</svg>
+}

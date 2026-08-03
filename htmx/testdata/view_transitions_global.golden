@@ -1,0 +1,10 @@
+<script nonce="">
+(function(){if(typeof htmx!=='undefined'&&document.startViewTransition){htmx.config.globalViewTransitions=true;}})();
+</script>
+<style nonce="">
+::view-transition-old(root){animation:tc-vt-fade-out 200ms ease forwards}
+::view-transition-new(root){animation:tc-vt-fade-in 200ms ease forwards}
+@keyframes tc-vt-fade-out{to{opacity:0}}
+@keyframes tc-vt-fade-in{from{opacity:0}}
+@media (prefers-reduced-motion:reduce){::view-transition-old(root),::view-transition-new(root){animation:none}}
+</style>

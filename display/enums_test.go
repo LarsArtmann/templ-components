@@ -96,6 +96,14 @@ func TestIsValidEnums(t *testing.T) {
 		{"TableCellPadding invalid", func() bool {
 			return TableCellPaddingIsValid(TableCellPadding("bogus"))
 		}, false},
+		// LineChartStyle
+		{"LineChartStyle Linear", func() bool { return LineChartStyleIsValid(LineChartStyleLinear) }, true},
+		{"LineChartStyle Smooth", func() bool { return LineChartStyleIsValid(LineChartStyleSmooth) }, true},
+		{"LineChartStyle invalid", func() bool { return LineChartStyleIsValid(LineChartStyle("bogus")) }, false},
+		// PieChartLabelMode
+		{"PieChartLabelMode External", func() bool { return PieChartLabelModeIsValid(PieChartLabelExternal) }, true},
+		{"PieChartLabelMode None", func() bool { return PieChartLabelModeIsValid(PieChartLabelNone) }, true},
+		{"PieChartLabelMode invalid", func() bool { return PieChartLabelModeIsValid(PieChartLabelMode("bogus")) }, false},
 	}
 
 	for _, tt := range tests {
