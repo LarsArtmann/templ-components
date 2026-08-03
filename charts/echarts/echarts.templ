@@ -1,9 +1,6 @@
 package echarts
 
-import (
-	"github.com/a-h/templ"
-	"github.com/larsartmann/templ-components/utils"
-)
+import "github.com/larsartmann/templ-components/utils"
 // SDKScript renders a CSP-safe <script src> tag that loads the Apache ECharts
 // runtime from CDN. Include this once per page in your layout.
 //
@@ -39,11 +36,11 @@ templ EChart(props EChartsProps) {
 			}
 			{ props.Attrs... }
 		>
-			{ templ.Raw(props.Element) }
+			@templ.Raw(props.Element)
 		</div>
 		if props.Script != "" {
 			<script nonce={ props.Nonce }>
-				{ templ.Raw(props.Script) }
+				{ props.Script }
 			</script>
 		}
 		if props.DarkModeBridge {
