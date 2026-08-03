@@ -36,7 +36,7 @@ tc ls
 #   ...
 ```
 
-### `tc add <component>`
+
 
 Copies a component's `.templ` file (and its `_types.go` sibling, if present)
 to `./components/` by default. Override the destination with `--out`.
@@ -50,7 +50,7 @@ tc add dropdown --out ./src/components
 # tc: wrote src/components/dropdown_templ.go   (if present)
 ```
 
-After copying, edit the `.templ` file directly. Run `templ generate` to
+
 produce the `_templ.go` file, then import your local copy instead of the
 library package.
 

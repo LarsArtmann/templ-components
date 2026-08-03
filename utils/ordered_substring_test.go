@@ -57,7 +57,11 @@ func TestNoOrderedTailwindSubstringsInTests(t *testing.T) {
 				return fmt.Errorf("read file: %w", readErr)
 			}
 
-			scanLinesForOrderedSubstrings(path, string(data), tailwindTokenRe, containsCallRe, stringLiteralRe, &violations, t)
+			scanLinesForOrderedSubstrings(
+				t, path, string(data),
+				tailwindTokenRe, containsCallRe, stringLiteralRe,
+				&violations,
+			)
 
 			return nil
 		})
@@ -75,11 +79,13 @@ func TestNoOrderedTailwindSubstringsInTests(t *testing.T) {
 // strings.Contains call whose string literal contains multiple Tailwind-class
 // tokens in a fixed order.
 func scanLinesForOrderedSubstrings(
+	t *testing.T,
 	path, data string,
 	tailwindTokenRe, containsCallRe, stringLiteralRe *regexp.Regexp,
 	violations *int,
-	t *testing.T,
 ) {
+	t.Helper()
+
 	lineNum := 0
 
 	for line := range strings.SplitSeq(data, "\n") {

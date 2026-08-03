@@ -16,10 +16,7 @@ Chromium builds while still flagging any real visual change.
 
 ## How it works
 
-```
-AssertScreenshot(t, "button/primary_dark", display.Button(props), visualtest.Options{Dark: true})
-        │
-        ▼
+
   render component into an isolated HTML page (compiled Tailwind CSS inlined)
         │
         ▼
@@ -85,43 +82,12 @@ func TestMyComponent(t *testing.T) {
     props := display.DefaultCardProps()
     props.Title = "Revenue"
 
-    visualtest.AssertScreenshot(t, "card/basic_light", display.Card(props))
-    visualtest.AssertScreenshot(t, "card/basic_dark",  display.Card(props), visualtest.Options{Dark: true})
-    visualtest.AssertScreenshot(t, "card/basic_rtl",   display.Card(props), visualtest.Options{RTL: true})
-}
+
 ```
 
-### Options
 
-| Option         | Default  | Purpose                                                                                        |
-| -------------- | -------- | ---------------------------------------------------------------------------------------------- |
-| `Dark`         | false    | Adds `class="dark"` to `<html>` (the library's dark strategy)                                  |
-| `RTL`          | false    | Sets `dir="rtl"` to test logical-property mirroring                                            |
-| `Viewport`     | 1280×800 | Emulated window size for responsive variants                                                   |
-| `MaxMismatch`  | 0.001    | Max fraction of mismatched pixels (0–1) that still passes                                      |
-| `Threshold`    | 0.1      | Pixelmatch perceptual color-distance threshold (0–1); higher tolerates more rendering noise    |
-| `State`        | `Rest`   | Interaction to apply before capture: `StateHover`, `StateFocus`, `StateClick`, `StateContext`  |
-| `FullViewport` | false    | Capture the full viewport instead of the `#tc-root` element (required for top-layer overlays)  |
-| `WaitSelector` | `""`     | CSS selector to wait for (visible) after applying `State` — e.g. `[popover]` once a menu opens |
 
-### Testing overlays (Dropdown / Popover / ContextMenu / Modal / Drawer)
 
-Components whose open state renders in the browser **top layer** (native
-Popover API menus and `<dialog>`) paint _outside_ `#tc-root`'s bounding box,
-so a normal element screenshot crops them. Use `StateClick` (or
-`StateContext` for right-click menus) with `FullViewport: true` and
-`WaitSelector: "[popover]"`:
-
-```go
-visualtest.AssertScreenshot(t, "dropdown/open_light", display.Dropdown(props),
-    visualtest.Options{
-        State:        visualtest.StateClick,      // click the popovertarget trigger
-        WaitSelector: "[popover]",                // wait for the menu to appear
-        FullViewport: true,                       // capture the top-layer menu
-        Viewport:     visualtest.Viewport{Width: 480, Height: 360},
-        MaxMismatch:  0.02,                       // JS-positioned overlays have ~1px jitter
-    })
-```
 
 - `StateClick` clicks the first `[popovertarget]`/button/link inside `#tc-root`.
 - `StateContext` dispatches a `contextmenu` event (for `ContextMenu`).

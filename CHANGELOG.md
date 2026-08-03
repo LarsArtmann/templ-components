@@ -11,13 +11,37 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`display.LineChart`** — pure-SVG line chart with axes, gridlines, multi-series support, data-point dots, legend, linear/smooth styles, and ARIA. Zero JavaScript. Part of the two-tier chart architecture (ADR-0031).
 - **`display.PieChart`** — pure-SVG pie/donut chart with arc paths, external labels, legend, donut center label, custom colors, and ARIA. Zero JavaScript.
 - **`display.AreaChart`** — pure-SVG area chart (line chart with filled areas), configurable fill opacity, multi-series, smooth curves.
-- **`display.chart_geometry.go`** — shared SVG chart geometry helpers: `ScalePoints`, `BuildPolylinePath`, `BuildSmoothPath` (Catmull-Rom), `BuildAreaPath`, `ComputeNiceTicks`, `FormatTickValue`. The foundation for all native SVG chart components.
+- **`display.chart_geometry.go`** — shared SVG chart geometry helpers: `ScalePoints`, `BuildPolylinePath`, `BuildSmoothPath` (Catull-Rom), `BuildAreaPath`, `ComputeNiceTicks`, `FormatTickValue`. The foundation for all native SVG chart components.
 - **`charts/echarts`** — opt-in ECharts adapter package (`EChart`, `SDKScript`) with dark mode bridge. Accepts go-echarts `RenderSnippet()` output as strings — zero dependency on go-echarts. Follows the datastar opt-in precedent.
 - **`LineChartStyle`** and **`PieChartLabelMode`** typed enums with `IsValid()` methods.
 - Recipe docs: `docs/recipes/line-chart.md`, `pie-chart.md`, `area-chart.md`, `echarts-adapter.md`.
 - ADR-0031: Two-Tier Chart Architecture (Native SVG + Opt-in ECharts).
 - Golden snapshot tests for LineChart (10 baselines), PieChart (8 baselines), AreaChart (7 baselines).
 - Demo showcase: SVG Charts section in `examples/demo/display_demo.templ`.
+- **`recipes.AuthLayout`** — split-screen authentication layout with a card panel and branding panel. Supports reversed layout, panel features list, and panel footer.
+- **`visualtest.Bool()`** — tri-state option helper for `Dark`/`RTL` fields. `*bool` semantics: nil=unset (default), `Bool(true)`=explicit dark/RTL, `Bool(false)`=explicit light/LTR. Prevents zero-value conflation.
+- **`visualtest.ViewportMobile`**, **`ViewportTablet`**, **`ViewportDesktop`** — viewport preset constants for visual regression tests.
+- **`visualtest.InteractionState.String()`** — debug-friendly string representation of interaction state.
+- **HTMX golden snapshot tests** — 13 new golden baselines covering all HTMX components (LoadingIndicator, InlineLoadingOverlay, LoadingButton, CSRFToken, ConfirmDelete, SwapOOB, GlobalErrorHandling, ViewTransitions).
+- **`nix run .#css`** — flake app that compiles Tailwind CSS with `--minify` for quick CSS rebuilds.
+- **`tc version`** command and **`tc add --list-deps`** flag — CLI ergonomics for dependency inspection.
+- **Popover edge-flipping** — dropdowns and popovers automatically flip to the opposite side when the preferred side clips off-screen.
+- **`docs/testing-guide.md`** — comprehensive three-tier testing strategy documentation.
+- **`docs/migration/skeletoncardgrid-api-change.md`** — migration guide for the SkeletonCardGrid Props API change.
+- **`utils.TestNoOrderedTailwindSubstringsInTests`** — drift-guard that scans all test files for brittle ordered Tailwind substring assertions (e.g., `strings.Contains(out, "flex flex-col")`). Catches latent flakes from `utils.Class()` nondeterministic reordering.
+
+### Changed
+
+- **`visualtest.Options.Dark`/`RTL`** changed from `bool` to `*bool` — tri-state semantics prevent zero-value conflation between "unset" and "explicitly false". All visual tests updated to use `visualtest.Bool(true)`.
+- **`visualtest` hover targeting** — `hoverAction` now descends to the first interactive child element instead of targeting `#tc-root` center, fixing hover-state screenshots.
+- **treefmt aligned with gofumpt** — switched from `gofmt` to `gofumpt` to eliminate the latent formatter conflict with golangci-lint.
+- **Chromium pinned via separate nixpkgs input** — added `nixpkgs-chromium` input decoupled from main `nixpkgs` so `nix flake update` doesn't shift pixel output in visual regression tests.
+
+### Fixed
+
+- **Modal/Drawer visual regression tests** — `<dialog Open=true>` doesn't promote to top-layer without `showModal()` JS. Fixed by using `FullViewport: true` + `WaitSelector: "dialog"`.
+- **SkeletonCardGrid test assertion** — replaced brittle `strings.Contains(output, "rounded-lg border")` with `AssertNotContains`.
+- **34 golangci-lint findings resolved** — renamed short variables in chart geometry, removed unused function, fixed whitespace and style violations.
 
 ## [1.6.0] — 2026-07-30
 
