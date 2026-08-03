@@ -50,7 +50,11 @@ func TestGoldenSweepAreaChart(t *testing.T) {
 		}))},
 		{Name: "area_chart_custom_color", HTML: utils.Render(t, AreaChart(AreaChartProps{
 			Series: []LineChartSeries{
-				{Name: "Growth", Values: []float64{120, 180, 250, 300, 280, 340}, Color: "text-emerald-600 dark:text-emerald-400"},
+				{
+					Name:   "Growth",
+					Values: []float64{120, 180, 250, 300, 280, 340},
+					Color:  "text-emerald-600 dark:text-emerald-400",
+				},
 			},
 			XAxisLabels: months,
 		}))},

@@ -151,6 +151,7 @@ func TestBuildSmoothPath(t *testing.T) {
 
 	t.Run("empty", func(t *testing.T) {
 		t.Parallel()
+
 		if got := BuildSmoothPath(nil); got != "" {
 			t.Errorf("got %q, want empty", got)
 		}
@@ -158,9 +159,11 @@ func TestBuildSmoothPath(t *testing.T) {
 
 	t.Run("two points falls back to polyline", func(t *testing.T) {
 		t.Parallel()
+
 		pts := []Point{{X: 0, Y: 0}, {X: 10, Y: 20}}
 		got := BuildSmoothPath(pts)
 		want := BuildPolylinePath(pts)
+
 		if got != want {
 			t.Errorf("got %q, want %q (polyline fallback)", got, want)
 		}
@@ -168,11 +171,14 @@ func TestBuildSmoothPath(t *testing.T) {
 
 	t.Run("three points produces Bezier", func(t *testing.T) {
 		t.Parallel()
+
 		pts := []Point{{X: 0, Y: 0}, {X: 50, Y: 50}, {X: 100, Y: 0}}
 		got := BuildSmoothPath(pts)
+
 		if !strings.HasPrefix(got, "M 0 0 C ") {
 			t.Errorf("expected Bezier curve, got %q", got)
 		}
+
 		if !strings.Contains(got, "100 0") {
 			t.Errorf("expected path to end at (100, 0), got %q", got)
 		}
@@ -184,6 +190,7 @@ func TestBuildAreaPath(t *testing.T) {
 
 	t.Run("empty", func(t *testing.T) {
 		t.Parallel()
+
 		if got := BuildAreaPath(nil, 100); got != "" {
 			t.Errorf("got %q, want empty", got)
 		}
@@ -191,8 +198,10 @@ func TestBuildAreaPath(t *testing.T) {
 
 	t.Run("closes to baseline", func(t *testing.T) {
 		t.Parallel()
+
 		pts := []Point{{X: 0, Y: 0}, {X: 50, Y: 50}, {X: 100, Y: 0}}
 		got := BuildAreaPath(pts, 100)
+
 		if !strings.HasSuffix(got, "Z") {
 			t.Errorf("expected path to end with Z (closed), got %q", got)
 		}

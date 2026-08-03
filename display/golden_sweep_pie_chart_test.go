@@ -109,6 +109,7 @@ func TestComputeSliceAngles(t *testing.T) {
 			{Label: "C", Value: 50},
 		}
 		angles := computeSliceAngles(slices)
+
 		if len(angles) != 3 {
 			t.Fatalf("got %d angles, want 3", len(angles))
 		}
@@ -135,6 +136,7 @@ func TestComputeSliceAngles(t *testing.T) {
 			{Label: "B", Value: 100},
 		}
 		angles := computeSliceAngles(slices)
+
 		if len(angles) != 1 {
 			t.Fatalf("got %d angles, want 1 (zero skipped)", len(angles))
 		}

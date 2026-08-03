@@ -35,10 +35,10 @@ func DefaultModalProps() ModalProps {
 
 //nolint:gochecknoglobals // Package-level lookup table; Tailwind class strings are intentionally inline
 var modalSizeLookup = map[ModalSize]string{
-	ModalSizeSM:  "max-w-sm",
+	ModalSizeSM:  maxWSM,
 	ModalSizeMD:  "max-w-md",
 	ModalSizeLG:  "max-w-lg",
-	ModalSizeXL:  "max-w-xl",
+	ModalSizeXL:  maxWXL,
 	ModalSize2XL: "max-w-4xl",
 }
 

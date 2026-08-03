@@ -36,17 +36,8 @@ func TestNoOrderedTailwindSubstringsInTests(t *testing.T) {
 		"integration", "internal",
 	}
 
-	// A Tailwind-class-like token: lowercase letters/digits with optional
-	// variant prefixes (dark:, sm:, hover:), hyphens, brackets, slashes,
-	// colons, dots, underscores, and percentages. Crucially NO uppercase and
-	// NO spaces — this excludes English phrases ("Page not found") and HTML
-	// fragments.
 	tailwindTokenRe := regexp.MustCompile(`^[a-z][a-z0-9]*(?::[a-z][a-z0-9]*)*(?:-[a-z0-9\[\]/._%]+)*$`)
-
-	// Find strings.Contains( calls on a line.
 	containsCallRe := regexp.MustCompile(`strings\.Contains\s*\(`)
-
-	// Extract double-quoted and backtick string literals.
 	stringLiteralRe := regexp.MustCompile("(\"[^\"]*\"|`[^`]*`)")
 
 	violations := 0
@@ -66,57 +57,7 @@ func TestNoOrderedTailwindSubstringsInTests(t *testing.T) {
 				return fmt.Errorf("read file: %w", readErr)
 			}
 
-			lineNum := 0
-			for line := range strings.SplitSeq(string(data), "\n") {
-				lineNum++
-
-				if !containsCallRe.MatchString(line) {
-					continue
-				}
-
-				for _, match := range stringLiteralRe.FindAllString(line, -1) {
-					// Strip surrounding quotes/backticks.
-					literal := match[1 : len(match)-1]
-					if !strings.Contains(literal, " ") {
-						continue
-					}
-
-					tokens := strings.Fields(literal)
-					if len(tokens) < 2 {
-						continue
-					}
-
-					allTailwind := true
-					hasHyphen := false
-
-					for _, tok := range tokens {
-						if !tailwindTokenRe.MatchString(tok) {
-							allTailwind = false
-
-							break
-						}
-
-						if strings.Contains(tok, "-") {
-							hasHyphen = true
-						}
-					}
-
-					// Flag only when every token looks like a Tailwind class
-					// and at least one has a hyphen (excludes all-lowercase
-					// English phrases with no hyphens).
-					if allTailwind && hasHyphen {
-						violations++
-
-						t.Errorf(
-							"ordered Tailwind substring in %s:%d\n  %s\n  literal: %q\n  use AssertContainsAll or single-token AssertContains instead",
-							path,
-							lineNum,
-							strings.TrimSpace(line),
-							literal,
-						)
-					}
-				}
-			}
+			scanLinesForOrderedSubstrings(path, string(data), tailwindTokenRe, containsCallRe, stringLiteralRe, &violations, t)
 
 			return nil
 		})
@@ -128,4 +69,69 @@ func TestNoOrderedTailwindSubstringsInTests(t *testing.T) {
 	if violations > 0 {
 		t.Fatalf("found %d ordered Tailwind substring assertion(s); see above", violations)
 	}
+}
+
+// scanLinesForOrderedSubstrings walks each line of a test file and flags any
+// strings.Contains call whose string literal contains multiple Tailwind-class
+// tokens in a fixed order.
+func scanLinesForOrderedSubstrings(
+	path, data string,
+	tailwindTokenRe, containsCallRe, stringLiteralRe *regexp.Regexp,
+	violations *int,
+	t *testing.T,
+) {
+	lineNum := 0
+
+	for line := range strings.SplitSeq(data, "\n") {
+		lineNum++
+
+		if !containsCallRe.MatchString(line) {
+			continue
+		}
+
+		for _, match := range stringLiteralRe.FindAllString(line, -1) {
+			literal := match[1 : len(match)-1]
+			if !isOrderedTailwindSubstring(literal, tailwindTokenRe) {
+				continue
+			}
+
+			*violations++
+
+			t.Errorf(
+				"ordered Tailwind substring in %s:%d\n  %s\n  literal: %q\n  use AssertContainsAll or single-token AssertContains instead",
+				path,
+				lineNum,
+				strings.TrimSpace(line),
+				literal,
+			)
+		}
+	}
+}
+
+// isOrderedTailwindSubstring reports whether a string literal contains two or
+// more space-separated tokens that all look like Tailwind utility classes, with
+// at least one containing a hyphen (excludes all-lowercase English phrases).
+func isOrderedTailwindSubstring(literal string, tailwindTokenRe *regexp.Regexp) bool {
+	if !strings.Contains(literal, " ") {
+		return false
+	}
+
+	tokens := strings.Fields(literal)
+	if len(tokens) < 2 {
+		return false
+	}
+
+	hasHyphen := false
+
+	for _, tok := range tokens {
+		if !tailwindTokenRe.MatchString(tok) {
+			return false
+		}
+
+		if strings.Contains(tok, "-") {
+			hasHyphen = true
+		}
+	}
+
+	return hasHyphen
 }

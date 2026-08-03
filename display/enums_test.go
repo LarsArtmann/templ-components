@@ -103,7 +103,11 @@ func TestIsValidEnums(t *testing.T) {
 		// PieChartLabelMode
 		{"PieChartLabelMode External", func() bool { return PieChartLabelModeIsValid(PieChartLabelExternal) }, true},
 		{"PieChartLabelMode None", func() bool { return PieChartLabelModeIsValid(PieChartLabelNone) }, true},
-		{"PieChartLabelMode invalid", func() bool { return PieChartLabelModeIsValid(PieChartLabelMode("bogus")) }, false},
+		{
+			"PieChartLabelMode invalid",
+			func() bool { return PieChartLabelModeIsValid(PieChartLabelMode("bogus")) },
+			false,
+		},
 	}
 
 	for _, tt := range tests {

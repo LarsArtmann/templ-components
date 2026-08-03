@@ -50,7 +50,11 @@ func TestGoldenSweepLineChart(t *testing.T) {
 		}))},
 		{Name: "line_chart_custom_color", HTML: utils.Render(t, LineChart(LineChartProps{
 			Series: []LineChartSeries{
-				{Name: "Growth", Values: []float64{5, 10, 20, 35, 55, 80, 110}, Color: "text-emerald-600 dark:text-emerald-400"},
+				{
+					Name:   "Growth",
+					Values: []float64{5, 10, 20, 35, 55, 80, 110},
+					Color:  "text-emerald-600 dark:text-emerald-400",
+				},
 			},
 			XAxisLabels: weekdays,
 		}))},
@@ -108,10 +112,10 @@ func TestLineChartEmptyState(t *testing.T) {
 func TestLineChartMinOverride(t *testing.T) {
 	t.Parallel()
 
-	min := 0.0
+	minVal := 0.0
 	html := utils.Render(t, LineChart(LineChartProps{
 		Series: []LineChartSeries{{Values: []float64{10, 20, 30}}},
-		Min:    &min,
+		Min:    &minVal,
 	}))
 	utils.AssertContains(t, html, ">0<")
 }

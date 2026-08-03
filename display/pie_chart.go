@@ -269,10 +269,30 @@ func computeFullCirclePath(centerX, centerY, radius, innerRadius float64) string
 	innerStartX, innerStartY := polarToCartesian(centerX, centerY, innerRadius, 0)
 	innerEndX, innerEndY := polarToCartesian(centerX, centerY, innerRadius, pieChartHalfCircle)
 
-	return fmt.Sprintf("M %g %g A %g %g 0 1 1 %g %g A %g %g 0 1 1 %g %g "+
-		"L %g %g A %g %g 0 1 0 %g %g A %g %g 0 1 0 %g %g Z",
-		startX, startY, radius, radius, endX, endY, radius, radius, startX, startY,
-		innerStartX, innerStartY, innerRadius, innerRadius, innerEndX, innerEndY, innerRadius, innerRadius, innerStartX, innerStartY)
+	return fmt.Sprintf(
+		"M %g %g A %g %g 0 1 1 %g %g A %g %g 0 1 1 %g %g "+
+			"L %g %g A %g %g 0 1 0 %g %g A %g %g 0 1 0 %g %g Z",
+		startX,
+		startY,
+		radius,
+		radius,
+		endX,
+		endY,
+		radius,
+		radius,
+		startX,
+		startY,
+		innerStartX,
+		innerStartY,
+		innerRadius,
+		innerRadius,
+		innerEndX,
+		innerEndY,
+		innerRadius,
+		innerRadius,
+		innerStartX,
+		innerStartY,
+	)
 }
 
 // pieChartHasData reports whether at least one slice has a positive value.
