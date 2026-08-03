@@ -29,12 +29,12 @@ func TestInteractionStateString(t *testing.T) {
 func TestBoolHelper(t *testing.T) {
 	t.Parallel()
 
-	b := Bool(true)
+	b := new(true)
 	if b == nil || !*b {
 		t.Fatal("Bool(true) should return non-nil pointer to true")
 	}
 
-	f := Bool(false)
+	f := new(false)
 	if f == nil || *f {
 		t.Fatal("Bool(false) should return non-nil pointer to false")
 	}
@@ -66,22 +66,23 @@ func TestResolveOptionsTriState(t *testing.T) {
 	}
 
 	// Explicit dark.
-	o = resolveOptions([]Options{{Dark: Bool(true)}})
+	o = resolveOptions([]Options{{Dark: new(true)}})
 	if !isDark(o) {
 		t.Error("Dark=Bool(true) should be dark mode")
 	}
 
 	// Explicit light (tri-state: distinguish from unset).
-	o = resolveOptions([]Options{{Dark: Bool(false)}})
+	o = resolveOptions([]Options{{Dark: new(false)}})
 	if isDark(o) {
 		t.Error("Dark=Bool(false) should be light mode")
 	}
+
 	if o.Dark == nil {
 		t.Error("Dark=Bool(false) should be non-nil (explicitly set)")
 	}
 
 	// Later option overrides earlier.
-	o = resolveOptions([]Options{{Dark: Bool(true)}, {Dark: Bool(false)}})
+	o = resolveOptions([]Options{{Dark: new(true)}, {Dark: new(false)}})
 	if isDark(o) {
 		t.Error("later Dark=Bool(false) should override earlier Bool(true)")
 	}

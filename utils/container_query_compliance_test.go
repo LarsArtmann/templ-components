@@ -154,6 +154,10 @@ var containerQueryExceptions = []containerQueryException{
 	{"navigation/mobile_menu.templ", "mobile menu: shown/hidden by viewport width (sm:hidden)"},
 	{"navigation/nav.templ", "responsive nav bar: grid layout switches at viewport md: breakpoint"},
 	{"errorpage/notfound404.templ", "full-page 404: link grid columns switch at viewport sm:/lg: breakpoints"},
+	{
+		"recipes/auth_layout.templ",
+		"full-page auth split-screen: branding panel visibility is viewport-gated (lg:flex/hidden)",
+	},
 }
 
 func isContainerQueryException(path string) bool {

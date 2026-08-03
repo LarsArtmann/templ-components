@@ -3,6 +3,14 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Separate nixpkgs pin for Chromium. Visual regression tests are
+    # pixel-sensitive: a Chromium major bump can shift font AA, sub-pixel
+    # layout, or rendering timings enough to flip goldens. Pinning Chromium
+    # to its own nixpkgs revision (updated independently and deliberately)
+    # insulates the visual goldens from routine `nix flake update` bumps.
+    # To update: change the rev below to a nixpkgs commit with the desired
+    # Chromium, run `nix flake lock`, then `nix run .#visual -- -update`.
+    nixpkgs-chromium.url = "github:NixOS/nixpkgs/bfb0bf3c2c9aa3c8d8dc4b97a6f0e5e6f0121c10";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -28,7 +36,7 @@
       imports = [ inputs.treefmt-nix.flakeModule ];
 
       perSystem =
-        { config, pkgs, ... }:
+        { config, pkgs, inputs, ... }:
         {
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [

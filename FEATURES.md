@@ -19,9 +19,9 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `icons`      | 3 (102 icons) | SVG icon system with typed name constants, RTL mirroring                                                                                                                                                                                                             |
 | `layout`     | 10            | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                                                                                           |
 | `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                     |
-| `recipes`    | 3 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                              |
+| `recipes`    | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                              |
 
-**Totals:** 107 templ components (primitives) + 3 recipe screens = 101, 102 icon names, 47 typed enums (45 with `IsValid()`), 101 generated `*_templ.go` files, ~30,500 lines of Go/templ source
+**Totals:** 107 templ components (primitives) + 4 recipe screens = 111, 102 icon names, 47 typed enums (45 with `IsValid()`), 102 generated `*_templ.go` files, ~30,500 lines of Go/templ source
 
 ---
 

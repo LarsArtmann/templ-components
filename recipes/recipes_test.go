@@ -171,12 +171,14 @@ func TestAuthLayoutRender(t *testing.T) {
 		// In normal mode, card appears before panel in DOM order.
 		// In reverse mode, panel appears before card.
 		normalCardIdx := indexOf(normal, `id="card"`)
+
 		normalPanelIdx := indexOf(normal, "Panel")
 		if normalCardIdx >= normalPanelIdx {
 			t.Error("normal layout should have card before panel in DOM")
 		}
 
 		reversedCardIdx := indexOf(reversed, `id="card"`)
+
 		reversedPanelIdx := indexOf(reversed, "Panel")
 		if reversedPanelIdx >= reversedCardIdx {
 			t.Error("reverse layout should have panel before card in DOM")
@@ -185,6 +187,7 @@ func TestAuthLayoutRender(t *testing.T) {
 
 	t.Run("default props", func(t *testing.T) {
 		t.Parallel()
+
 		p := DefaultAuthLayoutProps()
 		if p.Reverse {
 			t.Error("DefaultAuthLayoutProps().Reverse should be false")

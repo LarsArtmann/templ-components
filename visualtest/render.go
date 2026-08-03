@@ -71,7 +71,9 @@ func (s InteractionState) String() string {
 //	visualtest.Options{Dark: visualtest.Bool(true)}  // explicit dark mode
 //	visualtest.Options{Dark: visualtest.Bool(false)} // explicit light mode
 //	visualtest.Options{}                             // unset → default (light)
-func Bool(b bool) *bool { return &b }
+//
+//go:fix inline
+func Bool(b bool) *bool { return new(b) }
 
 // Options configures how a component is rendered and captured.
 type Options struct {

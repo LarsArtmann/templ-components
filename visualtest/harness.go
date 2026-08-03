@@ -82,6 +82,7 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 // {RTL:Bool(true)} yields dark+RTL. FullViewport ORs together.
 func resolveOptions(opts []Options) Options {
 	merged := Options{}
+
 	for _, o := range opts {
 		if o.Dark != nil {
 			merged.Dark = o.Dark

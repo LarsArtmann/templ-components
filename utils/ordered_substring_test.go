@@ -56,6 +56,7 @@ func TestNoOrderedTailwindSubstringsInTests(t *testing.T) {
 			if err != nil || info.IsDir() {
 				return err
 			}
+
 			if !strings.HasSuffix(path, "_test.go") {
 				return nil
 			}
@@ -68,6 +69,7 @@ func TestNoOrderedTailwindSubstringsInTests(t *testing.T) {
 			lineNum := 0
 			for line := range strings.SplitSeq(string(data), "\n") {
 				lineNum++
+
 				if !containsCallRe.MatchString(line) {
 					continue
 				}
@@ -86,11 +88,14 @@ func TestNoOrderedTailwindSubstringsInTests(t *testing.T) {
 
 					allTailwind := true
 					hasHyphen := false
+
 					for _, tok := range tokens {
 						if !tailwindTokenRe.MatchString(tok) {
 							allTailwind = false
+
 							break
 						}
+
 						if strings.Contains(tok, "-") {
 							hasHyphen = true
 						}
@@ -101,11 +106,18 @@ func TestNoOrderedTailwindSubstringsInTests(t *testing.T) {
 					// English phrases with no hyphens).
 					if allTailwind && hasHyphen {
 						violations++
-						t.Errorf("ordered Tailwind substring in %s:%d\n  %s\n  literal: %q\n  use AssertContainsAll or single-token AssertContains instead",
-							path, lineNum, strings.TrimSpace(line), literal)
+
+						t.Errorf(
+							"ordered Tailwind substring in %s:%d\n  %s\n  literal: %q\n  use AssertContainsAll or single-token AssertContains instead",
+							path,
+							lineNum,
+							strings.TrimSpace(line),
+							literal,
+						)
 					}
 				}
 			}
+
 			return nil
 		})
 		if walkErr != nil {
