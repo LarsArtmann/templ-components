@@ -10,7 +10,7 @@
     # insulates the visual goldens from routine `nix flake update` bumps.
     # To update: change the rev below to a nixpkgs commit with the desired
     # Chromium, run `nix flake lock`, then `nix run .#visual -- -update`.
-    nixpkgs-chromium.url = "github:NixOS/nixpkgs/bfb0bf3c2c9aa3c8d8dc4b97a6f0e5e6f0121c10";
+    nixpkgs-chromium.url = "github:NixOS/nixpkgs/148bab9c1c3c53136ecb44a6ea356a0ed5b39b06";
     flake-parts = {
       url = "github:hercules-ci/flake-parts";
       inputs.nixpkgs-lib.follows = "nixpkgs";
@@ -36,7 +36,7 @@
       imports = [ inputs.treefmt-nix.flakeModule ];
 
       perSystem =
-        { config, pkgs, inputs, ... }:
+        { config, pkgs, inputs', ... }:
         {
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
@@ -174,14 +174,14 @@
                   # main nixpkgs) so visual goldens don't shift on routine
                   # `nix flake update`. Update deliberately: see nixpkgs-chromium
                   # input comment in flake.nix.
-                  inputs.nixpkgs-chromium.legacyPackages.${pkgs.system}.chromium
+                  inputs'.nixpkgs-chromium.legacyPackages.chromium
                 ];
                 text = ''
                   export GOEXPERIMENT=jsonv2
                   # visualtest is its own module with a local replace directive;
                   # the parent go.work would shadow it, so disable workspace mode.
                   export GOWORK=off
-                  export CHROMEDP_CHROME_PATH="${inputs.nixpkgs-chromium.legacyPackages.${pkgs.system}.chromium}/bin/chromium"
+                  export CHROMEDP_CHROME_PATH="${inputs'.nixpkgs-chromium.legacyPackages.chromium}/bin/chromium"
                   cd visualtest
                   # Forward extra args (e.g. -update, -run TestButtons) to go test.
                   go test ./... -count=1 "$@"
