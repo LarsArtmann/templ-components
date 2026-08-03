@@ -36,7 +36,7 @@ Don't know what to look for? Find your page type:
 
 | You're building...             | Reach for                                                                                                                                                                                                                          |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`, `Sparkline`, `BarChart`, `PolledRegion`                                                                                      |
+| **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`, `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `AreaChart`, `PolledRegion`                      |
 | **List / table page**          | `Table` (`Flush` for card nesting, `CellPadding` for compact rows, `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `ListNote` |
 | **Detail page**                | `Split`, `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `Breadcrumbs`                                                                                                                                           |
 | **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`                                                                                                   |
@@ -49,7 +49,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 35 components
+#### `display` — 38 components
 
 | Component            | Signature                                           | One-liner                                                                                                                                        |
 | -------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -88,6 +88,9 @@ Don't know what to look for? Find your page type:
 | `ExternalLink`       | `ExternalLink(props ExternalLinkProps)`             | Safe off-site link — `target="_blank" rel="noopener"`, URL-sanitized href, optional arrow icon                                                   |
 | `CollapsibleSection` | `CollapsibleSection(props CollapsibleSectionProps)` | Native `<details>/<summary>` — configurable heading, open/closed default, optional `StorageKey` for localStorage persistence, chevron rotation   |
 | `Heatmap`            | `Heatmap(props HeatmapProps)`                       | CSS grid heatmap — row/column labels, opacity-based coloring, peak highlighting, tooltips, empty state                                           |
+| `LineChart`          | `LineChart(props LineChartProps)`                   | Pure SVG line chart — axes, gridlines, multi-series, dots, legend, linear/smooth styles, ARIA. Zero JS (ADR-0031)                                 |
+| `PieChart`           | `PieChart(props PieChartProps)`                     | Pure SVG pie/donut chart — arc paths, external labels, legend, center label, custom colors, ARIA. Zero JS                                         |
+| `AreaChart`          | `AreaChart(props AreaChartProps)`                   | Pure SVG area chart — filled areas, multi-series, fill opacity, smooth curves, ARIA. Zero JS                                                      |
 
 #### `forms` — 21 components
 

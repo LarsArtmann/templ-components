@@ -135,15 +135,29 @@ const (
 	lineChartLegendY        = 12
 )
 
+// Shared Tailwind color class constants for chart palettes.
+const (
+	chartColorBlue     = "text-blue-600 dark:text-blue-400"
+	chartColorEmerald  = "text-emerald-600 dark:text-emerald-400"
+	chartColorAmber    = "text-amber-600 dark:text-amber-400"
+	chartColorRose     = "text-rose-600 dark:text-rose-400"
+	chartColorViolet   = "text-violet-600 dark:text-violet-400"
+	chartColorCyan     = "text-cyan-600 dark:text-cyan-400"
+	chartColorOrange   = "text-orange-600 dark:text-orange-400"
+	chartColorPink     = "text-pink-600 dark:text-pink-400"
+)
+
 // lineChartPalette is the default color cycle for series without an explicit Color.
 // Uses Tailwind text-* classes so SVG stroke/fill inherit via currentColor.
+//
+//nolint:gochecknoglobals // Package-level lookup table for chart series colors
 var lineChartPalette = []string{
-	"text-blue-600 dark:text-blue-400",
-	"text-emerald-600 dark:text-emerald-400",
-	"text-amber-600 dark:text-amber-400",
-	"text-rose-600 dark:text-rose-400",
-	"text-violet-600 dark:text-violet-400",
-	"text-cyan-600 dark:text-cyan-400",
+	chartColorBlue,
+	chartColorEmerald,
+	chartColorAmber,
+	chartColorRose,
+	chartColorViolet,
+	chartColorCyan,
 }
 
 // DefaultLineChartProps returns sensible defaults for a line chart.

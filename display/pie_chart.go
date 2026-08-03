@@ -97,15 +97,17 @@ const (
 )
 
 // pieChartPalette is the default color cycle for slices.
+//
+//nolint:gochecknoglobals // Package-level lookup table for chart slice colors
 var pieChartPalette = []string{
-	"text-blue-600 dark:text-blue-400",
-	"text-emerald-600 dark:text-emerald-400",
-	"text-amber-600 dark:text-amber-400",
-	"text-rose-600 dark:text-rose-400",
-	"text-violet-600 dark:text-violet-400",
-	"text-cyan-600 dark:text-cyan-400",
-	"text-orange-600 dark:text-orange-400",
-	"text-pink-600 dark:text-pink-400",
+	chartColorBlue,
+	chartColorEmerald,
+	chartColorAmber,
+	chartColorRose,
+	chartColorViolet,
+	chartColorCyan,
+	chartColorOrange,
+	chartColorPink,
 }
 
 // DefaultPieChartProps returns sensible defaults for a pie chart.
