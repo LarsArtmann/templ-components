@@ -39,18 +39,10 @@ templ EChart(props EChartsProps) {
 			@templ.Raw(props.Element)
 		</div>
 		if props.Script != "" {
-			<script nonce={ props.Nonce }>
-				{ props.Script }
-			</script>
+			@chartScriptComponent(props.Nonce, props.Script, "echarts chart script")
 		}
 		if props.DarkModeBridge {
-			@darkModeBridgeScript(props.Nonce)
+			@darkModeBridgeComponent(props.Nonce)
 		}
 	}
-}
-
-// darkModeBridgeScript is a thin wrapper that renders the singleton dark mode
-// bridge in a CSP-safe <script nonce> tag.
-templ darkModeBridgeScript(nonce string) {
-	@darkModeBridgeComponent(nonce)
 }

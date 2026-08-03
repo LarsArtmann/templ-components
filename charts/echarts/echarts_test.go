@@ -1,6 +1,7 @@
 package echarts
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -78,15 +79,36 @@ func TestEChartAllScriptsHaveNonce(t *testing.T) {
 		DarkModeBridge: true,
 	}))
 
-	// Every <script tag in the output must have nonce=
-	for _, line := range splitByScript(html) {
-		if line == "" {
-			continue
-		}
+	scriptCount := strings.Count(html, "<script")
+	nonceCount := strings.Count(html, `nonce="csp-nonce"`)
+	if scriptCount != nonceCount {
+		t.Errorf("expected %d script tags to all have nonce, got %d nonce attrs", scriptCount, nonceCount)
+	}
+}
 
-		if !containsStr(line, `nonce="csp-nonce"`) {
-			t.Errorf("script tag missing nonce: %s", line)
-		}
+func TestEChartsScriptURL(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name    string
+		version EChartsVersion
+		cdn     string
+		want    string
+	}{
+		{"default", "", "", "https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"},
+		{"custom version", "5.4.3", "", "https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"},
+		{"custom cdn", "5.5.0", "https://unpkg.com", "https://unpkg.com/echarts@5.5.0/dist/echarts.min.js"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := echartsScriptURL(tt.version, tt.cdn)
+			if got != tt.want {
+				t.Errorf("got %q, want %q", got, tt.want)
+			}
+		})
 	}
 }
 
@@ -123,32 +145,6 @@ func TestSDKScriptSelfHosted(t *testing.T) {
 	utils.AssertNotContains(t, html, "cdn.jsdelivr.net")
 }
 
-func TestEChartsScriptURL(t *testing.T) {
-	t.Parallel()
-
-	tests := []struct {
-		name    string
-		version EChartsVersion
-		cdn     string
-		want    string
-	}{
-		{"default", "", "", "https://cdn.jsdelivr.net/npm/echarts@5.5.0/dist/echarts.min.js"},
-		{"custom version", "5.4.3", "", "https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"},
-		{"custom cdn", "5.5.0", "https://unpkg.com", "https://unpkg.com/echarts@5.5.0/dist/echarts.min.js"},
-	}
-
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			t.Parallel()
-
-			got := echartsScriptURL(tt.version, tt.cdn)
-			if got != tt.want {
-				t.Errorf("got %q, want %q", got, tt.want)
-			}
-		})
-	}
-}
-
 func TestEChartBasePropsPropagation(t *testing.T) {
 	t.Parallel()
 
@@ -164,59 +160,4 @@ func TestEChartBasePropsPropagation(t *testing.T) {
 	utils.AssertContains(t, html, "max-w-2xl")
 	utils.AssertContains(t, html, `id="my-echart"`)
 	utils.AssertContains(t, html, `aria-label="Sales chart"`)
-}
-
-func splitByScript(s string) []string {
-	return splitBy(s, "<script")
-}
-
-func containsStr(s, sub string) bool {
-	return len(s) >= len(sub) && indexOf(s, sub) >= 0
-}
-
-func indexOf(s, sub string) int {
-	for i := 0; i <= len(s)-len(sub); i++ {
-		if s[i:i+len(sub)] == sub {
-			return i
-		}
-	}
-
-	return -1
-}
-
-func splitBy(s, sep string) []string {
-	var result []string
-
-	for {
-		idx := indexOf(s, sep)
-		if idx < 0 {
-			if s != "" {
-				result = append(result, s)
-			}
-
-			break
-		}
-
-		if idx > 0 {
-			result = append(result, s[:idx])
-		}
-
-		s = s[idx:]
-	}
-
-	// Find end of this script tag section
-	if len(s) > 0 {
-		endIdx := indexOf(s, "</script>")
-		if endIdx >= 0 {
-			result = append(result, s[:endIdx+len("</script>")])
-			s = s[endIdx+len("</script>"):]
-		} else {
-			result = append(result, s)
-			s = ""
-		}
-	}
-
-	_ = s
-
-	return result
 }

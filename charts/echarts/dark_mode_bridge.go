@@ -40,11 +40,17 @@ func darkModeBridgeJS() string {
 // darkModeBridgeComponent renders the dark mode bridge script in a CSP-safe
 // <script nonce> tag. Singleton via the window.tcEChartsDarkBridge guard.
 func darkModeBridgeComponent(nonce string) templ.Component {
+	return chartScriptComponent(nonce, darkModeBridgeJS(), "echarts dark mode bridge")
+}
+
+// chartScriptComponent renders a CSP-safe <script nonce> tag wrapping the
+// given JS string. Used for both the chart init script and the dark mode bridge.
+func chartScriptComponent(nonce, js, errLabel string) templ.Component {
 	escapedNonce := html.EscapeString(nonce)
 
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, darkModeBridgeJS()); err != nil {
-			return fmt.Errorf("write echarts dark mode bridge: %w", err)
+		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">\n%s</script>\n", escapedNonce, js); err != nil {
+			return fmt.Errorf("write %s: %w", errLabel, err)
 		}
 
 		return nil
