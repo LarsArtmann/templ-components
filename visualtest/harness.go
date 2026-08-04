@@ -206,7 +206,8 @@ func waitAnimationSettled(sel string) chromedp.Action {
 		expr := fmt.Sprintf(
 			`(()=>{const el=document.querySelector(%q);if(!el)return true;`+
 				`const a=el.getAnimations();return a.length===0||`+
-				`a.every(x=>x.playState==='finished');})()`, sel)
+				`a.every(x=>x.playState==='finished');})()`, sel,
+		)
 
 		for time.Now().Before(deadline) {
 			var done bool
