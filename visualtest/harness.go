@@ -164,6 +164,11 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	// — e.g. an overlay menu opened by StateClick — then settle and capture.
 	if opts.WaitSelector != "" {
 		tasks = append(tasks, chromedp.WaitVisible(opts.WaitSelector, chromedp.ByQuery))
+		// Wait for CSS @starting-style transitions to finish so the overlay is
+		// captured in its settled state, not mid-slide. Without this, parallel
+		// test load can delay the transition start past the fixed settleDelay,
+		// capturing the drawer off-screen (a ~90% false mismatch).
+		tasks = append(tasks, waitAnimationSettled(opts.WaitSelector))
 	}
 
 	capture := chromedp.Action(chromedp.Screenshot(rootSel, &screenshot, chromedp.ByQuery, chromedp.NodeVisible))
@@ -184,6 +189,42 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	}
 
 	return screenshot, nil
+}
+
+// waitAnimationSettled blocks until all CSS animations/transitions on the first
+// element matching sel have finished, with a best-effort timeout. It first
+// sleeps briefly so the browser registers any @starting-style transition
+// (getAnimations() is transiently empty before the transition is created),
+// then polls until the animation list is empty or every entry is "finished".
+func waitAnimationSettled(sel string) chromedp.Action {
+	return chromedp.ActionFunc(func(ctx context.Context) error {
+		if err := chromedp.Sleep(80 * time.Millisecond).Do(ctx); err != nil {
+			return err
+		}
+
+		deadline := time.Now().Add(800 * time.Millisecond)
+		expr := fmt.Sprintf(
+			`(()=>{const el=document.querySelector(%q);if(!el)return true;`+
+				`const a=el.getAnimations();return a.length===0||`+
+				`a.every(x=>x.playState==='finished');})()`, sel)
+
+		for time.Now().Before(deadline) {
+			var done bool
+			if err := chromedp.Evaluate(expr, &done).Do(ctx); err != nil {
+				return err
+			}
+
+			if done {
+				return nil
+			}
+
+			if err := chromedp.Sleep(40 * time.Millisecond).Do(ctx); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	})
 }
 
 const (
