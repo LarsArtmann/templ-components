@@ -42,6 +42,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Modal/Drawer visual regression tests** — `<dialog Open=true>` doesn't promote to top-layer without `showModal()` JS. Fixed by using `FullViewport: true` + `WaitSelector: "dialog"`.
 - **SkeletonCardGrid test assertion** — replaced brittle `strings.Contains(output, "rounded-lg border")` with `AssertNotContains`.
 - **34 golangci-lint findings resolved** — renamed short variables in chart geometry, removed unused function, fixed whitespace and style violations.
+- **`.envrc` missing `GOEXPERIMENT=jsonv2`** — the export was dropped, so every tool outside `nix develop` (gopls, BuildFlow, IDE, bare `go`) silently misbuilt the module. Restored (`TestEnvrcConsistency` now passes).
+- **`breadcrumbs_templ.go` out of sync** — `navigation/breadcrumbs.templ` was switched to `encoding/json` (stable) but the generated file still imported `encoding/json/v2`. Regenerated `*_templ.go` to match (`TestTemplGeneratedInSync` now passes).
 
 ## [1.6.0] — 2026-07-30
 
