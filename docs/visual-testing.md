@@ -137,6 +137,18 @@ Chromium, after which it reads 0.0000% deterministically.
 Chromium-version drift, not anti-aliasing noise. A real regression (missing
 menu, wrong colors, broken layout) blows far past 1%.
 
+### Animation settle (race fix)
+
+The initial serialized calibration showed 0% mismatch, but the **full parallel
+suite** flaked ~20% of the time on Modal/Drawer captures (~90% false mismatch).
+Root cause: `WaitVisible("dialog")` returns the instant `showModal()` makes the
+`<dialog>` `display:block`, but the `@starting-style` slide-in transition
+(200ms, defined in `templates/custom.css`) can still be mid-flight under
+parallel load — capturing the drawer off-screen. The harness now calls
+`waitAnimationSettled` after `WaitVisible`, which polls `getAnimations()` until
+all CSS transitions finish before capturing. After the fix the full parallel
+suite passes 8/8 with 0.0000% overlay mismatch.
+
 ## When a visual test fails
 
 1. Open `testdata/.fail/<name>.diff.png` — red pixels show what changed.
