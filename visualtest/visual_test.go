@@ -239,11 +239,15 @@ func TestRTL(t *testing.T) {
 // crop it). Nonce is required so the components render their positioning
 // scripts and — for ContextMenu — the menu + event handler at all.
 //
-// MaxMismatch is raised to 1%: these menus are positioned in JS from the
-// trigger's getBoundingClientRect(), so a 1px layout-timing shift shows up as
-// edge anti-aliasing variance (~0.5-0.75% observed empirically). A real
-// regression (missing menu, wrong colors, broken layout) blows far past 1%.
-// Pure-CSS components stay at the strict 0.1% default.
+// MaxMismatch is 1%: these menus are positioned in JS from the trigger's
+// getBoundingClientRect(), so the threshold must absorb Chromium-version
+// micro-drift (nixpkgs-chromium bumps shift rendered pixels by a fraction of a
+// percent). A 10x serialized calibration against the pinned Chromium showed
+// 0.0000% run-to-run mismatch across all overlays (Dropdown/Popover/ContextMenu,
+// light + dark) — rendering is fully deterministic here, so the 1% threshold is
+// pure headroom for version drift, not anti-aliasing noise. A real regression
+// (missing menu, wrong colors, broken layout) blows far past 1%. Pure-CSS
+// components stay at the strict 0.1% default.
 func overlayOpen(viewport visualtest.Viewport, state visualtest.InteractionState) visualtest.Options {
 	return visualtest.Options{
 		State:        state,
