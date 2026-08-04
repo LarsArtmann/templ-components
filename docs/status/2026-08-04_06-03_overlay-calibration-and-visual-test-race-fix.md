@@ -25,16 +25,16 @@ flake app itself, only `nix eval` and raw env inspection.
 
 **Calibration executed (serialized, 10×):**
 
-| Golden                 | Helper      | 10× result     | Notes                     |
-| ---------------------- | ----------- | -------------- | ------------------------- |
-| dropdown/open_light    | overlayOpen | 0.0000% ×10    | deterministic             |
+| Golden                 | Helper      | 10× result                | Notes                          |
+| ---------------------- | ----------- | ------------------------- | ------------------------------ |
+| dropdown/open_light    | overlayOpen | 0.0000% ×10               | deterministic                  |
 | dropdown/open_dark     | overlayOpen | 0.7442% ×10 → 0.0000% ×10 | **stale golden** — regenerated |
-| popover/open_light     | overlayOpen | 0.0000% ×10    | deterministic             |
-| contextmenu/open_light | overlayOpen | 0.0000% ×10    | deterministic             |
-| modal/open_light       | dialogOpen  | 0.0000% ×10    | deterministic (serialized) |
-| modal/open_dark        | dialogOpen  | 0.0000% ×10    | deterministic (serialized) |
-| drawer/right_light     | dialogOpen  | 0.0000% ×10    | deterministic (serialized) |
-| drawer/left_dark       | dialogOpen  | 0.0000% ×10    | deterministic (serialized) |
+| popover/open_light     | overlayOpen | 0.0000% ×10               | deterministic                  |
+| contextmenu/open_light | overlayOpen | 0.0000% ×10               | deterministic                  |
+| modal/open_light       | dialogOpen  | 0.0000% ×10               | deterministic (serialized)     |
+| modal/open_dark        | dialogOpen  | 0.0000% ×10               | deterministic (serialized)     |
+| drawer/right_light     | dialogOpen  | 0.0000% ×10               | deterministic (serialized)     |
+| drawer/left_dark       | dialogOpen  | 0.0000% ×10               | deterministic (serialized)     |
 
 **Stale golden found & regenerated.** `dropdown/open_dark.png` was at a stable
 0.7442% systematic diff — not anti-aliasing noise (as the prior inline comment
@@ -88,17 +88,17 @@ after the fix. All 8 overlay goldens at 0.0000% mismatch.
 
 ### Verification
 
-| Check                          | Result                                      |
-| ------------------------------ | ------------------------------------------- |
-| `go build ./...`              | ✅ clean                                    |
-| `go test ./... -count=1`      | ✅ 18 packages pass                         |
-| `nix run .#verify`            | ✅ generate + build + test + lint all pass  |
-| `golangci-lint run`           | ✅ 0 issues                                 |
-| `scripts/check-lint-config.sh` | ✅ guard passes                            |
-| `go vet ./...` (visualtest)   | ✅ clean                                    |
-| Full visual suite ×8 (parallel) | ✅ 8/8 pass, 0.0000% overlay mismatch     |
-| `.envrc` regression check     | ✅ GOEXPERIMENT still present               |
-| `.gitignore` regression check | ✅ no `*_templ.go` re-add                   |
+| Check                           | Result                                     |
+| ------------------------------- | ------------------------------------------ |
+| `go build ./...`                | ✅ clean                                   |
+| `go test ./... -count=1`        | ✅ 18 packages pass                        |
+| `nix run .#verify`              | ✅ generate + build + test + lint all pass |
+| `golangci-lint run`             | ✅ 0 issues                                |
+| `scripts/check-lint-config.sh`  | ✅ guard passes                            |
+| `go vet ./...` (visualtest)     | ✅ clean                                   |
+| Full visual suite ×8 (parallel) | ✅ 8/8 pass, 0.0000% overlay mismatch      |
+| `.envrc` regression check       | ✅ GOEXPERIMENT still present              |
+| `.gitignore` regression check   | ✅ no `*_templ.go` re-add                  |
 
 ---
 
