@@ -44,6 +44,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **34 golangci-lint findings resolved** — renamed short variables in chart geometry, removed unused function, fixed whitespace and style violations.
 - **`.envrc` missing `GOEXPERIMENT=jsonv2`** — the export was dropped, so every tool outside `nix develop` (gopls, BuildFlow, IDE, bare `go`) silently misbuilt the module. Restored (`TestEnvrcConsistency` now passes).
 - **`breadcrumbs_templ.go` out of sync** — `navigation/breadcrumbs.templ` was switched to `encoding/json` (stable) but the generated file still imported `encoding/json/v2`. Regenerated `*_templ.go` to match (`TestTemplGeneratedInSync` now passes).
+- **Visual overlay `MaxMismatch` calibration** — ran a 10× serialized calibration of all 8 overlay goldens (Dropdown/Popover/ContextMenu via `overlayOpen`; Modal/Drawer via `dialogOpen`) under the pinned Chromium; confirmed 0.0000% run-to-run mismatch (fully deterministic). Regenerated the stale `dropdown/open_dark` golden (was at a stable 0.7442% systematic diff — a stale golden the prior comment misattributed to anti-aliasing noise). Updated the `overlayOpen`/`dialogOpen` comments and `docs/visual-testing.md` with the rigorous data; the 1% threshold is validated as pure headroom for Chromium-version drift.
 
 ## [1.6.0] — 2026-07-30
 

@@ -262,9 +262,10 @@ func overlayOpen(viewport visualtest.Viewport, state visualtest.InteractionState
 // that are server-rendered with Open=true. The auto-open JS calls showModal(),
 // promoting the dialog to the top layer — outside #tc-root's bounding box — so
 // FullViewport is required. WaitSelector: "dialog" ensures the screenshot is
-// taken after showModal() fires. MaxMismatch is raised to 1% to absorb
-// top-layer positioning and backdrop anti-aliasing variance (0% observed
-// empirically, 1% gives safe headroom).
+// taken after showModal() fires. MaxMismatch is 1% to absorb Chromium-version
+// micro-drift; a 10x serialized calibration confirmed 0.0000% run-to-run
+// mismatch across Modal/Drawer (light + dark), so the threshold is pure
+// headroom for version drift.
 func dialogOpen(viewport visualtest.Viewport) visualtest.Options {
 	return visualtest.Options{
 		WaitSelector: "dialog",

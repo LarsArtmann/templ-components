@@ -88,9 +88,10 @@ func TestMyComponent(t *testing.T) {
 - `StateClick` clicks the first `[popovertarget]`/button/link inside `#tc-root`.
 - `StateContext` dispatches a `contextmenu` event (for `ContextMenu`).
 - Raise `MaxMismatch` to ~1% for JS-positioned overlays: the menu is placed
-  from the trigger's `getBoundingClientRect()`, so a 1px layout-timing shift
-  shows up as edge anti-aliasing variance (~0.5-0.75% observed empirically). A
-  real regression blows past 1%.
+  from the trigger's `getBoundingClientRect()`, so the threshold must absorb
+  Chromium-version micro-drift. A 10x serialized calibration confirmed 0.0000%
+  run-to-run mismatch (fully deterministic in pinned Chromium), so 1% is pure
+  headroom for version drift. A real regression blows past 1%.
 - Pass `Nonce` on the component props so positioning scripts (and
   `ContextMenu`'s menu + handler, which are gated on `Nonce != ""`) render.
 
@@ -99,6 +100,42 @@ func TestMyComponent(t *testing.T) {
 Names map to files under `testdata/` (e.g. `"button/primary_dark"` →
 `testdata/button/primary_dark.png`). Keep one subdirectory level per component
 family so the directory tree mirrors the component packages.
+
+## MaxMismatch calibration
+
+The default `MaxMismatch` is 0.1% (catches any real visual change while
+absorbing cross-build anti-aliasing noise). JS-positioned overlays (Dropdown,
+Popover, ContextMenu) and native `<dialog>` overlays (Modal, Drawer) use a
+raised 1% threshold because their menus are placed from the trigger's
+`getBoundingClientRect()` and the threshold must absorb Chromium-version
+micro-drift (a `nixpkgs-chromium` bump shifts rendered pixels by a fraction of
+a percent).
+
+### Calibration methodology (2026-08-04)
+
+Each overlay test was run 10x serialized (`-count=10 -parallel 1`) under the
+pinned Chromium to measure run-to-run variance:
+
+| Golden                 | Helper      | 10x result |
+| ---------------------- | ----------- | ---------- |
+| dropdown/open_light    | overlayOpen | 0.0000%    |
+| dropdown/open_dark     | overlayOpen | 0.0000% *  |
+| popover/open_light     | overlayOpen | 0.0000%    |
+| contextmenu/open_light | overlayOpen | 0.0000%    |
+| modal/open_light       | dialogOpen  | 0.0000%    |
+| modal/open_dark        | dialogOpen  | 0.0000%    |
+| drawer/right_light     | dialogOpen  | 0.0000%    |
+| drawer/left_dark       | dialogOpen  | 0.0000%    |
+
+\* `dropdown/open_dark` measured a stable 0.7442% systematic diff before this
+calibration — a stale golden, not anti-aliasing variance (the prior comment
+misattributed it to AA noise). The golden was regenerated against the pinned
+Chromium, after which it reads 0.0000% deterministically.
+
+**Conclusion:** rendering is fully deterministic in the pinned headless Chromium
+(zero run-to-run variance), so the 1% threshold is pure headroom for
+Chromium-version drift, not anti-aliasing noise. A real regression (missing
+menu, wrong colors, broken layout) blows far past 1%.
 
 ## When a visual test fails
 
