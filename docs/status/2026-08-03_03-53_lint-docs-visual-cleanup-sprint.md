@@ -1,5 +1,14 @@
 # Status Report — 2026-08-03 03:53
 
+> **Resolution (2026-08-05):** All section A items shipped in v1.7.0.
+> Section B/F doc-count drift items resolved — README, FEATURES, SKILL.md,
+> sections.ts counts all corrected to actual values (52 enums, 49 visual
+> goldens, 175 HTML goldens, 112 components). The charts/echarts drift-guard
+> gap (B/F item 1) is now fixed — the package is included in
+> `countExportedTemplFunctions`. Dark-mode visual variants for 6 newer
+> components and chart visual tests are tracked as TODO_LIST.md #95–#96.
+> The CHANGELOG "Catull-Rom" typo was fixed.
+
 ## Session: TODO Execution Sprint Cleanup & Lint/Docs/Visual Coverage Pass
 
 ---

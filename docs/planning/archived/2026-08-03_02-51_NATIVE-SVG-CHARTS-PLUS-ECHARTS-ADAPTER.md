@@ -1,3 +1,6 @@
+> **Status: FULLY SHIPPED in v1.7.0.** All planned work in this document is complete.
+> See [`CHANGELOG.md`](../../../CHANGELOG.md) for the v1.7.0 release notes. Archived 2026-08-05.
+
 # Charts Integration Plan: Native SVG + Opt-in ECharts Adapter
 
 **Created:** 2026-08-03 02:51

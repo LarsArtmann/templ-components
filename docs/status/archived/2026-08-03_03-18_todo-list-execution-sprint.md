@@ -1,3 +1,6 @@
+> **Status: FULLY SHIPPED in v1.7.0.** All planned work in this document is complete.
+> See [`CHANGELOG.md`](../../../CHANGELOG.md) for the v1.7.0 release notes. Archived 2026-08-05.
+
 # Status Report — 2026-08-03 03:18
 
 > Session: TODO list execution sprint — 15 actionable items from TODO_LIST.md

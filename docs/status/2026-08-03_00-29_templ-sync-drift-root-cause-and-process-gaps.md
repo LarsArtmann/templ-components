@@ -1,5 +1,13 @@
 # Status Report — 2026-08-03 00:29 CEST
 
+> **Resolution (2026-08-05):** The immediate drift was fixed and has been
+> re-fixed multiple times since (the daemon keeps re-introducing v2). The
+> **breadcrumbs v1/v2 decision remains unmade** — no ADR exists. Prevention
+> items (E1/F1 `check-templ-sync.sh`, CI step, pre-push hook) are tracked as
+> TODO_LIST.md #103/#105 but not yet implemented. The sync guard test
+> (`TestTemplGeneratedInSync`) works but only fires in CI. **Daemon fix (#93)
+> is blocked on `larsartmann/buildflow`.**
+
 **Session scope:** Fix the recurring `TestTemplGeneratedInSync` CI failure on
 `navigation/breadcrumbs_templ.go`. Single-issue session.
 
