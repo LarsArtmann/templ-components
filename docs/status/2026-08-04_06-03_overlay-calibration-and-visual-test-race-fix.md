@@ -1,5 +1,12 @@
 # Status Report — 2026-08-04 06:03
 
+> **Resolution (2026-08-05):** Fully shipped in v1.7.0. The calibration data,
+> `waitAnimationSettled` race fix, and stale golden regeneration are all in
+> the v1.7.0 release. The `dropdown/open_dark.png` golden still needs human
+> verification (TODO_LIST.md #80). The `waitAnimationSettled` helper has no
+> dedicated unit test (TODO_LIST.md #99). AGENTS.md was NOT updated with the
+> `waitAnimationSettled` documentation (still open).
+
 ## Visual Overlay Calibration (#82) + Race Condition Discovery & Fix
 
 **Session scope:** Complete TODO #82 (empirical `MaxMismatch` calibration for

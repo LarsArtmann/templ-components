@@ -6,13 +6,22 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- `charts/echarts` package added to `countExportedTemplFunctions` drift guard — `EChart` and `SDKScript` are now counted in the component total (110→112). The drift-guard regex is now flexible (`across \d+ packages`) so adding future packages doesn't break the test.
+
 ### Changed
 
 - Bumped `nixpkgs` and `treefmt-nix` flake inputs to latest upstream revisions (security patches, formatter improvements). Updated `github.com/chromedp/cdproto` in `visualtest/go.mod` to pick up the latest Chrome DevTools Protocol type definitions.
+- Corrected all stale counts in README.md: enums (51/47/43 → 52), visual goldens (31 → 49), HTML goldens (102 → 175), components (107/98 → 112). The drift-guard test did not cover README, allowing silent drift.
+- Merged orphaned `### Enums` section (GridGap alone) into the main display Enums table in FEATURES.md.
+- Archived 6 fully-resolved historical docs (2 planning + 4 status) to `docs/{status,planning}/archived/` with resolution banners.
 
 ### Fixed
 
 - `breadcrumbs_templ.go` out of sync (recurrence) — the generated file had drifted back to `encoding/json/v2` while the source uses `encoding/json` (stable). Regenerated to match (`TestTemplGeneratedInSync` now passes).
+- Removed unused constant `pieChartLegendCharW` from `display/pie_chart.go` (dead code, verified via grep — zero references).
+- Fixed "Catull-Rom" → "Catmull-Rom" typo in v1.7.0 CHANGELOG entry.
 
 ## [1.7.0] — 2026-08-04
 

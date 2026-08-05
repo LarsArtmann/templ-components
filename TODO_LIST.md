@@ -9,6 +9,10 @@
 > `docs/status/2026-08-*` and `docs/planning/2026-08-*`. Each was verified against
 > the codebase before adding — items already shipped were routed to CHANGELOG
 > instead. Blocked and deferred items carry forward from the prior list.
+>
+> **Completed this session:** #102 (charts/echarts added to drift guard, count
+> 110→112) and #106 (pieChartLegendCharW deleted) were done as fix-on-sight
+> items rather than left as TODOs.
 
 ---
 
@@ -35,7 +39,6 @@
 
 | #   | Task                                                        | Evidence                                                                              |
 | --- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| 102 | Add `charts/echarts` to `countExportedTemplFunctions`       | `utils/docs_count_test.go:43` — the package list includes 8 packages but NOT `charts/echarts` (2 components: `EChart`, `SDKScript`). The component count is stale by 2. Adding it will bump the drift-guard count from 110 → 112. |
 | 103 | Write `scripts/check-templ-sync.sh` pre-commit guard        | `TestTemplGeneratedInSync` exists but only fires in CI (BuildFlow daemon has 60s budget, no `go test`). A <100ms shell script mirroring `scripts/check-lint-config.sh` would catch `*_templ.go` drift at commit time. Source: `docs/status/2026-08-03_00-29_templ-sync-drift-root-cause-and-process-gaps.md`. |
 | 104 | Add CSS freshness CI check                                  | Compile demo CSS in CI, diff against committed `examples/demo/static/app.css`, fail if different. `TestCSSFreshness` only warns locally. The v1.7.0 release shipped stale CSS because this check wasn't enforced. |
 | 105 | Add CI lane with Chromium for visual regression             | Visual tests skip silently without Chromium ("vacuously green" risk). A CI lane running `nix run .#visual` would catch visual regressions at PR time, not at manual-test time. |
@@ -44,7 +47,6 @@
 
 | #   | Task                                                        | Evidence                                                                              |
 | --- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
-| 106 | Remove unused const `pieChartLegendCharW`                   | `display/pie_chart.go:93` — defined but never referenced (verified via grep).          |
 | 107 | Extract `enums_go.go` repeated string to named constant     | `cmd/tc/main.go:87` — `"enums_go.go"` repeated 4× (goconst violation).                  |
 
 ### Architecture / DRY

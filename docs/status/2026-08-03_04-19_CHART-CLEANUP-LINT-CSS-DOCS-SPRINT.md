@@ -1,5 +1,13 @@
 # Status Report: Chart Cleanup Sprint — Lint, Dead Code, CSS, Docs, CSP
 
+> **Resolution (2026-08-05):** All section A items shipped in v1.7.0. The
+> `charts/echarts` drift-guard gap (D/F item 1) is now fixed — the package
+> is included in `countExportedTemplFunctions` (count: 110→112). The unused
+> `pieChartLegendCharW` constant was deleted. Visual regression tests for
+> chart components are tracked as TODO_LIST.md #95. Fuzz tests for geometry
+> math are tracked as TODO_LIST.md #98. The LineChart/AreaChart sub-template
+> extraction (~80% duplication) is tracked as TODO_LIST.md #108.
+
 **Date:** 2026-08-03 04:19
 **Session Goal:** Execute remaining cleanup tasks from the SVG Charts + ECharts Adapter status report (`docs/status/2026-08-03_03-38_SVG-CHARTS-ECHARTS-ADAPTER.md`)
 **Prior Status Report:** `docs/status/2026-08-03_03-38_SVG-CHARTS-ECHARTS-ADAPTER.md`
