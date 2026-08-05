@@ -10,6 +10,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - Bumped `nixpkgs` and `treefmt-nix` flake inputs to latest upstream revisions (security patches, formatter improvements). Updated `github.com/chromedp/cdproto` in `visualtest/go.mod` to pick up the latest Chrome DevTools Protocol type definitions.
 
+### Fixed
+
+- `breadcrumbs_templ.go` out of sync (recurrence) — the generated file had drifted back to `encoding/json/v2` while the source uses `encoding/json` (stable). Regenerated to match (`TestTemplGeneratedInSync` now passes).
+
 ## [1.7.0] — 2026-08-04
 
 ### Added
