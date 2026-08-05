@@ -10,6 +10,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 - `charts/echarts` package added to `countExportedTemplFunctions` drift guard — `EChart` and `SDKScript` are now counted in the component total (110→112). The drift-guard regex is now flexible (`across \d+ packages`) so adding future packages doesn't break the test.
 - Visual regression CI lane — `nix run .#visual` now runs in CI on every push/PR with Chromium provided by Nix (bit-identical renderer to golden PNGs). Previously visual tests only ran locally; CI silently skipped without a browser ("vacuously green" risk).
+- `ChartPadding.Sanitize()` method clamps all padding fields to non-negative values before rendering. Negative padding previously produced negative plot dimensions, corrupting SVG path math.
+- `SanitizeInnerRadius()` function clamps the PieChart `InnerRadius` to `[0, 1]`. Values outside this range previously produced broken arc paths. NaN is clamped to 0.
 
 ### Changed
 

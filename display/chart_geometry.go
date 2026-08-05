@@ -42,6 +42,17 @@ const (
 	chartColorPink    = "text-pink-600 dark:text-pink-400"
 )
 
+// chartMaxFloor returns 1 when the computed max is zero so percentage-based
+// chart math (bar widths, heatmap opacity) has a non-zero denominator.
+// Used by BarChart and Heatmap when no caller-supplied max is provided.
+func chartMaxFloor(maxVal float64) float64 {
+	if maxVal == 0 {
+		return 1
+	}
+
+	return maxVal
+}
+
 // Sanitize clamps all padding fields to non-negative values. Negative padding
 // produces negative plot dimensions (width - left - right < 0), which corrupt
 // SVG path math. Called by LineChart and AreaChart before rendering.

@@ -39,6 +39,15 @@ func darkThemeColor(props PageProps) string {
 	return DefaultDarkThemeColor
 }
 
+// resolveLocale returns locale if non-empty, otherwise the default "en".
+// Used by Base and Minimal so the html lang attribute always has a valid value.
+func resolveLocale(locale string) string {
+	if locale == "" {
+		return "en"
+	}
+	return locale
+}
+
 // PageProps configures the base page layout
 type PageProps struct {
 	Title          string
@@ -122,12 +131,7 @@ func DefaultPageProps() PageProps {
 //	  <h1>My Page</h1>
 //	}
 templ Base(props PageProps) {
-	{{
-		locale := props.Locale
-		if locale == "" {
-			locale = "en"
-		}
-	}}
+	{{ locale := resolveLocale(props.Locale) }}
 	<!DOCTYPE html>
 	<html lang={ locale } class="h-full">
 		<head>
@@ -239,12 +243,7 @@ func DefaultMinimalProps() MinimalProps {
 //	  <h1>Hello</h1>
 //	}
 templ Minimal(props MinimalProps) {
-	{{
-		locale := props.Locale
-		if locale == "" {
-			locale = "en"
-		}
-	}}
+	{{ locale := resolveLocale(props.Locale) }}
 	<!DOCTYPE html>
 	<html lang={ locale }>
 		<head>

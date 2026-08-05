@@ -272,11 +272,9 @@ func FormFieldWrapper(props FormFieldProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		if props.Error != "" {
-			templ_7745c5c3_Err = FieldError(props.ID, props.Error).Render(ctx, templ_7745c5c3_Buffer)
-			if templ_7745c5c3_Err != nil {
-				return templ_7745c5c3_Err
-			}
+		templ_7745c5c3_Err = FieldError(props.ID, props.Error).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
 		}
 		if props.HelpText != "" {
 			templ_7745c5c3_Err = helpText(props.ID, props.HelpText).Render(ctx, templ_7745c5c3_Buffer)

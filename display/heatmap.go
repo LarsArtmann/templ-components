@@ -96,11 +96,7 @@ func heatmapMax(rows []HeatmapRow, override float64) float64 {
 		}
 	}
 
-	if maxVal == 0 {
-		return 1
-	}
-
-	return maxVal
+	return chartMaxFloor(maxVal)
 }
 
 // heatmapOpacity returns an opacity value (0.05–1.0) for a cell based on

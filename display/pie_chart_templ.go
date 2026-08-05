@@ -84,7 +84,7 @@ func PieChart(props PieChartProps) templ.Component {
 
 		innerR := 0.0
 		if props.Donut {
-			innerR = radius * props.InnerRadius
+			innerR = radius * SanitizeInnerRadius(props.InnerRadius)
 		}
 
 		hasData := pieChartHasData(props.Slices)

@@ -134,7 +134,7 @@ func DefaultDonutChartProps() PieChartProps {
 // Values outside this range produce broken arc paths (inner radius larger
 // than the pie, or negative hole size). Returns the clamped value.
 func SanitizeInnerRadius(r float64) float64 {
-	if r < pieChartMinValue {
+	if math.IsNaN(r) || r < pieChartMinValue {
 		return pieChartMinValue
 	}
 

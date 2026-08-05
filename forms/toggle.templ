@@ -98,9 +98,7 @@ templ Toggle(props ToggleProps) {
 			<span class="ms-3 text-sm font-medium text-gray-900 dark:text-white">{ props.Label }</span>
 		}
 	</label>
-	if props.Error != "" {
-		@FieldError(props.ID, props.Error)
-	}
+	@FieldError(props.ID, props.Error)
 	if props.HelpText != "" {
 		@helpText(props.ID, props.HelpText)
 	}

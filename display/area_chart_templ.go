@@ -54,7 +54,7 @@ func AreaChart(props AreaChartProps) templ.Component {
 		if height == 0 {
 			height = areaChartDefaultHeight
 		}
-		padding := props.Padding
+		padding := props.Padding.Sanitize()
 		if padding == (ChartPadding{}) {
 			padding = DefaultChartPadding()
 		}

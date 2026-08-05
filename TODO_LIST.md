@@ -5,15 +5,6 @@
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
 
-> **2026-08-05 harvest:** Items below were harvested from 11 status reports in
-> `docs/status/2026-08-*` and `docs/planning/2026-08-*`. Each was verified against
-> the codebase before adding — items already shipped were routed to CHANGELOG
-> instead. Blocked and deferred items carry forward from the prior list.
->
-> **Completed this session:** #102 (charts/echarts added to drift guard, count
-> 110→112) and #106 (pieChartLegendCharW deleted) were done as fix-on-sight
-> items rather than left as TODOs.
-
 ---
 
 ## Open — actionable
@@ -28,25 +19,12 @@
 | 98  | Add fuzz tests for chart geometry math                    | `ScalePoints`, `ComputeNiceTicks`, `computeArcPath` untested with NaN/Inf/negative/very-large inputs. Pure math functions — perfect fuzz targets. Source: `display/chart_geometry.go`, `display/pie_chart.go`. |
 | 99  | Add `waitAnimationSettled` unit test                      | `visualtest/harness.go` — the helper has no dedicated test. Exercised indirectly by every overlay visual test but polling logic, empty-animations path, and timeout path are untested in isolation.            |
 
-### Validation hardening
-
-| #   | Task                                                       | Evidence                                                                                                      |
-| --- | ---------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| 100 | Add `ChartPadding` validation (clamp negative values to 0) | `display/chart_geometry.go` — zero or negative padding produces negative plot dimensions. No guard, no clamp. |
-| 101 | Add `InnerRadius` validation to PieChart (clamp to [0,1])  | `display/pie_chart.go` — `InnerRadius` outside [0,1] produces broken arc paths. No guard.                     |
-
 ### Drift prevention (process hardening)
 
 | #   | Task                                                 | Evidence                                                                                                                                                                                                                                                                                                      |
 | --- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 103 | Write `scripts/check-templ-sync.sh` pre-commit guard | `TestTemplGeneratedInSync` exists but only fires in CI (BuildFlow daemon has 60s budget, no `go test`). A <100ms shell script mirroring `scripts/check-lint-config.sh` would catch `*_templ.go` drift at commit time. Source: `docs/status/2026-08-03_00-29_templ-sync-drift-root-cause-and-process-gaps.md`. |
 | 104 | Add CSS freshness CI check                           | Compile demo CSS in CI, diff against committed `examples/demo/static/app.css`, fail if different. `TestCSSFreshness` only warns locally. The v1.7.0 release shipped stale CSS because this check wasn't enforced.                                                                                             |
-
-### Code cleanup (fix-on-sight tier)
-
-| #   | Task                                                    | Evidence                                                               |
-| --- | ------------------------------------------------------- | ---------------------------------------------------------------------- |
-| 107 | Extract `enums_go.go` repeated string to named constant | `cmd/tc/main.go:87` — `"enums_go.go"` repeated 4× (goconst violation). |
 
 ### Architecture / DRY
 

@@ -53,7 +53,7 @@ func LineChart(props LineChartProps) templ.Component {
 		if height == 0 {
 			height = lineChartDefaultHeight
 		}
-		padding := props.Padding
+		padding := props.Padding.Sanitize()
 		if padding == (ChartPadding{}) {
 			padding = DefaultChartPadding()
 		}
