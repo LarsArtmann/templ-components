@@ -90,7 +90,6 @@ const (
 	pieChartFontSize       = "11"
 	pieChartCenterFontSize = "18"
 	pieChartLegendYGap     = 18
-	pieChartLegendCharW    = 7
 	pieChartLegendSwatch   = 12
 	pieChartLegendGap      = 8
 	pieChartLeftPad        = 20

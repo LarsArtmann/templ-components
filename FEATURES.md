@@ -23,7 +23,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                     |
 | `recipes`    | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                |
 
-**Totals:** 110 templ components (primitives, drift-guard verified) + 2 ECharts adapter components (opt-in) + 4 recipe screens = 116, 102 icon names, 52 typed enums (49 with `IsValid()`), 106 generated `*_templ.go` files, ~31,500 lines of Go/templ source
+**Totals:** 112 templ components (primitives, drift-guard verified) + 4 recipe screens = 116, 102 icon names, 52 typed enums (49 with `IsValid()`), 106 generated `*_templ.go` files, ~31,500 lines of Go/templ source
 
 ---
 
@@ -127,6 +127,7 @@ type BaseProps struct {
 | `TabsVariant`      | Default, Pills                                     |
 | `TrendDirection`   | Up, Down, None                                     |
 | `GridCols`         | 1, 2, 3 (default), 4, 5, 6, `AutoFit`              |
+| `GridGap`          | SM, MD (default), LG, XL                            |
 | `ButtonSize`       | SM, MD (default), LG                               |
 | `ButtonHTMLType`   | Button, Submit, Reset                              |
 | `OverlayKind`      | Modal, Drawer                                      |
@@ -141,12 +142,6 @@ type BaseProps struct {
 ### Known Issues
 
 - `Accordion` `grid-rows-[0fr]` CSS output never verified against compiled Tailwind v4 output — accordion collapse animation depends on it (`display/accordion.templ:79`)
-
-### Enums
-
-| Type      | Values                   |
-| --------- | ------------------------ |
-| `GridGap` | SM, MD (default), LG, XL |
 
 ---
 

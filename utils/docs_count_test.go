@@ -40,7 +40,10 @@ func countExportedTemplFunctions(t *testing.T, root string) int {
 	templFuncRe := regexp.MustCompile(`^templ\s+([A-Z][A-Za-z0-9]*)\s*\(`)
 	count := 0
 
-	packages := []string{"display", "feedback", "forms", "navigation", "errorpage", "layout", "htmx", "datastar", "charts/echarts"}
+	packages := []string{
+		"display", "feedback", "forms", "navigation", "errorpage",
+		"layout", "htmx", "datastar", "charts/echarts",
+	}
 	for _, pkg := range packages {
 		files, err := filepath.Glob(filepath.Join(root, pkg, "*.templ"))
 		if err != nil {

@@ -15,7 +15,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-110 server-rendered components. 51 typed string enums. 102 SVG icons. Zero client-side framework.
+112 server-rendered components. 52 typed string enums (49 with IsValid()). 102 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -24,8 +24,8 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **CSS approach**       | Tailwind v4 (CSS-first)    | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
 | **JavaScript**         | HATEOAS (enhances HTML)    | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js**   | No                         | No                            | Yes                                            |
-| **Components**         | 107                        | 40+                           | —                                              |
-| **Typed props**        | 47 enums                   | —                             | —                                              |
+| **Components**         | 112                        | 40+                           | —                                              |
+| **Typed props**        | 52 enums                   | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)          | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts) | Yes                           | —                                              |
 | **Container queries**  | 8 opt-in components        | —                             | —                                              |
@@ -226,7 +226,7 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 ## Design Principles
 
-**Type-safe.** 51 typed string enums make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 52 typed string enums (49 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 
@@ -292,12 +292,12 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 
 | Metric         | Value                                               |
 | -------------- | --------------------------------------------------- |
-| Components     | 98                                                  |
+| Components     | 112                                                 |
 | SVG icons      | 102                                                 |
-| Typed enums    | 43                                                  |
+| Typed enums    | 52 (49 with IsValid)                                |
 | Packages       | 15                                                  |
 | Tests          | ~1,070 test functions + ~1,240 subtests             |
-| Visual goldens | 31 pixel-level regression tests (chromedp)          |
+| Visual goldens | 49 pixel-level regression tests (chromedp)          |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---
@@ -309,7 +309,7 @@ of regression:
 
 | Tier                     | What                                                                 | Where                                   | Catches                                                                                                                                         |
 | ------------------------ | -------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `internal/golden` — 102 `.golden` files | Structure, attribute, and class changes                                                                                                         |
+| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `internal/golden` — 175 `.golden` files | Structure, attribute, and class changes                                                                                                         |
 | **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                                | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
 | **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)         | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
 
