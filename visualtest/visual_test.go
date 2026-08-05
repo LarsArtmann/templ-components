@@ -10,6 +10,7 @@ import (
 	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
+	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/visualtest"
 )
 
@@ -549,4 +550,246 @@ func TestNotFound404(t *testing.T) {
 	props.Links = errorpage.DefaultNotFoundLinks()
 	props.Nonce = "test-nonce"
 	visualtest.AssertScreenshot(t, "notfound404/light", errorpage.NotFound404(props))
+}
+
+// --- #95: Chart visual tests ---
+
+// TestLineChart covers a two-series line chart with gridlines, dots, and legend.
+func TestLineChart(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultLineChartProps()
+	props.Series = []display.LineChartSeries{
+		{Name: "Revenue", Values: []float64{120, 180, 150, 210, 280, 320}},
+		{Name: "Costs", Values: []float64{80, 90, 100, 110, 130, 140}},
+	}
+	props.XAxisLabels = []string{"Jan", "Feb", "Mar", "Apr", "May", "Jun"}
+	visualtest.AssertScreenshot(t, "linechart/light", display.LineChart(props))
+}
+
+// TestPieChart covers a three-slice pie chart with external labels and legend.
+func TestPieChart(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultPieChartProps()
+	props.Slices = []display.PieChartSlice{
+		{Label: "Desktop", Value: 55},
+		{Label: "Mobile", Value: 30},
+		{Label: "Tablet", Value: 15},
+	}
+	visualtest.AssertScreenshot(t, "piechart/light", display.PieChart(props))
+}
+
+// TestDonutChart covers the donut variant with a center label.
+func TestDonutChart(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultDonutChartProps()
+	props.Slices = []display.PieChartSlice{
+		{Label: "Used", Value: 128},
+		{Label: "Free", Value: 72},
+	}
+	props.CenterLabel = "128GB"
+	visualtest.AssertScreenshot(t, "donutchart/light", display.PieChart(props))
+}
+
+// TestAreaChart covers a two-series area chart with filled areas.
+func TestAreaChart(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultAreaChartProps()
+	props.Series = []display.LineChartSeries{
+		{Name: "Visits", Values: []float64{30, 50, 45, 80, 90, 110}},
+		{Name: "Signups", Values: []float64{10, 15, 20, 25, 30, 40}},
+	}
+	props.XAxisLabels = []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat"}
+	visualtest.AssertScreenshot(t, "areachart/light", display.AreaChart(props))
+}
+
+// --- #96: Dark-mode variants for newer components ---
+
+// TestComboboxDark covers the combobox in dark mode.
+func TestComboboxDark(t *testing.T) {
+	t.Parallel()
+
+	cb := forms.DefaultComboboxProps()
+	cb.Label = "Country"
+	cb.Placeholder = "Select a country..."
+	cb.Options = []forms.ComboboxOption{
+		{Label: "United States", Value: "us"},
+		{Label: "Canada", Value: "ca"},
+		{Label: "Germany", Value: "de"},
+	}
+	cb.Nonce = "test-nonce"
+	visualtest.AssertScreenshot(t, "combobox/dark", forms.Combobox(cb), visualtest.Options{Dark: new(true)})
+}
+
+// TestTooltipDark covers the tooltip in dark mode.
+func TestTooltipDark(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultTooltipProps()
+	props.Text = "Helpful information"
+
+	tooltipWithTrigger := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		ctx = templ.WithChildren(
+			ctx,
+			templ.Raw(
+				`<button class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">Hover for info</button>`,
+			),
+		)
+
+		return display.Tooltip(props).Render(ctx, w)
+	})
+	visualtest.AssertScreenshot(t, "tooltip/dark", tooltipWithTrigger, visualtest.Options{Dark: new(true)})
+}
+
+// TestCarouselDark covers the carousel in dark mode.
+func TestCarouselDark(t *testing.T) {
+	t.Parallel()
+
+	carousel := display.DefaultCarouselProps()
+	carousel.Slides = []display.CarouselSlide{
+		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-blue-600 text-2xl font-bold text-white">1</div>`)},
+		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-emerald-600 text-2xl font-bold text-white">2</div>`)},
+	}
+	carousel.ShowIndicators = true
+	carousel.Nonce = "test-nonce"
+	visualtest.AssertScreenshot(t, "carousel/dark", display.Carousel(carousel), visualtest.Options{Dark: new(true)})
+}
+
+// TestSkeletonDark covers the skeleton loading state in dark mode.
+func TestSkeletonDark(t *testing.T) {
+	t.Parallel()
+
+	skeleton := feedback.DefaultSkeletonCardGridProps()
+	skeleton.Count = 3
+	visualtest.AssertScreenshot(t, "skeleton/dark", feedback.SkeletonCardGrid(skeleton), visualtest.Options{Dark: new(true)})
+}
+
+// TestErrorPageDark covers the full-page error in dark mode.
+func TestErrorPageDark(t *testing.T) {
+	t.Parallel()
+
+	props := errorpage.DefaultErrorPageProps()
+	props.Why = "The database connection timed out after 30 seconds."
+	props.Fix = "Check that the database is running and accessible from the application server."
+	props.Nonce = "test-nonce"
+	visualtest.AssertScreenshot(t, "errorpage/dark", errorpage.ErrorPage(props), visualtest.Options{Dark: new(true)})
+}
+
+// TestNotFound404Dark covers the 404 page in dark mode.
+func TestNotFound404Dark(t *testing.T) {
+	t.Parallel()
+
+	props := errorpage.DefaultNotFound404Props()
+	props.Links = errorpage.DefaultNotFoundLinks()
+	props.Nonce = "test-nonce"
+	visualtest.AssertScreenshot(t, "notfound404/dark", errorpage.NotFound404(props), visualtest.Options{Dark: new(true)})
+}
+
+// --- #97: Visual tests for v1.5–v1.6 components ---
+
+// TestBarChart covers a horizontal bar chart with values and labels.
+func TestBarChart(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultBarChartProps()
+	props.Bars = []display.BarChartBar{
+		{Label: "Mon", Value: 42},
+		{Label: "Tue", Value: 78},
+		{Label: "Wed", Value: 55},
+		{Label: "Thu", Value: 91},
+		{Label: "Fri", Value: 67},
+	}
+	visualtest.AssertScreenshot(t, "barchart/light", display.BarChart(props))
+}
+
+// TestHeatmap covers a 3×4 heatmap grid with values and peak highlight.
+func TestHeatmap(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultHeatmapProps()
+	props.ColumnLabels = []string{"W1", "W2", "W3", "W4"}
+	props.Rows = []display.HeatmapRow{
+		{Label: "Build", Cells: []display.HeatmapCell{{Value: 12}, {Value: 8}, {Value: 15}, {Value: 3}}},
+		{Label: "Test", Cells: []display.HeatmapCell{{Value: 45}, {Value: 52}, {Value: 38}, {Value: 61}}},
+		{Label: "Deploy", Cells: []display.HeatmapCell{{Value: 5}, {Value: 9}, {Value: 2}, {Value: 7}}},
+	}
+	props.HighlightPeak = true
+	visualtest.AssertScreenshot(t, "heatmap/light", display.Heatmap(props))
+}
+
+// TestSparkline covers a sparkline with a filled area.
+func TestSparkline(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultSparklineProps()
+	props.Values = []float64{10, 20, 15, 30, 25, 40, 35, 50}
+	props.Filled = true
+	visualtest.AssertScreenshot(t, "sparkline/light", display.Sparkline(props))
+}
+
+// TestCollapsibleSection covers an expanded collapsible section with body content.
+func TestCollapsibleSection(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultCollapsibleSectionProps()
+	props.Title = "Advanced Settings"
+
+	section := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		ctx = templ.WithChildren(ctx, templ.Raw(
+			`<p class="text-sm text-gray-500 dark:text-gray-400">Configure advanced options for your account.</p>`,
+		))
+
+		return display.CollapsibleSection(props).Render(ctx, w)
+	})
+	visualtest.AssertScreenshot(t, "collapsible/light", section)
+}
+
+// TestExternalLink covers an external link with icon.
+func TestExternalLink(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultExternalLinkProps()
+	props.Href = "https://example.com"
+	props.Text = "Visit documentation"
+	visualtest.AssertScreenshot(t, "externallink/light", display.ExternalLink(props))
+}
+
+// TestPolledRegion covers a polled region with initial content.
+func TestPolledRegion(t *testing.T) {
+	t.Parallel()
+
+	props := htmx.DefaultPolledRegionProps()
+	props.URL = "/api/stats"
+	props.Every = "5s"
+
+	region := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		ctx = templ.WithChildren(ctx, templ.Raw(
+			`<div class="rounded-lg border border-gray-200 p-4 dark:border-gray-700">`+
+				`<p class="text-sm text-gray-500 dark:text-gray-400">Loading stats…</p></div>`,
+		))
+
+		return htmx.PolledRegion(props).Render(ctx, w)
+	})
+	visualtest.AssertScreenshot(t, "polledregion/light", region)
+}
+
+// TestDataTable covers a sortable data table with 3 columns and 3 rows.
+func TestDataTable(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultDataTableProps()
+	props.Columns = []display.DataTableColumn{
+		{Label: "Name", Sortable: true, SortKey: "name"},
+		{Label: "Role", Sortable: true},
+		{Label: "Status"},
+	}
+	props.Rows = []display.TableRow{
+		{Cells: []display.TableCell{{Text: "Alice"}, {Text: "Admin"}, {Text: "Active"}}},
+		{Cells: []display.TableCell{{Text: "Bob"}, {Text: "Editor"}, {Text: "Away"}}},
+		{Cells: []display.TableCell{{Text: "Carol"}, {Text: "Viewer"}, {Text: "Offline"}}},
+	}
+	visualtest.AssertScreenshot(t, "datatable/light", display.DataTable(props))
 }
