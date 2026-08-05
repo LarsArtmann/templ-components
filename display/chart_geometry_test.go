@@ -333,15 +333,28 @@ func TestChartPaddingSanitize(t *testing.T) {
 		input ChartPadding
 		want  ChartPadding
 	}{
-		{name: "all negative clamped to zero", input: ChartPadding{Top: -10, Right: -5, Bottom: -20, Left: -1}, want: ChartPadding{}},
-		{name: "mixed signs", input: ChartPadding{Top: 20, Right: -5, Bottom: 30, Left: -1}, want: ChartPadding{Top: 20, Right: 0, Bottom: 30, Left: 0}},
-		{name: "all positive unchanged", input: ChartPadding{Top: 20, Right: 20, Bottom: 30, Left: 40}, want: ChartPadding{Top: 20, Right: 20, Bottom: 30, Left: 40}},
+		{
+			name:  "all negative clamped to zero",
+			input: ChartPadding{Top: -10, Right: -5, Bottom: -20, Left: -1},
+			want:  ChartPadding{},
+		},
+		{
+			name:  "mixed signs",
+			input: ChartPadding{Top: 20, Right: -5, Bottom: 30, Left: -1},
+			want:  ChartPadding{Top: 20, Right: 0, Bottom: 30, Left: 0},
+		},
+		{
+			name:  "all positive unchanged",
+			input: ChartPadding{Top: 20, Right: 20, Bottom: 30, Left: 40},
+			want:  ChartPadding{Top: 20, Right: 20, Bottom: 30, Left: 40},
+		},
 		{name: "zero unchanged", input: ChartPadding{}, want: ChartPadding{}},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got := tt.input.Sanitize()
 			if got != tt.want {
 				t.Errorf("Sanitize() = %+v, want %+v", got, tt.want)
@@ -354,7 +367,7 @@ func TestSanitizeInnerRadius(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		name string
+		name  string
 		input float64
 		want  float64
 	}{
@@ -370,6 +383,7 @@ func TestSanitizeInnerRadius(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
+
 			got := SanitizeInnerRadius(tt.input)
 			if math.IsNaN(got) || got != tt.want {
 				t.Errorf("SanitizeInnerRadius(%v) = %v, want %v", tt.input, got, tt.want)

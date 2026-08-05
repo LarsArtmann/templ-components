@@ -28,6 +28,7 @@ func BenchmarkComputeArcPath(b *testing.B) {
 	for i := range slices {
 		slices[i] = PieChartSlice{Label: "S", Value: float64(i + 1)}
 	}
+
 	angles := computeSliceAngles(slices)
 
 	b.ResetTimer()
@@ -43,6 +44,7 @@ func BenchmarkComputeArcPath(b *testing.B) {
 // LineChart component to a buffer with two series of 50 data points each.
 func BenchmarkLineChartRender(b *testing.B) {
 	props := DefaultLineChartProps()
+
 	props.Series = []LineChartSeries{
 		{Name: "Revenue", Values: make([]float64, 50)},
 		{Name: "Costs", Values: make([]float64, 50)},
@@ -59,6 +61,7 @@ func BenchmarkLineChartRender(b *testing.B) {
 
 	for b.Loop() {
 		var buf bytes.Buffer
+
 		_ = component.Render(ctx, &buf)
 	}
 }

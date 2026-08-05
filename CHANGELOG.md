@@ -14,9 +14,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `SanitizeInnerRadius()` function clamps the PieChart `InnerRadius` to `[0, 1]`. Values outside this range previously produced broken arc paths. NaN is clamped to 0.
 - `scripts/check-templ-sync.sh` — fast (<1s) pre-commit guard that catches `*_templ.go` drift before commit. Mirrors `check-lint-config.sh`, wired into `.git/hooks/pre-commit` and CI. Prevents the BuildFlow daemon from committing stale generated files.
 - CSS freshness CI lane — recompiles demo CSS via `nix run .#css` and diffs against the committed file. Prevents stale CSS shipping (as happened in v1.7.0).
+- Fuzz tests for chart geometry math: `FuzzScalePoints`, `FuzzComputeNiceTicks`, `FuzzComputeArcPath` — verify no panics on NaN/Inf/negative/extreme inputs (2M+ executions, zero failures).
+- Visual regression tests for charts: LineChart, PieChart, DonutChart, AreaChart now have golden PNG baselines.
+- Dark-mode visual variants for Combobox, Tooltip, Carousel, Skeleton, ErrorPage, NotFound404.
+- Visual regression tests for v1.5–v1.6 components: BarChart, Heatmap, Sparkline, CollapsibleSection, ExternalLink, PolledRegion, DataTable.
+- `TestWaitAnimationSettled` — dedicated test for the visual test harness covering polling, empty-animations, and timeout paths.
+- Benchmarks for PieChart arc computation (`BenchmarkComputeSliceAngles`, `BenchmarkComputeArcPath`) and full LineChart render (`BenchmarkLineChartRender`).
 
 ### Changed
 
+- Shared chart sub-templates extracted: `chartAxes`, `chartLegend`, `chartEmptyStateMsg` in `display/chart_shared.templ`. Eliminates ~80% template duplication between LineChart and AreaChart. `ChartRenderData` struct + `computeChartRenderData()` centralize the shared setup logic.
 - Bumped `nixpkgs` and `treefmt-nix` flake inputs to latest upstream revisions (security patches, formatter improvements). Updated `github.com/chromedp/cdproto` in `visualtest/go.mod` to pick up the latest Chrome DevTools Protocol type definitions.
 - Corrected all stale counts in README.md: enums (51/47/43 → 52), visual goldens (31 → 49), HTML goldens (102 → 175), components (107/98 → 112). The drift-guard test did not cover README, allowing silent drift.
 - Merged orphaned `### Enums` section (GridGap alone) into the main display Enums table in FEATURES.md.

@@ -26,10 +26,6 @@ templ LineChart(props LineChartProps) {
 		if height == 0 {
 			height = lineChartDefaultHeight
 		}
-		padding := props.Padding.Sanitize()
-		if padding == (ChartPadding{}) {
-			padding = DefaultChartPadding()
-		}
 		style := props.Style
 		if style == "" {
 			style = LineChartStyleLinear
@@ -39,121 +35,37 @@ templ LineChart(props LineChartProps) {
 			emptyMsg = lineChartDefaultEmptyMsg
 		}
 
-		minVal, maxVal := lineChartBounds(props.Series, props.Min, props.Max)
-		plotW := width - padding.Left - padding.Right
-		plotH := height - padding.Top - padding.Bottom
-		ticks := ComputeNiceTicks(minVal, maxVal, lineChartMaxTicks)
-		hasData := lineChartHasData(props.Series)
-		rangeVal := maxVal - minVal
-
-		maxSeriesLen := 0
-		for _, s := range props.Series {
-			if len(s.Values) > maxSeriesLen {
-				maxSeriesLen = len(s.Values)
-			}
-		}
-		labelCount := len(props.XAxisLabels)
-		if labelCount > maxSeriesLen {
-			labelCount = maxSeriesLen
-		}
-
-		type legendItem struct {
-			Name  string
-			Color string
-			X     int
-		}
-		var legendItems []legendItem
-		if props.ShowLegend && len(props.Series) > 1 {
-			lx := padding.Left
-			for i, s := range props.Series {
-				if s.Name == "" {
-					continue
-				}
-				legendItems = append(legendItems, legendItem{
-					Name:  s.Name,
-					Color: lineChartColor(i, s.Color),
-					X:     lx,
-				})
-				lx += len(s.Name)*lineChartLegendCharW + lineChartLegendGap
-			}
-		}
+		d := computeChartRenderData(
+			width, height, props.Padding,
+			props.Series, props.XAxisLabels,
+			props.Min, props.Max,
+			props.ShowGrid, props.ShowLegend,
+			props.ValueFormat, emptyMsg,
+			props.Class, props.AriaLabel, props.ID, props.Attrs,
+		)
 	}}
 	<svg
-		viewBox={ fmt.Sprintf("0 0 %d %d", width, height) }
-		class={ utils.Class("w-full h-auto", props.Class) }
+		viewBox={ fmt.Sprintf("0 0 %d %d", d.Width, d.Height) }
+		class={ utils.Class("w-full h-auto", d.Class) }
 		role="img"
-		if props.AriaLabel != "" {
-			aria-label={ props.AriaLabel }
+		if d.AriaLabel != "" {
+			aria-label={ d.AriaLabel }
 		} else {
 			aria-hidden="true"
 		}
-		if props.ID != "" {
-			id={ props.ID }
+		if d.ID != "" {
+			id={ d.ID }
 		}
-		{ props.Attrs... }
+		{ d.Attrs... }
 	>
-		if hasData {
-			for _, tick := range ticks {
-				{{
-					y := float64(padding.Top) + float64(plotH) - ((tick-minVal)/rangeVal)*float64(plotH)
-				}}
-				if props.ShowGrid {
-					<line
-						x1={ padding.Left }
-						y1={ y }
-						x2={ width - padding.Right }
-						y2={ y }
-						class="stroke-gray-200 dark:stroke-gray-700"
-						stroke-width="1"
-						stroke-dasharray="4 4"
-					/>
-				}
-				<text
-					x={ padding.Left - lineChartTickLen }
-					y={ y + lineChartLabelYOffset }
-					text-anchor="end"
-					class="fill-gray-500 dark:fill-gray-400"
-					font-size={ lineChartFontSize }
-				>{ lineChartTickFormat(props.ValueFormat, tick) }</text>
-			}
-			<line
-				x1={ padding.Left }
-				y1={ padding.Top }
-				x2={ padding.Left }
-				y2={ padding.Top + plotH }
-				class="stroke-gray-300 dark:stroke-gray-600"
-				stroke-width="1"
-			/>
-			<line
-				x1={ padding.Left }
-				y1={ padding.Top + plotH }
-				x2={ width - padding.Right }
-				y2={ padding.Top + plotH }
-				class="stroke-gray-300 dark:stroke-gray-600"
-				stroke-width="1"
-			/>
-			if labelCount > 0 {
-				for i := range labelCount {
-					if i < len(props.XAxisLabels) {
-						{{
-							x := padding.Left + int(lineChartTickLabelX(plotW, labelCount, i))
-						}}
-						<text
-							x={ x }
-							y={ padding.Top + plotH + lineChartXLabelOffset }
-							text-anchor="middle"
-							class="fill-gray-500 dark:fill-gray-400"
-							font-size={ lineChartFontSize }
-						>{ props.XAxisLabels[i] }</text>
-					}
-				}
-			}
+		if d.HasData {
+			@chartAxes(d)
 			for i, series := range props.Series {
 				if len(series.Values) >= 2 {
 					{{
 						color := lineChartColor(i, series.Color)
 						strokeW := lineChartStrokeWidth(series.StrokeWidth)
-						pts := ScalePoints(series.Values, plotW, plotH, minVal, maxVal)
+						pts := ScalePoints(series.Values, d.PlotW, d.PlotH, d.MinVal, d.MaxVal)
 						var path string
 						if style == LineChartStyleSmooth {
 							path = BuildSmoothPath(pts)
@@ -163,7 +75,7 @@ templ LineChart(props LineChartProps) {
 					}}
 					<g
 						class={ color }
-						transform={ fmt.Sprintf("translate(%d,%d)", padding.Left, padding.Top) }
+						transform={ fmt.Sprintf("translate(%d,%d)", d.Padding.Left, d.Padding.Top) }
 					>
 						<path
 							d={ path }
@@ -184,35 +96,9 @@ templ LineChart(props LineChartProps) {
 					</g>
 				}
 			}
-			if len(legendItems) > 0 {
-				for _, li := range legendItems {
-					<g transform={ fmt.Sprintf("translate(%d,%d)", li.X, lineChartLegendY) }>
-						<rect
-							width="14"
-							height="3"
-							y="-2"
-							rx="1"
-							class={ li.Color }
-							fill="currentColor"
-						/>
-						<text
-							x="18"
-							y="2"
-							class="fill-gray-600 dark:fill-gray-300"
-							font-size={ lineChartFontSize }
-						>{ li.Name }</text>
-					</g>
-				}
-			}
+			@chartLegend(d)
 		} else {
-			<text
-				x={ width / 2 }
-				y={ height / 2 }
-				text-anchor="middle"
-				dominant-baseline="middle"
-				class="fill-gray-400 dark:fill-gray-500"
-				font-size={ lineChartEmptyFontSize }
-			>{ emptyMsg }</text>
+			@chartEmptyStateMsg(d)
 		}
 	</svg>
 }

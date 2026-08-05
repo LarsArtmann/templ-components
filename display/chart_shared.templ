@@ -1,0 +1,103 @@
+package display
+
+import (
+	"fmt"
+)
+
+// chartAxes renders the Y-axis ticks, optional gridlines, axis lines, and
+// X-axis labels. Shared between LineChart and AreaChart.
+templ chartAxes(d ChartRenderData) {
+	for _, tick := range d.Ticks {
+		{{
+			y := float64(d.Padding.Top) + float64(d.PlotH) - ((tick-d.MinVal)/d.RangeVal)*float64(d.PlotH)
+		}}
+		if d.ShowGrid {
+			<line
+				x1={ d.Padding.Left }
+				y1={ y }
+				x2={ d.Width - d.Padding.Right }
+				y2={ y }
+				class="stroke-gray-200 dark:stroke-gray-700"
+				stroke-width="1"
+				stroke-dasharray="4 4"
+			/>
+		}
+		<text
+			x={ d.Padding.Left - lineChartTickLen }
+			y={ y + lineChartLabelYOffset }
+			text-anchor="end"
+			class="fill-gray-500 dark:fill-gray-400"
+			font-size={ lineChartFontSize }
+		>{ lineChartTickFormat(d.ValueFormat, tick) }</text>
+	}
+	<line
+		x1={ d.Padding.Left }
+		y1={ d.Padding.Top }
+		x2={ d.Padding.Left }
+		y2={ d.Padding.Top + d.PlotH }
+		class="stroke-gray-300 dark:stroke-gray-600"
+		stroke-width="1"
+	/>
+	<line
+		x1={ d.Padding.Left }
+		y1={ d.Padding.Top + d.PlotH }
+		x2={ d.Width - d.Padding.Right }
+		y2={ d.Padding.Top + d.PlotH }
+		class="stroke-gray-300 dark:stroke-gray-600"
+		stroke-width="1"
+	/>
+	if d.LabelCount > 0 {
+		for i := range d.LabelCount {
+			if i < len(d.XAxisLabels) {
+				{{
+					x := d.Padding.Left + int(lineChartTickLabelX(d.PlotW, d.LabelCount, i))
+				}}
+				<text
+					x={ x }
+					y={ d.Padding.Top + d.PlotH + lineChartXLabelOffset }
+					text-anchor="middle"
+					class="fill-gray-500 dark:fill-gray-400"
+					font-size={ lineChartFontSize }
+				>{ d.XAxisLabels[i] }</text>
+			}
+		}
+	}
+}
+
+// chartLegend renders the color-swatch legend above the chart. Shared between
+// LineChart and AreaChart.
+templ chartLegend(d ChartRenderData) {
+	if len(d.LegendItems) > 0 {
+		for _, li := range d.LegendItems {
+			<g transform={ fmt.Sprintf("translate(%d,%d)", li.X, lineChartLegendY) }>
+				<rect
+					width="14"
+					height="3"
+					y="-2"
+					rx="1"
+					class={ li.Color }
+					fill="currentColor"
+				/>
+				<text
+					x="18"
+					y="2"
+					class="fill-gray-600 dark:fill-gray-300"
+					font-size={ lineChartFontSize }
+				>{ li.Name }</text>
+			</g>
+		}
+	}
+}
+
+// chartEmptyStateMsg renders the "No data" message centered in the SVG canvas.
+// Shared between LineChart and AreaChart.
+templ chartEmptyStateMsg(d ChartRenderData) {
+	<text
+		x={ d.Width / 2 }
+		y={ d.Height / 2 }
+		text-anchor="middle"
+		dominant-baseline="middle"
+		class="fill-gray-400 dark:fill-gray-500"
+		font-size={ lineChartEmptyFontSize }
+	>{ d.EmptyMsg }</text>
+}

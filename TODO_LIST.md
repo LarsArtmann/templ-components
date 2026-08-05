@@ -7,27 +7,6 @@
 
 ---
 
-## Open — actionable
-
-### Testing gaps (highest impact)
-
-| #   | Task                                                      | Evidence                                                                                                                                                                                                       |
-| --- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 95  | Add visual regression tests for chart components          | No `visualtest/` entries for LineChart, PieChart, AreaChart (`visualtest/testdata/` — verified absent). Biggest testing gap per 3 status reports. Golden tests verify HTML structure but not visual rendering. |
-| 96  | Add dark-mode visual variants for 6 newer components      | Combobox, Tooltip, Carousel, Skeleton, ErrorPage, NotFound404 are light-only in `visualtest/`. Every pre-existing component family has both light + dark goldens.                                              |
-| 97  | Add visual tests for v1.5–v1.6 components without goldens | CollapsibleSection, Heatmap, Sparkline, BarChart, ExternalLink, PolledRegion, DataTable have no visual goldens (`visualtest/testdata/` — verified absent).                                                     |
-| 98  | Add fuzz tests for chart geometry math                    | `ScalePoints`, `ComputeNiceTicks`, `computeArcPath` untested with NaN/Inf/negative/very-large inputs. Pure math functions — perfect fuzz targets. Source: `display/chart_geometry.go`, `display/pie_chart.go`. |
-| 99  | Add `waitAnimationSettled` unit test                      | `visualtest/harness.go` — the helper has no dedicated test. Exercised indirectly by every overlay visual test but polling logic, empty-animations path, and timeout path are untested in isolation.            |
-
-### Architecture / DRY
-
-| #   | Task                                            | Evidence                                                                                                                                                                                                                                          |
-| --- | ----------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 108 | Extract shared LineChart/AreaChart sub-template | `display/line_chart.templ` + `display/area_chart.templ` — ~80% template duplication (axes, gridlines, X-axis labels, legend, empty state identical). Deferred from ADR-0010's 8+ parameter guidance, but the duplication is a maintenance burden. |
-| 109 | Add benchmarks for chart geometry helpers       | `BenchmarkScalePoints` + `BenchmarkBuildPolylinePath` exist in `chart_geometry_test.go`, but no benchmarks for PieChart arc computation (`computeSliceAngles` + `computeArcPath` for 100 slices) or full LineChart render.                        |
-
----
-
 ## Blocked — External dependencies
 
 | #   | Task                                        | Blocker                                                                                                                                                                                                                                                                                                                                                                                                                                                           |

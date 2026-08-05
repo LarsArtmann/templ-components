@@ -5,6 +5,8 @@ import (
 	"math"
 	"strconv"
 	"strings"
+
+	"github.com/a-h/templ"
 )
 
 // Chart geometry constants — shared across all native SVG chart components.
@@ -74,6 +76,117 @@ func (p ChartPadding) Sanitize() ChartPadding {
 		Right:  max(p.Right, 0),
 		Bottom: max(p.Bottom, 0),
 		Left:   max(p.Left, 0),
+	}
+}
+
+// ChartLegendItem holds a computed legend entry for a chart series.
+type ChartLegendItem struct {
+	Name  string
+	Color string
+	X     int
+}
+
+// ChartRenderData bundles the pre-computed values shared between LineChart
+// and AreaChart rendering. Both charts compute identical setup (bounds, ticks,
+// padding, legend positions) — this struct eliminates the duplicated logic.
+type ChartRenderData struct {
+	Width       int
+	Height      int
+	Padding     ChartPadding
+	PlotW       int
+	PlotH       int
+	MinVal      float64
+	MaxVal      float64
+	RangeVal    float64
+	Ticks       []float64
+	HasData     bool
+	LabelCount  int
+	XAxisLabels []string
+	ShowGrid    bool
+	ValueFormat func(float64) string
+	LegendItems []ChartLegendItem
+	EmptyMsg    string
+	Class       string
+	AriaLabel   string
+	ID          string
+	Attrs       templ.Attributes
+}
+
+// computeChartRenderData calculates the shared rendering parameters for
+// LineChart and AreaChart. Both charts share identical axis/gridline/legend
+// layout — only the per-series path rendering differs.
+func computeChartRenderData(
+	width, height int,
+	padding ChartPadding,
+	series []LineChartSeries,
+	xAxisLabels []string,
+	minOverride, maxOverride *float64,
+	showGrid, showLegend bool,
+	valueFormat func(float64) string,
+	emptyMsg, class, ariaLabel, id string,
+	attrs templ.Attributes,
+) ChartRenderData {
+	padding = padding.Sanitize()
+	if padding == (ChartPadding{}) {
+		padding = DefaultChartPadding()
+	}
+
+	minVal, maxVal := lineChartBounds(series, minOverride, maxOverride)
+	plotW := width - padding.Left - padding.Right
+	plotH := height - padding.Top - padding.Bottom
+	ticks := ComputeNiceTicks(minVal, maxVal, lineChartMaxTicks)
+	hasData := lineChartHasData(series)
+	rangeVal := maxVal - minVal
+
+	maxSeriesLen := 0
+	for _, s := range series {
+		if len(s.Values) > maxSeriesLen {
+			maxSeriesLen = len(s.Values)
+		}
+	}
+
+	labelCount := min(len(xAxisLabels), maxSeriesLen)
+
+	var legendItems []ChartLegendItem
+
+	if showLegend && len(series) > 1 {
+		lx := padding.Left
+
+		for i, s := range series {
+			if s.Name == "" {
+				continue
+			}
+
+			legendItems = append(legendItems, ChartLegendItem{
+				Name:  s.Name,
+				Color: lineChartColor(i, s.Color),
+				X:     lx,
+			})
+			lx += len(s.Name)*lineChartLegendCharW + lineChartLegendGap
+		}
+	}
+
+	return ChartRenderData{
+		Width:       width,
+		Height:      height,
+		Padding:     padding,
+		PlotW:       plotW,
+		PlotH:       plotH,
+		MinVal:      minVal,
+		MaxVal:      maxVal,
+		RangeVal:    rangeVal,
+		Ticks:       ticks,
+		HasData:     hasData,
+		LabelCount:  labelCount,
+		XAxisLabels: xAxisLabels,
+		ShowGrid:    showGrid,
+		ValueFormat: valueFormat,
+		LegendItems: legendItems,
+		EmptyMsg:    emptyMsg,
+		Class:       class,
+		AriaLabel:   ariaLabel,
+		ID:          id,
+		Attrs:       attrs,
 	}
 }
 

@@ -650,8 +650,16 @@ func TestCarouselDark(t *testing.T) {
 
 	carousel := display.DefaultCarouselProps()
 	carousel.Slides = []display.CarouselSlide{
-		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-blue-600 text-2xl font-bold text-white">1</div>`)},
-		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-emerald-600 text-2xl font-bold text-white">2</div>`)},
+		{
+			Content: templ.Raw(
+				`<div class="flex h-32 items-center justify-center rounded-xl bg-blue-600 text-2xl font-bold text-white">1</div>`,
+			),
+		},
+		{
+			Content: templ.Raw(
+				`<div class="flex h-32 items-center justify-center rounded-xl bg-emerald-600 text-2xl font-bold text-white">2</div>`,
+			),
+		},
 	}
 	carousel.ShowIndicators = true
 	carousel.Nonce = "test-nonce"
@@ -664,7 +672,12 @@ func TestSkeletonDark(t *testing.T) {
 
 	skeleton := feedback.DefaultSkeletonCardGridProps()
 	skeleton.Count = 3
-	visualtest.AssertScreenshot(t, "skeleton/dark", feedback.SkeletonCardGrid(skeleton), visualtest.Options{Dark: new(true)})
+	visualtest.AssertScreenshot(
+		t,
+		"skeleton/dark",
+		feedback.SkeletonCardGrid(skeleton),
+		visualtest.Options{Dark: new(true)},
+	)
 }
 
 // TestErrorPageDark covers the full-page error in dark mode.
@@ -685,7 +698,12 @@ func TestNotFound404Dark(t *testing.T) {
 	props := errorpage.DefaultNotFound404Props()
 	props.Links = errorpage.DefaultNotFoundLinks()
 	props.Nonce = "test-nonce"
-	visualtest.AssertScreenshot(t, "notfound404/dark", errorpage.NotFound404(props), visualtest.Options{Dark: new(true)})
+	visualtest.AssertScreenshot(
+		t,
+		"notfound404/dark",
+		errorpage.NotFound404(props),
+		visualtest.Options{Dark: new(true)},
+	)
 }
 
 // --- #97: Visual tests for v1.5–v1.6 components ---

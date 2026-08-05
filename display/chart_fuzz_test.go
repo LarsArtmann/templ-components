@@ -16,6 +16,7 @@ func FuzzScalePoints(f *testing.F) {
 		{math.Inf(1)},
 		{-1e20, 1e20},
 	}
+
 	f.Add(600, 300, 0.0, 100.0)
 	f.Add(-100, -100, math.Inf(-1), math.Inf(1))
 	f.Add(0, 0, math.NaN(), math.NaN())
@@ -59,8 +60,10 @@ func FuzzComputeArcPath(f *testing.F) {
 	f.Add(math.NaN(), math.NaN(), math.NaN(), math.NaN(), math.NaN(), math.NaN())
 	f.Add(200.0, 150.0, 100.0, 200.0, 0.0, 360.0)
 
-	f.Fuzz(func(t *testing.T, cx float64, cy float64, radius float64, innerRadius float64, startAngle float64, endAngle float64) {
-		// Should never panic regardless of input.
-		_ = computeArcPath(cx, cy, radius, innerRadius, startAngle, endAngle)
-	})
+	f.Fuzz(
+		func(t *testing.T, cx float64, cy float64, radius float64, innerRadius float64, startAngle float64, endAngle float64) {
+			// Should never panic regardless of input.
+			_ = computeArcPath(cx, cy, radius, innerRadius, startAngle, endAngle)
+		},
+	)
 }

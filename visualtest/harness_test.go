@@ -79,6 +79,7 @@ func TestWaitAnimationSettled(t *testing.T) {
 				if elapsed < 800*time.Millisecond {
 					t.Errorf("long_running took %v — should wait at least 800ms before timeout", elapsed)
 				}
+
 				if elapsed > 1200*time.Millisecond {
 					t.Errorf("long_running took %v — should not exceed ~900ms total (80ms sleep + 800ms poll)", elapsed)
 				}
