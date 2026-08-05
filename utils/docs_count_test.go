@@ -26,7 +26,7 @@ func TestDocsCountDrift(t *testing.T) {
 	assertCount(t, agents, `(\d+)\s+generated files across all packages`, "AGENTS.md generated files", actualGenerated)
 
 	skill := readDoc(t, "skill", "SKILL.md")
-	componentsRe := `(\d+)\s+components across 10 packages`
+	componentsRe := `(\d+)\s+components across \d+ packages`
 	assertCount(t, skill, componentsRe, "SKILL.md components", actualComponents)
 
 	sections := readDoc(t, "website", "src", "data", "sections.ts")
@@ -40,7 +40,7 @@ func countExportedTemplFunctions(t *testing.T, root string) int {
 	templFuncRe := regexp.MustCompile(`^templ\s+([A-Z][A-Za-z0-9]*)\s*\(`)
 	count := 0
 
-	packages := []string{"display", "feedback", "forms", "navigation", "errorpage", "layout", "htmx", "datastar"}
+	packages := []string{"display", "feedback", "forms", "navigation", "errorpage", "layout", "htmx", "datastar", "charts/echarts"}
 	for _, pkg := range packages {
 		files, err := filepath.Glob(filepath.Join(root, pkg, "*.templ"))
 		if err != nil {
