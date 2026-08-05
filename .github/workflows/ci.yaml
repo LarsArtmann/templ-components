@@ -24,6 +24,9 @@ jobs:
       - name: Lint-config guard (fast, fails before golangci-lint runs)
         run: scripts/check-lint-config.sh
 
+      - name: Templ-sync guard (fast, catches *_templ.go drift before generate)
+        run: scripts/check-templ-sync.sh
+
       - name: Run golangci-lint
         run: |
           golangci-lint run --timeout=5m \
@@ -103,6 +106,29 @@ jobs:
         with:
           name: coverage-report
           path: coverage.out
+
+  # CSS freshness check: recompile demo CSS via Nix-provided Tailwind and diff
+  # against the committed file. Catches stale CSS that shipped in v1.7.0
+  # (missing bg-amber-50 class). Runs in the Nix lane so the Tailwind binary
+  # matches the one used locally via `nix run .#css`.
+  css:
+    name: CSS Freshness
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: cachix/install-nix-action@0f8fc12f46eedb3680625e7a282cf5c3c14bb630 # v30
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+      - name: Recompile demo CSS and diff against committed
+        run: |
+          cp examples/demo/static/app.css /tmp/committed-app.css
+          nix run .#css
+          if ! diff -q /tmp/committed-app.css examples/demo/static/app.css; then
+            echo "::error::Committed CSS is stale. Recompile with: nix run .#css"
+            diff /tmp/committed-app.css examples/demo/static/app.css | head -30
+            exit 1
+          fi
+          echo "CSS is fresh."
 
   # Visual regression tests run via Nix so the Chromium binary matches the one
   # used to generate the committed golden PNGs (same nixpkgs revision → bit-

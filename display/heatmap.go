@@ -82,21 +82,19 @@ func DefaultHeatmapProps() HeatmapProps {
 
 // heatmapMax returns the effective max value, auto-computing from data when 0.
 func heatmapMax(rows []HeatmapRow, override float64) float64 {
-	if override > 0 {
-		return override
-	}
+	return chartMaxWithOverride(override, func() float64 {
+		var maxVal float64
 
-	var maxVal float64
-
-	for _, row := range rows {
-		for _, cell := range row.Cells {
-			if cell.Value > maxVal {
-				maxVal = cell.Value
+		for _, row := range rows {
+			for _, cell := range row.Cells {
+				if cell.Value > maxVal {
+					maxVal = cell.Value
+				}
 			}
 		}
-	}
 
-	return chartMaxFloor(maxVal)
+		return maxVal
+	})
 }
 
 // heatmapOpacity returns an opacity value (0.05–1.0) for a cell based on

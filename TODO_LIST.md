@@ -19,13 +19,6 @@
 | 98  | Add fuzz tests for chart geometry math                    | `ScalePoints`, `ComputeNiceTicks`, `computeArcPath` untested with NaN/Inf/negative/very-large inputs. Pure math functions — perfect fuzz targets. Source: `display/chart_geometry.go`, `display/pie_chart.go`. |
 | 99  | Add `waitAnimationSettled` unit test                      | `visualtest/harness.go` — the helper has no dedicated test. Exercised indirectly by every overlay visual test but polling logic, empty-animations path, and timeout path are untested in isolation.            |
 
-### Drift prevention (process hardening)
-
-| #   | Task                                                 | Evidence                                                                                                                                                                                                                                                                                                      |
-| --- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 103 | Write `scripts/check-templ-sync.sh` pre-commit guard | `TestTemplGeneratedInSync` exists but only fires in CI (BuildFlow daemon has 60s budget, no `go test`). A <100ms shell script mirroring `scripts/check-lint-config.sh` would catch `*_templ.go` drift at commit time. Source: `docs/status/2026-08-03_00-29_templ-sync-drift-root-cause-and-process-gaps.md`. |
-| 104 | Add CSS freshness CI check                           | Compile demo CSS in CI, diff against committed `examples/demo/static/app.css`, fail if different. `TestCSSFreshness` only warns locally. The v1.7.0 release shipped stale CSS because this check wasn't enforced.                                                                                             |
-
 ### Architecture / DRY
 
 | #   | Task                                            | Evidence                                                                                                                                                                                                                                          |

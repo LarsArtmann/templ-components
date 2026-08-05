@@ -43,7 +43,7 @@ func TestOrigin(t *testing.T) {
 		{"unpkg with path", "https://unpkg.com/path", "https://cdn.jsdelivr.net/gh", "https://unpkg.com"},
 		{"relative path returns empty", "/assets", "https://cdn.jsdelivr.net/gh", ""},
 		{"http scheme", "http://example.com/foo", "https://cdn.jsdelivr.net/gh", "http://example.com"},
-		{"trims trailing slash then extracts origin", "https://unpkg.com/", "https://cdn.jsdelivr.net/gh", "https://unpkg.com"},
+		{"trims slash then origin", "https://unpkg.com/", "https://cdn.jsdelivr.net/gh", "https://unpkg.com"},
 	}
 
 	for _, tt := range tests {

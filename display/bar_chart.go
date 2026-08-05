@@ -92,19 +92,17 @@ func DefaultBarChartProps() BarChartProps {
 
 // barChartMax returns the effective max, auto-computing from data when 0.
 func barChartMax(bars []BarChartBar, override float64) float64 {
-	if override > 0 {
-		return override
-	}
+	return chartMaxWithOverride(override, func() float64 {
+		var maxVal float64
 
-	var maxVal float64
-
-	for _, b := range bars {
-		if b.Value > maxVal {
-			maxVal = b.Value
+		for _, b := range bars {
+			if b.Value > maxVal {
+				maxVal = b.Value
+			}
 		}
-	}
 
-	return chartMaxFloor(maxVal)
+		return maxVal
+	})
 }
 
 // barPercentWidth returns the CSS width percentage for a bar value.

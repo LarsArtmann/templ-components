@@ -117,7 +117,7 @@ func sparklineAreaPath(values []float64, width, height int, minVal, maxVal float
 // maxVal <= minVal. Returns ok=false when fewer than 2 values are given —
 // callers must render nothing in that case (a single point can't form a
 // line or area).
-func sparklineGeometry(values []float64, width int, minVal, maxVal float64) (stepX, rangeVal float64, ok bool) {
+func sparklineGeometry(values []float64, width int, minVal, maxVal float64) (float64, float64, bool) {
 	if len(values) < 2 {
 		return 0, 0, false
 	}
@@ -126,7 +126,7 @@ func sparklineGeometry(values []float64, width int, minVal, maxVal float64) (ste
 		maxVal = minVal + 1
 	}
 
-	stepX = float64(width) / float64(len(values)-1)
+	stepX := float64(width) / float64(len(values)-1)
 
 	return stepX, maxVal - minVal, true
 }

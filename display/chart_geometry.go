@@ -53,6 +53,18 @@ func chartMaxFloor(maxVal float64) float64 {
 	return maxVal
 }
 
+// chartMaxWithOverride returns override when positive, otherwise calls compute
+// to derive the max from the data. The returned value is then floored via
+// chartMaxFloor so the consumer can use it as a percentage denominator
+// without a zero-division guard. Shared by BarChart and Heatmap.
+func chartMaxWithOverride(override float64, compute func() float64) float64 {
+	if override > 0 {
+		return override
+	}
+
+	return chartMaxFloor(compute())
+}
+
 // Sanitize clamps all padding fields to non-negative values. Negative padding
 // produces negative plot dimensions (width - left - right < 0), which corrupt
 // SVG path math. Called by LineChart and AreaChart before rendering.

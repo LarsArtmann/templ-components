@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - Visual regression CI lane — `nix run .#visual` now runs in CI on every push/PR with Chromium provided by Nix (bit-identical renderer to golden PNGs). Previously visual tests only ran locally; CI silently skipped without a browser ("vacuously green" risk).
 - `ChartPadding.Sanitize()` method clamps all padding fields to non-negative values before rendering. Negative padding previously produced negative plot dimensions, corrupting SVG path math.
 - `SanitizeInnerRadius()` function clamps the PieChart `InnerRadius` to `[0, 1]`. Values outside this range previously produced broken arc paths. NaN is clamped to 0.
+- `scripts/check-templ-sync.sh` — fast (<1s) pre-commit guard that catches `*_templ.go` drift before commit. Mirrors `check-lint-config.sh`, wired into `.git/hooks/pre-commit` and CI. Prevents the BuildFlow daemon from committing stale generated files.
+- CSS freshness CI lane — recompiles demo CSS via `nix run .#css` and diffs against the committed file. Prevents stale CSS shipping (as happened in v1.7.0).
 
 ### Changed
 
