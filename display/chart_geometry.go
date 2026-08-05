@@ -42,6 +42,18 @@ const (
 	chartColorPink    = "text-pink-600 dark:text-pink-400"
 )
 
+// Sanitize clamps all padding fields to non-negative values. Negative padding
+// produces negative plot dimensions (width - left - right < 0), which corrupt
+// SVG path math. Called by LineChart and AreaChart before rendering.
+func (p ChartPadding) Sanitize() ChartPadding {
+	return ChartPadding{
+		Top:    max(p.Top, 0),
+		Right:  max(p.Right, 0),
+		Bottom: max(p.Bottom, 0),
+		Left:   max(p.Left, 0),
+	}
+}
+
 // Point is a coordinate pair in SVG user space.
 type Point struct {
 	X, Y float64

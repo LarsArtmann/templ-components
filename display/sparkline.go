@@ -52,16 +52,11 @@ func DefaultSparklineProps() SparklineProps {
 
 // sparklinePoints computes the SVG polyline points for the given values.
 func sparklinePoints(values []float64, width, height int, minVal, maxVal float64) string {
-	if len(values) < 2 {
+	stepX, rangeVal, ok := sparklineGeometry(values, width, minVal, maxVal)
+	if !ok {
 		return ""
 	}
 
-	if maxVal <= minVal {
-		maxVal = minVal + 1
-	}
-
-	stepX := float64(width) / float64(len(values)-1)
-	rangeVal := maxVal - minVal
 	points := make([]string, 0, len(values))
 
 	for i, v := range values {
@@ -80,16 +75,10 @@ func sparklinePoints(values []float64, width, height int, minVal, maxVal float64
 
 // sparklineAreaPath builds a closed SVG path for the filled area beneath the line.
 func sparklineAreaPath(values []float64, width, height int, minVal, maxVal float64) string {
-	if len(values) < 2 {
+	stepX, rangeVal, ok := sparklineGeometry(values, width, minVal, maxVal)
+	if !ok {
 		return ""
 	}
-
-	if maxVal <= minVal {
-		maxVal = minVal + 1
-	}
-
-	stepX := float64(width) / float64(len(values)-1)
-	rangeVal := maxVal - minVal
 
 	var b strings.Builder
 
@@ -121,6 +110,25 @@ func sparklineAreaPath(values []float64, width, height int, minVal, maxVal float
 	b.WriteString(" Z")
 
 	return b.String()
+}
+
+// sparklineGeometry returns the per-step X advance and value range for
+// plotting a sparkline series, normalizing the degenerate case where
+// maxVal <= minVal. Returns ok=false when fewer than 2 values are given —
+// callers must render nothing in that case (a single point can't form a
+// line or area).
+func sparklineGeometry(values []float64, width int, minVal, maxVal float64) (stepX, rangeVal float64, ok bool) {
+	if len(values) < 2 {
+		return 0, 0, false
+	}
+
+	if maxVal <= minVal {
+		maxVal = minVal + 1
+	}
+
+	stepX = float64(width) / float64(len(values)-1)
+
+	return stepX, maxVal - minVal, true
 }
 
 // sparklineBounds returns the effective min/max for the given values,

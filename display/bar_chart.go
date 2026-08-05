@@ -104,11 +104,7 @@ func barChartMax(bars []BarChartBar, override float64) float64 {
 		}
 	}
 
-	if maxVal == 0 {
-		return 1
-	}
-
-	return maxVal
+	return chartMaxFloor(maxVal)
 }
 
 // barPercentWidth returns the CSS width percentage for a bar value.

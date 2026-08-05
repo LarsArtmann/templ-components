@@ -1,6 +1,8 @@
 package datastar
 
-import "strings"
+import (
+	"github.com/larsartmann/templ-components/internal/cdn"
+)
 
 // DatastarVersion is a pinned Datastar runtime version. Use the exported
 // constants (e.g. DatastarVersion1_0_2) for compile-time safety; custom
@@ -35,11 +37,7 @@ const (
 // resolveDatastarCDN returns cdnBase if non-empty, otherwise defaultDatastarCDNBase.
 // A trailing slash is trimmed so consumers can pass "https://unpkg.com/" safely.
 func resolveDatastarCDN(cdnBase string) string {
-	if cdnBase == "" {
-		cdnBase = defaultDatastarCDNBase
-	}
-
-	return strings.TrimRight(cdnBase, "/")
+	return cdn.ResolveBase(cdnBase, defaultDatastarCDNBase)
 }
 
 // datastarScriptURL returns the CDN URL for the Datastar runtime at the given
@@ -59,15 +57,5 @@ func datastarScriptURL(version DatastarVersion, cdnBase string) string {
 // use in <link rel="preconnect">. Returns "" if the input doesn't parse as
 // an absolute URL (e.g. a relative self-hosted path like "/assets").
 func datastarCDNOrigin(cdnBase string) string {
-	base := resolveDatastarCDN(cdnBase)
-	if !strings.HasPrefix(base, "http://") && !strings.HasPrefix(base, "https://") {
-		return ""
-	}
-
-	idx := strings.Index(base[8:], "/")
-	if idx < 0 {
-		return base
-	}
-
-	return base[:8+idx]
+	return cdn.Origin(cdnBase, defaultDatastarCDNBase)
 }

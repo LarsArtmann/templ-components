@@ -41,7 +41,6 @@
 | --- | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 103 | Write `scripts/check-templ-sync.sh` pre-commit guard | `TestTemplGeneratedInSync` exists but only fires in CI (BuildFlow daemon has 60s budget, no `go test`). A <100ms shell script mirroring `scripts/check-lint-config.sh` would catch `*_templ.go` drift at commit time. Source: `docs/status/2026-08-03_00-29_templ-sync-drift-root-cause-and-process-gaps.md`. |
 | 104 | Add CSS freshness CI check                           | Compile demo CSS in CI, diff against committed `examples/demo/static/app.css`, fail if different. `TestCSSFreshness` only warns locally. The v1.7.0 release shipped stale CSS because this check wasn't enforced.                                                                                             |
-| 105 | Add CI lane with Chromium for visual regression      | Visual tests skip silently without Chromium ("vacuously green" risk). A CI lane running `nix run .#visual` would catch visual regressions at PR time, not at manual-test time.                                                                                                                                |
 
 ### Code cleanup (fix-on-sight tier)
 

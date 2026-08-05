@@ -27,7 +27,7 @@ templ AreaChart(props AreaChartProps) {
 		if height == 0 {
 			height = areaChartDefaultHeight
 		}
-		padding := props.Padding
+		padding := props.Padding.Sanitize()
 		if padding == (ChartPadding{}) {
 			padding = DefaultChartPadding()
 		}

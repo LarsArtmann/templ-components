@@ -1,7 +1,7 @@
 // HTMX CDN version pinning and SRI hash lookup.
 package layout
 
-import "strings"
+import "github.com/larsartmann/templ-components/internal/cdn"
 
 // HTMXVersion is a pinned HTMX main-script version. Use the exported constants
 // (e.g. HTMXVersion2_0_10) for compile-time safety; custom versions can be
@@ -58,28 +58,14 @@ var sriHTMXMainByVersion = map[HTMXVersion]string{
 // resolveCDNBase returns cdnBase if non-empty, otherwise defaultCDNBase.
 // A trailing slash is trimmed so consumers can pass "https://unpkg.com/" safely.
 func resolveCDNBase(cdnBase string) string {
-	if cdnBase == "" {
-		cdnBase = defaultCDNBase
-	}
-
-	return strings.TrimRight(cdnBase, "/")
+	return cdn.ResolveBase(cdnBase, defaultCDNBase)
 }
 
 // htmxCDNOrigin extracts the scheme+host (origin) from the CDN base URL for
 // use in <link rel="preconnect">. Returns "" if the input doesn't parse as
 // an absolute URL (e.g. a relative self-hosted path like "/assets").
 func htmxCDNOrigin(cdnBase string) string {
-	base := resolveCDNBase(cdnBase)
-	if !strings.HasPrefix(base, "http://") && !strings.HasPrefix(base, "https://") {
-		return ""
-	}
-
-	idx := strings.Index(base[8:], "/")
-	if idx < 0 {
-		return base
-	}
-
-	return base[:8+idx]
+	return cdn.Origin(cdnBase, defaultCDNBase)
 }
 
 // htmxScriptURL returns the CDN URL for the htmx main script at the given

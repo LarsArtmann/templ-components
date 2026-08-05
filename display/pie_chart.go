@@ -130,6 +130,21 @@ func DefaultDonutChartProps() PieChartProps {
 	return props
 }
 
+// SanitizeInnerRadius clamps the InnerRadius to the valid range [0, 1].
+// Values outside this range produce broken arc paths (inner radius larger
+// than the pie, or negative hole size). Returns the clamped value.
+func SanitizeInnerRadius(r float64) float64 {
+	if r < pieChartMinValue {
+		return pieChartMinValue
+	}
+
+	if r > normalizedMax {
+		return normalizedMax
+	}
+
+	return r
+}
+
 // pieChartTotal returns the sum of all slice values, ignoring negative values.
 func pieChartTotal(slices []PieChartSlice) float64 {
 	var total float64

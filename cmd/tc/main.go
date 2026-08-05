@@ -77,6 +77,8 @@ func newRegistry() *registry {
 	return r
 }
 
+const enumsGoFile = "enums_go.go"
+
 // packageDeps lists the non-test, non-generated, non-types .go files in each
 // package. These are the sibling files that 'tc add' does NOT copy but that the
 // .templ source references (class lookups, enums, shared helpers, etc.).
@@ -84,12 +86,12 @@ func newRegistry() *registry {
 var packageDeps = map[string][]string{
 	"display": {
 		"bar_chart.go", "button_go.go", "collapsible_section.go",
-		"drawer_go.go", "enums_go.go", "external_link.go",
+		"drawer_go.go", enumsGoFile, "external_link.go",
 		"heatmap.go", "modal_go.go", "shared.go", "sparkline.go",
 	},
-	"feedback": {"enums_go.go", "styles.go"},
+	"feedback": {enumsGoFile, "styles.go"},
 	"forms": {
-		"aria.go", "enums_go.go", "ids.go",
+		"aria.go", enumsGoFile, "ids.go",
 		"input_classes.go", "radio.go",
 	},
 	"layout": {
@@ -98,7 +100,7 @@ var packageDeps = map[string][]string{
 	},
 	"navigation": {},
 	"htmx": {
-		"enums_go.go", "polled_region.go",
+		enumsGoFile, "polled_region.go",
 		"view_transitions.go",
 	},
 	"errorpage": {
