@@ -21,16 +21,16 @@ trivial fix-on-sight items to the TODO list instead of just fixing them.
 
 ## a) FULLY DONE
 
-| Item | Details | Verification |
-| --- | --- | --- |
-| Read all 11 `2026-08-*` files | 8 status reports + 2 planning docs + 1 overlay calibration report, read in full | All file contents in context |
-| CHANGELOG.md fixed | "Catull-Rom" → "Catmull-Rom" typo corrected. `[Unreleased]` warmed with dependency bump + breadcrumbs drift fix | `TestVersionMatchesChangelog` passes |
-| FEATURES.md rebuilt | Added `datastar` package section (3 components + action helpers + enums). Added `charts/echarts` package section (2 components + dark mode bridge + enums). Added 12 missing display components to table (LineChart, PieChart, AreaChart, Sparkline, BarChart, Heatmap, CollapsibleSection, ExternalLink, HoverCard, ContextMenu, Carousel). Added chart enums. Fixed cross-cutting counts (dark mode text, type safety enum count, test coverage golden/visual counts). Fixed overview table component counts. | `TestDocsCountDrift` passes |
-| TODO_LIST.md rebuilt | Bumped version 1.6.0→1.7.0. Harvested 15 actionable items (#95–#109) from status reports, each verified against code with `file:line` evidence. Organized into 5 impact-ordered categories. Carried forward blocked/deferred items intact. | Manual cross-check against code |
-| ROADMAP.md rebuilt | Updated component count 98→110. Added v1.5.0–v1.7.0 shipped work (dashboard primitives, charts, datastar, AuthLayout, overlay calibration). Fixed visual goldens 31→49 / 29 types. Fixed enum count 43→52. Added chart ecosystem direction to v2.0+. Fixed all `[Unreleased]` → shipped version labels. | Manual cross-check |
-| breadcrumbs_templ.go drift fixed | Generated file had `encoding/json/v2`, source has `encoding/json`. Regenerated with templ v0.3.1020. | `TestTemplGeneratedInSync` passes |
-| Full test suite | 18/18 packages pass | `go test ./... -count=1` → all ok |
-| Drift-guard suite | All pass | `TestDocsCountDrift`, `TestVersionMatches*`, `TestTemplGeneratedInSync`, `TestDarkMode*`, `TestMotionReduceCompliance`, `TestCSSFreshness`, `TestEnvrcConsistency`, `TestGolangciDisabledLinters`, `TestSkillComponentCount` |
+| Item                             | Details                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | Verification                                                                                                                                                                                                                 |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Read all 11 `2026-08-*` files    | 8 status reports + 2 planning docs + 1 overlay calibration report, read in full                                                                                                                                                                                                                                                                                                                                                                                                                                 | All file contents in context                                                                                                                                                                                                 |
+| CHANGELOG.md fixed               | "Catull-Rom" → "Catmull-Rom" typo corrected. `[Unreleased]` warmed with dependency bump + breadcrumbs drift fix                                                                                                                                                                                                                                                                                                                                                                                                 | `TestVersionMatchesChangelog` passes                                                                                                                                                                                         |
+| FEATURES.md rebuilt              | Added `datastar` package section (3 components + action helpers + enums). Added `charts/echarts` package section (2 components + dark mode bridge + enums). Added 12 missing display components to table (LineChart, PieChart, AreaChart, Sparkline, BarChart, Heatmap, CollapsibleSection, ExternalLink, HoverCard, ContextMenu, Carousel). Added chart enums. Fixed cross-cutting counts (dark mode text, type safety enum count, test coverage golden/visual counts). Fixed overview table component counts. | `TestDocsCountDrift` passes                                                                                                                                                                                                  |
+| TODO_LIST.md rebuilt             | Bumped version 1.6.0→1.7.0. Harvested 15 actionable items (#95–#109) from status reports, each verified against code with `file:line` evidence. Organized into 5 impact-ordered categories. Carried forward blocked/deferred items intact.                                                                                                                                                                                                                                                                      | Manual cross-check against code                                                                                                                                                                                              |
+| ROADMAP.md rebuilt               | Updated component count 98→110. Added v1.5.0–v1.7.0 shipped work (dashboard primitives, charts, datastar, AuthLayout, overlay calibration). Fixed visual goldens 31→49 / 29 types. Fixed enum count 43→52. Added chart ecosystem direction to v2.0+. Fixed all `[Unreleased]` → shipped version labels.                                                                                                                                                                                                         | Manual cross-check                                                                                                                                                                                                           |
+| breadcrumbs_templ.go drift fixed | Generated file had `encoding/json/v2`, source has `encoding/json`. Regenerated with templ v0.3.1020.                                                                                                                                                                                                                                                                                                                                                                                                            | `TestTemplGeneratedInSync` passes                                                                                                                                                                                            |
+| Full test suite                  | 18/18 packages pass                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             | `go test ./... -count=1` → all ok                                                                                                                                                                                            |
+| Drift-guard suite                | All pass                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `TestDocsCountDrift`, `TestVersionMatches*`, `TestTemplGeneratedInSync`, `TestDarkMode*`, `TestMotionReduceCompliance`, `TestCSSFreshness`, `TestEnvrcConsistency`, `TestGolangciDisabledLinters`, `TestSkillComponentCount` |
 
 ---
 
@@ -49,14 +49,14 @@ work. It should be merged into the main display Enums table above it.
 I verified README is stale but did not fix it. README has **4 different
 inconsistent counts**:
 
-| Count | README says | Actual | Notes |
-| --- | --- | --- | --- |
-| Enums (hero) | 51 | 52 total (49 IsValid) | Off by 1 |
-| Enums (comparison table) | 47 | 52 | Off by 5 |
-| Enums (typed props row) | 43 | 52 | Off by 9 |
-| Visual goldens | 31 | 49 | Off by 18 |
-| HTML golden files | 102 | 175 | Off by 73 |
-| Components | 110 | 110 (+ 2 opt-in echarts) | Correct for drift-guard scope |
+| Count                    | README says | Actual                   | Notes                         |
+| ------------------------ | ----------- | ------------------------ | ----------------------------- |
+| Enums (hero)             | 51          | 52 total (49 IsValid)    | Off by 1                      |
+| Enums (comparison table) | 47          | 52                       | Off by 5                      |
+| Enums (typed props row)  | 43          | 52                       | Off by 9                      |
+| Visual goldens           | 31          | 49                       | Off by 18                     |
+| HTML golden files        | 102         | 175                      | Off by 73                     |
+| Components               | 110         | 110 (+ 2 opt-in echarts) | Correct for drift-guard scope |
 
 The `TestDocsCountDrift` test does NOT check README, so these drift silently. I
 identified the problem but didn't fix it because I was focused on the 4 docs the
@@ -78,18 +78,18 @@ This is the single biggest omission of the session.
 
 ## c) NOT STARTED
 
-| Item | Why Not |
-| --- | --- |
-| **ANNOTATE the 11 historical reports** | Forgot. The docs-health skill explicitly describes ANNOTATE mode with inline `done at <hash>` markers. I loaded the skill, read the instructions, then focused entirely on living docs. |
-| **Fix README.md stale counts** | Identified the problem, documented it internally, but didn't fix it. Rationalized "user only named 4 docs." |
-| **Run `golangci-lint run`** | Forgot. Ran `go test ./...` only. AGENTS.md says the verify cycle includes lint. |
-| **Run `nix flake check`** | Forgot. Multiple status reports emphasize this as part of the standard verify cycle. |
-| **Run `nix fmt`** | Didn't format-check my edited markdown files. |
-| **Fix `pieChartLegendCharW`** | Identified as unused (TODO #106), put it in TODO list. AGENTS.md says "fix on sight." I should have just deleted it. |
-| **Add `charts/echarts` to drift guard** | Identified the gap (TODO #102), put it in TODO list. It's a one-line fix in `utils/docs_count_test.go:43`. I should have just done it. |
-| **Fix orphaned `### Enums` section in FEATURES.md** | Pre-existing, noticed during review, left alone. |
-| **Check `.gitignore` for BuildFlow regression** | AGENTS.md says to check after each commit. I checked once (no regression), but didn't verify after the breadcrumbs regeneration. |
-| **Archive fully-resolved historical reports** | Several reports (e.g., the datastar planning doc, the chart planning doc) describe fully-shipped work. They could be moved to `docs/status/archived/` or `docs/planning/archived/`. Not started. |
+| Item                                                | Why Not                                                                                                                                                                                          |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **ANNOTATE the 11 historical reports**              | Forgot. The docs-health skill explicitly describes ANNOTATE mode with inline `done at <hash>` markers. I loaded the skill, read the instructions, then focused entirely on living docs.          |
+| **Fix README.md stale counts**                      | Identified the problem, documented it internally, but didn't fix it. Rationalized "user only named 4 docs."                                                                                      |
+| **Run `golangci-lint run`**                         | Forgot. Ran `go test ./...` only. AGENTS.md says the verify cycle includes lint.                                                                                                                 |
+| **Run `nix flake check`**                           | Forgot. Multiple status reports emphasize this as part of the standard verify cycle.                                                                                                             |
+| **Run `nix fmt`**                                   | Didn't format-check my edited markdown files.                                                                                                                                                    |
+| **Fix `pieChartLegendCharW`**                       | Identified as unused (TODO #106), put it in TODO list. AGENTS.md says "fix on sight." I should have just deleted it.                                                                             |
+| **Add `charts/echarts` to drift guard**             | Identified the gap (TODO #102), put it in TODO list. It's a one-line fix in `utils/docs_count_test.go:43`. I should have just done it.                                                           |
+| **Fix orphaned `### Enums` section in FEATURES.md** | Pre-existing, noticed during review, left alone.                                                                                                                                                 |
+| **Check `.gitignore` for BuildFlow regression**     | AGENTS.md says to check after each commit. I checked once (no regression), but didn't verify after the breadcrumbs regeneration.                                                                 |
+| **Archive fully-resolved historical reports**       | Several reports (e.g., the datastar planning doc, the chart planning doc) describe fully-shipped work. They could be moved to `docs/status/archived/` or `docs/planning/archived/`. Not started. |
 
 ---
 

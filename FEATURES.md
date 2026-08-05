@@ -8,20 +8,20 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 
 ## Overview
 
-| Package      | Components    | Description                                                                                                                                                                                                                                                          |
-| ------------ | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                                                                                |
-| `display`    | 38            | UI display: cards, badges, buttons, modals, drawers, tables, data tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, empty states, page headers, definition lists, copy button, relative time, count badge, image, hover card, context menu, carousel, **SVG charts** (LineChart, PieChart, AreaChart), Sparkline, BarChart, Heatmap, CollapsibleSection, ExternalLink |
-| `errorpage`  | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                                                                                         |
-| `feedback`   | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                                                                                    |
-| `forms`      | 21            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, sliders, ratings, file inputs, date pickers, comboboxes, filter dropdowns, tags input, calendar, validation                                                                                  |
-| `htmx`       | 8             | HTMX integration: loading indicators, error handling, helpers, View Transitions                                                                                                                                                                                      |
-| `datastar`   | 3             | Datastar integration: SDK runtime injection, SSE-powered LiveRegion, loading Indicator (opt-in, ADR-0030)                                                                                                                                                            |
-| `charts/echarts` | 2         | Opt-in ECharts adapter: `EChart` wrapper + `SDKScript` with dark mode bridge (ADR-0031). Accepts go-echarts `RenderSnippet()` strings — zero dep on go-echarts                                                                                                         |
-| `icons`      | 3 (102 icons) | SVG icon system with typed name constants, RTL mirroring                                                                                                                                                                                                             |
-| `layout`     | 10            | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                                                                                           |
-| `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                     |
-| `recipes`    | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                |
+| Package          | Components    | Description                                                                                                                                                                                                                                                                                                                                                                           |
+| ---------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `utils`          | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                                                                                                                                                                                                 |
+| `display`        | 38            | UI display: cards, badges, buttons, modals, drawers, tables, data tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, empty states, page headers, definition lists, copy button, relative time, count badge, image, hover card, context menu, carousel, **SVG charts** (LineChart, PieChart, AreaChart), Sparkline, BarChart, Heatmap, CollapsibleSection, ExternalLink |
+| `errorpage`      | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                                                                                                                                                                                                          |
+| `feedback`       | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                                                                                                                                                                                                     |
+| `forms`          | 21            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, sliders, ratings, file inputs, date pickers, comboboxes, filter dropdowns, tags input, calendar, validation                                                                                                                                                                                                   |
+| `htmx`           | 8             | HTMX integration: loading indicators, error handling, helpers, View Transitions                                                                                                                                                                                                                                                                                                       |
+| `datastar`       | 3             | Datastar integration: SDK runtime injection, SSE-powered LiveRegion, loading Indicator (opt-in, ADR-0030)                                                                                                                                                                                                                                                                             |
+| `charts/echarts` | 2             | Opt-in ECharts adapter: `EChart` wrapper + `SDKScript` with dark mode bridge (ADR-0031). Accepts go-echarts `RenderSnippet()` strings — zero dep on go-echarts                                                                                                                                                                                                                        |
+| `icons`          | 3 (102 icons) | SVG icon system with typed name constants, RTL mirroring                                                                                                                                                                                                                                                                                                                              |
+| `layout`         | 10            | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                                                                                                                                                                                                            |
+| `navigation`     | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                                                                                                                                      |
+| `recipes`        | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                                                                                                                                 |
 
 **Totals:** 112 templ components (primitives, drift-guard verified) + 4 recipe screens = 116, 102 icon names, 52 typed enums (49 with `IsValid()`), 106 generated `*_templ.go` files, ~31,500 lines of Go/templ source
 
@@ -69,75 +69,75 @@ type BaseProps struct {
 
 ### Components
 
-| Component          | Status           | Description                     | Key Features                                                                                                                                                                                                                                    |
-| ------------------ | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Accordion`        | FULLY_FUNCTIONAL | Collapsible accordion panels    | JS toggle, `aria-expanded`, `aria-controls`, chevron rotation                                                                                                                                                                                   |
-| `Avatar`           | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                                                                                                                                                                                   |
-| `Button`           | FULLY_FUNCTIONAL | Action button                   | 5 variants, 3 sizes, href (link mode), loading state                                                                                                                                                                                            |
-| `Badge`            | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                                                                                                                                                                                               |
-| `StatusBadge`      | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                                                                                                                                                                                                          |
-| `Card`             | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, `Header` slot override, 4 padding sizes, `Body` slot override, `CardPaddingNone` skips wrapper div, `TitleClass`/`HeaderClass` override props, `ContainerAware` (padding breakpoints via `@container`) |
-| `SimpleCard`       | FULLY_FUNCTIONAL | Minimal card                    | Children-only, no header/footer, `Body` slot override (forwards to Card.Body)                                                                                                                                                                   |
-| `StatCard`         | FULLY_FUNCTIONAL | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None), optional `Icon` field, `Href` renders as clickable `<a>`                                                                                                                              |
-| `Grid`             | FULLY_FUNCTIONAL | Responsive grid container       | Typed `GridCols` enum (1–6 + `AutoFit`), `GridGap` enum, `MinColWidth` for auto-fit grids, responsive breakpoints (1→2→3→N), optional `ContainerResponsive` (`@container`), children slot                                                       |
-| `Dropdown`         | FULLY_FUNCTIONAL | Button-triggered menu           | External/internal links, buttons, keyboard nav, ARIA menu                                                                                                                                                                                       |
-| `Drawer`           | FULLY_FUNCTIONAL | Side panel                      | Left/right slide, focus trap, Escape, backdrop, 5 sizes                                                                                                                                                                                         |
-| `EmptyState`       | FULLY_FUNCTIONAL | Centered empty state            | Icon, title, description, action link/button                                                                                                                                                                                                    |
-| `SimpleEmptyState` | FULLY_FUNCTIONAL | Minimal empty state             | Text-only                                                                                                                                                                                                                                       |
-| `Modal`            | FULLY_FUNCTIONAL | Accessible modal dialog         | Focus trap, Escape close, backdrop, 5 sizes, open/close API                                                                                                                                                                                     |
-| `Table`            | FULLY_FUNCTIONAL | Responsive data table           | Headers, rows, striping, hover, caption, bordered, `Body` slot (custom `<tr>` rendering), `TypedHeaders`/`TableHeader` with `aria-sort`, `Flush` (table-in-card border suppression), `CellPadding` (comfortable/compact)                        |
-| `Tabs`             | FULLY_FUNCTIONAL | Tabbed interface                | Default underline or pills variant, ARIA tablist/tab/tabpanel                                                                                                                                                                                   |
-| `Tooltip`          | FULLY_FUNCTIONAL | Hover tooltip                   | 4 positions, arrow, `role="tooltip"`, CSS-only                                                                                                                                                                                                  |
-| `Popover`          | FULLY_FUNCTIONAL | Button-triggered floating panel | 4 positions, `role="dialog"`, click-outside/Escape dismiss, CSP-safe singleton JS, arbitrary content via children slot                                                                                                                          |
-| `PageHeader`       | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots                                                                                                                                                                                            |
-| `DefinitionList`   | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup                                                                                                                                                                                          |
-| `ListNote`         | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                                                                                                                                                                                                       |
-| `CopyButton`       | FULLY_FUNCTIONAL | Clipboard copy button           | CSP-safe singleton JS, "Copied!" feedback, clipboard icon, optional `Href` variant (renders `<a>`)                                                                                                                                              |
-| `RelativeTime`     | FULLY_FUNCTIONAL | Relative timestamp              | `<time datetime>` with "2 hours ago", absolute title on hover                                                                                                                                                                                   |
-| `CountBadge`       | FULLY_FUNCTIONAL | Notification count overlay      | Absolute-positioned badge, overflow "N+", aria-hidden decorative                                                                                                                                                                                |
-| `DefinitionGrid`   | FULLY_FUNCTIONAL | Responsive key/value grid       | Term-detail pairs in SimpleCard tiles, composes through Grid, `ContainerAware` (`@sm:`/`@lg:` via `@container`)                                                                                                                                 |
-| `Image`            | FULLY_FUNCTIONAL | Lazy-loaded image               | `loading=lazy` default, width/height for CLS, CSP-safe fallback, optional `Rounded` for circular                                                                                                                                                |
-| `DataTable`        | FULLY_FUNCTIONAL | Data table with sort + paging   | Composes Table, auto-generates sort-toggle URLs from `ActiveSortColumn`/`ActiveSortDir`/`SortBaseURL`, optional `Pagination` slot, optional `EmptyState` slot                                                                                   |
-| `LineChart`        | FULLY_FUNCTIONAL | SVG line chart                  | Axes, gridlines, multi-series, data-point dots, legend, linear/smooth styles, ARIA. Zero JS. Composes `chart_geometry.go` helpers                                                                                                               |
-| `PieChart`         | FULLY_FUNCTIONAL | SVG pie/donut chart             | Arc paths, external labels, legend, donut center label, custom colors, ARIA. Zero JS                                                                                                                                                            |
-| `AreaChart`        | FULLY_FUNCTIONAL | SVG area chart                  | Filled areas, configurable fill opacity, multi-series, smooth curves. LineChart variant                                                                                                                                                         |
-| `Sparkline`        | FULLY_FUNCTIONAL | Inline trend chart              | Tiny SVG polyline, `currentColor` stroke, optional filled area, auto min/max bounds (`*float64`)                                                                                                                                                |
-| `BarChart`         | FULLY_FUNCTIONAL | CSS bar chart                   | Horizontal/vertical bars, per-bar colors, link labels, custom value formatting, empty state. No SVG                                                                                                                                             |
-| `Heatmap`          | FULLY_FUNCTIONAL | CSS grid heatmap                | Row/column labels, opacity-based coloring, peak highlighting, clickable cells, tooltip support                                                                                                                                                  |
-| `CollapsibleSection` | FULLY_FUNCTIONAL | Collapsible region            | Native `<details>/<summary>`, configurable heading level (h1-h6), open/closed default, optional `StorageKey` for localStorage                                                                                                                   |
-| `ExternalLink`     | FULLY_FUNCTIONAL | Safe off-site link              | `target="_blank" rel="noopener noreferrer"`, external-arrow icon, URL sanitization                                                                                                                                                              |
-| `HoverCard`        | FULLY_FUNCTIONAL | Hover card panel                | CSS-only hover/focus, `role="dialog"`, arbitrary content via children                                                                                                                                                                            |
-| `ContextMenu`      | FULLY_FUNCTIONAL | Right-click menu                | Native Popover API, cursor positioning, shared WAI-ARIA menu keyboard nav, Shift+F10 and ContextMenu key support                                                                                                                                 |
-| `Carousel`         | FULLY_FUNCTIONAL | Image/content carousel          | CSS scroll-snap + keyboard nav (ArrowLeft/Right, Home/End), RTL-aware, dots, prev/next buttons                                                                                                                                                  |
+| Component            | Status           | Description                     | Key Features                                                                                                                                                                                                                                    |
+| -------------------- | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Accordion`          | FULLY_FUNCTIONAL | Collapsible accordion panels    | JS toggle, `aria-expanded`, `aria-controls`, chevron rotation                                                                                                                                                                                   |
+| `Avatar`             | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                                                                                                                                                                                   |
+| `Button`             | FULLY_FUNCTIONAL | Action button                   | 5 variants, 3 sizes, href (link mode), loading state                                                                                                                                                                                            |
+| `Badge`              | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                                                                                                                                                                                               |
+| `StatusBadge`        | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                                                                                                                                                                                                          |
+| `Card`               | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, `Header` slot override, 4 padding sizes, `Body` slot override, `CardPaddingNone` skips wrapper div, `TitleClass`/`HeaderClass` override props, `ContainerAware` (padding breakpoints via `@container`) |
+| `SimpleCard`         | FULLY_FUNCTIONAL | Minimal card                    | Children-only, no header/footer, `Body` slot override (forwards to Card.Body)                                                                                                                                                                   |
+| `StatCard`           | FULLY_FUNCTIONAL | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None), optional `Icon` field, `Href` renders as clickable `<a>`                                                                                                                              |
+| `Grid`               | FULLY_FUNCTIONAL | Responsive grid container       | Typed `GridCols` enum (1–6 + `AutoFit`), `GridGap` enum, `MinColWidth` for auto-fit grids, responsive breakpoints (1→2→3→N), optional `ContainerResponsive` (`@container`), children slot                                                       |
+| `Dropdown`           | FULLY_FUNCTIONAL | Button-triggered menu           | External/internal links, buttons, keyboard nav, ARIA menu                                                                                                                                                                                       |
+| `Drawer`             | FULLY_FUNCTIONAL | Side panel                      | Left/right slide, focus trap, Escape, backdrop, 5 sizes                                                                                                                                                                                         |
+| `EmptyState`         | FULLY_FUNCTIONAL | Centered empty state            | Icon, title, description, action link/button                                                                                                                                                                                                    |
+| `SimpleEmptyState`   | FULLY_FUNCTIONAL | Minimal empty state             | Text-only                                                                                                                                                                                                                                       |
+| `Modal`              | FULLY_FUNCTIONAL | Accessible modal dialog         | Focus trap, Escape close, backdrop, 5 sizes, open/close API                                                                                                                                                                                     |
+| `Table`              | FULLY_FUNCTIONAL | Responsive data table           | Headers, rows, striping, hover, caption, bordered, `Body` slot (custom `<tr>` rendering), `TypedHeaders`/`TableHeader` with `aria-sort`, `Flush` (table-in-card border suppression), `CellPadding` (comfortable/compact)                        |
+| `Tabs`               | FULLY_FUNCTIONAL | Tabbed interface                | Default underline or pills variant, ARIA tablist/tab/tabpanel                                                                                                                                                                                   |
+| `Tooltip`            | FULLY_FUNCTIONAL | Hover tooltip                   | 4 positions, arrow, `role="tooltip"`, CSS-only                                                                                                                                                                                                  |
+| `Popover`            | FULLY_FUNCTIONAL | Button-triggered floating panel | 4 positions, `role="dialog"`, click-outside/Escape dismiss, CSP-safe singleton JS, arbitrary content via children slot                                                                                                                          |
+| `PageHeader`         | FULLY_FUNCTIONAL | Page title block                | Title, subtitle, breadcrumb + action component slots                                                                                                                                                                                            |
+| `DefinitionList`     | FULLY_FUNCTIONAL | Two-column key/value list       | Typed `DefinitionItem` entries, semantic `<dl>` markup                                                                                                                                                                                          |
+| `ListNote`           | FULLY_FUNCTIONAL | Truncation notice               | "Showing N of M" when a list is truncated                                                                                                                                                                                                       |
+| `CopyButton`         | FULLY_FUNCTIONAL | Clipboard copy button           | CSP-safe singleton JS, "Copied!" feedback, clipboard icon, optional `Href` variant (renders `<a>`)                                                                                                                                              |
+| `RelativeTime`       | FULLY_FUNCTIONAL | Relative timestamp              | `<time datetime>` with "2 hours ago", absolute title on hover                                                                                                                                                                                   |
+| `CountBadge`         | FULLY_FUNCTIONAL | Notification count overlay      | Absolute-positioned badge, overflow "N+", aria-hidden decorative                                                                                                                                                                                |
+| `DefinitionGrid`     | FULLY_FUNCTIONAL | Responsive key/value grid       | Term-detail pairs in SimpleCard tiles, composes through Grid, `ContainerAware` (`@sm:`/`@lg:` via `@container`)                                                                                                                                 |
+| `Image`              | FULLY_FUNCTIONAL | Lazy-loaded image               | `loading=lazy` default, width/height for CLS, CSP-safe fallback, optional `Rounded` for circular                                                                                                                                                |
+| `DataTable`          | FULLY_FUNCTIONAL | Data table with sort + paging   | Composes Table, auto-generates sort-toggle URLs from `ActiveSortColumn`/`ActiveSortDir`/`SortBaseURL`, optional `Pagination` slot, optional `EmptyState` slot                                                                                   |
+| `LineChart`          | FULLY_FUNCTIONAL | SVG line chart                  | Axes, gridlines, multi-series, data-point dots, legend, linear/smooth styles, ARIA. Zero JS. Composes `chart_geometry.go` helpers                                                                                                               |
+| `PieChart`           | FULLY_FUNCTIONAL | SVG pie/donut chart             | Arc paths, external labels, legend, donut center label, custom colors, ARIA. Zero JS                                                                                                                                                            |
+| `AreaChart`          | FULLY_FUNCTIONAL | SVG area chart                  | Filled areas, configurable fill opacity, multi-series, smooth curves. LineChart variant                                                                                                                                                         |
+| `Sparkline`          | FULLY_FUNCTIONAL | Inline trend chart              | Tiny SVG polyline, `currentColor` stroke, optional filled area, auto min/max bounds (`*float64`)                                                                                                                                                |
+| `BarChart`           | FULLY_FUNCTIONAL | CSS bar chart                   | Horizontal/vertical bars, per-bar colors, link labels, custom value formatting, empty state. No SVG                                                                                                                                             |
+| `Heatmap`            | FULLY_FUNCTIONAL | CSS grid heatmap                | Row/column labels, opacity-based coloring, peak highlighting, clickable cells, tooltip support                                                                                                                                                  |
+| `CollapsibleSection` | FULLY_FUNCTIONAL | Collapsible region              | Native `<details>/<summary>`, configurable heading level (h1-h6), open/closed default, optional `StorageKey` for localStorage                                                                                                                   |
+| `ExternalLink`       | FULLY_FUNCTIONAL | Safe off-site link              | `target="_blank" rel="noopener noreferrer"`, external-arrow icon, URL sanitization                                                                                                                                                              |
+| `HoverCard`          | FULLY_FUNCTIONAL | Hover card panel                | CSS-only hover/focus, `role="dialog"`, arbitrary content via children                                                                                                                                                                           |
+| `ContextMenu`        | FULLY_FUNCTIONAL | Right-click menu                | Native Popover API, cursor positioning, shared WAI-ARIA menu keyboard nav, Shift+F10 and ContextMenu key support                                                                                                                                |
+| `Carousel`           | FULLY_FUNCTIONAL | Image/content carousel          | CSS scroll-snap + keyboard nav (ArrowLeft/Right, Home/End), RTL-aware, dots, prev/next buttons                                                                                                                                                  |
 
 ### Enums
 
-| Type               | Values                                             |
-| ------------------ | -------------------------------------------------- |
-| `AvatarSize`       | XS, SM, MD, LG, XL                                 |
-| `AvatarShape`      | Circle, Square                                     |
-| `AvatarStatus`     | Online, Offline, None                              |
-| `BadgeType`        | Primary, Success, Warning, Error, Info, Neutral    |
-| `BadgeSize`        | SM, MD, LG                                         |
-| `CardPadding`      | None, SM, MD, LG                                   |
-| `DropdownPosition` | Left, Right                                        |
-| `ModalSize`        | SM, MD, LG, XL, 2XL, Full                          |
-| `DrawerSide`       | Left, Right                                        |
-| `DrawerSize`       | SM, MD, LG, XL, 2XL, Full                          |
-| `TabsVariant`      | Default, Pills                                     |
-| `TrendDirection`   | Up, Down, None                                     |
-| `GridCols`         | 1, 2, 3 (default), 4, 5, 6, `AutoFit`              |
-| `GridGap`          | SM, MD (default), LG, XL                            |
-| `ButtonSize`       | SM, MD (default), LG                               |
-| `ButtonHTMLType`   | Button, Submit, Reset                              |
-| `OverlayKind`      | Modal, Drawer                                      |
-| `DropdownItemKind` | Link, Button                                       |
-| `TooltipPosition`  | Top, Bottom, Left, Right                           |
-| `PopoverPosition`  | Top, Bottom, Left, Right                           |
-| `SortDirection`    | None, Asc, Desc (for TableHeader sortable columns) |
-| `LineChartStyle`   | Linear, Smooth (Catmull-Rom spline)                |
-| `PieChartLabelMode`| External, None                                      |
-| `BarOrient`        | Horizontal, Vertical                                |
+| Type                | Values                                             |
+| ------------------- | -------------------------------------------------- |
+| `AvatarSize`        | XS, SM, MD, LG, XL                                 |
+| `AvatarShape`       | Circle, Square                                     |
+| `AvatarStatus`      | Online, Offline, None                              |
+| `BadgeType`         | Primary, Success, Warning, Error, Info, Neutral    |
+| `BadgeSize`         | SM, MD, LG                                         |
+| `CardPadding`       | None, SM, MD, LG                                   |
+| `DropdownPosition`  | Left, Right                                        |
+| `ModalSize`         | SM, MD, LG, XL, 2XL, Full                          |
+| `DrawerSide`        | Left, Right                                        |
+| `DrawerSize`        | SM, MD, LG, XL, 2XL, Full                          |
+| `TabsVariant`       | Default, Pills                                     |
+| `TrendDirection`    | Up, Down, None                                     |
+| `GridCols`          | 1, 2, 3 (default), 4, 5, 6, `AutoFit`              |
+| `GridGap`           | SM, MD (default), LG, XL                           |
+| `ButtonSize`        | SM, MD (default), LG                               |
+| `ButtonHTMLType`    | Button, Submit, Reset                              |
+| `OverlayKind`       | Modal, Drawer                                      |
+| `DropdownItemKind`  | Link, Button                                       |
+| `TooltipPosition`   | Top, Bottom, Left, Right                           |
+| `PopoverPosition`   | Top, Bottom, Left, Right                           |
+| `SortDirection`     | None, Asc, Desc (for TableHeader sortable columns) |
+| `LineChartStyle`    | Linear, Smooth (Catmull-Rom spline)                |
+| `PieChartLabelMode` | External, None                                     |
+| `BarOrient`         | Horizontal, Vertical                               |
 
 ### Known Issues
 
@@ -324,28 +324,28 @@ Opt-in Datastar integration. Does NOT import the Datastar SDK — consumer adds 
 
 ### Components
 
-| Component    | Status           | Description                  | Key Features                                                                                           |
-| ------------ | ---------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------ |
-| `SDKScript`  | FULLY_FUNCTIONAL | Datastar runtime injection   | Configurable version + CDN host, self-hostable via `Src`, CSP nonce                                     |
-| `LiveRegion` | FULLY_FUNCTIONAL | SSE-powered live region      | `data-signals-merge`, auto-connect, `LivePoliteness` enum (Polite/Assertive), `aria-live` for a11y      |
-| `Indicator`  | FULLY_FUNCTIONAL | Datastar loading indicator   | Signal-based show/hide, motion-reduce, custom spinner fallback                                         |
+| Component    | Status           | Description                | Key Features                                                                                       |
+| ------------ | ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------- |
+| `SDKScript`  | FULLY_FUNCTIONAL | Datastar runtime injection | Configurable version + CDN host, self-hostable via `Src`, CSP nonce                                |
+| `LiveRegion` | FULLY_FUNCTIONAL | SSE-powered live region    | `data-signals-merge`, auto-connect, `LivePoliteness` enum (Polite/Assertive), `aria-live` for a11y |
+| `Indicator`  | FULLY_FUNCTIONAL | Datastar loading indicator | Signal-based show/hide, motion-reduce, custom spinner fallback                                     |
 
 ### Action Helpers
 
-| Function | Purpose                                           |
-| -------- | ------------------------------------------------- |
-| `Get`    | Datastar `data-get` attribute helper              |
-| `Post`   | Datastar `data-post` attribute helper             |
-| `Put`    | Datastar `data-put` attribute helper              |
-| `Patch`  | Datastar `data-patch` attribute helper            |
-| `Delete` | Datastar `data-delete` attribute helper           |
+| Function | Purpose                                 |
+| -------- | --------------------------------------- |
+| `Get`    | Datastar `data-get` attribute helper    |
+| `Post`   | Datastar `data-post` attribute helper   |
+| `Put`    | Datastar `data-put` attribute helper    |
+| `Patch`  | Datastar `data-patch` attribute helper  |
+| `Delete` | Datastar `data-delete` attribute helper |
 
 ### Enums
 
-| Type               | Values               |
-| ------------------ | -------------------- |
-| `DatastarVersion`  | v0.1.x (default)     |
-| `LivePoliteness`   | Polite, Assertive    |
+| Type              | Values            |
+| ----------------- | ----------------- |
+| `DatastarVersion` | v0.1.x (default)  |
+| `LivePoliteness`  | Polite, Assertive |
 
 ---
 
@@ -355,10 +355,10 @@ Opt-in ECharts adapter. Accepts go-echarts `RenderSnippet()` output as strings (
 
 ### Components
 
-| Component  | Status           | Description                | Key Features                                                                                            |
-| ---------- | ---------------- | -------------------------- | ------------------------------------------------------------------------------------------------------- |
-| `EChart`   | FULLY_FUNCTIONAL | ECharts chart wrapper      | Wraps `RenderSnippet()` output in CSP-safe `<div>` + inline `<script nonce>`. Accepts Element + Script |
-| `SDKScript`| FULLY_FUNCTIONAL | ECharts runtime loader     | Loads echarts.min.js from CDN, configurable version + host, self-hostable via `Src`                     |
+| Component   | Status           | Description            | Key Features                                                                                           |
+| ----------- | ---------------- | ---------------------- | ------------------------------------------------------------------------------------------------------ |
+| `EChart`    | FULLY_FUNCTIONAL | ECharts chart wrapper  | Wraps `RenderSnippet()` output in CSP-safe `<div>` + inline `<script nonce>`. Accepts Element + Script |
+| `SDKScript` | FULLY_FUNCTIONAL | ECharts runtime loader | Loads echarts.min.js from CDN, configurable version + host, self-hostable via `Src`                    |
 
 ### Dark Mode Bridge
 
@@ -366,9 +366,9 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 
 ### Enums
 
-| Type             | Values           |
-| ---------------- | ---------------- |
-| `EChartsVersion` | Configurable    |
+| Type             | Values       |
+| ---------------- | ------------ |
+| `EChartsVersion` | Configurable |
 
 ---
 
