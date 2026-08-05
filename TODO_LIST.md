@@ -1,23 +1,58 @@
 # TODO List — templ-components
 
-**Updated:** 2026-08-04 | **Version:** 1.6.0
+**Updated:** 2026-08-05 | **Version:** 1.7.0
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
 
-> **2026-08-04 audit:** Items 67, 73, 79, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 91, 92, and 94
-> were all verified as **complete** against the code and removed from this list (their entries
-> already live in `[Unreleased]` in CHANGELOG.md). #82's Chromium calibration is now done too
-> (Chromium was available via `nix run .#visual` after all). The only remaining item requiring
-> resources unavailable to an automated agent is human review of the overlay PNGs (#80).
+> **2026-08-05 harvest:** Items below were harvested from 11 status reports in
+> `docs/status/2026-08-*` and `docs/planning/2026-08-*`. Each was verified against
+> the codebase before adding — items already shipped were routed to CHANGELOG
+> instead. Blocked and deferred items carry forward from the prior list.
 
 ---
 
 ## Open — actionable
 
-_No actionable items. The actionable backlog is clear — all tasks are either complete
-(see CHANGELOG `[Unreleased]`), blocked on external resources, or deferred to a future
-major version below._
+### Testing gaps (highest impact)
+
+| #   | Task                                                        | Evidence                                                                                              |
+| --- | ----------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| 95  | Add visual regression tests for chart components            | No `visualtest/` entries for LineChart, PieChart, AreaChart (`visualtest/testdata/` — verified absent). Biggest testing gap per 3 status reports. Golden tests verify HTML structure but not visual rendering. |
+| 96  | Add dark-mode visual variants for 6 newer components        | Combobox, Tooltip, Carousel, Skeleton, ErrorPage, NotFound404 are light-only in `visualtest/`. Every pre-existing component family has both light + dark goldens. |
+| 97  | Add visual tests for v1.5–v1.6 components without goldens   | CollapsibleSection, Heatmap, Sparkline, BarChart, ExternalLink, PolledRegion, DataTable have no visual goldens (`visualtest/testdata/` — verified absent). |
+| 98  | Add fuzz tests for chart geometry math                      | `ScalePoints`, `ComputeNiceTicks`, `computeArcPath` untested with NaN/Inf/negative/very-large inputs. Pure math functions — perfect fuzz targets. Source: `display/chart_geometry.go`, `display/pie_chart.go`. |
+| 99  | Add `waitAnimationSettled` unit test                         | `visualtest/harness.go` — the helper has no dedicated test. Exercised indirectly by every overlay visual test but polling logic, empty-animations path, and timeout path are untested in isolation. |
+
+### Validation hardening
+
+| #   | Task                                                        | Evidence                                                                              |
+| --- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 100 | Add `ChartPadding` validation (clamp negative values to 0)  | `display/chart_geometry.go` — zero or negative padding produces negative plot dimensions. No guard, no clamp. |
+| 101 | Add `InnerRadius` validation to PieChart (clamp to [0,1])   | `display/pie_chart.go` — `InnerRadius` outside [0,1] produces broken arc paths. No guard. |
+
+### Drift prevention (process hardening)
+
+| #   | Task                                                        | Evidence                                                                              |
+| --- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 102 | Add `charts/echarts` to `countExportedTemplFunctions`       | `utils/docs_count_test.go:43` — the package list includes 8 packages but NOT `charts/echarts` (2 components: `EChart`, `SDKScript`). The component count is stale by 2. Adding it will bump the drift-guard count from 110 → 112. |
+| 103 | Write `scripts/check-templ-sync.sh` pre-commit guard        | `TestTemplGeneratedInSync` exists but only fires in CI (BuildFlow daemon has 60s budget, no `go test`). A <100ms shell script mirroring `scripts/check-lint-config.sh` would catch `*_templ.go` drift at commit time. Source: `docs/status/2026-08-03_00-29_templ-sync-drift-root-cause-and-process-gaps.md`. |
+| 104 | Add CSS freshness CI check                                  | Compile demo CSS in CI, diff against committed `examples/demo/static/app.css`, fail if different. `TestCSSFreshness` only warns locally. The v1.7.0 release shipped stale CSS because this check wasn't enforced. |
+| 105 | Add CI lane with Chromium for visual regression             | Visual tests skip silently without Chromium ("vacuously green" risk). A CI lane running `nix run .#visual` would catch visual regressions at PR time, not at manual-test time. |
+
+### Code cleanup (fix-on-sight tier)
+
+| #   | Task                                                        | Evidence                                                                              |
+| --- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 106 | Remove unused const `pieChartLegendCharW`                   | `display/pie_chart.go:93` — defined but never referenced (verified via grep).          |
+| 107 | Extract `enums_go.go` repeated string to named constant     | `cmd/tc/main.go:87` — `"enums_go.go"` repeated 4× (goconst violation).                  |
+
+### Architecture / DRY
+
+| #   | Task                                                        | Evidence                                                                              |
+| --- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| 108 | Extract shared LineChart/AreaChart sub-template             | `display/line_chart.templ` + `display/area_chart.templ` — ~80% template duplication (axes, gridlines, X-axis labels, legend, empty state identical). Deferred from ADR-0010's 8+ parameter guidance, but the duplication is a maintenance burden. |
+| 109 | Add benchmarks for chart geometry helpers                   | `BenchmarkScalePoints` + `BenchmarkBuildPolylinePath` exist in `chart_geometry_test.go`, but no benchmarks for PieChart arc computation (`computeSliceAngles` + `computeArcPath` for 100 slices) or full LineChart render. |
 
 ---
 
@@ -25,7 +60,7 @@ major version below._
 
 | #   | Task                                        | Blocker                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | --- | ------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 80  | Human-eyeball the AI-generated overlay PNGs | `dropdown` (light/dark), `popover`, `contextmenu`, `modal`, and `drawer` PNGs were captured by an automated agent. AI cannot read PNGs, so a human must confirm no enshrined rendering bug (e.g. wrong top-layer position). Run `nix run .#visual`, then inspect `visualtest/testdata/{dropdown,popover,contextmenu,modal,drawer}/`.                                                                                                                              |
+| 80  | Human-eyeball the AI-generated overlay PNGs | `dropdown` (light/dark), `popover`, `contextmenu`, `modal`, and `drawer` PNGs were captured by an automated agent. AI cannot read PNGs, so a human must confirm no enshrined rendering bug (e.g. wrong top-layer position). Run `nix run .#visual`, then inspect `visualtest/testdata/{dropdown,popover,contextmenu,modal,drawer}/`. The regenerated `dropdown/open_dark.png` (6781→4790 bytes) makes this slightly more urgent. |
 | 28  | `awesome-templ` PR submission               | Needs upstream maintainer approval.                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | 29  | `templ.guide` listing submission            | Needs upstream maintainer approval.                                                                                                                                                                                                                                                                                                                                                                                                                               |
 | 93  | BuildFlow daemon: honest commit messages    | 6+ sessions. Daemon commits with hallucinated messages (e.g. "chore: update project configuration") authored as "Unknown Author", and re-introduces stale files via broad `git add -A`. Fix lives in `larsartmann/buildflow` (pre-commit `golangci-lint config verify`, message templates derived from `git diff --stat`, `GOWORK=off`). Blocked on separate-repo work. Mitigated in this repo by `scripts/check-lint-config.sh` + `TestGolangciDisabledLinters`. |

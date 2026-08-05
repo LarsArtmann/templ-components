@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- Bumped `nixpkgs` and `treefmt-nix` flake inputs to latest upstream revisions (security patches, formatter improvements). Updated `github.com/chromedp/cdproto` in `visualtest/go.mod` to pick up the latest Chrome DevTools Protocol type definitions.
+
 ## [1.7.0] — 2026-08-04
 
 ### Added
@@ -13,7 +17,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`display.LineChart`** — pure-SVG line chart with axes, gridlines, multi-series support, data-point dots, legend, linear/smooth styles, and ARIA. Zero JavaScript. Part of the two-tier chart architecture (ADR-0031).
 - **`display.PieChart`** — pure-SVG pie/donut chart with arc paths, external labels, legend, donut center label, custom colors, and ARIA. Zero JavaScript.
 - **`display.AreaChart`** — pure-SVG area chart (line chart with filled areas), configurable fill opacity, multi-series, smooth curves.
-- **`display.chart_geometry.go`** — shared SVG chart geometry helpers: `ScalePoints`, `BuildPolylinePath`, `BuildSmoothPath` (Catull-Rom), `BuildAreaPath`, `ComputeNiceTicks`, `FormatTickValue`. The foundation for all native SVG chart components.
+- **`display.chart_geometry.go`** — shared SVG chart geometry helpers: `ScalePoints`, `BuildPolylinePath`, `BuildSmoothPath` (Catmull-Rom), `BuildAreaPath`, `ComputeNiceTicks`, `FormatTickValue`. The foundation for all native SVG chart components.
 - **`charts/echarts`** — opt-in ECharts adapter package (`EChart`, `SDKScript`) with dark mode bridge. Accepts go-echarts `RenderSnippet()` output as strings — zero dependency on go-echarts. Follows the datastar opt-in precedent.
 - **`LineChartStyle`** and **`PieChartLabelMode`** typed enums with `IsValid()` methods.
 - Recipe docs: `docs/recipes/line-chart.md`, `pie-chart.md`, `area-chart.md`, `echarts-adapter.md`.

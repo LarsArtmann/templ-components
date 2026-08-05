@@ -11,17 +11,19 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | Package      | Components    | Description                                                                                                                                                                                                                                                          |
 | ------------ | ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `utils`      | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                                                                                |
-| `display`    | 30            | UI display: cards, badges, buttons, modals, drawers, tables, data tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, empty states, page headers, definition lists, copy button, relative time, count badge, image, hover card, context menu, carousel |
+| `display`    | 38            | UI display: cards, badges, buttons, modals, drawers, tables, data tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, empty states, page headers, definition lists, copy button, relative time, count badge, image, hover card, context menu, carousel, **SVG charts** (LineChart, PieChart, AreaChart), Sparkline, BarChart, Heatmap, CollapsibleSection, ExternalLink |
 | `errorpage`  | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                                                                                         |
 | `feedback`   | 13            | User feedback: alerts, toasts, spinners, progress bars, skeletons                                                                                                                                                                                                    |
 | `forms`      | 21            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, sliders, ratings, file inputs, date pickers, comboboxes, filter dropdowns, tags input, calendar, validation                                                                                  |
 | `htmx`       | 8             | HTMX integration: loading indicators, error handling, helpers, View Transitions                                                                                                                                                                                      |
+| `datastar`   | 3             | Datastar integration: SDK runtime injection, SSE-powered LiveRegion, loading Indicator (opt-in, ADR-0030)                                                                                                                                                            |
+| `charts/echarts` | 2         | Opt-in ECharts adapter: `EChart` wrapper + `SDKScript` with dark mode bridge (ADR-0031). Accepts go-echarts `RenderSnippet()` strings — zero dep on go-echarts                                                                                                         |
 | `icons`      | 3 (102 icons) | SVG icon system with typed name constants, RTL mirroring                                                                                                                                                                                                             |
 | `layout`     | 10            | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                                                                                           |
 | `navigation` | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                     |
 | `recipes`    | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                |
 
-**Totals:** 110 templ components (primitives) + 4 recipe screens = 114, 102 icon names, 51 typed enums (49 with `IsValid()`), 106 generated `*_templ.go` files, ~31,500 lines of Go/templ source
+**Totals:** 110 templ components (primitives, drift-guard verified) + 2 ECharts adapter components (opt-in) + 4 recipe screens = 116, 102 icon names, 52 typed enums (49 with `IsValid()`), 106 generated `*_templ.go` files, ~31,500 lines of Go/templ source
 
 ---
 
@@ -96,6 +98,17 @@ type BaseProps struct {
 | `DefinitionGrid`   | FULLY_FUNCTIONAL | Responsive key/value grid       | Term-detail pairs in SimpleCard tiles, composes through Grid, `ContainerAware` (`@sm:`/`@lg:` via `@container`)                                                                                                                                 |
 | `Image`            | FULLY_FUNCTIONAL | Lazy-loaded image               | `loading=lazy` default, width/height for CLS, CSP-safe fallback, optional `Rounded` for circular                                                                                                                                                |
 | `DataTable`        | FULLY_FUNCTIONAL | Data table with sort + paging   | Composes Table, auto-generates sort-toggle URLs from `ActiveSortColumn`/`ActiveSortDir`/`SortBaseURL`, optional `Pagination` slot, optional `EmptyState` slot                                                                                   |
+| `LineChart`        | FULLY_FUNCTIONAL | SVG line chart                  | Axes, gridlines, multi-series, data-point dots, legend, linear/smooth styles, ARIA. Zero JS. Composes `chart_geometry.go` helpers                                                                                                               |
+| `PieChart`         | FULLY_FUNCTIONAL | SVG pie/donut chart             | Arc paths, external labels, legend, donut center label, custom colors, ARIA. Zero JS                                                                                                                                                            |
+| `AreaChart`        | FULLY_FUNCTIONAL | SVG area chart                  | Filled areas, configurable fill opacity, multi-series, smooth curves. LineChart variant                                                                                                                                                         |
+| `Sparkline`        | FULLY_FUNCTIONAL | Inline trend chart              | Tiny SVG polyline, `currentColor` stroke, optional filled area, auto min/max bounds (`*float64`)                                                                                                                                                |
+| `BarChart`         | FULLY_FUNCTIONAL | CSS bar chart                   | Horizontal/vertical bars, per-bar colors, link labels, custom value formatting, empty state. No SVG                                                                                                                                             |
+| `Heatmap`          | FULLY_FUNCTIONAL | CSS grid heatmap                | Row/column labels, opacity-based coloring, peak highlighting, clickable cells, tooltip support                                                                                                                                                  |
+| `CollapsibleSection` | FULLY_FUNCTIONAL | Collapsible region            | Native `<details>/<summary>`, configurable heading level (h1-h6), open/closed default, optional `StorageKey` for localStorage                                                                                                                   |
+| `ExternalLink`     | FULLY_FUNCTIONAL | Safe off-site link              | `target="_blank" rel="noopener noreferrer"`, external-arrow icon, URL sanitization                                                                                                                                                              |
+| `HoverCard`        | FULLY_FUNCTIONAL | Hover card panel                | CSS-only hover/focus, `role="dialog"`, arbitrary content via children                                                                                                                                                                            |
+| `ContextMenu`      | FULLY_FUNCTIONAL | Right-click menu                | Native Popover API, cursor positioning, shared WAI-ARIA menu keyboard nav, Shift+F10 and ContextMenu key support                                                                                                                                 |
+| `Carousel`         | FULLY_FUNCTIONAL | Image/content carousel          | CSS scroll-snap + keyboard nav (ArrowLeft/Right, Home/End), RTL-aware, dots, prev/next buttons                                                                                                                                                  |
 
 ### Enums
 
@@ -121,6 +134,9 @@ type BaseProps struct {
 | `TooltipPosition`  | Top, Bottom, Left, Right                           |
 | `PopoverPosition`  | Top, Bottom, Left, Right                           |
 | `SortDirection`    | None, Asc, Desc (for TableHeader sortable columns) |
+| `LineChartStyle`   | Linear, Smooth (Catmull-Rom spline)                |
+| `PieChartLabelMode`| External, None                                      |
+| `BarOrient`        | Horizontal, Vertical                                |
 
 ### Known Issues
 
@@ -307,6 +323,60 @@ _(None currently)_
 
 ---
 
+## Package: `datastar`
+
+Opt-in Datastar integration. Does NOT import the Datastar SDK — consumer adds `datastar-go` to their own `go.mod`. Follows the same opt-in pattern as `htmx`. See ADR-0030.
+
+### Components
+
+| Component    | Status           | Description                  | Key Features                                                                                           |
+| ------------ | ---------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `SDKScript`  | FULLY_FUNCTIONAL | Datastar runtime injection   | Configurable version + CDN host, self-hostable via `Src`, CSP nonce                                     |
+| `LiveRegion` | FULLY_FUNCTIONAL | SSE-powered live region      | `data-signals-merge`, auto-connect, `LivePoliteness` enum (Polite/Assertive), `aria-live` for a11y      |
+| `Indicator`  | FULLY_FUNCTIONAL | Datastar loading indicator   | Signal-based show/hide, motion-reduce, custom spinner fallback                                         |
+
+### Action Helpers
+
+| Function | Purpose                                           |
+| -------- | ------------------------------------------------- |
+| `Get`    | Datastar `data-get` attribute helper              |
+| `Post`   | Datastar `data-post` attribute helper             |
+| `Put`    | Datastar `data-put` attribute helper              |
+| `Patch`  | Datastar `data-patch` attribute helper            |
+| `Delete` | Datastar `data-delete` attribute helper           |
+
+### Enums
+
+| Type               | Values               |
+| ------------------ | -------------------- |
+| `DatastarVersion`  | v0.1.x (default)     |
+| `LivePoliteness`   | Polite, Assertive    |
+
+---
+
+## Package: `charts/echarts`
+
+Opt-in ECharts adapter. Accepts go-echarts `RenderSnippet()` output as strings (`Element` + `Script`) — zero dependency on go-echarts in the library's `go.mod`. Consumer builds their chart with go-echarts, passes the snippet to `EChart`. See ADR-0031.
+
+### Components
+
+| Component  | Status           | Description                | Key Features                                                                                            |
+| ---------- | ---------------- | -------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `EChart`   | FULLY_FUNCTIONAL | ECharts chart wrapper      | Wraps `RenderSnippet()` output in CSP-safe `<div>` + inline `<script nonce>`. Accepts Element + Script |
+| `SDKScript`| FULLY_FUNCTIONAL | ECharts runtime loader     | Loads echarts.min.js from CDN, configurable version + host, self-hostable via `Src`                     |
+
+### Dark Mode Bridge
+
+Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts theme with the Tailwind `.dark` class. Guard: `window.tcEChartsDarkBridge`. Shallow `setOption({...}, {merge: true})` — consumer axis styling may be partially overridden (documented limitation).
+
+### Enums
+
+| Type             | Values           |
+| ---------------- | ---------------- |
+| `EChartsVersion` | Configurable    |
+
+---
+
 ## Package: `icons`
 
 ### Components
@@ -392,12 +462,12 @@ _(None currently)_
 ## Cross-Cutting Features
 
 - **CSP Compliance:** All inline scripts use `nonce` attribute
-- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All 104 components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
+- **Dark Mode:** Full Tailwind `dark:` variant support via `layout.ThemeScript` + `layout.ThemeToggle`. All components have `dark:` variants for every neutral and semantic color class. Enforced by `TestDarkModeCompliance` + `TestDarkModeSemanticColors` regression tests. `color-scheme: light/dark` set for native form control rendering.
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first viewport breakpoints (`sm:`/`md:`/`lg:`) plus opt-in **container queries** — 8 components accept `ContainerAware` (or `Grid.ContainerResponsive`) to adapt to their parent container width via `@container` instead of the viewport (ADR-0018).
-- **Type Safety:** 45 typed string enums (all with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
-- **Test Coverage:** 72.3% total statement coverage across library packages (range 48.2%–81.8%; CI-enforced ≥ 70% via `go test -race -coverprofile=...`; recompute with `nix run .#coverage`). BDD + golden-file HTML snapshots (`internal/golden` in 5 packages) + a11y + benchmark + integration tests, plus pixel-level **visual regression** tests (`visualtest/` — chromedp + pixelmatch, `nix run .#visual`; 31 goldens / 11 component types incl. RTL) and drift-guard tests enforcing doc/code count consistency (component, enum, generated-file, dark-mode, motion-reduce, RTL, container-query, CSS-freshness, lint-config).
+- **Type Safety:** 52 typed string enums (49 with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
+- **Test Coverage:** 72.3% total statement coverage across library packages (range 48.2%–81.8%; CI-enforced ≥ 70% via `go test -race -coverprofile=...`; recompute with `nix run .#coverage`). BDD + golden-file HTML snapshots (`internal/golden` in 5 packages, 175 baselines) + a11y + benchmark + integration tests, plus pixel-level **visual regression** tests (`visualtest/` — chromedp + pixelmatch, `nix run .#visual`; 49 goldens across 29 component types incl. RTL + dark mode) and drift-guard tests enforcing doc/code count consistency (component, enum, generated-file, dark-mode, motion-reduce, RTL, container-query, CSS-freshness, lint-config).
 - **Theming:** Tailwind v4 `@theme` override support via `templ-components-theme.css`. Components emit standard utility classes (`bg-blue-600`, `text-gray-900`) — consumers override `--color-*` variables to theme globally without touching component code.
 - **CSS Automation:** `templates/app.css` + `templates/custom.css` starter entry-point + BuildFlow `tailwind-build` provider (auto-discovers CSS entry-points, compiles via `tailwindcss` in the DAG). See `docs/tailwind-v4-adoption-guide.md`.
 - **RTL/i18n:** All CSS uses logical properties (`ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`). Components auto-mirror in `dir="rtl"` contexts. Keyboard nav (Tabs, Dropdown) swaps ArrowLeft/Right in RTL.
