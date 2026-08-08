@@ -11,5 +11,9 @@ package datastar
 //
 //	@datastar.SDKScript(datastar.SDKScriptProps{Src: "/static/datastar.js", Nonce: nonce})
 templ SDKScript(props SDKScriptProps) {
-	<script type="module" nonce={ props.Nonce } src={ scriptSrc(props) }></script>
+	if props.Nonce != "" {
+		<script type="module" nonce={ props.Nonce } src={ scriptSrc(props) }></script>
+	} else {
+		<script type="module" src={ scriptSrc(props) }></script>
+	}
 }

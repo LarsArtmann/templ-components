@@ -13,18 +13,33 @@ import (
 // If you use OS-following (prefers-color-scheme), you do NOT need this script —
 // Tailwind v4's default dark: variant handles it automatically.
 templ ThemeScript(nonce string) {
-	<script nonce={ nonce }>
-		(function() {
-			var theme;
-			try { theme = localStorage.getItem('theme'); } catch(e) {}
-			var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-			var isDark = theme === 'dark' || (!theme && prefersDark);
-			if (isDark) {
-				document.documentElement.classList.add('dark');
-			}
-			document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
-		})();
-	</script>
+	if nonce != "" {
+		<script nonce={ nonce }>
+			(function() {
+				var theme;
+				try { theme = localStorage.getItem('theme'); } catch(e) {}
+				var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+				var isDark = theme === 'dark' || (!theme && prefersDark);
+				if (isDark) {
+					document.documentElement.classList.add('dark');
+				}
+				document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+			})();
+		</script>
+	} else {
+		<script>
+			(function() {
+				var theme;
+				try { theme = localStorage.getItem('theme'); } catch(e) {}
+				var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+				var isDark = theme === 'dark' || (!theme && prefersDark);
+				if (isDark) {
+					document.documentElement.classList.add('dark');
+				}
+				document.documentElement.style.colorScheme = isDark ? 'dark' : 'light';
+			})();
+		</script>
+	}
 }
 
 // ThemeToggle renders a theme toggle button with sun/moon icons.
