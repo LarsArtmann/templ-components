@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.8.0] — 2026-08-08
+
 ### Added
 
 - `charts/echarts` package added to `countExportedTemplFunctions` drift guard — `EChart` and `SDKScript` are now counted in the component total (110→112). The drift-guard regex is now flexible (`across \d+ packages`) so adding future packages doesn't break the test.
@@ -34,6 +36,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - `breadcrumbs_templ.go` out of sync (recurrence) — the generated file had drifted back to `encoding/json/v2` while the source uses `encoding/json` (stable). Regenerated to match (`TestTemplGeneratedInSync` now passes).
 - Removed unused constant `pieChartLegendCharW` from `display/pie_chart.go` (dead code, verified via grep — zero references).
 - Fixed "Catull-Rom" → "Catmull-Rom" typo in v1.7.0 CHANGELOG entry.
+- **CSP nonce handling:** `datastar.SDKScript`, `layout.ThemeScript`, and `layout.ThemeToggle` no longer render an empty `nonce=""` attribute when no nonce is configured. Empty nonces are CSP no-ops and broke strict-CSP consumers (e.g. go-health-dashboard). The `nonce` attribute is now emitted only when a non-empty value is supplied. Golden baselines updated.
 
 ## [1.7.0] — 2026-08-04
 
