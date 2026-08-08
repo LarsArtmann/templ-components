@@ -42,15 +42,23 @@ templ BarChart(props BarChartProps) {
 			valueFmt = func(v float64) string { return fmt.Sprintf("%.0f", v) }
 		}
 		maxVal := barChartMax(bars, props.Max)
+		minBarW := props.MinBarWidth
+		if minBarW == "" {
+			minBarW = defaultMinBarWidth
+		}
+		gapClass := props.Gap
+		if gapClass == "" {
+			gapClass = defaultVerticalGap
+		}
 	}}
 	if len(bars) == 0 {
 		<p class="text-sm text-gray-500 dark:text-gray-400">{ emptyMsg }</p>
 	} else if orient == BarVertical {
-		<div class="flex items-end gap-2 overflow-x-auto" role="img" if props.AriaLabel != "" { aria-label={ props.AriaLabel } }>
+		<div class={ utils.Class("flex items-end overflow-x-auto", gapClass) } role="img" if props.AriaLabel != "" { aria-label={ props.AriaLabel } }>
 			for _, bar := range bars {
-				<div class="flex w-full min-w-12 flex-col items-center gap-1">
+				<div class={ utils.Class("flex w-full flex-col items-center gap-1", minBarW) } if bar.Tooltip != "" { title={ bar.Tooltip } }>
 					if props.ShowValues {
-						<span class="text-xs tabular-nums text-gray-600 dark:text-gray-400">{ valueFmt(bar.Value) }</span>
+						<span class="text-xs tabular-nums text-gray-600 dark:text-gray-400">{ barValueLabel(bar, valueFmt) }</span>
 					}
 					<div class="flex w-full flex-1 items-end">
 						<div
@@ -67,7 +75,7 @@ templ BarChart(props BarChartProps) {
 	} else {
 		<div class="space-y-2" role="img" if props.AriaLabel != "" { aria-label={ props.AriaLabel } }>
 			for _, bar := range bars {
-				<div class="flex items-center gap-3">
+				<div class="flex items-center gap-3" if bar.Tooltip != "" { title={ bar.Tooltip } }>
 					if bar.Href != "" {
 						<a
 							href={ templ.SafeURL(bar.Href) }
@@ -89,7 +97,7 @@ templ BarChart(props BarChartProps) {
 					</div>
 					if props.ShowValues {
 						<span class="w-16 shrink-0 text-end text-xs tabular-nums text-gray-600 dark:text-gray-400">
-							{ valueFmt(bar.Value) }
+							{ barValueLabel(bar, valueFmt) }
 						</span>
 					}
 				</div>

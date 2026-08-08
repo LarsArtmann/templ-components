@@ -36,6 +36,15 @@ type BarChartBar struct {
 
 	// Href makes the bar label a clickable link.
 	Href string
+
+	// Tooltip sets a per-bar title attribute (native browser tooltip).
+	// Useful for dense charts where per-bar labels are hidden.
+	Tooltip string
+
+	// ValueLabel overrides the auto-formatted value display. When set,
+	// this string is shown instead of ValueFormat(Value). Useful for
+	// composite labels like "123 (45%)" or "1.2 GB".
+	ValueLabel string
 }
 
 // BarChartProps configures a CSS bar chart.
@@ -67,15 +76,26 @@ type BarChartProps struct {
 
 	// EmptyMessage is shown when Bars is empty. Default: "No data".
 	EmptyMessage string
+
+	// MinBarWidth sets the minimum width for vertical bars (Tailwind
+	// width class, e.g. "min-w-1" for dense time-series). Default: "min-w-12".
+	MinBarWidth string
+
+	// Gap controls the spacing between bars (Tailwind gap class,
+	// e.g. "gap-px" for dense charts). Default: "gap-2" (vertical),
+	// "" (horizontal, uses space-y-2).
+	Gap string
 }
 
 const (
-	defaultBarColor   = "bg-blue-600 dark:bg-blue-500"
-	defaultEmptyMsg   = "No data"
-	defaultLabelWidth = "w-32"
-	percentScale      = 100.0
-	percentRound      = 10.0
-	zeroPercent       = "0.0%"
+	defaultBarColor     = "bg-blue-600 dark:bg-blue-500"
+	defaultEmptyMsg     = "No data"
+	defaultLabelWidth   = "w-32"
+	defaultMinBarWidth  = "min-w-12"
+	defaultVerticalGap  = "gap-2"
+	percentScale        = 100.0
+	percentRound        = 10.0
+	zeroPercent         = "0.0%"
 )
 
 // DefaultBarChartProps returns sensible defaults for a bar chart.
@@ -103,6 +123,16 @@ func barChartMax(bars []BarChartBar, override float64) float64 {
 
 		return maxVal
 	})
+}
+
+// barValueLabel returns the display string for a bar's value, preferring
+// the per-bar ValueLabel override when set.
+func barValueLabel(bar BarChartBar, fallback func(float64) string) string {
+	if bar.ValueLabel != "" {
+		return bar.ValueLabel
+	}
+
+	return fallback(bar.Value)
 }
 
 // barPercentWidth returns the CSS width percentage for a bar value.
