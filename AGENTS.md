@@ -349,8 +349,9 @@ needing `nix develop`. Run `direnv allow` once after cloning.
 
 **Consumers** must set `GOEXPERIMENT=jsonv2` when building (or wait for Go 1.27
 where it becomes stable). The `errorpage` package uses `json.MarshalEncode` +
-`jsontext.NewEncoder` for JSON error responses. Other packages (breadcrumbs,
-tests) still use `encoding/json` v1 — both coexist fine under the experiment flag.
+`jsontext.NewEncoder` for JSON error responses. The `navigation/breadcrumbs`
+package also uses `encoding/json/v2`. Remaining packages (tests) still use
+`encoding/json` v1 — both coexist fine under the experiment flag.
 
 ## Conventions
 
