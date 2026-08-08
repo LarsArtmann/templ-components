@@ -142,22 +142,33 @@ func ThemeToggle(ariaLabel string, nonce string) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</button><script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</button> ")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var7 string
-		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 66, Col: 22}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\">\n\t\t(function() {\n\t\t\tvar html = document.documentElement;\n\n\t\t\tfunction syncToggleAria(btn) {\n\t\t\t\tif (btn) btn.setAttribute('aria-checked', String(html.classList.contains('dark')));\n\t\t\t}\n\n\t\t\t// Always sync aria-checked, even after htmx swap re-injects a button\n\t\t\t// with the hardcoded aria-checked=\"false\". This runs on every render;\n\t\t\t// the click listener below is guarded so it only attaches once.\n\t\t\tdocument.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);\n\n\t\t\tif (!window.tcThemeToggleAttached) {\n\t\t\t\twindow.tcThemeToggleAttached = true;\n\n\t\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\tvar btn = e.target.closest('[data-theme-toggle]');\n\t\t\t\tif (!btn) return;\n\t\t\t\tvar isDark = html.classList.contains('dark');\n\t\t\t\tif (isDark) {\n\t\t\t\t\thtml.classList.remove('dark');\n\t\t\t\t\ttry { localStorage.setItem('theme', 'light'); } catch(e) {}\n\t\t\t\t} else {\n\t\t\t\t\thtml.classList.add('dark');\n\t\t\t\t\ttry { localStorage.setItem('theme', 'dark'); } catch(e) {}\n\t\t\t\t}\n\t\t\t\thtml.style.colorScheme = isDark ? 'light' : 'dark';\n\t\t\t\tdocument.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);\n\t\t\t\t});\n\t\t\t}\n\t\t})();\n\t</script>")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
+		if nonce != "" {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<script nonce=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var7 string
+			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `layout/theme.templ`, Line: 67, Col: 23}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\">\n\t\t\t(function() {\n\t\t\t\tvar html = document.documentElement;\n\n\t\t\t\tfunction syncToggleAria(btn) {\n\t\t\t\t\tif (btn) btn.setAttribute('aria-checked', String(html.classList.contains('dark')));\n\t\t\t\t}\n\n\t\t\t\t// Always sync aria-checked, even after htmx swap re-injects a button\n\t\t\t\t// with the hardcoded aria-checked=\"false\". This runs on every render;\n\t\t\t\t// the click listener below is guarded so it only attaches once.\n\t\t\t\tdocument.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);\n\n\t\t\t\tif (!window.tcThemeToggleAttached) {\n\t\t\t\t\twindow.tcThemeToggleAttached = true;\n\n\t\t\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\t\tvar btn = e.target.closest('[data-theme-toggle]');\n\t\t\t\t\tif (!btn) return;\n\t\t\t\t\tvar isDark = html.classList.contains('dark');\n\t\t\t\t\tif (isDark) {\n\t\t\t\t\t\thtml.classList.remove('dark');\n\t\t\t\t\t\ttry { localStorage.setItem('theme', 'light'); } catch(e) {}\n\t\t\t\t\t} else {\n\t\t\t\t\t\thtml.classList.add('dark');\n\t\t\t\t\t\ttry { localStorage.setItem('theme', 'dark'); } catch(e) {}\n\t\t\t\t\t}\n\t\t\t\t\thtml.style.colorScheme = isDark ? 'light' : 'dark';\n\t\t\t\t\tdocument.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t})();\n\t\t</script>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<script>\n\t\t\t(function() {\n\t\t\t\tvar html = document.documentElement;\n\n\t\t\t\tfunction syncToggleAria(btn) {\n\t\t\t\t\tif (btn) btn.setAttribute('aria-checked', String(html.classList.contains('dark')));\n\t\t\t\t}\n\n\t\t\t\t// Always sync aria-checked, even after htmx swap re-injects a button\n\t\t\t\t// with the hardcoded aria-checked=\"false\". This runs on every render;\n\t\t\t\t// the click listener below is guarded so it only attaches once.\n\t\t\t\tdocument.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);\n\n\t\t\t\tif (!window.tcThemeToggleAttached) {\n\t\t\t\t\twindow.tcThemeToggleAttached = true;\n\n\t\t\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\t\tvar btn = e.target.closest('[data-theme-toggle]');\n\t\t\t\t\tif (!btn) return;\n\t\t\t\t\tvar isDark = html.classList.contains('dark');\n\t\t\t\t\tif (isDark) {\n\t\t\t\t\t\thtml.classList.remove('dark');\n\t\t\t\t\t\ttry { localStorage.setItem('theme', 'light'); } catch(e) {}\n\t\t\t\t\t} else {\n\t\t\t\t\t\thtml.classList.add('dark');\n\t\t\t\t\t\ttry { localStorage.setItem('theme', 'dark'); } catch(e) {}\n\t\t\t\t\t}\n\t\t\t\t\thtml.style.colorScheme = isDark ? 'light' : 'dark';\n\t\t\t\t\tdocument.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t})();\n\t\t</script>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		return nil
 	})

@@ -63,37 +63,73 @@ templ ThemeToggle(ariaLabel string, nonce string) {
 		@icons.Icon(icons.Moon, "h-5 w-5 dark:hidden")
 		@icons.Icon(icons.Sun, "hidden h-5 w-5 dark:block")
 	</button>
-	<script nonce={ nonce }>
-		(function() {
-			var html = document.documentElement;
+	if nonce != "" {
+		<script nonce={ nonce }>
+			(function() {
+				var html = document.documentElement;
 
-			function syncToggleAria(btn) {
-				if (btn) btn.setAttribute('aria-checked', String(html.classList.contains('dark')));
-			}
-
-			// Always sync aria-checked, even after htmx swap re-injects a button
-			// with the hardcoded aria-checked="false". This runs on every render;
-			// the click listener below is guarded so it only attaches once.
-			document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
-
-			if (!window.tcThemeToggleAttached) {
-				window.tcThemeToggleAttached = true;
-
-				document.addEventListener('click', function(e) {
-				var btn = e.target.closest('[data-theme-toggle]');
-				if (!btn) return;
-				var isDark = html.classList.contains('dark');
-				if (isDark) {
-					html.classList.remove('dark');
-					try { localStorage.setItem('theme', 'light'); } catch(e) {}
-				} else {
-					html.classList.add('dark');
-					try { localStorage.setItem('theme', 'dark'); } catch(e) {}
+				function syncToggleAria(btn) {
+					if (btn) btn.setAttribute('aria-checked', String(html.classList.contains('dark')));
 				}
-				html.style.colorScheme = isDark ? 'light' : 'dark';
+
+				// Always sync aria-checked, even after htmx swap re-injects a button
+				// with the hardcoded aria-checked="false". This runs on every render;
+				// the click listener below is guarded so it only attaches once.
 				document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
-				});
-			}
-		})();
-	</script>
+
+				if (!window.tcThemeToggleAttached) {
+					window.tcThemeToggleAttached = true;
+
+					document.addEventListener('click', function(e) {
+					var btn = e.target.closest('[data-theme-toggle]');
+					if (!btn) return;
+					var isDark = html.classList.contains('dark');
+					if (isDark) {
+						html.classList.remove('dark');
+						try { localStorage.setItem('theme', 'light'); } catch(e) {}
+					} else {
+						html.classList.add('dark');
+						try { localStorage.setItem('theme', 'dark'); } catch(e) {}
+					}
+					html.style.colorScheme = isDark ? 'light' : 'dark';
+					document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
+					});
+				}
+			})();
+		</script>
+	} else {
+		<script>
+			(function() {
+				var html = document.documentElement;
+
+				function syncToggleAria(btn) {
+					if (btn) btn.setAttribute('aria-checked', String(html.classList.contains('dark')));
+				}
+
+				// Always sync aria-checked, even after htmx swap re-injects a button
+				// with the hardcoded aria-checked="false". This runs on every render;
+				// the click listener below is guarded so it only attaches once.
+				document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
+
+				if (!window.tcThemeToggleAttached) {
+					window.tcThemeToggleAttached = true;
+
+					document.addEventListener('click', function(e) {
+					var btn = e.target.closest('[data-theme-toggle]');
+					if (!btn) return;
+					var isDark = html.classList.contains('dark');
+					if (isDark) {
+						html.classList.remove('dark');
+						try { localStorage.setItem('theme', 'light'); } catch(e) {}
+					} else {
+						html.classList.add('dark');
+						try { localStorage.setItem('theme', 'dark'); } catch(e) {}
+					}
+					html.style.colorScheme = isDark ? 'light' : 'dark';
+					document.querySelectorAll('[data-theme-toggle]').forEach(syncToggleAria);
+					});
+				}
+			})();
+		</script>
+	}
 }
