@@ -7,10 +7,13 @@ import (
 
 // SidebarNavItem is one link in a vertical sidebar navigation.
 type SidebarNavItem struct {
-	Label  string
-	Href   string
-	Icon   icons.Name // optional; renders before the label if set
+	Label string
+	Href  string
+	Icon  icons.Name // optional; renders before the label if set
 	Active bool
+	// Section groups this item under a collapsible header. Items with
+	// the same Section value are grouped together. Empty = ungrouped.
+	Section string
 }
 
 // SidebarNavProps configures a vertical sidebar navigation panel.
@@ -18,6 +21,9 @@ type SidebarNavProps struct {
 	utils.BaseProps
 	// Brand renders at the top of the sidebar (optional).
 	Brand templ.Component
+	// Header renders between Brand and the nav links (optional).
+	// Useful for search/filter inputs.
+	Header templ.Component
 	// Items are the navigation links.
 	Items []SidebarNavItem
 	// Footer renders at the bottom of the sidebar (optional).
@@ -43,6 +49,59 @@ func sidebarItemActive(item SidebarNavItem, currentPath string) bool {
 		return false
 	}
 	return IsActive(item.Href, currentPath)
+}
+
+// sidebarNavGroup is a run of consecutive items with the same Section value.
+type sidebarNavGroup struct {
+	Section string // empty for ungrouped items
+	Items   []SidebarNavItem
+}
+
+// sidebarNavGroups partitions items into groups of consecutive items sharing
+// the same Section value. Items with empty Section form standalone groups.
+func sidebarNavGroups(items []SidebarNavItem) []sidebarNavGroup {
+	if len(items) == 0 {
+		return nil
+	}
+
+	var groups []sidebarNavGroup
+	current := sidebarNavGroup{Section: items[0].Section}
+
+	for _, item := range items {
+		if item.Section != current.Section {
+			groups = append(groups, current)
+			current = sidebarNavGroup{Section: item.Section}
+		}
+
+		current.Items = append(current.Items, item)
+	}
+
+	groups = append(groups, current)
+
+	return groups
+}
+
+// sidebarNavHasSections reports whether any item has a non-empty Section,
+// which triggers the grouped rendering path.
+func sidebarNavHasSections(items []SidebarNavItem) bool {
+	for _, item := range items {
+		if item.Section != "" {
+			return true
+		}
+	}
+
+	return false
+}
+
+// sidebarGroupHasActive reports whether any item in a group is active.
+func sidebarGroupHasActive(items []SidebarNavItem, currentPath string) bool {
+	for _, item := range items {
+		if sidebarItemActive(item, currentPath) {
+			return true
+		}
+	}
+
+	return false
 }
 
 // SidebarNav renders a vertical sidebar with brand, nav links (each with an
@@ -74,23 +133,79 @@ templ SidebarNav(props SidebarNavProps) {
 				@props.Brand
 			</div>
 		}
+		if props.Header != nil {
+			<div class="px-3 pb-1">
+				@props.Header
+			</div>
+		}
 		<nav class="flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto px-3 py-2" aria-label="Sidebar navigation">
-			for _, item := range props.Items {
-				{{ active := sidebarItemActive(item, props.CurrentPath) }}
-				<a
-					href={ templ.SafeURL(item.Href) }
-					class={ "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium " + utils.TransitionColors,
-						templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
-						templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active) }
-					if active {
-						aria-current="page"
+			if sidebarNavHasSections(props.Items) {
+				for _, group := range sidebarNavGroups(props.Items) {
+					if group.Section != "" {
+						{{ hasActive := sidebarGroupHasActive(group.Items, props.CurrentPath) }}
+						<details class="group" if hasActive { open }>
+							<summary class="flex cursor-pointer list-none items-center justify-between rounded-lg px-3 pt-3 pb-1 text-xs font-semibold uppercase tracking-wider text-gray-500 hover:text-gray-300 dark:text-gray-600 dark:hover:text-gray-400 [&::-webkit-details-marker]:hidden">
+								<span>{ group.Section }</span>
+								@icons.Icon(icons.ChevronDown, "h-3 w-3 shrink-0 text-gray-600 transition-transform duration-200 motion-reduce:transition-none group-open:rotate-180 dark:text-gray-500")
+							</summary>
+							<div class="flex flex-col gap-0.5">
+								for _, item := range group.Items {
+									{{ active := sidebarItemActive(item, props.CurrentPath) }}
+									<a
+										href={ templ.SafeURL(item.Href) }
+										class={ "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium " + utils.TransitionColors,
+											templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
+											templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active) }
+										if active {
+											aria-current="page"
+										}
+									>
+										if item.Icon != "" {
+											@icons.Icon(item.Icon, "h-5 w-5 flex-shrink-0")
+										}
+										{ item.Label }
+									</a>
+								}
+							</div>
+						</details>
+					} else {
+						for _, item := range group.Items {
+							{{ active := sidebarItemActive(item, props.CurrentPath) }}
+							<a
+								href={ templ.SafeURL(item.Href) }
+								class={ "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium " + utils.TransitionColors,
+									templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
+									templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active) }
+								if active {
+									aria-current="page"
+								}
+							>
+								if item.Icon != "" {
+									@icons.Icon(item.Icon, "h-5 w-5 flex-shrink-0")
+								}
+								{ item.Label }
+							</a>
+						}
 					}
-				>
-					if item.Icon != "" {
-						@icons.Icon(item.Icon, "h-5 w-5 flex-shrink-0")
-					}
-					{ item.Label }
-				</a>
+				}
+			} else {
+				for _, item := range props.Items {
+					{{ active := sidebarItemActive(item, props.CurrentPath) }}
+					<a
+						href={ templ.SafeURL(item.Href) }
+						class={ "flex items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium " + utils.TransitionColors,
+							templ.KV("bg-blue-600 text-white dark:bg-blue-500", active),
+							templ.KV("text-gray-300 hover:bg-gray-800 hover:text-white", !active) }
+						if active {
+							aria-current="page"
+						}
+					>
+						if item.Icon != "" {
+							@icons.Icon(item.Icon, "h-5 w-5 flex-shrink-0")
+						}
+						{ item.Label }
+					</a>
+				}
 			}
 		</nav>
 		if props.Footer != nil {
