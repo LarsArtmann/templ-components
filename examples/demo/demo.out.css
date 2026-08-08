@@ -2802,13 +2802,13 @@
   }
   .dark\:peer-checked\:text-amber-400:where(.dark, .dark *):is(:where(.peer):checked ~ *),
   .dark\:peer-focus-visible\:text-amber-400:where(.dark, .dark *):is(
-    :where(.peer):focus-visible ~ *
-  ) {
+      :where(.peer):focus-visible ~ *
+    ) {
     color: var(--color-amber-400);
   }
   .dark\:peer-focus-visible\:ring-amber-400:where(.dark, .dark *):is(
-    :where(.peer):focus-visible ~ *
-  ) {
+      :where(.peer):focus-visible ~ *
+    ) {
     --tw-ring-color: var(--color-amber-400);
   }
   .dark\:selection\:bg-blue-900:where(.dark, .dark *) ::selection {
