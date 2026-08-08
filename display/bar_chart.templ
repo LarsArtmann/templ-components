@@ -54,7 +54,7 @@ templ BarChart(props BarChartProps) {
 	if len(bars) == 0 {
 		<p class="text-sm text-gray-500 dark:text-gray-400">{ emptyMsg }</p>
 	} else if orient == BarVertical {
-		<div class={ utils.Class("flex items-end overflow-x-auto", gapClass) } role="img" if props.AriaLabel != "" { aria-label={ props.AriaLabel } }>
+		<div class={ utils.Class("flex items-end overflow-x-auto", gapClass) } if props.Height != "" { style={ "height:" + props.Height } } role="img" if props.AriaLabel != "" { aria-label={ props.AriaLabel } }>
 			for _, bar := range bars {
 				<div class={ utils.Class("flex w-full flex-col items-center gap-1", minBarW) } if bar.Tooltip != "" { title={ bar.Tooltip } }>
 					if props.ShowValues {

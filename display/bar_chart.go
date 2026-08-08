@@ -85,17 +85,22 @@ type BarChartProps struct {
 	// e.g. "gap-px" for dense charts). Default: "gap-2" (vertical),
 	// "" (horizontal, uses space-y-2).
 	Gap string
+
+	// Height sets the chart container height (CSS value, e.g. "8rem").
+	// Essential for vertical charts — percentage bar heights need a
+	// definite parent height. No effect on horizontal.
+	Height string
 }
 
 const (
-	defaultBarColor     = "bg-blue-600 dark:bg-blue-500"
-	defaultEmptyMsg     = "No data"
-	defaultLabelWidth   = "w-32"
-	defaultMinBarWidth  = "min-w-12"
-	defaultVerticalGap  = "gap-2"
-	percentScale        = 100.0
-	percentRound        = 10.0
-	zeroPercent         = "0.0%"
+	defaultBarColor    = "bg-blue-600 dark:bg-blue-500"
+	defaultEmptyMsg    = "No data"
+	defaultLabelWidth  = "w-32"
+	defaultMinBarWidth = "min-w-12"
+	defaultVerticalGap = "gap-2"
+	percentScale       = 100.0
+	percentRound       = 10.0
+	zeroPercent        = "0.0%"
 )
 
 // DefaultBarChartProps returns sensible defaults for a bar chart.
