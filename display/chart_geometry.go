@@ -127,7 +127,7 @@ func computeChartRenderData(
 	attrs templ.Attributes,
 ) ChartRenderData {
 	padding = padding.Sanitize()
-	if padding == (ChartPadding{}) {
+	if padding == (ChartPadding{}) { //nolint:exhaustruct // zero-value sentinel detects unset padding
 		padding = DefaultChartPadding()
 	}
 
@@ -148,22 +148,8 @@ func computeChartRenderData(
 	labelCount := min(len(xAxisLabels), maxSeriesLen)
 
 	var legendItems []ChartLegendItem
-
 	if showLegend && len(series) > 1 {
-		lx := padding.Left
-
-		for i, s := range series {
-			if s.Name == "" {
-				continue
-			}
-
-			legendItems = append(legendItems, ChartLegendItem{
-				Name:  s.Name,
-				Color: lineChartColor(i, s.Color),
-				X:     lx,
-			})
-			lx += len(s.Name)*lineChartLegendCharW + lineChartLegendGap
-		}
+		legendItems = buildChartLegend(series, padding.Left)
 	}
 
 	return ChartRenderData{
@@ -188,6 +174,29 @@ func computeChartRenderData(
 		ID:          id,
 		Attrs:       attrs,
 	}
+}
+
+// buildChartLegend lays out legend items left-to-right from startX, spacing
+// each item by its label width. Shared by LineChart and AreaChart.
+func buildChartLegend(series []LineChartSeries, startX int) []ChartLegendItem {
+	var items []ChartLegendItem
+
+	legendX := startX
+
+	for i, s := range series {
+		if s.Name == "" {
+			continue
+		}
+
+		items = append(items, ChartLegendItem{
+			Name:  s.Name,
+			Color: lineChartColor(i, s.Color),
+			X:     legendX,
+		})
+		legendX += len(s.Name)*lineChartLegendCharW + lineChartLegendGap
+	}
+
+	return items
 }
 
 // Point is a coordinate pair in SVG user space.
