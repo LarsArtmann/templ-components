@@ -62,14 +62,11 @@ func TestCSSFreshness(t *testing.T) {
 				"recompile with: nix run .#css  OR  tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css --minify",
 			cssInfo.ModTime().Format("2006-01-02 15:04"),
 		)
-		// In CI a stale committed CSS ships missing classes to consumers; fail
-		// hard. Locally, just warn so `go test ./...` stays green during edits
-		// before a CSS recompile.
-		if os.Getenv("CI") != "" {
-			t.Error(msg)
-		} else {
-			t.Logf("WARNING: %s", msg)
-		}
+		// Informational only — the CSS Freshness CI job does a proper content
+		// diff (nix run .#css → diff). This timestamp check is too fragile for
+		// CI because templ generate touches source files before tests run,
+		// giving them newer mtimes than the committed CSS.
+		t.Logf("WARNING: %s", msg)
 	}
 }
 
