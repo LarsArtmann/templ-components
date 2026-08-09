@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **Visual regression tests are now a hard CI gate.** The Visual Regression job detects skipped tests (e.g. missing Chromium) and fails the pipeline, preventing "vacuously green" runs where tests silently skip without a browser.
+
 ## [1.8.1] — 2026-08-09
 
 ### Added

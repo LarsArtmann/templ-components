@@ -90,9 +90,9 @@ jobs:
 
       - name: Compile visualtest module (separate go.mod, would otherwise be skipped)
         run: cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./...
-        # Tests skip cleanly when Chromium is absent, so this never red-lines CI
-        # purely over a missing browser. The check catches compile-only regressions
-        # like the visualtest/doc.go `:=` shadowing bug (2026-07-28).
+        # Compile-only check: this step has no Chromium, so tests skip.
+        # Actual visual regression runs in the dedicated "Visual Regression"
+        # job below (hard gate — fails the pipeline if any test skips or fails).
 
       - name: Docs-health drift guard
         run: go test ./utils/... -run TestDocsCountDrift
@@ -138,10 +138,12 @@ jobs:
           fi
           echo "CSS is fresh."
 
-  # Visual regression tests run via Nix so the Chromium binary matches the one
-  # used to generate the committed golden PNGs (same nixpkgs revision → bit-
-  # identical renderer). A non-Nix Chromium would produce font/anti-aliasing
-  # drift and false-fail the pixel comparison. See docs/visual-testing.md.
+  # Visual regression tests — HARD GATE. Runs via Nix so the Chromium binary
+  # matches the one used to generate the committed golden PNGs (same nixpkgs
+  # revision → bit-identical renderer). A non-Nix Chromium would produce
+  # font/anti-aliasing drift and false-fail the pixel comparison. If ANY test
+  # skips (e.g. Chromium missing) or fails, the pipeline goes red.
+  # See docs/visual-testing.md.
   visual:
     name: Visual Regression
     runs-on: ubuntu-latest
@@ -150,8 +152,14 @@ jobs:
       - uses: cachix/install-nix-action@630ae543ea3a38a9a4166f03376c02c50f408342 # v31
         with:
           nix_path: nixpkgs=channel:nixos-unstable
-      - name: Run visual tests
-        run: nix run .#visual
+      - name: Run visual tests (fail if any test skips or fails)
+        run: |
+          OUTPUT=$(nix run .#visual 2>&1)
+          echo "$OUTPUT"
+          if echo "$OUTPUT" | grep -qiE '(SKIP|no Chromium binary found)'; then
+            echo "::error::Visual tests were skipped — Chromium must be available in CI"
+            exit 1
+          fi
       - name: Upload failure artifacts (actual + diff PNGs)
         if: failure()
         uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
