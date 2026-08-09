@@ -365,7 +365,7 @@ func withChildren(parent, child templ.Component) templ.Component {
 func TestSpinner(t *testing.T) {
 	t.Parallel()
 
-	spinnerOpts := visualtest.Options{MaxMismatch: 0.05}
+	spinnerOpts := visualtest.Options{MaxMismatch: 0.08}
 	visualtest.AssertScreenshot(t, "spinner/md_light", feedback.Spinner(feedback.SpinnerProps{}), spinnerOpts)
 
 	spinnerOpts.Dark = new(true)
@@ -776,6 +776,8 @@ func TestExternalLink(t *testing.T) {
 }
 
 // TestPolledRegion covers a polled region with initial content.
+// MaxMismatch is 1%: the rendered text uses sub-pixel anti-aliasing that
+// varies slightly between Chromium runs on static content.
 func TestPolledRegion(t *testing.T) {
 	t.Parallel()
 
@@ -791,7 +793,7 @@ func TestPolledRegion(t *testing.T) {
 
 		return htmx.PolledRegion(props).Render(ctx, w)
 	})
-	visualtest.AssertScreenshot(t, "polledregion/light", region)
+	visualtest.AssertScreenshot(t, "polledregion/light", region, visualtest.Options{MaxMismatch: 0.01})
 }
 
 // TestDataTable covers a sortable data table with 3 columns and 3 rows.

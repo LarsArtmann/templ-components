@@ -49,19 +49,20 @@ func TestWaitAnimationSettled(t *testing.T) {
 			taskCtx, taskCancel := context.WithTimeout(ctx, 5*time.Second)
 			defer taskCancel()
 
-			start := time.Now()
-
-			err := chromedp.Run(taskCtx,
+			if err := chromedp.Run(taskCtx,
 				chromedp.Navigate(srv.URL),
 				chromedp.WaitVisible("#test", chromedp.ByQuery),
-				waitAnimationSettled("#test"),
-			)
+			); err != nil {
+				t.Fatalf("navigate(%s): %v", name, err)
+			}
 
-			elapsed := time.Since(start)
+			start := time.Now()
 
-			if err != nil {
+			if err := chromedp.Run(taskCtx, waitAnimationSettled("#test")); err != nil {
 				t.Fatalf("waitAnimationSettled(%s): %v", name, err)
 			}
+
+			elapsed := time.Since(start)
 
 			switch name {
 			case "no_animations":
