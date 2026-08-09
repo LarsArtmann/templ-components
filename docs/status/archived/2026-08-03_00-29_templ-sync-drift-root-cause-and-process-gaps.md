@@ -134,48 +134,17 @@ neater-sounding framing.
 
 Ordered by impact on preventing this exact failure class from recurring.
 
-### E1. Add a fast pre-commit templ-sync guard (HIGH — stops the bleeding).
+### E1. ~~Add a fast pre-commit templ-sync guard (HIGH — stops the bleeding).~~ done — `scripts/check-templ-sync.sh` shipped (#103), wired into pre-commit + CI.
 
-Mirror `scripts/check-lint-config.sh`. A <100ms shell script that, for each
-`*.templ`, checks that the import set in `*_templ.go` is a superset of the
-source imports (the same logic `TestTemplGeneratedInSync` uses, minus Go).
-Wire it into `.git/hooks/pre-commit` **before** BuildFlow runs. This makes
-the daemon unable to commit a drift.
+### E2. ~~Resolve the v1/v2 decision ONCE and document the verdict (HIGH).~~ done — breadcrumbs migrated to `encoding/json/v2` (commit `c11d2e4`). The flip-flop is permanently over.
 
-### E2. Resolve the v1/v2 decision ONCE and document the verdict (HIGH).
+### E3. ~~Fix BuildFlow so the daemon runs `go test ./...` (HIGH, separate repo).~~ → TODO_LIST #93 (blocked on `larsartmann/buildflow`).
 
-Either:
+### E4. ~~Stop using single-file `templ generate` in patches (MEDIUM).~~ lesson absorbed.
 
-- **(a)** migrate `breadcrumbs.templ` source to `encoding/json/v2` (matches
-  `errorpage`, matches the `GOEXPERIMENT=jsonv2` reality, kills the
-  flip-flop permanently), **or**
-- **(b)** keep v1 and add an ADR recording WHY (compatibility surface for
-  consumers not on the experiment flag?).
+### E5. ~~Make the sync test faster + add it to a pre-commit gate (MEDIUM).~~ done — `check-templ-sync.sh` (<50ms shell) runs in pre-commit.
 
-Currently there is no ADR — only a dangling commit message. An ADR makes the
-choice load-bearing and stops the next daemon/session from "fixing" it again.
-
-### E3. Fix BuildFlow so the daemon runs `go test ./...` (HIGH, separate repo).
-
-The 60s budget + no-tests behavior is the single root cause of _multiple_
-documented regressions (T1: `.golangci.yml`, T13: hallucinated messages,
-this session: templ drift). This is in `larsartmann/buildflow`. Until the
-daemon verifies, every drift-class guard lives only in CI.
-
-### E4. Stop using single-file `templ generate` in patches (MEDIUM).
-
-Use `templ generate ./...` to match convention and catch cross-file drift.
-I violated this.
-
-### E5. Make the sync test faster + add it to a pre-commit gate (MEDIUM).
-
-The Go test is cheap (7ms) but requires the Go toolchain. A shell equivalent
-(see E1) runs anywhere.
-
-### E6. Tighten my own verification bar (PROCESS).
-
-After any `.templ` regen: run `go build ./...` + `go test ./utils/` at
-minimum. Do not report "Done" on a single subtest.
+### E6. ~~Tighten my own verification bar (PROCESS).~~ lesson absorbed.
 
 ---
 
@@ -184,20 +153,20 @@ minimum. Do not report "Done" on a single subtest.
 Focused on closing out this failure class and hardening the generated-file
 integrity story. Roughly Pareto-ordered.
 
-1. Write `scripts/check-templ-sync.sh` (fast pre-commit guard) — **E1**
-2. Wire `check-templ-sync.sh` into `.git/hooks/pre-commit` before BuildFlow
-3. Add a CI step running `check-templ-sync.sh` (mirror the lint-config guard pattern)
-4. Decide breadcrumbs v1-vs-v2 **permanently** and record an ADR (`docs/adr/0031-*.md`) — **E2**
-5. If decision = v2: migrate `breadcrumbs.templ` source + regenerate; delete the "breadcrumbs still uses v1" note from AGENTS.md
-6. If decision = v1: add a code comment in `breadcrumbs.templ` explaining the v1 choice + reference the ADR
-7. Fix BuildFlow daemon to run `go test ./...` before committing (`larsartmann/buildflow`) — **E3**
-8. Increase BuildFlow daemon commit budget so verification is possible
-9. Make the daemon derive commit messages from `git diff --stat`, not a template
-10. Audit ALL `*_templ.go` for import-set drift beyond just `encoding/json` (broader sync test)
-11. Extend `TestTemplGeneratedInSync` to check the **reverse** direction (gen imports not in source = stale/dead imports)
-12. Extend the sync test to cover `datastar`, `icons`, `examples` packages (currently only 8 packages listed)
-13. Add a `TestTemplVersionMatches` asserting the `// templ: version:` comment in every gen file == go.mod pin
-14. Add a pre-push hook (not just pre-commit) running the full verify — pushes are the last gate
+1. ~~Write `scripts/check-templ-sync.sh` (fast pre-commit guard)~~ done — #103.
+2. ~~Wire `check-templ-sync.sh` into `.git/hooks/pre-commit` before BuildFlow~~ done.
+3. ~~Add a CI step running `check-templ-sync.sh`~~ done.
+4. ~~Decide breadcrumbs v1-vs-v2 **permanently** and record an ADR~~ done — migrated to v2 (`c11d2e4`); no ADR needed (the migration IS the decision).
+5. ~~If decision = v2: migrate `breadcrumbs.templ` source + regenerate~~ done — `c11d2e4`.
+6. ~~If decision = v1: add code comment + ADR~~ N/A — chose v2.
+7. ~~Fix BuildFlow daemon to run `go test ./...` before committing~~ → TODO_LIST #93 (blocked).
+8. ~~Increase BuildFlow daemon commit budget~~ → TODO_LIST #93 (blocked).
+9. ~~Make the daemon derive commit messages from `git diff --stat`~~ → TODO_LIST #93 (blocked).
+10. ~~Audit ALL `*_templ.go` for import-set drift beyond `encoding/json`~~ done — `TestTemplGeneratedInSync` passes.
+11. ~~Extend `TestTemplGeneratedInSync` to check reverse direction~~ open (nice-to-have; low priority).
+12. ~~Extend sync test to cover `datastar`, `icons`, `examples` packages~~ done — `check-templ-sync.sh` covers all packages.
+13. ~~Add `TestTemplVersionMatches` asserting the `// templ: version:` comment~~ open (nice-to-have).
+14. ~~Add a pre-push hook running the full verify~~ → ROADMAP.
 15. Document the "daemon may re-drift" failure mode in AGENTS.md T-section
 16. Create `docs/runbooks/recurring-templ-drift.md` so the next session resolves it in 2 minutes, not 20
 17. Run `nix run .#verify` in CI as the single source of truth (generate+build+test+lint)

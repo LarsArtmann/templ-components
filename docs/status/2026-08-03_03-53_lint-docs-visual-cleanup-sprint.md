@@ -73,19 +73,19 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 
 ## E. WHAT WE SHOULD IMPROVE
 
-1. **Always run `nix flake check` as part of the verify cycle.** It catches formatting issues that `go test` and `golangci-lint` don't. This should be muscle memory alongside `go build && go test && golangci-lint run`.
+1. ~~**Always run `nix flake check` as part of the verify cycle.**~~ lesson absorbed.
 
-2. **The verify cycle should be: `nix run .#verify && nix flake check`.** The `#verify` app runs generate+build+test+lint. `nix flake check` adds treefmt verification. Together they cover everything.
+2. ~~**The verify cycle should be: `nix run .#verify && nix flake check`.**~~ lesson absorbed.
 
-3. **gopls stale diagnostics should be restarted immediately** when they persist after a compile-clean state. Don't tolerate false errors — they degrade every subsequent decision.
+3. ~~**gopls stale diagnostics should be restarted immediately**~~ lesson absorbed.
 
-4. **Doc-count maintenance is a known brittle pattern** (5 files must move in lockstep), but `TestDocsCountDrift` doesn't check visual golden counts or golden file counts — only component counts. Consider extending the drift guard to check visual golden count against `find testdata -name '*.png' | wc -l`.
+4. ~~**Doc-count maintenance is a known brittle pattern**~~ → TODO_LIST #112 (extend drift guard to README + ROADMAP).
 
-5. **Dark-mode visual test coverage** should be mandatory for every new component family, not just "the ones that existed before." The current standard is light+dark; new tests should match.
+5. ~~**Dark-mode visual test coverage should be mandatory**~~ done — dark-mode variants shipped for all newer components (v1.8.0).
 
-6. **The CHANGELOG typo "Catull-Rom" → "Catmull-Rom"** — I saw the existing entry and didn't fix it. Always fix typos on sight, especially in user-facing documentation.
+6. ~~**The CHANGELOG typo "Catull-Rom" → "Catmull-Rom"**~~ done — fixed.
 
-7. **MaxMismatch thresholds should be documented with the measurement methodology.** I measured spinner across 5 runs and overlays across the full suite, but didn't document the measurement method in a comment or test helper. Future maintainers won't know how to re-verify.
+7. ~~**MaxMismatch thresholds should be documented with measurement methodology.**~~ done — documented in `docs/visual-testing.md`.
 
 ---
 
@@ -93,71 +93,71 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 
 ### High Priority (Release Blockers)
 
-1. Fix doc count drift: README visual goldens 31→49, typed enums 43→45
-2. Fix doc count drift: FEATURES visual goldens 31→49, typed enums 51/49→45
-3. Fix doc count drift: AGENTS golden files 102→175
-4. Fix CHANGELOG typo: "Catull-Rom" → "Catmull-Rom"
-5. Add dark-mode visual variants for the 6 new tests (Combobox, Tooltip, Carousel, Skeleton, ErrorPage, NotFound404)
-6. Run `nix fmt` as part of every verify cycle (or add it to `#verify`)
-7. Extend `TestDocsCountDrift` to check visual golden count + golden file count
+1. ~~Fix doc count drift: README visual goldens 31→49~~ done — updated to 66 (2026-08-09).
+2. ~~Fix doc count drift: FEATURES visual goldens 31→49~~ done — updated to 66.
+3. ~~Fix doc count drift: AGENTS golden files 102→175~~ done.
+4. ~~Fix CHANGELOG typo: "Catull-Rom" → "Catmull-Rom"~~ done.
+5. ~~Add dark-mode visual variants for the 6 new tests~~ done — v1.8.0.
+6. ~~Run `nix fmt` as part of every verify cycle~~ done.
+7. ~~Extend `TestDocsCountDrift` to check visual golden count~~ → TODO_LIST #112.
 
 ### Visual Test Coverage Gaps
 
-8. Add visual test for CollapsibleSection (v1.6.0 component — no visual golden)
-9. Add visual test for Heatmap (v1.6.0 component — no visual golden)
-10. Add visual test for PolledRegion (v1.5.0 component — no visual golden)
-11. Add visual test for Sparkline (v1.5.0 component — no visual golden)
-12. Add visual test for BarChart (v1.5.0 component — no visual golden)
-13. Add visual test for ExternalLink (v1.5.0 component — no visual golden)
-14. Add visual tests for LineChart, PieChart, AreaChart (new chart components)
-15. Add visual test for ECharts adapter (charts/echarts package)
-16. Add visual test for DataTable
-17. Add visual test for ContextMenu open state
-18. Add visual test for Badge variants (pill, dot, success, error)
-19. Add RTL variants for all new visual tests
-20. Add hover/focus state tests for interactive components beyond buttons
+8. ~~Add visual test for CollapsibleSection~~ done — v1.8.0.
+9. ~~Add visual test for Heatmap~~ done — v1.8.0.
+10. ~~Add visual test for PolledRegion~~ done — v1.8.0.
+11. ~~Add visual test for Sparkline~~ done — v1.8.0.
+12. ~~Add visual test for BarChart~~ done — v1.8.0.
+13. ~~Add visual test for ExternalLink~~ done — v1.8.0.
+14. ~~Add visual tests for LineChart, PieChart, AreaChart~~ done — v1.8.0.
+15. ~~Add visual test for ECharts adapter~~ open — needs browser-based JS execution; → ROADMAP.
+16. ~~Add visual test for DataTable~~ done — v1.8.0.
+17. Add visual test for ContextMenu open state ← open.
+18. Add visual test for Badge variants ← open.
+19. ~~Add RTL variants for all new visual tests~~ partially done; expanding → ROADMAP.
+20. Add hover/focus state tests for interactive components beyond buttons ← open.
 
 ### Quality Hardening
 
-21. Add negative test for `TestNoOrderedTailwindSubstringsInTests` (inject known violation, assert flagged)
-22. Add browser test for popover edge-flipping (currently SSR-only)
-23. Review Tooltip test `templ.ComponentFunc` pattern — is there a cleaner way?
-24. Verify chart components pass `TestMotionReduceCompliance`
-25. Verify chart components pass container-query compliance
-26. Add benchmarks for chart geometry helpers (ScalePoints, BuildSmoothPath, ComputeNiceTicks)
-27. Add fuzz tests for chart geometry (arbitrary float64 inputs, NaN/Inf handling)
-28. Review chart component ARIA compliance (are charts accessible to screen readers?)
-29. Add CSP nonce test coverage for chart components (if they emit inline SVG)
-30. Review `packageDeps` map in `cmd/tc/main.go` — is it still accurate after chart additions?
+21. ~~Add negative test for `TestNoOrderedTailwindSubstringsInTests`~~ open (nice-to-have).
+22. ~~Add browser test for popover edge-flipping~~ open.
+23. ~~Review Tooltip test `templ.ComponentFunc` pattern~~ open.
+24. ~~Verify chart components pass `TestMotionReduceCompliance`~~ done — drift-guard passes.
+25. ~~Verify chart components pass container-query compliance~~ done — drift-guard passes.
+26. ~~Add benchmarks for chart geometry helpers~~ done — #109.
+27. ~~Add fuzz tests for chart geometry~~ done — #98.
+28. ~~Review chart component ARIA compliance~~ done — charts have `role="img"` + ARIA.
+29. ~~Add CSP nonce test coverage for chart components~~ done — charts emit no inline scripts.
+30. ~~Review `packageDeps` map in `cmd/tc/main.go`~~ done — `tc` tracks package sources.
 
 ### Documentation
 
-31. Update `docs/recipes/` with AuthLayout recipe documentation
-32. Add chart components to `examples/demo/recipes_demo.templ`
-33. Add AuthLayout to demo showcase
-34. Update SKILL.md with chart component patterns
-35. Update `docs/adr/` — ADR-0031 (chart architecture) is referenced but may need review
-36. Write migration guide for chart components (how consumers adopt SVG vs ECharts)
-37. Update `docs/tailwind-v4-adoption-guide.md` if chart colors need new Tailwind classes
-38. Add visual testing section to `docs/testing-guide.md` cross-link
-39. Document the `nix run .#css` app in README
+31. ~~Update `docs/recipes/` with AuthLayout~~ done.
+32. ~~Add chart components to `examples/demo/recipes_demo.templ`~~ done.
+33. ~~Add AuthLayout to demo showcase~~ done.
+34. ~~Update SKILL.md with chart component patterns~~ done — AGENTS.md carries the patterns.
+35. ~~Update `docs/adr/` — ADR-0031~~ done.
+36. ~~Write migration guide for chart components~~ done — `docs/recipes/`.
+37. ~~Update `docs/tailwind-v4-adoption-guide.md`~~ done — chart colors use standard Tailwind palette.
+38. ~~Add visual testing section to `docs/testing-guide.md`~~ done.
+39. ~~Document `nix run .#css` in README~~ done.
 
 ### Infrastructure
 
-40. Fix BuildFlow blank commit messages (#93 — requires BuildFlow repo change)
-41. Consider pinning `nixpkgs-chromium` to a specific older version for long-term stability
-42. Add `nix fmt` to pre-commit hook (or ensure treefmt runs before commit)
-43. Verify `.github/workflows/ci.yaml` runs `nix flake check` or equivalent treefmt step
-44. Review whether `visualtest/go.mod` `go mod tidy` added unnecessary dependencies
-45. Consider adding visual test count to CI output for quick drift detection
+40. ~~Fix BuildFlow blank commit messages~~ → TODO_LIST #93 (blocked).
+41. ~~Consider pinning `nixpkgs-chromium`~~ done — pinned via separate flake input.
+42. ~~Add `nix fmt` to pre-commit hook~~ done — treefmt runs via `nix flake check`.
+43. ~~Verify `.github/workflows/ci.yaml` runs `nix flake check`~~ done.
+44. ~~Review `visualtest/go.mod` dependencies~~ done.
+45. ~~Consider adding visual test count to CI output~~ open (nice-to-have).
 
 ### Release Preparation
 
-46. Verify `[Unreleased]` CHANGELOG section is complete for a release cut
-47. Review all 21 unpushed commits for correctness before pushing
-48. Consider cutting v1.7.0 (charts + AuthLayout + visual test expansion + lint cleanup)
-49. Run `scripts/release.sh 1.7.0 "<summary>"` after doc fixes
-50. Verify `git show v1.7.0` tag before pushing
+46. ~~Verify `[Unreleased]` CHANGELOG section is complete~~ done — [Unreleased] has 3 entries.
+47. ~~Review all unpushed commits~~ done — pushed.
+48. ~~Consider cutting v1.7.0~~ done — v1.7.0 shipped; v1.8.0 shipped.
+49. ~~Run `scripts/release.sh 1.7.0`~~ done.
+50. ~~Verify `git show v1.7.0` tag~~ done.
 
 ---
 
