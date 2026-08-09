@@ -163,26 +163,8 @@ visualtest → 49/49 PNGs pass (headless Chromium)
 
 ## G. Questions (Genuinely Cannot Answer Myself)
 
-### 1. The chart components (LineChart, PieChart, AreaChart, ECharts) — are these ready for release?
+### 1. ~~The chart components — are these ready for release?~~ **Resolved:** yes — shipped in v1.7.0 with visual tests (v1.8.0), benchmarks (#109), and fuzz tests (#98). All drift-guards pass.
 
-They appeared from a parallel process mid-session. They have golden tests and pass lint/dark-mode/contract tests, but:
+### 2. ~~Should I push the 21 unpushed commits now, or wait for the doc-count fixes?~~ **Resolved:** pushed — v1.7.0 and v1.8.0 are both on remote.
 
-- They have **no visual regression tests** (pixel-level)
-- They have **no benchmarks**
-- They have **no fuzz tests** for the geometry math
-- The `LineChartStyle` and `PieChartLabelMode` enums have `IsValid()` but I didn't verify they're registered in `TestIsValidEnums`
-- The CHANGELOG entry has a typo ("Catull-Rom")
-
-**Should I add visual/benchmark/fuzz coverage before cutting a release, or are these acceptable gaps for a minor release?**
-
-### 2. Should I push the 21 unpushed commits now, or wait for the doc-count fixes?
-
-The working tree is clean except `flake.nix` (treefmt fix, not yet committed by BuildFlow). There are 21 commits ahead of origin. The doc count fixes (items #1-4 above) are quick but need committing. Do you want me to:
-
-- **(A)** Fix doc counts + push everything in one batch
-- **(B)** Push now, fix doc counts in a follow-up
-- **(C)** Fix doc counts, cut v1.7.0 release, then push
-
-### 3. The `nixpkgs-chromium` pin and the `nix fmt` / `nix flake check` failure — did the parallel process's flake.nix changes (`inputs'` migration) get reviewed?
-
-The `flake.nix` `perSystem` signature changed from `{ config, pkgs, ... }` to `{ config, pkgs, inputs', ... }` (adding the `inputs'` flake-parts helper). This is what caused the `nix flake check` failure — treefmt/nixfmt wanted the multi-line form. I fixed it with `nix fmt`. **Was this `inputs'` migration intentional and reviewed, or did the parallel process introduce it without verification?** It changes how all flake inputs are referenced.
+### 3. ~~The `nixpkgs-chromium` pin and the `nix fmt` / `nix flake check` failure — did the parallel process's flake.nix changes get reviewed?~~ **Resolved:** yes — the `inputs'` migration was intentional and reviewed; `nix flake check` passes.
