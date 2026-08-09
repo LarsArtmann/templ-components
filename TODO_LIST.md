@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-08-05 | **Version:** 1.7.0
+**Updated:** 2026-08-09 | **Version:** 1.8.0
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
