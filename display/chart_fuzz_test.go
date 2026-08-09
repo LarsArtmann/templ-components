@@ -67,3 +67,54 @@ func FuzzComputeArcPath(f *testing.F) {
 		},
 	)
 }
+
+// FuzzBuildSmoothPath verifies BuildSmoothPath never panics on adversarial
+// inputs (NaN, Inf, empty, single point, collinear, extreme coordinates).
+func FuzzBuildSmoothPath(f *testing.F) {
+	pointSets := [][]Point{
+		{},
+		{{X: 0, Y: 0}},
+		{{X: 0, Y: 0}, {X: 100, Y: 50}},
+		{{X: math.NaN(), Y: 0}, {X: 50, Y: math.Inf(1)}},
+		{{X: -1e20, Y: 1e20}, {X: 1e20, Y: -1e20}, {X: 0, Y: 0}},
+	}
+
+	f.Add(0.0, 0.0, 100.0, 50.0)
+	f.Add(math.NaN(), math.Inf(-1), math.Inf(1), math.NaN())
+	f.Add(-1e20, 1e20, 1e20, -1e20)
+
+	f.Fuzz(func(t *testing.T, x1 float64, y1 float64, x2 float64, y2 float64) {
+		dynamicSet := []Point{{X: x1, Y: y1}, {X: x2, Y: y2}, {X: x1 + x2, Y: y1 + y2}}
+		allSets := append(pointSets, dynamicSet)
+
+		for _, points := range allSets {
+			// Should never panic regardless of input.
+			_ = BuildSmoothPath(points)
+		}
+	})
+}
+
+// FuzzBuildAreaPath verifies BuildAreaPath never panics on adversarial inputs
+// (NaN, Inf, empty, negative height, extreme coordinates).
+func FuzzBuildAreaPath(f *testing.F) {
+	pointSets := [][]Point{
+		{},
+		{{X: 0, Y: 0}},
+		{{X: 0, Y: 0}, {X: 100, Y: 50}},
+		{{X: math.NaN(), Y: 0}, {X: 50, Y: math.Inf(1)}},
+	}
+
+	f.Add(0.0, 0.0, 100.0, 50.0, 300)
+	f.Add(math.NaN(), math.Inf(-1), 0.0, 0.0, -100)
+	f.Add(-1e20, 1e20, 1e20, -1e20, 0)
+
+	f.Fuzz(func(t *testing.T, x1 float64, y1 float64, x2 float64, y2 float64, height int) {
+		dynamicSet := []Point{{X: x1, Y: y1}, {X: x2, Y: y2}}
+		allSets := append(pointSets, dynamicSet)
+
+		for _, points := range allSets {
+			// Should never panic regardless of input.
+			_ = BuildAreaPath(points, height)
+		}
+	})
+}
