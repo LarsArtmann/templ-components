@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.8.1] — 2026-08-09
+
 ### Added
 
 - **`display.BarChart` richer per-bar metadata.** New `BarChartBar.Tooltip` (emits a native `title` attribute for hover tooltips on dense charts), `BarChartBar.ValueLabel` (overrides the auto-formatted value for composite labels like "123 (45%)" or "1.2 GB"), `BarChartProps.MinBarWidth` (Tailwind class, tightens vertical bars), and `BarChartProps.Gap` (Tailwind class, configurable vertical-bar spacing down to `gap-px`). All fall back to current behavior when unset.
