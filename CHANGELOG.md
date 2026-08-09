@@ -11,6 +11,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **`display.BarChart` richer per-bar metadata.** New `BarChartBar.Tooltip` (emits a native `title` attribute for hover tooltips on dense charts), `BarChartBar.ValueLabel` (overrides the auto-formatted value for composite labels like "123 (45%)" or "1.2 GB"), `BarChartProps.MinBarWidth` (Tailwind class, tightens vertical bars), and `BarChartProps.Gap` (Tailwind class, configurable vertical-bar spacing down to `gap-px`). All fall back to current behavior when unset.
 - **`display.BarChart` fixed-height vertical charts.** New `BarChartProps.Height` (CSS value string, e.g. "8rem", "200px") applied as an inline `style="height:..."` on the vertical chart container. Fixes bars collapsing to zero height when the parent has no definite height. Horizontal charts are unaffected.
 - **`navigation.SidebarNav` collapsible sections + header slot.** New `SidebarNavItem.Section` groups consecutive items under a collapsible `<details>` header (empty `Section` stays flat, preserving existing behavior); the section containing the active item auto-expands. New `SidebarNavProps.Header` slot renders between Brand and nav links for search inputs or filters.
+- **Drift-guard extension: README.md + ROADMAP.md.** `TestDocsCountDrift` now asserts component/enum/visual-golden counts in README.md and ROADMAP.md, closing the gap that let the version badge and golden counts drift unnoticed for multiple releases.
+- **Version-sync pre-commit guard.** New `scripts/check-version-sync.sh` extracts the version from `utils/version.go`, `CHANGELOG.md`, and `FEATURES.md` and blocks commits if they disagree (<50ms shell, mirrors `check-templ-sync.sh`). Wired into `.git/hooks/pre-commit` (Guard 3) and CI.
+- **Actionlint in CI.** GitHub Actions workflow files are now linted with `actionlint` on every push/PR.
+- **Fuzz tests for chart geometry.** `FuzzBuildSmoothPath` and `FuzzBuildAreaPath` join the existing chart fuzz suite, verifying the Catmull-Rom spline and area-path builders never panic on adversarial inputs (NaN, Inf, empty slices, extreme coordinates).
 
 ## [1.8.0] — 2026-08-08
 

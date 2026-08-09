@@ -37,6 +37,11 @@ jobs:
             ./htmx/... ./icons/... ./integration/... ./internal/... \
             ./layout/... ./navigation/... ./recipes/... ./utils/...
 
+      - name: Actionlint (lint GitHub Actions workflows)
+        run: |
+          go install github.com/rhysd/actionlint/cmd/actionlint@latest
+          actionlint
+
   build:
     name: Build & Test
     runs-on: ubuntu-latest

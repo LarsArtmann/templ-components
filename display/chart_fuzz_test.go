@@ -85,12 +85,14 @@ func FuzzBuildSmoothPath(f *testing.F) {
 
 	f.Fuzz(func(t *testing.T, x1 float64, y1 float64, x2 float64, y2 float64) {
 		dynamicSet := []Point{{X: x1, Y: y1}, {X: x2, Y: y2}, {X: x1 + x2, Y: y1 + y2}}
-		allSets := append(pointSets, dynamicSet)
 
-		for _, points := range allSets {
+		for _, points := range pointSets {
 			// Should never panic regardless of input.
 			_ = BuildSmoothPath(points)
 		}
+
+		// Should never panic regardless of input.
+		_ = BuildSmoothPath(dynamicSet)
 	})
 }
 
@@ -110,11 +112,13 @@ func FuzzBuildAreaPath(f *testing.F) {
 
 	f.Fuzz(func(t *testing.T, x1 float64, y1 float64, x2 float64, y2 float64, height int) {
 		dynamicSet := []Point{{X: x1, Y: y1}, {X: x2, Y: y2}}
-		allSets := append(pointSets, dynamicSet)
 
-		for _, points := range allSets {
+		for _, points := range pointSets {
 			// Should never panic regardless of input.
 			_ = BuildAreaPath(points, height)
 		}
+
+		// Should never panic regardless of input.
+		_ = BuildAreaPath(dynamicSet, height)
 	})
 }

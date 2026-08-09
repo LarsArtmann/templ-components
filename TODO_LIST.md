@@ -23,8 +23,6 @@
 
 | #   | Task                                                                          | Why                                                                                                                                                                  |
 | --- | ----------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 111 | Add `scripts/check-version-sync.sh` pre-commit guard                          | The v1.8.0 release drifted because no fast guard checks `version.go == CHANGELOG heading == FEATURES.md version` at commit time (only CI drift-guard tests catch it, and the daemon's 60s budget skips `go test`). Mirror the proven `check-templ-sync.sh` (<50ms shell) and wire into `.git/hooks/pre-commit` + CI. Source: `docs/status/2026-08-08_11-38_*.md`. |
-| 112 | Extend `TestDocsCountDrift` to cover `README.md` + `ROADMAP.md`               | The drift guard checks FEATURES/AGENTS/SKILL/sections.ts but NOT README or ROADMAP. This let README's version badge sit at `v1.2.0` for 5 releases and visual-golden counts drift 49→66 unnoticed. Adding both files prevents the count-drift class permanently. |
 
 ---
 
