@@ -17,6 +17,7 @@ func TestDocsCountDrift(t *testing.T) {
 	actualComponents := countExportedTemplFunctions(t, root)
 	actualGenerated := countGeneratedFiles(t, root)
 	actualIsValid := countIsValidMethods(t, root)
+	actualVisualGoldens := countVisualGoldens(t, root)
 
 	features := readDoc(t, "FEATURES.md")
 	assertCount(t, features, `(\d+)\s+templ components`, "FEATURES.md templ components", actualComponents)
@@ -32,6 +33,15 @@ func TestDocsCountDrift(t *testing.T) {
 	sections := readDoc(t, "website", "src", "data", "sections.ts")
 	assertCount(t, sections, componentsRe, "website sections.ts components", actualComponents)
 	assertCount(t, sections, `(\d+)\s+typed string enums`, "website sections.ts typed string enums", actualIsValid)
+
+	readme := readDoc(t, "README.md")
+	assertCount(t, readme, `(\d+)\s+server-rendered components`, "README.md components", actualComponents)
+	assertCount(t, readme, `(\d+)\s+with IsValid\(\)`, "README.md IsValid methods", actualIsValid)
+	assertCount(t, readme, `Visual goldens \| (\d+)\s+pixel-level`, "README.md visual goldens", actualVisualGoldens)
+
+	roadmap := readDoc(t, "ROADMAP.md")
+	assertCount(t, roadmap, `(\d+)[^0-9]{0,6}templ components across`, "ROADMAP.md components", actualComponents)
+	assertCount(t, roadmap, `(\d+)\s+goldens`, "ROADMAP.md visual goldens", actualVisualGoldens)
 }
 
 func countExportedTemplFunctions(t *testing.T, root string) int {
@@ -155,6 +165,34 @@ func readDoc(t *testing.T, parts ...string) []byte {
 	}
 
 	return data
+}
+
+func countVisualGoldens(t *testing.T, root string) int {
+	t.Helper()
+
+	count := 0
+	visualDir := filepath.Join(root, "visualtest", "testdata")
+
+	err := filepath.WalkDir(visualDir, func(path string, d os.DirEntry, err error) error {
+		if err != nil {
+			return err
+		}
+
+		if d.IsDir() {
+			return nil
+		}
+
+		if strings.HasSuffix(path, ".png") && !strings.HasSuffix(path, ".fail.png") {
+			count++
+		}
+
+		return nil
+	})
+	if err != nil {
+		t.Fatalf("walk visual goldens: %v", err)
+	}
+
+	return count
 }
 
 func assertCount(t *testing.T, doc []byte, pattern, label string, want int) {
