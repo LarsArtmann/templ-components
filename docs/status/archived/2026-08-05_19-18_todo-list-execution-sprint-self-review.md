@@ -252,36 +252,15 @@ uncompilable code.
 
 ### G1. Should I generate the 17 golden PNGs by installing Chromium, or is that your job?
 
-The visual tests are designed to be generated via `nix run .#visual` which
-provides a Nix-pinned Chromium for bit-identical rendering. I don't have
-Chromium in this session. Should I:
-
-- **(a)** Attempt to install Chromium via `apt` / `nix profile install` and run
-  `go test -update` (risk: non-Nix Chromium produces font/anti-aliasing drift,
-  guaranteeing the PNGs will need regeneration later)?
-- **(b)** Leave it for you to run `nix run .#visual` and commit the PNGs?
+~~The visual tests are designed to be generated via `nix run .#visual` which provides a Nix-pinned Chromium for bit-identical rendering. I don't have Chromium in this session.~~ **Resolved:** generated in a later session via `nix run .#visual` — 66 goldens shipped in v1.8.0 with a CI visual lane using Nix-pinned Chromium.
 
 ### G2. The BuildFlow daemon committed 5 commits with pre-existing changes I didn't author. Should I investigate those changes or leave them?
 
-The commits `bb65cf5` and `34b4d0f` contain changes to `forms/input.templ`,
-`forms/label.templ`, `forms/toggle.templ`, `layout/base.templ`, `layout/sri.go`,
-`internal/cdn/cdn.go`. These were in the working tree at session start
-(possibly from a prior session). I didn't touch them. Should I:
-
-- **(a)** Review them for correctness and report issues?
-- **(b)** Leave them alone since they're not my work?
+~~The commits `bb65cf5` and `34b4d0f` contain changes to `forms/input.templ`, `forms/label.templ`, `forms/toggle.templ`, `layout/base.templ`, `layout/sri.go`, `internal/cdn/cdn.go`.~~ **Resolved:** shipped in v1.7.0; no regressions reported. The commingling is the known #93 daemon behavior (blocked on `larsartmann/buildflow`).
 
 ### G3. The `.git/hooks/pre-commit` modification (adding `check-templ-sync.sh`) will be overwritten by `buildflow precommit install`. How should this be made permanent?
 
-Options:
-
-- **(a)** Document in AGENTS.md that the hook must be manually re-edited after
-  `buildflow precommit install` (fragile, but matches the existing
-  `check-lint-config.sh` precedent).
-- **(b)** Fix BuildFlow to auto-discover `scripts/check-*.sh` files (requires
-  changes to `larsartmann/buildflow`).
-- **(c)** Use a git `core.hooksPath` to point to a tracked directory (changes
-  the hook management model).
+~~Options: (a) Document in AGENTS.md... (b) Fix BuildFlow to auto-discover... (c) Use git `core.hooksPath`...~~ **Resolved:** Option (a) adopted — `check-templ-sync.sh` is documented in AGENTS.md and wired into CI as a standalone guard step (runs before `golangci-lint` even installs). The hook-edit fragility remains (→ TODO_LIST #93) but the CI guard makes drift impossible to merge.
 
 ---
 
