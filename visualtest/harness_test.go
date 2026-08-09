@@ -18,9 +18,6 @@ import (
 func TestWaitAnimationSettled(t *testing.T) {
 	t.Parallel()
 
-	ctx, cancel := newTab(t)
-	defer cancel()
-
 	pages := map[string]string{
 		"no_animations": `<!DOCTYPE html><html><body>
 <div id="test" style="width:100px;height:100px;background:blue"></div>
@@ -40,6 +37,9 @@ func TestWaitAnimationSettled(t *testing.T) {
 	for name, page := range pages {
 		t.Run(name, func(t *testing.T) {
 			t.Parallel()
+
+			ctx, cancel := newTab(t)
+			defer cancel()
 
 			srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 				_, _ = io.WriteString(w, page)
