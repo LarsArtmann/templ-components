@@ -6,7 +6,9 @@
 > goldens, 175 HTML goldens, 112 components). The charts/echarts drift-guard
 > gap (B/F item 1) is now fixed — the package is included in
 > `countExportedTemplFunctions`. Dark-mode visual variants for 6 newer
-> components and chart visual tests are tracked as TODO_LIST.md #95–#96.
+> components and chart visual tests are ~~tracked as TODO_LIST.md #95–#96~~
+> **→ done: all dark-mode variants and chart visual tests shipped in v1.8.0
+> (66 goldens total).**
 > The CHANGELOG "Catull-Rom" typo was fixed.
 
 ## Session: TODO Execution Sprint Cleanup & Lint/Docs/Visual Coverage Pass
