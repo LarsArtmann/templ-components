@@ -66,13 +66,15 @@ func TestWaitAnimationSettled(t *testing.T) {
 
 			switch name {
 			case "no_animations":
-				// Should return after the initial 80ms sleep.
-				if elapsed > 300*time.Millisecond {
-					t.Errorf("no_animations took %v — should return almost immediately after initial sleep", elapsed)
+				// Waits through the registration window (~300ms) since no
+				// animations appear to confirm the element has no transition.
+				if elapsed > 500*time.Millisecond {
+					t.Errorf("no_animations took %v — should return after registration window", elapsed)
 				}
 			case "finished_animations":
-				// Should return after the initial 80ms sleep + one poll.
-				if elapsed > 400*time.Millisecond {
+				// May wait through the registration window if the short animation
+				// has already been cleaned up by the time getAnimations() runs.
+				if elapsed > 500*time.Millisecond {
 					t.Errorf("finished_animations took %v — should return quickly", elapsed)
 				}
 			case "long_running":

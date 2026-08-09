@@ -192,31 +192,44 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 }
 
 // waitAnimationSettled blocks until all CSS animations/transitions on the first
-// element matching sel have finished, with a best-effort timeout. It first
-// sleeps briefly so the browser registers any @starting-style transition
-// (getAnimations() is transiently empty before the transition is created),
-// then polls until the animation list is empty or every entry is "finished".
+// element matching sel have finished, with a best-effort timeout. It uses a
+// two-phase approach: (1) wait up to 300ms for @starting-style transitions to
+// register (getAnimations() is transiently empty before the browser creates
+// the transition), then (2) poll until all animations report "finished".
+// If no animations appear within the registration window, the function returns
+// immediately (the element genuinely has no transition).
 func waitAnimationSettled(sel string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
 		if err := chromedp.Sleep(80 * time.Millisecond).Do(ctx); err != nil {
 			return err
 		}
 
-		deadline := time.Now().Add(800 * time.Millisecond)
 		expr := fmt.Sprintf(
-			`(()=>{const el=document.querySelector(%q);if(!el)return true;`+
-				`const a=el.getAnimations();return a.length===0||`+
-				`a.every(x=>x.playState==='finished');})()`, sel,
+			`(()=>{const el=document.querySelector(%q);if(!el)return"none";`+
+				`const a=el.getAnimations();if(a.length===0)return"empty";`+
+				`return a.every(x=>x.playState==='finished')?"done":"running";})()`, sel,
 		)
 
-		for time.Now().Before(deadline) {
-			var done bool
-			if err := chromedp.Evaluate(expr, &done).Do(ctx); err != nil {
+		registerDeadline := time.Now().Add(300 * time.Millisecond)
+		settleDeadline := time.Now().Add(800 * time.Millisecond)
+		animSeen := false
+
+		for time.Now().Before(settleDeadline) {
+			var state string
+
+			if err := chromedp.Evaluate(expr, &state).Do(ctx); err != nil {
 				return err
 			}
 
-			if done {
+			switch state {
+			case "none", "done":
 				return nil
+			case "running":
+				animSeen = true
+			case "empty":
+				if animSeen || !time.Now().Before(registerDeadline) {
+					return nil
+				}
 			}
 
 			if err := chromedp.Sleep(40 * time.Millisecond).Do(ctx); err != nil {
