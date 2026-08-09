@@ -27,6 +27,9 @@ jobs:
       - name: Templ-sync guard (fast, catches *_templ.go drift before generate)
         run: scripts/check-templ-sync.sh
 
+      - name: Version-sync guard (fast, catches version drift before test)
+        run: scripts/check-version-sync.sh
+
       - name: Run golangci-lint
         run: |
           golangci-lint run --timeout=5m \

@@ -71,7 +71,7 @@ type BaseProps struct {
 
 | Component            | Status           | Description                     | Key Features                                                                                                                                                                                                                                    |
 | -------------------- | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Accordion`          | FULLY_FUNCTIONAL | Collapsible accordion panels    | JS toggle, `aria-expanded`, `aria-controls`, chevron rotation                                                                                                                                                                                   |
+| `Accordion`          | FULLY_FUNCTIONAL | Collapsible accordion panels    | Native `<details>/<summary>`, zero JS, chevron rotation via CSS, `role=group`                                                                                                                                                                 |
 | `Avatar`             | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                                                                                                                                                                                   |
 | `Button`             | FULLY_FUNCTIONAL | Action button                   | 5 variants, 3 sizes, href (link mode), loading state                                                                                                                                                                                            |
 | `Badge`              | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                                                                                                                                                                                               |
@@ -138,10 +138,6 @@ type BaseProps struct {
 | `LineChartStyle`    | Linear, Smooth (Catmull-Rom spline)                |
 | `PieChartLabelMode` | External, None                                     |
 | `BarOrient`         | Horizontal, Vertical                               |
-
-### Known Issues
-
-- `Accordion` `grid-rows-[0fr]` CSS output never verified against compiled Tailwind v4 output — accordion collapse animation depends on it (`display/accordion.templ:79`)
 
 ---
 
