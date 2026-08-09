@@ -3,7 +3,7 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/larsartmann/templ-components/ci.yaml?branch=master&style=flat-square)](https://github.com/larsartmann/templ-components/actions)
 [![Go Reference](https://img.shields.io/badge/go-pkg.go.dev-blue?style=flat-square)](https://pkg.go.dev/github.com/larsartmann/templ-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://github.com/larsartmann/templ-components/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/version-v1.2.0-blue?style=flat-square)](https://github.com/larsartmann/templ-components/releases)
+[![Version](https://img.shields.io/badge/version-v1.8.0-blue?style=flat-square)](https://github.com/larsartmann/templ-components/releases)
 
 **Server-rendered Go components that ship real HTML — no JavaScript framework required. Built on [templ](https://templ.guide), [HTMX](https://htmx.org), and [Tailwind CSS v4](https://tailwindcss.com).**
 
@@ -297,7 +297,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | Typed enums    | 52 (49 with IsValid)                                |
 | Packages       | 15                                                  |
 | Tests          | ~1,070 test functions + ~1,240 subtests             |
-| Visual goldens | 49 pixel-level regression tests (chromedp)          |
+| Visual goldens | 66 pixel-level regression tests (chromedp)          |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---
