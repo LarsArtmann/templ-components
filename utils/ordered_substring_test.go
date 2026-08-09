@@ -141,3 +141,46 @@ func isOrderedTailwindSubstring(literal string, tailwindTokenRe *regexp.Regexp) 
 
 	return hasHyphen
 }
+
+// TestIsOrderedTailwindSubstring verifies the predicate used by
+// TestNoOrderedTailwindSubstringsInTests. Without this test, the guard itself
+// is untested — a predicate bug could silently disable the drift guard.
+func TestIsOrderedTailwindSubstring(t *testing.T) {
+	t.Parallel()
+
+	re := regexp.MustCompile(`^[a-z][a-z0-9]*(?::[a-z][a-z0-9]*)*(?:-[a-z0-9\[\]/._%]+)*$`)
+
+	tests := []struct {
+		name     string
+		literal  string
+		expected bool
+	}{
+		{"classic violation", "bg-blue-600 text-white", true},
+		{"padding pair", "px-4 py-2", true},
+		{"dark mode pair", "dark:bg-blue-500 text-blue-400", true},
+		{"three layout classes", "flex items-center justify-center", true},
+		{"arbitrary value", "w-[100px] h-[50px]", true},
+		{"mixed valid tokens", "flex bg-blue-600", true},
+
+		{"empty string", "", false},
+		{"single token no space", "bg-blue-600", false},
+		{"single token with space", "bg-blue-600 ", false},
+		{"two tokens no hyphen", "flex items", false},
+		{"english phrase", "some random text", false},
+		{"uppercase words", "Hello World", false},
+		{"html attribute", "data-testid", false},
+		{"css property", "display flex", false},
+		{"aria attribute pair", "role button", false},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			t.Parallel()
+
+			result := isOrderedTailwindSubstring(tc.literal, re)
+			if result != tc.expected {
+				t.Errorf("isOrderedTailwindSubstring(%q) = %v, want %v", tc.literal, result, tc.expected)
+			}
+		})
+	}
+}

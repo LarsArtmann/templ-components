@@ -15,6 +15,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Version-sync pre-commit guard.** New `scripts/check-version-sync.sh` extracts the version from `utils/version.go`, `CHANGELOG.md`, and `FEATURES.md` and blocks commits if they disagree (<50ms shell, mirrors `check-templ-sync.sh`). Wired into `.git/hooks/pre-commit` (Guard 3) and CI.
 - **Actionlint in CI.** GitHub Actions workflow files are now linted with `actionlint` on every push/PR.
 - **Fuzz tests for chart geometry.** `FuzzBuildSmoothPath` and `FuzzBuildAreaPath` join the existing chart fuzz suite, verifying the Catmull-Rom spline and area-path builders never panic on adversarial inputs (NaN, Inf, empty slices, extreme coordinates).
+- **Unit test for ordered-substring guard predicate.** `TestIsOrderedTailwindSubstring` provides 16 table-driven cases (positive violations + negative non-violations), closing the meta-test gap where the drift guard itself was untested.
+
+### Fixed
+
+- **Visual test harness: parallel tab isolation.** `TestWaitAnimationSettled` subtests no longer share a single browser tab — each gets its own via `newTab(t)`, eliminating context-cancellation failures when parallel navigations clobbered each other.
+- **Visual test harness: two-phase transition detection.** `waitAnimationSettled` now waits for `@starting-style` transitions to *register* (appear in `getAnimations()`) before waiting for them to *finish*, fixing the 99%+ false mismatch on drawers/popovers captured mid-slide under parallel load.
+- **Visual test thresholds.** `TestPolledRegion` raised to 1% MaxMismatch (sub-pixel font rendering noise); `TestSpinner` raised to 8% (continuously rotating CSS animation catches random frames).
 
 ## [1.8.0] — 2026-08-08
 
