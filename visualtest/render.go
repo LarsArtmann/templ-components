@@ -73,7 +73,10 @@ func (s InteractionState) String() string {
 //	visualtest.Options{Dark: visualtest.Bool(true)}  // explicit dark mode
 //	visualtest.Options{Dark: visualtest.Bool(false)} // explicit light mode
 //	visualtest.Options{}                             // unset → default (light)
-func Bool(b bool) *bool { return &b }
+//
+//go:fix inline
+//nolint:gocheckcompilerdirectives,modernize // //go:fix is a valid Go 1.26 directive; the linter is stale; the wrapper exists for API stability + tri-state clarity, not micro-optimization
+func Bool(b bool) *bool { return new(b) }
 
 // Options configures how a component is rendered and captured.
 type Options struct {

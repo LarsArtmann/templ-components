@@ -34,7 +34,7 @@ func readGolden(t *testing.T, name string) (image.Image, bool) {
 
 		t.Fatalf("visualtest: open golden %s: %v", p, err)
 	}
-	defer f.Close() //nolint:gosec // read-only test fixture
+	defer f.Close()
 
 	img, err := png.Decode(f)
 	if err != nil {

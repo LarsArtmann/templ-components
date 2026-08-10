@@ -63,12 +63,12 @@ func comparePixels(
 	if err != nil && !errors.Is(err, pixelmatch.ErrImageSizesNotMatch) {
 		// An unexpected error from pixelmatch is a test-harness bug, not a
 		// visual regression — surface it loudly.
-		return diffResult{
+		return diffResult{ //nolint:exhaustruct
 			Match:       false,
 			MismatchPct: percentMultiplier,
 			Width:       goldenBounds.Dx(),
 			Height:      goldenBounds.Dy(),
-		}, nil //nolint:exhaustruct
+		}, nil
 	}
 
 	pct := float64(mismatched) / float64(total) * percentMultiplier
