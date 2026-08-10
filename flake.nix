@@ -157,14 +157,19 @@
 
             coverage = {
               type = "app";
-              meta.description = "Run tests with coverage report";
+              meta.description = "Run tests with coverage report (all modules)";
               program = pkgs.writeShellApplication {
                 name = "run-coverage";
                 runtimeInputs = [ pkgs.go_1_26 ];
                 text = ''
                   export GOEXPERIMENT=jsonv2
+                  echo "=== Root module ==="
                   go test ./... -count=1 -coverprofile=coverage.out
                   go tool cover -func=coverage.out | tail -1
+                  for mod in utils icons errorpage charts/echarts; do
+                    echo "=== $mod ==="
+                    (cd "$mod" && go test ./... -count=1 -coverprofile=coverage.out && go tool cover -func=coverage.out | tail -1)
+                  done
                 '';
               };
             };

@@ -15,6 +15,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Architecture
 
+- **ADR-0034: Targeted 5-module workspace split.** The single-module library is now 5 Go modules coordinated by `go.work` (local dev) + `replace` directives (CI/consumers): `utils` (leaf: BaseProps, Class(), EnsureID, svg, cdn, golden), `icons` (102 SVG icons, icons-only adoption), `errorpage` (isolates `go-error-family`), `charts/echarts` (opt-in adapter), and root (all core UI + recipes + integration + demo + CLI). `internal/svg`, `internal/cdn`, `internal/golden` promoted to `utils/` sub-packages (Go's `internal/` rule blocks cross-module access). Import paths are unchanged for all externally-importable packages. Shared versioning: `scripts/release.sh` tags all 5 modules at release time (`v<x>`, `utils/v<x>`, `icons/v<x>`, `errorpage/v<x>`, `charts/echarts/v<x>`). Per-module CI isolation tests verify standalone builds. Supersedes ADR-0020 (proposed per-package ~12-module split, deferred). See `docs/adr/0034-targeted-module-split.md`.
 - **ADR-0033: Web Components permanently rejected.** Shadow DOM breaks the Tailwind-utility theming model; Custom Elements require JavaScript (violating the zero-JS principle); the cross-framework distribution problem WC solve doesn't exist for a Go-source library. The library achieves "use the platform" (the actual goal) via native APIs (`<dialog>`, Popover, `<details>`, scroll-snap, `@container`). Added to ROADMAP "Explicitly NOT Planned".
 
 ## [1.8.1] — 2026-08-09
