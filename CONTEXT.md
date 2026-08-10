@@ -23,28 +23,33 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS](
 ```
 templ-components/
 ├── utils/           # Base types, Tailwind class merging, generic helpers (Lookup, Ternary, EnsureID)
-├── internal/svg/    # Shared SVG primitives (fillIcon, spinner)
-├── display/         # UI (20): card, badge, modal, drawer, table, tabs, avatar, tooltip, accordion, dropdown, stat card, grid, page header, definition list, list note, empty state
+│                   # Sub-packages: utils/svg (SVG path constants), utils/cdn (SRI hashes), utils/golden (golden file testing)
+├── display/         # UI (38): card, badge, modal, drawer, table, tabs, avatar, tooltip, accordion, dropdown, stat card, grid, charts (LineChart, AreaChart, PieChart), carousel, context menu, hover card
 ├── feedback/        # Feedback (13): alert, toast, spinner, progress, skeleton, skeleton card grid, step indicator (shared feedbackStyleSet)
-├── forms/           # Form controls (16): input, select, textarea, checkbox, radio, toggle, file input, date picker, combobox, label, form, validation summary
-├── errorpage/       # Error presentation (3): ErrorPage, ErrorDetail, ErrorAlert + ErrorHandler + 6 constructors
-├── htmx/            # HTMX helpers: loading, error handling, CSRF, OOB swap, confirm delete
-├── internal/golden/ # Golden file comparison with CSS class normalization
-├── icons/           # Named SVG icons (100 path icons + Spinner = 101, map-driven rendering)
-├── layout/          # Page layout (5): base HTML, minimal, theme toggle, dark mode, CSP-safe Script helper
-└── navigation/      # Nav (10): navbar, simple nav, breadcrumbs, pagination, mobile menu, sidebar nav, footer
+├── forms/           # Form controls (21): input, select, textarea, checkbox, radio, toggle, file input, date picker, combobox, label, form, validation summary, slider, rating, tags input, calendar
+├── errorpage/       # Error presentation (4): ErrorPage, ErrorDetail, ErrorAlert, NotFound404 + ErrorHandler + 6 constructors + go-error-family integration
+├── htmx/            # HTMX helpers: loading, error handling, CSRF, OOB swap, confirm delete, View Transitions
+├── datastar/        # Datastar SDK runtime injection, SSE-powered LiveRegion, loading Indicator (opt-in, ADR-0030)
+├── charts/echarts/  # Opt-in ECharts adapter — accepts go-echarts RenderSnippet strings, CSP-safe, dark mode bridge (ADR-0031)
+├── icons/           # Named SVG icons (102 icons, map-driven rendering) — separate module
+├── layout/          # Page layout (10): base HTML, minimal, theme toggle, dark mode, CSP-safe Script/Stylesheet helpers, AppShell, Container, Split, Stack
+├── navigation/      # Nav (12): navbar, simple nav, breadcrumbs, pagination, mobile menu, sidebar nav, footer, EndOfList
+├── recipes/         # 3 composition screens: Dashboard, SettingsLayout, LoginCard
+├── integration/     # CSP nonce tests
+└── internal/contract/ # Contract tests — cross-package interface verification
 ```
 
-### Import Graph
+### Import Graph (Multi-Module Workspace)
 
 ```
-utils          ← all packages
-internal/svg   ← display, feedback, icons
-icons          ← display, feedback, errorpage
-internal/golden ← test-only (feedback, display, navigation golden tests)
+Layer 0 (leaf):  utils (utils, utils/svg, utils/cdn, utils/golden)
+Layer 1:         icons, charts/echarts    [depend on utils]
+Layer 2:         errorpage                [depends on utils, icons]
+Layer 3:         root (display, feedback, forms, layout, navigation,
+                          htmx, datastar, recipes, integration, internal/contract)
 ```
 
-No circular imports. `internal/svg` is not importable by consumers (Go `internal/` convention).
+No circular imports. Strict DAG — edges point downward only. 5 modules coordinated by `go.work` (dev) + `replace` directives (CI/consumers).
 
 ## Key Patterns
 
@@ -133,7 +138,7 @@ No other runtime dependencies.
 ## Architecture Decisions
 
 1. **`utils.BaseProps` over per-component fields** — Shared ID/Class/Attrs/AriaLabel/Nonce across all components
-2. **`internal/svg` package** — Centralized SVG primitives to avoid cross-package import issues
+2. **`utils/svg` package** — Centralized SVG primitives (was `internal/svg`, promoted for cross-module access)
 3. **Map-based style lookups** — Data-driven, extensible, consistent across packages
 4. **`layout.PageProps` (not BaseProps)** — Different purpose, different name to avoid confusion. `PageProps` does NOT embed `utils.BaseProps` because it represents a full HTML page (with Title, Description, HTMX config, security headers) rather than an inline component. It has its own `ID`, `Class`, `Attrs`, and `Nonce` fields directly.
 5. **String enums** — Type-safe without code generation; `type XxxType string` + constants
@@ -141,7 +146,7 @@ No other runtime dependencies.
 7. **`feedbackStyleSet` + generic lookup** — Shared style struct with `lookupFeedbackStyle[T]()` eliminates per-component duplicate types
 8. **`iconPathData` map** — Data-driven icon rendering replaces switch statements; multi-path icons use `|` separator
 9. **`AvatarStatus` / `TrendDirection` enums** — Impossible states unrepresentable; boolean pairs eliminated
-10. **`internal/golden`** — Golden file snapshot testing with CSS class normalization (sorts classes for deterministic comparison despite tailwind-merge-go non-deterministic ordering)
+10. **`utils/golden`** — Golden file snapshot testing with CSS class normalization (was `internal/golden`, promoted for cross-module access)
 
 ### JavaScript Patterns
 
