@@ -38,7 +38,7 @@ func comparePixels(
 	actualBounds := actual.Bounds()
 
 	if !goldenBounds.Eq(actualBounds) {
-		return diffResult{ //nolint:exhaustruct // Pixels omitted intentionally on dimension mismatch
+		return diffResult{ //nolint:exhaustruct
 			Match:       false,
 			MismatchPct: percentMultiplier,
 			Width:       actualBounds.Dx(),
@@ -48,7 +48,7 @@ func comparePixels(
 
 	total := goldenBounds.Dx() * goldenBounds.Dy()
 	if total == 0 {
-		return diffResult{Match: true, Width: goldenBounds.Dx(), Height: goldenBounds.Dy()}, nil //nolint:exhaustruct // MismatchPct and Pixels are zero by design
+		return diffResult{Match: true, Width: goldenBounds.Dx(), Height: goldenBounds.Dy()}, nil //nolint:exhaustruct
 	}
 
 	var diffImg image.Image
@@ -63,7 +63,12 @@ func comparePixels(
 	if err != nil && !errors.Is(err, pixelmatch.ErrImageSizesNotMatch) {
 		// An unexpected error from pixelmatch is a test-harness bug, not a
 		// visual regression — surface it loudly.
-		return diffResult{Match: false, MismatchPct: percentMultiplier, Width: goldenBounds.Dx(), Height: goldenBounds.Dy()}, nil //nolint:exhaustruct // Pixels omitted on error path
+		return diffResult{
+			Match:       false,
+			MismatchPct: percentMultiplier,
+			Width:       goldenBounds.Dx(),
+			Height:      goldenBounds.Dy(),
+		}, nil //nolint:exhaustruct
 	}
 
 	pct := float64(mismatched) / float64(total) * percentMultiplier

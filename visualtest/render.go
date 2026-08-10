@@ -16,6 +16,8 @@ type Viewport struct {
 
 // Common viewport presets matching real device CSS widths. Use them as
 // Options{Viewport: visualtest.ViewportMobile} to test responsive breakpoints.
+//
+//nolint:gochecknoglobals // viewport presets are intentional package-level constants consumed by callers
 var (
 	ViewportMobile  = Viewport{Width: 375, Height: 667}  // iPhone SE / small phone
 	ViewportTablet  = Viewport{Width: 768, Height: 1024} // iPad portrait
@@ -71,9 +73,7 @@ func (s InteractionState) String() string {
 //	visualtest.Options{Dark: visualtest.Bool(true)}  // explicit dark mode
 //	visualtest.Options{Dark: visualtest.Bool(false)} // explicit light mode
 //	visualtest.Options{}                             // unset → default (light)
-//
-//go:fix inline
-func Bool(b bool) *bool { return new(b) }
+func Bool(b bool) *bool { return &b }
 
 // Options configures how a component is rendered and captured.
 type Options struct {
@@ -111,24 +111,24 @@ type Options struct {
 }
 
 // defaultOptions fills zero values with sensible defaults.
-func defaultOptions(o Options) Options {
-	if o.Viewport.Width == 0 {
-		o.Viewport.Width = ViewportDesktop.Width
+func defaultOptions(options Options) Options {
+	if options.Viewport.Width == 0 {
+		options.Viewport.Width = ViewportDesktop.Width
 	}
 
-	if o.Viewport.Height == 0 {
-		o.Viewport.Height = ViewportDesktop.Height
+	if options.Viewport.Height == 0 {
+		options.Viewport.Height = ViewportDesktop.Height
 	}
 
-	if o.MaxMismatch == 0 {
-		o.MaxMismatch = 0.001
+	if options.MaxMismatch == 0 {
+		options.MaxMismatch = 0.001
 	}
 
-	if o.Threshold == 0 {
-		o.Threshold = 0.1
+	if options.Threshold == 0 {
+		options.Threshold = 0.1
 	}
 
-	return o
+	return options
 }
 
 // isDark reports whether the Dark option is explicitly true.

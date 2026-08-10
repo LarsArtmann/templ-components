@@ -11,10 +11,12 @@ import (
 // with the exact same stylesheet consumers see. It is read once from
 // examples/demo/static/app.css (the demo's compiled output) relative to the
 // repo root.
+//
+//nolint:gochecknoglobals // sync.Once + cache pattern requires package-level state
 var (
 	cssOnce sync.Once
 	cssData []byte
-	cssErr  error
+	errCSS  error
 )
 
 // loadCSS returns the compiled Tailwind stylesheet. It resolves the path from
@@ -23,22 +25,22 @@ func loadCSS() ([]byte, error) {
 	cssOnce.Do(func() {
 		path := cssPath()
 
-		cssData, cssErr = os.ReadFile(path)
-		if cssErr == nil {
+		cssData, errCSS = os.ReadFile(path)
+		if errCSS == nil {
 			return
 		}
 
-		cssErr = &cssLoadError{path: path, err: cssErr}
+		errCSS = &cssLoadError{path: path, err: errCSS}
 	})
 
-	return cssData, cssErr
+	return cssData, errCSS
 }
 
 // cssPath locates examples/demo/static/app.css relative to this source file.
 // runtime.Caller gives the absolute path of this file in the module tree, so
 // the lookup is immune to the process working directory.
 func cssPath() string {
-	_, file, _, _ := runtime.Caller(0) // visualtest/css.go
+	_, file, _, _ := runtime.Caller(0) //nolint:dogsled // pc and line are intentionally discarded; only the file path is needed
 	// file = <repo>/visualtest/css.go
 	repoRoot := filepath.Dir(file)
 

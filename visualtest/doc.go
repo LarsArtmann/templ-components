@@ -37,6 +37,7 @@ import (
 )
 
 var (
+	//nolint:gochecknoglobals // shared Chromium allocator + lifecycle state shared across all visual tests
 	allocatorOnce  sync.Once
 	sharedAllocCtx context.Context
 	allocCancel    context.CancelFunc
@@ -57,6 +58,11 @@ func ensureAllocator(t *testing.T) {
 			return
 		}
 
+		// Validate the path is accessible before handing it to chromedp —
+		// avoids a more confusing exec failure later. The chromePath comes
+		// from CHROMEDP_CHROME_PATH (test environment variable, set by
+		// `nix run .#visual`), not from user input.
+		//nolint:gosec // path is from CHROMEDP_CHROME_PATH env var, not user-controlled
 		if _, err := os.Stat(chromePath); err != nil {
 			return
 		}

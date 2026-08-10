@@ -16,9 +16,6 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-// percentMultiplier converts a fractional ratio (0.0–1.0) into a percentage (0–100%).
-const percentMultiplier = 100
-
 // AssertScreenshot renders component in an isolated page, captures an element
 // screenshot of #tc-root, and compares the pixels against the golden PNG in
 // testdata. With -update, the golden is rewritten instead.
@@ -268,7 +265,7 @@ func hoverAction(sel string) chromedp.Action {
 		// Descend to the first interactive child like focusAction; fall back to
 		// the root so components with no inner interactive element still get a
 		// hover at the root centre.
-		js := `(() => {
+		script := `(() => {
 			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
 			if (!root) return null;
 			const e = root.querySelector('button, a[href], input, select, textarea, [role="button"], [tabindex]:not([tabindex="-1"])') || root;
@@ -277,12 +274,12 @@ func hoverAction(sel string) chromedp.Action {
 		})()`
 
 		var coords []float64
-		if err := chromedp.Evaluate(js, &coords).Do(ctx); err != nil {
+		if err := chromedp.Evaluate(script, &coords).Do(ctx); err != nil {
 			return fmt.Errorf("hover: get %s rect: %w", sel, err)
 		}
 
 		if len(coords) != 2 {
-			return fmt.Errorf("hover: element %q not found", sel)
+			return wrapSelector(errHoverElementNotFound, sel)
 		}
 
 		return input.DispatchMouseEvent(input.MouseMoved, coords[0], coords[1]).Do(ctx)
@@ -295,7 +292,7 @@ func hoverAction(sel string) chromedp.Action {
 // focusable element exists.
 func focusAction(sel string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
-		js := `(() => {
+		script := `(() => {
 			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
 			if (!root) return false;
 			const f = root.querySelector('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
@@ -304,12 +301,12 @@ func focusAction(sel string) chromedp.Action {
 		})()`
 
 		var focused bool
-		if err := chromedp.Evaluate(js, &focused).Do(ctx); err != nil {
+		if err := chromedp.Evaluate(script, &focused).Do(ctx); err != nil {
 			return fmt.Errorf("focus: query %s: %w", sel, err)
 		}
 
 		if !focused {
-			return fmt.Errorf("focus: no focusable element under %q", sel)
+			return wrapSelector(errFocusNoElement, sel)
 		}
 
 		return nil
@@ -324,7 +321,7 @@ func focusAction(sel string) chromedp.Action {
 // invoker, but a dispatched event also exercises hover/active paint).
 func clickAction(sel string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
-		js := `(() => {
+		script := `(() => {
 			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
 			if (!root) return null;
 			const e = root.querySelector('[popovertarget], button, a[href], [role="button"]');
@@ -334,12 +331,12 @@ func clickAction(sel string) chromedp.Action {
 		})()`
 
 		var coords []float64
-		if err := chromedp.Evaluate(js, &coords).Do(ctx); err != nil {
+		if err := chromedp.Evaluate(script, &coords).Do(ctx); err != nil {
 			return fmt.Errorf("click: query %s: %w", sel, err)
 		}
 
 		if len(coords) != 2 {
-			return fmt.Errorf("click: no clickable element under %q", sel)
+			return wrapSelector(errClickNoElement, sel)
 		}
 
 		// Press + release at centre: this triggers the popovertarget invoker
@@ -361,7 +358,7 @@ func clickAction(sel string) chromedp.Action {
 // headless Chromium.
 func contextAction(sel string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
-		js := `(() => {
+		script := `(() => {
 			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
 			if (!root) return false;
 			const t = root.querySelector('[data-tc-ctxmenu-trigger], button, a[href], [tabindex]');
@@ -371,12 +368,12 @@ func contextAction(sel string) chromedp.Action {
 		})()`
 
 		var ok bool
-		if err := chromedp.Evaluate(js, &ok).Do(ctx); err != nil {
+		if err := chromedp.Evaluate(script, &ok).Do(ctx); err != nil {
 			return fmt.Errorf("context: query %s: %w", sel, err)
 		}
 
 		if !ok {
-			return fmt.Errorf("context: no trigger element under %q", sel)
+			return wrapSelector(errContextNoTrigger, sel)
 		}
 
 		return nil
