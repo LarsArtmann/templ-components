@@ -45,7 +45,7 @@ wrapper (or `@container` on root for Pagination), swap `sm:`/`md:`/`lg:` for
 
 Six `.tc-fluid-*` utility classes in `templates/custom.css` size text with `cqi` (container
 inline-size units) + `clamp()`. Text scales smoothly with its container — the typography
-analog of the container-aware components. See the [Fluid Typography recipe](../recipes/fluid-typography.md).
+analog of the container-aware components. See the [Fluid Typography recipe](recipes/fluid-typography.md).
 
 ### Enforcement
 
@@ -210,9 +210,9 @@ worth the refactor risk for 8 components × ~3 lines.**
 
 ## References
 
-- [ADR-0018: Container-Query-Native Contract](../adr/0018-container-query-native-contract.md)
-- [ADR-0022: v2.0 Default-Flip Migration Plan](../adr/0022-v2-default-flip-migration.md)
-- [ADR-0033: Web Components Rejection](../adr/0033-web-components-rejection.md)
-- [Recipe: Container Queries](../recipes/container-queries.md)
-- [Recipe: Fluid Typography](../recipes/fluid-typography.md)
+- [ADR-0018: Container-Query-Native Contract](adr/0018-container-query-native-contract.md)
+- [ADR-0022: v2.0 Default-Flip Migration Plan](adr/0022-v2-default-flip-migration.md)
+- [ADR-0033: Web Components Rejection](adr/0033-web-components-rejection.md)
+- [Recipe: Container Queries](recipes/container-queries.md)
+- [Recipe: Fluid Typography](recipes/fluid-typography.md)
 - [MDN: Container Query Length Units](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries#container_query_length_units)

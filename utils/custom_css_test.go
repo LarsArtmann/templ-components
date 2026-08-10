@@ -26,20 +26,7 @@ func TestCustomCSSUtilities(t *testing.T) {
 
 	defined := loadCustomCSSClasses(t)
 
-	requiredFluid := []string{
-		"tc-fluid-display", "tc-fluid-h1", "tc-fluid-h2",
-		"tc-fluid-h3", "tc-fluid-h4", "tc-fluid-lead",
-	}
-
-	for _, cls := range requiredFluid {
-		if !defined[cls] {
-			t.Errorf(
-				"required CSS class .%s is missing from templates/custom.css — "+
-					"fluid typography classes must not be deleted",
-				cls,
-			)
-		}
-	}
+	assertRequiredFluidClasses(t, defined)
 
 	scanDirs := []string{
 		"display", "feedback", "forms", "navigation",
@@ -49,7 +36,36 @@ func TestCustomCSSUtilities(t *testing.T) {
 
 	used := scanTemplForCSSClasses(t, scanDirs)
 
-	violations := make([]string, 0)
+	assertUsedClassesDefined(t, used, defined)
+}
+
+func assertRequiredFluidClasses(t *testing.T, defined map[string]bool) {
+	t.Helper()
+
+	required := []string{
+		"tc-fluid-display", "tc-fluid-h1", "tc-fluid-h2",
+		"tc-fluid-h3", "tc-fluid-h4", "tc-fluid-lead",
+	}
+
+	for _, cls := range required {
+		if !defined[cls] {
+			t.Errorf(
+				"required CSS class .%s is missing from templates/custom.css — "+
+					"fluid typography classes must not be deleted",
+				cls,
+			)
+		}
+	}
+}
+
+func assertUsedClassesDefined(
+	t *testing.T,
+	used map[string][]string,
+	defined map[string]bool,
+) {
+	t.Helper()
+
+	var violations []string
 
 	for cls, files := range used {
 		if defined[cls] {
@@ -100,72 +116,79 @@ func loadCustomCSSClasses(t *testing.T) map[string]bool {
 	return defined
 }
 
+// cssTokenRe matches tc-* CSS class names while filtering out data-tc-*
+// attributes and --tc-* custom properties. The non-capturing prefix ensures
+// the character before tc- is NOT a lowercase letter or hyphen.
+var cssTokenRe = regexp.MustCompile(`(?:^|[^a-z-])(tc-[a-z][a-z0-9-]*)`)
+
+var cssCommentRe = regexp.MustCompile(`^\s*//`)
+
 // scanTemplForCSSClasses walks .templ files in the given directories and
 // returns a map of tc-* CSS class names to the files where they are used.
-//
-// Only classes that appear as CSS class references are collected — data-tc-*
-// attributes and --tc-* custom properties are filtered out.
 func scanTemplForCSSClasses(t *testing.T, dirs []string) map[string][]string {
 	t.Helper()
-
-	// (?:^|[^a-z-]) ensures the char before tc- is NOT a lowercase letter
-	// or hyphen, which filters out data-tc-* and --tc-* tokens.
-	tokenRe := regexp.MustCompile(`(?:^|[^a-z-])(tc-[a-z][a-z0-9-]*)`)
-
-	commentRe := regexp.MustCompile(`^\s*//`)
 
 	used := make(map[string]map[string]bool)
 
 	for _, dir := range dirs {
-		dirPath := filepath.Join("..", dir)
-
-		err := filepath.Walk(dirPath, func(path string, info os.FileInfo, walkErr error) error {
-			if walkErr != nil {
-				return walkErr
-			}
-
-			if info.IsDir() || !strings.HasSuffix(path, ".templ") {
-				return nil
-			}
-
-			if strings.Contains(path, "cmd"+string(filepath.Separator)+"tc") {
-				return nil
-			}
-
-			data, err := os.ReadFile(path)
-			if err != nil {
-				return fmt.Errorf("read file: %w", err)
-			}
-
-			relPath := strings.TrimPrefix(path, "../")
-
-			for line := range strings.SplitSeq(string(data), "\n") {
-				if commentRe.MatchString(line) {
-					continue
-				}
-
-				for _, match := range tokenRe.FindAllStringSubmatch(line, -1) {
-					cls := match[1]
-
-					if used[cls] == nil {
-						used[cls] = make(map[string]bool)
-					}
-
-					used[cls][relPath] = true
-				}
-			}
-
-			return nil
-		})
-		if err != nil {
-			t.Logf("walk error for %s: %v", dir, err)
-		}
+		walkCSSClassDir(t, filepath.Join("..", dir), used)
 	}
 
+	return flattenCSSClassMap(used)
+}
+
+func walkCSSClassDir(t *testing.T, dirPath string, used map[string]map[string]bool) {
+	t.Helper()
+
+	err := filepath.Walk(dirPath, func(path string, info os.FileInfo, walkErr error) error {
+		if walkErr != nil || info.IsDir() || !strings.HasSuffix(path, ".templ") {
+			return walkErr
+		}
+
+		if strings.Contains(path, filepath.Join("cmd", "tc")) {
+			return nil
+		}
+
+		collectCSSClassesFromFile(path, used)
+
+		return nil
+	})
+	if err != nil {
+		t.Logf("walk error for %s: %v", dirPath, err)
+	}
+}
+
+func collectCSSClassesFromFile(path string, used map[string]map[string]bool) {
+	data, err := os.ReadFile(path)
+	if err != nil {
+		return
+	}
+
+	relPath := strings.TrimPrefix(path, "../")
+
+	for line := range strings.SplitSeq(string(data), "\n") {
+		if cssCommentRe.MatchString(line) {
+			continue
+		}
+
+		for _, match := range cssTokenRe.FindAllStringSubmatch(line, -1) {
+			cls := match[1]
+
+			if used[cls] == nil {
+				used[cls] = make(map[string]bool)
+			}
+
+			used[cls][relPath] = true
+		}
+	}
+}
+
+func flattenCSSClassMap(used map[string]map[string]bool) map[string][]string {
 	result := make(map[string][]string, len(used))
 
 	for cls, fileSet := range used {
 		files := make([]string, 0, len(fileSet))
+
 		for file := range fileSet {
 			files = append(files, file)
 		}

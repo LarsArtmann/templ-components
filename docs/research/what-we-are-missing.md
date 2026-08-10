@@ -409,10 +409,16 @@ Enables **scoped CSS per component** without JavaScript:
 </my-card>
 ```
 
-**Relevance:** templ-components currently uses global Tailwind classes. DSD
-would enable true component encapsulation — styles can't leak in or out.
-However, this conflicts with the current Tailwind utility-class approach.
-Better suited for a "scoped components" opt-in mode in v2.0+.
+**Relevance:** **Permanently rejected.** See [ADR-0033](../adr/0033-web-components-rejection.md).
+Shadow DOM breaks the Tailwind utility-class theming model (classes cannot
+cross the shadow boundary), and the distribution problem Web Components solve
+(packaging/distributing JS-enhanced components) does not exist for a Go-source
+library. The library already achieves component-scoped behavior via native
+APIs (`<dialog>`, Popover API, `<details>`, scroll-snap, container queries).
+
+> **Update (2026-08-10):** This section previously said "better suited for a
+> 'scoped components' opt-in mode in v2.0+." That conclusion has been
+> overturned — Web Components (including DSD) are permanently rejected.
 
 ---
 
@@ -508,6 +514,6 @@ client-side JS — our URL parsing is server-side Go.
 | ------------------------------------------------------ | ----------------------------- |
 | Anchor Positioning for Tooltip/Dropdown/Popover        | Eliminates JS positioning     |
 | `light-dark()` migration                               | Simplifies dark mode system   |
-| Declarative Shadow DOM opt-in                          | Component style encapsulation |
+| ~~Declarative Shadow DOM opt-in~~                      | ~~Component style encapsulation~~ **Permanently rejected (ADR-0033)** |
 | Popover API migration (Dropdown, Popover, ContextMenu) | ~134 lines JS eliminated      |
 | `<dialog>` migration (Modal, Drawer)                   | ~150 lines JS eliminated      |

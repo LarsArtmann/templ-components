@@ -2,6 +2,8 @@
 
 > Use `@container` when a component should adapt to its **parent's** width, not the viewport.
 
+**See also:** [Container Query Leveraging Strategy](../container-query-strategy.md) | [Fluid Typography](fluid-typography.md) | [ADR-0018](../adr/0018-container-query-native-contract.md)
+
 ## When to use container queries
 
 Use container queries when a component is placed in variable-width containers

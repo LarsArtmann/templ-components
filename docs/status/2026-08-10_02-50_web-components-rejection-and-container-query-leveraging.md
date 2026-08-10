@@ -13,7 +13,7 @@
 | Item | File | Notes |
 |------|------|-------|
 | ADR-0033: Web Components permanently rejected | `docs/adr/0033-web-components-rejection.md` | Binding decision. Shadow DOM breaks Tailwind theming; Custom Elements need JS; distribution problem doesn't exist for Go-source lib. Added to ROADMAP "Explicitly NOT Planned". |
-| Container Query leveraging strategy | `docs/research/container-query-strategy.md` | Full landscape: shipped foundation, cqi units, style queries (deferred), v2 default flip, named containers, 5 candidates evaluated & rejected, consolidation declined. |
+| Container Query leveraging strategy | `docs/container-query-strategy.md` | Full landscape: shipped foundation, cqi units, style queries (deferred), v2 default flip, named containers, 5 candidates evaluated & rejected, consolidation declined. |
 
 ### New capability: Fluid Typography via Container Query Units
 
