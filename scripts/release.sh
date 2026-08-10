@@ -147,8 +147,8 @@ RELEASE_NOTES="$(printf '%s\n' "$RELEASE_NOTES" | awk 'NF{p=1} p{lines[++n]=$0} 
 RELEASE_COMMITTED=0
 release_rollback() {
     if [ "$RELEASE_COMMITTED" = "0" ]; then
-        echo "Release aborted; rolling back utils/version.go, CHANGELOG.md, FEATURES.md..." >&2
-        git restore utils/version.go CHANGELOG.md FEATURES.md 2>/dev/null || true
+        echo "Release aborted; rolling back version files, go.mod files, CHANGELOG, FEATURES..." >&2
+        git restore utils/version.go go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod CHANGELOG.md FEATURES.md 2>/dev/null || true
     fi
 }
 trap release_rollback EXIT
@@ -157,6 +157,19 @@ trap release_rollback EXIT
 sed -i.bak -E "s|^(const[[:space:]]+Version[[:space:]]+=[[:space:]]+\")[^\"]+(\")|\1${NEW_VERSION}\2|" utils/version.go
 rm -f utils/version.go.bak
 echo "Bumped utils.Version to $NEW_VERSION"
+
+# 5b. Bump internal module require versions in all go.mod files.
+#     Each sub-module references siblings at the shared version. The Go module
+#     proxy resolves these via directory-prefixed tags (utils/v2.0.0, etc.).
+#     The replace directives override these for local dev; at publish time the
+#     proxy uses the tagged version.
+for modfile in go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod; do
+    sed -i.bak -E \
+        "s|(github.com/larsartmann/templ-components/[a-z/]+) v[0-9]+\.[0-9]+\.[0-9]+|\1 v${NEW_VERSION}|g" \
+        "$modfile"
+    rm -f "${modfile}.bak"
+done
+echo "Bumped all internal module require entries to v${NEW_VERSION}."
 
 # 6. Move release notes from [Unreleased] to the new version heading.
 #    On encountering [Unreleased]: emit fresh-empty [Unreleased], then the new
@@ -190,14 +203,13 @@ else
     echo "Warning: FEATURES.md not found; skipped its version bump." >&2
 fi
 
-# 7. Run full verify.
-echo "Running full verify (templ generate + CSS compile + build + test + lint)..."
+# 7. Run full verify (all 5 modules).
+echo "Running full verify (templ generate + CSS compile + per-module build/test/lint)..."
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...
 
 # Recompile demo CSS so committed static/app.css includes any new Tailwind
-# classes from source changes. The Dockerfile does this in its 3-stage build,
-# but local `go run` users rely on the committed file being current.
+# classes from source changes.
 if command -v tailwindcss &>/dev/null; then
     tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css --minify
 else
@@ -205,9 +217,25 @@ else
     echo "Run 'nix run .#build' or install tailwindcss to recompile." >&2
 fi
 
+# Root module (GOWORK=off tests the replace-directive resolution path).
 go build ./...
 go test ./... -count=1 -race
-golangci-lint run ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/... ./internal/...
+
+# Sub-modules (standalone isolation).
+for mod in utils icons errorpage charts/echarts; do
+    echo "==> verify $mod"
+    (cd "$mod" && go build ./... && go test ./... -count=1 -race)
+done
+
+# Lint (golangci-lint does not support go.work).
+golangci-lint run \
+    ./display/... ./errorpage/... ./feedback/... ./forms/... \
+    ./htmx/... ./datastar/... ./integration/... ./internal/... \
+    ./layout/... ./navigation/... ./recipes/... ./cmd/...
+for mod in utils icons errorpage charts/echarts; do
+    echo "==> lint $mod"
+    (cd "$mod" && golangci-lint run ./...)
+done
 
 # Drift-guard: version files must agree with utils.Version (CHANGELOG heading
 # AND FEATURES.md version). The full suite ran above; this surfaces a targeted
@@ -241,12 +269,19 @@ Co-Authored-By: Crush <noreply@crush.lars.software>"
 RELEASE_COMMITTED=1  # commit landed; EXIT trap no longer rolls back
 RELEASE_COMMIT="$(git rev-parse HEAD)"
 
-# 9. Annotated, SSH-signed tag.
+# 9. Annotated, SSH-signed tags (root + all sub-modules).
 git tag -s "v${NEW_VERSION}" -m "v${NEW_VERSION}: ${RELEASE_SUMMARY}" "$RELEASE_COMMIT"
+
+# Sub-module tags use directory-prefixed format so the Go module proxy
+# resolves them correctly (e.g., utils/v2.0.0 → module .../utils at v2.0.0).
+for submod in utils icons errorpage charts/echarts; do
+    git tag -s "${submod}/v${NEW_VERSION}" -m "${submod}/v${NEW_VERSION}: ${RELEASE_SUMMARY}" "$RELEASE_COMMIT"
+done
 
 echo ""
 echo "Release v${NEW_VERSION} cut at commit ${RELEASE_COMMIT}."
-echo "Tag: v${NEW_VERSION} (annotated, SSH-signed)"
+echo "Tags: v${NEW_VERSION} (root) + utils/v${NEW_VERSION}, icons/v${NEW_VERSION},"
+echo "      errorpage/v${NEW_VERSION}, charts/echarts/v${NEW_VERSION} (sub-modules)"
 echo ""
 echo "Next steps:"
 echo "  1. Review the release: git show v${NEW_VERSION}"

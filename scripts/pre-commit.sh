@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 # Pre-commit hook for templ-components
-# Runs: templ generate, go build, go test, golangci-lint
+# Runs: templ generate, per-module build/test/lint across all 5 modules.
+#
+# GOWORK=off is intentional: it tests the replace-directive resolution path
+# (the same path proxy consumers use at publish time). Workspace mode (go.work)
+# is for interactive development only.
 
 set -euo pipefail
 
@@ -13,13 +17,26 @@ echo "Running templ-components pre-commit checks..."
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...
 
-# Build
+# --- Root module (uses replace directives for sub-modules) ---
 go build ./...
+go test ./... -count=1
 
-# Test
-go test ./...
+# --- Sub-modules (standalone isolation) ---
+for mod in utils icons errorpage charts/echarts; do
+  echo "==> $mod"
+  (cd "$mod" && go build ./... && go test ./... -count=1)
+done
 
-# Lint (examples/ excluded via .golangci.yml)
-golangci-lint run ./...
+# --- Lint (golangci-lint does not support go.work) ---
+echo "==> lint root"
+golangci-lint run \
+  ./display/... ./errorpage/... ./feedback/... ./forms/... \
+  ./htmx/... ./icons/... ./integration/... ./internal/... \
+  ./layout/... ./navigation/... ./recipes/... ./cmd/...
+
+for mod in utils icons errorpage charts/echarts; do
+  echo "==> lint $mod"
+  (cd "$mod" && golangci-lint run ./...)
+done
 
 echo "All checks passed."

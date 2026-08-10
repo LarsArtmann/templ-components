@@ -6,10 +6,12 @@
 
 ## Status
 
-**Proposed — deferred until consumer demand.** A prototype was developed on the
-`modularize/strategic-split` branch (never merged). This ADR documents the
-design; the execution awaits concrete consumer requests for independent
-importability.
+**Superseded by [ADR-0034](0034-targeted-module-split.md).** The split was
+executed on 2026-08-10 with a **targeted 5-module** design (not the per-package
+~12-module design proposed here). The trigger criteria below were formally unmet
+(0 confirmed consumers), but the maintainer chose to execute proactively to
+isolate `go-error-family` (errorpage) and enable icons-only adoption. See
+ADR-0034 for the executed design, DAG, and versioning strategy.
 
 ## Context
 
