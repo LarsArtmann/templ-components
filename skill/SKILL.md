@@ -367,7 +367,7 @@ hand-rolled, and where the gaps are.
 - **CSP-safe by construction.** Every inline `<script>` carries `nonce={ props.Nonce }`. No
   `eval()`, no inline event handlers, no `javascript:` URLs. This is why consumers can ship a
   strict Content-Security-Policy without forking the library.
-- **Single source of truth.** SVG path data lives in `internal/svg`; icon names map to paths in
+- **Single source of truth.** SVG path data lives in `utils/svg`; icon names map to paths in
   `icons/icon_paths.go`; feedback styles live in `feedback/styles.go`; Tailwind class strings are
   never duplicated when a shared constant exists (`cardShellClass`, `mutedTextClass`).
 - **Composition over configuration.** Props embed `utils.BaseProps`; consumers override via
@@ -485,7 +485,7 @@ that's what made `layout.Script` the worst-tested component in the library.
 [ ] coverage_*_test.go  — targeted coverage of private helpers and branches
 ```
 
-Golden tests use `internal/golden.Assert(t, name, got)` with CSS-class normalization; pass
+Golden tests use `utils/golden.Assert(t, name, got)` with CSS-class normalization; pass
 `-update` to regenerate after an intentional visual change, then review the diff.
 
 ## Repo-wide guard & compliance tests
@@ -610,7 +610,7 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
   `Card` internally. `StatCard` also uses `cardShellClass`.
 - **Muted text:** use `mutedTextClass` (`text-sm text-gray-500 dark:text-gray-400`) plus a
   margin, not a bespoke class string.
-- **SVG paths:** reference constants in `internal/svg`, never inline a new path literal.
+- **SVG paths:** reference constants in `utils/svg`, never inline a new path literal.
 - **ProgressBar clamp:** use `max(0, min(100, v))` (Go 1.21+ builtins), not manual if-branch.
 - **RTL logical properties:** use logical Tailwind utilities (`ms-`, `me-`, `ps-`,
   `pe-`, `start-0`, `end-0`, `text-start`, `border-s-`, `border-e-`) instead of

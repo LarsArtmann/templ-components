@@ -238,7 +238,7 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 **Pay for what you use.** Import only the packages you need. No monolithic bundle.
 
-**Tested at two layers.** HTML golden-file snapshots (`internal/golden`) catch
+**Tested at two layers.** HTML golden-file snapshots (`utils/golden`) catch
 structure/class drift; pixel-level visual regression tests (`visualtest/`, a
 separate Go module so chromedp never pollutes your dependency graph) render each
 component in headless Chromium and diff pixels — catching layout shifts,
@@ -309,7 +309,7 @@ of regression:
 
 | Tier                     | What                                                                 | Where                                   | Catches                                                                                                                                         |
 | ------------------------ | -------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `internal/golden` — 175 `.golden` files | Structure, attribute, and class changes                                                                                                         |
+| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 175 `.golden` files    | Structure, attribute, and class changes                                                                                                         |
 | **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                                | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
 | **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)         | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
 

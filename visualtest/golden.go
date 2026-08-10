@@ -11,7 +11,7 @@ import (
 )
 
 // update is the shared -update flag. When set, golden PNGs are rewritten with
-// the current render instead of being compared. Mirrors internal/golden's DX.
+// the current render instead of being compared. Mirrors utils/golden's DX.
 //
 //nolint:gochecknoglobals // CLI flag for golden updates
 var update = flag.Bool("update", false, "update visual golden PNGs instead of comparing")

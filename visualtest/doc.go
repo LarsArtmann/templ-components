@@ -1,7 +1,7 @@
 // Package visualtest provides pixel-level visual regression testing for
 // templ-components using a headless Chromium driven by chromedp.
 //
-// Unlike the HTML-string golden tests in internal/golden (which normalize CSS
+// Unlike the HTML-string golden tests in utils/golden (which normalize CSS
 // class order and compare text), these tests render each component in a real
 // browser, capture a screenshot, and diff pixels against a committed golden
 // PNG. This catches regressions the string tests cannot: layout shifts,
@@ -17,7 +17,7 @@
 //	go test ./... -update                 # regenerate golden PNGs
 //
 // The -update flag rewrites every golden with the current render, just like
-// internal/golden. Review the diff before committing.
+// utils/golden. Review the diff before committing.
 //
 // # Why a separate module?
 //

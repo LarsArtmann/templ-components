@@ -5,7 +5,7 @@ different regressions:
 
 | Layer             | Where                        | Compares   | Catches                                                                        |
 | ----------------- | ---------------------------- | ---------- | ------------------------------------------------------------------------------ |
-| HTML golden       | `internal/golden`            | HTML text  | Structure / class changes (classes are sorted)                                 |
+| HTML golden       | `utils/golden`               | HTML text  | Structure / class changes (classes are sorted)                                 |
 | **Visual golden** | `visualtest/` (this package) | **Pixels** | Layout shifts, dark-mode color regressions, RTL mirroring, responsive collapse |
 
 The HTML golden tests normalize CSS class order and diff strings, so they are

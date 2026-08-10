@@ -14,7 +14,7 @@ Inspired by Domain-Driven Design (DDD) Ubiquitous Language.
 | FeedbackType      | Enum for visual feedback severity: Success, Error, Warning, Info                   | `feedback.FeedbackType`          |
 | TrendDirection    | Enum for stat change direction: Up, Down, None                                     | `display.TrendDirection`         |
 | FeedbackStyle     | Visual properties (color, icon, border) for a feedback variant                     | `feedback.feedbackStyleSet`      |
-| FillIcon          | SVG rendered with `fill="currentColor"`; used for small 20x20 indicators           | `internal/svg.FillIcon`          |
+| FillIcon          | SVG rendered with `fill="currentColor"`; used for small 20x20 indicators           | `utils/svg.FillIcon`             |
 | StrokeIcon        | SVG rendered with `stroke="currentColor"`; standard 24x24 UI icons                 | `icons.Icon`                     |
 | IconPath          | SVG path data string; multi-path icons use a pipe separator                        | `icons.iconPathData`             |
 | CardShell         | Shared CSS class for consistent card appearance (border, shadow, radius)           | `display.cardShellClass`         |

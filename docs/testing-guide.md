@@ -7,7 +7,7 @@ accessible, and does not regress visually.
 
 | Tier                    | Mechanism                                                      | Location                                     | Catches                                                                     | Cost                |
 | ----------------------- | -------------------------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------- | ------------------- |
-| 1. HTML golden          | Render component → normalize → diff against `.golden` file     | `internal/golden`, `<pkg>/testdata/*.golden` | Structure, attributes, class changes                                        | Fast, deterministic |
+| 1. HTML golden          | Render component → normalize → diff against `.golden` file     | `utils/golden`, `<pkg>/testdata/*.golden`    | Structure, attributes, class changes                                        | Fast, deterministic |
 | 2. Drift-guard scanners | Repo-wide invariant tests in `utils/`                          | `utils/*_compliance_test.go`, `integration/` | Cross-cutting regressions (dark-mode gaps, missing motion-reduce, RTL, CSP) | Fast                |
 | 3. Visual regression    | Render in headless Chromium → pixel diff against committed PNG | `visualtest/` (separate module)              | Layout shifts, color regressions, RTL mirroring                             | ~4s full suite      |
 
