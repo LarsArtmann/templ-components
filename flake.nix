@@ -63,7 +63,7 @@
           apps = {
             test = {
               type = "app";
-              meta.description = "Run all tests with race detector";
+              meta.description = "Run all tests with race detector (all modules via go.work)";
               program = pkgs.writeShellApplication {
                 name = "run-tests";
                 runtimeInputs = [ pkgs.go_1_26 ];
@@ -76,12 +76,24 @@
 
             lint = {
               type = "app";
-              meta.description = "Run golangci-lint across all packages";
+              meta.description = "Run golangci-lint across all modules";
               program = pkgs.writeShellApplication {
                 name = "run-lint";
                 runtimeInputs = [ pkgs.golangci-lint ];
                 text = ''
-                  golangci-lint run ./datastar/... ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./utils/... ./internal/...
+                  # golangci-lint does not support go.work workspace mode.
+                  # Lint each module independently with GOWORK=off.
+                  export GOEXPERIMENT=jsonv2
+                  echo "==> Linting root module..."
+                  GOWORK=off golangci-lint run ./display/... ./feedback/... ./forms/... ./htmx/... ./datastar/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./internal/... ./cmd/...
+                  echo "==> Linting utils module..."
+                  (cd utils && GOWORK=off golangci-lint run ./...)
+                  echo "==> Linting icons module..."
+                  (cd icons && GOWORK=off golangci-lint run ./...)
+                  echo "==> Linting errorpage module..."
+                  (cd errorpage && GOWORK=off golangci-lint run ./...)
+                  echo "==> Linting charts/echarts module..."
+                  (cd charts/echarts && GOWORK=off golangci-lint run ./...)
                 '';
               };
             };
@@ -107,7 +119,7 @@
 
             verify = {
               type = "app";
-              meta.description = "Full verification: generate + build + test + lint";
+              meta.description = "Full verification: generate + build + test + lint (all modules)";
               program = pkgs.writeShellApplication {
                 name = "run-verify";
                 runtimeInputs = [
@@ -120,16 +132,24 @@
                   echo "==> Regenerating templ..."
                   find . -name '*_templ.go' -print0 | xargs -0 rm
                   templ generate ./...
-                  echo "==> Building..."
+                  echo "==> Building (workspace)..."
                   go build ./...
-                  echo "==> Testing..."
+                  echo "==> Testing (workspace)..."
                   go test ./... -count=1
-                  echo "==> Testing visualtest module (separate go.mod)..."
-                  # visualtest is a separate Go module; ./... from repo root skips it.
-                  # Tests skip cleanly when Chromium is absent, so this never red-lines CI.
-                  cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./... && cd ..
-                  echo "==> Linting..."
-                  golangci-lint run ./datastar/... ./display/... ./errorpage/... ./feedback/... ./forms/... ./htmx/... ./icons/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./utils/... ./internal/...
+                  echo "==> Per-module GOWORK=off isolation tests..."
+                  for mod in utils icons errorpage charts/echarts; do
+                    echo "  -> $mod"
+                    (cd "$mod" && GOWORK=off go test -count=1 ./...)
+                  done
+                  echo "==> Testing visualtest module..."
+                  (cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./...)
+                  echo "==> Linting per-module..."
+                  echo "  -> root"
+                  GOWORK=off golangci-lint run ./display/... ./feedback/... ./forms/... ./htmx/... ./datastar/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./internal/... ./cmd/...
+                  for mod in utils icons errorpage charts/echarts; do
+                    echo "  -> $mod"
+                    (cd "$mod" && GOWORK=off golangci-lint run ./...)
+                  done
                   echo "==> All checks passed."
                 '';
               };

@@ -6,17 +6,16 @@ import (
 	"testing"
 )
 
-// TestEnvrcConsistency verifies the committed .envrc carries the two flags
-// every tool needs (go, gopls, BuildFlow, IDE) — not just the `nix develop`
-// shell. .envrc is tracked (no secrets: two export lines) so direnv activates
-// it on every clone. If these flags drift, bare `go build` and language servers
-// silently miss GOEXPERIMENT=jsonv2 and fail with confusing errors.
+// TestEnvrcConsistency verifies the committed .envrc carries the
+// GOEXPERIMENT flag every tool needs (go, gopls, BuildFlow, IDE) — not just
+// the `nix develop` shell. .envrc is tracked (no secrets) so direnv activates
+// it on every clone. GOWORK is no longer set to off: the go.work file lists
+// all sub-modules for multi-module workspace development.
 func TestEnvrcConsistency(t *testing.T) {
 	t.Parallel()
 
 	data, err := os.ReadFile("../.envrc")
 	if err != nil {
-		// .envrc is tracked, so a missing file is a real problem, not a skip.
 		t.Fatalf("read ../.envrc: %v\nIf .envrc was deliberately removed, delete this test too.", err)
 	}
 
@@ -24,16 +23,13 @@ func TestEnvrcConsistency(t *testing.T) {
 
 	for _, want := range []string{
 		"GOEXPERIMENT=jsonv2",
-		"GOWORK=off",
 	} {
 		if !strings.Contains(src, want) {
 			t.Errorf(".envrc is missing %q — every tool outside `nix develop` will misbuild the module.", want)
 		}
 	}
 
-	// .envrc must never carry secrets. It is committed precisely because it is
-	// machine-independent. A `source ~/.secrets` or absolute home path would
-	// break other clones and leak on a public repo.
+	// .envrc must never carry secrets or machine-specific paths.
 	dangerous := []string{
 		"source ", "source\t", "~/.secrets", "/home/", "/Users/",
 		"export SECRET", "export TOKEN", "export PASSWORD", "export API_KEY",
