@@ -28,7 +28,7 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **Typed props**        | 52 enums                   | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)          | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts) | Yes                           | —                                              |
-| **Container queries**  | 8 opt-in components        | —                             | —                                              |
+| **Container queries**  | 8 opt-in components + fluid typography (`cqi`) | —                             | —                                              |
 | **Visual regression**  | chromedp pixel tests       | —                             | —                                              |
 | **HTMX integration**   | Built-in package           | —                             | —                                              |
 | **Datastar support**   | Opt-in package             | —                             | —                                              |

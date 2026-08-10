@@ -11,4 +11,6 @@ Practical guides for common templ-components patterns.
 | [Custom 404 Page](custom-404-page.md)                         | NotFound404 component with custom links, search, and HTTP handler integration   |
 | [Cursor Pagination](cursor-pagination.md)                     | Cursor-based "Load more" pattern with HTMX infinite scroll                      |
 | [Horizontal Filter Bar](horizontal-filter-bar.md)             | Compact horizontal filter form with Form.Inline (or Form Layout: Grid)          |
+| [Container Queries](container-queries.md)                         | The 8 `ContainerAware` components and the `@container` wrapper contract      |
+| [Fluid Typography](fluid-typography.md)                          | `.tc-fluid-*` classes: text that scales with its container via `cqi` units   |
 | [HTMX Error Feedback](server-rendered-htmx-error-feedback.md) | Server-rendered toast/error pipeline for HTMX responses                         |

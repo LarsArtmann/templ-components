@@ -258,6 +258,17 @@ templ displayDemo() {
 		@display.Card(display.CardProps{Title: u.Name}) { <p>{ u.Email }</p> }
 	}
 }`)
+	@demoSection("Fluid Typography (container query units)", "display-fluid-typography")
+	<div class="grid gap-4 sm:grid-cols-2">
+		@display.Card(display.CardProps{ContainerAware: true, Title: "Container-aware metric"}) {
+			<p class="tc-fluid-lead text-gray-600 dark:text-gray-400">Revenue scales with this card's width:</p>
+			<p class="tc-fluid-display font-bold text-blue-600 dark:text-blue-400">$4.2M</p>
+		}
+		<div class="@container max-w-xs">
+			<p class="tc-fluid-h2 font-semibold text-gray-900 dark:text-white">Heading in a narrow container</p>
+			<p class="tc-fluid-lead text-gray-500 dark:text-gray-400">Text shrinks smoothly as the container narrows via cqi units.</p>
+		</div>
+	</div>
 	@demoSection("Empty States", "display-empty-state")
 	<div class="grid gap-4 sm:grid-cols-2">
 		@display.EmptyState(display.EmptyStateProps{

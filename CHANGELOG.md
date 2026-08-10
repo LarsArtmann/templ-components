@@ -8,7 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Fluid typography via container query units.** Six `.tc-fluid-*` utility classes (`tc-fluid-display`, `tc-fluid-h1`–`tc-fluid-h4`, `tc-fluid-lead`) in `templates/custom.css` size text with `clamp(min, Ncqi + base, max)` — text scales smoothly with its container's width, not the viewport. Composes directly inside all 8 container-aware components. Baseline 2023, zero JavaScript. Recipe: `docs/recipes/fluid-typography.md`.
+- **Container query leveraging strategy.** `docs/research/container-query-strategy.md` maps the full landscape: shipped foundation, container query length units, style queries (deferred until Baseline), the v2.0 default flip, named containers, and honest evaluation of new component candidates (5 evaluated, all rejected) and the `containerAwareWrapper` consolidation (declined).
 - **Visual regression tests are now a hard CI gate.** The Visual Regression job detects skipped tests (e.g. missing Chromium) and fails the pipeline, preventing "vacuously green" runs where tests silently skip without a browser.
+
+### Architecture
+
+- **ADR-0033: Web Components permanently rejected.** Shadow DOM breaks the Tailwind-utility theming model; Custom Elements require JavaScript (violating the zero-JS principle); the cross-framework distribution problem WC solve doesn't exist for a Go-source library. The library achieves "use the platform" (the actual goal) via native APIs (`<dialog>`, Popover, `<details>`, scroll-snap, `@container`). Added to ROADMAP "Explicitly NOT Planned".
 
 ## [1.8.1] — 2026-08-09
 
