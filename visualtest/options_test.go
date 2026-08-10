@@ -29,12 +29,12 @@ func TestInteractionStateString(t *testing.T) {
 func TestBoolHelper(t *testing.T) {
 	t.Parallel()
 
-	b := new(true)
+	b := Bool(true)
 	if b == nil || !*b {
 		t.Fatal("Bool(true) should return non-nil pointer to true")
 	}
 
-	f := new(false)
+	f := Bool(false)
 	if f == nil || *f {
 		t.Fatal("Bool(false) should return non-nil pointer to false")
 	}

@@ -14,14 +14,26 @@ type Viewport struct {
 	Height int
 }
 
+// Device viewport dimensions in CSS pixels, matching real devices. The viewport
+// presets compose these so the magic-number linter stays happy without burying
+// the values.
+const (
+	viewportMobileWidth   = 375
+	viewportMobileHeight  = 667
+	viewportTabletWidth   = 768
+	viewportTabletHeight  = 1024
+	viewportDesktopWidth  = 1280
+	viewportDesktopHeight = 800
+)
+
 // Common viewport presets matching real device CSS widths. Use them as
 // Options{Viewport: visualtest.ViewportMobile} to test responsive breakpoints.
 //
 //nolint:gochecknoglobals // viewport presets are intentional package-level constants consumed by callers
 var (
-	ViewportMobile  = Viewport{Width: 375, Height: 667}  // iPhone SE / small phone
-	ViewportTablet  = Viewport{Width: 768, Height: 1024} // iPad portrait
-	ViewportDesktop = Viewport{Width: 1280, Height: 800} // default laptop
+	ViewportMobile  = Viewport{Width: viewportMobileWidth, Height: viewportMobileHeight}   // iPhone SE / small phone
+	ViewportTablet  = Viewport{Width: viewportTabletWidth, Height: viewportTabletHeight}   // iPad portrait
+	ViewportDesktop = Viewport{Width: viewportDesktopWidth, Height: viewportDesktopHeight} // default laptop
 )
 
 // InteractionState selects an interactive state to apply to #tc-root before
@@ -73,9 +85,9 @@ func (s InteractionState) String() string {
 //	visualtest.Options{Dark: visualtest.Bool(true)}  // explicit dark mode
 //	visualtest.Options{Dark: visualtest.Bool(false)} // explicit light mode
 //	visualtest.Options{}                             // unset → default (light)
-//
-// //go:fix inline //nolint:gocheckcompilerdirectives // //go:fix is a valid Go 1.26 directive; the linter is stale
-func Bool(b bool) *bool { return new(b) } //nolint:modernize // wrapper exists for API stability + tri-state clarity, not micro-optimization
+
+//nolint:modernize // wrapper exists for API stability + tri-state clarity, not micro-optimization
+func Bool(b bool) *bool { return &b }
 
 // Options configures how a component is rendered and captured.
 type Options struct {

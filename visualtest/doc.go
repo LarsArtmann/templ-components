@@ -36,8 +36,8 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
+//nolint:gochecknoglobals // shared Chromium allocator + lifecycle state shared across all visual tests
 var (
-	//nolint:gochecknoglobals // shared Chromium allocator + lifecycle state shared across all visual tests
 	allocatorOnce  sync.Once
 	sharedAllocCtx context.Context
 	allocCancel    context.CancelFunc

@@ -22,7 +22,12 @@ func TestButtons(t *testing.T) {
 	primary := display.DefaultButtonProps()
 	primary.Text = "Save changes"
 	visualtest.AssertScreenshot(t, "button/primary_light", display.Button(primary))
-	visualtest.AssertScreenshot(t, "button/primary_dark", display.Button(primary), visualtest.Options{Dark: new(true)})
+	visualtest.AssertScreenshot(
+		t,
+		"button/primary_dark",
+		display.Button(primary),
+		visualtest.Options{Dark: new(true)},
+	)
 
 	danger := display.DefaultButtonProps()
 	danger.Text = "Delete account"
@@ -81,7 +86,12 @@ func TestAlerts(t *testing.T) {
 	errAlert.Title = "Could not save"
 	errAlert.Message = "The server rejected the request. Try again in a moment."
 	errAlert.Type = feedback.FeedbackError
-	visualtest.AssertScreenshot(t, "alert/error_dark", feedback.Alert(errAlert), visualtest.Options{Dark: new(true)})
+	visualtest.AssertScreenshot(
+		t,
+		"alert/error_dark",
+		feedback.Alert(errAlert),
+		visualtest.Options{Dark: new(true)},
+	)
 
 	warn := feedback.DefaultAlertProps()
 	warn.Title = "Storage almost full"
@@ -119,7 +129,12 @@ func TestCard(t *testing.T) {
 	card := display.DefaultCardProps()
 	card.Title = "Monthly revenue"
 	visualtest.AssertScreenshot(t, "card/basic_light", display.Card(card))
-	visualtest.AssertScreenshot(t, "card/basic_dark", display.Card(card), visualtest.Options{Dark: new(true)})
+	visualtest.AssertScreenshot(
+		t,
+		"card/basic_dark",
+		display.Card(card),
+		visualtest.Options{Dark: new(true)},
+	)
 }
 
 // TestResponsiveViewport captures a card at a mobile viewport width to catch
@@ -177,7 +192,12 @@ func TestInput(t *testing.T) {
 	basic.Label = "Email address"
 	basic.Placeholder = "you@example.com"
 	visualtest.AssertScreenshot(t, "input/text_light", forms.Input(basic))
-	visualtest.AssertScreenshot(t, "input/text_dark", forms.Input(basic), visualtest.Options{Dark: new(true)})
+	visualtest.AssertScreenshot(
+		t,
+		"input/text_dark",
+		forms.Input(basic),
+		visualtest.Options{Dark: new(true)},
+	)
 
 	withError := forms.DefaultInputProps()
 	withError.Label = "Email address"
@@ -204,7 +224,12 @@ func TestSelect(t *testing.T) {
 		{Value: "jp", Label: "Japan"},
 	}
 	visualtest.AssertScreenshot(t, "select/basic_light", forms.Select(sel))
-	visualtest.AssertScreenshot(t, "select/basic_dark", forms.Select(sel), visualtest.Options{Dark: new(true)})
+	visualtest.AssertScreenshot(
+		t,
+		"select/basic_dark",
+		forms.Select(sel),
+		visualtest.Options{Dark: new(true)},
+	)
 }
 
 // TestRTL verifies that logical CSS properties (ms-, me-, ps-, pe-, start-,
@@ -663,7 +688,12 @@ func TestCarouselDark(t *testing.T) {
 	}
 	carousel.ShowIndicators = true
 	carousel.Nonce = "test-nonce"
-	visualtest.AssertScreenshot(t, "carousel/dark", display.Carousel(carousel), visualtest.Options{Dark: new(true)})
+	visualtest.AssertScreenshot(
+		t,
+		"carousel/dark",
+		display.Carousel(carousel),
+		visualtest.Options{Dark: new(true)},
+	)
 }
 
 // TestSkeletonDark covers the skeleton loading state in dark mode.
@@ -688,7 +718,12 @@ func TestErrorPageDark(t *testing.T) {
 	props.Why = "The database connection timed out after 30 seconds."
 	props.Fix = "Check that the database is running and accessible from the application server."
 	props.Nonce = "test-nonce"
-	visualtest.AssertScreenshot(t, "errorpage/dark", errorpage.ErrorPage(props), visualtest.Options{Dark: new(true)})
+	visualtest.AssertScreenshot(
+		t,
+		"errorpage/dark",
+		errorpage.ErrorPage(props),
+		visualtest.Options{Dark: new(true)},
+	)
 }
 
 // TestNotFound404Dark covers the 404 page in dark mode.
