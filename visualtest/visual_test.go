@@ -515,6 +515,7 @@ func TestTooltip(t *testing.T) {
 			),
 		)
 
+		//nolint:contextcheck // generated Tooltip$1 closure has a non-context-passing inner branch
 		return display.Tooltip(props).Render(ctx, w)
 	})
 	visualtest.AssertScreenshot(t, "tooltip/light", tooltipWithTrigger)
@@ -664,6 +665,7 @@ func TestTooltipDark(t *testing.T) {
 			),
 		)
 
+		//nolint:contextcheck // generated Tooltip$1 closure has a non-context-passing inner branch
 		return display.Tooltip(props).Render(ctx, w)
 	})
 	visualtest.AssertScreenshot(t, "tooltip/dark", tooltipWithTrigger, visualtest.Options{Dark: new(true)})
@@ -795,6 +797,7 @@ func TestCollapsibleSection(t *testing.T) {
 			`<p class="text-sm text-gray-500 dark:text-gray-400">Configure advanced options for your account.</p>`,
 		))
 
+		//nolint:contextcheck // generated CollapsibleSection$1 closure has a non-context-passing inner branch
 		return display.CollapsibleSection(props).Render(ctx, w)
 	})
 	visualtest.AssertScreenshot(t, "collapsible/light", section)
@@ -826,6 +829,7 @@ func TestPolledRegion(t *testing.T) {
 				`<p class="text-sm text-gray-500 dark:text-gray-400">Loading stats…</p></div>`,
 		))
 
+		//nolint:contextcheck // generated PolledRegion$1 closure has a non-context-passing inner branch
 		return htmx.PolledRegion(props).Render(ctx, w)
 	})
 	visualtest.AssertScreenshot(t, "polledregion/light", region, visualtest.Options{MaxMismatch: 0.01})
