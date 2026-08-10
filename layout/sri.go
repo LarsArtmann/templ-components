@@ -1,7 +1,7 @@
 // HTMX CDN version pinning and SRI hash lookup.
 package layout
 
-import "github.com/larsartmann/templ-components/internal/cdn"
+import "github.com/larsartmann/templ-components/utils/cdn"
 
 // HTMXVersion is a pinned HTMX main-script version. Use the exported constants
 // (e.g. HTMXVersion2_0_10) for compile-time safety; custom versions can be
