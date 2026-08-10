@@ -75,22 +75,22 @@ func TestToastStyles(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		typ           ToastType
+		typ           FeedbackType
 		wantBorder    string
 		wantIconColor string
 	}{
 		{
-			ToastSuccess,
+			FeedbackSuccess,
 			borderGreenClass,
 			"text-green-600 dark:text-green-400",
 		},
-		{ToastError, borderRedClass, "text-red-600 dark:text-red-400"},
+		{FeedbackError, borderRedClass, "text-red-600 dark:text-red-400"},
 		{
-			ToastWarning,
+			FeedbackWarning,
 			borderYellowClass,
 			"text-yellow-600 dark:text-yellow-400",
 		},
-		{ToastInfo, borderBlueClass, textBlueInfoClass},
+		{FeedbackInfo, borderBlueClass, textBlueInfoClass},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.typ), func(t *testing.T) {
@@ -122,14 +122,14 @@ func TestAlertStyles(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
-		typ           AlertType
+		typ           FeedbackType
 		wantBorder    string
 		wantIconColor string
 	}{
-		{AlertSuccess, borderGreenClass, "text-green-600 dark:text-green-400"},
-		{AlertError, borderRedClass, "text-red-600 dark:text-red-400"},
-		{AlertWarning, borderYellowClass, "text-yellow-600 dark:text-yellow-400"},
-		{AlertInfo, borderBlueClass, textBlueInfoClass},
+		{FeedbackSuccess, borderGreenClass, "text-green-600 dark:text-green-400"},
+		{FeedbackError, borderRedClass, "text-red-600 dark:text-red-400"},
+		{FeedbackWarning, borderYellowClass, "text-yellow-600 dark:text-yellow-400"},
+		{FeedbackInfo, borderBlueClass, textBlueInfoClass},
 	}
 	for _, tt := range tests {
 		t.Run(string(tt.typ), func(t *testing.T) {

@@ -45,5 +45,5 @@ Shared helpers in `feedback/styles.go`:
 ## Consequences
 
 - Consumers should use `FeedbackType` directly
-- `AlertType` and `ToastType` still compile but are deprecated
+- ~~`AlertType` and `ToastType` still compile but are deprecated~~ **Removed in v2.0 (ADR-0022)**
 - Adding new feedback variants requires only one change

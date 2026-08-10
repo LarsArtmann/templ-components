@@ -19,6 +19,22 @@ Run this in your project directory:
 go get github.com/larsartmann/templ-components@latest
 ```
 
+### Individual modules (v2.0+)
+
+Since v2.0, the library is a 5-module workspace (see ADR-0034). You can adopt
+individual modules without pulling in the full UI library:
+
+```bash
+# Icons only (pure SVG, no Tailwind dependency):
+go get github.com/larsartmann/templ-components/icons@latest
+
+# Error pages only (isolates go-error-family):
+go get github.com/larsartmann/templ-components/errorpage@latest
+
+# ECharts adapter only:
+go get github.com/larsartmann/templ-components/charts/echarts@latest
+```
+
 ## Tailwind CSS Setup
 
 Since this is a Go module (not an npm package), you need to vendor the dependency so Tailwind can scan the `.templ` source files for class names.

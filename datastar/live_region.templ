@@ -7,15 +7,14 @@ import "github.com/larsartmann/templ-components/utils"
 // htmx.PolledRegion — but instead of polling on an interval, the server pushes
 // patches over a single long-lived connection.
 //
-// The server endpoint must return a text/event-stream response. Use the
-// datastar-go SDK to patch elements or signals:
+// The server endpoint must return a text/event-stream response. Use
+// go-datastar (github.com/larsartmann/go-datastar) to patch elements or signals:
 //
 //	func streamHandler(w http.ResponseWriter, r *http.Request) {
-//	    sse := datastar.NewSSE(w, r)
-//	    for {
-//	        sse.PatchElementTempl(metricsCard(currentMetrics()))
-//	        time.Sleep(time.Second)
-//	    }
+//	    stream := sse.NewStream(w, r)
+//	    defer func() { _ = stream.Close() }()
+//	    resp := datastar.NewResponse(stream)
+//	    _ = resp.PatchElementsTempl(metricsCard(currentMetrics()))
 //	}
 //
 //	@datastar.LiveRegion(datastar.LiveRegionProps{

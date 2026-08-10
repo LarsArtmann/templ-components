@@ -61,7 +61,8 @@ type CardProps struct {
 // DefaultCardProps returns sensible defaults
 func DefaultCardProps() CardProps {
 	return CardProps{
-		Padding: CardPaddingMD,
+		Padding:        CardPaddingMD,
+		ContainerAware: true,
 	}
 }
 

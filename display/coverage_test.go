@@ -211,11 +211,11 @@ func TestDefaultGridPropsValue(t *testing.T) {
 	}
 }
 
-func TestGridContainerResponsive(t *testing.T) {
+func TestGridContainerAware(t *testing.T) {
 	t.Parallel()
 	t.Run("wraps in @container div", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Grid(GridProps{Cols: GridCols3, ContainerResponsive: true}))
+		output := utils.Render(t, Grid(GridProps{Cols: GridCols3, ContainerAware: true}))
 		utils.AssertContains(t, output, "@container")
 		utils.AssertContains(t, output, "@lg:grid-cols-3")
 	})
@@ -231,7 +231,7 @@ func TestGridContainerResponsive(t *testing.T) {
 	})
 	t.Run("container 2 col uses @sm", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, Grid(GridProps{Cols: GridCols2, ContainerResponsive: true}))
+		output := utils.Render(t, Grid(GridProps{Cols: GridCols2, ContainerAware: true}))
 		utils.AssertContains(t, output, "@sm:grid-cols-2")
 	})
 }

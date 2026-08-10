@@ -253,7 +253,7 @@ func TestStepIndicatorLastStep(t *testing.T) {
 func TestAlertAllTypes(t *testing.T) {
 	t.Parallel()
 
-	for _, atype := range []AlertType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
+	for _, atype := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
 		output := utils.Render(t, Alert(AlertProps{
 			Message: "Test message",
 			Type:    atype,
@@ -280,7 +280,7 @@ func TestAlertDismissibleWithNonce(t *testing.T) {
 func TestToastEachType(t *testing.T) {
 	t.Parallel()
 
-	for _, ttype := range []ToastType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
+	for _, ttype := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
 		output := utils.Render(t, Toast(ToastProps{
 			Message: "Notification",
 			Type:    ttype,

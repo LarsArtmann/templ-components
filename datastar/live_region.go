@@ -38,7 +38,8 @@ func livePolitenessValue(p LivePoliteness) LivePoliteness {
 // connection.
 //
 // The URL endpoint should return a text/event-stream response. The server
-// patches the region's children (or signals) using the datastar-go SDK.
+// patches the region's children (or signals) using go-datastar
+// (github.com/larsartmann/go-datastar).
 //
 //	@datastar.LiveRegion(datastar.LiveRegionProps{
 //	    URL:       "/stream/metrics",

@@ -4,7 +4,6 @@ package htmx
 import (
 	"testing"
 
-	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -13,9 +12,7 @@ func TestLoadingIndicatorRender(t *testing.T) {
 	output := utils.Render(
 		t,
 		LoadingIndicator(
-			feedback.Spinner(
-				feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-blue-600 dark:text-blue-400"},
-			),
+			testSpinner("text-blue-600 dark:text-blue-400"),
 		),
 	)
 	utils.AssertContains(t, output, "tc-loading-indicator")
@@ -29,9 +26,7 @@ func TestInlineLoadingOverlayRender(t *testing.T) {
 		t,
 		InlineLoadingOverlay(
 			"form-loader",
-			feedback.Spinner(
-				feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"},
-			),
+			testSpinner("text-blue-600 dark:text-blue-400"),
 		),
 	)
 	utils.AssertContains(t, output, `id="form-loader"`)
@@ -46,7 +41,7 @@ func TestLoadingButtonRender(t *testing.T) {
 		LoadingButton(
 			"Save",
 			"Saving...",
-			feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "htmx-indicator"}),
+			testSpinner("htmx-indicator"),
 		),
 	)
 	utils.AssertContains(t, output, "Save")

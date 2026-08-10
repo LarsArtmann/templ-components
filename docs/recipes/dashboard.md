@@ -60,8 +60,8 @@ func dashboard() templ.Component {
 ## Container-aware tip
 
 Pair `recipes.Dashboard` with container-aware children to make the stat grid respond to the
-sidebar column width (ADR-0018). Pass `display.GridProps{ContainerResponsive: true}` for
-stat grids that should reflow based on their parent column instead of the viewport.
+sidebar column width (ADR-0018). `display.Grid` defaults to `ContainerAware: true` since v2.0,
+so stat grids reflow based on their parent column instead of the viewport automatically.
 
 ## See also
 

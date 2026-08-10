@@ -16,7 +16,7 @@ The library uses both approaches for different icon types.
 ## Decision
 
 - **24×24 stroke icons**: All standard UI icons use `fill="none" stroke="currentColor" stroke-width="1.5"`. This is the default `Icon` component.
-- **20×20 fill icons**: Small indicator icons (arrows, chevrons, avatar) use `fill="currentColor"`. These are rendered via `internal/svg.FillIcon()`.
+- **20×20 fill icons**: Small indicator icons (arrows, chevrons, avatar) use `fill="currentColor"`. These are rendered via `utils/svg.FillIcon()` (was `internal/svg`, promoted in ADR-0034).
 - **Spinner**: Special case — uses SVG `<circle>` + `<path>` with `fill="none"` for the spinning animation.
 
 ### Rationale

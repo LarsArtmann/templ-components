@@ -4,9 +4,31 @@
 // Server-Sent Events (SSE) and reactive signals.
 //
 // This package mirrors the [htmx] package: it emits data-* attributes and
-// injects the Datastar runtime <script> tag without importing the
-// datastar-go SDK. Consumers who want SSE streaming add
-// github.com/starfederation/datastar-go to their own go.mod.
+// injects the Datastar runtime <script> tag without importing any server-side
+// SDK. The pinned version ([DatastarVersion1_0_2]) is derived from
+// [github.com/larsartmann/go-datastar/static].Version so the CDN URL and the
+// embedded bundle can never drift.
+//
+// # Server-side SDK
+//
+// Consumers who want SSE streaming should use
+// [github.com/larsartmann/go-datastar] — a protocol library where every patch
+// is a first-class value (not a method call on a live connection). Add it to
+// your own go.mod:
+//
+//	go get github.com/larsartmann/go-datastar
+//
+// # Self-hosting the Datastar runtime
+//
+// By default, SDKScript loads the runtime from the jsDelivr CDN. For
+// self-hosting, use [github.com/larsartmann/go-datastar/static] (zero
+// dependencies — its go.mod requires nothing):
+//
+//	mux.Handle("GET /datastar.js", http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+//	    w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
+//	    _, _ = w.Write(static.Bytes())
+//	}))
+//	@datastar.SDKScript(datastar.SDKScriptProps{Src: "/datastar.js"})
 //
 // # Quick start
 //
@@ -24,14 +46,13 @@
 //	    @display.StatCard(display.StatCardProps{Label: "Active Users", Value: "—"})
 //	}
 //
-// The server endpoint streams patches using the datastar-go SDK:
+// The server endpoint streams patches using go-datastar:
 //
 //	func streamHandler(w http.ResponseWriter, r *http.Request) {
-//	    sse := datastar.NewSSE(w, r)
-//	    for {
-//	        sse.PatchElementTempl(metricsCard(currentMetrics()))
-//	        time.Sleep(time.Second)
-//	    }
+//	    stream := sse.NewStream(w, r)
+//	    defer func() { _ = stream.Close() }()
+//	    resp := datastar.NewResponse(stream)
+//	    _ = resp.PatchElementsTempl(metricsCard(currentMetrics()))
 //	}
 //
 // # When to choose Datastar over HTMX

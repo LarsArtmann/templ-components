@@ -67,7 +67,7 @@ var gridColsLookup = map[GridCols]string{
 
 // gridColsContainerLookup maps each GridCols value to container-query-based
 // Tailwind classes (@sm:, @lg:) that respond to the parent container's width
-// instead of the browser viewport. Used when ContainerResponsive is true.
+// instead of the browser viewport. Used when ContainerAware is true.
 var gridColsContainerLookup = map[GridCols]string{
 	GridCols1: "grid grid-cols-1",
 	GridCols2: "grid grid-cols-1 @sm:grid-cols-2",
@@ -116,17 +116,17 @@ type GridProps struct {
 	Cols GridCols
 	// Gap controls the spacing between grid items. Defaults to GridGapMD (gap-4).
 	Gap GridGap
-	// ContainerResponsive, when true, renders the grid inside an @container
+	// ContainerAware, when true, renders the grid inside an @container
 	// wrapper so column counts respond to the container's width instead of
-	// the browser viewport. Useful for grids placed in sidebars, cards, or
-	// other constrained layouts. Defaults to false (viewport breakpoints).
-	ContainerResponsive bool
+	// the browser viewport. Defaults to true (v2.0). Set to false for
+	// viewport-based breakpoints.
+	ContainerAware bool
 	// MinColWidth sets the minimum column width for auto-fit grids. Used only
 	// when Cols is GridColsAutoFit. Generates a CSS auto-fit/minmax template
 	// that responds to container width. Example: "190px" produces
 	// grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)).
 	// Ignored for fixed column counts. When Cols is GridColsAutoFit,
-	// ContainerResponsive is ignored (auto-fit already responds to container
+	// ContainerAware is ignored (auto-fit already responds to container
 	// width via CSS minmax).
 	MinColWidth string
 }
@@ -134,7 +134,8 @@ type GridProps struct {
 // DefaultGridProps returns sensible defaults (GridCols3).
 func DefaultGridProps() GridProps {
 	return GridProps{ //nolint:exhaustruct // intentionally minimal defaults
-		Cols: GridColsDefault,
+		Cols:           GridColsDefault,
+		ContainerAware: true,
 	}
 }
 
@@ -150,7 +151,7 @@ func DefaultGridProps() GridProps {
 // For container-query-based responsiveness (grid adapts to its parent container,
 // not the viewport):
 //
-//	@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerResponsive: true}) {
+//	@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerAware: true}) {
 //	   // items
 //	}
 func Grid(props GridProps) templ.Component {
@@ -182,11 +183,11 @@ func Grid(props GridProps) templ.Component {
 		baseGrid := gridClass(cols)
 		if cols == GridColsAutoFit {
 			baseGrid = gridAutoFitClass(props.MinColWidth)
-		} else if props.ContainerResponsive {
+		} else if props.ContainerAware {
 			baseGrid = gridContainerClass(cols)
 		}
 		gridClasses := utils.Class(baseGrid, gap, props.Class)
-		if props.ContainerResponsive {
+		if props.ContainerAware {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"@container\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -208,7 +209,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var3 string
 				templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 167, Col: 18}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 168, Col: 18}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 				if templ_7745c5c3_Err != nil {
@@ -244,7 +245,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var5 string
 				templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 171, Col: 33}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 172, Col: 33}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 				if templ_7745c5c3_Err != nil {
@@ -289,7 +290,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var7 string
 				templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 181, Col: 17}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 182, Col: 17}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 				if templ_7745c5c3_Err != nil {
@@ -325,7 +326,7 @@ func Grid(props GridProps) templ.Component {
 				var templ_7745c5c3_Var9 string
 				templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 185, Col: 32}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/grid.templ`, Line: 186, Col: 32}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 				if templ_7745c5c3_Err != nil {

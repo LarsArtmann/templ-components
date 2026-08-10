@@ -3,7 +3,6 @@ package htmx
 import (
 	"testing"
 
-	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/golden"
 )
@@ -14,7 +13,7 @@ import (
 func TestGoldenSweepHTMXComponents(t *testing.T) {
 	t.Parallel()
 
-	spinner := feedback.Spinner(feedback.DefaultSpinnerProps())
+	spinner := testSpinner("text-blue-600 dark:text-blue-400")
 
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "loading_indicator", HTML: utils.Render(t, LoadingIndicator(spinner))},

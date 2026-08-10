@@ -28,8 +28,8 @@ _All actionable items have been completed or deferred. See Blocked and Deferred 
 
 | #   | Task                                                            | Notes                                                                                                                                                                                  |
 | --- | --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 35  | Flip defaults: self-host htmx + semantic tokens → default       | Both shipped opt-in (v0.22.0). `HTMXSrc` opt-in; `templ-components-theme.css` opt-in. Default flip deferred to v2.0 (insufficient deprecation time). See ADR-0007, ADR-0008, ADR-0022. |
-| 38  | Remove `AlertType` / `ToastType` backward-compat aliases        | Other aliases (`ModalSizeFull`, `DrawerFull`, `FamilyFromErrorFamily`, `FormProps.Inline`) removed in v1.0.0. These two remain as `type X = FeedbackType` aliases.                     |
+| 35  | ~~Flip defaults: self-host htmx + semantic tokens → default~~   | **DONE (v2.0):** HTMX self-host via `//go:embed` is now default; semantic tokens included by default. Container-aware default also flipped for Grid/Card/Split. See ADR-0022. |
+| 38  | ~~Remove `AlertType` / `ToastType` backward-compat aliases~~  | **DONE (v2.0):** Aliases removed (ADR-0022). Use `FeedbackType`/`FeedbackSuccess`/etc. directly.                                                                                       |
 | 39  | Compound component pattern (Trigger/Content/Close) for overlays | Current Modal/Drawer are monolithic. v2.0 design — ADR-0023 written.                                                                                                                   |
 
 ---

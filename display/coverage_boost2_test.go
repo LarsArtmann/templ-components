@@ -24,11 +24,11 @@ func TestListNoteBaseProps(t *testing.T) {
 	utils.AssertContainsAll(t, output, `id="list-note-1"`, `aria-label="Truncation notice"`)
 }
 
-func TestGridContainerResponsiveWithBaseProps(t *testing.T) {
+func TestGridContainerAwareWithBaseProps(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Grid(GridProps{
-		Cols:                GridCols3,
-		ContainerResponsive: true,
+		Cols:           GridCols3,
+		ContainerAware: true,
 		BaseProps: utils.BaseProps{
 			ID:        "cgrid",
 			AriaLabel: "Responsive grid",
@@ -40,8 +40,8 @@ func TestGridContainerResponsiveWithBaseProps(t *testing.T) {
 func TestGridContainerClassFallback(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Grid(GridProps{
-		Cols:                GridCols("bogus"),
-		ContainerResponsive: true,
+		Cols:           GridCols("bogus"),
+		ContainerAware: true,
 	}))
 	utils.AssertContains(t, output, "grid-cols-1")
 }

@@ -49,12 +49,12 @@ func TestGridColsAutoFitIsValid(t *testing.T) {
 	utils.AssertEqual(t, "GridColsAutoFit valid", GridColsIsValid(GridColsAutoFit), true)
 }
 
-func TestGridAutoFitTakesPrecedenceOverContainerResponsive(t *testing.T) {
+func TestGridAutoFitTakesPrecedenceOverContainerAware(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Grid(GridProps{
-		Cols:                GridColsAutoFit,
-		MinColWidth:         "190px",
-		ContainerResponsive: true,
+		Cols:           GridColsAutoFit,
+		MinColWidth:    "190px",
+		ContainerAware: true,
 	}))
 	utils.AssertContainsAll(t, output, "auto-fit", "minmax(190px,1fr)")
 	utils.AssertNotContains(t, output, "@sm:grid-cols")

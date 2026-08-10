@@ -68,6 +68,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 		t.Parallel()
 
 		props := DefaultPageProps()
+		props.HTMXSrc = "" // opt into CDN mode to test version rendering
 		props.HTMXVersion = defaultHTMXVersion
 		output := utils.Render(t, Base(props))
 		utils.AssertContains(t, output, "htmx.org@2.0.10")
@@ -77,6 +78,7 @@ func TestBaseUserGetsCompleteHTMLPage(t *testing.T) {
 		t.Parallel()
 
 		props := DefaultPageProps()
+		props.HTMXSrc = "" // opt into CDN+SRI mode
 		props.HTMXUseSRI = true
 		output := utils.Render(t, Base(props))
 		utils.AssertContains(t, output, `integrity="sha384-`)
@@ -174,8 +176,8 @@ func TestDefaultPagePropsProvidesSensibleDefaults(t *testing.T) {
 			t.Errorf("expected Locale 'en', got %q", props.Locale)
 		}
 
-		if props.HTMXVersion != defaultHTMXVersion {
-			t.Errorf("expected HTMXVersion %q, got %q", defaultHTMXVersion, props.HTMXVersion)
+		if props.HTMXSrc != HTMXSelfHost {
+			t.Errorf("expected HTMXSrc %q, got %q", HTMXSelfHost, props.HTMXSrc)
 		}
 
 		if !props.SecurityHeaders {

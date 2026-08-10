@@ -74,19 +74,19 @@ func TestAlerts(t *testing.T) {
 	success := feedback.DefaultAlertProps()
 	success.Title = "Payment received"
 	success.Message = "Your subscription is now active."
-	success.Type = feedback.AlertSuccess
+	success.Type = feedback.FeedbackSuccess
 	visualtest.AssertScreenshot(t, "alert/success_light", feedback.Alert(success))
 
 	errAlert := feedback.DefaultAlertProps()
 	errAlert.Title = "Could not save"
 	errAlert.Message = "The server rejected the request. Try again in a moment."
-	errAlert.Type = feedback.AlertError
+	errAlert.Type = feedback.FeedbackError
 	visualtest.AssertScreenshot(t, "alert/error_dark", feedback.Alert(errAlert), visualtest.Options{Dark: new(true)})
 
 	warn := feedback.DefaultAlertProps()
 	warn.Title = "Storage almost full"
 	warn.Message = "You have used 92% of your quota."
-	warn.Type = feedback.AlertWarning
+	warn.Type = feedback.FeedbackWarning
 	visualtest.AssertScreenshot(t, "alert/warning_light", feedback.Alert(warn))
 }
 

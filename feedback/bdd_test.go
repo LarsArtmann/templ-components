@@ -36,7 +36,7 @@ func TestAlertUserReceivesImportantMessages(t *testing.T) {
 		output := utils.Render(t, Alert(AlertProps{
 			Title:   "Warning",
 			Message: "This action cannot be undone.",
-			Type:    AlertWarning,
+			Type:    FeedbackWarning,
 		}))
 		utils.AssertContains(t, output, "Warning")
 		utils.AssertContains(t, output, "This action cannot be undone.")
@@ -48,7 +48,7 @@ func TestAlertUserReceivesImportantMessages(t *testing.T) {
 		output := utils.Render(t, Alert(AlertProps{
 			Title:   "Success",
 			Message: "Your changes have been saved.",
-			Type:    AlertSuccess,
+			Type:    FeedbackSuccess,
 		}))
 		utils.AssertContains(t, output, "Success")
 		utils.AssertContains(t, output, "green")
@@ -59,7 +59,7 @@ func TestAlertUserReceivesImportantMessages(t *testing.T) {
 		output := utils.Render(t, Alert(AlertProps{
 			Title:       "Info",
 			Message:     "New features available.",
-			Type:        AlertInfo,
+			Type:        FeedbackInfo,
 			Dismissible: true,
 		}))
 		utils.AssertContains(t, output, "New features available.")
@@ -76,7 +76,7 @@ func TestToastUserGetsNonIntrusiveNotifications(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Toast(ToastProps{
 			Message: "Item saved successfully!",
-			Type:    ToastSuccess,
+			Type:    FeedbackSuccess,
 		}))
 		utils.AssertContains(t, output, "Item saved successfully!")
 	})
@@ -86,7 +86,7 @@ func TestToastUserGetsNonIntrusiveNotifications(t *testing.T) {
 		output := utils.Render(t, Toast(ToastProps{
 			Title:    "Saved",
 			Message:  "Your changes are live.",
-			Type:     ToastSuccess,
+			Type:     FeedbackSuccess,
 			Duration: ToastDurationMedium,
 		}))
 		utils.AssertContains(t, output, "Saved")

@@ -19,6 +19,8 @@ declare -A MODULE_PATHS=(
     ["icons"]="github.com/larsartmann/templ-components/icons"
     ["errorpage"]="github.com/larsartmann/templ-components/errorpage"
     ["charts/echarts"]="github.com/larsartmann/templ-components/charts/echarts"
+    ["datastar"]="github.com/larsartmann/templ-components/datastar"
+    ["htmx"]="github.com/larsartmann/templ-components/htmx"
 )
 
 for dir in "${!MODULE_PATHS[@]}"; do
@@ -37,13 +39,13 @@ while IFS= read -r line; do
         echo "::error::${file}: replace directive uses absolute path (not portable for CI/consumers)"
         ERRORS=$((ERRORS + 1))
     fi
-done < <(grep -rn 'replace.*=>' go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod 2>/dev/null || true)
+done < <(grep -rn 'replace.*=>' go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod datastar/go.mod htmx/go.mod 2>/dev/null || true)
 
 # 3. Verify all sibling module requires share the same version.
 #    Only match require lines (indented, followed by version), not replace lines.
 SHARED_VERSION="$(grep -E '^\s+github.com/larsartmann/templ-components/utils v' go.mod | head -1 | awk '{print $2}' || true)"
 if [ -n "$SHARED_VERSION" ]; then
-    for modfile in go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod; do
+    for modfile in go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod datastar/go.mod htmx/go.mod; do
         while IFS= read -r version; do
             if [ -n "$version" ] && [ "$version" != "$SHARED_VERSION" ]; then
                 echo "::error::${modfile}: sibling module version '${version}' != shared '${SHARED_VERSION}'"
@@ -58,4 +60,4 @@ if [ "$ERRORS" -gt 0 ]; then
     exit 1
 fi
 
-echo "Module sync check: OK (5 modules, all paths and versions consistent)."
+echo "Module sync check: OK (7 modules, all paths and versions consistent)."

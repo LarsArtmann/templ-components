@@ -8,8 +8,21 @@
 The `icons` package provides 102 named SVG icons (101 Heroicons v2 outline
 path-icon constants + 1 animated Spinner; 5 discoverability aliases like
 `Close`→`X` resolve to canonical paths). It depends only on
-`github.com/a-h/templ` and the internal SVG path constants — no Tailwind, no
+`github.com/a-h/templ` and the `utils/svg` path constants — no Tailwind, no
 CSS framework.
+
+## Standalone module (icons-only adoption)
+
+Since ADR-0034, `icons` is a **separate Go module**. You can adopt it without
+pulling in any UI components, Tailwind, or CSS:
+
+```bash
+go get github.com/larsartmann/templ-components/icons@latest
+```
+
+This is the lightest possible dependency — only `github.com/a-h/templ` and
+`utils/svg` (pure SVG path data). No `display`, `forms`, `feedback`, or any
+Tailwind-emitting package is imported.
 
 ## Three API levels
 

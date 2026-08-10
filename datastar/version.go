@@ -1,6 +1,7 @@
 package datastar
 
 import (
+	"github.com/larsartmann/go-datastar/static"
 	"github.com/larsartmann/templ-components/utils/cdn"
 )
 
@@ -13,7 +14,9 @@ type DatastarVersion string
 
 const (
 	// DatastarVersion1_0_2 is the Datastar runtime version this package pins.
-	DatastarVersion1_0_2 DatastarVersion = "1.0.2"
+	// The value is derived from [static.Version] so the embedded bundle and the
+	// CDN URL can never drift apart.
+	DatastarVersion1_0_2 DatastarVersion = DatastarVersion(static.Version)
 
 	// defaultDatastarVersion is the internal default; always equals the latest
 	// exported DatastarVersion constant.

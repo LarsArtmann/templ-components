@@ -117,6 +117,7 @@ func DefaultPageProps() PageProps {
 		CSSPath:             "/app.css",
 		Favicon:             "/favicon.svg",
 		HTMXVersion:         HTMXVersion2_0_10,
+		HTMXSrc:             HTMXSelfHost,
 		HTMXUseSRI:          true,
 		HTMXResponseTargets: true,
 		SecurityHeaders:     true,
@@ -184,7 +185,9 @@ templ Base(props PageProps) {
 					<link rel="preconnect" href={ cdnOrigin } crossorigin/>
 					<link rel="dns-prefetch" href={ cdnOrigin }/>
 				}
-				if props.HTMXSrc != "" {
+				if props.HTMXSrc == HTMXSelfHost {
+					@htmxSelfHostComponent(props.Nonce)
+				} else if props.HTMXSrc != "" {
 					<script src={ props.HTMXSrc }></script>
 				} else if props.HTMXUseSRI {
 					{{ mainSRI := htmxMainSRI(props.HTMXVersion) }}

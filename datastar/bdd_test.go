@@ -1,10 +1,11 @@
 package datastar
 
 import (
+	"context"
+	"io"
 	"testing"
 
 	"github.com/a-h/templ"
-	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -121,11 +122,18 @@ func TestIndicatorUserSeesLoadingFeedback(t *testing.T) {
 	t.Run("consumer can inject custom spinner component", func(t *testing.T) {
 		t.Parallel()
 
+		customSpinner := templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+			_, err := io.WriteString(w, `<div class="my-custom-spinner"></div>`)
+
+			return err //nolint:wrapcheck // test helper, direct passthrough
+		})
+
 		output := utils.Render(t, Indicator(IndicatorProps{
 			Signal:  "saving",
-			Spinner: feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM}),
+			Spinner: customSpinner,
 		}))
 		utils.AssertContains(t, output, `data-show="$saving"`)
+		utils.AssertContains(t, output, "my-custom-spinner")
 		utils.AssertNotContains(t, output, "defaultIndicatorSpinner")
 	})
 

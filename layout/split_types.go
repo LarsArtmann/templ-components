@@ -87,8 +87,9 @@ type SplitProps struct {
 //nolint:exhaustruct // constructor intentionally sets only non-zero defaults
 func DefaultSplitProps() SplitProps {
 	return SplitProps{
-		AsidePosition: AsidePositionDefault,
-		Ratio:         SplitRatioDefault,
-		Gap:           "gap-6",
+		AsidePosition:  AsidePositionDefault,
+		Ratio:          SplitRatioDefault,
+		Gap:            "gap-6",
+		ContainerAware: true,
 	}
 }

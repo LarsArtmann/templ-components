@@ -52,6 +52,7 @@ func TestIntegrationFullPageRender(t *testing.T) {
 		t.Parallel()
 
 		props := DefaultPageProps()
+		props.HTMXSrc = "" // opt into CDN+SRI mode
 		props.HTMXUseSRI = true
 		output := utils.Render(t, Base(props))
 

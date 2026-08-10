@@ -247,7 +247,7 @@ templ displayDemo() {
 	}
 	<div class="border border-gray-200 dark:border-gray-700 rounded-lg p-4 mt-4">
 		<p class="text-xs text-gray-500 dark:text-gray-400 mb-3">Container-responsive (resize this box):</p>
-		@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerResponsive: true}) {
+		@display.Grid(display.GridProps{Cols: display.GridCols3, ContainerAware: true}) {
 			@display.StatCard(display.StatCardProps{Value: "42", Label: "Requests/s"})
 			@display.StatCard(display.StatCardProps{Value: "12ms", Label: "Latency"})
 			@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime"})

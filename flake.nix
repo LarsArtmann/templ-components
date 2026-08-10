@@ -53,9 +53,9 @@
             ];
             shellHook = ''
               # GOEXPERIMENT=jsonv2: required until Go 1.27 stabilizes it.
-              # GOWORK is now ON: go.work lists all 5 modules (root, utils,
-              # icons, errorpage, charts/echarts) + visualtest. Use
-              # GOWORK=off only for per-module isolation testing.
+              # GOWORK is now ON: go.work lists all 7 modules (root, utils,
+              # icons, errorpage, charts/echarts, datastar, htmx) + visualtest.
+              # Use GOWORK=off only for per-module isolation testing.
               export GOEXPERIMENT=jsonv2
             '';
           };
@@ -85,7 +85,7 @@
                   # Lint each module independently with GOWORK=off.
                   export GOEXPERIMENT=jsonv2
                   echo "==> Linting root module..."
-                  GOWORK=off golangci-lint run ./display/... ./feedback/... ./forms/... ./htmx/... ./datastar/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./internal/... ./cmd/...
+                  GOWORK=off golangci-lint run ./display/... ./feedback/... ./forms/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./internal/... ./cmd/...
                   echo "==> Linting utils module..."
                   (cd utils && GOWORK=off golangci-lint run ./...)
                   echo "==> Linting icons module..."
@@ -94,6 +94,10 @@
                   (cd errorpage && GOWORK=off golangci-lint run ./...)
                   echo "==> Linting charts/echarts module..."
                   (cd charts/echarts && GOWORK=off golangci-lint run ./...)
+                  echo "==> Linting datastar module..."
+                  (cd datastar && GOWORK=off golangci-lint run ./...)
+                  echo "==> Linting htmx module..."
+                  (cd htmx && GOWORK=off golangci-lint run ./...)
                 '';
               };
             };
@@ -137,7 +141,7 @@
                   echo "==> Testing (workspace)..."
                   go test ./... -count=1
                   echo "==> Per-module GOWORK=off isolation tests..."
-                  for mod in utils icons errorpage charts/echarts; do
+                  for mod in utils icons errorpage charts/echarts datastar htmx; do
                     echo "  -> $mod"
                     (cd "$mod" && GOWORK=off go test -count=1 ./...)
                   done
@@ -145,8 +149,8 @@
                   (cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./...)
                   echo "==> Linting per-module..."
                   echo "  -> root"
-                  GOWORK=off golangci-lint run ./display/... ./feedback/... ./forms/... ./htmx/... ./datastar/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./internal/... ./cmd/...
-                  for mod in utils icons errorpage charts/echarts; do
+                  GOWORK=off golangci-lint run ./display/... ./feedback/... ./forms/... ./integration/... ./layout/... ./navigation/... ./recipes/... ./internal/... ./cmd/...
+                  for mod in utils icons errorpage charts/echarts datastar htmx; do
                     echo "  -> $mod"
                     (cd "$mod" && GOWORK=off golangci-lint run ./...)
                   done
@@ -166,7 +170,7 @@
                   echo "=== Root module ==="
                   go test ./... -count=1 -coverprofile=coverage.out
                   go tool cover -func=coverage.out | tail -1
-                  for mod in utils icons errorpage charts/echarts; do
+                  for mod in utils icons errorpage charts/echarts datastar htmx; do
                     echo "=== $mod ==="
                     (cd "$mod" && go test ./... -count=1 -coverprofile=coverage.out && go tool cover -func=coverage.out | tail -1)
                   done

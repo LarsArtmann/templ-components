@@ -12,28 +12,27 @@ the browser window.
 
 Use viewport queries (`sm:`, `lg:`) when the component spans the full page width.
 
-## Grid with ContainerResponsive
+## Grid with ContainerAware
 
-The `Grid` component supports an opt-in container-query mode:
+The `Grid` component defaults to container-query mode (`ContainerAware: true` since v2.0):
 
 ```go
 @display.Grid(display.GridProps{
-    Cols:               display.GridCols3,
-    ContainerResponsive: true,
-    Class:              "max-w-2xl",
+    Cols:            display.GridCols3,
+    ContainerAware:  true, // default since v2.0; set false for viewport breakpoints
+    Class:           "max-w-2xl",
 }) {
     // cards...
 }
 ```
 
-When `ContainerResponsive` is `true`:
+When `ContainerAware` is `true`:
 
 - The grid wraps in a `<div class="@container">` element
 - Column counts use `@sm:` / `@md:` / `@lg:` variants instead of `sm:` / `lg:`
 - The grid responds to the wrapper's width, not the viewport
 
-When `false` (default), the grid uses standard viewport breakpoints — backward
-compatible with all existing consumers.
+When `false`, the grid uses standard viewport breakpoints.
 
 ## Manual container queries in custom components
 
@@ -49,21 +48,22 @@ Tailwind v4 supports `@container` natively — no plugin or config needed.
 
 ## All container-aware components
 
-Every component with a `ContainerAware` (or `ContainerResponsive`) flag follows the
-same contract (ADR-0018): opt-in, default off, emits `@container` wrapper or root
+Every component with a `ContainerAware` flag follows the
+same contract (ADR-0018): emits `@container` wrapper or root
 class, swaps viewport breakpoints (`sm:`/`md:`/`lg:`) for container variants
-(`@sm:`/`@md:`/`@lg:`).
+(`@sm:`/`@md:`/`@lg:`). Since v2.0, `Grid`, `Card`, and `Split` default `true`;
+the other 5 default `false`.
 
-| Component                   | Flag                  | What adapts                                              |
-| --------------------------- | --------------------- | -------------------------------------------------------- |
-| `display.Grid`              | `ContainerResponsive` | Column count (1→2→3→N)                                   |
-| `display.Card`              | `ContainerAware`      | Padding (compact below `@sm:`)                           |
-| `display.DefinitionGrid`    | `ContainerAware`      | Term-detail card grid column count                       |
-| `navigation.Nav`            | `ContainerAware`      | Collapse to hamburger below `@sm:`                       |
-| `navigation.Pagination`     | `ContainerAware`      | Mobile prev/next vs full page numbers                    |
-| `layout.Split`              | `ContainerAware`      | 2-col main+aside collapses to stacked below `@md:`       |
-| `forms.Form`                | `ContainerAware`      | Grid layout label/value columns below `@sm:`             |
-| `feedback.SkeletonCardGrid` | `ContainerAware`      | Loading skeleton grid matches `Grid.ContainerResponsive` |
+| Component                   | Flag               | What adapts                                  | Default |
+| --------------------------- | ------------------ | -------------------------------------------- | ------- |
+| `display.Grid`              | `ContainerAware`   | Column count (1→2→3→N)                       | `true`  |
+| `display.Card`              | `ContainerAware`   | Padding (compact below `@sm:`)               | `true`  |
+| `display.DefinitionGrid`    | `ContainerAware`   | Term-detail card grid column count           | `false` |
+| `navigation.Nav`            | `ContainerAware`   | Collapse to hamburger below `@sm:`           | `false` |
+| `navigation.Pagination`     | `ContainerAware`   | Mobile prev/next vs full page numbers        | `false` |
+| `layout.Split`              | `ContainerAware`   | 2-col main+aside collapses to stacked below `@md:` | `true`  |
+| `forms.Form`                | `ContainerAware`   | Grid layout label/value columns below `@sm:` | `false` |
+| `feedback.SkeletonCardGrid` | `ContainerAware`   | Loading skeleton grid matches `Grid.ContainerAware` | `false` |
 
 ### Split — article+sidebar in a constrained container
 

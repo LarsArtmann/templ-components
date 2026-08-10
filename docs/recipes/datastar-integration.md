@@ -30,22 +30,38 @@ script:
 }
 ```
 
-Self-hosting:
+Self-hosting via [go-datastar/static](https://pkg.go.dev/github.com/larsartmann/go-datastar/static)
+(zero-dependency module — its go.mod requires nothing):
+
+```bash
+go get github.com/larsartmann/go-datastar/static
+```
 
 ```go
-@datastar.SDKScript(datastar.SDKScriptProps{Src: "/static/datastar.js"})
+// Serve the embedded bundle with ETag + Cache-Control
+mux.Handle("GET /datastar.js", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "text/javascript; charset=utf-8")
+    _, _ = w.Write(static.Bytes())
+}))
+
+// Point SDKScript at your self-hosted path
+@datastar.SDKScript(datastar.SDKScriptProps{Src: "/datastar.js"})
 ```
+
+The version pinned by `datastar.DatastarVersion1_0_2` is derived from
+`static.Version`, so the CDN URL and the embedded bundle can never drift.
 
 ---
 
-## Step 2: Add the datastar-go SDK to your project
+## Step 2: Add go-datastar to your project
 
 ```bash
-go get github.com/starfederation/datastar-go
+go get github.com/larsartmann/go-datastar
 ```
 
-This gives you the server-side SSE helpers. The library itself does **not**
-depend on it — only your application does.
+[go-datastar](https://github.com/LarsArtmann/go-datastar) provides the
+server-side SSE protocol vocabulary where every patch is a first-class value.
+The library itself does **not** depend on it — only your application does.
 
 ---
 
@@ -69,19 +85,29 @@ depend on it — only your application does.
 ### Backend (Go handler)
 
 ```go
-import "github.com/starfederation/datastar-go/datastar"
+import (
+    "github.com/larsartmann/go-datastar"
+    "github.com/larsartmann/go-sse"
+)
 
 func streamMetrics(w http.ResponseWriter, r *http.Request) {
-    sse := datastar.NewSSE(w, r)
+    stream := sse.NewStream(w, r)
+    defer func() { _ = stream.Close() }()
+
+    resp := datastar.NewResponse(stream)
 
     for {
         metrics := fetchCurrentMetrics()
 
         // Patch the StatCard's value by targeting its element ID
-        sse.PatchElementTempl(statCard(metrics), datastar.WithModeInner())
+        if err := resp.PatchElementsTempl(statCard(metrics),
+            datastar.WithModeInner(),
+        ); err != nil {
+            return
+        }
 
         // Or patch signals only (no HTML round-trip):
-        // sse.MarshalAndPatchSignals(map[string]any{"activeUsers": metrics.Users})
+        // _ = resp.MarshalAndPatchSignals(map[string]any{"activeUsers": metrics.Users})
 
         select {
         case <-r.Context().Done():
@@ -222,7 +248,8 @@ Or self-host and use `script-src 'self'` only. No `'unsafe-inline'` or
 ## Further reading
 
 - [Datastar official docs](https://data-star.dev/)
-- [Datastar Go SDK](https://github.com/starfederation/datastar-go)
+- [go-datastar](https://github.com/LarsArtmann/go-datastar) — Go protocol library (patches as values)
+- [go-datastar/static](https://pkg.go.dev/github.com/larsartmann/go-datastar/static) — embedded JS bundle (zero deps)
 - `docs/research/datastar-integration-analysis.md` — full deep-research analysis
 - `docs/adr/0030-datastar-integration-strategy.md` — architectural decision
 - `docs/javascript-guide.md` — JS decision ladder (Datastar is rung 7)

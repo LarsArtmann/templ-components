@@ -1,6 +1,6 @@
 # ADR-0022: v2.0 Default-Flip Migration Plan
 
-**Status:** Draft (2026-07-28)
+**Status:** Accepted (2026-08-10)
 **Decider:** Lars Artmann
 
 ## Context

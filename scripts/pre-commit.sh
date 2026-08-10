@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 # Pre-commit hook for templ-components
-# Runs: templ generate, per-module build/test/lint across all 5 modules.
+# Runs: templ generate, per-module build/test/lint across all 7 modules.
 #
 # GOWORK=off is intentional: it tests the replace-directive resolution path
 # (the same path proxy consumers use at publish time). Workspace mode (go.work)
@@ -22,7 +22,7 @@ go build ./...
 go test ./... -count=1
 
 # --- Sub-modules (standalone isolation) ---
-for mod in utils icons errorpage charts/echarts; do
+for mod in utils icons errorpage charts/echarts datastar htmx; do
   echo "==> $mod"
   (cd "$mod" && go build ./... && go test ./... -count=1)
 done
@@ -31,10 +31,10 @@ done
 echo "==> lint root"
 golangci-lint run \
   ./display/... ./feedback/... ./forms/... \
-  ./htmx/... ./datastar/... ./integration/... ./internal/... \
+  ./integration/... ./internal/... \
   ./layout/... ./navigation/... ./recipes/... ./cmd/...
 
-for mod in utils icons errorpage charts/echarts; do
+for mod in utils icons errorpage charts/echarts datastar htmx; do
   echo "==> lint $mod"
   (cd "$mod" && golangci-lint run ./...)
 done

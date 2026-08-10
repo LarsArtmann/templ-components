@@ -33,6 +33,9 @@ jobs:
       - name: Module-sync guard (fast, catches multi-module workspace drift)
         run: scripts/check-module-sync.sh
 
+      - name: Module DAG layer guard (fast, catches upward dependencies)
+        run: scripts/check-module-layers.sh
+
       - name: Run golangci-lint
         run: |
           # Multi-module: lint each module independently (golangci-lint
@@ -40,7 +43,7 @@ jobs:
           echo "==> Root module..."
           golangci-lint run --timeout=5m \
             ./display/... ./feedback/... ./forms/... \
-            ./htmx/... ./datastar/... ./integration/... ./internal/... \
+            ./integration/... ./internal/... \
             ./layout/... ./navigation/... ./recipes/... ./cmd/...
           echo "==> utils module..."
           (cd utils && golangci-lint run --timeout=5m ./...)
@@ -50,6 +53,10 @@ jobs:
           (cd errorpage && golangci-lint run --timeout=5m ./...)
           echo "==> charts/echarts module..."
           (cd charts/echarts && golangci-lint run --timeout=5m ./...)
+          echo "==> datastar module..."
+          (cd datastar && golangci-lint run --timeout=5m ./...)
+          echo "==> htmx module..."
+          (cd htmx && golangci-lint run --timeout=5m ./...)
 
       - name: Actionlint (lint GitHub Actions workflows)
         run: |
@@ -90,7 +97,7 @@ jobs:
       - name: Go mod tidy (all modules)
         run: |
           go mod tidy
-          for mod in utils icons errorpage charts/echarts; do
+          for mod in utils icons errorpage charts/echarts datastar htmx; do
             (cd "$mod" && go mod tidy)
           done
 
@@ -106,11 +113,11 @@ jobs:
       - name: Test
         run: go test -race -coverprofile=coverage.out $(go list ./... | grep -v examples)
 
-      - name: Per-module isolation tests (GOWORK=off)
+      - name: Per-module isolation tests (GOWORK=off, race-enabled)
         run: |
-          for mod in utils icons errorpage charts/echarts; do
+          for mod in utils icons errorpage charts/echarts datastar htmx; do
             echo "==> $mod"
-            (cd "$mod" && GOWORK=off go test -count=1 ./...)
+            (cd "$mod" && GOWORK=off go test -race -count=1 ./...)
           done
 
       - name: Compile visualtest module (separate go.mod, would otherwise be skipped)

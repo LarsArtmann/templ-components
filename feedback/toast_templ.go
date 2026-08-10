@@ -16,23 +16,12 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-// ToastType represents the visual style of a toast
-// Deprecated: Use FeedbackType instead. Will be removed in v1.0.
-type ToastType = FeedbackType
-
-const (
-	ToastSuccess = FeedbackSuccess
-	ToastError   = FeedbackError
-	ToastWarning = FeedbackWarning
-	ToastInfo    = FeedbackInfo
-)
-
 // ToastProps configures a toast notification
 type ToastProps struct {
 	utils.BaseProps
 	Message  string
 	Title    string
-	Type     ToastType
+	Type     FeedbackType
 	Duration int // milliseconds, 0 for no auto-dismiss
 }
 
@@ -87,7 +76,7 @@ func toastDismissScript(nonce, toastID string, duration int) templ.Component {
 // DefaultToastProps returns sensible defaults
 func DefaultToastProps() ToastProps {
 	return ToastProps{
-		Type:     ToastInfo,
+		Type:     FeedbackInfo,
 		Duration: ToastDurationMedium,
 	}
 }
@@ -132,7 +121,7 @@ func ToastContainer(nonce string) templ.Component {
 // Toast renders a single toast notification (server-side rendered)
 // For HTMX responses, use ToastContainer + the tcShowToast() JS function
 //
-//	@feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.ToastSuccess})
+//	@feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.FeedbackSuccess})
 func Toast(props ToastProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -168,7 +157,7 @@ func Toast(props ToastProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(toastID)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 106, Col: 14}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 95, Col: 14}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -199,7 +188,7 @@ func Toast(props ToastProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 111, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 100, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -252,7 +241,7 @@ func Toast(props ToastProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 119, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 108, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -288,7 +277,7 @@ func Toast(props ToastProps) templ.Component {
 		var templ_7745c5c3_Var12 string
 		templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinStringErrs(props.Message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 121, Col: 52}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/toast.templ`, Line: 110, Col: 52}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 		if templ_7745c5c3_Err != nil {

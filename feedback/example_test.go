@@ -10,7 +10,7 @@ import (
 
 func ExampleAlert() {
 	props := feedback.DefaultAlertProps()
-	props.Type = feedback.AlertSuccess
+	props.Type = feedback.FeedbackSuccess
 	props.Title = "Success"
 	props.Message = "Your changes have been saved."
 
@@ -22,7 +22,7 @@ func ExampleAlert() {
 
 func ExampleToast() {
 	props := feedback.DefaultToastProps()
-	props.Type = feedback.ToastInfo
+	props.Type = feedback.FeedbackInfo
 	props.Title = "Notification"
 	props.Message = "You have a new message."
 

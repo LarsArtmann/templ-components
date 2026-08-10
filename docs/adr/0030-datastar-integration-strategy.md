@@ -35,11 +35,16 @@ analysis.
 
 1. **HTMX remains the default** interactivity layer. Zero-dependency, HATEOAS-first.
 
-2. **A new `datastar` package** provides first-class Datastar support with **zero
-   new library dependencies**. It mirrors the existing `htmx` package pattern:
-   emit `data-*` attributes and inject the runtime `<script>`, without importing
-   the `datastar-go` SDK. Consumers who want SSE streaming add `datastar-go` to
-   **their** go.mod, not ours.
+2. **A new `datastar` package** provides first-class Datastar support with
+   near-zero new library dependencies. It mirrors the existing `htmx` package
+   pattern: emit `data-*` attributes and inject the runtime `<script>`, without
+   importing any server-side SDK. The sole dependency is
+   [go-datastar/static](https://pkg.go.dev/github.com/larsartmann/go-datastar/static)
+   — a zero-dependency module that embeds the datastar.js bundle and exposes
+   its version. Consumers who want SSE streaming add
+   [go-datastar](https://github.com/LarsArtmann/go-datastar) to **their** go.mod.
+   The version constant (`DatastarVersion1_0_2`) is derived from `static.Version`
+   so the CDN URL and the embedded bundle can never drift.
 
 3. **SSE-powered components** (`LiveRegion`) unlock real-time capabilities that
    HTMX polling cannot match: push-based updates, zero idle requests,
@@ -66,8 +71,9 @@ analysis.
 - **New package:** `datastar/` with `SDKScript`, `LiveRegion`, `Indicator`, and
   typed `data-*` attribute helpers. Same conventions as all other packages
   (BaseProps, typed enums with IsValid, golden tests, dark-mode compliance).
-- **No go.mod changes.** The library stays at 3 production dependencies (templ,
-  tailwind-merge-go, go-error-family).
+- **New dependency:** `go-datastar/static` (zero transitive deps — its go.mod
+  has no `require` directives). This is the single source of truth for the
+  Datastar runtime version.
 - **Documentation burden:** the JS decision ladder (rung 7) and a new recipe
   (`docs/recipes/datastar-integration.md`) guide consumers through the choice.
 - **Two interactivity models** coexist: consumers who use both HTMX and Datastar

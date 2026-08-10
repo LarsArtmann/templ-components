@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
-	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -17,9 +16,7 @@ func renderLoadingIndicator(t *testing.T) string {
 	return utils.Render(
 		t,
 		LoadingIndicator(
-			feedback.Spinner(
-				feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-blue-600 dark:text-blue-400"},
-			),
+			testSpinner("text-blue-600 dark:text-blue-400"),
 		),
 	)
 }
@@ -47,9 +44,7 @@ func TestInlineLoadingOverlayUserSeesLocalLoadingState(t *testing.T) {
 			t,
 			InlineLoadingOverlay(
 				"my-form-loading",
-				feedback.Spinner(
-					feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600 dark:text-blue-400"},
-				),
+				testSpinner("text-blue-600 dark:text-blue-400"),
 			),
 		)
 		utils.AssertContains(t, output, `id="my-form-loading"`)
@@ -195,7 +190,7 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 				"LoadingIndicator",
 				func() templ.Component {
 					return LoadingIndicator(
-						feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerLG, Color: "text-blue-600"}),
+						testSpinner("text-blue-600"),
 					)
 				},
 			},
@@ -204,7 +199,7 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 				func() templ.Component {
 					return InlineLoadingOverlay(
 						"test",
-						feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerMD, Color: "text-blue-600"}),
+						testSpinner("text-blue-600"),
 					)
 				},
 			},
@@ -212,7 +207,7 @@ func TestHTMXComponentsRenderValidHTML(t *testing.T) {
 				return LoadingButton(
 					"Go",
 					"Going...",
-					feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "htmx-indicator"}),
+					testSpinner("htmx-indicator"),
 				)
 			}},
 			{

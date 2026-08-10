@@ -1,8 +1,10 @@
 # AGENTS.md — templ-components
 
-## Module Structure (single module)
+## Module Structure (7-module workspace)
 
-This repo is a **single Go module** (`github.com/larsartmann/templ-components`) with 16 packages:
+This repo is a **7-module Go workspace** (`github.com/larsartmann/templ-components`) coordinated by `go.work` (local dev, gitignored) + `replace` directives (CI/consumers). See ADR-0034 for the split rationale and DAG. The modules: **root** (core UI + recipes + integration + demo + CLI), **utils** (leaf: BaseProps, Class(), EnsureID, svg, cdn, golden), **icons** (102 SVG icons, icons-only adoption), **errorpage** (isolates go-error-family), **charts/echarts** (opt-in adapter), **htmx** (HTMX loading/error/OOB components), **datastar** (Datastar runtime + SSE LiveRegion). Additionally, **visualtest** is a separate module for visual regression tests (not part of the library DAG). See `docs/modularization/README.md` for contributor setup.
+
+### Root-module packages (10)
 
 | Package             | Contains                                                  | Purpose                                                                                                                                                  |
 | ------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
@@ -11,31 +13,27 @@ This repo is a **single Go module** (`github.com/larsartmann/templ-components`) 
 | `forms`             | 21 components                                             | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                                                                     |
 | `layout`            | 10 components                                             | Page shell, theme toggle, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                      |
 | `navigation`        | 12 components                                             | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                                                                    |
-| `htmx`              | 8 components                                              | HTMX loading, error handling, OOB swaps, View Transitions                                                                                                |
-| `datastar`          | 3 components + action helpers                             | Datastar SDK runtime injection, SSE-powered LiveRegion, loading Indicator. Opt-in complement to HTMX (ADR-0030)                                          |
-| `charts/echarts`    | 2 components + dark mode bridge                           | Opt-in ECharts adapter — accepts go-echarts RenderSnippet strings, CSP-safe, dark mode bridge (ADR-0031)                                                 |
-| `icons`             | 102 named SVG icons                                       | Heroicons v2 outline + Spinner                                                                                                                           |
-| `errorpage`         | 4 components + handler                                    | Error pages, 404, go-error-family integration                                                                                                            |
+| `htmx`              | **Separate module** — 8 components                          | HTMX loading, error handling, OOB swaps, View Transitions                                                                                                |
+| `datastar`          | **Separate module** — 3 components + action helpers        | Datastar runtime injection, SSE-powered LiveRegion, loading Indicator. Pins version via `go-datastar/static`. Opt-in complement to HTMX (ADR-0030) |
 | `recipes`           | 3 composition screens                                     | Dashboard, SettingsLayout, LoginCard — screen-level compositions of display/forms/layout/navigation (ADR-0019)                                           |
-| `utils`             | BaseProps, Class(), EnsureID, test helpers                | Shared utilities — includes `utils/svg` (SVG path constants), `utils/cdn` (SRI hashes), `utils/golden` (golden file testing)                              |
 | `internal/contract` | Contract tests                                            | Cross-package interface verification                                                                                                                     |
 | `integration`       | CSP nonce tests                                           | Asserts nonce on all inline scripts                                                                                                                      |
 | `examples/demo`     | Demo binary                                               | Showcases components                                                                                                                                     |
-| `visualtest`        | **Separate module** — pixel-level visual regression tests | chromedp + headless Chromium; `nix run .#visual`. See `docs/visual-testing.md`                                                                           |
+| `cmd/tc`            | CLI tool                                                  | Component scaffolding (excluded from lint — uses different conventions)                                                                                  |
 
 > **Note:** `go.work` and `go.work.sum` are in `.gitignore` (local dev only). CI and consumers use `replace` directives in each module's `go.mod`. `internal/` packages (`svg`, `cdn`, `golden`) were promoted to `utils/` sub-packages because Go's `internal/` rule blocks cross-module access.
 
 ## Build & Test Commands
 
 ```bash
-# Full build (workspace mode via go.work — builds all 5 modules)
+# Full build (workspace mode via go.work — builds all 7 modules)
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./...
 
 # Tests (all modules via go.work)
 go test ./...
 
 # Per-module isolation tests (verify each module builds standalone without go.work)
-for mod in utils icons errorpage charts/echarts; do (cd "$mod" && GOWORK=off go test ./...); done
+for mod in utils icons errorpage charts/echarts datastar; do (cd "$mod" && GOWORK=off go test ./...); done
 
 # All-in-one verification
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && nix run .#lint
@@ -118,7 +116,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - **Dark mode color convention:** Light mode uses `-600` shade for backgrounds (`bg-blue-600`), dark mode uses `-500` (`dark:bg-blue-500`). Light mode uses `-600` for text (`text-blue-600`), dark mode uses `-400` (`dark:text-blue-400`). Neutral text: `text-gray-500` → `dark:text-gray-400`, `text-gray-400` → `dark:text-gray-500`. Every neutral and semantic color class MUST have a `dark:` variant — enforced by `utils.TestDarkModeCompliance` + `utils.TestDarkModeSemanticColors` (both now pass). Exceptions: Toggle thumb (`bg-white` both modes), SidebarNav (permanently dark sidebar), avatar silhouette icon (`text-blue-200` decorative).
 - **Dark mode compliance tests:** `utils.TestDarkModeCompliance` scans all `.templ`/`.go` source files for neutral colors (`text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`, `ring-gray-*`) without `dark:` variants. `utils.TestDarkModeSemanticColors` scans for semantic colors (`bg-blue-600`, `text-red-600`, etc.) without `dark:` variants. Both now pass. Run via `go test ./utils/... -run TestDarkMode`. For the full dark mode strategy analysis (Tailwind v4 default is `prefers-color-scheme`, three consumer paths, `@theme` palette override pattern), see `docs/dark-mode-research.md`.
 - **CI:** `.github/workflows/ci.yaml` — lint (golangci-lint), build+test with `templ generate`, coverage artifact. Pre-commit: `.git/hooks/pre-commit` → `scripts/pre-commit.sh`
-- **Import graph:** `utils` (leaf module with `utils/svg`, `utils/cdn`, `utils/golden`); `icons` → utils; `errorpage` → utils, icons; `charts/echarts` → utils; root module (display, feedback, forms, layout, navigation, htmx, datastar, recipes) → utils, icons, errorpage, charts/echarts. All 5 modules form a strict DAG. Production deps: `icons → utils/svg`, `display → icons,utils`, `feedback → icons,utils`, `forms → icons,utils`, `layout → icons,utils`, `navigation → icons,utils`, `htmx → utils`, `datastar → utils/cdn,utils`, `errorpage → icons,utils`, `charts/echarts → utils`, `recipes → display,icons,layout,utils`. Root module `require`s all sub-modules for backward compatibility (old import paths resolve to the sub-modules automatically).
+- **Import graph:** `utils` (leaf module with `utils/svg`, `utils/cdn`, `utils/golden`); `icons` → utils; `errorpage` → utils, icons; `charts/echarts` → utils; `htmx` → utils; `datastar` → utils, go-datastar/static; root module (display, feedback, forms, layout, navigation, recipes) → utils, icons, errorpage, charts/echarts, htmx, datastar. All 7 modules form a strict DAG. Production deps: `icons → utils/svg`, `display → icons,utils`, `feedback → icons,utils`, `forms → icons,utils`, `layout → icons,utils`, `navigation → icons,utils`, `htmx → utils` (separate module), `datastar → utils, go-datastar/static` (separate module, zero transitive deps), `errorpage → icons,utils`, `charts/echarts → utils`, `recipes → display,icons,layout,utils`. Root module `require`s all sub-modules for backward compatibility (old import paths resolve to the sub-modules automatically).
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
 - **SVG paths:** Shared constants in `utils/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
@@ -130,7 +128,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - Class attributes use `utils.Class()` for Tailwind conflict resolution (exception: `templ.KV` conditionals where comma-join is required)
 - **RTL/i18n: use logical CSS properties exclusively.** Never use `ml-`/`mr-`/`pl-`/`pr-`/`left-`/`right-`/`text-left`/`border-l-`/`border-r-` — use `ms-`/`me-`/`ps-`/`pe-`/`start-`/`end-`/`text-start`/`border-s-`/`border-e-` instead. These are CSS logical properties that automatically mirror in RTL (`dir="rtl"`). Exception: `left-1/2 -translate-x-1/2` for centering (not directional).
 - **Motion: use shared transition constants.** Use `transitionFast` (150ms), `transitionNormal` (200ms), `transitionColors`, `transitionTransform` from `display/shared.go` instead of inline timing strings. All include `motion-reduce:*` fallbacks. Wire into CopyButton, Accordion, Modal, Drawer — do NOT leave inline `transition-colors motion-reduce:...` strings when a constant matches.
-- **Container queries: use `@container` for context-responsive components (ADR-0018).** 8 components have an opt-in `ContainerAware` (or `ContainerResponsive` on Grid) bool flag. When true, the component emits a `<div class="@container">` wrapper (or adds `@container` to its root for Pagination) and swaps viewport breakpoints (`sm:`/`md:`/`lg:`) for container variants (`@sm:`/`@md:`/`@lg:`) via parallel lookup maps. Default false = byte-identical to existing behavior. Container-aware components: `Grid.ContainerResponsive`, `Card.ContainerAware`, `Nav.ContainerAware`, `Split.ContainerAware`, `DefinitionGrid.ContainerAware`, `Form.ContainerAware`, `Pagination.ContainerAware`, `SkeletonCardGrid.ContainerAware`. **Fluid typography** via container query units (`cqi`): six `.tc-fluid-*` utility classes in `templates/custom.css` size text with `clamp(min, Ncqi + base, max)` — see `docs/recipes/fluid-typography.md`. **Do NOT expand `ContainerAware` to marginal candidates** (`Container`, `Breadcrumbs`, `EmptyState`, `NotFound404`, `Footer`) — evaluated and rejected in `docs/container-query-strategy.md`; none meet all three ADR-0018 criteria. **Web Components / Shadow DOM are permanently rejected** (ADR-0033) — Shadow DOM breaks the Tailwind theming model; the library achieves "use the platform" via native APIs instead. **CRITICAL: after adding `@md:` or other container variant classes to `.templ` files, the demo CSS must be recompiled** — Tailwind v4 scans `.templ` files at CSS compile time; the committed `examples/demo/static/app.css` will be stale until recompiled via `nix run .#build` or the Dockerfile pipeline.
+- **Container queries: use `@container` for context-responsive components (ADR-0018).** 8 components have a `ContainerAware` bool flag. When true, the component emits a `<div class="@container">` wrapper (or adds `@container` to its root for Pagination) and swaps viewport breakpoints (`sm:`/`md:`/`lg:`) for container variants (`@sm:`/`@md:`/`@lg:`) via parallel lookup maps. **Since v2.0, `Grid`, `Card`, and `Split` default `ContainerAware: true`** (opt-out); `Nav`, `DefinitionGrid`, `Form`, `Pagination`, and `SkeletonCardGrid` still default `false` (opt-in). Container-aware components: `Grid.ContainerAware`, `Card.ContainerAware`, `Nav.ContainerAware`, `Split.ContainerAware`, `DefinitionGrid.ContainerAware`, `Form.ContainerAware`, `Pagination.ContainerAware`, `SkeletonCardGrid.ContainerAware`. **Fluid typography** via container query units (`cqi`): six `.tc-fluid-*` utility classes in `templates/custom.css` size text with `clamp(min, Ncqi + base, max)` — see `docs/recipes/fluid-typography.md`. **Do NOT expand `ContainerAware` to marginal candidates** (`Container`, `Breadcrumbs`, `EmptyState`, `NotFound404`, `Footer`) — evaluated and rejected in `docs/container-query-strategy.md`; none meet all three ADR-0018 criteria. **Web Components / Shadow DOM are permanently rejected** (ADR-0033) — Shadow DOM breaks the Tailwind theming model; the library achieves "use the platform" via native APIs instead. **CRITICAL: after adding `@md:` or other container variant classes to `.templ` files, the demo CSS must be recompiled** — Tailwind v4 scans `.templ` files at CSS compile time; the committed `examples/demo/static/app.css` will be stale until recompiled via `nix run .#build` or the Dockerfile pipeline.
 - Style lookups use maps/structs, not switches (e.g., `badgeStyleMap`, `badgeSizeLookup`, `cardPaddingLookup`, `iconPathData`, `alertIconMap`, `toastIconMap`, `spinnerSizeLookup`, `progressHeightLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`)
 - **Lookup maps MUST use typed enum keys** (never `map[string]X`). If a typed enum exists, its lookup map uses it as the key type — `badgeSizeLookup[BadgeSizeMD]`, not `badgeSizeLookup[string(v)]`. All map lookups go through `utils.Lookup(m, key, fallback)` (generic, no per-call `if ok` boilerplate). `ButtonHTMLType` uses `map[ButtonHTMLType]string` + `utils.Lookup` (not `map[X]bool`).
 - **Every closed-set enum MUST ship an `IsValid()` method + a test in the same commit.** 31 enums have IsValid (e.g., `SortDirectionIsValid`, `ButtonHTMLTypeIsValid`, `TableCellPaddingIsValid`). Test in the package's `enums_test.go` table-driven `TestIsValidEnums`. No IsValid without a test — this prevents the dead-code ghost system.
@@ -142,11 +140,11 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - CSP: all inline scripts use `nonce={ props.Nonce }`
 - Sub-templates: extract shared rendering to private `templ` functions
 - Feedback styles: shared `feedbackStyleSet` struct + `lookupFeedbackStyle[T]()` generic + `feedbackIconName()` + `dismissScript()` in `feedback/styles.go`
-- FeedbackType: canonical `FeedbackType` enum (`FeedbackSuccess/Error/Warning/Info`); `AlertType` and `ToastType` are type aliases for backward compat
+- FeedbackType: canonical `FeedbackType` enum (`FeedbackSuccess/Error/Warning/Info`). **v2.0 removed** the `AlertType`/`ToastType` aliases and `AlertSuccess`/`ToastSuccess`/etc. constants — use `FeedbackType`/`FeedbackSuccess`/etc. directly. See ADR-0022.
 - Icons: `iconPathData` map with `|` separator for multi-path icons. `iconPaths()` validates no empty segments (panics on stray `|`). `allIconNames()` auto-generated from `iconPathData` + Spinner — no manual list to maintain.
 - Form errors: `ErrorAttrs(id, errMsg, helpTextID)` helper returns `templ.Attributes` for aria-invalid/aria-describedby
 - Shared constants: `cardShellClass`, `mutedTextClass` (in `display/shared.go`) — use for consistent card styling and secondary-text pattern.
-- `PageProps.HTMXCDN` overrides the CDN base URL (defaults to `https://cdn.jsdelivr.net/npm`).
+- **HTMX loading (v2.0 default: self-host).** `DefaultPageProps()` sets `HTMXSrc: HTMXSelfHost`, which embeds HTMX 2.0.10 inline via `//go:embed` (`layout/embed.go`) and renders it as `<script nonce="...">`. No external CDN request. Consumers who prefer CDN loading set `HTMXSrc: ""` and provide `HTMXVersion` to use the jsDelivr CDN path. `PageProps.HTMXCDN` overrides the CDN base URL (defaults to `https://cdn.jsdelivr.net/npm`).
 - Modal/Drawer: native `<dialog>` element provides focus trapping, Escape-to-close, focus restore, top-layer rendering, and `::backdrop` — zero JS for those behaviors. CSS `@starting-style` + `allow-discrete` handle open/close animations (defined in `templates/custom.css` under `.tc-modal` / `.tc-drawer`). `tcOpenModal(id)` / `tcCloseModal(id)` are thin wrappers around `dialog.showModal()` / `dialog.close()` for backward compat. Backdrop click detection: `e.target === dialog` (the backdrop is a pseudo-element of dialog, so clicks register on the dialog itself).
 - NavLink/MobileNavLink: both render through the shared `navLinkAnchor` sub-template; each supplies an active/inactive base-class builder (`navLinkClasses`, `mobileNavLinkClass`) and `navLinkAnchor` merges `props.Class` via `utils.Class()` so consumer Tailwind overrides resolve correctly. Do NOT assert ordered class substrings in tests — `utils.Class`/tailwind-merge reorders classes; use `utils.AssertContainsAll` for multi-token checks.
 - InputType: validates via `inputType()` with `validInputTypes` map; panics on unknown, defaults empty to `"text"`
@@ -319,14 +317,16 @@ after reviewing the release commit and tag with `git show v<version>` and
 # support go.work workspace mode). Run from repo root.
 # Root module (examples/ excluded via .golangci.yml paths exclusion):
 golangci-lint run \
-  ./datastar/... ./display/... ./feedback/... ./forms/... \
-  ./htmx/... ./integration/... ./internal/... \
+  ./display/... ./feedback/... ./forms/... \
+  ./integration/... ./internal/... \
   ./layout/... ./navigation/... ./recipes/... ./cmd/...
 # Sub-modules:
 (cd utils && golangci-lint run ./...)
 (cd icons && golangci-lint run ./...)
 (cd errorpage && golangci-lint run ./...)
 (cd charts/echarts && golangci-lint run ./...)
+(cd htmx && golangci-lint run ./...)
+(cd datastar && golangci-lint run ./...)
 ```
 
 **Disabled linters (do NOT re-enable — fundamentally incompatible with this codebase):**
@@ -346,7 +346,7 @@ This library uses `encoding/json/v2` + `encoding/json/jsontext` (Go 1.26+ with
 `GOEXPERIMENT=jsonv2` automatically. The `.golangci.yml` enables the
 `goexperiment.jsonv2` build tag. The `flake.nix` devShell exports
 `GOEXPERIMENT=jsonv2` via `shellHook`. **`.envrc`** (direnv) sets
-`GOEXPERIMENT=jsonv2` repo-wide for ALL tools. `go.work` is active by default (lists all 5 modules). Use `GOWORK=off` for per-module isolation testing.
+`GOEXPERIMENT=jsonv2` repo-wide for ALL tools. `go.work` is active by default (lists all 7 modules). Use `GOWORK=off` for per-module isolation testing.
 
 **Consumers** must set `GOEXPERIMENT=jsonv2` when building (or wait for Go 1.27
 where it becomes stable). The `errorpage` package uses `json.MarshalEncode` +

@@ -16,7 +16,7 @@ func TestAlertRender(t *testing.T) {
 		props := AlertProps{
 			Title:   "Error",
 			Message: "Something failed",
-			Type:    AlertError,
+			Type:    FeedbackError,
 		}
 		output := utils.Render(t, Alert(props))
 		utils.AssertContains(t, output, "Error")
@@ -30,7 +30,7 @@ func TestAlertRender(t *testing.T) {
 
 		props := AlertProps{
 			Title:       "Warning",
-			Type:        AlertWarning,
+			Type:        FeedbackWarning,
 			Dismissible: true,
 		}
 		output := utils.Render(t, Alert(props))
@@ -52,7 +52,7 @@ func TestToastRender(t *testing.T) {
 
 	props := ToastProps{
 		Message: "Saved!",
-		Type:    ToastSuccess,
+		Type:    FeedbackSuccess,
 	}
 	output := utils.Render(t, Toast(props))
 	utils.AssertContains(t, output, "Saved!")
@@ -268,7 +268,7 @@ func TestSkeletonVariants(t *testing.T) {
 func TestToastAllTypes(t *testing.T) {
 	t.Parallel()
 
-	for _, tt := range []ToastType{ToastSuccess, ToastError, ToastWarning, ToastInfo} {
+	for _, tt := range []FeedbackType{FeedbackSuccess, FeedbackError, FeedbackWarning, FeedbackInfo} {
 		t.Run("toast type "+string(tt), func(t *testing.T) {
 			t.Parallel()
 			output := utils.Render(t, Toast(ToastProps{
@@ -288,7 +288,7 @@ func TestAlertDismissScript(t *testing.T) {
 		output := utils.Render(t, Alert(AlertProps{
 			BaseProps:   utils.BaseProps{Nonce: "test-nonce"},
 			Title:       "Dismiss me",
-			Type:        AlertInfo,
+			Type:        FeedbackInfo,
 			Dismissible: true,
 		}))
 		utils.AssertContains(t, output, `data-dismiss="alert"`)
@@ -302,16 +302,16 @@ func TestDefaultPropsConstructors(t *testing.T) {
 		t.Parallel()
 
 		props := DefaultAlertProps()
-		if props.Type != AlertInfo {
-			t.Errorf("DefaultAlertProps().Type = %q, want %q", props.Type, AlertInfo)
+		if props.Type != FeedbackInfo {
+			t.Errorf("DefaultAlertProps().Type = %q, want %q", props.Type, FeedbackInfo)
 		}
 	})
 	t.Run("DefaultToastProps", func(t *testing.T) {
 		t.Parallel()
 
 		props := DefaultToastProps()
-		if props.Type != ToastInfo {
-			t.Errorf("DefaultToastProps().Type = %q, want %q", props.Type, ToastInfo)
+		if props.Type != FeedbackInfo {
+			t.Errorf("DefaultToastProps().Type = %q, want %q", props.Type, FeedbackInfo)
 		}
 	})
 	t.Run("DefaultStepIndicatorProps", func(t *testing.T) {

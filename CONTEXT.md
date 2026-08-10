@@ -127,7 +127,7 @@ No other runtime dependencies.
 | Pattern             | Example              | Purpose                                   |
 | ------------------- | -------------------- | ----------------------------------------- |
 | `XxxProps`          | `CardProps`          | Component configuration struct            |
-| `XxxType`           | `AlertType`          | String enum for visual variants           |
+| `XxxType`           | `FeedbackType`       | String enum for visual variants           |
 | `XxxSize`           | `BadgeSize`          | String enum for size variants             |
 | `XxxPosition`       | `TooltipPosition`    | String enum for positional variants       |
 | `XxxStatus`         | `AvatarStatus`       | String enum for state variants            |

@@ -1,4 +1,4 @@
-# ADR 0034: Targeted 5-Module Workspace Split
+# ADR 0034: Targeted 7-Module Workspace Split
 
 ## Date
 
@@ -42,17 +42,17 @@ A full per-package split (~12 modules) was rejected because:
 
 ## Decision
 
-Split into **5 modules** connected by a `go.work` workspace for local dev and
+Split into **7 modules** connected by a `go.work` workspace for local dev and
 `replace` directives for CI/consumer builds.
 
 ### Module boundaries
 
 ```
 Layer 0 (leaf):  utils (utils, utils/svg, utils/cdn, utils/golden)
-Layer 1:         icons, charts/echarts    [depend on utils]
-Layer 2:         errorpage                [depends on utils, icons]
+Layer 1:         icons, charts/echarts, htmx, datastar    [depend on utils]
+Layer 2:         errorpage                                [depends on utils, icons]
 Layer 3:         root (display, feedback, forms, layout, navigation,
-                          htmx, datastar, recipes, integration, cmd/tc,
+                          recipes, integration, cmd/tc,
                           internal/contract, examples/demo)
 ```
 
@@ -62,6 +62,8 @@ Layer 3:         root (display, feedback, forms, layout, navigation,
 | `github.com/larsartmann/templ-components/icons`        | templ, utils                          | 102 named SVG icons; icons-only adoption             |
 | `github.com/larsartmann/templ-components/errorpage`    | templ, go-error-family, icons, utils  | Error pages + handler; isolates go-error-family      |
 | `github.com/larsartmann/templ-components/charts/echarts` | templ, utils                        | Opt-in ECharts adapter (ADR-0031)                    |
+| `github.com/larsartmann/templ-components/htmx`         | templ, utils                          | HTMX loading, error handling, OOB swaps              |
+| `github.com/larsartmann/templ-components/datastar`     | templ, utils, go-datastar/static      | Datastar runtime + SSE LiveRegion (ADR-0030)         |
 | `github.com/larsartmann/templ-components` (root)       | all above + testify                   | Core UI + recipes + integration + demo + CLI         |
 
 ### `internal/` package promotion
@@ -81,10 +83,10 @@ imports 10+ packages; works fine as a root-module internal).
 ### Dual strategy: `go.work` + `replace`
 
 - **`go.work`** (gitignored): local development. Provides seamless cross-module
-  refactoring. `use` directives for all 5 modules + visualtest.
+  refactoring. `use` directives for all 7 modules + visualtest.
 - **`replace` directives** in each module's `go.mod`: CI and consumer builds.
   Each sub-module replaces its sibling deps with relative paths (`./utils`,
-  `../icons`, etc.). The root module replaces all 4 sub-modules.
+  `../icons`, etc.). The root module replaces all 6 sub-modules.
 
 ### Versioning: shared tag
 
@@ -123,7 +125,7 @@ affected by the rename.
 
 ### Negative
 
-- **Release complexity.** `scripts/release.sh` must tag 5 directories instead
+- **Release complexity.** `scripts/release.sh` must tag 7 directories instead
   of 1. The version-sync guard must check all modules.
 - **CI complexity.** golangci-lint does not support go.work; each module is
   linted independently. Per-module isolation tests verify standalone builds.
@@ -136,7 +138,7 @@ affected by the rename.
 
 ## Verification
 
-All 5 modules build, test, and lint clean:
+All 7 modules build, test, and lint clean:
 - Workspace mode (`go.work`): `go build ./... && go test ./...`
 - Standalone mode (`GOWORK=off`): per-module `go build ./... && go test ./...`
 - Lint: per-module `golangci-lint run` (golangci-lint does not support go.work)

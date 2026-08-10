@@ -5,36 +5,25 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-// AlertType represents the visual style of an alert
-// Deprecated: Use FeedbackType instead. Will be removed in v1.0.
-type AlertType = FeedbackType
-
-const (
-	AlertSuccess = FeedbackSuccess
-	AlertError   = FeedbackError
-	AlertWarning = FeedbackWarning
-	AlertInfo    = FeedbackInfo
-)
-
 // AlertProps configures an alert banner
 type AlertProps struct {
 	utils.BaseProps
 	Title       string
 	Message     string
-	Type        AlertType
+	Type        FeedbackType
 	Dismissible bool
 }
 
 // DefaultAlertProps returns sensible defaults
 func DefaultAlertProps() AlertProps {
 	return AlertProps{
-		Type: AlertInfo,
+		Type: FeedbackInfo,
 	}
 }
 
 // Alert renders a full-width alert banner
 //
-//	@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong", Type: feedback.AlertError})
+//	@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong", Type: feedback.FeedbackError})
 //
 // The dismiss control markup is shared via utils.DismissButton; only the style
 // classes differ from errorpage.ErrorAlert. JS behaviour is shared via

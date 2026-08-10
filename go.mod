@@ -6,7 +6,9 @@ require github.com/a-h/templ v0.3.1020
 
 require (
 	github.com/larsartmann/templ-components/charts/echarts v1.8.1
+	github.com/larsartmann/templ-components/datastar v1.8.1
 	github.com/larsartmann/templ-components/errorpage v1.8.1
+	github.com/larsartmann/templ-components/htmx v1.8.1
 	github.com/larsartmann/templ-components/icons v1.8.1
 	github.com/larsartmann/templ-components/utils v1.8.1
 	github.com/stretchr/testify v1.10.0
@@ -14,7 +16,11 @@ require (
 
 replace github.com/larsartmann/templ-components/charts/echarts => ./charts/echarts
 
+replace github.com/larsartmann/templ-components/datastar => ./datastar
+
 replace github.com/larsartmann/templ-components/errorpage => ./errorpage
+
+replace github.com/larsartmann/templ-components/htmx => ./htmx
 
 replace github.com/larsartmann/templ-components/icons => ./icons
 
@@ -23,6 +29,7 @@ replace github.com/larsartmann/templ-components/utils => ./utils
 require (
 	github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
+	github.com/larsartmann/go-datastar/static v0.1.0 // indirect
 	github.com/larsartmann/go-error-family v0.10.0 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect

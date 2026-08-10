@@ -3,7 +3,6 @@ package htmx
 import (
 	"testing"
 
-	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -37,7 +36,7 @@ func TestLoadingButtonCoverageGaps(t *testing.T) {
 
 	t.Run("renders with default spinner", func(t *testing.T) {
 		t.Parallel()
-		output := utils.Render(t, LoadingButton("Save", "Saving...", feedback.Spinner(feedback.DefaultSpinnerProps())))
+		output := utils.Render(t, LoadingButton("Save", "Saving...", testSpinner("text-blue-600")))
 		utils.AssertContains(t, output, "Save")
 		utils.AssertContains(t, output, "Saving...")
 	})

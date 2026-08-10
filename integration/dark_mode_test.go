@@ -27,7 +27,7 @@ func TestDarkModeVariantsPresent(t *testing.T) {
 		{"Card", utils.Render(t, display.Card(display.CardProps{Title: "T"}))},
 		{"Badge", utils.Render(t, display.Badge(display.BadgeProps{Text: "B", Type: display.BadgeSuccess}))},
 		{"Avatar", utils.Render(t, display.Avatar(display.AvatarProps{Initials: "AB"}))},
-		{"Alert", utils.Render(t, feedback.Alert(feedback.AlertProps{Type: feedback.AlertInfo, Message: "M"}))},
+		{"Alert", utils.Render(t, feedback.Alert(feedback.AlertProps{Type: feedback.FeedbackInfo, Message: "M"}))},
 		{
 			"Spinner",
 			utils.Render(t, feedback.Spinner(feedback.SpinnerProps{Color: "text-blue-600 dark:text-blue-400"})),

@@ -8,23 +8,12 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-// ToastType represents the visual style of a toast
-// Deprecated: Use FeedbackType instead. Will be removed in v1.0.
-type ToastType = FeedbackType
-
-const (
-	ToastSuccess = FeedbackSuccess
-	ToastError   = FeedbackError
-	ToastWarning = FeedbackWarning
-	ToastInfo    = FeedbackInfo
-)
-
 // ToastProps configures a toast notification
 type ToastProps struct {
 	utils.BaseProps
 	Message  string
 	Title    string
-	Type     ToastType
+	Type     FeedbackType
 	Duration int // milliseconds, 0 for no auto-dismiss
 }
 
@@ -79,7 +68,7 @@ func toastDismissScript(nonce, toastID string, duration int) templ.Component {
 // DefaultToastProps returns sensible defaults
 func DefaultToastProps() ToastProps {
 	return ToastProps{
-		Type:     ToastInfo,
+		Type:     FeedbackInfo,
 		Duration: ToastDurationMedium,
 	}
 }
@@ -98,7 +87,7 @@ templ ToastContainer(nonce string) {
 // Toast renders a single toast notification (server-side rendered)
 // For HTMX responses, use ToastContainer + the tcShowToast() JS function
 //
-//	@feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.ToastSuccess})
+//	@feedback.Toast(feedback.ToastProps{Message: "Saved!", Type: feedback.FeedbackSuccess})
 templ Toast(props ToastProps) {
 	{{ toastID := utils.EnsureID("toast", props.ID) }}
 	{{ s := feedbackStyle(props.Type) }}

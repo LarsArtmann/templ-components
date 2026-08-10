@@ -40,7 +40,7 @@ func TestToastContainerHasColorMap(t *testing.T) {
 func TestToastBasicRender(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Toast(ToastProps{
-		Type:    ToastSuccess,
+		Type:    FeedbackSuccess,
 		Message: "Saved successfully",
 	}))
 	utils.AssertContains(t, output, "Saved successfully")
@@ -50,7 +50,7 @@ func TestToastBasicRender(t *testing.T) {
 func TestToastDurationAutoDismiss(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Toast(ToastProps{
-		Type:     ToastInfo,
+		Type:     FeedbackInfo,
 		Message:  "test",
 		Duration: 5000,
 	}))

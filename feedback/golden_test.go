@@ -18,7 +18,7 @@ func TestGoldenAlertError(t *testing.T) {
 	output := utils.Render(t, Alert(AlertProps{
 		Title:   "Error",
 		Message: "Something failed",
-		Type:    AlertError,
+		Type:    FeedbackError,
 	}))
 	golden.Assert(t, "alert_error", output)
 }
@@ -33,7 +33,7 @@ func TestGoldenAlertSuccess(t *testing.T) {
 	output := utils.Render(t, Alert(AlertProps{
 		Title:   "Saved",
 		Message: "Your changes are stored.",
-		Type:    AlertSuccess,
+		Type:    FeedbackSuccess,
 	}))
 	golden.Assert(t, "alert_success", output)
 }
@@ -43,7 +43,7 @@ func TestGoldenAlertInfo(t *testing.T) {
 	output := utils.Render(t, Alert(AlertProps{
 		Title:   "Heads up",
 		Message: "A new version is available.",
-		Type:    AlertInfo,
+		Type:    FeedbackInfo,
 	}))
 	golden.Assert(t, "alert_info", output)
 }
@@ -52,7 +52,7 @@ func TestGoldenAlertDismissible(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Alert(AlertProps{
 		Title:       "Warning",
-		Type:        AlertWarning,
+		Type:        FeedbackWarning,
 		Dismissible: true,
 	}))
 	golden.Assert(t, "alert_dismissible", output)
@@ -63,7 +63,7 @@ func TestGoldenToast(t *testing.T) {
 	output := utils.Render(t, Toast(ToastProps{
 		BaseProps: utils.BaseProps{ID: "toast-success"},
 		Message:   "Saved!",
-		Type:      ToastSuccess,
+		Type:      FeedbackSuccess,
 	}))
 	golden.Assert(t, "toast_success", output)
 }

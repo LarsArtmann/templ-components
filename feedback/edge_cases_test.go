@@ -13,7 +13,7 @@ func TestAlertEdgeCases(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Alert(AlertProps{
 			Message: "Just a message",
-			Type:    AlertInfo,
+			Type:    FeedbackInfo,
 		}))
 		utils.AssertContains(t, output, "Just a message")
 		utils.AssertContains(t, output, `role="alert"`)
@@ -23,7 +23,7 @@ func TestAlertEdgeCases(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Alert(AlertProps{
 			Title: "Title Only",
-			Type:  AlertInfo,
+			Type:  FeedbackInfo,
 		}))
 		utils.AssertContains(t, output, "Title Only")
 		utils.AssertContains(t, output, `role="alert"`)
@@ -44,7 +44,7 @@ func TestAlertEdgeCases(t *testing.T) {
 		output := utils.Render(t, Alert(AlertProps{
 			BaseProps: utils.BaseProps{ID: "my-alert"},
 			Message:   "Test",
-			Type:      AlertInfo,
+			Type:      FeedbackInfo,
 		}))
 		utils.AssertContains(t, output, `id="my-alert"`)
 	})
@@ -57,7 +57,7 @@ func TestToastEdgeCases(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Toast(ToastProps{
 			Title: "No Body",
-			Type:  ToastInfo,
+			Type:  FeedbackInfo,
 		}))
 		utils.AssertContains(t, output, "No Body")
 		utils.AssertContains(t, output, `role="status"`)
@@ -78,7 +78,7 @@ func TestToastEdgeCases(t *testing.T) {
 		output := utils.Render(t, Toast(ToastProps{
 			BaseProps: utils.BaseProps{ID: "my-toast"},
 			Message:   "Test",
-			Type:      ToastInfo,
+			Type:      FeedbackInfo,
 		}))
 		utils.AssertContains(t, output, `id="my-toast"`)
 	})
@@ -97,7 +97,7 @@ func TestToastEdgeCases(t *testing.T) {
 		output := utils.Render(t, Toast(ToastProps{
 			BaseProps: utils.BaseProps{ID: "manual-toast"},
 			Message:   "Manual",
-			Type:      ToastInfo,
+			Type:      FeedbackInfo,
 		}))
 		utils.AssertNotContains(t, output, "setTimeout")
 	})

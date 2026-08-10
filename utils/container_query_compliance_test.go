@@ -11,7 +11,7 @@ import (
 
 // TestContainerQueryCompliance scans .templ files for structural viewport
 // breakpoints (sm:/md:/lg:/xl: on grid-cols, flex, hidden, col-span, etc.)
-// that lack a corresponding ContainerAware or ContainerResponsive flag.
+// that lack a corresponding ContainerAware or ContainerAware flag.
 //
 // Container queries let a component adapt to its parent container width
 // instead of the browser viewport — critical for embedded/nested layouts.
@@ -33,7 +33,7 @@ func TestContainerQueryCompliance(t *testing.T) {
 	)
 
 	containerAwareRe := regexp.MustCompile(
-		`ContainerAware|ContainerResponsive`,
+		`ContainerAware|ContainerAware`,
 	)
 
 	scanContainerQuery(t, dirs, structuralRe, containerAwareRe)

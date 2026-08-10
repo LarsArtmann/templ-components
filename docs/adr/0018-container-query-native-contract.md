@@ -8,6 +8,10 @@
 
 Accepted
 
+> **v2.0 Update (ADR-0022):** `Grid.ContainerResponsive` was renamed to `Grid.ContainerAware`
+> for consistency with all other container-aware components. The default was flipped to `true`
+> for `Grid`, `Card`, and `Split` (opt-out); the other 5 components remain opt-in (`false`).
+
 ## Context
 
 The library has one container-query component (`display.Grid` with `ContainerResponsive: true`,

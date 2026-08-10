@@ -18,9 +18,12 @@
 #   3. Bumps utils.Version
 #   4. Collects release notes (--notes-file or CHANGELOG [Unreleased])
 #   5. Moves notes from [Unreleased] to a new versioned heading (inserts fresh [Unreleased])
-#   6. Regenerates *_templ.go and runs the full verify suite
+#   5b. Bumps require versions in all 5 go.mod files
+#   5c. Removes replace directives (remove-at-release strategy)
+#   6. Regenerates *_templ.go and runs the full verify suite (workspace mode)
 #   7. Stages and commits as `release: <version> — <summary>` (one-commit convention)
-#   8. Creates an annotated, SSH-signed tag `v<version>: <summary>`
+#   8. Creates annotated, SSH-signed tags: root `v<x>` + sub-module `utils/v<x>`, etc.
+#   9. Re-adds replace directives in a follow-up commit for local dev
 #
 # Required: GPG/SSH signing key configured (the tag signing matches v0.5.0).
 # Does NOT push. House rule: "NEVER PUSH TO REMOTE" — push manually after review.
@@ -75,8 +78,11 @@ if [ -z "$NEW_VERSION" ] || [ -z "$RELEASE_SUMMARY" ]; then
 fi
 TODAY="$(date -u +%Y-%m-%d)"
 
-export GOWORK=off
 export GOEXPERIMENT=jsonv2
+# NOTE: GOWORK is NOT set to off — we use go.work (workspace mode) for
+# verification because the release commit removes replace directives and
+# the new version tags don't exist on the proxy yet. Workspace mode resolves
+# sibling modules locally via the go.work "use" directives.
 
 cd "$(dirname "$0")/.."
 
@@ -171,6 +177,23 @@ for modfile in go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/
 done
 echo "Bumped all internal module require entries to v${NEW_VERSION}."
 
+# 5c. Remove replace directives (remove-at-release strategy).
+#     The release commit ships WITHOUT replace directives so the tagged go.mod
+#     files are clean for consumers. After tagging (step 10), replaces are
+#     re-added in a follow-up commit for local dev convenience.
+REPLACE_BACKUP_DIR="$(mktemp -d)"
+trap 'rm -rf "$REPLACE_BACKUP_DIR"' EXIT  # clean up temp dir (also fires after release_rollback)
+for modfile in go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod; do
+    backup_name="$(echo "$modfile" | tr '/' '_')"
+    grep '^replace github.com/larsartmann/templ-components/' "$modfile" > "${REPLACE_BACKUP_DIR}/${backup_name}" 2>/dev/null || true
+    sed -i.bak '/^replace github.com\/larsartmann\/templ-components\//d' "$modfile"
+    rm -f "${modfile}.bak"
+    # Clean up resulting consecutive blank lines
+    sed -i.bak '/^$/N;/^\n$/d' "$modfile"
+    rm -f "${modfile}.bak"
+done
+echo "Removed replace directives from all go.mod files (backed up for re-addition after tagging)."
+
 # 6. Move release notes from [Unreleased] to the new version heading.
 #    On encountering [Unreleased]: emit fresh-empty [Unreleased], then the new
 #    version heading with the (trimmed) notes body. Skip the ORIGINAL [Unreleased]
@@ -217,12 +240,12 @@ else
     echo "Run 'nix run .#build' or install tailwindcss to recompile." >&2
 fi
 
-# Root module (GOWORK=off tests the replace-directive resolution path).
+# Root module (workspace mode — replaces removed, tags don't exist yet).
 go build ./...
 go test ./... -count=1 -race
 
-# Sub-modules (standalone isolation).
-for mod in utils icons errorpage charts/echarts; do
+# Sub-modules (workspace resolves sibling modules locally).
+for mod in utils icons errorpage charts/echarts datastar htmx; do
     echo "==> verify $mod"
     (cd "$mod" && go build ./... && go test ./... -count=1 -race)
 done
@@ -230,9 +253,9 @@ done
 # Lint (golangci-lint does not support go.work).
 golangci-lint run \
     ./display/... ./feedback/... ./forms/... \
-    ./htmx/... ./datastar/... ./integration/... ./internal/... \
+    ./integration/... ./internal/... \
     ./layout/... ./navigation/... ./recipes/... ./cmd/...
-for mod in utils icons errorpage charts/echarts; do
+for mod in utils icons errorpage charts/echarts datastar htmx; do
     echo "==> lint $mod"
     (cd "$mod" && golangci-lint run ./...)
 done
@@ -277,6 +300,29 @@ git tag -s "v${NEW_VERSION}" -m "v${NEW_VERSION}: ${RELEASE_SUMMARY}" "$RELEASE_
 for submod in utils icons errorpage charts/echarts; do
     git tag -s "${submod}/v${NEW_VERSION}" -m "${submod}/v${NEW_VERSION}: ${RELEASE_SUMMARY}" "$RELEASE_COMMIT"
 done
+
+# 10. Re-add replace directives for local dev (remove-at-release strategy).
+#     The tagged commit (step 8) has no replace directives — clean for consumers.
+#     This follow-up commit restores them so local development continues to work
+#     without proxy round-trips.
+for modfile in go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod; do
+    backup_name="$(echo "$modfile" | tr '/' '_')"
+    backup_file="${REPLACE_BACKUP_DIR}/${backup_name}"
+    if [ -s "$backup_file" ]; then
+        echo "" >> "$modfile"
+        cat "$backup_file" >> "$modfile"
+    fi
+done
+git add go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod
+git commit -m "chore: re-add replace directives after v${NEW_VERSION} release
+
+These local replace directives were removed for the release commit so the
+tagged go.mod files are clean for consumers. They are re-added here for
+local development convenience (go.work provides workspace resolution, but
+replace directives are needed for GOWORK=off standalone testing).
+
+Co-Authored-By: Crush <noreply@crush.lars.software>"
+echo "Re-added replace directives for local dev."
 
 echo ""
 echo "Release v${NEW_VERSION} cut at commit ${RELEASE_COMMIT}."

@@ -114,7 +114,7 @@ new primitive.
 - Migrating existing 48 flex usages to grid — most are correctly 1D. M15
   audits and documents keep-decisions per usage.
 - Container-query-as-default — viewport-default remains the safer baseline.
-  `Grid.ContainerResponsive` is the opt-in path; may revisit post-v1.0.
+  `Grid.ContainerAware` is the opt-out path since v2.0 (renamed from `ContainerResponsive`, default flipped to `true`, ADR-0022).
 - CSS subgrid — tracked in `docs/research/css-subgrid.md`. Would unlock
   true 2D alignment in Card/DefinitionList once Baseline 2025.
 

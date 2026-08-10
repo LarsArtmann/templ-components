@@ -10,7 +10,7 @@ import (
 
 func BenchmarkFeedbackRenders(b *testing.B) {
 	b.Run("Alert render", func(b *testing.B) {
-		props := AlertProps{Title: "Error", Message: "Something failed", Type: AlertError}
+		props := AlertProps{Title: "Error", Message: "Something failed", Type: FeedbackError}
 
 		b.ResetTimer()
 
@@ -22,7 +22,7 @@ func BenchmarkFeedbackRenders(b *testing.B) {
 	})
 
 	b.Run("Toast render", func(b *testing.B) {
-		props := ToastProps{Message: "Saved!", Type: ToastSuccess}
+		props := ToastProps{Message: "Saved!", Type: FeedbackSuccess}
 
 		b.ResetTimer()
 

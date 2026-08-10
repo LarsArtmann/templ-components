@@ -4,19 +4,19 @@ This directory documents the multi-module workspace split executed on 2026-08-10
 
 ## What was done
 
-The single-module library was split into **5 Go modules** connected by a
+The single-module library was split into **7 Go modules** connected by a
 `go.work` workspace (local dev) and `replace` directives (CI/consumers).
 
 ```
 Layer 0 (leaf):  utils (utils, utils/svg, utils/cdn, utils/golden)
-Layer 1:         icons, charts/echarts    [depend on utils]
+Layer 1:         icons, charts/echarts, datastar, htmx    [depend on utils]
 Layer 2:         errorpage                [depends on utils, icons]
 Layer 3:         root (display, feedback, forms, layout, navigation,
-                          htmx, datastar, recipes, integration, cmd/tc,
+                          recipes, integration, cmd/tc,
                           internal/contract, examples/demo)
 ```
 
-## Why 5 modules (not per-package)
+## Why 7 modules (not per-package)
 
 A full per-package split (~12 modules) was proposed in ADR-0020 but rejected
 because:
@@ -32,7 +32,7 @@ because:
 
 | Decision | Choice | Rationale |
 |----------|--------|-----------|
-| Scope | Targeted 5-module | Real isolation wins without per-package overhead |
+| Scope | Targeted 7-module | Real isolation wins without per-package overhead |
 | Versioning | Shared (one version for all modules) | Simplest for solo-maintained lib |
 | `internal/` packages | Promoted to `utils/` sub-packages | Go's `internal/` rule blocks cross-module access |
 | Compat | Import paths unchanged | `internal/*` was never externally importable; sub-module paths unchanged |
@@ -45,7 +45,7 @@ because:
 
 ## Release process
 
-At release time, `scripts/release.sh` tags all 5 modules:
+At release time, `scripts/release.sh` tags all 7 modules:
 
 ```
 v<version>              # root module
@@ -53,6 +53,8 @@ utils/v<version>        # utils
 icons/v<version>        # icons
 errorpage/v<version>    # errorpage
 charts/echarts/v<version>  # charts/echarts
+datastar/v<version>     # datastar
+htmx/v<version>         # htmx
 ```
 
 The Go module proxy resolves sub-module versions via these directory-prefixed
@@ -66,5 +68,5 @@ consumers resolve via the published tags.
 `go.work` is missing, run:
 
 ```bash
-go work use . utils icons errorpage charts/echarts visualtest
+go work use . utils icons errorpage charts/echarts datastar htmx visualtest
 ```

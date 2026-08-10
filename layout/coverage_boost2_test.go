@@ -63,6 +63,7 @@ func TestBaseWithHTMXCustomCDN(t *testing.T) {
 
 	props := DefaultPageProps()
 	props.Title = "Custom CDN"
+	props.HTMXSrc = "" // opt into CDN mode
 	props.HTMXCDN = "https://unpkg.com"
 	output := utils.Render(t, Base(props))
 	utils.AssertContains(t, output, "unpkg.com")
@@ -82,6 +83,7 @@ func TestBaseWithHTMXSRI(t *testing.T) {
 
 	props := DefaultPageProps()
 	props.Title = "SRI"
+	props.HTMXSrc = "" // opt into CDN+SRI mode
 	props.HTMXUseSRI = true
 	output := utils.Render(t, Base(props))
 	utils.AssertContains(t, output, "sha384-")
@@ -103,7 +105,7 @@ func TestBaseDefaultProps(t *testing.T) {
 		t, output,
 		`lang="en"`,
 		"/app.css",
-		"htmx.org",
+		"var htmx", // v2.0: HTMX is embedded inline by default (self-host)
 	)
 }
 
@@ -273,6 +275,7 @@ func TestBaseHTMXCDNOverrides(t *testing.T) {
 
 	props := DefaultPageProps()
 	props.Title = "Self-hosted"
+	props.HTMXSrc = "" // opt into CDN mode
 	props.HTMXCDN = "https://cdn.example.com"
 	output := utils.Render(t, Base(props))
 	utils.AssertContains(t, output, "cdn.example.com")

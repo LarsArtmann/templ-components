@@ -13,36 +13,25 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-// AlertType represents the visual style of an alert
-// Deprecated: Use FeedbackType instead. Will be removed in v1.0.
-type AlertType = FeedbackType
-
-const (
-	AlertSuccess = FeedbackSuccess
-	AlertError   = FeedbackError
-	AlertWarning = FeedbackWarning
-	AlertInfo    = FeedbackInfo
-)
-
 // AlertProps configures an alert banner
 type AlertProps struct {
 	utils.BaseProps
 	Title       string
 	Message     string
-	Type        AlertType
+	Type        FeedbackType
 	Dismissible bool
 }
 
 // DefaultAlertProps returns sensible defaults
 func DefaultAlertProps() AlertProps {
 	return AlertProps{
-		Type: AlertInfo,
+		Type: FeedbackInfo,
 	}
 }
 
 // Alert renders a full-width alert banner
 //
-//	@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong", Type: feedback.AlertError})
+//	@feedback.Alert(feedback.AlertProps{Title: "Error", Message: "Something went wrong", Type: feedback.FeedbackError})
 //
 // The dismiss control markup is shared via utils.DismissButton; only the style
 // classes differ from errorpage.ErrorAlert. JS behaviour is shared via
@@ -86,7 +75,7 @@ func Alert(props AlertProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 46, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 35, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -122,7 +111,7 @@ func Alert(props AlertProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 51, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 40, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -175,7 +164,7 @@ func Alert(props AlertProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 61, Col: 62}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 50, Col: 62}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -211,7 +200,7 @@ func Alert(props AlertProps) templ.Component {
 		var templ_7745c5c3_Var11 string
 		templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(props.Message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 64, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 53, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 		if templ_7745c5c3_Err != nil {
@@ -292,7 +281,7 @@ func inlineMessage(message string, colorClass string, role string, icon templ.Co
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.ResolveAttributeValue(role)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 79, Col: 80}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 68, Col: 80}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var15)
 		if templ_7745c5c3_Err != nil {
@@ -313,7 +302,7 @@ func inlineMessage(message string, colorClass string, role string, icon templ.Co
 		var templ_7745c5c3_Var16 string
 		templ_7745c5c3_Var16, templ_7745c5c3_Err = templ.JoinStringErrs(message)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 81, Col: 17}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `feedback/alert.templ`, Line: 70, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var16))
 		if templ_7745c5c3_Err != nil {
