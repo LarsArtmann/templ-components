@@ -229,7 +229,7 @@ done
 
 # Lint (golangci-lint does not support go.work).
 golangci-lint run \
-    ./display/... ./errorpage/... ./feedback/... ./forms/... \
+    ./display/... ./feedback/... ./forms/... \
     ./htmx/... ./datastar/... ./integration/... ./internal/... \
     ./layout/... ./navigation/... ./recipes/... ./cmd/...
 for mod in utils icons errorpage charts/echarts; do

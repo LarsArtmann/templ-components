@@ -40,7 +40,8 @@ while IFS= read -r line; do
 done < <(grep -rn 'replace.*=>' go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod 2>/dev/null || true)
 
 # 3. Verify all sibling module requires share the same version.
-SHARED_VERSION="$(grep -E 'github.com/larsartmann/templ-components/utils ' go.mod | awk '{print $2}' || true)"
+#    Only match require lines (indented, followed by version), not replace lines.
+SHARED_VERSION="$(grep -E '^\s+github.com/larsartmann/templ-components/utils v' go.mod | head -1 | awk '{print $2}' || true)"
 if [ -n "$SHARED_VERSION" ]; then
     for modfile in go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod; do
         while IFS= read -r version; do
@@ -48,7 +49,7 @@ if [ -n "$SHARED_VERSION" ]; then
                 echo "::error::${modfile}: sibling module version '${version}' != shared '${SHARED_VERSION}'"
                 ERRORS=$((ERRORS + 1))
             fi
-        done < <(grep -oE 'github.com/larsartmann/templ-components/[a-z/]+ v[0-9]+\.[0-9]+\.[0-9]+' "$modfile" 2>/dev/null | awk '{print $2}' || true)
+        done < <(grep -E '^\s+github.com/larsartmann/templ-components/[a-z/]+ v' "$modfile" 2>/dev/null | awk '{print $2}' || true)
     done
 fi
 

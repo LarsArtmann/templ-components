@@ -30,8 +30,8 @@ done
 # --- Lint (golangci-lint does not support go.work) ---
 echo "==> lint root"
 golangci-lint run \
-  ./display/... ./errorpage/... ./feedback/... ./forms/... \
-  ./htmx/... ./icons/... ./integration/... ./internal/... \
+  ./display/... ./feedback/... ./forms/... \
+  ./htmx/... ./datastar/... ./integration/... ./internal/... \
   ./layout/... ./navigation/... ./recipes/... ./cmd/...
 
 for mod in utils icons errorpage charts/echarts; do

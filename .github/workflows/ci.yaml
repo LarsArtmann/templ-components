@@ -30,6 +30,9 @@ jobs:
       - name: Version-sync guard (fast, catches version drift before test)
         run: scripts/check-version-sync.sh
 
+      - name: Module-sync guard (fast, catches multi-module workspace drift)
+        run: scripts/check-module-sync.sh
+
       - name: Run golangci-lint
         run: |
           # Multi-module: lint each module independently (golangci-lint
