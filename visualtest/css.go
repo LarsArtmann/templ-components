@@ -40,9 +40,7 @@ func loadCSS() ([]byte, error) {
 // runtime.Caller gives the absolute path of this file in the module tree, so
 // the lookup is immune to the process working directory.
 func cssPath() string {
-	_, file, _, _ := runtime.Caller(
-		0,
-	) //nolint:dogsled // pc and line are intentionally discarded; only the file path is needed
+	_, file, _, _ := runtime.Caller(0) //nolint:dogsled // pc and line intentionally discarded
 	// file = <repo>/visualtest/css.go
 	repoRoot := filepath.Dir(file)
 
