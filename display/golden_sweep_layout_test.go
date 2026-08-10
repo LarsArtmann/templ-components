@@ -3,8 +3,8 @@ package display
 import (
 	"testing"
 
-	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/golden"
 )
 
 // Golden sweep for the layout/visualization components added in v1.6.0:

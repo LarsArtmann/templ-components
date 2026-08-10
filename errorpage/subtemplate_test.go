@@ -4,8 +4,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/golden"
 )
 
 // TestErrorHeaderSubTemplate verifies the shared errorHeader sub-template renders

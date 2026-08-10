@@ -25,24 +25,22 @@ This repo is a **single Go module** (`github.com/larsartmann/templ-components`) 
 | `examples/demo`     | Demo binary                                               | Showcases components                                                                                                                                     |
 | `visualtest`        | **Separate module** — pixel-level visual regression tests | chromedp + headless Chromium; `nix run .#visual`. See `docs/visual-testing.md`                                                                           |
 
-> **Note:** A multi-module workspace split was prototyped on the `modularize/strategic-split`
-> branch but was never merged to `master`. The split may be re-attempted post-v1.0 if the
-> package graph warrants it.
+> **Note:** `go.work` and `go.work.sum` are in `.gitignore` (local dev only). CI and consumers use `replace` directives in each module's `go.mod`. `internal/` packages (`svg`, `cdn`, `golden`) were promoted to `utils/` sub-packages because Go's `internal/` rule blocks cross-module access.
 
 ## Build & Test Commands
 
 ```bash
-# Full build (required before go build after .templ changes)
+# Full build (workspace mode via go.work — builds all 5 modules)
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./...
 
-# Tests
+# Tests (all modules via go.work)
 go test ./...
 
-# Lint
-golangci-lint run ./...
+# Per-module isolation tests (verify each module builds standalone without go.work)
+for mod in utils icons errorpage charts/echarts; do (cd "$mod" && GOWORK=off go test ./...); done
 
 # All-in-one verification
-find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && golangci-lint run ./...
+find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && nix run .#lint
 ```
 
 ### Nix flake commands
@@ -122,10 +120,10 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - **Dark mode color convention:** Light mode uses `-600` shade for backgrounds (`bg-blue-600`), dark mode uses `-500` (`dark:bg-blue-500`). Light mode uses `-600` for text (`text-blue-600`), dark mode uses `-400` (`dark:text-blue-400`). Neutral text: `text-gray-500` → `dark:text-gray-400`, `text-gray-400` → `dark:text-gray-500`. Every neutral and semantic color class MUST have a `dark:` variant — enforced by `utils.TestDarkModeCompliance` + `utils.TestDarkModeSemanticColors` (both now pass). Exceptions: Toggle thumb (`bg-white` both modes), SidebarNav (permanently dark sidebar), avatar silhouette icon (`text-blue-200` decorative).
 - **Dark mode compliance tests:** `utils.TestDarkModeCompliance` scans all `.templ`/`.go` source files for neutral colors (`text-gray-*`, `bg-white`, `bg-gray-*`, `border-gray-*`, `ring-gray-*`) without `dark:` variants. `utils.TestDarkModeSemanticColors` scans for semantic colors (`bg-blue-600`, `text-red-600`, etc.) without `dark:` variants. Both now pass. Run via `go test ./utils/... -run TestDarkMode`. For the full dark mode strategy analysis (Tailwind v4 default is `prefers-color-scheme`, three consumer paths, `@theme` palette override pattern), see `docs/dark-mode-research.md`.
 - **CI:** `.github/workflows/ci.yaml` — lint (golangci-lint), build+test with `templ generate`, coverage artifact. Pre-commit: `.git/hooks/pre-commit` → `scripts/pre-commit.sh`
-- **Import graph:** `internal/svg` ← `icons`; `utils` (leaf); `icons,internal/svg,utils` ← root packages (display,feedback,forms,layout,navigation,htmx,datastar); `icons,utils` ← errorpage; `charts/echarts → utils` (opt-in, zero-dep ECharts wrapper); all ← examples/demo. Production deps: `icons → internal/svg`, `display → icons,internal/svg,utils`, `feedback → icons,internal/svg,utils`, `forms → icons,utils`, `layout → icons,utils`, `navigation → icons,internal/svg,utils`, `htmx → utils`, `datastar → utils`, `errorpage → icons,utils`, `charts/echarts → utils`
+- **Import graph:** `utils` (leaf module with `utils/svg`, `utils/cdn`, `utils/golden`); `icons` → utils; `errorpage` → utils, icons; `charts/echarts` → utils; root module (display, feedback, forms, layout, navigation, htmx, datastar, recipes) → utils, icons, errorpage, charts/echarts. All 5 modules form a strict DAG. Production deps: `icons → utils/svg`, `display → icons,utils`, `feedback → icons,utils`, `forms → icons,utils`, `layout → icons,utils`, `navigation → icons,utils`, `htmx → utils`, `datastar → utils/cdn,utils`, `errorpage → icons,utils`, `charts/echarts → utils`, `recipes → display,icons,layout,utils`. Root module `require`s all sub-modules for backward compatibility (old import paths resolve to the sub-modules automatically).
 - **No circular imports** allowed
 - **AriaLabel propagation:** All components with `BaseProps` propagate `AriaLabel` to root element. Components with hardcoded aria-labels (Nav, Pagination, Breadcrumbs, StepIndicator) allow AriaLabel override via `utils.Ternary`
-- **SVG paths:** Shared constants in `internal/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
+- **SVG paths:** Shared constants in `utils/svg` (PathChevronDown, PathChevronSmall, PathArrowUp/Down/Left/Right, PathAvatarFill) — single source of truth
 
 ## Code Conventions
 
@@ -177,7 +175,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - **Drawer:** `display.Drawer` — accessible side panel rendered as a native `<dialog>` with `data-side="left"`/`"right"`. CSS positions the dialog via `margin-inline-*` (auto-mirrors in RTL) and animates via `translateX`. Side positioning is in `templates/custom.css` under `dialog.tc-drawer[data-side=...]`.
 - **ValidationSummary:** `forms.ValidationSummary` — accessible error summary with icon, error count, linked field errors, `role="alert"`.
 - **Snapshot testing strategy (three tiers):**
-  1. **HTML golden tests** (`internal/golden`) — fast, deterministic, the backbone. 102 golden files across all packages. Two normalizations: (a) CSS class tokens sorted alphabetically inside `class="..."`, (b) auto-generated EnsureID values (`tc-<prefix>-<16hex>`) replaced with `tc-<prefix>-NORMALIZED` so EnsureID-using components (Accordion, Tabs, Dropdown, Tooltip, Carousel, ContextMenu, Combobox, Nav) are safe for golden testing without explicit IDs. LCS-based diff with line numbers. Update with `-update` flag.
+  1. **HTML golden tests** (`utils/golden`) — fast, deterministic, the backbone. 102 golden files across all packages. Two normalizations: (a) CSS class tokens sorted alphabetically inside `class="..."`, (b) auto-generated EnsureID values (`tc-<prefix>-<16hex>`) replaced with `tc-<prefix>-NORMALIZED` so EnsureID-using components (Accordion, Tabs, Dropdown, Tooltip, Carousel, ContextMenu, Combobox, Nav) are safe for golden testing without explicit IDs. LCS-based diff with line numbers. Update with `-update` flag.
   2. **Substring assertions** (`utils.AssertContains`/`AssertNotContains`/`AssertContainsAll`) — lightweight checks for individual attributes/structure. Use for targeted invariant checks (e.g., "must contain `aria-label`"), not as a substitute for golden tests.
   3. **Visual regression** (`visualtest.AssertScreenshot`) — pixel-level PNG comparison in headless Chromium. Catches what string tests cannot: layout shifts, color regressions, RTL mirroring. Separate module. Run via `nix run .#visual`.
 - **Table-driven golden tests:** Use `golden.AssertSnapshots(t, []golden.Snapshot{{name, html}, ...})` to batch multiple snapshots as parallel subtests. Eliminates `t.Run` + `golden.Assert` boilerplate. Pattern: `golden_sweep_test.go` files in each package cover all component variants.
@@ -319,12 +317,18 @@ after reviewing the release commit and tag with `git show v<version>` and
 ## Lint Command
 
 ```bash
-# examples/ excluded via .golangci.yml paths exclusion.
-# cmd/tc excluded via explicit package list (CLI tool uses different conventions).
+# Multi-module: lint each module independently (golangci-lint does not
+# support go.work workspace mode). Run from repo root.
+# Root module (examples/ excluded via .golangci.yml paths exclusion):
 golangci-lint run \
-  ./datastar/... ./display/... ./errorpage/... ./feedback/... ./forms/... \
-  ./htmx/... ./icons/... ./integration/... ./internal/... \
-  ./layout/... ./navigation/... ./recipes/... ./utils/...
+  ./datastar/... ./display/... ./feedback/... ./forms/... \
+  ./htmx/... ./integration/... ./internal/... \
+  ./layout/... ./navigation/... ./recipes/... ./cmd/...
+# Sub-modules:
+(cd utils && golangci-lint run ./...)
+(cd icons && golangci-lint run ./...)
+(cd errorpage && golangci-lint run ./...)
+(cd charts/echarts && golangci-lint run ./...)
 ```
 
 **Disabled linters (do NOT re-enable — fundamentally incompatible with this codebase):**
@@ -343,9 +347,8 @@ This library uses `encoding/json/v2` + `encoding/json/jsontext` (Go 1.26+ with
 `GOEXPERIMENT=jsonv2`). The pre-commit hook (`scripts/pre-commit.sh`) sets
 `GOEXPERIMENT=jsonv2` automatically. The `.golangci.yml` enables the
 `goexperiment.jsonv2` build tag. The `flake.nix` devShell exports
-`GOEXPERIMENT=jsonv2` + `GOWORK=off` via `shellHook`. **`.envrc`** (direnv) sets
-both vars repo-wide for ALL tools — go, gopls, BuildFlow, shell, IDE — without
-needing `nix develop`. Run `direnv allow` once after cloning.
+`GOEXPERIMENT=jsonv2` via `shellHook`. **`.envrc`** (direnv) sets
+`GOEXPERIMENT=jsonv2` repo-wide for ALL tools. `go.work` is active by default (lists all 5 modules). Use `GOWORK=off` for per-module isolation testing.
 
 **Consumers** must set `GOEXPERIMENT=jsonv2` when building (or wait for Go 1.27
 where it becomes stable). The `errorpage` package uses `json.MarshalEncode` +

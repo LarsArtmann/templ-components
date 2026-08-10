@@ -3,8 +3,8 @@ package display
 import (
 	"testing"
 
-	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/golden"
 )
 
 // TestDarkModeBadgeGolden verifies the badge renders correctly inside a

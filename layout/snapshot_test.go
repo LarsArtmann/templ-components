@@ -5,8 +5,8 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
-	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/golden"
 )
 
 func TestThemeScriptRender(t *testing.T) {

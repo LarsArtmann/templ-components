@@ -3,8 +3,8 @@ package feedback
 import (
 	"testing"
 
-	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/golden"
 )
 
 // Golden sweep for feedback components that previously lacked golden tests.

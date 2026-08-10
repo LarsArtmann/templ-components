@@ -4,8 +4,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/golden"
 )
 
 func TestDefaultCalendarProps(t *testing.T) {

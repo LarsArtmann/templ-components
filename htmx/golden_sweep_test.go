@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/larsartmann/templ-components/feedback"
-	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/golden"
 )
 
 // TestGoldenSweepHTMXComponents provides golden HTML snapshots for every htmx

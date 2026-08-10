@@ -5,8 +5,8 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/golden"
 )
 
 func TestGoldenSidebarNav(t *testing.T) {
