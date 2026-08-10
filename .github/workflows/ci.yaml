@@ -120,7 +120,7 @@ jobs:
         # job below (hard gate — fails the pipeline if any test skips or fails).
 
       - name: Docs-health drift guard
-        run: go test ./utils/... -run TestDocsCountDrift
+        run: cd utils && go test ./... -run TestDocsCountDrift
 
       - name: Check coverage threshold
         run: |

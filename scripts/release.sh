@@ -241,7 +241,7 @@ done
 # AND FEATURES.md version). The full suite ran above; this surfaces a targeted
 # message on mismatch. Rollback is handled by the EXIT trap (release_rollback),
 # so no ad-hoc git restore is needed here.
-if ! go test ./utils/... -run 'TestVersionMatches(Changelog|Features)' -count=1 >/dev/null 2>&1; then
+if ! (cd utils && go test ./... -run 'TestVersionMatches(Changelog|Features)' -count=1 >/dev/null 2>&1); then
     echo "Error: version drift-guard failed. utils.Version, CHANGELOG heading, and FEATURES.md version must all agree." >&2
     exit 1
 fi
