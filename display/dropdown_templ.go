@@ -10,8 +10,8 @@ import templruntime "github.com/a-h/templ/runtime"
 
 import (
 	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
 )
 
 // DropdownItemKind determines how a dropdown item is rendered

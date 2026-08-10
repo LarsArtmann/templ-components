@@ -11,8 +11,8 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
 )
 
 const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs"

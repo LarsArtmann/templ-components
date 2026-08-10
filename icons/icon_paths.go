@@ -120,7 +120,7 @@ var iconAliases = map[Name]Name{
 }
 
 // specialIcons are names that are NOT path icons (rendered by a different code
-// path, e.g. Spinner via internal/svg). iconPaths/IconPathData/IconPathJS
+// path, e.g. Spinner via utils/svg). iconPaths/IconPathData/IconPathJS
 // return the Question fallback for these so consumers get a clear visual signal
 // rather than silently wrong data.
 //

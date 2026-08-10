@@ -7,7 +7,7 @@ import (
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/internal/golden"
+	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/utils"
 )
 

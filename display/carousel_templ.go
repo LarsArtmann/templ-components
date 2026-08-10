@@ -11,8 +11,8 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"fmt"
 
-	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
 )
 
 // CarouselSlide represents a single slide in a carousel.

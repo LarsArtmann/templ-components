@@ -4,7 +4,7 @@ import (
 	"math"
 	"testing"
 
-	"github.com/larsartmann/templ-components/internal/golden"
+	"github.com/larsartmann/templ-components/utils/golden"
 	"github.com/larsartmann/templ-components/utils"
 )
 

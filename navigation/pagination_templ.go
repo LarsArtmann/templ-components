@@ -13,8 +13,8 @@ import (
 	"net/url"
 	"strconv"
 
-	"github.com/larsartmann/templ-components/internal/svg"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
 )
 
 // inactivePageLinkClass is the shared class for a non-current pagination page link.

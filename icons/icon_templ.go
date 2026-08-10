@@ -11,7 +11,7 @@ import templruntime "github.com/a-h/templ/runtime"
 import (
 	"fmt"
 
-	"github.com/larsartmann/templ-components/internal/svg"
+	"github.com/larsartmann/templ-components/utils/svg"
 )
 
 // Icon renders an SVG icon by name with customizable class and size.

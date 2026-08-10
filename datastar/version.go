@@ -1,7 +1,7 @@
 package datastar
 
 import (
-	"github.com/larsartmann/templ-components/internal/cdn"
+	"github.com/larsartmann/templ-components/utils/cdn"
 )
 
 // DatastarVersion is a pinned Datastar runtime version. Use the exported
