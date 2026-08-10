@@ -32,10 +32,21 @@ jobs:
 
       - name: Run golangci-lint
         run: |
+          # Multi-module: lint each module independently (golangci-lint
+          # does not support go.work workspace mode).
+          echo "==> Root module..."
           golangci-lint run --timeout=5m \
-            ./display/... ./errorpage/... ./feedback/... ./forms/... \
-            ./htmx/... ./icons/... ./integration/... ./internal/... \
-            ./layout/... ./navigation/... ./recipes/... ./utils/...
+            ./display/... ./feedback/... ./forms/... \
+            ./htmx/... ./datastar/... ./integration/... ./internal/... \
+            ./layout/... ./navigation/... ./recipes/... ./cmd/...
+          echo "==> utils module..."
+          (cd utils && golangci-lint run --timeout=5m ./...)
+          echo "==> icons module..."
+          (cd icons && golangci-lint run --timeout=5m ./...)
+          echo "==> errorpage module..."
+          (cd errorpage && golangci-lint run --timeout=5m ./...)
+          echo "==> charts/echarts module..."
+          (cd charts/echarts && golangci-lint run --timeout=5m ./...)
 
       - name: Actionlint (lint GitHub Actions workflows)
         run: |
@@ -73,8 +84,12 @@ jobs:
           done
           exit $EXIT_CODE
 
-      - name: Go mod tidy
-        run: go mod tidy
+      - name: Go mod tidy (all modules)
+        run: |
+          go mod tidy
+          for mod in utils icons errorpage charts/echarts; do
+            (cd "$mod" && go mod tidy)
+          done
 
       - name: Verify no untracked changes
         run: git diff --exit-code
@@ -87,6 +102,13 @@ jobs:
 
       - name: Test
         run: go test -race -coverprofile=coverage.out $(go list ./... | grep -v examples)
+
+      - name: Per-module isolation tests (GOWORK=off)
+        run: |
+          for mod in utils icons errorpage charts/echarts; do
+            echo "==> $mod"
+            (cd "$mod" && GOWORK=off go test -count=1 ./...)
+          done
 
       - name: Compile visualtest module (separate go.mod, would otherwise be skipped)
         run: cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./...
