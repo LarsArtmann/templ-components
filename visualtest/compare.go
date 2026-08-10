@@ -13,6 +13,10 @@ import (
 	"github.com/orisano/pixelmatch"
 )
 
+// percentMultiplier is the scaling factor used to convert a fractional
+// mismatch ratio into a percentage (0.0–1.0 → 0–100%).
+const percentMultiplier = 100
+
 // diffResult summarizes a pixel comparison.
 type diffResult struct {
 	Match       bool    // true if within tolerance
@@ -30,21 +34,21 @@ func comparePixels(
 	golden, actual image.Image,
 	threshold, maxMismatchPct float64,
 ) (diffResult, *image.RGBA) {
-	gb := golden.Bounds()
-	ab := actual.Bounds()
+	goldenBounds := golden.Bounds()
+	actualBounds := actual.Bounds()
 
-	if !gb.Eq(ab) {
-		return diffResult{
+	if !goldenBounds.Eq(actualBounds) {
+		return diffResult{ //nolint:exhaustruct // Pixels omitted intentionally on dimension mismatch
 			Match:       false,
-			MismatchPct: 100,
-			Width:       ab.Dx(),
-			Height:      ab.Dy(),
+			MismatchPct: percentMultiplier,
+			Width:       actualBounds.Dx(),
+			Height:      actualBounds.Dy(),
 		}, nil
 	}
 
-	total := gb.Dx() * gb.Dy()
+	total := goldenBounds.Dx() * goldenBounds.Dy()
 	if total == 0 {
-		return diffResult{Match: true, Width: gb.Dx(), Height: gb.Dy()}, nil
+		return diffResult{Match: true, Width: goldenBounds.Dx(), Height: goldenBounds.Dy()}, nil //nolint:exhaustruct // MismatchPct and Pixels are zero by design
 	}
 
 	var diffImg image.Image
@@ -59,10 +63,10 @@ func comparePixels(
 	if err != nil && !errors.Is(err, pixelmatch.ErrImageSizesNotMatch) {
 		// An unexpected error from pixelmatch is a test-harness bug, not a
 		// visual regression — surface it loudly.
-		return diffResult{Match: false, MismatchPct: 100, Width: gb.Dx(), Height: gb.Dy()}, nil
+		return diffResult{Match: false, MismatchPct: percentMultiplier, Width: goldenBounds.Dx(), Height: goldenBounds.Dy()}, nil //nolint:exhaustruct // Pixels omitted on error path
 	}
 
-	pct := float64(mismatched) / float64(total) * 100
+	pct := float64(mismatched) / float64(total) * percentMultiplier
 
 	var rgba *image.RGBA
 	if d, ok := diffImg.(*image.RGBA); ok {
@@ -73,8 +77,8 @@ func comparePixels(
 		Match:       pct <= maxMismatchPct,
 		MismatchPct: pct,
 		Pixels:      mismatched,
-		Width:       gb.Dx(),
-		Height:      gb.Dy(),
+		Width:       goldenBounds.Dx(),
+		Height:      goldenBounds.Dy(),
 	}, rgba
 }
 

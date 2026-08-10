@@ -16,6 +16,9 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
+// percentMultiplier converts a fractional ratio (0.0–1.0) into a percentage (0–100%).
+const percentMultiplier = 100
+
 // AssertScreenshot renders component in an isolated page, captures an element
 // screenshot of #tc-root, and compares the pixels against the golden PNG in
 // testdata. With -update, the golden is rewritten instead.
@@ -25,10 +28,10 @@ import (
 func AssertScreenshot(t *testing.T, name string, component templ.Component, opts ...Options) {
 	t.Helper()
 
-	o := resolveOptions(opts)
+	options := resolveOptions(opts)
 
 	// Build the page once (also validates CSS + component render early).
-	page, err := renderHTML(component, o)
+	page, err := renderHTML(component, options)
 	if err != nil {
 		t.Fatalf("visualtest[%s]: build page: %v", name, err)
 	}
@@ -36,7 +39,7 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 	ctx, cancel := newTab(t)
 	defer cancel()
 
-	actual, err := capture(ctx, page, o)
+	actual, err := capture(ctx, page, options)
 	if err != nil {
 		t.Fatalf("visualtest[%s]: capture: %v", name, err)
 	}
@@ -60,9 +63,9 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 		t.Fatalf("visualtest[%s]: decode actual: %v", name, err)
 	}
 
-	maxMismatchPct := o.MaxMismatch * 100
+	maxMismatchPct := options.MaxMismatch * percentMultiplier
 
-	result, diff := comparePixels(golden, actualImg, o.Threshold, maxMismatchPct)
+	result, diff := comparePixels(golden, actualImg, options.Threshold, maxMismatchPct)
 	if !result.Match {
 		writeFailureArtifacts(t, name, actual, diff)
 		t.Errorf("visualtest[%s]: visual mismatch — %s (max %.4f%%).\n"+
@@ -81,41 +84,41 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 // earlier one; nil means "unset" so composing {Dark:Bool(true)} with
 // {RTL:Bool(true)} yields dark+RTL. FullViewport ORs together.
 func resolveOptions(opts []Options) Options {
-	merged := Options{}
+	merged := Options{} //nolint:exhaustruct // zero value is the intended "unset" sentinel; merged below
 
-	for _, o := range opts {
-		if o.Dark != nil {
-			merged.Dark = o.Dark
+	for _, opt := range opts {
+		if opt.Dark != nil {
+			merged.Dark = opt.Dark
 		}
 
-		if o.RTL != nil {
-			merged.RTL = o.RTL
+		if opt.RTL != nil {
+			merged.RTL = opt.RTL
 		}
 
-		if o.Viewport.Width != 0 {
-			merged.Viewport.Width = o.Viewport.Width
+		if opt.Viewport.Width != 0 {
+			merged.Viewport.Width = opt.Viewport.Width
 		}
 
-		if o.Viewport.Height != 0 {
-			merged.Viewport.Height = o.Viewport.Height
+		if opt.Viewport.Height != 0 {
+			merged.Viewport.Height = opt.Viewport.Height
 		}
 
-		if o.MaxMismatch != 0 {
-			merged.MaxMismatch = o.MaxMismatch
+		if opt.MaxMismatch != 0 {
+			merged.MaxMismatch = opt.MaxMismatch
 		}
 
-		if o.Threshold != 0 {
-			merged.Threshold = o.Threshold
+		if opt.Threshold != 0 {
+			merged.Threshold = opt.Threshold
 		}
 
-		if o.State != StateRest {
-			merged.State = o.State
+		if opt.State != StateRest {
+			merged.State = opt.State
 		}
 
-		merged.FullViewport = merged.FullViewport || o.FullViewport
+		merged.FullViewport = merged.FullViewport || opt.FullViewport
 
-		if o.WaitSelector != "" {
-			merged.WaitSelector = o.WaitSelector
+		if opt.WaitSelector != "" {
+			merged.WaitSelector = opt.WaitSelector
 		}
 	}
 
@@ -148,8 +151,10 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	}
 
 	// Apply the requested interaction state before settling + capture so
-	// :hover / :focus-visible styles are baked into the screenshot.
+	// :hover / :focus-visible styles are baked into the screenshot. StateRest
+	// is intentionally a no-op (the default — no interaction needed).
 	switch opts.State {
+	case StateRest: // no-op: the default, nothing to dispatch
 	case StateHover:
 		tasks = append(tasks, hoverAction(rootSel))
 	case StateFocus:
@@ -171,12 +176,12 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 		tasks = append(tasks, waitAnimationSettled(opts.WaitSelector))
 	}
 
-	capture := chromedp.Action(chromedp.Screenshot(rootSel, &screenshot, chromedp.ByQuery, chromedp.NodeVisible))
+	var capture chromedp.Action = chromedp.Screenshot(rootSel, &screenshot, chromedp.ByQuery, chromedp.NodeVisible)
 	if opts.FullViewport {
 		// Full-viewport capture: top-layer overlays (Popover API menus,
 		// <dialog>) paint outside #tc-root's box, so an element screenshot
 		// would crop them.
-		capture = chromedp.Action(chromedp.CaptureScreenshot(&screenshot))
+		capture = chromedp.CaptureScreenshot(&screenshot)
 	}
 
 	tasks = append(
@@ -193,15 +198,15 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 
 // waitAnimationSettled blocks until all CSS animations/transitions on the first
 // element matching sel have finished, with a best-effort timeout. It uses a
-// two-phase approach: (1) wait up to 300ms for @starting-style transitions to
-// register (getAnimations() is transiently empty before the browser creates
-// the transition), then (2) poll until all animations report "finished".
-// If no animations appear within the registration window, the function returns
-// immediately (the element genuinely has no transition).
+// two-phase approach: (1) wait up to animRegisterDelay for @starting-style
+// transitions to register (getAnimations() is transiently empty before the
+// browser creates the transition), then (2) poll until all animations report
+// "finished". If no animations appear within the registration window, the
+// function returns immediately (the element genuinely has no transition).
 func waitAnimationSettled(sel string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
-		if err := chromedp.Sleep(80 * time.Millisecond).Do(ctx); err != nil {
-			return err
+		if err := chromedp.Sleep(animInitialDelay).Do(ctx); err != nil {
+			return fmt.Errorf("wait animation settled: initial sleep: %w", err)
 		}
 
 		expr := fmt.Sprintf(
@@ -210,15 +215,15 @@ func waitAnimationSettled(sel string) chromedp.Action {
 				`return a.every(x=>x.playState==='finished')?"done":"running";})()`, sel,
 		)
 
-		registerDeadline := time.Now().Add(300 * time.Millisecond)
-		settleDeadline := time.Now().Add(800 * time.Millisecond)
+		registerDeadline := time.Now().Add(animRegisterDelay)
+		settleDeadline := time.Now().Add(animSettleDelay)
 		animSeen := false
 
 		for time.Now().Before(settleDeadline) {
 			var state string
 
 			if err := chromedp.Evaluate(expr, &state).Do(ctx); err != nil {
-				return err
+				return fmt.Errorf("wait animation settled: evaluate: %w", err)
 			}
 
 			switch state {
@@ -232,8 +237,8 @@ func waitAnimationSettled(sel string) chromedp.Action {
 				}
 			}
 
-			if err := chromedp.Sleep(40 * time.Millisecond).Do(ctx); err != nil {
-				return err
+			if err := chromedp.Sleep(animPollDelay).Do(ctx); err != nil {
+				return fmt.Errorf("wait animation settled: poll sleep: %w", err)
 			}
 		}
 
@@ -242,8 +247,12 @@ func waitAnimationSettled(sel string) chromedp.Action {
 }
 
 const (
-	captureTimeout = 20 * time.Second
-	settleDelay    = 200 * time.Millisecond
+	captureTimeout    = 20 * time.Second
+	settleDelay       = 200 * time.Millisecond
+	animInitialDelay  = 80 * time.Millisecond
+	animRegisterDelay = 300 * time.Millisecond
+	animSettleDelay   = 800 * time.Millisecond
+	animPollDelay     = 40 * time.Millisecond
 )
 
 // hoverAction returns a chromedp action that moves the mouse to the center of
