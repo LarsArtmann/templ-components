@@ -1,0 +1,31 @@
+package icons
+
+import "fmt"
+
+// AnimatedIcon renders an icon with its default hover animation.
+// The default animation is determined by DefaultAnimation(name).
+// For Spinner (which has its own built-in spin), the plain Icon is rendered.
+//
+//	@icons.AnimatedIcon(icons.Heart, "h-6 w-6 text-red-500")
+//
+// Requires the animated-icon CSS from templates/custom.css (.tc-anim-* classes).
+templ AnimatedIcon(name Name, class string) {
+	@AnimatedIconWithAnimation(name, DefaultAnimation(name), class)
+}
+
+// AnimatedIconWithAnimation renders an icon with a specific hover animation.
+// Use any Animation constant (AnimPulse, AnimWiggle, AnimSpin, etc.).
+// Pass AnimNone to render a plain icon without the animation wrapper.
+//
+//	@icons.AnimatedIconWithAnimation(icons.Bell, icons.AnimWiggle, "h-6 w-6")
+//
+// Requires the animated-icon CSS from templates/custom.css (.tc-anim-* classes).
+templ AnimatedIconWithAnimation(name Name, anim Animation, class string) {
+	if anim == AnimNone {
+		@Icon(name, class)
+	} else {
+		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
+			@Icon(name, class)
+		</span>
+	}
+}

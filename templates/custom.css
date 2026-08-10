@@ -520,3 +520,243 @@ details[open] [data-tc-chevron] {
 :root {
   --tc-sidebar-w: 16rem;
 }
+
+/*
+ * ─── Animated Icons (heroicons-animated inspired, pure CSS) ───────────────
+ *
+ * Zero-JavaScript hover animations for icons. Inspired by
+ * https://www.heroicons-animated.com/ — CSS reimplementations of the
+ * Motion-based React originals.
+ *
+ * Usage in templ:
+ *   @icons.AnimatedIcon(icons.Heart, "h-6 w-6")
+ *   @icons.AnimatedIconWithAnimation(icons.Bell, icons.AnimWiggle, "h-6 w-6")
+ *
+ * The .tc-anim wrapper provides the hover/focus trigger; the .tc-anim-<type>
+ * class selects the animation. All animations respect prefers-reduced-motion.
+ */
+
+.tc-anim {
+  display: inline-flex;
+}
+
+/* --- Pulse — Heart-style gentle scale burst (scale [1, 1.08, 1] x2) --- */
+@keyframes tc-icon-pulse {
+  0%,
+  100% {
+    scale: 1;
+  }
+  50% {
+    scale: 1.08;
+  }
+}
+
+.tc-anim-pulse:hover svg,
+.tc-anim-pulse:focus-within svg {
+  animation: tc-icon-pulse 0.45s ease-in-out 2;
+}
+
+/* --- Beat — Star-style strong scale with overshoot (scale [1, 0.9, 1.2, 1]) --- */
+@keyframes tc-icon-beat {
+  0% {
+    scale: 1;
+  }
+  33% {
+    scale: 0.9;
+  }
+  66% {
+    scale: 1.2;
+  }
+  100% {
+    scale: 1;
+  }
+}
+
+.tc-anim-beat:hover svg,
+.tc-anim-beat:focus-within svg {
+  animation: tc-icon-beat 0.6s ease-in-out;
+}
+
+/* --- Bounce — Search-style multi-direction bounce (x/y keyframes) --- */
+@keyframes tc-icon-bounce {
+  0% {
+    translate: 0 0;
+  }
+  30% {
+    translate: 0 -4px;
+  }
+  60% {
+    translate: -3px 0;
+  }
+  100% {
+    translate: 0 0;
+  }
+}
+
+.tc-anim-bounce:hover svg,
+.tc-anim-bounce:focus-within svg {
+  animation: tc-icon-bounce 1s ease-in-out;
+}
+
+/* --- Wiggle — Bell-style rotation shake (rotate [0, -10, 10, -10, 0]) --- */
+@keyframes tc-icon-wiggle {
+  0%,
+  100% {
+    rotate: 0deg;
+  }
+  25% {
+    rotate: -10deg;
+  }
+  50% {
+    rotate: 10deg;
+  }
+  75% {
+    rotate: -10deg;
+  }
+}
+
+.tc-anim-wiggle:hover svg,
+.tc-anim-wiggle:focus-within svg {
+  animation: tc-icon-wiggle 0.5s ease-in-out;
+}
+
+/* --- Spin — Cog/Settings-style one-shot rotation with spring easing --- */
+.tc-anim-spin svg {
+  transition: rotate 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tc-anim-spin:hover svg,
+.tc-anim-spin:focus-within svg {
+  rotate: 180deg;
+}
+
+/* --- Jump — Home-style scale + vertical lift --- */
+@keyframes tc-icon-jump {
+  0% {
+    scale: 1;
+    translate: 0 0;
+  }
+  50% {
+    scale: 1.1;
+    translate: 0 -1px;
+  }
+  100% {
+    scale: 1;
+    translate: 0 0;
+  }
+}
+
+.tc-anim-jump:hover svg,
+.tc-anim-jump:focus-within svg {
+  animation: tc-icon-jump 0.4s ease-out;
+}
+
+/* --- Nod — Chevron-style vertical bob (translateY [0, 2, 0]) --- */
+@keyframes tc-icon-nod {
+  0%,
+  100% {
+    translate: 0 0;
+  }
+  50% {
+    translate: 0 2px;
+  }
+}
+
+.tc-anim-nod:hover svg,
+.tc-anim-nod:focus-within svg {
+  animation: tc-icon-nod 0.5s ease-in-out;
+}
+
+/* --- Shake — Play-style horizontal shift + rotation burst --- */
+@keyframes tc-icon-shake {
+  0% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+  20% {
+    translate: -1px 0;
+    rotate: -10deg;
+  }
+  50% {
+    translate: 2px 0;
+    rotate: 0deg;
+  }
+  100% {
+    translate: 0 0;
+    rotate: 0deg;
+  }
+}
+
+.tc-anim-shake:hover svg,
+.tc-anim-shake:focus-within svg {
+  animation: tc-icon-shake 0.5s ease-in-out;
+}
+
+/* --- Blink — Eye-style per-path eyelid blink (requires 2-path icon) --- */
+@keyframes tc-icon-blink-lid {
+  0%,
+  100% {
+    scale: 1 1;
+    opacity: 1;
+  }
+  50% {
+    scale: 1 0.1;
+    opacity: 0.3;
+  }
+}
+
+@keyframes tc-icon-blink-pupil {
+  0%,
+  100% {
+    scale: 1;
+    opacity: 1;
+  }
+  50% {
+    scale: 0.3;
+    opacity: 0.3;
+  }
+}
+
+.tc-anim-blink:hover svg path:nth-child(1),
+.tc-anim-blink:focus-within svg path:nth-child(1) {
+  animation: tc-icon-blink-lid 0.4s ease-in-out;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+.tc-anim-blink:hover svg path:nth-child(2),
+.tc-anim-blink:focus-within svg path:nth-child(2) {
+  animation: tc-icon-blink-pupil 0.4s ease-in-out;
+  transform-origin: center;
+  transform-box: fill-box;
+}
+
+/* --- Split — Trash-style per-path lid/body split (requires 2-path icon) --- */
+.tc-anim-split svg path {
+  transition: translate 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.tc-anim-split:hover svg path:nth-child(1),
+.tc-anim-split:focus-within svg path:nth-child(1) {
+  translate: 0 -1.5px;
+}
+
+.tc-anim-split:hover svg path:nth-child(2),
+.tc-anim-split:focus-within svg path:nth-child(2) {
+  translate: 0 1px;
+}
+
+/* --- Reduced motion: disable all animated-icon effects --- */
+@media (prefers-reduced-motion: reduce) {
+  .tc-anim:hover svg,
+  .tc-anim:focus-within svg,
+  .tc-anim:hover svg path,
+  .tc-anim:focus-within svg path {
+    animation: none !important;
+    transition: none !important;
+    translate: 0 0 !important;
+    rotate: 0deg !important;
+    scale: 1 !important;
+    opacity: 1 !important;
+  }
+}

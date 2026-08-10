@@ -70,6 +70,35 @@ icons.IconPathJS(icons.Home)
 // => `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M2.25 12l8.954...`
 ```
 
+## Animated icons (heroicons-animated inspired)
+
+`AnimatedIcon` and `AnimatedIconWithAnimation` render any icon with a
+hover-triggered CSS animation — pure CSS, zero JavaScript, `prefers-reduced-motion`
+support. Inspired by [heroicons-animated.com](https://www.heroicons-animated.com/).
+
+```templ
+@icons.AnimatedIcon(icons.Heart, "h-6 w-6 text-red-500")
+
+@icons.AnimatedIconWithAnimation(icons.Bell, icons.AnimWiggle, "h-6 w-6")
+```
+
+Each icon has a default animation via `DefaultAnimation()`:
+
+| Icon | Default | Icon | Default |
+| --- | --- | --- | --- |
+| Heart | `AnimPulse` | Home | `AnimJump` |
+| Star | `AnimBeat` | Search | `AnimBounce` |
+| Bell | `AnimWiggle` | ChevronDown | `AnimNod` |
+| Settings | `AnimSpin` | Eye | `AnimBlink` |
+| ExternalLink | `AnimShake` | (others) | `AnimPulse` |
+
+10 presets total: `AnimPulse`, `AnimBeat`, `AnimBounce`, `AnimWiggle`, `AnimSpin`,
+`AnimJump`, `AnimNod`, `AnimShake`, `AnimBlink` (per-path), `AnimSplit` (per-path).
+
+**CSS requirement:** copy the `.tc-anim-*` classes from `templates/custom.css`
+into your stylesheet. The animations use CSS `@keyframes`, individual transform
+properties (`scale`, `rotate`, `translate`), and `:hover` / `:focus-within` triggers.
+
 ## Full icon catalog
 
 102 icons (101 path-icon constants + 1 animated Spinner). Typed constants prevent typos:
@@ -101,4 +130,7 @@ Icons use [Heroicons v2 outline](https://heroicons.com) path data. To add one:
 ## Package CSS dependencies
 
 All packages emit Tailwind v4+ utility classes except `icons` (pure SVG data).
+The `AnimatedIcon` / `AnimatedIconWithAnimation` functions require the `.tc-anim-*`
+classes from `templates/custom.css` — copy them into your stylesheet if using
+animated icons without the full library CSS.
 Tailwind v4+ is the standard — see `docs/tailwind-v4-adoption-guide.md`.
