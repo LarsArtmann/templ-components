@@ -277,6 +277,15 @@ Components emit standard Tailwind classes (`bg-blue-600`). Override globally in 
 
 Dark mode: `@custom-variant dark (&:where(.dark, .dark *))` + `layout.ThemeScript()` + `layout.ThemeToggle()`. `color-scheme: light` on `:root`, `color-scheme: dark` on `.dark`.
 
+**Custom CSS utilities** (`templates/custom.css`): The library ships `.tc-*` classes for
+features Tailwind can't express: overlay animations (`.tc-overlay`, `.tc-modal`,
+`.tc-drawer`), scroll-snap (`.tc-snap-*`), stylable select (`.tc-select`), auto-growing
+textarea (`.tc-auto-grow`), content-visibility (`.tc-content-auto`), and **fluid
+typography** (`.tc-fluid-display`, `.tc-fluid-h1`–`h4`, `.tc-fluid-lead` — scale text
+with container width via `cqi` units; see `docs/recipes/fluid-typography.md`).
+Consumers vendor `templates/custom.css` via `app.css`; these classes are available
+automatically. Guarded by `TestCustomCSSUtilities`.
+
 ### Dark mode checklist (for new components)
 
 Every new component MUST pass `TestDarkModeCompliance` + `TestDarkModeSemanticColors`. Checklist:
@@ -491,6 +500,7 @@ generated files:
 | `TestGolangciDisabledLinters`                | `utils/lint_config_test.go`                | The recurring regression where `godoclint`/`ireturn`/`testableexamples` re-enter `.golangci.yml`'s enable list (incompatible with a templ library). |
 | `TestTemplGeneratedInSync`                   | `utils/templ_sync_test.go`                 | A `.templ` edit committed without regenerating `*_templ.go` (breadcrumbs drift caught here).                                                        |
 | `TestContainerQueryCompliance`               | `utils/container_query_compliance_test.go` | Structural viewport breakpoints (`sm:`/`md:` grid/flex/hidden) without a `ContainerAware` opt-in. Exemptions must be verified, not assumed.         |
+| `TestCustomCSSUtilities`                     | `utils/custom_css_test.go`                 | `tc-*` CSS class used in `.templ` but missing from `templates/custom.css` (and fluid typography classes deleted).                                   |
 | `TestTailwindGoSourceScanning`               | `utils/tailwind_source_test.go`            | Tailwind classes hidden in `.go` map literals (not just `.templ`) missing from compiled CSS — the `bg-amber-50` root cause.                         |
 | `TestCSSFreshness`                           | `utils/css_freshness_test.go`              | Committed demo CSS older than the newest source. **Fails in CI** (`CI` env set), warns locally.                                                     |
 | `TestEnvrcConsistency`                       | `utils/infra_guards_test.go`               | `.envrc` losing `GOEXPERIMENT=jsonv2`/`GOWORK=off`, or gaining secrets/machine paths.                                                               |
@@ -611,8 +621,18 @@ Never invent IDs with `time.Now()` alone — predictable under concurrency.
   positioning that must not flip.
 - **Container queries:** when a component should respond to its parent's width
   rather than the viewport, use Tailwind v4's `@container` + `@sm:`/`@md:`/`@lg:`
-  variants. The `Grid` component supports this via the opt-in `ContainerResponsive`
-  field.
+  variants. 8 components have an opt-in `ContainerAware` (or `ContainerResponsive`
+  on `Grid`) flag: `Grid`, `Card`, `Nav`, `Split`, `DefinitionGrid`, `Form`,
+  `Pagination`, `SkeletonCardGrid`. **Fluid typography** via `.tc-fluid-*` classes
+  (container query `cqi` units) composes directly inside any container-aware component.
+  See ADR-0018 and `docs/container-query-strategy.md`. Do NOT expand `ContainerAware`
+  to marginal candidates (Container, Breadcrumbs, EmptyState, NotFound404, Footer) —
+  all evaluated and rejected in the strategy doc.
+- **Web Components are permanently rejected** (ADR-0033). Shadow DOM breaks the
+  Tailwind theming model, Custom Elements require JS, and the distribution problem
+  doesn't exist for a Go-source library. The library achieves component encapsulation
+  via native APIs (`<dialog>`, Popover, `<details>`, scroll-snap, `@container`).
+  Never re-evaluate; the decision is binding.
 
 ## Anti-patterns to refuse on review
 
