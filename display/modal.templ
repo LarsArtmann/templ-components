@@ -20,7 +20,7 @@ templ Modal(props ModalProps) {
 		ariaLabel:   props.AriaLabel,
 		kind:        OverlayModal,
 		nonce:       props.Nonce,
-		dialogClass: utils.Class("tc-modal bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 overflow-hidden", modalSizeClass(props.Size), props.Class),
+		dialogClass: utils.Class("tc-modal bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 overflow-hidden print:hidden", modalSizeClass(props.Size), props.Class),
 		attrs:       props.Attrs,
 	}) {
 		{ children... }

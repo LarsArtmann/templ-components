@@ -7,7 +7,7 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs"
+const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs print:shadow-none print:border-0 print:bg-transparent"
 
 // CardPadding defines the internal padding of a card
 type CardPadding string
@@ -123,17 +123,17 @@ templ cardInner(props CardProps) {
 					if props.Title != "" {
 						switch props.TitleTag {
 							case "h1":
-								<h1 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h1>
+								<h1 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h1>
 							case "h2":
-								<h2 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h2>
+								<h2 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h2>
 							case "h4":
-								<h4 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h4>
+								<h4 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h4>
 							case "h5":
-								<h5 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h5>
+								<h5 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h5>
 							case "h6":
-								<h6 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h6>
+								<h6 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h6>
 							default:
-								<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h3>
+								<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h3>
 						}
 					}
 					if props.Subtitle != "" {

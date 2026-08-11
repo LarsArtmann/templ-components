@@ -66,7 +66,7 @@ func Modal(props ModalProps) templ.Component {
 			ariaLabel:   props.AriaLabel,
 			kind:        OverlayModal,
 			nonce:       props.Nonce,
-			dialogClass: utils.Class("tc-modal bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 overflow-hidden", modalSizeClass(props.Size), props.Class),
+			dialogClass: utils.Class("tc-modal bg-white dark:bg-gray-900 rounded-lg shadow-xl dark:shadow-black/20 overflow-hidden print:hidden", modalSizeClass(props.Size), props.Class),
 			attrs:       props.Attrs,
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {

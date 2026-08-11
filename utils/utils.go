@@ -1,6 +1,8 @@
 package utils
 
 import (
+	"sort"
+	"strings"
 	"sync"
 	"time"
 
@@ -47,7 +49,11 @@ func Class(classes ...string) string {
 	classMu.Lock()
 	defer classMu.Unlock()
 
-	return twmerge.Merge(classes...)
+	merged := twmerge.Merge(classes...)
+	parts := strings.Fields(merged)
+	sort.Strings(parts)
+
+	return strings.Join(parts, " ")
 }
 
 // CurrentYear returns the current year as a string.

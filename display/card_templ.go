@@ -15,7 +15,7 @@ import (
 	"github.com/larsartmann/templ-components/utils/svg"
 )
 
-const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs"
+const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs print:shadow-none print:border-0 print:bg-transparent"
 
 // CardPadding defines the internal padding of a card
 type CardPadding string
@@ -326,7 +326,7 @@ func cardInner(props CardProps) templ.Component {
 			if props.Title != "" {
 				switch props.TitleTag {
 				case "h1":
-					var templ_7745c5c3_Var13 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass)}
+					var templ_7745c5c3_Var13 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass)}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var13...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -351,7 +351,7 @@ func cardInner(props CardProps) templ.Component {
 					var templ_7745c5c3_Var15 string
 					templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 126, Col: 132}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 126, Col: 150}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 					if templ_7745c5c3_Err != nil {
@@ -362,7 +362,7 @@ func cardInner(props CardProps) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				case "h2":
-					var templ_7745c5c3_Var16 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass)}
+					var templ_7745c5c3_Var16 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass)}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var16...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -387,7 +387,7 @@ func cardInner(props CardProps) templ.Component {
 					var templ_7745c5c3_Var18 string
 					templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 128, Col: 132}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 128, Col: 150}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
 					if templ_7745c5c3_Err != nil {
@@ -398,7 +398,7 @@ func cardInner(props CardProps) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				case "h4":
-					var templ_7745c5c3_Var19 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass)}
+					var templ_7745c5c3_Var19 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass)}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var19...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -423,7 +423,7 @@ func cardInner(props CardProps) templ.Component {
 					var templ_7745c5c3_Var21 string
 					templ_7745c5c3_Var21, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 130, Col: 132}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 130, Col: 150}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var21))
 					if templ_7745c5c3_Err != nil {
@@ -434,7 +434,7 @@ func cardInner(props CardProps) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				case "h5":
-					var templ_7745c5c3_Var22 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass)}
+					var templ_7745c5c3_Var22 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass)}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var22...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -459,7 +459,7 @@ func cardInner(props CardProps) templ.Component {
 					var templ_7745c5c3_Var24 string
 					templ_7745c5c3_Var24, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 132, Col: 132}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 132, Col: 150}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var24))
 					if templ_7745c5c3_Err != nil {
@@ -470,7 +470,7 @@ func cardInner(props CardProps) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				case "h6":
-					var templ_7745c5c3_Var25 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass)}
+					var templ_7745c5c3_Var25 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass)}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var25...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -495,7 +495,7 @@ func cardInner(props CardProps) templ.Component {
 					var templ_7745c5c3_Var27 string
 					templ_7745c5c3_Var27, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 134, Col: 132}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 134, Col: 150}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var27))
 					if templ_7745c5c3_Err != nil {
@@ -506,7 +506,7 @@ func cardInner(props CardProps) templ.Component {
 						return templ_7745c5c3_Err
 					}
 				default:
-					var templ_7745c5c3_Var28 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass)}
+					var templ_7745c5c3_Var28 = []any{utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass)}
 					templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var28...)
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
@@ -531,7 +531,7 @@ func cardInner(props CardProps) templ.Component {
 					var templ_7745c5c3_Var30 string
 					templ_7745c5c3_Var30, templ_7745c5c3_Err = templ.JoinStringErrs(props.Title)
 					if templ_7745c5c3_Err != nil {
-						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 136, Col: 132}
+						return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 136, Col: 150}
 					}
 					_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var30))
 					if templ_7745c5c3_Err != nil {

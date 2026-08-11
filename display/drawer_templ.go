@@ -67,7 +67,7 @@ func Drawer(props DrawerProps) templ.Component {
 			ariaLabel:   props.AriaLabel,
 			kind:        OverlayDrawer,
 			nonce:       props.Nonce,
-			dialogClass: utils.Class("tc-drawer bg-white dark:bg-gray-900 shadow-xl dark:shadow-black/20 overflow-y-auto", drawerSizeClass(props.Size), props.Class),
+			dialogClass: utils.Class("tc-drawer bg-white dark:bg-gray-900 shadow-xl dark:shadow-black/20 overflow-y-auto print:hidden", drawerSizeClass(props.Size), props.Class),
 			side:        props.Side,
 			attrs:       props.Attrs,
 		}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var2), templ_7745c5c3_Buffer)
