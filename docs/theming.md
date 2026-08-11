@@ -113,6 +113,7 @@ Three starter presets ship in `templates/presets/`:
 | `default` | `templates/presets/default.css` | The library defaults (blue + gray)     |
 | `minimal` | `templates/presets/minimal.css` | Reduced palette, more whitespace       |
 | `glass`   | `templates/presets/glass.css`   | Frosted-glass surfaces, blurred panels |
+| `emerald` | `templates/presets/emerald.css` | Emerald-green brand palette            |
 
 Import the one you want from your `app.css`:
 
@@ -122,3 +123,28 @@ Import the one you want from your `app.css`:
 
 Each preset file overrides only the `--color-tc-*` tokens — it does not
 re-define the entire Tailwind palette.
+
+---
+
+## Print-safe vs screen-only components
+
+Most components render fine on paper, but a few are interactive-only.
+The table below documents which components include `print:` variants for
+graceful degradation when the page is printed.
+
+| Component         | Print behaviour                                      | Notes                                       |
+| ----------------- | ---------------------------------------------------- | ------------------------------------------- |
+| `Card`            | Borders, shadows, and backgrounds removed            | `print:shadow-none print:border-0 print:bg-transparent` |
+| `Modal`           | Hidden                                               | `print:hidden`                              |
+| `Drawer`          | Hidden                                               | `print:hidden`                              |
+| `PageHeader`      | Title heading avoids page break                      | `break-after-avoid` on `<h1>`               |
+| `SectionHeading`  | Heading avoids page break                            | `break-after-avoid`                         |
+| `StatCard`        | No special print rules                               | Renders as-is                               |
+| `ProgressBar`     | No special print rules                               | Animations are static when printed          |
+| `CircularProgress`| No special print rules                               | SVG renders correctly in print              |
+| `Spinner`         | No special print rules                               | Animation is static when printed            |
+| `Alert`           | No special print rules                               | Renders as-is                               |
+| `Tabs`            | All panels visible (no JS to toggle in print)        | Consider hiding tabs in print CSS if needed |
+| `Tooltip`         | No special print rules                               | Invisible unless hovered (which cannot happen in print) |
+| `Dropdown`        | No special print rules                               | Closed state is the default                 |
+| All others        | No special print rules                               | Render as-is                                |

@@ -1,0 +1,21 @@
+/*
+ * templ-components preset: emerald
+ *
+ * An emerald-green brand palette. Matches the LarsArtmann/CV project theme.
+ *
+ * Usage:
+ *   @import "tailwindcss" source(none);
+ *   @import "./templ-components-theme.css";
+ *   @import "./presets/emerald.css";
+ *   @import "./custom.css";
+ */
+@theme {
+  --color-tc-primary: var(--color-emerald-600);
+  --color-tc-primary-hover: var(--color-emerald-700);
+  --color-tc-primary-fg: var(--color-white);
+  --color-tc-danger: var(--color-red-600);
+  --color-tc-danger-hover: var(--color-red-700);
+  --color-tc-success: var(--color-emerald-500);
+  --color-tc-warning: var(--color-amber-500);
+  --color-tc-info: var(--color-emerald-400);
+}

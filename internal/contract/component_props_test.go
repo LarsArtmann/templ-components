@@ -93,6 +93,7 @@ func componentTypes() []any {
 		feedback.ToastProps{},
 		feedback.ProgressBarProps{},
 		feedback.StepIndicatorProps{},
+		feedback.CircularProgressProps{},
 
 		// layout (4 new body-layout primitives; Base/Minimal/PageProps excluded per AGENTS.md)
 		layout.ContainerProps{},

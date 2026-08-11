@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`feedback.CircularProgress` component.** SVG-based circular progress indicator with typed size enum (sm/md/lg), optional percentage label, and value clamping. Follows the library's standard props/enum/golden-test pattern.
+- **`display.SectionHeading` and `display.DateRange` components.** SectionHeading provides typed heading level (H1-H6) and text alignment (Left/Center/Right) with `break-after-avoid` for print. DateRange renders a date range with a "Present" fallback and typed date format enum.
+- **Print-friendly display components.** `Card` now includes `print:shadow-none print:border-0 print:bg-transparent`. `Modal` and `Drawer` include `print:hidden`. `PageHeader` and `SectionHeading` include `break-after-avoid` on headings. Print-safe vs screen-only matrix documented in `docs/theming.md`.
+- **`emerald` brand preset** (`templates/presets/emerald.css`). Emerald-green primary palette matching the LarsArtmann/CV project theme.
+- **`PageProps.SkipLinkText`, `PageProps.OGType`, `PageProps.BodyDataAttrs`.** `SkipLinkText` overrides the default "Skip to main content" for i18n. `OGType` sets the Open Graph type (defaults to "website"). `BodyDataAttrs` adds extra attributes to the `<body>` element (e.g. `data-language`).
+- **`utils.Class()` output now sorted alphabetically.** Fixes non-determinism from `Oudwins/tailwind-merge-go` map iteration, making golden tests stable across runs.
+
 - **4 new icons: Book, CircleStack, DevicePhoneMobile, ArrowTrendingUp.** Expands the icon catalogue from 102 to 106 icons (105 path icons + Spinner). All use official Heroicons v2 path data with appropriate animation mappings (Book/CircleStack/ArrowTrendingUp→nod, DevicePhoneMobile→pulse).
 
 - **Animated icons (heroicons-animated inspired).** `icons.AnimatedIcon(name, class)` and `icons.AnimatedIconWithAnimation(name, anim, class)` render any icon with a hover-triggered CSS animation. 11 animation presets (`AnimPulse`, `AnimBeat`, `AnimBounce`, `AnimWiggle`, `AnimSpin`, `AnimJump`, `AnimNod`, `AnimShake`, `AnimBlink`, `AnimWobble`, `AnimDraw`) covering all heroicons-animated patterns. Pure CSS (zero JavaScript), `prefers-reduced-motion` support, triggers on `:hover` and `:focus-within`. Every icon has an explicit default via `DefaultAnimation()` — Heart→pulse, Bell→wiggle, Settings→spin, Eye→blink, Beaker→wobble, Bolt→draw (self-draw via stroke-dashoffset), Refresh→spin, etc. Aliases (ArrowPath, Bars3, MapPin, HandThumbUp) resolve to their canonical icon's animation. CSS lives in `templates/custom.css` under `.tc-anim-*` classes.

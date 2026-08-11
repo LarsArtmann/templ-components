@@ -48,12 +48,32 @@ func resolveLocale(locale string) string {
 	return locale
 }
 
+// ogType returns the Open Graph type, defaulting to "website" when empty.
+func ogType(props PageProps) string {
+	if props.OGType != "" {
+		return props.OGType
+	}
+	return "website"
+}
+
+// skipLinkText returns the accessibility skip-link text, defaulting to
+// "Skip to main content" when empty.
+func skipLinkText(text string) string {
+	if text != "" {
+		return text
+	}
+	return "Skip to main content"
+}
+
 // PageProps configures the base page layout
 type PageProps struct {
 	Title          string
 	Description    string
 	Locale         string
 	OGImage        string
+	// OGType sets the Open Graph type for the og:type meta tag. Defaults to
+	// "website" when empty. Common values: "website", "profile", "article".
+	OGType         string
 	ThemeColor     string
 	DarkThemeColor string
 	// CSSPath auto-injects `<link rel="stylesheet" href={CSSPath}>` into the
@@ -91,6 +111,12 @@ type PageProps struct {
 	// compatibility; set to false to skip the extra request. Ignored when
 	// HTMXSrc is set (self-host implies you manage extensions).
 	HTMXResponseTargets bool
+	// SkipLinkText overrides the default "Skip to main content" text for the
+	// accessibility skip link. Useful for i18n.
+	SkipLinkText        string
+	// BodyDataAttrs adds extra attributes to the <body> element (e.g.
+	// data-language). Keys are rendered as-is. Pass nil for no extra attributes.
+	BodyDataAttrs       templ.Attributes
 	BodyClass           string
 	Nonce               string
 	HeadContent         templ.Component
@@ -112,6 +138,8 @@ type PageProps struct {
 func DefaultPageProps() PageProps {
 	return PageProps{
 		Locale:              "en",
+		OGType:              "website",
+		SkipLinkText:        "Skip to main content",
 		ThemeColor:          DefaultThemeColor,
 		DarkThemeColor:      DefaultDarkThemeColor,
 		CSSPath:             "/app.css",
@@ -156,7 +184,7 @@ templ Base(props PageProps) {
 			if props.Description != "" {
 				<meta property="og:description" content={ props.Description }/>
 			}
-			<meta property="og:type" content="website"/>
+			<meta property="og:type" content={ ogType(props) }/>
 			if props.OGImage != "" {
 				<meta property="og:image" content={ props.OGImage }/>
 			}
@@ -211,9 +239,9 @@ templ Base(props PageProps) {
 				@props.HeadContent
 			}
 		</head>
-		<body class={ props.BodyClass }>
+		<body class={ props.BodyClass } { props.BodyDataAttrs... }>
 			<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:start-2 focus:z-50 focus:bg-blue-600 dark:focus:bg-blue-500 focus:text-white focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg focus:outline-hidden focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 focus:ring-blue-500 dark:focus:ring-blue-400">
-				Skip to main content
+				{ skipLinkText(props.SkipLinkText) }
 			</a>
 			<main id="main-content" tabindex="-1" class="flex-1">
 				{ children... }

@@ -1,0 +1,127 @@
+package feedback
+
+import (
+	"fmt"
+	"math"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// CircularProgressSize controls the diameter of the ring.
+type CircularProgressSize string
+
+const (
+	CircularProgressSizeSM CircularProgressSize = "sm"
+	CircularProgressSizeMD CircularProgressSize = "md"
+	CircularProgressSizeLG CircularProgressSize = "lg"
+)
+
+// CircularProgressProps configures a circular SVG progress indicator.
+type CircularProgressProps struct {
+	utils.BaseProps
+	// Value is the percentage (0–100). Values outside the range are clamped.
+	Value int
+	// Size controls the rendered diameter. Defaults to md.
+	Size CircularProgressSize
+	// ShowLabel renders the numeric percentage in the centre.
+	ShowLabel bool
+	// Color overrides the progress arc colour (Tailwind stroke utility).
+	// Defaults to text-blue-600 dark:text-blue-500.
+	Color string
+	// TrackColor overrides the background track colour.
+	// Defaults to text-gray-200 dark:text-gray-700.
+	TrackColor string
+}
+
+// DefaultCircularProgressProps returns sensible defaults.
+func DefaultCircularProgressProps() CircularProgressProps {
+	return CircularProgressProps{
+		Size:      CircularProgressSizeMD,
+		Color:     "text-blue-600 dark:text-blue-500",
+		TrackColor: "text-gray-200 dark:text-gray-700",
+	}
+}
+
+// circularProgressSizeLookup maps size enums to Tailwind dimension classes.
+//
+//nolint:gochecknoglobals // Package-level lookup table for circular progress sizes
+var circularProgressSizeLookup = map[CircularProgressSize]string{
+	CircularProgressSizeSM: "w-8 h-8",
+	CircularProgressSizeMD: "w-12 h-12",
+	CircularProgressSizeLG: "w-16 h-16",
+}
+
+// circularProgressStrokeLookup maps size enums to SVG stroke widths.
+//
+//nolint:gochecknoglobals // Package-level lookup table for stroke widths
+var circularProgressStrokeLookup = map[CircularProgressSize]float64{
+	CircularProgressSizeSM: 8,
+	CircularProgressSizeMD: 7,
+	CircularProgressSizeLG: 6,
+}
+
+// CircularProgress renders a circular SVG progress indicator with an optional
+// percentage label. The value is clamped to [0, 100].
+//
+//	@feedback.CircularProgress(feedback.CircularProgressProps{Value: 75, ShowLabel: true})
+templ CircularProgress(props CircularProgressProps) {
+	{{
+		value := max(0, min(100, props.Value))
+		strokeWidth := utils.Lookup(circularProgressStrokeLookup, props.Size, 7)
+		radius := 50.0 - strokeWidth/2
+		circumference := 2 * math.Pi * radius
+		dashOffset := circumference * (1 - float64(value)/100)
+		sizeClass := utils.Lookup(circularProgressSizeLookup, props.Size, "w-12 h-12")
+		color := props.Color
+		if color == "" {
+			color = "text-blue-600 dark:text-blue-500"
+		}
+		trackColor := props.TrackColor
+		if trackColor == "" {
+			trackColor = "text-gray-200 dark:text-gray-700"
+		}
+	}}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("relative inline-flex items-center justify-center", sizeClass, props.Class) }
+		{ props.Attrs... }
+		role="progressbar"
+		aria-valuenow={ fmt.Sprintf("%d", value) }
+		aria-valuemin="0"
+		aria-valuemax="100"
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		} else {
+			aria-label={ fmt.Sprintf("%d%% complete", value) }
+		}
+	>
+		<svg class={ utils.Class("w-full h-full -rotate-90", color) } viewBox="0 0 100 100" fill="none">
+			<circle
+				cx="50"
+				cy="50"
+				r={ fmt.Sprintf("%.2f", radius) }
+				stroke="currentColor"
+				stroke-width={ fmt.Sprintf("%.2f", strokeWidth) }
+				class={ trackColor }
+			/>
+			<circle
+				cx="50"
+				cy="50"
+				r={ fmt.Sprintf("%.2f", radius) }
+				stroke="currentColor"
+				stroke-width={ fmt.Sprintf("%.2f", strokeWidth) }
+				stroke-linecap="round"
+				stroke-dasharray={ fmt.Sprintf("%.2f", circumference) }
+				stroke-dashoffset={ fmt.Sprintf("%.2f", dashOffset) }
+				class="transition-all duration-500 ease-out motion-reduce:transition-none"
+			/>
+		</svg>
+		if props.ShowLabel {
+			<span class="absolute inset-0 flex items-center justify-center text-xs font-semibold text-gray-700 dark:text-gray-300">
+				{ fmt.Sprintf("%d%%", value) }
+			</span>
+		}
+	</div>
+}
