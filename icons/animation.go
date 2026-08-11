@@ -241,6 +241,19 @@ func DefaultAnimation(name Name) Animation {
 	return AnimPulse
 }
 
+// resolveAnimation applies safety guards to an animation request.
+// Per-path animations (AnimBlink) that require multiple SVG path elements
+// fall back to AnimPulse when the icon doesn't have enough paths,
+// preventing silent no-ops where the CSS targets nth-child(N) but only
+// one path exists.
+func resolveAnimation(name Name, anim Animation) Animation {
+	if anim == AnimBlink && len(iconPaths(name)) < 2 {
+		return AnimPulse
+	}
+
+	return anim
+}
+
 // AllAnimations returns all valid animation types, sorted alphabetically.
 // Useful for documentation, icon galleries, and demos.
 func AllAnimations() []Animation {

@@ -115,6 +115,7 @@ func AnimatedIconWithAnimation(name Name, anim Animation, class string) templ.Co
 				return templ_7745c5c3_Err
 			}
 		} else {
+			anim = resolveAnimation(name, anim)
 			var templ_7745c5c3_Var5 = []any{"tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex"}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var5...)
 			if templ_7745c5c3_Err != nil {
@@ -236,7 +237,7 @@ func drawIcon(name Name, class string) templ.Component {
 				var templ_7745c5c3_Var12 string
 				templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(p)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `icons/animated_icon.templ`, Line: 52, Col: 77}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `icons/animated_icon.templ`, Line: 53, Col: 77}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 				if templ_7745c5c3_Err != nil {

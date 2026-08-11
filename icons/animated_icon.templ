@@ -32,6 +32,7 @@ templ AnimatedIconWithAnimation(name Name, anim Animation, class string) {
 			@drawIcon(name, class)
 		</span>
 	} else {
+		{{ anim = resolveAnimation(name, anim) }}
 		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
 			@Icon(name, class)
 		</span>

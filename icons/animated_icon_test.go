@@ -151,6 +151,25 @@ func TestAnimatedIconMultiPathStructure(t *testing.T) {
 	})
 }
 
+func TestAnimBlinkFallsBackOnSinglePathIcon(t *testing.T) {
+	t.Parallel()
+
+	// Trash has only 1 path — AnimBlink should fall back to AnimPulse.
+	output := utils.Render(t, AnimatedIconWithAnimation(Trash, AnimBlink, "h-6 w-6"))
+
+	utils.AssertContains(t, output, "tc-anim-pulse")
+	utils.AssertNotContains(t, output, "tc-anim-blink")
+}
+
+func TestAnimBlinkWorksOnMultiPathIcon(t *testing.T) {
+	t.Parallel()
+
+	// Eye has 2 paths — AnimBlink should work normally.
+	output := utils.Render(t, AnimatedIconWithAnimation(Eye, AnimBlink, "h-6 w-6"))
+
+	utils.AssertContains(t, output, "tc-anim-blink")
+}
+
 func TestAnimatedIconProducesValidHTML(t *testing.T) {
 	t.Parallel()
 
