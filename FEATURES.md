@@ -23,7 +23,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `navigation`     | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                                                                                                                                      |
 | `recipes`        | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                                                                                                                                 |
 
-**Totals:** 112 templ components (primitives, drift-guard verified) + 4 recipe screens = 116, 102 icon names, 52 typed enums (49 with `IsValid()`), 107 generated `*_templ.go` files, ~31,500 lines of Go/templ source
+**Totals:** 112 templ components (primitives, drift-guard verified) + 4 recipe screens = 116, 102 icon names, 52 typed enums (49 with `IsValid()`), 108 generated `*_templ.go` files, ~31,500 lines of Go/templ source
 
 ---
 
@@ -375,6 +375,7 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 | `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 102 named icons, custom class, currentColor theming                  |
 | `IconWithStrokeWidth` | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)                          |
 | `IconRTL`             | FULLY_FUNCTIONAL | RTL mirror icon  | Directional icons auto-mirror under `dir="rtl"` via CSS `scaleX(-1)` |
+| `AnimatedIcon`        | FULLY_FUNCTIONAL | Animated icon    | 11 hover-triggered CSS animation presets, zero JavaScript, RTL variant available |
 
 ### Icon Names (102)
 
@@ -387,6 +388,11 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 | `IconWithStrokeWidth` | Icon with custom stroke-width                                          |
 | `IconPathData`        | Returns raw path data for a named icon (full `<svg>` wrapper control)  |
 | `IconPathJS`          | Returns path data formatted for JS injection                           |
+| `AnimatedIcon`        | Renders an icon with its default hover animation (wraps in `<span>`)   |
+| `AnimatedIconWithAnimation` | Renders an icon with a specific animation preset                |
+| `AnimatedIconRTL`     | Animated icon with RTL mirroring support                               |
+| `DefaultAnimation`    | Returns the default animation for an icon name                         |
+| `AllAnimations`       | Returns all valid animation types, sorted                              |
 | `allIconNames`        | Auto-generated list of all icon names from `iconPathData` (unexported) |
 
 ### Known Issues

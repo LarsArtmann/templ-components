@@ -151,25 +151,6 @@ func TestAnimatedIconMultiPathStructure(t *testing.T) {
 	})
 }
 
-func TestAnimBlinkFallsBackOnSinglePathIcon(t *testing.T) {
-	t.Parallel()
-
-	// Trash has only 1 path — AnimBlink should fall back to AnimPulse.
-	output := utils.Render(t, AnimatedIconWithAnimation(Trash, AnimBlink, "h-6 w-6"))
-
-	utils.AssertContains(t, output, "tc-anim-pulse")
-	utils.AssertNotContains(t, output, "tc-anim-blink")
-}
-
-func TestAnimBlinkWorksOnMultiPathIcon(t *testing.T) {
-	t.Parallel()
-
-	// Eye has 2 paths — AnimBlink should work normally.
-	output := utils.Render(t, AnimatedIconWithAnimation(Eye, AnimBlink, "h-6 w-6"))
-
-	utils.AssertContains(t, output, "tc-anim-blink")
-}
-
 func TestAnimatedIconProducesValidHTML(t *testing.T) {
 	t.Parallel()
 
@@ -182,4 +163,66 @@ func TestAnimatedIconProducesValidHTML(t *testing.T) {
 	if !strings.HasSuffix(strings.TrimSpace(output), "</span>") {
 		t.Errorf("AnimatedIcon output should end with </span>")
 	}
+}
+
+func TestAnimBlinkFallsBackOnSinglePathIcon(t *testing.T) {
+	t.Parallel()
+
+	// Trash has only 1 path — AnimBlink needs 2+ for per-path nth-child CSS.
+	// resolveAnimation should fall back to AnimPulse so the animation is visible.
+	output := utils.Render(t, AnimatedIconWithAnimation(Trash, AnimBlink, "h-5 w-5"))
+
+	utils.AssertContains(t, output, "tc-anim-pulse")
+	utils.AssertNotContains(t, output, "tc-anim-blink")
+}
+
+func TestAnimBlinkWorksOnMultiPathIcon(t *testing.T) {
+	t.Parallel()
+
+	// Eye has 2 paths — AnimBlink should work as-is.
+	output := utils.Render(t, AnimatedIconWithAnimation(Eye, AnimBlink, "h-5 w-5"))
+
+	utils.AssertContains(t, output, "tc-anim-blink")
+}
+
+func TestAnimatedIconRTL(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, AnimatedIconRTL(ArrowRight, "h-5 w-5"))
+
+	utils.AssertContains(t, output, "data-tc-dir-icon")
+	utils.AssertContains(t, output, "tc-anim")
+	utils.AssertContains(t, output, "<svg")
+	utils.AssertContains(t, output, "</span>")
+}
+
+func TestAnimatedIconWithAnimationRTL(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, AnimatedIconWithAnimationRTL(ArrowRight, AnimShake, "h-5 w-5"))
+
+	utils.AssertContains(t, output, "data-tc-dir-icon")
+	utils.AssertContains(t, output, "tc-anim-shake")
+	utils.AssertContains(t, output, "<svg")
+}
+
+func TestAnimatedIconWithAnimationRTLDraw(t *testing.T) {
+	t.Parallel()
+
+	// AnimDraw uses drawIcon which adds data-tc-dir-icon when rtl=true.
+	output := utils.Render(t, AnimatedIconWithAnimationRTL(Bolt, AnimDraw, "h-5 w-5"))
+
+	utils.AssertContains(t, output, "data-tc-dir-icon")
+	utils.AssertContains(t, output, "tc-anim-draw")
+	utils.AssertContains(t, output, `pathLength="1"`)
+}
+
+func TestAnimatedIconWithAnimationRTLNone(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, AnimatedIconWithAnimationRTL(ArrowRight, AnimNone, "h-5 w-5"))
+
+	utils.AssertContains(t, output, "data-tc-dir-icon")
+	utils.AssertNotContains(t, output, "tc-anim")
+	utils.AssertNotContains(t, output, "<span")
 }

@@ -32,6 +32,7 @@ const (
 
 	// AnimWiggle — rotation shake.
 	// Source (Bell): rotate [0, -10, 10, -10, 0], 0.5s ease-in-out.
+	// Source (Moon): rotate [0, -10, 10, -5, 5, 0] — same oscillation family.
 	AnimWiggle Animation = "wiggle"
 
 	// AnimSpin — one-shot rotation with spring-like easing.
@@ -116,6 +117,10 @@ var defaultAnimations = map[Name]Animation{
 	Beaker:   AnimWobble, // scale 0.9 + rotate [0, 6, -6, 3, -3, 0]
 	Bolt:     AnimDraw,   // pathLength [0, 1] self-draw
 	Refresh:  AnimSpin,   // rotation with spring
+	Moon:     AnimWiggle, // rotate [0, -10, 10, -5, 5, 0] — oscillation, same family as Bell
+	Sun:      AnimPulse,  // per-ray opacity stagger (not replicable with 1 path); pulse = radiating energy
+	Lock:     AnimShake,  // rotate [-3, 2, -2, 1, 0] + scale [1, 1.02, 0.98, 1]
+	Trash:    AnimBounce, // per-path translateY (lid up/body down); bounce = closest single-path approximation
 
 	// --- Semantic: pulse (gentle confirmation/identity) ---
 	Check:              AnimPulse,
@@ -156,12 +161,10 @@ var defaultAnimations = map[Name]Animation{
 	BugAnt:        AnimWiggle,
 	PuzzlePiece:   AnimWiggle,
 	Question:      AnimWiggle,
-	Trash:         AnimWiggle,
 
 	// --- Semantic: spin (rotation/turning) ---
 	Wrench: AnimSpin,
 	Globe:  AnimSpin,
-	Sun:    AnimSpin,
 	Clock:  AnimSpin,
 	Key:    AnimSpin,
 	Cube:   AnimSpin,
@@ -188,7 +191,6 @@ var defaultAnimations = map[Name]Animation{
 	Edit:         AnimNod,
 	Menu:         AnimNod,
 	Calendar:     AnimNod,
-	Moon:         AnimNod,
 	Clipboard:    AnimNod,
 	CodeBracket:  AnimNod,
 	DocumentText: AnimNod,
@@ -210,7 +212,6 @@ var defaultAnimations = map[Name]Animation{
 	ExternalLink:          AnimShake,
 	Link:                  AnimShake,
 	EyeOff:                AnimShake,
-	Lock:                  AnimShake,
 	Unlock:                AnimShake,
 	Phone:                 AnimShake,
 	NoSymbol:              AnimShake,

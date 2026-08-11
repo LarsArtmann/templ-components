@@ -100,6 +100,11 @@ Each icon has a default animation via `DefaultAnimation()`:
 into your stylesheet. The animations use CSS `@keyframes`, individual transform
 properties (`scale`, `rotate`, `translate`), and `:hover` / `:focus-within` triggers.
 
+**DOM structure:** `AnimatedIcon` wraps the SVG in a `<span>` element (the hover
+trigger), unlike `Icon()` which renders a bare `<svg>`. This extra wrapper may
+affect flex/grid layouts or CSS sibling combinators that assume the SVG is a
+direct child. Use `Icon()` / `IconRTL()` if you need the bare SVG.
+
 ## Full icon catalog
 
 102 icons (101 path-icon constants + 1 animated Spinner). Typed constants prevent typos:

@@ -59,6 +59,10 @@ func TestDefaultAnimation(t *testing.T) {
 		{"Beaker defaults to wobble", Beaker, AnimWobble},
 		{"Bolt defaults to draw", Bolt, AnimDraw},
 		{"Refresh defaults to spin", Refresh, AnimSpin},
+		{"Moon defaults to wiggle", Moon, AnimWiggle},
+		{"Sun defaults to pulse", Sun, AnimPulse},
+		{"Lock defaults to shake", Lock, AnimShake},
+		{"Trash defaults to bounce", Trash, AnimBounce},
 
 		// Spinner always opts out
 		{"Spinner defaults to none", Spinner, AnimNone},

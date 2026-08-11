@@ -10,6 +10,10 @@ import (
 // The default animation is determined by DefaultAnimation(name).
 // For Spinner (which has its own built-in spin), the plain Icon is rendered.
 //
+// AnimatedIcon wraps the SVG in a <span> element (the hover trigger), changing
+// the DOM structure vs Icon(). Account for the wrapper in flex/grid layouts
+// or CSS sibling combinators that assume the SVG is a direct child.
+//
 //	@icons.AnimatedIcon(icons.Heart, "h-6 w-6 text-red-500")
 //
 // Requires the animated-icon CSS from templates/custom.css (.tc-anim-* classes).
@@ -29,7 +33,7 @@ templ AnimatedIconWithAnimation(name Name, anim Animation, class string) {
 		@Icon(name, class)
 	} else if anim == AnimDraw {
 		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
-			@drawIcon(name, class)
+			@drawIcon(name, class, false)
 		</span>
 	} else {
 		{{ anim = resolveAnimation(name, anim) }}
@@ -39,16 +43,44 @@ templ AnimatedIconWithAnimation(name Name, anim Animation, class string) {
 	}
 }
 
+// AnimatedIconRTL renders an animated directional icon that auto-mirrors in RTL contexts.
+// Add this CSS to your stylesheet: [dir="rtl"] [data-tc-dir-icon] { transform: scaleX(-1); }
+//
+//	@icons.AnimatedIconRTL(icons.ArrowRight, "h-4 w-4")
+templ AnimatedIconRTL(name Name, class string) {
+	@AnimatedIconWithAnimationRTL(name, DefaultAnimation(name), class)
+}
+
+// AnimatedIconWithAnimationRTL renders an animated directional icon with a specific
+// animation and RTL mirroring support.
+//
+//	@icons.AnimatedIconWithAnimationRTL(icons.ArrowRight, icons.AnimShake, "h-4 w-4")
+templ AnimatedIconWithAnimationRTL(name Name, anim Animation, class string) {
+	if anim == AnimNone {
+		@IconRTL(name, class)
+	} else if anim == AnimDraw {
+		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
+			@drawIcon(name, class, true)
+		</span>
+	} else {
+		{{ anim = resolveAnimation(name, anim) }}
+		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
+			@IconRTL(name, class)
+		</span>
+	}
+}
+
 // drawIcon renders an icon with pathLength="1" on each path so CSS
 // stroke-dashoffset animations work uniformly regardless of actual path length.
-// Used by the AnimDraw (self-draw) animation.
-templ drawIcon(name Name, class string) {
+// Used by the AnimDraw (self-draw) animation. When rtl is true, the data-tc-dir-icon
+// attribute is added for CSS-based RTL mirroring.
+templ drawIcon(name Name, class string, rtl bool) {
 	if name == Spinner {
-		<svg class={ class, "animate-spin motion-reduce:animate-none" } fill="none" viewBox="0 0 24 24" aria-hidden="true">
+		<svg class={ class, "animate-spin motion-reduce:animate-none" } fill="none" viewBox="0 0 24 24" aria-hidden="true" data-tc-dir-icon?={ rtl }>
 			@svg.SpinnerSVG()
 		</svg>
 	} else {
-		<svg class={ class } fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+		<svg class={ class } fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true" data-tc-dir-icon?={ rtl }>
 			for _, p := range iconPaths(name) {
 				<path pathLength="1" stroke-linecap="round" stroke-linejoin="round" d={ p }></path>
 			}
