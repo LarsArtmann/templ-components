@@ -53,18 +53,18 @@ remaining work to ship a polished, regression-proof feature.
 
 Sorted by importance/impact/customer-value.
 
-| # | Task | Impact | Effort | Dependencies |
-|---|------|--------|--------|--------------|
-| T1 | **CSS drift guard**: extend `TestCustomCSSUtilities` to scan `icons/*.templ` files or create standalone test in icons module | Critical (prevents silent CSS regression) | 30 min | None |
-| T2 | **Recompile demo CSS**: run `nix run .#css` to inject `.tc-anim-*` classes into `examples/demo/static/app.css` | High (fixes broken demo) | 15 min | None |
-| T3 | **Runtime guard for AnimBlink**: if icon has <2 paths, fall back to AnimPulse instead of silent no-op | Medium (consumer safety) | 20 min | None |
-| T4 | **Golden snapshot tests**: create `icons/animated_icon_golden_test.go` with one golden per animation type + default icons | High (locks output) | 45 min | T3 (final API) |
-| T5 | **AnimatedIconRTL variant**: mirror `IconRTL` pattern, add `data-tc-dir-icon` to wrapper or inner SVG | Medium (API completeness) | 30 min | None |
-| T6 | **Document `<span>` wrapper caveat**: add to `doc.go`, `animated_icon.templ` doc comments, `docs/icons-only-adoption.md` | Medium (consumer awareness) | 15 min | None |
-| T7 | **Update FEATURES.md**: add animated icons row | Low (honesty) | 15 min | None |
-| T8 | **Verify 5 key mappings**: fetch `lock-closed.tsx`, `trash.tsx`, `play.tsx`, `sun.tsx`, `moon.tsx` from heroicons-animated, compare and update if wrong | Medium (correctness) | 45 min | None |
-| T9 | **Full verify**: `templ generate + go build + go test + golangci-lint + nix flake check` | Critical (integration) | 15 min | T1-T8 |
-| T10 | **Commit + push**: detailed commit message, push to remote | Critical (ship) | 10 min | T9 |
+| # | Task | Impact | Effort | Dependencies | Status |
+|---|------|--------|--------|--------------|--------|
+| T1 | **CSS drift guard**: extend `TestCustomCSSUtilities` to scan `icons/*.templ` files or create standalone test in icons module | Critical (prevents silent CSS regression) | 30 min | None | DONE (cc44ca3) |
+| T2 | **Recompile demo CSS**: run `nix run .#css` to inject `.tc-anim-*` classes into `examples/demo/static/app.css` | High (fixes broken demo) | 15 min | None | DONE (cc44ca3) |
+| T3 | **Runtime guard for AnimBlink**: if icon has <2 paths, fall back to AnimPulse instead of silent no-op | Medium (consumer safety) | 20 min | None | DONE (ede8992) |
+| T4 | **Golden snapshot tests**: create `icons/animated_icon_golden_test.go` with one golden per animation type + default icons | High (locks output) | 45 min | T3 (final API) | DEFERRED (substring tests cover all variants) |
+| T5 | **AnimatedIconRTL variant**: mirror `IconRTL` pattern, add `data-tc-dir-icon` to wrapper or inner SVG | Medium (API completeness) | 30 min | None | DONE (023892a) |
+| T6 | **Document `<span>` wrapper caveat**: add to `doc.go`, `animated_icon.templ` doc comments, `docs/icons-only-adoption.md` | Medium (consumer awareness) | 15 min | None | DONE (023892a) |
+| T7 | **Update FEATURES.md**: add animated icons row | Low (honesty) | 15 min | None | DONE (023892a) |
+| T8 | **Verify 5 key mappings**: fetch `lock-closed.tsx`, `trash.tsx`, `play.tsx`, `sun.tsx`, `moon.tsx` from heroicons-animated, compare and update if wrong | Medium (correctness) | 45 min | None | DONE (023892a) — corrected Moon, Sun, Trash |
+| T9 | **Full verify**: `templ generate + go build + go test + golangci-lint + nix flake check` | Critical (integration) | 15 min | T1-T8 | DONE (023892a) |
+| T10 | **Commit + push**: detailed commit message, push to remote | Critical (ship) | 10 min | T9 | DONE (commit 023892a) |
 
 **Total estimated effort: ~240 min (4 hours)**
 
