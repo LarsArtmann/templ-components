@@ -31,7 +31,7 @@ templ-components/
 ├── htmx/            # HTMX helpers: loading, error handling, CSRF, OOB swap, confirm delete, View Transitions
 ├── datastar/        # Datastar SDK runtime injection, SSE-powered LiveRegion, loading Indicator (opt-in, ADR-0030)
 ├── charts/echarts/  # Opt-in ECharts adapter — accepts go-echarts RenderSnippet strings, CSP-safe, dark mode bridge (ADR-0031)
-├── icons/           # Named SVG icons (102 icons, map-driven rendering) — separate module
+├── icons/           # Named SVG icons (106 icons, map-driven rendering) — separate module
 ├── layout/          # Page layout (10): base HTML, minimal, theme toggle, dark mode, CSP-safe Script/Stylesheet helpers, AppShell, Container, Split, Stack
 ├── navigation/      # Nav (12): navbar, simple nav, breadcrumbs, pagination, mobile menu, sidebar nav, footer, EndOfList
 ├── recipes/         # 3 composition screens: Dashboard, SettingsLayout, LoginCard

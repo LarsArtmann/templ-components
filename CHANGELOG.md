@@ -8,6 +8,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **4 new icons: Book, CircleStack, DevicePhoneMobile, ArrowTrendingUp.** Expands the icon catalogue from 102 to 106 icons (105 path icons + Spinner). All use official Heroicons v2 path data with appropriate animation mappings (Book/CircleStack/ArrowTrendingUp→nod, DevicePhoneMobile→pulse).
+
 - **Animated icons (heroicons-animated inspired).** `icons.AnimatedIcon(name, class)` and `icons.AnimatedIconWithAnimation(name, anim, class)` render any icon with a hover-triggered CSS animation. 11 animation presets (`AnimPulse`, `AnimBeat`, `AnimBounce`, `AnimWiggle`, `AnimSpin`, `AnimJump`, `AnimNod`, `AnimShake`, `AnimBlink`, `AnimWobble`, `AnimDraw`) covering all heroicons-animated patterns. Pure CSS (zero JavaScript), `prefers-reduced-motion` support, triggers on `:hover` and `:focus-within`. Every icon has an explicit default via `DefaultAnimation()` — Heart→pulse, Bell→wiggle, Settings→spin, Eye→blink, Beaker→wobble, Bolt→draw (self-draw via stroke-dashoffset), Refresh→spin, etc. Aliases (ArrowPath, Bars3, MapPin, HandThumbUp) resolve to their canonical icon's animation. CSS lives in `templates/custom.css` under `.tc-anim-*` classes.
 
 - **Fluid typography via container query units.** Six `.tc-fluid-*` utility classes (`tc-fluid-display`, `tc-fluid-h1`–`tc-fluid-h4`, `tc-fluid-lead`) in `templates/custom.css` size text with `clamp(min, Ncqi + base, max)` — text scales smoothly with its container's width, not the viewport. Composes directly inside all 8 container-aware components. Baseline 2023, zero JavaScript. Recipe: `docs/recipes/fluid-typography.md`.

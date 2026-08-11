@@ -48,7 +48,7 @@ export const comparisons: ComparisonItem[] = [
       "CSP nonce on every inline script",
       "Built-in HTMX integration package",
       "Native SVG charts (zero-JS LineChart, PieChart, AreaChart)",
-      "102 SVG icons (no icon library dep)",
+      "106 SVG icons (no icon library dep)",
     ],
     cons: [],
   },

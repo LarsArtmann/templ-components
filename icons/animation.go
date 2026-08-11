@@ -227,6 +227,10 @@ var defaultAnimations = map[Name]Animation{
 	Server:            AnimNod, // HA=server: opacity+translateY
 	Trash:             AnimNod, // HA=trash: translateY
 	Upload:            AnimNod, // HA=arrow-up-tray: translateY
+	Book:              AnimNod, // HA=book: translateY
+	CircleStack:       AnimNod, // HA=circle-stack: translateY
+	ArrowTrendingUp:   AnimNod, // HA=arrow-trending-up: translateY
+	DevicePhoneMobile: AnimPulse, // HA=device-phone-mobile: scale
 }
 
 // DefaultAnimation returns the default animation for the given icon name.

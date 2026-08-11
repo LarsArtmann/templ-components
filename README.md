@@ -15,7 +15,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-112 server-rendered components. 52 typed string enums (49 with IsValid()). 102 SVG icons. Zero client-side framework.
+112 server-rendered components. 52 typed string enums (49 with IsValid()). 106 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -167,7 +167,7 @@ Nav bars, breadcrumbs, pagination, mobile menus, sidebar, load-more.
 @navigation.SidebarNav(navigation.SidebarNavProps{CurrentPath: "/users"})
 ```
 
-### `icons` — SVG Icons (102 icons)
+### `icons` — SVG Icons (106 icons)
 
 Typed icon constants, no icon library dependency.
 

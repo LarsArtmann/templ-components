@@ -59,7 +59,7 @@ Layer 3:         root (display, feedback, forms, layout, navigation,
 | Module path                                            | Deps                                  | Purpose                                              |
 | ------------------------------------------------------ | ------------------------------------- | ---------------------------------------------------- |
 | `github.com/larsartmann/templ-components/utils`        | templ, tailwind-merge-go              | Leaf: BaseProps, Class(), EnsureID, svg, cdn, golden |
-| `github.com/larsartmann/templ-components/icons`        | templ, utils                          | 102 named SVG icons; icons-only adoption             |
+| `github.com/larsartmann/templ-components/icons`        | templ, utils                          | 106 named SVG icons; icons-only adoption             |
 | `github.com/larsartmann/templ-components/errorpage`    | templ, go-error-family, icons, utils  | Error pages + handler; isolates go-error-family      |
 | `github.com/larsartmann/templ-components/charts/echarts` | templ, utils                        | Opt-in ECharts adapter (ADR-0031)                    |
 | `github.com/larsartmann/templ-components/htmx`         | templ, utils                          | HTMX loading, error handling, OOB swaps              |

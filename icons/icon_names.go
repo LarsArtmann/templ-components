@@ -110,6 +110,10 @@ const (
 	ArrowRightOnRectangle Name = "arrow-right-on-rectangle"
 	BuildingOffice2       Name = "building-office-2"
 	Key                   Name = "key"
+	Book                  Name = "book"
+	CircleStack           Name = "circle-stack"
+	DevicePhoneMobile     Name = "device-phone-mobile"
+	ArrowTrendingUp       Name = "arrow-trending-up"
 )
 
 // allIconNames returns all icon names, auto-generated from iconPathData + Spinner.

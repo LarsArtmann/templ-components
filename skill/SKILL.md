@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-112 components across 11 packages + 102 icons. If you're about to hand-roll
+112 components across 11 packages + 106 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -194,11 +194,11 @@ Don't know what to look for? Find your page type:
 | `FromError`                    | `FromError(err) ErrorPageProps`       | Extract family/code/why/fix from error                                      |
 | `NotFound` ... `InternalError` | 6 constructors                        | Pre-built error page props by HTTP family                                   |
 
-#### `icons` — 102 icons + 3 functions
+#### `icons` — 106 icons + 3 functions
 
 | Function                                        | One-liner                                          |
 | ----------------------------------------------- | -------------------------------------------------- |
-| `Icon(name, class)`                             | Inline SVG icon by name (100 path icons + Spinner) |
+| `Icon(name, class)`                             | Inline SVG icon by name (104 path icons + Spinner) |
 | `IconWithStrokeWidth(name, class, strokeWidth)` | Same, custom stroke width (default 1.5)            |
 | `IconPathData(name) []string`                   | Raw path data for custom SVG wrapper               |
 | `IconPathJS(name) string`                       | Path data formatted for JS injection               |
