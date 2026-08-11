@@ -48,7 +48,7 @@ for pkg in "${PACKAGES[@]}"; do
 
 			# Skip templ runtime imports (generator always injects these).
 			case "$imp" in
-				github.com/a-h/templ*) continue ;;
+			github.com/a-h/templ*) continue ;;
 			esac
 
 			# Check if this import appears in the generated file.

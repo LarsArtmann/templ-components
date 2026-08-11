@@ -210,26 +210,26 @@ var defaultAnimations = map[Name]Animation{
 	Key:                   AnimShake, // HA=key: rotate [0, 3, -3, 0]
 
 	// --- nod (vertical bob, 17 icons) ---
-	ArchiveBox:        AnimNod, // HA=archive-box: translateY
-	ArrowDown:         AnimNod, // HA=arrow-down: translateY+pathMorph
-	ArrowDownOnSquare: AnimNod, // HA=arrow-down-on-square: translateY
-	ArrowUp:           AnimNod, // HA=arrow-up: translateY+pathMorph
-	ArrowUpOnSquare:   AnimNod, // HA=arrow-up-on-square: translateY
-	ChevronDown:       AnimNod, // HA=chevron-down: translateY
-	ChevronUp:         AnimNod, // HA=chevron-up: translateY
-	Clipboard:         AnimNod, // HA=clipboard: source=blink (scaleY+translateY) but single-path → nod
-	Document:          AnimNod, // HA=document: translateY
-	Download:          AnimNod, // HA=arrow-down-tray: translateY
-	Folder:            AnimNod, // HA=folder: translateY
-	Microphone:        AnimNod, // HA=microphone: translateY
-	Printer:           AnimNod, // HA=printer: translateY
-	QueueList:         AnimNod, // HA=queue-list: opacity+translateY
-	Server:            AnimNod, // HA=server: opacity+translateY
-	Trash:             AnimNod, // HA=trash: translateY
-	Upload:            AnimNod, // HA=arrow-up-tray: translateY
-	Book:              AnimNod, // HA=book: translateY
-	CircleStack:       AnimNod, // HA=circle-stack: translateY
-	ArrowTrendingUp:   AnimNod, // HA=arrow-trending-up: translateY
+	ArchiveBox:        AnimNod,   // HA=archive-box: translateY
+	ArrowDown:         AnimNod,   // HA=arrow-down: translateY+pathMorph
+	ArrowDownOnSquare: AnimNod,   // HA=arrow-down-on-square: translateY
+	ArrowUp:           AnimNod,   // HA=arrow-up: translateY+pathMorph
+	ArrowUpOnSquare:   AnimNod,   // HA=arrow-up-on-square: translateY
+	ChevronDown:       AnimNod,   // HA=chevron-down: translateY
+	ChevronUp:         AnimNod,   // HA=chevron-up: translateY
+	Clipboard:         AnimNod,   // HA=clipboard: source=blink (scaleY+translateY) but single-path → nod
+	Document:          AnimNod,   // HA=document: translateY
+	Download:          AnimNod,   // HA=arrow-down-tray: translateY
+	Folder:            AnimNod,   // HA=folder: translateY
+	Microphone:        AnimNod,   // HA=microphone: translateY
+	Printer:           AnimNod,   // HA=printer: translateY
+	QueueList:         AnimNod,   // HA=queue-list: opacity+translateY
+	Server:            AnimNod,   // HA=server: opacity+translateY
+	Trash:             AnimNod,   // HA=trash: translateY
+	Upload:            AnimNod,   // HA=arrow-up-tray: translateY
+	Book:              AnimNod,   // HA=book: translateY
+	CircleStack:       AnimNod,   // HA=circle-stack: translateY
+	ArrowTrendingUp:   AnimNod,   // HA=arrow-trending-up: translateY
 	DevicePhoneMobile: AnimPulse, // HA=device-phone-mobile: scale
 }
 

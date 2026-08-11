@@ -22,35 +22,35 @@ errors=0
 # imports of ${PREFIX}/X where X is NOT in the allowed list.
 # Allowed subpaths are matched as path prefixes (e.g., "utils" matches "utils/svg").
 check_layer() {
-    local dir="$1"
-    shift
-    local -a allowed=("$@")
+	local dir="$1"
+	shift
+	local -a allowed=("$@")
 
-    while IFS= read -r file; do
-        [[ -z "$file" ]] && continue
-        # Extract all imports matching our module prefix
-        local imports
-        imports=$(grep -oE "\"${PREFIX}/[^\"]+\"" "$file" 2>/dev/null | sed 's/"//g' | sort -u || true)
+	while IFS= read -r file; do
+		[[ -z "$file" ]] && continue
+		# Extract all imports matching our module prefix
+		local imports
+		imports=$(grep -oE "\"${PREFIX}/[^\"]+\"" "$file" 2>/dev/null | sed 's/"//g' | sort -u || true)
 
-        for imp in $imports; do
-            # Strip the prefix to get the subpath
-            local subpath="${imp#${PREFIX}/}"
+		for imp in $imports; do
+			# Strip the prefix to get the subpath
+			local subpath="${imp#${PREFIX}/}"
 
-            local ok=false
-            for allowed_prefix in "${allowed[@]}"; do
-                if [[ "$subpath" == "$allowed_prefix" ]] || [[ "$subpath" == "$allowed_prefix/"* ]]; then
-                    ok=true
-                    break
-                fi
-            done
+			local ok=false
+			for allowed_prefix in "${allowed[@]}"; do
+				if [[ "$subpath" == "$allowed_prefix" ]] || [[ "$subpath" == "$allowed_prefix/"* ]]; then
+					ok=true
+					break
+				fi
+			done
 
-            if [[ "$ok" != "true" ]]; then
-                echo "DAG VIOLATION: $dir imports '$imp' (upward dependency)"
-                echo "  File: ${file#$REPO_ROOT/}"
-                errors=$((errors + 1))
-            fi
-        done
-    done < <(find "$REPO_ROOT/$dir" -name '*.go' ! -name '*_templ.go' ! -path '*/vendor/*' 2>/dev/null)
+			if [[ "$ok" != "true" ]]; then
+				echo "DAG VIOLATION: $dir imports '$imp' (upward dependency)"
+				echo "  File: ${file#$REPO_ROOT/}"
+				errors=$((errors + 1))
+			fi
+		done
+	done < <(find "$REPO_ROOT/$dir" -name '*.go' ! -name '*_templ.go' ! -path '*/vendor/*' 2>/dev/null)
 }
 
 # Layer 0: utils — leaf, can only import its own sub-packages
@@ -74,10 +74,10 @@ check_layer "errorpage" "utils" "icons" "errorpage"
 # Root module (layer 3) is not checked — it can import everything.
 
 if [[ $errors -gt 0 ]]; then
-    echo ""
-    echo "Module layer check: FAILED ($errors violation(s))"
-    echo "See ADR-0034 for the module dependency DAG."
-    exit 1
+	echo ""
+	echo "Module layer check: FAILED ($errors violation(s))"
+	echo "See ADR-0034 for the module dependency DAG."
+	exit 1
 fi
 
 echo "Module layer check: OK (no upward dependencies in 6 sub-modules)"

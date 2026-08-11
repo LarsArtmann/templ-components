@@ -19,7 +19,7 @@ CONFIG=".golangci.yml"
 QUIET="${1:-}"
 
 if [ ! -f "$CONFIG" ]; then
-    exit 0
+	exit 0
 fi
 
 # Only flag disabled linters if they appear in the enable: section (not disable:).
@@ -42,31 +42,31 @@ section == "enable" && /^[[:space:]]+ireturn:/ {
 ' "$CONFIG" 2>/dev/null || true)
 
 if [ -n "$VIOLATIONS" ] || [ -n "$IRETURN_BLOCK" ]; then
-    if [ "$QUIET" != "--quiet" ]; then
-        echo "" >&2
-        echo "BLOCKED: .golangci.yml re-enables a disabled linter." >&2
-        echo "" >&2
-        echo "The following linters are FUNDAMENTALLY INCOMPATIBLE with a templ library" >&2
-        echo "and are documented as disabled in AGENTS.md:" >&2
-        if [ -n "$VIOLATIONS" ]; then
-            echo "" >&2
-            echo "$VIOLATIONS" | while IFS= read -r line; do
-                echo "  $line" >&2
-            done
-        fi
-        if [ -n "$IRETURN_BLOCK" ]; then
-            echo "" >&2
-            echo "  Dead ireturn: settings block found — delete it." >&2
-            echo "$IRETURN_BLOCK" | while IFS= read -r line; do
-                echo "    $line" >&2
-            done
-        fi
-        echo "" >&2
-        echo "Fix: remove these entries from .golangci.yml." >&2
-        echo "This regression has occurred 5 times — see TestGolangciDisabledLinters." >&2
-        echo "" >&2
-    fi
-    exit 1
+	if [ "$QUIET" != "--quiet" ]; then
+		echo "" >&2
+		echo "BLOCKED: .golangci.yml re-enables a disabled linter." >&2
+		echo "" >&2
+		echo "The following linters are FUNDAMENTALLY INCOMPATIBLE with a templ library" >&2
+		echo "and are documented as disabled in AGENTS.md:" >&2
+		if [ -n "$VIOLATIONS" ]; then
+			echo "" >&2
+			echo "$VIOLATIONS" | while IFS= read -r line; do
+				echo "  $line" >&2
+			done
+		fi
+		if [ -n "$IRETURN_BLOCK" ]; then
+			echo "" >&2
+			echo "  Dead ireturn: settings block found — delete it." >&2
+			echo "$IRETURN_BLOCK" | while IFS= read -r line; do
+				echo "    $line" >&2
+			done
+		fi
+		echo "" >&2
+		echo "Fix: remove these entries from .golangci.yml." >&2
+		echo "This regression has occurred 5 times — see TestGolangciDisabledLinters." >&2
+		echo "" >&2
+	fi
+	exit 1
 fi
 
 exit 0

@@ -1,0 +1,93 @@
+package display
+
+import (
+	"time"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// DateFormat defines the Go time layout used by DateRange.
+// When empty, DateRangeDefaults.Layout is used.
+type DateFormat string
+
+const (
+	// DateFormatJanuary2006 renders as "January 2006".
+	DateFormatJanuary2006 DateFormat = "January 2006"
+	// DateFormatJan2006 renders as "Jan 2006".
+	DateFormatJan2006 DateFormat = "Jan 2006"
+	// DateFormat2006_01 renders as "2006-01".
+	DateFormat2006_01 DateFormat = "2006-01"
+	// DateFormatJan2_2006 renders as "Jan 2, 2006".
+	DateFormatJan2_2006 DateFormat = "Jan 2, 2006"
+)
+
+// DateRangeDefaults are used when props fields are zero.
+var DateRangeDefaults = struct {
+	Layout      DateFormat
+	PresentText string
+	Separator   string
+}{
+	Layout:      DateFormatJanuary2006,
+	PresentText: "Present",
+	Separator:   "–",
+}
+
+// DateRangeProps configures a date range display.
+type DateRangeProps struct {
+	utils.BaseProps
+	Start *time.Time
+	End   *time.Time
+	// Layout overrides the date format. Defaults to "January 2006".
+	Layout DateFormat
+	// PresentText overrides the text shown when End is nil. Defaults to "Present".
+	PresentText string
+	// Separator overrides the range separator. Defaults to "–" (en dash).
+	Separator string
+}
+
+// DateRange renders a date range with configurable formatting. When End is nil,
+// the PresentText is shown. When Start is nil, only End is shown. When both are
+// equal, only one date is shown (no range).
+//
+//	@display.DateRange(display.DateRangeProps{
+//	   Start: &start,
+//	   End:   nil, // shows "Present"
+//	})
+templ DateRange(props DateRangeProps) {
+	{{ 
+		layout := props.Layout; if layout == "" { layout = DateRangeDefaults.Layout }
+		present := props.PresentText; if present == "" { present = DateRangeDefaults.PresentText }
+		sep := props.Separator; if sep == "" { sep = DateRangeDefaults.Separator }
+		startStr := formatDate(props.Start, layout)
+		endStr := formatDate(props.End, layout); if props.End == nil { endStr = present }
+	}}
+	<time
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("text-sm text-gray-600 dark:text-gray-400", props.Class) }
+		if props.Start != nil {
+			datetime={ props.Start.Format("2006-01") }
+		}
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		if startStr != "" && endStr != "" && startStr != endStr {
+			{ startStr } { " " }{ sep }{ " " }{ endStr }
+		} else if startStr != "" {
+			{ startStr }
+		} else {
+			{ endStr }
+		}
+	</time>
+}
+
+// formatDate formats a time with the given layout, returning "" for nil.
+func formatDate(t *time.Time, layout DateFormat) string {
+	if t == nil {
+		return ""
+	}
+	return t.Format(string(layout))
+}

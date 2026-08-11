@@ -63,6 +63,8 @@ func componentTypes() []any {
 		display.HoverCardProps{},
 		display.ContextMenuProps{},
 		display.CarouselProps{},
+		display.SectionHeadingProps{},
+		display.DateRangeProps{},
 
 		// forms (18)
 		forms.InputProps{},

@@ -1,0 +1,113 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// HeadingLevel defines the HTML heading element used by SectionHeading.
+type HeadingLevel string
+
+const (
+	HeadingLevelH1 HeadingLevel = "h1"
+	HeadingLevelH2 HeadingLevel = "h2"
+	HeadingLevelH3 HeadingLevel = "h3"
+	HeadingLevelH4 HeadingLevel = "h4"
+	HeadingLevelH5 HeadingLevel = "h5"
+	HeadingLevelH6 HeadingLevel = "h6"
+)
+
+// headingLevelClass returns the Tailwind text size class for a heading level.
+func headingLevelClass(level HeadingLevel) string {
+	switch level {
+	case HeadingLevelH1:
+		return "text-3xl font-bold"
+	case HeadingLevelH2:
+		return "text-2xl font-bold"
+	case HeadingLevelH3:
+		return "text-xl font-semibold"
+	case HeadingLevelH4:
+		return "text-lg font-semibold"
+	case HeadingLevelH5:
+		return "text-base font-semibold"
+	case HeadingLevelH6:
+		return "text-sm font-semibold uppercase tracking-wide"
+	default:
+		return "text-2xl font-bold"
+	}
+}
+
+// TextAlign defines the horizontal alignment of a SectionHeading.
+type TextAlign string
+
+const (
+	TextAlignLeft   TextAlign = "left"
+	TextAlignCenter TextAlign = "center"
+	TextAlignRight  TextAlign = "right"
+)
+
+// textAlignClass returns the Tailwind text alignment class.
+func textAlignClass(align TextAlign) string {
+	switch align {
+	case TextAlignCenter:
+		return "text-center"
+	case TextAlignRight:
+		return "text-right"
+	default:
+		return "text-left"
+	}
+}
+
+// sectionHeadingTitleClass combines the heading level, base title classes,
+// and optional override into a single class string.
+func sectionHeadingTitleClass(level HeadingLevel, override string) string {
+	return utils.Class(headingLevelClass(level), "text-gray-900 dark:text-white break-after-avoid", override)
+}
+
+// SectionHeadingProps configures a section-level heading with typed
+// heading level and alignment.
+type SectionHeadingProps struct {
+	utils.BaseProps
+	Title    string
+	Level    HeadingLevel
+	Align    TextAlign
+	SubTitle string
+}
+
+// SectionHeading renders a section-level heading with configurable heading
+// element (h1-h6), alignment, and optional subtitle. Headings include
+// break-after-avoid for print pagination. Use this for section titles within
+// page content (not the page title itself — use PageHeader for that).
+//
+//	@display.SectionHeading(display.SectionHeadingProps{
+//	   Title: "Experience",
+//	   Level: display.HeadingLevelH2,
+//	   Align: display.TextAlignCenter,
+//	})
+templ SectionHeading(props SectionHeadingProps) {
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class(textAlignClass(props.Align), props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		switch props.Level {
+		case HeadingLevelH1:
+			<h1 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h1>
+		case HeadingLevelH3:
+			<h3 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h3>
+		case HeadingLevelH4:
+			<h4 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h4>
+		case HeadingLevelH5:
+			<h5 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h5>
+		case HeadingLevelH6:
+			<h6 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h6>
+		default:
+			<h2 class={ sectionHeadingTitleClass(props.Level, "") }>{ props.Title }</h2>
+		}
+		if props.SubTitle != "" {
+			<p class={ utils.Class(mutedTextClass, "mt-1") }>{ props.SubTitle }</p>
+		}
+	</div>
+}

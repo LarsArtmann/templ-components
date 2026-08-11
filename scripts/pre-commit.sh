@@ -23,20 +23,20 @@ go test ./... -count=1
 
 # --- Sub-modules (standalone isolation) ---
 for mod in utils icons errorpage charts/echarts datastar htmx; do
-  echo "==> $mod"
-  (cd "$mod" && go build ./... && go test ./... -count=1)
+	echo "==> $mod"
+	(cd "$mod" && go build ./... && go test ./... -count=1)
 done
 
 # --- Lint (golangci-lint does not support go.work) ---
 echo "==> lint root"
 golangci-lint run \
-  ./display/... ./feedback/... ./forms/... \
-  ./integration/... ./internal/... \
-  ./layout/... ./navigation/... ./recipes/... ./cmd/...
+	./display/... ./feedback/... ./forms/... \
+	./integration/... ./internal/... \
+	./layout/... ./navigation/... ./recipes/... ./cmd/...
 
 for mod in utils icons errorpage charts/echarts datastar htmx; do
-  echo "==> lint $mod"
-  (cd "$mod" && golangci-lint run ./...)
+	echo "==> lint $mod"
+	(cd "$mod" && golangci-lint run ./...)
 done
 
 echo "All checks passed."
