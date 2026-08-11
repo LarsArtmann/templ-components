@@ -82,16 +82,18 @@ support. Inspired by [heroicons-animated.com](https://www.heroicons-animated.com
 @icons.AnimatedIconWithAnimation(icons.Bell, icons.AnimWiggle, "h-6 w-6")
 ```
 
-Each icon has a default animation via `DefaultAnimation()`:
+Each icon has a default animation via `DefaultAnimation()`. All 96 mappings are
+verified against [heroicons-animated](https://github.com/heroicons-animated/heroicons-animated) source (316 icons):
 
 | Icon | Default | Icon | Default |
 | --- | --- | --- | --- |
-| Heart | `AnimPulse` | Home | `AnimJump` |
+| Heart | `AnimPulse` | Home | `AnimPulse` |
 | Star | `AnimBeat` | Search | `AnimBounce` |
 | Bell | `AnimWiggle` | ChevronDown | `AnimNod` |
 | Settings | `AnimSpin` | Eye | `AnimBlink` |
 | Beaker | `AnimWobble` | Bolt | `AnimDraw` |
-| ExternalLink | `AnimShake` | Refresh | `AnimSpin` |
+| ExternalLink | `AnimPulse` | Refresh | `AnimSpin` |
+| Lock | `AnimWobble` | Check | `AnimDraw` |
 
 11 presets total: `AnimPulse`, `AnimBeat`, `AnimBounce`, `AnimWiggle`, `AnimSpin`,
 `AnimJump`, `AnimNod`, `AnimShake`, `AnimBlink` (per-path), `AnimWobble`, `AnimDraw` (self-draw via `stroke-dashoffset`).

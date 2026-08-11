@@ -48,31 +48,40 @@ func TestDefaultAnimation(t *testing.T) {
 		icon Name
 		want Animation
 	}{
-		// Verified from heroicons-animated source
+		// Verified against heroicons-animated source (2026-08-11, 316 icons)
 		{"Heart defaults to pulse", Heart, AnimPulse},
 		{"Star defaults to beat", Star, AnimBeat},
 		{"Bell defaults to wiggle", Bell, AnimWiggle},
 		{"Settings defaults to spin", Settings, AnimSpin},
 		{"Eye defaults to blink", Eye, AnimBlink},
-		{"Home defaults to jump", Home, AnimJump},
+		{"Home defaults to pulse", Home, AnimPulse},
 		{"Search defaults to bounce", Search, AnimBounce},
 		{"Beaker defaults to wobble", Beaker, AnimWobble},
 		{"Bolt defaults to draw", Bolt, AnimDraw},
 		{"Refresh defaults to spin", Refresh, AnimSpin},
 		{"Moon defaults to wiggle", Moon, AnimWiggle},
 		{"Sun defaults to pulse", Sun, AnimPulse},
-		{"Lock defaults to shake", Lock, AnimShake},
-		{"Trash defaults to bounce", Trash, AnimBounce},
+		{"Lock defaults to wobble", Lock, AnimWobble},
+		{"Trash defaults to nod", Trash, AnimNod},
+		{"Check defaults to draw", Check, AnimDraw},
+		{"X defaults to draw", X, AnimDraw},
+		{"ChevronRight defaults to bounce", ChevronRight, AnimBounce},
+		{"ArrowRight defaults to bounce", ArrowRight, AnimBounce},
+		{"Wrench defaults to wiggle", Wrench, AnimWiggle},
+		{"Cube defaults to wobble", Cube, AnimWobble},
+		{"Calculator defaults to beat", Calculator, AnimBeat},
+		{"Fire defaults to wiggle", Fire, AnimWiggle},
+		{"AcademicCap defaults to shake", AcademicCap, AnimShake},
 
 		// Spinner always opts out
 		{"Spinner defaults to none", Spinner, AnimNone},
 
 		// Aliases resolve to canonical icon's animation
 		{"ArrowPath alias resolves to spin", ArrowPath, AnimSpin},
-		{"Bars3 alias resolves to Menu nod", Bars3, AnimNod},
-		{"HandThumbUp alias resolves to ThumbUp bounce", HandThumbUp, AnimBounce},
+		{"Bars3 alias resolves to Menu pulse", Bars3, AnimPulse},
+		{"HandThumbUp alias resolves to ThumbUp wiggle", HandThumbUp, AnimWiggle},
 		{"MapPin alias resolves to Location bounce", MapPin, AnimBounce},
-		{"Close shares X pulse", Close, AnimPulse},
+		{"Close shares X draw", Close, AnimDraw},
 	}
 
 	for _, tt := range tests {
