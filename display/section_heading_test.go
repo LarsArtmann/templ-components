@@ -9,9 +9,10 @@ import (
 
 func TestGoldenSectionHeading(t *testing.T) {
 	t.Parallel()
+
 	tests := []struct {
-		name   string
-		props  SectionHeadingProps
+		name  string
+		props SectionHeadingProps
 	}{
 		{
 			name: "h2_center",

@@ -10,12 +10,13 @@ import (
 
 func TestGoldenDateRange(t *testing.T) {
 	t.Parallel()
+
 	start := time.Date(2023, 1, 15, 0, 0, 0, 0, time.UTC)
 	end := time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC)
 
 	tests := []struct {
-		name   string
-		props  DateRangeProps
+		name  string
+		props DateRangeProps
 	}{
 		{
 			name: "range",
@@ -34,8 +35,8 @@ func TestGoldenDateRange(t *testing.T) {
 		{
 			name: "compact_format",
 			props: DateRangeProps{
-				Start: &start,
-				End:   &end,
+				Start:  &start,
+				End:    &end,
 				Layout: DateFormatJan2006,
 			},
 		},
