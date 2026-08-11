@@ -90,10 +90,11 @@ Each icon has a default animation via `DefaultAnimation()`:
 | Star | `AnimBeat` | Search | `AnimBounce` |
 | Bell | `AnimWiggle` | ChevronDown | `AnimNod` |
 | Settings | `AnimSpin` | Eye | `AnimBlink` |
-| ExternalLink | `AnimShake` | (others) | `AnimPulse` |
+| Beaker | `AnimWobble` | Bolt | `AnimDraw` |
+| ExternalLink | `AnimShake` | Refresh | `AnimSpin` |
 
-10 presets total: `AnimPulse`, `AnimBeat`, `AnimBounce`, `AnimWiggle`, `AnimSpin`,
-`AnimJump`, `AnimNod`, `AnimShake`, `AnimBlink` (per-path), `AnimSplit` (per-path).
+11 presets total: `AnimPulse`, `AnimBeat`, `AnimBounce`, `AnimWiggle`, `AnimSpin`,
+`AnimJump`, `AnimNod`, `AnimShake`, `AnimBlink` (per-path), `AnimWobble`, `AnimDraw` (self-draw via `stroke-dashoffset`).
 
 **CSS requirement:** copy the `.tc-anim-*` classes from `templates/custom.css`
 into your stylesheet. The animations use CSS `@keyframes`, individual transform

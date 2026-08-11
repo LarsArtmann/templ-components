@@ -205,7 +205,7 @@ Don't know what to look for? Find your page type:
 | `AnimatedIcon(name, class)`                     | Icon with hover animation (default per-icon)       |
 | `AnimatedIconWithAnimation(name, anim, class)`  | Icon with explicit animation preset                |
 | `DefaultAnimation(name) Animation`              | Get default animation for an icon                  |
-| `AllAnimations() []Animation`                   | All 10 animation presets, sorted                   |
+| `AllAnimations() []Animation`                   | All 11 animation presets, sorted                   |
 
 #### `utils` — shared types + helpers
 

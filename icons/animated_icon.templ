@@ -1,6 +1,10 @@
 package icons
 
-import "fmt"
+import (
+	"fmt"
+
+	"github.com/larsartmann/templ-components/utils/svg"
+)
 
 // AnimatedIcon renders an icon with its default hover animation.
 // The default animation is determined by DefaultAnimation(name).
@@ -14,7 +18,7 @@ templ AnimatedIcon(name Name, class string) {
 }
 
 // AnimatedIconWithAnimation renders an icon with a specific hover animation.
-// Use any Animation constant (AnimPulse, AnimWiggle, AnimSpin, etc.).
+// Use any Animation constant (AnimPulse, AnimWiggle, AnimSpin, AnimDraw, etc.).
 // Pass AnimNone to render a plain icon without the animation wrapper.
 //
 //	@icons.AnimatedIconWithAnimation(icons.Bell, icons.AnimWiggle, "h-6 w-6")
@@ -23,9 +27,30 @@ templ AnimatedIcon(name Name, class string) {
 templ AnimatedIconWithAnimation(name Name, anim Animation, class string) {
 	if anim == AnimNone {
 		@Icon(name, class)
+	} else if anim == AnimDraw {
+		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
+			@drawIcon(name, class)
+		</span>
 	} else {
 		<span class={ "tc-anim", fmt.Sprintf("tc-anim-%s", anim), "inline-flex" }>
 			@Icon(name, class)
 		</span>
+	}
+}
+
+// drawIcon renders an icon with pathLength="1" on each path so CSS
+// stroke-dashoffset animations work uniformly regardless of actual path length.
+// Used by the AnimDraw (self-draw) animation.
+templ drawIcon(name Name, class string) {
+	if name == Spinner {
+		<svg class={ class, "animate-spin motion-reduce:animate-none" } fill="none" viewBox="0 0 24 24" aria-hidden="true">
+			@svg.SpinnerSVG()
+		</svg>
+	} else {
+		<svg class={ class } fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
+			for _, p := range iconPaths(name) {
+				<path pathLength="1" stroke-linecap="round" stroke-linejoin="round" d={ p }></path>
+			}
+		</svg>
 	}
 }

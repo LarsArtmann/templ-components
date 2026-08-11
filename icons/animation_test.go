@@ -22,7 +22,8 @@ func TestAnimationIsValid(t *testing.T) {
 		{"nod", AnimNod, true},
 		{"shake", AnimShake, true},
 		{"blink", AnimBlink, true},
-		{"split", AnimSplit, true},
+		{"wobble", AnimWobble, true},
+		{"draw", AnimDraw, true},
 		{"none is not valid", AnimNone, false},
 		{"empty is not valid", Animation(""), false},
 		{"bogus is not valid", Animation("bogus"), false},
@@ -47,19 +48,27 @@ func TestDefaultAnimation(t *testing.T) {
 		icon Name
 		want Animation
 	}{
+		// Verified from heroicons-animated source
 		{"Heart defaults to pulse", Heart, AnimPulse},
 		{"Star defaults to beat", Star, AnimBeat},
 		{"Bell defaults to wiggle", Bell, AnimWiggle},
 		{"Settings defaults to spin", Settings, AnimSpin},
 		{"Eye defaults to blink", Eye, AnimBlink},
-		{"Trash defaults to wiggle", Trash, AnimWiggle},
 		{"Home defaults to jump", Home, AnimJump},
 		{"Search defaults to bounce", Search, AnimBounce},
+		{"Beaker defaults to wobble", Beaker, AnimWobble},
+		{"Bolt defaults to draw", Bolt, AnimDraw},
+		{"Refresh defaults to spin", Refresh, AnimSpin},
+
+		// Spinner always opts out
 		{"Spinner defaults to none", Spinner, AnimNone},
-		{"unmapped icon defaults to pulse", Document, AnimPulse},
-		{"Wrench defaults to spin", Wrench, AnimSpin},
-		{"ChevronDown defaults to nod", ChevronDown, AnimNod},
-		{"ExternalLink defaults to shake", ExternalLink, AnimShake},
+
+		// Aliases resolve to canonical icon's animation
+		{"ArrowPath alias resolves to spin", ArrowPath, AnimSpin},
+		{"Bars3 alias resolves to Menu nod", Bars3, AnimNod},
+		{"HandThumbUp alias resolves to ThumbUp bounce", HandThumbUp, AnimBounce},
+		{"MapPin alias resolves to Location bounce", MapPin, AnimBounce},
+		{"Close shares X pulse", Close, AnimPulse},
 	}
 
 	for _, tt := range tests {
@@ -78,8 +87,8 @@ func TestAllAnimations(t *testing.T) {
 
 	anims := AllAnimations()
 
-	if len(anims) != 10 {
-		t.Errorf("AllAnimations() returned %d animations, want 10", len(anims))
+	if len(anims) != 11 {
+		t.Errorf("AllAnimations() returned %d animations, want 11", len(anims))
 	}
 
 	for i := 1; i < len(anims); i++ {
@@ -115,4 +124,52 @@ func TestDefaultAnimationConsistency(t *testing.T) {
 			}
 		}
 	})
+}
+
+// TestCompleteAnimationCoverage verifies that every icon in iconPathData has
+// either a direct entry in defaultAnimations or resolves through iconAliases
+// to a name that does. No icon should silently fall back to the generic
+// AnimPulse unless it is explicitly mapped to pulse.
+func TestCompleteAnimationCoverage(t *testing.T) {
+	t.Parallel()
+
+	unmapped := make([]Name, 0)
+
+	for name := range iconPathData {
+		if _, ok := defaultAnimations[name]; ok {
+			continue
+		}
+
+		if alias, ok := iconAliases[name]; ok {
+			if _, ok := defaultAnimations[alias]; ok {
+				continue
+			}
+		}
+
+		unmapped = append(unmapped, name)
+	}
+
+	if len(unmapped) > 0 {
+		t.Errorf("icons without animation mapping (would fall back to AnimPulse): %v", unmapped)
+	}
+}
+
+// TestBlinkIconsHaveMultiplePaths verifies that all icons mapped to AnimBlink
+// have 2+ SVG path elements (required for the per-path nth-child CSS targeting).
+func TestBlinkIconsHaveMultiplePaths(t *testing.T) {
+	t.Parallel()
+
+	for name, anim := range defaultAnimations {
+		if anim != AnimBlink {
+			continue
+		}
+
+		actualPaths := len(iconPaths(name))
+		if actualPaths < 2 {
+			t.Errorf(
+				"icon %q mapped to AnimBlink (requires 2+ paths) but has only %d",
+				name, actualPaths,
+			)
+		}
+	}
 }

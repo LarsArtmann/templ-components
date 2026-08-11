@@ -32,13 +32,14 @@ func TestAnimatedIconWithAnimation(t *testing.T) {
 	}{
 		{"Bell with wiggle", Bell, AnimWiggle, "tc-anim-wiggle"},
 		{"Settings with spin", Settings, AnimSpin, "tc-anim-spin"},
-		{"Trash with wiggle", Trash, AnimWiggle, "tc-anim-wiggle"},
 		{"Eye with blink", Eye, AnimBlink, "tc-anim-blink"},
 		{"Star with beat", Star, AnimBeat, "tc-anim-beat"},
 		{"Search with bounce", Search, AnimBounce, "tc-anim-bounce"},
 		{"Home with jump", Home, AnimJump, "tc-anim-jump"},
 		{"ChevronDown with nod", ChevronDown, AnimNod, "tc-anim-nod"},
 		{"ArrowRight with shake", ArrowRight, AnimShake, "tc-anim-shake"},
+		{"Beaker with wobble", Beaker, AnimWobble, "tc-anim-wobble"},
+		{"Heart with pulse", Heart, AnimPulse, "tc-anim-pulse"},
 	}
 
 	for _, tt := range tests {
@@ -53,6 +54,34 @@ func TestAnimatedIconWithAnimation(t *testing.T) {
 			utils.AssertContains(t, output, "h-5 w-5")
 		})
 	}
+}
+
+func TestAnimatedIconWithDrawRendersPathLength(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, AnimatedIconWithAnimation(Bolt, AnimDraw, "h-6 w-6"))
+
+	utils.AssertContains(t, output, "tc-anim-draw")
+	utils.AssertContains(t, output, `pathLength="1"`)
+	utils.AssertContains(t, output, "<svg")
+}
+
+func TestAnimatedIconBoltDefaultsToDraw(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, AnimatedIcon(Bolt, "h-6 w-6"))
+
+	utils.AssertContains(t, output, "tc-anim-draw")
+	utils.AssertContains(t, output, `pathLength="1"`)
+}
+
+func TestAnimatedIconRefreshDefaultsToSpin(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, AnimatedIcon(Refresh, "h-6 w-6"))
+
+	utils.AssertContains(t, output, "tc-anim-spin")
+	utils.AssertContains(t, output, "<svg")
 }
 
 func TestAnimatedIconWithNoneRendersPlainIcon(t *testing.T) {
@@ -97,32 +126,6 @@ func TestAllPathIconsCanAnimate(t *testing.T) {
 				utils.AssertContains(t, output, "tc-anim-"+string(anim))
 			}
 		})
-	}
-}
-
-func TestPerPathAnimationsHaveCorrectPathCount(t *testing.T) {
-	t.Parallel()
-
-	// AnimBlink requires 2+ paths; AnimSplit requires 2+ paths.
-	// Verify that all icons defaulted to these animations have enough paths.
-	perPathAnimations := map[Animation]int{
-		AnimBlink: 2,
-		AnimSplit: 2,
-	}
-
-	for name, anim := range defaultAnimations {
-		requiredPaths, isPerPath := perPathAnimations[anim]
-		if !isPerPath {
-			continue
-		}
-
-		actualPaths := len(iconPaths(name))
-		if actualPaths < requiredPaths {
-			t.Errorf(
-				"icon %q defaulted to %s (requires %d paths) but has only %d",
-				name, anim, requiredPaths, actualPaths,
-			)
-		}
 	}
 }
 
