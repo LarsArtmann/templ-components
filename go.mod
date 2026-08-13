@@ -5,12 +5,12 @@ go 1.26.5
 require github.com/a-h/templ v0.3.1020
 
 require (
-	github.com/larsartmann/templ-components/charts/echarts v1.8.1
-	github.com/larsartmann/templ-components/datastar v1.8.1
-	github.com/larsartmann/templ-components/errorpage v1.8.1
-	github.com/larsartmann/templ-components/htmx v1.8.1
-	github.com/larsartmann/templ-components/icons v1.8.1
-	github.com/larsartmann/templ-components/utils v1.8.1
+	github.com/larsartmann/templ-components/charts/echarts v1.8.2
+	github.com/larsartmann/templ-components/datastar v1.8.2
+	github.com/larsartmann/templ-components/errorpage v1.8.2
+	github.com/larsartmann/templ-components/htmx v1.8.2
+	github.com/larsartmann/templ-components/icons v1.8.2
+	github.com/larsartmann/templ-components/utils v1.8.2
 	github.com/stretchr/testify v1.11.1
 )
 
