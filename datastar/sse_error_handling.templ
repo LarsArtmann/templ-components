@@ -1,0 +1,57 @@
+package datastar
+
+// SSEErrorHandlingConfig configures global DataStar SSE error handling.
+type SSEErrorHandlingConfig struct {
+	// Nonce is the CSP nonce for the inline script.
+	Nonce string
+	// DurationMS is the toast auto-dismiss delay in milliseconds (default: 6000).
+	DurationMS int
+}
+
+// DefaultSSEErrorHandlingConfig returns sensible defaults for SSE error handling.
+func DefaultSSEErrorHandlingConfig() SSEErrorHandlingConfig {
+	return SSEErrorHandlingConfig{
+		DurationMS: 6000,
+	}
+}
+
+func (c *SSEErrorHandlingConfig) normalize() {
+	if c.DurationMS <= 0 {
+		c.DurationMS = 6000
+	}
+}
+
+// SSEErrorHandling renders a global listener for DataStar SSE errors
+// (datastar-sse-error) and surfaces them as accessible toasts so streaming
+// failures are never silent. This is the DataStar counterpart to
+// htmx.GlobalErrorHandling, which covers HTMX request errors.
+//
+// Requires feedback.ToastContainer on the page for toast feedback (it provides
+// the global tcShowToast function). Without it, errors are still logged to the
+// console and announced via the aria-live region.
+//
+// DataStar reconnects its own SSE streams, so this handler only reports the
+// interruption; it does not retry. Typical layout wiring:
+//
+//	@feedback.ToastContainer("")
+//	@datastar.SSEErrorHandling(datastar.DefaultSSEErrorHandlingConfig())
+templ SSEErrorHandling(cfg SSEErrorHandlingConfig) {
+	{{ cfg.normalize() }}
+	<div id="tc-datastar-announcer" aria-live="polite" class="sr-only"></div>
+	<script nonce={ cfg.Nonce }>
+		(function() {
+			'use strict';
+			var DURATION = {{ cfg.DurationMS }};
+			document.addEventListener('datastar-sse-error', function(evt) {
+				var detail = evt.detail || {};
+				var reason = detail.message || detail.statusText || 'Connection lost';
+				console.error('DataStar SSE Error:', detail);
+				if (typeof tcShowToast === 'function') {
+					tcShowToast('The live stream was interrupted (' + reason + '). It will resume automatically.', 'error', 'Connection Lost', DURATION);
+				}
+				var announcer = document.getElementById('tc-datastar-announcer');
+				if (announcer) announcer.textContent = 'Connection Lost: ' + reason;
+			});
+		})();
+	</script>
+}
