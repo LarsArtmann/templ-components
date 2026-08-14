@@ -32,16 +32,18 @@ jobs:
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
 
+      # Enable corepack BEFORE setup-node: its `cache: pnpm` probe runs
+      # `pnpm store path` and fails if pnpm is not on PATH yet. The website
+      # declares "packageManager": "pnpm@11.20.0" in package.json, so
+      # corepack activates exactly that pinned version (Node 24 ships corepack).
+      - run: corepack enable pnpm
+
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
           node-version: "24"
           cache: pnpm
           cache-dependency-path: website/pnpm-lock.yaml
 
-      # setup-node does not install pnpm. The website declares
-      # "packageManager": "pnpm@11.20.0" in package.json, so corepack
-      # activates exactly that pinned version (Node 24 ships corepack).
-      - run: corepack enable pnpm
       - run: pnpm --version
 
       - run: pnpm install
