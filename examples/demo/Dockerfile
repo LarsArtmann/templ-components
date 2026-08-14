@@ -6,9 +6,9 @@
 FROM node:22-slim AS css
 WORKDIR /src
 COPY . .
-RUN npm init -y \
-    && npm install tailwindcss @tailwindcss/cli \
-    && npx @tailwindcss/cli \
+RUN pnpm init -y \
+    && pnpm add tailwindcss @tailwindcss/cli \
+    && pnpm dlx @tailwindcss/cli \
         -i examples/demo/demo.css \
         -o examples/demo/static/app.css \
         --minify

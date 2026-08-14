@@ -24,7 +24,7 @@ const (
 )
 
 // Datastar CDN paths. Datastar is served from jsDelivr's GitHub path
-// (not npm), so the URL structure differs from HTMX's npm-style path.
+// (not pnpm), so the URL structure differs from HTMX's pnpm-style path.
 const (
 	// defaultDatastarCDNBase is the CDN base URL. Consumers override via
 	// SDKScriptProps.CDN (e.g. "https://unpkg.com" or a self-hosted origin).

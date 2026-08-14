@@ -57,7 +57,7 @@ Lean into these hard — they're the actual moat:
 
 ## Tier 3 — Growth Multipliers
 
-8. **Interactive playground / copy-paste snippets** — Not just a demo site, but one where you click a component, see it rendered, and copy the Go code. This is what made shadcn/ui explode. The "copy component" pattern is what Go devs want — they don't want npm-style dependency, they want code they control.
+8. **Interactive playground / copy-paste snippets** — Not just a demo site, but one where you click a component, see it rendered, and copy the Go code. This is what made shadcn/ui explode. The "copy component" pattern is what Go devs want — they don't want pnpm-style dependency, they want code they control.
 
 9. **Real-world example app using the full ecosystem** — Not a showcase. A real app built with templ-components + cqrs-htmx + go-cqrs-lite. A CRUD admin panel or dashboard that uses HTMX + CQRS + authorization end-to-end. Something someone can `git clone` and have a working app in 5 minutes. This app doubles as the demo site. This is worth 10x more than any individual feature.
 

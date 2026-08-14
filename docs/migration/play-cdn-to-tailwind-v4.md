@@ -55,11 +55,11 @@ devShells.default = pkgs.mkShellNoCC {
 };
 ```
 
-### Option C: npm
+### Option C: pnpm
 
 ```bash
-npm install -D @tailwindcss/cli
-npx @tailwindcss/cli -i app.css -o static/app.css --minify
+pnpm add -D @tailwindcss/cli
+pnpm dlx @tailwindcss/cli -i app.css -o static/app.css --minify
 ```
 
 ## Step 2 — Create your CSS entry point

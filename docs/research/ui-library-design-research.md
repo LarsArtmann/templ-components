@@ -111,7 +111,7 @@ power — closing the gap that made shadcn invent copy-paste. The multi-module w
 ### Model B — Copy-Paste CLI (shadcn/ui)
 
 ```bash
-npx shadcn@latest add dialog   # copies source INTO your project
+pnpm dlx shadcn@latest add dialog   # copies source INTO your project
 ```
 
 | Dimension           | Assessment                                                                                    |
@@ -1303,7 +1303,7 @@ v4 is a ground-up rewrite that fundamentally changes component library authoring
    @source "../node_modules/templ-components";
    ```
 
-   Wait — templ-components is a Go library, not npm. But the Tailwind scanning still
+   Wait — templ-components is a Go library, not pnpm. But the Tailwind scanning still
    needs to find the class strings in the generated `*_templ.go` files. The
    `docs/tailwind-v4-adoption-guide.md` documents this setup.
 
@@ -1739,7 +1739,7 @@ manually). This means templ-components has a stronger, more consistent API contr
 | **Language**            | Go + templ                          | Go + templ                     | TypeScript + React               |
 | **Rendering**           | Server-side                         | Server-side                    | Client-side (CSR/SSR)            |
 | **CSS**                 | Tailwind v4                         | Tailwind v3/v4                 | Tailwind v4                      |
-| **Distribution**        | Go module                           | Module + CLI copy              | npm CLI copy-paste               |
+| **Distribution**        | Go module                           | Module + CLI copy              | pnpm CLI copy-paste               |
 | **BaseProps**           | Embedded (consistent)               | Not embedded (repeated)        | React props (per-component)      |
 | **Variant lookup**      | Map + `utils.Lookup`                | Switch statement               | CVA                              |
 | **Class merge**         | `utils.Class` (tailwind-merge-go)   | `utils.TwMerge`                | `cn()` (clsx + tailwind-merge)   |

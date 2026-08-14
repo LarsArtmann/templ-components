@@ -73,7 +73,7 @@ Full public launch of templ-components: CI fixes, demo expansion (97 components)
 | 3   | **Cloud Run `actAs` permission denied**               | CI Cloud Run deploy failed          | Deploy service account needed `iam.serviceAccountUser` on the runtime account                     | ✅ Fixed: IAM binding                 |
 | 4   | **Firebase Hosting rewrite → Cloud Run returned 404** | Wasted ~30 min                      | Firebase Spark (free) plan doesn't support Cloud Run rewrites. Billing ≠ Firebase plan.           | ⚠️ Pivoted to direct URL              |
 | 5   | **Deployed to europe-west1 first**                    | Wasted ~15 min                      | Didn't check Firebase region constraint                                                           | ✅ Cleaned up, redeployed us-central1 |
-| 6   | **Accidentally created root `node_modules/`**         | BuildFlow pre-commit failed         | `npm install tailwindcss` in root instead of temp dir                                             | ✅ Deleted                            |
+| 6   | **Accidentally created root `node_modules/`**         | BuildFlow pre-commit failed         | `pnpm add tailwindcss` in root instead of temp dir                                             | ✅ Deleted                            |
 | 7   | **Corrupted main.go with bad edit**                   | Build failed                        | Edit tool replaced wrong function boundary, created duplicate handler                             | ✅ Rewrote entire file                |
 | 8   | **Demo URL is ugly**                                  | Bad first impression                | `templcomponents-demo-132045829579.us-central1.run.app` — no custom domain mapped                 | ❌ Not fixed                          |
 
@@ -176,7 +176,7 @@ Full public launch of templ-components: CI fixes, demo expansion (97 components)
 
 The pre-compiled CSS (`static/app.css`) is committed and goes stale if component Tailwind classes change. Two options:
 
-- **A) Node stage in Dockerfile:** `FROM node:22-slim AS css → FROM golang:1.26 AS go → FROM distroless` — fully self-contained, CSS always fresh, but Docker image build takes longer (Node pull + npm install)
+- **A) Node stage in Dockerfile:** `FROM node:22-slim AS css → FROM golang:1.26 AS go → FROM distroless` — fully self-contained, CSS always fresh, but Docker image build takes longer (Node pull + pnpm install)
 - **B) CI step in website workflow:** Recompile CSS before Docker build, commit if changed — simpler Dockerfile, but couples CSS freshness to CI
 
 **Which approach?**

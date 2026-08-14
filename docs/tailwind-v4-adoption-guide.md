@@ -54,9 +54,9 @@ curl -sSLO https://github.com/tailwindlabs/tailwindcss/releases/latest/download/
 chmod +x tailwindcss-linux-x64
 mv tailwindcss-linux-x64 ~/.local/bin/tailwindcss
 
-# Option B: npx (if you already have Node.js)
-# Replace `tailwindcss` with `npx @tailwindcss/cli` in all commands below:
-npx @tailwindcss/cli -i app.css -o static/app.css --minify
+# Option B: pnpm dlx (if you already have Node.js)
+# Replace `tailwindcss` with `pnpm dlx @tailwindcss/cli` in all commands below:
+pnpm dlx @tailwindcss/cli -i app.css -o static/app.css --minify
 
 # Option C: Nix flake (recommended for LarsArtmann projects)
 # Add pkgs.tailwindcss_4 to your devShell, then use `tailwindcss` directly.

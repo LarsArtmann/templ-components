@@ -56,7 +56,7 @@ type SDKScriptProps struct {
 	Version EChartsVersion
 
 	// CDN overrides the CDN base URL. Defaults to DefaultCDNHost.
-	// Consumers can point this at their own origin or npm mirror.
+	// Consumers can point this at their own origin or pnpm mirror.
 	CDN string
 
 	// Src overrides the full script URL — use for self-hosting.

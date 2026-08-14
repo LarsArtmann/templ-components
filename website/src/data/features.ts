@@ -9,7 +9,7 @@ export const features: Feature[] = [
   {
     icon: "lightning",
     title: "Zero Node.js",
-    desc: "Pure Go + templ + Tailwind CSS v4. No build pipeline beyond templ generate. No npm, no bundlers, no SPA framework. CSS-first config, class-based dark mode.",
+    desc: "Pure Go + templ + Tailwind CSS v4. No build pipeline beyond templ generate. No pnpm, no bundlers, no SPA framework. CSS-first config, class-based dark mode.",
   },
   {
     icon: "code",

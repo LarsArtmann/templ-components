@@ -199,7 +199,7 @@ app.css` after compiling would have caught it. Add to BuildFlow or pre-commit.
    that handles CSS compilation with explicit paths.
 
 6. **Docker CSS stage could be cached better.** The Node stage copies the entire
-   repo (`COPY . .`) before running `npm install`. If only Go files change, the
+   repo (`COPY . .`) before running `pnpm install`. If only Go files change, the
    Node stage rebuilds unnecessarily. Could split into `COPY` for CSS-relevant
    files only. (Minor — Docker layer caching helps.)
 

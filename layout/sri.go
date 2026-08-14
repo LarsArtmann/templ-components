@@ -17,7 +17,7 @@ const (
 	defaultHTMXVersion HTMXVersion = HTMXVersion2_0_10
 )
 
-// HTMX 2.x split its extensions into standalone npm packages with independent
+// HTMX 2.x split its extensions into standalone pnpm packages with independent
 // version numbers. The response-targets extension is no longer bundled inside
 // the htmx.org package: loading htmx.org@<v>/dist/ext/response-targets.js
 // emits the console warning "You are using an htmx 1 extension with htmx 2.0.x"
@@ -30,7 +30,7 @@ const (
 )
 
 // defaultCDNBase is the CDN base URL used when PageProps.HTMXCDN is empty.
-// Both htmx.org and htmx-ext-response-targets are served from npm-style paths
+// Both htmx.org and htmx-ext-response-targets are served from pnpm-style paths
 // under this base. Consumers override via PageProps.HTMXCDN (e.g.
 // "https://unpkg.com" or a self-hosted origin).
 const defaultCDNBase = "https://cdn.jsdelivr.net/npm"

@@ -327,7 +327,7 @@ Sorted by importance/impact/customer-value within each parent task.
 | 12.3 | Add PieChart demo: traffic sources breakdown                                                                                             | 8min  | 7.7       |
 | 12.4 | Add DonutChart demo: storage usage with center label                                                                                     | 8min  | 7.7       |
 | 12.5 | Add AreaChart demo: active users over time                                                                                               | 8min  | 9.5       |
-| 12.6 | Recompile demo CSS: `cd examples/demo && npx tailwindcss --content '../**/*.templ' -i demo.css -o static/app.css` (or `nix run .#build`) | 10min | 12.1-12.5 |
+| 12.6 | Recompile demo CSS: `cd examples/demo && pnpm dlx tailwindcss --content '../**/*.templ' -i demo.css -o static/app.css` (or `nix run .#build`) | 10min | 12.1-12.5 |
 
 #### Parent #13: ADR-0031
 
