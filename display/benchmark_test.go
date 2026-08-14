@@ -95,7 +95,7 @@ func BenchmarkHotPaths(b *testing.B) {
 
 	b.Run("CopyButton render", func(b *testing.B) {
 		props := DefaultCopyButtonProps()
-		props.Text = "npm install foo"
+		props.Text = "pnpm add foo"
 
 		b.ResetTimer()
 

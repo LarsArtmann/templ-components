@@ -10,7 +10,7 @@ import (
 
 func ExampleCopyButton() {
 	props := display.DefaultCopyButtonProps()
-	props.Text = "npm install my-package"
+	props.Text = "pnpm add my-package"
 	props.Label = "Copy command"
 
 	var buf bytes.Buffer

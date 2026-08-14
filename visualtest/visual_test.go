@@ -470,7 +470,7 @@ func TestCopyButton(t *testing.T) {
 	t.Parallel()
 
 	cb := display.DefaultCopyButtonProps()
-	cb.Text = "npm install templ"
+	cb.Text = "pnpm add templ"
 	visualtest.AssertScreenshot(t, "copybutton/light", display.CopyButton(cb))
 }
 

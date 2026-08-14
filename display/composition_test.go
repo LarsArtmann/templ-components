@@ -124,13 +124,13 @@ func TestCompositionCardWithCopyButton(t *testing.T) {
 	t.Run("card body renders a CopyButton", func(t *testing.T) {
 		t.Parallel()
 
-		copyBtn := CopyButton(CopyButtonProps{Text: "npm install foo"})
+		copyBtn := CopyButton(CopyButtonProps{Text: "pnpm add foo"})
 		output := utils.Render(t, Card(CardProps{
 			Title: "Install",
 			Body:  copyBtn,
 		}))
 		utils.AssertContains(t, output, "Install")
-		utils.AssertContains(t, output, `data-tc-copy="npm install foo"`)
+		utils.AssertContains(t, output, `data-tc-copy="pnpm add foo"`)
 	})
 }
 

@@ -14,7 +14,7 @@ import (
 func TestGoldenCopyButton(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, CopyButton(CopyButtonProps{
-		Text:      "npm install foo",
+		Text:      "pnpm add foo",
 		Label:     "Copy",
 		Icon:      true,
 		BaseProps: utils.BaseProps{Nonce: "abc123"},
@@ -92,7 +92,7 @@ func TestGoldenCardBodySlot(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Card(CardProps{
 		Title: "Installation",
-		Body:  templ.Raw("<pre>npm install @larsartmann/templ-components</pre>"),
+		Body:  templ.Raw("<pre>pnpm add @larsartmann/templ-components</pre>"),
 	}))
 	golden.Assert(t, "card_body_slot", output)
 }
