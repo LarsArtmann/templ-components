@@ -6,7 +6,10 @@
 FROM node:22-slim AS css
 WORKDIR /src
 COPY . .
-RUN pnpm init -y \
+# node:22-slim no longer ships pnpm on PATH; install the pinned version
+# (matches website/package.json packageManager) via npm.
+RUN npm install -g pnpm@11.20.0 \
+    && pnpm init -y \
     && pnpm add tailwindcss @tailwindcss/cli \
     && pnpm dlx @tailwindcss/cli \
         -i examples/demo/demo.css \

@@ -208,3 +208,6 @@ jobs:
           name: visual-failures
           path: visualtest/testdata/.fail/
           if-no-files-found: ignore
+          # .fail starts with a dot — v4's default excludes hidden files,
+          # which silently produced an empty artifact.
+          include-hidden-files: true

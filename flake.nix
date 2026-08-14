@@ -201,6 +201,8 @@
                 name = "run-visual";
                 runtimeInputs = [
                   pkgs.go_1_26
+                  # fc-match for the font diagnostics below.
+                  pkgs.fontconfig
                   # Use Chromium from the pinned nixpkgs-chromium input (not the
                   # main nixpkgs) so visual goldens don't shift on routine
                   # `nix flake update`. Update deliberately: see nixpkgs-chromium
@@ -216,27 +218,40 @@
                   # Font determinism: the demo CSS declares Inter, JetBrains
                   # Mono, and Space Grotesk (headings). Neither dev machines
                   # nor CI runners reliably have them installed, and host
-                  # fontconfig resolves generic fallbacks differently
-                  # (DejaVu vs Ubuntu vs Liberation metrics), which shifted
-                  # text rendering and flipped goldens between environments.
-                  # Pin the exact font set so rendering is identical wherever
-                  # this app runs. Space Grotesk is not in nixpkgs (headings
-                  # fall back to Inter, next in the CSS stack) and the
-                  # jetbrains-mono derivation is currently broken upstream
+                  # fontconfig resolves the fallbacks differently in every
+                  # environment, which shifted text rendering and flipped
+                  # goldens between local and CI.
+                  #
+                  # Fix: a FULLY PURE fonts.conf. Note: pkgs.makeFontsConf is
+                  # unsuitable here — it includes /etc/fonts/conf.d and impure
+                  # FHS/profile font dirs by default, reintroducing exactly
+                  # the host drift this pin exists to eliminate. This conf
+                  # lists only nix store font directories, so rendering is
+                  # identical on every machine. Space Grotesk is not in nixpkgs
+                  # (headings fall back to Inter, next in the CSS stack) and
+                  # the jetbrains-mono derivation is currently broken upstream
                   # (gftools dependency fails; mono text falls back to DejaVu
-                  # Sans Mono). Still the designed typography, just
-                  # deterministic. DejaVu covers glyphs Inter lacks.
-                  # After changing this list, regenerate ALL goldens:
+                  # Sans Mono). DejaVu covers glyphs Inter lacks.
+                  #
+                  # After changing the font list, regenerate ALL goldens:
                   #   nix run .#visual -- -update
-                  export FONTCONFIG_FILE="${
-                    pkgs.makeFontsConf {
-                      fontDirectories = [
-                        pkgs.inter
-                        pkgs.dejavu_fonts
-                      ];
-                    }
-                  }"
+                  export FONTCONFIG_FILE="${pkgs.writeText "tc-visual-fonts.conf" ''
+                    <?xml version="1.0"?>
+                    <!DOCTYPE fontconfig SYSTEM "urn:fontconfig:fonts.dtd">
+                    <fontconfig>
+                      <dir>${pkgs.inter}</dir>
+                      <dir>${pkgs.dejavu_fonts}</dir>
+                      <cachedir>/tmp/tc-visualtest-fontconfig-cache</cachedir>
+                    </fontconfig>
+                  ''}"
                   cd visualtest
+                  # Font diagnostics: shows which font family each CSS generic
+                  # resolves to under the pinned FONTCONFIG_FILE. Rendering
+                  # drift between environments almost always shows up here.
+                  echo "font diagnostics:"
+                  fc-match sans-serif
+                  fc-match serif
+                  fc-match monospace
                   # Forward extra args (e.g. -update, -run TestButtons) to go test.
                   go test ./... -count=1 "$@"
                 '';
