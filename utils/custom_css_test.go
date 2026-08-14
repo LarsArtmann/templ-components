@@ -204,12 +204,13 @@ func flattenCSSClassMap(used map[string]map[string]bool) map[string][]string {
 // are NOT CSS class definitions in templates/custom.css. Each has an explicit
 // reason documenting why it does not need a custom.css definition.
 var cssClassExceptions = map[string]string{
-	"tc-echarts":           "wrapper class for ECharts container div, styled inline by component",
-	"tc-menu-open":         "JS state class toggled by singleton handler, styled via Tailwind utilities",
-	"tc-menu-close":        "JS state class toggled by singleton handler, styled via Tailwind utilities",
-	"tc-btn-loading":       "HTMX loading state class, styled via Tailwind htmx-request utilities",
-	"tc-toast-container":   "element ID (id=), not a CSS class",
-	"tc-loading-indicator": "element ID (id=), not a CSS class",
-	"tc-error-announcer":   "element ID (id=), not a CSS class",
-	"tc-form-loading":      "referenced in comment only, not a CSS class",
+	"tc-echarts":            "wrapper class for ECharts container div, styled inline by component",
+	"tc-menu-open":          "JS state class toggled by singleton handler, styled via Tailwind utilities",
+	"tc-menu-close":         "JS state class toggled by singleton handler, styled via Tailwind utilities",
+	"tc-btn-loading":        "HTMX loading state class, styled via Tailwind htmx-request utilities",
+	"tc-toast-container":    "element ID (id=), not a CSS class",
+	"tc-loading-indicator":  "element ID (id=), not a CSS class",
+	"tc-error-announcer":    "element ID (id=), not a CSS class",
+	"tc-datastar-announcer": "element ID (id=), not a CSS class",
+	"tc-form-loading":       "referenced in comment only, not a CSS class",
 }

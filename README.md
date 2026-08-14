@@ -15,7 +15,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-112 server-rendered components. 52 typed string enums (49 with IsValid()). 106 SVG icons. Zero client-side framework.
+116 server-rendered components. 52 typed string enums (49 with IsValid()). 106 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -24,7 +24,7 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **CSS approach**       | Tailwind v4 (CSS-first)    | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
 | **JavaScript**         | HATEOAS (enhances HTML)    | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js**   | No                         | No                            | Yes                                            |
-| **Components**         | 112                        | 40+                           | —                                              |
+| **Components**         | 116                        | 40+                           | —                                              |
 | **Typed props**        | 52 enums                   | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)          | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts) | Yes                           | —                                              |
@@ -292,7 +292,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 
 | Metric         | Value                                               |
 | -------------- | --------------------------------------------------- |
-| Components     | 112                                                 |
+| Components     | 116                                                 |
 | SVG icons      | 102                                                 |
 | Typed enums    | 52 (49 with IsValid)                                |
 | Packages       | 15                                                  |

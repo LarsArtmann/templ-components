@@ -57,9 +57,9 @@ func textAlignClass(align TextAlign) string {
 	case TextAlignCenter:
 		return "text-center"
 	case TextAlignRight:
-		return "text-right"
+		return "text-end"
 	default:
-		return "text-left"
+		return "text-start"
 	}
 }
 
