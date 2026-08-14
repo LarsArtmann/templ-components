@@ -213,6 +213,29 @@
                   # the parent go.work would shadow it, so disable workspace mode.
                   export GOWORK=off
                   export CHROMEDP_CHROME_PATH="${inputs'.nixpkgs-chromium.legacyPackages.chromium}/bin/chromium"
+                  # Font determinism: the demo CSS declares Inter, JetBrains
+                  # Mono, and Space Grotesk (headings). Neither dev machines
+                  # nor CI runners reliably have them installed, and host
+                  # fontconfig resolves generic fallbacks differently
+                  # (DejaVu vs Ubuntu vs Liberation metrics), which shifted
+                  # text rendering and flipped goldens between environments.
+                  # Pin the exact font set so rendering is identical wherever
+                  # this app runs. Space Grotesk is not in nixpkgs (headings
+                  # fall back to Inter, next in the CSS stack) and the
+                  # jetbrains-mono derivation is currently broken upstream
+                  # (gftools dependency fails; mono text falls back to DejaVu
+                  # Sans Mono). Still the designed typography, just
+                  # deterministic. DejaVu covers glyphs Inter lacks.
+                  # After changing this list, regenerate ALL goldens:
+                  #   nix run .#visual -- -update
+                  export FONTCONFIG_FILE="${
+                    pkgs.makeFontsConf {
+                      fontDirectories = [
+                        pkgs.inter
+                        pkgs.dejavu_fonts
+                      ];
+                    }
+                  }"
                   cd visualtest
                   # Forward extra args (e.g. -update, -run TestButtons) to go test.
                   go test ./... -count=1 "$@"
