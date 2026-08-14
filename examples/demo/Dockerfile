@@ -8,8 +8,13 @@ WORKDIR /src
 COPY . .
 # node:22-slim no longer ships pnpm on PATH; install the pinned version
 # (matches website/package.json packageManager) via npm.
+# pnpm 11 fails installs whose dependency build scripts were not explicitly
+# approved (ERR_PNPM_IGNORED_BUILDS). @parcel/watcher, a transitive dep of
+# @tailwindcss/cli, ships prebuilt binaries, so its install script is safe
+# to approve via a pnpm-workspace.yaml allowBuilds entry.
 RUN npm install -g pnpm@11.20.0 \
     && pnpm init -y \
+    && printf 'allowBuilds:\n  "@parcel/watcher": true\n' > pnpm-workspace.yaml \
     && pnpm add tailwindcss @tailwindcss/cli \
     && pnpm dlx @tailwindcss/cli \
         -i examples/demo/demo.css \

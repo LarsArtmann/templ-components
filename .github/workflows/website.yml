@@ -78,9 +78,6 @@ jobs:
         with:
           node-version: "24"
 
-      # pnpm is needed later for `pnpm add -g firebase-tools`.
-      - run: corepack enable pnpm
-
       - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           name: website-dist
@@ -121,6 +118,10 @@ jobs:
 
       - name: Deploy to Firebase Hosting
         working-directory: website
+        # npm, not pnpm: `pnpm add -g` fails its preflight because the
+        # pnpm global bin dir (~/.local/share/pnpm/bin) is not on PATH on
+        # GitHub runners, and corepack does not set PNPM_HOME. Verified by
+        # container replication on node:24 with corepack pnpm@11.20.0.
         run: |
-          pnpm add -g firebase-tools
+          npm install -g firebase-tools
           firebase deploy --only hosting:templcomponents --project lars-software
