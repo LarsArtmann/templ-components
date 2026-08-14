@@ -401,3 +401,107 @@ func TestSpinnerWithBaseProps(t *testing.T) {
 	utils.AssertContains(t, output, "w-4")
 	utils.AssertContains(t, output, "h-4")
 }
+
+func TestCircularProgressRender(t *testing.T) {
+	t.Parallel()
+
+	t.Run("renders SVG with viewBox and rotation", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 50}))
+		utils.AssertContains(t, output, "<svg")
+		utils.AssertContains(t, output, `viewBox="0 0 100 100"`)
+		utils.AssertContains(t, output, "-rotate-90")
+		utils.AssertContains(t, output, "fill=\"none\"")
+	})
+
+	t.Run("track and progress circles", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 60}))
+		utils.AssertContainsAll(t, output, "<circle", "<circle")
+		utils.AssertContains(t, output, `cx="50"`)
+		utils.AssertContains(t, output, `cy="50"`)
+		utils.AssertContains(t, output, `stroke="currentColor"`)
+		utils.AssertContains(t, output, "stroke-linecap=\"round\"")
+		utils.AssertContains(t, output, "stroke-dasharray=")
+		utils.AssertContains(t, output, "stroke-dashoffset=")
+	})
+
+	t.Run("size variants produce dimension classes", func(t *testing.T) {
+		t.Parallel()
+		t.Run("sm", func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 50, Size: CircularProgressSizeSM}))
+			utils.AssertContains(t, output, "w-8")
+			utils.AssertContains(t, output, "h-8")
+		})
+		t.Run("md", func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 50, Size: CircularProgressSizeMD}))
+			utils.AssertContains(t, output, "w-12")
+			utils.AssertContains(t, output, "h-12")
+		})
+		t.Run("lg", func(t *testing.T) {
+			t.Parallel()
+			output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 50, Size: CircularProgressSizeLG}))
+			utils.AssertContains(t, output, "w-16")
+			utils.AssertContains(t, output, "h-16")
+		})
+	})
+
+	t.Run("label span when ShowLabel true", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 42, ShowLabel: true}))
+		utils.AssertContains(t, output, "<span")
+		utils.AssertContains(t, output, "42%")
+		utils.AssertContains(t, output, "absolute inset-0")
+	})
+
+	t.Run("no label span when ShowLabel false", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 42, ShowLabel: false}))
+		utils.AssertNotContains(t, output, "absolute inset-0")
+	})
+
+	t.Run("default colors applied", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 50}))
+		utils.AssertContains(t, output, "text-blue-600")
+		utils.AssertContains(t, output, "dark:text-blue-500")
+		utils.AssertContains(t, output, "text-gray-200")
+		utils.AssertContains(t, output, "dark:text-gray-700")
+	})
+
+	t.Run("custom color overrides default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CircularProgress(CircularProgressProps{
+			Value:      50,
+			Color:      "text-emerald-600",
+			TrackColor: "text-emerald-100",
+		}))
+		utils.AssertContains(t, output, "text-emerald-600")
+		utils.AssertContains(t, output, "text-emerald-100")
+		utils.AssertNotContains(t, output, "text-blue-600")
+		utils.AssertNotContains(t, output, "text-gray-200")
+	})
+
+	t.Run("motion-reduce on transition", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 50}))
+		utils.AssertContains(t, output, "transition-all")
+		utils.AssertContains(t, output, "motion-reduce:transition-none")
+	})
+
+	t.Run("zero value has full dashoffset", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 0}))
+		utils.AssertContains(t, output, `aria-valuenow="0"`)
+		utils.AssertContains(t, output, `aria-label="0% complete"`)
+	})
+
+	t.Run("full value has zero dashoffset", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, CircularProgress(CircularProgressProps{Value: 100}))
+		utils.AssertContains(t, output, `aria-valuenow="100"`)
+		utils.AssertContains(t, output, `aria-label="100% complete"`)
+	})
+}

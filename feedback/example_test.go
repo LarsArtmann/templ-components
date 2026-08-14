@@ -47,3 +47,14 @@ func ExampleSkeletonCardGrid() {
 	fmt.Println(buf.String())
 	// Output will contain a responsive grid of skeleton loading cards
 }
+
+func ExampleCircularProgress() {
+	var buf bytes.Buffer
+
+	_ = feedback.CircularProgress(feedback.CircularProgressProps{
+		Value:     75,
+		ShowLabel: true,
+	}).Render(context.Background(), &buf)
+	fmt.Println(buf.String())
+	// Output will contain a circular SVG progress ring showing 75%
+}

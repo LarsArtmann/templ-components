@@ -160,13 +160,6 @@ func TestCircularProgress_BDD(t *testing.T) {
 	})
 }
 
-func ExampleCircularProgress() {
-	utils.Render(nil, CircularProgress(CircularProgressProps{
-		Value:     75,
-		ShowLabel: true,
-	}))
-}
-
 func TestCircularProgress_Coverage(t *testing.T) {
 	t.Parallel()
 
