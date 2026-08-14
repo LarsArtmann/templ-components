@@ -21,7 +21,10 @@ cd "$REPO_ROOT"
 export GOEXPERIMENT=jsonv2
 
 step() { printf '\n\033[1m==> %s\033[0m\n' "$1"; }
-fail() { printf '\033[31mFAILED: %s\033[0m\n' "$1" >&2; exit 1; }
+fail() {
+	printf '\033[31mFAILED: %s\033[0m\n' "$1" >&2
+	exit 1
+}
 
 # --- 1. Fast guards (mirrors CI "Lint" job prologue) -----------------------
 
@@ -37,18 +40,18 @@ scripts/check-module-layers.sh
 step "Lint (golangci-lint)"
 nix run .#lint || fail "golangci-lint"
 
-if command -v actionlint > /dev/null 2>&1; then
-  step "Lint (actionlint)"
-  actionlint .github/workflows/ci.yaml .github/workflows/website.yml || fail "actionlint"
+if command -v actionlint >/dev/null 2>&1; then
+	step "Lint (actionlint)"
+	actionlint .github/workflows/ci.yaml .github/workflows/website.yml || fail "actionlint"
 else
-  echo "actionlint not on PATH; skipping (CI will run it)."
+	echo "actionlint not on PATH; skipping (CI will run it)."
 fi
 
 # --- 3. Build & Test ----------------------------------------------------------
 
 step "templ generate"
-command -v templ > /dev/null 2>&1 \
-  || fail "templ not on PATH; enter the dev shell with: nix develop"
+command -v templ >/dev/null 2>&1 ||
+	fail "templ not on PATH; enter the dev shell with: nix develop"
 tree_before=$(git status --porcelain)
 templ generate ./...
 
@@ -58,20 +61,20 @@ step "Verify generated *_templ.go are tracked"
 # compare the tree state before vs after instead of diffing against HEAD.
 UNTRACKED=$(git status --porcelain -- '*_templ.go' | grep '^??' || true)
 if [ -n "$UNTRACKED" ]; then
-  echo "$UNTRACKED"
-  fail "untracked *_templ.go files; git add them (library consumers need them committed)"
+	echo "$UNTRACKED"
+	fail "untracked *_templ.go files; git add them (library consumers need them committed)"
 fi
 
 step "Go mod tidy (all modules)"
 go mod tidy
 for mod in utils icons errorpage charts/echarts datastar htmx; do
-  (cd "$mod" && go mod tidy)
+	(cd "$mod" && go mod tidy)
 done
 
 step "Verify no generate/tidy drift"
 if [ "$tree_before" != "$(git status --porcelain)" ]; then
-  diff <(echo "$tree_before") <(git status --porcelain) || true
-  fail "generate/tidy modified the tree (see + lines above)"
+	diff <(echo "$tree_before") <(git status --porcelain) || true
+	fail "generate/tidy modified the tree (see + lines above)"
 fi
 
 step "Go vet"
@@ -85,8 +88,8 @@ go list ./... | grep -v examples | xargs go test -race -coverprofile=coverage.ou
 
 step "Per-module isolation tests (GOWORK=off)"
 for mod in utils icons errorpage charts/echarts datastar htmx; do
-  echo "  ==> $mod"
-  (cd "$mod" && GOWORK=off go test -race -count=1 ./...)
+	echo "  ==> $mod"
+	(cd "$mod" && GOWORK=off go test -race -count=1 ./...)
 done
 
 step "Compile visualtest module"
@@ -98,8 +101,8 @@ step "Docs-health drift guard"
 step "Coverage threshold (70%)"
 COVERAGE=$(go tool cover -func=coverage.out | awk '/^total:/ { sub("%", "", $3); print $3 }')
 echo "Total coverage: ${COVERAGE}%"
-awk -v c="$COVERAGE" 'BEGIN { exit (c < 70) ? 1 : 0 }' \
-  || fail "coverage ${COVERAGE}% is below 70% threshold"
+awk -v c="$COVERAGE" 'BEGIN { exit (c < 70) ? 1 : 0 }' ||
+	fail "coverage ${COVERAGE}% is below 70% threshold"
 
 step "Build examples"
 go build ./examples/...
@@ -109,9 +112,9 @@ go build ./examples/...
 step "CSS Freshness"
 cp examples/demo/static/app.css /tmp/committed-app.css
 nix run .#css
-if ! diff -q /tmp/committed-app.css examples/demo/static/app.css > /dev/null; then
-  diff /tmp/committed-app.css examples/demo/static/app.css | head -30
-  fail "committed CSS is stale; recompile with: nix run .#css"
+if ! diff -q /tmp/committed-app.css examples/demo/static/app.css >/dev/null; then
+	diff /tmp/committed-app.css examples/demo/static/app.css | head -30
+	fail "committed CSS is stale; recompile with: nix run .#css"
 fi
 echo "CSS is fresh."
 
@@ -125,7 +128,7 @@ set -e
 echo "$OUTPUT"
 [ "$STATUS" -eq 0 ] || fail "visual tests exited $STATUS (see log above)"
 if echo "$OUTPUT" | grep -qiE '(SKIP|no Chromium binary found)'; then
-  fail "visual tests were skipped; Chromium must be available"
+	fail "visual tests were skipped; Chromium must be available"
 fi
 
 printf '\n\033[32mAll CI stages passed locally. Ready to push.\033[0m\n'
