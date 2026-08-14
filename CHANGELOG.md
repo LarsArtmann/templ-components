@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`display.Card`: `ContainerAware` reverted to default `false`.** The v2.0 default flip (shipped in v1.8.2) made every `Card` emit an `@container` wrapper whose `container-type: inline-size` containment suppresses intrinsic width — inside shrink-to-fit parents (flex rows, `inline-block`, auto-sized grid columns) cards collapsed to **zero width**. Caught by the visual regression suite (`visualtest/testdata/card/*` — golden 229px vs actual 32px). `Grid` and `Split` keep the `true` default (layout primitives used in definite-width contexts). Set `ContainerAware: true` explicitly to restore v1.8.2 behavior; give the wrapper a definite width when the parent is shrink-to-fit.
+
 ### Added
 
 - **`feedback.CircularProgress` component.** SVG-based circular progress indicator with typed size enum (sm/md/lg), optional percentage label, and value clamping. Follows the library's standard props/enum/golden-test pattern.

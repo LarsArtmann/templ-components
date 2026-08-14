@@ -54,15 +54,19 @@ type CardProps struct {
 	HeaderClass string
 	// ContainerAware, when true, wraps the card in a @container div and swaps
 	// sm: breakpoint classes for @sm: so padding adapts to container width,
-	// not the viewport. Default false (viewport breakpoints).
+	// not the viewport. Default false (viewport breakpoints). The @container
+	// wrapper applies container-type: inline-size containment, which
+	// suppresses the card's intrinsic width: inside shrink-to-fit parents
+	// (flex rows, inline-block, auto-sized grid columns) a container-aware
+	// card collapses to zero width unless the parent provides a definite
+	// width. That is why Card is opt-in. See ADR-0018.
 	ContainerAware bool
 }
 
 // DefaultCardProps returns sensible defaults
 func DefaultCardProps() CardProps {
 	return CardProps{
-		Padding:        CardPaddingMD,
-		ContainerAware: true,
+		Padding: CardPaddingMD,
 	}
 }
 
