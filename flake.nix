@@ -245,13 +245,24 @@
                     </fontconfig>
                   ''}"
                   cd visualtest
-                  # Font diagnostics: shows which font family each CSS generic
-                  # resolves to under the pinned FONTCONFIG_FILE. Rendering
-                  # drift between environments almost always shows up here.
-                  echo "font diagnostics:"
-                  fc-match sans-serif
-                  fc-match serif
-                  fc-match monospace
+                  # Font guard: under the pinned FONTCONFIG_FILE every CSS
+                  # generic must resolve to Inter (Space Grotesk and JetBrains
+                  # Mono are absent, so headings and code fall back to it).
+                  # If a generic resolves to anything else, the pure pin is
+                  # broken (host fonts leaked in) and goldens WILL shift, so
+                  # fail fast with a clear message instead of pixel diffs.
+                  for family in sans-serif serif monospace; do
+                    result=$(fc-match "$family")
+                    echo "font pin: $family -> $result"
+                    case "$result" in
+                      Inter*) ;;
+                      *)
+                        echo "ERROR: $family resolves away from Inter ($result)." >&2
+                        echo "The pure fontconfig pin is broken; fix fonts.conf before trusting goldens." >&2
+                        exit 1
+                        ;;
+                    esac
+                  done
                   # Forward extra args (e.g. -update, -run TestButtons) to go test.
                   go test ./... -count=1 "$@"
                 '';
