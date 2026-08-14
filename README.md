@@ -11,6 +11,13 @@
 
 No DaisyUI. No Node.js. No framework lock-in.
 
+> **Part of the GOTH stack** — pair with
+> [cqrs-htmx](https://github.com/larsartmann/cqrs-htmx) (HTTP → CQRS wiring,
+> auth, HTMX response building) and
+> [go-cqrs-lite](https://github.com/larsartmann/go-cqrs-lite) (event sourcing
+> core) for a complete server-rendered Go web stack with zero framework
+> lock-in.
+
 ---
 
 ## Why templ-components?
@@ -51,6 +58,9 @@ go get github.com/larsartmann/templ-components
 > ```bash
 > export GOEXPERIMENT=jsonv2
 > ```
+>
+> Without it the build fails with:
+> `build constraints exclude all Go files in .../encoding/json/v2`
 
 **2. Build a page**
 

@@ -70,6 +70,20 @@ If your project uses [BuildFlow](https://github.com/larsartmann/buildflow), the 
 go list -m github.com/larsartmann/templ-components
 ```
 
+## Troubleshooting
+
+### `build constraints exclude all Go files in .../encoding/json/v2`
+
+The `errorpage` module uses `encoding/json/v2`, which requires the `jsonv2`
+experiment on Go 1.26. Export it before building:
+
+```bash
+export GOEXPERIMENT=jsonv2
+```
+
+The flag becomes the default when Go 1.27 ships. Until then, put it in your
+`.envrc`, `flake.nix` devShell, or CI environment so every tool picks it up.
+
 ## Next Steps
 
 - Follow the [Quick Start](/getting-started/quick-start/) for a complete page example

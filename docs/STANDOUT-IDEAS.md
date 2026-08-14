@@ -10,7 +10,7 @@ This isn't one library — it's three that form a **complete GOTH stack framewor
 
 | Library                                                                 | Role                                                                                      | Maturity                                 |
 | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------- |
-| **[templ-components](https://github.com/larsartmann/templ-components)** | UI components (69 components, 99 icons, Tailwind + HTMX)                                  | 1,100+ tests, v0.3.0                     |
+| **[templ-components](https://github.com/larsartmann/templ-components)** | UI components (116 components, 106 icons, Tailwind + HTMX + opt-in Datastar)                  | 1,300+ tests, visual regression suite, v1.8 |
 | **[cqrs-htmx](https://github.com/larsartmann/cqrs-htmx)**               | HTTP → CQRS wiring (command/query dispatch, auth, HTMX response builder, templ rendering) | 137 specs, 92.6% coverage, 0 lint issues |
 | **[go-cqrs-lite](https://github.com/larsartmann/go-cqrs-lite)**         | Event sourcing core (aggregates, events, projections)                                     | Stable v1.1.0                            |
 
@@ -27,17 +27,17 @@ This isn't one library — it's three that form a **complete GOTH stack framewor
 
 ## The Competitive Reality (Single-Library View)
 
-templUI (v1.9.3, listed on templ.guide) is the incumbent — stable, CLI tool, active iteration. DatastarUI is a shadcn/ui pixel-perfect port. Both have demo sites. Neither has an ecosystem story. templ-components alone is pre-v1.0 and invisible. But combined with cqrs-htmx, it's a full-stack solution that no competitor offers.
+templUI (v1.9.3, listed on templ.guide) is the incumbent — stable, CLI tool, active iteration. DatastarUI is a shadcn/ui pixel-perfect port. Both have demo sites. Neither has an ecosystem story. templ-components is past v1.0 (v1.8, deployed website + demo, 7-module workspace) but still not listed on templ.guide. Combined with cqrs-htmx, it's a full-stack solution that no competitor offers.
 
 ---
 
 ## Tier 1 — Table Stakes (Without These, Nothing Else Matters)
 
-1. **Live component showcase site** — templUI has `templui.io`. There is nothing visual here. A developer considering this library has no way to see what they're getting. This is the single highest-leverage thing to do. Ship it as a `./cmd/demo` server that renders every component with variants. Deploy it (Fly.io, Railway, anywhere). One command: `go run ./cmd/demo`.
+1. **Live component showcase site** — ✅ DONE: website (Astro + Starlight, Firebase Hosting) and the demo binary (Cloud Run) are deployed via `.github/workflows/website.yml` on every push to master.
 
-2. **Get listed on templ.guide** — templUI is the _only_ library listed there. That's a massive discoverability moat. Open a PR/issue on the templ docs repo once public.
+2. **Get listed on templ.guide** — OPEN: templUI is the _only_ library listed there. That's a massive discoverability moat. Open a PR/issue on the templ docs repo (verify listing criteria first).
 
-3. **Tag v0.1.0 and go public** — PUBLIC_OR_PRIVATE.md analysis is correct. The analysis paralysis is costing first-mover ground every day. Ship alpha, iterate publicly.
+3. **Tag v0.1.0 and go public** — ✅ DONE: public repo, currently at v1.8 with a one-commit release convention (`scripts/release.sh`).
 
 ---
 
@@ -51,7 +51,7 @@ Lean into these hard — they're the actual moat:
 
 6. **Package-per-concern architecture** — `go get` only `display` or only `forms`. templUI is more monolithic. This matters for binary size, build times, and dependency hygiene in Go.
 
-7. **Feedback system completeness** — 12 feedback components (toast with JS API, skeletons, step indicators, progress bars, loading overlays) is genuinely more complete than competitors. A "dashboard in a box" advantage.
+7. **Feedback system completeness** — 14 feedback components (toast with JS API, skeletons, step indicators, progress bars, loading overlays) is genuinely more complete than competitors. A "dashboard in a box" advantage.
 
 ---
 
