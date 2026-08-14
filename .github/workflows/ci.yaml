@@ -84,14 +84,14 @@ jobs:
       - name: Verify all *_templ.go files are tracked
         run: |
           EXIT_CODE=0
-          for templ_file in $(find . -name '*.templ' -not -path './vendor/*' -not -path './cmd/tc/_sources/*'); do
+          while IFS= read -r -d '' templ_file; do
             gen_file="${templ_file%.templ}_templ.go"
             if ! git ls-files --error-unmatch "$gen_file" >/dev/null 2>&1; then
               echo "::error::$gen_file is not tracked. Generated files MUST be committed."
               echo "::error::Check .gitignore for conflicting *_templ.go rules."
               EXIT_CODE=1
             fi
-          done
+          done < <(find . -name '*.templ' -not -path './vendor/*' -not -path './cmd/tc/_sources/*' -print0)
           exit $EXIT_CODE
 
       - name: Go mod tidy (all modules)
@@ -111,7 +111,7 @@ jobs:
         run: go build ./...
 
       - name: Test
-        run: go test -race -coverprofile=coverage.out $(go list ./... | grep -v examples)
+        run: go list ./... | grep -v examples | xargs go test -race -coverprofile=coverage.out
 
       - name: Per-module isolation tests (GOWORK=off, race-enabled)
         run: |
@@ -186,8 +186,17 @@ jobs:
           nix_path: nixpkgs=channel:nixos-unstable
       - name: Run visual tests (fail if any test skips or fails)
         run: |
+          # Capture without letting `set -e` abort before the output is echoed:
+          # a failing `nix run` must still print the test log for debugging.
+          set +e
           OUTPUT=$(nix run .#visual 2>&1)
+          STATUS=$?
+          set -e
           echo "$OUTPUT"
+          if [ "$STATUS" -ne 0 ]; then
+            echo "::error::Visual tests failed with exit code $STATUS — see log above"
+            exit 1
+          fi
           if echo "$OUTPUT" | grep -qiE '(SKIP|no Chromium binary found)'; then
             echo "::error::Visual tests were skipped — Chromium must be available in CI"
             exit 1
