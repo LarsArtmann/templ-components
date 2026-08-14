@@ -29,7 +29,15 @@ ENV CGO_ENABLED=0
 
 WORKDIR /src
 
+# The root go.mod replaces all 6 sub-modules with local paths, so
+# `go mod download` needs their go.mod files present to resolve the graph.
 COPY go.mod go.sum ./
+COPY utils/go.mod utils/
+COPY icons/go.mod icons/
+COPY errorpage/go.mod errorpage/
+COPY charts/echarts/go.mod charts/echarts/
+COPY htmx/go.mod htmx/
+COPY datastar/go.mod datastar/
 RUN go mod download
 
 COPY . .
