@@ -284,6 +284,7 @@ var familyStatusCodeMap = map[Family]int{
 	FamilyTransient:      503,
 	FamilyCorruption:     500,
 	FamilyInfrastructure: 503,
+	FamilyOrchestration:  500,
 }
 
 // ContextMap converts a map[string]string to a []ContextPair slice.

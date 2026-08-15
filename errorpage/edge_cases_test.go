@@ -4,6 +4,7 @@ import (
 	"strings"
 	"testing"
 
+	errorfamily "github.com/larsartmann/go-error-family"
 	"github.com/larsartmann/templ-components/utils"
 )
 
@@ -266,11 +267,35 @@ func TestFamilyStatusCodeEdgeCases(t *testing.T) {
 		expected := map[Family]int{
 			FamilyRejection: 400, FamilyConflict: 409, FamilyTransient: 503,
 			FamilyCorruption: 500, FamilyInfrastructure: 503,
+			FamilyOrchestration: 500,
 		}
 		for f, want := range expected {
 			if got := FamilyStatusCode(f); got != want {
 				t.Errorf("FamilyStatusCode(%q) = %d, want %d", f, got, want)
 			}
+		}
+	})
+
+	t.Run("orchestration maps to 500 as a known family, not via the unknown fallback", func(t *testing.T) {
+		t.Parallel()
+
+		// FamilyOrchestration is defined in the style map and mapped from
+		// go-error-family, so it must be present in the status map itself.
+		// Before this fix it only returned 500 because utils.Lookup's fallback
+		// happened to be 500 — the map entry was missing.
+		if _, ok := familyStatusCodeMap[FamilyOrchestration]; !ok {
+			t.Error("familyStatusCodeMap is missing FamilyOrchestration; " +
+				"the 500 came from the unknown-family fallback, not from data")
+		}
+
+		// End to end: a go-error-family Orchestration error derives 500.
+		props := FromError(errorfamily.New(errorfamily.Orchestration, "test.bug", "rendering failed"))
+		if props.Family != FamilyOrchestration {
+			t.Fatalf("FromError family = %q, want %q", props.Family, FamilyOrchestration)
+		}
+
+		if got := FamilyStatusCode(props.Family); got != 500 {
+			t.Errorf("FamilyStatusCode(orchestration) = %d, want 500", got)
 		}
 	})
 
