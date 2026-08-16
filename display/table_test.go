@@ -144,6 +144,25 @@ func TestTableRender(t *testing.T) {
 		utils.AssertContains(t, output, "<tbody")
 		utils.AssertContains(t, output, "divide-y")
 	})
+
+	t.Run("BodyID lands on the tbody element", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"Name"},
+			Rows:    []TableRow{SimpleTableRow("Alice")},
+			BodyID:  "recent-rows",
+		}))
+		utils.AssertContains(t, output, `<tbody id="recent-rows"`)
+	})
+
+	t.Run("tbody carries no id when BodyID is unset", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Table(TableProps{
+			Headers: []string{"Name"},
+			Rows:    []TableRow{SimpleTableRow("Alice")},
+		}))
+		utils.AssertNotContains(t, output, "tbody id=")
+	})
 }
 
 func TestTableFlush(t *testing.T) {

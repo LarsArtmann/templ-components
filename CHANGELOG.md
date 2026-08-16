@@ -13,6 +13,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`display.StatCardProps.ValueID` and `display.TableProps.BodyID`.** Optional ids on the StatCard value `<dd>` and the Table `<tbody>`, so live-updating dashboards can address those nodes directly instead of querying the components' internal structure — a markup refactor inside the component can no longer break consumer scripts (dnsblockd's dashboard JS contract, consumer TODO T86).
 - **`feedback.CircularProgress` component.** SVG-based circular progress indicator with typed size enum (sm/md/lg), optional percentage label, and value clamping. Follows the library's standard props/enum/golden-test pattern.
 - **`display.SectionHeading` and `display.DateRange` components.** SectionHeading provides typed heading level (H1-H6) and text alignment (Left/Center/Right) with `break-after-avoid` for print. DateRange renders a date range with a "Present" fallback and typed date format enum.
 - **Print-friendly display components.** `Card` now includes `print:shadow-none print:border-0 print:bg-transparent`. `Modal` and `Drawer` include `print:hidden`. `PageHeader` and `SectionHeading` include `break-after-avoid` on headings. Print-safe vs screen-only matrix documented in `docs/theming.md`.

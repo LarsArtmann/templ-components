@@ -189,6 +189,11 @@ type TableProps struct {
 	//	    }
 	//	}
 	Body templ.Component
+	// BodyID, when non-empty, sets the id attribute on the <tbody> element.
+	// Use on live-updating dashboards whose scripts swap rows without
+	// querying the table's internal structure — so a markup refactor inside
+	// the table cannot break the script's selector.
+	BodyID string
 }
 
 // DefaultTableProps returns sensible defaults
@@ -259,7 +264,12 @@ templ Table(props TableProps) {
 					</tr>
 				</thead>
 			}
-			<tbody class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900">
+			<tbody
+			if props.BodyID != "" {
+				id={ props.BodyID }
+			}
+			class="divide-y divide-gray-200 dark:divide-gray-700 bg-white dark:bg-gray-900"
+		>
 				if props.Body != nil {
 					@props.Body
 				} else {

@@ -58,6 +58,16 @@ func TestGoldenStatCardWithHref(t *testing.T) {
 	golden.Assert(t, "stat_card_href", output)
 }
 
+func TestGoldenStatCardWithValueID(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, StatCard(StatCardProps{
+		Label:   "Users",
+		Value:   "1,204",
+		ValueID: "stat-users-value",
+	}))
+	golden.Assert(t, "stat_card_value_id", output)
+}
+
 func TestGoldenGrid(t *testing.T) {
 	t.Parallel()
 	output := utils.Render(t, Grid(GridProps{Cols: GridCols3}))
