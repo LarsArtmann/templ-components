@@ -98,6 +98,28 @@ scripts/release.sh <new-version> "<release-summary>"
 One-commit convention. SSH-signed tags. House rule: **never push automatically**.
 See [`AGENTS.md`](AGENTS.md) § Release Convention for details.
 
+### Release checklist (lockstep tagging)
+
+Every root tag must ship with a `<sub-module>/v<version>` tag for **every**
+published sub-module — `utils/`, `icons/`, `errorpage/`, `htmx/`, `datastar/`,
+`charts/echarts/` — all pointing at the same release commit. Consumers pin
+sub-modules in go.mod; a root-only release leaves those pins unresolvable on
+the Go module proxy (v1.8.3 shipped root-only and broke every dependent
+build).
+
+Before pushing:
+
+1. `scripts/release.sh` created the tags (the sub-module set is derived from
+   the root go.mod's replace directives — adding a published module is a
+   replace-directive edit, nothing else).
+2. `scripts/check-release-tags.sh` passes (names any missing or diverged
+   sub-module tag).
+3. Push with `git push origin master --follow-tags` so the sibling tags ride
+   along.
+
+The `release-tags` CI job runs the guard on every `v*` tag push and fails the
+release if the set is incomplete.
+
 ---
 
 ## Reporting issues

@@ -59,6 +59,46 @@ func TestReleaseScriptInvariants(t *testing.T) {
 		"must flip RELEASE_COMMITTED after the commit so a later tag failure keeps the commit",
 	)
 	checkAbsent(t, script, "git checkout --", "must use git restore, not git checkout (AGENTS.md ban)")
+
+	// Invariant added 2026-08-16 after v1.8.3 shipped as a root-only release:
+	// the sub-module set (what gets bumped, replace-stripped, and tagged) must
+	// be DERIVED from the root go.mod's replace directives, never hardcoded.
+	// The hardcoded list had silently drifted (missing htmx/ and datastar/),
+	// so those modules never received release tags and every consumer pinning
+	// them at the new version failed with "unknown revision".
+	checkContains(
+		t,
+		script,
+		"SUBMODULE_PATHS=",
+		"must derive the sub-module set from the root go.mod replace directives",
+	)
+	checkAbsent(
+		t,
+		script,
+		"for submod in utils icons errorpage charts/echarts",
+		"must not hardcode the sub-module tag list (v1.8.3 root-only release root cause)",
+	)
+	checkContains(t, script, "for submod in $SUBMODULE_PATHS", "tagging loop must use the derived set")
+	checkContains(t, script, "for modfile in $MODFILES", "go.mod loops must use the derived set")
+}
+
+// TestCheckReleaseTagsScriptInvariants guards scripts/check-release-tags.sh:
+// the lockstep-tag guard must exist, derive the same sub-module set as the
+// release script, and verify tag-to-commit equality (not just existence).
+func TestCheckReleaseTagsScriptInvariants(t *testing.T) {
+	t.Parallel()
+
+	data, err := os.ReadFile("../scripts/check-release-tags.sh")
+	if err != nil {
+		t.Skipf("scripts/check-release-tags.sh not found (running outside repo root?): %v", err)
+	}
+
+	script := string(data)
+
+	checkContains(t, script, "SUBMODULE_PATHS=", "guard must derive sub-modules like release.sh does")
+	checkContains(t, script, "^{commit}", "guard must resolve tags to commits")
+	checkContains(t, script, "MISSING:", "guard must name missing sub-module tags")
+	checkContains(t, script, "DIVERGED:", "guard must catch tags pointing at the wrong commit")
 }
 
 func checkContains(t *testing.T, script, needle, msg string) {

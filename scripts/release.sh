@@ -18,7 +18,7 @@
 #   3. Bumps utils.Version
 #   4. Collects release notes (--notes-file or CHANGELOG [Unreleased])
 #   5. Moves notes from [Unreleased] to a new versioned heading (inserts fresh [Unreleased])
-#   5b. Bumps require versions in all 5 go.mod files
+#   5b. Bumps require versions in every module go.mod (discovered, not hardcoded)
 #   5c. Removes replace directives (remove-at-release strategy)
 #   6. Regenerates *_templ.go and runs the full verify suite (workspace mode)
 #   7. Stages and commits as `release: <version> — <summary>` (one-commit convention)
@@ -100,6 +100,32 @@ if [ "$CURRENT_BRANCH" != "master" ]; then
 	exit 1
 fi
 
+# 2b. Published sub-modules, derived from the ROOT go.mod's replace
+#     directives (replace github.com/larsartmann/templ-components/<path> => ./<path>)
+#     - the single source of truth for "what gets tagged". Hardcoding this
+#     list is how v1.8.3 shipped as a root-only release: the hardcoded set had
+#     drifted from the real module set (missing htmx/ and datastar/), so
+#     consumers pinning the sub-modules at the new version found no tags on
+#     the proxy and every dependent build broke.
+SUBMODULE_PATHS="$(awk '
+	$1 == "replace" && $2 ~ /^github\.com\/larsartmann\/templ-components\// {
+		path = $2
+		sub(/^github\.com\/larsartmann\/templ-components\//, "", path)
+		print path
+	}
+' go.mod)"
+if [ -z "$SUBMODULE_PATHS" ]; then
+	echo "Error: no templ-components replace directives found in go.mod." >&2
+	echo "The release script expects the local-dev replace set to be present" >&2
+	echo "(the previous release's follow-up commit re-adds them)." >&2
+	exit 1
+fi
+MODFILES="go.mod"
+for submod in $SUBMODULE_PATHS; do
+	MODFILES="$MODFILES ${submod}/go.mod"
+done
+echo "Publishing root + sub-modules: $(echo "$SUBMODULE_PATHS" | tr '\n' ' ')"
+
 # 3. New version must be > current version.
 CURRENT_VERSION="$(grep -E '^const[[:space:]]+Version' utils/version.go | sed -E 's/.*"([^"]+)".*/\1/')"
 echo "Current version: $CURRENT_VERSION"
@@ -154,7 +180,7 @@ RELEASE_COMMITTED=0
 release_rollback() {
 	if [ "$RELEASE_COMMITTED" = "0" ]; then
 		echo "Release aborted; rolling back version files, go.mod files, CHANGELOG, FEATURES..." >&2
-		git restore utils/version.go go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod CHANGELOG.md FEATURES.md 2>/dev/null || true
+		git restore utils/version.go $MODFILES CHANGELOG.md FEATURES.md 2>/dev/null || true
 	fi
 }
 trap release_rollback EXIT
@@ -169,7 +195,7 @@ echo "Bumped utils.Version to $NEW_VERSION"
 #     proxy resolves these via directory-prefixed tags (utils/v2.0.0, etc.).
 #     The replace directives override these for local dev; at publish time the
 #     proxy uses the tagged version.
-for modfile in go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod; do
+for modfile in $MODFILES; do
 	sed -i.bak -E \
 		"s|(github.com/larsartmann/templ-components/[a-z/]+) v[0-9]+\.[0-9]+\.[0-9]+|\1 v${NEW_VERSION}|g" \
 		"$modfile"
@@ -183,7 +209,7 @@ echo "Bumped all internal module require entries to v${NEW_VERSION}."
 #     re-added in a follow-up commit for local dev convenience.
 REPLACE_BACKUP_DIR="$(mktemp -d)"
 trap 'rm -rf "$REPLACE_BACKUP_DIR"' EXIT # clean up temp dir (also fires after release_rollback)
-for modfile in go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod; do
+for modfile in $MODFILES; do
 	backup_name="$(echo "$modfile" | tr '/' '_')"
 	grep '^replace github.com/larsartmann/templ-components/' "$modfile" >"${REPLACE_BACKUP_DIR}/${backup_name}" 2>/dev/null || true
 	sed -i.bak '/^replace github.com\/larsartmann\/templ-components\//d' "$modfile"
@@ -226,7 +252,7 @@ else
 	echo "Warning: FEATURES.md not found; skipped its version bump." >&2
 fi
 
-# 7. Run full verify (all 5 modules).
+# 7. Run full verify (all modules).
 echo "Running full verify (templ generate + CSS compile + per-module build/test/lint)..."
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...
@@ -297,7 +323,7 @@ git tag -s "v${NEW_VERSION}" -m "v${NEW_VERSION}: ${RELEASE_SUMMARY}" "$RELEASE_
 
 # Sub-module tags use directory-prefixed format so the Go module proxy
 # resolves them correctly (e.g., utils/v2.0.0 → module .../utils at v2.0.0).
-for submod in utils icons errorpage charts/echarts; do
+for submod in $SUBMODULE_PATHS; do
 	git tag -s "${submod}/v${NEW_VERSION}" -m "${submod}/v${NEW_VERSION}: ${RELEASE_SUMMARY}" "$RELEASE_COMMIT"
 done
 
@@ -305,7 +331,7 @@ done
 #     The tagged commit (step 8) has no replace directives — clean for consumers.
 #     This follow-up commit restores them so local development continues to work
 #     without proxy round-trips.
-for modfile in go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod; do
+for modfile in $MODFILES; do
 	backup_name="$(echo "$modfile" | tr '/' '_')"
 	backup_file="${REPLACE_BACKUP_DIR}/${backup_name}"
 	if [ -s "$backup_file" ]; then
@@ -313,7 +339,7 @@ for modfile in go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod; do
 		cat "$backup_file" >>"$modfile"
 	fi
 done
-git add go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod
+git add $MODFILES
 git commit -m "chore: re-add replace directives after v${NEW_VERSION} release
 
 These local replace directives were removed for the release commit so the
@@ -326,8 +352,7 @@ echo "Re-added replace directives for local dev."
 
 echo ""
 echo "Release v${NEW_VERSION} cut at commit ${RELEASE_COMMIT}."
-echo "Tags: v${NEW_VERSION} (root) + utils/v${NEW_VERSION}, icons/v${NEW_VERSION},"
-echo "      errorpage/v${NEW_VERSION}, charts/echarts/v${NEW_VERSION} (sub-modules)"
+echo "Tags: v${NEW_VERSION} (root) + $(for s in $SUBMODULE_PATHS; do printf '%s/v%s, ' "$s" "$NEW_VERSION"; done | sed 's/, $//') (sub-modules)"
 echo ""
 echo "Next steps:"
 echo "  1. Review the release: git show v${NEW_VERSION}"

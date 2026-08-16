@@ -6,20 +6,20 @@ This repo is a **7-module Go workspace** (`github.com/larsartmann/templ-componen
 
 ### Root-module packages (10)
 
-| Package             | Contains                                                  | Purpose                                                                                                                                                  |
-| ------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `display`           | 40 UI components                                          | Cards, tables (Table + DataTable), modals, badges, buttons, avatars, carousel, context menu, hover card, **SVG charts** (LineChart, PieChart, AreaChart) |
-| `feedback`          | 14 components                                             | Alerts, toasts, spinners, skeletons, progress bars                                                                                                       |
-| `forms`             | 21 components                                             | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                                                                     |
-| `layout`            | 10 components                                             | Page shell, theme toggle, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                      |
-| `navigation`        | 12 components                                             | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                                                                    |
-| `htmx`              | **Separate module** — 8 components                          | HTMX loading, error handling, OOB swaps, View Transitions                                                                                                |
-| `datastar`          | **Separate module** — 4 components + action helpers        | Datastar runtime injection, SSE-powered LiveRegion, loading Indicator, SSE error handling. Pins version via `go-datastar/static`. Opt-in complement to HTMX (ADR-0030) |
-| `recipes`           | 4 composition screens                                     | Dashboard, SettingsLayout, LoginCard, AuthLayout — screen-level compositions of display/forms/layout/navigation (ADR-0019)                                 |
-| `internal/contract` | Contract tests                                            | Cross-package interface verification                                                                                                                     |
-| `integration`       | CSP nonce tests                                           | Asserts nonce on all inline scripts                                                                                                                      |
-| `examples/demo`     | Demo binary                                               | Showcases components                                                                                                                                     |
-| `cmd/tc`            | CLI tool                                                  | Component scaffolding (excluded from lint — uses different conventions)                                                                                  |
+| Package             | Contains                                            | Purpose                                                                                                                                                                |
+| ------------------- | --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `display`           | 40 UI components                                    | Cards, tables (Table + DataTable), modals, badges, buttons, avatars, carousel, context menu, hover card, **SVG charts** (LineChart, PieChart, AreaChart)               |
+| `feedback`          | 14 components                                       | Alerts, toasts, spinners, skeletons, progress bars                                                                                                                     |
+| `forms`             | 21 components                                       | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                                                                                   |
+| `layout`            | 10 components                                       | Page shell, theme toggle, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                    |
+| `navigation`        | 12 components                                       | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                                                                                  |
+| `htmx`              | **Separate module** — 8 components                  | HTMX loading, error handling, OOB swaps, View Transitions                                                                                                              |
+| `datastar`          | **Separate module** — 4 components + action helpers | Datastar runtime injection, SSE-powered LiveRegion, loading Indicator, SSE error handling. Pins version via `go-datastar/static`. Opt-in complement to HTMX (ADR-0030) |
+| `recipes`           | 4 composition screens                               | Dashboard, SettingsLayout, LoginCard, AuthLayout — screen-level compositions of display/forms/layout/navigation (ADR-0019)                                             |
+| `internal/contract` | Contract tests                                      | Cross-package interface verification                                                                                                                                   |
+| `integration`       | CSP nonce tests                                     | Asserts nonce on all inline scripts                                                                                                                                    |
+| `examples/demo`     | Demo binary                                         | Showcases components                                                                                                                                                   |
+| `cmd/tc`            | CLI tool                                            | Component scaffolding (excluded from lint — uses different conventions)                                                                                                |
 
 > **Note:** `go.work` and `go.work.sum` are in `.gitignore` (local dev only). CI and consumers use `replace` directives in each module's `go.mod`. `internal/` packages (`svg`, `cdn`, `golden`) were promoted to `utils/` sub-packages because Go's `internal/` rule blocks cross-module access.
 
@@ -313,7 +313,11 @@ What it does:
 8. Regenerates `*_templ.go` and runs the full verify suite (build + test + lint)
 9. Asserts the version drift-guard (`TestVersionMatches(Changelog|Features)`)
 10. Stages and commits as `release: <version> — <summary>` (one-commit convention; body carries the release notes, `Assisted-by: Crush:${CRUSH_MODEL}`)
-11. Creates an annotated, SSH-signed tag `v<version>: <summary>`
+11. Creates annotated, SSH-signed tags: root `v<version>` plus one
+    `<sub-module>/v<version>` per published sub-module, in lockstep —
+    guard with `scripts/check-release-tags.sh` before pushing (a root-only
+    release, like v1.8.3, breaks every consumer; checklist: CONTRIBUTING.md
+    § Release)
 
 The script does **not** push. House rule: "NEVER PUSH TO REMOTE". Push manually
 after reviewing the release commit and tag with `git show v<version>` and

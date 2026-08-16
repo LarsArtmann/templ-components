@@ -3,10 +3,24 @@ name: CI
 on:
   push:
     branches: [master, main]
+    tags: ["v*"]
   pull_request:
     branches: [master, main]
 
 jobs:
+  release-tags:
+    name: Release tag completeness
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      # fetch-depth: 0 pulls every tag: the sub-module tags live on the same
+      # release commit as the pushed root tag and must all be present.
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          fetch-depth: 0
+      - name: Verify every sub-module carries the release tag
+        run: scripts/check-release-tags.sh "${GITHUB_REF_NAME#v}"
+
   lint:
     name: Lint
     runs-on: ubuntu-latest
