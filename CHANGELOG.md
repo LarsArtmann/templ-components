@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.8.4] - 2026-08-16
+
 ### Fixed
 
 - **`errorpage`: `FamilyOrchestration` now has an explicit `familyStatusCodeMap` entry (500).** The map entry was missing — orchestration errors only returned 500 because `FamilyStatusCode`'s unknown-family fallback happened to be 500. The 500 now comes from data, not accident, and an end-to-end test guards the map entry's presence. Same gap fixed in `htmx.GlobalErrorHandling`'s family-aware toast map (`tcFamilyToastMap`): `'orchestration'` is now mapped to `'error'` explicitly instead of relying on the `|| 'error'` fallback. Stale doc comment ("five defined constants") corrected to six.
