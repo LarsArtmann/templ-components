@@ -194,7 +194,7 @@ var errBlankNonRejection = errValidateBlank
 
 // Validate verifies that the props form a coherent error page. Returns an
 // error when:
-//   - Family is not one of the five defined constants (FamilyIsValid).
+//   - Family is not one of the six defined constants (FamilyIsValid).
 //   - StatusCode is set but outside the HTTP error range [400, 599].
 //   - The page has no Title AND no Message AND no CauseChain (would render
 //     as an empty error card — likely a caller bug).

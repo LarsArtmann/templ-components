@@ -14,7 +14,8 @@
 				'conflict': 'warning',
 				'transient': 'info',
 				'corruption': 'error',
-				'infrastructure': 'error'
+				'infrastructure': 'error',
+				'orchestration': 'error'
 			};
 
 			function tcParseErrorBody(xhr) {

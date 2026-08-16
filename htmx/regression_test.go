@@ -48,3 +48,21 @@ func TestLoadingButtonNilSpinner(t *testing.T) {
 		t.Error("expected non-empty output")
 	}
 }
+
+// TestGlobalErrorHandlingFamilyToastMap verifies the family-aware toast map in
+// the rendered JS covers all six error families. Before the fix,
+// 'orchestration' was missing and only worked by accident via the '|| error'
+// fallback — mirroring the familyStatusCodeMap gap fixed in errorpage.
+func TestGlobalErrorHandlingFamilyToastMap(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, GlobalErrorHandling(DefaultErrorHandlingConfig()))
+	utils.AssertContainsAll(t, output,
+		"'rejection': 'warning'",
+		"'conflict': 'warning'",
+		"'transient': 'info'",
+		"'corruption': 'error'",
+		"'infrastructure': 'error'",
+		"'orchestration': 'error'",
+	)
+}
