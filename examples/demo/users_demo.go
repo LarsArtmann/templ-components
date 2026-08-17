@@ -70,10 +70,7 @@ func demoUserRows(users []demoUser) []display.TableRow {
 }
 
 func usersTotalPages(total int) uint {
-	pages := (total + usersPageSize - 1) / usersPageSize
-	if pages < 1 {
-		pages = 1
-	}
+	pages := max((total+usersPageSize-1)/usersPageSize, 1)
 	return uint(pages)
 }
 
