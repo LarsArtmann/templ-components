@@ -110,98 +110,98 @@ Nothing in this session. All 7 commits are clean, BuildFlow passed on every comm
 
 ### Immediate (this feature)
 
-| #   | Task                                                                            | Impact | Effort |
-| --- | ------------------------------------------------------------------------------- | ------ | ------ |
-| 1   | Cut v0.16.0 release with Flush + CellPadding                                    | High   | Low    |
-| 2   | Update README.md Table section with Flush/CellPadding                           | Medium | Low    |
-| 3   | Remove the CSS workaround in cqrs-htmx adminui and adopt `Flush: true`          | High   | Low    |
-| 4   | Add a `docs/recipes/table-in-card.md` recipe showing the full dashboard pattern | Medium | Low    |
+| # | Task                                                                            | Impact | Effort |
+| - | ------------------------------------------------------------------------------- | ------ | ------ |
+| 1 | Cut v0.16.0 release with Flush + CellPadding                                    | High   | Low    |
+| 2 | Update README.md Table section with Flush/CellPadding                           | Medium | Low    |
+| 3 | Remove the CSS workaround in cqrs-htmx adminui and adopt `Flush: true`          | High   | Low    |
+| 4 | Add a `docs/recipes/table-in-card.md` recipe showing the full dashboard pattern | Medium | Low    |
 
 ### Table component improvements
 
-| #   | Task                                                                                                     | Impact | Effort |
-| --- | -------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 5   | Add `TableSize` enum (sm/md/lg) controlling font-size + cell-padding as a unified control                | Medium | Medium |
-| 6   | Add `StickyHeader bool` — `sticky top-0` on `<thead>` for long tables                                    | Medium | Low    |
-| 7   | Add `ColumnAlign []TextAlign` — per-column text alignment (start/center/end)                             | Medium | Medium |
-| 8   | Add `EmptyState templ.Component` slot — renders when `Rows` is empty (currently renders empty `<tbody>`) | High   | Low    |
-| 9   | Add `Loading bool` — renders skeleton rows placeholder                                                   | Medium | Medium |
-| 10  | Add `Selectable bool` + `Row.Selected` — checkbox column for bulk actions                                | High   | High   |
-| 11  | `DataTable` wrapper (PLANNED in FEATURES.md) — sorting + filtering + pagination in one component         | High   | High   |
-| 12  | Add `FooterRow templ.Component` — `<tfoot>` support for totals/summaries                                 | Medium | Low    |
-| 13  | Add `StickyFirstColumn bool` — `sticky start-0` for row label columns                                    | Low    | Medium |
-| 14  | Add `ZebraOdd bool` — control which row index gets striping (currently hardcoded to odd)                 | Low    | Low    |
+| #  | Task                                                                                                     | Impact | Effort |
+| -- | -------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 5  | Add `TableSize` enum (sm/md/lg) controlling font-size + cell-padding as a unified control                | Medium | Medium |
+| 6  | Add `StickyHeader bool` — `sticky top-0` on `<thead>` for long tables                                    | Medium | Low    |
+| 7  | Add `ColumnAlign []TextAlign` — per-column text alignment (start/center/end)                             | Medium | Medium |
+| 8  | Add `EmptyState templ.Component` slot — renders when `Rows` is empty (currently renders empty `<tbody>`) | High   | Low    |
+| 9  | Add `Loading bool` — renders skeleton rows placeholder                                                   | Medium | Medium |
+| 10 | Add `Selectable bool` + `Row.Selected` — checkbox column for bulk actions                                | High   | High   |
+| 11 | `DataTable` wrapper (PLANNED in FEATURES.md) — sorting + filtering + pagination in one component         | High   | High   |
+| 12 | Add `FooterRow templ.Component` — `<tfoot>` support for totals/summaries                                 | Medium | Low    |
+| 13 | Add `StickyFirstColumn bool` — `sticky start-0` for row label columns                                    | Low    | Medium |
+| 14 | Add `ZebraOdd bool` — control which row index gets striping (currently hardcoded to odd)                 | Low    | Low    |
 
 ### Cross-component improvements
 
-| #   | Task                                                                                                                             | Impact | Effort |
-| --- | -------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 15  | Unify `DensityLevel` enum across Card, Table, Badge, Avatar (compact/comfortable/spacious)                                       | Medium | High   |
-| 16  | Add `SharedBorderClass` constant — the `border border-gray-200 dark:border-gray-700` string is duplicated between Card and Table | Low    | Low    |
-| 17  | Extract `overflowXAutoClass` shared constant — currently inline in Table wrapper                                                 | Low    | Low    |
-| 18  | Add `Card.BodyFlush` — alias for `CardPaddingNone` with clearer naming for table-in-card use case                                | Low    | Low    |
+| #  | Task                                                                                                                             | Impact | Effort |
+| -- | -------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 15 | Unify `DensityLevel` enum across Card, Table, Badge, Avatar (compact/comfortable/spacious)                                       | Medium | High   |
+| 16 | Add `SharedBorderClass` constant — the `border border-gray-200 dark:border-gray-700` string is duplicated between Card and Table | Low    | Low    |
+| 17 | Extract `overflowXAutoClass` shared constant — currently inline in Table wrapper                                                 | Low    | Low    |
+| 18 | Add `Card.BodyFlush` — alias for `CardPaddingNone` with clearer naming for table-in-card use case                                | Low    | Low    |
 
 ### Testing improvements
 
-| #   | Task                                                                                       | Impact | Effort |
-| --- | ------------------------------------------------------------------------------------------ | ------ | ------ |
-| 19  | Add fuzz test for `TableCellPadding` — verify no panic on arbitrary string input           | Low    | Low    |
-| 20  | Add benchmark for `tableWrapperClass` + `tableCellPaddingClass`                            | Low    | Low    |
-| 21  | Add a11y test for Table — verify `aria-label` propagation, `scope="col"` presence          | Medium | Low    |
-| 22  | Add dark-mode compliance test for Table — verify all `border-gray-*` have `dark:` variants | Medium | Low    |
-| 23  | Add snapshot test for Table-in-Card composition (not just integration assertion)           | Low    | Low    |
-| 24  | Test Table with `Flush=true` + `Bordered=true` interaction (both borders on table element) | Low    | Low    |
+| #  | Task                                                                                       | Impact | Effort |
+| -- | ------------------------------------------------------------------------------------------ | ------ | ------ |
+| 19 | Add fuzz test for `TableCellPadding` — verify no panic on arbitrary string input           | Low    | Low    |
+| 20 | Add benchmark for `tableWrapperClass` + `tableCellPaddingClass`                            | Low    | Low    |
+| 21 | Add a11y test for Table — verify `aria-label` propagation, `scope="col"` presence          | Medium | Low    |
+| 22 | Add dark-mode compliance test for Table — verify all `border-gray-*` have `dark:` variants | Medium | Low    |
+| 23 | Add snapshot test for Table-in-Card composition (not just integration assertion)           | Low    | Low    |
+| 24 | Test Table with `Flush=true` + `Bordered=true` interaction (both borders on table element) | Low    | Low    |
 
 ### Documentation improvements
 
-| #   | Task                                                                                | Impact | Effort |
-| --- | ----------------------------------------------------------------------------------- | ------ | ------ |
-| 25  | Add ADR for the Flush pattern (component opts out of its own border when nested)    | Low    | Low    |
-| 26  | Update `docs/recipes/horizontal-filter-bar.md` to mention compact table for results | Low    | Low    |
-| 27  | Add Flush pattern to CONTRIBUTING.md conventions section                            | Low    | Low    |
-| 28  | Document the wrapper-div-not-using-utils.Class decision in table.templ comment      | Low    | Low    |
+| #  | Task                                                                                | Impact | Effort |
+| -- | ----------------------------------------------------------------------------------- | ------ | ------ |
+| 25 | Add ADR for the Flush pattern (component opts out of its own border when nested)    | Low    | Low    |
+| 26 | Update `docs/recipes/horizontal-filter-bar.md` to mention compact table for results | Low    | Low    |
+| 27 | Add Flush pattern to CONTRIBUTING.md conventions section                            | Low    | Low    |
+| 28 | Document the wrapper-div-not-using-utils.Class decision in table.templ comment      | Low    | Low    |
 
 ### Broader library improvements
 
-| #   | Task                                                                                                   | Impact | Effort |
-| --- | ------------------------------------------------------------------------------------------------------ | ------ | ------ |
-| 29  | Audit all components for hardcoded border classes that can't be suppressed when nested                 | Medium | Medium |
-| 30  | Add `Flush` to SimpleCard (currently inherits via Card, but SimpleCard with Flush isn't documented)    | Low    | Low    |
-| 31  | `StatCard` + `Card` nesting — does StatCard inside Card produce a double border? Audit needed          | Medium | Low    |
-| 32  | Add `Tooltip.Flush` for tooltips inside bordered containers                                            | Low    | Medium |
-| 33  | Review if `Badge` inside `Card` header has border conflicts                                            | Low    | Low    |
-| 34  | `Form` component — does it have a border that conflicts when nested in Card?                           | Low    | Low    |
-| 35  | Create a "nesting compatibility matrix" doc — which components can nest inside which without conflicts | Medium | Medium |
+| #  | Task                                                                                                   | Impact | Effort |
+| -- | ------------------------------------------------------------------------------------------------------ | ------ | ------ |
+| 29 | Audit all components for hardcoded border classes that can't be suppressed when nested                 | Medium | Medium |
+| 30 | Add `Flush` to SimpleCard (currently inherits via Card, but SimpleCard with Flush isn't documented)    | Low    | Low    |
+| 31 | `StatCard` + `Card` nesting — does StatCard inside Card produce a double border? Audit needed          | Medium | Low    |
+| 32 | Add `Tooltip.Flush` for tooltips inside bordered containers                                            | Low    | Medium |
+| 33 | Review if `Badge` inside `Card` header has border conflicts                                            | Low    | Low    |
+| 34 | `Form` component — does it have a border that conflicts when nested in Card?                           | Low    | Low    |
+| 35 | Create a "nesting compatibility matrix" doc — which components can nest inside which without conflicts | Medium | Medium |
 
 ### Type model improvements
 
-| #   | Task                                                                                                                                                  | Impact | Effort |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 36  | Make `TableHeader.SortDirection` use `SortDirection` type (currently uses the same type but no `SortDirectionIsValid` on the struct)                  | Low    | Low    |
-| 37  | Add `TableColumnWidth` typed enum (auto/fixed/narrow/wide)                                                                                            | Low    | Medium |
-| 38  | Consider `TableRowAction` struct for row-level action buttons (edit/delete)                                                                           | Medium | Medium |
-| 39  | Add `TableColumn` struct with `Header`, `Width`, `Align`, `Sortable` — replace parallel `Headers`/`TypedHeaders` with unified `Columns []TableColumn` | High   | High   |
+| #  | Task                                                                                                                                                  | Impact | Effort |
+| -- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 36 | Make `TableHeader.SortDirection` use `SortDirection` type (currently uses the same type but no `SortDirectionIsValid` on the struct)                  | Low    | Low    |
+| 37 | Add `TableColumnWidth` typed enum (auto/fixed/narrow/wide)                                                                                            | Low    | Medium |
+| 38 | Consider `TableRowAction` struct for row-level action buttons (edit/delete)                                                                           | Medium | Medium |
+| 39 | Add `TableColumn` struct with `Header`, `Width`, `Align`, `Sortable` — replace parallel `Headers`/`TypedHeaders` with unified `Columns []TableColumn` | High   | High   |
 
 ### Infrastructure
 
-| #   | Task                                                                                                                  | Impact | Effort |
-| --- | --------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 40  | Add visual regression testing (Playwright/screenshot diff) — golden files catch HTML changes but not visual rendering | High   | High   |
-| 41  | Add `docs/recipes/dashboard-table.md` with sorting + pagination + compact + flush all together                        | Medium | Low    |
-| 42  | Create interactive Storybook-like demo page with all Table options toggleable                                         | Medium | High   |
-| 43  | Add CSP test for Table with clickable rows — verify nonce on the row-href script                                      | Low    | Low    |
-| 44  | Add `utils.AssertCount` test helper — `strings.Count` assertions are inline and repeated                              | Low    | Low    |
+| #  | Task                                                                                                                  | Impact | Effort |
+| -- | --------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 40 | Add visual regression testing (Playwright/screenshot diff) — golden files catch HTML changes but not visual rendering | High   | High   |
+| 41 | Add `docs/recipes/dashboard-table.md` with sorting + pagination + compact + flush all together                        | Medium | Low    |
+| 42 | Create interactive Storybook-like demo page with all Table options toggleable                                         | Medium | High   |
+| 43 | Add CSP test for Table with clickable rows — verify nonce on the row-href script                                      | Low    | Low    |
+| 44 | Add `utils.AssertCount` test helper — `strings.Count` assertions are inline and repeated                              | Low    | Low    |
 
 ### Consumer feedback items
 
-| #   | Task                                                                                          | Impact | Effort |
-| --- | --------------------------------------------------------------------------------------------- | ------ | ------ |
-| 45  | Collect feedback from cqrs-htmx on whether Compact padding is compact enough (py-2 vs py-1.5) | Medium | Low    |
-| 46  | Ask if consumers want a `TableVariant` enum (simple/bordered/flush) instead of separate bools | Low    | Low    |
-| 47  | Survey: do consumers nest other components inside Card(CardPaddingNone) that need Flush?      | Medium | Low    |
-| 48  | Document the consumer CSS workaround removal path in the CHANGELOG release notes              | Low    | Low    |
-| 49  | Add migration guide: "From CSS workaround to Flush prop"                                      | Low    | Low    |
-| 50  | Review all cqrs-htmx adminui table templates (5 reported) for Flush adoption                  | Medium | Low    |
+| #  | Task                                                                                          | Impact | Effort |
+| -- | --------------------------------------------------------------------------------------------- | ------ | ------ |
+| 45 | Collect feedback from cqrs-htmx on whether Compact padding is compact enough (py-2 vs py-1.5) | Medium | Low    |
+| 46 | Ask if consumers want a `TableVariant` enum (simple/bordered/flush) instead of separate bools | Low    | Low    |
+| 47 | Survey: do consumers nest other components inside Card(CardPaddingNone) that need Flush?      | Medium | Low    |
+| 48 | Document the consumer CSS workaround removal path in the CHANGELOG release notes              | Low    | Low    |
+| 49 | Add migration guide: "From CSS workaround to Flush prop"                                      | Low    | Low    |
+| 50 | Review all cqrs-htmx adminui table templates (5 reported) for Flush adoption                  | Medium | Low    |
 
 ---
 

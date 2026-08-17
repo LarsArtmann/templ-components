@@ -1,4 +1,4 @@
-#syntax=docker/dockerfile:1.7
+# syntax=docker/dockerfile:1.7
 
 # Stage 1: Compile Tailwind CSS (always fresh, never stale)
 # Scans all .templ files for class names and generates the final CSS.

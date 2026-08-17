@@ -152,103 +152,103 @@ These P3 tasks were evaluated and deferred as future work. They are documented h
 
 ### Immediate (before commit/release)
 
-| #   | Task                                                             | Effort |
-| --- | ---------------------------------------------------------------- | ------ |
-| 1   | Commit all dark mode compliance work (69 modified + 6 new files) | 10m    |
-| 2   | Cut v0.9.1 release via `scripts/release.sh`                      | 10m    |
-| 3   | Verify `.gitignore` doesn't have `*_templ.go` added by BuildFlow | 2m     |
+| # | Task                                                             | Effort |
+| - | ---------------------------------------------------------------- | ------ |
+| 1 | Commit all dark mode compliance work (69 modified + 6 new files) | 10m    |
+| 2 | Cut v0.9.1 release via `scripts/release.sh`                      | 10m    |
+| 3 | Verify `.gitignore` doesn't have `*_templ.go` added by BuildFlow | 2m     |
 
 ### json/v2 migration (blocking)
 
-| #   | Task                                                                              | Effort |
-| --- | --------------------------------------------------------------------------------- | ------ |
-| 4   | Check if Go 1.27 is available (expected to have `json/v2` stable)                 | 5m     |
-| 5   | If Go 1.27 available: bump `go.mod`, reapply `json/v2` migration                  | 20m    |
-| 6   | If not: set `GOEXPERIMENT=jsonv2` in `flake.nix` devShell and CI                  | 15m    |
-| 7   | Add `GOEXPERIMENT=jsonv2` to `.github/workflows/ci.yaml`                          | 5m     |
-| 8   | Audit ALL files for `encoding/json` → `encoding/json/v2` (not just handler.go)    | 15m    |
-| 9   | Verify `json/v2` API compatibility (`json.NewEncoder`, `enc.SetEscapeHTML`, etc.) | 10m    |
+| # | Task                                                                              | Effort |
+| - | --------------------------------------------------------------------------------- | ------ |
+| 4 | Check if Go 1.27 is available (expected to have `json/v2` stable)                 | 5m     |
+| 5 | If Go 1.27 available: bump `go.mod`, reapply `json/v2` migration                  | 20m    |
+| 6 | If not: set `GOEXPERIMENT=jsonv2` in `flake.nix` devShell and CI                  | 15m    |
+| 7 | Add `GOEXPERIMENT=jsonv2` to `.github/workflows/ci.yaml`                          | 5m     |
+| 8 | Audit ALL files for `encoding/json` → `encoding/json/v2` (not just handler.go)    | 15m    |
+| 9 | Verify `json/v2` API compatibility (`json.NewEncoder`, `enc.SetEscapeHTML`, etc.) | 10m    |
 
 ### Testing improvements
 
-| #   | Task                                                                  | Effort |
-| --- | --------------------------------------------------------------------- | ------ |
-| 10  | Add dark golden test variants (render with `.dark` parent)            | 12m    |
-| 11  | Add toast JS-created toast golden test                                | 12m    |
-| 12  | Add `BaseProps.Class` dark: propagation test                          | 10m    |
-| 13  | Benchmark `utils.Class()` with dark: strings vs without               | 12m    |
-| 14  | Add test for `prefers-reduced-transparency` CSS support               | 5m     |
-| 15  | Add contract test: props with `Color` field have dark mode godoc      | 10m    |
-| 16  | Add visual regression testing (Playwright screenshot diff light/dark) | 30m+   |
+| #  | Task                                                                  | Effort |
+| -- | --------------------------------------------------------------------- | ------ |
+| 10 | Add dark golden test variants (render with `.dark` parent)            | 12m    |
+| 11 | Add toast JS-created toast golden test                                | 12m    |
+| 12 | Add `BaseProps.Class` dark: propagation test                          | 10m    |
+| 13 | Benchmark `utils.Class()` with dark: strings vs without               | 12m    |
+| 14 | Add test for `prefers-reduced-transparency` CSS support               | 5m     |
+| 15 | Add contract test: props with `Color` field have dark mode godoc      | 10m    |
+| 16 | Add visual regression testing (Playwright screenshot diff light/dark) | 30m+   |
 
 ### Component improvements
 
-| #   | Task                                                                  | Effort |
-| --- | --------------------------------------------------------------------- | ------ |
-| 17  | Add `Theme` enum (Light/Dark/Auto) to `layout` package                | 12m    |
-| 18  | Add `SidebarNav` light mode option (prop to switch from dark sidebar) | 12m    |
-| 19  | Add `darkMode()` helper in `utils` (returns `dark:` prefixed classes) | 10m    |
-| 20  | Explore Tailwind v4 `@theme` dark mode tokens (CSS-first approach)    | 12m    |
-| 21  | Add `color-scheme` to `layout.Base` body class (not just theme CSS)   | 5m     |
+| #  | Task                                                                  | Effort |
+| -- | --------------------------------------------------------------------- | ------ |
+| 17 | Add `Theme` enum (Light/Dark/Auto) to `layout` package                | 12m    |
+| 18 | Add `SidebarNav` light mode option (prop to switch from dark sidebar) | 12m    |
+| 19 | Add `darkMode()` helper in `utils` (returns `dark:` prefixed classes) | 10m    |
+| 20 | Explore Tailwind v4 `@theme` dark mode tokens (CSS-first approach)    | 12m    |
+| 21 | Add `color-scheme` to `layout.Base` body class (not just theme CSS)   | 5m     |
 
 ### Documentation
 
-| #   | Task                                                                      | Effort |
-| --- | ------------------------------------------------------------------------- | ------ |
-| 22  | Write v0.9.1 release note highlighting dark mode audit                    | 5m     |
-| 23  | Add `docs/dark-mode-guide.md` (comprehensive consumer guide)              | 15m    |
-| 24  | Update `docs/migration/v0.8-to-v0.9.md` with dark mode compliance section | 10m    |
-| 25  | Add dark mode section to `docs/tailwind-v4-adoption-guide.md`             | 10m    |
+| #  | Task                                                                      | Effort |
+| -- | ------------------------------------------------------------------------- | ------ |
+| 22 | Write v0.9.1 release note highlighting dark mode audit                    | 5m     |
+| 23 | Add `docs/dark-mode-guide.md` (comprehensive consumer guide)              | 15m    |
+| 24 | Update `docs/migration/v0.8-to-v0.9.md` with dark mode compliance section | 10m    |
+| 25 | Add dark mode section to `docs/tailwind-v4-adoption-guide.md`             | 10m    |
 
 ### CSS infrastructure
 
-| #   | Task                                                                   | Effort |
-| --- | ---------------------------------------------------------------------- | ------ |
-| 26  | Add `dark:` variants to remaining `shadow-xs`/`shadow-sm` instances    | 10m    |
-| 27  | Verify `backdrop-blur-xs` is sufficient in dark mode                   | 5m     |
-| 28  | Add `dark:` variants to `ring-offset` in `layout/base.templ` skip link | 3m     |
-| 29  | Add `-webkit-scrollbar` styling for dark mode (Safari/Chrome)          | 10m    |
-| 30  | Verify `color-scheme` propagation to shadow DOM components             | 5m     |
+| #  | Task                                                                   | Effort |
+| -- | ---------------------------------------------------------------------- | ------ |
+| 26 | Add `dark:` variants to remaining `shadow-xs`/`shadow-sm` instances    | 10m    |
+| 27 | Verify `backdrop-blur-xs` is sufficient in dark mode                   | 5m     |
+| 28 | Add `dark:` variants to `ring-offset` in `layout/base.templ` skip link | 3m     |
+| 29 | Add `-webkit-scrollbar` styling for dark mode (Safari/Chrome)          | 10m    |
+| 30 | Verify `color-scheme` propagation to shadow DOM components             | 5m     |
 
 ### Accessibility
 
-| #   | Task                                                                | Effort |
-| --- | ------------------------------------------------------------------- | ------ |
-| 31  | Verify all dark mode color combinations with actual browser testing | 15m    |
-| 32  | Test with screen readers in dark mode (NVDA, VoiceOver)             | 15m    |
-| 33  | Add `prefers-contrast: more` media query support                    | 10m    |
-| 34  | Verify high-contrast mode (Windows) compatibility                   | 10m    |
+| #  | Task                                                                | Effort |
+| -- | ------------------------------------------------------------------- | ------ |
+| 31 | Verify all dark mode color combinations with actual browser testing | 15m    |
+| 32 | Test with screen readers in dark mode (NVDA, VoiceOver)             | 15m    |
+| 33 | Add `prefers-contrast: more` media query support                    | 10m    |
+| 34 | Verify high-contrast mode (Windows) compatibility                   | 10m    |
 
 ### Code quality
 
-| #   | Task                                                                               | Effort |
-| --- | ---------------------------------------------------------------------------------- | ------ |
-| 35  | Extract dark mode exception list to a shared variable (reduce test duplication)    | 5m     |
-| 36  | Add `TestDarkModeHoverVariants` — scan for `hover:` without `dark:hover:`          | 12m    |
-| 37  | Add `TestDarkModeFocusVariants` — scan for `focus:` without `dark:focus:`          | 12m    |
-| 38  | Add `TestDarkModeRingOffset` — scan for `ring-offset-` without `dark:ring-offset-` | 8m     |
-| 39  | Add `TestDarkModeShadowVariants` — scan for `shadow-*` without `dark:shadow-*`     | 8m     |
-| 40  | Consider a `darkModeClass()` helper to reduce boilerplate                          | 10m    |
+| #  | Task                                                                               | Effort |
+| -- | ---------------------------------------------------------------------------------- | ------ |
+| 35 | Extract dark mode exception list to a shared variable (reduce test duplication)    | 5m     |
+| 36 | Add `TestDarkModeHoverVariants` — scan for `hover:` without `dark:hover:`          | 12m    |
+| 37 | Add `TestDarkModeFocusVariants` — scan for `focus:` without `dark:focus:`          | 12m    |
+| 38 | Add `TestDarkModeRingOffset` — scan for `ring-offset-` without `dark:ring-offset-` | 8m     |
+| 39 | Add `TestDarkModeShadowVariants` — scan for `shadow-*` without `dark:shadow-*`     | 8m     |
+| 40 | Consider a `darkModeClass()` helper to reduce boilerplate                          | 10m    |
 
 ### Release / CI
 
-| #   | Task                                                                        | Effort |
-| --- | --------------------------------------------------------------------------- | ------ |
-| 41  | Add dark mode compliance tests to CI workflow (`.github/workflows/ci.yaml`) | 5m     |
-| 42  | Add `GOEXPERIMENT=jsonv2` to CI if migrating                                | 5m     |
-| 43  | Tag v0.9.1 release                                                          | 5m     |
-| 44  | Update ROADMAP.md with dark mode compliance milestone                       | 5m     |
-| 45  | Add v0.9.1 migration notes to `docs/migration/`                             | 10m    |
+| #  | Task                                                                        | Effort |
+| -- | --------------------------------------------------------------------------- | ------ |
+| 41 | Add dark mode compliance tests to CI workflow (`.github/workflows/ci.yaml`) | 5m     |
+| 42 | Add `GOEXPERIMENT=jsonv2` to CI if migrating                                | 5m     |
+| 43 | Tag v0.9.1 release                                                          | 5m     |
+| 44 | Update ROADMAP.md with dark mode compliance milestone                       | 5m     |
+| 45 | Add v0.9.1 migration notes to `docs/migration/`                             | 10m    |
 
 ### Future features
 
-| #   | Task                                                              | Effort |
-| --- | ----------------------------------------------------------------- | ------ |
-| 46  | Add `Theme` context propagation (components detect current theme) | 20m    |
-| 47  | Add `data-theme` attribute support (alternative to `.dark` class) | 10m    |
-| 48  | Add automatic theme detection from system preference (without JS) | 10m    |
-| 49  | Add dark mode preview mode to demo page (separate `/dark` route)  | 10m    |
-| 50  | Add theme persistence to cookie (server-side rendering support)   | 15m    |
+| #  | Task                                                              | Effort |
+| -- | ----------------------------------------------------------------- | ------ |
+| 46 | Add `Theme` context propagation (components detect current theme) | 20m    |
+| 47 | Add `data-theme` attribute support (alternative to `.dark` class) | 10m    |
+| 48 | Add automatic theme detection from system preference (without JS) | 10m    |
+| 49 | Add dark mode preview mode to demo page (separate `/dark` route)  | 10m    |
+| 50 | Add theme persistence to cookie (server-side rendering support)   | 15m    |
 
 ---
 

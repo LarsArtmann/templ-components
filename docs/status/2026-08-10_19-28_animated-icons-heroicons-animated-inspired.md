@@ -9,17 +9,20 @@
 ## a) FULLY DONE
 
 ### Core implementation
+
 1. **`icons/animation.go`** — `Animation` typed enum with 10 presets (`AnimPulse`, `AnimBeat`, `AnimBounce`, `AnimWiggle`, `AnimSpin`, `AnimJump`, `AnimNod`, `AnimShake`, `AnimBlink`, `AnimSplit`). `IsValid()` method. `DefaultAnimation(name)` per-icon mapping. `AllAnimations()` sorted list. Consistency validation in tests ensures all mapped icons exist in `iconPathData` and all mapped animations are valid.
 2. **`icons/animated_icon.templ`** — `AnimatedIcon(name, class)` renders with the icon's default animation. `AnimatedIconWithAnimation(name, anim, class)` for explicit control. `AnimNone` renders plain `Icon()` without the wrapper span. Delegates to `@Icon()` internally (no SVG duplication).
 3. **`templates/custom.css`** — 10 `@keyframes` + hover/focus-within rules + `prefers-reduced-motion` override block. Uses modern individual transform properties (`scale`, `rotate`, `translate`) for smooth composition. Per-path animations (`AnimBlink`, `AnimSplit`) target `svg path:nth-child(N)`.
 4. **Generated file committed:** `icons/animated_icon_templ.go` generated and ready.
 
 ### Tests
+
 5. **`icons/animation_test.go`** — `TestAnimationIsValid` (all 10 + AnimNone + bogus), `TestDefaultAnimation` (13 cases), `TestAllAnimations` (count + sort + no AnimNone), `TestDefaultAnimationConsistency` (all mapped icons are valid names + all animations are valid).
 6. **`icons/animated_icon_test.go`** — wrapper structure assertions, per-animation class checks (9 cases), AnimNone renders plain, Spinner defaults to plain, all path icons can animate (full sweep), per-path animation path-count guard (`TestPerPathAnimationsHaveCorrectPathCount`), valid HTML structure.
 7. **`icons/example_test.go`** — `ExampleAnimatedIcon`, `ExampleAnimatedIconWithAnimation`, `ExampleAnimation_IsValid`, `ExampleDefaultAnimation` (with `// Output:` assertions).
 
 ### Documentation
+
 8. **`icons/doc.go`** — package doc updated with Animated Icons section + usage examples.
 9. **`AGENTS.md`** — animated icons entry added with full technical detail.
 10. **SKILL.md** — icon function table updated with 4 new entries.
@@ -27,6 +30,7 @@
 12. **`docs/icons-only-adoption.md`** — new "Animated icons" section with default-animation table + CSS dependency note.
 
 ### Verification
+
 13. **Build:** `GOEXPERIMENT=jsonv2 go build ./...` — clean (root + all modules).
 14. **Tests:** `go test ./icons/... -count=1` — all pass (40+ test cases).
 15. **Lint:** `golangci-lint run ./...` (icons module standalone) — 0 issues.
@@ -71,21 +75,25 @@ One honest callout: **I initially put `Refresh` and `ArrowPath` in the `defaultA
 ## e) WHAT WE SHOULD IMPROVE
 
 ### Architecture & API
+
 1. **`AnimSplit` is a dead preset.** No icon defaults to it. Either find/add a 2-path icon that warrants it, or remove it to avoid confusion. Right now it's an attractive nuisance — consumers will try it and get silent no-ops on most icons.
 2. **No runtime guard for per-path animations on wrong-path-count icons.** `AnimatedIconWithAnimation(Eye, AnimSplit, class)` silently does nothing. Options: (a) document the requirement loudly, (b) add a Go-side guard that falls back to a whole-SVG animation, (c) emit a `data-tc-anim-warning` attribute for debugging.
 3. **The `<span>` wrapper changes DOM structure.** `Icon()` renders a bare `<svg>`, but `AnimatedIcon()` renders `<span><svg></svg></span>`. This could break consumers who rely on the SVG being a direct child of a flex/grid container (the span introduces an extra nesting level). Consider: (a) documenting this, (b) using a `<g>` wrapper inside the SVG instead (but then hover wouldn't work the same way), (c) making the wrapper optional.
 4. **No `AnimatedIconRTL` variant.** `IconRTL` exists for directional icons, but there's no animated RTL equivalent. Consumers who need both animation AND RTL mirroring have to choose.
 
 ### Coverage
+
 5. **Only 10 of 316 heroicons-animated animations implemented.** The source has unique animations per icon. We generalized to 10 categories, which is pragmatic, but many icons in the source have bespoke animations that don't map cleanly to any of our 10 presets (e.g., `archive-box-arrow-down` has a downward arrow slide, `finger-print` has a sweep effect).
 6. **No way for consumers to register custom animations.** The 10 presets are hardcoded. A registry pattern (`RegisterAnimation(name, cssClass)`) would allow extensibility.
 
 ### Testing
+
 7. **No CSS existence guard for `.tc-anim-*` classes** (see c5/c6).
 8. **No visual regression baseline.** Can't catch CSS regressions in the animation keyframes.
 9. **No golden snapshot.** Render output isn't locked.
 
 ### CSS Quality
+
 10. **The `prefers-reduced-motion` override uses `!important` on 5 properties.** This is heavy-handed but necessary to override both `animation` and individual transform properties. An alternative is wrapping all animation rules in `@media (prefers-reduced-motion: no-preference)` instead, which is cleaner (animations only apply when the user hasn't requested reduced motion).
 11. **No dark-mode interaction.** Animations work fine in dark mode (they're transform-based), but there's no test asserting this.
 12. **The `AnimSpin` transition approach** (`transition: rotate 0.5s cubic-bezier(...)`) lingers after hover ends — the icon stays rotated until mouse leave. This matches the heroicons-animated source (spring physics), but could surprise consumers expecting a "play once and reset" behavior.
@@ -95,6 +103,7 @@ One honest callout: **I initially put `Refresh` and `ArrowPath` in the `defaultA
 ## f) Up to 50 Things We Should Get Done Next
 
 ### High priority (correctness & safety)
+
 1. Add `Refresh`/`ArrowPath` to `defaultAnimations` via their canonical name (`Refresh` is in `iconPathData`; `ArrowPath` is the alias — need to verify which is canonical)
 2. Remove `AnimSplit` preset OR find a 2-path icon to default it to (currently a dead feature)
 3. Extend `TestCustomCSSUtilities` to scan `icons/*.templ` for `tc-anim-*` classes and verify they exist in `custom.css`
@@ -105,10 +114,11 @@ One honest callout: **I initially put `Refresh` and `ArrowPath` in the `defaultA
 8. Document the `<span>` wrapper caveat in `doc.go` and `docs/icons-only-adoption.md`
 
 ### Medium priority (coverage & polish)
+
 9. Map more icons to thoughtful defaults (currently 35/102 explicitly mapped)
 10. Add animated icons to the demo page (`examples/demo/`)
 11. Add a visual regression test for at least the wrapper structure
-12. Consider `@media (prefers-reduced-motion: no-preference)` refact  or instead of the `!important` override block
+12. Consider `@media (prefers-reduced-motion: no-preference)` refact or instead of the `!important` override block
 13. Add `AnimatedIconRTL` variant
 14. Update `README.md` with animated icons mention
 15. Add BDD test for animated icon behavior in `icons/bdd_test.go`
@@ -121,6 +131,7 @@ One honest callout: **I initially put `Refresh` and `ArrowPath` in the `defaultA
 22. Verify `focus-within` works correctly when the icon is inside a focusable parent
 
 ### Lower priority (nice-to-have)
+
 23. Backfill more verified-from-source animation assignments (fetch each overlapping `.tsx` and confirm)
 24. Consider CSS `transition` for smoother hover-out on keyframe animations (currently they snap back)
 25. Add a `tc-anim-loop` variant for continuous (non-hover) animation

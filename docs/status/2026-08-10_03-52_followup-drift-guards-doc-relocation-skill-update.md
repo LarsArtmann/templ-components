@@ -13,6 +13,7 @@
 The highest-priority gap from the previous session: the `.tc-fluid-*` CSS classes had no test guarding their existence. If someone deleted the CSS block, nothing would fail.
 
 **What shipped:**
+
 - Scans all `.templ` files in 11 directories (`display`, `feedback`, `forms`, `navigation`, `errorpage`, `layout`, `htmx`, `datastar`, `recipes`, `charts/echarts`, `examples/demo`)
 - Extracts every `tc-*` CSS class name (filtering out `data-tc-*` attributes and `--tc-*` custom properties via a non-capturing prefix regex)
 - Asserts each class is defined in `templates/custom.css` (via `.tc-*` selector regex)
@@ -26,6 +27,7 @@ The highest-priority gap from the previous session: the `.tc-fluid-*` CSS classe
 ### 2. ADR-0033 cross-reference in `docs/research/what-we-are-missing.md`
 
 **What changed:** §2.4 "Declarative Shadow DOM" — replaced the old "Better suited for a scoped components opt-in mode in v2.0+" language with:
+
 - "**Permanently rejected.** See ADR-0033."
 - A 5-line explanation of why (Shadow DOM breaks Tailwind, distribution problem doesn't exist for Go-source lib, native APIs already achieve the goal)
 - A blockquote noting the overturn: "This section previously said... That conclusion has been overturned."
@@ -34,29 +36,33 @@ The highest-priority gap from the previous session: the `.tc-fluid-*` CSS classe
 ### 3. `docs/DOMAIN_LANGUAGE.md` glossary entries
 
 Added 3 rows to the "Platform terms" table:
-| Term | What it says |
-|------|-------------|
-| **Fluid Typography** | CSS utility classes scaling font size via `clamp(min, Ncqi + base, max)`. Six classes, zero JS, Baseline 2023. |
-| **Container Query Units** | CSS length units (`cqi`, `cqw`, `cqh`, `cqmin`, `cqmax`) resolving relative to nearest `@container` ancestor. |
-| **Web Components** | Custom Elements + Shadow DOM + HTML Templates. **Permanently rejected** (ADR-0033). |
+
+| Term                      | What it says                                                                                                   |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| **Fluid Typography**      | CSS utility classes scaling font size via `clamp(min, Ncqi + base, max)`. Six classes, zero JS, Baseline 2023. |
+| **Container Query Units** | CSS length units (`cqi`, `cqw`, `cqh`, `cqmin`, `cqmax`) resolving relative to nearest `@container` ancestor.  |
+| **Web Components**        | Custom Elements + Shadow DOM + HTML Templates. **Permanently rejected** (ADR-0033).                            |
 
 ### 4. Strategy doc relocation (`docs/research/` → `docs/`)
 
 The container-query leveraging strategy is a living reference, not point-in-time research. Moved via `git mv` (history preserved).
 
 **All cross-references updated (4 files):**
+
 - `CHANGELOG.md` — `docs/research/container-query-strategy.md` → `docs/container-query-strategy.md`
 - `AGENTS.md` — same path fix in the container queries convention paragraph
 - `ROADMAP.md` — same path fix in the container-aware expansion table row
 - `docs/status/2026-08-10_02-50_*.md` — same path fix in the status report's own file reference
 
 **Relative links inside the strategy doc fixed:**
+
 - `../adr/` → `adr/` (3 links)
 - `../recipes/` → `recipes/` (3 links)
 
 ### 5. Recipe cross-link (`docs/recipes/container-queries.md`)
 
 Added a prominent "See also" line immediately after the intro blockquote:
+
 > **See also:** [Container Query Leveraging Strategy](../container-query-strategy.md) | [Fluid Typography](fluid-typography.md) | [ADR-0018](../adr/0018-container-query-native-contract.md)
 
 Previously the strategy doc was only linked at the bottom of the recipe.
@@ -72,6 +78,7 @@ Added a "Custom CSS utilities" subsection documenting all `.tc-*` classes: overl
 Added `TestCustomCSSUtilities` row to the compliance test catalog.
 
 **Part 2 — Mandatory conventions:**
+
 - Expanded container queries convention: lists all 8 container-aware components, mentions fluid typography, cross-references ADR-0018 + strategy doc, explicitly forbids expanding to marginal candidates
 - Added new bullet: "Web Components are permanently rejected (ADR-0033)" with 4-line rationale
 
@@ -80,6 +87,7 @@ Added `TestCustomCSSUtilities` row to the compliance test catalog.
 ### 7. CHANGELOG entry
 
 Added to `[Unreleased]` → Added:
+
 > `TestCustomCSSUtilities` drift-guard. New scanner in `utils/custom_css_test.go` asserts every `tc-*` CSS class used in `.templ` files is defined in `templates/custom.css` — catches silent CSS deletions and missing definitions before consumers hit visual regressions.
 
 ### Verification (all green)
@@ -108,12 +116,15 @@ I updated §2.4 and the priority table. But I did not search the entire 500+ lin
 ## c) NOT STARTED
 
 ### Visual verification of fluid typography demo
+
 Not attempted. The CSS classes are present in compiled `examples/demo/static/app.css` (verified via grep), and the HTML structure is correct (golden tests pass), but I did not run the demo binary and screenshot the fluid typography section at different container widths. Same status as previous session.
 
 ### Golden test for the demo's fluid typography section
+
 No golden snapshot test was added for the new demo section in `examples/demo/display_demo.templ`. The demo package has no test files (`[no test files]`), so this would be a new test file.
 
 ### Visual regression golden for `.tc-fluid-*`
+
 Not attempted. Same reasoning as previous session — the visual test framework supports `Viewport` but not per-element container width, so testing fluid typography would need a new `ContainerWidth` option or a custom harness.
 
 ---
@@ -121,9 +132,11 @@ Not attempted. Same reasoning as previous session — the visual test framework 
 ## d) TOTALLY FUCKED UP
 
 ### The stale LSP diagnostics (cosmetic, self-correcting)
+
 After rewriting `utils/custom_css_test.go` to fix gocognit/gci/gosec issues, the LSP continued showing 3 warnings (`gocognit`, `gosec`, `gci`) that `golangci-lint run` reported as 0 issues. I spent a moment confused by this before confirming via CLI that the file was actually clean. The LSP diagnostics were stale — they reflected the pre-refactor version of the file. Not a real bug, but I should have recognized the staleness pattern faster instead of second-guessing my rewrite.
 
 ### The `golangci-lint run ./utils/custom_css_test.go ./utils/...` invocation mistake
+
 In the final verification, I mixed a single-file argument with a package glob (`./utils/custom_css_test.go ./utils/...`), which caused `golangci-lint` to error: `named files must be .go files: ./utils/...`. I fixed this by re-running with the correct package-only invocation. Sloppy — I should know that `golangci-lint` takes either files OR packages, not both.
 
 ---
@@ -131,18 +144,23 @@ In the final verification, I mixed a single-file argument with a package glob (`
 ## e) WHAT WE SHOULD IMPROVE
 
 ### 1. The `TestCustomCSSUtilities` scanner should be symmetric with `TestTailwindGoSourceScanning`
+
 `TestTailwindGoSourceScanning` exists specifically because Tailwind classes were hidden in `.go` map literals that `.templ`-only scanning missed. The same risk exists for `tc-*` classes — a component could build a class string in Go and never reference it in `.templ`. The scanner should optionally check `.go` files too (excluding `*_templ.go` and `*_test.go`), or at least document the gap.
 
 ### 2. The `cssClassExceptions` map mixes different categories
+
 The exceptions list combines genuinely different things: JS state hooks (`tc-menu-open`, `tc-btn-loading`), element IDs that happen to match the pattern (`tc-toast-container`), and classes defined elsewhere (`tc-echarts` which is in the ECharts component's inline styles). A cleaner design would separate these into named categories. Low priority — the map works and each entry has a reason string.
 
 ### 3. I didn't check whether `docs/research/what-we-are-missing.md` references DSD outside §2.4
+
 The document is 500+ lines. I did a targeted edit on the section I knew about, but didn't grep the full document for "shadow", "DSD", "Web Components", "encapsulation" to find other potentially stale references. The `what-we-are-missing.md` doc may have a summary table or intro paragraph that still lists DSD as a future possibility.
 
 ### 4. The SKILL.md table row for `TestCustomCSSUtilities` was initially missing the closing `|`
+
 When I added the compliance test table row, the old_string match consumed the closing `|` and my new_string didn't re-add it. I caught this on visual inspection of the file and fixed it immediately, but it's the kind of thing that would have rendered as a broken table in any Markdown viewer. The edit tool's exact-match requirement means I need to be more careful about trailing delimiters in table rows.
 
 ### 5. I should have verified the compiled demo CSS contains `tc-fluid-*` as part of the test suite
+
 I manually grepped `examples/demo/static/app.css` for `tc-fluid` and confirmed the classes are present. But this is a manual check — if someone recompiles the demo CSS without `--minify` (as happened in the previous session), the classes might still be there but the format wrong. A test asserting the compiled CSS contains specific class definitions would be more robust. However, this is really `TestCSSFreshness`'s job (which already exists).
 
 ---
@@ -234,10 +252,13 @@ I manually grepped `examples/demo/static/app.css` for `tc-fluid` and confirmed t
 ## g) Questions I CANNOT figure out myself
 
 ### 1. Should `TestCustomCSSUtilities` also scan `.go` files for `tc-*` classes?
+
 The scanner currently only searches `.templ` files. The precedent (`TestTailwindGoSourceScanning`) exists because Tailwind classes were found in `.go` map literals that `.templ`-only scanning missed. The same risk exists for `tc-*` classes — but right now all `tc-*` classes in `.go` files are test assertions or string constants, not component rendering. Scanning `.go` files would catch more but also require more exceptions. Should I extend it, or is the `.templ`-only scope correct for now?
 
 ### 2. Should the `.tc-fluid-*` classes be applied to existing components (PageHeader, StatCard, NotFound404) as part of this session's work, or is that a separate feature?
+
 The strategy doc identifies these as natural candidates (items #31-33 in the previous session's list). Applying them would be a one-line change per component (adding the class to the title element). But it changes default rendering — consumers who didn't ask for fluid typography would get it. The safe path is to add a `FluidTypography bool` prop to each component, but that's API surface. What's the right call: apply now (opinionated), add a prop (opt-in), or defer to a separate session?
 
 ### 3. Is it time to cut a patch release (`1.8.2`) with this session's + the previous session's work?
+
 The `[Unreleased]` section is warm with: fluid typography utilities, strategy doc, ADR-0033, visual regression CI gate, `TestCustomCSSUtilities` drift-guard. No Go API changes, no breaking changes. The release convention says every feature commit adds its changelog entry immediately (done). But whether to cut is your call. Should I run `scripts/release.sh 0.8.2 "..."`, or let this accumulate with future work toward `1.9.0`?

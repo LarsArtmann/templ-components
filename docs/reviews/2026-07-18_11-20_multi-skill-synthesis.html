@@ -243,24 +243,29 @@
       <header>
         <h1>Multi-Skill Review — Synthesis</h1>
         <div class="sub">
-          13 skills run across docs, code, architecture, naming, data model, duplication,
-          modularization, nix, copy, and design.
+          13 skills run across docs, code, architecture, naming, data model,
+          duplication, modularization, nix, copy, and design.
         </div>
         <div class="meta">
           <span><b>Date:</b> 2026-07-18</span>
           <span><b>Project:</b> templ-components v0.18.0</span>
           <span><b>Head:</b> 042954d → working tree (uncommitted fixes)</span>
-          <span><b>Outcome:</b> clean codebase, docs de-drifted, 3 actionable defects</span>
+          <span
+            ><b>Outcome:</b> clean codebase, docs de-drifted, 3 actionable
+            defects</span
+          >
         </div>
       </header>
 
       <div class="hero-score">
         <div class="big">9 / 10</div>
         <div>
-          <b>Overall project health.</b> The Go/templ source is in excellent shape (0 lint, 0 new
-          duplication, 13/13 packages green, 0 TODO debt). Documentation drift was found and fixed
-          across the README, website, and living docs. The only blocking items are three defects in
-          the release-cut shell script. No refactor, no redesign, no rename is warranted.
+          <b>Overall project health.</b> The Go/templ source is in excellent
+          shape (0 lint, 0 new duplication, 13/13 packages green, 0 TODO debt).
+          Documentation drift was found and fixed across the README, website,
+          and living docs. The only blocking items are three defects in the
+          release-cut shell script. No refactor, no redesign, no rename is
+          warranted.
         </div>
       </div>
 
@@ -312,8 +317,9 @@
             <tr>
               <td>docs-health</td>
               <td>
-                Fixed 6 drift items: stale icon count, TODO version header, "unreleased"→shipped, 3
-                dup TODO items, README badge, ROADMAP enum count
+                Fixed 6 drift items: stale icon count, TODO version header,
+                "unreleased"→shipped, 3 dup TODO items, README badge, ROADMAP
+                enum count
               </td>
               <td><span class="sev ok">fresh</span></td>
               <td>inline fixes</td>
@@ -321,21 +327,31 @@
             <tr>
               <td>update-old-docs</td>
               <td>
-                100+ historical docs reviewed; <b>all left alone</b> (dated snapshots, living docs
-                carry current state — restraint applied)
+                100+ historical docs reviewed; <b>all left alone</b> (dated
+                snapshots, living docs carry current state — restraint applied)
               </td>
               <td><span class="sev ok">correct</span></td>
               <td>decision recorded</td>
             </tr>
             <tr>
               <td>code-quality-scan</td>
-              <td>Build ✓ · lint 0 · tests 14/14 · 0 new clones · 3 release.sh defects surfaced</td>
+              <td>
+                Build ✓ · lint 0 · tests 14/14 · 0 new clones · 3 release.sh
+                defects surfaced
+              </td>
               <td><span class="sev ok">9/10</span></td>
-              <td><a href="../../reviews/2026-07-18_09-45_code-quality-scan.html">HTML</a></td>
+              <td>
+                <a href="../../reviews/2026-07-18_09-45_code-quality-scan.html"
+                  >HTML</a
+                >
+              </td>
             </tr>
             <tr>
               <td>architecture-review</td>
-              <td>Layered, acyclic, max fan-out 5, 3 external deps, utils as leaf hub</td>
+              <td>
+                Layered, acyclic, max fan-out 5, 3 external deps, utils as leaf
+                hub
+              </td>
               <td><span class="sev ok">9/10</span></td>
               <td>
                 <a
@@ -349,41 +365,57 @@
               <td>Current-state + target-state D2 diagrams rendered to SVG</td>
               <td><span class="sev ok">done</span></td>
               <td>
-                <a href="../../architecture-understanding/2026-07-18_10-05-current-state.d2">.d2</a>
+                <a
+                  href="../../architecture-understanding/2026-07-18_10-05-current-state.d2"
+                  >.d2</a
+                >
                 + .svg
               </td>
             </tr>
             <tr>
               <td>full-code-review</td>
               <td>
-                0 TODO debt, 0 stringly-typed logic, 0 split brains, 0 dead code; only release.sh
-                defects
+                0 TODO debt, 0 stringly-typed logic, 0 split brains, 0 dead
+                code; only release.sh defects
               </td>
               <td><span class="sev ok">9/10</span></td>
-              <td><a href="../../reviews/2026-07-18_10-15_full-code-review.html">HTML</a></td>
+              <td>
+                <a href="../../reviews/2026-07-18_10-15_full-code-review.html"
+                  >HTML</a
+                >
+              </td>
             </tr>
             <tr>
               <td>naming-review</td>
               <td>
-                0 vague-noun/verb types, uniform Default*Props constructors (69), 2 defensible Low
-                notes
+                0 vague-noun/verb types, uniform Default*Props constructors
+                (69), 2 defensible Low notes
               </td>
               <td><span class="sev ok">9/10</span></td>
-              <td><a href="../../reviews/2026-07-18_10-30_naming-review.html">HTML</a></td>
+              <td>
+                <a href="../../reviews/2026-07-18_10-30_naming-review.html"
+                  >HTML</a
+                >
+              </td>
             </tr>
             <tr>
               <td>data-model-review</td>
               <td>
-                74 props structs, 0 pointer-as-state fields, 41 typed enums; model fits purpose, no
-                redesign
+                74 props structs, 0 pointer-as-state fields, 41 typed enums;
+                model fits purpose, no redesign
               </td>
               <td><span class="sev ok">9/10</span></td>
-              <td><a href="../../reviews/2026-07-18_10-40_data-model-review.html">HTML</a></td>
+              <td>
+                <a href="../../reviews/2026-07-18_10-40_data-model-review.html"
+                  >HTML</a
+                >
+              </td>
             </tr>
             <tr>
               <td>deduplicate-code</td>
               <td>
-                Zero harmful duplication; 3 threshold-3 groups all acceptable (test infra + demo)
+                Zero harmful duplication; 3 threshold-3 groups all acceptable
+                (test infra + demo)
               </td>
               <td><span class="sev ok">clean</span></td>
               <td>inline verdict</td>
@@ -391,25 +423,35 @@
             <tr>
               <td>go-modularize</td>
               <td>
-                Defer to v1.0 — pre-freeze API makes the versioning benefit moot; confirms
-                2026-05-14 proposal
+                Defer to v1.0 — pre-freeze API makes the versioning benefit
+                moot; confirms 2026-05-14 proposal
               </td>
               <td><span class="sev low">defer</span></td>
-              <td><a href="../../modularization/2026-07-18_10-50_assessment.html">HTML</a></td>
+              <td>
+                <a href="../../modularization/2026-07-18_10-50_assessment.html"
+                  >HTML</a
+                >
+              </td>
             </tr>
             <tr>
               <td>nix-flake-migration</td>
               <td>
-                Already on flake-parts; add treefmt-nix + checks (website already has treefmt)
+                Already on flake-parts; add treefmt-nix + checks (website
+                already has treefmt)
               </td>
               <td><span class="sev low">refine</span></td>
-              <td><a href="../../proposals/2026-07-18_10-55_nix-flake-migration.html">HTML</a></td>
+              <td>
+                <a
+                  href="../../proposals/2026-07-18_10-55_nix-flake-migration.html"
+                  >HTML</a
+                >
+              </td>
             </tr>
             <tr>
               <td>copywriting</td>
               <td>
-                Tightened README headline; fixed 9 stale counts (97→94, 34→37) across README +
-                website hero/features/OG/api-reference
+                Tightened README headline; fixed 9 stale counts (97→94, 34→37)
+                across README + website hero/features/OG/api-reference
               </td>
               <td><span class="sev ok">improved</span></td>
               <td>inline fixes</td>
@@ -417,12 +459,15 @@
             <tr>
               <td>frontend-design</td>
               <td>
-                Site already distinctive (warm stone, Space Grotesk, disciplined motion); one push:
-                commit to amber signature accent
+                Site already distinctive (warm stone, Space Grotesk, disciplined
+                motion); one push: commit to amber signature accent
               </td>
               <td><span class="sev ok">strong</span></td>
               <td>
-                <a href="../../reviews/2026-07-18_11-10_frontend-design-assessment.html">HTML</a>
+                <a
+                  href="../../reviews/2026-07-18_11-10_frontend-design-assessment.html"
+                  >HTML</a
+                >
               </td>
             </tr>
           </tbody>
@@ -434,25 +479,29 @@
         <div class="card solution">
           <div class="h">Documentation de-drift (committed-ready)</div>
           <ul class="tight">
-            <li><code>AGENTS.md</code> — icon count "101 total" → "102 total" + alias detail</li>
             <li>
-              <code>TODO_LIST.md</code> — version 0.17.0 → 0.18.0; "Modern web standards — Shipped
-              (unreleased)" → "Shipped in v0.18.0"; removed 3 duplicate items (#60/#63/#64 = dups of
-              #38/#35/#39)
+              <code>AGENTS.md</code> — icon count "101 total" → "102 total" +
+              alias detail
             </li>
             <li>
-              <code>README.md</code> — version badge v0.17.0 → v0.18.0; headline tightened; 97→94
-              components, 34→37 enums (4 places)
+              <code>TODO_LIST.md</code> — version 0.17.0 → 0.18.0; "Modern web
+              standards — Shipped (unreleased)" → "Shipped in v0.18.0"; removed
+              3 duplicate items (#60/#63/#64 = dups of #38/#35/#39)
+            </li>
+            <li>
+              <code>README.md</code> — version badge v0.17.0 → v0.18.0; headline
+              tightened; 97→94 components, 34→37 enums (4 places)
             </li>
             <li><code>ROADMAP.md</code> — "30+ enums" → "37 enums"</li>
             <li>
-              <code>website/src/components/HeroSection.astro</code> — metrics 97→94, 34→37; subhead
-              97→94
+              <code>website/src/components/HeroSection.astro</code> — metrics
+              97→94, 34→37; subhead 97→94
             </li>
             <li>
               <code>website/src/data/features.ts</code>,
               <code>website/src/pages/og/[...slug].ts</code>,
-              <code>website/src/content/docs/api-reference.mdx</code> — 34→37 / 97→94
+              <code>website/src/content/docs/api-reference.mdx</code> — 34→37 /
+              97→94
             </li>
           </ul>
         </div>
@@ -461,9 +510,9 @@
       <section>
         <h2>The 3 actionable defects (the only blockers)</h2>
         <p>
-          All three live in <code>scripts/release.sh</code>, identified by the v0.18.0 release
-          post-mortem and confirmed still present at HEAD. They are the only items blocking a
-          "clean" bill of health.
+          All three live in <code>scripts/release.sh</code>, identified by the
+          v0.18.0 release post-mortem and confirmed still present at HEAD. They
+          are the only items blocking a "clean" bill of health.
         </p>
         <table>
           <thead>
@@ -480,25 +529,35 @@
               <td>1</td>
               <td><span class="sev medium">Medium</span></td>
               <td class="loc">scripts/release.sh:137</td>
-              <td>Duplicated release-summary line in commit body (also in subject)</td>
-              <td>Drop leading <code>${RELEASE_SUMMARY}</code> from <code>RELEASE_BODY</code></td>
+              <td>
+                Duplicated release-summary line in commit body (also in subject)
+              </td>
+              <td>
+                Drop leading <code>${RELEASE_SUMMARY}</code> from
+                <code>RELEASE_BODY</code>
+              </td>
             </tr>
             <tr>
               <td>2</td>
               <td><span class="sev medium">Medium</span></td>
               <td class="loc">scripts/release.sh:143</td>
               <td>
-                Hardcoded wrong attribution <code>Assisted-by: Crush:MiniMax-M3</code> (v0.18.0 tag
-                falsely claims MiniMax-M3)
+                Hardcoded wrong attribution
+                <code>Assisted-by: Crush:MiniMax-M3</code> (v0.18.0 tag falsely
+                claims MiniMax-M3)
               </td>
-              <td>Read model from <code>crush_info</code> / env var, or omit the line</td>
+              <td>
+                Read model from <code>crush_info</code> / env var, or omit the
+                line
+              </td>
             </tr>
             <tr>
               <td>3</td>
               <td><span class="sev low">Low</span></td>
               <td class="loc">scripts/release.sh:102-109</td>
               <td>
-                Hostile stdin prompt; empty stdin → anemic commit body violating AGENTS.md spec
+                Hostile stdin prompt; empty stdin → anemic commit body violating
+                AGENTS.md spec
               </td>
               <td>
                 Add <code>--notes-file</code> or auto-derive from CHANGELOG
@@ -514,26 +573,29 @@
         <div class="card warning">
           <div class="h">Flake standardization (~30 min)</div>
           <p>
-            Add <code>treefmt-nix</code> (nixfmt + gofumpt + goimports + templ) and a
-            <code>checks</code> block to the root <code>flake.nix</code>, matching what
-            <code>website/flake.nix</code> already does. Do NOT add git-hooks.nix — BuildFlow owns
-            pre-commit.
+            Add <code>treefmt-nix</code> (nixfmt + gofumpt + goimports + templ)
+            and a <code>checks</code> block to the root <code>flake.nix</code>,
+            matching what <code>website/flake.nix</code> already does. Do NOT
+            add git-hooks.nix — BuildFlow owns pre-commit.
           </p>
         </div>
         <div class="card warning">
           <div class="h">Website amber signature accent (design)</div>
           <p>
-            Commit to <code>--color-amber</code> as the marketing-site signature (eyebrows, metric
-            numbers, hover states), keeping blue as the installable-library brand color. First step:
-            recolor hero metrics + eyebrow to amber.
+            Commit to <code>--color-amber</code> as the marketing-site signature
+            (eyebrows, metric numbers, hover states), keeping blue as the
+            installable-library brand color. First step: recolor hero metrics +
+            eyebrow to amber.
           </p>
         </div>
         <div class="card warning">
           <div class="h">Validate() — scoped, not blanket (data model)</div>
           <p>
-            Update TODO_LIST #62: do NOT add <code>Validate()</code> to all 74 props structs. Keep
-            render-time fallback for presentational props; add <code>Validate()</code> only to
-            <code>errorpage.ErrorPageProps</code> where invalid config produces a broken page.
+            Update TODO_LIST #62: do NOT add <code>Validate()</code> to all 74
+            props structs. Keep render-time fallback for presentational props;
+            add <code>Validate()</code> only to
+            <code>errorpage.ErrorPageProps</code> where invalid config produces
+            a broken page.
           </p>
         </div>
       </section>
@@ -543,30 +605,34 @@
         <div class="card solution">
           <div class="h">Drift-guard tests block regression</div>
           <p>
-            Version ↔ CHANGELOG ↔ FEATURES counts, dark-mode compliance, motion-reduce compliance,
-            CSP nonce, docs-count — all enforced by failing tests. This is why the library stayed
-            clean through 18 releases.
+            Version ↔ CHANGELOG ↔ FEATURES counts, dark-mode compliance,
+            motion-reduce compliance, CSP nonce, docs-count — all enforced by
+            failing tests. This is why the library stayed clean through 18
+            releases.
           </p>
         </div>
         <div class="card solution">
           <div class="h">Type safety is taken seriously</div>
           <p>
-            37 closed-set enums with IsValid(), typed lookup maps, zero interface{} in prod,
-            surgical generics. No stringly-typed domain logic.
+            37 closed-set enums with IsValid(), typed lookup maps, zero
+            interface{} in prod, surgical generics. No stringly-typed domain
+            logic.
           </p>
         </div>
         <div class="card solution">
           <div class="h">Native web platform over JS</div>
           <p>
-            Modal/Drawer on &lt;dialog&gt;, Accordion on &lt;details&gt;, Carousel on scroll-snap,
-            Textarea on field-sizing. ~200 lines of focus-trap JS eliminated in v0.18.0.
+            Modal/Drawer on &lt;dialog&gt;, Accordion on &lt;details&gt;,
+            Carousel on scroll-snap, Textarea on field-sizing. ~200 lines of
+            focus-trap JS eliminated in v0.18.0.
           </p>
         </div>
         <div class="card solution">
           <div class="h">Tiny, intentional dependency surface</div>
           <p>
-            3 external repos (templ, tailwind-merge-go, go-error-family). No HTTP framework, no ORM,
-            no logging lib. icons-only adoption is a free emergent property.
+            3 external repos (templ, tailwind-merge-go, go-error-family). No
+            HTTP framework, no ORM, no logging lib. icons-only adoption is a
+            free emergent property.
           </p>
         </div>
       </section>
@@ -582,9 +648,10 @@
       </section>
 
       <footer>
-        Synthesis generated 2026-07-18. 13 skills executed; this is the roll-up. Per-skill HTML
-        reports linked above. Point-in-time snapshot; living state in CI + AGENTS.md + CHANGELOG.md.
-        Note: edits are uncommitted in the working tree per the "never commit unless asked" rule.
+        Synthesis generated 2026-07-18. 13 skills executed; this is the roll-up.
+        Per-skill HTML reports linked above. Point-in-time snapshot; living
+        state in CI + AGENTS.md + CHANGELOG.md. Note: edits are uncommitted in
+        the working tree per the "never commit unless asked" rule.
       </footer>
     </div>
   </body>

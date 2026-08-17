@@ -167,33 +167,33 @@
 
 ## f) Top 25 Things to Get Done Next
 
-| #   | Priority | Task                                                                    | Effort | Impact                            |
-| --- | -------- | ----------------------------------------------------------------------- | ------ | --------------------------------- |
-| 1   | **P0**   | Fix the failing formatRelativeTime boundary test (wrong expectation)    | 2 min  | Critical — test suite is RED      |
-| 2   | **P0**   | Investigate & fix branch-switching instability (BuildFlow/watcher)      | 30 min | Critical — prevents reliable work |
-| 3   | **P1**   | Add remaining IsValid() methods (AvatarSize, BadgeType, GridCols, etc.) | 20 min | High                              |
-| 4   | **P1**   | OverlayKind typed enum for closeKind/componentName                      | 15 min | High                              |
-| 5   | **P1**   | CopyButton execCommand('copy') fallback                                 | 10 min | Medium                            |
-| 6   | **P1**   | CopyButton aria-live="polite" for "Copied!"                             | 5 min  | Medium                            |
-| 7   | **P2**   | Integration tests: CopyButton+Card, CountBadge+Button                   | 12 min | Medium                            |
-| 8   | **P2**   | Integration tests: DefinitionGrid+Grid, Image+fallback                  | 10 min | Medium                            |
-| 9   | **P2**   | Golden test: StatCard HTMX hx-get variant                               | 10 min | Low                               |
-| 10  | **P2**   | Golden test: Card.Body slot variant                                     | 10 min | Low                               |
-| 11  | **P2**   | Document Image srcset limitation in godoc                               | 5 min  | Low                               |
-| 12  | **P2**   | Benchmark tests for CopyButton, CountBadge, Image, LoadMore             | 15 min | Low                               |
-| 13  | **P2**   | Remove stale Tooltip known issue from FEATURES.md (already fixed)       | 2 min  | Low                               |
-| 14  | **P3**   | SKILL.md Part 2: document CopyButton/Image/CountBadge patterns          | 20 min | Medium                            |
-| 15  | **P3**   | Demo: anchor-linked table of contents                                   | 15 min | Medium                            |
-| 16  | **P3**   | Demo: standalone /forms quickstart route                                | 30 min | Medium                            |
-| 17  | **P3**   | Add runnable cursor pagination example to demo                          | 20 min | Low                               |
-| 18  | **P3**   | Tag v0.7.0 release (many improvements since v0.6.1)                     | 15 min | High                              |
-| 19  | **P3**   | Sortable data table (consumer-requested feature)                        | 2-4h   | High                              |
-| 20  | **P3**   | Filter dropdown component (consumer-requested)                          | 1-2h   | Medium                            |
-| 21  | **P4**   | CLI tool: `templ-components add <component>` (shadcn-style)             | 4-8h   | High                              |
-| 22  | **P4**   | Demo/showcase site (live rendered components)                           | 4-8h   | Critical for adoption             |
-| 23  | **P4**   | Form validation pipeline: `forms.Validate(input, rules)`                | 4-8h   | High                              |
-| 24  | **P4**   | Headless/unstyled component variants                                    | 8-16h  | Medium                            |
-| 25  | **P4**   | Real-world example app (CRUD admin panel with auth)                     | 16-40h | Critical for ecosystem            |
+| #  | Priority | Task                                                                    | Effort | Impact                            |
+| -- | -------- | ----------------------------------------------------------------------- | ------ | --------------------------------- |
+| 1  | **P0**   | Fix the failing formatRelativeTime boundary test (wrong expectation)    | 2 min  | Critical — test suite is RED      |
+| 2  | **P0**   | Investigate & fix branch-switching instability (BuildFlow/watcher)      | 30 min | Critical — prevents reliable work |
+| 3  | **P1**   | Add remaining IsValid() methods (AvatarSize, BadgeType, GridCols, etc.) | 20 min | High                              |
+| 4  | **P1**   | OverlayKind typed enum for closeKind/componentName                      | 15 min | High                              |
+| 5  | **P1**   | CopyButton execCommand('copy') fallback                                 | 10 min | Medium                            |
+| 6  | **P1**   | CopyButton aria-live="polite" for "Copied!"                             | 5 min  | Medium                            |
+| 7  | **P2**   | Integration tests: CopyButton+Card, CountBadge+Button                   | 12 min | Medium                            |
+| 8  | **P2**   | Integration tests: DefinitionGrid+Grid, Image+fallback                  | 10 min | Medium                            |
+| 9  | **P2**   | Golden test: StatCard HTMX hx-get variant                               | 10 min | Low                               |
+| 10 | **P2**   | Golden test: Card.Body slot variant                                     | 10 min | Low                               |
+| 11 | **P2**   | Document Image srcset limitation in godoc                               | 5 min  | Low                               |
+| 12 | **P2**   | Benchmark tests for CopyButton, CountBadge, Image, LoadMore             | 15 min | Low                               |
+| 13 | **P2**   | Remove stale Tooltip known issue from FEATURES.md (already fixed)       | 2 min  | Low                               |
+| 14 | **P3**   | SKILL.md Part 2: document CopyButton/Image/CountBadge patterns          | 20 min | Medium                            |
+| 15 | **P3**   | Demo: anchor-linked table of contents                                   | 15 min | Medium                            |
+| 16 | **P3**   | Demo: standalone /forms quickstart route                                | 30 min | Medium                            |
+| 17 | **P3**   | Add runnable cursor pagination example to demo                          | 20 min | Low                               |
+| 18 | **P3**   | Tag v0.7.0 release (many improvements since v0.6.1)                     | 15 min | High                              |
+| 19 | **P3**   | Sortable data table (consumer-requested feature)                        | 2-4h   | High                              |
+| 20 | **P3**   | Filter dropdown component (consumer-requested)                          | 1-2h   | Medium                            |
+| 21 | **P4**   | CLI tool: `templ-components add <component>` (shadcn-style)             | 4-8h   | High                              |
+| 22 | **P4**   | Demo/showcase site (live rendered components)                           | 4-8h   | Critical for adoption             |
+| 23 | **P4**   | Form validation pipeline: `forms.Validate(input, rules)`                | 4-8h   | High                              |
+| 24 | **P4**   | Headless/unstyled component variants                                    | 8-16h  | Medium                            |
+| 25 | **P4**   | Real-world example app (CRUD admin panel with auth)                     | 16-40h | Critical for ecosystem            |
 
 ---
 

@@ -6,38 +6,38 @@
 
 ### 1% → 51% Impact (Critical Fixes)
 
-| #   | Task                                             | Impact      | Effort | Files                                           |
-| --- | ------------------------------------------------ | ----------- | ------ | ----------------------------------------------- |
-| 1   | Fix NavLinkProps.Attrs shadowing BaseProps.Attrs | P0 bug      | 15min  | navigation/nav_link.templ                       |
-| 2   | Validate Modal/Dropdown ID (panic on empty)      | P1 safety   | 15min  | display/modal.templ, dropdown.templ             |
-| 3   | Fix Dropdown JS XSS (use strconv.Quote)          | P1 security | 20min  | display/dropdown.templ                          |
-| 4   | Add aria-required to form inputs                 | P1 a11y     | 15min  | forms/input.templ, select.templ, textarea.templ |
+| # | Task                                             | Impact      | Effort | Files                                           |
+| - | ------------------------------------------------ | ----------- | ------ | ----------------------------------------------- |
+| 1 | Fix NavLinkProps.Attrs shadowing BaseProps.Attrs | P0 bug      | 15min  | navigation/nav_link.templ                       |
+| 2 | Validate Modal/Dropdown ID (panic on empty)      | P1 safety   | 15min  | display/modal.templ, dropdown.templ             |
+| 3 | Fix Dropdown JS XSS (use strconv.Quote)          | P1 security | 20min  | display/dropdown.templ                          |
+| 4 | Add aria-required to form inputs                 | P1 a11y     | 15min  | forms/input.templ, select.templ, textarea.templ |
 
 ### 4% → 64% Impact (Architecture Fixes)
 
-| #   | Task                                            | Impact      | Effort | Files                                   |
-| --- | ----------------------------------------------- | ----------- | ------ | --------------------------------------- |
-| 5   | Consolidate Badge color maps into single struct | P2 dedup    | 20min  | display/badge.templ                     |
-| 6   | Unify JS attachment pattern (IIFE standard)     | P2 arch     | 30min  | display/accordion.templ, dropdown.templ |
-| 7   | Decouple htmx from feedback.Spinner             | P2 coupling | 20min  | htmx/loading.templ                      |
-| 8   | Fix Accordion state detection (aria-expanded)   | P1 robust   | 15min  | display/accordion.templ                 |
+| # | Task                                            | Impact      | Effort | Files                                   |
+| - | ----------------------------------------------- | ----------- | ------ | --------------------------------------- |
+| 5 | Consolidate Badge color maps into single struct | P2 dedup    | 20min  | display/badge.templ                     |
+| 6 | Unify JS attachment pattern (IIFE standard)     | P2 arch     | 30min  | display/accordion.templ, dropdown.templ |
+| 7 | Decouple htmx from feedback.Spinner             | P2 coupling | 20min  | htmx/loading.templ                      |
+| 8 | Fix Accordion state detection (aria-expanded)   | P1 robust   | 15min  | display/accordion.templ                 |
 
 ### 20% → 80% Impact (Quality & Completeness)
 
-| #   | Task                                              | Impact     | Effort | Files                             |
-| --- | ------------------------------------------------- | ---------- | ------ | --------------------------------- |
-| 9   | Replace Tab.Active with ActiveTabID               | P2 types   | 20min  | display/tabs.templ                |
-| 10  | Add Avatar Alt field                              | P1 a11y    | 10min  | display/avatar.templ              |
-| 11  | Remove dead code (IconAttrs)                      | P2 cleanup | 5min   | icons/icon_helpers.go             |
-| 12  | Shared dismissScript for Alert/Toast              | P2 dedup   | 20min  | feedback/alert.templ, toast.templ |
-| 13  | Add BDD tests for navigation                      | P1 testing | 30min  | navigation/bdd_test.go            |
-| 14  | Add BDD tests for htmx                            | P1 testing | 30min  | htmx/bdd_test.go                  |
-| 15  | Add BDD tests for layout                          | P1 testing | 20min  | layout/bdd_test.go                |
-| 16  | Add BDD tests for icons                           | P2 testing | 15min  | icons/bdd_test.go                 |
-| 17  | Extract tooltip position/arrow to single function | P3 dedup   | 10min  | display/tooltip.templ             |
-| 18  | Extract card shell CSS helper                     | P3 dedup   | 10min  | display/card.templ                |
-| 19  | Add Table scope attributes                        | P2 a11y    | 10min  | display/table.templ               |
-| 20  | Make GlobalErrorHandling configurable             | P2 config  | 15min  | htmx/error_handling.templ         |
+| #  | Task                                              | Impact     | Effort | Files                             |
+| -- | ------------------------------------------------- | ---------- | ------ | --------------------------------- |
+| 9  | Replace Tab.Active with ActiveTabID               | P2 types   | 20min  | display/tabs.templ                |
+| 10 | Add Avatar Alt field                              | P1 a11y    | 10min  | display/avatar.templ              |
+| 11 | Remove dead code (IconAttrs)                      | P2 cleanup | 5min   | icons/icon_helpers.go             |
+| 12 | Shared dismissScript for Alert/Toast              | P2 dedup   | 20min  | feedback/alert.templ, toast.templ |
+| 13 | Add BDD tests for navigation                      | P1 testing | 30min  | navigation/bdd_test.go            |
+| 14 | Add BDD tests for htmx                            | P1 testing | 30min  | htmx/bdd_test.go                  |
+| 15 | Add BDD tests for layout                          | P1 testing | 20min  | layout/bdd_test.go                |
+| 16 | Add BDD tests for icons                           | P2 testing | 15min  | icons/bdd_test.go                 |
+| 17 | Extract tooltip position/arrow to single function | P3 dedup   | 10min  | display/tooltip.templ             |
+| 18 | Extract card shell CSS helper                     | P3 dedup   | 10min  | display/card.templ                |
+| 19 | Add Table scope attributes                        | P2 a11y    | 10min  | display/table.templ               |
+| 20 | Make GlobalErrorHandling configurable             | P2 config  | 15min  | htmx/error_handling.templ         |
 
 ## Architecture Deepening Opportunities
 

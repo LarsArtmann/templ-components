@@ -199,53 +199,53 @@ The closest things to "problems":
 
 ### Tier 1: High Impact, Low Effort (< 30 min each)
 
-| #   | Task                                                                               | Impact          | Effort | Rationale                         |
-| --- | ---------------------------------------------------------------------------------- | --------------- | ------ | --------------------------------- |
-| 1   | Test `DefaultRadioProps()`, `DefaultRadioGroupProps()`, `DefaultInputGroupProps()` | Coverage        | 10min  | Three 0% functions, trivial tests |
-| 2   | Fix `dropdownItemLink` coverage (44.7% → 80%+)                                     | Coverage        | 15min  | Only function <50% outside demo   |
-| 3   | Extract `"Go back"` to constant in `errorpage/handler.go`                          | Cleanliness     | 5min   | Duplicated string                 |
-| 4   | Split `errorpage/handler.go` → `handler.go` + `constructors.go`                    | Maintainability | 10min  | Only file >300 lines              |
-| 5   | Typed enum keys for 7 lookup maps (`map[BadgeSize]string`)                         | Type safety     | 20min  | Eliminates `string()` casts       |
-| 6   | Test Toggle disabled state + aria-checked                                          | A11y/Coverage   | 15min  | New feature untested              |
-| 7   | Test Radio disabled option + DefaultRadioProps                                     | A11y/Coverage   | 15min  | Missing edge cases                |
-| 8   | Test FileInput disabled + DefaultFileInputProps                                    | Coverage        | 10min  | Missing edge cases                |
+| # | Task                                                                               | Impact          | Effort | Rationale                         |
+| - | ---------------------------------------------------------------------------------- | --------------- | ------ | --------------------------------- |
+| 1 | Test `DefaultRadioProps()`, `DefaultRadioGroupProps()`, `DefaultInputGroupProps()` | Coverage        | 10min  | Three 0% functions, trivial tests |
+| 2 | Fix `dropdownItemLink` coverage (44.7% → 80%+)                                     | Coverage        | 15min  | Only function <50% outside demo   |
+| 3 | Extract `"Go back"` to constant in `errorpage/handler.go`                          | Cleanliness     | 5min   | Duplicated string                 |
+| 4 | Split `errorpage/handler.go` → `handler.go` + `constructors.go`                    | Maintainability | 10min  | Only file >300 lines              |
+| 5 | Typed enum keys for 7 lookup maps (`map[BadgeSize]string`)                         | Type safety     | 20min  | Eliminates `string()` casts       |
+| 6 | Test Toggle disabled state + aria-checked                                          | A11y/Coverage   | 15min  | New feature untested              |
+| 7 | Test Radio disabled option + DefaultRadioProps                                     | A11y/Coverage   | 15min  | Missing edge cases                |
+| 8 | Test FileInput disabled + DefaultFileInputProps                                    | Coverage        | 10min  | Missing edge cases                |
 
 ### Tier 2: High Impact, Medium Effort (1-2 hours each)
 
-| #   | Task                                                                                | Impact       | Effort | Rationale                                |
-| --- | ----------------------------------------------------------------------------------- | ------------ | ------ | ---------------------------------------- |
-| 9   | Add `HTMLButtonType` enum for `ButtonProps.Type`                                    | Type safety  | 30min  | Currently raw string, accepts anything   |
-| 10  | Add `htmlEscape()` direct unit tests                                                | Security     | 30min  | XSS-relevant function at 50% coverage    |
-| 11  | Add forms/ `aria-*` attribute tests (aria-checked, role="radiogroup", aria-invalid) | A11y         | 1hr    | forms/ a11y_test.go only tests dark mode |
-| 12  | BDD tests for `forms/` package                                                      | Quality      | 1.5hr  | Behavioral test coverage                 |
-| 13  | BDD tests for `navigation/` package                                                 | Quality      | 1hr    | Behavioral test coverage                 |
-| 14  | Add CI coverage threshold (e.g., 60% minimum)                                       | Quality gate | 15min  | Prevent regression                       |
+| #  | Task                                                                                | Impact       | Effort | Rationale                                |
+| -- | ----------------------------------------------------------------------------------- | ------------ | ------ | ---------------------------------------- |
+| 9  | Add `HTMLButtonType` enum for `ButtonProps.Type`                                    | Type safety  | 30min  | Currently raw string, accepts anything   |
+| 10 | Add `htmlEscape()` direct unit tests                                                | Security     | 30min  | XSS-relevant function at 50% coverage    |
+| 11 | Add forms/ `aria-*` attribute tests (aria-checked, role="radiogroup", aria-invalid) | A11y         | 1hr    | forms/ a11y_test.go only tests dark mode |
+| 12 | BDD tests for `forms/` package                                                      | Quality      | 1.5hr  | Behavioral test coverage                 |
+| 13 | BDD tests for `navigation/` package                                                 | Quality      | 1hr    | Behavioral test coverage                 |
+| 14 | Add CI coverage threshold (e.g., 60% minimum)                                       | Quality gate | 15min  | Prevent regression                       |
 
 ### Tier 3: Medium Impact, Medium Effort (2-4 hours each)
 
-| #   | Task                                                                 | Impact      | Effort | Rationale                          |
-| --- | -------------------------------------------------------------------- | ----------- | ------ | ---------------------------------- |
-| 15  | BDD tests for `display/` package                                     | Quality     | 2hr    | Largest package by component count |
-| 16  | BDD tests for `feedback/` package                                    | Quality     | 1.5hr  | Behavioral test coverage           |
-| 17  | Keyboard navigation tests (Modal Escape, Dropdown Escape, Tab order) | A11y        | 3hr    | Biggest a11y gap                   |
-| 18  | `ProgressBarProps.Color` typed enum with presets                     | Type safety | 1hr    | Currently raw string               |
+| #  | Task                                                                 | Impact      | Effort | Rationale                          |
+| -- | -------------------------------------------------------------------- | ----------- | ------ | ---------------------------------- |
+| 15 | BDD tests for `display/` package                                     | Quality     | 2hr    | Largest package by component count |
+| 16 | BDD tests for `feedback/` package                                    | Quality     | 1.5hr  | Behavioral test coverage           |
+| 17 | Keyboard navigation tests (Modal Escape, Dropdown Escape, Tab order) | A11y        | 3hr    | Biggest a11y gap                   |
+| 18 | `ProgressBarProps.Color` typed enum with presets                     | Type safety | 1hr    | Currently raw string               |
 
 ### Tier 4: High Impact, High Effort (New Features)
 
-| #   | Task                                             | Impact  | Effort | Rationale                                     |
-| --- | ------------------------------------------------ | ------- | ------ | --------------------------------------------- |
-| 19  | **Drawer component** (slide-out panel)           | Feature | 4hr    | Common UI pattern, Modal-like architecture    |
-| 20  | **Form wrapper** (form-level validation, submit) | Feature | 6hr    | High-value for consumers, ties forms together |
-| 21  | **DatePicker component**                         | Feature | 8hr    | Complex, requires date handling library       |
-| 22  | **Combobox component**                           | Feature | 6hr    | Complex, requires search + keyboard nav       |
+| #  | Task                                             | Impact  | Effort | Rationale                                     |
+| -- | ------------------------------------------------ | ------- | ------ | --------------------------------------------- |
+| 19 | **Drawer component** (slide-out panel)           | Feature | 4hr    | Common UI pattern, Modal-like architecture    |
+| 20 | **Form wrapper** (form-level validation, submit) | Feature | 6hr    | High-value for consumers, ties forms together |
+| 21 | **DatePicker component**                         | Feature | 8hr    | Complex, requires date handling library       |
+| 22 | **Combobox component**                           | Feature | 6hr    | Complex, requires search + keyboard nav       |
 
 ### Tier 5: Infrastructure & Release
 
-| #   | Task                                              | Impact      | Effort | Rationale                                  |
-| --- | ------------------------------------------------- | ----------- | ------ | ------------------------------------------ |
-| 23  | Documentation site (auto-generated API docs)      | Adoption    | 4hr    | Helps consumers discover components        |
-| 24  | Remove deprecated `AlertType`/`ToastType` aliases | API cleanup | 30min  | Clean public API for v0.2.0                |
-| 25  | Cut v0.2.0 release tag                            | Milestone   | 1hr    | First public version with breaking changes |
+| #  | Task                                              | Impact      | Effort | Rationale                                  |
+| -- | ------------------------------------------------- | ----------- | ------ | ------------------------------------------ |
+| 23 | Documentation site (auto-generated API docs)      | Adoption    | 4hr    | Helps consumers discover components        |
+| 24 | Remove deprecated `AlertType`/`ToastType` aliases | API cleanup | 30min  | Clean public API for v0.2.0                |
+| 25 | Cut v0.2.0 release tag                            | Milestone   | 1hr    | First public version with breaking changes |
 
 ---
 

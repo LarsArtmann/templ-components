@@ -21,35 +21,35 @@ The demo loads `@tailwindcss/browser@4` (client-side JIT). This is:
 
 ### Phase 1: Push & Verify (51% result, ~15 min)
 
-| #   | Task                                 | Est.   | Status  |
-| --- | ------------------------------------ | ------ | ------- |
-| 1   | `git push origin master`             | 1 min  | pending |
-| 2   | Watch CI run, fix failures           | 10 min | pending |
-| 3   | Watch website workflow, fix failures | 10 min | pending |
+| # | Task                                 | Est.   | Status  |
+| - | ------------------------------------ | ------ | ------- |
+| 1 | `git push origin master`             | 1 min  | pending |
+| 2 | Watch CI run, fix failures           | 10 min | pending |
+| 3 | Watch website workflow, fix failures | 10 min | pending |
 
 ### Phase 2: Pre-Compiled CSS (80% result, ~30 min)
 
-| #   | Task                                                                                 | Est.   | Status  |
-| --- | ------------------------------------------------------------------------------------ | ------ | ------- |
-| 4   | Create `examples/demo/demo.css` Tailwind entry point with theme + `@source` scanning | 5 min  | pending |
-| 5   | Add multi-stage Dockerfile: Node → CSS compile → Go → embed → distroless             | 10 min | pending |
-| 6   | Add `//go:embed demo.css` + serve from `/css/app.css` in demo binary                 | 10 min | pending |
-| 7   | Remove Tailwind CDN + Google Fonts CDN from `tailwindV4CDN` template                 | 5 min  | pending |
+| # | Task                                                                                 | Est.   | Status  |
+| - | ------------------------------------------------------------------------------------ | ------ | ------- |
+| 4 | Create `examples/demo/demo.css` Tailwind entry point with theme + `@source` scanning | 5 min  | pending |
+| 5 | Add multi-stage Dockerfile: Node → CSS compile → Go → embed → distroless             | 10 min | pending |
+| 6 | Add `//go:embed demo.css` + serve from `/css/app.css` in demo binary                 | 10 min | pending |
+| 7 | Remove Tailwind CDN + Google Fonts CDN from `tailwindV4CDN` template                 | 5 min  | pending |
 
 ### Phase 3: Sidebar Layout (~20 min)
 
-| #   | Task                                                                         | Est.   | Status  |
-| --- | ---------------------------------------------------------------------------- | ------ | ------- |
-| 8   | Replace TOC pills with fixed left sidebar (package groups + component links) | 15 min | pending |
-| 9   | Add scroll-spy highlight (active section)                                    | 5 min  | pending |
+| # | Task                                                                         | Est.   | Status  |
+| - | ---------------------------------------------------------------------------- | ------ | ------- |
+| 8 | Replace TOC pills with fixed left sidebar (package groups + component links) | 15 min | pending |
+| 9 | Add scroll-spy highlight (active section)                                    | 5 min  | pending |
 
 ### Phase 4: Polish (~15 min)
 
-| #   | Task                                     | Est.  | Status  |
-| --- | ---------------------------------------- | ----- | ------- |
-| 10  | Rebuild Docker image, redeploy Cloud Run | 5 min | pending |
-| 11  | Verify all endpoints return 200          | 5 min | pending |
-| 12  | Commit all + push                        | 5 min | pending |
+| #  | Task                                     | Est.  | Status  |
+| -- | ---------------------------------------- | ----- | ------- |
+| 10 | Rebuild Docker image, redeploy Cloud Run | 5 min | pending |
+| 11 | Verify all endpoints return 200          | 5 min | pending |
+| 12 | Commit all + push                        | 5 min | pending |
 
 ## Mermaid Graph
 

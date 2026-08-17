@@ -54,16 +54,16 @@ class, swaps viewport breakpoints (`sm:`/`md:`/`lg:`) for container variants
 (`@sm:`/`@md:`/`@lg:`). Since v2.0, `Grid`, `Card`, and `Split` default `true`;
 the other 5 default `false`.
 
-| Component                   | Flag               | What adapts                                  | Default |
-| --------------------------- | ------------------ | -------------------------------------------- | ------- |
-| `display.Grid`              | `ContainerAware`   | Column count (1→2→3→N)                       | `true`  |
-| `display.Card`              | `ContainerAware`   | Padding (compact below `@sm:`)               | `true`  |
-| `display.DefinitionGrid`    | `ContainerAware`   | Term-detail card grid column count           | `false` |
-| `navigation.Nav`            | `ContainerAware`   | Collapse to hamburger below `@sm:`           | `false` |
-| `navigation.Pagination`     | `ContainerAware`   | Mobile prev/next vs full page numbers        | `false` |
-| `layout.Split`              | `ContainerAware`   | 2-col main+aside collapses to stacked below `@md:` | `true`  |
-| `forms.Form`                | `ContainerAware`   | Grid layout label/value columns below `@sm:` | `false` |
-| `feedback.SkeletonCardGrid` | `ContainerAware`   | Loading skeleton grid matches `Grid.ContainerAware` | `false` |
+| Component                   | Flag             | What adapts                                         | Default |
+| --------------------------- | ---------------- | --------------------------------------------------- | ------- |
+| `display.Grid`              | `ContainerAware` | Column count (1→2→3→N)                              | `true`  |
+| `display.Card`              | `ContainerAware` | Padding (compact below `@sm:`)                      | `true`  |
+| `display.DefinitionGrid`    | `ContainerAware` | Term-detail card grid column count                  | `false` |
+| `navigation.Nav`            | `ContainerAware` | Collapse to hamburger below `@sm:`                  | `false` |
+| `navigation.Pagination`     | `ContainerAware` | Mobile prev/next vs full page numbers               | `false` |
+| `layout.Split`              | `ContainerAware` | 2-col main+aside collapses to stacked below `@md:`  | `true`  |
+| `forms.Form`                | `ContainerAware` | Grid layout label/value columns below `@sm:`        | `false` |
+| `feedback.SkeletonCardGrid` | `ContainerAware` | Loading skeleton grid matches `Grid.ContainerAware` | `false` |
 
 ### Split — article+sidebar in a constrained container
 

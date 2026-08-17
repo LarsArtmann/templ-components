@@ -6,12 +6,12 @@ This guide walks through each change and what you need to do.
 
 ## Quick summary
 
-| Change | Impact | Migration effort |
-|--------|--------|-----------------|
-| 7-module workspace split | Import paths unchanged; `internal/*` → `utils/*` | None (if you didn't import `internal/`) |
-| HTMX self-host by default | HTMX embedded inline, no CDN request | Set `HTMXSrc: ""` to keep CDN |
-| Container-aware by default | Grid, Card, Split use container queries | Set `ContainerAware: false` for viewport |
-| Alias removal | `AlertType`/`ToastType` removed | Rename to `FeedbackType` |
+| Change                     | Impact                                           | Migration effort                         |
+| -------------------------- | ------------------------------------------------ | ---------------------------------------- |
+| 7-module workspace split   | Import paths unchanged; `internal/*` → `utils/*` | None (if you didn't import `internal/`)  |
+| HTMX self-host by default  | HTMX embedded inline, no CDN request             | Set `HTMXSrc: ""` to keep CDN            |
+| Container-aware by default | Grid, Card, Split use container queries          | Set `ContainerAware: false` for viewport |
+| Alias removal              | `AlertType`/`ToastType` removed                  | Rename to `FeedbackType`                 |
 
 ---
 
@@ -93,12 +93,12 @@ activates when `HTMXSrc == "self"`.
 
 ### Trade-offs
 
-| Self-host (default) | CDN (opt-in) |
-|---------------------|-------------|
-| No external request | Browser caching across sites |
-| ~50KB inline per page | Shared cache via CDN |
+| Self-host (default)         | CDN (opt-in)                        |
+| --------------------------- | ----------------------------------- |
+| No external request         | Browser caching across sites        |
+| ~50KB inline per page       | Shared cache via CDN                |
 | No SRI needed (same-origin) | SRI verification via integrity attr |
-| Works offline / air-gapped | Requires network access |
+| Works offline / air-gapped  | Requires network access             |
 
 ---
 
@@ -109,11 +109,11 @@ viewport breakpoints. See ADR-0018.
 
 ### What changed
 
-| Component | Field | v1.x default | v2.0 default |
-|-----------|-------|-------------|-------------|
-| `Grid` | `ContainerAware` | `false` (viewport) | `true` (container) |
-| `Card` | `ContainerAware` | `false` (viewport) | `true` (container) |
-| `Split` | `ContainerAware` | `false` (viewport) | `true` (container) |
+| Component | Field            | v1.x default       | v2.0 default       |
+| --------- | ---------------- | ------------------ | ------------------ |
+| `Grid`    | `ContainerAware` | `false` (viewport) | `true` (container) |
+| `Card`    | `ContainerAware` | `false` (viewport) | `true` (container) |
+| `Split`   | `ContainerAware` | `false` (viewport) | `true` (container) |
 
 Additionally, `Grid.ContainerResponsive` has been **renamed** to
 `Grid.ContainerAware` for consistency with all other components.
@@ -146,19 +146,19 @@ Type aliases and constants that were deprecated since v0.x have been removed.
 
 ### What changed
 
-| Removed | Replacement |
-|---------|------------|
-| `feedback.AlertType` | `feedback.FeedbackType` |
-| `feedback.ToastType` | `feedback.FeedbackType` |
-| `feedback.AlertSuccess` | `feedback.FeedbackSuccess` |
-| `feedback.AlertError` | `feedback.FeedbackError` |
-| `feedback.AlertWarning` | `feedback.FeedbackWarning` |
-| `feedback.AlertInfo` | `feedback.FeedbackInfo` |
-| `feedback.ToastSuccess` | `feedback.FeedbackSuccess` |
-| `feedback.ToastError` | `feedback.FeedbackError` |
-| `feedback.ToastWarning` | `feedback.FeedbackWarning` |
-| `feedback.ToastInfo` | `feedback.FeedbackInfo` |
-| `Grid.ContainerResponsive` | `Grid.ContainerAware` |
+| Removed                    | Replacement                |
+| -------------------------- | -------------------------- |
+| `feedback.AlertType`       | `feedback.FeedbackType`    |
+| `feedback.ToastType`       | `feedback.FeedbackType`    |
+| `feedback.AlertSuccess`    | `feedback.FeedbackSuccess` |
+| `feedback.AlertError`      | `feedback.FeedbackError`   |
+| `feedback.AlertWarning`    | `feedback.FeedbackWarning` |
+| `feedback.AlertInfo`       | `feedback.FeedbackInfo`    |
+| `feedback.ToastSuccess`    | `feedback.FeedbackSuccess` |
+| `feedback.ToastError`      | `feedback.FeedbackError`   |
+| `feedback.ToastWarning`    | `feedback.FeedbackWarning` |
+| `feedback.ToastInfo`       | `feedback.FeedbackInfo`    |
+| `Grid.ContainerResponsive` | `Grid.ContainerAware`      |
 
 ### What you need to do
 

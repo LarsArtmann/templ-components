@@ -65,14 +65,14 @@
 
         /* --- Type stacks (system only — zero external fonts) --- */
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
 
       * {
@@ -289,15 +289,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
 
       /* --- Issue cards --- */
@@ -310,15 +322,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue h3 {
         margin-bottom: 0.3rem;
@@ -827,8 +851,8 @@
           <div class="hero-badge">Self-review</div>
           <h1>templ-components — what I forgot and what to fix next</h1>
           <p class="hero-subtitle">
-            A brutally honest reflection on the current state of the codebase, the docs that lie,
-            and the highest-value next steps.
+            A brutally honest reflection on the current state of the codebase,
+            the docs that lie, and the highest-value next steps.
           </p>
         </div>
 
@@ -870,19 +894,24 @@
           <div class="where">git status</div>
           <p>
             The previous session left uncommitted changes: a broken
-            <code>docs/DOMAIN_LANGUAGE.md</code> glossary table, a newsletter component, a nixpkgs
-            bump, and reformatted planning files. I should have inspected and committed or fixed
-            these before starting.
+            <code>docs/DOMAIN_LANGUAGE.md</code> glossary table, a newsletter
+            component, a nixpkgs bump, and reformatted planning files. I should
+            have inspected and committed or fixed these before starting.
           </p>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
-          <h3>I accepted the "97 components" and "75 generated files" counts without verifying</h3>
-          <div class="where">FEATURES.md:23, AGENTS.md:53, SKILL.md:29, website</div>
+          <h3>
+            I accepted the "97 components" and "75 generated files" counts
+            without verifying
+          </h3>
+          <div class="where">
+            FEATURES.md:23, AGENTS.md:53, SKILL.md:29, website
+          </div>
           <p>
-            The actual exported templ function count is 94 and the generated file count is 82. These
-            numbers were copied from older docs and drifted. This is a classic split-brain between
-            code and docs.
+            The actual exported templ function count is 94 and the generated
+            file count is 82. These numbers were copied from older docs and
+            drifted. This is a classic split-brain between code and docs.
           </p>
         </div>
 
@@ -892,13 +921,14 @@
           <h3>The domain-language glossary table was broken</h3>
           <div class="where">docs/DOMAIN_LANGUAGE.md:8-19</div>
           <p>
-            A four-column separator under a three-column header and a literal pipe character inside
-            the IconPath cell made the Markdown table unreadable. This should have been caught by a
-            renderer or a doc lint check.
+            A four-column separator under a three-column header and a literal
+            pipe character inside the IconPath cell made the Markdown table
+            unreadable. This should have been caught by a renderer or a doc lint
+            check.
           </p>
           <div class="callout callout-solution">
-            <strong>Fixed</strong> Replaced the malformed separator, removed the pipe from the cell,
-            and used a semicolon to describe the separator.
+            <strong>Fixed</strong> Replaced the malformed separator, removed the
+            pipe from the cell, and used a semicolon to describe the separator.
           </div>
         </div>
         <div class="issue issue-important">
@@ -906,25 +936,29 @@
           <h3>There was no automated guard against doc-count drift</h3>
           <div class="where">utils/skill_count_test.go</div>
           <p>
-            <code>TestSkillComponentCount</code> was informational and only compared against
-            SKILL.md. There was no test that failed when FEATURES.md, AGENTS.md, or the website
-            drifted.
+            <code>TestSkillComponentCount</code> was informational and only
+            compared against SKILL.md. There was no test that failed when
+            FEATURES.md, AGENTS.md, or the website drifted.
           </p>
           <div class="callout callout-solution">
-            <strong>Fixed</strong> Added <code>utils/TestDocsCountDrift</code> which fails the build
-            if component, generated-file, or IsValid counts do not match the actual source.
+            <strong>Fixed</strong> Added
+            <code>utils/TestDocsCountDrift</code> which fails the build if
+            component, generated-file, or IsValid counts do not match the actual
+            source.
           </div>
         </div>
 
-        <h2 id="improve"><span class="num">03</span>What could still improve</h2>
+        <h2 id="improve">
+          <span class="num">03</span>What could still improve
+        </h2>
         <div class="strengths">
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
               <strong>Type safety is already strong</strong>
               <span
-                >37 typed enums with IsValid methods, ComponentProps interface, and generic Lookup
-                helper keep the library predictable.</span
+                >37 typed enums with IsValid methods, ComponentProps interface,
+                and generic Lookup helper keep the library predictable.</span
               >
             </div>
           </div>
@@ -944,9 +978,10 @@
           <h3>Prop-level validation</h3>
           <div class="where">all component props structs</div>
           <p>
-            Most components trust the consumer to provide sensible values. Adding
-            <code>Validate() error</code> methods would turn runtime mistakes into compile-time
-            failures, but it is a v1.0 breaking change.
+            Most components trust the consumer to provide sensible values.
+            Adding
+            <code>Validate() error</code> methods would turn runtime mistakes
+            into compile-time failures, but it is a v1.0 breaking change.
           </p>
         </div>
         <div class="issue issue-nice">
@@ -954,8 +989,9 @@
           <h3>Branded types for IDs, nonces, and URLs</h3>
           <div class="where">utils.BaseProps</div>
           <p>
-            <code>ID string</code> and <code>Nonce string</code> are easy to misuse. Branded types
-            would prevent passing a CSS class where an ID is expected.
+            <code>ID string</code> and <code>Nonce string</code> are easy to
+            misuse. Branded types would prevent passing a CSS class where an ID
+            is expected.
           </p>
         </div>
         <div class="issue issue-nice">
@@ -963,8 +999,8 @@
           <h3>Self-host HTMX by default</h3>
           <div class="where">ADR 0007</div>
           <p>
-            Current layout defaults to a CDN. Serving HTMX from the same origin improves CSP posture
-            and offline reliability.
+            Current layout defaults to a CDN. Serving HTMX from the same origin
+            improves CSP posture and offline reliability.
           </p>
         </div>
 
@@ -974,8 +1010,9 @@
           <div class="migration-content">
             <h4>Keep the docs-drift guard green</h4>
             <p>
-              Whenever a new component is added, update FEATURES.md, AGENTS.md, SKILL.md, and the
-              website counts so the new test continues to pass.
+              Whenever a new component is added, update FEATURES.md, AGENTS.md,
+              SKILL.md, and the website counts so the new test continues to
+              pass.
             </p>
           </div>
         </div>
@@ -984,8 +1021,9 @@
           <div class="migration-content">
             <h4>Add Validate() methods to the top 5 props structs</h4>
             <p>
-              Start with Card, Button, Input, Alert, and Table. This is the highest-impact
-              type-model improvement and can be done behind the v1.0 flag.
+              Start with Card, Button, Input, Alert, and Table. This is the
+              highest-impact type-model improvement and can be done behind the
+              v1.0 flag.
             </p>
           </div>
         </div>
@@ -994,8 +1032,8 @@
           <div class="migration-content">
             <h4>Self-host HTMX as the default</h4>
             <p>
-              Implement ADR 0007: ship HTMX from the library's own static asset path and make CDN
-              opt-in.
+              Implement ADR 0007: ship HTMX from the library's own static asset
+              path and make CDN opt-in.
             </p>
           </div>
         </div>
@@ -1014,8 +1052,8 @@
           <div class="migration-content">
             <h4>Prototype compound components for Modal/Drawer</h4>
             <p>
-              Replace monolithic overlay components with Trigger/Content/Close sub-components for
-              better composability.
+              Replace monolithic overlay components with Trigger/Content/Close
+              sub-components for better composability.
             </p>
           </div>
         </div>

@@ -17,11 +17,13 @@ Prior commits: `cc44ca3` (foundation), `ede8992` (blink guard), `023892a` (RTL +
 ## a) FULLY DONE
 
 ### 1. Cloned heroicons-animated and parsed all 316 source files
+
 - `git clone --depth 1` of `github.com/heroicons-animated/heroicons-animated`
 - All 316 `.tsx` icon components live in `packages/react/src/icons/`
 - Each file contains Motion variant definitions with explicit keyframe arrays
 
 ### 2. Wrote automated classifier (Python)
+
 - Extracts animation properties from each `.tsx`: `scale`, `rotate`, `translateX`,
   `translateY`, `opacity`, `pathLength`, `pathOffset`, `scaleY`, `scaleX`,
   `rotateY`, `rotateX`, `skewX`, `width`, `strokeWidth`, `pathMorph`, `circlePos`
@@ -31,6 +33,7 @@ Prior commits: `cc44ca3` (foundation), `ede8992` (blink guard), `023892a` (RTL +
 - Zero unknowns after the v2 pass (first pass had 18 unknowns, all resolved)
 
 ### 3. Built correct name mapping (our names → heroicons-animated names)
+
 - 95/96 of our icons have a direct source equivalent
 - Many of our names differ from heroicons-animated filenames:
   - `search` → `magnifying-glass`, `lock` → `lock-closed`, `unlock` → `lock-open`
@@ -46,21 +49,24 @@ Prior commits: `cc44ca3` (foundation), `ede8992` (blink guard), `023892a` (RTL +
   plain variant)
 
 ### 4. Corrected 64 of 96 mappings based on source data
+
 **Source classification distribution** (for our 95 matched icons):
-| Preset | Count | Source Pattern |
-|--------|-------|----------------|
-| draw | 20 | pathLength + opacity (self-drawing stroke) |
-| pulse | 19 | scale [1, ~1.1, 1] or opacity flicker |
-| nod | 17 | translateY [0, -N, 0] |
-| bounce | 12 | translateX or combined x/y keyframes |
-| wiggle | 11 | rotate [0, -N, N, ...] oscillation |
-| beat | 4 | scale [1, 0.9, 1.2, 1] overshoot |
-| wobble | 4 | scale + rotate, or rotateY (3D) |
-| spin | 4 | rotate (spring, large rotation) |
-| shake | 4 | rotate + translateX/Y burst |
-| blink | 1 | scaleY per-path (only Eye qualifies — needs 2+ paths) |
+
+| Preset | Count | Source Pattern                                        |
+| ------ | ----- | ----------------------------------------------------- |
+| draw   | 20    | pathLength + opacity (self-drawing stroke)            |
+| pulse  | 19    | scale [1, ~1.1, 1] or opacity flicker                 |
+| nod    | 17    | translateY [0, -N, 0]                                 |
+| bounce | 12    | translateX or combined x/y keyframes                  |
+| wiggle | 11    | rotate [0, -N, N, ...] oscillation                    |
+| beat   | 4     | scale [1, 0.9, 1.2, 1] overshoot                      |
+| wobble | 4     | scale + rotate, or rotateY (3D)                       |
+| spin   | 4     | rotate (spring, large rotation)                       |
+| shake  | 4     | rotate + translateX/Y burst                           |
+| blink  | 1     | scaleY per-path (only Eye qualifies — needs 2+ paths) |
 
 **Key corrections** (most impactful):
+
 - **20 icons moved to `AnimDraw`** (was scattered across pulse/nod/wiggle/shake).
   The source uses `pathLength` self-draw extensively — it's the #1 pattern (74/316
   icons in the full library). Check, X, Share, ShieldCheck, Link, NoSymbol, Minus,
@@ -69,7 +75,7 @@ Prior commits: `cc44ca3` (foundation), `ede8992` (blink guard), `023892a` (RTL +
 - **ChevronRight/Left and ArrowRight/Left moved to `AnimBounce`** (was shake).
   Source uses pure `translateX` — horizontal slide, not rotation.
 - **Lock moved to `AnimWobble`** (was shake). Source uses `rotate [-3, 2, -2, 1, 0]`
-  + `scale [1, 1.02, 0.98, 1]` — scale+rotate is wobble, not shake.
+  - `scale [1, 1.02, 0.98, 1]` — scale+rotate is wobble, not shake.
 - **ExclamationTriangle/Circle moved to `AnimPulse`** (was beat). Source uses
   `scale [1, 1.1, 1]` — gentle pulse, not overshoot beat.
 - **Wrench moved to `AnimWiggle`** (was spin). Source uses
@@ -78,8 +84,10 @@ Prior commits: `cc44ca3` (foundation), `ede8992` (blink guard), `023892a` (RTL +
 - **Calculator moved to `AnimBeat`** (was nod). Source uses `scale [1, 1.5, 1]`.
 
 ### 5. Handled blink fallback for single-path icons
+
 4 icons whose source uses per-path `scaleY`/`scaleX` (blink) but have only 1 SVG
 path in our implementation were adapted:
+
 - **Bookmark** → pulse (source: scaleX/scaleY, but 1 path)
 - **Chart** → pulse (source: opacity+scaleY, but 1 path)
 - **Filter** → pulse (source: scaleX/scaleY, but 1 path)
@@ -87,6 +95,7 @@ path in our implementation were adapted:
   component is closer to nod)
 
 ### 6. Updated source comments on Animation constants
+
 - `AnimBounce`: added ChevronRight as second source example
 - `AnimShake`: replaced stale Play/LockClosed sources with AcademicCap/BugAnt/Key
   (the icons that actually use shake now)
@@ -95,6 +104,7 @@ path in our implementation were adapted:
 - `AnimJump`: noted no icon defaults to jump; kept Home as closest pattern
 
 ### 7. Updated tests
+
 - `TestDefaultAnimation`: updated all existing test cases to match new mappings
 - Added 9 new test cases: Check→draw, X→draw, ChevronRight→bounce,
   ArrowRight→bounce, Wrench→wiggle, Cube→wobble, Calculator→beat, Fire→wiggle,
@@ -105,11 +115,13 @@ path in our implementation were adapted:
   `TestAnimationIsValid`, `TestDefaultAnimationConsistency`) pass unchanged
 
 ### 8. Updated documentation
+
 - `docs/icons-only-adoption.md`: updated the default animation table (Home→pulse,
   ExternalLink→pulse, Lock→wobble, added Check→draw row), added note that all
   96 mappings are verified against source
 
 ### 9. Full verification passed
+
 - `go build ./...` — success (workspace mode)
 - `go test ./...` — all packages pass (10 packages)
 - `golangci-lint run ./...` (icons module standalone) — 0 issues
@@ -120,14 +132,17 @@ path in our implementation were adapted:
 ## b) PARTIALLY DONE
 
 ### Uncommitted changes
+
 Three files are modified but NOT committed (awaiting user decision on commit +
 push):
+
 1. `icons/animation.go` — the `defaultAnimations` map (64 entries changed) +
    Animation constant source comments
 2. `icons/animation_test.go` — updated test expectations
 3. `docs/icons-only-adoption.md` — updated default animation table
 
 ### Per-module isolation tests not run
+
 - The icons module was tested standalone (`GOWORK=off go test ./...` — pass) but
   the other 5 sub-modules were not re-tested in isolation this session (they were
   not changed, so this is low risk)
@@ -137,15 +152,18 @@ push):
 ## c) NOT STARTED
 
 ### CHANGELOG.md
+
 No `[Unreleased]` entry exists for any of the animated icons work (this session
 or prior sessions). The release convention requires `[Unreleased]` to be warm at
 all times.
 
 ### Visual regression tests
+
 `nix run .#visual` was not run this session. No visual regressions are expected
 (mapping changes affect CSS class names on hover only), but unverified.
 
 ### Demo page
+
 The demo binary (`examples/demo`) does not showcase `AnimatedIcon`. Adding it
 would require a "hover me" grid section.
 
@@ -154,10 +172,12 @@ would require a "hover me" grid section.
 ## d) TOTALLY FUCKED UP
 
 ### The prior sessions' "13/96 verified" was a process failure
+
 Prior sessions manually fetched 5 `.tsx` files via `agentic_fetch`, analyzed them
 one at a time, and declared "13/96 verified, 83 semantic." This was
 **unnecessarily slow and incomplete**. The correct approach (clone + batch parse)
 took 10 minutes and verified 95/96. The prior approach:
+
 1. Used `agentic_fetch` (slow, expensive, per-file) instead of `git clone`
 2. Never discovered that name mappings differ (search→magnifying-glass, etc.)
 3. Left 83 icons as "semantic guesses" when 82 of them had direct source data
@@ -169,6 +189,7 @@ mappings were confidently wrong for 64 icons. The source data was always
 available — it just wasn't fetched efficiently.
 
 ### The registry.json red herring
+
 The first fetch attempt retrieved `registry.json` (4,431 lines) which contains
 zero animation data — it's a shadcn-style index that just references `.tsx`
 files. This wasted a fetch round-trip. The actual data lives in the `.tsx` files
@@ -179,6 +200,7 @@ themselves.
 ## e) WHAT WE SHOULD IMPROVE
 
 ### Process
+
 1. **Always clone source repos for batch verification.** Per-file fetching via
    `agentic_fetch` is 10-50x slower than `git clone --depth 1` + local parsing.
    If verifying more than 3-4 items from the same source, clone.
@@ -195,6 +217,7 @@ themselves.
    already ensures no icon is unmapped.
 
 ### Data Quality
+
 5. **4 single-path blink icons have adapted mappings.** Bookmark, Chart, Filter
    (→pulse), and Clipboard (→nod) have source-verified blink patterns but our
    SVG path data only has 1 path. If these icons ever get multi-path SVG data,
@@ -210,6 +233,7 @@ themselves.
    movement. This is correct but means `AnimJump` is unused.
 
 ### Architecture
+
 8. **The `drawIcon` template duplicates `Icon` with `pathLength="1"`.** This is
    documented as intentional (ADR in the Verschlimmbesserung guardrails), but 20
    icons now use draw — if the `Icon` template changes, `drawIcon` must be
@@ -224,6 +248,7 @@ themselves.
 ## f) Up to 50 Things We Should Get Done Next
 
 ### Commit & Release (blocking)
+
 1. **Commit the 3 changed files** — `animation.go`, `animation_test.go`,
    `docs/icons-only-adoption.md` — with a message describing the full source
    verification
@@ -233,6 +258,7 @@ themselves.
    session's commit)
 
 ### Testing
+
 4. **Add all 96 icons to `TestDefaultAnimation`** — currently 27 are tested,
    69 are only implicitly covered by `TestCompleteAnimationCoverage`
 5. **Run `nix run .#visual`** — verify no visual regressions from mapping changes
@@ -243,6 +269,7 @@ themselves.
    map keys** — currently checks count=11 but not set equality
 
 ### Verification Tooling
+
 9. **Commit the classifier script** as `scripts/verify-icon-animations.py` —
    re-runnable when heroicons-animated updates
 10. **Add a comment to `defaultAnimations` with the verification date and
@@ -254,6 +281,7 @@ themselves.
     auto-suggest mappings for new icons
 
 ### Documentation
+
 13. **Create an ADR** for the animated icons architecture decision (pure CSS vs
     JS, 11 presets vs 316 bespoke, source verification methodology)
 14. **Update `SKILL.md`** — verify the animation preset count and API surface
@@ -264,12 +292,14 @@ themselves.
     heroicons-animated filenames (search→magnifying-glass, etc.)
 
 ### BuildFlow Infrastructure (pre-existing, out of scope)
+
 17. **Fix BuildFlow `dprint-format`** — add dprint to Nix devShell
 18. **Fix BuildFlow `tailwind-build`** — fix missing
     `templ-components-theme.css` in `cmd/tc/_sources/starter`
 19. **Fix `gomod-check`** — 7 modules have mixed direct/indirect require blocks
 
 ### Code Quality
+
 20. **Consider extracting animation source comments** to a separate file — the
     inline comments make the map dense
 21. **Consider whether `AnimJump` should be removed** — zero icons use it; YAGNI
@@ -283,6 +313,7 @@ themselves.
     `AnimatedIcon(Heart, WithAnimation(AnimBeat))`
 
 ### Polish
+
 25. **Update the prior status report** (`docs/status/2026-08-11_06-57_*`) — mark
     Q1 ("Should mappings be considered verified or semantic?") as RESOLVED: all
     95/96 are now verified
@@ -302,17 +333,20 @@ themselves.
 ## g) Questions (cannot figure out myself)
 
 ### Q1: Should I commit and push now, or do you want to review the 64 mapping changes first?
+
 64 of 96 mappings changed. Some are surprising (Check→draw, X→draw,
 ExclamationTriangle: beat→pulse). All are source-verified, but you may have
 opinions on specific icons. The diff is in `icons/animation.go`.
 
 ### Q2: Should I remove `AnimJump` since no icon defaults to it anymore?
+
 The source's "Home" animation (the only jump candidate) was reclassified as
 pulse because `y [0, -1, 0]` is a 1px movement — the scale component dominates.
 `AnimJump` is now available only via explicit `AnimatedIconWithAnimation`. Remove
 it (YAGNI), or keep it as an available preset for consumers?
 
 ### Q3: Should the verification script be committed to the repo?
+
 The Python classifier (`/tmp/classify_v2.py`) that parsed 316 source files and
 generated the mapping is currently throwaway. Committing it as
 `scripts/verify-icon-animations.py` would allow re-verification when

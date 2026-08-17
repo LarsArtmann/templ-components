@@ -7,7 +7,7 @@ A previous session built an animated icons feature inspired by
 out it was a **bad rebuild**: it collapsed 316 bespoke per-icon animations into
 10 generic presets, mapped only 35/102 icons, left dead code (`AnimSplit`),
 and dropped `Refresh`/`ArrowPath`. This session was a **ground-up rework** of the
-animation system. The scope of *this session* was to fix the rebuild, not to
+animation system. The scope of _this session_ was to fix the rebuild, not to
 build a 1:1 port of all 316 originals.
 
 ---
@@ -15,6 +15,7 @@ build a 1:1 port of all 316 originals.
 ## a) FULLY DONE
 
 ### Bugs fixed
+
 1. **`Refresh`/`ArrowPath` had NO path data** (pre-existing bug — both rendered as
    the Question mark fallback). Added correct heroicons v2 outline arrow-path SVG
    data to `iconPathData` (`icons/icon_paths.go:31`). Now `Icon(Refresh, ...)` and
@@ -24,6 +25,7 @@ build a 1:1 port of all 316 originals.
    `validAnimations` map), `custom.css` (`.tc-anim-split` rules), all tests.
 
 ### Animation types: 10 → 11
+
 3. **Added `AnimWobble`** — Beaker-style `scale 0.9` + `rotate [0, 6, -6, 3, -3, 0]`,
    verified from the heroicons-animated `beaker.tsx` source. CSS `@keyframes
    tc-icon-wobble` in `custom.css`.
@@ -36,6 +38,7 @@ build a 1:1 port of all 316 originals.
    `prefers-reduced-motion` block to also reset `stroke-dashoffset`.
 
 ### Icon coverage: 35/102 → 96/96 explicit mappings
+
 6. **Every canonical icon in `iconPathData` now has an explicit animation mapping.**
    The previous session left 67 icons on generic `AnimPulse` fallback. Now: 28
    pulse, 26 nod, 15 shake, 14 wiggle, 13 bounce, 11 spin, 7 beat, 5 jump, 4
@@ -45,6 +48,7 @@ build a 1:1 port of all 316 originals.
    animation. Previously these got generic pulse.
 
 ### Tests rewritten
+
 8. **`TestCompleteAnimationCoverage`** — new test that iterates ALL icons in
    `iconPathData` + checks `iconAliases` resolution, failing if any icon would
    silently fall back to `AnimPulse`. This is the drift-guard against future
@@ -62,6 +66,7 @@ build a 1:1 port of all 316 originals.
 14. All 38+ test cases pass, golangci-lint 0 issues, workspace build clean.
 
 ### Documentation
+
 15. CHANGELOG `[Unreleased]` updated: 11 presets, full list, alias mention.
 16. AGENTS.md animated icons bullet rewritten.
 17. SKILL.md table: "11 animation presets".
@@ -73,6 +78,7 @@ build a 1:1 port of all 316 originals.
 ## b) PARTIALLY DONE
 
 ### Animation mappings are "semantic" not "verified" for most icons
+
 19. **Only 9 mappings are verified from heroicons-animated source**: Heart (pulse),
     Star (beat), Bell (wiggle), Settings (spin), Eye (blink), Home (jump), Search
     (bounce), Beaker (wobble), Bolt (draw). The other 87 are "semantic" — chosen
@@ -82,6 +88,7 @@ build a 1:1 port of all 316 originals.
     checked 11 source files.
 
 ### `drawIcon` template duplicates `strokeIcon` logic
+
 20. The `drawIcon` template in `animated_icon.templ` is a copy of the `strokeIcon`
     pattern from `icon.templ`, only differing in adding `pathLength="1"`. If the
     SVG structure changes in `strokeIcon`, `drawIcon` will drift. Could be
@@ -121,6 +128,7 @@ build a 1:1 port of all 316 originals.
 ### Nothing in this session was totally fucked up.
 
 The previous session's work (before this session) was fucked up:
+
 - Dead `AnimSplit` preset
 - 67/102 icons on generic fallback
 - `Refresh`/`ArrowPath` missing path data
@@ -134,6 +142,7 @@ not correctness issues.
 ## e) WHAT WE SHOULD IMPROVE
 
 ### Architectural concerns
+
 30. **The `<span>` wrapper changes DOM structure.** `AnimatedIcon` wraps the SVG
     in `<span class="tc-anim tc-anim-{type} inline-flex">`. This could break
     flex/grid layouts or CSS sibling combinators (`+`, `~`) that expect the SVG
@@ -166,6 +175,7 @@ not correctness issues.
     overridden.
 
 ### Testing gaps
+
 36. **No test verifies the `<span>` wrapper doesn't break common layouts.**
 37. **No test verifies `AnimBlink` is a no-op on 1-path icons** (just that it
     works on 2-path icons).
@@ -180,6 +190,7 @@ not correctness issues.
 ## f) Next steps (prioritized)
 
 ### P0 — Correctness & safety
+
 40. **Add `icons` to `TestCustomCSSUtilities` scan dirs** (or add a separate
     test in the icons module that asserts `.tc-anim-*` classes exist in
     `custom.css`). Currently the CSS-to-templ drift guard has a blind spot.
@@ -191,6 +202,7 @@ not correctness issues.
     directional icons that also need animation.
 
 ### P1 — Coverage & quality
+
 44. **Verify more icon mappings against heroicons-animated source.** Fetch more
     `.tsx` source files for icons we guessed at (Lock, Unlock, Trash, Cog6Tooth,
     MagnifyingGlass, Play, ChevronDown, etc.). Only 11/316 sources were checked.
@@ -206,7 +218,7 @@ not correctness issues.
 51. **Deduplicate `drawIcon` and `strokeIcon`** — parameterize the path rendering
     to avoid drift.
 52. **Verify `AnimSpin` spring approximation** — the `cubic-bezier(0.34, 1.56, 0.64, 1)`
-    is a spring *approximation*. The original uses Motion's spring solver
+    is a spring _approximation_. The original uses Motion's spring solver
     (stiffness 250, damping 25). CSS can't replicate spring physics exactly.
 53. **Consider `AnimTada`** — a common animation pattern (rotate + scale) that
     the original library likely uses for some icons.

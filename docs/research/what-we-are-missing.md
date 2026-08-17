@@ -474,7 +474,7 @@ client-side JS — our URL parsing is server-side Go.
 | `hx-include`     | Include extra form data                | Not documented   | Document               |
 | `hx-params`      | Filter request parameters              | Not documented   | Document               |
 | `hx-encoding`    | Multipart form uploads                 | Not documented   | Document for FileInput |
-| ` boosted` links | `hx-boost` for progressive enhancement | Not documented   | Document               |
+| `boosted` links  | `hx-boost` for progressive enhancement | Not documented   | Document               |
 | `hx-history`     | History management                     | Not documented   | Document               |
 
 ---
@@ -510,10 +510,10 @@ client-side JS — our URL parsing is server-side Go.
 
 ### Long term (architectural)
 
-| Task                                                   | Impact                        |
-| ------------------------------------------------------ | ----------------------------- |
-| Anchor Positioning for Tooltip/Dropdown/Popover        | Eliminates JS positioning     |
-| `light-dark()` migration                               | Simplifies dark mode system   |
+| Task                                                   | Impact                                                                |
+| ------------------------------------------------------ | --------------------------------------------------------------------- |
+| Anchor Positioning for Tooltip/Dropdown/Popover        | Eliminates JS positioning                                             |
+| `light-dark()` migration                               | Simplifies dark mode system                                           |
 | ~~Declarative Shadow DOM opt-in~~                      | ~~Component style encapsulation~~ **Permanently rejected (ADR-0033)** |
-| Popover API migration (Dropdown, Popover, ContextMenu) | ~134 lines JS eliminated      |
-| `<dialog>` migration (Modal, Drawer)                   | ~150 lines JS eliminated      |
+| Popover API migration (Dropdown, Popover, ContextMenu) | ~134 lines JS eliminated                                              |
+| `<dialog>` migration (Modal, Drawer)                   | ~150 lines JS eliminated                                              |

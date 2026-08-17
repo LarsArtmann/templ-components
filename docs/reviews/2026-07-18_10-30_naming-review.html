@@ -199,7 +199,8 @@
       <header>
         <h1>Naming Review — templ-components</h1>
         <div class="sub">
-          Identifier honesty, clarity, domain alignment, consistency across all packages.
+          Identifier honesty, clarity, domain alignment, consistency across all
+          packages.
         </div>
         <div class="meta">
           <span><b>Date:</b> 2026-07-18</span>
@@ -211,9 +212,10 @@
       <div class="score-bar">
         <div class="big">9 / 10</div>
         <div class="lbl">
-          <b>Naming health.</b> Identifiers are honest, domain-aligned, and highly consistent. Zero
-          vague-noun/verb types, zero Manager/Handler/Impl, zero I-prefix interfaces, and a single
-          uniform constructor convention (<code>Default*Props</code>, 69 functions). Two
+          <b>Naming health.</b> Identifiers are honest, domain-aligned, and
+          highly consistent. Zero vague-noun/verb types, zero
+          Manager/Handler/Impl, zero I-prefix interfaces, and a single uniform
+          constructor convention (<code>Default*Props</code>, 69 functions). Two
           Low-severity stylistic notes that are both defensible.
         </div>
       </div>
@@ -263,12 +265,17 @@
               <td><code>type *(Data|Info|Record|Item|Object|Thing)</code></td>
               <td>1</td>
               <td>
-                <code>CauseItem</code> — domain-honest (item in a cause chain); see note below
+                <code>CauseItem</code> — domain-honest (item in a cause chain);
+                see note below
               </td>
             </tr>
             <tr>
               <td>Trash-can types</td>
-              <td><code>type *(Manager|Handler|Processor|Helper|Util|Utility)</code></td>
+              <td>
+                <code
+                  >type *(Manager|Handler|Processor|Helper|Util|Utility)</code
+                >
+              </td>
               <td>0</td>
               <td><span class="sev ok">Clean</span></td>
             </tr>
@@ -289,8 +296,8 @@
               <td><code>type (Abstract|Base)*</code></td>
               <td>1</td>
               <td>
-                <code>utils.BaseProps</code> — legitimate embedded-common-fields; not inheritance
-                leakage
+                <code>utils.BaseProps</code> — legitimate
+                embedded-common-fields; not inheritance leakage
               </td>
             </tr>
             <tr>
@@ -318,40 +325,49 @@
             <span class="sev low">Low</span>
           </div>
           <p>
-            <code>errorpage/styles.go:150</code> — <code>CauseItem{Message, Code}</code> represents
-            one error in a cause chain. "Item" is normally a vague-noun smell, but here
-            <code>[]CauseItem</code> reads naturally as "the list of items in the cause chain" and
-            the alternatives (<code>Cause</code>, <code>CauseEntry</code>) are either more ambiguous
-            or no clearer. <b>Verdict: keep.</b> Flagged only for completeness.
+            <code>errorpage/styles.go:150</code> —
+            <code>CauseItem{Message, Code}</code> represents one error in a
+            cause chain. "Item" is normally a vague-noun smell, but here
+            <code>[]CauseItem</code> reads naturally as "the list of items in
+            the cause chain" and the alternatives (<code>Cause</code>,
+            <code>CauseEntry</code>) are either more ambiguous or no clearer.
+            <b>Verdict: keep.</b> Flagged only for completeness.
           </p>
         </div>
 
         <div class="card warning">
           <div class="h">
-            N2 · Adjective boolean fields (<code>Active</code>, <code>Bordered</code>,
-            <code>Checked</code>) <span class="sev low">Low</span>
+            N2 · Adjective boolean fields (<code>Active</code>,
+            <code>Bordered</code>, <code>Checked</code>)
+            <span class="sev low">Low</span>
           </div>
           <p>
-            The "booleans should read as yes/no questions" rule would rename these to
-            <code>IsActive</code>/<code>HasBorder</code>/<code>IsChecked</code>. However
-            <code>Checked</code>, <code>AutoFocus</code>, <code>AutoGrow</code> deliberately mirror
-            the HTML attributes they emit (<code>&lt;input checked&gt;</code>,
-            <code>&lt;input autofocus&gt;</code>), which aids discoverability in a form library.
-            <code>Active</code> is the established term for nav/breadcrumb current-page state.
-            <b>Verdict: keep</b> — HTML-attribute parity is the stronger convention here.
+            The "booleans should read as yes/no questions" rule would rename
+            these to
+            <code>IsActive</code>/<code>HasBorder</code>/<code>IsChecked</code>.
+            However <code>Checked</code>, <code>AutoFocus</code>,
+            <code>AutoGrow</code> deliberately mirror the HTML attributes they
+            emit (<code>&lt;input checked&gt;</code>,
+            <code>&lt;input autofocus&gt;</code>), which aids discoverability in
+            a form library. <code>Active</code> is the established term for
+            nav/breadcrumb current-page state. <b>Verdict: keep</b> —
+            HTML-attribute parity is the stronger convention here.
           </p>
         </div>
 
         <div class="card warning">
           <div class="h">
-            N3 · single-letter <code>icons.X</code> <span class="sev low">Low</span>
+            N3 · single-letter <code>icons.X</code>
+            <span class="sev low">Low</span>
           </div>
           <p>
-            <code>icons/icon_names.go:20</code> — <code>X Name = "x"</code> (the close icon).
-            Single-letter identifiers are normally a smell, but this is the canonical Heroicons name
-            for the close/X glyph. A <code>Close</code> alias (same value) was already added as the
-            preferred discoverable name. <b>Verdict: already mitigated</b> — prefer
-            <code>icons.Close</code> in new code; <code>X</code> kept for parity with Heroicons.
+            <code>icons/icon_names.go:20</code> — <code>X Name = "x"</code> (the
+            close icon). Single-letter identifiers are normally a smell, but
+            this is the canonical Heroicons name for the close/X glyph. A
+            <code>Close</code> alias (same value) was already added as the
+            preferred discoverable name. <b>Verdict: already mitigated</b> —
+            prefer <code>icons.Close</code> in new code; <code>X</code> kept for
+            parity with Heroicons.
           </p>
         </div>
       </section>
@@ -362,17 +378,20 @@
           <div class="h">Domain-honest typed enums</div>
           <p>
             37 enums named for their domain, not their implementation:
-            <code>Family</code> (rejection/conflict/transient/corruption/infrastructure),
-            <code>OverlayKind</code>, <code>FeedbackType</code>, <code>TableCellPadding</code>,
-            <code>SortDirection</code>, <code>TrendDirection</code>. No
+            <code>Family</code>
+            (rejection/conflict/transient/corruption/infrastructure),
+            <code>OverlayKind</code>, <code>FeedbackType</code>,
+            <code>TableCellPadding</code>, <code>SortDirection</code>,
+            <code>TrendDirection</code>. No
             <code>TypeEnum</code>/<code>StatusCode</code>-style type encoding.
           </p>
         </div>
         <div class="card solution">
           <div class="h">Uniform constructor vocabulary</div>
           <p>
-            Every component with non-zero defaults has a <code>DefaultXProps()</code> constructor —
-            69 of them, 0 exceptions. No <code>New</code>/<code>Create</code>/<code>Make</code>
+            Every component with non-zero defaults has a
+            <code>DefaultXProps()</code> constructor — 69 of them, 0 exceptions.
+            No <code>New</code>/<code>Create</code>/<code>Make</code>
             drift. This is unusually consistent for a library this size.
           </p>
         </div>
@@ -381,16 +400,18 @@
           <p>
             <code>overlayDialogJS</code>, <code>overlayShellProps</code>,
             <code>feedbackStyle</code>, <code>tableCellPaddingClass</code>,
-            <code>navLinkAnchor</code> — private functions read as full sentences about what they
-            produce. No <code>doStuff</code>/<code>handleIt</code>.
+            <code>navLinkAnchor</code> — private functions read as full
+            sentences about what they produce. No
+            <code>doStuff</code>/<code>handleIt</code>.
           </p>
         </div>
         <div class="card solution">
           <div class="h">Prior hygiene held</div>
           <p>
-            The AGENTS.md naming-hygiene notes (radio_go.go→radio.go, errMsg→errorMessage,
-            cleanMessage→sanitizeErrorMessage, htmxMainSRIDefault→sriHTMXMainDefault) are all still
-            in place. No regression.
+            The AGENTS.md naming-hygiene notes (radio_go.go→radio.go,
+            errMsg→errorMessage, cleanMessage→sanitizeErrorMessage,
+            htmxMainSRIDefault→sriHTMXMainDefault) are all still in place. No
+            regression.
           </p>
         </div>
       </section>
@@ -398,17 +419,21 @@
       <section>
         <h2>Recommendation</h2>
         <p>
-          No renames required. The two Low notes are both defensible and renaming them would either
-          reduce clarity (<code>Checked</code>→<code>IsChecked</code> breaks HTML-attribute parity)
-          or be cosmetic (<code>CauseItem</code>). The naming quality is a strength of this codebase
-          — preserve the existing conventions: typed enums, <code>Default*Props</code> constructors,
-          HTML-attribute boolean names.
+          No renames required. The two Low notes are both defensible and
+          renaming them would either reduce clarity (<code>Checked</code>→<code
+            >IsChecked</code
+          >
+          breaks HTML-attribute parity) or be cosmetic (<code>CauseItem</code>).
+          The naming quality is a strength of this codebase — preserve the
+          existing conventions: typed enums,
+          <code>Default*Props</code> constructors, HTML-attribute boolean names.
         </p>
       </section>
 
       <footer>
-        Naming review generated 2026-07-18. Automated detection via golangci-lint (0) + naming-smell
-        greps. Point-in-time snapshot; conventions are documented in AGENTS.md.
+        Naming review generated 2026-07-18. Automated detection via
+        golangci-lint (0) + naming-smell greps. Point-in-time snapshot;
+        conventions are documented in AGENTS.md.
       </footer>
     </div>
   </body>

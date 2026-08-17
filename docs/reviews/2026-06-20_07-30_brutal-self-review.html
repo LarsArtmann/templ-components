@@ -23,7 +23,8 @@
         padding: 0;
       }
       body {
-        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        font-family:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         background: var(--bg);
         color: var(--text);
         line-height: 1.6;
@@ -217,9 +218,11 @@
   <body>
     <h1>Brutal Self-Review</h1>
     <p class="meta">
-      <strong>Project:</strong> templ-components | <strong>Date:</strong> 2026-06-20 |
-      <strong>Session:</strong> Post-reflection after overlay JS extraction + coverage work |
-      <strong>Commits reviewed:</strong> <code>1e0def2</code> → <code>c97fa68</code>
+      <strong>Project:</strong> templ-components |
+      <strong>Date:</strong> 2026-06-20 |
+      <strong>Session:</strong> Post-reflection after overlay JS extraction +
+      coverage work | <strong>Commits reviewed:</strong> <code>1e0def2</code> →
+      <code>c97fa68</code>
     </p>
 
     <div class="stats">
@@ -252,23 +255,29 @@
     <h2>1. What did I forget?</h2>
 
     <div class="card problem">
-      <h4>HTMX delegation regression <span class="status fixed">FIXED</span></h4>
+      <h4>
+        HTMX delegation regression <span class="status fixed">FIXED</span>
+      </h4>
       <p>
         My <code>overlayTrapJS</code> used
-        <code>querySelectorAll('[data-tc-close]').forEach(addEventListener)</code> — per-element
-        binding that breaks when HTMX swaps content into the modal/drawer after render. Dynamically
-        added close buttons had no click handler.
+        <code
+          >querySelectorAll('[data-tc-close]').forEach(addEventListener)</code
+        >
+        — per-element binding that breaks when HTMX swaps content into the
+        modal/drawer after render. Dynamically added close buttons had no click
+        handler.
       </p>
       <p>
-        <strong>Root cause:</strong> I didn't think about HTMX DOM swaps when designing the click
-        handler. The existing <code>utils.DismissScript()</code> already uses the correct delegated
+        <strong>Root cause:</strong> I didn't think about HTMX DOM swaps when
+        designing the click handler. The existing
+        <code>utils.DismissScript()</code> already uses the correct delegated
         pattern — I should have followed it.
       </p>
       <p>
         <strong>Fix:</strong> Replaced with
         <code
-          >overlay.addEventListener('click', function(e) { if (e.target.closest('[data-tc-close]'))
-          ... })</code
+          >overlay.addEventListener('click', function(e) { if
+          (e.target.closest('[data-tc-close]')) ... })</code
         >
         — delegated on the overlay container. <code>bbab95c</code>
       </p>
@@ -278,23 +287,28 @@
       <h4>Toast icon split brain <span class="status fixed">FIXED</span></h4>
       <p>
         Server-rendered toasts showed <code>XCircle</code> for errors (from
-        <code>feedbackIconMap</code>), but client-side <code>tcShowToast()</code> showed
-        <code>ExclamationTriangle</code> (from <code>toastJSIconPaths()</code>). Same severity,
-        different icons depending on whether the toast was server-rendered or JS-injected.
+        <code>feedbackIconMap</code>), but client-side
+        <code>tcShowToast()</code> showed <code>ExclamationTriangle</code> (from
+        <code>toastJSIconPaths()</code>). Same severity, different icons
+        depending on whether the toast was server-rendered or JS-injected.
       </p>
       <p>
         <strong>Fix:</strong> <code>toastJSIconPaths()</code> now reads from
-        <code>feedbackIconMap</code> as single source of truth. <code>afa62b1</code>
+        <code>feedbackIconMap</code> as single source of truth.
+        <code>afa62b1</code>
       </p>
     </div>
 
     <h2>2. What's stupid that we do anyway?</h2>
 
     <div class="card warning">
-      <h4>6 panics in library code <span class="status deferred">PRE-V1.0 DEFERRED</span></h4>
+      <h4>
+        6 panics in library code
+        <span class="status deferred">PRE-V1.0 DEFERRED</span>
+      </h4>
       <p>
-        The <code>how-to-golang</code> policy says <strong>"no panics in library code"</strong>. We
-        have 6:
+        The <code>how-to-golang</code> policy says
+        <strong>"no panics in library code"</strong>. We have 6:
       </p>
       <table>
         <tr>
@@ -332,87 +346,107 @@
       </table>
       <p>
         <strong>Why deferred:</strong> Changing panics to returned errors is a
-        <strong>BREAKING API change</strong> — templ components can't return errors from render. The
-        correct fix is <code>templ.Transform</code> or error-component rendering, which requires a
-        design decision. This is v1.0 scope.
+        <strong>BREAKING API change</strong> — templ components can't return
+        errors from render. The correct fix is <code>templ.Transform</code> or
+        error-component rendering, which requires a design decision. This is
+        v1.0 scope.
       </p>
     </div>
 
     <div class="card skip">
-      <h4>encoding/json v1 <span class="status skipped">SKIPPED (justified)</span></h4>
+      <h4>
+        encoding/json v1 <span class="status skipped">SKIPPED (justified)</span>
+      </h4>
       <p>
-        <code>how-to-golang</code> bans <code>encoding/json</code> v1 in favor of v2 for Go 1.25+.
-        However, <code>encoding/json/v2</code> in Go 1.26.3 is behind
-        <code>GOEXPERIMENT=jsonv2</code> — it's not production-ready and can't be required from a
-        publishable library. The single usage in <code>errorpage/handler.go</code> stays on v1 until
-        json/v2 is stable.
+        <code>how-to-golang</code> bans <code>encoding/json</code> v1 in favor
+        of v2 for Go 1.25+. However, <code>encoding/json/v2</code> in Go 1.26.3
+        is behind <code>GOEXPERIMENT=jsonv2</code> — it's not production-ready
+        and can't be required from a publishable library. The single usage in
+        <code>errorpage/handler.go</code> stays on v1 until json/v2 is stable.
       </p>
     </div>
 
     <h2>3. What could I have done better?</h2>
 
     <div class="card problem">
-      <h4>Wrote tests against wrong type names <span class="status fixed">FIXED</span></h4>
+      <h4>
+        Wrote tests against wrong type names
+        <span class="status fixed">FIXED</span>
+      </h4>
       <p>
-        I wrote coverage tests using <code>icons.User</code> (doesn't exist, it's
-        <code>icons.Users</code>), <code>HrefPrefix</code> (doesn't exist, it's
-        <code>BaseURL + QueryParam</code>), <code>TableRow{Cells: []string{...}}</code> (Cells is
-        <code>[]TableCell</code>, use <code>SimpleTableRow()</code>). I should have read the source
-        types before writing tests — wasted 4 iterations fixing compilation errors.
+        I wrote coverage tests using <code>icons.User</code> (doesn't exist,
+        it's <code>icons.Users</code>), <code>HrefPrefix</code> (doesn't exist,
+        it's <code>BaseURL + QueryParam</code>),
+        <code>TableRow{Cells: []string{...}}</code> (Cells is
+        <code>[]TableCell</code>, use <code>SimpleTableRow()</code>). I should
+        have read the source types before writing tests — wasted 4 iterations
+        fixing compilation errors.
       </p>
     </div>
 
     <div class="card problem">
       <h4>Left dead code <span class="status fixed">FIXED</span></h4>
       <p>
-        <code>utils.AssertContainsClass</code> was identical to <code>AssertContains</code> with
-        zero callers. I should have caught this during the coverage analysis phase — it showed 0%
-        coverage but I didn't investigate why. <code>afa62b1</code>
+        <code>utils.AssertContainsClass</code> was identical to
+        <code>AssertContains</code> with zero callers. I should have caught this
+        during the coverage analysis phase — it showed 0% coverage but I didn't
+        investigate why. <code>afa62b1</code>
       </p>
     </div>
 
     <h2>4. What could I still improve?</h2>
 
     <div class="card problem">
-      <h4>RadioGroup missing AriaLabel <span class="status fixed">FIXED</span></h4>
+      <h4>
+        RadioGroup missing AriaLabel <span class="status fixed">FIXED</span>
+      </h4>
       <p>
-        <code>&lt;fieldset&gt;</code> root element silently dropped <code>props.AriaLabel</code>.
+        <code>&lt;fieldset&gt;</code> root element silently dropped
+        <code>props.AriaLabel</code>.
         <code>c97fa68</code>
       </p>
     </div>
 
     <div class="card problem">
       <h4>
-        Avatar image branch missing all BaseProps on root <span class="status fixed">FIXED</span>
+        Avatar image branch missing all BaseProps on root
+        <span class="status fixed">FIXED</span>
       </h4>
       <p>
-        When <code>props.Src != ""</code>, the root wrapper <code>&lt;div&gt;</code> had zero
-        BaseProps — ID, Class, Attrs, and AriaLabel all went to the inner
-        <code>&lt;img&gt;</code> (and AriaLabel was dropped entirely in favor of <code>alt</code>).
-        Now BaseProps propagate to the wrapper div, matching the initials/fallback branch.
+        When <code>props.Src != ""</code>, the root wrapper
+        <code>&lt;div&gt;</code> had zero BaseProps — ID, Class, Attrs, and
+        AriaLabel all went to the inner <code>&lt;img&gt;</code> (and AriaLabel
+        was dropped entirely in favor of <code>alt</code>). Now BaseProps
+        propagate to the wrapper div, matching the initials/fallback branch.
         <code>c97fa68</code>
       </p>
     </div>
 
     <div class="card warning">
       <h4>
-        6x duplicated "attach-once guard" boilerplate <span class="status deferred">DEFERRED</span>
+        6x duplicated "attach-once guard" boilerplate
+        <span class="status deferred">DEFERRED</span>
       </h4>
       <p>
-        Accordion, Dropdown, Tabs, MobileMenu, ErrorPage go-back, and ThemeToggle all repeat the
-        identical <code>window.tc*Attached</code> guard +
-        <code>document.addEventListener('click', ...)</code> pattern. Could extract to a shared
-        helper, but each has unique handler logic. Low ROI — the boilerplate is 5 lines and the
-        handlers are different.
+        Accordion, Dropdown, Tabs, MobileMenu, ErrorPage go-back, and
+        ThemeToggle all repeat the identical
+        <code>window.tc*Attached</code> guard +
+        <code>document.addEventListener('click', ...)</code> pattern. Could
+        extract to a shared helper, but each has unique handler logic. Low ROI —
+        the boilerplate is 5 lines and the handlers are different.
       </p>
     </div>
 
     <div class="card warning">
-      <h4>Badge info=indigo vs Feedback info=blue <span class="status deferred">DEFERRED</span></h4>
+      <h4>
+        Badge info=indigo vs Feedback info=blue
+        <span class="status deferred">DEFERRED</span>
+      </h4>
       <p>
-        Minor color inconsistency: <code>BadgeInfo → indigo</code> in <code>badgeStyleMap</code> vs
-        <code>FeedbackInfo → blue</code> in <code>feedbackStyleMap</code>. Not a bug — badges and
-        feedback alerts serve different visual purposes. But worth deciding deliberately.
+        Minor color inconsistency: <code>BadgeInfo → indigo</code> in
+        <code>badgeStyleMap</code> vs <code>FeedbackInfo → blue</code> in
+        <code>feedbackStyleMap</code>. Not a bug — badges and feedback alerts
+        serve different visual purposes. But worth deciding deliberately.
       </p>
     </div>
 
@@ -421,15 +455,17 @@
     <div class="card problem">
       <h4>Misleading coverage table</h4>
       <p>
-        In my previous report, I listed navigation coverage as <code>72.7% → 72.6%</code> and marked
-        it "completed". That's a <strong>decrease</strong>. The tests I wrote were valid but the
-        code changes (SimpleNav refactor, pagination uint) added more uncovered statements than the
-        tests covered. I should have been honest: "coverage stayed flat despite new tests".
+        In my previous report, I listed navigation coverage as
+        <code>72.7% → 72.6%</code> and marked it "completed". That's a
+        <strong>decrease</strong>. The tests I wrote were valid but the code
+        changes (SimpleNav refactor, pagination uint) added more uncovered
+        statements than the tests covered. I should have been honest: "coverage
+        stayed flat despite new tests".
       </p>
       <p>
-        Also, I listed "P3-7: Forms tests — completed" but I didn't actually write any forms tests.
-        I skipped it because forms was already at 73.2% (above threshold). The table implied work
-        was done.
+        Also, I listed "P3-7: Forms tests — completed" but I didn't actually
+        write any forms tests. I skipped it because forms was already at 73.2%
+        (above threshold). The table implied work was done.
       </p>
     </div>
 
@@ -439,22 +475,26 @@
       <h4>Lessons</h4>
       <ul>
         <li>
-          <strong>Read source types before writing tests.</strong> Every compilation error I hit was
-          from guessing type names instead of reading the struct definitions.
+          <strong>Read source types before writing tests.</strong> Every
+          compilation error I hit was from guessing type names instead of
+          reading the struct definitions.
         </li>
         <li>
-          <strong>Investigate 0% coverage functions.</strong> <code>AssertContainsClass</code> at 0%
-          was dead code, not a coverage gap. <code>DismissScript</code> at 0% was a profiling
-          artifact (tested from another package).
+          <strong>Investigate 0% coverage functions.</strong>
+          <code>AssertContainsClass</code> at 0% was dead code, not a coverage
+          gap. <code>DismissScript</code> at 0% was a profiling artifact (tested
+          from another package).
         </li>
         <li>
-          <strong>Follow existing patterns for new JS.</strong> The dismiss pattern was already
-          event-delegated. My overlay JS should have been too from the start.
+          <strong>Follow existing patterns for new JS.</strong> The dismiss
+          pattern was already event-delegated. My overlay JS should have been
+          too from the start.
         </li>
         <li>
-          <strong>Single source of truth means everywhere.</strong> The toast icon split brain
-          existed because <code>toastJSIconPaths()</code> hardcoded icons instead of reading from
-          <code>feedbackIconMap</code>.
+          <strong>Single source of truth means everywhere.</strong> The toast
+          icon split brain existed because
+          <code>toastJSIconPaths()</code> hardcoded icons instead of reading
+          from <code>feedbackIconMap</code>.
         </li>
       </ul>
     </div>
@@ -464,13 +504,15 @@
     <div class="card warning">
       <h4>No ghost systems found</h4>
       <p>
-        <code>utils.DismissScript</code> appeared dead (0% coverage in <code>utils</code> package)
-        but is actually called from 3 <code>.templ</code> files and tested in the
+        <code>utils.DismissScript</code> appeared dead (0% coverage in
+        <code>utils</code> package) but is actually called from 3
+        <code>.templ</code> files and tested in the
         <code>feedback</code> package. Coverage profiling artifact, not a ghost.
       </p>
       <p>
-        <code>icons.IconWithStrokeWidth</code> is exported but only used in tests. It's an
-        intentional public API for external consumers — not a ghost.
+        <code>icons.IconWithStrokeWidth</code> is exported but only used in
+        tests. It's an intentional public API for external consumers — not a
+        ghost.
       </p>
     </div>
 
@@ -479,9 +521,10 @@
     <div class="card warning">
       <h4>Coverage tests were scattershot</h4>
       <p>
-        I wrote coverage tests for 5 packages when only 2 (feedback at 70.4%, errorpage at 70.8%)
-        were near the CI threshold. The display/navigation/layout tests had low ROI — those packages
-        were already safely above 70%.
+        I wrote coverage tests for 5 packages when only 2 (feedback at 70.4%,
+        errorpage at 70.8%) were near the CI threshold. The
+        display/navigation/layout tests had low ROI — those packages were
+        already safely above 70%.
       </p>
     </div>
 
@@ -490,8 +533,8 @@
     <div class="card solution">
       <h4>No</h4>
       <p>
-        Only removed <code>AssertContainsClass</code> which was confirmed dead code (identical to
-        <code>AssertContains</code>, zero callers).
+        Only removed <code>AssertContainsClass</code> which was confirmed dead
+        code (identical to <code>AssertContains</code>, zero callers).
       </p>
     </div>
 
@@ -504,13 +547,15 @@
       </tr>
       <tr>
         <td>
-          Toast error icon: <code>XCircle</code> (server) vs <code>ExclamationTriangle</code> (JS
-          client)
+          Toast error icon: <code>XCircle</code> (server) vs
+          <code>ExclamationTriangle</code> (JS client)
         </td>
         <td><span class="tag done">FIXED</span></td>
       </tr>
       <tr>
-        <td>Badge info=<code>indigo</code> vs Feedback info=<code>blue</code></td>
+        <td>
+          Badge info=<code>indigo</code> vs Feedback info=<code>blue</code>
+        </td>
         <td><span class="tag deferred">DEFERRED</span></td>
       </tr>
     </table>
@@ -520,9 +565,10 @@
     <div class="card warning">
       <h4>377 test functions, ~72.5% average coverage</h4>
       <p>
-        Below the 80% minimum from <code>how-to-golang</code>. All packages are above the 70% CI
-        threshold. The main gaps are in generated <code>*_templ.go</code> render functions which are
-        hard to get to 100% because of conditional branches in HTML generation.
+        Below the 80% minimum from <code>how-to-golang</code>. All packages are
+        above the 70% CI threshold. The main gaps are in generated
+        <code>*_templ.go</code> render functions which are hard to get to 100%
+        because of conditional branches in HTML generation.
       </p>
     </div>
 
@@ -530,11 +576,12 @@
 
     <ol class="steps">
       <li>
-        <strong>Fix HTMX delegation bug</strong> — overlayTrapJS per-element binding → event
-        delegation. <span class="tag done">DONE (bbab95c)</span>
+        <strong>Fix HTMX delegation bug</strong> — overlayTrapJS per-element
+        binding → event delegation. <span class="tag done">DONE (bbab95c)</span>
       </li>
       <li>
-        <strong>Fix toast icon split brain</strong> — toastJSIconPaths reads from feedbackIconMap.
+        <strong>Fix toast icon split brain</strong> — toastJSIconPaths reads
+        from feedbackIconMap.
         <span class="tag done">DONE (afa62b1)</span>
       </li>
       <li>
@@ -542,24 +589,29 @@
         <span class="tag done">DONE (afa62b1)</span>
       </li>
       <li>
-        <strong>Fix RadioGroup AriaLabel</strong> — fieldset now propagates AriaLabel.
+        <strong>Fix RadioGroup AriaLabel</strong> — fieldset now propagates
+        AriaLabel.
         <span class="tag done">DONE (c97fa68)</span>
       </li>
       <li>
-        <strong>Fix Avatar image branch BaseProps</strong> — wrapper div now gets all BaseProps.
+        <strong>Fix Avatar image branch BaseProps</strong> — wrapper div now
+        gets all BaseProps.
         <span class="tag done">DONE (c97fa68)</span>
       </li>
       <li>
-        <strong>Migrate to encoding/json/v2</strong> — blocked behind GOEXPERIMENT=jsonv2.
+        <strong>Migrate to encoding/json/v2</strong> — blocked behind
+        GOEXPERIMENT=jsonv2.
         <span class="tag skip">SKIPPED</span>
       </li>
       <li>
-        <strong>Remove panics from library code</strong> — requires design decision for
-        error-returning templ components. <span class="tag deferred">v1.0 SCOPE</span>
+        <strong>Remove panics from library code</strong> — requires design
+        decision for error-returning templ components.
+        <span class="tag deferred">v1.0 SCOPE</span>
       </li>
       <li>
-        <strong>Extract shared delegation boilerplate</strong> — 6 sites with window.tc*Attached
-        pattern. Low ROI. <span class="tag deferred">BACKLOG</span>
+        <strong>Extract shared delegation boilerplate</strong> — 6 sites with
+        window.tc*Attached pattern. Low ROI.
+        <span class="tag deferred">BACKLOG</span>
       </li>
     </ol>
   </body>

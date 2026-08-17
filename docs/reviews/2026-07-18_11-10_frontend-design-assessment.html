@@ -188,8 +188,8 @@
       <header>
         <h1>Frontend Design Assessment</h1>
         <div class="sub">
-          Distinctiveness + intentionality review of the templ-components marketing site &amp;
-          component aesthetic.
+          Distinctiveness + intentionality review of the templ-components
+          marketing site &amp; component aesthetic.
         </div>
         <div class="meta">
           <span>DATE: 2026-07-18</span>
@@ -213,7 +213,9 @@
         <div class="stat">
           <div class="label">Display face</div>
           <div class="value" style="color: var(--text)">Space Grotesk</div>
-          <div class="label" style="margin-top: 0.3rem">code: JetBrains Mono</div>
+          <div class="label" style="margin-top: 0.3rem">
+            code: JetBrains Mono
+          </div>
         </div>
         <div class="stat">
           <div class="label">Default-ness</div>
@@ -228,9 +230,10 @@
       </div>
 
       <p>
-        This is a <b>critique of an already-strong design</b>, not a rebuild. The site makes
-        deliberate choices and does not read as templated. The notes below confirm what is working
-        and identify the one place to spend more boldness.
+        This is a <b>critique of an already-strong design</b>, not a rebuild.
+        The site makes deliberate choices and does not read as templated. The
+        notes below confirm what is working and identify the one place to spend
+        more boldness.
       </p>
 
       <section>
@@ -238,14 +241,15 @@
 
         <div class="card win">
           <div class="h">
-            Warm stone neutrals, not zinc/slate <span class="tag good">distinctive</span>
+            Warm stone neutrals, not zinc/slate
+            <span class="tag good">distinctive</span>
           </div>
           <p>
             The dark base is <code>#0a0908</code> (warm near-black) with
-            <code>#a8a29e</code> (stone-400) secondary text. This is <b>not</b> the generic
-            <code>zinc-950</code>/<code>slate-900</code> every AI dark site reaches for. The warmth
-            gives the page a tactile, considered feel. Keep this — it is the foundation of the
-            identity.
+            <code>#a8a29e</code> (stone-400) secondary text. This is
+            <b>not</b> the generic <code>zinc-950</code>/<code>slate-900</code>
+            every AI dark site reaches for. The warmth gives the page a tactile,
+            considered feel. Keep this — it is the foundation of the identity.
           </p>
         </div>
 
@@ -255,12 +259,13 @@
             <span class="tag good">distinctive</span>
           </div>
           <p>
-            Space Grotesk is a characterful geometric sans with personality at display sizes;
-            pairing it with JetBrains Mono for code/data is a deliberate choice, not the default
-            Inter/system-ui. The <code>clamp()</code> fluid type scale in the hero (<code
+            Space Grotesk is a characterful geometric sans with personality at
+            display sizes; pairing it with JetBrains Mono for code/data is a
+            deliberate choice, not the default Inter/system-ui. The
+            <code>clamp()</code> fluid type scale in the hero (<code
               >clamp(2.75rem, 8vw, 4.5rem)</code
-            >) reads as intentional. Typography is carrying its share of the personality — exactly
-            what the skill asks for.
+            >) reads as intentional. Typography is carrying its share of the
+            personality — exactly what the skill asks for.
           </p>
         </div>
 
@@ -270,22 +275,25 @@
             <span class="tag good">quality floor</span>
           </div>
           <p>
-            Three named keyframes (<code>fade-in</code>, <code>fade-in-up</code>,
-            <code>pulse-dot</code>) used sparingly, with a <code>prefers-reduced-motion</code> block
-            that disables transforms. <code>:focus-visible</code> rings and branded
-            <code>::selection</code> are present. This is the unannounced quality floor the skill
-            calls for.
+            Three named keyframes (<code>fade-in</code>,
+            <code>fade-in-up</code>, <code>pulse-dot</code>) used sparingly,
+            with a <code>prefers-reduced-motion</code> block that disables
+            transforms. <code>:focus-visible</code> rings and branded
+            <code>::selection</code> are present. This is the unannounced
+            quality floor the skill calls for.
           </p>
         </div>
 
         <div class="card win">
           <div class="h">
-            The hero code block IS the thesis <span class="tag good">correct instinct</span>
+            The hero code block IS the thesis
+            <span class="tag good">correct instinct</span>
           </div>
           <p>
-            The hero opens with a live templ code sample, not a generic big-number + gradient. For a
-            developer library, showing real usage IS the most characteristic thing in the subject's
-            world. This is the right call.
+            The hero opens with a live templ code sample, not a generic
+            big-number + gradient. For a developer library, showing real usage
+            IS the most characteristic thing in the subject's world. This is the
+            right call.
           </p>
         </div>
       </section>
@@ -298,23 +306,29 @@
             <span class="tag risk">push further</span>
           </div>
           <p>
-            The token system already defines <code>--color-amber: #fbbf24</code> and uses it
-            tentatively — string highlighting in the hero code, one step variant in
-            <code>HowItWorksSection</code>, the <code>~</code> in <code>ComparisonSection</code>. It
-            reads as incidental, not intentional.
+            The token system already defines
+            <code>--color-amber: #fbbf24</code> and uses it tentatively — string
+            highlighting in the hero code, one step variant in
+            <code>HowItWorksSection</code>, the <code>~</code> in
+            <code>ComparisonSection</code>. It reads as incidental, not
+            intentional.
           </p>
           <p>
-            <b>The move:</b> make amber the consistent voice of the marketing site — section
-            eyebrows, the stat numbers in the metrics row, hover/emphasis states — while
-            <b>blue stays the library's component-brand color</b>. This creates a clean separation:
-            <i>blue = the product you install, amber = the site selling it</i>. Right now both
-            accents compete weakly; committing to amber as the signature gives the page the one
-            memorable thing the skill asks for ("spend your boldness in one place").
+            <b>The move:</b> make amber the consistent voice of the marketing
+            site — section eyebrows, the stat numbers in the metrics row,
+            hover/emphasis states — while
+            <b>blue stays the library's component-brand color</b>. This creates
+            a clean separation:
+            <i>blue = the product you install, amber = the site selling it</i>.
+            Right now both accents compete weakly; committing to amber as the
+            signature gives the page the one memorable thing the skill asks for
+            ("spend your boldness in one place").
           </p>
           <p>
-            Concrete first step: recolor the hero metrics numbers (<code>94 · 102 · 37 · 9</code>)
-            and the "Server-rendered UI for Go" eyebrow from neutral/blue to amber. Low-risk,
-            high-distinctiveness payoff.
+            Concrete first step: recolor the hero metrics numbers (<code
+              >94 · 102 · 37 · 9</code
+            >) and the "Server-rendered UI for Go" eyebrow from neutral/blue to
+            amber. Low-risk, high-distinctiveness payoff.
           </p>
         </div>
       </section>
@@ -339,8 +353,8 @@
               <td>Near-black + single acid-green/vermilion accent</td>
               <td>Near-black warm + blue (brand-coherent) + amber</td>
               <td>
-                <span class="tag good">avoided</span> — blue is justified by library theming, not a
-                default
+                <span class="tag good">avoided</span> — blue is justified by
+                library theming, not a default
               </td>
             </tr>
             <tr>
@@ -351,39 +365,44 @@
           </tbody>
         </table>
         <p>
-          The site clears the default-ness bar on all three. The only soft spot is that blue-600 as
-          the primary accent is the <i>safe</i> choice (justified by brand coherence) — which is
-          exactly why leaning into amber as the signature is the right risk.
+          The site clears the default-ness bar on all three. The only soft spot
+          is that blue-600 as the primary accent is the <i>safe</i> choice
+          (justified by brand coherence) — which is exactly why leaning into
+          amber as the signature is the right risk.
         </p>
       </section>
 
       <section>
         <h2>Component library aesthetic (brief)</h2>
         <p>
-          The <b>library</b> itself is intentionally neutral — it emits standard Tailwind utility
-          classes (<code>bg-blue-600</code>, <code>text-gray-500</code>) and lets consumers theme
-          via <code>@theme</code> overrides. That is the correct posture for a component library: do
-          not impose a visual identity on consumers. The dark-mode convention (<code>-600</code>
-          light / <code>-500</code> dark backgrounds, <code>-600</code> / <code>-400</code> text) is
-          consistent and tested. No change recommended here — the library's job is to be a neutral,
-          themable substrate, and it is.
+          The <b>library</b> itself is intentionally neutral — it emits standard
+          Tailwind utility classes (<code>bg-blue-600</code>,
+          <code>text-gray-500</code>) and lets consumers theme via
+          <code>@theme</code> overrides. That is the correct posture for a
+          component library: do not impose a visual identity on consumers. The
+          dark-mode convention (<code>-600</code> light / <code>-500</code> dark
+          backgrounds, <code>-600</code> / <code>-400</code> text) is consistent
+          and tested. No change recommended here — the library's job is to be a
+          neutral, themable substrate, and it is.
         </p>
       </section>
 
       <section>
         <h2>Summary</h2>
         <p>
-          The marketing site is genuinely well-designed and distinctive — warm palette, real type
-          pairing, disciplined motion, a hero built around real code. <b>No rebuild needed.</b> The
-          single recommendation is to commit harder to the amber secondary accent as the site's
-          signature, separating it from the blue that represents the installable library. Everything
-          else is preservation.
+          The marketing site is genuinely well-designed and distinctive — warm
+          palette, real type pairing, disciplined motion, a hero built around
+          real code. <b>No rebuild needed.</b> The single recommendation is to
+          commit harder to the amber secondary accent as the site's signature,
+          separating it from the blue that represents the installable library.
+          Everything else is preservation.
         </p>
       </section>
 
       <footer>
-        Frontend design assessment generated 2026-07-18. Critique of the existing design using this
-        skill's token system / signature framework. Built with the site's own design tokens.
+        Frontend design assessment generated 2026-07-18. Critique of the
+        existing design using this skill's token system / signature framework.
+        Built with the site's own design tokens.
       </footer>
     </div>
   </body>

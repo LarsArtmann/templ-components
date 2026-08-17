@@ -52,15 +52,15 @@ The testing/quality items (visual test gaps, fuzz tests, component improvements,
 
 Sorted by importance/impact/effort/customer-value (highest first).
 
-| #   | Task                                                                                          | Impact   | Effort | Est    | Customer Value                                            |
-| --- | --------------------------------------------------------------------------------------------- | -------- | ------ | ------ | --------------------------------------------------------- |
-| P1  | **Verify session work**: lint + flake + fmt + CHANGELOG diff verify + ROADMAP verify          | Critical | Low    | 30min  | Confidence that prior session's edits are correct         |
-| P2  | **Drift guard hardening**: extend `TestDocsCountDrift` to cover README.md + ROADMAP.md (#112) | High     | Medium | 45min  | Self-correcting doc counts — drift can't recur            |
-| P3  | **Version-sync guard**: write `scripts/check-version-sync.sh` + wire into pre-commit + CI (#111) | High     | Medium | 60min  | Prevents the v1.8.0 version-drift class permanently       |
-| P4  | **Fix-on-sight**: Accordion known issue, AGENTS.md breadcrumbs, stale prose in archived reports | Medium   | Low    | 30min  | No stale claims remain in any doc                         |
-| P5  | **Annotation quality**: scan archived report prose for stale TL;DR / Executive Summary claims | Medium   | Medium | 45min  | Historical docs fully navigable — prose matches resolution |
-| P6  | **Testing quick wins**: fuzz tests, negative tests, visual test gaps (items 14–25)            | Medium   | High   | 100min | Deeper test coverage for chart math + visual variants     |
-| P7  | **Commit + push**                                                                             | Low      | Low    | 15min  | Changes documented and pushed to remote                   |
+| #  | Task                                                                                             | Impact   | Effort | Est    | Customer Value                                             |
+| -- | ------------------------------------------------------------------------------------------------ | -------- | ------ | ------ | ---------------------------------------------------------- |
+| P1 | **Verify session work**: lint + flake + fmt + CHANGELOG diff verify + ROADMAP verify             | Critical | Low    | 30min  | Confidence that prior session's edits are correct          |
+| P2 | **Drift guard hardening**: extend `TestDocsCountDrift` to cover README.md + ROADMAP.md (#112)    | High     | Medium | 45min  | Self-correcting doc counts — drift can't recur             |
+| P3 | **Version-sync guard**: write `scripts/check-version-sync.sh` + wire into pre-commit + CI (#111) | High     | Medium | 60min  | Prevents the v1.8.0 version-drift class permanently        |
+| P4 | **Fix-on-sight**: Accordion known issue, AGENTS.md breadcrumbs, stale prose in archived reports  | Medium   | Low    | 30min  | No stale claims remain in any doc                          |
+| P5 | **Annotation quality**: scan archived report prose for stale TL;DR / Executive Summary claims    | Medium   | Medium | 45min  | Historical docs fully navigable — prose matches resolution |
+| P6 | **Testing quick wins**: fuzz tests, negative tests, visual test gaps (items 14–25)               | Medium   | High   | 100min | Deeper test coverage for chart math + visual variants      |
+| P7 | **Commit + push**                                                                                | Low      | Low    | 15min  | Changes documented and pushed to remote                    |
 
 **Total estimated effort:** ~325min (~5.4 hours)
 
@@ -74,36 +74,36 @@ Sorted by importance/impact/effort/customer-value within each parent task.
 
 ### P1: Verify session work
 
-| #   | Sub-task                                                                        | Parent | Est  | Depends on |
-| --- | ------------------------------------------------------------------------------- | ------ | ---- | ---------- |
-| M1a | Run `golangci-lint run ./...` — verify 0 issues                                | P1     | 5min | —          |
-| M1b | Run `nix flake check` — verify treefmt passes                                  | P1     | 3min | —          |
-| M1c | Run `nix fmt` — auto-format any changed files                                  | P1     | 2min | —          |
-| M1d | Verify CHANGELOG `bacb528` entry: open `display/bar_chart.go`, check prop names | P1     | 5min | —          |
+| #   | Sub-task                                                                         | Parent | Est  | Depends on |
+| --- | -------------------------------------------------------------------------------- | ------ | ---- | ---------- |
+| M1a | Run `golangci-lint run ./...` — verify 0 issues                                  | P1     | 5min | —          |
+| M1b | Run `nix flake check` — verify treefmt passes                                    | P1     | 3min | —          |
+| M1c | Run `nix fmt` — auto-format any changed files                                    | P1     | 2min | —          |
+| M1d | Verify CHANGELOG `bacb528` entry: open `display/bar_chart.go`, check prop names  | P1     | 5min | —          |
 | M1e | Verify CHANGELOG `6d5e8f0` entry: confirm `Height` field exists on BarChartProps | P1     | 3min | —          |
-| M1f | Verify CHANGELOG `91cbd18` entry: confirm `Section` + `Header` on SidebarNav    | P1     | 5min | —          |
-| M1g | Verify ROADMAP visual-golden component list: `ls visualtest/testdata/`          | P1     | 3min | —          |
+| M1f | Verify CHANGELOG `91cbd18` entry: confirm `Section` + `Header` on SidebarNav     | P1     | 5min | —          |
+| M1g | Verify ROADMAP visual-golden component list: `ls visualtest/testdata/`           | P1     | 3min | —          |
 
 ### P2: Drift guard hardening (#112)
 
-| #   | Sub-task                                                                        | Parent | Est  | Depends on |
-| --- | ------------------------------------------------------------------------------- | ------ | ---- | ---------- |
-| M2a | Read `utils/docs_count_test.go` — understand current assertion pattern          | P2     | 3min | —          |
-| M2b | Add README.md assertions: component count + enum count + visual golden count    | P2     | 8min | M2a        |
-| M2c | Add ROADMAP.md assertions: component count + visual golden count                | P2     | 5min | M2a        |
-| M2d | Run `go test ./utils/ -run TestDocsCountDrift` — verify all pass                | P2     | 2min | M2b, M2c   |
-| M2e | Fix any count mismatches the new assertions surface                             | P2     | 5min | M2d        |
+| #   | Sub-task                                                                     | Parent | Est  | Depends on |
+| --- | ---------------------------------------------------------------------------- | ------ | ---- | ---------- |
+| M2a | Read `utils/docs_count_test.go` — understand current assertion pattern       | P2     | 3min | —          |
+| M2b | Add README.md assertions: component count + enum count + visual golden count | P2     | 8min | M2a        |
+| M2c | Add ROADMAP.md assertions: component count + visual golden count             | P2     | 5min | M2a        |
+| M2d | Run `go test ./utils/ -run TestDocsCountDrift` — verify all pass             | P2     | 2min | M2b, M2c   |
+| M2e | Fix any count mismatches the new assertions surface                          | P2     | 5min | M2d        |
 
 ### P3: Version-sync guard (#111)
 
-| #   | Sub-task                                                                        | Parent | Est  | Depends on |
-| --- | ------------------------------------------------------------------------------- | ------ | ---- | ---------- |
-| M3a | Read `scripts/check-templ-sync.sh` — mirror the pattern                         | P3     | 3min | —          |
-| M3b | Write `scripts/check-version-sync.sh`: extract version from `version.go`, CHANGELOG heading, FEATURES.md version; compare all three | P3 | 10min | M3a |
-| M3c | `chmod +x scripts/check-version-sync.sh` + test with drift injection            | P3     | 3min | M3b        |
-| M3d | Wire into `.git/hooks/pre-commit` alongside `check-templ-sync.sh`               | P3     | 3min | M3c        |
-| M3e | Add CI step in `.github/workflows/ci.yaml` (mirror lint-config guard)           | P3     | 5min | M3c        |
-| M3f | Run `go test ./...` — verify nothing broke                                       | P3     | 2min | M3d, M3e   |
+| #   | Sub-task                                                                                                                            | Parent | Est   | Depends on |
+| --- | ----------------------------------------------------------------------------------------------------------------------------------- | ------ | ----- | ---------- |
+| M3a | Read `scripts/check-templ-sync.sh` — mirror the pattern                                                                             | P3     | 3min  | —          |
+| M3b | Write `scripts/check-version-sync.sh`: extract version from `version.go`, CHANGELOG heading, FEATURES.md version; compare all three | P3     | 10min | M3a        |
+| M3c | `chmod +x scripts/check-version-sync.sh` + test with drift injection                                                                | P3     | 3min  | M3b        |
+| M3d | Wire into `.git/hooks/pre-commit` alongside `check-templ-sync.sh`                                                                   | P3     | 3min  | M3c        |
+| M3e | Add CI step in `.github/workflows/ci.yaml` (mirror lint-config guard)                                                               | P3     | 5min  | M3c        |
+| M3f | Run `go test ./...` — verify nothing broke                                                                                          | P3     | 2min  | M3d, M3e   |
 
 ### P4: Fix-on-sight
 
@@ -116,32 +116,32 @@ Sorted by importance/impact/effort/customer-value within each parent task.
 
 ### P5: Annotation quality
 
-| #   | Sub-task                                                                        | Parent | Est  | Depends on |
-| --- | ------------------------------------------------------------------------------- | ------ | ---- | ---------- |
-| M5a | Scan `docs/status/archived/2026-08-08_11-38_*.md` TL;DR — is "broken" claim corrected? | P5 | 5min | —    |
-| M5b | Scan `docs/status/archived/2026-08-05_18-24_*.md` TL;DR — is "skipped ANNOTATE" claim corrected? | P5 | 5min | — |
-| M5c | Scan remaining 7 archived reports for stale TL;DR claims (quick scan, not line-by-line) | P5 | 10min | —  |
+| #   | Sub-task                                                                                         | Parent | Est   | Depends on |
+| --- | ------------------------------------------------------------------------------------------------ | ------ | ----- | ---------- |
+| M5a | Scan `docs/status/archived/2026-08-08_11-38_*.md` TL;DR — is "broken" claim corrected?           | P5     | 5min  | —          |
+| M5b | Scan `docs/status/archived/2026-08-05_18-24_*.md` TL;DR — is "skipped ANNOTATE" claim corrected? | P5     | 5min  | —          |
+| M5c | Scan remaining 7 archived reports for stale TL;DR claims (quick scan, not line-by-line)          | P5     | 10min | —          |
 
 ### P6: Testing quick wins (highest-impact first)
 
-| #   | Sub-task                                                                        | Parent | Est   | Depends on |
-| --- | ------------------------------------------------------------------------------- | ------ | ----- | ---------- |
-| M6a | Add `FuzzBuildSmoothPath` fuzz test for Catmull-Rom spline math                | P6     | 10min | —          |
-| M6b | Add `FuzzBuildAreaPath` fuzz test                                               | P6     | 8min  | —          |
-| M6c | Add negative test for `TestNoOrderedTailwindSubstringsInTests` (inject violation, assert flagged) | P6 | 10min | — |
-| M6d | Add visual test for ContextMenu open state                                      | P6     | 10min | —          |
-| M6e | Add visual test for Badge variants (pill, dot, success, error)                  | P6     | 10min | —          |
-| M6f | Add `actionlint` to CI                                                           | P6     | 5min  | —          |
-| M6g | Run `go test ./...` to verify new tests pass                                    | P6     | 3min  | M6a–M6f    |
-| M6h | Run `nix run .#visual` to generate any new golden PNGs                          | P6     | 5min  | M6d, M6e   |
+| #   | Sub-task                                                                                          | Parent | Est   | Depends on |
+| --- | ------------------------------------------------------------------------------------------------- | ------ | ----- | ---------- |
+| M6a | Add `FuzzBuildSmoothPath` fuzz test for Catmull-Rom spline math                                   | P6     | 10min | —          |
+| M6b | Add `FuzzBuildAreaPath` fuzz test                                                                 | P6     | 8min  | —          |
+| M6c | Add negative test for `TestNoOrderedTailwindSubstringsInTests` (inject violation, assert flagged) | P6     | 10min | —          |
+| M6d | Add visual test for ContextMenu open state                                                        | P6     | 10min | —          |
+| M6e | Add visual test for Badge variants (pill, dot, success, error)                                    | P6     | 10min | —          |
+| M6f | Add `actionlint` to CI                                                                            | P6     | 5min  | —          |
+| M6g | Run `go test ./...` to verify new tests pass                                                      | P6     | 3min  | M6a–M6f    |
+| M6h | Run `nix run .#visual` to generate any new golden PNGs                                            | P6     | 5min  | M6d, M6e   |
 
 ### P7: Commit + push
 
-| #   | Sub-task                                                                        | Parent | Est  | Depends on |
-| --- | ------------------------------------------------------------------------------- | ------ | ---- | ---------- |
-| M7a | `git status` + review all changes                                               | P7     | 3min | P1–P6      |
-| M7b | `git commit` with detailed message                                              | P7     | 5min | M7a        |
-| M7c | `git push`                                                                       | P7     | 2min | M7b        |
+| #   | Sub-task                           | Parent | Est  | Depends on |
+| --- | ---------------------------------- | ------ | ---- | ---------- |
+| M7a | `git status` + review all changes  | P7     | 3min | P1–P6      |
+| M7b | `git commit` with detailed message | P7     | 5min | M7a        |
+| M7c | `git push`                         | P7     | 2min | M7b        |
 
 **Total:** 37 micro-tasks, ~325min.
 
@@ -151,26 +151,26 @@ Sorted by importance/impact/effort/customer-value within each parent task.
 
 These items from the status report are already in TODO_LIST or ROADMAP. They need execution when prioritized, not more planning. Re-planning them here would be Verschlimmbesserung.
 
-| Status Report # | Item | Tracked In |
-| --------------- | ---- | ---------- |
-| 10 | Broken v1.8.0 tag decision | TODO_LIST #110 (blocked — user decision) |
-| 19 | Unit tests for `computeChartRenderData()` | ROADMAP chart ecosystem |
-| 20 | Negative test for ordered-substring guard | TODO_LIST (quality) |
-| 21 | Browser test for popover edge-flipping | TODO_LIST (quality) |
-| 24 | Visual tests for Heatmap with `ShowValues` | ROADMAP |
-| 25 | RTL visual test for charts | ROADMAP |
-| 26 | Sparkline `EmptyMessage` field | ROADMAP chart ecosystem |
-| 29 | Heatmap `ColorVar` default | TODO_LIST (quality) |
-| 30 | ADR for `computeChartRenderData` pattern | TODO_LIST (quality) |
-| 31–36 | Architecture / DRY (6 items) | ROADMAP chart ecosystem |
-| 37 | Pre-push hook | ROADMAP |
-| 38 | `nix run .#release` automation | ROADMAP |
-| 39 | `.github/workflows/release.yaml` | ROADMAP |
-| 40 | `release verify` flake target | ROADMAP |
-| 41 | Fix `scripts/pre-commit.sh` | TODO_LIST #93 (blocked) |
-| 42 | `go-structure-linter` findings | TODO_LIST (quality) |
-| 43 | `gomod-check` findings | TODO_LIST (quality) |
-| 44–50 | Visual testing infrastructure (7 items) | ROADMAP |
+| Status Report # | Item                                       | Tracked In                               |
+| --------------- | ------------------------------------------ | ---------------------------------------- |
+| 10              | Broken v1.8.0 tag decision                 | TODO_LIST #110 (blocked — user decision) |
+| 19              | Unit tests for `computeChartRenderData()`  | ROADMAP chart ecosystem                  |
+| 20              | Negative test for ordered-substring guard  | TODO_LIST (quality)                      |
+| 21              | Browser test for popover edge-flipping     | TODO_LIST (quality)                      |
+| 24              | Visual tests for Heatmap with `ShowValues` | ROADMAP                                  |
+| 25              | RTL visual test for charts                 | ROADMAP                                  |
+| 26              | Sparkline `EmptyMessage` field             | ROADMAP chart ecosystem                  |
+| 29              | Heatmap `ColorVar` default                 | TODO_LIST (quality)                      |
+| 30              | ADR for `computeChartRenderData` pattern   | TODO_LIST (quality)                      |
+| 31–36           | Architecture / DRY (6 items)               | ROADMAP chart ecosystem                  |
+| 37              | Pre-push hook                              | ROADMAP                                  |
+| 38              | `nix run .#release` automation             | ROADMAP                                  |
+| 39              | `.github/workflows/release.yaml`           | ROADMAP                                  |
+| 40              | `release verify` flake target              | ROADMAP                                  |
+| 41              | Fix `scripts/pre-commit.sh`                | TODO_LIST #93 (blocked)                  |
+| 42              | `go-structure-linter` findings             | TODO_LIST (quality)                      |
+| 43              | `gomod-check` findings                     | TODO_LIST (quality)                      |
+| 44–50           | Visual testing infrastructure (7 items)    | ROADMAP                                  |
 
 ---
 

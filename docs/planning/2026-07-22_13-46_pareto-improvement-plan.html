@@ -65,14 +65,14 @@
 
         /* --- Type stacks (system only — zero external fonts) --- */
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
 
       * {
@@ -289,15 +289,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
 
       /* --- Issue cards --- */
@@ -310,15 +322,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue h3 {
         margin-bottom: 0.3rem;
@@ -802,243 +826,331 @@
     </style>
   </head>
   <body>
-<div class="top-bar">
-  <span>Pareto Improvement Plan</span>
-  <span>2026-07-22</span>
-</div>
-
-<div class="layout">
-  <aside class="sidebar">
-    <nav>
-      <div class="label">Contents</div>
-      <a href="#summary">Summary</a>
-      <a href="#tiers">Pareto Tiers</a>
-      <a href="#tasks">All Tasks</a>
-      <a href="#execution">Execution Order</a>
-    </nav>
-  </aside>
-  <main class="main">
-    <div class="hero">
-      <div class="hero-badge">Plan</div>
-      <h1>Improvement plan sorted by impact vs effort</h1>
-      <p class="hero-subtitle">Quick wins first, then higher-leverage architectural work. Stop before diminishing returns.</p>
+    <div class="top-bar">
+      <span>Pareto Improvement Plan</span>
+      <span>2026-07-22</span>
     </div>
 
-    <section id="summary">
-      <h2><span class="num">01</span>Summary</h2>
-      <div class="stat-grid">
-        <div class="stat-card stat-good">
-          <div class="stat-value">3</div>
-          <div class="stat-label">1% tasks</div>
+    <div class="layout">
+      <aside class="sidebar">
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#tiers">Pareto Tiers</a>
+          <a href="#tasks">All Tasks</a>
+          <a href="#execution">Execution Order</a>
+        </nav>
+      </aside>
+      <main class="main">
+        <div class="hero">
+          <div class="hero-badge">Plan</div>
+          <h1>Improvement plan sorted by impact vs effort</h1>
+          <p class="hero-subtitle">
+            Quick wins first, then higher-leverage architectural work. Stop
+            before diminishing returns.
+          </p>
         </div>
-        <div class="stat-card stat-warn">
-          <div class="stat-value">3</div>
-          <div class="stat-label">4% tasks</div>
-        </div>
-        <div class="stat-card stat-bad">
-          <div class="stat-value">6</div>
-          <div class="stat-label">20% tasks</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-value">6</div>
-          <div class="stat-label">Long tail</div>
-        </div>
-      </div>
-    </section>
 
-    <section id="tiers">
-      <h2><span class="num">02</span>Pareto Tiers</h2>
+        <section id="summary">
+          <h2><span class="num">01</span>Summary</h2>
+          <div class="stat-grid">
+            <div class="stat-card stat-good">
+              <div class="stat-value">3</div>
+              <div class="stat-label">1% tasks</div>
+            </div>
+            <div class="stat-card stat-warn">
+              <div class="stat-value">3</div>
+              <div class="stat-label">4% tasks</div>
+            </div>
+            <div class="stat-card stat-bad">
+              <div class="stat-value">6</div>
+              <div class="stat-label">20% tasks</div>
+            </div>
+            <div class="stat-card">
+              <div class="stat-value">6</div>
+              <div class="stat-label">Long tail</div>
+            </div>
+          </div>
+        </section>
 
-      <div class="issue issue-nice">
-        <span class="severity severity-nice">1% — 51% of value</span>
-        <h3>Fix the highest-leverage doc drift</h3>
-        <p>Three tiny changes fix the most visible split brain: README counts, any remaining AGENTS.md stale numbers, and the freshness of TODO_LIST.md. Each is minutes of work and eliminates active misinformation.</p>
-      </div>
+        <section id="tiers">
+          <h2><span class="num">02</span>Pareto Tiers</h2>
 
-      <div class="issue issue-important">
-        <span class="severity severity-important">4% — 64% cumulative value</span>
-        <h3>Docs-health audit, golden-file adoption, type-model clarity</h3>
-        <p>A full docs-health audit catches the drift we do not yet know about. Converting brittle assertion tests to golden files in the newest package (navigation) improves maintainability. Documenting the PageProps exception reduces architectural confusion.</p>
-      </div>
+          <div class="issue issue-nice">
+            <span class="severity severity-nice">1% — 51% of value</span>
+            <h3>Fix the highest-leverage doc drift</h3>
+            <p>
+              Three tiny changes fix the most visible split brain: README
+              counts, any remaining AGENTS.md stale numbers, and the freshness
+              of TODO_LIST.md. Each is minutes of work and eliminates active
+              misinformation.
+            </p>
+          </div>
 
-      <div class="issue">
-        <span class="severity">20% — 80% cumulative value</span>
-        <h3>Broader test coverage and tooling polish</h3>
-        <p>Golden files for feedback and forms, a generated component-count badge, release-script improvements, and integration-test coverage. Valuable but not urgent.</p>
-      </div>
-    </section>
+          <div class="issue issue-important">
+            <span class="severity severity-important"
+              >4% — 64% cumulative value</span
+            >
+            <h3>Docs-health audit, golden-file adoption, type-model clarity</h3>
+            <p>
+              A full docs-health audit catches the drift we do not yet know
+              about. Converting brittle assertion tests to golden files in the
+              newest package (navigation) improves maintainability. Documenting
+              the PageProps exception reduces architectural confusion.
+            </p>
+          </div>
 
-    <section id="tasks">
-      <h2><span class="num">03</span>All Tasks by Impact / Effort</h2>
+          <div class="issue">
+            <span class="severity">20% — 80% cumulative value</span>
+            <h3>Broader test coverage and tooling polish</h3>
+            <p>
+              Golden files for feedback and forms, a generated component-count
+              badge, release-script improvements, and integration-test coverage.
+              Valuable but not urgent.
+            </p>
+          </div>
+        </section>
 
-      <table>
-        <thead>
-          <tr>
-            <th># </th>
-            <th>Task</th>
-            <th>Tier</th>
-            <th>Impact</th>
-            <th>Effort</th>
-            <th>Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td>
-            <td>Fix README.md component count (94 → 98) and enum count (37 → 43)</td>
-            <td><span class="badge badge-critical">1%</span></td>
-            <td>High</td>
-            <td>5 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>2</td>
-            <td>Fix any remaining stale counts in AGENTS.md (generated files, component counts)</td>
-            <td><span class="badge badge-critical">1%</span></td>
-            <td>High</td>
-            <td>10 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>3</td>
-            <td>Refresh TODO_LIST.md: remove completed items, verify open items against code</td>
-            <td><span class="badge badge-critical">1%</span></td>
-            <td>High</td>
-            <td>20 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>4</td>
-            <td>Run full docs-health audit and fix critical/medium drift (FEATURES, README, AGENTS, CHANGELOG cross-checks)</td>
-            <td><span class="badge badge-high">4%</span></td>
-            <td>High</td>
-            <td>45 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>5</td>
-            <td>Convert navigation assertion tests to golden files where it improves readability</td>
-            <td><span class="badge badge-high">4%</span></td>
-            <td>Medium</td>
-            <td>60 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>6</td>
-            <td>Document the PageProps / BaseProps exception and decide if it is still justified</td>
-            <td><span class="badge badge-high">4%</span></td>
-            <td>High</td>
-            <td>45 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>7</td>
-            <td>Add golden file tests for feedback package snapshot tests</td>
-            <td><span class="badge badge-medium">20%</span></td>
-            <td>Medium</td>
-            <td>90 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>8</td>
-            <td>Add golden file tests for forms package snapshot tests</td>
-            <td><span class="badge badge-medium">20%</span></td>
-            <td>Medium</td>
-            <td>90 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>9</td>
-            <td>Add a script or badge that derives README component count from exported templ functions</td>
-            <td><span class="badge badge-medium">20%</span></td>
-            <td>Medium</td>
-            <td>60 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>10</td>
-            <td>Improve release script error messages and rollback observability</td>
-            <td><span class="badge badge-medium">20%</span></td>
-            <td>Low</td>
-            <td>30 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>11</td>
-            <td>Review internal/svg public API for missing helpers and completeness</td>
-            <td><span class="badge badge-medium">20%</span></td>
-            <td>Medium</td>
-            <td>30 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-          <tr>
-            <td>12</td>
-            <td>Add integration test for errorpage JSON mode + HTMX error handler wiring</td>
-            <td><span class="badge badge-medium">20%</span></td>
-            <td>Medium</td>
-            <td>45 min</td>
-            <td><span class="badge badge-fixed">Open</span></td>
-          </tr>
-        </tbody>
-      </table>
-    </section>
+        <section id="tasks">
+          <h2><span class="num">03</span>All Tasks by Impact / Effort</h2>
 
-    <section id="execution">
-      <h2><span class="num">04</span>Execution Order</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Task</th>
+                <th>Tier</th>
+                <th>Impact</th>
+                <th>Effort</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>
+                  Fix README.md component count (94 → 98) and enum count (37 →
+                  43)
+                </td>
+                <td><span class="badge badge-critical">1%</span></td>
+                <td>High</td>
+                <td>5 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>
+                  Fix any remaining stale counts in AGENTS.md (generated files,
+                  component counts)
+                </td>
+                <td><span class="badge badge-critical">1%</span></td>
+                <td>High</td>
+                <td>10 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>
+                  Refresh TODO_LIST.md: remove completed items, verify open
+                  items against code
+                </td>
+                <td><span class="badge badge-critical">1%</span></td>
+                <td>High</td>
+                <td>20 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>4</td>
+                <td>
+                  Run full docs-health audit and fix critical/medium drift
+                  (FEATURES, README, AGENTS, CHANGELOG cross-checks)
+                </td>
+                <td><span class="badge badge-high">4%</span></td>
+                <td>High</td>
+                <td>45 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>5</td>
+                <td>
+                  Convert navigation assertion tests to golden files where it
+                  improves readability
+                </td>
+                <td><span class="badge badge-high">4%</span></td>
+                <td>Medium</td>
+                <td>60 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>6</td>
+                <td>
+                  Document the PageProps / BaseProps exception and decide if it
+                  is still justified
+                </td>
+                <td><span class="badge badge-high">4%</span></td>
+                <td>High</td>
+                <td>45 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>7</td>
+                <td>
+                  Add golden file tests for feedback package snapshot tests
+                </td>
+                <td><span class="badge badge-medium">20%</span></td>
+                <td>Medium</td>
+                <td>90 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>8</td>
+                <td>Add golden file tests for forms package snapshot tests</td>
+                <td><span class="badge badge-medium">20%</span></td>
+                <td>Medium</td>
+                <td>90 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>9</td>
+                <td>
+                  Add a script or badge that derives README component count from
+                  exported templ functions
+                </td>
+                <td><span class="badge badge-medium">20%</span></td>
+                <td>Medium</td>
+                <td>60 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>10</td>
+                <td>
+                  Improve release script error messages and rollback
+                  observability
+                </td>
+                <td><span class="badge badge-medium">20%</span></td>
+                <td>Low</td>
+                <td>30 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>11</td>
+                <td>
+                  Review internal/svg public API for missing helpers and
+                  completeness
+                </td>
+                <td><span class="badge badge-medium">20%</span></td>
+                <td>Medium</td>
+                <td>30 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+              <tr>
+                <td>12</td>
+                <td>
+                  Add integration test for errorpage JSON mode + HTMX error
+                  handler wiring
+                </td>
+                <td><span class="badge badge-medium">20%</span></td>
+                <td>Medium</td>
+                <td>45 min</td>
+                <td><span class="badge badge-fixed">Open</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
 
-      <div class="migration-step">
-        <div class="migration-num">1</div>
-        <div class="migration-content">
-          <h4>Fix README counts</h4>
-          <p>Update README.md:18 to 98 components and 43 typed enums. Verify with <code>grep</code> and <code>TestSkillComponentCount</code>.</p>
-        </div>
-      </div>
+        <section id="execution">
+          <h2><span class="num">04</span>Execution Order</h2>
 
-      <div class="migration-step">
-        <div class="migration-num">2</div>
-        <div class="migration-content">
-          <h4>Refresh TODO_LIST.md</h4>
-          <p>Remove completed items, mark verified open items, and add any new items exposed by this review.</p>
-        </div>
-      </div>
+          <div class="migration-step">
+            <div class="migration-num">1</div>
+            <div class="migration-content">
+              <h4>Fix README counts</h4>
+              <p>
+                Update README.md:18 to 98 components and 43 typed enums. Verify
+                with <code>grep</code> and <code>TestSkillComponentCount</code>.
+              </p>
+            </div>
+          </div>
 
-      <div class="migration-step">
-        <div class="migration-num">3</div>
-        <div class="migration-content">
-          <h4>Docs-health audit</h4>
-          <p>Cross-check FEATURES.md, AGENTS.md, and CHANGELOG.md for counts, ghost references, and broken commands. Fix critical/medium drift.</p>
-        </div>
-      </div>
+          <div class="migration-step">
+            <div class="migration-num">2</div>
+            <div class="migration-content">
+              <h4>Refresh TODO_LIST.md</h4>
+              <p>
+                Remove completed items, mark verified open items, and add any
+                new items exposed by this review.
+              </p>
+            </div>
+          </div>
 
-      <div class="migration-step">
-        <div class="migration-num">4</div>
-        <div class="migration-content">
-          <h4>Verification</h4>
-          <p>Run <code>nix run .#verify</code> after each self-contained change. Commit and push when the 1% and 4% tiers are done.</p>
-        </div>
-      </div>
-    </section>
+          <div class="migration-step">
+            <div class="migration-num">3</div>
+            <div class="migration-content">
+              <h4>Docs-health audit</h4>
+              <p>
+                Cross-check FEATURES.md, AGENTS.md, and CHANGELOG.md for counts,
+                ghost references, and broken commands. Fix critical/medium
+                drift.
+              </p>
+            </div>
+          </div>
 
-    <section class="issue issue-nice">
-      <div class="issue-header">
-        <h3>Resolution (2026-07-27)</h3>
-      </div>
-      <div class="migration-content">
-        <p>This plan was executed. Current status of the top items:</p>
-        <ul>
-          <li><strong>#1 README counts</strong> — DONE. README now shows 98 components, 43 enums (was 94/37).</li>
-          <li><strong>#2 AGENTS.md stale counts</strong> — DONE. Generated-file count and component counts reconciled.</li>
-          <li><strong>#3 TODO_LIST refresh</strong> — DONE. Rebuilt: resolved items removed, open items verified against code.</li>
-          <li><strong>#4 Docs-health audit</strong> — DONE. FEATURES.md Planned section corrected (tokens/self-host now DONE), ROADMAP updated to v1.2.0.</li>
-          <li><strong>#5–#8 Golden file adoption</strong> — OPEN. See TODO_LIST #73 (start with navigation).</li>
-          <li><strong>#6 PageProps exception</strong> — Documented in AGENTS.md.</li>
-        </ul>
-        <p>Full docs-health report in TODO_LIST.md, ROADMAP.md, and FEATURES.md.</p>
-      </div>
-    </section>
+          <div class="migration-step">
+            <div class="migration-num">4</div>
+            <div class="migration-content">
+              <h4>Verification</h4>
+              <p>
+                Run <code>nix run .#verify</code> after each self-contained
+                change. Commit and push when the 1% and 4% tiers are done.
+              </p>
+            </div>
+          </div>
+        </section>
 
-    <footer class="footer">Generated 2026-07-22 · Based on self-review 2026-07-22_13-46</footer>
-  </main>
-</div>
-</body>
+        <section class="issue issue-nice">
+          <div class="issue-header">
+            <h3>Resolution (2026-07-27)</h3>
+          </div>
+          <div class="migration-content">
+            <p>This plan was executed. Current status of the top items:</p>
+            <ul>
+              <li>
+                <strong>#1 README counts</strong> — DONE. README now shows 98
+                components, 43 enums (was 94/37).
+              </li>
+              <li>
+                <strong>#2 AGENTS.md stale counts</strong> — DONE.
+                Generated-file count and component counts reconciled.
+              </li>
+              <li>
+                <strong>#3 TODO_LIST refresh</strong> — DONE. Rebuilt: resolved
+                items removed, open items verified against code.
+              </li>
+              <li>
+                <strong>#4 Docs-health audit</strong> — DONE. FEATURES.md
+                Planned section corrected (tokens/self-host now DONE), ROADMAP
+                updated to v1.2.0.
+              </li>
+              <li>
+                <strong>#5–#8 Golden file adoption</strong> — OPEN. See
+                TODO_LIST #73 (start with navigation).
+              </li>
+              <li>
+                <strong>#6 PageProps exception</strong> — Documented in
+                AGENTS.md.
+              </li>
+            </ul>
+            <p>
+              Full docs-health report in TODO_LIST.md, ROADMAP.md, and
+              FEATURES.md.
+            </p>
+          </div>
+        </section>
+
+        <footer class="footer">
+          Generated 2026-07-22 · Based on self-review 2026-07-22_13-46
+        </footer>
+      </main>
+    </div>
+  </body>
 </html>

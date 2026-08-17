@@ -65,14 +65,14 @@
 
         /* --- Type stacks (system only — zero external fonts) --- */
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
 
       * {
@@ -280,15 +280,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
 
       /* --- Issue cards --- */
@@ -301,15 +313,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue h3 {
         margin-bottom: 0.3rem;
@@ -811,8 +835,8 @@
           <div class="hero-badge">Pareto Plan · ≤12min tasks</div>
           <h1>templ-components Remediation Plan</h1>
           <p class="hero-subtitle">
-            123 actionable tasks across 4 Pareto tiers, each ≤12 minutes, sorted by impact / effort
-            / customer-value.
+            123 actionable tasks across 4 Pareto tiers, each ≤12 minutes, sorted
+            by impact / effort / customer-value.
           </p>
         </div>
         <h2 id="summary"><span class="num">00</span>Summary</h2>
@@ -835,12 +859,17 @@
           </div>
         </div>
         <div class="callout callout-solution">
-          <strong>Method</strong> branching-flow (12 linters, 97.5/100) + per-package Sr-Architect
-          review of all 164 source files → deduplicated into 123 tasks. Tier 1 alone fixes the
-          correctness/a11y/security bugs users actually hit.
+          <strong>Method</strong> branching-flow (12 linters, 97.5/100) +
+          per-package Sr-Architect review of all 164 source files → deduplicated
+          into 123 tasks. Tier 1 alone fixes the correctness/a11y/security bugs
+          users actually hit.
         </div>
-        <h2 id="tier1"><span class="num">01</span>Tier 1 — Critical (1% → 51%)</h2>
-        <p class="hero-subtitle">19 tasks · ~164 min · correctness / a11y / security bugs</p>
+        <h2 id="tier1">
+          <span class="num">01</span>Tier 1 — Critical (1% → 51%)
+        </h2>
+        <p class="hero-subtitle">
+          19 tasks · ~164 min · correctness / a11y / security bugs
+        </p>
         <table>
           <thead>
             <tr>
@@ -862,8 +891,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>Overlay A11y</strong></td>
               <td>
-                MobileNavLink: add External target=_blank + rel=noopener (security regression vs
-                NavLink)
+                MobileNavLink: add External target=_blank + rel=noopener
+                (security regression vs NavLink)
               </td>
               <td><code>navigation/nav_link.templ:64</code></td>
               <td>6m</td>
@@ -875,8 +904,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>Overlay A11y</strong></td>
               <td>
-                Make Modal/Drawer aria-labelledby conditional on Title (fallback AriaLabel) —
-                currently dangles when title empty
+                Make Modal/Drawer aria-labelledby conditional on Title (fallback
+                AriaLabel) — currently dangles when title empty
               </td>
               <td><code>display/modal_templ.go:21</code></td>
               <td>8m</td>
@@ -888,8 +917,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>Forms A11y</strong></td>
               <td>
-                Combobox text input: add ErrorAttrs (aria-invalid/aria-describedby) — errors
-                invisible to AT
+                Combobox text input: add ErrorAttrs
+                (aria-invalid/aria-describedby) — errors invisible to AT
               </td>
               <td><code>forms/combobox.templ:53</code></td>
               <td>10m</td>
@@ -901,8 +930,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>Forms Correctness</strong></td>
               <td>
-                Combobox: separate display value from submission value (Value currently doubles as
-                Label)
+                Combobox: separate display value from submission value (Value
+                currently doubles as Label)
               </td>
               <td><code>forms/combobox.templ:58</code></td>
               <td>10m</td>
@@ -914,8 +943,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>Overlay A11y</strong></td>
               <td>
-                Modal/Drawer: add aria-hidden + inert to closed overlays (phantom dialog in a11y
-                tree)
+                Modal/Drawer: add aria-hidden + inert to closed overlays
+                (phantom dialog in a11y tree)
               </td>
               <td><code>display/modal_templ.go:14</code></td>
               <td>10m</td>
@@ -927,8 +956,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>Overlay A11y</strong></td>
               <td>
-                Modal/Drawer SSR-open: call tcOpen on load when props.Open (focus never moves,
-                restore broken)
+                Modal/Drawer SSR-open: call tcOpen on load when props.Open
+                (focus never moves, restore broken)
               </td>
               <td><code>display/shared.go:100</code></td>
               <td>10m</td>
@@ -940,8 +969,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>Forms A11y</strong></td>
               <td>
-                Combobox keyboard nav: ArrowUp/Down, Enter, Home/End + aria-activedescendant
-                (WAI-ARIA)
+                Combobox keyboard nav: ArrowUp/Down, Enter, Home/End +
+                aria-activedescendant (WAI-ARIA)
               </td>
               <td><code>forms/combobox.templ:99</code></td>
               <td>12m</td>
@@ -953,8 +982,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Feedback A11y</strong></td>
               <td>
-                Spinner: emit aria-hidden=true ONLY when no AriaLabel (current contradicts
-                aria-label)
+                Spinner: emit aria-hidden=true ONLY when no AriaLabel (current
+                contradicts aria-label)
               </td>
               <td><code>feedback/loading.templ:65</code></td>
               <td>6m</td>
@@ -965,7 +994,10 @@
               <td><span class="badge badge-high">High</span></td>
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Forms A11y</strong></td>
-              <td>FileInput: add ErrorAttrs (errors/help text not linked via aria-describedby)</td>
+              <td>
+                FileInput: add ErrorAttrs (errors/help text not linked via
+                aria-describedby)
+              </td>
               <td><code>forms/file_input.templ:42</code></td>
               <td>6m</td>
             </tr>
@@ -976,8 +1008,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Nav A11y</strong></td>
               <td>
-                Navigation: add motion-reduce overrides to all transition-colors (violates lib
-                convention)
+                Navigation: add motion-reduce overrides to all transition-colors
+                (violates lib convention)
               </td>
               <td><code>navigation/*.templ</code></td>
               <td>6m</td>
@@ -989,8 +1021,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Feedback A11y</strong></td>
               <td>
-                Toast: use role=status for polite toasts (role=alert + aria-live=polite is
-                contradictory)
+                Toast: use role=status for polite toasts (role=alert +
+                aria-live=polite is contradictory)
               </td>
               <td><code>feedback/toast.templ:145</code></td>
               <td>6m</td>
@@ -1002,8 +1034,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Overlay A11y Tests</strong></td>
               <td>
-                Add tests: no-title omits aria-labelledby; closed overlay has aria-hidden; SSR-open
-                focus
+                Add tests: no-title omits aria-labelledby; closed overlay has
+                aria-hidden; SSR-open focus
               </td>
               <td><code>display/*_test.go</code></td>
               <td>8m</td>
@@ -1015,8 +1047,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Feedback A11y</strong></td>
               <td>
-                ProgressBar: move aria-label + aria-value* onto the role=progressbar element
-                (currently nameless)
+                ProgressBar: move aria-label + aria-value* onto the
+                role=progressbar element (currently nameless)
               </td>
               <td><code>feedback/progressbar.templ:59</code></td>
               <td>10m</td>
@@ -1028,8 +1060,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Forms Correctness</strong></td>
               <td>
-                InputHidden: render bare &lt;input type=hidden&gt; without FormFieldWrapper
-                (label/error wrong)
+                InputHidden: render bare &lt;input type=hidden&gt; without
+                FormFieldWrapper (label/error wrong)
               </td>
               <td><code>forms/input.templ:80</code></td>
               <td>10m</td>
@@ -1041,8 +1073,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Forms Correctness</strong></td>
               <td>
-                Select: enforce single Selected option (multiple is invalid state,
-                browser-inconsistent)
+                Select: enforce single Selected option (multiple is invalid
+                state, browser-inconsistent)
               </td>
               <td><code>forms/select.templ:16</code></td>
               <td>10m</td>
@@ -1054,8 +1086,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Nav A11y</strong></td>
               <td>
-                MobileMenu: derive unique ID via EnsureID (hardcoded tc-mobile-menu collides w/ 2
-                Navs)
+                MobileMenu: derive unique ID via EnsureID (hardcoded
+                tc-mobile-menu collides w/ 2 Navs)
               </td>
               <td><code>navigation/mobile_menu.templ:14</code></td>
               <td>10m</td>
@@ -1067,8 +1099,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Feedback Edge</strong></td>
               <td>
-                LoadingOverlay: clamp Progress to [0,100] before width:% (negative/&gt;100 = invalid
-                CSS)
+                LoadingOverlay: clamp Progress to [0,100] before width:%
+                (negative/&gt;100 = invalid CSS)
               </td>
               <td><code>feedback/loading.templ:115</code></td>
               <td>6m</td>
@@ -1080,8 +1112,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Feedback API</strong></td>
               <td>
-                Toast Duration: emit per-toast setTimeout or document as tcShowToast-only (dead prop
-                = split-brain)
+                Toast Duration: emit per-toast setTimeout or document as
+                tcShowToast-only (dead prop = split-brain)
               </td>
               <td><code>feedback/toast.templ:28</code></td>
               <td>10m</td>
@@ -1093,8 +1125,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Feedback A11y</strong></td>
               <td>
-                SkeletonGroup: extract un-annotated internal skeleton; single role=status (N+1
-                announcements)
+                SkeletonGroup: extract un-annotated internal skeleton; single
+                role=status (N+1 announcements)
               </td>
               <td><code>feedback/loading.templ:141</code></td>
               <td>10m</td>
@@ -1102,7 +1134,9 @@
           </tbody>
         </table>
         <h2 id="tier2"><span class="num">02</span>Tier 2 — High (4% → 64%)</h2>
-        <p class="hero-subtitle">22 tasks · ~192 min · HTMX / layout / icons / errorpage safety</p>
+        <p class="hero-subtitle">
+          22 tasks · ~192 min · HTMX / layout / icons / errorpage safety
+        </p>
         <table>
           <thead>
             <tr>
@@ -1124,7 +1158,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>HTMX Correctness</strong></td>
               <td>
-                afterRequest: clear data-tc-retry on success (stale counter skips future retries)
+                afterRequest: clear data-tc-retry on success (stale counter
+                skips future retries)
               </td>
               <td><code>htmx/error_handling.templ:155</code></td>
               <td>8m</td>
@@ -1136,7 +1171,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>HTMX Security</strong></td>
               <td>
-                Empty Nonce: omit nonce attr when empty (strict CSP silently disables whole script)
+                Empty Nonce: omit nonce attr when empty (strict CSP silently
+                disables whole script)
               </td>
               <td><code>htmx/error_handling.templ:45</code></td>
               <td>10m</td>
@@ -1148,8 +1184,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>Icons Integrity</strong></td>
               <td>
-                Alias the 4 duplicate icon pairs (Menu/Bars3, Refresh/ArrowPath, Location/MapPin,
-                ThumbUp/HandThumbUp)
+                Alias the 4 duplicate icon pairs (Menu/Bars3, Refresh/ArrowPath,
+                Location/MapPin, ThumbUp/HandThumbUp)
               </td>
               <td><code>icons/icon_paths.go:41</code></td>
               <td>10m</td>
@@ -1161,8 +1197,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Layout A11y</strong></td>
               <td>
-                Skip-link target: add tabindex=-1 to &lt;main id=main-content&gt; (focus doesn't
-                move)
+                Skip-link target: add tabindex=-1 to &lt;main
+                id=main-content&gt; (focus doesn't move)
               </td>
               <td><code>layout/base.templ:104</code></td>
               <td>4m</td>
@@ -1173,7 +1209,10 @@
               <td><span class="badge badge-high">High</span></td>
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>HTMX Correctness</strong></td>
-              <td>responseError: guard xhr null before xhr.status (TypeError on missing xhr)</td>
+              <td>
+                responseError: guard xhr null before xhr.status (TypeError on
+                missing xhr)
+              </td>
               <td><code>htmx/error_handling.templ:141</code></td>
               <td>6m</td>
             </tr>
@@ -1184,7 +1223,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Icons Integrity</strong></td>
               <td>
-                Guard Spinner in iconPaths (IconPathData(Spinner) wrongly returns Question path)
+                Guard Spinner in iconPaths (IconPathData(Spinner) wrongly
+                returns Question path)
               </td>
               <td><code>icons/icon_paths.go:140</code></td>
               <td>6m</td>
@@ -1196,7 +1236,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>errorpage Safety</strong></td>
               <td>
-                Override nil: implement documented skip-render OR fix doc+test (contract mismatch)
+                Override nil: implement documented skip-render OR fix doc+test
+                (contract mismatch)
               </td>
               <td><code>errorpage/handler.go:243</code></td>
               <td>6m</td>
@@ -1207,7 +1248,10 @@
               <td><span class="badge badge-high">High</span></td>
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Icons Tests</strong></td>
-              <td>Add test: every exported Name const has iconPathData coverage (or is Spinner)</td>
+              <td>
+                Add test: every exported Name const has iconPathData coverage
+                (or is Spinner)
+              </td>
               <td><code>icons/icon_names.go</code></td>
               <td>8m</td>
             </tr>
@@ -1218,8 +1262,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>HTMX Correctness</strong></td>
               <td>
-                LoadingButton: add inverse toggle so defaultText hides during request (both render
-                now)
+                LoadingButton: add inverse toggle so defaultText hides during
+                request (both render now)
               </td>
               <td><code>htmx/loading.templ:39</code></td>
               <td>10m</td>
@@ -1231,8 +1275,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Layout A11y</strong></td>
               <td>
-                ThemeScript/ThemeToggle: set document.colorScheme (native controls stay light in
-                dark mode)
+                ThemeScript/ThemeToggle: set document.colorScheme (native
+                controls stay light in dark mode)
               </td>
               <td><code>layout/theme.templ:11</code></td>
               <td>10m</td>
@@ -1244,7 +1288,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Layout A11y</strong></td>
               <td>
-                ThemeToggle: role=switch + aria-checked, synced in toggle script (no current state)
+                ThemeToggle: role=switch + aria-checked, synced in toggle script
+                (no current state)
               </td>
               <td><code>layout/theme.templ:27</code></td>
               <td>10m</td>
@@ -1256,8 +1301,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Layout Security</strong></td>
               <td>
-                SRI: fail loud / fallback when HTMXVersion not in SRI table (silently loses
-                integrity)
+                SRI: fail loud / fallback when HTMXVersion not in SRI table
+                (silently loses integrity)
               </td>
               <td><code>layout/sri.go:51</code></td>
               <td>10m</td>
@@ -1269,8 +1314,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Icons Integrity</strong></td>
               <td>
-                Move stray-| validation to init(); keep iconPaths panic-free (panic in render hot
-                path)
+                Move stray-| validation to init(); keep iconPaths panic-free
+                (panic in render hot path)
               </td>
               <td><code>icons/icon_paths.go:125</code></td>
               <td>10m</td>
@@ -1282,7 +1327,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>errorpage Safety</strong></td>
               <td>
-                Map unknown errors to 500 not 503 (503 signals retry -&gt; CDN/LB retry storms)
+                Map unknown errors to 500 not 503 (503 signals retry -&gt;
+                CDN/LB retry storms)
               </td>
               <td><code>errorpage/handler.go:82</code></td>
               <td>10m</td>
@@ -1294,8 +1340,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>errorpage Safety</strong></td>
               <td>
-                WriteErrorPage: derive status from props.Family (param + Family can disagree -&gt;
-                wrong code)
+                WriteErrorPage: derive status from props.Family (param + Family
+                can disagree -&gt; wrong code)
               </td>
               <td><code>errorpage/handler.go:292</code></td>
               <td>10m</td>
@@ -1307,7 +1353,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>errorpage Size</strong></td>
               <td>
-                handler.go (354 lines): split into fromerror.go + constructors.go + handler.go
+                handler.go (354 lines): split into fromerror.go +
+                constructors.go + handler.go
               </td>
               <td><code>errorpage/handler.go</code></td>
               <td>10m</td>
@@ -1319,8 +1366,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>errorpage Safety</strong></td>
               <td>
-                renderWithShell: render to buffer before WriteHeader (templ error mid-stream =
-                truncated doc)
+                renderWithShell: render to buffer before WriteHeader (templ
+                error mid-stream = truncated doc)
               </td>
               <td><code>errorpage/handler.go:266</code></td>
               <td>12m</td>
@@ -1331,7 +1378,10 @@
               <td><span class="badge badge-high">High</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Layout A11y</strong></td>
-              <td>Layout: motion-reduce overrides for scroll-smooth + transition-colors</td>
+              <td>
+                Layout: motion-reduce overrides for scroll-smooth +
+                transition-colors
+              </td>
               <td><code>layout/base.templ:41</code></td>
               <td>6m</td>
             </tr>
@@ -1342,7 +1392,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>errorpage A11y</strong></td>
               <td>
-                erroralert: replace dead hover:bg-opacity-80 with Tailwind v4 modifier bg-{color}/80
+                erroralert: replace dead hover:bg-opacity-80 with Tailwind v4
+                modifier bg-{color}/80
               </td>
               <td><code>errorpage/erroralert.templ:48</code></td>
               <td>8m</td>
@@ -1354,8 +1405,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>errorpage Correctness</strong></td>
               <td>
-                FromError: add ErrorTitle() extraction + family-based default (every dynamic page
-                titleless)
+                FromError: add ErrorTitle() extraction + family-based default
+                (every dynamic page titleless)
               </td>
               <td><code>errorpage/handler.go:40</code></td>
               <td>10m</td>
@@ -1367,8 +1418,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>errorpage A11y</strong></td>
               <td>
-                contextTable: use &lt;dl&gt; or add caption/th+scope (SR mis-announces definition
-                data as table)
+                contextTable: use &lt;dl&gt; or add caption/th+scope (SR
+                mis-announces definition data as table)
               </td>
               <td><code>errorpage/shared.templ:38</code></td>
               <td>10m</td>
@@ -1380,16 +1431,20 @@
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>errorpage Context</strong></td>
               <td>
-                renderWithShell: wrap once, include title in error (branching-flow flagged context
-                loss)
+                renderWithShell: wrap once, include title in error
+                (branching-flow flagged context loss)
               </td>
               <td><code>errorpage/handler.go:341</code></td>
               <td>8m</td>
             </tr>
           </tbody>
         </table>
-        <h2 id="tier3"><span class="num">03</span>Tier 3 — Medium (20% → 80%)</h2>
-        <p class="hero-subtitle">41 tasks · ~374 min · type-safety / architecture / systemic</p>
+        <h2 id="tier3">
+          <span class="num">03</span>Tier 3 — Medium (20% → 80%)
+        </h2>
+        <p class="hero-subtitle">
+          41 tasks · ~374 min · type-safety / architecture / systemic
+        </p>
         <table>
           <thead>
             <tr>
@@ -1411,8 +1466,8 @@
               <td><span class="badge badge-high">L</span></td>
               <td><strong>Icons A11y</strong></td>
               <td>
-                Icon a11y: add role=img + &lt;title&gt; variant (icons as sole button content
-                invisible to AT)
+                Icon a11y: add role=img + &lt;title&gt; variant (icons as sole
+                button content invisible to AT)
               </td>
               <td><code>icons/icon.templ:23</code></td>
               <td>10m</td>
@@ -1424,8 +1479,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Script Dedup</strong></td>
               <td>
-                overlayScriptComponent: HTML-escape nonce before fmt.Sprintf (attribute boundary
-                break)
+                overlayScriptComponent: HTML-escape nonce before fmt.Sprintf
+                (attribute boundary break)
               </td>
               <td><code>display/shared.go:147</code></td>
               <td>6m</td>
@@ -1446,7 +1501,10 @@
               <td><span class="badge badge-medium">Medium</span></td>
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Duplication</strong></td>
-              <td>errorpage familyStyleMap: builder to dedup 6 near-identical 8-field entries</td>
+              <td>
+                errorpage familyStyleMap: builder to dedup 6 near-identical
+                8-field entries
+              </td>
               <td><code>errorpage/styles.go:53</code></td>
               <td>8m</td>
             </tr>
@@ -1457,7 +1515,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Display Edge</strong></td>
               <td>
-                Button Disabled+Href: render aria-disabled/tabindex=-1/pointer-events-none (silently
+                Button Disabled+Href: render
+                aria-disabled/tabindex=-1/pointer-events-none (silently
                 clickable)
               </td>
               <td><code>display/button.templ:20</code></td>
@@ -1470,7 +1529,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Layout Arch</strong></td>
               <td>
-                response-targets extension: opt-out prop (force-loaded w/ htmx, extra request+bytes)
+                response-targets extension: opt-out prop (force-loaded w/ htmx,
+                extra request+bytes)
               </td>
               <td><code>layout/base.templ:89</code></td>
               <td>8m</td>
@@ -1482,7 +1542,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Display Naming</strong></td>
               <td>
-                ModalSizeFull/DrawerFull: rename (map to max-w-4xl/2xl, not full — misleading)
+                ModalSizeFull/DrawerFull: rename (map to max-w-4xl/2xl, not full
+                — misleading)
               </td>
               <td><code>display/modal_go.go:41</code></td>
               <td>8m</td>
@@ -1494,7 +1555,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Type Safety</strong></td>
               <td>
-                DropdownItem: deprecate Href fallback, require Kind (dual discrimination drops href)
+                DropdownItem: deprecate Href fallback, require Kind (dual
+                discrimination drops href)
               </td>
               <td><code>display/dropdown.templ:20</code></td>
               <td>10m</td>
@@ -1506,8 +1568,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Architecture</strong></td>
               <td>
-                Label/FormFieldWrapper: convert positional params to Props structs (3 &amp; 5
-                primitives)
+                Label/FormFieldWrapper: convert positional params to Props
+                structs (3 &amp; 5 primitives)
               </td>
               <td><code>forms/label.templ:6</code></td>
               <td>10m</td>
@@ -1519,8 +1581,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Concurrency</strong></td>
               <td>
-                utils EnsureID: panic/atomic-counter fallback (time.Now nanos = predictable,
-                collides)
+                utils EnsureID: panic/atomic-counter fallback (time.Now nanos =
+                predictable, collides)
               </td>
               <td><code>utils/validate.go:25</code></td>
               <td>10m</td>
@@ -1532,8 +1594,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Tests</strong></td>
               <td>
-                version_test: t.Fatal not Skip; go:embed CHANGELOG (guard silently disabled in many
-                layouts)
+                version_test: t.Fatal not Skip; go:embed CHANGELOG (guard
+                silently disabled in many layouts)
               </td>
               <td><code>utils/version_test.go:17</code></td>
               <td>10m</td>
@@ -1545,7 +1607,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Architecture</strong></td>
               <td>
-                Extract IsActive(href,currentPath) helper; unify NavLink/sidebar active detection
+                Extract IsActive(href,currentPath) helper; unify NavLink/sidebar
+                active detection
               </td>
               <td><code>navigation/nav_link.templ:38</code></td>
               <td>10m</td>
@@ -1556,7 +1619,10 @@
               <td><span class="badge badge-medium">Medium</span></td>
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Forms API</strong></td>
-              <td>ToggleProps: add Required/Error/HelpText (inconsistent w/ every other field)</td>
+              <td>
+                ToggleProps: add Required/Error/HelpText (inconsistent w/ every
+                other field)
+              </td>
               <td><code>forms/toggle.templ:15</code></td>
               <td>10m</td>
             </tr>
@@ -1567,8 +1633,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Display A11y</strong></td>
               <td>
-                Tooltip: auto-gen ID via EnsureID; always emit aria-describedby (unlinked when no
-                ID)
+                Tooltip: auto-gen ID via EnsureID; always emit aria-describedby
+                (unlinked when no ID)
               </td>
               <td><code>display/tooltip.templ:67</code></td>
               <td>10m</td>
@@ -1580,7 +1646,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Display Edge</strong></td>
               <td>
-                Avatar: render status dot in initials/fallback branches too (only img branch now)
+                Avatar: render status dot in initials/fallback branches too
+                (only img branch now)
               </td>
               <td><code>display/avatar.templ:106</code></td>
               <td>10m</td>
@@ -1592,8 +1659,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Architecture</strong></td>
               <td>
-                htmx helpers (LoadingIndicator, ConfirmDelete, SwapOOB, CSRFToken): Props structs w/
-                BaseProps
+                htmx helpers (LoadingIndicator, ConfirmDelete, SwapOOB,
+                CSRFToken): Props structs w/ BaseProps
               </td>
               <td><code>htmx/helpers.templ</code></td>
               <td>12m</td>
@@ -1605,8 +1672,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Script Dedup</strong></td>
               <td>
-                Hoist Combobox/Accordion/Dropdown global scripts to one-shot helpers (emitted per
-                instance)
+                Hoist Combobox/Accordion/Dropdown global scripts to one-shot
+                helpers (emitted per instance)
               </td>
               <td><code>forms/combobox.templ:99</code></td>
               <td>12m</td>
@@ -1618,8 +1685,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Error Family</strong></td>
               <td>
-                errorpage: 4 fmt.Errorf -&gt; go-error-family constructors (branching-flow
-                errorfamily)
+                errorpage: 4 fmt.Errorf -&gt; go-error-family constructors
+                (branching-flow errorfamily)
               </td>
               <td><code>errorpage/handler.go:284</code></td>
               <td>12m</td>
@@ -1631,7 +1698,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Display A11y</strong></td>
               <td>
-                Tooltip: Escape-to-dismiss + touch fallback (hover/focus-only, invisible on touch)
+                Tooltip: Escape-to-dismiss + touch fallback (hover/focus-only,
+                invisible on touch)
               </td>
               <td><code>display/tooltip.templ:63</code></td>
               <td>12m</td>
@@ -1643,8 +1711,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Performance</strong></td>
               <td>
-                utils Class(): per-shard mutex or result cache (coarse global lock serializes all
-                SSR merges)
+                utils Class(): per-shard mutex or result cache (coarse global
+                lock serializes all SSR merges)
               </td>
               <td><code>utils/utils.go:41</code></td>
               <td>12m</td>
@@ -1655,7 +1723,9 @@
               <td><span class="badge badge-medium">Medium</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Edge Case</strong></td>
-              <td>SimpleNav: add Sticky prop instead of hardcoded Sticky:true</td>
+              <td>
+                SimpleNav: add Sticky prop instead of hardcoded Sticky:true
+              </td>
               <td><code>navigation/nav.templ:100</code></td>
               <td>6m</td>
             </tr>
@@ -1665,7 +1735,10 @@
               <td><span class="badge badge-medium">Medium</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Edge Case</strong></td>
-              <td>Skip rendering MobileMenu when props.Links empty (emits empty div + script)</td>
+              <td>
+                Skip rendering MobileMenu when props.Links empty (emits empty
+                div + script)
+              </td>
               <td><code>navigation/nav.templ:61</code></td>
               <td>6m</td>
             </tr>
@@ -1676,8 +1749,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Forms A11y</strong></td>
               <td>
-                ErrorAttrs: emit aria-describedby when helpTextID set regardless of id (id-less
-                fields blind)
+                ErrorAttrs: emit aria-describedby when helpTextID set regardless
+                of id (id-less fields blind)
               </td>
               <td><code>forms/helpers.go:26</code></td>
               <td>6m</td>
@@ -1688,7 +1761,10 @@
               <td><span class="badge badge-high">High</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Forms Edge</strong></td>
-              <td>validation: sanitize err.Field before href=# (broken fragment URLs)</td>
+              <td>
+                validation: sanitize err.Field before href=# (broken fragment
+                URLs)
+              </td>
               <td><code>forms/validation.templ:61</code></td>
               <td>6m</td>
             </tr>
@@ -1699,8 +1775,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Type Safety</strong></td>
               <td>
-                FormMethod: add PUT/DELETE/PATCH or document Attrs path (silently -&gt; GET is
-                surprising)
+                FormMethod: add PUT/DELETE/PATCH or document Attrs path
+                (silently -&gt; GET is surprising)
               </td>
               <td><code>forms/form.templ:10</code></td>
               <td>8m</td>
@@ -1712,8 +1788,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Type Safety</strong></td>
               <td>
-                paginationArrow roundedSide string param -&gt; typed enum/constants (typo = bad
-                class)
+                paginationArrow roundedSide string param -&gt; typed
+                enum/constants (typo = bad class)
               </td>
               <td><code>navigation/pagination.templ:100</code></td>
               <td>8m</td>
@@ -1725,7 +1801,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Architecture</strong></td>
               <td>
-                activeSpanOrLink (5 positional params, 2 empty sentinels) -&gt; struct or split
+                activeSpanOrLink (5 positional params, 2 empty sentinels) -&gt;
+                struct or split
               </td>
               <td><code>navigation/nav_link.templ:26</code></td>
               <td>8m</td>
@@ -1736,7 +1813,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Architecture</strong></td>
-              <td>Ternary: document eager-eval caveat or deprecate for inline templ if/else</td>
+              <td>
+                Ternary: document eager-eval caveat or deprecate for inline
+                templ if/else
+              </td>
               <td><code>utils/utils.go:58</code></td>
               <td>8m</td>
             </tr>
@@ -1746,7 +1826,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Nil Safety</strong></td>
-              <td>htmx loading: guard nil spinner templ.Component (panics at render)</td>
+              <td>
+                htmx loading: guard nil spinner templ.Component (panics at
+                render)
+              </td>
               <td><code>htmx/loading.templ:7</code></td>
               <td>8m</td>
             </tr>
@@ -1757,8 +1840,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Type Safety</strong></td>
               <td>
-                utils ValidateID: reject invalid HTML-id chars (only checks emptiness; SanitizeID
-                lives in forms)
+                utils ValidateID: reject invalid HTML-id chars (only checks
+                emptiness; SanitizeID lives in forms)
               </td>
               <td><code>utils/validate.go:10</code></td>
               <td>8m</td>
@@ -1769,7 +1852,10 @@
               <td><span class="badge badge-medium">Medium</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Edge Case</strong></td>
-              <td>ensureAccordionItemIDs: copy slice before mutating caller's []AccordionItem</td>
+              <td>
+                ensureAccordionItemIDs: copy slice before mutating caller's
+                []AccordionItem
+              </td>
               <td><code>display/accordion.templ:10</code></td>
               <td>8m</td>
             </tr>
@@ -1780,8 +1866,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Type Safety</strong></td>
               <td>
-                StatusBadge: accept typed status alias w/ constants (raw string + magic map only
-                validation)
+                StatusBadge: accept typed status alias w/ constants (raw string
+                + magic map only validation)
               </td>
               <td><code>display/badge.templ:135</code></td>
               <td>10m</td>
@@ -1792,7 +1878,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Type Safety</strong></td>
-              <td>htmx SwapStyle typed enum (validSwapStyles map[string]bool + bare strings)</td>
+              <td>
+                htmx SwapStyle typed enum (validSwapStyles map[string]bool +
+                bare strings)
+              </td>
               <td><code>htmx/helpers.templ:4</code></td>
               <td>10m</td>
             </tr>
@@ -1803,7 +1892,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Type Safety</strong></td>
               <td>
-                ThemeColor/DarkThemeColor hex validation (^# hex, garbage renders into meta now)
+                ThemeColor/DarkThemeColor hex validation (^# hex, garbage
+                renders into meta now)
               </td>
               <td><code>layout/base.templ:16</code></td>
               <td>10m</td>
@@ -1815,7 +1905,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Architecture</strong></td>
               <td>
-                tabLink: pack active/inactive classes into struct (easily swapped positional params)
+                tabLink: pack active/inactive classes into struct (easily
+                swapped positional params)
               </td>
               <td><code>display/tabs.templ:46</code></td>
               <td>10m</td>
@@ -1826,7 +1917,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Architecture</strong></td>
-              <td>Move DismissScript out of utils (foundation leaks DOM/JS concerns)</td>
+              <td>
+                Move DismissScript out of utils (foundation leaks DOM/JS
+                concerns)
+              </td>
               <td><code>utils/utils.go:74</code></td>
               <td>10m</td>
             </tr>
@@ -1836,7 +1930,10 @@
               <td><span class="badge badge-medium">Medium</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Edge Case</strong></td>
-              <td>breadcrumbs: resolve relative Href for JSON-LD (spec requires absolute URL)</td>
+              <td>
+                breadcrumbs: resolve relative Href for JSON-LD (spec requires
+                absolute URL)
+              </td>
               <td><code>navigation/breadcrumbs.templ:32</code></td>
               <td>10m</td>
             </tr>
@@ -1846,7 +1943,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Layout Edge</strong></td>
-              <td>empty Locale: default 'en' (renders lang='' invalid) + guard og:locale</td>
+              <td>
+                empty Locale: default 'en' (renders lang='' invalid) + guard
+                og:locale
+              </td>
               <td><code>layout/base.templ:16</code></td>
               <td>10m</td>
             </tr>
@@ -1857,8 +1957,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Display Arch</strong></td>
               <td>
-                card statCardFigures: replace switch with trendStyle map (convention = maps not
-                switches)
+                card statCardFigures: replace switch with trendStyle map
+                (convention = maps not switches)
               </td>
               <td><code>display/card.templ:209</code></td>
               <td>10m</td>
@@ -1870,7 +1970,8 @@
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Architecture</strong></td>
               <td>
-                diagnosticSection (5 positional args mixing data+presentation) -&gt; props struct
+                diagnosticSection (5 positional args mixing data+presentation)
+                -&gt; props struct
               </td>
               <td><code>errorpage/shared.templ:80</code></td>
               <td>8m</td>
@@ -1887,8 +1988,12 @@
             </tr>
           </tbody>
         </table>
-        <h2 id="tier4"><span class="num">04</span>Tier 4 — Polish &amp; cleanup</h2>
-        <p class="hero-subtitle">41 tasks · ~294 min · dead-code / duplication / test gaps</p>
+        <h2 id="tier4">
+          <span class="num">04</span>Tier 4 — Polish &amp; cleanup
+        </h2>
+        <p class="hero-subtitle">
+          41 tasks · ~294 min · dead-code / duplication / test gaps
+        </p>
         <table>
           <thead>
             <tr>
@@ -1909,7 +2014,10 @@
               <td><span class="badge badge-high">High</span></td>
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Tests</strong></td>
-              <td>navigation: add MobileNavLink External test (security bug untested)</td>
+              <td>
+                navigation: add MobileNavLink External test (security bug
+                untested)
+              </td>
               <td><code>navigation/*_test.go</code></td>
               <td>6m</td>
             </tr>
@@ -1920,7 +2028,8 @@
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Tests</strong></td>
               <td>
-                integration: render components inside layout.Base test (head/body/nonce unverified)
+                integration: render components inside layout.Base test
+                (head/body/nonce unverified)
               </td>
               <td><code>integration/composition_test.go:14</code></td>
               <td>8m</td>
@@ -1931,7 +2040,10 @@
               <td><span class="badge badge-medium">Medium</span></td>
               <td><span class="badge badge-medium">M</span></td>
               <td><strong>Tests</strong></td>
-              <td>layout: consolidate 7 overlapping test files into 2 (unit + behaviour)</td>
+              <td>
+                layout: consolidate 7 overlapping test files into 2 (unit +
+                behaviour)
+              </td>
               <td><code>layout/*_test.go</code></td>
               <td>12m</td>
             </tr>
@@ -1941,7 +2053,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>feedback: remove alertIconName/toastIconName pure-indirection wrappers</td>
+              <td>
+                feedback: remove alertIconName/toastIconName pure-indirection
+                wrappers
+              </td>
               <td><code>feedback/alert.templ:41</code></td>
               <td>6m</td>
             </tr>
@@ -1952,8 +2067,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
               <td>
-                feedback: inline feedbackStyle in alert/toast; delete alertStyles/toastStyles
-                duplicate unpackers
+                feedback: inline feedbackStyle in alert/toast; delete
+                alertStyles/toastStyles duplicate unpackers
               </td>
               <td><code>feedback/alert.templ:36</code></td>
               <td>6m</td>
@@ -1964,7 +2079,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>feedback: standardize data-dismiss (value never inspected — dead info)</td>
+              <td>
+                feedback: standardize data-dismiss (value never inspected — dead
+                info)
+              </td>
               <td><code>feedback/alert.templ:79</code></td>
               <td>6m</td>
             </tr>
@@ -1974,7 +2092,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>display: buttonVariantDefault/badgeStyleDefault use map fallback directly</td>
+              <td>
+                display: buttonVariantDefault/badgeStyleDefault use map fallback
+                directly
+              </td>
               <td><code>display/button_go.go:89</code></td>
               <td>6m</td>
             </tr>
@@ -1984,7 +2105,9 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>navigation: remove sidebarItemActive dead '/' special-case</td>
+              <td>
+                navigation: remove sidebarItemActive dead '/' special-case
+              </td>
               <td><code>navigation/sidebar_nav.templ:43</code></td>
               <td>6m</td>
             </tr>
@@ -1994,7 +2117,10 @@
               <td><span class="badge badge-medium">Medium</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>forms: textarea rows default 3 -&gt; 4 to match DefaultTextareaProps</td>
+              <td>
+                forms: textarea rows default 3 -&gt; 4 to match
+                DefaultTextareaProps
+              </td>
               <td><code>forms/textarea.templ:50</code></td>
               <td>6m</td>
             </tr>
@@ -2004,7 +2130,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>forms: comboboxInputClass const -&gt; func(hasError) for error-ring state</td>
+              <td>
+                forms: comboboxInputClass const -&gt; func(hasError) for
+                error-ring state
+              </td>
               <td><code>forms/combobox.templ:33</code></td>
               <td>6m</td>
             </tr>
@@ -2014,7 +2143,9 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Tests</strong></td>
-              <td>integration: add ThemeScript/ThemeToggle to CSPNonceConsistency</td>
+              <td>
+                integration: add ThemeScript/ThemeToggle to CSPNonceConsistency
+              </td>
               <td><code>integration/composition_test.go:262</code></td>
               <td>6m</td>
             </tr>
@@ -2044,7 +2175,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>display: tabs remove nested &lt;nav&gt; double aria-label on tablist</td>
+              <td>
+                display: tabs remove nested &lt;nav&gt; double aria-label on
+                tablist
+              </td>
               <td><code>display/tabs.templ:83</code></td>
               <td>8m</td>
             </tr>
@@ -2055,7 +2189,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
               <td>
-                forms: InputGroupPaddingClass — wire into InputGroup or delete (split-brain API)
+                forms: InputGroupPaddingClass — wire into InputGroup or delete
+                (split-brain API)
               </td>
               <td><code>forms/input_group.templ:25</code></td>
               <td>8m</td>
@@ -2067,7 +2202,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Security</strong></td>
               <td>
-                internal/golden: Assert name path-escape guard (name w/ ../ escapes testdata/)
+                internal/golden: Assert name path-escape guard (name w/ ../
+                escapes testdata/)
               </td>
               <td><code>internal/golden/golden.go:31</code></td>
               <td>8m</td>
@@ -2079,8 +2215,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
               <td>
-                icons: reword docs — svg fill constants vs icons stroke (not 'single source of
-                truth')
+                icons: reword docs — svg fill constants vs icons stroke (not
+                'single source of truth')
               </td>
               <td><code>internal/svg/svg.templ:6</code></td>
               <td>8m</td>
@@ -2101,7 +2237,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Architecture</strong></td>
-              <td>icons: centralize Spinner-is-special rule (special-cased in 3 places)</td>
+              <td>
+                icons: centralize Spinner-is-special rule (special-cased in 3
+                places)
+              </td>
               <td><code>icons/icon_paths.go:120</code></td>
               <td>10m</td>
             </tr>
@@ -2112,8 +2251,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
               <td>
-                display: example_test add // Output directives or convert to Test* (zero regression
-                value)
+                display: example_test add // Output directives or convert to
+                Test* (zero regression value)
               </td>
               <td><code>display/example_test.go:11</code></td>
               <td>10m</td>
@@ -2125,7 +2264,8 @@
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Tests</strong></td>
               <td>
-                feedback: add toastJSStyles/toastJSIconPaths table tests (non-trivial, untested)
+                feedback: add toastJSStyles/toastJSIconPaths table tests
+                (non-trivial, untested)
               </td>
               <td><code>feedback/toast.templ:44</code></td>
               <td>10m</td>
@@ -2136,7 +2276,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>display: DefinitionItem/TableCell unify dual string+Component slot fields</td>
+              <td>
+                display: DefinitionItem/TableCell unify dual string+Component
+                slot fields
+              </td>
               <td><code>display/definition_list.templ:8</code></td>
               <td>10m</td>
             </tr>
@@ -2146,7 +2289,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">S</span></td>
               <td><strong>i18n</strong></td>
-              <td>errorpage: accept label strings via props for i18n (hardcoded English copy)</td>
+              <td>
+                errorpage: accept label strings via props for i18n (hardcoded
+                English copy)
+              </td>
               <td><code>errorpage/shared.templ:15</code></td>
               <td>10m</td>
             </tr>
@@ -2156,7 +2302,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>feedback: add explicit MD entries to spinnerSizeLookup/progressHeightLookup</td>
+              <td>
+                feedback: add explicit MD entries to
+                spinnerSizeLookup/progressHeightLookup
+              </td>
               <td><code>feedback/loading.templ:20</code></td>
               <td>6m</td>
             </tr>
@@ -2166,7 +2315,9 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>display: remove dropdownItemLink dead variadic extraAttrs param</td>
+              <td>
+                display: remove dropdownItemLink dead variadic extraAttrs param
+              </td>
               <td><code>display/dropdown.templ:69</code></td>
               <td>6m</td>
             </tr>
@@ -2186,7 +2337,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>display: drawer inline style -&gt; Tailwind classes (left-0 inset-y-0)</td>
+              <td>
+                display: drawer inline style -&gt; Tailwind classes (left-0
+                inset-y-0)
+              </td>
               <td><code>display/drawer.templ:31</code></td>
               <td>6m</td>
             </tr>
@@ -2216,7 +2370,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>navigation: replace fmt.Sprintf('%d') with native templ interpolation</td>
+              <td>
+                navigation: replace fmt.Sprintf('%d') with native templ
+                interpolation
+              </td>
               <td><code>navigation/pagination.templ:152</code></td>
               <td>6m</td>
             </tr>
@@ -2226,7 +2383,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>forms: extract const errorIDSuffix='-error' (duplicated literal in 2 places)</td>
+              <td>
+                forms: extract const errorIDSuffix='-error' (duplicated literal
+                in 2 places)
+              </td>
               <td><code>forms/helpers.go:39</code></td>
               <td>6m</td>
             </tr>
@@ -2246,7 +2406,9 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>errorpage: FromError call errors.AsType once (currently twice)</td>
+              <td>
+                errorpage: FromError call errors.AsType once (currently twice)
+              </td>
               <td><code>errorpage/handler.go:54</code></td>
               <td>6m</td>
             </tr>
@@ -2257,8 +2419,8 @@
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
               <td>
-                internal/golden: annotate golden.go:38 nil-deref false positive (flag.Bool never
-                nil)
+                internal/golden: annotate golden.go:38 nil-deref false positive
+                (flag.Bool never nil)
               </td>
               <td><code>internal/golden/golden.go:38</code></td>
               <td>6m</td>
@@ -2269,7 +2431,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>internal/golden: replace hand-rolled contains with strings.Contains</td>
+              <td>
+                internal/golden: replace hand-rolled contains with
+                strings.Contains
+              </td>
               <td><code>internal/golden/golden_test.go:88</code></td>
               <td>6m</td>
             </tr>
@@ -2279,7 +2444,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>navigation: SidebarNavItem embed BaseProps (no per-item customization)</td>
+              <td>
+                navigation: SidebarNavItem embed BaseProps (no per-item
+                customization)
+              </td>
               <td><code>navigation/sidebar_nav.templ:9</code></td>
               <td>6m</td>
             </tr>
@@ -2289,7 +2457,9 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>navigation: normalize() consolidate all defaulting in one place</td>
+              <td>
+                navigation: normalize() consolidate all defaulting in one place
+              </td>
               <td><code>navigation/pagination.templ:33</code></td>
               <td>6m</td>
             </tr>
@@ -2299,7 +2469,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>feedback helpers_test: replace hand-rolled contains with strings.Contains</td>
+              <td>
+                feedback helpers_test: replace hand-rolled contains with
+                strings.Contains
+              </td>
               <td><code>feedback/helpers_test.go:224</code></td>
               <td>8m</td>
             </tr>
@@ -2310,8 +2483,8 @@
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
               <td>
-                feedback: feedbackStyleDefault use named-field struct literal (positional is
-                fragile)
+                feedback: feedbackStyleDefault use named-field struct literal
+                (positional is fragile)
               </td>
               <td><code>feedback/styles.go:79</code></td>
               <td>8m</td>
@@ -2322,7 +2495,10 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><span class="badge badge-low">XS</span></td>
               <td><strong>Cleanup</strong></td>
-              <td>errorpage: errorResponse.Context type any -&gt; map[string]string</td>
+              <td>
+                errorpage: errorResponse.Context type any -&gt;
+                map[string]string
+              </td>
               <td><code>errorpage/handler.go:113</code></td>
               <td>8m</td>
             </tr>
@@ -2490,7 +2666,9 @@
                   templ-components Remediation — Pareto Execution Flow
                 </text>
               </g>
-              <g class="JiMzNDtUaWVyIDE6IENyaXRpY2FsXG4oMSUgLSZndDsgNTElKSYjMzQ7">
+              <g
+                class="JiMzNDtUaWVyIDE6IENyaXRpY2FsXG4oMSUgLSZndDsgNTElKSYjMzQ7"
+              >
                 <g class="shape">
                   <rect
                     x="153.000000"
@@ -2562,7 +2740,9 @@
                   <tspan x="658.000000" dy="18.500000">&amp; Correctness</tspan>
                 </text>
               </g>
-              <g class="JiMzNDtOYXYgU2VjdXJpdHlcbk1vYmlsZU5hdkxpbmsvSUQmIzM0Ow==">
+              <g
+                class="JiMzNDtOYXYgU2VjdXJpdHlcbk1vYmlsZU5hdkxpbmsvSUQmIzM0Ow=="
+              >
                 <g class="shape">
                   <rect
                     x="573.000000"
@@ -2586,7 +2766,9 @@
                   <tspan x="658.000000" dy="18.500000">MobileNavLink/ID</tspan>
                 </text>
               </g>
-              <g class="JiMzNDtGZWVkYmFjayBBMTF5XG5TcGlubmVyL1Byb2dyZXNzL1RvYXN0JiMzNDs=">
+              <g
+                class="JiMzNDtGZWVkYmFjayBBMTF5XG5TcGlubmVyL1Byb2dyZXNzL1RvYXN0JiMzNDs="
+              >
                 <g class="shape">
                   <rect
                     x="551.000000"
@@ -2607,7 +2789,9 @@
                   style="text-anchor: middle; font-size: 16px"
                 >
                   <tspan x="657.500000" dy="0.000000">Feedback A11y</tspan>
-                  <tspan x="657.500000" dy="18.500000">Spinner/Progress/Toast</tspan>
+                  <tspan x="657.500000" dy="18.500000">
+                    Spinner/Progress/Toast
+                  </tspan>
                 </text>
               </g>
               <g class="JiMzNDtUaWVyIDE6IENyaXRpY2FsJiMzNDs=">
@@ -2776,7 +2960,9 @@
                   Tier 2: High
                 </text>
               </g>
-              <g class="JiMzNDtUaWVyIDM6IE1lZGl1bVxuKDIwJSAtJmd0OyA4MCUpJiMzNDs=">
+              <g
+                class="JiMzNDtUaWVyIDM6IE1lZGl1bVxuKDIwJSAtJmd0OyA4MCUpJiMzNDs="
+              >
                 <g class="shape">
                   <rect
                     x="151.000000"
@@ -2824,7 +3010,9 @@
                   <tspan x="1688.000000" dy="18.500000">enums/phantom</tspan>
                 </text>
               </g>
-              <g class="JiMzNDtBcmNoaXRlY3R1cmVcbnBvc2l0aW9uYWwtJmd0O3N0cnVjdHMmIzM0Ow==">
+              <g
+                class="JiMzNDtBcmNoaXRlY3R1cmVcbnBvc2l0aW9uYWwtJmd0O3N0cnVjdHMmIzM0Ow=="
+              >
                 <g class="shape">
                   <rect
                     x="1597.000000"
@@ -2845,7 +3033,9 @@
                   style="text-anchor: middle; font-size: 16px"
                 >
                   <tspan x="1687.500000" dy="0.000000">Architecture</tspan>
-                  <tspan x="1687.500000" dy="18.500000">positional-&gt;structs</tspan>
+                  <tspan x="1687.500000" dy="18.500000">
+                    positional-&gt;structs
+                  </tspan>
                 </text>
               </g>
               <g class="JiMzNDtTY3JpcHQgZGVkdXBcbiZhbXA7IHN5c3RlbWljJiMzNDs=">
@@ -2895,7 +3085,9 @@
                   Tier 3: Medium
                 </text>
               </g>
-              <g class="JiMzNDtUaWVyIDQ6IFBvbGlzaFxuKGNsZWFudXAvdGVzdHMpJiMzNDs=">
+              <g
+                class="JiMzNDtUaWVyIDQ6IFBvbGlzaFxuKGNsZWFudXAvdGVzdHMpJiMzNDs="
+              >
                 <g class="shape">
                   <rect
                     x="150.000000"
@@ -2940,10 +3132,14 @@
                   style="text-anchor: middle; font-size: 16px"
                 >
                   <tspan x="2193.000000" dy="0.000000">Dead code</tspan>
-                  <tspan x="2193.000000" dy="18.500000">&amp; duplication</tspan>
+                  <tspan x="2193.000000" dy="18.500000">
+                    &amp; duplication
+                  </tspan>
                 </text>
               </g>
-              <g class="JiMzNDtUZXN0IGdhcHNcbiZhbXA7IGNvbnNvbGlkYXRpb24mIzM0Ow==">
+              <g
+                class="JiMzNDtUZXN0IGdhcHNcbiZhbXA7IGNvbnNvbGlkYXRpb24mIzM0Ow=="
+              >
                 <g class="shape">
                   <rect
                     x="2115.000000"
@@ -2964,7 +3160,9 @@
                   style="text-anchor: middle; font-size: 16px"
                 >
                   <tspan x="2193.000000" dy="0.000000">Test gaps</tspan>
-                  <tspan x="2193.000000" dy="18.500000">&amp; consolidation</tspan>
+                  <tspan x="2193.000000" dy="18.500000">
+                    &amp; consolidation
+                  </tspan>
                 </text>
               </g>
               <g class="JiMzNDtUaWVyIDQ6IFBvbGlzaCYjMzQ7">
@@ -3327,35 +3525,44 @@
                 width="2473"
                 height="961"
               >
-                <rect x="-101" y="-101" width="2473" height="961" fill="white"></rect>
+                <rect
+                  x="-101"
+                  y="-101"
+                  width="2473"
+                  height="961"
+                  fill="white"
+                ></rect>
               </mask>
             </svg>
           </svg>
         </div>
         <div class="callout">
-          <strong>Order of operations</strong> Work top-to-bottom by tier. Tier 1 is independently
-          shippable and delivers the majority of user-visible quality. Each task is self-contained
-          (build+test after every cluster of 2–4).
+          <strong>Order of operations</strong> Work top-to-bottom by tier. Tier
+          1 is independently shippable and delivers the majority of user-visible
+          quality. Each task is self-contained (build+test after every cluster
+          of 2–4).
         </div>
         <h2 id="how"><span class="num">06</span>How to read this plan</h2>
         <div class="card">
           <p>
-            <strong>Est (Estimate)</strong> is the per-task ceiling: every task is ≤12 minutes (most
-            are 6–10m). <strong>Impact</strong> rates effect on library quality / end-users (L/XL =
-            ship first). <strong>Sev</strong> is the original finding severity. Tasks within a tier
-            are sorted by Impact desc, then effort asc. Run
+            <strong>Est (Estimate)</strong> is the per-task ceiling: every task
+            is ≤12 minutes (most are 6–10m). <strong>Impact</strong> rates
+            effect on library quality / end-users (L/XL = ship first).
+            <strong>Sev</strong> is the original finding severity. Tasks within
+            a tier are sorted by Impact desc, then effort asc. Run
             <code
-              >find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build
-              ./... && go test ./... && golangci-lint run ./display/... ./errorpage/...
-              ./feedback/... ./forms/... ./htmx/... ./icons/... ./layout/... ./navigation/...
-              ./utils/... ./internal/...</code
+              >find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate
+              ./... && go build ./... && go test ./... && golangci-lint run
+              ./display/... ./errorpage/... ./feedback/... ./forms/...
+              ./htmx/... ./icons/... ./layout/... ./navigation/... ./utils/...
+              ./internal/...</code
             >
             to verify after each cluster.
           </p>
         </div>
         <footer class="footer">
-          Generated 2026-06-28 01:21 &middot; 123 tasks · baseline: build OK · tests green · lint 0
-          issues · branching-flow 97.5/100
+          Generated 2026-06-28 01:21 &middot; 123 tasks · baseline: build OK ·
+          tests green · lint 0 issues · branching-flow 97.5/100
         </footer>
       </main>
     </div>

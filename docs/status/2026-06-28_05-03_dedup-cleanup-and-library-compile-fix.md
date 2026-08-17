@@ -116,33 +116,33 @@
 
 ## f) Top 25 things to do next (sorted by impact × 1/work)
 
-| #   | Task                                                                             | Impact | Work    |
-| --- | -------------------------------------------------------------------------------- | ------ | ------- |
-| 1   | **Tag v0.5.0 + write CHANGELOG entry** (library is unreleased)                   | Crit   | Trivial |
-| 2   | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)              | High   | Low     |
-| 3   | Fix `internal/golden` test isolation (use `t.TempDir()`)                         | Med    | Low     |
-| 4   | Decide on `.buildflow.yml`: commit or gitignore                                  | Low    | Trivial |
-| 5   | Add rationale comments to accepted clones (Modal/Drawer, alert/erroralert)       | Low    | Trivial |
-| 6   | Submit awesome-templ PR (entry text ready)                                       | Med    | Low     |
-| 7   | Submit templ.guide listing (manual)                                              | Med    | Low     |
-| 8   | Audit remaining templ clone groups at t=8+ for any drift-prone extractions       | Med    | Low     |
-| 9   | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6 candidate)    | High   | Med     |
-| 10  | Extract shared dismiss-button markup to `internal/dismiss` (unblock alert clone) | Med    | Med     |
-| 11  | Run `art-dupl` on Go sources at t=15 (currently only templ was scanned)          | Med    | Low     |
-| 12  | Add `Validate() error` design spike for v1.0                                     | High   | High    |
-| 13  | Move test helpers to `internal/testutil/` (v1.0 breaking)                        | Med    | Med     |
-| 14  | Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)                | Low    | Trivial |
-| 15  | Add integration test for `go get` from clean project (CI already does this)      | Low    | Low     |
-| 16  | Consider typed `ComponentName`/`IconName` branded types for stronger safety      | Med    | Med     |
-| 17  | Document the "slot vs flat strings" decision in an ADR                           | Med    | Low     |
-| 18  | Add file-size enforcement (BuildFlow has `file-size-check` at 350 lines)         | Low    | Trivial |
-| 19  | Audit `examples/demo` for staleness against current API                          | Low    | Low     |
-| 20  | Add a CONTRIBUTING note about the BuildFlow gitignore gotcha                     | Low    | Trivial |
-| 21  | Consider `internal/svg` → public `svg` (consumers ask for raw paths)             | Low    | Med     |
-| 22  | Add cross-package composition tests (Card+Badge+Table realistic layout)          | Low    | Low     |
-| 23  | Write ADR for the "silent fallback over panic" validation philosophy             | Med    | Low     |
-| 24  | Evaluate `go-error-family` v0.6+ for new error families                          | Low    | Low     |
-| 25  | Plan v0.6.0 scope (action slots, more composition tests, svg publicity)          | Med    | Med     |
+| #  | Task                                                                             | Impact | Work    |
+| -- | -------------------------------------------------------------------------------- | ------ | ------- |
+| 1  | **Tag v0.5.0 + write CHANGELOG entry** (library is unreleased)                   | Crit   | Trivial |
+| 2  | Fix BuildFlow re-adding `*_templ.go` to `.gitignore` (upstream fix)              | High   | Low     |
+| 3  | Fix `internal/golden` test isolation (use `t.TempDir()`)                         | Med    | Low     |
+| 4  | Decide on `.buildflow.yml`: commit or gitignore                                  | Low    | Trivial |
+| 5  | Add rationale comments to accepted clones (Modal/Drawer, alert/erroralert)       | Low    | Trivial |
+| 6  | Submit awesome-templ PR (entry text ready)                                       | Med    | Low     |
+| 7  | Submit templ.guide listing (manual)                                              | Med    | Low     |
+| 8  | Audit remaining templ clone groups at t=8+ for any drift-prone extractions       | Med    | Low     |
+| 9  | Add `EmptyStateProps.Action templ.Component` slot (breaking — v0.6 candidate)    | High   | Med     |
+| 10 | Extract shared dismiss-button markup to `internal/dismiss` (unblock alert clone) | Med    | Med     |
+| 11 | Run `art-dupl` on Go sources at t=15 (currently only templ was scanned)          | Med    | Low     |
+| 12 | Add `Validate() error` design spike for v1.0                                     | High   | High    |
+| 13 | Move test helpers to `internal/testutil/` (v1.0 breaking)                        | Med    | Med     |
+| 14 | Remove deprecated aliases `AlertType`/`ToastType` (v1.0 breaking)                | Low    | Trivial |
+| 15 | Add integration test for `go get` from clean project (CI already does this)      | Low    | Low     |
+| 16 | Consider typed `ComponentName`/`IconName` branded types for stronger safety      | Med    | Med     |
+| 17 | Document the "slot vs flat strings" decision in an ADR                           | Med    | Low     |
+| 18 | Add file-size enforcement (BuildFlow has `file-size-check` at 350 lines)         | Low    | Trivial |
+| 19 | Audit `examples/demo` for staleness against current API                          | Low    | Low     |
+| 20 | Add a CONTRIBUTING note about the BuildFlow gitignore gotcha                     | Low    | Trivial |
+| 21 | Consider `internal/svg` → public `svg` (consumers ask for raw paths)             | Low    | Med     |
+| 22 | Add cross-package composition tests (Card+Badge+Table realistic layout)          | Low    | Low     |
+| 23 | Write ADR for the "silent fallback over panic" validation philosophy             | Med    | Low     |
+| 24 | Evaluate `go-error-family` v0.6+ for new error families                          | Low    | Low     |
+| 25 | Plan v0.6.0 scope (action slots, more composition tests, svg publicity)          | Med    | Med     |
 
 ---
 

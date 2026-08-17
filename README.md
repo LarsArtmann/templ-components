@@ -26,20 +26,20 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
-| Feature                | templ-components           | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
-| ---------------------- | -------------------------- | ----------------------------- | ---------------------------------------------- |
-| **CSS approach**       | Tailwind v4 (CSS-first)    | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
-| **JavaScript**         | HATEOAS (enhances HTML)    | Alpine.js                     | DaisyUI JS                                     |
-| **Requires Node.js**   | No                         | No                            | Yes                                            |
-| **Components**         | 116                        | 40+                           | —                                              |
-| **Typed props**        | 52 enums                   | —                             | —                                              |
-| **Dark mode**          | Built-in (tested)          | CSS custom properties         | Via DaisyUI                                    |
-| **CSP compliant**      | Yes (nonce on all scripts) | Yes                           | —                                              |
+| Feature                | templ-components                               | [templUI](https://templui.io) | [goshipit](https://github.com/haatos/goshipit) |
+| ---------------------- | ---------------------------------------------- | ----------------------------- | ---------------------------------------------- |
+| **CSS approach**       | Tailwind v4 (CSS-first)                        | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
+| **JavaScript**         | HATEOAS (enhances HTML)                        | Alpine.js                     | DaisyUI JS                                     |
+| **Requires Node.js**   | No                                             | No                            | Yes                                            |
+| **Components**         | 116                                            | 40+                           | —                                              |
+| **Typed props**        | 52 enums                                       | —                             | —                                              |
+| **Dark mode**          | Built-in (tested)                              | CSS custom properties         | Via DaisyUI                                    |
+| **CSP compliant**      | Yes (nonce on all scripts)                     | Yes                           | —                                              |
 | **Container queries**  | 8 opt-in components + fluid typography (`cqi`) | —                             | —                                              |
-| **Visual regression**  | chromedp pixel tests       | —                             | —                                              |
-| **HTMX integration**   | Built-in package           | —                             | —                                              |
-| **Datastar support**   | Opt-in package             | —                             | —                                              |
-| **Standalone library** | Yes                        | No                            | No                                             |
+| **Visual regression**  | chromedp pixel tests                           | —                             | —                                              |
+| **HTMX integration**   | Built-in package                               | —                             | —                                              |
+| **Datastar support**   | Opt-in package                                 | —                             | —                                              |
+| **Standalone library** | Yes                                            | No                            | No                                             |
 
 ---
 
@@ -317,11 +317,11 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 The library is verified by a three-tier strategy that catches different classes
 of regression:
 
-| Tier                     | What                                                                 | Where                                   | Catches                                                                                                                                         |
-| ------------------------ | -------------------------------------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
-| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 175 `.golden` files    | Structure, attribute, and class changes                                                                                                         |
-| **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                                | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
-| **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)         | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
+| Tier                     | What                                                                 | Where                                | Catches                                                                                                                                         |
+| ------------------------ | -------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **HTML golden**          | Snapshot the rendered HTML (CSS classes sorted, auto-IDs normalized) | `utils/golden` — 175 `.golden` files | Structure, attribute, and class changes                                                                                                         |
+| **Drift-guard scanners** | Cross-cutting invariant tests                                        | `utils/`                             | Dark-mode gaps, missing `motion-reduce:`, physical RTL props, CSP nonce regressions, lint-config drift, stale CSS, ordered-substring flake risk |
+| **Visual regression**    | Pixel-level PNG diff in headless Chromium                            | `visualtest/` (separate module)      | Layout shifts, dark-mode color regressions, RTL mirroring                                                                                       |
 
 ```bash
 nix run .#verify   # generate + build + test + lint — the "done" check

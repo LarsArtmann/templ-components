@@ -52,14 +52,14 @@ Confidence that the changes are correct and nothing was broken.
 
 Sorted by importance/impact/effort/customer-value (highest first).
 
-| #   | Task                                                                                 | Impact   | Effort | Est   | Customer Value                                      |
-| --- | ------------------------------------------------------------------------------------ | -------- | ------ | ----- | --------------------------------------------------- |
-| P1  | **Code-level doc fixes**: README counts, pieChartLegendCharW, orphaned Enums section | Critical | Low    | 30min | Docs match code — zero known mismatches             |
-| P2  | **Drift guard hardening**: add charts/echarts, flexible regex, cascade count updates | High     | Medium | 45min | Self-correcting doc counts — drift can't recur      |
-| P3  | **Full verify suite**: golangci-lint + nix flake check + nix fmt + go test           | High     | Low    | 30min | Confidence that changes are correct                 |
-| P4  | **Archive 6 fully-resolved historical docs** (2 planning + 4 status)                 | Medium   | Low    | 30min | Clean active directories; resolved work is archived |
-| P5  | **Annotate 4 partially-resolved status reports** (inline `done at` / `→ TODO #N`)    | Medium   | High   | 90min | Historical docs are navigable — readers know status |
-| P6  | **Write plan doc + commit + push**                                                   | Low      | Low    | 30min | Plan is documented; changes are pushed to remote    |
+| #  | Task                                                                                 | Impact   | Effort | Est   | Customer Value                                      |
+| -- | ------------------------------------------------------------------------------------ | -------- | ------ | ----- | --------------------------------------------------- |
+| P1 | **Code-level doc fixes**: README counts, pieChartLegendCharW, orphaned Enums section | Critical | Low    | 30min | Docs match code — zero known mismatches             |
+| P2 | **Drift guard hardening**: add charts/echarts, flexible regex, cascade count updates | High     | Medium | 45min | Self-correcting doc counts — drift can't recur      |
+| P3 | **Full verify suite**: golangci-lint + nix flake check + nix fmt + go test           | High     | Low    | 30min | Confidence that changes are correct                 |
+| P4 | **Archive 6 fully-resolved historical docs** (2 planning + 4 status)                 | Medium   | Low    | 30min | Clean active directories; resolved work is archived |
+| P5 | **Annotate 4 partially-resolved status reports** (inline `done at` / `→ TODO #N`)    | Medium   | High   | 90min | Historical docs are navigable — readers know status |
+| P6 | **Write plan doc + commit + push**                                                   | Low      | Low    | 30min | Plan is documented; changes are pushed to remote    |
 
 **Total estimated effort:** ~255min (4.25 hours)
 

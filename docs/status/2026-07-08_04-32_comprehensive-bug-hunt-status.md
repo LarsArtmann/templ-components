@@ -199,7 +199,7 @@ Nothing is irrevocably broken. But here's what I did poorly:
 
 ### Code quality improvements
 
-6. **Preventive CI check for dynamic Tailwind concatenation.** A grep-based test that fails when it finds `" + ` inside a Tailwind class context would prevent the entire bug class.
+6. **Preventive CI check for dynamic Tailwind concatenation.** A grep-based test that fails when it finds `" +` inside a Tailwind class context would prevent the entire bug class.
 7. **Test the JS behavior, not just the rendered HTML.** Most fixes involve JavaScript that executes in the browser. The test suite only verifies server-rendered HTML. Consider jsdom or playwright for critical JS paths.
 8. **InlineLoadingOverlay inconsistent with LoadingIndicator.** LoadingIndicator has sr-only text; InlineLoadingOverlay does not. Both are status regions.
 9. **Footer doesn't accept BaseProps.** Every other component does. This is an API inconsistency that prevents consumers from setting Class/ID/Attrs on the footer.

@@ -10,22 +10,22 @@
 
 Two prior research + implementation sessions shipped 14 browser enhancements:
 
-| #   | Enhancement                                                                  | Status     |
-| --- | ---------------------------------------------------------------------------- | ---------- |
-| 1   | Accordion → native `<details>`/`<summary>` (26 lines JS eliminated)          | ✅ Shipped |
-| 2   | Carousel → CSS scroll-snap (native touch/drag)                               | ✅ Shipped |
-| 3   | `htmx.ViewTransitions()` helper component                                    | ✅ Shipped |
-| 4   | CSS foundation (`@starting-style`, `::backdrop`, dialog/popover transitions) | ✅ Shipped |
-| 5   | Image `decoding="async"` + `fetchpriority`                                   | ✅ Shipped |
-| 6   | Input `enterkeyhint` auto-mapped per InputType                               | ✅ Shipped |
-| 7   | Input `inputmode` auto-mapped per InputType                                  | ✅ Shipped |
-| 8   | `text-wrap: balance` on headings, `pretty` on paragraphs                     | ✅ Shipped |
-| 9   | `:user-valid`/`:user-invalid` CSS validation styling                         | ✅ Shipped |
-| 10  | `.tc-auto-grow` utility (`field-sizing: content`)                            | ✅ Shipped |
-| 11  | `interpolate-size: allow-keywords` (animate `height: auto`)                  | ✅ Shipped |
-| 12  | `forced-colors` media query (Windows High Contrast a11y)                     | ✅ Shipped |
-| 13  | `<meta name="color-scheme">` + `<link rel="preconnect">`                     | ✅ Shipped |
-| 14  | `prefers-reduced-transparency` media query                                   | ✅ Shipped |
+| #  | Enhancement                                                                  | Status     |
+| -- | ---------------------------------------------------------------------------- | ---------- |
+| 1  | Accordion → native `<details>`/`<summary>` (26 lines JS eliminated)          | ✅ Shipped |
+| 2  | Carousel → CSS scroll-snap (native touch/drag)                               | ✅ Shipped |
+| 3  | `htmx.ViewTransitions()` helper component                                    | ✅ Shipped |
+| 4  | CSS foundation (`@starting-style`, `::backdrop`, dialog/popover transitions) | ✅ Shipped |
+| 5  | Image `decoding="async"` + `fetchpriority`                                   | ✅ Shipped |
+| 6  | Input `enterkeyhint` auto-mapped per InputType                               | ✅ Shipped |
+| 7  | Input `inputmode` auto-mapped per InputType                                  | ✅ Shipped |
+| 8  | `text-wrap: balance` on headings, `pretty` on paragraphs                     | ✅ Shipped |
+| 9  | `:user-valid`/`:user-invalid` CSS validation styling                         | ✅ Shipped |
+| 10 | `.tc-auto-grow` utility (`field-sizing: content`)                            | ✅ Shipped |
+| 11 | `interpolate-size: allow-keywords` (animate `height: auto`)                  | ✅ Shipped |
+| 12 | `forced-colors` media query (Windows High Contrast a11y)                     | ✅ Shipped |
+| 13 | `<meta name="color-scheme">` + `<link rel="preconnect">`                     | ✅ Shipped |
+| 14 | `prefers-reduced-transparency` media query                                   | ✅ Shipped |
 
 ---
 
@@ -104,24 +104,24 @@ Documentation, investigation, and future preparation:
 
 Sorted by impact (desc), effort (asc), customer value (desc).
 
-| #   | Task                                                      | Tier | Impact   | Effort | Customer Value               | Deps  |
-| --- | --------------------------------------------------------- | ---- | -------- | ------ | ---------------------------- | ----- |
-| 1   | Write tests for all 14 shipped browser enhancements       | 1%   | Critical | 90min  | Prevents regression          | —     |
-| 2   | Integrate `field-sizing: content` into Textarea component | 1%   | High     | 30min  | Auto-growing textarea        | —     |
-| 3   | Add `SrcSet` and `Sizes` fields to ImageProps             | 1%   | High     | 45min  | Responsive images            | —     |
-| 4   | Update CHANGELOG, AGENTS.md, javascript-guide.md          | 1%   | High     | 60min  | Discoverability              | 1,2,3 |
-| 5   | Add `hx-validate` attribute to Form component             | 4%   | Medium   | 30min  | HTML5 validation before HTMX | —     |
-| 6   | Wrap search inputs in `<search>` element                  | 4%   | Medium   | 30min  | Semantic a11y landmark       | —     |
-| 7   | Apply `content-visibility: auto` to Table body rows       | 4%   | Medium   | 45min  | Perf on large tables         | —     |
-| 8   | Write ADR: Popover API blocked on Anchor Positioning      | 4%   | High     | 45min  | Prevents wasted effort       | —     |
-| 9   | Add `EnterKeyHint` field to TextareaProps                 | 20%  | Low      | 30min  | Chat app UX                  | —     |
-| 10  | Add Speculation Rules helper component                    | 20%  | Medium   | 60min  | Near-instant navigation      | —     |
-| 11  | Style Select with `appearance-none` + custom arrow        | 20%  | Medium   | 60min  | Visual consistency           | —     |
-| 12  | Migrate MobileMenu to Popover API                         | 20%  | Medium   | 90min  | Light dismiss, top-layer     | 8     |
-| 13  | Document HTMX attributes (hx-preserve, hx-boost, etc.)    | 20%  | Low      | 60min  | Consumer education           | —     |
-| 14  | Write consumer migration guide for browser features       | 20%  | Medium   | 60min  | Adoption                     | 4     |
-| 15  | CSS Anchor Positioning spike + prototype                  | 20%  | Low      | 90min  | Future readiness             | 8     |
-| 16  | `light-dark()` architectural assessment ADR               | 20%  | Low      | 45min  | v2.0 planning                | —     |
+| #  | Task                                                      | Tier | Impact   | Effort | Customer Value               | Deps  |
+| -- | --------------------------------------------------------- | ---- | -------- | ------ | ---------------------------- | ----- |
+| 1  | Write tests for all 14 shipped browser enhancements       | 1%   | Critical | 90min  | Prevents regression          | —     |
+| 2  | Integrate `field-sizing: content` into Textarea component | 1%   | High     | 30min  | Auto-growing textarea        | —     |
+| 3  | Add `SrcSet` and `Sizes` fields to ImageProps             | 1%   | High     | 45min  | Responsive images            | —     |
+| 4  | Update CHANGELOG, AGENTS.md, javascript-guide.md          | 1%   | High     | 60min  | Discoverability              | 1,2,3 |
+| 5  | Add `hx-validate` attribute to Form component             | 4%   | Medium   | 30min  | HTML5 validation before HTMX | —     |
+| 6  | Wrap search inputs in `<search>` element                  | 4%   | Medium   | 30min  | Semantic a11y landmark       | —     |
+| 7  | Apply `content-visibility: auto` to Table body rows       | 4%   | Medium   | 45min  | Perf on large tables         | —     |
+| 8  | Write ADR: Popover API blocked on Anchor Positioning      | 4%   | High     | 45min  | Prevents wasted effort       | —     |
+| 9  | Add `EnterKeyHint` field to TextareaProps                 | 20%  | Low      | 30min  | Chat app UX                  | —     |
+| 10 | Add Speculation Rules helper component                    | 20%  | Medium   | 60min  | Near-instant navigation      | —     |
+| 11 | Style Select with `appearance-none` + custom arrow        | 20%  | Medium   | 60min  | Visual consistency           | —     |
+| 12 | Migrate MobileMenu to Popover API                         | 20%  | Medium   | 90min  | Light dismiss, top-layer     | 8     |
+| 13 | Document HTMX attributes (hx-preserve, hx-boost, etc.)    | 20%  | Low      | 60min  | Consumer education           | —     |
+| 14 | Write consumer migration guide for browser features       | 20%  | Medium   | 60min  | Adoption                     | 4     |
+| 15 | CSS Anchor Positioning spike + prototype                  | 20%  | Low      | 90min  | Future readiness             | 8     |
+| 16 | `light-dark()` architectural assessment ADR               | 20%  | Low      | 45min  | v2.0 planning                | —     |
 
 **Total estimated effort:** ~13.5 hours
 

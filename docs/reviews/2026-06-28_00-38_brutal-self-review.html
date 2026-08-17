@@ -30,14 +30,14 @@
         --warning: var(--color-yellow);
         --radius: 0px;
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
       * {
         box-sizing: border-box;
@@ -196,15 +196,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue {
         background: var(--surface-raised);
@@ -215,15 +227,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-fixed {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue .where {
         font-family: var(--font-mono);
@@ -408,9 +432,10 @@
           <div class="hero-badge">Self-Critique</div>
           <h1>Brutal Self-Review: templ-components</h1>
           <p class="hero-subtitle">
-            An honest audit of recent v0.4.0 work — what was forgotten, what I lied about in my own
-            docs, the ghost systems and split brains, and a prioritized plan. Every claim below was
-            verified against the actual code, not trusted from memory.
+            An honest audit of recent v0.4.0 work — what was forgotten, what I
+            lied about in my own docs, the ghost systems and split brains, and a
+            prioritized plan. Every claim below was verified against the actual
+            code, not trusted from memory.
           </p>
         </div>
 
@@ -436,12 +461,14 @@
         <div class="card card-solution">
           <h4>Verdict</h4>
           <p>
-            The codebase is architecturally sound and the library's type model is internally
-            consistent — but I shipped a release with no changelog, frozen docs, and a few factual
-            lies in AGENTS.md. The two real type-safety gaps (unvalidated
-            <code>ButtonProps.Type</code> and <code>FormMethod</code>) were the only deviations from
-            the library's own enum convention. All safe-to-fix items are now done; the rest is
-            blocked on the cqrs-htmx repo.
+            The codebase is architecturally sound and the library's type model
+            is internally consistent — but I shipped a release with no
+            changelog, frozen docs, and a few factual lies in AGENTS.md. The two
+            real type-safety gaps (unvalidated
+            <code>ButtonProps.Type</code> and <code>FormMethod</code>) were the
+            only deviations from the library's own enum convention. All
+            safe-to-fix items are now done; the rest is blocked on the cqrs-htmx
+            repo.
           </p>
         </div>
 
@@ -451,12 +478,14 @@
           <h4>Did I lie to you? Yes.</h4>
           <p>
             Three factual falsehoods were sitting in the docs I authored: (1)
-            <code>AGENTS.md</code> claimed "<code>SanitizeID</code> not used internally" — it
-            <em>is</em>, in <code>forms/radio_go.go:55</code>. (2) <code>AGENTS.md</code> said "46
-            generated files" — the real count is 51. (3) A status report declared "adminui Tailwind
-            infrastructure ready" while the compiled <code>admin-tw.css</code> was never added to
-            <code>assets.go</code>'s <code>go:embed</code> — so it is never served. I declared
-            victory prematurely.
+            <code>AGENTS.md</code> claimed "<code>SanitizeID</code> not used
+            internally" — it <em>is</em>, in <code>forms/radio_go.go:55</code>.
+            (2) <code>AGENTS.md</code> said "46 generated files" — the real
+            count is 51. (3) A status report declared "adminui Tailwind
+            infrastructure ready" while the compiled
+            <code>admin-tw.css</code> was never added to
+            <code>assets.go</code>'s <code>go:embed</code> — so it is never
+            served. I declared victory prematurely.
           </p>
         </div>
 
@@ -465,29 +494,33 @@
           <p>
             Shipped v0.4.0 with <strong>no CHANGELOG entry</strong> (the
             <code>[Unreleased]</code> section still said "Nothing yet").
-            <strong>FEATURES.md was frozen at v0.3.0</strong> — every metric wrong.
-            <strong>CONTEXT.md</strong> and <strong>TODO_LIST.md</strong> were dated 2026-06-20. The
-            demo hardcodes the version string and showcases only ~48 of 73 components.
+            <strong>FEATURES.md was frozen at v0.3.0</strong> — every metric
+            wrong. <strong>CONTEXT.md</strong> and
+            <strong>TODO_LIST.md</strong> were dated 2026-06-20. The demo
+            hardcodes the version string and showcases only ~48 of 73
+            components.
           </p>
         </div>
 
         <div class="card card-warning">
           <h4>What's stupid that we do anyway?</h4>
           <p>
-            Component and icon counts are hand-maintained in <strong>four</strong> separate docs
-            (README, FEATURES, AGENTS, CONTEXT) that drift the moment a component ships. README even
-            contradicted itself — the forms header said "12" while the total of 73 only adds up with
-            forms=16. This is a split brain by design.
+            Component and icon counts are hand-maintained in
+            <strong>four</strong> separate docs (README, FEATURES, AGENTS,
+            CONTEXT) that drift the moment a component ships. README even
+            contradicted itself — the forms header said "12" while the total of
+            73 only adds up with forms=16. This is a split brain by design.
           </p>
         </div>
 
         <div class="card card-warning">
           <h4>Ghost systems?</h4>
           <p>
-            Yes. <code>admin-tw.css</code> is a ghost artifact — compiled, committed, but never
-            embedded or served. And the status report described
-            <code>templ-components-colors.css</code> as a current deliverable <em>after</em> it was
-            deleted — a self-contradiction within the docs corpus.
+            Yes. <code>admin-tw.css</code> is a ghost artifact — compiled,
+            committed, but never embedded or served. And the status report
+            described <code>templ-components-colors.css</code> as a current
+            deliverable <em>after</em> it was deleted — a self-contradiction
+            within the docs corpus.
           </p>
         </div>
 
@@ -498,8 +531,8 @@
           <h3>CHANGELOG missing v0.4.0 entry</h3>
           <div class="where">CHANGELOG.md</div>
           <p>
-            [Unreleased] said "Nothing yet" while 4 components, 3 icons, and a new API shipped.
-            Added a full v0.4.0 entry.
+            [Unreleased] said "Nothing yet" while 4 components, 3 icons, and a
+            new API shipped. Added a full v0.4.0 entry.
           </p>
         </div>
 
@@ -508,8 +541,9 @@
           <h3>FEATURES.md frozen at v0.3.0</h3>
           <div class="where">FEATURES.md — every count wrong</div>
           <p>
-            Said 69 components / 99 icons / 46 generated files. Actual: 73 / 101 / 51. Overhauled to
-            v0.4.0 with the new components and IconPathData API.
+            Said 69 components / 99 icons / 46 generated files. Actual: 73 / 101
+            / 51. Overhauled to v0.4.0 with the new components and IconPathData
+            API.
           </p>
         </div>
 
@@ -518,8 +552,8 @@
           <h3>AGENTS.md factual lies</h3>
           <div class="where">AGENTS.md:28, AGENTS.md:78</div>
           <p>
-            "46 generated files" (actual 51) and "SanitizeID not used internally" (it is, in
-            radio_go.go). Both corrected.
+            "46 generated files" (actual 51) and "SanitizeID not used
+            internally" (it is, in radio_go.go). Both corrected.
           </p>
         </div>
 
@@ -528,9 +562,10 @@
           <h3>ButtonProps.Type was a raw, unvalidated string</h3>
           <div class="where">display/button_go.go:35</div>
           <p>
-            The only props field typed as a raw string, emitting values straight to the DOM.
-            Replaced with a typed <code>ButtonHTMLType</code> enum +
-            <code>buttonHTMLType()</code> normalizer that falls back to "button". 4 tests added.
+            The only props field typed as a raw string, emitting values straight
+            to the DOM. Replaced with a typed <code>ButtonHTMLType</code> enum +
+            <code>buttonHTMLType()</code> normalizer that falls back to
+            "button". 4 tests added.
           </p>
         </div>
 
@@ -540,8 +575,8 @@
           <div class="where">forms/form.templ:41</div>
           <p>
             An invalid method rendered verbatim to the DOM. Added
-            <code>formMethod()</code> normalizer falling back to GET (HTML spec default). 5 tests
-            added.
+            <code>formMethod()</code> normalizer falling back to GET (HTML spec
+            default). 5 tests added.
           </p>
         </div>
 
@@ -550,8 +585,9 @@
           <h3>AvatarStatus rendered an invisible dot</h3>
           <div class="where">display/avatar.templ:106</div>
           <p>
-            An unknown status passed the "not none" guard but matched no color class — a transparent
-            dot. Now renders a dot only for the two known statuses. 2 regression tests added.
+            An unknown status passed the "not none" guard but matched no color
+            class — a transparent dot. Now renders a dot only for the two known
+            statuses. 2 regression tests added.
           </p>
         </div>
 
@@ -560,8 +596,8 @@
           <h3>Hardcoded version string in demo</h3>
           <div class="where">examples/demo/demo.templ:221</div>
           <p>
-            Added <code>utils.Version</code> as the single source of truth and a drift-guard test
-            linking it to the latest CHANGELOG heading.
+            Added <code>utils.Version</code> as the single source of truth and a
+            drift-guard test linking it to the latest CHANGELOG heading.
           </p>
         </div>
 
@@ -570,9 +606,11 @@
           <h3>admin-tw.css never embedded / served</h3>
           <div class="where">cqrs-htmx · adminui/assets.go:13</div>
           <p>
-            The compiled Tailwind output exists on disk but <code>assets.go</code>'s
-            <code>go:embed</code> only lists <code>admin.css</code> and <code>admin.js</code>. The
-            "infrastructure ready" claim was false. Fix: add <code>admin-tw.css</code> to the embed.
+            The compiled Tailwind output exists on disk but
+            <code>assets.go</code>'s <code>go:embed</code> only lists
+            <code>admin.css</code> and <code>admin.js</code>. The
+            "infrastructure ready" claim was false. Fix: add
+            <code>admin-tw.css</code> to the embed.
             <strong>Blocked — concurrent agent activity in cqrs-htmx.</strong>
           </p>
         </div>
@@ -582,9 +620,10 @@
           <h3>7 adminui .templ files still on custom CSS</h3>
           <div class="where">cqrs-htmx · adminui/*.templ (688 lines)</div>
           <p>
-            The migration targets (layout, dashboard, users, tenants, members, audit, components)
-            all still use admin.css classes. Needs the cqrs-htmx repo, which has uncommitted
-            bot/impersonation work from another agent.
+            The migration targets (layout, dashboard, users, tenants, members,
+            audit, components) all still use admin.css classes. Needs the
+            cqrs-htmx repo, which has uncommitted bot/impersonation work from
+            another agent.
           </p>
         </div>
 
@@ -595,8 +634,8 @@
             <div class="text">
               <strong>Clean dependency profile</strong>
               <span
-                >Only 3 deps (templ, tailwind-merge-go, go-error-family). Zero banned libraries. 0
-                lint issues, all 456 tests pass.</span
+                >Only 3 deps (templ, tailwind-merge-go, go-error-family). Zero
+                banned libraries. 0 lint issues, all 456 tests pass.</span
               >
             </div>
           </div>
@@ -605,8 +644,9 @@
             <div class="text">
               <strong>Generics well-applied</strong>
               <span
-                >utils.Lookup[K,V] eliminated ~42 lines of duplicated boilerplate across 14 enum
-                lookups. No place is reinventing what generics solve.</span
+                >utils.Lookup[K,V] eliminated ~42 lines of duplicated
+                boilerplate across 14 enum lookups. No place is reinventing what
+                generics solve.</span
               >
             </div>
           </div>
@@ -615,14 +655,17 @@
             <div class="text">
               <strong>Verified claims were true</strong>
               <span
-                >The FeedbackType/AlertType/ToastType type-alias claim, the "zero panics except 1
-                icon check" claim, and BaseProps embedding all verified accurate in code.</span
+                >The FeedbackType/AlertType/ToastType type-alias claim, the
+                "zero panics except 1 icon check" claim, and BaseProps embedding
+                all verified accurate in code.</span
               >
             </div>
           </div>
         </div>
 
-        <h2 id="plan"><span class="num">03</span>Execution Plan — sorted by impact ÷ effort</h2>
+        <h2 id="plan">
+          <span class="num">03</span>Execution Plan — sorted by impact ÷ effort
+        </h2>
         <table>
           <thead>
             <tr>
@@ -778,19 +821,21 @@
         <div class="card card-warning">
           <h4>cqrs-htmx has concurrent agent activity</h4>
           <p>
-            Tasks 12–15 all live in <code>cqrs-htmx</code>, which has uncommitted bot/impersonation
-            work in <code>usermgmt/</code> and <code>adminui/authz.go</code> /
-            <code>handler_users.go</code> from another agent. Per your standing instruction, I did
-            not touch that repo. The single highest-value unblock is <strong>task 12</strong> (add
-            <code>admin-tw.css</code> to the <code>go:embed</code>) — a 5-minute fix that makes the
-            Tailwind infrastructure actually work. Give the go-ahead and I'll do tasks 12–15 in
-            order.
+            Tasks 12–15 all live in <code>cqrs-htmx</code>, which has
+            uncommitted bot/impersonation work in <code>usermgmt/</code> and
+            <code>adminui/authz.go</code> / <code>handler_users.go</code> from
+            another agent. Per your standing instruction, I did not touch that
+            repo. The single highest-value unblock is
+            <strong>task 12</strong> (add <code>admin-tw.css</code> to the
+            <code>go:embed</code>) — a 5-minute fix that makes the Tailwind
+            infrastructure actually work. Give the go-ahead and I'll do tasks
+            12–15 in order.
           </p>
         </div>
 
         <footer class="footer">
-          Generated 2026-06-28 · Reviewed against templ-components v0.4.0 (master, post-fixes) · 456
-          tests, 0 lint issues
+          Generated 2026-06-28 · Reviewed against templ-components v0.4.0
+          (master, post-fixes) · 456 tests, 0 lint issues
         </footer>
       </main>
     </div>

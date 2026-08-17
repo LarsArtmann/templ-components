@@ -1,7 +1,7 @@
 # Comprehensive Execution Plan — templ-components
 
-**Date:** 2026-05-07 04:56  
-**Author:** Crush (Parakletos)  
+**Date:** 2026-05-07 04:56\
+**Author:** Crush (Parakletos)\
 **Status:** ACTIVE — Execute in order
 
 ---
@@ -10,30 +10,30 @@
 
 ### The 1% that delivers 51% of the result
 
-| #   | Task                                                    | Why                                                                |
-| --- | ------------------------------------------------------- | ------------------------------------------------------------------ |
-| 1   | Fix README.md broken StatCard API example               | Consumers copy-paste this and it WILL NOT COMPILE. Max damage.     |
-| 2   | Update CONTEXT.md with new architecture (enums, styles) | Every AI session and contributor reads this first. Source of truth |
+| # | Task                                                    | Why                                                                |
+| - | ------------------------------------------------------- | ------------------------------------------------------------------ |
+| 1 | Fix README.md broken StatCard API example               | Consumers copy-paste this and it WILL NOT COMPILE. Max damage.     |
+| 2 | Update CONTEXT.md with new architecture (enums, styles) | Every AI session and contributor reads this first. Source of truth |
 
 ### The 4% that delivers 64% of the result
 
-| #   | Task                                           | Why                                                               |
-| --- | ---------------------------------------------- | ----------------------------------------------------------------- |
-| 3   | Run golangci-lint, fix all issues              | Code quality gate — catches latent bugs before they ship          |
-| 4   | Update FEATURES.md with new enums + BoolString | Public-facing feature inventory — consumers use this to find APIs |
-| 5   | Add `feedback/styles.go` package comment       | Failing lint right now — zero-cost fix                            |
-| 6   | Default `PageProps.SecurityHeaders` to `true`  | Security-by-default — prevents consumers from shipping insecure   |
+| # | Task                                           | Why                                                               |
+| - | ---------------------------------------------- | ----------------------------------------------------------------- |
+| 3 | Run golangci-lint, fix all issues              | Code quality gate — catches latent bugs before they ship          |
+| 4 | Update FEATURES.md with new enums + BoolString | Public-facing feature inventory — consumers use this to find APIs |
+| 5 | Add `feedback/styles.go` package comment       | Failing lint right now — zero-cost fix                            |
+| 6 | Default `PageProps.SecurityHeaders` to `true`  | Security-by-default — prevents consumers from shipping insecure   |
 
 ### The 20% that delivers 80% of the result
 
-| #   | Task                                                   | Why                                                       |
-| --- | ------------------------------------------------------ | --------------------------------------------------------- |
-| 7   | Extract shared form error/aria helper (#12)            | ~30 lines deduped across 4 form components                |
-| 8   | Add `DefaultStatCardProps()` constructor               | Consistency with Card, Badge, Modal — consumers expect it |
-| 9   | Convert snapshot tests to golden files (#26)           | Catches rendering regressions substring tests miss        |
-| 10  | Fix `EmptyStateProps` icon mapping to use `icons.Name` | Type-safe instead of stringly-typed                       |
-| 11  | Add component composition tests (#29)                  | Verify components work when nested                        |
-| 12  | Deduplicate remaining 9 test clone groups (#51)        | Clean test code                                           |
+| #  | Task                                                   | Why                                                       |
+| -- | ------------------------------------------------------ | --------------------------------------------------------- |
+| 7  | Extract shared form error/aria helper (#12)            | ~30 lines deduped across 4 form components                |
+| 8  | Add `DefaultStatCardProps()` constructor               | Consistency with Card, Badge, Modal — consumers expect it |
+| 9  | Convert snapshot tests to golden files (#26)           | Catches rendering regressions substring tests miss        |
+| 10 | Fix `EmptyStateProps` icon mapping to use `icons.Name` | Type-safe instead of stringly-typed                       |
+| 11 | Add component composition tests (#29)                  | Verify components work when nested                        |
+| 12 | Deduplicate remaining 9 test clone groups (#51)        | Clean test code                                           |
 
 ### The remaining 80% (still valuable, lower impact)
 
@@ -366,7 +366,7 @@ graph TD
 | 68 | T26 | Git commit + push | 5min | HIGH | LOW | T25c |
 | 69 | T27 | Investigate doc site options (templ-doc, pkgsite, etc.) | 15min | LOW | LOW | — |
 
-**Total estimated time:** ~8.5 hours  
+**Total estimated time:** ~8.5 hours\
 **Parallelizable tasks:** Many Phase 4 tasks can run in parallel
 
 ---

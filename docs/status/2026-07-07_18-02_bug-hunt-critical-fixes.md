@@ -47,36 +47,36 @@ to every consumer — and fixed all of them with regression tests.
 
 ### 1. Forms Package Bug Hunt (9 bugs found + fixed + tested)
 
-| #   | Bug                                                | File                            | Impact                                                                                                                                                               | Fix                                                                  |
-| --- | -------------------------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| 1   | **Toggle thumb didn't move**                       | `forms/toggle.templ:89`         | `peer-checked:translate-x-5` built at runtime (`"peer-checked:" + translateClass`) — invisible to Tailwind's content scanner. CSS never generated. Thumb never slid. | Store complete literal (`peer-checked:translate-x-5`) in lookup map. |
-| 2   | **Combobox disabled hidden input still submitted** | `forms/combobox.templ:100`      | Hidden input missing `disabled` — disabled field's value submitted (HTML spec violation).                                                                            | Add `if props.Disabled { disabled }` to hidden input.                |
-| 3   | **Combobox stale hidden value**                    | `forms/combobox.templ:133`      | Typing without selecting left pre-populated server value in hidden input. User's typed text silently replaced.                                                       | Clear hidden value on `input` event.                                 |
-| 4   | **Combobox Enter blocked form submission**         | `forms/combobox.templ:231`      | Unconditional `e.preventDefault()` on Enter, even when no option highlighted. Blocked form submit.                                                                   | Only preventDefault when an option is actively highlighted.          |
-| 5   | **Select mutated caller's slice**                  | `forms/select.templ:19-34`      | `normalizeSelectOptions` modified caller's `[]SelectOption` in place. Reusing options across renders corrupted data.                                                 | Return defensive copy (`make` + `copy`).                             |
-| 6   | **Select doc contradicted code**                   | `forms/select.templ:5-7`        | Type comment said "Selected takes precedence" but code clears Selected.                                                                                              | Fixed doc to match implementation.                                   |
-| 7   | **Checkbox invalid `for=""`**                      | `forms/input.templ:154`         | Checkbox without ID rendered `<label for="">` — invalid HTML, breaks label association.                                                                              | Render `<span>` when ID empty (like Radio component).                |
-| 8   | **Toast auto-dismiss silently disabled**           | `feedback/toast.templ:163`      | `Duration > 0` but no ID → auto-dismiss gated on `props.ID != ""`. `DefaultToastProps()` sets Duration: 5000 but no ID → never auto-dismissed.                       | Auto-generate ID via `EnsureID`.                                     |
-| 9   | **ProgressBar aria-valuenow unclamped**            | `feedback/progressbar.templ:84` | `aria-valuenow` used raw `props.Current` (could be negative or > Total). Violated ARIA spec, disagreed with visual clamp.                                            | Clamp to `[0, Total]`.                                               |
+| # | Bug                                                | File                            | Impact                                                                                                                                                               | Fix                                                                  |
+| - | -------------------------------------------------- | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| 1 | **Toggle thumb didn't move**                       | `forms/toggle.templ:89`         | `peer-checked:translate-x-5` built at runtime (`"peer-checked:" + translateClass`) — invisible to Tailwind's content scanner. CSS never generated. Thumb never slid. | Store complete literal (`peer-checked:translate-x-5`) in lookup map. |
+| 2 | **Combobox disabled hidden input still submitted** | `forms/combobox.templ:100`      | Hidden input missing `disabled` — disabled field's value submitted (HTML spec violation).                                                                            | Add `if props.Disabled { disabled }` to hidden input.                |
+| 3 | **Combobox stale hidden value**                    | `forms/combobox.templ:133`      | Typing without selecting left pre-populated server value in hidden input. User's typed text silently replaced.                                                       | Clear hidden value on `input` event.                                 |
+| 4 | **Combobox Enter blocked form submission**         | `forms/combobox.templ:231`      | Unconditional `e.preventDefault()` on Enter, even when no option highlighted. Blocked form submit.                                                                   | Only preventDefault when an option is actively highlighted.          |
+| 5 | **Select mutated caller's slice**                  | `forms/select.templ:19-34`      | `normalizeSelectOptions` modified caller's `[]SelectOption` in place. Reusing options across renders corrupted data.                                                 | Return defensive copy (`make` + `copy`).                             |
+| 6 | **Select doc contradicted code**                   | `forms/select.templ:5-7`        | Type comment said "Selected takes precedence" but code clears Selected.                                                                                              | Fixed doc to match implementation.                                   |
+| 7 | **Checkbox invalid `for=""`**                      | `forms/input.templ:154`         | Checkbox without ID rendered `<label for="">` — invalid HTML, breaks label association.                                                                              | Render `<span>` when ID empty (like Radio component).                |
+| 8 | **Toast auto-dismiss silently disabled**           | `feedback/toast.templ:163`      | `Duration > 0` but no ID → auto-dismiss gated on `props.ID != ""`. `DefaultToastProps()` sets Duration: 5000 but no ID → never auto-dismissed.                       | Auto-generate ID via `EnsureID`.                                     |
+| 9 | **ProgressBar aria-valuenow unclamped**            | `feedback/progressbar.templ:84` | `aria-valuenow` used raw `props.Current` (could be negative or > Total). Violated ARIA spec, disagreed with visual clamp.                                            | Clamp to `[0, Total]`.                                               |
 
 ### 2. Display Package Bug Hunt (7 bugs found + fixed + tested)
 
-| #   | Bug                                                  | File                                             | Impact                                                                                                                                                                                                                            | Fix                                                                                                       |
-| --- | ---------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
-| 10  | **Modal/Drawer JS didn't sync aria-hidden or inert** | `display/shared.go:122-162`                      | JS open/close functions only toggled CSS classes. A JS-opened modal stayed `inert` (keyboard-dead) + `aria-hidden="true"` (screen-reader-invisible). A JS-closed modal kept `aria-hidden="false"` + no `inert` (focus trap leak). | `tcOpen` sets `aria-hidden=false` + removes `inert`; `tcClose` sets `aria-hidden=true` + adds `inert`.    |
-| 11  | **Dropdown RTL arrow nav was dead code**             | `display/dropdown.templ:212`                     | RTL ternary inside JS string literal: `e.key === '(document... ? ...)'` — never matched any key.                                                                                                                                  | Compute `nextKey`/`prevKey` as variables outside comparison (like Tabs already did).                      |
-| 12  | **Accordion clipped content >384px**                 | `display/accordion.templ:79`                     | `max-h-96` (384px) + `overflow-hidden` permanently hid long content. No scroll fallback.                                                                                                                                          | CSS grid technique: `grid-rows-[1fr]`/`grid-rows-[0fr]` for true auto-height animation.                   |
-| 13  | **Tabs crashed without IDs**                         | `display/tabs.templ:47-58`                       | No `EnsureID` → invalid HTML (`id="-tab"`), `aria-controls=""`, JS `querySelector('#')` SyntaxError. No tab keyboard-focusable if `ActiveTabID` unset.                                                                            | `ensureTabIDs()` auto-generates IDs; `resolveActiveTabID()` defaults to first tab (WAI-ARIA requirement). |
-| 14  | **CopyButton link variant navigated away**           | `display/shared.go:272`                          | No `e.preventDefault()` — clicking `<a>` variant followed href before "Copied!" label swap fired.                                                                                                                                 | Add `e.preventDefault()` to click handler.                                                                |
-| 15  | **Tooltip invisible to screen readers**              | `display/tooltip.templ:70` + `display/shared.go` | `aria-describedby` on non-focusable wrapper `<div>`. Must be on focusable trigger element.                                                                                                                                        | JS propagates `aria-describedby` from wrapper to first focusable child + re-runs on `htmx:afterSettle`.   |
-| 16  | **Pagination dynamic class concatenation**           | `navigation/pagination.templ:106`                | `"rounded-" + roundedSide + "-md"` invisible to Tailwind scanner (same class of bug as Toggle). Also used physical properties (`l`/`r`) not logical (`start`/`end`).                                                              | Pass complete logical-property literals (`rounded-s-md`/`rounded-e-md`).                                  |
+| #  | Bug                                                  | File                                             | Impact                                                                                                                                                                                                                            | Fix                                                                                                       |
+| -- | ---------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| 10 | **Modal/Drawer JS didn't sync aria-hidden or inert** | `display/shared.go:122-162`                      | JS open/close functions only toggled CSS classes. A JS-opened modal stayed `inert` (keyboard-dead) + `aria-hidden="true"` (screen-reader-invisible). A JS-closed modal kept `aria-hidden="false"` + no `inert` (focus trap leak). | `tcOpen` sets `aria-hidden=false` + removes `inert`; `tcClose` sets `aria-hidden=true` + adds `inert`.    |
+| 11 | **Dropdown RTL arrow nav was dead code**             | `display/dropdown.templ:212`                     | RTL ternary inside JS string literal: `e.key === '(document... ? ...)'` — never matched any key.                                                                                                                                  | Compute `nextKey`/`prevKey` as variables outside comparison (like Tabs already did).                      |
+| 12 | **Accordion clipped content >384px**                 | `display/accordion.templ:79`                     | `max-h-96` (384px) + `overflow-hidden` permanently hid long content. No scroll fallback.                                                                                                                                          | CSS grid technique: `grid-rows-[1fr]`/`grid-rows-[0fr]` for true auto-height animation.                   |
+| 13 | **Tabs crashed without IDs**                         | `display/tabs.templ:47-58`                       | No `EnsureID` → invalid HTML (`id="-tab"`), `aria-controls=""`, JS `querySelector('#')` SyntaxError. No tab keyboard-focusable if `ActiveTabID` unset.                                                                            | `ensureTabIDs()` auto-generates IDs; `resolveActiveTabID()` defaults to first tab (WAI-ARIA requirement). |
+| 14 | **CopyButton link variant navigated away**           | `display/shared.go:272`                          | No `e.preventDefault()` — clicking `<a>` variant followed href before "Copied!" label swap fired.                                                                                                                                 | Add `e.preventDefault()` to click handler.                                                                |
+| 15 | **Tooltip invisible to screen readers**              | `display/tooltip.templ:70` + `display/shared.go` | `aria-describedby` on non-focusable wrapper `<div>`. Must be on focusable trigger element.                                                                                                                                        | JS propagates `aria-describedby` from wrapper to first focusable child + re-runs on `htmx:afterSettle`.   |
+| 16 | **Pagination dynamic class concatenation**           | `navigation/pagination.templ:106`                | `"rounded-" + roundedSide + "-md"` invisible to Tailwind scanner (same class of bug as Toggle). Also used physical properties (`l`/`r`) not logical (`start`/`end`).                                                              | Pass complete logical-property literals (`rounded-s-md`/`rounded-e-md`).                                  |
 
 ### 3. Demo Fixes (2 issues)
 
-| #   | Issue                              | Fix                                                                                                               |
-| --- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
-| 17  | **Duplicate `#loading` anchor ID** | Two sections both used `id="loading"` (spinners + skeleton grid). Renamed skeleton section to `id="skeletons"`.   |
-| 18  | **Incomplete/misleading TOC**      | TOC had 7 hardcoded links but the page had 20+ sections. Rebuilt as data-driven loop covering all major sections. |
+| #  | Issue                              | Fix                                                                                                               |
+| -- | ---------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| 17 | **Duplicate `#loading` anchor ID** | Two sections both used `id="loading"` (spinners + skeleton grid). Renamed skeleton section to `id="skeletons"`.   |
+| 18 | **Incomplete/misleading TOC**      | TOC had 7 hardcoded links but the page had 20+ sections. Rebuilt as data-driven loop covering all major sections. |
 
 ### 4. Regression Tests (all bug fixes)
 
@@ -273,58 +273,58 @@ test for this. Low risk, but worth noting.
 
 ## f) Top 50 Things to Get Done Next
 
-| #   | Task                                                                  | Impact   | Effort |
-| --- | --------------------------------------------------------------------- | -------- | ------ |
-| 1   | **Commit this session's work** (4-5 logical commits)                  | CRITICAL | LOW    |
-| 2   | Audit `htmx` package (7 components) for bugs                          | HIGH     | MED    |
-| 3   | Audit `errorpage` package (4 components + handler) for bugs           | HIGH     | MED    |
-| 4   | Audit `layout` package (5 components) for bugs                        | MED      | LOW    |
-| 5   | Audit remaining `navigation` components (10 components)               | MED      | MED    |
-| 6   | Add CI check for dynamic Tailwind class concatenation                 | HIGH     | LOW    |
-| 7   | Browser-test accordion grid animation                                 | HIGH     | LOW    |
-| 8   | Browser-test toggle thumb slide                                       | HIGH     | LOW    |
-| 9   | Browser-test tooltip aria-describedby propagation                     | MED      | LOW    |
-| 10  | Browser-test modal/drawer open→close→focus-restore lifecycle          | HIGH     | MED    |
-| 11  | Document CopyButton `<a>` variant navigation suppression              | MED      | LOW    |
-| 12  | Document Tabs `resolveActiveTabID` behavior change                    | MED      | LOW    |
-| 13  | Verify `grid-rows-[0fr]` produces correct CSS in Tailwind v4          | HIGH     | LOW    |
-| 14  | Add Playwright/screenshot test infrastructure                         | HIGH     | HIGH   |
-| 15  | Refactor overlay JS generators to use `text/template`                 | MED      | MED    |
-| 16  | Run `nix run .#verify` to confirm canonical check                     | LOW      | LOW    |
-| 17  | Consider `type="submit"` edge case for CopyButton preventDefault      | LOW      | LOW    |
-| 18  | Add `forms.InputGroup` to audit (was missed)                          | MED      | LOW    |
-| 19  | Run `art-dupl` on Go sources (not just `.templ` files)                | LOW      | LOW    |
-| 20  | Add fuzz test for combobox keyboard handling                          | LOW      | MED    |
-| 21  | Add test for tooltip with custom (non-standard) trigger element       | LOW      | LOW    |
-| 22  | Verify `inert` attribute renders correctly in templ (boolean attr)    | LOW      | LOW    |
-| 23  | Cut v0.10.0 release with these fixes                                  | HIGH     | LOW    |
-| 24  | Add awesome-templ PR submission with updated component count          | LOW      | LOW    |
-| 25  | Add templ.guide listing submission                                    | LOW      | LOW    |
-| 26  | Self-host htmx.js in examples/demo (no CDN dependency)                | LOW      | LOW    |
-| 27  | Add "doc reality" CI check (verify AGENTS.md claims match code)       | MED      | MED    |
-| 28  | Archive completed planning docs with STATUS headers                   | LOW      | LOW    |
-| 29  | Add fuzz tests to CI pipeline (30s per PR)                            | MED      | LOW    |
-| 30  | Wire motion constants into remaining 19 components                    | MED      | HIGH   |
-| 31  | Fix SKILL.md component count discrepancy (82 vs 83)                   | LOW      | LOW    |
-| 32  | Add Popover component (most requested new component)                  | HIGH     | HIGH   |
-| 33  | Add SortableDataTable wrapper around TableHeader                      | HIGH     | HIGH   |
-| 34  | Add FilterDropdown component                                          | MED      | MED    |
-| 35  | Design `Validate() error` pattern for v1.0 props                      | MED      | HIGH   |
-| 36  | Add standalone `/forms` quickstart demo route                         | MED      | MED    |
-| 37  | Add blocks/composition examples (dashboard, login, settings)          | MED      | MED    |
-| 38  | Consumer validation: adopt templ-components in a real project         | HIGH     | HIGH   |
-| 39  | Move test helpers to `internal/testutil/` (v1.0 scope)                | MED      | HIGH   |
-| 40  | Semantic token layer (`bg-tc-primary`) — ADR 0008 phased rollout      | MED      | HIGH   |
-| 41  | Configure SSH tag signing                                             | LOW      | LOW    |
-| 42  | Pagination RTL icon visual swap (ArrowLeft/ArrowRight)                | MED      | LOW    |
-| 43  | Add integration test for Combobox full lifecycle (type→select→submit) | MED      | MED    |
-| 44  | Add test for Accordion with very long content (>1000px)               | LOW      | LOW    |
-| 45  | Review all `data-tc-*` attributes for consistency                     | LOW      | MED    |
-| 46  | Add `role="group"` audit for form field grouping                      | LOW      | MED    |
-| 47  | Verify color contrast ratios meet WCAG AA                             | MED      | MED    |
-| 48  | Add keyboard navigation test for Dropdown (full menu item cycle)      | MED      | LOW    |
-| 49  | Add test for Tabs client-side keyboard nav (ArrowLeft/Right/Home/End) | MED      | LOW    |
-| 50  | Create a "bug hunt checklist" from lessons learned this session       | MED      | LOW    |
+| #  | Task                                                                  | Impact   | Effort |
+| -- | --------------------------------------------------------------------- | -------- | ------ |
+| 1  | **Commit this session's work** (4-5 logical commits)                  | CRITICAL | LOW    |
+| 2  | Audit `htmx` package (7 components) for bugs                          | HIGH     | MED    |
+| 3  | Audit `errorpage` package (4 components + handler) for bugs           | HIGH     | MED    |
+| 4  | Audit `layout` package (5 components) for bugs                        | MED      | LOW    |
+| 5  | Audit remaining `navigation` components (10 components)               | MED      | MED    |
+| 6  | Add CI check for dynamic Tailwind class concatenation                 | HIGH     | LOW    |
+| 7  | Browser-test accordion grid animation                                 | HIGH     | LOW    |
+| 8  | Browser-test toggle thumb slide                                       | HIGH     | LOW    |
+| 9  | Browser-test tooltip aria-describedby propagation                     | MED      | LOW    |
+| 10 | Browser-test modal/drawer open→close→focus-restore lifecycle          | HIGH     | MED    |
+| 11 | Document CopyButton `<a>` variant navigation suppression              | MED      | LOW    |
+| 12 | Document Tabs `resolveActiveTabID` behavior change                    | MED      | LOW    |
+| 13 | Verify `grid-rows-[0fr]` produces correct CSS in Tailwind v4          | HIGH     | LOW    |
+| 14 | Add Playwright/screenshot test infrastructure                         | HIGH     | HIGH   |
+| 15 | Refactor overlay JS generators to use `text/template`                 | MED      | MED    |
+| 16 | Run `nix run .#verify` to confirm canonical check                     | LOW      | LOW    |
+| 17 | Consider `type="submit"` edge case for CopyButton preventDefault      | LOW      | LOW    |
+| 18 | Add `forms.InputGroup` to audit (was missed)                          | MED      | LOW    |
+| 19 | Run `art-dupl` on Go sources (not just `.templ` files)                | LOW      | LOW    |
+| 20 | Add fuzz test for combobox keyboard handling                          | LOW      | MED    |
+| 21 | Add test for tooltip with custom (non-standard) trigger element       | LOW      | LOW    |
+| 22 | Verify `inert` attribute renders correctly in templ (boolean attr)    | LOW      | LOW    |
+| 23 | Cut v0.10.0 release with these fixes                                  | HIGH     | LOW    |
+| 24 | Add awesome-templ PR submission with updated component count          | LOW      | LOW    |
+| 25 | Add templ.guide listing submission                                    | LOW      | LOW    |
+| 26 | Self-host htmx.js in examples/demo (no CDN dependency)                | LOW      | LOW    |
+| 27 | Add "doc reality" CI check (verify AGENTS.md claims match code)       | MED      | MED    |
+| 28 | Archive completed planning docs with STATUS headers                   | LOW      | LOW    |
+| 29 | Add fuzz tests to CI pipeline (30s per PR)                            | MED      | LOW    |
+| 30 | Wire motion constants into remaining 19 components                    | MED      | HIGH   |
+| 31 | Fix SKILL.md component count discrepancy (82 vs 83)                   | LOW      | LOW    |
+| 32 | Add Popover component (most requested new component)                  | HIGH     | HIGH   |
+| 33 | Add SortableDataTable wrapper around TableHeader                      | HIGH     | HIGH   |
+| 34 | Add FilterDropdown component                                          | MED      | MED    |
+| 35 | Design `Validate() error` pattern for v1.0 props                      | MED      | HIGH   |
+| 36 | Add standalone `/forms` quickstart demo route                         | MED      | MED    |
+| 37 | Add blocks/composition examples (dashboard, login, settings)          | MED      | MED    |
+| 38 | Consumer validation: adopt templ-components in a real project         | HIGH     | HIGH   |
+| 39 | Move test helpers to `internal/testutil/` (v1.0 scope)                | MED      | HIGH   |
+| 40 | Semantic token layer (`bg-tc-primary`) — ADR 0008 phased rollout      | MED      | HIGH   |
+| 41 | Configure SSH tag signing                                             | LOW      | LOW    |
+| 42 | Pagination RTL icon visual swap (ArrowLeft/ArrowRight)                | MED      | LOW    |
+| 43 | Add integration test for Combobox full lifecycle (type→select→submit) | MED      | MED    |
+| 44 | Add test for Accordion with very long content (>1000px)               | LOW      | LOW    |
+| 45 | Review all `data-tc-*` attributes for consistency                     | LOW      | MED    |
+| 46 | Add `role="group"` audit for form field grouping                      | LOW      | MED    |
+| 47 | Verify color contrast ratios meet WCAG AA                             | MED      | MED    |
+| 48 | Add keyboard navigation test for Dropdown (full menu item cycle)      | MED      | LOW    |
+| 49 | Add test for Tabs client-side keyboard nav (ArrowLeft/Right/Home/End) | MED      | LOW    |
+| 50 | Create a "bug hunt checklist" from lessons learned this session       | MED      | LOW    |
 
 ---
 

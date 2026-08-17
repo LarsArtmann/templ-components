@@ -56,34 +56,34 @@ This is the **exact gotcha already documented in AGENTS.md**:
 
 ## 2. FULLY DONE
 
-| #   | Item                                | Evidence                                     |
-| --- | ----------------------------------- | -------------------------------------------- |
-| 1   | Root-caused the flake               | captured `flex-col space-y-4 flex` output    |
-| 2   | Proved `utils.Class` is thread-safe | 3M varied concurrent calls, 0 corruption     |
-| 3   | Proved `Stack` component is correct | isolated render always emits `flex flex-col` |
-| 4   | Fixed the broken assertion          | `AssertContainsAll` with independent tokens  |
-| 5   | Verified fix kills the flake        | 0/40 under `-race`                           |
-| 6   | No regression elsewhere             | full `go test ./...` green                   |
+| # | Item                                | Evidence                                     |
+| - | ----------------------------------- | -------------------------------------------- |
+| 1 | Root-caused the flake               | captured `flex-col space-y-4 flex` output    |
+| 2 | Proved `utils.Class` is thread-safe | 3M varied concurrent calls, 0 corruption     |
+| 3 | Proved `Stack` component is correct | isolated render always emits `flex flex-col` |
+| 4 | Fixed the broken assertion          | `AssertContainsAll` with independent tokens  |
+| 5 | Verified fix kills the flake        | 0/40 under `-race`                           |
+| 6 | No regression elsewhere             | full `go test ./...` green                   |
 
 ---
 
 ## 3. PARTIALLY DONE
 
-| #   | Item                          | Why partial                                                                                                                                                                                                                                                                |
-| --- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Comment in the fixed test** | Added a 3-line `//` block explaining _why_ we use `AssertContainsAll`. Defensible (explains why, documents a non-obvious convention, AGENTS.md permits "why" comments) but AGENTS.md also says "NEVER ADD COMMENTS unless asked." Borderline — flagging for user judgment. |
-| 2   | **Verification scope**        | Ran `go test ./...` (non-race) at the end + 40× `-race` on `integration/` only. Did **not** run 40× `-race` on every other package — other packages may have their own shuffle-dependent flakes that the original BuildFlow run would surface.                             |
+| # | Item                          | Why partial                                                                                                                                                                                                                                                                |
+| - | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | **Comment in the fixed test** | Added a 3-line `//` block explaining _why_ we use `AssertContainsAll`. Defensible (explains why, documents a non-obvious convention, AGENTS.md permits "why" comments) but AGENTS.md also says "NEVER ADD COMMENTS unless asked." Borderline — flagging for user judgment. |
+| 2 | **Verification scope**        | Ran `go test ./...` (non-race) at the end + 40× `-race` on `integration/` only. Did **not** run 40× `-race` on every other package — other packages may have their own shuffle-dependent flakes that the original BuildFlow run would surface.                             |
 
 ---
 
 ## 4. NOT STARTED (gaps I noticed but did not touch)
 
-| #   | Gap                                                                                                                                                                                                                                                                                                       | Impact                       |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| 1   | **Did NOT scan repo for other tests with the same anti-pattern.** This is the biggest miss. AGENTS.md documents the rule; one test violated it; almost certainly more exist. Any `strings.Contains(output, "X Y")` where `X` and `Y` are Tailwind classes passed through `utils.Class` is a latent flake. | High — systematic fragility. |
-| 2   | **No CHANGELOG `[Unreleased]` entry.** AGENTS.md release convention: every fix on `master` must add its changelog entry immediately, not defer.                                                                                                                                                           | Medium — drift risk.         |
-| 3   | **No automated guard.** The convention lives in AGENTS.md prose only. No grep-test, no linter rule prevents re-introduction.                                                                                                                                                                              | Medium — recurrence certain. |
-| 4   | **Did not escalate the tailwind-merge-go nondeterminism.** The library emits order-dependent-on-LRU output. Options (sort output in `utils.Class`, pin LRU, wrap with a stable layer) unexplored.                                                                                                         | Low (architectural).         |
+| # | Gap                                                                                                                                                                                                                                                                                                       | Impact                       |
+| - | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| 1 | **Did NOT scan repo for other tests with the same anti-pattern.** This is the biggest miss. AGENTS.md documents the rule; one test violated it; almost certainly more exist. Any `strings.Contains(output, "X Y")` where `X` and `Y` are Tailwind classes passed through `utils.Class` is a latent flake. | High — systematic fragility. |
+| 2 | **No CHANGELOG `[Unreleased]` entry.** AGENTS.md release convention: every fix on `master` must add its changelog entry immediately, not defer.                                                                                                                                                           | Medium — drift risk.         |
+| 3 | **No automated guard.** The convention lives in AGENTS.md prose only. No grep-test, no linter rule prevents re-introduction.                                                                                                                                                                              | Medium — recurrence certain. |
+| 4 | **Did not escalate the tailwind-merge-go nondeterminism.** The library emits order-dependent-on-LRU output. Options (sort output in `utils.Class`, pin LRU, wrap with a stable layer) unexplored.                                                                                                         | Low (architectural).         |
 
 ---
 
@@ -91,11 +91,11 @@ This is the **exact gotcha already documented in AGENTS.md**:
 
 Nothing destructive. No reverts, no force-pushes, no data loss, no unrelated files touched. Honest missteps:
 
-| #   | Misstep                                                                                                                                                                                                                                                                                                                           | Lesson                                                                                                                                                                      |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 1   | **Over-investigated exotic concurrency theories before capturing the output.** I wrote 3 separate stress tests (2 for `utils.Class`, 1 for `Stack`) before simply instrumenting the failing test to print its bad output — which instantly revealed the reordering.                                                               | When a test fails, **capture the actual output FIRST.** The answer was one `t.Errorf("...%q", output)` away. ~6 tool calls of speculative stress-testing could have been 1. |
-| 2   | **Quoted the AGENTS.md rule early, then failed to apply it immediately.** I literally pasted _"Do NOT assert ordered class substrings"_ into my second message — then spent the next several steps proving the component and `Class` were innocent before fixing the _assertion_. The rule told me the answer; I didn't trust it. | Trust documented conventions over novel investigation.                                                                                                                      |
-| 3   | **Did not run the exact BuildFlow `test-race` command.** Reproduced with `go test -race` (close, but BuildFlow may set flags/env differently). The original failure path is not bit-for-bit verified.                                                                                                                             | Reproduce via the real failing command, not a near-neighbor.                                                                                                                |
+| # | Misstep                                                                                                                                                                                                                                                                                                                           | Lesson                                                                                                                                                                      |
+| - | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | **Over-investigated exotic concurrency theories before capturing the output.** I wrote 3 separate stress tests (2 for `utils.Class`, 1 for `Stack`) before simply instrumenting the failing test to print its bad output — which instantly revealed the reordering.                                                               | When a test fails, **capture the actual output FIRST.** The answer was one `t.Errorf("...%q", output)` away. ~6 tool calls of speculative stress-testing could have been 1. |
+| 2 | **Quoted the AGENTS.md rule early, then failed to apply it immediately.** I literally pasted _"Do NOT assert ordered class substrings"_ into my second message — then spent the next several steps proving the component and `Class` were innocent before fixing the _assertion_. The rule told me the answer; I didn't trust it. | Trust documented conventions over novel investigation.                                                                                                                      |
+| 3 | **Did not run the exact BuildFlow `test-race` command.** Reproduced with `go test -race` (close, but BuildFlow may set flags/env differently). The original failure path is not bit-for-bit verified.                                                                                                                             | Reproduce via the real failing command, not a near-neighbor.                                                                                                                |
 
 ---
 

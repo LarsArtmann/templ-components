@@ -10,21 +10,21 @@ prior session's self-review (`docs/status/2026-07-28_09-23_...`).
 
 ## a) FULLY DONE (shipped + verified)
 
-| #   | Task                                                                                                | Verification                                                             |
-| --- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| 3   | `StateClick` + `StateContext` + `FullViewport` + `WaitSelector` in visual harness                   | `nix run .#visual` passes (31 goldens, ~4s)                              |
-| 4   | Dropdown/Popover/ContextMenu visual tests (T8 — previously skipped as "needs click simulation")     | 4 PNG goldens committed; dropdown/open_light re-runs at 0.0000% mismatch |
-| 7   | `TestCSSFreshness` fails in CI (`CI` env → `t.Errorf`, local → `t.Logf`)                            | `go test ./utils/... -run TestCSSFreshness` passes locally               |
-| 8   | `TestEnvrcConsistency` — asserts `.envrc` has both flags + no secrets                               | passes                                                                   |
-| 9   | `TestPreCommitHookInstallsGuard` — asserts `check-lint-config.sh` before BuildFlow                  | passes                                                                   |
-| 11  | Container-query exemptions verified — pruned 3 dead, documented 4 active with reasons               | `TestContainerQueryCompliance` passes                                    |
-| 12  | Pagination golden snapshot (T14 proof-of-concept)                                                   | `pagination.golden` committed + passes                                   |
-| 13  | Breadcrumbs golden snapshot (with JSON-LD)                                                          | `breadcrumbs.golden` committed + passes                                  |
-| 15  | Alert success + info golden snapshots (completes 4-type coverage)                                   | `alert_success.golden`, `alert_info.golden` committed                    |
-| 16  | Input basic + error golden snapshots                                                                | `input_basic.golden`, `input_error.golden` committed                     |
-| 28  | `skill/SKILL.md` — repo-wide guard-test table + visual harness section                              | synced to global skill                                                   |
-| 30  | ROADMAP cross-references ADR-0022 (default-flip) + ADR-0023 (compound overlay)                      | linked with status updates                                               |
-| 32  | `docs/visual-testing.md` — shared Chromium architecture, overlay testing, fixed stale Options table | updated                                                                  |
+| #  | Task                                                                                                | Verification                                                             |
+| -- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| 3  | `StateClick` + `StateContext` + `FullViewport` + `WaitSelector` in visual harness                   | `nix run .#visual` passes (31 goldens, ~4s)                              |
+| 4  | Dropdown/Popover/ContextMenu visual tests (T8 — previously skipped as "needs click simulation")     | 4 PNG goldens committed; dropdown/open_light re-runs at 0.0000% mismatch |
+| 7  | `TestCSSFreshness` fails in CI (`CI` env → `t.Errorf`, local → `t.Logf`)                            | `go test ./utils/... -run TestCSSFreshness` passes locally               |
+| 8  | `TestEnvrcConsistency` — asserts `.envrc` has both flags + no secrets                               | passes                                                                   |
+| 9  | `TestPreCommitHookInstallsGuard` — asserts `check-lint-config.sh` before BuildFlow                  | passes                                                                   |
+| 11 | Container-query exemptions verified — pruned 3 dead, documented 4 active with reasons               | `TestContainerQueryCompliance` passes                                    |
+| 12 | Pagination golden snapshot (T14 proof-of-concept)                                                   | `pagination.golden` committed + passes                                   |
+| 13 | Breadcrumbs golden snapshot (with JSON-LD)                                                          | `breadcrumbs.golden` committed + passes                                  |
+| 15 | Alert success + info golden snapshots (completes 4-type coverage)                                   | `alert_success.golden`, `alert_info.golden` committed                    |
+| 16 | Input basic + error golden snapshots                                                                | `input_basic.golden`, `input_error.golden` committed                     |
+| 28 | `skill/SKILL.md` — repo-wide guard-test table + visual harness section                              | synced to global skill                                                   |
+| 30 | ROADMAP cross-references ADR-0022 (default-flip) + ADR-0023 (compound overlay)                      | linked with status updates                                               |
+| 32 | `docs/visual-testing.md` — shared Chromium architecture, overlay testing, fixed stale Options table | updated                                                                  |
 
 ### Two critical bugs found & fixed (NOT on the original list)
 

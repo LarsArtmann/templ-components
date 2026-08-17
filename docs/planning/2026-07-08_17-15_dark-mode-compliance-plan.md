@@ -48,60 +48,60 @@
 
 ## Master Table
 
-| ID  | Task                                                                                         | Priority | Impact   | Effort | Subtasks | Deps | Category |
-| --- | -------------------------------------------------------------------------------------------- | -------- | -------- | ------ | -------- | ---- | -------- |
-| 1   | Separate `handler.go` json/v2 change into its own commit                                     | P0       | High     | 5m     | 1        | —    | Cleanup  |
-| 2   | Commit dark mode fixes (excluding handler.go)                                                | P0       | High     | 10m    | 2        | 1    | Release  |
-| 3   | Add `TestDarkModeCompliance` — scan `.templ` for neutral colors without `dark:`              | P0       | Critical | 12m    | 3        | 2    | Testing  |
-| 4   | Add `TestDarkModeSemanticColors` — scan for `bg-blue-600` etc. without `dark:`               | P0       | Critical | 12m    | 3        | 2    | Testing  |
-| 5   | Run new tests — verify they PASS (all issues already fixed)                                  | P0       | Critical | 5m     | 1        | 3,4  | Testing  |
-| 6   | Add `color-scheme: dark` to `.dark` class in theme CSS                                       | P0       | High     | 8m     | 2        | —    | A11y     |
-| 7   | Bump `utils.Version` + CHANGELOG `[Unreleased]` entry                                        | P0       | Medium   | 10m    | 3        | 2    | Release  |
-| 8   | Update FEATURES.md to note full dark mode compliance                                         | P1       | Medium   | 5m     | 1        | 2    | Docs     |
-| 9   | Document dark mode convention in AGENTS.md                                                   | P1       | High     | 12m    | 3        | —    | Docs     |
-| 10  | Fix `progressbar.templ:54` LSP hint (use `max()`)                                            | P1       | Low      | 8m     | 2        | —    | Code     |
-| 11  | Fix doc comments in `htmx/loading.templ` (add `dark:` variants)                              | P1       | Low      | 4m     | 1        | —    | Docs     |
-| 12  | Fix doc comments in `feedback/loading.templ` (add `dark:` variants)                          | P1       | Low      | 4m     | 1        | —    | Docs     |
-| 13  | Fix doc comments in `icons/icon.templ` (add `dark:` variants)                                | P1       | Low      | 4m     | 1        | —    | Docs     |
-| 14  | Fix doc comments in `forms/input_group.templ` (add `dark:` variants)                         | P1       | Low      | 4m     | 1        | —    | Docs     |
-| 15  | Update SKILL.md Part 2 with dark mode checklist for new components                           | P1       | High     | 10m    | 1        | 9    | Docs     |
-| 16  | Add ADR `0011-dark-mode-convention.md`                                                       | P1       | Medium   | 10m    | 1        | 9    | Docs     |
-| 17  | Update README.md dark mode section with complete convention                                  | P1       | Medium   | 10m    | 1        | 9    | Docs     |
-| 18  | Tag patch release (v0.9.1 or similar)                                                        | P1       | High     | 10m    | 2        | 7,8  | Release  |
-| 19  | Add dark mode integration test — render with `.dark` wrapper, assert `dark:` classes present | P2       | Medium   | 12m    | 2        | 3,4  | Testing  |
-| 20  | Audit `hover:` variants for missing `dark:hover:`                                            | P2       | Medium   | 12m    | 2        | —    | Audit    |
-| 21  | Audit `focus:` variants for missing `dark:focus:`                                            | P2       | Medium   | 12m    | 2        | —    | Audit    |
-| 22  | Audit `ring-offset-*` for dark mode                                                          | P2       | Low      | 8m     | 2        | —    | Audit    |
-| 23  | Audit `shadow-*` classes for dark mode                                                       | P2       | Low      | 6m     | 2        | —    | Audit    |
-| 24  | Audit `backdrop-blur-*` opacity for dark mode                                                | P2       | Low      | 6m     | 1        | —    | Audit    |
-| 25  | Add test for toast JS-created toast (dynamic path)                                           | P2       | Medium   | 12m    | 2        | —    | Testing  |
-| 26  | Add dark golden test variants (render with `.dark` parent)                                   | P2       | Medium   | 12m    | 2        | 19   | Testing  |
-| 27  | Verify WCAG AA contrast ratios for all dark mode color combos                                | P2       | High     | 12m    | 3        | —    | A11y     |
-| 28  | Add `scrollbar-color` for dark mode                                                          | P2       | Low      | 6m     | 2        | —    | CSS      |
-| 29  | Verify `::selection` colors work in dark mode                                                | P2       | Low      | 4m     | 1        | —    | Audit    |
-| 30  | Verify Table `hover:bg-gray-50` has `dark:hover:bg-gray-800`                                 | P2       | Low      | 6m     | 2        | —    | Audit    |
-| 31  | Add `darkMode` toggle to demo page                                                           | P2       | Low      | 10m    | 1        | —    | Demo     |
-| 32  | Add dark mode release note                                                                   | P2       | Low      | 5m     | 1        | 18   | Docs     |
-| 33  | Update CONTRIBUTING.md with dark mode section                                                | P2       | Low      | 10m    | 1        | 9    | Docs     |
-| 34  | Add pre-commit hook for dark mode check                                                      | P2       | Medium   | 10m    | 1        | 3,4  | Tooling  |
-| 35  | Add test that `BaseProps.Class` propagates `dark:` classes                                   | P2       | Low      | 10m    | 1        | —    | Testing  |
-| 36  | Benchmark dark mode class resolution (tailwind-merge-go with longer strings)                 | P2       | Low      | 12m    | 2        | —    | Perf     |
-| 37  | Verify CountBadge `ring-white dark:ring-gray-800` is sufficient                              | P3       | Low      | 5m     | 1        | —    | Audit    |
-| 38  | Verify Tooltip arrow border colors in dark mode                                              | P3       | Low      | 5m     | 1        | —    | Audit    |
-| 39  | Verify Nav mobile menu slide animation visible in dark mode                                  | P3       | Low      | 5m     | 1        | —    | Audit    |
-| 40  | Add `prefers-color-scheme` fallback when `.dark` class is absent                             | P3       | Medium   | 10m    | 1        | —    | CSS      |
-| 41  | Add `prefers-reduced-transparency` media query for overlays                                  | P3       | Low      | 6m     | 1        | —    | A11y     |
-| 42  | Add contract test: props with `Color` field have dark mode godoc                             | P3       | Low      | 10m    | 1        | —    | Testing  |
-| 43  | Add test asserting every component has `dark:` classes                                       | P3       | Medium   | 10m    | 1        | 19   | Testing  |
-| 44  | Explore Tailwind v4 `@theme` dark mode tokens (CSS-first approach)                           | P3       | Medium   | 12m    | 2        | —    | Research |
-| 45  | Add `darkMode()` helper in `utils` (returns `dark:` prefixed classes)                        | P3       | Low      | 10m    | 1        | —    | Code     |
-| 46  | Add `Theme` enum (Light/Dark/Auto) to `layout`                                               | P3       | Low      | 12m    | 2        | —    | Code     |
-| 47  | Add `SidebarNav` light mode option (prop to switch from dark sidebar)                        | P3       | Low      | 12m    | 2        | —    | Code     |
-| 48  | Add visual regression testing (screenshot comparison light/dark)                             | P3       | Medium   | 12m    | 2        | —    | Research |
-| 49  | Add screen reader behavior verification (dark: changes are no-op for SR)                     | P3       | Low      | 5m     | 1        | —    | A11y     |
-| 50  | Add `color-scheme: light` to `:root` (explicit light mode)                                   | P3       | Low      | 4m     | 1        | 6    | CSS      |
-| 51  | Add test for `prefers-reduced-transparency` support                                          | P3       | Low      | 5m     | 1        | 41   | Testing  |
-| 52  | Explore `scroll-smooth` in dark mode (verify no issues)                                      | P3       | Low      | 3m     | 1        | —    | Audit    |
+| ID | Task                                                                                         | Priority | Impact   | Effort | Subtasks | Deps | Category |
+| -- | -------------------------------------------------------------------------------------------- | -------- | -------- | ------ | -------- | ---- | -------- |
+| 1  | Separate `handler.go` json/v2 change into its own commit                                     | P0       | High     | 5m     | 1        | —    | Cleanup  |
+| 2  | Commit dark mode fixes (excluding handler.go)                                                | P0       | High     | 10m    | 2        | 1    | Release  |
+| 3  | Add `TestDarkModeCompliance` — scan `.templ` for neutral colors without `dark:`              | P0       | Critical | 12m    | 3        | 2    | Testing  |
+| 4  | Add `TestDarkModeSemanticColors` — scan for `bg-blue-600` etc. without `dark:`               | P0       | Critical | 12m    | 3        | 2    | Testing  |
+| 5  | Run new tests — verify they PASS (all issues already fixed)                                  | P0       | Critical | 5m     | 1        | 3,4  | Testing  |
+| 6  | Add `color-scheme: dark` to `.dark` class in theme CSS                                       | P0       | High     | 8m     | 2        | —    | A11y     |
+| 7  | Bump `utils.Version` + CHANGELOG `[Unreleased]` entry                                        | P0       | Medium   | 10m    | 3        | 2    | Release  |
+| 8  | Update FEATURES.md to note full dark mode compliance                                         | P1       | Medium   | 5m     | 1        | 2    | Docs     |
+| 9  | Document dark mode convention in AGENTS.md                                                   | P1       | High     | 12m    | 3        | —    | Docs     |
+| 10 | Fix `progressbar.templ:54` LSP hint (use `max()`)                                            | P1       | Low      | 8m     | 2        | —    | Code     |
+| 11 | Fix doc comments in `htmx/loading.templ` (add `dark:` variants)                              | P1       | Low      | 4m     | 1        | —    | Docs     |
+| 12 | Fix doc comments in `feedback/loading.templ` (add `dark:` variants)                          | P1       | Low      | 4m     | 1        | —    | Docs     |
+| 13 | Fix doc comments in `icons/icon.templ` (add `dark:` variants)                                | P1       | Low      | 4m     | 1        | —    | Docs     |
+| 14 | Fix doc comments in `forms/input_group.templ` (add `dark:` variants)                         | P1       | Low      | 4m     | 1        | —    | Docs     |
+| 15 | Update SKILL.md Part 2 with dark mode checklist for new components                           | P1       | High     | 10m    | 1        | 9    | Docs     |
+| 16 | Add ADR `0011-dark-mode-convention.md`                                                       | P1       | Medium   | 10m    | 1        | 9    | Docs     |
+| 17 | Update README.md dark mode section with complete convention                                  | P1       | Medium   | 10m    | 1        | 9    | Docs     |
+| 18 | Tag patch release (v0.9.1 or similar)                                                        | P1       | High     | 10m    | 2        | 7,8  | Release  |
+| 19 | Add dark mode integration test — render with `.dark` wrapper, assert `dark:` classes present | P2       | Medium   | 12m    | 2        | 3,4  | Testing  |
+| 20 | Audit `hover:` variants for missing `dark:hover:`                                            | P2       | Medium   | 12m    | 2        | —    | Audit    |
+| 21 | Audit `focus:` variants for missing `dark:focus:`                                            | P2       | Medium   | 12m    | 2        | —    | Audit    |
+| 22 | Audit `ring-offset-*` for dark mode                                                          | P2       | Low      | 8m     | 2        | —    | Audit    |
+| 23 | Audit `shadow-*` classes for dark mode                                                       | P2       | Low      | 6m     | 2        | —    | Audit    |
+| 24 | Audit `backdrop-blur-*` opacity for dark mode                                                | P2       | Low      | 6m     | 1        | —    | Audit    |
+| 25 | Add test for toast JS-created toast (dynamic path)                                           | P2       | Medium   | 12m    | 2        | —    | Testing  |
+| 26 | Add dark golden test variants (render with `.dark` parent)                                   | P2       | Medium   | 12m    | 2        | 19   | Testing  |
+| 27 | Verify WCAG AA contrast ratios for all dark mode color combos                                | P2       | High     | 12m    | 3        | —    | A11y     |
+| 28 | Add `scrollbar-color` for dark mode                                                          | P2       | Low      | 6m     | 2        | —    | CSS      |
+| 29 | Verify `::selection` colors work in dark mode                                                | P2       | Low      | 4m     | 1        | —    | Audit    |
+| 30 | Verify Table `hover:bg-gray-50` has `dark:hover:bg-gray-800`                                 | P2       | Low      | 6m     | 2        | —    | Audit    |
+| 31 | Add `darkMode` toggle to demo page                                                           | P2       | Low      | 10m    | 1        | —    | Demo     |
+| 32 | Add dark mode release note                                                                   | P2       | Low      | 5m     | 1        | 18   | Docs     |
+| 33 | Update CONTRIBUTING.md with dark mode section                                                | P2       | Low      | 10m    | 1        | 9    | Docs     |
+| 34 | Add pre-commit hook for dark mode check                                                      | P2       | Medium   | 10m    | 1        | 3,4  | Tooling  |
+| 35 | Add test that `BaseProps.Class` propagates `dark:` classes                                   | P2       | Low      | 10m    | 1        | —    | Testing  |
+| 36 | Benchmark dark mode class resolution (tailwind-merge-go with longer strings)                 | P2       | Low      | 12m    | 2        | —    | Perf     |
+| 37 | Verify CountBadge `ring-white dark:ring-gray-800` is sufficient                              | P3       | Low      | 5m     | 1        | —    | Audit    |
+| 38 | Verify Tooltip arrow border colors in dark mode                                              | P3       | Low      | 5m     | 1        | —    | Audit    |
+| 39 | Verify Nav mobile menu slide animation visible in dark mode                                  | P3       | Low      | 5m     | 1        | —    | Audit    |
+| 40 | Add `prefers-color-scheme` fallback when `.dark` class is absent                             | P3       | Medium   | 10m    | 1        | —    | CSS      |
+| 41 | Add `prefers-reduced-transparency` media query for overlays                                  | P3       | Low      | 6m     | 1        | —    | A11y     |
+| 42 | Add contract test: props with `Color` field have dark mode godoc                             | P3       | Low      | 10m    | 1        | —    | Testing  |
+| 43 | Add test asserting every component has `dark:` classes                                       | P3       | Medium   | 10m    | 1        | 19   | Testing  |
+| 44 | Explore Tailwind v4 `@theme` dark mode tokens (CSS-first approach)                           | P3       | Medium   | 12m    | 2        | —    | Research |
+| 45 | Add `darkMode()` helper in `utils` (returns `dark:` prefixed classes)                        | P3       | Low      | 10m    | 1        | —    | Code     |
+| 46 | Add `Theme` enum (Light/Dark/Auto) to `layout`                                               | P3       | Low      | 12m    | 2        | —    | Code     |
+| 47 | Add `SidebarNav` light mode option (prop to switch from dark sidebar)                        | P3       | Low      | 12m    | 2        | —    | Code     |
+| 48 | Add visual regression testing (screenshot comparison light/dark)                             | P3       | Medium   | 12m    | 2        | —    | Research |
+| 49 | Add screen reader behavior verification (dark: changes are no-op for SR)                     | P3       | Low      | 5m     | 1        | —    | A11y     |
+| 50 | Add `color-scheme: light` to `:root` (explicit light mode)                                   | P3       | Low      | 4m     | 1        | 6    | CSS      |
+| 51 | Add test for `prefers-reduced-transparency` support                                          | P3       | Low      | 5m     | 1        | 41   | Testing  |
+| 52 | Explore `scroll-smooth` in dark mode (verify no issues)                                      | P3       | Low      | 3m     | 1        | —    | Audit    |
 
 ---
 

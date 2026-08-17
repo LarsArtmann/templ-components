@@ -25,9 +25,9 @@
 
 # Status Report: Session 13 — Coverage Boost Sprint
 
-**Date:** 2026-07-06 04:33  
-**Session Type:** Test coverage improvement  
-**Version:** 0.9.0 (no version bump — test-only changes)  
+**Date:** 2026-07-06 04:33\
+**Session Type:** Test coverage improvement\
+**Version:** 0.9.0 (no version bump — test-only changes)\
 **Branch:** master
 
 ---

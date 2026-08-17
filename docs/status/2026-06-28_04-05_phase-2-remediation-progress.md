@@ -141,33 +141,33 @@ All remaining tasks are Tier 3 (Medium) or Tier 4 (Polish) — no remaining Crit
 
 Sorted by impact × inverse effort (highest value first):
 
-| #   | Task                                                    | Impact | Effort | Rationale                                                                 |
-| --- | ------------------------------------------------------- | ------ | ------ | ------------------------------------------------------------------------- |
-| 1   | P-052 paginationArrow → props struct                    | XS     | S      | 7 positional params; highest param count in the package                   |
-| 2   | P-053 activeSpanOrLink → struct or split                | XS     | S      | 5 positional params; used by NavLink and SidebarNav                       |
-| 3   | P-051 tabLink pack active/inactive classes into struct  | XS     | S      | 4 string params; swapping active/inactive compiles silently               |
-| 4   | P-054 diagnosticSection → props struct                  | XS     | S      | 5 positional params in errorpage shared template                          |
-| 5   | P-042 StatusBadge typed alias                           | S      | S      | Magic string map is only validation; typed alias adds compile-time safety |
-| 6   | P-045 paginationArrow roundedSide typed enum            | XS     | XS     | "l"/"r" literals → typed enum; 5-minute fix                               |
-| 7   | P-046 DropdownItem deprecate Href fallback              | M      | S      | Dual discrimination drops href silently; Kind should be required          |
-| 8   | P-039 contextTable → dl                                 | S      | S      | Screen readers mis-announce definition data as table                      |
-| 9   | P-076 Icon accessible variant (role=img + title)        | L      | M      | Icons as sole button content invisible to AT                              |
-| 10  | P-122 SidebarNavItem embed BaseProps                    | XS     | XS     | Missing Class/ID/Attrs/AriaLabel support                                  |
-| 11  | P-111 IconPathJS accept strokeWidth arg                 | XS     | XS     | Hardcoded 1.5; 5-minute fix                                               |
-| 12  | P-119 paginationRange current>total test case           | XS     | XS     | Edge case with no test coverage                                           |
-| 13  | P-114 toastJSStyles/toastJSIconPaths tests              | S      | S      | Non-trivial untested string builders                                      |
-| 14  | P-056 Move DismissScript out of utils                   | S      | S      | Foundation package leaks browser-specific DOM concerns                    |
-| 15  | P-064 errorpage familyStyleMap builder                  | M      | M      | 6 near-identical 8-field entries → builder reduces drift                  |
-| 16  | P-120 DefinitionItem/TableCell unify dual slot          | S      | S      | Two structs with same dual string+Component pattern                       |
-| 17  | P-121 errorpage accept label strings via props for i18n | M      | M      | "Go home", "Go back" etc. hardcoded; no i18n path                         |
-| 18  | P-113 layout consolidate 7 test files → 2               | M      | M      | Massive duplication; rename "coverage_boost" anti-pattern                 |
-| 19  | P-080 utils Class() per-shard mutex                     | M      | L      | Real contention bottleneck under concurrent SSR                           |
-| 20  | P-100 InputGroupPaddingClass: audit usage               | XS     | XS     | Verify it's wired correctly or delete                                     |
-| 21  | P-103 Remove unreachable props.Timestamp=="" branch     | XS     | XS     | Already done — verify and close                                           |
-| 22  | P-096 pageURL preserve fragment across re-encode        | XS     | XS     | Already done — verify and close                                           |
-| 23  | P-112 example_test // Output directives                 | S      | S      | Already done for forms + errorpage — audit remaining packages             |
-| 24  | P-047 HTMXVersion typed const set                       | M      | S      | Already done — add more version constants as htmx releases                |
-| 25  | P-048 ThemeColor hex validation                         | S      | S      | Already done — consider named color support (e.g. "indigo-600")           |
+| #  | Task                                                    | Impact | Effort | Rationale                                                                 |
+| -- | ------------------------------------------------------- | ------ | ------ | ------------------------------------------------------------------------- |
+| 1  | P-052 paginationArrow → props struct                    | XS     | S      | 7 positional params; highest param count in the package                   |
+| 2  | P-053 activeSpanOrLink → struct or split                | XS     | S      | 5 positional params; used by NavLink and SidebarNav                       |
+| 3  | P-051 tabLink pack active/inactive classes into struct  | XS     | S      | 4 string params; swapping active/inactive compiles silently               |
+| 4  | P-054 diagnosticSection → props struct                  | XS     | S      | 5 positional params in errorpage shared template                          |
+| 5  | P-042 StatusBadge typed alias                           | S      | S      | Magic string map is only validation; typed alias adds compile-time safety |
+| 6  | P-045 paginationArrow roundedSide typed enum            | XS     | XS     | "l"/"r" literals → typed enum; 5-minute fix                               |
+| 7  | P-046 DropdownItem deprecate Href fallback              | M      | S      | Dual discrimination drops href silently; Kind should be required          |
+| 8  | P-039 contextTable → dl                                 | S      | S      | Screen readers mis-announce definition data as table                      |
+| 9  | P-076 Icon accessible variant (role=img + title)        | L      | M      | Icons as sole button content invisible to AT                              |
+| 10 | P-122 SidebarNavItem embed BaseProps                    | XS     | XS     | Missing Class/ID/Attrs/AriaLabel support                                  |
+| 11 | P-111 IconPathJS accept strokeWidth arg                 | XS     | XS     | Hardcoded 1.5; 5-minute fix                                               |
+| 12 | P-119 paginationRange current>total test case           | XS     | XS     | Edge case with no test coverage                                           |
+| 13 | P-114 toastJSStyles/toastJSIconPaths tests              | S      | S      | Non-trivial untested string builders                                      |
+| 14 | P-056 Move DismissScript out of utils                   | S      | S      | Foundation package leaks browser-specific DOM concerns                    |
+| 15 | P-064 errorpage familyStyleMap builder                  | M      | M      | 6 near-identical 8-field entries → builder reduces drift                  |
+| 16 | P-120 DefinitionItem/TableCell unify dual slot          | S      | S      | Two structs with same dual string+Component pattern                       |
+| 17 | P-121 errorpage accept label strings via props for i18n | M      | M      | "Go home", "Go back" etc. hardcoded; no i18n path                         |
+| 18 | P-113 layout consolidate 7 test files → 2               | M      | M      | Massive duplication; rename "coverage_boost" anti-pattern                 |
+| 19 | P-080 utils Class() per-shard mutex                     | M      | L      | Real contention bottleneck under concurrent SSR                           |
+| 20 | P-100 InputGroupPaddingClass: audit usage               | XS     | XS     | Verify it's wired correctly or delete                                     |
+| 21 | P-103 Remove unreachable props.Timestamp=="" branch     | XS     | XS     | Already done — verify and close                                           |
+| 22 | P-096 pageURL preserve fragment across re-encode        | XS     | XS     | Already done — verify and close                                           |
+| 23 | P-112 example_test // Output directives                 | S      | S      | Already done for forms + errorpage — audit remaining packages             |
+| 24 | P-047 HTMXVersion typed const set                       | M      | S      | Already done — add more version constants as htmx releases                |
+| 25 | P-048 ThemeColor hex validation                         | S      | S      | Already done — consider named color support (e.g. "indigo-600")           |
 
 ---
 

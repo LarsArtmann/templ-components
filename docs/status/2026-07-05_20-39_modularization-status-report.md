@@ -184,48 +184,48 @@ the consumer experience before claiming success.
 
 ### Tier 1 — Must Do Before Merge (blocks v0.7.0) — ❌ ALL MOOT
 
-| #   | Task                                             | Status (2026-07-06)                      |
-| --- | ------------------------------------------------ | ---------------------------------------- |
-| 1   | **Merge `modularize/strategic-split` to master** | ❌ Abandoned                             |
-| 2   | **Cut v0.7.0 release using per-module tags**     | ✅ v0.7.0 released as single-module      |
-| 3   | **Verify consumer experience from clean repo**   | ✅ Standard single-module `go get` works |
-| 4   | **Run CI on the branch**                         | ❌ Moot                                  |
+| # | Task                                             | Status (2026-07-06)                      |
+| - | ------------------------------------------------ | ---------------------------------------- |
+| 1 | **Merge `modularize/strategic-split` to master** | ❌ Abandoned                             |
+| 2 | **Cut v0.7.0 release using per-module tags**     | ✅ v0.7.0 released as single-module      |
+| 3 | **Verify consumer experience from clean repo**   | ✅ Standard single-module `go get` works |
+| 4 | **Run CI on the branch**                         | ❌ Moot                                  |
 
 ### Tier 2 — Should Do After Merge — ❌ ALL MOOT (except #10)
 
-| #   | Task                                                                  | Status (2026-07-06)                                                  |
-| --- | --------------------------------------------------------------------- | -------------------------------------------------------------------- |
-| 5   | **Update README.md** for multi-module                                 | ❌ Moot — single-module correct                                      |
-| 6   | **Update CONTRIBUTING.md** for multi-module                           | ❌ Moot                                                              |
-| 7   | **Update icons-only-adoption.md**                                     | ✅ Done (different framing)                                          |
-| 8   | **Add `make dry-release`**                                            | ⬜ Not done                                                          |
-| 9   | **Update flake.nix `verify` app** for multi-module                    | ❌ Moot                                                              |
-| 10  | **File BuildFlow issue** — branch-switching + go.work gitignore fight | ✅ Resolved — BuildFlow no longer switches branches; go.work removed |
-| 11  | **Clean up stashes**                                                  | ⬠ Likely resolved                                                    |
+| #  | Task                                                                  | Status (2026-07-06)                                                  |
+| -- | --------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| 5  | **Update README.md** for multi-module                                 | ❌ Moot — single-module correct                                      |
+| 6  | **Update CONTRIBUTING.md** for multi-module                           | ❌ Moot                                                              |
+| 7  | **Update icons-only-adoption.md**                                     | ✅ Done (different framing)                                          |
+| 8  | **Add `make dry-release`**                                            | ⬜ Not done                                                          |
+| 9  | **Update flake.nix `verify` app** for multi-module                    | ❌ Moot                                                              |
+| 10 | **File BuildFlow issue** — branch-switching + go.work gitignore fight | ✅ Resolved — BuildFlow no longer switches branches; go.work removed |
+| 11 | **Clean up stashes**                                                  | ⬠ Likely resolved                                                    |
 
 ### Tier 3 — Improve Quality — ❌ MOSTLY MOOT
 
-| #   | Task                                               | Status (2026-07-06)                                        |
-| --- | -------------------------------------------------- | ---------------------------------------------------------- |
-| 12  | **Add workspace sync CI check**                    | ❌ Moot                                                    |
-| 13  | **Add replace-directive audit script**             | ❌ Moot                                                    |
-| 14  | **Per-module go.sum audit**                        | ❌ Moot                                                    |
-| 15  | **Add version-drift CI check**                     | ❌ Moot                                                    |
-| 16  | **Document the release workflow** for multi-module | ❌ Moot                                                    |
-| 17  | **Evaluate: should `htmx` be extracted?**          | ⬜ Deferred — may revisit post-v1.0                        |
-| 18  | **Evaluate: merge svg + utils?**                   | ✅ Resolved — svg stays as `internal/svg` in single module |
+| #  | Task                                               | Status (2026-07-06)                                        |
+| -- | -------------------------------------------------- | ---------------------------------------------------------- |
+| 12 | **Add workspace sync CI check**                    | ❌ Moot                                                    |
+| 13 | **Add replace-directive audit script**             | ❌ Moot                                                    |
+| 14 | **Per-module go.sum audit**                        | ❌ Moot                                                    |
+| 15 | **Add version-drift CI check**                     | ❌ Moot                                                    |
+| 16 | **Document the release workflow** for multi-module | ❌ Moot                                                    |
+| 17 | **Evaluate: should `htmx` be extracted?**          | ⬜ Deferred — may revisit post-v1.0                        |
+| 18 | **Evaluate: merge svg + utils?**                   | ✅ Resolved — svg stays as `internal/svg` in single module |
 
 ### Tier 4 — Polish & Long-term
 
-| #   | Task                                                                                                     | Status (2026-07-06)                               |
-| --- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
-| 19  | **Add per-module coverage reporting**                                                                    | ❌ Moot                                           |
-| 20  | **Update `docs/diagrams/internal-dependencies.d2`** — reflect new multi-module DAG                       | ❌ Moot — diagram is for single module            |
-| 21  | **Consider go.work.sum in .gitignore vs committed**                                                      | ❌ Moot — no go.work                              |
-| 22  | **Add `go work vendor` support**                                                                         | ❌ Moot                                           |
-| 23  | **Stale doc cleanup** — ~30 docs/status/_.md and docs/planning/_.md files still reference `internal/svg` | ✅ Resolved — `internal/svg` is correct on master |
-| 24  | **Monitor co-change after 3 months**                                                                     | ⬜ Ongoing                                        |
-| 25  | **Consider independent versioning for icons**                                                            | ⬜ Deferred — may revisit post-v1.0               |
+| #  | Task                                                                                                     | Status (2026-07-06)                               |
+| -- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| 19 | **Add per-module coverage reporting**                                                                    | ❌ Moot                                           |
+| 20 | **Update `docs/diagrams/internal-dependencies.d2`** — reflect new multi-module DAG                       | ❌ Moot — diagram is for single module            |
+| 21 | **Consider go.work.sum in .gitignore vs committed**                                                      | ❌ Moot — no go.work                              |
+| 22 | **Add `go work vendor` support**                                                                         | ❌ Moot                                           |
+| 23 | **Stale doc cleanup** — ~30 docs/status/_.md and docs/planning/_.md files still reference `internal/svg` | ✅ Resolved — `internal/svg` is correct on master |
+| 24 | **Monitor co-change after 3 months**                                                                     | ⬜ Ongoing                                        |
+| 25 | **Consider independent versioning for icons**                                                            | ⬜ Deferred — may revisit post-v1.0               |
 
 ---
 

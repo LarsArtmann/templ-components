@@ -31,21 +31,21 @@ Meanwhile grid is already used **correctly** in 9 places (`display.Grid`, `Defin
 
 The two highest-leverage primitives. Ship these first and the library immediately covers the #1 hand-rolled consumer pattern.
 
-| #   | Task                                                                                           | Impact                                                                                                                                                                                   | Effort |
-| --- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| M1  | **`layout.AppShell`** — sidebar + sticky header + scrollable main, responsive mobile drawer    | Eliminates the single most-rebuilt pattern. Every consumer hand-rolls this. Native `<dialog>` Drawer reuse means zero new JS. `minmax(0,1fr)` baked in to prevent grid blowout.          | 90min  |
-| M2  | **`layout.Container`** — typed max-width wrapper (SM/MD/LG/XL/Full/Prose) + responsive padding | Replaces the `max-w-6xl mx-auto px-4 sm:px-6 lg:px-8` snippet repeated in every demo and every consumer. Single source of truth for content width. Prose variant targets long-form docs. | 30min  |
+| #  | Task                                                                                           | Impact                                                                                                                                                                                   | Effort |
+| -- | ---------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| M1 | **`layout.AppShell`** — sidebar + sticky header + scrollable main, responsive mobile drawer    | Eliminates the single most-rebuilt pattern. Every consumer hand-rolls this. Native `<dialog>` Drawer reuse means zero new JS. `minmax(0,1fr)` baked in to prevent grid blowout.          | 90min  |
+| M2 | **`layout.Container`** — typed max-width wrapper (SM/MD/LG/XL/Full/Prose) + responsive padding | Replaces the `max-w-6xl mx-auto px-4 sm:px-6 lg:px-8` snippet repeated in every demo and every consumer. Single source of truth for content width. Prose variant targets long-form docs. | 30min  |
 
 ### 4% that delivers 64% of the result
 
 Above plus the other 2D layout gaps consumers currently hand-roll.
 
-| #   | Task                                                                    | Impact                                                                                                                              | Effort |
-| --- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------ |
-| M3  | **`layout.Split`** — 2-col content+aside (start/end aside, typed Ratio) | Covers the "main article + sidebar widget" / "detail + metadata" pattern. RTL-aware via logical CSS.                                | 45min  |
-| M4  | **`navigation.Footer` → multi-column grid**                             | Add `Columns []FooterColumn` for link columns. Backward-compatible (empty = current single-row). Grid `grid-cols-2 md:grid-cols-4`. | 60min  |
-| M5  | **`forms.Form.Inline` → grid** (add `Layout` enum: Stack/Inline/Grid)   | `flex flex-wrap` misaligns labels when fields wrap. Grid `sm:grid-cols-[auto_1fr]` keeps alignment. Deprecate `Inline bool` softly. | 45min  |
-| M6  | **`layout.Stack`** — vertical rhythm component (typed Gap enum)         | Replaces repeated `space-y-6` / `space-y-4` strings. Single source of truth for vertical spacing.                                   | 30min  |
+| #  | Task                                                                    | Impact                                                                                                                              | Effort |
+| -- | ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------ |
+| M3 | **`layout.Split`** — 2-col content+aside (start/end aside, typed Ratio) | Covers the "main article + sidebar widget" / "detail + metadata" pattern. RTL-aware via logical CSS.                                | 45min  |
+| M4 | **`navigation.Footer` → multi-column grid**                             | Add `Columns []FooterColumn` for link columns. Backward-compatible (empty = current single-row). Grid `grid-cols-2 md:grid-cols-4`. | 60min  |
+| M5 | **`forms.Form.Inline` → grid** (add `Layout` enum: Stack/Inline/Grid)   | `flex flex-wrap` misaligns labels when fields wrap. Grid `sm:grid-cols-[auto_1fr]` keeps alignment. Deprecate `Inline bool` softly. | 45min  |
+| M6 | **`layout.Stack`** — vertical rhythm component (typed Gap enum)         | Replaces repeated `space-y-6` / `space-y-4` strings. Single source of truth for vertical spacing.                                   | 30min  |
 
 ### 20% that delivers 80% of the result
 

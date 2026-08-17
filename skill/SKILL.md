@@ -56,7 +56,7 @@ Don't know what to look for? Find your page type:
 | `Card`               | `Card(props CardProps)`                             | Bordered card with title, subtitle, footer, header action, 4 padding sizes, `ContainerAware`                                                     |
 | `SimpleCard`         | `SimpleCard(props SimpleCardProps)`                 | Minimal card — children only, no header/footer                                                                                                   |
 | `StatCard`           | `StatCard(props StatCardProps)`                     | Dashboard metric card with value, label, change, trend, icon, optional `Href` link                                                               |
-| `Grid`               | `Grid(props GridProps)`                             | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerAware` (default `true` since v2.0)                                           |
+| `Grid`               | `Grid(props GridProps)`                             | Responsive grid — typed `GridCols` enum, `GridGap` enum, `ContainerAware` (default `true` since v2.0)                                            |
 | `Badge`              | `Badge(props BadgeProps)`                           | Compact status label — 7 types, 3 sizes, pill, dot, optional `Href`                                                                              |
 | `StatusBadge`        | `StatusBadge(status string)`                        | Auto-maps ~20 status strings to badge types                                                                                                      |
 | `Button`             | `Button(props ButtonProps)`                         | Button or link button — variants, sizes, icons, HTMX attrs                                                                                       |
@@ -384,6 +384,7 @@ Local dev uses `go.work` (gitignored); CI/consumers use `replace` directives in 
 module's `go.mod`. See `docs/modularization/README.md` for contributor setup.
 
 **Module DAG (strict acyclic):**
+
 ```
 Layer 0: utils (leaf)
 Layer 1: icons, charts/echarts, htmx, datastar  [depend on utils]
@@ -419,6 +420,7 @@ done
 `TestDocsCountDrift`). Run them via `cd utils && go test ./... -run 'TestVersionMatches|TestDocsCountDrift'`.
 
 **Guard scripts** (all <100ms, wired into `.git/hooks/pre-commit`):
+
 1. `scripts/check-lint-config.sh` — disabled linters not re-enabled
 2. `scripts/check-templ-sync.sh` — generated files match `.templ` sources
 3. `scripts/check-version-sync.sh` — version.go, CHANGELOG, FEATURES agree
@@ -430,13 +432,13 @@ Build automation lives in `flake.nix`, not a Makefile. Per repo policy you run t
 of raw `go`/`golangci-lint` invocations — they wrap the pinned `templ` (v0.3.1020, matching
 `go.mod`) so generation is reproducible.
 
-| Command              | What it does                                                                |
-| -------------------- | --------------------------------------------------------------------------- |
+| Command              | What it does                                                               |
+| -------------------- | -------------------------------------------------------------------------- |
 | `nix run .#build`    | Regenerate `*_templ.go` + `go build ./...` (workspace mode, all 7 modules) |
-| `nix run .#test`     | `go test ./... -count=1 -race` (workspace mode)                             |
-| `nix run .#lint`     | `golangci-lint` per-module (root + 4 sub-modules)                           |
-| `nix run .#coverage` | Tests with `-coverprofile` + summary line (per-module coverage)             |
-| `nix run .#verify`   | **Generate + build + test + lint in one shot — this is the "done" check**   |
+| `nix run .#test`     | `go test ./... -count=1 -race` (workspace mode)                            |
+| `nix run .#lint`     | `golangci-lint` per-module (root + 4 sub-modules)                          |
+| `nix run .#coverage` | Tests with `-coverprofile` + summary line (per-module coverage)            |
+| `nix run .#verify`   | **Generate + build + test + lint in one shot — this is the "done" check**  |
 
 Run `nix run .#verify` before considering any component work finished. The full equivalent
 manual command (only if you have no Nix) is documented in `AGENTS.md` and `CONTRIBUTING.md`.

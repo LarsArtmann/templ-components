@@ -178,33 +178,33 @@
 
 Sorted by impact/effort ratio (highest first):
 
-| #   | Task                                           | Impact  | Effort  | Notes                                                          |
-| --- | ---------------------------------------------- | ------- | ------- | -------------------------------------------------------------- |
-| 1   | **Tag v0.3.0**                                 | HIGH    | TRIVIAL | All features done, just needs `git tag` + push                 |
-| 2   | **Submit to awesome-templ**                    | HIGH    | LOW     | Discoverability — one PR                                       |
-| 3   | **Remove 4 ID validation panics**              | HIGH    | MED     | Convert to fallback (generate ID) or error component rendering |
-| 4   | **Remove SwapOOB panic**                       | MED     | LOW     | Same pattern as #3                                             |
-| 5   | **Add Date Picker component**                  | HIGH    | MED     | Common need, native HTML `<input type="date">` wrapper         |
-| 6   | **Write integration tests**                    | MED     | MED     | Test component composition in real HTML document               |
-| 7   | **Get coverage to 80%**                        | MED     | HIGH    | Focus on errorpage (71.2%) and display (72.5%) first           |
-| 8   | **Add Combobox/Autocomplete**                  | MED     | HIGH    | Complex — needs JS for filtering                               |
-| 9   | **Deploy demo site**                           | MED     | MED     | GitHub Pages from `examples/demo`                              |
-| 10  | **Extract shared delegation boilerplate**      | LOW     | LOW     | 6 sites with `window.tc*Attached` guard                        |
-| 11  | **Add `Validate() error` to props structs**    | MED     | MED     | Catch errors before render                                     |
-| 12  | **Move test helpers to `internal/testutil/`**  | LOW     | LOW     | Breaking — defer to v1.0                                       |
-| 13  | **Add property-based tests**                   | LOW     | MED     | gopter for invariant verification                              |
-| 14  | **Add axe-core/pa11y accessibility CI**        | MED     | MED     | Automated a11y regression detection                            |
-| 15  | **Plan v1.0 API freeze**                       | HIGH    | LOW     | Define scope, cut features, set date                           |
-| 16  | **Documentation site**                         | MED     | HIGH    | pkgsite or doc2go generation                                   |
-| 17  | **Cross-link ecosystem in README**             | LOW     | TRIVIAL | GOTH stack story                                               |
-| 18  | **Open PR on templ.guide**                     | MED     | LOW     | Get listed in official templ docs                              |
-| 19  | **Verify `go get` from clean project**         | HIGH    | LOW     | Critical for consumers                                         |
-| 20  | **Consistent nonce propagation audit**         | MED     | LOW     | Systematic check across all components                         |
-| 21  | **Convert remaining snapshot tests to golden** | LOW     | LOW     | Pattern exists, just needs adoption                            |
-| 22  | **Add goreleaser**                             | LOW     | MED     | Automated releases on tag                                      |
-| 23  | **Consider `go:generate stringer` for enums**  | LOW     | LOW     | Type-safe string representation                                |
-| 24  | **Modularize into Go workspace**               | LOW     | HIGH    | 10-module go.work — big refactor                               |
-| 25  | **Badge info=indigo vs Feedback info=blue**    | TRIVIAL | TRIVIAL | Minor color consistency decision                               |
+| #  | Task                                           | Impact  | Effort  | Notes                                                          |
+| -- | ---------------------------------------------- | ------- | ------- | -------------------------------------------------------------- |
+| 1  | **Tag v0.3.0**                                 | HIGH    | TRIVIAL | All features done, just needs `git tag` + push                 |
+| 2  | **Submit to awesome-templ**                    | HIGH    | LOW     | Discoverability — one PR                                       |
+| 3  | **Remove 4 ID validation panics**              | HIGH    | MED     | Convert to fallback (generate ID) or error component rendering |
+| 4  | **Remove SwapOOB panic**                       | MED     | LOW     | Same pattern as #3                                             |
+| 5  | **Add Date Picker component**                  | HIGH    | MED     | Common need, native HTML `<input type="date">` wrapper         |
+| 6  | **Write integration tests**                    | MED     | MED     | Test component composition in real HTML document               |
+| 7  | **Get coverage to 80%**                        | MED     | HIGH    | Focus on errorpage (71.2%) and display (72.5%) first           |
+| 8  | **Add Combobox/Autocomplete**                  | MED     | HIGH    | Complex — needs JS for filtering                               |
+| 9  | **Deploy demo site**                           | MED     | MED     | GitHub Pages from `examples/demo`                              |
+| 10 | **Extract shared delegation boilerplate**      | LOW     | LOW     | 6 sites with `window.tc*Attached` guard                        |
+| 11 | **Add `Validate() error` to props structs**    | MED     | MED     | Catch errors before render                                     |
+| 12 | **Move test helpers to `internal/testutil/`**  | LOW     | LOW     | Breaking — defer to v1.0                                       |
+| 13 | **Add property-based tests**                   | LOW     | MED     | gopter for invariant verification                              |
+| 14 | **Add axe-core/pa11y accessibility CI**        | MED     | MED     | Automated a11y regression detection                            |
+| 15 | **Plan v1.0 API freeze**                       | HIGH    | LOW     | Define scope, cut features, set date                           |
+| 16 | **Documentation site**                         | MED     | HIGH    | pkgsite or doc2go generation                                   |
+| 17 | **Cross-link ecosystem in README**             | LOW     | TRIVIAL | GOTH stack story                                               |
+| 18 | **Open PR on templ.guide**                     | MED     | LOW     | Get listed in official templ docs                              |
+| 19 | **Verify `go get` from clean project**         | HIGH    | LOW     | Critical for consumers                                         |
+| 20 | **Consistent nonce propagation audit**         | MED     | LOW     | Systematic check across all components                         |
+| 21 | **Convert remaining snapshot tests to golden** | LOW     | LOW     | Pattern exists, just needs adoption                            |
+| 22 | **Add goreleaser**                             | LOW     | MED     | Automated releases on tag                                      |
+| 23 | **Consider `go:generate stringer` for enums**  | LOW     | LOW     | Type-safe string representation                                |
+| 24 | **Modularize into Go workspace**               | LOW     | HIGH    | 10-module go.work — big refactor                               |
+| 25 | **Badge info=indigo vs Feedback info=blue**    | TRIVIAL | TRIVIAL | Minor color consistency decision                               |
 
 ---
 

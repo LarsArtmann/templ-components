@@ -65,14 +65,14 @@
 
         /* --- Type stacks (system only — zero external fonts) --- */
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
 
       * {
@@ -289,15 +289,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
 
       /* --- Issue cards --- */
@@ -310,15 +322,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue h3 {
         margin-bottom: 0.3rem;
@@ -826,8 +850,8 @@
           <div class="hero-badge">Pareto plan</div>
           <h1>templ-components — next steps sorted by impact vs effort</h1>
           <p class="hero-subtitle">
-            Focus on the 20% of work that drives 80% of the value, then tackle the remaining
-            architecture bets.
+            Focus on the 20% of work that drives 80% of the value, then tackle
+            the remaining architecture bets.
           </p>
         </div>
 
@@ -865,23 +889,25 @@
         <div class="card card-solution">
           <h4>1% — immediate wins (do first)</h4>
           <p>
-            Keep the docs-drift guard green, remove deprecated aliases, add a docs-health CI check,
-            and land external listings. These are low effort and prevent future rot.
+            Keep the docs-drift guard green, remove deprecated aliases, add a
+            docs-health CI check, and land external listings. These are low
+            effort and prevent future rot.
           </p>
         </div>
         <div class="card card-warning">
           <h4>4% — high-leverage architecture</h4>
           <p>
-            Add Validate() methods to the top props structs, self-host HTMX by default, and add
-            compound-component patterns for Modal/Drawer. These change the API surface and improve
-            consumer trust.
+            Add Validate() methods to the top props structs, self-host HTMX by
+            default, and add compound-component patterns for Modal/Drawer. These
+            change the API surface and improve consumer trust.
           </p>
         </div>
         <div class="card">
           <h4>20% — strategic bets</h4>
           <p>
-            Semantic token layer, headless/unstyled variants, CLI tool, E2E tests, and visual
-            regression. These are larger investments that shape the library's long-term positioning.
+            Semantic token layer, headless/unstyled variants, CLI tool, E2E
+            tests, and visual regression. These are larger investments that
+            shape the library's long-term positioning.
           </p>
         </div>
 
@@ -900,7 +926,10 @@
             <tbody>
               <tr>
                 <td><span class="badge badge-fixed">1%</span></td>
-                <td>Remove deprecated aliases (AlertType, ToastType, FamilyFromErrorFamily)</td>
+                <td>
+                  Remove deprecated aliases (AlertType, ToastType,
+                  FamilyFromErrorFamily)
+                </td>
                 <td>2</td>
                 <td>1</td>
                 <td><strong>2.00</strong></td>
@@ -1046,13 +1075,14 @@
           <span class="node">Compound components</span>
         </div>
         <div class="callout callout-warning">
-          <strong>Order matters</strong> Validate methods and self-host HTMX are consumer-facing
-          changes that should land before the larger compound-component and semantic-token
-          redesigns.
+          <strong>Order matters</strong> Validate methods and self-host HTMX are
+          consumer-facing changes that should land before the larger
+          compound-component and semantic-token redesigns.
         </div>
 
         <footer class="footer">
-          Generated 2026-07-16 &middot; Impact scores are relative (impact 1-3 / effort 1-3)
+          Generated 2026-07-16 &middot; Impact scores are relative (impact 1-3 /
+          effort 1-3)
         </footer>
       </main>
     </div>

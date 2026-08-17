@@ -52,54 +52,54 @@ The brutal truth that surfaced: **the previous sessions lied in TODO_LIST.md** �
 
 ### Bug Fixes
 
-| #   | Fix                                                                                                                                                                                                | Severity | Commit  |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
-| 1   | **ModalSize2XL/DrawerSize2XL value `"full"`→`"2xl"`** — both had identical values to their deprecated aliases, working only by map-key accident. Now each has its own value + dedicated map entry. | Critical | ced952b |
-| 2   | **FEATURES.md version 0.6.1→0.7.0** — was wrong since v0.7.0 release                                                                                                                               | High     | ced952b |
-| 3   | **BadgeType phantom "Default" value** — listed in FEATURES.md but doesn't exist in code                                                                                                            | Medium   | ced952b |
-| 4   | **Tooltip stale "Known Issue"** — claimed `tooltipLookupPosition()` called twice; already fixed (cached in `pos` variable)                                                                         | Low      | ced952b |
-| 5   | **FeedbackType missing from FEATURES.md** — AlertType/ToastType are aliases for FeedbackType, not separate types. Doc now reflects this.                                                           | Medium   | ced952b |
-| 6   | **TODO_LIST:184 lie** — claimed ModalSize2XL "FIXED: value changed from 'full' to '2xl'" when it wasn't. Now actually fixed + TODO updated.                                                        | Critical | ced952b |
+| # | Fix                                                                                                                                                                                                | Severity | Commit  |
+| - | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------- | ------- |
+| 1 | **ModalSize2XL/DrawerSize2XL value `"full"`→`"2xl"`** — both had identical values to their deprecated aliases, working only by map-key accident. Now each has its own value + dedicated map entry. | Critical | ced952b |
+| 2 | **FEATURES.md version 0.6.1→0.7.0** — was wrong since v0.7.0 release                                                                                                                               | High     | ced952b |
+| 3 | **BadgeType phantom "Default" value** — listed in FEATURES.md but doesn't exist in code                                                                                                            | Medium   | ced952b |
+| 4 | **Tooltip stale "Known Issue"** — claimed `tooltipLookupPosition()` called twice; already fixed (cached in `pos` variable)                                                                         | Low      | ced952b |
+| 5 | **FeedbackType missing from FEATURES.md** — AlertType/ToastType are aliases for FeedbackType, not separate types. Doc now reflects this.                                                           | Medium   | ced952b |
+| 6 | **TODO_LIST:184 lie** — claimed ModalSize2XL "FIXED: value changed from 'full' to '2xl'" when it wasn't. Now actually fixed + TODO updated.                                                        | Critical | ced952b |
 
 ### Type Safety Improvements
 
-| #   | Change                                                                                                                                                                                                                                                                                                    | Files               | Commit  |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------- |
-| 7   | **6 lookup maps converted from `map[string]string` to typed-key maps** — `cardPaddingLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`, `badgeSizeLookup` (display); `spinnerSizeLookup`, `progressHeightLookup` (feedback). Eliminated all `string(v)` casts.                                           | 8 files             | 766b754 |
-| 8   | **`CauseItem.Code` changed from `string` to `Code` type** — the `Code` type existed in the same package but wasn't used on this struct.                                                                                                                                                                   | errorpage/styles.go | 766b754 |
-| 9   | **14 missing IsValid methods added** — AvatarStatus, DropdownItemKind, DropdownPosition, TabsVariant, OverlayKind, ButtonSize, ButtonHTMLType (display); StepIndicatorOrientation (feedback); ToggleSize, InputType, FormMethod (forms); SwapStyle (htmx); Name (icons). Total enums with IsValid: 16→30. | 5 files             | 3e10d60 |
-| 10  | **All 30 IsValid functions now tested** — table-driven tests with valid + invalid inputs across 5 packages. Eliminates the dead-code ghost system (16 functions with 0 callers → 30 functions with test coverage).                                                                                        | 5 new test files    | 3e10d60 |
+| #  | Change                                                                                                                                                                                                                                                                                                    | Files               | Commit  |
+| -- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------- |
+| 7  | **6 lookup maps converted from `map[string]string` to typed-key maps** — `cardPaddingLookup`, `avatarSizeLookup`, `avatarDotSizeLookup`, `badgeSizeLookup` (display); `spinnerSizeLookup`, `progressHeightLookup` (feedback). Eliminated all `string(v)` casts.                                           | 8 files             | 766b754 |
+| 8  | **`CauseItem.Code` changed from `string` to `Code` type** — the `Code` type existed in the same package but wasn't used on this struct.                                                                                                                                                                   | errorpage/styles.go | 766b754 |
+| 9  | **14 missing IsValid methods added** — AvatarStatus, DropdownItemKind, DropdownPosition, TabsVariant, OverlayKind, ButtonSize, ButtonHTMLType (display); StepIndicatorOrientation (feedback); ToggleSize, InputType, FormMethod (forms); SwapStyle (htmx); Name (icons). Total enums with IsValid: 16→30. | 5 files             | 3e10d60 |
+| 10 | **All 30 IsValid functions now tested** — table-driven tests with valid + invalid inputs across 5 packages. Eliminates the dead-code ghost system (16 functions with 0 callers → 30 functions with test coverage).                                                                                        | 5 new test files    | 3e10d60 |
 
 ### Accessibility
 
-| #   | Change                                                                                                                                                                                   | Commit  |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| 11  | **Combobox `aria-selected` on active option** — was using non-standard `data-selected` only. Now sets both `data-selected` and `aria-selected="true"` for screen reader compliance.      | 0ee6bb1 |
-| 12  | **Combobox Tab-to-close + cleanup** — Tab key now closes listbox and clears selection state (`data-selected`, `aria-activedescendant`). Previously Tab just moved focus without cleanup. | 0ee6bb1 |
-| 13  | **Combobox `tcClearComboSelection()` helper** — extracted DRY cleanup used across Escape/Enter/Tab/navigation paths.                                                                     | 0ee6bb1 |
+| #  | Change                                                                                                                                                                                   | Commit  |
+| -- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| 11 | **Combobox `aria-selected` on active option** — was using non-standard `data-selected` only. Now sets both `data-selected` and `aria-selected="true"` for screen reader compliance.      | 0ee6bb1 |
+| 12 | **Combobox Tab-to-close + cleanup** — Tab key now closes listbox and clears selection state (`data-selected`, `aria-activedescendant`). Previously Tab just moved focus without cleanup. | 0ee6bb1 |
+| 13 | **Combobox `tcClearComboSelection()` helper** — extracted DRY cleanup used across Escape/Enter/Tab/navigation paths.                                                                     | 0ee6bb1 |
 
 ### New Features
 
-| #   | Feature                                                                                                                                                                                                                                                                                                                                                                                | Commit  |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| 14  | **Sortable TableHeader** — `TableHeader` struct with `Sortable bool`, `SortDirection` enum (None/Asc/Desc), `Href` for server-side sort links. Renders `aria-sort="ascending/descending/none"` on sortable columns, ↑/↓ visual indicators, clickable `<a>` when Href is set. `TypedHeaders []TableHeader` on TableProps takes precedence over `Headers []string`. Backward compatible. | 74da41d |
-| 15  | **Form.Inline horizontal layout** — `Inline bool` field on FormProps renders `flex flex-wrap items-end gap-3` instead of `space-y-6`. Follows the exact `RadioGroup.Inline` precedent.                                                                                                                                                                                                 | 74da41d |
+| #  | Feature                                                                                                                                                                                                                                                                                                                                                                                | Commit  |
+| -- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| 14 | **Sortable TableHeader** — `TableHeader` struct with `Sortable bool`, `SortDirection` enum (None/Asc/Desc), `Href` for server-side sort links. Renders `aria-sort="ascending/descending/none"` on sortable columns, ↑/↓ visual indicators, clickable `<a>` when Href is set. `TypedHeaders []TableHeader` on TableProps takes precedence over `Headers []string`. Backward compatible. | 74da41d |
+| 15 | **Form.Inline horizontal layout** — `Inline bool` field on FormProps renders `flex flex-wrap items-end gap-3` instead of `space-y-6`. Follows the exact `RadioGroup.Inline` precedent.                                                                                                                                                                                                 | 74da41d |
 
 ### Test Coverage
 
-| #   | Change                                                                                                                                                                      | Before → After            | Commit  |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | ------- |
-| 16  | **htmx coverage boost** — ConfirmDelete full props, SwapOOB all 8 swap styles + invalid fallback, CSRFToken                                                                 | 68.5% → 75.7%             | b430980 |
-| 17  | **layout coverage boost** — Stylesheet test (was 0%!), Script with attrs                                                                                                    | 69.6% → 74.5%             | b430980 |
-| 18  | **All 13 packages now ≥70% coverage** — display 70.4%, feedback 72.5%, forms 72.3%, errorpage 73.0%, layout 74.5%, htmx 75.7%, utils 77.6%, icons 78.6%, internal/svg 79.0% | 3 packages were below 70% | b430980 |
+| #  | Change                                                                                                                                                                      | Before → After            | Commit  |
+| -- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- | ------- |
+| 16 | **htmx coverage boost** — ConfirmDelete full props, SwapOOB all 8 swap styles + invalid fallback, CSRFToken                                                                 | 68.5% → 75.7%             | b430980 |
+| 17 | **layout coverage boost** — Stylesheet test (was 0%!), Script with attrs                                                                                                    | 69.6% → 74.5%             | b430980 |
+| 18 | **All 13 packages now ≥70% coverage** — display 70.4%, feedback 72.5%, forms 72.3%, errorpage 73.0%, layout 74.5%, htmx 75.7%, utils 77.6%, icons 78.6%, internal/svg 79.0% | 3 packages were below 70% | b430980 |
 
 ### Documentation
 
-| #   | Change                                                                                                                                                                                 | Commit  |
-| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| 19  | **3 recipe docs** — custom-table-rows.md (Body slot + TypedHeaders sortable columns), custom-404-page.md (NotFound404 with custom links/search), recipe-index.md (links all 5 recipes) | 7778f95 |
-| 20  | **errorpage/doc.go updated** — NotFound404 added to component list                                                                                                                     | 7778f95 |
-| 21  | **FEATURES.md updated** — enum count 32→33 (+SortDirection), SortDirection added to display enums table                                                                                | 7778f95 |
+| #  | Change                                                                                                                                                                                 | Commit  |
+| -- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| 19 | **3 recipe docs** — custom-table-rows.md (Body slot + TypedHeaders sortable columns), custom-404-page.md (NotFound404 with custom links/search), recipe-index.md (links all 5 recipes) | 7778f95 |
+| 20 | **errorpage/doc.go updated** — NotFound404 added to component list                                                                                                                     | 7778f95 |
+| 21 | **FEATURES.md updated** — enum count 32→33 (+SortDirection), SortDirection added to display enums table                                                                                | 7778f95 |
 
 ---
 
@@ -116,15 +116,15 @@ The brutal truth that surfaced: **the previous sessions lied in TODO_LIST.md** �
 
 ## C) NOT STARTED ⬜
 
-| #   | Item                                                                                                                                          | Status (2026-07-06)                                 |
-| --- | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
-| 1   | **v0.8.0 release** — all changes target this version but no release commit/tag cut yet                                                        | ✅ **Done** — v0.8.0 released (`2d2d127`)           |
-| 2   | **CHANGELOG [Unreleased] entries** — none of the 7 commits this session added CHANGELOG entries                                               | ✅ **Done** — all entries added, released in v0.8.0 |
-| 3   | **`utils.Version` bump to 0.8.0** — still says 0.7.0                                                                                          | ✅ **Done** — `utils.Version = "0.8.0"`             |
-| 4   | **Sortable DataTable component** — TableHeader provides the type, but no high-level DataTable component that auto-manages sort state          | ⬜ Not started                                      |
-| 5   | **Filter dropdown component** — recipe documents the manual pattern; no purpose-built component exists                                        | ⬜ Not started                                      |
-| 6   | **`forms.InlineForm`** vs `Form.Inline` — the Inline field is done but a dedicated InlineForm constructor function might be more discoverable | ⬜ Not started (low priority)                       |
-| 7   | **Demo app showcase** — new TableHeader and Form.Inline features not yet showcased in examples/demo                                           | ⬜ Not started                                      |
+| # | Item                                                                                                                                          | Status (2026-07-06)                                 |
+| - | --------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| 1 | **v0.8.0 release** — all changes target this version but no release commit/tag cut yet                                                        | ✅ **Done** — v0.8.0 released (`2d2d127`)           |
+| 2 | **CHANGELOG [Unreleased] entries** — none of the 7 commits this session added CHANGELOG entries                                               | ✅ **Done** — all entries added, released in v0.8.0 |
+| 3 | **`utils.Version` bump to 0.8.0** — still says 0.7.0                                                                                          | ✅ **Done** — `utils.Version = "0.8.0"`             |
+| 4 | **Sortable DataTable component** — TableHeader provides the type, but no high-level DataTable component that auto-manages sort state          | ⬜ Not started                                      |
+| 5 | **Filter dropdown component** — recipe documents the manual pattern; no purpose-built component exists                                        | ⬜ Not started                                      |
+| 6 | **`forms.InlineForm`** vs `Form.Inline` — the Inline field is done but a dedicated InlineForm constructor function might be more discoverable | ⬜ Not started (low priority)                       |
+| 7 | **Demo app showcase** — new TableHeader and Form.Inline features not yet showcased in examples/demo                                           | ⬜ Not started                                      |
 
 ---
 
@@ -132,12 +132,12 @@ The brutal truth that surfaced: **the previous sessions lied in TODO_LIST.md** �
 
 ### Nothing critical this session — but documenting pre-existing damage found:
 
-| #   | Issue                                                                                                                                                                                                                                                                                          | Severity     | Status                                |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------------------------------------- |
-| 1   | **TODO_LIST.md lied about ModalSize2XL being fixed** — "FIXED: value changed from 'full' to '2xl'" was verifiably false. The previous session claimed to fix it but didn't. This is the kind of documentation lie that erodes trust in the entire TODO_LIST.                                   | **Critical** | Fixed this session (ced952b)          |
-| 2   | **16 IsValid functions were dead code** — exported, documented, zero callers, zero tests. A ghost validation system that gave false confidence about type safety. Built across sessions 7-8 and never tested.                                                                                  | **High**     | Fixed this session (3e10d60)          |
-| 3   | **6 lookup maps used `string` keys** despite typed enums existing — `badgeSizeLookup[string(v)]` instead of `badgeSizeLookup[v]`. The typed enums were created in earlier sessions but the maps were never updated, creating a split brain where the type system was bypassed at every lookup. | **High**     | Fixed this session (766b754)          |
-| 4   | **FEATURES.md had 5 separate factual errors** — wrong version (0.6.1 vs 0.7.0), phantom BadgeType "Default" value, stale Tooltip known issue, missing FeedbackType enum, disagreeing coverage numbers. Documentation drift from sessions 7-9.                                                  | **Medium**   | Fixed this session (ced952b, 7778f95) |
+| # | Issue                                                                                                                                                                                                                                                                                          | Severity     | Status                                |
+| - | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------ | ------------------------------------- |
+| 1 | **TODO_LIST.md lied about ModalSize2XL being fixed** — "FIXED: value changed from 'full' to '2xl'" was verifiably false. The previous session claimed to fix it but didn't. This is the kind of documentation lie that erodes trust in the entire TODO_LIST.                                   | **Critical** | Fixed this session (ced952b)          |
+| 2 | **16 IsValid functions were dead code** — exported, documented, zero callers, zero tests. A ghost validation system that gave false confidence about type safety. Built across sessions 7-8 and never tested.                                                                                  | **High**     | Fixed this session (3e10d60)          |
+| 3 | **6 lookup maps used `string` keys** despite typed enums existing — `badgeSizeLookup[string(v)]` instead of `badgeSizeLookup[v]`. The typed enums were created in earlier sessions but the maps were never updated, creating a split brain where the type system was bypassed at every lookup. | **High**     | Fixed this session (766b754)          |
+| 4 | **FEATURES.md had 5 separate factual errors** — wrong version (0.6.1 vs 0.7.0), phantom BadgeType "Default" value, stale Tooltip known issue, missing FeedbackType enum, disagreeing coverage numbers. Documentation drift from sessions 7-9.                                                  | **Medium**   | Fixed this session (ced952b, 7778f95) |
 
 ---
 
@@ -162,33 +162,33 @@ The brutal truth that surfaced: **the previous sessions lied in TODO_LIST.md** �
 
 Sorted by impact × effort × customer value.
 
-| #   | Task                                                                                                        | Status (2026-07-06)     |
-| --- | ----------------------------------------------------------------------------------------------------------- | ----------------------- |
-| 1   | **Cut v0.8.0 release** — bump version, CHANGELOG, tag, push                                                 | ✅ **Done** (`2d2d127`) |
-| 2   | **Add CHANGELOG [Unreleased] entries** for all 7 commits this session                                       | ✅ **Done**             |
-| 3   | **Add FEATURES.md version-sync test** (like TestVersionMatchesChangelog)                                    | ✅ **Done** (`6e94f93`) |
-| 4   | **Demo app: showcase TableHeader sortable columns**                                                         | ⬜ Not started          |
-| 5   | **Demo app: showcase Form.Inline**                                                                          | ⬜ Not started          |
-| 6   | **Golden test for TableHeader sortable variant**                                                            | ✅ **Done** (`cc88d41`) |
-| 7   | **StatCardProps.HxSwap: change `string` → `htmx.SwapStyle`**                                                | ✅ **Done** (`cc88d41`) |
-| 8   | **ButtonHTMLType: convert `map[X]bool` → `map[X]string` + Lookup**                                          | ✅ **Done** (`cc88d41`) |
-| 9   | **`feedbackIconName` + `FamilyStatusCode`: use `utils.Lookup`**                                             | ✅ **Done** (`d3c8b88`) |
-| 10  | **Combobox `focusout` handler** — clear aria-activedescendant on blur                                       | ✅ **Done** (`de8171c`) |
-| 11  | **Sortable DataTable component** — high-level wrapper around TableHeader                                    | ⬜ Not started          |
-| 12  | **Filter dropdown component** — purpose-built for filter bars                                               | ⬜ Not started          |
-| 13  | **Move test helpers to `internal/testutil/`** — deferred to v1.0 but plan it                                | ⬜ Deferred to v1.0     |
-| 14  | **Add `Validate() error` to props structs** — v1.0 scope, but design now                                    | ⬜ Deferred to v1.0     |
-| 15  | **errorpage coverage to 80%+** — handler edge paths, write failures                                         | ⬜ Not done (72.9%)     |
-| 16  | **feedback coverage to 80%+** — StepIndicator branches, LoadingOverlay                                      | ⬜ Not done (72.3%)     |
-| 17  | **forms coverage to 80%+** — Combobox rendering branches, RadioGroup                                        | ⬜ Not done (72.3%)     |
-| 18  | **navigation coverage to 80%+** — SidebarNav, Breadcrumbs JSON-LD                                           | ⬜ Not done (72.6%)     |
-| 19  | **AGENTS.md update** — document TableHeader, Form.Inline, typed-map convention, IsValid-test convention     | ✅ **Done** (`a0dbae7`) |
-| 20  | **Icons-only adoption doc update** — mention new icons added since v0.7.0                                   | ⬜ Not done             |
-| 21  | **awesome-templ PR submission** — component count updated, submit the prepared entry                        | ⬜ Not done             |
-| 22  | **templ.guide listing submission** — prepared but never submitted                                           | ⬜ Not done             |
-| 23  | **Tooltip: add `aria-describedby` via `props.ID`** — investigate if CSS-only tooltip needs JS for full a11y | ⬜ Not started          |
-| 24  | **Pagination: add `rel="canonical"` for page 1** — SEO improvement                                          | ✅ **Done** (`098f7c3`) |
-| 25  | **Add `TableHeader.IsValid` / `SortDirection.IsValid`** — complete the enum validation set                  | ✅ **Done** (`cc88d41`) |
+| #  | Task                                                                                                        | Status (2026-07-06)     |
+| -- | ----------------------------------------------------------------------------------------------------------- | ----------------------- |
+| 1  | **Cut v0.8.0 release** — bump version, CHANGELOG, tag, push                                                 | ✅ **Done** (`2d2d127`) |
+| 2  | **Add CHANGELOG [Unreleased] entries** for all 7 commits this session                                       | ✅ **Done**             |
+| 3  | **Add FEATURES.md version-sync test** (like TestVersionMatchesChangelog)                                    | ✅ **Done** (`6e94f93`) |
+| 4  | **Demo app: showcase TableHeader sortable columns**                                                         | ⬜ Not started          |
+| 5  | **Demo app: showcase Form.Inline**                                                                          | ⬜ Not started          |
+| 6  | **Golden test for TableHeader sortable variant**                                                            | ✅ **Done** (`cc88d41`) |
+| 7  | **StatCardProps.HxSwap: change `string` → `htmx.SwapStyle`**                                                | ✅ **Done** (`cc88d41`) |
+| 8  | **ButtonHTMLType: convert `map[X]bool` → `map[X]string` + Lookup**                                          | ✅ **Done** (`cc88d41`) |
+| 9  | **`feedbackIconName` + `FamilyStatusCode`: use `utils.Lookup`**                                             | ✅ **Done** (`d3c8b88`) |
+| 10 | **Combobox `focusout` handler** — clear aria-activedescendant on blur                                       | ✅ **Done** (`de8171c`) |
+| 11 | **Sortable DataTable component** — high-level wrapper around TableHeader                                    | ⬜ Not started          |
+| 12 | **Filter dropdown component** — purpose-built for filter bars                                               | ⬜ Not started          |
+| 13 | **Move test helpers to `internal/testutil/`** — deferred to v1.0 but plan it                                | ⬜ Deferred to v1.0     |
+| 14 | **Add `Validate() error` to props structs** — v1.0 scope, but design now                                    | ⬜ Deferred to v1.0     |
+| 15 | **errorpage coverage to 80%+** — handler edge paths, write failures                                         | ⬜ Not done (72.9%)     |
+| 16 | **feedback coverage to 80%+** — StepIndicator branches, LoadingOverlay                                      | ⬜ Not done (72.3%)     |
+| 17 | **forms coverage to 80%+** — Combobox rendering branches, RadioGroup                                        | ⬜ Not done (72.3%)     |
+| 18 | **navigation coverage to 80%+** — SidebarNav, Breadcrumbs JSON-LD                                           | ⬜ Not done (72.6%)     |
+| 19 | **AGENTS.md update** — document TableHeader, Form.Inline, typed-map convention, IsValid-test convention     | ✅ **Done** (`a0dbae7`) |
+| 20 | **Icons-only adoption doc update** — mention new icons added since v0.7.0                                   | ⬜ Not done             |
+| 21 | **awesome-templ PR submission** — component count updated, submit the prepared entry                        | ⬜ Not done             |
+| 22 | **templ.guide listing submission** — prepared but never submitted                                           | ⬜ Not done             |
+| 23 | **Tooltip: add `aria-describedby` via `props.ID`** — investigate if CSS-only tooltip needs JS for full a11y | ⬜ Not started          |
+| 24 | **Pagination: add `rel="canonical"` for page 1** — SEO improvement                                          | ✅ **Done** (`098f7c3`) |
+| 25 | **Add `TableHeader.IsValid` / `SortDirection.IsValid`** — complete the enum validation set                  | ✅ **Done** (`cc88d41`) |
 
 **Scorecard:** 12 of 25 complete (48%).
 

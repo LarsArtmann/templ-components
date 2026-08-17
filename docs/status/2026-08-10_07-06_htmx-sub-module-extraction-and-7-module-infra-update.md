@@ -185,13 +185,13 @@ The **release.sh gap** (section b-1) is the closest thing to "fucked up" — it 
 
 ## Session Metrics
 
-| Metric | Value |
-|--------|-------|
-| Files created | 3 (`htmx/go.mod`, `htmx/go.sum`, `htmx/testhelpers_test.go`, `datastar/version_test.go`) |
-| Files modified | ~20 (test files, infrastructure scripts, docs) |
-| Modules in workspace | 7 (was 6) |
-| Sub-module isolation tests | 6/6 passing (race-enabled) |
-| Lint issues | 0 across all 7 modules |
-| Golden files regenerated | 3 (htmx loading components) |
-| Commit | `5b737f8` (auto-committed by daemon) |
-| Critical gaps found post-commit | 1 (release.sh tagging/version loops) |
+| Metric                          | Value                                                                                    |
+| ------------------------------- | ---------------------------------------------------------------------------------------- |
+| Files created                   | 3 (`htmx/go.mod`, `htmx/go.sum`, `htmx/testhelpers_test.go`, `datastar/version_test.go`) |
+| Files modified                  | ~20 (test files, infrastructure scripts, docs)                                           |
+| Modules in workspace            | 7 (was 6)                                                                                |
+| Sub-module isolation tests      | 6/6 passing (race-enabled)                                                               |
+| Lint issues                     | 0 across all 7 modules                                                                   |
+| Golden files regenerated        | 3 (htmx loading components)                                                              |
+| Commit                          | `5b737f8` (auto-committed by daemon)                                                     |
+| Critical gaps found post-commit | 1 (release.sh tagging/version loops)                                                     |

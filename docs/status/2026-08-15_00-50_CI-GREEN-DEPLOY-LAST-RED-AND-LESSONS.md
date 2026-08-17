@@ -4,15 +4,15 @@
 
 **Session commits (8, all pushed):**
 
-| Commit | What |
-| --- | --- |
-| `73f21f0` | Recompile demo app.css after SectionHeading RTL fix (CSS Freshness) |
-| `df13fd7` | website.yml: corepack before setup-node cache probe |
-| `a244942` | Coverage boost tests (display + navigation, 523 lines) |
-| `1ec5aae` | Docs quick wins: GOEXPERIMENT error text, ADR-0035, STANDOUT-IDEAS, GOTH link |
-| `4e0aff5` | Font pin attempt #1 (makeFontsConf) + golden regen — *ineffective, superseded* |
-| `09bb943` | Flake-compiled demo CSS (real CSS fix) + pnpm 11 allowBuilds (website) |
-| `b20d14b` | canvaskit-wasm as direct website dependency |
+| Commit    | What                                                                                                |
+| --------- | --------------------------------------------------------------------------------------------------- |
+| `73f21f0` | Recompile demo app.css after SectionHeading RTL fix (CSS Freshness)                                 |
+| `df13fd7` | website.yml: corepack before setup-node cache probe                                                 |
+| `a244942` | Coverage boost tests (display + navigation, 523 lines)                                              |
+| `1ec5aae` | Docs quick wins: GOEXPERIMENT error text, ADR-0035, STANDOUT-IDEAS, GOTH link                       |
+| `4e0aff5` | Font pin attempt #1 (makeFontsConf) + golden regen — _ineffective, superseded_                      |
+| `09bb943` | Flake-compiled demo CSS (real CSS fix) + pnpm 11 allowBuilds (website)                              |
+| `b20d14b` | canvaskit-wasm as direct website dependency                                                         |
 | `4c6416a` | Fully pure fontconfig pin + golden regen #2 + Dockerfile pnpm bootstrap + artifact hidden-files fix |
 
 ---
@@ -46,7 +46,7 @@
 
 ## d) TOTALLY FUCKED UP (my mistakes this session — honest accounting)
 
-1. **CSS "fix" 73f21f0 was fake.** I committed a recompile without verifying it came from the flake-pinned tailwind. It came from a different tailwind binary → whole-line diff → CSS Freshness stayed red and cost a CI round-trip. Rule I violated: verify with the *exact* CI command (`nix run .#css` + diff) before pushing.
+1. **CSS "fix" 73f21f0 was fake.** I committed a recompile without verifying it came from the flake-pinned tailwind. It came from a different tailwind binary → whole-line diff → CSS Freshness stayed red and cost a CI round-trip. Rule I violated: verify with the _exact_ CI command (`nix run .#css` + diff) before pushing.
 2. **Font pin attempt #1 (4e0aff5) shipped without reading the tool.** I used `pkgs.makeFontsConf` without inspecting its source — it's impure by design (FHS/profile/includes paths). Result: pin did nothing, 63 goldens regenerated twice (second regen entirely wasted work), one wasted CI cycle. The fc-match diagnostic that exposed this should have existed BEFORE the first commit, not after the second failure.
 3. **Masked exit code AGAIN.** `pnpm run build 2>&1 | tail -6; echo $?` printed `BUILD-EXIT: 0` while the build had failed — the previous session's summary explicitly warned about this exact trap. Caught it on retry, but only after being briefly fooled.
 4. **Premature claim in commit message.** `4c6416a` says "(first green Deploy since the pnpm migration)" — the Deploy job then failed. I wrote the outcome before observing it.
@@ -124,4 +124,4 @@
 
 ---
 
-*Report ends. Waiting for instructions.*
+_Report ends. Waiting for instructions._

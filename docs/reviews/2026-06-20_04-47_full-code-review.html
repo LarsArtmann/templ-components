@@ -28,8 +28,10 @@
         --solution: var(--color-blue);
         --warning: var(--color-yellow);
         --radius: 0px;
-        --font-heading: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-        --font-body: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --font-heading:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --font-body:
+          -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
         --font-mono: "SF Mono", Monaco, Consolas, monospace;
       }
       * {
@@ -411,9 +413,9 @@
           <div class="hero-badge">Full Code Review</div>
           <h1>templ-components Deep Review</h1>
           <p class="hero-subtitle">
-            Point-in-time audit of every source file across 10 packages. Type safety, design system
-            consistency, CSP compliance, DRY violations, and naming reviewed against AGENTS.md
-            conventions.
+            Point-in-time audit of every source file across 10 packages. Type
+            safety, design system consistency, CSP compliance, DRY violations,
+            and naming reviewed against AGENTS.md conventions.
           </p>
         </div>
 
@@ -446,9 +448,10 @@
 
         <div class="callout callout-solution" id="summary">
           <strong>Verdict: Production-quality with minor debt</strong>
-          The codebase is well-architected: strong type safety, consistent BaseProps pattern,
-          generic style lookups, comprehensive a11y (motion-reduce, aria, focus traps), and zero
-          external runtime deps beyond templ + tailwind-merge-go. The issues found are consistency
+          The codebase is well-architected: strong type safety, consistent
+          BaseProps pattern, generic style lookups, comprehensive a11y
+          (motion-reduce, aria, focus traps), and zero external runtime deps
+          beyond templ + tailwind-merge-go. The issues found are consistency
           violations, not structural flaws. All safe fixes applied immediately.
         </div>
 
@@ -459,9 +462,9 @@
             <div class="text">
               <strong>Consistent ComponentProps interface</strong>
               <span
-                >Every props struct embeds utils.BaseProps with pointer-receiver Get/SetBaseProps.
-                25/25 components auto-satisfy the interface via method promotion.
-                recvcheck-clean.</span
+                >Every props struct embeds utils.BaseProps with pointer-receiver
+                Get/SetBaseProps. 25/25 components auto-satisfy the interface
+                via method promotion. recvcheck-clean.</span
               >
             </div>
           </div>
@@ -470,9 +473,9 @@
             <div class="text">
               <strong>Generic style lookup pattern</strong>
               <span
-                >lookupFeedbackStyle[T ~string]() eliminates duplication across Alert, Toast,
-                ErrorAlert. Map+fallback pattern used consistently for sizes, styles,
-                positions.</span
+                >lookupFeedbackStyle[T ~string]() eliminates duplication across
+                Alert, Toast, ErrorAlert. Map+fallback pattern used consistently
+                for sizes, styles, positions.</span
               >
             </div>
           </div>
@@ -481,9 +484,9 @@
             <div class="text">
               <strong>Comprehensive accessibility</strong>
               <span
-                >motion-reduce on all transitions/animations, aria-live regions, focus traps in
-                Modal/Drawer, sr-only labels, skip-to-content, keyboard nav in
-                Tabs/Dropdown/Accordion.</span
+                >motion-reduce on all transitions/animations, aria-live regions,
+                focus traps in Modal/Drawer, sr-only labels, skip-to-content,
+                keyboard nav in Tabs/Dropdown/Accordion.</span
               >
             </div>
           </div>
@@ -492,8 +495,9 @@
             <div class="text">
               <strong>Minimal dependencies</strong>
               <span
-                >Only 3: templ (rendering), tailwind-merge-go (class conflict resolution),
-                go-error-family (error classification). No framework lock-in.</span
+                >Only 3: templ (rendering), tailwind-merge-go (class conflict
+                resolution), go-error-family (error classification). No
+                framework lock-in.</span
               >
             </div>
           </div>
@@ -502,8 +506,8 @@
             <div class="text">
               <strong>Thread-safe class merging</strong>
               <span
-                >utils.Class() uses sync.Mutex to protect tailwind-merge-go's shared LRU cache.
-                Correctly documented reasoning.</span
+                >utils.Class() uses sync.Mutex to protect tailwind-merge-go's
+                shared LRU cache. Correctly documented reasoning.</span
               >
             </div>
           </div>
@@ -512,8 +516,9 @@
             <div class="text">
               <strong>CSP nonce on all inline scripts</strong>
               <span
-                >Every &lt;script&gt; tag accepts and propagates props.Nonce. DismissScript,
-                ThemeToggle, Dropdown, Accordion, Tabs, Modal, Drawer all nonce-compliant.</span
+                >Every &lt;script&gt; tag accepts and propagates props.Nonce.
+                DismissScript, ThemeToggle, Dropdown, Accordion, Tabs, Modal,
+                Drawer all nonce-compliant.</span
               >
             </div>
           </div>
@@ -521,8 +526,8 @@
 
         <h2><span class="num">&#10003;</span>Fixed On The Spot</h2>
         <p>
-          8 issues fixed immediately during this review. All changes verified: build, 1100+ tests,
-          lint all clean.
+          8 issues fixed immediately during this review. All changes verified:
+          build, 1100+ tests, lint all clean.
         </p>
 
         <table id="fixed">
@@ -541,12 +546,13 @@
               <td><span class="badge badge-critical">Critical</span></td>
               <td><code>errorpage/styles.go:83</code></td>
               <td>
-                FamilyInfrastructure used <code>slate-*</code> colors, violating documented "gray-*
-                exclusively" rule. Split brain with the rest of the design system.
+                FamilyInfrastructure used <code>slate-*</code> colors, violating
+                documented "gray-* exclusively" rule. Split brain with the rest
+                of the design system.
               </td>
               <td>
-                Changed all slate-* &#8594; gray-* (Border, BG, Text, IconColor, AccentBG,
-                AccentText, ActionButton)
+                Changed all slate-* &#8594; gray-* (Border, BG, Text, IconColor,
+                AccentBG, AccentText, ActionButton)
               </td>
             </tr>
             <tr>
@@ -554,8 +560,9 @@
               <td><span class="badge badge-critical">Critical</span></td>
               <td><code>display/dropdown.templ:63</code></td>
               <td>
-                <code>dropdownItemClass</code> had <code>dark:hover:bg-slate-700</code> &#8212; same
-                gray-only violation.
+                <code>dropdownItemClass</code> had
+                <code>dark:hover:bg-slate-700</code> &#8212; same gray-only
+                violation.
               </td>
               <td>Changed to <code>dark:hover:bg-gray-700</code></td>
             </tr>
@@ -564,8 +571,9 @@
               <td><span class="badge badge-high">High</span></td>
               <td><code>display/button_go.go:54-83</code></td>
               <td>
-                Used <code>switch</code> for variant and size class lookups, violating AGENTS.md
-                "Style lookups use maps/structs, not switches".
+                Used <code>switch</code> for variant and size class lookups,
+                violating AGENTS.md "Style lookups use maps/structs, not
+                switches".
               </td>
               <td>
                 Converted to <code>buttonVariantLookup</code> map +
@@ -577,11 +585,12 @@
               <td><span class="badge badge-high">High</span></td>
               <td><code>forms/toggle.templ:31</code></td>
               <td>
-                Used <code>switch</code> for toggle size class lookup &#8212; same convention
-                violation (pure class lookup, not structural).
+                Used <code>switch</code> for toggle size class lookup &#8212;
+                same convention violation (pure class lookup, not structural).
               </td>
               <td>
-                Converted to <code>toggleSizeMap</code> with <code>toggleSizeSet</code> struct +
+                Converted to <code>toggleSizeMap</code> with
+                <code>toggleSizeSet</code> struct +
                 <code>toggleSizeDefault</code> fallback
               </td>
             </tr>
@@ -590,12 +599,14 @@
               <td><span class="badge badge-high">High</span></td>
               <td><code>navigation/breadcrumbs.templ:39</code></td>
               <td>
-                BreadcrumbList struct had field names backwards: <code>Type</code> tagged
-                <code>@context</code>, <code>Context</code> tagged <code>@type</code>. Naming lie.
+                BreadcrumbList struct had field names backwards:
+                <code>Type</code> tagged <code>@context</code>,
+                <code>Context</code> tagged <code>@type</code>. Naming lie.
               </td>
               <td>
-                Swapped field names to match JSON-LD semantics: <code>Context</code> &#8594;
-                <code>@context</code>, <code>Type</code> &#8594; <code>@type</code>
+                Swapped field names to match JSON-LD semantics:
+                <code>Context</code> &#8594; <code>@context</code>,
+                <code>Type</code> &#8594; <code>@type</code>
               </td>
             </tr>
             <tr>
@@ -603,11 +614,13 @@
               <td><span class="badge badge-medium">Medium</span></td>
               <td><code>errorpage/errorpage.templ:74</code></td>
               <td>
-                Inline <code>onclick="history.back()"</code> &#8212; CSP violation. Library's own
-                principle: "all inline scripts use nonce".
+                Inline <code>onclick="history.back()"</code> &#8212; CSP
+                violation. Library's own principle: "all inline scripts use
+                nonce".
               </td>
               <td>
-                Replaced with <code>data-tc-go-back</code> attribute + nonce'd event listener script
+                Replaced with <code>data-tc-go-back</code> attribute + nonce'd
+                event listener script
               </td>
             </tr>
             <tr>
@@ -615,19 +628,23 @@
               <td><span class="badge badge-medium">Medium</span></td>
               <td><code>layout/theme.templ:28</code></td>
               <td>
-                ThemeToggle rendered <code>aria-label=""</code> when called with empty string
-                &#8212; worse than no aria-label for screen readers.
+                ThemeToggle rendered <code>aria-label=""</code> when called with
+                empty string &#8212; worse than no aria-label for screen
+                readers.
               </td>
               <td>
-                Added <code>utils.Ternary</code> default to "Toggle theme", matching Nav/Pagination
-                pattern
+                Added <code>utils.Ternary</code> default to "Toggle theme",
+                matching Nav/Pagination pattern
               </td>
             </tr>
             <tr>
               <td>8</td>
               <td><span class="badge badge-low">Low</span></td>
               <td><code>forms/validation.templ:54</code></td>
-              <td>Hardcoded English pluralization: <code>"%d error(s) found"</code>.</td>
+              <td>
+                Hardcoded English pluralization:
+                <code>"%d error(s) found"</code>.
+              </td>
               <td>Proper pluralization: 1 error, N errors</td>
             </tr>
             <tr>
@@ -635,7 +652,8 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><code>display/dropdown.templ:10</code></td>
               <td>
-                Leading space before <code>type DropdownItemKind</code> &#8212; stray whitespace.
+                Leading space before <code>type DropdownItemKind</code> &#8212;
+                stray whitespace.
               </td>
               <td>Removed leading space</td>
             </tr>
@@ -644,7 +662,8 @@
               <td><span class="badge badge-low">Low</span></td>
               <td><code>internal/svg/doc.go</code></td>
               <td>
-                Placeholder comment "Package svg provides ..." &#8212; no actual documentation.
+                Placeholder comment "Package svg provides ..." &#8212; no actual
+                documentation.
               </td>
               <td>Wrote proper package doc</td>
             </tr>
@@ -653,8 +672,8 @@
 
         <h2><span class="num">!</span>Open Findings</h2>
         <p>
-          Issues identified but NOT fixed &#8212; they require API changes, larger refactors, or
-          design decisions beyond a review pass.
+          Issues identified but NOT fixed &#8212; they require API changes,
+          larger refactors, or design decisions beyond a review pass.
         </p>
 
         <div class="issue issue-critical" id="findings">
@@ -664,27 +683,31 @@
             forms/input.templ:78, forms/select.templ:54, forms/textarea.templ:41
           </div>
           <p>
-            <strong>FormFieldWrapper</strong> exists specifically to DRY up the Label + children +
-            FieldError + helpText pattern. Only <strong>FileInput</strong> uses it. Input, Select,
-            Textarea, and RadioGroup all manually repeat the same 3-line pattern. This is the exact
-            duplication the wrapper was created to prevent.
+            <strong>FormFieldWrapper</strong> exists specifically to DRY up the
+            Label + children + FieldError + helpText pattern. Only
+            <strong>FileInput</strong> uses it. Input, Select, Textarea, and
+            RadioGroup all manually repeat the same 3-line pattern. This is the
+            exact duplication the wrapper was created to prevent.
           </p>
           <div class="callout callout-warning">
             <strong>Why not fixed here</strong>
-            Refactoring changes generated HTML structure for 4 components. Requires golden file
-            regeneration and may affect consumers who assert on specific markup order. Should be a
-            dedicated refactor PR.
+            Refactoring changes generated HTML structure for 4 components.
+            Requires golden file regeneration and may affect consumers who
+            assert on specific markup order. Should be a dedicated refactor PR.
           </div>
         </div>
 
         <div class="issue issue-critical">
           <span class="severity severity-critical">High Impact</span>
           <h3>Modal and Drawer JS is ~90% duplicated</h3>
-          <div class="where">display/modal.templ:57-109 vs display/drawer.templ:63-121</div>
+          <div class="where">
+            display/modal.templ:57-109 vs display/drawer.templ:63-121
+          </div>
           <p>
-            The open/close functions, focus trap (Tab key handling), focus save/restore via
-            <code>data-tc-prev-focus</code>, and the focusable element selector string are nearly
-            identical between Modal and Drawer. The selector
+            The open/close functions, focus trap (Tab key handling), focus
+            save/restore via
+            <code>data-tc-prev-focus</code>, and the focusable element selector
+            string are nearly identical between Modal and Drawer. The selector
             <code
               >'a[href], button:not([disabled]), textarea, input, select,
               [tabindex]:not([tabindex="-1"])'</code
@@ -694,27 +717,32 @@
           <div class="callout callout-solution">
             <strong>Recommended approach</strong>
             Extract a shared
-            <code>overlayScript(componentName, id, transformDirection)</code> function that
-            generates the common JS. Or extract the focusable selector to a shared Go string
-            constant.
+            <code>overlayScript(componentName, id, transformDirection)</code>
+            function that generates the common JS. Or extract the focusable
+            selector to a shared Go string constant.
           </div>
         </div>
 
         <div class="issue issue-important">
           <span class="severity severity-important">Medium</span>
           <h3>Modal/Drawer inline onclick handlers (CSP)</h3>
-          <div class="where">display/modal.templ:31,45 &#8212; display/drawer.templ:31,51</div>
+          <div class="where">
+            display/modal.templ:31,45 &#8212; display/drawer.templ:31,51
+          </div>
           <p>
             The backdrop and close button use
-            <code>onclick={ modalCloseHandler(props.ID) }</code> which renders as an inline
-            <code>onclick="tcCloseModal('id')"</code> attribute. This violates strict CSP (which the
-            library otherwise enforces via nonce'd scripts).
+            <code>onclick={ modalCloseHandler(props.ID) }</code> which renders
+            as an inline <code>onclick="tcCloseModal('id')"</code> attribute.
+            This violates strict CSP (which the library otherwise enforces via
+            nonce'd scripts).
           </p>
           <div class="callout callout-solution">
-            <strong>Fix pattern (already used by Alert/Accordion/Dropdown)</strong>
-            Replace with <code>data-close="modal"</code> attribute + global click listener in the
-            nonce'd script. The dismiss pattern in <code>utils.DismissScript()</code> shows the
-            exact approach.
+            <strong
+              >Fix pattern (already used by Alert/Accordion/Dropdown)</strong
+            >
+            Replace with <code>data-close="modal"</code> attribute + global
+            click listener in the nonce'd script. The dismiss pattern in
+            <code>utils.DismissScript()</code> shows the exact approach.
           </div>
         </div>
 
@@ -723,17 +751,22 @@
           <h3>Form.Content prop instead of children</h3>
           <div class="where">forms/form.templ:21</div>
           <p>
-            <code>FormProps.Content templ.Component</code> requires consumers to pass content as a
-            prop. Every other wrapper component (Card, Modal, Drawer, InputGroup, FormFieldWrapper)
-            uses <code>{ children... }</code>. This breaks the composition pattern and makes Form
-            harder to use than it should be.
+            <code>FormProps.Content templ.Component</code> requires consumers to
+            pass content as a prop. Every other wrapper component (Card, Modal,
+            Drawer, InputGroup, FormFieldWrapper) uses
+            <code>{ children... }</code>. This breaks the composition pattern
+            and makes Form harder to use than it should be.
           </p>
         </div>
 
         <div class="issue issue-important">
           <span class="severity severity-important">Medium</span>
-          <h3>Alert vs Toast: inconsistent icons and opacity for same severity</h3>
-          <div class="where">feedback/alert.templ:52-57 vs feedback/toast.templ:185-190</div>
+          <h3>
+            Alert vs Toast: inconsistent icons and opacity for same severity
+          </h3>
+          <div class="where">
+            feedback/alert.templ:52-57 vs feedback/toast.templ:185-190
+          </div>
           <p>Same FeedbackType renders different icons in Alert vs Toast:</p>
           <table>
             <thead>
@@ -757,8 +790,9 @@
             </tbody>
           </table>
           <p>
-            Also: dark mode bg opacity differs (<code>/20</code> for Alert, <code>/30</code> for
-            Toast). Same severity should produce the same visual treatment.
+            Also: dark mode bg opacity differs (<code>/20</code> for Alert,
+            <code>/30</code> for Toast). Same severity should produce the same
+            visual treatment.
           </p>
         </div>
 
@@ -767,9 +801,11 @@
           <h3>errorpage htmlEscape reimplements stdlib</h3>
           <div class="where">errorpage/handler.go:352-371</div>
           <p>
-            Hand-rolled HTML escaper duplicates <code>html.EscapeString()</code> from the stdlib.
-            The only difference is escaping <code>'</code> &#8594; <code>&#39;</code>, which stdlib
-            also does in modern Go. Could be replaced with <code>html.EscapeString(title)</code>.
+            Hand-rolled HTML escaper duplicates
+            <code>html.EscapeString()</code> from the stdlib. The only
+            difference is escaping <code>'</code> &#8594; <code>&#39;</code>,
+            which stdlib also does in modern Go. Could be replaced with
+            <code>html.EscapeString(title)</code>.
           </p>
         </div>
 
@@ -779,8 +815,9 @@
           <div class="where">errorpage/handler.go:331-349</div>
           <p>
             <code>renderWithShell()</code> builds an HTML document via
-            <code>fmt.Fprint</code> string concatenation. Could be a templ component for consistency
-            and safer escaping. Acceptable for an error fallback path.
+            <code>fmt.Fprint</code> string concatenation. Could be a templ
+            component for consistency and safer escaping. Acceptable for an
+            error fallback path.
           </p>
         </div>
 
@@ -821,37 +858,41 @@
           <p>
             <code>utils &#8592; all</code>,
             <code>internal/svg &#8592; display,feedback,icons</code>,
-            <code>icons &#8592; display,feedback,errorpage</code>. No circular imports.
-            <code>errorpage</code> correctly depends on <code>go-error-family</code> without pulling
-            in <code>feedback</code>.
+            <code>icons &#8592; display,feedback,errorpage</code>. No circular
+            imports. <code>errorpage</code> correctly depends on
+            <code>go-error-family</code> without pulling in
+            <code>feedback</code>.
           </p>
 
           <h3>Package boundaries are sound</h3>
           <p>
-            display (UI primitives), feedback (user feedback), forms (input controls), navigation
-            (menus), layout (page shells), htmx (integration), errorpage (error rendering), icons
-            (svg system), utils (shared types), internal (svg + golden test helpers). Each package
-            has a clear single responsibility.
+            display (UI primitives), feedback (user feedback), forms (input
+            controls), navigation (menus), layout (page shells), htmx
+            (integration), errorpage (error rendering), icons (svg system),
+            utils (shared types), internal (svg + golden test helpers). Each
+            package has a clear single responsibility.
           </p>
 
           <h3>Test coverage is comprehensive</h3>
           <p>
-            1100+ tests across BDD, coverage, snapshot (golden), a11y, edge cases, and integration
-            categories. Every package has multiple test dimensions. Golden file testing with CSS
-            class normalization is a strong pattern.
+            1100+ tests across BDD, coverage, snapshot (golden), a11y, edge
+            cases, and integration categories. Every package has multiple test
+            dimensions. Golden file testing with CSS class normalization is a
+            strong pattern.
           </p>
 
           <h3>Generated files correctly committed</h3>
           <p>
-            44 <code>*_templ.go</code> files committed &#8212; required for library consumers via Go
-            module proxy. <code>.gitignore</code> uses <code>!*_templ.go</code> override pattern.
-            This is correct and documented.
+            44 <code>*_templ.go</code> files committed &#8212; required for
+            library consumers via Go module proxy. <code>.gitignore</code> uses
+            <code>!*_templ.go</code> override pattern. This is correct and
+            documented.
           </p>
         </div>
 
         <footer class="footer">
-          Generated 2026-06-20 &middot; Reviewed against commit 7ea1619 (master) &middot; 12
-          packages, 44 source files, 1100+ tests
+          Generated 2026-06-20 &middot; Reviewed against commit 7ea1619 (master)
+          &middot; 12 packages, 44 source files, 1100+ tests
         </footer>
       </main>
     </div>

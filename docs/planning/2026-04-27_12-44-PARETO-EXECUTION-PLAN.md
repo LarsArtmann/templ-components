@@ -1,7 +1,7 @@
 # Pareto Execution Plan — templ-components v1.0
 
-**Date:** 2026-04-27 12:44  
-**Strategy:** 1% → 51%, 4% → 64%, 20% → 80%. Execute in order.  
+**Date:** 2026-04-27 12:44\
+**Strategy:** 1% → 51%, 4% → 64%, 20% → 80%. Execute in order.\
 **Goal:** `go-website-template` uses `templ-components`. Library is production-ready.
 
 ---

@@ -240,33 +240,33 @@ These tasks were identified in the plan but not yet implemented. All are Tier 3 
 
 Sorted by impact × inverse effort (highest value first):
 
-| #   | Task                                                      | Impact | Effort | Rationale                                                                 |
-| --- | --------------------------------------------------------- | ------ | ------ | ------------------------------------------------------------------------- |
-| 1   | P-049 Label/FormFieldWrapper → Props structs              | M      | S      | Used by every form component; positional params are a real footgun        |
-| 2   | P-057 Hoist Combobox/Accordion/Dropdown scripts           | M      | M      | Page weight reduction on multi-instance pages                             |
-| 3   | P-041 Split handler.go into 3 files                       | M      | S      | 354 lines is hard to navigate; quick split improves maintainability       |
-| 4   | P-037 renderWithShell render to buffer before WriteHeader | M      | M      | Templ error mid-stream = truncated HTML doc at wrong status; correctness  |
-| 5   | P-043 FormMethod add PUT/DELETE/PATCH                     | S      | XS     | HTMX users need these verbs; currently silently downgrades to GET         |
-| 6   | P-074 Tooltip auto-gen ID + aria-describedby              | M      | S      | Tooltips invisible to AT without ID; EnsureID pattern already exists      |
-| 7   | P-073 Tooltip Escape-to-dismiss + touch fallback          | M      | M      | Tooltip content invisible on touch devices                                |
-| 8   | P-050 htmx helpers → Props structs                        | M      | M      | Brings htmx in line with rest of library; enables Class/ID/Attrs          |
-| 9   | P-046 DropdownItem deprecate Href fallback                | M      | S      | Dual discrimination drops href silently; Kind should be required          |
-| 10  | P-036 WriteErrorPage derive status from Family            | M      | S      | Status code + Family can disagree → wrong HTTP code                       |
-| 11  | P-038 FromError ErrorTitle extraction                     | S      | S      | Every dynamically-derived error page is titleless                         |
-| 12  | P-064 errorpage familyStyleMap builder                    | M      | M      | 6 near-identical 8-field entries → builder reduces drift                  |
-| 13  | P-063 errorpage fmt.Errorf → go-error-family              | M      | M      | branching-flow flagged; consistency with error family integration         |
-| 14  | P-042 StatusBadge typed alias                             | S      | S      | Magic string map is only validation; typed alias adds compile-time safety |
-| 15  | P-047 HTMXVersion typed const set                         | M      | S      | Typos silently drop SRI; typed const catches at compile time              |
-| 16  | P-076 Icon accessible variant (role=img + title)          | L      | M      | Icons as sole button content invisible to AT                              |
-| 17  | P-039 contextTable → dl                                   | S      | S      | Screen readers mis-announce definition data as table                      |
-| 18  | P-052 paginationArrow → props struct                      | XS     | S      | 7 positional params; highest param count in the package                   |
-| 18  | P-112 example_test // Output directives                   | S      | S      | Zero regression protection from Example functions today                   |
-| 20  | P-113 layout consolidate 7 test files → 2                 | M      | M      | Massive duplication; rename "coverage_boost" anti-pattern                 |
-| 21  | P-056 Move DismissScript out of utils                     | S      | S      | Foundation package leaks browser-specific DOM concerns                    |
-| 22  | P-048 ThemeColor hex validation                           | S      | S      | Garbage renders into meta tag unchanged                                   |
-| 23  | P-105 ExtractCauseChain errors.Join                       | XS     | S      | Go 1.20+ Join siblings silently ignored                                   |
-| 24  | P-114 toastJSStyles/toastJSIconPaths tests                | S      | S      | Non-trivial untested string builders                                      |
-| 25  | P-080 utils Class() per-shard mutex                       | M      | L      | Real contention bottleneck under concurrent SSR                           |
+| #  | Task                                                      | Impact | Effort | Rationale                                                                 |
+| -- | --------------------------------------------------------- | ------ | ------ | ------------------------------------------------------------------------- |
+| 1  | P-049 Label/FormFieldWrapper → Props structs              | M      | S      | Used by every form component; positional params are a real footgun        |
+| 2  | P-057 Hoist Combobox/Accordion/Dropdown scripts           | M      | M      | Page weight reduction on multi-instance pages                             |
+| 3  | P-041 Split handler.go into 3 files                       | M      | S      | 354 lines is hard to navigate; quick split improves maintainability       |
+| 4  | P-037 renderWithShell render to buffer before WriteHeader | M      | M      | Templ error mid-stream = truncated HTML doc at wrong status; correctness  |
+| 5  | P-043 FormMethod add PUT/DELETE/PATCH                     | S      | XS     | HTMX users need these verbs; currently silently downgrades to GET         |
+| 6  | P-074 Tooltip auto-gen ID + aria-describedby              | M      | S      | Tooltips invisible to AT without ID; EnsureID pattern already exists      |
+| 7  | P-073 Tooltip Escape-to-dismiss + touch fallback          | M      | M      | Tooltip content invisible on touch devices                                |
+| 8  | P-050 htmx helpers → Props structs                        | M      | M      | Brings htmx in line with rest of library; enables Class/ID/Attrs          |
+| 9  | P-046 DropdownItem deprecate Href fallback                | M      | S      | Dual discrimination drops href silently; Kind should be required          |
+| 10 | P-036 WriteErrorPage derive status from Family            | M      | S      | Status code + Family can disagree → wrong HTTP code                       |
+| 11 | P-038 FromError ErrorTitle extraction                     | S      | S      | Every dynamically-derived error page is titleless                         |
+| 12 | P-064 errorpage familyStyleMap builder                    | M      | M      | 6 near-identical 8-field entries → builder reduces drift                  |
+| 13 | P-063 errorpage fmt.Errorf → go-error-family              | M      | M      | branching-flow flagged; consistency with error family integration         |
+| 14 | P-042 StatusBadge typed alias                             | S      | S      | Magic string map is only validation; typed alias adds compile-time safety |
+| 15 | P-047 HTMXVersion typed const set                         | M      | S      | Typos silently drop SRI; typed const catches at compile time              |
+| 16 | P-076 Icon accessible variant (role=img + title)          | L      | M      | Icons as sole button content invisible to AT                              |
+| 17 | P-039 contextTable → dl                                   | S      | S      | Screen readers mis-announce definition data as table                      |
+| 18 | P-052 paginationArrow → props struct                      | XS     | S      | 7 positional params; highest param count in the package                   |
+| 18 | P-112 example_test // Output directives                   | S      | S      | Zero regression protection from Example functions today                   |
+| 20 | P-113 layout consolidate 7 test files → 2                 | M      | M      | Massive duplication; rename "coverage_boost" anti-pattern                 |
+| 21 | P-056 Move DismissScript out of utils                     | S      | S      | Foundation package leaks browser-specific DOM concerns                    |
+| 22 | P-048 ThemeColor hex validation                           | S      | S      | Garbage renders into meta tag unchanged                                   |
+| 23 | P-105 ExtractCauseChain errors.Join                       | XS     | S      | Go 1.20+ Join siblings silently ignored                                   |
+| 24 | P-114 toastJSStyles/toastJSIconPaths tests                | S      | S      | Non-trivial untested string builders                                      |
+| 25 | P-080 utils Class() per-shard mutex                       | M      | L      | Real contention bottleneck under concurrent SSR                           |
 
 ---
 

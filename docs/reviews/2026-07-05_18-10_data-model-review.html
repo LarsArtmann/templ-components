@@ -65,14 +65,14 @@
 
         /* --- Type stacks (system only — zero external fonts) --- */
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
 
       * {
@@ -289,15 +289,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
 
       /* --- Issue cards --- */
@@ -310,15 +322,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue h3 {
         margin-bottom: 0.3rem;
@@ -809,7 +833,8 @@
       <aside class="sidebar" data-nav>
         <nav>
           <div class="label">Contents</div>
-          <a href="#s">Summary</a><a href="#p">Problems</a><a href="#st">Strengths</a>
+          <a href="#s">Summary</a><a href="#p">Problems</a
+          ><a href="#st">Strengths</a>
         </nav>
       </aside>
       <main class="main">
@@ -822,7 +847,8 @@
           <div class="hero-badge">Data Model Review</div>
           <h1>Type System Audit</h1>
           <p class="hero-subtitle">
-            First-principles review of typed enums, props structs, style lookups.
+            First-principles review of typed enums, props structs, style
+            lookups.
           </p>
         </div>
         <h2 id="s"><span class="num">00</span>Summary</h2>
@@ -847,8 +873,8 @@
         <div class="card card-solution">
           <h4>Assessment: Strong, room to tighten</h4>
           <p>
-            Typed enums, map lookups, BaseProps embedding. Gaps: validation asymmetry, 2XL="full"
-            mismatch, lossy family→status mapping.
+            Typed enums, map lookups, BaseProps embedding. Gaps: validation
+            asymmetry, 2XL="full" mismatch, lossy family→status mapping.
           </p>
         </div>
         <h2 id="p"><span class="num">01</span>Problem Catalog</h2>
@@ -856,13 +882,17 @@
           <span class="severity severity-critical">Critical</span>
           <h3>P1: ModalSize2XL value is "full"</h3>
           <div class="where">modal_go.go:18, drawer_go.go:25</div>
-          <p>Name says 2XL, value says full. Lookup keyed by deprecated alias.</p>
+          <p>
+            Name says 2XL, value says full. Lookup keyed by deprecated alias.
+          </p>
         </div>
         <div class="issue issue-critical">
           <span class="severity severity-critical">Critical</span>
           <h3>P2: Error family→status lossy</h3>
           <div class="where">styles.go:208</div>
-          <p>NotFound→400 (should be 404), InternalError→503 (should be 500).</p>
+          <p>
+            NotFound→400 (should be 404), InternalError→503 (should be 500).
+          </p>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">High</span>
@@ -894,25 +924,29 @@
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
-              <strong>Map-based lookups</strong><span>utils.Lookup[K,V]() generic.</span>
+              <strong>Map-based lookups</strong
+              ><span>utils.Lookup[K,V]() generic.</span>
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
-              <strong>Typed string enums</strong><span>Prevents cross-assignment.</span>
+              <strong>Typed string enums</strong
+              ><span>Prevents cross-assignment.</span>
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
-              <strong>FeedbackType unification</strong><span>Single canonical enum.</span>
+              <strong>FeedbackType unification</strong
+              ><span>Single canonical enum.</span>
             </div>
           </div>
           <div class="strength">
             <div class="check">+</div>
             <div class="text">
-              <strong>Generic style lookup</strong><span>lookupFeedbackStyle[T]() DRY.</span>
+              <strong>Generic style lookup</strong
+              ><span>lookupFeedbackStyle[T]() DRY.</span>
             </div>
           </div>
         </div>

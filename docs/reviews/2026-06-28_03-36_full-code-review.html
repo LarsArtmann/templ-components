@@ -65,14 +65,14 @@
 
         /* --- Type stacks (system only — zero external fonts) --- */
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
 
       * {
@@ -289,15 +289,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
 
       /* --- Issue cards --- */
@@ -310,15 +322,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue h3 {
         margin-bottom: 0.3rem;
@@ -831,8 +855,8 @@
           <div class="hero-badge">Full Code Review · every package</div>
           <h1>templ-components Code Review</h1>
           <p class="hero-subtitle">
-            Per-package Senior-Architect review of all source + tests, cross-referenced with
-            branching-flow static analysis.
+            Per-package Senior-Architect review of all source + tests,
+            cross-referenced with branching-flow static analysis.
           </p>
         </div>
         <h2 id="summary"><span class="num">00</span>Summary</h2>
@@ -859,11 +883,13 @@
           </div>
         </div>
         <div class="callout callout-warning">
-          <strong>Honest verdict</strong> The library is well-built — green build, green tests, zero
-          lint issues, no dupes/split-brains/bool-blindness. But the review surfaced real a11y bugs
-          (modal/drawer focus + aria, spinner/progressbar announcements, combobox field linking), a
-          security regression (MobileNavLink external), and correctness hazards (HTMX retry counter,
-          empty-nonce CSP, errorpage 503 retry-storm). Full remediation plan in
+          <strong>Honest verdict</strong> The library is well-built — green
+          build, green tests, zero lint issues, no
+          dupes/split-brains/bool-blindness. But the review surfaced real a11y
+          bugs (modal/drawer focus + aria, spinner/progressbar announcements,
+          combobox field linking), a security regression (MobileNavLink
+          external), and correctness hazards (HTMX retry counter, empty-nonce
+          CSP, errorpage 503 retry-storm). Full remediation plan in
           <code>docs/planning/</code>.
         </div>
         <h2 id="strengths"><span class="num">01</span>Strengths to preserve</h2>
@@ -873,8 +899,8 @@
             <div class="text">
               <strong>Baseline is green</strong
               ><span
-                >Build passes, all packages test green, golangci-lint reports 0 issues,
-                branching-flow scores 97.5/100 error quality.</span
+                >Build passes, all packages test green, golangci-lint reports 0
+                issues, branching-flow scores 97.5/100 error quality.</span
               >
             </div>
           </div>
@@ -883,8 +909,9 @@
             <div class="text">
               <strong>No structural rot</strong
               ><span
-                >Zero duplicate types, zero split-brain interfaces, zero bool-blindness, correct
-                context propagation, no naked returns.</span
+                >Zero duplicate types, zero split-brain interfaces, zero
+                bool-blindness, correct context propagation, no naked
+                returns.</span
               >
             </div>
           </div>
@@ -893,8 +920,9 @@
             <div class="text">
               <strong>Consistent type-safety conventions</strong
               ><span
-                >Typed string enums everywhere, map/struct lookups over switches, enum validation
-                with graceful fallback, single runtime panic (intentional integrity check).</span
+                >Typed string enums everywhere, map/struct lookups over
+                switches, enum validation with graceful fallback, single runtime
+                panic (intentional integrity check).</span
               >
             </div>
           </div>
@@ -903,8 +931,9 @@
             <div class="text">
               <strong>Solid a11y foundations</strong
               ><span
-                >motion-reduce on transitions/animations, AriaLabel propagation to all 25 root
-                elements, CSP nonces on inline scripts, theme script is XSS-safe.</span
+                >motion-reduce on transitions/animations, AriaLabel propagation
+                to all 25 root elements, CSP nonces on inline scripts, theme
+                script is XSS-safe.</span
               >
             </div>
           </div>
@@ -913,8 +942,8 @@
             <div class="text">
               <strong>Good composition</strong
               ><span
-                >utils ← all, no circular imports, htmx decoupled from feedback, errorpage
-                integrates go-error-family cleanly.</span
+                >utils ← all, no circular imports, htmx decoupled from feedback,
+                errorpage integrates go-error-family cleanly.</span
               >
             </div>
           </div>
@@ -922,522 +951,680 @@
         <h2 id="method"><span class="num">02</span>Method</h2>
         <div class="card">
           <p>
-            8 parallel Sr-Architect sub-reviews visited every <code>.go</code>/<code>.templ</code>
-            source file across display, forms, navigation, feedback, errorpage, layout, icons, htmx,
-            utils, internal. Findings were cross-checked against
-            <code>branching-flow all .</code> (12 linters) and the project's own AGENTS.md
-            conventions. Each finding carries severity, file:line, concrete fix, effort, and impact
-            — mapped 1:1 to tasks in the companion plan.
+            8 parallel Sr-Architect sub-reviews visited every
+            <code>.go</code>/<code>.templ</code>
+            source file across display, forms, navigation, feedback, errorpage,
+            layout, icons, htmx, utils, internal. Findings were cross-checked
+            against
+            <code>branching-flow all .</code> (12 linters) and the project's own
+            AGENTS.md conventions. Each finding carries severity, file:line,
+            concrete fix, effort, and impact — mapped 1:1 to tasks in the
+            companion plan.
           </p>
         </div>
         <h2 id="critical"><span class="num">03</span>Critical findings</h2>
         <div class="issue issue-critical">
           <span class="severity severity-critical">Blocking</span>
           <h3>
-            P-002 · MobileNavLink: add External target=_blank + rel=noopener (security regression vs
-            NavLink)
+            P-002 · MobileNavLink: add External target=_blank + rel=noopener
+            (security regression vs NavLink)
           </h3>
-          <div class="where">navigation/nav_link.templ:64 · impact L · effort XS · a11y</div>
+          <div class="where">
+            navigation/nav_link.templ:64 · impact L · effort XS · a11y
+          </div>
         </div>
         <div class="issue issue-critical">
           <span class="severity severity-critical">Blocking</span>
           <h3>
-            P-001 · Make Modal/Drawer aria-labelledby conditional on Title (fallback AriaLabel) —
-            currently dangles when title empty
+            P-001 · Make Modal/Drawer aria-labelledby conditional on Title
+            (fallback AriaLabel) — currently dangles when title empty
           </h3>
-          <div class="where">display/modal_templ.go:21 · impact L · effort XS · a11y</div>
+          <div class="where">
+            display/modal_templ.go:21 · impact L · effort XS · a11y
+          </div>
         </div>
         <div class="issue issue-critical">
           <span class="severity severity-critical">Blocking</span>
           <h3>
-            P-006 · Combobox text input: add ErrorAttrs (aria-invalid/aria-describedby) — errors
-            invisible to AT
+            P-006 · Combobox text input: add ErrorAttrs
+            (aria-invalid/aria-describedby) — errors invisible to AT
           </h3>
-          <div class="where">forms/combobox.templ:53 · impact L · effort XS · a11y</div>
+          <div class="where">
+            forms/combobox.templ:53 · impact L · effort XS · a11y
+          </div>
         </div>
         <div class="issue issue-critical">
           <span class="severity severity-critical">Blocking</span>
           <h3>
-            P-007 · Combobox: separate display value from submission value (Value currently doubles
-            as Label)
+            P-007 · Combobox: separate display value from submission value
+            (Value currently doubles as Label)
           </h3>
-          <div class="where">forms/combobox.templ:58 · impact L · effort S · type-safety</div>
+          <div class="where">
+            forms/combobox.templ:58 · impact L · effort S · type-safety
+          </div>
         </div>
         <div class="issue issue-critical">
           <span class="severity severity-critical">Blocking</span>
           <h3>
-            P-003 · Spinner: emit aria-hidden=true ONLY when no AriaLabel (current contradicts
-            aria-label)
+            P-003 · Spinner: emit aria-hidden=true ONLY when no AriaLabel
+            (current contradicts aria-label)
           </h3>
-          <div class="where">feedback/loading.templ:65 · impact M · effort XS · a11y</div>
+          <div class="where">
+            feedback/loading.templ:65 · impact M · effort XS · a11y
+          </div>
         </div>
         <div class="issue issue-critical">
           <span class="severity severity-critical">Blocking</span>
           <h3>
-            P-004 · ProgressBar: move aria-label + aria-value* onto the role=progressbar element
-            (currently nameless)
+            P-004 · ProgressBar: move aria-label + aria-value* onto the
+            role=progressbar element (currently nameless)
           </h3>
-          <div class="where">feedback/progressbar.templ:59 · impact M · effort S · a11y</div>
+          <div class="where">
+            feedback/progressbar.templ:59 · impact M · effort S · a11y
+          </div>
         </div>
         <div class="issue issue-critical">
           <span class="severity severity-critical">Blocking</span>
           <h3>
-            P-005 · LoadingOverlay: clamp Progress to [0,100] before width:% (negative/&gt;100 =
-            invalid CSS)
+            P-005 · LoadingOverlay: clamp Progress to [0,100] before width:%
+            (negative/&gt;100 = invalid CSS)
           </h3>
-          <div class="where">feedback/loading.templ:115 · impact S · effort XS · edge-case</div>
+          <div class="where">
+            feedback/loading.templ:115 · impact S · effort XS · edge-case
+          </div>
         </div>
         <div class="issue issue-critical">
           <span class="severity severity-critical">Blocking</span>
           <h3>
-            P-008 · Toast Duration: emit per-toast setTimeout or document as tcShowToast-only (dead
-            prop = split-brain)
+            P-008 · Toast Duration: emit per-toast setTimeout or document as
+            tcShowToast-only (dead prop = split-brain)
           </h3>
-          <div class="where">feedback/toast.templ:28 · impact S · effort S · architecture</div>
+          <div class="where">
+            feedback/toast.templ:28 · impact S · effort S · architecture
+          </div>
         </div>
         <h2 id="high"><span class="num">04</span>High findings</h2>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-009 · Modal/Drawer: add aria-hidden + inert to closed overlays (phantom dialog in a11y
-            tree)
+            P-009 · Modal/Drawer: add aria-hidden + inert to closed overlays
+            (phantom dialog in a11y tree)
           </h3>
-          <div class="where">display/modal_templ.go:14 · impact L · effort S · a11y</div>
+          <div class="where">
+            display/modal_templ.go:14 · impact L · effort S · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-010 · Modal/Drawer SSR-open: call tcOpen on load when props.Open (focus never moves,
-            restore broken)
+            P-010 · Modal/Drawer SSR-open: call tcOpen on load when props.Open
+            (focus never moves, restore broken)
           </h3>
-          <div class="where">display/shared.go:100 · impact L · effort S · a11y</div>
+          <div class="where">
+            display/shared.go:100 · impact L · effort S · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-014 · Combobox keyboard nav: ArrowUp/Down, Enter, Home/End + aria-activedescendant
-            (WAI-ARIA)
+            P-014 · Combobox keyboard nav: ArrowUp/Down, Enter, Home/End +
+            aria-activedescendant (WAI-ARIA)
           </h3>
-          <div class="where">forms/combobox.templ:99 · impact L · effort M · a11y</div>
+          <div class="where">
+            forms/combobox.templ:99 · impact L · effort M · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-012 · FileInput: add ErrorAttrs (errors/help text not linked via aria-describedby)
+            P-012 · FileInput: add ErrorAttrs (errors/help text not linked via
+            aria-describedby)
           </h3>
-          <div class="where">forms/file_input.templ:42 · impact M · effort XS · a11y</div>
+          <div class="where">
+            forms/file_input.templ:42 · impact M · effort XS · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-017 · Navigation: add motion-reduce overrides to all transition-colors (violates lib
-            convention)
+            P-017 · Navigation: add motion-reduce overrides to all
+            transition-colors (violates lib convention)
           </h3>
-          <div class="where">navigation/*.templ · impact M · effort XS · a11y</div>
+          <div class="where">
+            navigation/*.templ · impact M · effort XS · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-018 · Toast: use role=status for polite toasts (role=alert + aria-live=polite is
-            contradictory)
+            P-018 · Toast: use role=status for polite toasts (role=alert +
+            aria-live=polite is contradictory)
           </h3>
-          <div class="where">feedback/toast.templ:145 · impact M · effort XS · a11y</div>
+          <div class="where">
+            feedback/toast.templ:145 · impact M · effort XS · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-011 · Add tests: no-title omits aria-labelledby; closed overlay has aria-hidden;
-            SSR-open focus
+            P-011 · Add tests: no-title omits aria-labelledby; closed overlay
+            has aria-hidden; SSR-open focus
           </h3>
-          <div class="where">display/*_test.go · impact M · effort S · test-gap</div>
+          <div class="where">
+            display/*_test.go · impact M · effort S · test-gap
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-013 · InputHidden: render bare &lt;input type=hidden&gt; without FormFieldWrapper
-            (label/error wrong)
+            P-013 · InputHidden: render bare &lt;input type=hidden&gt; without
+            FormFieldWrapper (label/error wrong)
           </h3>
-          <div class="where">forms/input.templ:80 · impact M · effort S · edge-case</div>
+          <div class="where">
+            forms/input.templ:80 · impact M · effort S · edge-case
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-015 · Select: enforce single Selected option (multiple is invalid state,
-            browser-inconsistent)
+            P-015 · Select: enforce single Selected option (multiple is invalid
+            state, browser-inconsistent)
           </h3>
-          <div class="where">forms/select.templ:16 · impact M · effort S · type-safety</div>
+          <div class="where">
+            forms/select.templ:16 · impact M · effort S · type-safety
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-016 · MobileMenu: derive unique ID via EnsureID (hardcoded tc-mobile-menu collides w/
-            2 Navs)
+            P-016 · MobileMenu: derive unique ID via EnsureID (hardcoded
+            tc-mobile-menu collides w/ 2 Navs)
           </h3>
-          <div class="where">navigation/mobile_menu.templ:14 · impact M · effort S · a11y</div>
+          <div class="where">
+            navigation/mobile_menu.templ:14 · impact M · effort S · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-019 · SkeletonGroup: extract un-annotated internal skeleton; single role=status (N+1
-            announcements)
+            P-019 · SkeletonGroup: extract un-annotated internal skeleton;
+            single role=status (N+1 announcements)
           </h3>
-          <div class="where">feedback/loading.templ:141 · impact S · effort S · a11y</div>
+          <div class="where">
+            feedback/loading.templ:141 · impact S · effort S · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-020 · afterRequest: clear data-tc-retry on success (stale counter skips future
-            retries)
+            P-020 · afterRequest: clear data-tc-retry on success (stale counter
+            skips future retries)
           </h3>
-          <div class="where">htmx/error_handling.templ:155 · impact L · effort S · edge-case</div>
+          <div class="where">
+            htmx/error_handling.templ:155 · impact L · effort S · edge-case
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-022 · Empty Nonce: omit nonce attr when empty (strict CSP silently disables whole
-            script)
+            P-022 · Empty Nonce: omit nonce attr when empty (strict CSP silently
+            disables whole script)
           </h3>
-          <div class="where">htmx/error_handling.templ:45 · impact L · effort S · security</div>
+          <div class="where">
+            htmx/error_handling.templ:45 · impact L · effort S · security
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-029 · Alias the 4 duplicate icon pairs (Menu/Bars3, Refresh/ArrowPath,
-            Location/MapPin, ThumbUp/HandThumbUp)
+            P-029 · Alias the 4 duplicate icon pairs (Menu/Bars3,
+            Refresh/ArrowPath, Location/MapPin, ThumbUp/HandThumbUp)
           </h3>
-          <div class="where">icons/icon_paths.go:41 · impact L · effort S · duplication</div>
+          <div class="where">
+            icons/icon_paths.go:41 · impact L · effort S · duplication
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-026 · Skip-link target: add tabindex=-1 to &lt;main id=main-content&gt; (focus doesn't
-            move)
+            P-026 · Skip-link target: add tabindex=-1 to &lt;main
+            id=main-content&gt; (focus doesn't move)
           </h3>
-          <div class="where">layout/base.templ:104 · impact M · effort XS · a11y</div>
+          <div class="where">
+            layout/base.templ:104 · impact M · effort XS · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-021 · responseError: guard xhr null before xhr.status (TypeError on missing xhr)
+            P-021 · responseError: guard xhr null before xhr.status (TypeError
+            on missing xhr)
           </h3>
-          <div class="where">htmx/error_handling.templ:141 · impact M · effort XS · nil-safety</div>
+          <div class="where">
+            htmx/error_handling.templ:141 · impact M · effort XS · nil-safety
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-030 · Guard Spinner in iconPaths (IconPathData(Spinner) wrongly returns Question path)
+            P-030 · Guard Spinner in iconPaths (IconPathData(Spinner) wrongly
+            returns Question path)
           </h3>
-          <div class="where">icons/icon_paths.go:140 · impact M · effort XS · edge-case</div>
+          <div class="where">
+            icons/icon_paths.go:140 · impact M · effort XS · edge-case
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-033 · Override nil: implement documented skip-render OR fix doc+test (contract
-            mismatch)
+            P-033 · Override nil: implement documented skip-render OR fix
+            doc+test (contract mismatch)
           </h3>
-          <div class="where">errorpage/handler.go:243 · impact M · effort XS · error-handling</div>
+          <div class="where">
+            errorpage/handler.go:243 · impact M · effort XS · error-handling
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-031 · Add test: every exported Name const has iconPathData coverage (or is Spinner)
+            P-031 · Add test: every exported Name const has iconPathData
+            coverage (or is Spinner)
           </h3>
-          <div class="where">icons/icon_names.go · impact M · effort S · test-gap</div>
+          <div class="where">
+            icons/icon_names.go · impact M · effort S · test-gap
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-023 · LoadingButton: add inverse toggle so defaultText hides during request (both
-            render now)
+            P-023 · LoadingButton: add inverse toggle so defaultText hides
+            during request (both render now)
           </h3>
-          <div class="where">htmx/loading.templ:39 · impact M · effort S · edge-case</div>
+          <div class="where">
+            htmx/loading.templ:39 · impact M · effort S · edge-case
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-024 · ThemeScript/ThemeToggle: set document.colorScheme (native controls stay light in
-            dark mode)
+            P-024 · ThemeScript/ThemeToggle: set document.colorScheme (native
+            controls stay light in dark mode)
           </h3>
-          <div class="where">layout/theme.templ:11 · impact M · effort S · a11y</div>
+          <div class="where">
+            layout/theme.templ:11 · impact M · effort S · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-025 · ThemeToggle: role=switch + aria-checked, synced in toggle script (no current
-            state)
+            P-025 · ThemeToggle: role=switch + aria-checked, synced in toggle
+            script (no current state)
           </h3>
-          <div class="where">layout/theme.templ:27 · impact M · effort S · a11y</div>
+          <div class="where">
+            layout/theme.templ:27 · impact M · effort S · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-028 · SRI: fail loud / fallback when HTMXVersion not in SRI table (silently loses
-            integrity)
+            P-028 · SRI: fail loud / fallback when HTMXVersion not in SRI table
+            (silently loses integrity)
           </h3>
-          <div class="where">layout/sri.go:51 · impact M · effort S · security</div>
+          <div class="where">
+            layout/sri.go:51 · impact M · effort S · security
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-032 · Move stray-| validation to init(); keep iconPaths panic-free (panic in render
-            hot path)
+            P-032 · Move stray-| validation to init(); keep iconPaths panic-free
+            (panic in render hot path)
           </h3>
-          <div class="where">icons/icon_paths.go:125 · impact M · effort S · architecture</div>
+          <div class="where">
+            icons/icon_paths.go:125 · impact M · effort S · architecture
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-034 · Map unknown errors to 500 not 503 (503 signals retry -&gt; CDN/LB retry storms)
+            P-034 · Map unknown errors to 500 not 503 (503 signals retry -&gt;
+            CDN/LB retry storms)
           </h3>
-          <div class="where">errorpage/handler.go:82 · impact M · effort S · error-handling</div>
-        </div>
-        <div class="issue issue-important">
-          <span class="severity severity-important">Important</span>
-          <h3>P-027 · Layout: motion-reduce overrides for scroll-smooth + transition-colors</h3>
-          <div class="where">layout/base.templ:41 · impact S · effort XS · a11y</div>
+          <div class="where">
+            errorpage/handler.go:82 · impact M · effort S · error-handling
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-077 · Button Disabled+Href: render aria-disabled/tabindex=-1/pointer-events-none
-            (silently clickable)
+            P-027 · Layout: motion-reduce overrides for scroll-smooth +
+            transition-colors
           </h3>
-          <div class="where">display/button.templ:20 · impact M · effort S · edge-case</div>
+          <div class="where">
+            layout/base.templ:41 · impact S · effort XS · a11y
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-049 · Label/FormFieldWrapper: convert positional params to Props structs (3 &amp; 5
-            primitives)
+            P-077 · Button Disabled+Href: render
+            aria-disabled/tabindex=-1/pointer-events-none (silently clickable)
           </h3>
-          <div class="where">forms/label.templ:6 · impact M · effort S · architecture</div>
+          <div class="where">
+            display/button.templ:20 · impact M · effort S · edge-case
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
-          <h3>P-072 · validation: sanitize err.Field before href=# (broken fragment URLs)</h3>
-          <div class="where">forms/validation.templ:61 · impact S · effort XS · edge-case</div>
+          <h3>
+            P-049 · Label/FormFieldWrapper: convert positional params to Props
+            structs (3 &amp; 5 primitives)
+          </h3>
+          <div class="where">
+            forms/label.templ:6 · impact M · effort S · architecture
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
-          <h3>P-117 · navigation: add MobileNavLink External test (security bug untested)</h3>
-          <div class="where">navigation/*_test.go · impact M · effort XS · test-gap</div>
+          <h3>
+            P-072 · validation: sanitize err.Field before href=# (broken
+            fragment URLs)
+          </h3>
+          <div class="where">
+            forms/validation.templ:61 · impact S · effort XS · edge-case
+          </div>
+        </div>
+        <div class="issue issue-important">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-117 · navigation: add MobileNavLink External test (security bug
+            untested)
+          </h3>
+          <div class="where">
+            navigation/*_test.go · impact M · effort XS · test-gap
+          </div>
         </div>
         <div class="issue issue-important">
           <span class="severity severity-important">Important</span>
           <h3>P-118 · navigation: add duplicate-Nav ID collision test</h3>
-          <div class="where">navigation/*_test.go · impact S · effort XS · test-gap</div>
+          <div class="where">
+            navigation/*_test.go · impact S · effort XS · test-gap
+          </div>
         </div>
         <h2 id="medium"><span class="num">05</span>Medium findings</h2>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-036 · WriteErrorPage: derive status from props.Family (param + Family can disagree
-            -&gt; wrong code)
+            P-036 · WriteErrorPage: derive status from props.Family (param +
+            Family can disagree -&gt; wrong code)
           </h3>
-          <div class="where">errorpage/handler.go:292 · impact M · effort S · type-safety</div>
+          <div class="where">
+            errorpage/handler.go:292 · impact M · effort S · type-safety
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-041 · handler.go (354 lines): split into fromerror.go + constructors.go + handler.go
+            P-041 · handler.go (354 lines): split into fromerror.go +
+            constructors.go + handler.go
           </h3>
-          <div class="where">errorpage/handler.go · impact M · effort S · size</div>
+          <div class="where">
+            errorpage/handler.go · impact M · effort S · size
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-037 · renderWithShell: render to buffer before WriteHeader (templ error mid-stream =
-            truncated doc)
+            P-037 · renderWithShell: render to buffer before WriteHeader (templ
+            error mid-stream = truncated doc)
           </h3>
-          <div class="where">errorpage/handler.go:266 · impact M · effort M · edge-case</div>
+          <div class="where">
+            errorpage/handler.go:266 · impact M · effort M · edge-case
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-035 · erroralert: replace dead hover:bg-opacity-80 with Tailwind v4 modifier
-            bg-{color}/80
+            P-035 · erroralert: replace dead hover:bg-opacity-80 with Tailwind
+            v4 modifier bg-{color}/80
           </h3>
-          <div class="where">errorpage/erroralert.templ:48 · impact S · effort XS · edge-case</div>
+          <div class="where">
+            errorpage/erroralert.templ:48 · impact S · effort XS · edge-case
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-038 · FromError: add ErrorTitle() extraction + family-based default (every dynamic
-            page titleless)
+            P-038 · FromError: add ErrorTitle() extraction + family-based
+            default (every dynamic page titleless)
           </h3>
-          <div class="where">errorpage/handler.go:40 · impact S · effort S · edge-case</div>
+          <div class="where">
+            errorpage/handler.go:40 · impact S · effort S · edge-case
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-039 · contextTable: use &lt;dl&gt; or add caption/th+scope (SR mis-announces
-            definition data as table)
+            P-039 · contextTable: use &lt;dl&gt; or add caption/th+scope (SR
+            mis-announces definition data as table)
           </h3>
-          <div class="where">errorpage/shared.templ:38 · impact S · effort S · a11y</div>
+          <div class="where">
+            errorpage/shared.templ:38 · impact S · effort S · a11y
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-076 · Icon a11y: add role=img + &lt;title&gt; variant (icons as sole button content
-            invisible to AT)
+            P-076 · Icon a11y: add role=img + &lt;title&gt; variant (icons as
+            sole button content invisible to AT)
           </h3>
-          <div class="where">icons/icon.templ:23 · impact L · effort M · a11y</div>
+          <div class="where">
+            icons/icon.templ:23 · impact L · effort M · a11y
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-058 · overlayScriptComponent: HTML-escape nonce before fmt.Sprintf (attribute boundary
-            break)
+            P-058 · overlayScriptComponent: HTML-escape nonce before fmt.Sprintf
+            (attribute boundary break)
           </h3>
-          <div class="where">display/shared.go:147 · impact M · effort XS · security</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-important">Important</span>
-          <h3>P-047 · HTMXVersion: typed const set (typos silently drop SRI)</h3>
-          <div class="where">layout/sri.go:40 · impact M · effort S · type-safety</div>
+          <div class="where">
+            display/shared.go:147 · impact M · effort XS · security
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-064 · errorpage familyStyleMap: builder to dedup 6 near-identical 8-field entries
+            P-047 · HTMXVersion: typed const set (typos silently drop SRI)
           </h3>
-          <div class="where">errorpage/styles.go:53 · impact M · effort M · duplication</div>
+          <div class="where">
+            layout/sri.go:40 · impact M · effort S · type-safety
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-079 · response-targets extension: opt-out prop (force-loaded w/ htmx, extra
-            request+bytes)
+            P-064 · errorpage familyStyleMap: builder to dedup 6 near-identical
+            8-field entries
           </h3>
-          <div class="where">layout/base.templ:89 · impact M · effort S · architecture</div>
+          <div class="where">
+            errorpage/styles.go:53 · impact M · effort M · duplication
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-082 · ModalSizeFull/DrawerFull: rename (map to max-w-4xl/2xl, not full — misleading)
+            P-079 · response-targets extension: opt-out prop (force-loaded w/
+            htmx, extra request+bytes)
           </h3>
-          <div class="where">display/modal_go.go:41 · impact M · effort XS · naming</div>
+          <div class="where">
+            layout/base.templ:89 · impact M · effort S · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-046 · DropdownItem: deprecate Href fallback, require Kind (dual discrimination drops
-            href)
+            P-082 · ModalSizeFull/DrawerFull: rename (map to max-w-4xl/2xl, not
+            full — misleading)
           </h3>
-          <div class="where">display/dropdown.templ:20 · impact M · effort S · type-safety</div>
+          <div class="where">
+            display/modal_go.go:41 · impact M · effort XS · naming
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-060 · utils EnsureID: panic/atomic-counter fallback (time.Now nanos = predictable,
-            collides)
+            P-046 · DropdownItem: deprecate Href fallback, require Kind (dual
+            discrimination drops href)
           </h3>
-          <div class="where">utils/validate.go:25 · impact M · effort S · security</div>
+          <div class="where">
+            display/dropdown.templ:20 · impact M · effort S · type-safety
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-062 · version_test: t.Fatal not Skip; go:embed CHANGELOG (guard silently disabled in
-            many layouts)
+            P-060 · utils EnsureID: panic/atomic-counter fallback (time.Now
+            nanos = predictable, collides)
           </h3>
-          <div class="where">utils/version_test.go:17 · impact M · effort S · test-gap</div>
+          <div class="where">
+            utils/validate.go:25 · impact M · effort S · security
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-069 · Extract IsActive(href,currentPath) helper; unify NavLink/sidebar active
-            detection
+            P-062 · version_test: t.Fatal not Skip; go:embed CHANGELOG (guard
+            silently disabled in many layouts)
           </h3>
-          <div class="where">navigation/nav_link.templ:38 · impact M · effort S · architecture</div>
+          <div class="where">
+            utils/version_test.go:17 · impact M · effort S · test-gap
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-070 · ToggleProps: add Required/Error/HelpText (inconsistent w/ every other field)
+            P-069 · Extract IsActive(href,currentPath) helper; unify
+            NavLink/sidebar active detection
           </h3>
-          <div class="where">forms/toggle.templ:15 · impact M · effort S · architecture</div>
+          <div class="where">
+            navigation/nav_link.templ:38 · impact M · effort S · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-074 · Tooltip: auto-gen ID via EnsureID; always emit aria-describedby (unlinked when
-            no ID)
+            P-070 · ToggleProps: add Required/Error/HelpText (inconsistent w/
+            every other field)
           </h3>
-          <div class="where">display/tooltip.templ:67 · impact M · effort S · a11y</div>
+          <div class="where">
+            forms/toggle.templ:15 · impact M · effort S · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-075 · Avatar: render status dot in initials/fallback branches too (only img branch
-            now)
+            P-074 · Tooltip: auto-gen ID via EnsureID; always emit
+            aria-describedby (unlinked when no ID)
           </h3>
-          <div class="where">display/avatar.templ:106 · impact M · effort S · edge-case</div>
+          <div class="where">
+            display/tooltip.templ:67 · impact M · effort S · a11y
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-050 · htmx helpers (LoadingIndicator, ConfirmDelete, SwapOOB, CSRFToken): Props
-            structs w/ BaseProps
+            P-075 · Avatar: render status dot in initials/fallback branches too
+            (only img branch now)
           </h3>
-          <div class="where">htmx/helpers.templ · impact M · effort M · architecture</div>
+          <div class="where">
+            display/avatar.templ:106 · impact M · effort S · edge-case
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-057 · Hoist Combobox/Accordion/Dropdown global scripts to one-shot helpers (emitted
-            per instance)
+            P-050 · htmx helpers (LoadingIndicator, ConfirmDelete, SwapOOB,
+            CSRFToken): Props structs w/ BaseProps
           </h3>
-          <div class="where">forms/combobox.templ:99 · impact M · effort M · architecture</div>
+          <div class="where">
+            htmx/helpers.templ · impact M · effort M · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-063 · errorpage: 4 fmt.Errorf -&gt; go-error-family constructors (branching-flow
-            errorfamily)
+            P-057 · Hoist Combobox/Accordion/Dropdown global scripts to one-shot
+            helpers (emitted per instance)
           </h3>
-          <div class="where">errorpage/handler.go:284 · impact M · effort M · error-handling</div>
+          <div class="where">
+            forms/combobox.templ:99 · impact M · effort M · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-073 · Tooltip: Escape-to-dismiss + touch fallback (hover/focus-only, invisible on
-            touch)
+            P-063 · errorpage: 4 fmt.Errorf -&gt; go-error-family constructors
+            (branching-flow errorfamily)
           </h3>
-          <div class="where">display/tooltip.templ:63 · impact M · effort M · a11y</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-important">Important</span>
-          <h3>P-067 · SimpleNav: add Sticky prop instead of hardcoded Sticky:true</h3>
-          <div class="where">navigation/nav.templ:100 · impact S · effort XS · edge-case</div>
+          <div class="where">
+            errorpage/handler.go:284 · impact M · effort M · error-handling
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-068 · Skip rendering MobileMenu when props.Links empty (emits empty div + script)
+            P-073 · Tooltip: Escape-to-dismiss + touch fallback
+            (hover/focus-only, invisible on touch)
           </h3>
-          <div class="where">navigation/nav.templ:61 · impact S · effort XS · edge-case</div>
+          <div class="where">
+            display/tooltip.templ:63 · impact M · effort M · a11y
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-071 · ErrorAttrs: emit aria-describedby when helpTextID set regardless of id (id-less
-            fields blind)
+            P-067 · SimpleNav: add Sticky prop instead of hardcoded Sticky:true
           </h3>
-          <div class="where">forms/helpers.go:26 · impact S · effort XS · a11y</div>
+          <div class="where">
+            navigation/nav.templ:100 · impact S · effort XS · edge-case
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-043 · FormMethod: add PUT/DELETE/PATCH or document Attrs path (silently -&gt; GET is
-            surprising)
+            P-068 · Skip rendering MobileMenu when props.Links empty (emits
+            empty div + script)
           </h3>
-          <div class="where">forms/form.templ:10 · impact S · effort XS · type-safety</div>
+          <div class="where">
+            navigation/nav.templ:61 · impact S · effort XS · edge-case
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-045 · paginationArrow roundedSide string param -&gt; typed enum/constants (typo = bad
-            class)
+            P-071 · ErrorAttrs: emit aria-describedby when helpTextID set
+            regardless of id (id-less fields blind)
+          </h3>
+          <div class="where">
+            forms/helpers.go:26 · impact S · effort XS · a11y
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-043 · FormMethod: add PUT/DELETE/PATCH or document Attrs path
+            (silently -&gt; GET is surprising)
+          </h3>
+          <div class="where">
+            forms/form.templ:10 · impact S · effort XS · type-safety
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-045 · paginationArrow roundedSide string param -&gt; typed
+            enum/constants (typo = bad class)
           </h3>
           <div class="where">
             navigation/pagination.templ:100 · impact S · effort S · type-safety
@@ -1446,30 +1633,38 @@
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-066 · ensureAccordionItemIDs: copy slice before mutating caller's []AccordionItem
+            P-066 · ensureAccordionItemIDs: copy slice before mutating caller's
+            []AccordionItem
           </h3>
-          <div class="where">display/accordion.templ:10 · impact S · effort XS · edge-case</div>
+          <div class="where">
+            display/accordion.templ:10 · impact S · effort XS · edge-case
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-042 · StatusBadge: accept typed status alias w/ constants (raw string + magic map only
-            validation)
+            P-042 · StatusBadge: accept typed status alias w/ constants (raw
+            string + magic map only validation)
           </h3>
-          <div class="where">display/badge.templ:135 · impact S · effort S · type-safety</div>
+          <div class="where">
+            display/badge.templ:135 · impact S · effort S · type-safety
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-065 · breadcrumbs: resolve relative Href for JSON-LD (spec requires absolute URL)
+            P-065 · breadcrumbs: resolve relative Href for JSON-LD (spec
+            requires absolute URL)
           </h3>
-          <div class="where">navigation/breadcrumbs.templ:32 · impact S · effort S · edge-case</div>
+          <div class="where">
+            navigation/breadcrumbs.templ:32 · impact S · effort S · edge-case
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-115 · integration: render components inside layout.Base test (head/body/nonce
-            unverified)
+            P-115 · integration: render components inside layout.Base test
+            (head/body/nonce unverified)
           </h3>
           <div class="where">
             integration/composition_test.go:14 · impact M · effort S · test-gap
@@ -1477,213 +1672,325 @@
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
-          <h3>P-113 · layout: consolidate 7 overlapping test files into 2 (unit + behaviour)</h3>
-          <div class="where">layout/*_test.go · impact M · effort M · duplication</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-important">Important</span>
-          <h3>P-098 · forms: textarea rows default 3 -&gt; 4 to match DefaultTextareaProps</h3>
-          <div class="where">forms/textarea.templ:50 · impact S · effort XS · edge-case</div>
+          <h3>
+            P-113 · layout: consolidate 7 overlapping test files into 2 (unit +
+            behaviour)
+          </h3>
+          <div class="where">
+            layout/*_test.go · impact M · effort M · duplication
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-100 · forms: InputGroupPaddingClass — wire into InputGroup or delete (split-brain API)
+            P-098 · forms: textarea rows default 3 -&gt; 4 to match
+            DefaultTextareaProps
           </h3>
-          <div class="where">forms/input_group.templ:25 · impact S · effort S · dead-code</div>
+          <div class="where">
+            forms/textarea.templ:50 · impact S · effort XS · edge-case
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-important">Important</span>
           <h3>
-            P-112 · display: example_test add // Output directives or convert to Test* (zero
-            regression value)
+            P-100 · forms: InputGroupPaddingClass — wire into InputGroup or
+            delete (split-brain API)
           </h3>
-          <div class="where">display/example_test.go:11 · impact S · effort S · test-gap</div>
+          <div class="where">
+            forms/input_group.templ:25 · impact S · effort S · dead-code
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-important">Important</span>
+          <h3>
+            P-112 · display: example_test add // Output directives or convert to
+            Test* (zero regression value)
+          </h3>
+          <div class="where">
+            display/example_test.go:11 · impact S · effort S · test-gap
+          </div>
         </div>
         <h2 id="low"><span class="num">06</span>Low findings</h2>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-040 · renderWithShell: wrap once, include title in error (branching-flow flagged
-            context loss)
+            P-040 · renderWithShell: wrap once, include title in error
+            (branching-flow flagged context loss)
           </h3>
-          <div class="where">errorpage/handler.go:341 · impact XS · effort XS · error-handling</div>
+          <div class="where">
+            errorpage/handler.go:341 · impact XS · effort XS · error-handling
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-080 · utils Class(): per-shard mutex or result cache (coarse global lock serializes
-            all SSR merges)
+            P-080 · utils Class(): per-shard mutex or result cache (coarse
+            global lock serializes all SSR merges)
           </h3>
-          <div class="where">utils/utils.go:41 · impact M · effort L · concurrency</div>
+          <div class="where">
+            utils/utils.go:41 · impact M · effort L · concurrency
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-053 · activeSpanOrLink (5 positional params, 2 empty sentinels) -&gt; struct or split
+            P-053 · activeSpanOrLink (5 positional params, 2 empty sentinels)
+            -&gt; struct or split
           </h3>
-          <div class="where">navigation/nav_link.templ:26 · impact S · effort S · architecture</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-055 · Ternary: document eager-eval caveat or deprecate for inline templ if/else</h3>
-          <div class="where">utils/utils.go:58 · impact S · effort XS · architecture</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-059 · htmx loading: guard nil spinner templ.Component (panics at render)</h3>
-          <div class="where">htmx/loading.templ:7 · impact S · effort XS · nil-safety</div>
+          <div class="where">
+            navigation/nav_link.templ:26 · impact S · effort S · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-061 · utils ValidateID: reject invalid HTML-id chars (only checks emptiness;
-            SanitizeID lives in forms)
+            P-055 · Ternary: document eager-eval caveat or deprecate for inline
+            templ if/else
           </h3>
-          <div class="where">utils/validate.go:10 · impact S · effort S · type-safety</div>
+          <div class="where">
+            utils/utils.go:58 · impact S · effort XS · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-044 · htmx SwapStyle typed enum (validSwapStyles map[string]bool + bare strings)
+            P-059 · htmx loading: guard nil spinner templ.Component (panics at
+            render)
           </h3>
-          <div class="where">htmx/helpers.templ:4 · impact S · effort S · type-safety</div>
+          <div class="where">
+            htmx/loading.templ:7 · impact S · effort XS · nil-safety
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-048 · ThemeColor/DarkThemeColor hex validation (^# hex, garbage renders into meta now)
+            P-061 · utils ValidateID: reject invalid HTML-id chars (only checks
+            emptiness; SanitizeID lives in forms)
           </h3>
-          <div class="where">layout/base.templ:16 · impact S · effort S · type-safety</div>
+          <div class="where">
+            utils/validate.go:10 · impact S · effort S · type-safety
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-051 · tabLink: pack active/inactive classes into struct (easily swapped positional
-            params)
+            P-044 · htmx SwapStyle typed enum (validSwapStyles map[string]bool +
+            bare strings)
           </h3>
-          <div class="where">display/tabs.templ:46 · impact S · effort S · architecture</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-056 · Move DismissScript out of utils (foundation leaks DOM/JS concerns)</h3>
-          <div class="where">utils/utils.go:74 · impact S · effort S · architecture</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-078 · empty Locale: default 'en' (renders lang='' invalid) + guard og:locale</h3>
-          <div class="where">layout/base.templ:16 · impact S · effort XS · edge-case</div>
+          <div class="where">
+            htmx/helpers.templ:4 · impact S · effort S · type-safety
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-081 · card statCardFigures: replace switch with trendStyle map (convention = maps not
-            switches)
+            P-048 · ThemeColor/DarkThemeColor hex validation (^# hex, garbage
+            renders into meta now)
           </h3>
-          <div class="where">display/card.templ:209 · impact S · effort S · architecture</div>
+          <div class="where">
+            layout/base.templ:16 · impact S · effort S · type-safety
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-054 · diagnosticSection (5 positional args mixing data+presentation) -&gt; props
-            struct
+            P-051 · tabLink: pack active/inactive classes into struct (easily
+            swapped positional params)
           </h3>
-          <div class="where">errorpage/shared.templ:80 · impact XS · effort S · architecture</div>
+          <div class="where">
+            display/tabs.templ:46 · impact S · effort S · architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-056 · Move DismissScript out of utils (foundation leaks DOM/JS
+            concerns)
+          </h3>
+          <div class="where">
+            utils/utils.go:74 · impact S · effort S · architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-078 · empty Locale: default 'en' (renders lang='' invalid) + guard
+            og:locale
+          </h3>
+          <div class="where">
+            layout/base.templ:16 · impact S · effort XS · edge-case
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-081 · card statCardFigures: replace switch with trendStyle map
+            (convention = maps not switches)
+          </h3>
+          <div class="where">
+            display/card.templ:209 · impact S · effort S · architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-054 · diagnosticSection (5 positional args mixing
+            data+presentation) -&gt; props struct
+          </h3>
+          <div class="where">
+            errorpage/shared.templ:80 · impact XS · effort S · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>P-052 · paginationArrow (7 params) -&gt; props struct</h3>
           <div class="where">
-            navigation/pagination.templ:100 · impact XS · effort S · architecture
+            navigation/pagination.templ:100 · impact XS · effort S ·
+            architecture
           </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-084 · feedback: remove alertIconName/toastIconName pure-indirection wrappers</h3>
-          <div class="where">feedback/alert.templ:41 · impact S · effort XS · dead-code</div>
+          <h3>
+            P-084 · feedback: remove alertIconName/toastIconName
+            pure-indirection wrappers
+          </h3>
+          <div class="where">
+            feedback/alert.templ:41 · impact S · effort XS · dead-code
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-085 · feedback: inline feedbackStyle in alert/toast; delete alertStyles/toastStyles
-            duplicate unpackers
+            P-085 · feedback: inline feedbackStyle in alert/toast; delete
+            alertStyles/toastStyles duplicate unpackers
           </h3>
-          <div class="where">feedback/alert.templ:36 · impact S · effort XS · dead-code</div>
+          <div class="where">
+            feedback/alert.templ:36 · impact S · effort XS · dead-code
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-086 · feedback: standardize data-dismiss (value never inspected — dead info)</h3>
-          <div class="where">feedback/alert.templ:79 · impact S · effort XS · dead-code</div>
+          <h3>
+            P-086 · feedback: standardize data-dismiss (value never inspected —
+            dead info)
+          </h3>
+          <div class="where">
+            feedback/alert.templ:79 · impact S · effort XS · dead-code
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-091 · display: buttonVariantDefault/badgeStyleDefault use map fallback directly</h3>
-          <div class="where">display/button_go.go:89 · impact S · effort XS · duplication</div>
+          <h3>
+            P-091 · display: buttonVariantDefault/badgeStyleDefault use map
+            fallback directly
+          </h3>
+          <div class="where">
+            display/button_go.go:89 · impact S · effort XS · duplication
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-094 · navigation: remove sidebarItemActive dead '/' special-case</h3>
+          <h3>
+            P-094 · navigation: remove sidebarItemActive dead '/' special-case
+          </h3>
           <div class="where">
             navigation/sidebar_nav.templ:43 · impact S · effort XS · dead-code
           </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-099 · forms: comboboxInputClass const -&gt; func(hasError) for error-ring state</h3>
-          <div class="where">forms/combobox.templ:33 · impact S · effort XS · architecture</div>
+          <h3>
+            P-099 · forms: comboboxInputClass const -&gt; func(hasError) for
+            error-ring state
+          </h3>
+          <div class="where">
+            forms/combobox.templ:33 · impact S · effort XS · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-116 · integration: add ThemeScript/ThemeToggle to CSPNonceConsistency</h3>
+          <h3>
+            P-116 · integration: add ThemeScript/ThemeToggle to
+            CSPNonceConsistency
+          </h3>
           <div class="where">
-            integration/composition_test.go:262 · impact S · effort XS · test-gap
+            integration/composition_test.go:262 · impact S · effort XS ·
+            test-gap
           </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>P-119 · navigation: paginationRange add current&gt;total case</h3>
-          <div class="where">navigation/*_test.go · impact S · effort XS · test-gap</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-093 · display: tabs remove nested &lt;nav&gt; double aria-label on tablist</h3>
-          <div class="where">display/tabs.templ:83 · impact S · effort XS · a11y</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>
-            P-107 · internal/golden: Assert name path-escape guard (name w/ ../ escapes testdata/)
-          </h3>
-          <div class="where">internal/golden/golden.go:31 · impact S · effort XS · security</div>
+          <div class="where">
+            navigation/*_test.go · impact S · effort XS · test-gap
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-109 · icons: reword docs — svg fill constants vs icons stroke (not 'single source of
-            truth')
+            P-093 · display: tabs remove nested &lt;nav&gt; double aria-label on
+            tablist
           </h3>
-          <div class="where">internal/svg/svg.templ:6 · impact S · effort XS · naming</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-111 · icons: IconPathJS accept strokeWidth arg (hardcoded 1.5)</h3>
-          <div class="where">icons/icon_paths.go:150 · impact S · effort XS · architecture</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-110 · icons: centralize Spinner-is-special rule (special-cased in 3 places)</h3>
-          <div class="where">icons/icon_paths.go:120 · impact S · effort S · architecture</div>
+          <div class="where">
+            display/tabs.templ:83 · impact S · effort XS · a11y
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-114 · feedback: add toastJSStyles/toastJSIconPaths table tests (non-trivial, untested)
+            P-107 · internal/golden: Assert name path-escape guard (name w/ ../
+            escapes testdata/)
           </h3>
-          <div class="where">feedback/toast.templ:44 · impact S · effort S · test-gap</div>
+          <div class="where">
+            internal/golden/golden.go:31 · impact S · effort XS · security
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-120 · display: DefinitionItem/TableCell unify dual string+Component slot fields</h3>
+          <h3>
+            P-109 · icons: reword docs — svg fill constants vs icons stroke (not
+            'single source of truth')
+          </h3>
+          <div class="where">
+            internal/svg/svg.templ:6 · impact S · effort XS · naming
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-111 · icons: IconPathJS accept strokeWidth arg (hardcoded 1.5)
+          </h3>
+          <div class="where">
+            icons/icon_paths.go:150 · impact S · effort XS · architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-110 · icons: centralize Spinner-is-special rule (special-cased in
+            3 places)
+          </h3>
+          <div class="where">
+            icons/icon_paths.go:120 · impact S · effort S · architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-114 · feedback: add toastJSStyles/toastJSIconPaths table tests
+            (non-trivial, untested)
+          </h3>
+          <div class="where">
+            feedback/toast.templ:44 · impact S · effort S · test-gap
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-120 · display: DefinitionItem/TableCell unify dual
+            string+Component slot fields
+          </h3>
           <div class="where">
             display/definition_list.templ:8 · impact S · effort S · architecture
           </div>
@@ -1691,98 +1998,156 @@
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-121 · errorpage: accept label strings via props for i18n (hardcoded English copy)
+            P-121 · errorpage: accept label strings via props for i18n
+            (hardcoded English copy)
           </h3>
-          <div class="where">errorpage/shared.templ:15 · impact S · effort M · architecture</div>
+          <div class="where">
+            errorpage/shared.templ:15 · impact S · effort M · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-088 · feedback: add explicit MD entries to spinnerSizeLookup/progressHeightLookup
+            P-088 · feedback: add explicit MD entries to
+            spinnerSizeLookup/progressHeightLookup
           </h3>
-          <div class="where">feedback/loading.templ:20 · impact XS · effort XS · naming</div>
+          <div class="where">
+            feedback/loading.templ:20 · impact XS · effort XS · naming
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-089 · display: remove dropdownItemLink dead variadic extraAttrs param</h3>
-          <div class="where">display/dropdown.templ:69 · impact XS · effort XS · dead-code</div>
+          <h3>
+            P-089 · display: remove dropdownItemLink dead variadic extraAttrs
+            param
+          </h3>
+          <div class="where">
+            display/dropdown.templ:69 · impact XS · effort XS · dead-code
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>P-090 · display: inline emptyStateIcon one-line wrapper</h3>
-          <div class="where">display/empty_state.templ:104 · impact XS · effort XS · dead-code</div>
+          <div class="where">
+            display/empty_state.templ:104 · impact XS · effort XS · dead-code
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-092 · display: drawer inline style -&gt; Tailwind classes (left-0 inset-y-0)</h3>
-          <div class="where">display/drawer.templ:31 · impact XS · effort XS · architecture</div>
+          <h3>
+            P-092 · display: drawer inline style -&gt; Tailwind classes (left-0
+            inset-y-0)
+          </h3>
+          <div class="where">
+            display/drawer.templ:31 · impact XS · effort XS · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-095 · navigation: navLinkClasses extract shared prefix const</h3>
-          <div class="where">navigation/nav_link.templ:5 · impact XS · effort XS · duplication</div>
+          <h3>
+            P-095 · navigation: navLinkClasses extract shared prefix const
+          </h3>
+          <div class="where">
+            navigation/nav_link.templ:5 · impact XS · effort XS · duplication
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-096 · navigation: pageURL preserve fragment across re-encode</h3>
+          <h3>
+            P-096 · navigation: pageURL preserve fragment across re-encode
+          </h3>
           <div class="where">
             navigation/pagination.templ:39 · impact XS · effort XS · edge-case
           </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-097 · navigation: replace fmt.Sprintf('%d') with native templ interpolation</h3>
-          <div class="where">navigation/pagination.templ:152 · impact XS · effort XS · cleanup</div>
+          <h3>
+            P-097 · navigation: replace fmt.Sprintf('%d') with native templ
+            interpolation
+          </h3>
+          <div class="where">
+            navigation/pagination.templ:152 · impact XS · effort XS · cleanup
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-101 · forms: extract const errorIDSuffix='-error' (duplicated literal in 2 places)
+            P-101 · forms: extract const errorIDSuffix='-error' (duplicated
+            literal in 2 places)
           </h3>
-          <div class="where">forms/helpers.go:39 · impact XS · effort XS · duplication</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-103 · errorpage: remove unreachable props.Timestamp=='' branch</h3>
-          <div class="where">errorpage/handler.go:239 · impact XS · effort XS · dead-code</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-104 · errorpage: FromError call errors.AsType once (currently twice)</h3>
-          <div class="where">errorpage/handler.go:54 · impact XS · effort XS · duplication</div>
+          <div class="where">
+            forms/helpers.go:39 · impact XS · effort XS · duplication
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-106 · internal/golden: annotate golden.go:38 nil-deref false positive (flag.Bool never
-            nil)
+            P-103 · errorpage: remove unreachable props.Timestamp=='' branch
           </h3>
-          <div class="where">internal/golden/golden.go:38 · impact XS · effort XS · nil-safety</div>
-        </div>
-        <div class="issue issue-nice">
-          <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-108 · internal/golden: replace hand-rolled contains with strings.Contains</h3>
           <div class="where">
-            internal/golden/golden_test.go:88 · impact XS · effort XS · duplication
+            errorpage/handler.go:239 · impact XS · effort XS · dead-code
           </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-122 · navigation: SidebarNavItem embed BaseProps (no per-item customization)</h3>
+          <h3>
+            P-104 · errorpage: FromError call errors.AsType once (currently
+            twice)
+          </h3>
           <div class="where">
-            navigation/sidebar_nav.templ:9 · impact XS · effort XS · architecture
+            errorpage/handler.go:54 · impact XS · effort XS · duplication
           </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-123 · navigation: normalize() consolidate all defaulting in one place</h3>
+          <h3>
+            P-106 · internal/golden: annotate golden.go:38 nil-deref false
+            positive (flag.Bool never nil)
+          </h3>
           <div class="where">
-            navigation/pagination.templ:33 · impact XS · effort XS · architecture
+            internal/golden/golden.go:38 · impact XS · effort XS · nil-safety
           </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-083 · feedback helpers_test: replace hand-rolled contains with strings.Contains</h3>
+          <h3>
+            P-108 · internal/golden: replace hand-rolled contains with
+            strings.Contains
+          </h3>
+          <div class="where">
+            internal/golden/golden_test.go:88 · impact XS · effort XS ·
+            duplication
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-122 · navigation: SidebarNavItem embed BaseProps (no per-item
+            customization)
+          </h3>
+          <div class="where">
+            navigation/sidebar_nav.templ:9 · impact XS · effort XS ·
+            architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-123 · navigation: normalize() consolidate all defaulting in one
+            place
+          </h3>
+          <div class="where">
+            navigation/pagination.templ:33 · impact XS · effort XS ·
+            architecture
+          </div>
+        </div>
+        <div class="issue issue-nice">
+          <span class="severity severity-nice">Nice-to-have</span>
+          <h3>
+            P-083 · feedback helpers_test: replace hand-rolled contains with
+            strings.Contains
+          </h3>
           <div class="where">
             feedback/helpers_test.go:224 · impact XS · effort XS · duplication
           </div>
@@ -1790,22 +2155,35 @@
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
           <h3>
-            P-087 · feedback: feedbackStyleDefault use named-field struct literal (positional is
-            fragile)
+            P-087 · feedback: feedbackStyleDefault use named-field struct
+            literal (positional is fragile)
           </h3>
-          <div class="where">feedback/styles.go:79 · impact XS · effort XS · architecture</div>
+          <div class="where">
+            feedback/styles.go:79 · impact XS · effort XS · architecture
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-102 · errorpage: errorResponse.Context type any -&gt; map[string]string</h3>
-          <div class="where">errorpage/handler.go:113 · impact XS · effort XS · type-safety</div>
+          <h3>
+            P-102 · errorpage: errorResponse.Context type any -&gt;
+            map[string]string
+          </h3>
+          <div class="where">
+            errorpage/handler.go:113 · impact XS · effort XS · type-safety
+          </div>
         </div>
         <div class="issue issue-nice">
           <span class="severity severity-nice">Nice-to-have</span>
-          <h3>P-105 · errorpage: ExtractCauseChain handle errors.Join siblings</h3>
-          <div class="where">errorpage/styles.go:229 · impact XS · effort S · edge-case</div>
+          <h3>
+            P-105 · errorpage: ExtractCauseChain handle errors.Join siblings
+          </h3>
+          <div class="where">
+            errorpage/styles.go:229 · impact XS · effort S · edge-case
+          </div>
         </div>
-        <h2 id="branching"><span class="num">07</span>branching-flow results</h2>
+        <h2 id="branching">
+          <span class="num">07</span>branching-flow results
+        </h2>
         <table>
           <thead>
             <tr>
@@ -1818,7 +2196,8 @@
               <td><strong>CONTEXT — semantic error context</strong></td>
               <td>
                 <span class="badge badge-medium"
-                  >2 medium (errorpage title lost in error wrap) → task P-040</span
+                  >2 medium (errorpage title lost in error wrap) → task
+                  P-040</span
                 >
               </td>
             </tr>
@@ -1830,8 +2209,8 @@
               <td><strong>PHANTOM — primitive→phantom types</strong></td>
               <td>
                 <span class="badge badge-medium"
-                  >54 (mostly intentional UI strings; genuine ones covered by P-042..P-048,
-                  P-061)</span
+                  >54 (mostly intentional UI strings; genuine ones covered by
+                  P-042..P-048, P-061)</span
                 >
               </td>
             </tr>
@@ -1839,13 +2218,18 @@
               <td><strong>PANIC — panic conditions</strong></td>
               <td>
                 <span class="badge badge-critical"
-                  >2 high: icon_paths.go:127 (P-032), golden.go:38 false positive (P-106)</span
+                  >2 high: icon_paths.go:127 (P-032), golden.go:38 false
+                  positive (P-106)</span
                 >
               </td>
             </tr>
             <tr>
               <td><strong>STRONG-ID — id params</strong></td>
-              <td><span class="badge badge-medium">10 (covered by P-030, P-061, P-045)</span></td>
+              <td>
+                <span class="badge badge-medium"
+                  >10 (covered by P-030, P-061, P-045)</span
+                >
+              </td>
             </tr>
             <tr>
               <td><strong>BOOLBLIND</strong></td>
@@ -1855,8 +2239,8 @@
               <td><strong>ANTI-PATTERNS</strong></td>
               <td>
                 <span class="badge badge-medium"
-                  >1: utils.BaseProps base-naming (deliberate interface backing — document, don't
-                  rename)</span
+                  >1: utils.BaseProps base-naming (deliberate interface backing
+                  — document, don't rename)</span
                 >
               </td>
             </tr>
@@ -1864,7 +2248,8 @@
               <td><strong>MIXINS — composition opportunities</strong></td>
               <td>
                 <span class="badge badge-medium"
-                  >8 low/medium (optional; addressed selectively P-069, P-081)</span
+                  >8 low/medium (optional; addressed selectively P-069,
+                  P-081)</span
                 >
               </td>
             </tr>
@@ -1874,7 +2259,9 @@
             </tr>
             <tr>
               <td><strong>ERRORFAMILY — go-error-family adoption</strong></td>
-              <td><span class="badge badge-medium">4 fmt.Errorf → P-063</span></td>
+              <td>
+                <span class="badge badge-medium">4 fmt.Errorf → P-063</span>
+              </td>
             </tr>
             <tr>
               <td><strong>CONTEXTGUARD</strong></td>

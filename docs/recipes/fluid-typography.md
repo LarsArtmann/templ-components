@@ -34,14 +34,14 @@ The library ships ready-made fluid heading and lead-text classes in `templates/c
 They compose directly inside any container-aware component (Card, Split, Nav, Form, Grid,
 DefinitionGrid, Pagination, SkeletonCardGrid) or any `<div class="@container">`:
 
-| Class              | Min (floor) | Max (ceiling) | Scale formula          |
-| ------------------ | ----------- | ------------- | ---------------------- |
-| `.tc-fluid-display` | 2rem (32px) | 3.5rem (56px) | `5cqi + 1rem`         |
-| `.tc-fluid-h1`      | 1.75rem     | 2.5rem        | `4cqi + 0.75rem`      |
-| `.tc-fluid-h2`      | 1.5rem      | 2rem          | `3.5cqi + 0.5rem`     |
-| `.tc-fluid-h3`      | 1.25rem     | 1.75rem       | `2.5cqi + 0.5rem`     |
-| `.tc-fluid-h4`      | 1.125rem    | 1.5rem        | `2cqi + 0.375rem`     |
-| `.tc-fluid-lead`    | 1.125rem    | 1.375rem      | `1.75cqi + 0.5rem`    |
+| Class               | Min (floor) | Max (ceiling) | Scale formula      |
+| ------------------- | ----------- | ------------- | ------------------ |
+| `.tc-fluid-display` | 2rem (32px) | 3.5rem (56px) | `5cqi + 1rem`      |
+| `.tc-fluid-h1`      | 1.75rem     | 2.5rem        | `4cqi + 0.75rem`   |
+| `.tc-fluid-h2`      | 1.5rem      | 2rem          | `3.5cqi + 0.5rem`  |
+| `.tc-fluid-h3`      | 1.25rem     | 1.75rem       | `2.5cqi + 0.5rem`  |
+| `.tc-fluid-h4`      | 1.125rem    | 1.5rem        | `2cqi + 0.375rem`  |
+| `.tc-fluid-lead`    | 1.125rem    | 1.375rem      | `1.75cqi + 0.5rem` |
 
 > **Requirement:** the element must have a query-container ancestor. Tailwind's
 > `@container` class sets `container-type: inline-size`. Without it, `cqi` resolves
@@ -122,14 +122,14 @@ arbitrary value:
 
 ## Container query unit reference
 
-| Unit    | Resolves against                         |
-| ------- | ---------------------------------------- |
-| `cqw`   | 1% of container width                    |
-| `cqh`   | 1% of container height                   |
+| Unit    | Resolves against                                                 |
+| ------- | ---------------------------------------------------------------- |
+| `cqw`   | 1% of container width                                            |
+| `cqh`   | 1% of container height                                           |
 | `cqi`   | 1% of container inline size (= width in LTR/RTL horizontal text) |
-| `cqb`   | 1% of container block size (= height in horizontal text) |
-| `cqmin` | 1% of the smaller of container width/height |
-| `cqmax` | 1% of the larger of container width/height  |
+| `cqb`   | 1% of container block size (= height in horizontal text)         |
+| `cqmin` | 1% of the smaller of container width/height                      |
+| `cqmax` | 1% of the larger of container width/height                       |
 
 For typography, **always use `cqi`** (inline size): it mirrors correctly in vertical
 writing modes and is the canonical choice for horizontal text scaling.

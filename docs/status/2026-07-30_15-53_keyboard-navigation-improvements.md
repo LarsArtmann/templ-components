@@ -99,16 +99,16 @@ against WAI-ARIA APG patterns, then implemented keyboard enhancements for **4 co
 
 ### Identified in audit but not addressed:
 
-| #   | Component       | Gap                                                                             | Priority | Why it matters                                   |
-| --- | --------------- | ------------------------------------------------------------------------------- | -------- | ------------------------------------------------ |
-| 1   | **ContextMenu** | No keyboard trigger (Shift+F10 / Menu key), no arrow nav, no focus management   | HIGH     | Completely inaccessible to keyboard-only users   |
-| 2   | **Rating**      | Radio inputs rendered in reverse DOM order (5→1) so arrow keys go right-to-left | HIGH     | Violates WAI-ARIA radiogroup pattern             |
-| 3   | **MobileMenu**  | No focus trap while open                                                        | MEDIUM   | Tab escapes the menu into page content           |
-| 4   | **MobileMenu**  | No arrow-key navigation between items                                           | LOW      | Tab works, but arrow keys are the APG pattern    |
-| 5   | **Combobox**    | No type-ahead (first-letter matching) for listbox options                       | MEDIUM   | Full APG combobox pattern                        |
-| 6   | **Combobox**    | No PageUp/PageDown                                                              | LOW      | Arrows/Home/End already implemented              |
-| 7   | **Tabs**        | Server-rendered tabs (ClientSide: false) have no keyboard activation            | MEDIUM   | Only client-side tabs have arrow-key support     |
-| 8   | **Carousel**    | No `aria-live` region to announce slide changes                                 | MEDIUM   | Screen readers don't announce when slide changes |
+| # | Component       | Gap                                                                             | Priority | Why it matters                                   |
+| - | --------------- | ------------------------------------------------------------------------------- | -------- | ------------------------------------------------ |
+| 1 | **ContextMenu** | No keyboard trigger (Shift+F10 / Menu key), no arrow nav, no focus management   | HIGH     | Completely inaccessible to keyboard-only users   |
+| 2 | **Rating**      | Radio inputs rendered in reverse DOM order (5→1) so arrow keys go right-to-left | HIGH     | Violates WAI-ARIA radiogroup pattern             |
+| 3 | **MobileMenu**  | No focus trap while open                                                        | MEDIUM   | Tab escapes the menu into page content           |
+| 4 | **MobileMenu**  | No arrow-key navigation between items                                           | LOW      | Tab works, but arrow keys are the APG pattern    |
+| 5 | **Combobox**    | No type-ahead (first-letter matching) for listbox options                       | MEDIUM   | Full APG combobox pattern                        |
+| 6 | **Combobox**    | No PageUp/PageDown                                                              | LOW      | Arrows/Home/End already implemented              |
+| 7 | **Tabs**        | Server-rendered tabs (ClientSide: false) have no keyboard activation            | MEDIUM   | Only client-side tabs have arrow-key support     |
+| 8 | **Carousel**    | No `aria-live` region to announce slide changes                                 | MEDIUM   | Screen readers don't announce when slide changes |
 
 ---
 

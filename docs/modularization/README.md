@@ -30,12 +30,12 @@ because:
 
 ## Key decisions
 
-| Decision | Choice | Rationale |
-|----------|--------|-----------|
-| Scope | Targeted 7-module | Real isolation wins without per-package overhead |
-| Versioning | Shared (one version for all modules) | Simplest for solo-maintained lib |
-| `internal/` packages | Promoted to `utils/` sub-packages | Go's `internal/` rule blocks cross-module access |
-| Compat | Import paths unchanged | `internal/*` was never externally importable; sub-module paths unchanged |
+| Decision             | Choice                               | Rationale                                                                |
+| -------------------- | ------------------------------------ | ------------------------------------------------------------------------ |
+| Scope                | Targeted 7-module                    | Real isolation wins without per-package overhead                         |
+| Versioning           | Shared (one version for all modules) | Simplest for solo-maintained lib                                         |
+| `internal/` packages | Promoted to `utils/` sub-packages    | Go's `internal/` rule blocks cross-module access                         |
+| Compat               | Import paths unchanged               | `internal/*` was never externally importable; sub-module paths unchanged |
 
 ## Files
 

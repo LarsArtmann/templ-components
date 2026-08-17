@@ -31,7 +31,6 @@ compare PNG pixels against testdata/<name>.png (0.1% threshold)
 └── differ → fail + write testdata/.fail/<name>.{actual,diff}.png
 
 ````
-
 ### Shared Chromium process
 
 A **single** headless Chromium process is launched lazily on the first
@@ -81,8 +80,6 @@ func TestMyComponent(t *testing.T) {
 
     props := display.DefaultCardProps()
     props.Title = "Revenue"
-
-
 ```
 
 - `StateClick` clicks the first `[popovertarget]`/button/link inside `#tc-root`.

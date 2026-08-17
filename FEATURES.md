@@ -8,20 +8,20 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 
 ## Overview
 
-| Package          | Components    | Description                                                                                                                                                                                                                                                                                                                                                                           |
-| ---------------- | ------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `utils`          | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                                                                                                                                                                                                 |
+| Package          | Components    | Description                                                                                                                                                                                                                                                                                                                                                                                                      |
+| ---------------- | ------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `utils`          | 0             | Shared types, Tailwind class merging, generic helpers                                                                                                                                                                                                                                                                                                                                                            |
 | `display`        | 40            | UI display: cards, badges, buttons, modals, drawers, tables, data tables, tabs, avatars, tooltips, accordions, dropdowns, popovers, empty states, page headers, definition lists, copy button, relative time, count badge, image, hover card, context menu, carousel, **SVG charts** (LineChart, PieChart, AreaChart), Sparkline, BarChart, Heatmap, CollapsibleSection, ExternalLink, SectionHeading, DateRange |
-| `errorpage`      | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                                                                                                                                                                                                          |
-| `feedback`       | 14            | User feedback: alerts, toasts, spinners, progress bars, skeletons, circular progress                                                                                                         |
-| `forms`          | 21            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, sliders, ratings, file inputs, date pickers, comboboxes, filter dropdowns, tags input, calendar, validation                                                                                                                                                                                                   |
-| `htmx`           | 8             | HTMX integration: loading indicators, error handling, helpers, View Transitions                                                                                                                                                                                                                                                                                                       |
-| `datastar`       | 4             | Datastar integration: SDK runtime injection, SSE-powered LiveRegion, loading Indicator, SSE error handling (opt-in, ADR-0030)                                                               |
-| `charts/echarts` | 2             | Opt-in ECharts adapter: `EChart` wrapper + `SDKScript` with dark mode bridge (ADR-0031). Accepts go-echarts `RenderSnippet()` strings — zero dep on go-echarts                                                                                                                                                                                                                        |
-| `icons`          | 3 (106 icons) | SVG icon system with typed name constants, RTL mirroring                                                                                                                                                                                                                                                                                                                              |
-| `layout`         | 10            | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                                                                                                                                                                                                            |
-| `navigation`     | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                                                                                                                                      |
-| `recipes`        | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                                                                                                                                 |
+| `errorpage`      | 4             | Error presentation: full-page errors, dedicated 404, error detail cards, family-aware alerts                                                                                                                                                                                                                                                                                                                     |
+| `feedback`       | 14            | User feedback: alerts, toasts, spinners, progress bars, skeletons, circular progress                                                                                                                                                                                                                                                                                                                             |
+| `forms`          | 21            | Form controls: inputs, selects, textareas, checkboxes, radios, toggles, sliders, ratings, file inputs, date pickers, comboboxes, filter dropdowns, tags input, calendar, validation                                                                                                                                                                                                                              |
+| `htmx`           | 8             | HTMX integration: loading indicators, error handling, helpers, View Transitions                                                                                                                                                                                                                                                                                                                                  |
+| `datastar`       | 4             | Datastar integration: SDK runtime injection, SSE-powered LiveRegion, loading Indicator, SSE error handling (opt-in, ADR-0030)                                                                                                                                                                                                                                                                                    |
+| `charts/echarts` | 2             | Opt-in ECharts adapter: `EChart` wrapper + `SDKScript` with dark mode bridge (ADR-0031). Accepts go-echarts `RenderSnippet()` strings — zero dep on go-echarts                                                                                                                                                                                                                                                   |
+| `icons`          | 3 (106 icons) | SVG icon system with typed name constants, RTL mirroring                                                                                                                                                                                                                                                                                                                                                         |
+| `layout`         | 10            | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                                                                                                                                                                                                                                       |
+| `navigation`     | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                                                                                                                                                                 |
+| `recipes`        | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                                                                                                                                                            |
 
 **Totals:** 116 templ components (primitives, drift-guard verified) + 4 recipe screens = 120, 106 icon names, 52 typed enums (49 with `IsValid()`), 112 generated `*_templ.go` files, ~31,500 lines of Go/templ source
 
@@ -71,7 +71,7 @@ type BaseProps struct {
 
 | Component            | Status           | Description                     | Key Features                                                                                                                                                                                                                                    |
 | -------------------- | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Accordion`          | FULLY_FUNCTIONAL | Collapsible accordion panels    | Native `<details>/<summary>`, zero JS, chevron rotation via CSS, `role=group`                                                                                                                                                                 |
+| `Accordion`          | FULLY_FUNCTIONAL | Collapsible accordion panels    | Native `<details>/<summary>`, zero JS, chevron rotation via CSS, `role=group`                                                                                                                                                                   |
 | `Avatar`             | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                                                                                                                                                                                   |
 | `Button`             | FULLY_FUNCTIONAL | Action button                   | 5 variants, 3 sizes, href (link mode), loading state                                                                                                                                                                                            |
 | `Badge`              | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                                                                                                                                                                                               |
@@ -79,7 +79,7 @@ type BaseProps struct {
 | `Card`               | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, `Header` slot override, 4 padding sizes, `Body` slot override, `CardPaddingNone` skips wrapper div, `TitleClass`/`HeaderClass` override props, `ContainerAware` (padding breakpoints via `@container`) |
 | `SimpleCard`         | FULLY_FUNCTIONAL | Minimal card                    | Children-only, no header/footer, `Body` slot override (forwards to Card.Body)                                                                                                                                                                   |
 | `StatCard`           | FULLY_FUNCTIONAL | Dashboard metric card           | StatCardProps struct, TrendDirection enum (Up/Down/None), optional `Icon` field, `Href` renders as clickable `<a>`                                                                                                                              |
-| `Grid`               | FULLY_FUNCTIONAL | Responsive grid container       | Typed `GridCols` enum (1–6 + `AutoFit`), `GridGap` enum, `MinColWidth` for auto-fit grids, responsive breakpoints (1→2→3→N), `ContainerAware` (`@container`, default `true` since v2.0), children slot                                                       |
+| `Grid`               | FULLY_FUNCTIONAL | Responsive grid container       | Typed `GridCols` enum (1–6 + `AutoFit`), `GridGap` enum, `MinColWidth` for auto-fit grids, responsive breakpoints (1→2→3→N), `ContainerAware` (`@container`, default `true` since v2.0), children slot                                          |
 | `Dropdown`           | FULLY_FUNCTIONAL | Button-triggered menu           | External/internal links, buttons, keyboard nav, ARIA menu                                                                                                                                                                                       |
 | `Drawer`             | FULLY_FUNCTIONAL | Side panel                      | Left/right slide, focus trap, Escape, backdrop, 5 sizes                                                                                                                                                                                         |
 | `EmptyState`         | FULLY_FUNCTIONAL | Centered empty state            | Icon, title, description, action link/button                                                                                                                                                                                                    |
@@ -106,8 +106,8 @@ type BaseProps struct {
 | `Heatmap`            | FULLY_FUNCTIONAL | CSS grid heatmap                | Row/column labels, opacity-based coloring, peak highlighting, clickable cells, tooltip support                                                                                                                                                  |
 | `CollapsibleSection` | FULLY_FUNCTIONAL | Collapsible region              | Native `<details>/<summary>`, configurable heading level (h1-h6), open/closed default, optional `StorageKey` for localStorage                                                                                                                   |
 | `ExternalLink`       | FULLY_FUNCTIONAL | Safe off-site link              | `target="_blank" rel="noopener noreferrer"`, external-arrow icon, URL sanitization                                                                                                                                                              |
-| `SectionHeading`     | FULLY_FUNCTIONAL | Section heading block            | Typed heading level (H1-H6) + text alignment (`text-start`/`text-center`/`text-end`), `break-after-avoid` for print, title/subtitle/action composition                                                                                          |
-| `DateRange`          | FULLY_FUNCTIONAL | Date range display               | Start/end dates with "Present" fallback, typed date-format enum, separator                                                                                                                        |
+| `SectionHeading`     | FULLY_FUNCTIONAL | Section heading block           | Typed heading level (H1-H6) + text alignment (`text-start`/`text-center`/`text-end`), `break-after-avoid` for print, title/subtitle/action composition                                                                                          |
+| `DateRange`          | FULLY_FUNCTIONAL | Date range display              | Start/end dates with "Present" fallback, typed date-format enum, separator                                                                                                                                                                      |
 | `HoverCard`          | FULLY_FUNCTIONAL | Hover card panel                | CSS-only hover/focus, `role="dialog"`, arbitrary content via children                                                                                                                                                                           |
 | `ContextMenu`        | FULLY_FUNCTIONAL | Right-click menu                | Native Popover API, cursor positioning, shared WAI-ARIA menu keyboard nav, Shift+F10 and ContextMenu key support                                                                                                                                |
 | `Carousel`           | FULLY_FUNCTIONAL | Image/content carousel          | CSS scroll-snap + keyboard nav (ArrowLeft/Right, Home/End), RTL-aware, dots, prev/next buttons                                                                                                                                                  |
@@ -173,15 +173,15 @@ type BaseProps struct {
 
 |                      | Function                       | Signature                                  | Purpose |
 | -------------------- | ------------------------------ | ------------------------------------------ | ------- |
-| `ErrorHandler`       | `(err, cfg) http.Handler`      | Serves error page with correct HTTP status |
-| `WriteError`         | `(w, r, err, nonce)`           | Convenience wrapper for ErrorHandler       |
-| `WriteErrorPage`     | `(w, r, status, props, nonce)` | Renders pre-configured ErrorPageProps      |
-| `NotFound`           | `() ErrorPageProps`            | Pre-built 404 (Rejection)                  |
-| `Forbidden`          | `() ErrorPageProps`            | Pre-built 403 (Rejection)                  |
-| `BadRequest`         | `(msg) ErrorPageProps`         | Pre-built 400 (Rejection)                  |
-| `Conflict`           | `(msg) ErrorPageProps`         | Pre-built 409 (Conflict)                   |
-| `ServiceUnavailable` | `() ErrorPageProps`            | Pre-built 503 (Transient)                  |
-| `InternalError`      | `() ErrorPageProps`            | Pre-built 500 (Infrastructure)             |
+| `ErrorHandler`       | `(err, cfg) http.Handler`      | Serves error page with correct HTTP status |         |
+| `WriteError`         | `(w, r, err, nonce)`           | Convenience wrapper for ErrorHandler       |         |
+| `WriteErrorPage`     | `(w, r, status, props, nonce)` | Renders pre-configured ErrorPageProps      |         |
+| `NotFound`           | `() ErrorPageProps`            | Pre-built 404 (Rejection)                  |         |
+| `Forbidden`          | `() ErrorPageProps`            | Pre-built 403 (Rejection)                  |         |
+| `BadRequest`         | `(msg) ErrorPageProps`         | Pre-built 400 (Rejection)                  |         |
+| `Conflict`           | `(msg) ErrorPageProps`         | Pre-built 409 (Conflict)                   |         |
+| `ServiceUnavailable` | `() ErrorPageProps`            | Pre-built 503 (Transient)                  |         |
+| `InternalError`      | `() ErrorPageProps`            | Pre-built 500 (Infrastructure)             |         |
 
 ### Family Visual Mapping
 
@@ -199,31 +199,31 @@ type BaseProps struct {
 
 ### Components
 
-| Component          | Status           | Description             | Key Features                                                                                                                                                          |
-| ------------------ | ---------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `Alert`            | FULLY_FUNCTIONAL | Full-width alert banner | 4 types, dismissible, icon, CSP nonce                                                                                                                                 |
-| `InlineError`      | FULLY_FUNCTIONAL | Compact error message   | Red icon + text                                                                                                                                                       |
-| `InlineSuccess`    | FULLY_FUNCTIONAL | Compact success message | Green checkmark + text                                                                                                                                                |
-| `Spinner`          | FULLY_FUNCTIONAL | Animated SVG spinner    | 3 sizes, custom color class                                                                                                                                           |
-| `LoadingOverlay`   | FULLY_FUNCTIONAL | Full-screen loading     | Spinner, message, optional progress bar                                                                                                                               |
-| `InlineLoading`    | FULLY_FUNCTIONAL | Compact inline loading  | Spinner + message                                                                                                                                                     |
-| `Skeleton`         | FULLY_FUNCTIONAL | Pulsing placeholder     | 7 variants: text, title, avatar, image, card, table-row                                                                                                               |
-| `SkeletonGroup`    | FULLY_FUNCTIONAL | Multiple skeletons      | Group with `animate-pulse`                                                                                                                                            |
+| Component          | Status           | Description             | Key Features                                                                                                                                                     |
+| ------------------ | ---------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Alert`            | FULLY_FUNCTIONAL | Full-width alert banner | 4 types, dismissible, icon, CSP nonce                                                                                                                            |
+| `InlineError`      | FULLY_FUNCTIONAL | Compact error message   | Red icon + text                                                                                                                                                  |
+| `InlineSuccess`    | FULLY_FUNCTIONAL | Compact success message | Green checkmark + text                                                                                                                                           |
+| `Spinner`          | FULLY_FUNCTIONAL | Animated SVG spinner    | 3 sizes, custom color class                                                                                                                                      |
+| `LoadingOverlay`   | FULLY_FUNCTIONAL | Full-screen loading     | Spinner, message, optional progress bar                                                                                                                          |
+| `InlineLoading`    | FULLY_FUNCTIONAL | Compact inline loading  | Spinner + message                                                                                                                                                |
+| `Skeleton`         | FULLY_FUNCTIONAL | Pulsing placeholder     | 7 variants: text, title, avatar, image, card, table-row                                                                                                          |
+| `SkeletonGroup`    | FULLY_FUNCTIONAL | Multiple skeletons      | Group with `animate-pulse`                                                                                                                                       |
 | `SkeletonCardGrid` | FULLY_FUNCTIONAL | Loading card grid       | Responsive grid of N skeleton cards (`SkeletonCardGridProps{Count, ContainerAware}`), single `role="status"`, matches `Grid.ContainerAware` when container-aware |
-| `ProgressBar`      | FULLY_FUNCTIONAL | Progress indicator      | 3 sizes, custom color, label, percentage, indeterminate mode (`aria-busy`), clamped `aria-valuenow`                                                                   |
-| `StepIndicator`    | FULLY_FUNCTIONAL | Step progress indicator | Horizontal/vertical orientation, completed/current/future states, labels                                                                                              |
-| `CircularProgress` | FULLY_FUNCTIONAL | Circular progress       | SVG ring, typed size enum (sm/md/lg), optional percentage label, value clamping to `[0, Total]`                                                                       |
-| `ToastContainer`   | FULLY_FUNCTIONAL | Fixed toast container   | JS `tcShowToast()` for dynamic toasts                                                                                                                                 |
-| `Toast`            | FULLY_FUNCTIONAL | Server-rendered toast   | 4 types, dismissible, title, message, duration, auto-generates ID via `EnsureID` for auto-dismiss                                                                     |
+| `ProgressBar`      | FULLY_FUNCTIONAL | Progress indicator      | 3 sizes, custom color, label, percentage, indeterminate mode (`aria-busy`), clamped `aria-valuenow`                                                              |
+| `StepIndicator`    | FULLY_FUNCTIONAL | Step progress indicator | Horizontal/vertical orientation, completed/current/future states, labels                                                                                         |
+| `CircularProgress` | FULLY_FUNCTIONAL | Circular progress       | SVG ring, typed size enum (sm/md/lg), optional percentage label, value clamping to `[0, Total]`                                                                  |
+| `ToastContainer`   | FULLY_FUNCTIONAL | Fixed toast container   | JS `tcShowToast()` for dynamic toasts                                                                                                                            |
+| `Toast`            | FULLY_FUNCTIONAL | Server-rendered toast   | 4 types, dismissible, title, message, duration, auto-generates ID via `EnsureID` for auto-dismiss                                                                |
 
 ### Enums
 
-| Type              | Values                                                                         |
-| ----------------- | ------------------------------------------------------------------------------ |
+| Type              | Values                                                                                     |
+| ----------------- | ------------------------------------------------------------------------------------------ |
 | `FeedbackType`    | Success, Error, Warning, Info (canonical; `AlertType`/`ToastType` aliases removed in v2.0) |
-| `SpinnerSize`     | SM, MD, LG                                                                     |
-| `SkeletonVariant` | Text, TextShort, Title, Avatar, Image, Card, TableRow                          |
-| `ProgressBarSize` | SM, MD, LG                                                                     |
+| `SpinnerSize`     | SM, MD, LG                                                                                 |
+| `SkeletonVariant` | Text, TextShort, Title, Avatar, Image, Card, TableRow                                      |
+| `ProgressBarSize` | SM, MD, LG                                                                                 |
 
 ### Constants
 
@@ -321,12 +321,12 @@ Opt-in Datastar integration. Does NOT import the Datastar SDK — consumer adds 
 
 ### Components
 
-| Component    | Status           | Description                | Key Features                                                                                       |
-| ------------ | ---------------- | -------------------------- | -------------------------------------------------------------------------------------------------- |
-| `SDKScript`  | FULLY_FUNCTIONAL | Datastar runtime injection | Configurable version + CDN host, self-hostable via `Src`, CSP nonce                                |
-| `LiveRegion` | FULLY_FUNCTIONAL | SSE-powered live region    | `data-signals-merge`, auto-connect, `LivePoliteness` enum (Polite/Assertive), `aria-live` for a11y |
-| `Indicator`  | FULLY_FUNCTIONAL | Datastar loading indicator | Signal-based show/hide, motion-reduce, custom spinner fallback                                     |
-| `SSEErrorHandling` | FULLY_FUNCTIONAL | SSE error feedback  | Listens for `datastar-sse-error`, surfaces toast via `tcShowToast()`, `aria-live` announcer fallback, configurable duration |
+| Component          | Status           | Description                | Key Features                                                                                                                |
+| ------------------ | ---------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `SDKScript`        | FULLY_FUNCTIONAL | Datastar runtime injection | Configurable version + CDN host, self-hostable via `Src`, CSP nonce                                                         |
+| `LiveRegion`       | FULLY_FUNCTIONAL | SSE-powered live region    | `data-signals-merge`, auto-connect, `LivePoliteness` enum (Polite/Assertive), `aria-live` for a11y                          |
+| `Indicator`        | FULLY_FUNCTIONAL | Datastar loading indicator | Signal-based show/hide, motion-reduce, custom spinner fallback                                                              |
+| `SSEErrorHandling` | FULLY_FUNCTIONAL | SSE error feedback         | Listens for `datastar-sse-error`, surfaces toast via `tcShowToast()`, `aria-live` announcer fallback, configurable duration |
 
 ### Action Helpers
 
@@ -374,11 +374,11 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 
 ### Components
 
-| Component             | Status           | Description      | Key Features                                                         |
-| --------------------- | ---------------- | ---------------- | -------------------------------------------------------------------- |
-| `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 106 named icons, custom class, currentColor theming                  |
-| `IconWithStrokeWidth` | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)                          |
-| `IconRTL`             | FULLY_FUNCTIONAL | RTL mirror icon  | Directional icons auto-mirror under `dir="rtl"` via CSS `scaleX(-1)` |
+| Component             | Status           | Description      | Key Features                                                                     |
+| --------------------- | ---------------- | ---------------- | -------------------------------------------------------------------------------- |
+| `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 106 named icons, custom class, currentColor theming                              |
+| `IconWithStrokeWidth` | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)                                      |
+| `IconRTL`             | FULLY_FUNCTIONAL | RTL mirror icon  | Directional icons auto-mirror under `dir="rtl"` via CSS `scaleX(-1)`             |
 | `AnimatedIcon`        | FULLY_FUNCTIONAL | Animated icon    | 11 hover-triggered CSS animation presets, zero JavaScript, RTL variant available |
 
 ### Icon Names (106)
@@ -387,17 +387,17 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 
 ### Functions
 
-| Function              | Purpose                                                                |
-| --------------------- | ---------------------------------------------------------------------- |
-| `IconWithStrokeWidth` | Icon with custom stroke-width                                          |
-| `IconPathData`        | Returns raw path data for a named icon (full `<svg>` wrapper control)  |
-| `IconPathJS`          | Returns path data formatted for JS injection                           |
-| `AnimatedIcon`        | Renders an icon with its default hover animation (wraps in `<span>`)   |
-| `AnimatedIconWithAnimation` | Renders an icon with a specific animation preset                |
-| `AnimatedIconRTL`     | Animated icon with RTL mirroring support                               |
-| `DefaultAnimation`    | Returns the default animation for an icon name                         |
-| `AllAnimations`       | Returns all valid animation types, sorted                              |
-| `allIconNames`        | Auto-generated list of all icon names from `iconPathData` (unexported) |
+| Function                    | Purpose                                                                |
+| --------------------------- | ---------------------------------------------------------------------- |
+| `IconWithStrokeWidth`       | Icon with custom stroke-width                                          |
+| `IconPathData`              | Returns raw path data for a named icon (full `<svg>` wrapper control)  |
+| `IconPathJS`                | Returns path data formatted for JS injection                           |
+| `AnimatedIcon`              | Renders an icon with its default hover animation (wraps in `<span>`)   |
+| `AnimatedIconWithAnimation` | Renders an icon with a specific animation preset                       |
+| `AnimatedIconRTL`           | Animated icon with RTL mirroring support                               |
+| `DefaultAnimation`          | Returns the default animation for an icon name                         |
+| `AllAnimations`             | Returns all valid animation types, sorted                              |
+| `allIconNames`              | Auto-generated list of all icon names from `iconPathData` (unexported) |
 
 ### Known Issues
 
@@ -449,9 +449,9 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 | `MobileMenu`       | FULLY_FUNCTIONAL | Collapsible mobile menu     | JS toggle, nonce-based CSP                                                                                                                                                                                       |
 | `MobileMenuToggle` | FULLY_FUNCTIONAL | Hamburger button            | Conditional visibility                                                                                                                                                                                           |
 | `Footer`           | FULLY_FUNCTIONAL | Footer (legacy + multi-col) | `FooterProps` with `BaseProps`; legacy single-row when `Columns` empty; multi-column grid (`grid-cols-2 md:grid-cols-4`) with `Columns []FooterColumn` + optional brand + `BottomBar` slot. Backward compatible. |
-| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav        | Brand/footer/header slots, icons, active-route detection, collapsible sections (`SidebarNavItem.Section` groups items under native `<details>` headers, auto-expands the active section)                        |
+| `SidebarNav`       | FULLY_FUNCTIONAL | Vertical sidebar nav        | Brand/footer/header slots, icons, active-route detection, collapsible sections (`SidebarNavItem.Section` groups items under native `<details>` headers, auto-expands the active section)                         |
 | `LoadMore`         | FULLY_FUNCTIONAL | Cursor pagination button    | hx-get + hx-swap outerHTML, cursor as query param, centered layout, optional `InfiniteScroll` (hx-trigger="revealed")                                                                                            |
-| `EndOfList`        | FULLY_FUNCTIONAL | End-of-list indicator       | "You've reached the end" notice for the bottom of a list. `role="status"`, customizable `Message`. Companion to LoadMore/Pagination                                                                               |
+| `EndOfList`        | FULLY_FUNCTIONAL | End-of-list indicator       | "You've reached the end" notice for the bottom of a list. `role="status"`, customizable `Message`. Companion to LoadMore/Pagination                                                                              |
 
 ### Known Issues
 
@@ -493,16 +493,16 @@ _(None currently)_
 
 See `TODO_LIST.md` for the full verified inventory and `ROADMAP.md` for long-term direction.
 
-| Feature / Component                    | Package  | Status      | Notes                                                                                                                                                             |
-| -------------------------------------- | -------- | ----------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `DataTable`                            | display  | ✅ DONE     | High-level sortable/pagination/empty-state wrapper around `Table` (v0.18.0)                                                                                       |
-| `FilterDropdown`                       | forms    | ✅ DONE     | Purpose-built for HTMX filter bars                                                                                                                                |
-| Native `<dialog>`                      | display  | ✅ DONE     | Modal/Drawer use native `<dialog>` + `showModal()` (ADR 0014, v0.17.0)                                                                                            |
-| Semantic token layer                   | all      | ✅ DONE     | `templ-components-theme.css` + 3 presets, opt-in (v0.22.0, ADR 0008). Default flip deferred to v2.0.                                                              |
-| Self-host HTMX                         | layout   | ✅ DONE     | `PageProps.HTMXSrc` opt-in (v0.22.0, ADR 0007). Default flip (CDN → self-host) deferred to v2.0.                                                                  |
-| `Validate() error`                     | all      | 🟡 PARTIAL  | `ErrorPageProps.Validate()` shipped v1.0.0. Other props use graceful `utils.Lookup` fallback — no `Validate` needed unless invalid states are representable.      |
-| `internal/testutil/`                   | internal | ⬜ DEFERRED | Move test helpers behind re-exports. 70+ test imports affected; deferred post-v1.0 (TODO #34).                                                                    |
-| Compound components                    | display  | ⬜ v2.0     | Trigger/Content/Close sub-component API for overlays (TODO #39)                                                                                                   |
-| Per-package modules split              | all      | ✅ DONE (v2.0) | 5-module workspace: utils, icons, errorpage, charts/echarts, root. ADR-0034.                                                                                        |
-| Docs/showcase site                     | —        | ⬜ PLANNED  | Live rendered component catalog                                                                                                                                   |
-| Remove `AlertType`/`ToastType` aliases | feedback | ✅ DONE (v2.0) | Removed in v2.0 (ADR-0022). Use `FeedbackType`/`FeedbackSuccess`/etc. directly.                                                                                   |
+| Feature / Component                    | Package  | Status         | Notes                                                                                                                                                        |
+| -------------------------------------- | -------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DataTable`                            | display  | ✅ DONE        | High-level sortable/pagination/empty-state wrapper around `Table` (v0.18.0)                                                                                  |
+| `FilterDropdown`                       | forms    | ✅ DONE        | Purpose-built for HTMX filter bars                                                                                                                           |
+| Native `<dialog>`                      | display  | ✅ DONE        | Modal/Drawer use native `<dialog>` + `showModal()` (ADR 0014, v0.17.0)                                                                                       |
+| Semantic token layer                   | all      | ✅ DONE        | `templ-components-theme.css` + 3 presets, opt-in (v0.22.0, ADR 0008). Default flip deferred to v2.0.                                                         |
+| Self-host HTMX                         | layout   | ✅ DONE        | `PageProps.HTMXSrc` opt-in (v0.22.0, ADR 0007). Default flip (CDN → self-host) deferred to v2.0.                                                             |
+| `Validate() error`                     | all      | 🟡 PARTIAL     | `ErrorPageProps.Validate()` shipped v1.0.0. Other props use graceful `utils.Lookup` fallback — no `Validate` needed unless invalid states are representable. |
+| `internal/testutil/`                   | internal | ⬜ DEFERRED    | Move test helpers behind re-exports. 70+ test imports affected; deferred post-v1.0 (TODO #34).                                                               |
+| Compound components                    | display  | ⬜ v2.0        | Trigger/Content/Close sub-component API for overlays (TODO #39)                                                                                              |
+| Per-package modules split              | all      | ✅ DONE (v2.0) | 5-module workspace: utils, icons, errorpage, charts/echarts, root. ADR-0034.                                                                                 |
+| Docs/showcase site                     | —        | ⬜ PLANNED     | Live rendered component catalog                                                                                                                              |
+| Remove `AlertType`/`ToastType` aliases | feedback | ✅ DONE (v2.0) | Removed in v2.0 (ADR-0022). Use `FeedbackType`/`FeedbackSuccess`/etc. directly.                                                                              |

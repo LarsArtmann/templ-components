@@ -25,53 +25,53 @@ external unblocking.
 
 ### 1% that delivers 51% of the result
 
-| #   | Task                                | Why                                                                                                                                                                                                                                                                    | Effort              |
-| --- | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
-| 1   | **Commit + push docs-health fixes** | Every consumer and AI session that reads the docs sees accurate counts. 8 drift issues fixed: component counts (82→84), generated files (62→64), navigation (11→12), layout (5→6), SKILL.md (85→84), TODO_LIST version (0.14→0.16), lint command split brain resolved. | ✅ DONE (`be398ed`) |
+| # | Task                                | Why                                                                                                                                                                                                                                                                    | Effort              |
+| - | ----------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- |
+| 1 | **Commit + push docs-health fixes** | Every consumer and AI session that reads the docs sees accurate counts. 8 drift issues fixed: component counts (82→84), generated files (62→64), navigation (11→12), layout (5→6), SKILL.md (85→84), TODO_LIST version (0.14→0.16), lint command split brain resolved. | ✅ DONE (`be398ed`) |
 
 ### 4% that delivers 64% of the result
 
-| #   | Task                                                                                                                                                                                                                           | Why                                                                                                                                 | Effort  |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ------- |
-| 2   | **Fix 5 unfixed audit bugs** (navigation mobile-menu double-prefix, breadcrumbs auto-active, layout stale aria-checked after htmx swap, htmx retry `.click()` vs `htmx.trigger()`, forms.RadioGroup aria on individual inputs) | These are real correctness/a11y bugs found in the comprehensive bug hunt but never fixed. Each is 10-30 min with a regression test. | 90 min  |
-| 3   | **DataTable component** (#1 consumer-requested feature from DiscordSync + Overview)                                                                                                                                            | Wraps TableHeader + manages sort state. Every consumer hand-rolls this. Single highest-impact new component.                        | 2-4 hrs |
+| # | Task                                                                                                                                                                                                                           | Why                                                                                                                                 | Effort  |
+| - | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| 2 | **Fix 5 unfixed audit bugs** (navigation mobile-menu double-prefix, breadcrumbs auto-active, layout stale aria-checked after htmx swap, htmx retry `.click()` vs `htmx.trigger()`, forms.RadioGroup aria on individual inputs) | These are real correctness/a11y bugs found in the comprehensive bug hunt but never fixed. Each is 10-30 min with a regression test. | 90 min  |
+| 3 | **DataTable component** (#1 consumer-requested feature from DiscordSync + Overview)                                                                                                                                            | Wraps TableHeader + manages sort state. Every consumer hand-rolls this. Single highest-impact new component.                        | 2-4 hrs |
 
 ### 20% that delivers 80% of the result
 
-| #   | Task                                                                            | Why                                                                                                                                                                      | Effort |
-| --- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
-| 4   | **FilterDropdown component**                                                    | 2nd most-requested consumer feature. Purpose-built for HTMX filter bars. DiscordSync has 168 lines of custom filter code this would replace.                             | 45 min |
-| 5   | **Coverage push → 80%+ on 4 packages** (errorpage, feedback, forms, navigation) | Structural cap in generated templ branches means most gaps are unreachable. Targeted tests on handler edge paths, StepIndicator, Combobox rendering, SidebarNav JSON-LD. | 2 hrs  |
-| 6   | **Demo: standalone /forms quickstart route**                                    | Forms discoverability was the #1 gap reported by 3 consumers. A dedicated demo route showing a complete form with validation closes this.                                | 30 min |
-| 7   | **ADR for `encoding/json/v2` auto-formatter gotcha**                            | The json/v2 import was accidentally introduced 3 times by auto-formatters under `GOEXPERIMENT=jsonv2`. An ADR + `go:build` guard prevents recurrence.                    | 15 min |
-| 8   | **Update FEATURES.md with Table Flush/CellPadding** (v0.16.0 features)          | The Flush + CellPadding features shipped but FEATURES.md table rows may not mention them.                                                                                | 10 min |
+| # | Task                                                                            | Why                                                                                                                                                                      | Effort |
+| - | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------ |
+| 4 | **FilterDropdown component**                                                    | 2nd most-requested consumer feature. Purpose-built for HTMX filter bars. DiscordSync has 168 lines of custom filter code this would replace.                             | 45 min |
+| 5 | **Coverage push → 80%+ on 4 packages** (errorpage, feedback, forms, navigation) | Structural cap in generated templ branches means most gaps are unreachable. Targeted tests on handler edge paths, StepIndicator, Combobox rendering, SidebarNav JSON-LD. | 2 hrs  |
+| 6 | **Demo: standalone /forms quickstart route**                                    | Forms discoverability was the #1 gap reported by 3 consumers. A dedicated demo route showing a complete form with validation closes this.                                | 30 min |
+| 7 | **ADR for `encoding/json/v2` auto-formatter gotcha**                            | The json/v2 import was accidentally introduced 3 times by auto-formatters under `GOEXPERIMENT=jsonv2`. An ADR + `go:build` guard prevents recurrence.                    | 15 min |
+| 8 | **Update FEATURES.md with Table Flush/CellPadding** (v0.16.0 features)          | The Flush + CellPadding features shipped but FEATURES.md table rows may not mention them.                                                                                | 10 min |
 
 ### The remaining 80% to reach 100%
 
-| #   | Task                                                             | Why                          | Effort            | Tier     |
-| --- | ---------------------------------------------------------------- | ---------------------------- | ----------------- | -------- |
-| 9   | Blocks/composition examples (dashboard, login, settings layouts) | Consumer onboarding          | 3 hrs             | Deferred |
-| 10  | `Validate() error` on props structs                              | v1.0 API freeze prerequisite | 4 hrs             | v1.0     |
-| 11  | Move test helpers to `internal/testutil/`                        | v1.0 surface reduction       | 2 hrs             | v1.0     |
-| 12  | Self-host htmx as default (ADR 0007)                             | v1.0 breaking CSP change     | 15 min + decision | v1.0     |
-| 13  | Semantic token layer `bg-tc-primary` (ADR 0008)                  | v1.0 theming power           | 4 hrs+            | v1.0     |
-| 14  | Remove deprecated aliases                                        | v1.0 cleanup                 | 30 min            | v1.0     |
-| 15  | Compound component pattern (Trigger/Content/Close)               | v2.0 overlay architecture    | 3 hrs             | v2.0     |
-| 16  | Native `<dialog>` element for Modal/Drawer                       | v2.0 accessibility           | 3 hrs             | v2.0     |
-| 17  | Headless/unstyled component variants                             | v2.0 flexibility             | 8-16 hrs          | v2.0     |
-| 18  | CLI tool (`templ-components add <component>`)                    | v2.0 DX                      | 4-8 hrs           | v2.0     |
-| 19  | Demo/showcase site (live rendered components)                    | Adoption catalyst            | 4-8 hrs           | Blocked  |
-| 20  | `awesome-templ` PR submission                                    | Community visibility         | 5 min             | Blocked  |
-| 21  | `templ.guide` listing submission                                 | Community visibility         | 5 min             | Blocked  |
-| 22  | SSH tag signing configuration                                    | Release process              | 10 min            | Blocked  |
-| 23  | Visual regression testing (Playwright)                           | Quality gate                 | 30 min+           | Blocked  |
-| 24  | Slider component (ARIA slider pattern)                           | Research §5                  | 2 hrs             | New      |
-| 25  | Rating component (star rating, keyboard)                         | Research §5                  | 1 hr              | New      |
-| 26  | TagsInput component                                              | Research §5                  | 2 hrs             | New      |
-| 27  | ContextMenu component (right-click menu)                         | Research §5                  | 2 hrs             | New      |
-| 28  | Carousel component                                               | Research §5                  | 4 hrs             | New      |
-| 29  | HoverCard component                                              | Research §5                  | 2 hrs             | New      |
-| 30  | Calendar component (full calendar grid)                          | Research §5                  | 4 hrs             | New      |
+| #  | Task                                                             | Why                          | Effort            | Tier     |
+| -- | ---------------------------------------------------------------- | ---------------------------- | ----------------- | -------- |
+| 9  | Blocks/composition examples (dashboard, login, settings layouts) | Consumer onboarding          | 3 hrs             | Deferred |
+| 10 | `Validate() error` on props structs                              | v1.0 API freeze prerequisite | 4 hrs             | v1.0     |
+| 11 | Move test helpers to `internal/testutil/`                        | v1.0 surface reduction       | 2 hrs             | v1.0     |
+| 12 | Self-host htmx as default (ADR 0007)                             | v1.0 breaking CSP change     | 15 min + decision | v1.0     |
+| 13 | Semantic token layer `bg-tc-primary` (ADR 0008)                  | v1.0 theming power           | 4 hrs+            | v1.0     |
+| 14 | Remove deprecated aliases                                        | v1.0 cleanup                 | 30 min            | v1.0     |
+| 15 | Compound component pattern (Trigger/Content/Close)               | v2.0 overlay architecture    | 3 hrs             | v2.0     |
+| 16 | Native `<dialog>` element for Modal/Drawer                       | v2.0 accessibility           | 3 hrs             | v2.0     |
+| 17 | Headless/unstyled component variants                             | v2.0 flexibility             | 8-16 hrs          | v2.0     |
+| 18 | CLI tool (`templ-components add <component>`)                    | v2.0 DX                      | 4-8 hrs           | v2.0     |
+| 19 | Demo/showcase site (live rendered components)                    | Adoption catalyst            | 4-8 hrs           | Blocked  |
+| 20 | `awesome-templ` PR submission                                    | Community visibility         | 5 min             | Blocked  |
+| 21 | `templ.guide` listing submission                                 | Community visibility         | 5 min             | Blocked  |
+| 22 | SSH tag signing configuration                                    | Release process              | 10 min            | Blocked  |
+| 23 | Visual regression testing (Playwright)                           | Quality gate                 | 30 min+           | Blocked  |
+| 24 | Slider component (ARIA slider pattern)                           | Research §5                  | 2 hrs             | New      |
+| 25 | Rating component (star rating, keyboard)                         | Research §5                  | 1 hr              | New      |
+| 26 | TagsInput component                                              | Research §5                  | 2 hrs             | New      |
+| 27 | ContextMenu component (right-click menu)                         | Research §5                  | 2 hrs             | New      |
+| 28 | Carousel component                                               | Research §5                  | 4 hrs             | New      |
+| 29 | HoverCard component                                              | Research §5                  | 2 hrs             | New      |
+| 30 | Calendar component (full calendar grid)                          | Research §5                  | 4 hrs             | New      |
 
 ---
 
@@ -147,35 +147,35 @@ graph TD
 
 ### Tier 1 — Fix 5 unfixed audit bugs (90 min total)
 
-| #   | Task                                                                                                                                                                                                                                                       | Impact | Effort | Source              |
-| --- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | ------------------- |
-| 2a  | Fix navigation mobile-menu double-prefix: `EnsureID("mobile-menu", props.ID)` returns `"tc-mobile-menu-<hex>"` then template prepends `"tc-mobile-menu-"` again → `"tc-mobile-menu-tc-mobile-menu-<hex>"`. Functionally consistent but cosmetically wrong. | Low    | 15 min | bug-hunt-status:155 |
-| 2b  | Fix navigation breadcrumbs: no `CurrentPath` auto-detection. Unlike NavLink/SidebarNav, requires manual `Active: true` flag. API inconsistency.                                                                                                            | Medium | 30 min | bug-hunt-status:157 |
-| 2c  | Fix layout: stale `aria-checked` after htmx swap. ThemeToggle singleton guard prevents re-init after htmx swap. Newly swapped buttons get hardcoded `aria-checked="false"`.                                                                                | Medium | 20 min | bug-hunt-status:158 |
-| 2d  | Fix htmx retry: `.click()` may not replay non-click triggers. If original request used `hx-trigger="change"`, `.click()` won't replay. Should use `htmx.trigger()`.                                                                                        | Medium | 15 min | bug-hunt-status:159 |
-| 2e  | Fix forms.RadioGroup: error ARIA not on individual inputs. `aria-invalid`/`aria-describedby` only on `<fieldset>`, not on individual radio `<input>` elements.                                                                                             | Low    | 10 min | bug-hunt-status:161 |
+| #  | Task                                                                                                                                                                                                                                                       | Impact | Effort | Source              |
+| -- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ | ------------------- |
+| 2a | Fix navigation mobile-menu double-prefix: `EnsureID("mobile-menu", props.ID)` returns `"tc-mobile-menu-<hex>"` then template prepends `"tc-mobile-menu-"` again → `"tc-mobile-menu-tc-mobile-menu-<hex>"`. Functionally consistent but cosmetically wrong. | Low    | 15 min | bug-hunt-status:155 |
+| 2b | Fix navigation breadcrumbs: no `CurrentPath` auto-detection. Unlike NavLink/SidebarNav, requires manual `Active: true` flag. API inconsistency.                                                                                                            | Medium | 30 min | bug-hunt-status:157 |
+| 2c | Fix layout: stale `aria-checked` after htmx swap. ThemeToggle singleton guard prevents re-init after htmx swap. Newly swapped buttons get hardcoded `aria-checked="false"`.                                                                                | Medium | 20 min | bug-hunt-status:158 |
+| 2d | Fix htmx retry: `.click()` may not replay non-click triggers. If original request used `hx-trigger="change"`, `.click()` won't replay. Should use `htmx.trigger()`.                                                                                        | Medium | 15 min | bug-hunt-status:159 |
+| 2e | Fix forms.RadioGroup: error ARIA not on individual inputs. `aria-invalid`/`aria-describedby` only on `<fieldset>`, not on individual radio `<input>` elements.                                                                                             | Low    | 10 min | bug-hunt-status:161 |
 
 ### Tier 2 — DataTable component (2-4 hrs)
 
-| #   | Task                                                                                           | Impact | Effort |
-| --- | ---------------------------------------------------------------------------------------------- | ------ | ------ |
-| 3a  | Design `DataTableProps` struct (wraps TableHeader, manages sort state, pagination integration) | High   | 30 min |
-| 3b  | Implement `DataTable` component in `display/table_data.templ`                                  | High   | 60 min |
-| 3c  | Add golden + BDD + a11y + example tests                                                        | High   | 45 min |
-| 3d  | Register in contract test, update FEATURES.md, README, AGENTS.md, SKILL.md                     | High   | 15 min |
+| #  | Task                                                                                           | Impact | Effort |
+| -- | ---------------------------------------------------------------------------------------------- | ------ | ------ |
+| 3a | Design `DataTableProps` struct (wraps TableHeader, manages sort state, pagination integration) | High   | 30 min |
+| 3b | Implement `DataTable` component in `display/table_data.templ`                                  | High   | 60 min |
+| 3c | Add golden + BDD + a11y + example tests                                                        | High   | 45 min |
+| 3d | Register in contract test, update FEATURES.md, README, AGENTS.md, SKILL.md                     | High   | 15 min |
 
 ### Tier 3 — High-value improvements (3-4 hrs)
 
-| #   | Task                                                                  | Impact | Effort |
-| --- | --------------------------------------------------------------------- | ------ | ------ |
-| 4   | FilterDropdown component (forms package, HTMX auto-submit)            | High   | 45 min |
-| 5a  | Coverage: errorpage handler edge paths + write failures               | Medium | 30 min |
-| 5b  | Coverage: feedback StepIndicator branches + LoadingOverlay            | Medium | 30 min |
-| 5c  | Coverage: forms Combobox rendering branches + RadioGroup              | Medium | 30 min |
-| 5d  | Coverage: navigation SidebarNav + Breadcrumbs JSON-LD                 | Medium | 30 min |
-| 6   | Demo: standalone `/forms` quickstart route                            | Medium | 30 min |
-| 7   | ADR: json/v2 auto-formatter guard (`go:build` tag or pre-commit hook) | Medium | 15 min |
-| 8   | Update FEATURES.md table rows for Table Flush/CellPadding             | Low    | 10 min |
+| #  | Task                                                                  | Impact | Effort |
+| -- | --------------------------------------------------------------------- | ------ | ------ |
+| 4  | FilterDropdown component (forms package, HTMX auto-submit)            | High   | 45 min |
+| 5a | Coverage: errorpage handler edge paths + write failures               | Medium | 30 min |
+| 5b | Coverage: feedback StepIndicator branches + LoadingOverlay            | Medium | 30 min |
+| 5c | Coverage: forms Combobox rendering branches + RadioGroup              | Medium | 30 min |
+| 5d | Coverage: navigation SidebarNav + Breadcrumbs JSON-LD                 | Medium | 30 min |
+| 6  | Demo: standalone `/forms` quickstart route                            | Medium | 30 min |
+| 7  | ADR: json/v2 auto-formatter guard (`go:build` tag or pre-commit hook) | Medium | 15 min |
+| 8  | Update FEATURES.md table rows for Table Flush/CellPadding             | Low    | 10 min |
 
 ### Tier 4 — Deferred / blocked / future (remaining 80%)
 

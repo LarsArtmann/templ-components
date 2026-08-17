@@ -50,12 +50,12 @@ tree**. A `<tc-card>` with a shadow root would not receive the consumer's Tailwi
 
 The workarounds all re-architect the theming model:
 
-| Workaround                          | Why it fails here                                                                 |
-| ----------------------------------- | --------------------------------------------------------------------------------- |
-| CSS custom properties (do pierce)   | Forces a total rewrite: every utility class becomes a token reference. Abandons Tailwind. |
-| `::part()` / `::theme()`            | Per-shadow-root, awkward, and each part must be manually exported. Anti-ergonomic for consumers. |
+| Workaround                          | Why it fails here                                                                                         |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| CSS custom properties (do pierce)   | Forces a total rewrite: every utility class becomes a token reference. Abandons Tailwind.                 |
+| `::part()` / `::theme()`            | Per-shadow-root, awkward, and each part must be manually exported. Anti-ergonomic for consumers.          |
 | Constructable Stylesheets           | Requires JavaScript to inject the Tailwind output into each shadow root — violates the zero-JS principle. |
-| `@adoptedstylesheets` on the server | No SSR path exists; DSD `<style>` blocks can't reference the consumer's compiled Tailwind output. |
+| `@adoptedstylesheets` on the server | No SSR path exists; DSD `<style>` blocks can't reference the consumer's compiled Tailwind output.         |
 
 None of these preserve the library's core value: **write Go, get styled HTML, override
 colors without touching Go or JS.**
@@ -90,8 +90,8 @@ conflict, not an integration detail.
 DSD (Baseline 2024) server-renders a shadow root via `<template shadowrootmode="open">`,
 removing the JS-upgrade requirement. But it does not remove boundaries 1, 2, or 4 above:
 the shadow tree still can't receive the consumer's Tailwind utility classes, the
-distribution problem is unchanged, and HTMX swaps still desync. DSD solves the *hydration*
-problem that the library doesn't have, while leaving the *theming* problem intact.
+distribution problem is unchanged, and HTMX swaps still desync. DSD solves the _hydration_
+problem that the library doesn't have, while leaving the _theming_ problem intact.
 
 ## What the library DOES adopt: the "use the platform" philosophy
 
@@ -99,15 +99,15 @@ The library achieves every goal that motivates teams to reach for Web Components
 encapsulated, accessible, dependency-light components — through **native platform APIs in
 the light DOM**:
 
-| Goal                         | Web Components approach          | templ-components approach                              |
-| ---------------------------- | -------------------------------- | ------------------------------------------------------ |
-| Modal/dialog                 | Custom Element + shadow root     | Native `<dialog>` + `showModal()` (ADR-0014)           |
-| Floating menus / tooltips    | Custom Element positioning       | Native Popover API + `popovertarget` (ADR-0017)        |
-| Collapsible regions          | Custom Element open/close        | Native `<details>`/`<summary>` (ADR-0027)              |
-| Slideshows                   | Custom Element transform logic   | Native CSS scroll-snap (zero JS for touch/drag)        |
-| Component-scoped reflow      | Shadow DOM containment           | CSS Container Queries `@container` (ADR-0018)          |
-| Theme encapsulation          | Shadow DOM style boundary        | Tailwind `@theme` tokens + semantic alias layer (ADR-0008) |
-| Style encapsulation          | Shadow boundary                  | BEM-free utility classes + tailwind-merge conflict resolution |
+| Goal                      | Web Components approach        | templ-components approach                                     |
+| ------------------------- | ------------------------------ | ------------------------------------------------------------- |
+| Modal/dialog              | Custom Element + shadow root   | Native `<dialog>` + `showModal()` (ADR-0014)                  |
+| Floating menus / tooltips | Custom Element positioning     | Native Popover API + `popovertarget` (ADR-0017)               |
+| Collapsible regions       | Custom Element open/close      | Native `<details>`/`<summary>` (ADR-0027)                     |
+| Slideshows                | Custom Element transform logic | Native CSS scroll-snap (zero JS for touch/drag)               |
+| Component-scoped reflow   | Shadow DOM containment         | CSS Container Queries `@container` (ADR-0018)                 |
+| Theme encapsulation       | Shadow DOM style boundary      | Tailwind `@theme` tokens + semantic alias layer (ADR-0008)    |
+| Style encapsulation       | Shadow boundary                | BEM-free utility classes + tailwind-merge conflict resolution |
 
 The result: the library ships ~690 lines of JavaScript total across 112 components — and
 most components ship **zero** JS. This is the "use the platform" outcome that Web

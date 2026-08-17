@@ -96,33 +96,33 @@
 
 ## f) Top #25 next tasks (impact-sorted)
 
-| # | Task | Effort | Unblocks |
-|---|------|--------|----------|
-| 1 | Recompile demo CSS, commit (my miss) | 5m | CSS Freshness green |
-| 2 | Move `corepack enable pnpm` before setup-node in website.yml (both jobs) | 10m | Website green |
-| 3 | Decide coverage: add tests for 4 new components vs adjust gate | 30-90m | Build & Test green |
-| 4 | Pin fonts in `#visual` + regenerate goldens in pinned env | 60m | Visual green, trustworthy CI |
-| 5 | Watch a full green CI run end-to-end (the 1% deliverable) | 15m | Master trustworthy again |
-| 6 | Add CSS-staleness local guard script wired into pre-commit | 30m | Prevents repeat of d.1 |
-| 7 | Cut v1.8.3 patch release (Card zero-width fix is sitting on consumers) | 30m | Users on v1.8.2 |
-| 8 | README + installation.mdx: GOEXPERIMENT=jsonv2 callout with exact error text | 30m | Onboarding |
-| 9 | ADR-0035: freeze Datastar scope (4 components, no parity pursuit) | 45m | Scope clarity |
-| 10 | Refresh STANDOUT-IDEAS.md stats + GOTH-stack README cross-links | 45m | Discoverability |
-| 11 | Docs generator: manifest → MDX + sidebar wiring | 100m | The #1 competitive gap |
-| 12 | Docs pages: display (40 components) | 100m+ | Docs moat |
-| 13 | Docs pages: forms (21) | 100m | Docs moat |
-| 14 | Docs pages: feedback/layout/navigation (36) | 100m | Docs moat |
-| 15 | Docs pages: htmx/datastar/errorpage/icons/recipes | 90m | Docs moat |
-| 16 | chromedp interaction helpers (PressKey/Click/WaitVisible) in visualtest | 90m | JS behavior testing |
-| 17 | Keyboard-nav tests: Tabs + Carousel (RTL incl.) | 60m | WAI-ARIA proof |
-| 18 | Keyboard-nav tests: Dropdown + ContextMenu | 60m | WAI-ARIA proof |
-| 19 | Keyboard tests: Combobox + TagsInput | 60m | WAI-ARIA proof |
-| 20 | Shared `tcAttachOnce()` JS emitter; migrate 17 singletons | 90m | Maintainability |
-| 21 | Compound overlays (ADR-0023) part 1: Modal | 100m | v2.0 epic |
-| 22 | awesome-templ + templ.guide submissions (verify-before-filing first) | 30m | Discoverability |
-| 23 | Version sync root 1.8.1 vs sub-modules 1.8.2 + release script run | 60m | Release hygiene |
-| 24 | testutil migration phase 1 (TODO #34) | 60m | Maintainability |
-| 25 | BuildFlow external fixes (honest messages, devShell binaries) | 100m | Stops the rot class |
+| #  | Task                                                                         | Effort | Unblocks                     |
+| -- | ---------------------------------------------------------------------------- | ------ | ---------------------------- |
+| 1  | Recompile demo CSS, commit (my miss)                                         | 5m     | CSS Freshness green          |
+| 2  | Move `corepack enable pnpm` before setup-node in website.yml (both jobs)     | 10m    | Website green                |
+| 3  | Decide coverage: add tests for 4 new components vs adjust gate               | 30-90m | Build & Test green           |
+| 4  | Pin fonts in `#visual` + regenerate goldens in pinned env                    | 60m    | Visual green, trustworthy CI |
+| 5  | Watch a full green CI run end-to-end (the 1% deliverable)                    | 15m    | Master trustworthy again     |
+| 6  | Add CSS-staleness local guard script wired into pre-commit                   | 30m    | Prevents repeat of d.1       |
+| 7  | Cut v1.8.3 patch release (Card zero-width fix is sitting on consumers)       | 30m    | Users on v1.8.2              |
+| 8  | README + installation.mdx: GOEXPERIMENT=jsonv2 callout with exact error text | 30m    | Onboarding                   |
+| 9  | ADR-0035: freeze Datastar scope (4 components, no parity pursuit)            | 45m    | Scope clarity                |
+| 10 | Refresh STANDOUT-IDEAS.md stats + GOTH-stack README cross-links              | 45m    | Discoverability              |
+| 11 | Docs generator: manifest → MDX + sidebar wiring                              | 100m   | The #1 competitive gap       |
+| 12 | Docs pages: display (40 components)                                          | 100m+  | Docs moat                    |
+| 13 | Docs pages: forms (21)                                                       | 100m   | Docs moat                    |
+| 14 | Docs pages: feedback/layout/navigation (36)                                  | 100m   | Docs moat                    |
+| 15 | Docs pages: htmx/datastar/errorpage/icons/recipes                            | 90m    | Docs moat                    |
+| 16 | chromedp interaction helpers (PressKey/Click/WaitVisible) in visualtest      | 90m    | JS behavior testing          |
+| 17 | Keyboard-nav tests: Tabs + Carousel (RTL incl.)                              | 60m    | WAI-ARIA proof               |
+| 18 | Keyboard-nav tests: Dropdown + ContextMenu                                   | 60m    | WAI-ARIA proof               |
+| 19 | Keyboard tests: Combobox + TagsInput                                         | 60m    | WAI-ARIA proof               |
+| 20 | Shared `tcAttachOnce()` JS emitter; migrate 17 singletons                    | 90m    | Maintainability              |
+| 21 | Compound overlays (ADR-0023) part 1: Modal                                   | 100m   | v2.0 epic                    |
+| 22 | awesome-templ + templ.guide submissions (verify-before-filing first)         | 30m    | Discoverability              |
+| 23 | Version sync root 1.8.1 vs sub-modules 1.8.2 + release script run            | 60m    | Release hygiene              |
+| 24 | testutil migration phase 1 (TODO #34)                                        | 60m    | Maintainability              |
+| 25 | BuildFlow external fixes (honest messages, devShell binaries)                | 100m   | Stops the rot class          |
 
 ## g) Top question I cannot answer myself
 
@@ -133,4 +133,4 @@ fully green (more polish, but v1.8.2 stays the latest consumable tag longer)?
 
 ---
 
-*Point-in-time snapshot. Verify before relying on it. CI states referenced: 31828423621 (CI, partial), 31828423684 (Website, failed).*
+_Point-in-time snapshot. Verify before relying on it. CI states referenced: 31828423621 (CI, partial), 31828423684 (Website, failed)._

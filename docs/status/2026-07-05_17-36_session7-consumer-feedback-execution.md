@@ -130,12 +130,12 @@ Nothing from the Consumer Feedback Backlog remains unstarted — all 11 items ar
 
 ### Minor Issues Noticed (not blocking)
 
-| #   | Issue                                                                                                                                | Status (2026-07-06)                                     |
-| --- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
-| 1   | **`relative_time.templ` uses custom `formatInt()` helper** — unnecessary; `strconv.Itoa` would be cleaner. Shared with `CountBadge`. | ✅ Fixed — `strconv.Itoa` adopted                       |
-| 2   | **`formatRelativeTime` has no tests for edge cases** — boundary logic untested.                                                      | ✅ Fixed — boundary tests added (8 cases)               |
-| 3   | **`LoadMore` button has hardcoded default `id="tc-load-more"`** — ID collision risk.                                                 | ✅ Fixed — uses `utils.EnsureID("load-more", props.ID)` |
-| 4   | **`go.mod` was silently bumped from `go-error-family v0.5.1` to `v0.6.0`** during build.                                             | ✅ Monitored — no recurrence reported                   |
+| # | Issue                                                                                                                                | Status (2026-07-06)                                     |
+| - | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| 1 | **`relative_time.templ` uses custom `formatInt()` helper** — unnecessary; `strconv.Itoa` would be cleaner. Shared with `CountBadge`. | ✅ Fixed — `strconv.Itoa` adopted                       |
+| 2 | **`formatRelativeTime` has no tests for edge cases** — boundary logic untested.                                                      | ✅ Fixed — boundary tests added (8 cases)               |
+| 3 | **`LoadMore` button has hardcoded default `id="tc-load-more"`** — ID collision risk.                                                 | ✅ Fixed — uses `utils.EnsureID("load-more", props.ID)` |
+| 4 | **`go.mod` was silently bumped from `go-error-family v0.5.1` to `v0.6.0`** during build.                                             | ✅ Monitored — no recurrence reported                   |
 
 ---
 
@@ -166,48 +166,48 @@ Nothing from the Consumer Feedback Backlog remains unstarted — all 11 items ar
 
 ### High Impact (P0)
 
-| #   | Task                                                                       | Impact                          | Effort | Status (2026-07-06) |
-| --- | -------------------------------------------------------------------------- | ------------------------------- | ------ | ------------------- |
-| 1   | Fix `LoadMore` to use `utils.EnsureID()`                                   | Prevents ID collision bug       | 5 min  | ✅ Done             |
-| 2   | Replace `formatInt` with `strconv.Itoa`                                    | Removes unnecessary custom code | 10 min | ✅ Done             |
-| 3   | Add `formatRelativeTime` boundary unit tests                               | Covers untested time logic      | 15 min | ✅ Done             |
-| 4   | CopyButton: add `document.execCommand` fallback                            | Improves browser compatibility  | 15 min | ✅ Done             |
-| 5   | Integration tests: CopyButton+Card, CountBadge+Button, DefinitionGrid+Grid | Composition coverage            | 20 min | ✅ Done             |
+| # | Task                                                                       | Impact                          | Effort | Status (2026-07-06) |
+| - | -------------------------------------------------------------------------- | ------------------------------- | ------ | ------------------- |
+| 1 | Fix `LoadMore` to use `utils.EnsureID()`                                   | Prevents ID collision bug       | 5 min  | ✅ Done             |
+| 2 | Replace `formatInt` with `strconv.Itoa`                                    | Removes unnecessary custom code | 10 min | ✅ Done             |
+| 3 | Add `formatRelativeTime` boundary unit tests                               | Covers untested time logic      | 15 min | ✅ Done             |
+| 4 | CopyButton: add `document.execCommand` fallback                            | Improves browser compatibility  | 15 min | ✅ Done             |
+| 5 | Integration tests: CopyButton+Card, CountBadge+Button, DefinitionGrid+Grid | Composition coverage            | 20 min | ✅ Done             |
 
 ### Medium Impact (P1)
 
-| #   | Task                                                           | Impact                 | Effort | Status (2026-07-06)                              |
-| --- | -------------------------------------------------------------- | ---------------------- | ------ | ------------------------------------------------ |
-| 6   | SKILL.md Part 2: document CopyButton/Image/CountBadge patterns | Maintainer guidance    | 20 min | ✅ Done                                          |
-| 7   | Demo: anchor-linked table of contents at top                   | Demo navigability      | 15 min | ⬜ Not done                                      |
-| 8   | Demo: standalone `/forms` quickstart route                     | Forms discoverability  | 30 min | ⬜ Not done                                      |
-| 9   | Add runnable cursor pagination example to demo                 | Recipe concreteness    | 20 min | ✅ Done (recipe + demo)                          |
-| 10  | CopyButton: add `aria-live` for "Copied!" announcement         | Screen reader feedback | 10 min | ✅ Done (`role="status"` + `aria-live="polite"`) |
-| 11  | Image: document `srcset` limitation in godoc                   | Prevent confusion      | 5 min  | ✅ Done                                          |
-| 12  | StatCard HTMX: golden test for `hx-get` variant                | Snapshot coverage      | 10 min | ✅ Done                                          |
-| 13  | Card.Body: golden test for Body slot variant                   | Snapshot coverage      | 10 min | ✅ Done                                          |
+| #  | Task                                                           | Impact                 | Effort | Status (2026-07-06)                              |
+| -- | -------------------------------------------------------------- | ---------------------- | ------ | ------------------------------------------------ |
+| 6  | SKILL.md Part 2: document CopyButton/Image/CountBadge patterns | Maintainer guidance    | 20 min | ✅ Done                                          |
+| 7  | Demo: anchor-linked table of contents at top                   | Demo navigability      | 15 min | ⬜ Not done                                      |
+| 8  | Demo: standalone `/forms` quickstart route                     | Forms discoverability  | 30 min | ⬜ Not done                                      |
+| 9  | Add runnable cursor pagination example to demo                 | Recipe concreteness    | 20 min | ✅ Done (recipe + demo)                          |
+| 10 | CopyButton: add `aria-live` for "Copied!" announcement         | Screen reader feedback | 10 min | ✅ Done (`role="status"` + `aria-live="polite"`) |
+| 11 | Image: document `srcset` limitation in godoc                   | Prevent confusion      | 5 min  | ✅ Done                                          |
+| 12 | StatCard HTMX: golden test for `hx-get` variant                | Snapshot coverage      | 10 min | ✅ Done                                          |
+| 13 | Card.Body: golden test for Body slot variant                   | Snapshot coverage      | 10 min | ✅ Done                                          |
 
 ### v1.0 Preparation (P2)
 
-| #   | Task                                                        | Impact               | Effort | Status (2026-07-06)                                  |
-| --- | ----------------------------------------------------------- | -------------------- | ------ | ---------------------------------------------------- |
-| 14  | Design `Validate() error` pattern for all props structs     | v1.0 API freeze      | 2-4h   | ⬜ Not started                                       |
-| 15  | Plan `internal/testutil/` migration (70 test files)         | v1.0 breaking change | 3-4h   | ⬜ Not started                                       |
-| 16  | Self-host htmx: download + commit `htmx.min.js` to examples | v1.0 readiness       | 15 min | ⬜ Not started (ADR 0007 deferred)                   |
-| 17  | Remove deprecated aliases (`AlertType`, `ToastType`)        | v1.0 cleanup         | 30 min | ⬜ Not started (kept as aliases for backward compat) |
+| #  | Task                                                        | Impact               | Effort | Status (2026-07-06)                                  |
+| -- | ----------------------------------------------------------- | -------------------- | ------ | ---------------------------------------------------- |
+| 14 | Design `Validate() error` pattern for all props structs     | v1.0 API freeze      | 2-4h   | ⬜ Not started                                       |
+| 15 | Plan `internal/testutil/` migration (70 test files)         | v1.0 breaking change | 3-4h   | ⬜ Not started                                       |
+| 16 | Self-host htmx: download + commit `htmx.min.js` to examples | v1.0 readiness       | 15 min | ⬜ Not started (ADR 0007 deferred)                   |
+| 17 | Remove deprecated aliases (`AlertType`, `ToastType`)        | v1.0 cleanup         | 30 min | ⬜ Not started (kept as aliases for backward compat) |
 
 ### Polish (P3)
 
-| #   | Task                                                                   | Impact                  | Effort | Status (2026-07-06)                                |
-| --- | ---------------------------------------------------------------------- | ----------------------- | ------ | -------------------------------------------------- |
-| 18  | RelativeTime: optional JS auto-refresh (opt-in via `AutoRefresh bool`) | Dynamic UX              | 30 min | ✅ Done (defaults to `true`)                       |
-| 19  | CountBadge: `Max` default test (verify 99 overflow)                    | Edge case coverage      | 5 min  | ✅ Done                                            |
-| 20  | DefinitionGrid: test with `DetailComponent` slot                       | Component slot coverage | 10 min | ✅ Done                                            |
-| 21  | CopyButton: test nonce propagation on script tag                       | CSP safety verification | 5 min  | ✅ Done (CSP nonce-presence test)                  |
-| 22  | LoadMore: test `containsChar` helper                                   | Private helper coverage | 5 min  | ✅ Moot — `containsChar` deleted, `net/url` used   |
-| 23  | Add `CopyButton.Href` variant (link button that also copies)           | Consumer use case       | 15 min | ⬜ Not started                                     |
-| 24  | Add `Image.Rounded` bool for quick rounded corners                     | Common use case         | 10 min | ⬜ Not started                                     |
-| 25  | Benchmark tests for new components                                     | Performance baseline    | 20 min | ✅ Done (display, feedback, navigation benchmarks) |
+| #  | Task                                                                   | Impact                  | Effort | Status (2026-07-06)                                |
+| -- | ---------------------------------------------------------------------- | ----------------------- | ------ | -------------------------------------------------- |
+| 18 | RelativeTime: optional JS auto-refresh (opt-in via `AutoRefresh bool`) | Dynamic UX              | 30 min | ✅ Done (defaults to `true`)                       |
+| 19 | CountBadge: `Max` default test (verify 99 overflow)                    | Edge case coverage      | 5 min  | ✅ Done                                            |
+| 20 | DefinitionGrid: test with `DetailComponent` slot                       | Component slot coverage | 10 min | ✅ Done                                            |
+| 21 | CopyButton: test nonce propagation on script tag                       | CSP safety verification | 5 min  | ✅ Done (CSP nonce-presence test)                  |
+| 22 | LoadMore: test `containsChar` helper                                   | Private helper coverage | 5 min  | ✅ Moot — `containsChar` deleted, `net/url` used   |
+| 23 | Add `CopyButton.Href` variant (link button that also copies)           | Consumer use case       | 15 min | ⬜ Not started                                     |
+| 24 | Add `Image.Rounded` bool for quick rounded corners                     | Common use case         | 10 min | ⬜ Not started                                     |
+| 25 | Benchmark tests for new components                                     | Performance baseline    | 20 min | ✅ Done (display, feedback, navigation benchmarks) |
 
 **Scorecard:** 16 of 25 complete (64%).
 

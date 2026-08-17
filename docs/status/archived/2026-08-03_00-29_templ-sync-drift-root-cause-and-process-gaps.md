@@ -25,17 +25,17 @@ I did poorly, and what still needs to happen.
 
 ## A) FULLY DONE
 
-| #   | Item                                          | Evidence                                                                                                                |
-| --- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
-| 1   | Diagnosed the drift class                     | `breadcrumbs.templ:4` imports `encoding/json` (v1); the committed `breadcrumbs_templ.go:12` imported `encoding/json/v2` |
-| 2   | Traced the drift's origin through git history | `954a265` (migrate→v2) → `e37975b` (revert→v1) → `3a358e0` (daemon **re-introduces** v2 into the generated file only)   |
-| 3   | Fixed the generated file                      | `templ generate -f navigation/breadcrumbs.templ` produced `encoding/json` (v1), matching source                         |
-| 4   | Sync test passes                              | `go test ./utils/ -run TestTemplGeneratedInSync` → `ok`                                                                 |
-| 5   | Full build passes                             | `go build ./...` → exit 0                                                                                               |
-| 6   | Full utils package tests pass                 | `go test ./utils/` → `ok 0.752s`                                                                                        |
-| 7   | navigation package tests pass                 | `go test ./navigation/` → `ok 0.010s`                                                                                   |
-| 8   | Confirmed no OTHER drifts exist               | Scanned every `*_templ.go`; breadcrumbs was the only v2-in-gen/v1-in-src mismatch                                       |
-| 9   | Change auto-committed by daemon               | `10e80ff` authored as Lars Artmann, message `fix(navigation): use stable encoding/json...`                              |
+| # | Item                                          | Evidence                                                                                                                |
+| - | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| 1 | Diagnosed the drift class                     | `breadcrumbs.templ:4` imports `encoding/json` (v1); the committed `breadcrumbs_templ.go:12` imported `encoding/json/v2` |
+| 2 | Traced the drift's origin through git history | `954a265` (migrate→v2) → `e37975b` (revert→v1) → `3a358e0` (daemon **re-introduces** v2 into the generated file only)   |
+| 3 | Fixed the generated file                      | `templ generate -f navigation/breadcrumbs.templ` produced `encoding/json` (v1), matching source                         |
+| 4 | Sync test passes                              | `go test ./utils/ -run TestTemplGeneratedInSync` → `ok`                                                                 |
+| 5 | Full build passes                             | `go build ./...` → exit 0                                                                                               |
+| 6 | Full utils package tests pass                 | `go test ./utils/` → `ok 0.752s`                                                                                        |
+| 7 | navigation package tests pass                 | `go test ./navigation/` → `ok 0.010s`                                                                                   |
+| 8 | Confirmed no OTHER drifts exist               | Scanned every `*_templ.go`; breadcrumbs was the only v2-in-gen/v1-in-src mismatch                                       |
+| 9 | Change auto-committed by daemon               | `10e80ff` authored as Lars Artmann, message `fix(navigation): use stable encoding/json...`                              |
 
 ---
 

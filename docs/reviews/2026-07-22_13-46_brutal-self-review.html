@@ -65,14 +65,14 @@
 
         /* --- Type stacks (system only — zero external fonts) --- */
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
 
       * {
@@ -289,15 +289,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
 
       /* --- Issue cards --- */
@@ -310,15 +322,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue h3 {
         margin-bottom: 0.3rem;
@@ -822,8 +846,8 @@
           <div class="hero-badge">Self-Review</div>
           <h1>Stash cleanup & what I missed</h1>
           <p class="hero-subtitle">
-            Honest reflection on dropping five stale stashes and the verification drift I almost
-            shipped.
+            Honest reflection on dropping five stale stashes and the
+            verification drift I almost shipped.
           </p>
         </div>
 
@@ -844,14 +868,16 @@
             </div>
           </div>
           <p>
-            All five stashes were from the abandoned <code>modularize/strategic-split</code> branch.
-            Their contents were either already in master, redundant with family-derived defaults, or
+            All five stashes were from the abandoned
+            <code>modularize/strategic-split</code> branch. Their contents were
+            either already in master, redundant with family-derived defaults, or
             specific to the abandoned multi-module split. I dropped them safely.
           </p>
           <p>
-            However, I did not run the full verification suite immediately. When I finally did, it
-            surfaced a stale golden file and a lint configuration that had drifted from the
-            documented conventions. Those are now fixed, but they should not have been surprises.
+            However, I did not run the full verification suite immediately. When
+            I finally did, it surfaced a stale golden file and a lint
+            configuration that had drifted from the documented conventions.
+            Those are now fixed, but they should not have been surprises.
           </p>
         </section>
 
@@ -860,14 +886,18 @@
 
           <div class="issue issue-critical">
             <span class="severity severity-critical">Config Drift</span>
-            <h3><code>.golangci.yml</code> enabled linters that AGENTS.md says are disabled</h3>
+            <h3>
+              <code>.golangci.yml</code> enabled linters that AGENTS.md says are
+              disabled
+            </h3>
             <div class="where">.golangci.yml</div>
             <p>
-              <code>godoclint</code>, <code>ireturn</code>, and <code>testableexamples</code> were
-              enabled in the config, while AGENTS.md explicitly calls them "fundamentally
-              incompatible" and says "do NOT re-enable." This caused
-              <code>nix run .#verify</code> to fail with 69 lint issues. I fixed it by adding a
-              <code>linters.disable</code> block.
+              <code>godoclint</code>, <code>ireturn</code>, and
+              <code>testableexamples</code> were enabled in the config, while
+              AGENTS.md explicitly calls them "fundamentally incompatible" and
+              says "do NOT re-enable." This caused
+              <code>nix run .#verify</code> to fail with 69 lint issues. I fixed
+              it by adding a <code>linters.disable</code> block.
             </p>
           </div>
 
@@ -875,13 +905,15 @@
             <span class="severity severity-important">Stale Snapshot</span>
             <h3>Sidebar nav golden file did not match the templ source</h3>
             <div class="where">
-              navigation/sidebar_nav.templ vs navigation/testdata/sidebar_nav.golden
+              navigation/sidebar_nav.templ vs
+              navigation/testdata/sidebar_nav.golden
             </div>
             <p>
-              The <code>.templ</code> source had <code>min-h-0 overflow-y-auto</code> on the
-              scrollable nav, but the golden file lacked those classes. This was a pre-existing
-              mismatch, not caused by the stash cleanup. I updated the golden file with
-              <code>go test -update</code>.
+              The <code>.templ</code> source had
+              <code>min-h-0 overflow-y-auto</code> on the scrollable nav, but
+              the golden file lacked those classes. This was a pre-existing
+              mismatch, not caused by the stash cleanup. I updated the golden
+              file with <code>go test -update</code>.
             </p>
           </div>
 
@@ -890,20 +922,25 @@
             <h3>README component and enum counts are stale</h3>
             <div class="where">README.md:18</div>
             <p>
-              README advertises "94 server-rendered components" and "37 typed string enums." The
-              code and FEATURES.md report 98 exported templ components and 43 typed enums. This is a
-              split brain between marketing copy and the canonical feature inventory.
+              README advertises "94 server-rendered components" and "37 typed
+              string enums." The code and FEATURES.md report 98 exported templ
+              components and 43 typed enums. This is a split brain between
+              marketing copy and the canonical feature inventory.
             </p>
           </div>
 
           <div class="issue issue-nice">
             <span class="severity severity-nice">Good News</span>
-            <h3>Compliance tests that were historically failing are now passing</h3>
+            <h3>
+              Compliance tests that were historically failing are now passing
+            </h3>
             <div class="where">utils/</div>
             <p>
-              <code>TestDarkModeCompliance</code>, <code>TestDarkModeSemanticColors</code>, and
-              <code>TestMotionReduceCompliance</code> all pass. The project is in better dark-mode
-              and motion-reduce shape than the AGENTS.md warning suggests.
+              <code>TestDarkModeCompliance</code>,
+              <code>TestDarkModeSemanticColors</code>, and
+              <code>TestMotionReduceCompliance</code> all pass. The project is
+              in better dark-mode and motion-reduce shape than the AGENTS.md
+              warning suggests.
             </p>
           </div>
         </section>
@@ -914,33 +951,37 @@
           <div class="card card-problem">
             <h3>1. What did you forget?</h3>
             <p>
-              I forgot to run the full verification suite immediately after dropping the stashes. I
-              also forgot to check the README and AGENTS.md counts against the actual code before
-              declaring the cleanup complete.
+              I forgot to run the full verification suite immediately after
+              dropping the stashes. I also forgot to check the README and
+              AGENTS.md counts against the actual code before declaring the
+              cleanup complete.
             </p>
           </div>
 
           <div class="card card-problem">
             <h3>2. What is something stupid that we do anyway?</h3>
             <p>
-              We keep marketing copy in README.md with hardcoded counts that are not derived from
-              the code. Every new component silently makes the README more stale.
+              We keep marketing copy in README.md with hardcoded counts that are
+              not derived from the code. Every new component silently makes the
+              README more stale.
             </p>
           </div>
 
           <div class="card card-warning">
             <h3>3. What could you have done better?</h3>
             <p>
-              Started with <code>nix run .#verify</code> before any destructive action, then
-              verified the diff between the stashes and master programmatically rather than by
-              manual grep.
+              Started with <code>nix run .#verify</code> before any destructive
+              action, then verified the diff between the stashes and master
+              programmatically rather than by manual grep.
             </p>
           </div>
 
           <div class="card card-warning">
             <h3>4. What could you still improve?</h3>
             <ul>
-              <li>Derive README counts from the code or remove them entirely.</li>
+              <li>
+                Derive README counts from the code or remove them entirely.
+              </li>
               <li>Run a full docs-health audit to find more drift.</li>
               <li>Refresh TODO_LIST.md so it reflects reality.</li>
               <li>
@@ -953,59 +994,65 @@
           <div class="card">
             <h3>5. Did you lie to me?</h3>
             <p>
-              No, but I was overconfident. I stated the stashes were safe to drop without first
-              proving the verification suite still passed.
+              No, but I was overconfident. I stated the stashes were safe to
+              drop without first proving the verification suite still passed.
             </p>
           </div>
 
           <div class="card card-warning">
             <h3>6. How can we be less stupid?</h3>
             <p>
-              Make verification the first step after any state change, not the last. Treat every doc
-              count as a liability unless it is generated.
+              Make verification the first step after any state change, not the
+              last. Treat every doc count as a liability unless it is generated.
             </p>
           </div>
 
           <div class="card card-problem">
-            <h3>7. Is everything correctly integrated or are we building ghost systems?</h3>
+            <h3>
+              7. Is everything correctly integrated or are we building ghost
+              systems?
+            </h3>
             <p>
-              The modularize branch is a ghost system — valuable in concept but abandoned in
-              practice. The stashes were a smaller ghost inside it. They are now gone. The lint
-              config was a partial ghost: documented one way, configured another. It is now
-              integrated.
+              The modularize branch is a ghost system — valuable in concept but
+              abandoned in practice. The stashes were a smaller ghost inside it.
+              They are now gone. The lint config was a partial ghost: documented
+              one way, configured another. It is now integrated.
             </p>
           </div>
 
           <div class="card">
             <h3>8. Are we focusing on the scope creep trap?</h3>
             <p>
-              So far, no. The cleanup was scoped. The risk now is turning a doc-drift fix into a
-              full docs rewrite. I will keep each change self-contained.
+              So far, no. The cleanup was scoped. The risk now is turning a
+              doc-drift fix into a full docs rewrite. I will keep each change
+              self-contained.
             </p>
           </div>
 
           <div class="card card-solution">
             <h3>9. Did we remove something that was actually useful?</h3>
             <p>
-              No. Every stash change was either already in master, redundant, or tied to the
-              abandoned multi-module split.
+              No. Every stash change was either already in master, redundant, or
+              tied to the abandoned multi-module split.
             </p>
           </div>
 
           <div class="card card-problem">
             <h3>10. Did we create ANY split brains?</h3>
             <p>
-              Yes, by exposing existing ones: README counts vs. FEATURES counts, and the lint config
-              vs. AGENTS.md. The stash cleanup itself did not create new split brains.
+              Yes, by exposing existing ones: README counts vs. FEATURES counts,
+              and the lint config vs. AGENTS.md. The stash cleanup itself did
+              not create new split brains.
             </p>
           </div>
 
           <div class="card card-warning">
             <h3>11. How are we doing on tests? What can we do better?</h3>
             <p>
-              Tests pass. Compliance tests pass. The weak spot is snapshot coverage: many
-              assertion-based tests remain while only a handful of packages use golden files.
-              Converting more would improve diff readability and reduce brittle substring checks.
+              Tests pass. Compliance tests pass. The weak spot is snapshot
+              coverage: many assertion-based tests remain while only a handful
+              of packages use golden files. Converting more would improve diff
+              readability and reduce brittle substring checks.
             </p>
           </div>
         </section>
@@ -1013,12 +1060,19 @@
         <section id="plan">
           <h2><span class="num">04</span>Immediate Next Steps</h2>
           <p>
-            See the companion Pareto plan for the full ranked task list. The top quick wins are:
+            See the companion Pareto plan for the full ranked task list. The top
+            quick wins are:
           </p>
           <ol>
-            <li>Fix README.md component count (94 → 98) and enum count (37 → 43).</li>
-            <li>Run a docs-health audit and fix any critical or medium drift.</li>
-            <li>Refresh TODO_LIST.md: remove completed items, verify open items.</li>
+            <li>
+              Fix README.md component count (94 → 98) and enum count (37 → 43).
+            </li>
+            <li>
+              Run a docs-health audit and fix any critical or medium drift.
+            </li>
+            <li>
+              Refresh TODO_LIST.md: remove completed items, verify open items.
+            </li>
           </ol>
         </section>
 
@@ -1029,28 +1083,36 @@
           <div class="migration-content">
             <p>All findings from this review are resolved:</p>
             <ul>
-              <li><strong>Sidebar nav golden mismatch</strong> — FIXED. Regenerated.</li>
               <li>
-                <strong>README counts stale (94/37)</strong> — FIXED. README now shows 98
-                components, 43 enums. Drift-guard tests (<code>TestDocsCountDrift</code>) enforce
-                consistency.
+                <strong>Sidebar nav golden mismatch</strong> — FIXED.
+                Regenerated.
               </li>
               <li>
-                <strong>Historically failing compliance tests now passing</strong> — Confirmed. Dark
-                mode, motion-reduce, RTL scanners all green.
+                <strong>README counts stale (94/37)</strong> — FIXED. README now
+                shows 98 components, 43 enums. Drift-guard tests
+                (<code>TestDocsCountDrift</code>) enforce consistency.
               </li>
               <li>
-                <strong>TODO_LIST refresh</strong> — DONE. Rebuilt with verified open items only.
+                <strong
+                  >Historically failing compliance tests now passing</strong
+                >
+                — Confirmed. Dark mode, motion-reduce, RTL scanners all green.
               </li>
               <li>
-                <strong>Docs-health audit</strong> — DONE. FEATURES.md Planned section corrected,
-                ROADMAP updated to v1.2.0.
+                <strong>TODO_LIST refresh</strong> — DONE. Rebuilt with verified
+                open items only.
+              </li>
+              <li>
+                <strong>Docs-health audit</strong> — DONE. FEATURES.md Planned
+                section corrected, ROADMAP updated to v1.2.0.
               </li>
             </ul>
           </div>
         </section>
 
-        <footer class="footer">Generated 2026-07-22 · Reviewed against HEAD ffd52b3</footer>
+        <footer class="footer">
+          Generated 2026-07-22 · Reviewed against HEAD ffd52b3
+        </footer>
       </main>
     </div>
   </body>

@@ -27,26 +27,26 @@ match the actual diff — I read commit messages, not every changed line.
 
 ## a) FULLY DONE
 
-| Item | Details | Verification |
-| --- | --- | --- |
-| **CHANGELOG `[Unreleased]` populated** | 3 unreleased feature entries: BarChart tooltip/ValueLabel/MinBarWidth/Gap (commit `bacb528`), BarChart Height (`6d5e8f0`), SidebarNav collapsible sections + header slot (`91cbd18`). | `TestVersionMatchesChangelog` passes |
-| **README.md version badge fixed** | `v1.2.0` → `v1.8.0` (stale for 5 releases — prior reports flagged it, nobody fixed it until now). | Manual review of line 6 |
-| **README.md visual goldens count fixed** | `49` → `66` (computed: `find visualtest/testdata -name '*.png' \| wc -l`). | Computed from repo |
-| **ROADMAP.md component count fixed** | `110 across 10 packages` → `112 across 11 packages` (was stale since the 2026-08-05 18:50 session bumped the drift guard to 112 but missed ROADMAP). | `TestDocsCountDrift` passes |
-| **ROADMAP.md visual goldens fixed** | 3 stale references: `49 goldens` → `66 goldens` (Testing & QA row, Visual regression framework row, Visual test coverage expansion row). | Computed from repo |
-| **ROADMAP.md ghost TODO refs removed** | `See TODO #95–#97` and `See TODO #95–#101` on the Visual test coverage expansion + Chart ecosystem rows. These TODOs shipped in v1.8.0 — the refs are stale. Rewrote both rows to reflect current state. | Manual cross-check against CHANGELOG v1.8.0 |
-| **FEATURES.md BarChart row updated** | Added: per-bar `Tooltip` + `ValueLabel` override, `MinBarWidth`/`Gap`, `Height` for vertical sizing. Matches commits `bacb528` + `6d5e8f0`. | Cross-checked against `display/bar_chart.go` |
-| **FEATURES.md SidebarNav row updated** | Added: collapsible sections (`SidebarNavItem.Section`), header slot, auto-expand active section. Matches commit `91cbd18`. | Cross-checked against `navigation/sidebar_nav.templ` |
-| **FEATURES.md EndOfList row added** | Navigation component table was missing `EndOfList` (exists since v1.2.0, flagged by prior session's report as a pre-existing gap). Added full row. | `navigation/end_of_list.templ` exists |
-| **FEATURES.md visual goldens fixed** | Cross-cutting features line: `49 goldens across 29 component types` → `66 goldens incl. charts, dark-mode variants, and RTL coverage`. | Computed from repo |
-| **TODO_LIST.md version bumped** | `1.7.0` → `1.8.0`, date `2026-08-05` → `2026-08-09`. Was stale since v1.8.0 shipped. | Manual review |
-| **TODO_LIST #110 harvested** | Broken `v1.8.0` git tag — tag points to `685bee8` where `utils.Version` is still `1.7.0`. Needs user decision (force-move tag vs cut patch). Source: `2026-08-08_11-38_*.md`. | `git show v1.8.0 --stat` confirms |
-| **TODO_LIST #111 harvested** | `scripts/check-version-sync.sh` pre-commit guard — no fast guard checks `version.go == CHANGELOG == FEATURES.md` at commit time. Source: `2026-08-08_11-38_*.md`. | `scripts/` dir confirms it doesn't exist |
-| **TODO_LIST #112 harvested** | Extend `TestDocsCountDrift` to cover `README.md` + `ROADMAP.md` — the drift guard checks FEATURES/AGENTS/SKILL/sections.ts but NOT README or ROADMAP. This let the v1.2.0 badge + visual-golden drift go unnoticed. Source: multiple prior reports. | `utils/docs_count_test.go:21-34` confirms |
-| **9 reports annotated (all inline)** | Every numbered item in every unarchived `2026-08-0*` report resolved inline with `~~strikethrough~~` + verdict. ~510 items total across 9 files. Zero appendix-only annotations. | Section d) lists per-file counts |
-| **9 reports + 1 planning doc archived** | All `2026-08-0*` files moved to `docs/{status,planning}/archived/`. Active `docs/status/` and `docs/planning/` have zero `2026-08-0*` files. | `ls docs/status/2026-08-0*` → empty |
-| **Full test suite** | 19/19 packages pass. | `go test ./...` |
-| **All drift-guard tests** | 10/10 pass: TestDocsCountDrift, TestVersionMatches(Changelog\|Features), TestSkillComponentCount, TestDarkMode(Compliance\|SemanticColors), TestMotionReduceCompliance, TestCSSFreshness, TestEnvrcConsistency, TestGolangciDisabledLinters. | `go test ./utils/ -run '...'` |
+| Item                                     | Details                                                                                                                                                                                                                                             | Verification                                         |
+| ---------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **CHANGELOG `[Unreleased]` populated**   | 3 unreleased feature entries: BarChart tooltip/ValueLabel/MinBarWidth/Gap (commit `bacb528`), BarChart Height (`6d5e8f0`), SidebarNav collapsible sections + header slot (`91cbd18`).                                                               | `TestVersionMatchesChangelog` passes                 |
+| **README.md version badge fixed**        | `v1.2.0` → `v1.8.0` (stale for 5 releases — prior reports flagged it, nobody fixed it until now).                                                                                                                                                   | Manual review of line 6                              |
+| **README.md visual goldens count fixed** | `49` → `66` (computed: `find visualtest/testdata -name '*.png' \| wc -l`).                                                                                                                                                                          | Computed from repo                                   |
+| **ROADMAP.md component count fixed**     | `110 across 10 packages` → `112 across 11 packages` (was stale since the 2026-08-05 18:50 session bumped the drift guard to 112 but missed ROADMAP).                                                                                                | `TestDocsCountDrift` passes                          |
+| **ROADMAP.md visual goldens fixed**      | 3 stale references: `49 goldens` → `66 goldens` (Testing & QA row, Visual regression framework row, Visual test coverage expansion row).                                                                                                            | Computed from repo                                   |
+| **ROADMAP.md ghost TODO refs removed**   | `See TODO #95–#97` and `See TODO #95–#101` on the Visual test coverage expansion + Chart ecosystem rows. These TODOs shipped in v1.8.0 — the refs are stale. Rewrote both rows to reflect current state.                                            | Manual cross-check against CHANGELOG v1.8.0          |
+| **FEATURES.md BarChart row updated**     | Added: per-bar `Tooltip` + `ValueLabel` override, `MinBarWidth`/`Gap`, `Height` for vertical sizing. Matches commits `bacb528` + `6d5e8f0`.                                                                                                         | Cross-checked against `display/bar_chart.go`         |
+| **FEATURES.md SidebarNav row updated**   | Added: collapsible sections (`SidebarNavItem.Section`), header slot, auto-expand active section. Matches commit `91cbd18`.                                                                                                                          | Cross-checked against `navigation/sidebar_nav.templ` |
+| **FEATURES.md EndOfList row added**      | Navigation component table was missing `EndOfList` (exists since v1.2.0, flagged by prior session's report as a pre-existing gap). Added full row.                                                                                                  | `navigation/end_of_list.templ` exists                |
+| **FEATURES.md visual goldens fixed**     | Cross-cutting features line: `49 goldens across 29 component types` → `66 goldens incl. charts, dark-mode variants, and RTL coverage`.                                                                                                              | Computed from repo                                   |
+| **TODO_LIST.md version bumped**          | `1.7.0` → `1.8.0`, date `2026-08-05` → `2026-08-09`. Was stale since v1.8.0 shipped.                                                                                                                                                                | Manual review                                        |
+| **TODO_LIST #110 harvested**             | Broken `v1.8.0` git tag — tag points to `685bee8` where `utils.Version` is still `1.7.0`. Needs user decision (force-move tag vs cut patch). Source: `2026-08-08_11-38_*.md`.                                                                       | `git show v1.8.0 --stat` confirms                    |
+| **TODO_LIST #111 harvested**             | `scripts/check-version-sync.sh` pre-commit guard — no fast guard checks `version.go == CHANGELOG == FEATURES.md` at commit time. Source: `2026-08-08_11-38_*.md`.                                                                                   | `scripts/` dir confirms it doesn't exist             |
+| **TODO_LIST #112 harvested**             | Extend `TestDocsCountDrift` to cover `README.md` + `ROADMAP.md` — the drift guard checks FEATURES/AGENTS/SKILL/sections.ts but NOT README or ROADMAP. This let the v1.2.0 badge + visual-golden drift go unnoticed. Source: multiple prior reports. | `utils/docs_count_test.go:21-34` confirms            |
+| **9 reports annotated (all inline)**     | Every numbered item in every unarchived `2026-08-0*` report resolved inline with `~~strikethrough~~` + verdict. ~510 items total across 9 files. Zero appendix-only annotations.                                                                    | Section d) lists per-file counts                     |
+| **9 reports + 1 planning doc archived**  | All `2026-08-0*` files moved to `docs/{status,planning}/archived/`. Active `docs/status/` and `docs/planning/` have zero `2026-08-0*` files.                                                                                                        | `ls docs/status/2026-08-0*` → empty                  |
+| **Full test suite**                      | 19/19 packages pass.                                                                                                                                                                                                                                | `go test ./...`                                      |
+| **All drift-guard tests**                | 10/10 pass: TestDocsCountDrift, TestVersionMatches(Changelog\|Features), TestSkillComponentCount, TestDarkMode(Compliance\|SemanticColors), TestMotionReduceCompliance, TestCSSFreshness, TestEnvrcConsistency, TestGolangciDisabledLinters.        | `go test ./utils/ -run '...'`                        |
 
 ---
 
@@ -77,18 +77,18 @@ The display package Known Issues section says: "`Accordion` `grid-rows-[0fr]` CS
 
 ## c) NOT STARTED
 
-| Item | Why Not |
-| --- | --- |
-| **Run `golangci-lint run`** | Only ran `go test ./...` + drift-guard tests. Did not run the full lint suite. My markdown edits shouldn't affect lint, but the CHANGELOG entry descriptions or FEATURES.md text could theoretically contain a goconst false positive (unlikely — linters don't scan markdown). |
-| **Run `nix flake check`** | Did not verify treefmt formatting compliance for my edited files. |
-| **Run `nix fmt`** | Did not explicitly format-check changed markdown files. |
-| **Verify ROADMAP visual-golden component list** | Did not `ls visualtest/testdata/` to confirm each named component has a golden subdirectory. |
-| **Verify CHANGELOG `[Unreleased]` entries line-by-line** | Read commit messages, not full diffs. |
-| **Check Accordion Known Issue** | Did not verify whether `grid-rows-[0fr]` is now in compiled CSS. |
-| **Lint the archived reports for stale claims** | The 9 archived reports may contain stale claims in their prose (not the numbered items — those are all resolved). I did not scan the prose. |
-| **Update AGENTS.md** | AGENTS.md has a `breadcrumb_templ.go` note that may be stale post-`c11d2e4` migration. Did not check. |
-| **Run `scripts/check-templ-sync.sh`** | Did not verify generated-file sync after this session (no `.templ` files were touched, so this is low risk). |
-| **Run visual regression tests** | Did not run `nix run .#visual` (no visual changes made; low risk). |
+| Item                                                     | Why Not                                                                                                                                                                                                                                                                         |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Run `golangci-lint run`**                              | Only ran `go test ./...` + drift-guard tests. Did not run the full lint suite. My markdown edits shouldn't affect lint, but the CHANGELOG entry descriptions or FEATURES.md text could theoretically contain a goconst false positive (unlikely — linters don't scan markdown). |
+| **Run `nix flake check`**                                | Did not verify treefmt formatting compliance for my edited files.                                                                                                                                                                                                               |
+| **Run `nix fmt`**                                        | Did not explicitly format-check changed markdown files.                                                                                                                                                                                                                         |
+| **Verify ROADMAP visual-golden component list**          | Did not `ls visualtest/testdata/` to confirm each named component has a golden subdirectory.                                                                                                                                                                                    |
+| **Verify CHANGELOG `[Unreleased]` entries line-by-line** | Read commit messages, not full diffs.                                                                                                                                                                                                                                           |
+| **Check Accordion Known Issue**                          | Did not verify whether `grid-rows-[0fr]` is now in compiled CSS.                                                                                                                                                                                                                |
+| **Lint the archived reports for stale claims**           | The 9 archived reports may contain stale claims in their prose (not the numbered items — those are all resolved). I did not scan the prose.                                                                                                                                     |
+| **Update AGENTS.md**                                     | AGENTS.md has a `breadcrumb_templ.go` note that may be stale post-`c11d2e4` migration. Did not check.                                                                                                                                                                           |
+| **Run `scripts/check-templ-sync.sh`**                    | Did not verify generated-file sync after this session (no `.templ` files were touched, so this is low risk).                                                                                                                                                                    |
+| **Run visual regression tests**                          | Did not run `nix run .#visual` (no visual changes made; low risk).                                                                                                                                                                                                              |
 
 ---
 
@@ -204,93 +204,93 @@ falsehood by not fixing it.
 
 ### Critical — Close out this session's misses
 
-| # | Task | Why |
-| --- | --- | --- |
-| 1 | Run `golangci-lint run ./...` | Did not run this session |
-| 2 | Run `nix flake check` | Did not run this session |
-| 3 | Run `nix fmt` on changed markdown files | Did not run this session |
-| 4 | Verify CHANGELOG `[Unreleased]` entries against actual code diffs | Entries based on commit messages, not verified code |
-| 5 | Verify ROADMAP visual-golden component list | `ls visualtest/testdata/` and confirm each named component has a golden |
-| 6 | Check Accordion Known Issue: `rg "grid-rows-\[0fr\]" examples/demo/static/app.css` | Stale known issue — fix or confirm |
-| 7 | Verify AGENTS.md breadcrumbs note is updated for v2 migration | May be stale post-`c11d2e4` |
+| # | Task                                                                               | Why                                                                     |
+| - | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| 1 | Run `golangci-lint run ./...`                                                      | Did not run this session                                                |
+| 2 | Run `nix flake check`                                                              | Did not run this session                                                |
+| 3 | Run `nix fmt` on changed markdown files                                            | Did not run this session                                                |
+| 4 | Verify CHANGELOG `[Unreleased]` entries against actual code diffs                  | Entries based on commit messages, not verified code                     |
+| 5 | Verify ROADMAP visual-golden component list                                        | `ls visualtest/testdata/` and confirm each named component has a golden |
+| 6 | Check Accordion Known Issue: `rg "grid-rows-\[0fr\]" examples/demo/static/app.css` | Stale known issue — fix or confirm                                      |
+| 7 | Verify AGENTS.md breadcrumbs note is updated for v2 migration                      | May be stale post-`c11d2e4`                                             |
 
 ### High Priority — Drift prevention
 
-| # | Task | Why |
-| --- | --- | --- |
-| 8 | Implement TODO_LIST #112: extend `TestDocsCountDrift` to cover README.md + ROADMAP.md | Prevents the count-drift class permanently |
-| 9 | Implement TODO_LIST #111: write `scripts/check-version-sync.sh` | Prevents the version-drift class that broke v1.8.0 |
-| 10 | Decide TODO_LIST #110: force-move v1.8.0 tag or cut corrective release | Broken tag is consumer-facing |
+| #  | Task                                                                                  | Why                                                |
+| -- | ------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| 8  | Implement TODO_LIST #112: extend `TestDocsCountDrift` to cover README.md + ROADMAP.md | Prevents the count-drift class permanently         |
+| 9  | Implement TODO_LIST #111: write `scripts/check-version-sync.sh`                       | Prevents the version-drift class that broke v1.8.0 |
+| 10 | Decide TODO_LIST #110: force-move v1.8.0 tag or cut corrective release                | Broken tag is consumer-facing                      |
 
 ### Medium Priority — Annotation quality
 
-| # | Task | Why |
-| --- | --- | --- |
-| 11 | Scan archived report prose for stale TL;DR / Executive Summary claims | ANNOTATE mode covers prose, not just numbered items |
-| 12 | Full AGENTS.md VERIFY pass against current code | Breadth of stale-entry risk; hasn't been done this session |
-| 13 | Add the Accordion CSS Known Issue to a drift-guard test or remove it | Known issues without verification rot |
+| #  | Task                                                                  | Why                                                        |
+| -- | --------------------------------------------------------------------- | ---------------------------------------------------------- |
+| 11 | Scan archived report prose for stale TL;DR / Executive Summary claims | ANNOTATE mode covers prose, not just numbered items        |
+| 12 | Full AGENTS.md VERIFY pass against current code                       | Breadth of stale-entry risk; hasn't been done this session |
+| 13 | Add the Accordion CSS Known Issue to a drift-guard test or remove it  | Known issues without verification rot                      |
 
 ### Testing & Quality (from prior reports, still open)
 
-| # | Task | Why |
-| --- | --- | --- |
-| 14 | Add visual test for ContextMenu open state | Prior report F17 — still open |
-| 15 | Add visual test for Badge variants | Prior report F18 — still open |
-| 16 | Add hover/focus state tests for interactive components beyond buttons | Prior report F20 — still open |
-| 17 | Add fuzz test for `BuildSmoothPath` (Catmull-Rom spline) | Prior report F11 — still open |
-| 18 | Add fuzz test for `BuildAreaPath` | Prior report F12 — still open |
-| 19 | Add unit tests for `computeChartRenderData()` (12 params) | Prior report F14 — still open |
-| 20 | Add negative test for `TestNoOrderedTailwindSubstringsInTests` | Prior report F21 — still open |
-| 21 | Add browser test for popover edge-flipping | Prior report F22 — still open |
-| 22 | Review Tooltip test `templ.ComponentFunc` pattern | Prior report F23 — still open |
-| 23 | Add `actionlint` to CI | Prior report F28 — still open |
-| 24 | Add visual tests for Heatmap with `ShowValues` | Prior report F18 (self-review) — still open |
-| 25 | Add RTL visual test for charts | Prior report F20 (self-review) — still open |
+| #  | Task                                                                  | Why                                         |
+| -- | --------------------------------------------------------------------- | ------------------------------------------- |
+| 14 | Add visual test for ContextMenu open state                            | Prior report F17 — still open               |
+| 15 | Add visual test for Badge variants                                    | Prior report F18 — still open               |
+| 16 | Add hover/focus state tests for interactive components beyond buttons | Prior report F20 — still open               |
+| 17 | Add fuzz test for `BuildSmoothPath` (Catmull-Rom spline)              | Prior report F11 — still open               |
+| 18 | Add fuzz test for `BuildAreaPath`                                     | Prior report F12 — still open               |
+| 19 | Add unit tests for `computeChartRenderData()` (12 params)             | Prior report F14 — still open               |
+| 20 | Add negative test for `TestNoOrderedTailwindSubstringsInTests`        | Prior report F21 — still open               |
+| 21 | Add browser test for popover edge-flipping                            | Prior report F22 — still open               |
+| 22 | Review Tooltip test `templ.ComponentFunc` pattern                     | Prior report F23 — still open               |
+| 23 | Add `actionlint` to CI                                                | Prior report F28 — still open               |
+| 24 | Add visual tests for Heatmap with `ShowValues`                        | Prior report F18 (self-review) — still open |
+| 25 | Add RTL visual test for charts                                        | Prior report F20 (self-review) — still open |
 
 ### Component improvements (from prior reports, still open)
 
-| # | Task | Why |
-| --- | --- | --- |
-| 26 | Sparkline: add `EmptyMessage` field | Prior report F38 — empty values render nothing |
-| 27 | DataTable: test `Hover` and `Bordered` visual variants | Prior report F39 — only `Striped` tested |
-| 28 | CollapsibleSection: visual test collapsed state | Prior report F40 — only expanded tested |
-| 29 | Heatmap `ColorVar` defaults to `--ds-brand` which may not be defined | Prior report F37 — potential invisible cells |
-| 30 | Document the `computeChartRenderData` pattern in an ADR | Prior report F33 (self-review) — sub-template extraction |
+| #  | Task                                                                 | Why                                                      |
+| -- | -------------------------------------------------------------------- | -------------------------------------------------------- |
+| 26 | Sparkline: add `EmptyMessage` field                                  | Prior report F38 — empty values render nothing           |
+| 27 | DataTable: test `Hover` and `Bordered` visual variants               | Prior report F39 — only `Striped` tested                 |
+| 28 | CollapsibleSection: visual test collapsed state                      | Prior report F40 — only expanded tested                  |
+| 29 | Heatmap `ColorVar` defaults to `--ds-brand` which may not be defined | Prior report F37 — potential invisible cells             |
+| 30 | Document the `computeChartRenderData` pattern in an ADR              | Prior report F33 (self-review) — sub-template extraction |
 
 ### Architecture / DRY (from prior reports, routed to ROADMAP)
 
-| # | Task | Why |
-| --- | --- | --- |
-| 31 | Reduce `computeChartRenderData` params (builder or options struct) | 12 params (ADR-0010) |
-| 32 | Move `ChartRenderData.Attrs` out of geometry file | Decouples math from templ |
-| 33 | Extract shared chart SVG wrapper sub-template | `<svg>` open/close duplicated |
-| 34 | Extract `chartSeriesPaths` sub-template | Series-loop duplicated |
-| 35 | Share area-chart fill path logic | `BuildAreaPath` parameterization |
-| 36 | Extract `niceStepForNormalized` to lookup map | "Maps not switches" convention |
+| #  | Task                                                               | Why                              |
+| -- | ------------------------------------------------------------------ | -------------------------------- |
+| 31 | Reduce `computeChartRenderData` params (builder or options struct) | 12 params (ADR-0010)             |
+| 32 | Move `ChartRenderData.Attrs` out of geometry file                  | Decouples math from templ        |
+| 33 | Extract shared chart SVG wrapper sub-template                      | `<svg>` open/close duplicated    |
+| 34 | Extract `chartSeriesPaths` sub-template                            | Series-loop duplicated           |
+| 35 | Share area-chart fill path logic                                   | `BuildAreaPath` parameterization |
+| 36 | Extract `niceStepForNormalized` to lookup map                      | "Maps not switches" convention   |
 
 ### Release / process (from prior reports, still open)
 
-| # | Task | Why |
-| --- | --- | --- |
-| 37 | Add pre-push hook running full verify suite | Prior report — last gate before remote |
-| 38 | Add `nix run .#release` automation | Prior report |
-| 39 | Add `.github/workflows/release.yaml` for auto GitHub Releases | Prior report |
-| 40 | Add `release verify` target to flake.nix | Prior report |
-| 41 | Fix `scripts/pre-commit.sh` (replaced by BuildFlow) | Prior report |
-| 42 | Fix `go-structure-linter` findings (6) | Prior report |
-| 43 | Fix `gomod-check` findings (go.mod direct/indirect mix) | Prior report |
+| #  | Task                                                          | Why                                    |
+| -- | ------------------------------------------------------------- | -------------------------------------- |
+| 37 | Add pre-push hook running full verify suite                   | Prior report — last gate before remote |
+| 38 | Add `nix run .#release` automation                            | Prior report                           |
+| 39 | Add `.github/workflows/release.yaml` for auto GitHub Releases | Prior report                           |
+| 40 | Add `release verify` target to flake.nix                      | Prior report                           |
+| 41 | Fix `scripts/pre-commit.sh` (replaced by BuildFlow)           | Prior report                           |
+| 42 | Fix `go-structure-linter` findings (6)                        | Prior report                           |
+| 43 | Fix `gomod-check` findings (go.mod direct/indirect mix)       | Prior report                           |
 
 ### Visual testing infrastructure (from prior reports, routed to ROADMAP)
 
-| # | Task | Why |
-| --- | --- | --- |
-| 44 | Add `visualtest.AssertScreenshotStable` helper | Formalize calibration as reusable assertion |
-| 45 | Add `nix run .#visual-diff` app for side-by-side review | Easier human review (#80) |
-| 46 | Add `visualtest.Benchmark` helper | Per-component render latency |
-| 47 | Profile the visual test suite for slowest tests | Performance optimization |
-| 48 | Add golden file size regression detection | >50% change warrants investigation |
-| 49 | Add transition-duration constants to `display/shared.go` | CSS + Go harness single source of truth |
-| 50 | Add `tc visual` CLI subcommand | Visual tests without nix |
+| #  | Task                                                     | Why                                         |
+| -- | -------------------------------------------------------- | ------------------------------------------- |
+| 44 | Add `visualtest.AssertScreenshotStable` helper           | Formalize calibration as reusable assertion |
+| 45 | Add `nix run .#visual-diff` app for side-by-side review  | Easier human review (#80)                   |
+| 46 | Add `visualtest.Benchmark` helper                        | Per-component render latency                |
+| 47 | Profile the visual test suite for slowest tests          | Performance optimization                    |
+| 48 | Add golden file size regression detection                | >50% change warrants investigation          |
+| 49 | Add transition-duration constants to `display/shared.go` | CSS + Go harness single source of truth     |
+| 50 | Add `tc visual` CLI subcommand                           | Visual tests without nix                    |
 
 ---
 

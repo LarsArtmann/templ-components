@@ -158,33 +158,33 @@ Consider `go:generate stringer` for enums to eliminate manual string maps.
 
 Sorted by **impact × ease** (Pareto — high impact, low effort first):
 
-| #   | Task                                                | Impact | Effort | Package                 |
-| --- | --------------------------------------------------- | ------ | ------ | ----------------------- |
-| 1   | Add Breadcrumb JSON-LD render test                  | High   | S      | navigation              |
-| 2   | Verify demo app HTMX enable (`HTMXVersion` default) | Medium | S      | examples/demo           |
-| 3   | Update README.md for v0.2 API changes               | High   | M      | root                    |
-| 4   | Add DefaultLoadingOverlayProps test                 | Low    | S      | feedback                |
-| 5   | Add DefaultBreadcrumbsProps test                    | Low    | S      | navigation              |
-| 6   | Add Nav empty `Links` test                          | Low    | S      | navigation              |
-| 7   | Add CSRFToken empty string test                     | Low    | S      | htmx                    |
-| 8   | Tag v0.2.0 release + CHANGELOG final                | High   | S      | root                    |
-| 9   | Improve icons coverage (56.5% → 70%+)               | Medium | M      | icons                   |
-| 10  | Write ADR for filled vs stroke icon convention      | Medium | S      | docs/adr                |
-| 11  | Write ADR for JS attachment patterns                | Medium | S      | docs/adr                |
-| 12  | Add ADR for FeedbackType unification                | Medium | S      | docs/adr                |
-| 13  | Badge click/href support                            | Medium | M      | display                 |
-| 14  | ProgressBar indeterminate state                     | Medium | M      | feedback                |
-| 15  | Step indicator vertical variant                     | Medium | M      | feedback                |
-| 16  | Client-side JS tab switching                        | Medium | M      | display                 |
-| 17  | Tabs keyboard navigation (arrow keys)               | Medium | M      | display                 |
-| 18  | Consolidate inline JS into shared init              | High   | L      | layout/display/feedback |
-| 19  | Add Form component (inputs + validation)            | High   | L      | forms                   |
-| 20  | Skeleton component variants                         | Medium | L      | display                 |
-| 21  | Add Dialog/Drawer component variants                | High   | L      | display                 |
-| 22  | Add Combobox/Autocomplete component                 | High   | XL     | forms                   |
-| 23  | Add Date Picker component                           | High   | XL     | forms                   |
-| 24  | Golden file test infrastructure                     | High   | L      | testing                 |
-| 25  | Accessibility audit automation (axe-core)           | High   | L      | CI                      |
+| #  | Task                                                | Impact | Effort | Package                 |
+| -- | --------------------------------------------------- | ------ | ------ | ----------------------- |
+| 1  | Add Breadcrumb JSON-LD render test                  | High   | S      | navigation              |
+| 2  | Verify demo app HTMX enable (`HTMXVersion` default) | Medium | S      | examples/demo           |
+| 3  | Update README.md for v0.2 API changes               | High   | M      | root                    |
+| 4  | Add DefaultLoadingOverlayProps test                 | Low    | S      | feedback                |
+| 5  | Add DefaultBreadcrumbsProps test                    | Low    | S      | navigation              |
+| 6  | Add Nav empty `Links` test                          | Low    | S      | navigation              |
+| 7  | Add CSRFToken empty string test                     | Low    | S      | htmx                    |
+| 8  | Tag v0.2.0 release + CHANGELOG final                | High   | S      | root                    |
+| 9  | Improve icons coverage (56.5% → 70%+)               | Medium | M      | icons                   |
+| 10 | Write ADR for filled vs stroke icon convention      | Medium | S      | docs/adr                |
+| 11 | Write ADR for JS attachment patterns                | Medium | S      | docs/adr                |
+| 12 | Add ADR for FeedbackType unification                | Medium | S      | docs/adr                |
+| 13 | Badge click/href support                            | Medium | M      | display                 |
+| 14 | ProgressBar indeterminate state                     | Medium | M      | feedback                |
+| 15 | Step indicator vertical variant                     | Medium | M      | feedback                |
+| 16 | Client-side JS tab switching                        | Medium | M      | display                 |
+| 17 | Tabs keyboard navigation (arrow keys)               | Medium | M      | display                 |
+| 18 | Consolidate inline JS into shared init              | High   | L      | layout/display/feedback |
+| 19 | Add Form component (inputs + validation)            | High   | L      | forms                   |
+| 20 | Skeleton component variants                         | Medium | L      | display                 |
+| 21 | Add Dialog/Drawer component variants                | High   | L      | display                 |
+| 22 | Add Combobox/Autocomplete component                 | High   | XL     | forms                   |
+| 23 | Add Date Picker component                           | High   | XL     | forms                   |
+| 24 | Golden file test infrastructure                     | High   | L      | testing                 |
+| 25 | Accessibility audit automation (axe-core)           | High   | L      | CI                      |
 
 ---
 

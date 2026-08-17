@@ -30,14 +30,14 @@
         --warning: var(--color-yellow);
         --radius: 0px;
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
       * {
         box-sizing: border-box;
@@ -229,15 +229,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue {
         background: var(--surface-raised);
@@ -248,15 +260,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue .where {
         font-family: var(--font-mono);
@@ -549,9 +573,9 @@
           <div class="hero-badge">Brutal Self-Review</div>
           <h1>templ-components — Post-Dedup Honesty Check</h1>
           <p class="hero-subtitle">
-            After extracting 4 clone groups (9&rarr;6), a brutally honest review of what was
-            forgotten, what's broken, and what's stupid. The dedup was fine. The stewardship around
-            it was not.
+            After extracting 4 clone groups (9&rarr;6), a brutally honest review
+            of what was forgotten, what's broken, and what's stupid. The dedup
+            was fine. The stewardship around it was not.
           </p>
         </div>
 
@@ -600,24 +624,31 @@
         <div class="issue issue-critical">
           <span class="severity severity-critical">Blocking</span>
           <h3>Library is BROKEN: shared_templ.go not tracked by git</h3>
-          <div class="where">.gitignore:30 &middot; display/shared_templ.go</div>
+          <div class="where">
+            .gitignore:30 &middot; display/shared_templ.go
+          </div>
           <p>
-            The dedup work created <code>display/shared.templ</code> which generates
-            <code>display/shared_templ.go</code>. The <code>.gitignore</code> has a contradictory
-            rule: <code>!*_templ.go</code> at line 2 (un-ignore) but <code>*_templ.go</code> at line
-            30 (ignore). Last match wins in gitignore, so the generated file is silently ignored.
-            The previous session "fixed" this by removing line 30, but the fix was
+            The dedup work created <code>display/shared.templ</code> which
+            generates <code>display/shared_templ.go</code>. The
+            <code>.gitignore</code> has a contradictory rule:
+            <code>!*_templ.go</code> at line 2 (un-ignore) but
+            <code>*_templ.go</code> at line 30 (ignore). Last match wins in
+            gitignore, so the generated file is silently ignored. The previous
+            session "fixed" this by removing line 30, but the fix was
             <strong>reverted between sessions</strong> and nobody noticed.
           </p>
           <p>
-            Any consumer who runs <code>go get github.com/larsartmann/templ-components</code> gets
-            uncompilable code: <code>undefined: dialogHeader</code>. This is the #1 priority.
+            Any consumer who runs
+            <code>go get github.com/larsartmann/templ-components</code> gets
+            uncompilable code: <code>undefined: dialogHeader</code>. This is the
+            #1 priority.
           </p>
           <div class="callout callout-solution">
             <strong>Fix</strong>
-            Remove the trailing <code>*_templ.go</code> line from <code>.gitignore</code>. Run
-            <code>git add display/shared_templ.go</code>. Add a CI check that verifies all
-            <code>*_templ.go</code> files are tracked.
+            Remove the trailing <code>*_templ.go</code> line from
+            <code>.gitignore</code>. Run
+            <code>git add display/shared_templ.go</code>. Add a CI check that
+            verifies all <code>*_templ.go</code> files are tracked.
           </div>
         </div>
 
@@ -626,15 +657,16 @@
           <h3>Dedup work never committed</h3>
           <div class="where">54 files with uncommitted changes</div>
           <p>
-            The previous session completed the dedup refactoring (4 clone groups extracted),
-            verified tests pass, and then stopped without committing. 54 files sit dirty in the
-            working tree. The user's workflow explicitly requires committing after each
-            self-contained change. This is a process failure.
+            The previous session completed the dedup refactoring (4 clone groups
+            extracted), verified tests pass, and then stopped without
+            committing. 54 files sit dirty in the working tree. The user's
+            workflow explicitly requires committing after each self-contained
+            change. This is a process failure.
           </p>
           <div class="callout callout-solution">
             <strong>Fix</strong>
-            Commit in logical groups: (1) gitignore fix + new tracked files, (2) dedup refactoring,
-            (3) import normalization.
+            Commit in logical groups: (1) gitignore fix + new tracked files, (2)
+            dedup refactoring, (3) import normalization.
           </div>
         </div>
 
@@ -644,16 +676,19 @@
           <div class="where">go.sum &middot; how-to-golang policy</div>
           <p>
             <code>go.sum</code> contains entries for
-            <code>github.com/stretchr/testify v1.10.0</code> plus its transitive deps
-            (<code>go-spew</code>, <code>go-difflib</code>, <code>yaml.v3</code>). The
-            <code>how-to-golang</code> skill explicitly <strong>bans testify</strong> — use
-            <code>ginkgo/v2 + gomega</code> instead. <code>go mod why</code> confirms: "main module
-            does not need package". It's a phantom entry from an aborted experiment.
+            <code>github.com/stretchr/testify v1.10.0</code> plus its transitive
+            deps (<code>go-spew</code>, <code>go-difflib</code>,
+            <code>yaml.v3</code>). The <code>how-to-golang</code> skill
+            explicitly <strong>bans testify</strong> — use
+            <code>ginkgo/v2 + gomega</code> instead.
+            <code>go mod why</code> confirms: "main module does not need
+            package". It's a phantom entry from an aborted experiment.
           </p>
           <div class="callout callout-solution">
             <strong>Fix</strong>
-            Run <code>go mod tidy</code> to purge phantom entries. Verify go.sum only contains
-            entries for the 3 actual deps: templ, tailwind-merge-go, go-error-family.
+            Run <code>go mod tidy</code> to purge phantom entries. Verify go.sum
+            only contains entries for the 3 actual deps: templ,
+            tailwind-merge-go, go-error-family.
           </div>
         </div>
 
@@ -663,53 +698,67 @@
         <div class="issue issue-important">
           <span class="severity severity-important">Type Safety</span>
           <h3>Size lookups use map[string]string instead of typed keys</h3>
-          <div class="where">display/modal_go.go:36 &middot; display/drawer_go.go:51</div>
+          <div class="where">
+            display/modal_go.go:36 &middot; display/drawer_go.go:51
+          </div>
           <p>
-            <code>modalSizeLookup</code> and <code>drawerSizeLookup</code> are declared as
-            <code>map[string]string</code> with <code>string(ModalSizeSM)</code> conversions at
-            every entry and call site. Every other lookup table in the codebase
+            <code>modalSizeLookup</code> and <code>drawerSizeLookup</code> are
+            declared as <code>map[string]string</code> with
+            <code>string(ModalSizeSM)</code> conversions at every entry and call
+            site. Every other lookup table in the codebase
             (<code>buttonVariantLookup</code>, <code>feedbackStyleMap</code>,
-            <code>familyStyleMap</code>) correctly uses typed keys. This is inconsistent and loses
-            compile-time safety — a typo in a size string would silently fall through to the
-            default.
+            <code>familyStyleMap</code>) correctly uses typed keys. This is
+            inconsistent and loses compile-time safety — a typo in a size string
+            would silently fall through to the default.
           </p>
           <div class="callout callout-solution">
             <strong>Fix</strong>
-            Change to <code>map[ModalSize]string</code> and <code>map[DrawerSize]string</code>.
-            Remove all <code>string()</code> conversions. The <code>utils.Lookup[K,V]</code> generic
-            already supports this.
+            Change to <code>map[ModalSize]string</code> and
+            <code>map[DrawerSize]string</code>. Remove all
+            <code>string()</code> conversions. The
+            <code>utils.Lookup[K,V]</code> generic already supports this.
           </div>
         </div>
 
         <div class="issue issue-important">
           <span class="severity severity-important">Split Brain</span>
-          <h3>44 files of import-grouping churn from generator version mismatch</h3>
-          <div class="where">go.mod: templ v0.3.1020 &middot; installed: v0.3.1036</div>
+          <h3>
+            44 files of import-grouping churn from generator version mismatch
+          </h3>
+          <div class="where">
+            go.mod: templ v0.3.1020 &middot; installed: v0.3.1036
+          </div>
           <p>
-            The installed templ generator (v0.3.1036) groups <code>templ</code> and
-            <code>templruntime</code> imports into the main import block, while the committed files
-            (generated by v0.3.1020) keep them in a separate block. Every
-            <code>templ generate</code> run produces a 44-file diff of pure import reordering. This
-            pollutes PR diffs and git history with noise.
+            The installed templ generator (v0.3.1036) groups
+            <code>templ</code> and <code>templruntime</code> imports into the
+            main import block, while the committed files (generated by
+            v0.3.1020) keep them in a separate block. Every
+            <code>templ generate</code> run produces a 44-file diff of pure
+            import reordering. This pollutes PR diffs and git history with
+            noise.
           </p>
           <div class="callout callout-warning">
             <strong>Decision needed</strong>
-            Either pin the generator version to match go.mod, or accept the new grouping as the
-            standard and commit the normalization once. The recent commit history already shows 3
-            "regenerate: normalize import grouping" commits — this churn is recurring.
+            Either pin the generator version to match go.mod, or accept the new
+            grouping as the standard and commit the normalization once. The
+            recent commit history already shows 3 "regenerate: normalize import
+            grouping" commits — this churn is recurring.
           </div>
         </div>
 
         <div class="issue issue-important">
           <span class="severity severity-important">Convention</span>
           <h3>No flake.nix despite LarsArtmann project mandate</h3>
-          <div class="where">Global AGENTS.md: "Never use Makefile — use flake.nix"</div>
+          <div class="where">
+            Global AGENTS.md: "Never use Makefile — use flake.nix"
+          </div>
           <p>
-            The global AGENTS.md mandates <code>flake.nix</code> for all build/task automation in
-            LarsArtmann projects. There is no <code>flake.nix</code>, no <code>justfile</code>, no
-            <code>Makefile</code>. Build commands are raw shell strings copy-pasted from AGENTS.md.
-            This makes onboarding harder and breaks the Nix workflow that other LarsArtmann projects
-            use.
+            The global AGENTS.md mandates <code>flake.nix</code> for all
+            build/task automation in LarsArtmann projects. There is no
+            <code>flake.nix</code>, no <code>justfile</code>, no
+            <code>Makefile</code>. Build commands are raw shell strings
+            copy-pasted from AGENTS.md. This makes onboarding harder and breaks
+            the Nix workflow that other LarsArtmann projects use.
           </p>
         </div>
 
@@ -718,22 +767,30 @@
 
         <div class="issue issue-important">
           <span class="severity severity-important">Test Quality</span>
-          <h3>Coverage-padding test files inflate metrics without verifying behavior</h3>
+          <h3>
+            Coverage-padding test files inflate metrics without verifying
+            behavior
+          </h3>
           <div class="where">
-            display/coverage_boost_test.go, coverage_extra_test.go, coverage_test.go (6+ packages)
+            display/coverage_boost_test.go, coverage_extra_test.go,
+            coverage_test.go (6+ packages)
           </div>
           <p>
-            Files named <code>coverage_boost_test.go</code>, <code>coverage_extra_test.go</code>,
-            and <code>coverage_test.go</code> exist across 6+ packages. They render components with
-            all props set and assert <code>AssertContains</code> on single attributes. These test
-            "does it crash?" not "does it produce correct output?". The 72-79% coverage number is
-            inflated — these tests would pass even if the component rendered completely wrong HTML
-            as long as one attribute matched.
+            Files named <code>coverage_boost_test.go</code>,
+            <code>coverage_extra_test.go</code>, and
+            <code>coverage_test.go</code> exist across 6+ packages. They render
+            components with all props set and assert
+            <code>AssertContains</code> on single attributes. These test "does
+            it crash?" not "does it produce correct output?". The 72-79%
+            coverage number is inflated — these tests would pass even if the
+            component rendered completely wrong HTML as long as one attribute
+            matched.
           </p>
           <div class="callout callout-solution">
             <strong>Improve</strong>
-            Replace with golden/snapshot tests (the <code>internal/golden</code> package already
-            exists) that verify the full rendered output. Or adopt <code>go-snaps</code> per
+            Replace with golden/snapshot tests (the
+            <code>internal/golden</code> package already exists) that verify the
+            full rendered output. Or adopt <code>go-snaps</code> per
             how-to-golang recommendations.
           </div>
         </div>
@@ -743,9 +800,10 @@
           <h3>Average coverage 75% — below the 80% minimum</h3>
           <div class="where">go test -cover ./...</div>
           <p>
-            Package coverage ranges from 72.5% (display) to 79.2% (utils). The how-to-golang skill
-            sets a minimum of 80%. None of the 11 packages meet this threshold. The gap is likely in
-            error paths, edge cases, and the JS-generation functions in
+            Package coverage ranges from 72.5% (display) to 79.2% (utils). The
+            how-to-golang skill sets a minimum of 80%. None of the 11 packages
+            meet this threshold. The gap is likely in error paths, edge cases,
+            and the JS-generation functions in
             <code>display/shared.go</code>.
           </p>
         </div>
@@ -755,8 +813,8 @@
           <h3>Lint warning: inefficient string concatenation in toast.templ</h3>
           <div class="where">feedback/toast.templ:62</div>
           <p>
-            The templ linter warns about <code>writestring</code> inefficiency at line 62. Minor
-            performance issue in the toast JS generation path.
+            The templ linter warns about <code>writestring</code> inefficiency
+            at line 62. Minor performance issue in the toast JS generation path.
           </p>
         </div>
 
@@ -766,30 +824,35 @@
         <div class="card card-solution">
           <h4>What works well</h4>
           <p>
-            The <code>BaseProps</code> + <code>ComponentProps</code> interface with
-            <code>GetBaseProps()</code>/<code>SetBaseProps()</code> method promotion is a solid
-            composition pattern. The <code>utils.Lookup[K,V]</code> generic (recently refactored
-            from <code>MapEnum</code>) is the right abstraction for enum-to-class mappings. The
-            <code>FeedbackType</code> unification with backward-compatible aliases (<code
-              >AlertType = FeedbackType</code
-            >) is well done.
+            The <code>BaseProps</code> + <code>ComponentProps</code> interface
+            with <code>GetBaseProps()</code>/<code>SetBaseProps()</code> method
+            promotion is a solid composition pattern. The
+            <code>utils.Lookup[K,V]</code> generic (recently refactored from
+            <code>MapEnum</code>) is the right abstraction for enum-to-class
+            mappings. The <code>FeedbackType</code> unification with
+            backward-compatible aliases (<code>AlertType = FeedbackType</code>)
+            is well done.
           </p>
         </div>
 
         <div class="card card-warning">
           <h4>What needs work</h4>
           <p>
-            <strong>Stringly-typed lookups:</strong> <code>modalSizeLookup</code> and
-            <code>drawerSizeLookup</code> use <code>map[string]string</code> with
-            <code>string()</code> conversions, while every other lookup uses typed keys. This is the
-            one remaining type safety gap in the enum system.
+            <strong>Stringly-typed lookups:</strong>
+            <code>modalSizeLookup</code> and <code>drawerSizeLookup</code> use
+            <code>map[string]string</code> with
+            <code>string()</code> conversions, while every other lookup uses
+            typed keys. This is the one remaining type safety gap in the enum
+            system.
           </p>
           <p>
-            <strong>Overlay panel config split brain:</strong> <code>overlayPanelConfig</code> uses
-            <code>openClasses string</code> / <code>closeClasses string</code> containing
-            comma-separated JS class strings (<code>"'scale-100', 'opacity-100'"</code>). These are
-            JS-source-as-Go-strings — not type-safe, not validated. A typo produces silent runtime
-            breakage.
+            <strong>Overlay panel config split brain:</strong>
+            <code>overlayPanelConfig</code> uses
+            <code>openClasses string</code> /
+            <code>closeClasses string</code> containing comma-separated JS class
+            strings (<code>"'scale-100', 'opacity-100'"</code>). These are
+            JS-source-as-Go-strings — not type-safe, not validated. A typo
+            produces silent runtime breakage.
           </p>
         </div>
 
@@ -822,8 +885,9 @@
             <div class="text">
               <strong>Single panic, and it's the right kind</strong>
               <span
-                >Only panic is in icons/icon_paths.go:124 — a developer data integrity check for
-                stray <code>|</code> separators. Never reachable by consumers.</span
+                >Only panic is in icons/icon_paths.go:124 — a developer data
+                integrity check for stray <code>|</code> separators. Never
+                reachable by consumers.</span
               >
             </div>
           </div>
@@ -832,8 +896,9 @@
             <div class="text">
               <strong>Generic lookup pattern is excellent</strong>
               <span
-                ><code>utils.Lookup[K,V]</code> with fallback is the right Go generic pattern for
-                enum-to-value maps. Recently refactored from MapEnum — good iteration.</span
+                ><code>utils.Lookup[K,V]</code> with fallback is the right Go
+                generic pattern for enum-to-value maps. Recently refactored from
+                MapEnum — good iteration.</span
               >
             </div>
           </div>
@@ -842,8 +907,8 @@
             <div class="text">
               <strong>Clean import graph, no cycles</strong>
               <span
-                >utils &larr; all, internal/svg &larr; display/feedback/icons, feedback &larr; none.
-                Well-separated.</span
+                >utils &larr; all, internal/svg &larr; display/feedback/icons,
+                feedback &larr; none. Well-separated.</span
               >
             </div>
           </div>
@@ -852,8 +917,9 @@
             <div class="text">
               <strong>Golden testing infrastructure exists</strong>
               <span
-                ><code>internal/golden</code> package with <code>-update</code> flag support. Just
-                underused — most tests are coverage-padding instead.</span
+                ><code>internal/golden</code> package with
+                <code>-update</code> flag support. Just underused — most tests
+                are coverage-padding instead.</span
               >
             </div>
           </div>
@@ -872,8 +938,8 @@
         <!-- ==================== PLAN ==================== -->
         <h2 id="plan"><span class="num">06</span>Execution Plan</h2>
         <p>
-          Sorted by work required (low&rarr;high) vs impact (high&rarr;low). Each step is
-          self-contained and independently committable.
+          Sorted by work required (low&rarr;high) vs impact (high&rarr;low).
+          Each step is self-contained and independently committable.
         </p>
 
         <table>
@@ -950,9 +1016,11 @@
           <div class="migration-content">
             <h4>Fix .gitignore + track generated files</h4>
             <p>
-              Remove the trailing <code>*_templ.go</code> line. <code>git add</code> the new
-              <code>display/shared_templ.go</code>. Verify with <code>git check-ignore</code>. This
-              unblocks the library — nothing else matters if the code doesn't compile for consumers.
+              Remove the trailing <code>*_templ.go</code> line.
+              <code>git add</code> the new <code>display/shared_templ.go</code>.
+              Verify with <code>git check-ignore</code>. This unblocks the
+              library — nothing else matters if the code doesn't compile for
+              consumers.
             </p>
           </div>
         </div>
@@ -961,8 +1029,8 @@
           <div class="migration-content">
             <h4>Purge phantom testify from go.sum</h4>
             <p>
-              Run <code>go mod tidy</code>. Verify <code>go.sum</code> only has the 3 real deps.
-              Banned dependency must not linger.
+              Run <code>go mod tidy</code>. Verify <code>go.sum</code> only has
+              the 3 real deps. Banned dependency must not linger.
             </p>
           </div>
         </div>
@@ -971,9 +1039,10 @@
           <div class="migration-content">
             <h4>Commit dedup refactoring + import normalization</h4>
             <p>
-              Commit the 4 extracted clone groups (Icon delegation, dialogHeader,
-              codeAndFamilyBadge, diagnosticSection) plus the 44-file import regrouping from the
-              newer generator. Two commits: one for the refactoring, one for the normalization.
+              Commit the 4 extracted clone groups (Icon delegation,
+              dialogHeader, codeAndFamilyBadge, diagnosticSection) plus the
+              44-file import regrouping from the newer generator. Two commits:
+              one for the refactoring, one for the normalization.
             </p>
           </div>
         </div>
@@ -982,10 +1051,12 @@
           <div class="migration-content">
             <h4>Type-safe size lookups</h4>
             <p>
-              Change <code>modalSizeLookup</code> to <code>map[ModalSize]string</code> and
-              <code>drawerSizeLookup</code> to <code>map[DrawerSize]string</code>. Remove all
-              <code>string()</code> conversions. The <code>utils.Lookup[K,V]</code> generic already
-              handles this.
+              Change <code>modalSizeLookup</code> to
+              <code>map[ModalSize]string</code> and
+              <code>drawerSizeLookup</code> to
+              <code>map[DrawerSize]string</code>. Remove all
+              <code>string()</code> conversions. The
+              <code>utils.Lookup[K,V]</code> generic already handles this.
             </p>
           </div>
         </div>
@@ -994,9 +1065,9 @@
           <div class="migration-content">
             <h4>CI guard for untracked generated files</h4>
             <p>
-              Add a script to CI that verifies every <code>*.templ</code> file has a corresponding
-              tracked <code>*_templ.go</code> file. Prevents the exact regression that happened
-              here.
+              Add a script to CI that verifies every <code>*.templ</code> file
+              has a corresponding tracked <code>*_templ.go</code> file. Prevents
+              the exact regression that happened here.
             </p>
           </div>
         </div>
@@ -1005,8 +1076,8 @@
           <div class="migration-content">
             <h4>Fix toast.templ lint warning</h4>
             <p>
-              Address the <code>writestring</code> inefficiency at feedback/toast.templ:62. Low
-              impact but keeps lint clean.
+              Address the <code>writestring</code> inefficiency at
+              feedback/toast.templ:62. Low impact but keeps lint clean.
             </p>
           </div>
         </div>
@@ -1015,16 +1086,17 @@
           <div class="migration-content">
             <h4>Type-safe overlayPanelConfig</h4>
             <p>
-              Change <code>openClasses</code>/<code>closeClasses</code> from comma-separated JS
-              strings to <code>[]string</code>. Join at the use site in <code>shared.go</code>.
-              Eliminates a whole class of typo-induced runtime bugs.
+              Change <code>openClasses</code>/<code>closeClasses</code> from
+              comma-separated JS strings to <code>[]string</code>. Join at the
+              use site in <code>shared.go</code>. Eliminates a whole class of
+              typo-induced runtime bugs.
             </p>
           </div>
         </div>
 
         <footer class="footer">
-          Generated 2026-06-20 &middot; Reviewed against commit d0c91eb (v0.3.0) &middot; 46 templ
-          files, 26 handwritten Go files, 79 test files
+          Generated 2026-06-20 &middot; Reviewed against commit d0c91eb (v0.3.0)
+          &middot; 46 templ files, 26 handwritten Go files, 79 test files
         </footer>
       </main>
     </div>

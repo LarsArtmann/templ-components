@@ -164,58 +164,58 @@ These work, are verified, and committed (via auto-commit daemon):
 
 Sorted by **impact / effort** (P0 = do first):
 
-| #   | Priority | Task                                                                                                |
-| --- | -------- | --------------------------------------------------------------------------------------------------- |
-| 1   | **P0**   | Add visual tests for **Modal** and **Drawer** (native `<dialog>`, highest regression risk)          |
-| 2   | **P0**   | Add visual tests for **Dropdown/Popover/ContextMenu** (Popover API top-layer positioning)           |
-| 3   | **P0**   | Add visual tests for **Input** + **Select** (forms, most-used components)                           |
-| 4   | **P0**   | Add at least **one RTL test** — the option exists but is 100% unused                                |
-| 5   | **P0**   | Fix the shared-browser bug (one Chromium, many tabs) — 15s→2s test suite                            |
-| 6   | **P0**   | Fix `StateHover` to target first interactive child, not wrapper center                              |
-| 7   | **P1**   | Add visual tests for **Accordion** (`<details>` migration)                                          |
-| 8   | **P1**   | Add visual tests for **Tabs** (RTL keyboard nav, active tab focus ring)                             |
-| 9   | **P1**   | Add visual tests for **Tooltip** (pure CSS show/hide)                                               |
-| 10  | **P1**   | Add visual tests for **Toast** (enter/exit animation frame)                                         |
-| 11  | **P1**   | Add visual tests for **Spinner** + **Skeleton** (animation frame)                                   |
-| 12  | **P1**   | Add visual tests for **ProgressBar** (clamped aria-valuenow visual)                                 |
-| 13  | **P1**   | Add visual tests for **Table** (sortable headers, clickable rows, lazy rows)                        |
-| 14  | **P1**   | Add visual tests for **Avatar** + **AvatarStatus** (dot rendering)                                  |
-| 15  | **P1**   | Add visual tests for **Carousel** (scroll-snap positioning)                                         |
-| 16  | **P1**   | Add visual tests for **Combobox** (dropdown open state)                                             |
-| 17  | **P1**   | Add visual tests for **errorpage.ErrorPage** + **NotFound404**                                      |
-| 18  | **P1**   | Add a **dark-mode variant for EVERY component** that has semantic colors                            |
-| 19  | **P1**   | Calibrate `MaxMismatch` with a deliberate-breakage experiment (change a color, measure %)           |
-| 20  | **P2**   | Add `ViewportMobile`/`ViewportTablet`/`ViewportDesktop` presets                                     |
-| 21  | **P2**   | Add `String()` to `InteractionState`                                                                |
-| 22  | **P2**   | Change `Options.Dark`/`RTL` from `bool` to `*bool` (tri-state) or use a mode enum                   |
-| 23  | **P2**   | Remove or make configurable the `#tc-root` 16px padding in the render shell                         |
-| 24  | **P2**   | Add visual tests for **Toggle** (peer-checked translate-x animation frame)                          |
-| 25  | **P2**   | Add visual tests for **Checkbox** + **RadioGroup** (accent-color)                                   |
-| 26  | **P2**   | Add visual tests for **Textarea** (auto-grow field-sizing)                                          |
-| 27  | **P2**   | Add visual tests for **Slider** + **Rating**                                                        |
-| 28  | **P2**   | Add visual tests for **ValidationSummary** + **FieldError**                                         |
-| 29  | **P2**   | Add visual tests for **Breadcrumb** + **Pagination** + **SidebarNav**                               |
-| 30  | **P2**   | Add visual tests for **NavLink** + **MobileNavLink** (active/inactive states)                       |
-| 31  | **P2**   | Add visual tests for **Footer**                                                                     |
-| 32  | **P2**   | Add visual tests for **CountBadge** (overflow "N+", zero-hide)                                      |
-| 33  | **P2**   | Add visual tests for **RelativeTime**                                                               |
-| 34  | **P2**   | Add visual tests for **EndOfList** + **LoadMore**                                                   |
-| 35  | **P2**   | Add visual tests for **recipes.Dashboard** (full composed screen)                                   |
-| 36  | **P2**   | Add visual tests for **recipes.SettingsLayout**                                                     |
-| 37  | **P2**   | Add visual tests for **recipes.LoginCard**                                                          |
-| 38  | **P2**   | Add **768px tablet** viewport tests for responsive components (Grid, Card ContainerAware)           |
-| 39  | **P2**   | Add a **visual coverage metric** (like `TestSkillComponentCount`): "% of components with ≥1 golden" |
-| 40  | **P2**   | Add a test that `-update` actually rewrites goldens (harness meta-test)                             |
-| 41  | **P2**   | Add a test that `.fail/` artifacts are created on mismatch and cleaned on pass                      |
-| 42  | **P3**   | Add **CSS-staleness detection**: fail if `app.css` mtime < newest `.templ` mtime                    |
-| 43  | **P3**   | Add **animation capture** strategy (multiple frames? settled-state guarantee?)                      |
-| 44  | **P3**   | Add **cross-Chromium-version flakiness run** (run 50×, measure variance)                            |
-| 45  | **P3**   | Add **overlay/blink-comparison HTML** generator for PR review of golden changes                     |
-| 46  | **P3**   | Document the manual (non-Nix) path more prominently in `docs/visual-testing.md`                     |
-| 47  | **P3**   | Document `.fail/` cleanup-on-pass behavior in `docs/visual-testing.md`                              |
-| 48  | **P3**   | Consider a `scripts/visual.sh` for non-Nix contributors                                             |
-| 49  | **P3**   | Add **htmx loading states** visual tests (InlineLoadingOverlay, LoadingButton during request)       |
-| 50  | **P3**   | Investigate **Firefox/WebKit** feasibility (likely out of scope per no-Node rule, but document why) |
+| #  | Priority | Task                                                                                                |
+| -- | -------- | --------------------------------------------------------------------------------------------------- |
+| 1  | **P0**   | Add visual tests for **Modal** and **Drawer** (native `<dialog>`, highest regression risk)          |
+| 2  | **P0**   | Add visual tests for **Dropdown/Popover/ContextMenu** (Popover API top-layer positioning)           |
+| 3  | **P0**   | Add visual tests for **Input** + **Select** (forms, most-used components)                           |
+| 4  | **P0**   | Add at least **one RTL test** — the option exists but is 100% unused                                |
+| 5  | **P0**   | Fix the shared-browser bug (one Chromium, many tabs) — 15s→2s test suite                            |
+| 6  | **P0**   | Fix `StateHover` to target first interactive child, not wrapper center                              |
+| 7  | **P1**   | Add visual tests for **Accordion** (`<details>` migration)                                          |
+| 8  | **P1**   | Add visual tests for **Tabs** (RTL keyboard nav, active tab focus ring)                             |
+| 9  | **P1**   | Add visual tests for **Tooltip** (pure CSS show/hide)                                               |
+| 10 | **P1**   | Add visual tests for **Toast** (enter/exit animation frame)                                         |
+| 11 | **P1**   | Add visual tests for **Spinner** + **Skeleton** (animation frame)                                   |
+| 12 | **P1**   | Add visual tests for **ProgressBar** (clamped aria-valuenow visual)                                 |
+| 13 | **P1**   | Add visual tests for **Table** (sortable headers, clickable rows, lazy rows)                        |
+| 14 | **P1**   | Add visual tests for **Avatar** + **AvatarStatus** (dot rendering)                                  |
+| 15 | **P1**   | Add visual tests for **Carousel** (scroll-snap positioning)                                         |
+| 16 | **P1**   | Add visual tests for **Combobox** (dropdown open state)                                             |
+| 17 | **P1**   | Add visual tests for **errorpage.ErrorPage** + **NotFound404**                                      |
+| 18 | **P1**   | Add a **dark-mode variant for EVERY component** that has semantic colors                            |
+| 19 | **P1**   | Calibrate `MaxMismatch` with a deliberate-breakage experiment (change a color, measure %)           |
+| 20 | **P2**   | Add `ViewportMobile`/`ViewportTablet`/`ViewportDesktop` presets                                     |
+| 21 | **P2**   | Add `String()` to `InteractionState`                                                                |
+| 22 | **P2**   | Change `Options.Dark`/`RTL` from `bool` to `*bool` (tri-state) or use a mode enum                   |
+| 23 | **P2**   | Remove or make configurable the `#tc-root` 16px padding in the render shell                         |
+| 24 | **P2**   | Add visual tests for **Toggle** (peer-checked translate-x animation frame)                          |
+| 25 | **P2**   | Add visual tests for **Checkbox** + **RadioGroup** (accent-color)                                   |
+| 26 | **P2**   | Add visual tests for **Textarea** (auto-grow field-sizing)                                          |
+| 27 | **P2**   | Add visual tests for **Slider** + **Rating**                                                        |
+| 28 | **P2**   | Add visual tests for **ValidationSummary** + **FieldError**                                         |
+| 29 | **P2**   | Add visual tests for **Breadcrumb** + **Pagination** + **SidebarNav**                               |
+| 30 | **P2**   | Add visual tests for **NavLink** + **MobileNavLink** (active/inactive states)                       |
+| 31 | **P2**   | Add visual tests for **Footer**                                                                     |
+| 32 | **P2**   | Add visual tests for **CountBadge** (overflow "N+", zero-hide)                                      |
+| 33 | **P2**   | Add visual tests for **RelativeTime**                                                               |
+| 34 | **P2**   | Add visual tests for **EndOfList** + **LoadMore**                                                   |
+| 35 | **P2**   | Add visual tests for **recipes.Dashboard** (full composed screen)                                   |
+| 36 | **P2**   | Add visual tests for **recipes.SettingsLayout**                                                     |
+| 37 | **P2**   | Add visual tests for **recipes.LoginCard**                                                          |
+| 38 | **P2**   | Add **768px tablet** viewport tests for responsive components (Grid, Card ContainerAware)           |
+| 39 | **P2**   | Add a **visual coverage metric** (like `TestSkillComponentCount`): "% of components with ≥1 golden" |
+| 40 | **P2**   | Add a test that `-update` actually rewrites goldens (harness meta-test)                             |
+| 41 | **P2**   | Add a test that `.fail/` artifacts are created on mismatch and cleaned on pass                      |
+| 42 | **P3**   | Add **CSS-staleness detection**: fail if `app.css` mtime < newest `.templ` mtime                    |
+| 43 | **P3**   | Add **animation capture** strategy (multiple frames? settled-state guarantee?)                      |
+| 44 | **P3**   | Add **cross-Chromium-version flakiness run** (run 50×, measure variance)                            |
+| 45 | **P3**   | Add **overlay/blink-comparison HTML** generator for PR review of golden changes                     |
+| 46 | **P3**   | Document the manual (non-Nix) path more prominently in `docs/visual-testing.md`                     |
+| 47 | **P3**   | Document `.fail/` cleanup-on-pass behavior in `docs/visual-testing.md`                              |
+| 48 | **P3**   | Consider a `scripts/visual.sh` for non-Nix contributors                                             |
+| 49 | **P3**   | Add **htmx loading states** visual tests (InlineLoadingOverlay, LoadingButton during request)       |
+| 50 | **P3**   | Investigate **Firefox/WebKit** feasibility (likely out of scope per no-Node rule, but document why) |
 
 ---
 

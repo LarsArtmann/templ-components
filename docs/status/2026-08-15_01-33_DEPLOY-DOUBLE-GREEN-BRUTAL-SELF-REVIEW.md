@@ -9,14 +9,14 @@
 
 ## TL;DR
 
-| Area | State |
-| --- | --- |
-| CI workflow (4 jobs) | GREEN at `5514f63` |
+| Area                      | State                                                                                   |
+| ------------------------- | --------------------------------------------------------------------------------------- |
+| CI workflow (4 jobs)      | GREEN at `5514f63`                                                                      |
 | Website workflow (2 jobs) | GREEN at `b068220` (paths filter correctly skipped redeploy for scripts-only `5514f63`) |
-| Cloud Run demo | Live, healthy |
-| Firebase Hosting site | Live, serving |
-| Local CI rehearsal | `scripts/verify-local.sh` green end-to-end (71.7% coverage) |
-| Release v1.8.3/v1.9.0 | STILL BLOCKED ON USER DECISION (asked 3× across 2 sessions) |
+| Cloud Run demo            | Live, healthy                                                                           |
+| Firebase Hosting site     | Live, serving                                                                           |
+| Local CI rehearsal        | `scripts/verify-local.sh` green end-to-end (71.7% coverage)                             |
+| Release v1.8.3/v1.9.0     | STILL BLOCKED ON USER DECISION (asked 3× across 2 sessions)                             |
 
 ---
 
@@ -34,7 +34,7 @@
 
 ## b) PARTIALLY DONE
 
-1. **"Watch a complete green run" (todo #7 from prior session)** — DONE for CI and Website deploy, but the *deployed website content* is stale (see e/1 and f/2): the fresh deploy advertises "94 Components / 102 SVG icons / 37 Typed enums" vs actual 116/106. The pipeline is green; the product it ships lies a little.
+1. **"Watch a complete green run" (todo #7 from prior session)** — DONE for CI and Website deploy, but the _deployed website content_ is stale (see e/1 and f/2): the fresh deploy advertises "94 Components / 102 SVG icons / 37 Typed enums" vs actual 116/106. The pipeline is green; the product it ships lies a little.
 2. **Local rehearsal coverage** — `verify-local.sh` mirrors the CI workflow only. The Website workflow (astro build, demo Dockerfile, deploy) has NO local rehearsal equivalent; I verified the Dockerfile manually once instead.
 3. **CI-recovery f-list** — 3 of ~8 items done this session (AGENTS gotchas, verify-local, font guard). The rest (templ.guide listing, M8 docs generator, per-package docs, coverage lifts) untouched.
 
@@ -69,6 +69,7 @@
 ## f) Up to 50 things to get done next (impact-ordered; [C] = carried over, [N] = new this session)
 
 **Release & user-facing truth (highest impact)**
+
 1. [C] Decide v1.8.3 vs v1.9.0 and cut via `scripts/release.sh` — proxy's v1.8.2 ships the Card zero-width collapse bug (needs user answer, see g/1).
 2. [N] Fix stale homepage stats: 94→116 components, 102→106 icons, "4 Stars"/"94 Stars" badge, 37 enums claim — the live site undercounts the library (see e/1 above).
 3. [C] Seed CHANGELOG `[Unreleased]` with deploy/CI fixes so the next release is warm.
@@ -113,7 +114,7 @@
 **Then the feature track (after Tier-1 is truly closed)**
 33. [C] Whatever the ROADMAP holds next — this session deliberately stayed in Tier-1/CI scope per standing instruction.
 
-*(33 concrete items; padding to 50 with speculation would violate the "report what you noticed" instruction.)*
+_(33 concrete items; padding to 50 with speculation would violate the "report what you noticed" instruction.)_
 
 ## g) Questions I CANNOT answer myself (max 3)
 
@@ -123,4 +124,4 @@
 
 ---
 
-*Report format: user-mandated Markdown at docs/status/ (overrides the skill's HTML default; flagged per skill policy). Point-in-time snapshot — re-verify before treating as truth. Then: WAIT FOR INSTRUCTIONS.*
+_Report format: user-mandated Markdown at docs/status/ (overrides the skill's HTML default; flagged per skill policy). Point-in-time snapshot — re-verify before treating as truth. Then: WAIT FOR INSTRUCTIONS._

@@ -1,21 +1,21 @@
 # Execution Plan — templ-components Session 7
 
-**Date:** 2026-05-18  
+**Date:** 2026-05-18\
 **Status:** Planning complete, awaiting execution
 
 ## What I Forgot / Could Have Done Better
 
-| #   | Issue                                                                                                           | Severity        | Where                                          |
-| --- | --------------------------------------------------------------------------------------------------------------- | --------------- | ---------------------------------------------- |
-| 1   | **Modal IIFE XSS** — `'{{ props.ID }}'` not JS-escaped. Dropdown uses `strconv.Quote()`, Modal doesn't          | 🔴 Security     | `display/modal.templ:96`                       |
-| 2   | **StatCard TrendNone bug** — `else` branch says "Decreased by" for TrendNone. Should be 3-way `if/else if/else` | 🔴 Correctness  | `display/card.templ:159-163`                   |
-| 3   | **TrendNone = ""** — empty string sentinel indistinguishable from "forgot to set"                               | 🟡 Type safety  | `display/card.templ:124`                       |
-| 4   | **badgeSizeClass uses switch** — violates project's own "maps not switches" convention                          | 🟡 Convention   | `display/badge.templ`                          |
-| 5   | **cardPaddingClass uses switch** — same convention violation                                                    | 🟡 Convention   | `display/card.templ`                           |
-| 6   | **alertIconName/toastIconName duplicated** — nearly identical switch functions                                  | 🟡 Dedup        | `feedback/alert.templ`, `feedback/toast.templ` |
-| 7   | **Nonce parameter inconsistency** — ToastContainer/ThemeScript/etc take bare `string` nonce, not BaseProps      | 🟢 Consistency  | Multiple files                                 |
-| 8   | **No Table input validation** — mismatched header/row cell counts silently render broken HTML                   | 🟡 Robustness   | `display/table.templ`                          |
-| 9   | **Missing type fields** — DropdownItem.Disabled, InputProps.MaxLength, TableProps.EmptyMessage                  | 🟢 Feature gaps | Multiple files                                 |
+| # | Issue                                                                                                           | Severity        | Where                                          |
+| - | --------------------------------------------------------------------------------------------------------------- | --------------- | ---------------------------------------------- |
+| 1 | **Modal IIFE XSS** — `'{{ props.ID }}'` not JS-escaped. Dropdown uses `strconv.Quote()`, Modal doesn't          | 🔴 Security     | `display/modal.templ:96`                       |
+| 2 | **StatCard TrendNone bug** — `else` branch says "Decreased by" for TrendNone. Should be 3-way `if/else if/else` | 🔴 Correctness  | `display/card.templ:159-163`                   |
+| 3 | **TrendNone = ""** — empty string sentinel indistinguishable from "forgot to set"                               | 🟡 Type safety  | `display/card.templ:124`                       |
+| 4 | **badgeSizeClass uses switch** — violates project's own "maps not switches" convention                          | 🟡 Convention   | `display/badge.templ`                          |
+| 5 | **cardPaddingClass uses switch** — same convention violation                                                    | 🟡 Convention   | `display/card.templ`                           |
+| 6 | **alertIconName/toastIconName duplicated** — nearly identical switch functions                                  | 🟡 Dedup        | `feedback/alert.templ`, `feedback/toast.templ` |
+| 7 | **Nonce parameter inconsistency** — ToastContainer/ThemeScript/etc take bare `string` nonce, not BaseProps      | 🟢 Consistency  | Multiple files                                 |
+| 8 | **No Table input validation** — mismatched header/row cell counts silently render broken HTML                   | 🟡 Robustness   | `display/table.templ`                          |
+| 9 | **Missing type fields** — DropdownItem.Disabled, InputProps.MaxLength, TableProps.EmptyMessage                  | 🟢 Feature gaps | Multiple files                                 |
 
 ## Established Libraries Considered
 

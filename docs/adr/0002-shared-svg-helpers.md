@@ -1,6 +1,6 @@
 # ADR 1: Shared SVG Helpers in `internal/svg`
 
-**Status:** Accepted  
+**Status:** Accepted\
 **Date:** 2026-05-03
 
 ## Context

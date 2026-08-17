@@ -30,7 +30,7 @@
 
 8. **Visual test harness: parallel tab isolation** — `TestWaitAnimationSettled` had a design bug: parent created one browser tab, 3 parallel subtests shared it, navigations clobbered each other causing `context canceled` errors. Fix: each subtest calls `newTab(t)` independently. Also split timing measurement to isolate `waitAnimationSettled` from Navigate+WaitVisible overhead.
 
-9. **Visual test harness: two-phase `waitAnimationSettled`** — Root cause of drawer/popover 99%+ false mismatches under parallel load: the 80ms initial sleep was too short for `@starting-style` transitions to register in `getAnimations()`, so the function returned "settled" while the drawer was still off-screen. Fix: two-phase approach — (1) wait up to 300ms for animations to *register* (appear in `getAnimations()`), then (2) poll until all animations report "finished". Returns immediately if no animations appear within the registration window.
+9. **Visual test harness: two-phase `waitAnimationSettled`** — Root cause of drawer/popover 99%+ false mismatches under parallel load: the 80ms initial sleep was too short for `@starting-style` transitions to register in `getAnimations()`, so the function returned "settled" while the drawer was still off-screen. Fix: two-phase approach — (1) wait up to 300ms for animations to _register_ (appear in `getAnimations()`), then (2) poll until all animations report "finished". Returns immediately if no animations appear within the registration window.
 
 10. **Visual test threshold calibration** — `TestPolledRegion`: raised to 1% MaxMismatch (sub-pixel font rendering noise on static content). `TestSpinner`: raised to 8% (continuously rotating CSS animation catches random frames — 56x56 image means ~250 pixels, 8% = ~20 pixels of tolerance).
 
@@ -112,7 +112,7 @@
 
 6. **Extract magic numbers in `waitAnimationSettled` to named constants.** The `80ms`, `300ms`, `800ms`, `40ms` values are meaningful but opaque. BuildFlow's golangci-lint flags them as `mnd` (magic number detection). Named constants like `initialSleep`, `transitionRegisterTimeout`, `settleTimeout`, `pollInterval` would be self-documenting.
 
-7. **The `TestWaitAnimationSettled` timing thresholds (500ms, 500ms, 800-1200ms) are fragile under CI load.** Consider restructuring to assert *behavior* (did it return? did it wait longer for long-running?) rather than *exact timing*.
+7. **The `TestWaitAnimationSettled` timing thresholds (500ms, 500ms, 800-1200ms) are fragile under CI load.** Consider restructuring to assert _behavior_ (did it return? did it wait longer for long-running?) rather than _exact timing_.
 
 8. **`visualtest/` has 47 golangci-lint findings** (mnd, varnamelen, wrapcheck, err113, exhaustruct, etc.) that are suppressed in the separate-module lint config but visible via BuildFlow. These are pre-existing and acceptable for a test module, but a cleanup pass would reduce noise.
 

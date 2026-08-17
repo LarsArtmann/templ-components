@@ -139,103 +139,103 @@
 
 ### Critical / High Impact
 
-| #   | Task                                                                      | Impact | Effort |
-| --- | ------------------------------------------------------------------------- | ------ | ------ |
-| 1   | Cut v0.15.0 release (11 CHANGELOG entries waiting)                        | High   | 10min  |
-| 2   | Add build-time json/v2 guard (build tag or go.mod replace)                | High   | 30min  |
-| 3   | Add combinatorial flag tests for all components with 2+ bool fields       | High   | 60min  |
-| 4   | Audit all components for `ContainerResponsive`-style silent fallback bugs | Medium | 30min  |
+| # | Task                                                                      | Impact | Effort |
+| - | ------------------------------------------------------------------------- | ------ | ------ |
+| 1 | Cut v0.15.0 release (11 CHANGELOG entries waiting)                        | High   | 10min  |
+| 2 | Add build-time json/v2 guard (build tag or go.mod replace)                | High   | 30min  |
+| 3 | Add combinatorial flag tests for all components with 2+ bool fields       | High   | 60min  |
+| 4 | Audit all components for `ContainerResponsive`-style silent fallback bugs | Medium | 30min  |
 
 ### Component Improvements
 
-| #   | Task                                                            | Impact | Effort |
-| --- | --------------------------------------------------------------- | ------ | ------ |
-| 5   | Add `DefaultGridProps` doc example showing `MinColWidth` usage  | Low    | 5min   |
-| 6   | Add `Card.Header` usage example in godoc                        | Low    | 5min   |
-| 7   | Consider `Card.TitleElement` field (h1/h2/h3/h4 selection)      | Medium | 30min  |
-| 8   | Add `GridColsAutoFit` to the demo binary                        | Low    | 10min  |
-| 9   | Add `Card.Header` to the demo binary                            | Low    | 10min  |
-| 10  | Consider `GridProps.MaxColWidth` for `minmax(min, max)` pattern | Low    | 15min  |
+| #  | Task                                                            | Impact | Effort |
+| -- | --------------------------------------------------------------- | ------ | ------ |
+| 5  | Add `DefaultGridProps` doc example showing `MinColWidth` usage  | Low    | 5min   |
+| 6  | Add `Card.Header` usage example in godoc                        | Low    | 5min   |
+| 7  | Consider `Card.TitleElement` field (h1/h2/h3/h4 selection)      | Medium | 30min  |
+| 8  | Add `GridColsAutoFit` to the demo binary                        | Low    | 10min  |
+| 9  | Add `Card.Header` to the demo binary                            | Low    | 10min  |
+| 10 | Consider `GridProps.MaxColWidth` for `minmax(min, max)` pattern | Low    | 15min  |
 
 ### Documentation
 
-| #   | Task                                                                      | Impact | Effort |
-| --- | ------------------------------------------------------------------------- | ------ | ------ |
-| 11  | Create `docs/dark-mode-index.md` linking all dark mode docs               | Medium | 15min  |
-| 12  | Split adoption guide into quick-start + reference                         | Medium | 60min  |
-| 13  | Add "Migration from v0.14 to v0.15" guide                                 | Low    | 15min  |
-| 14  | Document all `DefaultXxxProps()` constructors in one table                | Low    | 20min  |
-| 15  | Add consumer guide section: "Choosing a dark mode strategy" decision tree | Low    | 15min  |
-| 16  | Audit godoc across all packages for completeness                          | Medium | 60min  |
-| 17  | Add `CHANGELOG.md` entry for the `@source` GOMODCACHE docs                | Low    | 2min   |
+| #  | Task                                                                      | Impact | Effort |
+| -- | ------------------------------------------------------------------------- | ------ | ------ |
+| 11 | Create `docs/dark-mode-index.md` linking all dark mode docs               | Medium | 15min  |
+| 12 | Split adoption guide into quick-start + reference                         | Medium | 60min  |
+| 13 | Add "Migration from v0.14 to v0.15" guide                                 | Low    | 15min  |
+| 14 | Document all `DefaultXxxProps()` constructors in one table                | Low    | 20min  |
+| 15 | Add consumer guide section: "Choosing a dark mode strategy" decision tree | Low    | 15min  |
+| 16 | Audit godoc across all packages for completeness                          | Medium | 60min  |
+| 17 | Add `CHANGELOG.md` entry for the `@source` GOMODCACHE docs                | Low    | 2min   |
 
 ### Testing
 
-| #   | Task                                                             | Impact | Effort |
-| --- | ---------------------------------------------------------------- | ------ | ------ |
-| 18  | Add fuzz test for `gridAutoFitClass()` with edge-case widths     | Low    | 10min  |
-| 19  | Add fuzz test for `GridColsAutoFit` + `MinColWidth` combinations | Low    | 10min  |
-| 20  | Add test: `Card.Header` + `Card.Body` both set renders both      | Low    | 5min   |
-| 21  | Add test: `CardPaddingNone` + `Card.Body` slot works correctly   | Low    | 5min   |
-| 22  | Add test: `CardPaddingNone` + `Card.Header` slot works correctly | Low    | 5min   |
-| 23  | Add dark mode golden test for `GridColsAutoFit`                  | Low    | 10min  |
-| 24  | Add dark mode golden test for `Card.Header` slot                 | Low    | 10min  |
-| 25  | Benchmark `gridAutoFitClass` string concatenation                | Low    | 5min   |
+| #  | Task                                                             | Impact | Effort |
+| -- | ---------------------------------------------------------------- | ------ | ------ |
+| 18 | Add fuzz test for `gridAutoFitClass()` with edge-case widths     | Low    | 10min  |
+| 19 | Add fuzz test for `GridColsAutoFit` + `MinColWidth` combinations | Low    | 10min  |
+| 20 | Add test: `Card.Header` + `Card.Body` both set renders both      | Low    | 5min   |
+| 21 | Add test: `CardPaddingNone` + `Card.Body` slot works correctly   | Low    | 5min   |
+| 22 | Add test: `CardPaddingNone` + `Card.Header` slot works correctly | Low    | 5min   |
+| 23 | Add dark mode golden test for `GridColsAutoFit`                  | Low    | 10min  |
+| 24 | Add dark mode golden test for `Card.Header` slot                 | Low    | 10min  |
+| 25 | Benchmark `gridAutoFitClass` string concatenation                | Low    | 5min   |
 
 ### Architecture / Type Model
 
-| #   | Task                                                                                                             | Impact | Effort |
-| --- | ---------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 26  | Consider typed `MinColWidth` type (e.g., `GridMinWidth string` with `IsValid()`)                                 | Low    | 15min  |
-| 27  | Consider `CardPaddingNone` as a separate code path (not a padding enum value)                                    | Low    | 20min  |
-| 28  | Audit all enum lookups for silent-fallback-on-unknown behavior                                                   | Medium | 30min  |
-| 29  | Consider a `GridMode` enum (`GridModeFixed` / `GridModeAutoFit` / `GridModeContainer`) instead of separate bools | Medium | 45min  |
+| #  | Task                                                                                                             | Impact | Effort |
+| -- | ---------------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 26 | Consider typed `MinColWidth` type (e.g., `GridMinWidth string` with `IsValid()`)                                 | Low    | 15min  |
+| 27 | Consider `CardPaddingNone` as a separate code path (not a padding enum value)                                    | Low    | 20min  |
+| 28 | Audit all enum lookups for silent-fallback-on-unknown behavior                                                   | Medium | 30min  |
+| 29 | Consider a `GridMode` enum (`GridModeFixed` / `GridModeAutoFit` / `GridModeContainer`) instead of separate bools | Medium | 45min  |
 
 ### Maintenance / Cleanup
 
-| #   | Task                                                                      | Impact | Effort |
-| --- | ------------------------------------------------------------------------- | ------ | ------ |
-| 30  | Remove the stale LSP diagnostic for `handler.go` (restart gopls)          | Low    | 1min   |
-| 31  | Check `.gitignore` for BuildFlow `*_templ.go` re-append after each commit | Low    | 1min   |
-| 32  | Audit all `*_templ.go` files are committed (none hidden by gitignore)     | Low    | 5min   |
-| 33  | Run `go mod tidy` to clean up any unused dependencies                     | Low    | 5min   |
-| 34  | Update `docs/planning/` plan to mark completed items                      | Low    | 10min  |
-| 35  | Clean up `docs/status/` — archive old status reports                      | Low    | 10min  |
+| #  | Task                                                                      | Impact | Effort |
+| -- | ------------------------------------------------------------------------- | ------ | ------ |
+| 30 | Remove the stale LSP diagnostic for `handler.go` (restart gopls)          | Low    | 1min   |
+| 31 | Check `.gitignore` for BuildFlow `*_templ.go` re-append after each commit | Low    | 1min   |
+| 32 | Audit all `*_templ.go` files are committed (none hidden by gitignore)     | Low    | 5min   |
+| 33 | Run `go mod tidy` to clean up any unused dependencies                     | Low    | 5min   |
+| 34 | Update `docs/planning/` plan to mark completed items                      | Low    | 10min  |
+| 35 | Clean up `docs/status/` — archive old status reports                      | Low    | 10min  |
 
 ### Consumer Experience
 
-| #   | Task                                                              | Impact | Effort |
-| --- | ----------------------------------------------------------------- | ------ | ------ |
-| 36  | Create a "Quick start" guide (5-line getting started)             | High   | 15min  |
-| 37  | Add a "Common patterns" cookbook section                          | Medium | 45min  |
-| 38  | Document the `icons.IconPathData` icons-only adoption path        | Medium | 20min  |
-| 39  | Add an interactive demo page for dark mode toggle vs OS-following | Low    | 30min  |
-| 40  | Create a "Theming cheat sheet" (1-page reference)                 | Medium | 20min  |
+| #  | Task                                                              | Impact | Effort |
+| -- | ----------------------------------------------------------------- | ------ | ------ |
+| 36 | Create a "Quick start" guide (5-line getting started)             | High   | 15min  |
+| 37 | Add a "Common patterns" cookbook section                          | Medium | 45min  |
+| 38 | Document the `icons.IconPathData` icons-only adoption path        | Medium | 20min  |
+| 39 | Add an interactive demo page for dark mode toggle vs OS-following | Low    | 30min  |
+| 40 | Create a "Theming cheat sheet" (1-page reference)                 | Medium | 20min  |
 
 ### Error Page Package
 
-| #   | Task                                                                              | Impact | Effort |
-| --- | --------------------------------------------------------------------------------- | ------ | ------ |
-| 41  | Add integration test for `writeJSONError` with json v1                            | Medium | 15min  |
-| 42  | Consider using `encoding/json` `Marshal` instead of `Encoder` for error responses | Low    | 10min  |
-| 43  | Add test verifying JSON error response shape matches HTMX expectations            | Medium | 20min  |
+| #  | Task                                                                              | Impact | Effort |
+| -- | --------------------------------------------------------------------------------- | ------ | ------ |
+| 41 | Add integration test for `writeJSONError` with json v1                            | Medium | 15min  |
+| 42 | Consider using `encoding/json` `Marshal` instead of `Encoder` for error responses | Low    | 10min  |
+| 43 | Add test verifying JSON error response shape matches HTMX expectations            | Medium | 20min  |
 
 ### Feedback Response
 
-| #   | Task                                                                      | Impact | Effort |
-| --- | ------------------------------------------------------------------------- | ------ | ------ |
-| 44  | Respond to cqrs-htmx feedback with the `@theme` palette override solution | Medium | 10min  |
-| 45  | Update the feedback file with "addressed" annotations                     | Low    | 10min  |
-| 46  | Consider a "Consumer Adoption Log" documenting who adopted what and when  | Low    | 15min  |
+| #  | Task                                                                      | Impact | Effort |
+| -- | ------------------------------------------------------------------------- | ------ | ------ |
+| 44 | Respond to cqrs-htmx feedback with the `@theme` palette override solution | Medium | 10min  |
+| 45 | Update the feedback file with "addressed" annotations                     | Low    | 10min  |
+| 46 | Consider a "Consumer Adoption Log" documenting who adopted what and when  | Low    | 15min  |
 
 ### Research / Investigation
 
-| #   | Task                                                                                     | Impact | Effort |
-| --- | ---------------------------------------------------------------------------------------- | ------ | ------ |
-| 47  | Investigate Tailwind v4 `@source` with Go import paths (feature request?)                | Low    | 30min  |
-| 48  | Research `light-dark()` browser support timeline for adoption readiness                  | Low    | 15min  |
-| 49  | Investigate whether `@theme inline` would simplify the theme.css file                    | Low    | 20min  |
-| 50  | Research whether other Go templ UI libraries have solved the dark mode packaging problem | Low    | 20min  |
+| #  | Task                                                                                     | Impact | Effort |
+| -- | ---------------------------------------------------------------------------------------- | ------ | ------ |
+| 47 | Investigate Tailwind v4 `@source` with Go import paths (feature request?)                | Low    | 30min  |
+| 48 | Research `light-dark()` browser support timeline for adoption readiness                  | Low    | 15min  |
+| 49 | Investigate whether `@theme inline` would simplify the theme.css file                    | Low    | 20min  |
+| 50 | Research whether other Go templ UI libraries have solved the dark mode packaging problem | Low    | 20min  |
 
 ---
 

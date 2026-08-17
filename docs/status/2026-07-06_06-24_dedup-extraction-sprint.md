@@ -39,24 +39,24 @@ Systematic `art-dupl --semantic` deduplication pass across thresholds t=8 throug
 
 ### This Session (2026-07-06)
 
-| #   | Extraction                                                                      | Files Changed                                                      | Clone Eliminated                         | Threshold |
-| --- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------- | --------- |
-| 1   | `errorHeader(gap, iconClass, ...)` — shared flex-row icon+content header        | `errorpage/shared.templ`, `errordetail.templ`, `errorpage.templ`   | errordetail ↔ errorpage flex-row         | t=8       |
-| 2   | `goBackScript(nonce)` — shared history.back() JS singleton                      | `errorpage/shared.templ`, `errorpage.templ`, `notfound404.templ`   | errorpage ↔ notfound404 script           | t=6       |
-| 3   | `actionLinkBody(text)` — shared text+ArrowRight icon body                       | `errorpage/shared.templ`, `errorpage.templ`, `notfound404.templ`   | errorpage ↔ notfound404 action link body | t=6       |
-| 4   | `skeletonContainer(layoutClass, label)` — shared aria shell                     | `feedback/loading.templ`                                           | SkeletonGroup ↔ SkeletonCardGrid         | t=7       |
-| 5   | `definitionDetailContent(item)` — shared DetailComponent-or-Detail fallback     | `display/definition_list.templ`, `definition_grid.templ`           | definition_grid ↔ definition_list        | t=5       |
-| 6   | Merged `overlayPanel` INTO `overlayShell` (panel config moved to struct fields) | `display/shared.templ`, `shared.go`, `drawer.templ`, `modal.templ` | drawer ↔ modal function-body             | t=6       |
+| # | Extraction                                                                      | Files Changed                                                      | Clone Eliminated                         | Threshold |
+| - | ------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------- | --------- |
+| 1 | `errorHeader(gap, iconClass, ...)` — shared flex-row icon+content header        | `errorpage/shared.templ`, `errordetail.templ`, `errorpage.templ`   | errordetail ↔ errorpage flex-row         | t=8       |
+| 2 | `goBackScript(nonce)` — shared history.back() JS singleton                      | `errorpage/shared.templ`, `errorpage.templ`, `notfound404.templ`   | errorpage ↔ notfound404 script           | t=6       |
+| 3 | `actionLinkBody(text)` — shared text+ArrowRight icon body                       | `errorpage/shared.templ`, `errorpage.templ`, `notfound404.templ`   | errorpage ↔ notfound404 action link body | t=6       |
+| 4 | `skeletonContainer(layoutClass, label)` — shared aria shell                     | `feedback/loading.templ`                                           | SkeletonGroup ↔ SkeletonCardGrid         | t=7       |
+| 5 | `definitionDetailContent(item)` — shared DetailComponent-or-Detail fallback     | `display/definition_list.templ`, `definition_grid.templ`           | definition_grid ↔ definition_list        | t=5       |
+| 6 | Merged `overlayPanel` INTO `overlayShell` (panel config moved to struct fields) | `display/shared.templ`, `shared.go`, `drawer.templ`, `modal.templ` | drawer ↔ modal function-body             | t=6       |
 
 **Net result:** 24 files changed, +911 insertions, -635 deletions. Clone groups at t=8 reduced from 6→4 (2 production, 2 demo). Clone groups at t=7 reduced from 9→8 (5 production, 3 demo).
 
 ### Pre-Session (commit `4c2b00e` — prior agent)
 
-| #   | Extraction                                | Clone Eliminated                                     |
-| --- | ----------------------------------------- | ---------------------------------------------------- |
-| 1   | `utils.DismissButton(bgClass, textClass)` | feedback.Alert ↔ errorpage.ErrorAlert dismiss button |
-| 2   | `errorpage.errorBody(...)`                | ErrorDetail ↔ ErrorPage badge+title+message          |
-| 3   | `display.copyButtonContent(icon, label)`  | CopyButton `<a>` ↔ `<button>` inner content          |
+| # | Extraction                                | Clone Eliminated                                     |
+| - | ----------------------------------------- | ---------------------------------------------------- |
+| 1 | `utils.DismissButton(bgClass, textClass)` | feedback.Alert ↔ errorpage.ErrorAlert dismiss button |
+| 2 | `errorpage.errorBody(...)`                | ErrorDetail ↔ ErrorPage badge+title+message          |
+| 3 | `display.copyButtonContent(icon, label)`  | CopyButton `<a>` ↔ `<button>` inner content          |
 
 ### Build/Test/Lint Status
 

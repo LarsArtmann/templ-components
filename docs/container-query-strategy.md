@@ -18,7 +18,7 @@ high-value, on-thesis work.
 Container Queries are the **single best "use the platform" capability** for this library's
 thesis (see ADR-0033): they are pure CSS, zero JavaScript, zero dependencies, Baseline
 2023, and they solve the exact problem server-rendered component libraries face — a
-component's correct layout depends on where it's *placed*, not on the *viewport*.
+component's correct layout depends on where it's _placed_, not on the _viewport_.
 
 ---
 
@@ -61,12 +61,12 @@ analog of the container-aware components. See the [Fluid Typography recipe](reci
 ancestor instead of the viewport. The library now uses them for fluid typography, but they
 have broader application:
 
-| Use case                      | Pattern                              | Status       |
-| ----------------------------- | ------------------------------------ | ------------ |
-| Fluid headings / metrics      | `clamp(min, Ncqi + base, max)`       | **Shipped** (`.tc-fluid-*`) |
-| Fluid spacing (gap, padding)  | `clamp(0.5rem, 2cqi, 1.5rem)`        | Consumer CSS |
-| Fluid icon sizing             | `width: clamp(1rem, 3cqi, 2rem)`     | Consumer CSS |
-| Fluid chart dimensions        | SVG `viewBox` + container `cqw` sizing | Research     |
+| Use case                     | Pattern                                | Status                      |
+| ---------------------------- | -------------------------------------- | --------------------------- |
+| Fluid headings / metrics     | `clamp(min, Ncqi + base, max)`         | **Shipped** (`.tc-fluid-*`) |
+| Fluid spacing (gap, padding) | `clamp(0.5rem, 2cqi, 1.5rem)`          | Consumer CSS                |
+| Fluid icon sizing            | `width: clamp(1rem, 3cqi, 2rem)`       | Consumer CSS                |
+| Fluid chart dimensions       | SVG `viewBox` + container `cqw` sizing | Research                    |
 
 **Why not bake fluid spacing into components?** Spacing is opinionated and consumers
 override it constantly via Tailwind utilities. The library's stance: provide fluid
@@ -96,6 +96,7 @@ This would let a parent set `--tc-density: compact` and have ALL descendants rea
 powerful "context styling" mechanism that's cleaner than prop-drilling.
 
 **Why defer:**
+
 - Firefox and Safari support is incomplete (Baseline not reached as of mid-2026).
 - The library's deprecation policy is "Baseline 2024+ only" for new CSS features.
 - When it hits Baseline, the natural application is a `Density` prop on `AppShell` that
@@ -153,13 +154,13 @@ The ROADMAP lists five container-aware candidates. Here is the rigorous evaluati
 ADR-0018's three criteria (viewport-responsive today, plausibly placed in a constrained
 container, clear named behavior change):
 
-| Candidate       | Responsive today? | In constrained container? | Named behavior change?        | Verdict   |
-| --------------- | ----------------- | ------------------------- | ----------------------------- | --------- |
-| `Container`     | No (it IS the width limiter) | N/A (it sets the width) | None | **Reject** — circular |
-| `Breadcrumbs`   | Minimal (separator) | Sometimes (header in split) | Weak — truncate vs wrap | **Defer** — no strong behavior change |
-| `EmptyState`    | Minimal            | Yes (card, drawer)        | Weak — icon/text size only    | **Reject** — cosmetic only |
-| `NotFound404`   | Yes (hero numeral) | No (always full page)     | N/A                           | **Reject** — never constrained |
-| `Footer`        | Yes (columns)      | Rarely (usually full-width) | Column collapse             | **Defer** — rarely placed in a container |
+| Candidate     | Responsive today?            | In constrained container?   | Named behavior change?     | Verdict                                  |
+| ------------- | ---------------------------- | --------------------------- | -------------------------- | ---------------------------------------- |
+| `Container`   | No (it IS the width limiter) | N/A (it sets the width)     | None                       | **Reject** — circular                    |
+| `Breadcrumbs` | Minimal (separator)          | Sometimes (header in split) | Weak — truncate vs wrap    | **Defer** — no strong behavior change    |
+| `EmptyState`  | Minimal                      | Yes (card, drawer)          | Weak — icon/text size only | **Reject** — cosmetic only               |
+| `NotFound404` | Yes (hero numeral)           | No (always full page)       | N/A                        | **Reject** — never constrained           |
+| `Footer`      | Yes (columns)                | Rarely (usually full-width) | Column collapse            | **Defer** — rarely placed in a container |
 
 **Conclusion:** None of the five candidates meet all three ADR-0018 criteria convincingly.
 Adding `ContainerAware` to marginal candidates **dilutes the pattern** and adds props
@@ -196,15 +197,15 @@ worth the refactor risk for 8 components × ~3 lines.**
 
 ## Recommendation summary
 
-| Action                                                        | Priority | Risk   | Status     |
-| ------------------------------------------------------------- | -------- | ------ | ---------- |
-| Fluid typography `.tc-fluid-*` classes                        | High     | None   | **Done**   |
-| Bind WC rejection as ADR-0033                                 | High     | None   | **Done**   |
-| Document container style queries (`@container style()`)       | Medium   | None   | **Done** (this doc) |
-| Hold the line on marginal `ContainerAware` candidates         | Ongoing  | None   | **Decision recorded** |
-| Decline `containerAwareWrapper` consolidation                 | —        | —      | **Declined** |
-| v2.0 default flip (Grid/Card/Split)                           | v2.0     | High   | ADR-0022 draft — do NOT execute pre-v2.0 |
-| Named containers + style queries                              | v2.0+    | —      | Blocked on Baseline |
+| Action                                                  | Priority | Risk | Status                                   |
+| ------------------------------------------------------- | -------- | ---- | ---------------------------------------- |
+| Fluid typography `.tc-fluid-*` classes                  | High     | None | **Done**                                 |
+| Bind WC rejection as ADR-0033                           | High     | None | **Done**                                 |
+| Document container style queries (`@container style()`) | Medium   | None | **Done** (this doc)                      |
+| Hold the line on marginal `ContainerAware` candidates   | Ongoing  | None | **Decision recorded**                    |
+| Decline `containerAwareWrapper` consolidation           | —        | —    | **Declined**                             |
+| v2.0 default flip (Grid/Card/Split)                     | v2.0     | High | ADR-0022 draft — do NOT execute pre-v2.0 |
+| Named containers + style queries                        | v2.0+    | —    | Blocked on Baseline                      |
 
 ---
 

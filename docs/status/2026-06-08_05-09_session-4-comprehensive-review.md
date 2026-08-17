@@ -201,33 +201,33 @@
 
 Sorted by **impact × effort** (highest first):
 
-| #   | Task                                                                       | Impact         | Effort | Category       |
-| --- | -------------------------------------------------------------------------- | -------------- | ------ | -------------- |
-| 1   | Fix pre-commit hook: fail on formatting changes instead of auto-committing | Process        | 30min  | Infrastructure |
-| 2   | Add `AssertContainsClass` test to exercise the 0% helper                   | Coverage       | 15min  | Testing        |
-| 3   | Fill Spinner coverage to 80%+ (more variant tests)                         | Coverage       | 30min  | Testing        |
-| 4   | Tag v0.3.0 with all Priority 2 features                                    | Release        | 10min  | Release        |
-| 5   | Add Drawer/Modal shared `dialogHeader` sub-template                        | Architecture   | 1hr    | Refactor       |
-| 6   | Add `go:generate` for icon names/paths from Heroicons SVGs                 | Architecture   | 2hr    | Tooling        |
-| 7   | Convert display snapshot tests to golden files                             | Testing        | 1hr    | Testing        |
-| 8   | Add coverage_test.go for errorpage package                                 | Coverage       | 45min  | Testing        |
-| 9   | Add coverage_test.go for htmx package                                      | Coverage       | 30min  | Testing        |
-| 10  | Extract Drawer/Modal shared close handler                                  | Architecture   | 1hr    | Refactor       |
-| 11  | Add `Validate() error` to Modal/Drawer/Accordion/Dropdown props            | Architecture   | 2hr    | Robustness     |
-| 12  | Move NavLink `currentPath` into NavLinkProps                               | Breaking       | 1hr    | API cleanup    |
-| 13  | Add Date Picker component                                                  | Feature        | 3hr    | Feature        |
-| 14  | Add Combobox/Autocomplete component                                        | Feature        | 4hr    | Feature        |
-| 15  | Consolidate inline JS into shared init strategy                            | Architecture   | 3hr    | JS quality     |
-| 16  | Add benchmark tests for forms package                                      | Testing        | 45min  | Testing        |
-| 17  | CI coverage regression check per-package                                   | Infrastructure | 30min  | Infrastructure |
-| 18  | SimpleNav BaseProps conversion                                             | Breaking       | 1hr    | API cleanup    |
-| 19  | Add BaseProps to StepIndicatorProps                                        | Breaking       | 30min  | API cleanup    |
-| 20  | Verify `go get` from clean remote project                                  | Release        | 15min  | Release        |
-| 21  | Submit to awesome-templ                                                    | Discovery      | 15min  | Marketing      |
-| 22  | Open PR on templ.guide                                                     | Discovery      | 15min  | Marketing      |
-| 23  | Set up goreleaser                                                          | Infrastructure | 1hr    | Infrastructure |
-| 24  | Plan v1.0 API freeze scope                                                 | Planning       | 1hr    | Planning       |
-| 25  | Documentation site generation                                              | Documentation  | 4hr+   | Docs           |
+| #  | Task                                                                       | Impact         | Effort | Category       |
+| -- | -------------------------------------------------------------------------- | -------------- | ------ | -------------- |
+| 1  | Fix pre-commit hook: fail on formatting changes instead of auto-committing | Process        | 30min  | Infrastructure |
+| 2  | Add `AssertContainsClass` test to exercise the 0% helper                   | Coverage       | 15min  | Testing        |
+| 3  | Fill Spinner coverage to 80%+ (more variant tests)                         | Coverage       | 30min  | Testing        |
+| 4  | Tag v0.3.0 with all Priority 2 features                                    | Release        | 10min  | Release        |
+| 5  | Add Drawer/Modal shared `dialogHeader` sub-template                        | Architecture   | 1hr    | Refactor       |
+| 6  | Add `go:generate` for icon names/paths from Heroicons SVGs                 | Architecture   | 2hr    | Tooling        |
+| 7  | Convert display snapshot tests to golden files                             | Testing        | 1hr    | Testing        |
+| 8  | Add coverage_test.go for errorpage package                                 | Coverage       | 45min  | Testing        |
+| 9  | Add coverage_test.go for htmx package                                      | Coverage       | 30min  | Testing        |
+| 10 | Extract Drawer/Modal shared close handler                                  | Architecture   | 1hr    | Refactor       |
+| 11 | Add `Validate() error` to Modal/Drawer/Accordion/Dropdown props            | Architecture   | 2hr    | Robustness     |
+| 12 | Move NavLink `currentPath` into NavLinkProps                               | Breaking       | 1hr    | API cleanup    |
+| 13 | Add Date Picker component                                                  | Feature        | 3hr    | Feature        |
+| 14 | Add Combobox/Autocomplete component                                        | Feature        | 4hr    | Feature        |
+| 15 | Consolidate inline JS into shared init strategy                            | Architecture   | 3hr    | JS quality     |
+| 16 | Add benchmark tests for forms package                                      | Testing        | 45min  | Testing        |
+| 17 | CI coverage regression check per-package                                   | Infrastructure | 30min  | Infrastructure |
+| 18 | SimpleNav BaseProps conversion                                             | Breaking       | 1hr    | API cleanup    |
+| 19 | Add BaseProps to StepIndicatorProps                                        | Breaking       | 30min  | API cleanup    |
+| 20 | Verify `go get` from clean remote project                                  | Release        | 15min  | Release        |
+| 21 | Submit to awesome-templ                                                    | Discovery      | 15min  | Marketing      |
+| 22 | Open PR on templ.guide                                                     | Discovery      | 15min  | Marketing      |
+| 23 | Set up goreleaser                                                          | Infrastructure | 1hr    | Infrastructure |
+| 24 | Plan v1.0 API freeze scope                                                 | Planning       | 1hr    | Planning       |
+| 25 | Documentation site generation                                              | Documentation  | 4hr+   | Docs           |
 
 ---
 
@@ -248,20 +248,20 @@ Here's my dilemma:
 
 ## Session 4 Commits (Chronological)
 
-| #   | Hash      | Message                                                                                            |
-| --- | --------- | -------------------------------------------------------------------------------------------------- |
-| 1   | `22c8d8c` | feat(v0.2): split progress.templ, raise coverage to 72%, prepare release                           |
-| 2   | `6a2bf9d` | fix: track all \*\_templ.go generated files for Go module proxy                                    |
-| 3   | `02b586e` | feat: add Drawer component, ValidationSummary, 25 new icons (98 total)                             |
-| 4   | `db65092` | refactor!: convert Spinner from positional args to SpinnerProps struct                             |
-| 5   | `70feec3` | feat(testing): add golden file comparison with CSS class normalization                             |
-| 6   | `52c4668` | docs: update AGENTS.md, CHANGELOG.md, TODO_LIST.md for session 4                                   |
-| 7   | `ba4303a` | chore: regenerate all \*\_templ.go files with goimports formatting                                 |
-| 8   | `8237a1d` | chore: normalize import formatting across all \*\_templ.go files                                   |
-| 9   | `481e427` | docs: fix stale CONTEXT.md references                                                              |
-| 10  | `50e90d5` | refactor: extract shared utils.ValidateID, deduplicate ID validation                               |
-| 11  | `a683af6` | test: cover DefaultSpinnerProps, DefaultInputGroupProps, DefaultValidationSummaryProps, ValidateID |
-| 12  | (pending) | fix: Spinner test assertion for non-deterministic class ordering                                   |
+| #  | Hash      | Message                                                                                            |
+| -- | --------- | -------------------------------------------------------------------------------------------------- |
+| 1  | `22c8d8c` | feat(v0.2): split progress.templ, raise coverage to 72%, prepare release                           |
+| 2  | `6a2bf9d` | fix: track all \*\_templ.go generated files for Go module proxy                                    |
+| 3  | `02b586e` | feat: add Drawer component, ValidationSummary, 25 new icons (98 total)                             |
+| 4  | `db65092` | refactor!: convert Spinner from positional args to SpinnerProps struct                             |
+| 5  | `70feec3` | feat(testing): add golden file comparison with CSS class normalization                             |
+| 6  | `52c4668` | docs: update AGENTS.md, CHANGELOG.md, TODO_LIST.md for session 4                                   |
+| 7  | `ba4303a` | chore: regenerate all \*\_templ.go files with goimports formatting                                 |
+| 8  | `8237a1d` | chore: normalize import formatting across all \*\_templ.go files                                   |
+| 9  | `481e427` | docs: fix stale CONTEXT.md references                                                              |
+| 10 | `50e90d5` | refactor: extract shared utils.ValidateID, deduplicate ID validation                               |
+| 11 | `a683af6` | test: cover DefaultSpinnerProps, DefaultInputGroupProps, DefaultValidationSummaryProps, ValidateID |
+| 12 | (pending) | fix: Spinner test assertion for non-deterministic class ordering                                   |
 
 ---
 

@@ -27,11 +27,11 @@
 
 ## B) PARTIALLY DONE (shipped with known gaps)
 
-| #   | Task                      | What shipped                                                                                                            | What's missing                                                                                                                                                                                                                     |
-| --- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 95  | Chart visual tests        | Test functions written for LineChart, PieChart, DonutChart, AreaChart. Code compiles.                                   | **ZERO golden PNGs exist.** No Chromium available in this session. First CI run will fail with "no golden yet — wrote X (re-run without -update)". Someone must run `nix run .#visual` locally to seed the PNGs, then commit them. |
-| 96  | Dark-mode visual variants | Test functions written for Combobox/dark, Tooltip/dark, Carousel/dark, Skeleton/dark, ErrorPage/dark, NotFound404/dark. | **ZERO golden PNGs exist.** Same Chromium gap as #95.                                                                                                                                                                              |
-| 97  | v1.5-v1.6 visual tests    | Test functions written for BarChart, Heatmap, Sparkline, CollapsibleSection, ExternalLink, PolledRegion, DataTable.     | **ZERO golden PNGs exist.** Same gap. 17 new golden PNGs across #95-97 need to be generated and committed.                                                                                                                         |
+| #  | Task                      | What shipped                                                                                                            | What's missing                                                                                                                                                                                                                     |
+| -- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 95 | Chart visual tests        | Test functions written for LineChart, PieChart, DonutChart, AreaChart. Code compiles.                                   | **ZERO golden PNGs exist.** No Chromium available in this session. First CI run will fail with "no golden yet — wrote X (re-run without -update)". Someone must run `nix run .#visual` locally to seed the PNGs, then commit them. |
+| 96 | Dark-mode visual variants | Test functions written for Combobox/dark, Tooltip/dark, Carousel/dark, Skeleton/dark, ErrorPage/dark, NotFound404/dark. | **ZERO golden PNGs exist.** Same Chromium gap as #95.                                                                                                                                                                              |
+| 97 | v1.5-v1.6 visual tests    | Test functions written for BarChart, Heatmap, Sparkline, CollapsibleSection, ExternalLink, PolledRegion, DataTable.     | **ZERO golden PNGs exist.** Same gap. 17 new golden PNGs across #95-97 need to be generated and committed.                                                                                                                         |
 
 ---
 
@@ -153,98 +153,98 @@ uncompilable code.
 
 ### Critical (block CI from going green)
 
-| #   | Task                                                   | Why                                             |
-| --- | ------------------------------------------------------ | ----------------------------------------------- |
-| ~~1~~   | ~~Generate 17 golden PNGs: `nix run .#visual`~~ done — v1.8.0 (66 goldens total). | Tests will fail on first CI run without them    |
-| ~~2~~   | ~~Verify `chart_shared_templ.go` is tracked in git~~ done — tracked. | BuildFlow `.gitignore` cycle may have hidden it |
-| ~~3~~   | ~~Run `golangci-lint run ./display/...` and fix findings~~ done — 0 issues. | LSP shows stale warnings; need real lint run    |
-| ~~4~~   | ~~Run `nix fmt` on all new files~~ done. | Formatting drift on `chart_fuzz_test.go`        |
+| #     | Task                                                                              | Why                                             |
+| ----- | --------------------------------------------------------------------------------- | ----------------------------------------------- |
+| ~~1~~ | ~~Generate 17 golden PNGs: `nix run .#visual`~~ done — v1.8.0 (66 goldens total). | Tests will fail on first CI run without them    |
+| ~~2~~ | ~~Verify `chart_shared_templ.go` is tracked in git~~ done — tracked.              | BuildFlow `.gitignore` cycle may have hidden it |
+| ~~3~~ | ~~Run `golangci-lint run ./display/...` and fix findings~~ done — 0 issues.       | LSP shows stale warnings; need real lint run    |
+| ~~4~~ | ~~Run `nix fmt` on all new files~~ done.                                          | Formatting drift on `chart_fuzz_test.go`        |
 
 ### High impact
 
-| #   | Task                                                                         | Why                                                                           |
-| --- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
-| ~~5~~   | ~~Review the 5 daemon commits for correctness~~ closed — released in v1.7.0. | Pre-existing changes were commingled with mine                                |
-| ~~6~~   | ~~Inspect the `forms/`, `layout/`, `internal/cdn/` changes I didn't author~~ closed — released in v1.7.0. | Unknown quality — were they ready to commit?                                  |
-| ~~7~~   | ~~Document `check-templ-sync.sh` in AGENTS.md~~ done. | Process improvement needs to be discoverable                                  |
-| ~~8~~   | ~~Verify CI YAML is valid (`yamllint` or `actionlint`)~~ done — CI runs green. | I hand-edited the workflow                                                    |
-| ~~9~~   | ~~Test `check-templ-sync.sh` with the `charts/echarts` and `datastar` packages~~ done — both pass. | I added them to the package list but they may have different templ structures |
-| ~~10~~  | ~~Run `go test ./... -race` (CI uses `-race`, I didn't)~~ done — CI green. | Potential race conditions in new code                                         |
+| #      | Task                                                                                                      | Why                                                                           |
+| ------ | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| ~~5~~  | ~~Review the 5 daemon commits for correctness~~ closed — released in v1.7.0.                              | Pre-existing changes were commingled with mine                                |
+| ~~6~~  | ~~Inspect the `forms/`, `layout/`, `internal/cdn/` changes I didn't author~~ closed — released in v1.7.0. | Unknown quality — were they ready to commit?                                  |
+| ~~7~~  | ~~Document `check-templ-sync.sh` in AGENTS.md~~ done.                                                     | Process improvement needs to be discoverable                                  |
+| ~~8~~  | ~~Verify CI YAML is valid (`yamllint` or `actionlint`)~~ done — CI runs green.                            | I hand-edited the workflow                                                    |
+| ~~9~~  | ~~Test `check-templ-sync.sh` with the `charts/echarts` and `datastar` packages~~ done — both pass.        | I added them to the package list but they may have different templ structures |
+| ~~10~~ | ~~Run `go test ./... -race` (CI uses `-race`, I didn't)~~ done — CI green.                                | Potential race conditions in new code                                         |
 
 ### Testing improvements
 
-| #   | Task                                                           | Why                                                    |
-| --- | -------------------------------------------------------------- | ------------------------------------------------------ |
-| 11  | Add fuzz test for `BuildSmoothPath` (Catmull-Rom spline) → ROADMAP chart ecosystem | Complex math, untested with adversarial input          |
-| 12  | Add fuzz test for `BuildAreaPath` → ROADMAP chart ecosystem | Same class of math                                     |
-| ~~13~~  | ~~Add fuzz test for `SanitizeInnerRadius` edge cases (Inf, -Inf)~~ partial — NaN + boundary covered; Inf edge cases open. | I only tested NaN and boundary values                  |
-| 14  | Add unit tests for `computeChartRenderData()` → ROADMAP chart ecosystem | New function with 12 params — needs direct tests       |
-| 15  | Add `FuzzSanitizeChartPadding` → ROADMAP chart ecosystem | Only table-driven tested; fuzzing may find edge cases  |
-| 16  | Add golden tests for chart shared sub-templates in isolation → ROADMAP | Currently only tested via LineChart/AreaChart          |
-| ~~17~~  | ~~Add visual tests for BarChart vertical orientation~~ done — BarChart visual golden exists (v1.8.0); `Height` prop added (v1.9 unreleased). | Only horizontal tested                                 |
-| 18  | Add visual tests for Heatmap with `ShowValues` → ROADMAP | Only `HighlightPeak` tested                            |
-| ~~19~~  | ~~Add visual dark-mode tests for ALL chart types~~ partial — LineChart/PieChart/DonutChart/AreaChart goldens shipped (v1.8.0); full dark coverage for all chart variants still open. | Charts have dark: variants but no dark goldens         |
-| 20  | Add RTL visual test for charts → ROADMAP | Charts use logical SVG positioning but untested in RTL |
+| #      | Task                                                                                                                                                                                 | Why                                                    |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ |
+| 11     | Add fuzz test for `BuildSmoothPath` (Catmull-Rom spline) → ROADMAP chart ecosystem                                                                                                   | Complex math, untested with adversarial input          |
+| 12     | Add fuzz test for `BuildAreaPath` → ROADMAP chart ecosystem                                                                                                                          | Same class of math                                     |
+| ~~13~~ | ~~Add fuzz test for `SanitizeInnerRadius` edge cases (Inf, -Inf)~~ partial — NaN + boundary covered; Inf edge cases open.                                                            | I only tested NaN and boundary values                  |
+| 14     | Add unit tests for `computeChartRenderData()` → ROADMAP chart ecosystem                                                                                                              | New function with 12 params — needs direct tests       |
+| 15     | Add `FuzzSanitizeChartPadding` → ROADMAP chart ecosystem                                                                                                                             | Only table-driven tested; fuzzing may find edge cases  |
+| 16     | Add golden tests for chart shared sub-templates in isolation → ROADMAP                                                                                                               | Currently only tested via LineChart/AreaChart          |
+| ~~17~~ | ~~Add visual tests for BarChart vertical orientation~~ done — BarChart visual golden exists (v1.8.0); `Height` prop added (v1.9 unreleased).                                         | Only horizontal tested                                 |
+| 18     | Add visual tests for Heatmap with `ShowValues` → ROADMAP                                                                                                                             | Only `HighlightPeak` tested                            |
+| ~~19~~ | ~~Add visual dark-mode tests for ALL chart types~~ partial — LineChart/PieChart/DonutChart/AreaChart goldens shipped (v1.8.0); full dark coverage for all chart variants still open. | Charts have dark: variants but no dark goldens         |
+| 20     | Add RTL visual test for charts → ROADMAP                                                                                                                                             | Charts use logical SVG positioning but untested in RTL |
 
 ### Architecture / DRY
 
-| #   | Task                                                                        | Why                                               |
-| --- | --------------------------------------------------------------------------- | ------------------------------------------------- |
-| 21  | Reduce `computeChartRenderData` to fewer params (builder or options struct) → ROADMAP chart ecosystem | 12 params is too many (ADR-0010)                  |
-| 22  | Move `ChartRenderData.Attrs` out of the geometry file → ROADMAP chart ecosystem | Decouples math from templ runtime                 |
-| 23  | Extract shared chart SVG wrapper as a sub-template too → ROADMAP chart ecosystem | The `<svg>` open/close is still duplicated        |
-| 24  | Consider extracting `chartSeriesPaths` sub-template → ROADMAP chart ecosystem | The series-loop + path + dots block is duplicated |
-| 25  | Share the area-chart-specific fill path logic → ROADMAP chart ecosystem | `BuildAreaPath` could be parameterized            |
+| #  | Task                                                                                                  | Why                                               |
+| -- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------- |
+| 21 | Reduce `computeChartRenderData` to fewer params (builder or options struct) → ROADMAP chart ecosystem | 12 params is too many (ADR-0010)                  |
+| 22 | Move `ChartRenderData.Attrs` out of the geometry file → ROADMAP chart ecosystem                       | Decouples math from templ runtime                 |
+| 23 | Extract shared chart SVG wrapper as a sub-template too → ROADMAP chart ecosystem                      | The `<svg>` open/close is still duplicated        |
+| 24 | Consider extracting `chartSeriesPaths` sub-template → ROADMAP chart ecosystem                         | The series-loop + path + dots block is duplicated |
+| 25 | Share the area-chart-specific fill path logic → ROADMAP chart ecosystem                               | `BuildAreaPath` could be parameterized            |
 
 ### Process hardening
 
-| #   | Task                                                                | Why                                  |
-| --- | ------------------------------------------------------------------- | ------------------------------------ |
-| ~~26~~  | ~~Add `check-templ-sync.sh` to the `nix run .#verify` pipeline~~ done — runs in pre-commit + CI. Still not in `#verify` directly (low priority). | Currently only in pre-commit + CI    |
-| ~~27~~  | ~~Make BuildFlow auto-discover `scripts/check-*.sh` guards~~ → TODO_LIST #93 (blocked on `larsartmann/buildflow`). | Manual hook edits get overwritten    |
-| 28  | Add `actionlint` to CI | Validate GitHub Actions YAML         |
-| ~~29~~  | ~~Add a CI step that verifies no uncommitted golden PNGs exist~~ done — CSS freshness CI lane + visual CI lane cover commit-sync. | Prevents "no golden yet" CI failures |
-| 30  | Add pre-push hook that runs `go test ./display/... -run TestGolden` | Faster feedback than CI              |
+| #      | Task                                                                                                                                             | Why                                  |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------ |
+| ~~26~~ | ~~Add `check-templ-sync.sh` to the `nix run .#verify` pipeline~~ done — runs in pre-commit + CI. Still not in `#verify` directly (low priority). | Currently only in pre-commit + CI    |
+| ~~27~~ | ~~Make BuildFlow auto-discover `scripts/check-*.sh` guards~~ → TODO_LIST #93 (blocked on `larsartmann/buildflow`).                               | Manual hook edits get overwritten    |
+| 28     | Add `actionlint` to CI                                                                                                                           | Validate GitHub Actions YAML         |
+| ~~29~~ | ~~Add a CI step that verifies no uncommitted golden PNGs exist~~ done — CSS freshness CI lane + visual CI lane cover commit-sync.                | Prevents "no golden yet" CI failures |
+| 30     | Add pre-push hook that runs `go test ./display/... -run TestGolden`                                                                              | Faster feedback than CI              |
 
 ### Documentation
 
-| #   | Task                                                              | Why                                                   |
-| --- | ----------------------------------------------------------------- | ----------------------------------------------------- |
-| ~~31~~  | ~~Update `docs/testing-guide.md` with the fuzz test workflow~~ done — testing-guide documents the three-tier strategy incl. fuzz. | New fuzz tests aren't documented                      |
-| ~~32~~  | ~~Update `skill/SKILL.md` component count if needed~~ done — drift guard covers SKILL.md. | New `chart_shared.templ` adds 3 private sub-templates |
-| 33  | Document the `computeChartRenderData` pattern in an ADR | Sub-template extraction with shared data struct       |
-| ~~34~~  | ~~Update `docs/visual-testing.md` with the new test inventory~~ done. | 17 new tests added                                    |
-| ~~35~~  | ~~Add `chart_shared.templ` to the `tc add --list-deps` package deps~~ done — `tc` tracks package sources. | New file should be listed                             |
+| #      | Task                                                                                                                              | Why                                                   |
+| ------ | --------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| ~~31~~ | ~~Update `docs/testing-guide.md` with the fuzz test workflow~~ done — testing-guide documents the three-tier strategy incl. fuzz. | New fuzz tests aren't documented                      |
+| ~~32~~ | ~~Update `skill/SKILL.md` component count if needed~~ done — drift guard covers SKILL.md.                                         | New `chart_shared.templ` adds 3 private sub-templates |
+| 33     | Document the `computeChartRenderData` pattern in an ADR                                                                           | Sub-template extraction with shared data struct       |
+| ~~34~~ | ~~Update `docs/visual-testing.md` with the new test inventory~~ done.                                                             | 17 new tests added                                    |
+| ~~35~~ | ~~Add `chart_shared.templ` to the `tc add --list-deps` package deps~~ done — `tc` tracks package sources.                         | New file should be listed                             |
 
 ### Component improvements (observed during work)
 
-| #   | Task                                                                        | Why                                           |
-| --- | --------------------------------------------------------------------------- | --------------------------------------------- |
-| 36  | BarChart has no vertical orientation visual test | Untested orientation variant — now has `Height` prop (v1.9 unreleased) |
-| 37  | Heatmap `ColorVar` defaults to `--ds-brand` which may not be defined | Potential invisible cells                  |
-| 38  | Sparkline has no `EmptyMessage` field | Empty values render nothing, no user feedback |
-| 39  | DataTable golden test uses `Striped` but doesn't test `Hover` or `Bordered` | Visual variants untested        |
-| 40  | CollapsibleSection visual test only covers expanded state | Collapsed state untested                      |
+| #  | Task                                                                        | Why                                                                    |
+| -- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| 36 | BarChart has no vertical orientation visual test                            | Untested orientation variant — now has `Height` prop (v1.9 unreleased) |
+| 37 | Heatmap `ColorVar` defaults to `--ds-brand` which may not be defined        | Potential invisible cells                                              |
+| 38 | Sparkline has no `EmptyMessage` field                                       | Empty values render nothing, no user feedback                          |
+| 39 | DataTable golden test uses `Striped` but doesn't test `Hover` or `Bordered` | Visual variants untested                                               |
+| 40 | CollapsibleSection visual test only covers expanded state                   | Collapsed state untested                                               |
 
 ### Cleanup
 
-| #   | Task                                                                           | Why                                       |
-| --- | ------------------------------------------------------------------------------ | ----------------------------------------- |
-| 41  | Verify `TestCSSFreshness` doesn't false-positive after `nix fmt` | Formatter may change file mtimes   |
-| 42  | Check if `docs/adr/0009-accepted-clones.md` needs updating for chart_shared | New shared code may change clone analysis |
-| ~~43~~  | ~~Run `art-dupl` on the display package after sub-template extraction~~ done — sub-template extraction reduced duplication. | Verify duplication actually decreased     |
-| ~~44~~  | ~~Remove the `_ = strings.TrimSpace` hack in old harness test draft~~ done — `TestWaitAnimationSettled` shipped clean (v1.8.0). | Dead code if it survived                  |
-| ~~45~~  | ~~Verify the `charts/echarts` and `datastar` packages pass `check-templ-sync.sh`~~ done — both packages pass sync guard. | I added them to the package list blindly  |
+| #      | Task                                                                                                                            | Why                                       |
+| ------ | ------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| 41     | Verify `TestCSSFreshness` doesn't false-positive after `nix fmt`                                                                | Formatter may change file mtimes          |
+| 42     | Check if `docs/adr/0009-accepted-clones.md` needs updating for chart_shared                                                     | New shared code may change clone analysis |
+| ~~43~~ | ~~Run `art-dupl` on the display package after sub-template extraction~~ done — sub-template extraction reduced duplication.     | Verify duplication actually decreased     |
+| ~~44~~ | ~~Remove the `_ = strings.TrimSpace` hack in old harness test draft~~ done — `TestWaitAnimationSettled` shipped clean (v1.8.0). | Dead code if it survived                  |
+| ~~45~~ | ~~Verify the `charts/echarts` and `datastar` packages pass `check-templ-sync.sh`~~ done — both packages pass sync guard.        | I added them to the package list blindly  |
 
 ### Stretch goals
 
-| #   | Task                                                                                     | Why                                                      |
-| --- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------- |
-| 46  | Add snapshot tests for `computeChartRenderData` output | Struct-level regression guard                            |
-| 47  | Add property-based tests for chart math invariants (e.g., "all points within plot area") | Deeper than fuzz (asserts properties, not just no-panic) |
-| 48  | Benchmark `computeChartRenderData` in isolation | Currently only benchmarked via full render               |
-| 49  | Add a `ChartTheme` type for centralized color management | Currently colors are per-chart palette slices        |
-| 50  | Explore `content-visibility: auto` for large charts | Performance optimization for many-series charts          |
+| #  | Task                                                                                     | Why                                                      |
+| -- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| 46 | Add snapshot tests for `computeChartRenderData` output                                   | Struct-level regression guard                            |
+| 47 | Add property-based tests for chart math invariants (e.g., "all points within plot area") | Deeper than fuzz (asserts properties, not just no-panic) |
+| 48 | Benchmark `computeChartRenderData` in isolation                                          | Currently only benchmarked via full render               |
+| 49 | Add a `ChartTheme` type for centralized color management                                 | Currently colors are per-chart palette slices            |
+| 50 | Explore `content-visibility: auto` for large charts                                      | Performance optimization for many-series charts          |
 
 ---
 

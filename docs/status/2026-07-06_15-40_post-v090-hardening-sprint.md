@@ -47,68 +47,68 @@ This session executed Tiers 1-9 in full.
 
 ### Tier 1 — Quick Wins (6 tasks)
 
-| #   | Task                                   | Details                                                                                                                                                                                                                                                      |
-| --- | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| 1   | CHANGELOG `[Unreleased]` entries       | Documented dedup sprint (6 sub-templates extracted), coverage boost (152 tests), goBackScript/overlayShellProps decisions, ADR 0009 rewrite                                                                                                                  |
-| 2   | README cross-links                     | Added "Further reading" table linking javascript-guide, motion-design, container-queries recipe, horizontal-filter-bar, custom-table-rows, custom-404-page, semantic-tokens ADR                                                                              |
-| 3   | Deleted stale branch                   | `origin/modularize/strategic-split` deleted (abandoned experiment, never merged, was misleading)                                                                                                                                                             |
-| 4   | `forms/radio_go.go` → `forms/radio.go` | `git mv` — misleading `_go.go` suffix falsely implied generated code                                                                                                                                                                                         |
-| 5   | `icons.Close` alias for `icons.X`      | Added `Close Name = "x"` alongside existing `X` — prefer `Close` in new code (single-letter identifiers have poor discoverability)                                                                                                                           |
-| 6   | 4 naming fixes                         | `errMsg` → `errorMessage` (no abbreviations), `cleanMessage` → `sanitizeErrorMessage` (precise verb), `htmxMainSRIDefault` → `sriHTMXMainDefault` (consistent word order with `sriHTMXMainByVersion`), extracted `msgGoBack` constant for goconst compliance |
+| # | Task                                   | Details                                                                                                                                                                                                                                                      |
+| - | -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1 | CHANGELOG `[Unreleased]` entries       | Documented dedup sprint (6 sub-templates extracted), coverage boost (152 tests), goBackScript/overlayShellProps decisions, ADR 0009 rewrite                                                                                                                  |
+| 2 | README cross-links                     | Added "Further reading" table linking javascript-guide, motion-design, container-queries recipe, horizontal-filter-bar, custom-table-rows, custom-404-page, semantic-tokens ADR                                                                              |
+| 3 | Deleted stale branch                   | `origin/modularize/strategic-split` deleted (abandoned experiment, never merged, was misleading)                                                                                                                                                             |
+| 4 | `forms/radio_go.go` → `forms/radio.go` | `git mv` — misleading `_go.go` suffix falsely implied generated code                                                                                                                                                                                         |
+| 5 | `icons.Close` alias for `icons.X`      | Added `Close Name = "x"` alongside existing `X` — prefer `Close` in new code (single-letter identifiers have poor discoverability)                                                                                                                           |
+| 6 | 4 naming fixes                         | `errMsg` → `errorMessage` (no abbreviations), `cleanMessage` → `sanitizeErrorMessage` (precise verb), `htmxMainSRIDefault` → `sriHTMXMainDefault` (consistent word order with `sriHTMXMainByVersion`), extracted `msgGoBack` constant for goconst compliance |
 
 ### Tier 2 — Sub-template Dedicated Tests (7 tasks)
 
-| #   | Task                                                  | File                                                                                                                                                     |
-| --- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 7   | `errorHeader` sub-template test                       | `errorpage/subtemplate_test.go` — verifies title + message rendering through ErrorPage                                                                   |
-| 8   | `actionLinkBody` sub-template test                    | Same file — verifies text + arrow SVG icon rendered                                                                                                      |
-| 9   | `goBackScript` sub-template test                      | Same file — verifies nonce propagation + `history.back()`                                                                                                |
-| 10  | `skeletonContainer` sub-template test (3 tests)       | `feedback/subtemplate_test.go` — role=status, loading label, zero/negative count fallback                                                                |
-| 11  | `definitionDetailContent` sub-template test (3 tests) | `display/subtemplate_test.go` — text fallback, DetailComponent slot, grid layout                                                                         |
-| 12  | Golden file: `error_header_consistency.golden`        | Created via `-update` flag                                                                                                                               |
-| 13  | Motion-reduce compliance test                         | `utils/motion_compliance_test.go` — greps all `.templ` files for `transition-*`/`animate-*` without `motion-reduce:` fallback. **Passes: 0 violations.** |
-| 14  | SKILL.md component count drift-guard                  | `utils/skill_count_test.go` — counts exported templ functions vs documented count. Logs 82 actual vs 83 documented (within tolerance).                   |
+| #  | Task                                                  | File                                                                                                                                                     |
+| -- | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 7  | `errorHeader` sub-template test                       | `errorpage/subtemplate_test.go` — verifies title + message rendering through ErrorPage                                                                   |
+| 8  | `actionLinkBody` sub-template test                    | Same file — verifies text + arrow SVG icon rendered                                                                                                      |
+| 9  | `goBackScript` sub-template test                      | Same file — verifies nonce propagation + `history.back()`                                                                                                |
+| 10 | `skeletonContainer` sub-template test (3 tests)       | `feedback/subtemplate_test.go` — role=status, loading label, zero/negative count fallback                                                                |
+| 11 | `definitionDetailContent` sub-template test (3 tests) | `display/subtemplate_test.go` — text fallback, DetailComponent slot, grid layout                                                                         |
+| 12 | Golden file: `error_header_consistency.golden`        | Created via `-update` flag                                                                                                                               |
+| 13 | Motion-reduce compliance test                         | `utils/motion_compliance_test.go` — greps all `.templ` files for `transition-*`/`animate-*` without `motion-reduce:` fallback. **Passes: 0 violations.** |
+| 14 | SKILL.md component count drift-guard                  | `utils/skill_count_test.go` — counts exported templ functions vs documented count. Logs 82 actual vs 83 documented (within tolerance).                   |
 
 ### Tier 3 — Demo & Documentation (8 tasks)
 
-| #   | Task                                      | Details                                                                                                                                                                                 |
-| --- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 15  | Demo: SkeletonCardGrid loading showcase   | Added to `examples/demo/demo.templ`                                                                                                                                                     |
-| 16  | Demo: anchor-linked TOC                   | Added nav bar with 7 anchor links at top of demo page. All `demoSection` calls updated with `id` parameter.                                                                             |
-| 17  | ADR 0010: Sub-template extraction pattern | `docs/adr/0010-sub-template-extraction-pattern.md` — formalizes when to extract (2+ callers, 5+ lines, clear name) and when not to (single caller, demo code, no clean name, 8+ params) |
-| 18  | Migration guide v0.8→v0.9                 | `docs/migration/v0.8-to-v0.9.md` — GridGap, CopyButton.Href, Image.Rounded, LoadMore.InfiniteScroll, NotFound404.LinksTitle, WriteNotFound404                                           |
-| 19  | README: ContainerResponsive example       | Added inline example in Grid section                                                                                                                                                    |
-| 20  | README: FormProps.Inline example          | Added filter bar example with link to horizontal-filter-bar recipe                                                                                                                      |
-| 21  | GlobalErrorHandling godoc                 | Enhanced with full layout wiring example showing ToastContainer requirement                                                                                                             |
-| 22  | SimpleCard.Body verified                  | Already existed (added in prior session). No change needed.                                                                                                                             |
+| #  | Task                                      | Details                                                                                                                                                                                 |
+| -- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 15 | Demo: SkeletonCardGrid loading showcase   | Added to `examples/demo/demo.templ`                                                                                                                                                     |
+| 16 | Demo: anchor-linked TOC                   | Added nav bar with 7 anchor links at top of demo page. All `demoSection` calls updated with `id` parameter.                                                                             |
+| 17 | ADR 0010: Sub-template extraction pattern | `docs/adr/0010-sub-template-extraction-pattern.md` — formalizes when to extract (2+ callers, 5+ lines, clear name) and when not to (single caller, demo code, no clean name, 8+ params) |
+| 18 | Migration guide v0.8→v0.9                 | `docs/migration/v0.8-to-v0.9.md` — GridGap, CopyButton.Href, Image.Rounded, LoadMore.InfiniteScroll, NotFound404.LinksTitle, WriteNotFound404                                           |
+| 19 | README: ContainerResponsive example       | Added inline example in Grid section                                                                                                                                                    |
+| 20 | README: FormProps.Inline example          | Added filter bar example with link to horizontal-filter-bar recipe                                                                                                                      |
+| 21 | GlobalErrorHandling godoc                 | Enhanced with full layout wiring example showing ToastContainer requirement                                                                                                             |
+| 22 | SimpleCard.Body verified                  | Already existed (added in prior session). No change needed.                                                                                                                             |
 
 ### Tier 4 — Features & Accessibility (3 tasks)
 
-| #   | Task                              | Details                                                                                                                                             |
-| --- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 23  | RTL keyboard mapping: Tabs        | `display/tabs.templ` JS handler now checks `document.documentElement.getAttribute('dir') === 'rtl'` and swaps ArrowLeft↔ArrowRight per WAI-ARIA APG |
-| 24  | RTL keyboard mapping: Dropdown    | `display/dropdown.templ` — same RTL swap for ArrowUp/Down horizontal navigation                                                                     |
-| 25  | Tooltip aria-describedby verified | Already present (line 70). `role="tooltip"` on tooltip element (line 81). No change needed.                                                         |
+| #  | Task                              | Details                                                                                                                                             |
+| -- | --------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 23 | RTL keyboard mapping: Tabs        | `display/tabs.templ` JS handler now checks `document.documentElement.getAttribute('dir') === 'rtl'` and swaps ArrowLeft↔ArrowRight per WAI-ARIA APG |
+| 24 | RTL keyboard mapping: Dropdown    | `display/dropdown.templ` — same RTL swap for ArrowUp/Down horizontal navigation                                                                     |
+| 25 | Tooltip aria-describedby verified | Already present (line 70). `role="tooltip"` on tooltip element (line 81). No change needed.                                                         |
 
 ### Tier 5 — Coverage Boost (1 task)
 
-| #   | Task                               | Before → After                                                                                                                                                                                           |
-| --- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 26  | `internal/golden` package coverage | **70.5% → 81.8%** (+11.3%). Added: `-update` flag test, MkdirAll test, normalization edge cases (no classes, multiple attrs, empty class, single class), diff identical/multi-line, lineAt out-of-range. |
+| #  | Task                               | Before → After                                                                                                                                                                                           |
+| -- | ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 26 | `internal/golden` package coverage | **70.5% → 81.8%** (+11.3%). Added: `-update` flag test, MkdirAll test, normalization edge cases (no classes, multiple attrs, empty class, single class), diff identical/multi-line, lineAt out-of-range. |
 
 ### Tier 6-9 — Benchmarks, Fuzz, Infrastructure (5 tasks)
 
-| #   | Task                      | File                                                                                                   |
-| --- | ------------------------- | ------------------------------------------------------------------------------------------------------ |
-| 27  | Benchmark suite: forms    | `forms/benchmark_test.go` — Input, Select, Textarea, Combobox                                          |
-| 28  | Benchmark suite: layout   | `layout/benchmark_test.go` — ThemeScript, ThemeToggle, Script, Minimal                                 |
-| 29  | Benchmark suite: htmx     | `htmx/benchmark_test.go` — LoadingIndicator, CSRFToken, SwapOOB                                        |
-| 30  | Benchmark suite: icons    | `icons/benchmark_test.go` — Icon, IconWithStrokeWidth, IconPathData, IconPathJS                        |
-| 31  | Benchmark suite: utils    | `utils/benchmark_test.go` — Class (2/4 strings), EnsureID, Ternary, Lookup (hit/miss)                  |
-| 32  | Fuzz test: InputType      | `forms/fuzz_test.go` — verifies `inputType()` never panics on arbitrary input                          |
-| 33  | Fuzz test: FormMethod     | `forms/fuzz_method_test.go` — verifies `formMethod()` never panics                                     |
-| 34  | Fuzz test: ButtonHTMLType | `display/fuzz_test.go` — verifies `buttonHTMLType()` never panics                                      |
-| 35  | goconst zero issues       | Extracted `msgGoBack` constant referencing `notFound404GoBackText` — project now has **0 lint issues** |
+| #  | Task                      | File                                                                                                   |
+| -- | ------------------------- | ------------------------------------------------------------------------------------------------------ |
+| 27 | Benchmark suite: forms    | `forms/benchmark_test.go` — Input, Select, Textarea, Combobox                                          |
+| 28 | Benchmark suite: layout   | `layout/benchmark_test.go` — ThemeScript, ThemeToggle, Script, Minimal                                 |
+| 29 | Benchmark suite: htmx     | `htmx/benchmark_test.go` — LoadingIndicator, CSRFToken, SwapOOB                                        |
+| 30 | Benchmark suite: icons    | `icons/benchmark_test.go` — Icon, IconWithStrokeWidth, IconPathData, IconPathJS                        |
+| 31 | Benchmark suite: utils    | `utils/benchmark_test.go` — Class (2/4 strings), EnsureID, Ternary, Lookup (hit/miss)                  |
+| 32 | Fuzz test: InputType      | `forms/fuzz_test.go` — verifies `inputType()` never panics on arbitrary input                          |
+| 33 | Fuzz test: FormMethod     | `forms/fuzz_method_test.go` — verifies `formMethod()` never panics                                     |
+| 34 | Fuzz test: ButtonHTMLType | `display/fuzz_test.go` — verifies `buttonHTMLType()` never panics                                      |
+| 35 | goconst zero issues       | Extracted `msgGoBack` constant referencing `notFound404GoBackText` — project now has **0 lint issues** |
 
 ### Final Verification
 
@@ -265,33 +265,33 @@ purpose of the drift-guard test.
 
 ## f) Top 25 Things to Get Done Next
 
-| #   | Task                                                                                         | Impact   | Effort | Est |
-| --- | -------------------------------------------------------------------------------------------- | -------- | ------ | --- |
-| 1   | **Commit this session's work** — 35+ files uncommitted, all green                            | CRITICAL | LOW    | 5m  |
-| 2   | Fix SKILL.md count: 83 → 82 (or investigate the discrepancy)                                 | LOW      | LOW    | 5m  |
-| 3   | Remove `RenderToBuffer` from `utils/benchmark_test.go` if it's causing coverage regression   | MED      | LOW    | 5m  |
-| 4   | Pagination icon RTL swap — swap ArrowLeft/ArrowRight in RTL contexts                         | MED      | LOW    | 10m |
-| 5   | Archive completed planning docs — add "STATUS: COMPLETED" headers                            | LOW      | LOW    | 10m |
-| 6   | Add fuzz tests to CI — `go test -fuzz=. -run=Fuzz ./...` for 30s                             | MED      | LOW    | 10m |
-| 7   | Wire motion constants into remaining 19 components (or remove them)                          | MED      | HIGH   | 90m |
-| 8   | Run `art-dupl` on Go sources (`*_templ.go` + handwritten `.go`)                              | LOW      | LOW    | 10m |
-| 9   | CSP nonce audit on all new sub-templates                                                     | MED      | LOW    | 10m |
-| 10  | Golden file full regeneration to ensure consistency                                          | LOW      | LOW    | 10m |
-| 11  | Configure SSH tag signing (`gpg.ssh.allowedSignersFile`)                                     | LOW      | LOW    | 10m |
-| 12  | Add "doc reality" CI check — verify AGENTS.md claims match filesystem                        | MED      | MED    | 30m |
-| 13  | Demo: standalone `/forms` quickstart route                                                   | MED      | MED    | 30m |
-| 14  | Sortable DataTable component — high-level wrapper around TableHeader                         | HIGH     | HIGH   | 6h+ |
-| 15  | Popover component (most requested new component)                                             | HIGH     | HIGH   | 4h  |
-| 16  | Filter dropdown component                                                                    | MED      | MED    | 45m |
-| 17  | Coverage: display sub-50% functions (`statCardInner`, `statCardFigures`)                     | MED      | LOW    | 12m |
-| 18  | Coverage: `forms.Input` render branches (67.1%)                                              | MED      | LOW    | 12m |
-| 19  | Coverage: `navigation.navLinkAnchor`, `simpleBrand`                                          | LOW      | LOW    | 12m |
-| 20  | Blocks/composition examples (dashboard, login, settings layouts)                             | MED      | MED    | 3h  |
-| 21  | `Validate() error` design pattern for v1.0                                                   | MED      | HIGH   | 4h  |
-| 22  | Self-host htmx: download + commit `htmx.min.js` to examples                                  | LOW      | LOW    | 15m |
-| 23  | awesome-templ PR submission (component count updated)                                        | LOW      | LOW    | 5m  |
-| 24  | templ.guide listing submission                                                               | LOW      | LOW    | 5m  |
-| 25  | Consumer project: actually adopt templ-components in DiscordSync to validate discoverability | HIGH     | HIGH   | 60m |
+| #  | Task                                                                                         | Impact   | Effort | Est |
+| -- | -------------------------------------------------------------------------------------------- | -------- | ------ | --- |
+| 1  | **Commit this session's work** — 35+ files uncommitted, all green                            | CRITICAL | LOW    | 5m  |
+| 2  | Fix SKILL.md count: 83 → 82 (or investigate the discrepancy)                                 | LOW      | LOW    | 5m  |
+| 3  | Remove `RenderToBuffer` from `utils/benchmark_test.go` if it's causing coverage regression   | MED      | LOW    | 5m  |
+| 4  | Pagination icon RTL swap — swap ArrowLeft/ArrowRight in RTL contexts                         | MED      | LOW    | 10m |
+| 5  | Archive completed planning docs — add "STATUS: COMPLETED" headers                            | LOW      | LOW    | 10m |
+| 6  | Add fuzz tests to CI — `go test -fuzz=. -run=Fuzz ./...` for 30s                             | MED      | LOW    | 10m |
+| 7  | Wire motion constants into remaining 19 components (or remove them)                          | MED      | HIGH   | 90m |
+| 8  | Run `art-dupl` on Go sources (`*_templ.go` + handwritten `.go`)                              | LOW      | LOW    | 10m |
+| 9  | CSP nonce audit on all new sub-templates                                                     | MED      | LOW    | 10m |
+| 10 | Golden file full regeneration to ensure consistency                                          | LOW      | LOW    | 10m |
+| 11 | Configure SSH tag signing (`gpg.ssh.allowedSignersFile`)                                     | LOW      | LOW    | 10m |
+| 12 | Add "doc reality" CI check — verify AGENTS.md claims match filesystem                        | MED      | MED    | 30m |
+| 13 | Demo: standalone `/forms` quickstart route                                                   | MED      | MED    | 30m |
+| 14 | Sortable DataTable component — high-level wrapper around TableHeader                         | HIGH     | HIGH   | 6h+ |
+| 15 | Popover component (most requested new component)                                             | HIGH     | HIGH   | 4h  |
+| 16 | Filter dropdown component                                                                    | MED      | MED    | 45m |
+| 17 | Coverage: display sub-50% functions (`statCardInner`, `statCardFigures`)                     | MED      | LOW    | 12m |
+| 18 | Coverage: `forms.Input` render branches (67.1%)                                              | MED      | LOW    | 12m |
+| 19 | Coverage: `navigation.navLinkAnchor`, `simpleBrand`                                          | LOW      | LOW    | 12m |
+| 20 | Blocks/composition examples (dashboard, login, settings layouts)                             | MED      | MED    | 3h  |
+| 21 | `Validate() error` design pattern for v1.0                                                   | MED      | HIGH   | 4h  |
+| 22 | Self-host htmx: download + commit `htmx.min.js` to examples                                  | LOW      | LOW    | 15m |
+| 23 | awesome-templ PR submission (component count updated)                                        | LOW      | LOW    | 5m  |
+| 24 | templ.guide listing submission                                                               | LOW      | LOW    | 5m  |
+| 25 | Consumer project: actually adopt templ-components in DiscordSync to validate discoverability | HIGH     | HIGH   | 60m |
 
 ---
 

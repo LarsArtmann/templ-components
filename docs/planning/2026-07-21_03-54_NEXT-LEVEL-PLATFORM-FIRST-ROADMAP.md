@@ -643,13 +643,13 @@ makes the recipes re-skinnable. Phase 4 freezes the API. Phase 5 breaks it for t
 
 ## Rejected Alternatives
 
-| Alternative                                 | Verdict  | Why rejected                                                                                                                                                      |
-| ------------------------------------------- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| WASM client runtime                         | ❌ Skip  | 50KB+ for problems CSS solves. WASM shines for compute, not DOM wiring.                                                                                           |
-| Unified `tc-runtime.js` bundle              | ❌ Skip  | Saves <2KB, breaks per-component CSP-audit story, adds "where is this JS?" mystery. Residual JS after Popover migration is ~6 tiny singletons — keep them inline. |
-| Per-component modules (98 modules)          | ❌ Skip  | Go module tooling is painful past ~10 modules. Per-package is the right granularity.                                                                              |
-| Big-bang modules split (no compat)          | ❌ Skip  | Breaks every consumer. Compat re-export module required for one minor cycle.                                                                                      |
-| WebComponents / Shadow DOM                  | ❌ Skip  | Tailwind classes don't pierce shadow boundary; SSR story bad; fights the templ/HTMX thesis.                                                                       |
+| Alternative                                 | Verdict | Why rejected                                                                                                                                                      |
+| ------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| WASM client runtime                         | ❌ Skip | 50KB+ for problems CSS solves. WASM shines for compute, not DOM wiring.                                                                                           |
+| Unified `tc-runtime.js` bundle              | ❌ Skip | Saves <2KB, breaks per-component CSP-audit story, adds "where is this JS?" mystery. Residual JS after Popover migration is ~6 tiny singletons — keep them inline. |
+| Per-component modules (98 modules)          | ❌ Skip | Go module tooling is painful past ~10 modules. Per-package is the right granularity.                                                                              |
+| Big-bang modules split (no compat)          | ❌ Skip | Breaks every consumer. Compat re-export module required for one minor cycle.                                                                                      |
+| WebComponents / Shadow DOM                  | ❌ Skip | Tailwind classes don't pierce shadow boundary; SSR story bad; fights the templ/HTMX thesis.                                                                       |
 | Headless variants as separate package       | ⚠️ Defer | Evaluate as `Unstyled bool` flag (Phase 5.4 spike) before committing to separate package.                                                                         |
 | Compound components (Trigger/Content/Close) | ⚠️ Defer | TODO #39, v2.0+. Popover API reduces the urgency (native handles trigger/content relationship).                                                                   |
 

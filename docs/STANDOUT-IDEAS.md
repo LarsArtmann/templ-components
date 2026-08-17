@@ -8,11 +8,11 @@
 
 This isn't one library — it's three that form a **complete GOTH stack framework without the framework**:
 
-| Library                                                                 | Role                                                                                      | Maturity                                 |
-| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------- |
-| **[templ-components](https://github.com/larsartmann/templ-components)** | UI components (116 components, 106 icons, Tailwind + HTMX + opt-in Datastar)                  | 1,300+ tests, visual regression suite, v1.8 |
-| **[cqrs-htmx](https://github.com/larsartmann/cqrs-htmx)**               | HTTP → CQRS wiring (command/query dispatch, auth, HTMX response builder, templ rendering) | 137 specs, 92.6% coverage, 0 lint issues |
-| **[go-cqrs-lite](https://github.com/larsartmann/go-cqrs-lite)**         | Event sourcing core (aggregates, events, projections)                                     | Stable v1.1.0                            |
+| Library                                                                 | Role                                                                                      | Maturity                                    |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------- |
+| **[templ-components](https://github.com/larsartmann/templ-components)** | UI components (116 components, 106 icons, Tailwind + HTMX + opt-in Datastar)              | 1,300+ tests, visual regression suite, v1.8 |
+| **[cqrs-htmx](https://github.com/larsartmann/cqrs-htmx)**               | HTTP → CQRS wiring (command/query dispatch, auth, HTMX response builder, templ rendering) | 137 specs, 92.6% coverage, 0 lint issues    |
+| **[go-cqrs-lite](https://github.com/larsartmann/go-cqrs-lite)**         | Event sourcing core (aggregates, events, projections)                                     | Stable v1.1.0                               |
 
 **No competitor has this.** templUI is just components. DatastarUI is just components. None of them solve the "how do I wire HTMX to my domain logic with auth, error handling, and templ rendering?" problem. That's what cqrs-htmx does. Together, these three libraries give a Go developer everything they need to build a production server-rendered web app — CQRS event sourcing, HTMX integration, authorization, and beautiful UI components — with zero framework lock-in.
 

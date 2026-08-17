@@ -98,14 +98,14 @@ The inline comments in `internal/contract/component_props_test.go` say `// displ
 
 ### From Status Report #1 — Identified But Never Executed on Master
 
-| #   | Item                                                               | Status (2026-07-06)                              |
-| --- | ------------------------------------------------------------------ | ------------------------------------------------ |
-| 1   | Replace `containsChar` with `strings.Contains` in LoadMore         | ✅ Done — `containsChar` deleted, `net/url` used |
-| 2   | Fix contract test comment counts (display 18→23, nav 6→7)          | ⬠ Stale comments remain (cosmetic only)          |
-| 3   | CopyButton `aria-live` for "Copied!" screen reader feedback        | ✅ Done — `role="status"` + `aria-live="polite"` |
-| 4   | Golden test for `RelativeTime` with `AutoRefresh: true` path       | ✅ Done                                          |
-| 5   | Integration tests: CopyButton+Card, CountBadge+Button compositions | ✅ Done — 7 composition tests                    |
-| 6   | SKILL.md Part 2: document CopyButton/Image/CountBadge JS patterns  | ✅ Done — full SKILL.md rewrite                  |
+| # | Item                                                               | Status (2026-07-06)                              |
+| - | ------------------------------------------------------------------ | ------------------------------------------------ |
+| 1 | Replace `containsChar` with `strings.Contains` in LoadMore         | ✅ Done — `containsChar` deleted, `net/url` used |
+| 2 | Fix contract test comment counts (display 18→23, nav 6→7)          | ⬠ Stale comments remain (cosmetic only)          |
+| 3 | CopyButton `aria-live` for "Copied!" screen reader feedback        | ✅ Done — `role="status"` + `aria-live="polite"` |
+| 4 | Golden test for `RelativeTime` with `AutoRefresh: true` path       | ✅ Done                                          |
+| 5 | Integration tests: CopyButton+Card, CountBadge+Button compositions | ✅ Done — 7 composition tests                    |
+| 6 | SKILL.md Part 2: document CopyButton/Image/CountBadge JS patterns  | ✅ Done — full SKILL.md rewrite                  |
 
 ---
 
@@ -155,43 +155,43 @@ The inline comments in `internal/contract/component_props_test.go` say `// displ
 
 ### Quick Wins (≤10 min, high impact per minute)
 
-| #   | Task                                                         | Impact                     | Effort |
-| --- | ------------------------------------------------------------ | -------------------------- | ------ |
-| 1   | Fix contract test comment counts (display 18→23, nav 6→7)    | Accuracy                   | 2 min  |
-| 2   | CopyButton: add `aria-live="polite"` to label span           | A11y                       | 3 min  |
-| 3   | Delete `containsChar`, replace with `strings.Contains`       | Code quality               | 3 min  |
-| 4   | Fix `feedback/loading.templ:119` templ minmax hint           | Lint cleanliness           | 3 min  |
-| 5   | Add `CursorParam` field to LoadMoreProps (default "cursor")  | API parity with Pagination | 5 min  |
-| 6   | RelativeTime: add golden test for `AutoRefresh: true` path   | Test coverage              | 5 min  |
-| 7   | CountBadge: add `Max=0` edge case test (verify default 99)   | Edge case coverage         | 5 min  |
-| 8   | Delete stale LSP error on `golden_new_test.go` (restart LSP) | Dev experience             | 1 min  |
+| # | Task                                                         | Impact                     | Effort |
+| - | ------------------------------------------------------------ | -------------------------- | ------ |
+| 1 | Fix contract test comment counts (display 18→23, nav 6→7)    | Accuracy                   | 2 min  |
+| 2 | CopyButton: add `aria-live="polite"` to label span           | A11y                       | 3 min  |
+| 3 | Delete `containsChar`, replace with `strings.Contains`       | Code quality               | 3 min  |
+| 4 | Fix `feedback/loading.templ:119` templ minmax hint           | Lint cleanliness           | 3 min  |
+| 5 | Add `CursorParam` field to LoadMoreProps (default "cursor")  | API parity with Pagination | 5 min  |
+| 6 | RelativeTime: add golden test for `AutoRefresh: true` path   | Test coverage              | 5 min  |
+| 7 | CountBadge: add `Max=0` edge case test (verify default 99)   | Edge case coverage         | 5 min  |
+| 8 | Delete stale LSP error on `golden_new_test.go` (restart LSP) | Dev experience             | 1 min  |
 
 ### Medium Effort (10-30 min)
 
-| #   | Task                                                                      | Impact               | Effort |
-| --- | ------------------------------------------------------------------------- | -------------------- | ------ |
-| 9   | LoadMore: use `net/url` pattern from Pagination (delete string concat)    | Correctness + parity | 15 min |
-| 10  | Integration tests: CopyButton inside Card, CountBadge wrapping Button     | Composition coverage | 15 min |
-| 11  | SKILL.md Part 2: document CopyButton/Image/RelativeTime JS patterns       | Maintainer guidance  | 20 min |
-| 12  | CopyButton: add `document.execCommand('copy')` fallback for old browsers  | Compatibility        | 15 min |
-| 13  | StatCard HTMX: golden test for `hx-get` variant                           | Snapshot coverage    | 10 min |
-| 14  | Card.Body: golden test for Body slot variant                              | Snapshot coverage    | 10 min |
-| 15  | Demo: anchor-linked table of contents at top                              | Demo navigability    | 15 min |
-| 16  | Add `formatRelativeTime` boundary table test (minute/hour/day/week edges) | Logic coverage       | 20 min |
+| #  | Task                                                                      | Impact               | Effort |
+| -- | ------------------------------------------------------------------------- | -------------------- | ------ |
+| 9  | LoadMore: use `net/url` pattern from Pagination (delete string concat)    | Correctness + parity | 15 min |
+| 10 | Integration tests: CopyButton inside Card, CountBadge wrapping Button     | Composition coverage | 15 min |
+| 11 | SKILL.md Part 2: document CopyButton/Image/RelativeTime JS patterns       | Maintainer guidance  | 20 min |
+| 12 | CopyButton: add `document.execCommand('copy')` fallback for old browsers  | Compatibility        | 15 min |
+| 13 | StatCard HTMX: golden test for `hx-get` variant                           | Snapshot coverage    | 10 min |
+| 14 | Card.Body: golden test for Body slot variant                              | Snapshot coverage    | 10 min |
+| 15 | Demo: anchor-linked table of contents at top                              | Demo navigability    | 15 min |
+| 16 | Add `formatRelativeTime` boundary table test (minute/hour/day/week edges) | Logic coverage       | 20 min |
 
 ### Larger Effort (30 min+)
 
-| #   | Task                                                                 | Impact               | Effort |
-| --- | -------------------------------------------------------------------- | -------------------- | ------ |
-| 17  | Image: handle `srcset` in fallback swap (not just `src`)             | Correctness          | 30 min |
-| 18  | RelativeTime: JS auto-refresh `Intl.RelativeTimeFormat` locale test  | Localization         | 30 min |
-| 19  | Type model: audit all new components for typed enum opportunities    | Type safety          | 30 min |
-| 20  | CopyButton: add `Href` variant (link button that also copies)        | Use case             | 20 min |
-| 21  | LoadMore: add infinite-scroll variant (`hx-trigger="revealed"`)      | UX feature           | 25 min |
-| 22  | Benchmark tests for all 6 new components                             | Performance baseline | 20 min |
-| 23  | Dedicated forms quickstart demo route (`/forms`)                     | Discoverability      | 30 min |
-| 24  | ADR: HATEOAS-first philosophy (formalize the shift from "zero JS")   | Architecture record  | 20 min |
-| 25  | Audit all components for `aria-live` opportunities beyond CopyButton | A11y audit           | 30 min |
+| #  | Task                                                                 | Impact               | Effort |
+| -- | -------------------------------------------------------------------- | -------------------- | ------ |
+| 17 | Image: handle `srcset` in fallback swap (not just `src`)             | Correctness          | 30 min |
+| 18 | RelativeTime: JS auto-refresh `Intl.RelativeTimeFormat` locale test  | Localization         | 30 min |
+| 19 | Type model: audit all new components for typed enum opportunities    | Type safety          | 30 min |
+| 20 | CopyButton: add `Href` variant (link button that also copies)        | Use case             | 20 min |
+| 21 | LoadMore: add infinite-scroll variant (`hx-trigger="revealed"`)      | UX feature           | 25 min |
+| 22 | Benchmark tests for all 6 new components                             | Performance baseline | 20 min |
+| 23 | Dedicated forms quickstart demo route (`/forms`)                     | Discoverability      | 30 min |
+| 24 | ADR: HATEOAS-first philosophy (formalize the shift from "zero JS")   | Architecture record  | 20 min |
+| 25 | Audit all components for `aria-live` opportunities beyond CopyButton | A11y audit           | 30 min |
 
 ---
 

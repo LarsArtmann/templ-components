@@ -264,123 +264,123 @@ this from reading AGENTS.md at the start of the session.
 
 ### Immediate (before commit)
 
-| #   | Task                                                   | Effort |
-| --- | ------------------------------------------------------ | ------ |
-| 1   | Add CHANGELOG `[Unreleased]` entry for doc count fixes | 3m     |
-| 2   | Review the 6-file diff for accuracy                    | 5m     |
-| 3   | Commit the doc fixes                                   | 2m     |
+| # | Task                                                   | Effort |
+| - | ------------------------------------------------------ | ------ |
+| 1 | Add CHANGELOG `[Unreleased]` entry for doc count fixes | 3m     |
+| 2 | Review the 6-file diff for accuracy                    | 5m     |
+| 3 | Commit the doc fixes                                   | 2m     |
 
 ### Count-drift prevention
 
-| #   | Task                                                                                  | Impact | Effort |
-| --- | ------------------------------------------------------------------------------------- | ------ | ------ |
-| 4   | Add `TestREADMECountsMatchCode` — verify README "By the Numbers" against actual code  | HIGH   | 15m    |
-| 5   | Add `TestFeaturesCountsMatchCode` — verify FEATURES.md totals against actual code     | HIGH   | 15m    |
-| 6   | Add `TestRoadmapCountsMatchCode` — verify ROADMAP.md component/icon counts            | MED    | 10m    |
-| 7   | Add `TestAgentsCountsMatchCode` — verify AGENTS.md per-package counts                 | MED    | 10m    |
-| 8   | Add `TestSKILLCountsMatchCode` — verify SKILL.md per-package counts                   | MED    | 10m    |
-| 9   | Document the enum counting methodology in FEATURES.md (what counts as a "typed enum") | LOW    | 5m     |
+| # | Task                                                                                  | Impact | Effort |
+| - | ------------------------------------------------------------------------------------- | ------ | ------ |
+| 4 | Add `TestREADMECountsMatchCode` — verify README "By the Numbers" against actual code  | HIGH   | 15m    |
+| 5 | Add `TestFeaturesCountsMatchCode` — verify FEATURES.md totals against actual code     | HIGH   | 15m    |
+| 6 | Add `TestRoadmapCountsMatchCode` — verify ROADMAP.md component/icon counts            | MED    | 10m    |
+| 7 | Add `TestAgentsCountsMatchCode` — verify AGENTS.md per-package counts                 | MED    | 10m    |
+| 8 | Add `TestSKILLCountsMatchCode` — verify SKILL.md per-package counts                   | MED    | 10m    |
+| 9 | Document the enum counting methodology in FEATURES.md (what counts as a "typed enum") | LOW    | 5m     |
 
 ### SKILL.md catalogue completeness
 
-| #   | Task                                                                                                                                                  | Impact | Effort |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 10  | Audit SKILL.md display section — verify all 30 components have catalogue rows                                                                         | MED    | 15m    |
-| 11  | Audit SKILL.md forms section — verify all 21 components have catalogue rows                                                                           | MED    | 10m    |
-| 12  | Audit SKILL.md feedback section — verify all 13 components have catalogue rows                                                                        | LOW    | 10m    |
-| 13  | Audit SKILL.md navigation section — verify all 12 components have catalogue rows                                                                      | LOW    | 10m    |
-| 14  | Audit SKILL.md htmx section — verify all 8 components have catalogue rows                                                                             | LOW    | 5m     |
-| 15  | Add new components (Popover, ContextMenu, Carousel, HoverCard, Calendar, DataTable, FilterDropdown, Slider, Rating, TagsInput) to SKILL.md if missing | MED    | 30m    |
+| #  | Task                                                                                                                                                  | Impact | Effort |
+| -- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 10 | Audit SKILL.md display section — verify all 30 components have catalogue rows                                                                         | MED    | 15m    |
+| 11 | Audit SKILL.md forms section — verify all 21 components have catalogue rows                                                                           | MED    | 10m    |
+| 12 | Audit SKILL.md feedback section — verify all 13 components have catalogue rows                                                                        | LOW    | 10m    |
+| 13 | Audit SKILL.md navigation section — verify all 12 components have catalogue rows                                                                      | LOW    | 10m    |
+| 14 | Audit SKILL.md htmx section — verify all 8 components have catalogue rows                                                                             | LOW    | 5m     |
+| 15 | Add new components (Popover, ContextMenu, Carousel, HoverCard, Calendar, DataTable, FilterDropdown, Slider, Rating, TagsInput) to SKILL.md if missing | MED    | 30m    |
 
 ### FEATURES.md completeness
 
-| #   | Task                                                                                                                                | Impact | Effort |
-| --- | ----------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 16  | Audit FEATURES.md for all v0.13.0-v0.17.0 components (Popover, ContextMenu, etc.)                                                   | MED    | 20m    |
-| 17  | Verify every FULLY_FUNCTIONAL claim in FEATURES.md against actual test results                                                      | LOW    | 30m    |
-| 18  | Add `templates/app.css` details to FEATURES.md (modern CSS features: `@starting-style`, `field-sizing`, `content-visibility`, etc.) | LOW    | 15m    |
+| #  | Task                                                                                                                                | Impact | Effort |
+| -- | ----------------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 16 | Audit FEATURES.md for all v0.13.0-v0.17.0 components (Popover, ContextMenu, etc.)                                                   | MED    | 20m    |
+| 17 | Verify every FULLY_FUNCTIONAL claim in FEATURES.md against actual test results                                                      | LOW    | 30m    |
+| 18 | Add `templates/app.css` details to FEATURES.md (modern CSS features: `@starting-style`, `field-sizing`, `content-visibility`, etc.) | LOW    | 15m    |
 
 ### README.md improvements
 
-| #   | Task                                                                                     | Impact | Effort |
-| --- | ---------------------------------------------------------------------------------------- | ------ | ------ |
-| 19  | Add ViewTransitions to README htmx code example                                          | LOW    | 3m     |
-| 20  | Add IconRTL to README icons section                                                      | LOW    | 3m     |
-| 21  | Add modern web standards section to README (dialog, stylable select, field-sizing, etc.) | MED    | 15m    |
-| 22  | Update README "Dependencies" count if go-error-family version changed                    | LOW    | 2m     |
+| #  | Task                                                                                     | Impact | Effort |
+| -- | ---------------------------------------------------------------------------------------- | ------ | ------ |
+| 19 | Add ViewTransitions to README htmx code example                                          | LOW    | 3m     |
+| 20 | Add IconRTL to README icons section                                                      | LOW    | 3m     |
+| 21 | Add modern web standards section to README (dialog, stylable select, field-sizing, etc.) | MED    | 15m    |
+| 22 | Update README "Dependencies" count if go-error-family version changed                    | LOW    | 2m     |
 
 ### ADR and cross-link verification
 
-| #   | Task                                                                                    | Impact | Effort |
-| --- | --------------------------------------------------------------------------------------- | ------ | ------ |
-| 23  | Verify all ADR references in docs resolve (ADR 0007-0015 all exist)                     | MED    | 10m    |
-| 24  | Verify all recipe doc links in README resolve                                           | LOW    | 5m     |
-| 25  | Verify all "Further reading" links in README resolve                                    | LOW    | 5m     |
-| 26  | Add ADR entries for v0.11.0-v0.17.0 features (if any architectural decisions were made) | LOW    | 15m    |
+| #  | Task                                                                                    | Impact | Effort |
+| -- | --------------------------------------------------------------------------------------- | ------ | ------ |
+| 23 | Verify all ADR references in docs resolve (ADR 0007-0015 all exist)                     | MED    | 10m    |
+| 24 | Verify all recipe doc links in README resolve                                           | LOW    | 5m     |
+| 25 | Verify all "Further reading" links in README resolve                                    | LOW    | 5m     |
+| 26 | Add ADR entries for v0.11.0-v0.17.0 features (if any architectural decisions were made) | LOW    | 15m    |
 
 ### Historical report cleanup
 
-| #   | Task                                                                                      | Impact | Effort |
-| --- | ----------------------------------------------------------------------------------------- | ------ | ------ |
-| 27  | Consider archiving `2026-07-0*` files to `docs/archive/2026-07/` — they're all historical | LOW    | 10m    |
-| 28  | Or add a `docs/status/README.md` index explaining the historical nature of these files    | LOW    | 5m     |
-| 29  | Verify the `AUTO-UPDATED 2026-07-10` overlays are still accurate (spot-check 3 claims)    | LOW    | 10m    |
+| #  | Task                                                                                      | Impact | Effort |
+| -- | ----------------------------------------------------------------------------------------- | ------ | ------ |
+| 27 | Consider archiving `2026-07-0*` files to `docs/archive/2026-07/` — they're all historical | LOW    | 10m    |
+| 28 | Or add a `docs/status/README.md` index explaining the historical nature of these files    | LOW    | 5m     |
+| 29 | Verify the `AUTO-UPDATED 2026-07-10` overlays are still accurate (spot-check 3 claims)    | LOW    | 10m    |
 
 ### Domain language
 
-| #   | Task                                                                                                                       | Impact | Effort |
-| --- | -------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 30  | Update `docs/DOMAIN_LANGUAGE.md` with terms from v0.11.0-v0.17.0 (View Transitions, Stylable Select, ContainerQuery, etc.) | LOW    | 15m    |
-| 31  | Verify DOMAIN_LANGUAGE.md terms are used consistently across all docs                                                      | LOW    | 10m    |
+| #  | Task                                                                                                                       | Impact | Effort |
+| -- | -------------------------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 30 | Update `docs/DOMAIN_LANGUAGE.md` with terms from v0.11.0-v0.17.0 (View Transitions, Stylable Select, ContainerQuery, etc.) | LOW    | 15m    |
+| 31 | Verify DOMAIN_LANGUAGE.md terms are used consistently across all docs                                                      | LOW    | 10m    |
 
 ### ROADMAP.md improvements
 
-| #   | Task                                                                                       | Impact | Effort |
-| --- | ------------------------------------------------------------------------------------------ | ------ | ------ |
-| 32  | Add v0.11.0-v0.17.0 milestones to ROADMAP.md "Current" section                             | LOW    | 10m    |
-| 33  | Update ROADMAP.md v2.0 section — "Native `<dialog>`" already shipped, remove from research | LOW    | 2m     |
-| 34  | Add "Modern web standards adoption" to ROADMAP.md current status                           | LOW    | 5m     |
+| #  | Task                                                                                       | Impact | Effort |
+| -- | ------------------------------------------------------------------------------------------ | ------ | ------ |
+| 32 | Add v0.11.0-v0.17.0 milestones to ROADMAP.md "Current" section                             | LOW    | 10m    |
+| 33 | Update ROADMAP.md v2.0 section — "Native `<dialog>`" already shipped, remove from research | LOW    | 2m     |
+| 34 | Add "Modern web standards adoption" to ROADMAP.md current status                           | LOW    | 5m     |
 
 ### Testing improvements
 
-| #   | Task                                                                    | Impact | Effort |
-| --- | ----------------------------------------------------------------------- | ------ | ------ |
-| 35  | Add a test that asserts every package directory has a FEATURES.md entry | LOW    | 10m    |
-| 36  | Add a test that asserts every component appears in FEATURES.md          | MED    | 20m    |
-| 37  | Add a test that asserts every component appears in SKILL.md catalogue   | MED    | 20m    |
+| #  | Task                                                                    | Impact | Effort |
+| -- | ----------------------------------------------------------------------- | ------ | ------ |
+| 35 | Add a test that asserts every package directory has a FEATURES.md entry | LOW    | 10m    |
+| 36 | Add a test that asserts every component appears in FEATURES.md          | MED    | 20m    |
+| 37 | Add a test that asserts every component appears in SKILL.md catalogue   | MED    | 20m    |
 
 ### CONTRIBUTING.md improvements
 
-| #   | Task                                                                   | Impact | Effort |
-| --- | ---------------------------------------------------------------------- | ------ | ------ |
-| 38  | Add `GOEXPERIMENT=jsonv2` to CONTRIBUTING.md build instructions        | MED    | 3m     |
-| 39  | Add `nix develop` mention to CONTRIBUTING.md for templ version pinning | LOW    | 5m     |
-| 40  | Cross-link CONTRIBUTING.md and AGENTS.md more prominently              | LOW    | 3m     |
+| #  | Task                                                                   | Impact | Effort |
+| -- | ---------------------------------------------------------------------- | ------ | ------ |
+| 38 | Add `GOEXPERIMENT=jsonv2` to CONTRIBUTING.md build instructions        | MED    | 3m     |
+| 39 | Add `nix develop` mention to CONTRIBUTING.md for templ version pinning | LOW    | 5m     |
+| 40 | Cross-link CONTRIBUTING.md and AGENTS.md more prominently              | LOW    | 3m     |
 
 ### AGENTS.md improvements
 
-| #   | Task                                                                                                       | Impact | Effort |
-| --- | ---------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 41  | Add ViewTransitions to AGENTS.md conventions section                                                       | LOW    | 5m     |
-| 42  | Add Stylable Select to AGENTS.md conventions section                                                       | LOW    | 5m     |
-| 43  | Add modern web standards section to AGENTS.md (dialog migration summary, field-sizing, content-visibility) | MED    | 15m    |
-| 44  | Verify "75 generated files" count is current after any new component additions                             | LOW    | 2m     |
+| #  | Task                                                                                                       | Impact | Effort |
+| -- | ---------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 41 | Add ViewTransitions to AGENTS.md conventions section                                                       | LOW    | 5m     |
+| 42 | Add Stylable Select to AGENTS.md conventions section                                                       | LOW    | 5m     |
+| 43 | Add modern web standards section to AGENTS.md (dialog migration summary, field-sizing, content-visibility) | MED    | 15m    |
+| 44 | Verify "75 generated files" count is current after any new component additions                             | LOW    | 2m     |
 
 ### Process improvements
 
-| #   | Task                                                                                                          | Impact | Effort |
-| --- | ------------------------------------------------------------------------------------------------------------- | ------ | ------ |
-| 45  | Create a `scripts/docs-health.sh` that automates this audit (count drift, ghost refs, cross-file consistency) | HIGH   | 45m    |
-| 46  | Add docs-health check to CI (run `scripts/docs-health.sh`, fail on drift)                                     | HIGH   | 15m    |
-| 47  | Add pre-commit hook that warns when component/icon counts change but docs aren't updated                      | MED    | 30m    |
+| #  | Task                                                                                                          | Impact | Effort |
+| -- | ------------------------------------------------------------------------------------------------------------- | ------ | ------ |
+| 45 | Create a `scripts/docs-health.sh` that automates this audit (count drift, ghost refs, cross-file consistency) | HIGH   | 45m    |
+| 46 | Add docs-health check to CI (run `scripts/docs-health.sh`, fail on drift)                                     | HIGH   | 15m    |
+| 47 | Add pre-commit hook that warns when component/icon counts change but docs aren't updated                      | MED    | 30m    |
 
 ### Polish
 
-| #   | Task                                                                               | Impact | Effort |
-| --- | ---------------------------------------------------------------------------------- | ------ | ------ |
-| 48  | Run `go test ./... -count=1` with `GOEXPERIMENT=jsonv2` to get uncached test count | LOW    | 5m     |
-| 49  | Update README "By the Numbers" test count to exact (not ~990) after full test run  | LOW    | 2m     |
-| 50  | Consider adding a "Last verified" date to README "By the Numbers" section          | LOW    | 2m     |
+| #  | Task                                                                               | Impact | Effort |
+| -- | ---------------------------------------------------------------------------------- | ------ | ------ |
+| 48 | Run `go test ./... -count=1` with `GOEXPERIMENT=jsonv2` to get uncached test count | LOW    | 5m     |
+| 49 | Update README "By the Numbers" test count to exact (not ~990) after full test run  | LOW    | 2m     |
+| 50 | Consider adding a "Last verified" date to README "By the Numbers" section          | LOW    | 2m     |
 
 ---
 

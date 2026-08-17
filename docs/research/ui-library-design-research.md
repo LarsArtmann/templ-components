@@ -1739,7 +1739,7 @@ manually). This means templ-components has a stronger, more consistent API contr
 | **Language**            | Go + templ                          | Go + templ                     | TypeScript + React               |
 | **Rendering**           | Server-side                         | Server-side                    | Client-side (CSR/SSR)            |
 | **CSS**                 | Tailwind v4                         | Tailwind v3/v4                 | Tailwind v4                      |
-| **Distribution**        | Go module                           | Module + CLI copy              | pnpm CLI copy-paste               |
+| **Distribution**        | Go module                           | Module + CLI copy              | pnpm CLI copy-paste              |
 | **BaseProps**           | Embedded (consistent)               | Not embedded (repeated)        | React props (per-component)      |
 | **Variant lookup**      | Map + `utils.Lookup`                | Switch statement               | CVA                              |
 | **Class merge**         | `utils.Class` (tailwind-merge-go)   | `utils.TwMerge`                | `cn()` (clsx + tailwind-merge)   |

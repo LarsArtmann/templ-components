@@ -12,20 +12,20 @@
 
 ## a) FULLY DONE
 
-| # | Task | Verification |
-|---|------|-------------|
-| 1 | Created `datastar/go.mod` (requires: templ, go-datastar/static, utils; replaces utils → ../utils) | `go mod tidy` clean |
-| 2 | Removed `feedback` import from `bdd_test.go` (would be a circular dep: feedback is in root module) | Replaced with inline `templ.ComponentFunc` |
-| 3 | Updated root `go.mod`: added datastar require + replace | `go build ./...` passes |
-| 4 | Updated `go.work`: added `use ./datastar` | Workspace resolves correctly |
-| 5 | Updated `scripts/check-module-sync.sh`: added datastar to 4 locations (paths, grep, version loop, count) | Script passes: "6 modules" |
-| 6 | Updated `scripts/check-module-layers.sh`: added datastar to Layer 1 DAG check | Script passes: "5 sub-modules" |
-| 7 | Updated `.github/workflows/ci.yaml`: moved datastar from root lint to per-module lint; added to tidy + isolation loops | Verified by reading diff |
-| 8 | Updated `AGENTS.md`: module table, import graph (6 modules), lint command, build commands | Verified |
-| 9 | Datastar sub-module isolation test passes (GOWORK=off, -race) | All tests pass |
-| 10 | All 6 sub-module isolation tests pass | utils, icons, errorpage, charts/echarts, datastar all green |
-| 11 | Datastar lint passes (0 issues) | `golangci-lint run` clean |
-| 12 | Root build passes | `go build ./...` clean |
+| #  | Task                                                                                                                   | Verification                                                |
+| -- | ---------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| 1  | Created `datastar/go.mod` (requires: templ, go-datastar/static, utils; replaces utils → ../utils)                      | `go mod tidy` clean                                         |
+| 2  | Removed `feedback` import from `bdd_test.go` (would be a circular dep: feedback is in root module)                     | Replaced with inline `templ.ComponentFunc`                  |
+| 3  | Updated root `go.mod`: added datastar require + replace                                                                | `go build ./...` passes                                     |
+| 4  | Updated `go.work`: added `use ./datastar`                                                                              | Workspace resolves correctly                                |
+| 5  | Updated `scripts/check-module-sync.sh`: added datastar to 4 locations (paths, grep, version loop, count)               | Script passes: "6 modules"                                  |
+| 6  | Updated `scripts/check-module-layers.sh`: added datastar to Layer 1 DAG check                                          | Script passes: "5 sub-modules"                              |
+| 7  | Updated `.github/workflows/ci.yaml`: moved datastar from root lint to per-module lint; added to tidy + isolation loops | Verified by reading diff                                    |
+| 8  | Updated `AGENTS.md`: module table, import graph (6 modules), lint command, build commands                              | Verified                                                    |
+| 9  | Datastar sub-module isolation test passes (GOWORK=off, -race)                                                          | All tests pass                                              |
+| 10 | All 6 sub-module isolation tests pass                                                                                  | utils, icons, errorpage, charts/echarts, datastar all green |
+| 11 | Datastar lint passes (0 issues)                                                                                        | `golangci-lint run` clean                                   |
+| 12 | Root build passes                                                                                                      | `go build ./...` clean                                      |
 
 ### Module DAG after this session
 
@@ -57,23 +57,23 @@ replace github.com/larsartmann/templ-components/utils => ../utils
 
 ## b) PARTIALLY DONE
 
-| # | Task | What's missing |
-|---|------|---------------|
-| 1 | **`flake.nix`** | **FORGOT TO UPDATE.** 6 locations still reference the old 5-module structure. `nix run .#lint`, `nix run .#verify`, `nix run .#test` all miss the datastar module. Lines 56-57 (comment), 88 (root lint includes datastar), 89-96 (missing datastar lint step), 140/149/169 (module loops missing datastar). This is a **CI-critical miss** — the Nix lint/test commands won't cover datastar. |
-| 2 | **`scripts/pre-commit.sh`** | **FORGOT TO UPDATE.** Lines 25, 34, 37 still reference old module list. Pre-commit lint won't cover datastar. |
-| 3 | **`scripts/release.sh`** | **FORGOT TO UPDATE.** Lines 248, 258 still reference old module list. Release verification won't cover datastar. |
+| # | Task                        | What's missing                                                                                                                                                                                                                                                                                                                                                                                 |
+| - | --------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | **`flake.nix`**             | **FORGOT TO UPDATE.** 6 locations still reference the old 5-module structure. `nix run .#lint`, `nix run .#verify`, `nix run .#test` all miss the datastar module. Lines 56-57 (comment), 88 (root lint includes datastar), 89-96 (missing datastar lint step), 140/149/169 (module loops missing datastar). This is a **CI-critical miss** — the Nix lint/test commands won't cover datastar. |
+| 2 | **`scripts/pre-commit.sh`** | **FORGOT TO UPDATE.** Lines 25, 34, 37 still reference old module list. Pre-commit lint won't cover datastar.                                                                                                                                                                                                                                                                                  |
+| 3 | **`scripts/release.sh`**    | **FORGOT TO UPDATE.** Lines 248, 258 still reference old module list. Release verification won't cover datastar.                                                                                                                                                                                                                                                                               |
 
 ---
 
 ## c) NOT STARTED
 
-| # | Task |
-|---|------|
-| 1 | **CHANGELOG entry** for the sub-module extraction |
-| 2 | **`docs/modularization/README.md`** — says "5 modules", needs "6 modules" |
-| 3 | **ADR-0034** — says "5 modules", needs amendment for the 6th |
-| 4 | **`docs/migration/v1-to-v2.md`** — says "5-module workspace" |
-| 5 | **Drift-guard test** — `TestDatastarVersionMatchesStatic` (from previous status) |
+| # | Task                                                                                     |
+| - | ---------------------------------------------------------------------------------------- |
+| 1 | **CHANGELOG entry** for the sub-module extraction                                        |
+| 2 | **`docs/modularization/README.md`** — says "5 modules", needs "6 modules"                |
+| 3 | **ADR-0034** — says "5 modules", needs amendment for the 6th                             |
+| 4 | **`docs/migration/v1-to-v2.md`** — says "5-module workspace"                             |
+| 5 | **Drift-guard test** — `TestDatastarVersionMatchesStatic` (from previous status)         |
 | 6 | **Update status report** from 06:32 — it says AGENTS.md import graph is stale; now fixed |
 
 ---
@@ -236,6 +236,7 @@ fixes immediately, or wait?
 
 ADR-0034 documents the original 5-module split. Datastar is a natural addition
 (same pattern, same justification). Should I:
+
 - **(A)** Amend ADR-0034 in-place (it's a living doc)
 - **(B)** Create ADR-0035 "datastar sub-module extraction" referencing 0034
 - **(C)** Just note it in CHANGELOG (the extraction is straightforward)

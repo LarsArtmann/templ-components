@@ -1,8 +1,8 @@
 # Status Report — templ-components
 
-**Generated:** 2026-07-16 00:31  
-**Branch:** master  
-**Version:** 0.17.0  
+**Generated:** 2026-07-16 00:31\
+**Branch:** master\
+**Version:** 0.17.0\
 **Reporter:** Crush session
 
 This report captures the current session's work, what was found, what is clean, and what still needs attention.

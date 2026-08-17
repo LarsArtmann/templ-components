@@ -33,6 +33,7 @@ three reasons:
    explicit at the dependency level.
 
 A full per-package split (~12 modules) was rejected because:
+
 - `utils/svg` is a universal dependency (every UI package uses it); splitting
   it adds overhead without composability payoff
 - `utils/golden` is used by 8 packages' tests; per-package splitting would
@@ -56,26 +57,26 @@ Layer 3:         root (display, feedback, forms, layout, navigation,
                           internal/contract, examples/demo)
 ```
 
-| Module path                                            | Deps                                  | Purpose                                              |
-| ------------------------------------------------------ | ------------------------------------- | ---------------------------------------------------- |
-| `github.com/larsartmann/templ-components/utils`        | templ, tailwind-merge-go              | Leaf: BaseProps, Class(), EnsureID, svg, cdn, golden |
-| `github.com/larsartmann/templ-components/icons`        | templ, utils                          | 106 named SVG icons; icons-only adoption             |
-| `github.com/larsartmann/templ-components/errorpage`    | templ, go-error-family, icons, utils  | Error pages + handler; isolates go-error-family      |
-| `github.com/larsartmann/templ-components/charts/echarts` | templ, utils                        | Opt-in ECharts adapter (ADR-0031)                    |
-| `github.com/larsartmann/templ-components/htmx`         | templ, utils                          | HTMX loading, error handling, OOB swaps              |
-| `github.com/larsartmann/templ-components/datastar`     | templ, utils, go-datastar/static      | Datastar runtime + SSE LiveRegion (ADR-0030)         |
-| `github.com/larsartmann/templ-components` (root)       | all above + testify                   | Core UI + recipes + integration + demo + CLI         |
+| Module path                                              | Deps                                 | Purpose                                              |
+| -------------------------------------------------------- | ------------------------------------ | ---------------------------------------------------- |
+| `github.com/larsartmann/templ-components/utils`          | templ, tailwind-merge-go             | Leaf: BaseProps, Class(), EnsureID, svg, cdn, golden |
+| `github.com/larsartmann/templ-components/icons`          | templ, utils                         | 106 named SVG icons; icons-only adoption             |
+| `github.com/larsartmann/templ-components/errorpage`      | templ, go-error-family, icons, utils | Error pages + handler; isolates go-error-family      |
+| `github.com/larsartmann/templ-components/charts/echarts` | templ, utils                         | Opt-in ECharts adapter (ADR-0031)                    |
+| `github.com/larsartmann/templ-components/htmx`           | templ, utils                         | HTMX loading, error handling, OOB swaps              |
+| `github.com/larsartmann/templ-components/datastar`       | templ, utils, go-datastar/static     | Datastar runtime + SSE LiveRegion (ADR-0030)         |
+| `github.com/larsartmann/templ-components` (root)         | all above + testify                  | Core UI + recipes + integration + demo + CLI         |
 
 ### `internal/` package promotion
 
 Go's `internal/` rule blocks cross-module access. Three `internal/` packages
 were promoted to `utils/` sub-packages:
 
-| Old path          | New path         | Reason                         |
-| ----------------- | ---------------- | ------------------------------ |
-| `internal/svg`    | `utils/svg`      | Used by icons, display, etc.   |
-| `internal/cdn`    | `utils/cdn`      | Used by layout, htmx           |
-| `internal/golden` | `utils/golden`   | Used by 8 packages' tests      |
+| Old path          | New path       | Reason                       |
+| ----------------- | -------------- | ---------------------------- |
+| `internal/svg`    | `utils/svg`    | Used by icons, display, etc. |
+| `internal/cdn`    | `utils/cdn`    | Used by layout, htmx         |
+| `internal/golden` | `utils/golden` | Used by 8 packages' tests    |
 
 `internal/contract` stays in the root module (cross-cutting test package that
 imports 10+ packages; works fine as a root-module internal).
@@ -139,6 +140,7 @@ affected by the rename.
 ## Verification
 
 All 7 modules build, test, and lint clean:
+
 - Workspace mode (`go.work`): `go build ./... && go test ./...`
 - Standalone mode (`GOWORK=off`): per-module `go build ./... && go test ./...`
 - Lint: per-module `golangci-lint run` (golangci-lint does not support go.work)

@@ -255,7 +255,7 @@ container). The shared token is the opening `<div>` tag — unavoidable.
 ### 18. `examples/demo/datastar_demo.templ`, `display_demo.templ`, `feedback_demo.templ`, `forms_section.templ`, `htmx_demo.templ`, `navigation_demo.templ` — `@demoSection` and `@demoCodeSnippet` calls (t=20+ clones across 8 groups)
 
 All demo files use `@demoSection("Title", "anchor")` and
-`@demoCodeSnippet("Go", `...`)` to structure their UI. The titles, anchors,
+`@demoCodeSnippet("Go",`...`)` to structure their UI. The titles, anchors,
 and code snippets all differ — the shared token is the function call shape.
 
 **Why not lazy**: These are demo-only constructs (the demo binary is excluded

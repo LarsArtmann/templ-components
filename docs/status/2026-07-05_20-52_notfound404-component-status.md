@@ -109,63 +109,63 @@ Build a **superb dedicated 404 page** (`errorpage.NotFound404`) for the templ-co
 
 ### Critical (do first)
 
-| #   | Task                                                                                                           | Status (2026-07-06)                |
-| --- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
-| 1   | **Fix contract test** — add `errorpage.NotFound404Props{}` to `internal/contract/component_props_test.go`      | ✅ Done (line 92)                  |
-| 2   | **Fix `TestFormatRelativeTimeBoundaries`** test failure in `display` — `59 seconds ago` vs `just now` boundary | ✅ Fixed (test expects "just now") |
-| 3   | **Commit the contract fix + verify full green**                                                                | ✅ Done                            |
+| # | Task                                                                                                           | Status (2026-07-06)                |
+| - | -------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| 1 | **Fix contract test** — add `errorpage.NotFound404Props{}` to `internal/contract/component_props_test.go`      | ✅ Done (line 92)                  |
+| 2 | **Fix `TestFormatRelativeTimeBoundaries`** test failure in `display` — `59 seconds ago` vs `just now` boundary | ✅ Fixed (test expects "just now") |
+| 3 | **Commit the contract fix + verify full green**                                                                | ✅ Done                            |
 
 ### High-value improvements
 
-| #   | Task                                                                                     | Status (2026-07-06) |
-| --- | ---------------------------------------------------------------------------------------- | ------------------- |
-| 4   | Add `WriteNotFound404(w, r, props, nonce)` convenience handler to `errorpage/handler.go` | ⬜ Not started      |
-| 5   | Update `errorpage/doc.go` to mention `NotFound404` in the package doc comment            | ✅ Done             |
-| 6   | Add NotFound404 to `examples/demo/` — wire a `/404` route                                | ⬜ Not started      |
-| 7   | Add `NotFound404` to the errorpage BDD test that covers all constructors                 | ✅ Done             |
+| # | Task                                                                                     | Status (2026-07-06) |
+| - | ---------------------------------------------------------------------------------------- | ------------------- |
+| 4 | Add `WriteNotFound404(w, r, props, nonce)` convenience handler to `errorpage/handler.go` | ⬜ Not started      |
+| 5 | Update `errorpage/doc.go` to mention `NotFound404` in the package doc comment            | ✅ Done             |
+| 6 | Add NotFound404 to `examples/demo/` — wire a `/404` route                                | ⬜ Not started      |
+| 7 | Add `NotFound404` to the errorpage BDD test that covers all constructors                 | ✅ Done             |
 
 ### Testing hardening
 
-| #   | Task                                                                                                               | Status (2026-07-06)     |
-| --- | ------------------------------------------------------------------------------------------------------------------ | ----------------------- |
-| 8   | Add a snapshot/composition test in `integration/composition_test.go` that renders NotFound404 inside `layout.Base` | ⬜ Not started          |
-| 9   | Add a test for `NotFound404` with empty `Numeral` — verify it defaults to `"404"`                                  | ✅ Done (coverage test) |
-| 10  | Add a test verifying `NotFound404` + `layout.ThemeToggle` composition doesn't break                                | ⬜ Not started          |
-| 11  | Add a test for the `data-tc-go-back` click handler script being idempotent (singleton guard)                       | ✅ Done                 |
+| #  | Task                                                                                                               | Status (2026-07-06)     |
+| -- | ------------------------------------------------------------------------------------------------------------------ | ----------------------- |
+| 8  | Add a snapshot/composition test in `integration/composition_test.go` that renders NotFound404 inside `layout.Base` | ⬜ Not started          |
+| 9  | Add a test for `NotFound404` with empty `Numeral` — verify it defaults to `"404"`                                  | ✅ Done (coverage test) |
+| 10 | Add a test verifying `NotFound404` + `layout.ThemeToggle` composition doesn't break                                | ⬜ Not started          |
+| 11 | Add a test for the `data-tc-go-back` click handler script being idempotent (singleton guard)                       | ✅ Done                 |
 
 ### Design polish
 
-| #   | Task                                                                                                        | Status (2026-07-06) |
-| --- | ----------------------------------------------------------------------------------------------------------- | ------------------- |
-| 12  | Add optional `Globe` or `Ghost` icon above the numeral for extra personality                                | ⬜ Not started      |
-| 13  | Add `NumeralVariant` typed enum (e.g., `gradient`, `solid`, `outline`) so consumers can pick a visual style | ⬜ Not started      |
-| 14  | Add `HomeHref` alias for `GoHomeHref` (shorter, more intuitive name)                                        | ⬜ Not started      |
-| 15  | Consider `LinksTitle` field — currently hardcoded to "Popular pages"                                        | ⬜ Not started      |
+| #  | Task                                                                                                        | Status (2026-07-06) |
+| -- | ----------------------------------------------------------------------------------------------------------- | ------------------- |
+| 12 | Add optional `Globe` or `Ghost` icon above the numeral for extra personality                                | ⬜ Not started      |
+| 13 | Add `NumeralVariant` typed enum (e.g., `gradient`, `solid`, `outline`) so consumers can pick a visual style | ⬜ Not started      |
+| 14 | Add `HomeHref` alias for `GoHomeHref` (shorter, more intuitive name)                                        | ⬜ Not started      |
+| 15 | Consider `LinksTitle` field — currently hardcoded to "Popular pages"                                        | ⬜ Not started      |
 
 ### Architecture
 
-| #   | Task                                                                                                              | Status (2026-07-06)                                       |
-| --- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| 16  | Consider whether `NotFound404` should compose `ErrorPage` internally (sharing the `min-h-screen` shell)           | ⬜ Not started — intentionally different visual treatment |
-| 17  | Extract the `min-h-screen flex items-center justify-center` pattern to a shared `fullscreenCenter` class constant | ⬜ Not started                                            |
-| 18  | Add a `NotFoundPageProps` that wraps `layout.Base` + `NotFound404` for a complete standalone HTML document        | ⬜ Not started                                            |
+| #  | Task                                                                                                              | Status (2026-07-06)                                       |
+| -- | ----------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| 16 | Consider whether `NotFound404` should compose `ErrorPage` internally (sharing the `min-h-screen` shell)           | ⬜ Not started — intentionally different visual treatment |
+| 17 | Extract the `min-h-screen flex items-center justify-center` pattern to a shared `fullscreenCenter` class constant | ⬜ Not started                                            |
+| 18 | Add a `NotFoundPageProps` that wraps `layout.Base` + `NotFound404` for a complete standalone HTML document        | ⬜ Not started                                            |
 
 ### Documentation
 
-| #   | Task                                                                                          | Status (2026-07-06) |
-| --- | --------------------------------------------------------------------------------------------- | ------------------- |
-| 19  | Add a recipe doc: `docs/recipes/custom-404-page.md` showing server integration patterns       | ✅ Done             |
-| 20  | Add `NotFound404` to the README's errorpage section with a full code example                  | ✅ Done             |
-| 21  | Update `docs/adr/` — consider an ADR for "why a dedicated 404 component instead of ErrorPage" | ⬜ Not started      |
+| #  | Task                                                                                          | Status (2026-07-06) |
+| -- | --------------------------------------------------------------------------------------------- | ------------------- |
+| 19 | Add a recipe doc: `docs/recipes/custom-404-page.md` showing server integration patterns       | ✅ Done             |
+| 20 | Add `NotFound404` to the README's errorpage section with a full code example                  | ✅ Done             |
+| 21 | Update `docs/adr/` — consider an ADR for "why a dedicated 404 component instead of ErrorPage" | ⬜ Not started      |
 
 ### Maintenance
 
-| #   | Task                                                                                           | Status (2026-07-06)              |
-| --- | ---------------------------------------------------------------------------------------------- | -------------------------------- |
-| 22  | Audit all `errorpage` golden files for consistency — ensure CSS class normalization is working | ✅ Done — golden files stable    |
-| 23  | Add `NotFound404` to the version drift guard — ensure it's included in the next release tag    | ✅ Done — v0.7.0/v0.8.0 released |
-| 24  | Run `nix run .#verify` (full Nix build) to confirm the Nix pipeline passes                     | ✅ Done — all green              |
-| 25  | Consider extracting `notFound404Search` sub-template pattern for reuse in `EmptyState`         | ⬜ Not started                   |
+| #  | Task                                                                                           | Status (2026-07-06)              |
+| -- | ---------------------------------------------------------------------------------------------- | -------------------------------- |
+| 22 | Audit all `errorpage` golden files for consistency — ensure CSS class normalization is working | ✅ Done — golden files stable    |
+| 23 | Add `NotFound404` to the version drift guard — ensure it's included in the next release tag    | ✅ Done — v0.7.0/v0.8.0 released |
+| 24 | Run `nix run .#verify` (full Nix build) to confirm the Nix pipeline passes                     | ✅ Done — all green              |
+| 25 | Consider extracting `notFound404Search` sub-template pattern for reuse in `EmptyState`         | ⬜ Not started                   |
 
 **Scorecard:** 12 of 25 complete (48%).
 

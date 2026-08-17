@@ -10,11 +10,11 @@
 
 These 3 tasks unlock the most value. They fix the public-facing image, eliminate type duplication, and make the API consistent:
 
-| #   | Task                                                              | Why 51%                                                                                             |
-| --- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
-| T1  | Fix demo app to use `layout.Base` + Tailwind v4                   | Only thing consumers see when they clone. Currently anti-advertisement.                             |
-| T2  | Unify AlertType/ToastType + merge style maps                      | Eliminates the biggest type duplication in the codebase (2 identical enums + 2 near-identical maps) |
-| T3  | Add BaseProps to StepIndicatorProps + LoadingOverlay props struct | API consistency — 2 components are the only outliers in their packages                              |
+| #  | Task                                                              | Why 51%                                                                                             |
+| -- | ----------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| T1 | Fix demo app to use `layout.Base` + Tailwind v4                   | Only thing consumers see when they clone. Currently anti-advertisement.                             |
+| T2 | Unify AlertType/ToastType + merge style maps                      | Eliminates the biggest type duplication in the codebase (2 identical enums + 2 near-identical maps) |
+| T3 | Add BaseProps to StepIndicatorProps + LoadingOverlay props struct | API consistency — 2 components are the only outliers in their packages                              |
 
 ### 4% → 64% Impact (High Leverage — DO SECOND)
 

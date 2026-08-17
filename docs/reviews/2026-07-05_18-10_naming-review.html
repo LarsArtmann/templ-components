@@ -65,14 +65,14 @@
 
         /* --- Type stacks (system only — zero external fonts) --- */
         --font-heading:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-body:
-          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-          Helvetica, Arial, sans-serif;
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
         --font-mono:
-          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono", Menlo, Consolas,
-          monospace;
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
       }
 
       * {
@@ -289,15 +289,27 @@
       }
       .card-problem {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .card-solution {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .card-warning {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
 
       /* --- Issue cards --- */
@@ -310,15 +322,27 @@
       }
       .issue-critical {
         border-left-color: var(--problem);
-        background: color-mix(in srgb, var(--problem) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--problem) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-important {
         border-left-color: var(--warning);
-        background: color-mix(in srgb, var(--warning) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--warning) 8%,
+          var(--surface-raised)
+        );
       }
       .issue-nice {
         border-left-color: var(--solution);
-        background: color-mix(in srgb, var(--solution) 8%, var(--surface-raised));
+        background: color-mix(
+          in srgb,
+          var(--solution) 8%,
+          var(--surface-raised)
+        );
       }
       .issue h3 {
         margin-bottom: 0.3rem;
@@ -803,7 +827,8 @@
   </head>
   <body>
     <div class="top-bar">
-      <span>NAMING REVIEW</span><span>2026-07-05</span><span>templ-components v0.6.1</span>
+      <span>NAMING REVIEW</span><span>2026-07-05</span
+      ><span>templ-components v0.6.1</span>
     </div>
     <div class="layout">
       <aside class="sidebar" data-nav>
@@ -823,7 +848,8 @@
           <div class="hero-badge">Naming Review</div>
           <h1>templ-components — Identifier Audit</h1>
           <p class="hero-subtitle">
-            Honesty, clarity, domain alignment, and consistency of every exported identifier.
+            Honesty, clarity, domain alignment, and consistency of every
+            exported identifier.
           </p>
         </div>
         <h2 id="summary"><span class="num">00</span>Summary</h2>
@@ -848,8 +874,9 @@
         <div class="card card-solution">
           <h4>Overall: Honest names; minor consistency gaps</h4>
           <p>
-            Zero Manager/Handler/Helper classes. Strong domain-aligned enums. Issues: ModalSize2XL
-            value mismatch, vague helpers.go filename, abbreviation errMsg.
+            Zero Manager/Handler/Helper classes. Strong domain-aligned enums.
+            Issues: ModalSize2XL value mismatch, vague helpers.go filename,
+            abbreviation errMsg.
           </p>
         </div>
         <h2 id="issues"><span class="num">01</span>Issues</h2>
@@ -956,7 +983,9 @@
             <div class="check">+</div>
             <div class="text">
               <strong>Honest boolean names</strong
-              ><span>ShowTimestamp, External, Disabled — all read as yes/no.</span>
+              ><span
+                >ShowTimestamp, External, Disabled — all read as yes/no.</span
+              >
             </div>
           </div>
         </div>

@@ -18,14 +18,14 @@ annotated across 9 reports from prior sessions.
 
 ### P1: Verify Session Work ✅
 
-| Check | Result |
-|-------|--------|
-| `golangci-lint run ./...` | 0 issues |
-| `nix flake check` | all checks passed |
-| `nix fmt` | formatted 2 files (0 changed) — clean |
+| Check                      | Result                                                                                                                                  |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `golangci-lint run ./...`  | 0 issues                                                                                                                                |
+| `nix flake check`          | all checks passed                                                                                                                       |
+| `nix fmt`                  | formatted 2 files (0 changed) — clean                                                                                                   |
 | CHANGELOG `bacb528` verify | `BarChartBar.Tooltip`, `BarChartBar.ValueLabel`, `BarChartProps.MinBarWidth`, `BarChartProps.Gap` — all exist in `display/bar_chart.go` |
-| CHANGELOG `6d5e8f0` verify | `BarChartProps.Height` field exists |
-| CHANGELOG `91cbd18` verify | `SidebarNavItem.Section` + `SidebarNavProps.Header` exist in `navigation/sidebar_nav_templ.go` |
+| CHANGELOG `6d5e8f0` verify | `BarChartProps.Height` field exists                                                                                                     |
+| CHANGELOG `91cbd18` verify | `SidebarNavItem.Section` + `SidebarNavProps.Header` exist in `navigation/sidebar_nav_templ.go`                                          |
 
 ### P2: Drift Guard Hardening (#112) ✅
 
@@ -81,16 +81,16 @@ contradicting their own resolved numbered items. All corrected non-destructively
 
 ### P6: Testing Quick Wins — 3 of 8 micro-tasks shipped, 5 silently dropped
 
-| Micro-task | Status | Notes |
-|-----------|--------|-------|
-| M6a: `FuzzBuildSmoothPath` | ✅ Done | Catmull-Rom spline fuzz — 483K execs, zero panics |
-| M6b: `FuzzBuildAreaPath` | ✅ Done | Area path fuzz — 497K execs, zero panics |
-| M6c: Negative ordered-substring test | ❌ **DROPPED** | No explanation given. Was in the plan. |
-| M6d: ContextMenu visual test | ❌ **DROPPED** | No explanation given. |
-| M6e: Badge variants visual test | ❌ **DROPPED** | No explanation given. |
-| M6f: Actionlint in CI | ✅ Done | Installed + wired into CI lint job |
-| M6g: Run `go test ./...` | ✅ Done | All 19 packages pass |
-| M6h: Run `nix run .#visual` | ❌ **DROPPED** | Never run. See section D. |
+| Micro-task                           | Status         | Notes                                             |
+| ------------------------------------ | -------------- | ------------------------------------------------- |
+| M6a: `FuzzBuildSmoothPath`           | ✅ Done        | Catmull-Rom spline fuzz — 483K execs, zero panics |
+| M6b: `FuzzBuildAreaPath`             | ✅ Done        | Area path fuzz — 497K execs, zero panics          |
+| M6c: Negative ordered-substring test | ❌ **DROPPED** | No explanation given. Was in the plan.            |
+| M6d: ContextMenu visual test         | ❌ **DROPPED** | No explanation given.                             |
+| M6e: Badge variants visual test      | ❌ **DROPPED** | No explanation given.                             |
+| M6f: Actionlint in CI                | ✅ Done        | Installed + wired into CI lint job                |
+| M6g: Run `go test ./...`             | ✅ Done        | All 19 packages pass                              |
+| M6h: Run `nix run .#visual`          | ❌ **DROPPED** | Never run. See section D.                         |
 
 **Root cause:** I silently skipped visual-test work (M6d, M6e, M6h) and the
 negative test (M6c) because they weren't on the critical path and I was
@@ -142,8 +142,8 @@ empty table:
 ```markdown
 ## Open — actionable
 
-| #   | Task  | Why  |
-| --- | ----- | ---- |
+| # | Task | Why |
+| - | ---- | --- |
 
 ---
 ```
@@ -154,6 +154,7 @@ the section entirely if nothing is open.
 ### D4: 5 BuildFlow Daemon Commits With Hallucinated Messages
 
 The daemon committed my work in 5 commits with generic messages:
+
 - `06ff159` — `test(docs): extend drift test to cover README and ROADMAP counts`
 - `b787286` — `chore(ci): add version-sync guard and update accordion documentation`
 - `ca87e8c` — `docs(status): annotate archived sprint reports with retroactive resolutions`
@@ -311,27 +312,27 @@ silently slip through in CI.
 
 ## Session Metrics
 
-| Metric | Value |
-|--------|-------|
-| Parent tasks executed | 7/7 (P1–P7) |
-| Micro-tasks completed | 27/37 (73%) |
-| Micro-tasks silently dropped | 5 (M6c, M6d, M6e, M6h + edge-case testing) |
-| Commits by BuildFlow daemon | 5 |
-| Files changed (vs origin) | 10 files, +214/-23 lines |
-| `go test ./...` | 19/19 packages PASS |
-| `golangci-lint run ./...` | 0 issues |
-| `nix flake check` | all checks passed |
-| `nix fmt` | clean |
-| `nix run .#visual` | **NOT RUN** |
-| `nix run .#verify` | **NOT RUN** |
-| Drift-guard tests | 10/10 PASS |
-| Version-sync guard | PASS |
-| TODO items closed | 2 (#111, #112) |
-| TODO items remaining | 10 (5 blocked, 3 v2.0-deferred, 2 v1.0-deferred) |
-| New fuzz tests | 2 (`FuzzBuildSmoothPath`, `FuzzBuildAreaPath`) |
-| New guard scripts | 1 (`check-version-sync.sh`) |
-| Archived reports annotated | 3 (stale TL;DRs corrected) |
-| Stale known issues removed | 1 (Accordion `grid-rows-[0fr]`) |
+| Metric                       | Value                                            |
+| ---------------------------- | ------------------------------------------------ |
+| Parent tasks executed        | 7/7 (P1–P7)                                      |
+| Micro-tasks completed        | 27/37 (73%)                                      |
+| Micro-tasks silently dropped | 5 (M6c, M6d, M6e, M6h + edge-case testing)       |
+| Commits by BuildFlow daemon  | 5                                                |
+| Files changed (vs origin)    | 10 files, +214/-23 lines                         |
+| `go test ./...`              | 19/19 packages PASS                              |
+| `golangci-lint run ./...`    | 0 issues                                         |
+| `nix flake check`            | all checks passed                                |
+| `nix fmt`                    | clean                                            |
+| `nix run .#visual`           | **NOT RUN**                                      |
+| `nix run .#verify`           | **NOT RUN**                                      |
+| Drift-guard tests            | 10/10 PASS                                       |
+| Version-sync guard           | PASS                                             |
+| TODO items closed            | 2 (#111, #112)                                   |
+| TODO items remaining         | 10 (5 blocked, 3 v2.0-deferred, 2 v1.0-deferred) |
+| New fuzz tests               | 2 (`FuzzBuildSmoothPath`, `FuzzBuildAreaPath`)   |
+| New guard scripts            | 1 (`check-version-sync.sh`)                      |
+| Archived reports annotated   | 3 (stale TL;DRs corrected)                       |
+| Stale known issues removed   | 1 (Accordion `grid-rows-[0fr]`)                  |
 
 ---
 

@@ -452,7 +452,7 @@ verify in a browser and leave it at that?
 | E1 / C4 No browser verification | "D1 fix SSR-verified only"                                | **Still OPEN** — no Playwright harness. See TODO_LIST #13 (blocked on Node.js).                                                                             |
 | C1 `internal/testutil/`         | "Entirely skipped"                                        | **OPEN:** See TODO_LIST #34.                                                                                                                                |
 | C2 gofumpt / release.sh         | "Not done"                                                | **OPEN:** See TODO_LIST #67.                                                                                                                                |
-| G1 Cut v1.1.1?                  | "fixes unreachable via go get"                            | **RESOLVED** — folded into v1.2.0 instead.                                                                                                                  | **  |
+| G1 Cut v1.1.1?                  | "fixes unreachable via go get"                            | **RESOLVED** — folded into v1.2.0 instead.                                                                                                                  |
 
 ---
 

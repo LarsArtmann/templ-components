@@ -35,84 +35,84 @@
 
 Sorted by: Impact × Customer Value / Effort (highest first)
 
-| #   | Task                                                                              | Source   | Impact | Effort | Customer Value | Est.  |
-| --- | --------------------------------------------------------------------------------- | -------- | ------ | ------ | -------------- | ----- |
-|     | **TIER 1 — RELEASE (51% impact)**                                                 |          |        |        |                |       |
-| 1   | Verify goreleaser config is correct and dry-run works                             | TODO #62 | HIGH   | 5min   | HIGH           | 5min  |
-| 2   | Update CHANGELOG.md with final v0.2.0 entry                                       | Release  | HIGH   | 8min   | HIGH           | 8min  |
-| 3   | Verify README.md metrics are accurate (tests, coverage, packages)                 | Release  | MED    | 5min   | MED            | 5min  |
-| 4   | Tag v0.2.0 and push tag                                                           | Release  | HIGH   | 3min   | HIGH           | 3min  |
-|     | **TIER 2 — COVERAGE GAPS (64% impact)**                                           |          |        |        |                |       |
-| 5   | Fix card_test.go compile errors — align with SimpleCard API                       | Bug      | HIGH   | 8min   | HIGH           | 8min  |
-| 6   | Test Skeleton image variant                                                       | Gap      | MED    | 5min   | MED            | 5min  |
-| 7   | Test Skeleton table-row variant                                                   | Gap      | MED    | 5min   | MED            | 5min  |
-| 8   | Test Skeleton unknown variant (default case)                                      | Gap      | MED    | 5min   | MED            | 5min  |
-| 9   | Test emptyStateAction button branch (no href)                                     | Gap      | MED    | 5min   | MED            | 5min  |
-| 10  | Test Avatar fallback SVG (no Src, no Initials)                                    | Gap      | MED    | 5min   | MED            | 5min  |
-| 11  | Test DefaultAccordionProps                                                        | Gap      | LOW    | 3min   | LOW            | 3min  |
-| 12  | Test DefaultDropdownProps                                                         | Gap      | LOW    | 3min   | LOW            | 3min  |
-| 13  | Test DefaultTableProps                                                            | Gap      | LOW    | 3min   | LOW            | 3min  |
-| 14  | Test DefaultAlertProps                                                            | Gap      | LOW    | 3min   | LOW            | 3min  |
-| 15  | Test DefaultStepIndicatorProps                                                    | Gap      | LOW    | 3min   | LOW            | 3min  |
-| 16  | Test DefaultToastProps                                                            | Gap      | LOW    | 3min   | LOW            | 3min  |
-| 17  | Test DefaultMinimalProps                                                          | Gap      | LOW    | 3min   | LOW            | 3min  |
-| 18  | Test DefaultNavLinkProps                                                          | Gap      | LOW    | 3min   | LOW            | 3min  |
-|     | **TIER 3 — JS UNIFICATION (TODO #23)**                                            |          |        |        |                |       |
-| 19  | Audit all 3 JS patterns — document current state and target design                | TODO #23 | HIGH   | 10min  | MED            | 10min |
-| 20  | Refactor Accordion JS to use data-attribute + window flag pattern                 | TODO #23 | MED    | 10min  | MED            | 10min |
-| 21  | Refactor Dropdown JS to use data-attribute + window flag pattern                  | TODO #23 | MED    | 10min  | MED            | 10min |
-| 22  | Refactor Modal JS to use data-attribute + window flag pattern                     | TODO #23 | MED    | 10min  | MED            | 10min |
-| 23  | Extract shared JS attachment helper function                                      | TODO #23 | MED    | 8min   | MED            | 8min  |
-| 24  | Update all JS-using tests for new pattern                                         | TODO #23 | MED    | 10min  | MED            | 10min |
-| 25  | Verify all interactive components work (Accordion, Dropdown, Modal, Alert, Toast) | TODO #23 | HIGH   | 10min  | HIGH           | 10min |
-|     | **TIER 4 — COVERAGE PUSH (80% impact)**                                           |          |        |        |                |       |
-| 26  | Display: test Badge with icon + text combination                                  | Coverage | MED    | 5min   | LOW            | 5min  |
-| 27  | Display: test EmptyState with custom icon                                         | Coverage | MED    | 5min   | LOW            | 5min  |
-| 28  | Display: test EmptyState with all icon styles                                     | Coverage | MED    | 5min   | LOW            | 5min  |
-| 29  | Display: test Tabs with no tabs provided                                          | Coverage | MED    | 5min   | LOW            | 5min  |
-| 30  | Display: test Tabs underline variant                                              | Coverage | MED    | 5min   | LOW            | 5min  |
-| 31  | Display: test Dropdown with divider items                                         | Coverage | MED    | 5min   | LOW            | 5min  |
-| 32  | Display: test Tooltip all 4 positions                                             | Coverage | MED    | 8min   | LOW            | 8min  |
-| 33  | Feedback: test Alert with custom icon                                             | Coverage | MED    | 5min   | LOW            | 5min  |
-| 34  | Feedback: test Alert all 4 types                                                  | Coverage | MED    | 5min   | LOW            | 5min  |
-| 35  | Feedback: test InlineMessage all types                                            | Coverage | MED    | 8min   | LOW            | 8min  |
-| 36  | Feedback: test Spinner all sizes                                                  | Coverage | LOW    | 5min   | LOW            | 5min  |
-| 37  | Feedback: test LoadingOverlay with custom spinner                                 | Coverage | LOW    | 5min   | LOW            | 5min  |
-| 38  | Feedback: test ProgressBar with label and animation                               | Coverage | MED    | 5min   | LOW            | 5min  |
-| 39  | Feedback: test StepIndicator with mixed states                                    | Coverage | MED    | 5min   | LOW            | 5min  |
-| 40  | Forms: test Input with placeholder                                                | Coverage | LOW    | 3min   | LOW            | 3min  |
-| 41  | Forms: test Input with addon (left/right)                                         | Coverage | MED    | 8min   | LOW            | 8min  |
-| 42  | Forms: test Checkbox with help + error simultaneously                             | Coverage | MED    | 5min   | LOW            | 5min  |
-| 43  | Forms: test Select with multiple options selected                                 | Coverage | LOW    | 5min   | LOW            | 5min  |
-| 44  | Navigation: test NavLink active with children                                     | Coverage | MED    | 5min   | LOW            | 5min  |
-| 45  | Navigation: test Pagination edge cases (1 page, 2 pages, 100+ pages)              | Coverage | MED    | 10min  | LOW            | 10min |
-| 46  | Navigation: test MobileMenu with open/closed state                                | Coverage | MED    | 5min   | LOW            | 5min  |
-| 47  | Icons: test strokeIcon path rendering                                             | Coverage | LOW    | 5min   | LOW            | 5min  |
-| 48  | Layout: test Base with all optional features enabled                              | Coverage | MED    | 8min   | LOW            | 8min  |
-| 49  | Layout: test Minimal with custom attrs                                            | Coverage | LOW    | 5min   | LOW            | 5min  |
-|     | **TIER 5 — GOLDEN FILES (TODO #51)**                                              |          |        |        |                |       |
-| 50  | Design golden file test infrastructure                                            | TODO #51 | MED    | 10min  | MED            | 10min |
-| 51  | Implement golden file helper (write/read/compare)                                 | TODO #51 | MED    | 10min  | MED            | 10min |
-| 52  | Convert display snapshot tests to golden files                                    | TODO #51 | MED    | 10min  | MED            | 10min |
-| 53  | Convert feedback snapshot tests to golden files                                   | TODO #51 | MED    | 10min  | MED            | 10min |
-| 54  | Convert forms snapshot tests to golden files                                      | TODO #51 | MED    | 8min   | MED            | 8min  |
-| 55  | Convert navigation snapshot tests to golden files                                 | TODO #51 | MED    | 8min   | MED            | 8min  |
-| 56  | Add CI golden file update command                                                 | TODO #51 | LOW    | 5min   | MED            | 5min  |
-|     | **TIER 6 — DOCUMENTATION SITE (TODO #71)**                                        |          |        |        |                |       |
-| 57  | Evaluate documentation site generators (pkgsite, doc2go, custom)                  | TODO #71 | MED    | 10min  | HIGH           | 10min |
-| 58  | Set up chosen doc generator with CI integration                                   | TODO #71 | MED    | 10min  | HIGH           | 10min |
-| 59  | Write per-component usage examples with live preview support                      | TODO #71 | HIGH   | 12min  | HIGH           | 12min |
-| 60  | Configure GitHub Pages deployment                                                 | TODO #71 | MED    | 8min   | MED            | 8min  |
-|     | **TIER 7 — CLEANUP & POLISH**                                                     |          |        |        |                |       |
-| 61  | Move display/a11y_test.go ProgressBar test to feedback/ (TODO #59)                | TODO #59 | LOW    | 5min   | LOW            | 5min  |
-| 62  | Move test helpers from utils/ to internal/testutils/ (TODO #58)                   | TODO #58 | MED    | 10min  | LOW            | 10min |
-| 63  | Update all imports after test helper move                                         | TODO #58 | MED    | 10min  | LOW            | 10min |
-| 64  | Verify examples/demo builds and renders correctly                                 | Cleanup  | LOW    | 5min   | MED            | 5min  |
-| 65  | Update FEATURES.md with final component list                                      | Cleanup  | MED    | 8min   | MED            | 8min  |
-| 66  | Update AGENTS.md with session 9 outcomes                                          | Cleanup  | LOW    | 5min   | LOW            | 5min  |
-| 67  | Update TODO_LIST.md — mark completed items                                        | Cleanup  | LOW    | 5min   | LOW            | 5min  |
-| 68  | Final verification: build + test + lint + coverage                                | Cleanup  | HIGH   | 5min   | HIGH           | 5min  |
-| 69  | Commit and push all session 9 work                                                | Cleanup  | HIGH   | 5min   | HIGH           | 5min  |
+| #  | Task                                                                              | Source   | Impact | Effort | Customer Value | Est.  |
+| -- | --------------------------------------------------------------------------------- | -------- | ------ | ------ | -------------- | ----- |
+|    | **TIER 1 — RELEASE (51% impact)**                                                 |          |        |        |                |       |
+| 1  | Verify goreleaser config is correct and dry-run works                             | TODO #62 | HIGH   | 5min   | HIGH           | 5min  |
+| 2  | Update CHANGELOG.md with final v0.2.0 entry                                       | Release  | HIGH   | 8min   | HIGH           | 8min  |
+| 3  | Verify README.md metrics are accurate (tests, coverage, packages)                 | Release  | MED    | 5min   | MED            | 5min  |
+| 4  | Tag v0.2.0 and push tag                                                           | Release  | HIGH   | 3min   | HIGH           | 3min  |
+|    | **TIER 2 — COVERAGE GAPS (64% impact)**                                           |          |        |        |                |       |
+| 5  | Fix card_test.go compile errors — align with SimpleCard API                       | Bug      | HIGH   | 8min   | HIGH           | 8min  |
+| 6  | Test Skeleton image variant                                                       | Gap      | MED    | 5min   | MED            | 5min  |
+| 7  | Test Skeleton table-row variant                                                   | Gap      | MED    | 5min   | MED            | 5min  |
+| 8  | Test Skeleton unknown variant (default case)                                      | Gap      | MED    | 5min   | MED            | 5min  |
+| 9  | Test emptyStateAction button branch (no href)                                     | Gap      | MED    | 5min   | MED            | 5min  |
+| 10 | Test Avatar fallback SVG (no Src, no Initials)                                    | Gap      | MED    | 5min   | MED            | 5min  |
+| 11 | Test DefaultAccordionProps                                                        | Gap      | LOW    | 3min   | LOW            | 3min  |
+| 12 | Test DefaultDropdownProps                                                         | Gap      | LOW    | 3min   | LOW            | 3min  |
+| 13 | Test DefaultTableProps                                                            | Gap      | LOW    | 3min   | LOW            | 3min  |
+| 14 | Test DefaultAlertProps                                                            | Gap      | LOW    | 3min   | LOW            | 3min  |
+| 15 | Test DefaultStepIndicatorProps                                                    | Gap      | LOW    | 3min   | LOW            | 3min  |
+| 16 | Test DefaultToastProps                                                            | Gap      | LOW    | 3min   | LOW            | 3min  |
+| 17 | Test DefaultMinimalProps                                                          | Gap      | LOW    | 3min   | LOW            | 3min  |
+| 18 | Test DefaultNavLinkProps                                                          | Gap      | LOW    | 3min   | LOW            | 3min  |
+|    | **TIER 3 — JS UNIFICATION (TODO #23)**                                            |          |        |        |                |       |
+| 19 | Audit all 3 JS patterns — document current state and target design                | TODO #23 | HIGH   | 10min  | MED            | 10min |
+| 20 | Refactor Accordion JS to use data-attribute + window flag pattern                 | TODO #23 | MED    | 10min  | MED            | 10min |
+| 21 | Refactor Dropdown JS to use data-attribute + window flag pattern                  | TODO #23 | MED    | 10min  | MED            | 10min |
+| 22 | Refactor Modal JS to use data-attribute + window flag pattern                     | TODO #23 | MED    | 10min  | MED            | 10min |
+| 23 | Extract shared JS attachment helper function                                      | TODO #23 | MED    | 8min   | MED            | 8min  |
+| 24 | Update all JS-using tests for new pattern                                         | TODO #23 | MED    | 10min  | MED            | 10min |
+| 25 | Verify all interactive components work (Accordion, Dropdown, Modal, Alert, Toast) | TODO #23 | HIGH   | 10min  | HIGH           | 10min |
+|    | **TIER 4 — COVERAGE PUSH (80% impact)**                                           |          |        |        |                |       |
+| 26 | Display: test Badge with icon + text combination                                  | Coverage | MED    | 5min   | LOW            | 5min  |
+| 27 | Display: test EmptyState with custom icon                                         | Coverage | MED    | 5min   | LOW            | 5min  |
+| 28 | Display: test EmptyState with all icon styles                                     | Coverage | MED    | 5min   | LOW            | 5min  |
+| 29 | Display: test Tabs with no tabs provided                                          | Coverage | MED    | 5min   | LOW            | 5min  |
+| 30 | Display: test Tabs underline variant                                              | Coverage | MED    | 5min   | LOW            | 5min  |
+| 31 | Display: test Dropdown with divider items                                         | Coverage | MED    | 5min   | LOW            | 5min  |
+| 32 | Display: test Tooltip all 4 positions                                             | Coverage | MED    | 8min   | LOW            | 8min  |
+| 33 | Feedback: test Alert with custom icon                                             | Coverage | MED    | 5min   | LOW            | 5min  |
+| 34 | Feedback: test Alert all 4 types                                                  | Coverage | MED    | 5min   | LOW            | 5min  |
+| 35 | Feedback: test InlineMessage all types                                            | Coverage | MED    | 8min   | LOW            | 8min  |
+| 36 | Feedback: test Spinner all sizes                                                  | Coverage | LOW    | 5min   | LOW            | 5min  |
+| 37 | Feedback: test LoadingOverlay with custom spinner                                 | Coverage | LOW    | 5min   | LOW            | 5min  |
+| 38 | Feedback: test ProgressBar with label and animation                               | Coverage | MED    | 5min   | LOW            | 5min  |
+| 39 | Feedback: test StepIndicator with mixed states                                    | Coverage | MED    | 5min   | LOW            | 5min  |
+| 40 | Forms: test Input with placeholder                                                | Coverage | LOW    | 3min   | LOW            | 3min  |
+| 41 | Forms: test Input with addon (left/right)                                         | Coverage | MED    | 8min   | LOW            | 8min  |
+| 42 | Forms: test Checkbox with help + error simultaneously                             | Coverage | MED    | 5min   | LOW            | 5min  |
+| 43 | Forms: test Select with multiple options selected                                 | Coverage | LOW    | 5min   | LOW            | 5min  |
+| 44 | Navigation: test NavLink active with children                                     | Coverage | MED    | 5min   | LOW            | 5min  |
+| 45 | Navigation: test Pagination edge cases (1 page, 2 pages, 100+ pages)              | Coverage | MED    | 10min  | LOW            | 10min |
+| 46 | Navigation: test MobileMenu with open/closed state                                | Coverage | MED    | 5min   | LOW            | 5min  |
+| 47 | Icons: test strokeIcon path rendering                                             | Coverage | LOW    | 5min   | LOW            | 5min  |
+| 48 | Layout: test Base with all optional features enabled                              | Coverage | MED    | 8min   | LOW            | 8min  |
+| 49 | Layout: test Minimal with custom attrs                                            | Coverage | LOW    | 5min   | LOW            | 5min  |
+|    | **TIER 5 — GOLDEN FILES (TODO #51)**                                              |          |        |        |                |       |
+| 50 | Design golden file test infrastructure                                            | TODO #51 | MED    | 10min  | MED            | 10min |
+| 51 | Implement golden file helper (write/read/compare)                                 | TODO #51 | MED    | 10min  | MED            | 10min |
+| 52 | Convert display snapshot tests to golden files                                    | TODO #51 | MED    | 10min  | MED            | 10min |
+| 53 | Convert feedback snapshot tests to golden files                                   | TODO #51 | MED    | 10min  | MED            | 10min |
+| 54 | Convert forms snapshot tests to golden files                                      | TODO #51 | MED    | 8min   | MED            | 8min  |
+| 55 | Convert navigation snapshot tests to golden files                                 | TODO #51 | MED    | 8min   | MED            | 8min  |
+| 56 | Add CI golden file update command                                                 | TODO #51 | LOW    | 5min   | MED            | 5min  |
+|    | **TIER 6 — DOCUMENTATION SITE (TODO #71)**                                        |          |        |        |                |       |
+| 57 | Evaluate documentation site generators (pkgsite, doc2go, custom)                  | TODO #71 | MED    | 10min  | HIGH           | 10min |
+| 58 | Set up chosen doc generator with CI integration                                   | TODO #71 | MED    | 10min  | HIGH           | 10min |
+| 59 | Write per-component usage examples with live preview support                      | TODO #71 | HIGH   | 12min  | HIGH           | 12min |
+| 60 | Configure GitHub Pages deployment                                                 | TODO #71 | MED    | 8min   | MED            | 8min  |
+|    | **TIER 7 — CLEANUP & POLISH**                                                     |          |        |        |                |       |
+| 61 | Move display/a11y_test.go ProgressBar test to feedback/ (TODO #59)                | TODO #59 | LOW    | 5min   | LOW            | 5min  |
+| 62 | Move test helpers from utils/ to internal/testutils/ (TODO #58)                   | TODO #58 | MED    | 10min  | LOW            | 10min |
+| 63 | Update all imports after test helper move                                         | TODO #58 | MED    | 10min  | LOW            | 10min |
+| 64 | Verify examples/demo builds and renders correctly                                 | Cleanup  | LOW    | 5min   | MED            | 5min  |
+| 65 | Update FEATURES.md with final component list                                      | Cleanup  | MED    | 8min   | MED            | 8min  |
+| 66 | Update AGENTS.md with session 9 outcomes                                          | Cleanup  | LOW    | 5min   | LOW            | 5min  |
+| 67 | Update TODO_LIST.md — mark completed items                                        | Cleanup  | LOW    | 5min   | LOW            | 5min  |
+| 68 | Final verification: build + test + lint + coverage                                | Cleanup  | HIGH   | 5min   | HIGH           | 5min  |
+| 69 | Commit and push all session 9 work                                                | Cleanup  | HIGH   | 5min   | HIGH           | 5min  |
 
 ---
 
