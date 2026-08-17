@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
 )
 
@@ -33,6 +34,9 @@ func prerender(outputDir string) error {
 		{"recipes/settings.html", "Settings Recipe - templ-components", "Settings recipe demo", recipesSettingsPage},
 		{"recipes/login.html", "Login Recipe - templ-components", "Login card recipe demo", recipesLoginPage},
 		{"recipes/auth.html", "Auth Layout Recipe - templ-components", "Auth layout recipe demo", recipesAuthPage},
+		{"users/index.html", "Users - templ-components", "Server-driven data table with sorting and pagination", func(props layout.PageProps) templ.Component {
+			return usersDemoPage(props, "Name", display.SortAsc, 1, usersTotalPages(len(demoUsers())))
+		}},
 	}
 
 	ctx := context.Background()

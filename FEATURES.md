@@ -18,12 +18,12 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `htmx`           | 8             | HTMX integration: loading indicators, error handling, helpers, View Transitions                                                                                                                                                                                                                                                                                                                                  |
 | `datastar`       | 4             | Datastar integration: SDK runtime injection, SSE-powered LiveRegion, loading Indicator, SSE error handling (opt-in, ADR-0030)                                                                                                                                                                                                                                                                                    |
 | `charts/echarts` | 2             | Opt-in ECharts adapter: `EChart` wrapper + `SDKScript` with dark mode bridge (ADR-0031). Accepts go-echarts `RenderSnippet()` strings — zero dep on go-echarts                                                                                                                                                                                                                                                   |
-| `icons`          | 3 (106 icons) | SVG icon system with typed name constants, RTL mirroring                                                                                                                                                                                                                                                                                                                                                         |
+| `icons`          | 3 (102 icons) | SVG icon system with typed name constants, RTL mirroring                                                                                                                                                                                                                                                                                                                                                         |
 | `layout`         | 10            | Page layout: base HTML, theme toggle, dark mode, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                                                                                                                                                                                                                                       |
 | `navigation`     | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                                                                                                                                                                 |
 | `recipes`        | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                                                                                                                                                            |
 
-**Totals:** 116 templ components (primitives, drift-guard verified) + 4 recipe screens = 120, 106 icon names, 52 typed enums (49 with `IsValid()`), 112 generated `*_templ.go` files, ~31,500 lines of Go/templ source
+**Totals:** 116 templ components (primitives, drift-guard verified) + 4 recipe screens = 120, 102 icon names, 52 typed enums (49 with `IsValid()`), 112 generated `*_templ.go` files, ~31,500 lines of Go/templ source
 
 ---
 
@@ -376,14 +376,14 @@ Singleton `MutationObserver` on `document.documentElement.class` syncs ECharts t
 
 | Component             | Status           | Description      | Key Features                                                                     |
 | --------------------- | ---------------- | ---------------- | -------------------------------------------------------------------------------- |
-| `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 106 named icons, custom class, currentColor theming                              |
+| `Icon`                | FULLY_FUNCTIONAL | SVG icon by name | 102 named icons, custom class, currentColor theming                              |
 | `IconWithStrokeWidth` | FULLY_FUNCTIONAL | Icon variant     | Custom stroke-width (default Icon uses 1.5)                                      |
 | `IconRTL`             | FULLY_FUNCTIONAL | RTL mirror icon  | Directional icons auto-mirror under `dir="rtl"` via CSS `scaleX(-1)`             |
 | `AnimatedIcon`        | FULLY_FUNCTIONAL | Animated icon    | 11 hover-triggered CSS animation presets, zero JavaScript, RTL variant available |
 
-### Icon Names (106)
+### Icon Names (102)
 
-105 path icons + Spinner covering navigation, UI actions, chevrons/arrows, communication, media, and status. See `icons/icon_names.go` for the complete list.
+101 path icons + Spinner covering navigation, UI actions, chevrons/arrows, communication, media, and status. See `icons/icon_names.go` for the complete list.
 
 ### Functions
 

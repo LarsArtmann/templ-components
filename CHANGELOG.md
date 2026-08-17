@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Demo overhaul: every demo endpoint is live, every count is real.** The mock backend gained real endpoints for LoadMore (`/api/items`, batch → next-button → EndOfList), ConfirmDelete (`/api/items/123`, live `#item-123` target), LoadingButton (`/api/save`, 600ms delay), a self-replacing PolledRegion that settles after 3 ticks (no infinite polling), and a templ-rendered `/api/users` fragment. New pages: `/users` (server-driven DataTable + Pagination with sorting/filter round-trips) and `/recipes/auth` (AuthLayout with real forms components). Recipes dogfood the library (LineChart, Avatar, RelativeTime, forms.Form) instead of raw HTML strings. The hero now renders `utils.Version` dynamically and computes the icon count from `icons.AllIconNames()`; a new `TestHeroCountsMatchFeatures` drift-guard asserts demo counts against FEATURES.md.
+- **FEATURES.md icon counts corrected (106 → 102).** `icons.AllIconNames()` returns 102 icons; the documented 106 was stale. Caught by the new demo drift-guard test.
+
 ## [1.8.4] - 2026-08-16
 
 ### Fixed
