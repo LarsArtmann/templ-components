@@ -8,6 +8,11 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+func demoDate(year int, month time.Month, day int) *time.Time {
+	t := time.Date(year, month, day, 0, 0, 0, 0, time.UTC)
+	return &t
+}
+
 templ displayDemo() {
 	@demoSection("Cards", "display-cards")
 	<div class="grid gap-4 sm:grid-cols-2">
@@ -138,7 +143,7 @@ templ displayDemo() {
 			<p class="text-gray-600 dark:text-gray-400">Run <code>go get github.com/larsartmann/templ-components</code> to add it to your project.</p>
 		</template>
 		<template data-content="acc-3">
-			<p class="text-gray-600 dark:text-gray-400">It's in active development (v0.x). The API may change before v1.0.</p>
+			<p class="text-gray-600 dark:text-gray-400">Yes — v{ utils.Version } follows semantic versioning. Breaking changes only land in major versions.</p>
 		</template>
 	}
 	@demoSection("Tabs", "display-tabs")
@@ -217,6 +222,26 @@ templ displayDemo() {
 		Title:    "User Settings",
 		Subtitle: "Manage your account preferences and security options",
 	})
+	@demoSection("SectionHeading + DateRange", "display-section-heading")
+	<div class="space-y-4 rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-6">
+		@display.SectionHeading(display.SectionHeadingProps{
+			Title:    "Experience",
+			SubTitle: "SectionHeading — configurable h1–h6 level, alignment, subtitle",
+			Level:    display.HeadingLevelH2,
+		})
+		@display.DateRange(display.DateRangeProps{
+			Start: demoDate(2023, 3, 1),
+		})
+		@display.DateRange(display.DateRangeProps{
+			Start:  demoDate(2024, 1, 15),
+			End:    demoDate(2025, 6, 30),
+			Layout: display.DateFormatJan2_2006,
+		})
+	</div>
+	@demoCodeSnippet("Go", `@display.DateRange(display.DateRangeProps{
+	Start: &start, // End nil renders "Present"
+	Layout: display.DateFormatJan2_2006,
+})`)
 	@demoSection("Definition List", "display-definition-list")
 	<div class="max-w-md">
 		@display.DefinitionList(display.DefinitionListProps{
@@ -436,8 +461,8 @@ templ displayDemo() {
 			Title:     "Debug Information",
 			Collapsed: true,
 		}) {
-			<pre class="text-xs text-gray-500 dark:text-gray-400">Version: v1.6.0
-Build: 2026-07-30T20:00:00Z</pre>
+			<pre class="text-xs text-gray-500 dark:text-gray-400">Version: v{ utils.Version }
+Build: { time.Now().UTC().Format("2006-01-02T15:04:05Z") }</pre>
 		}
 	</div>
 	@demoSection("Heatmap", "display-heatmap")

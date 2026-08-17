@@ -71,109 +71,127 @@ func formsDemoPage(props layout.PageProps) templ.Component {
 					}()
 				}
 				ctx = templ.InitializeContext(ctx)
-				templ_7745c5c3_Err = forms.ValidationSummary(forms.ValidationSummaryProps{
-					Errors: []forms.ValidationError{
-						{Field: "username", Message: "Username is required"},
-						{Field: "password", Message: "Password must be at least 8 characters"},
-					},
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " <div class=\"space-y-6\">")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = forms.Input(forms.InputProps{
-					Name:     "username",
-					Label:    "Username",
-					Required: true,
-					Error:    "Username is required",
-					HelpText: "3-20 characters, letters and numbers only.",
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = forms.Input(forms.InputProps{
-					Name:        "email",
-					Type:        forms.InputEmail,
-					Label:       "Email address",
-					Required:    true,
-					Placeholder: "you@example.com",
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = forms.Input(forms.InputProps{
-					Name:     "password",
-					Type:     forms.InputPassword,
-					Label:    "Password",
-					Required: true,
-					Error:    "Password must be at least 8 characters",
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = forms.Select(forms.SelectProps{
-					Name:  "role",
-					Label: "Role",
-					Options: []forms.SelectOption{
-						{Value: "member", Label: "Member"},
-						{Value: "admin", Label: "Admin"},
-						{Value: "owner", Label: "Owner"},
-					},
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = forms.Textarea(forms.TextareaProps{
-					Name:     "bio",
-					Label:    "Bio (optional)",
-					Rows:     3,
-					HelpText: "Tell us a little about yourself.",
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = forms.RadioGroup(forms.RadioGroupProps{
-					Name:  "plan",
-					Label: "Subscription Plan",
-					Options: []forms.RadioOption{
-						{Value: "free", Label: "Free", Checked: true},
-						{Value: "pro", Label: "Pro ($9/mo)"},
-						{Value: "team", Label: "Team ($29/mo)"},
-					},
-					HelpText: "You can change or cancel anytime.",
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = forms.Toggle(forms.ToggleProps{
-					Name:  "notifications",
-					Label: "Send me product updates",
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = forms.Checkbox(forms.CheckboxProps{
-					Name:  "terms",
-					Label: "I agree to the Terms of Service and Privacy Policy",
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><div class=\"mt-6 flex items-center justify-end gap-3\"><a href=\"/\" class=\"rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800\">Cancel</a>")
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = display.Button(display.ButtonProps{
-					Text: "Create Account",
-					Type: display.ButtonHTMLSubmit,
-				}).Render(ctx, templ_7745c5c3_Buffer)
-				if templ_7745c5c3_Err != nil {
-					return templ_7745c5c3_Err
-				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div>")
+				templ_7745c5c3_Var4 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+					templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+					templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+					if !templ_7745c5c3_IsBuffer {
+						defer func() {
+							templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+							if templ_7745c5c3_Err == nil {
+								templ_7745c5c3_Err = templ_7745c5c3_BufErr
+							}
+						}()
+					}
+					ctx = templ.InitializeContext(ctx)
+					templ_7745c5c3_Err = forms.ValidationSummary(forms.ValidationSummaryProps{
+						Errors: []forms.ValidationError{
+							{Field: "username", Message: "Username is required"},
+							{Field: "password", Message: "Password must be at least 8 characters"},
+						},
+					}).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, " <div class=\"space-y-6\">")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = forms.Input(forms.InputProps{
+						Name:     "username",
+						Label:    "Username",
+						Required: true,
+						Error:    "Username is required",
+						HelpText: "3-20 characters, letters and numbers only.",
+					}).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = forms.Input(forms.InputProps{
+						Name:        "email",
+						Type:        forms.InputEmail,
+						Label:       "Email address",
+						Required:    true,
+						Placeholder: "you@example.com",
+					}).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = forms.Input(forms.InputProps{
+						Name:     "password",
+						Type:     forms.InputPassword,
+						Label:    "Password",
+						Required: true,
+						Error:    "Password must be at least 8 characters",
+					}).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = forms.Select(forms.SelectProps{
+						Name:  "role",
+						Label: "Role",
+						Options: []forms.SelectOption{
+							{Value: "member", Label: "Member"},
+							{Value: "admin", Label: "Admin"},
+							{Value: "owner", Label: "Owner"},
+						},
+					}).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = forms.Textarea(forms.TextareaProps{
+						Name:     "bio",
+						Label:    "Bio (optional)",
+						Rows:     3,
+						HelpText: "Tell us a little about yourself.",
+					}).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = forms.RadioGroup(forms.RadioGroupProps{
+						Name:  "plan",
+						Label: "Subscription Plan",
+						Options: []forms.RadioOption{
+							{Value: "free", Label: "Free", Checked: true},
+							{Value: "pro", Label: "Pro ($9/mo)"},
+							{Value: "team", Label: "Team ($29/mo)"},
+						},
+						HelpText: "You can change or cancel anytime.",
+					}).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = forms.Toggle(forms.ToggleProps{
+						Name:  "notifications",
+						Label: "Send me product updates",
+					}).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = forms.Checkbox(forms.CheckboxProps{
+						Name:  "terms",
+						Label: "I agree to the Terms of Service and Privacy Policy",
+					}).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div><div class=\"mt-6 flex items-center justify-end gap-3\"><a href=\"/\" class=\"rounded-md px-3 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800\">Cancel</a>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = display.Button(display.ButtonProps{
+						Text: "Create Account",
+						Type: display.ButtonHTMLSubmit,
+					}).Render(ctx, templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div>")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+					return nil
+				})
+				templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: "/users", Method: forms.FormGet}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}

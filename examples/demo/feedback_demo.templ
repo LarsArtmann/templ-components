@@ -1,6 +1,9 @@
 package main
 
-import "github.com/larsartmann/templ-components/feedback"
+import (
+	"github.com/larsartmann/templ-components/feedback"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 templ feedbackDemo() {
 	@demoSection("Alerts", "feedback-alerts")
@@ -37,6 +40,33 @@ templ feedbackDemo() {
 		@feedback.ProgressBar(feedback.ProgressBarProps{Current: 45, Total: 100, Label: "Uploading...", ShowLabel: true})
 		@feedback.ProgressBar(feedback.ProgressBarProps{Current: 100, Total: 100, Label: "Complete", ShowLabel: true, Color: "bg-emerald-600 dark:bg-emerald-500"})
 		@feedback.ProgressBar(feedback.ProgressBarProps{Indeterminate: true, Label: "Processing..."})
+	</div>
+	@demoSection("CircularProgress", "feedback-circular-progress")
+	<div class="flex items-end gap-8">
+		<div class="text-center space-y-2">
+			@feedback.CircularProgress(feedback.CircularProgressProps{Value: 72, ShowLabel: true})
+			<p class="text-xs text-gray-500 dark:text-gray-400">md + label</p>
+		</div>
+		<div class="text-center space-y-2">
+			@feedback.CircularProgress(feedback.CircularProgressProps{Value: 45, Size: feedback.CircularProgressSizeSM})
+			<p class="text-xs text-gray-500 dark:text-gray-400">sm</p>
+		</div>
+		<div class="text-center space-y-2">
+			@feedback.CircularProgress(feedback.CircularProgressProps{Value: 100, Size: feedback.CircularProgressSizeLG, Color: "text-emerald-600 dark:text-emerald-500"})
+			<p class="text-xs text-gray-500 dark:text-gray-400">lg + custom color</p>
+		</div>
+	</div>
+	@demoSection("LoadingOverlay", "feedback-loading-overlay")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+		Full-screen overlay for page transitions — pinned to this frame for the demo via a <code>Class</code> override:
+	</p>
+	<div class="relative h-56 overflow-hidden rounded-xl border border-gray-200 dark:border-gray-800">
+		@feedback.LoadingOverlay(feedback.LoadingOverlayProps{
+			BaseProps:    utils.BaseProps{Class: "absolute"},
+			Message:      "Loading workspace...",
+			ShowProgress: true,
+			Progress:     62,
+		})
 	</div>
 	@demoSection("Step Indicator", "feedback-step-indicator")
 	<div class="space-y-6">

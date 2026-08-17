@@ -32,6 +32,7 @@ func prerender(outputDir string) error {
 		},
 		{"recipes/settings.html", "Settings Recipe - templ-components", "Settings recipe demo", recipesSettingsPage},
 		{"recipes/login.html", "Login Recipe - templ-components", "Login card recipe demo", recipesLoginPage},
+		{"recipes/auth.html", "Auth Layout Recipe - templ-components", "Auth layout recipe demo", recipesAuthPage},
 	}
 
 	ctx := context.Background()

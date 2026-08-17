@@ -9,9 +9,13 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"time"
+
 	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/recipes"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 func recipesLoginPage(props layout.PageProps) templ.Component {
@@ -47,12 +51,28 @@ func recipesLoginPage(props layout.PageProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"min-h-dvh flex flex-col\"><div class=\"flex items-center justify-between px-4 py-3\"><a href=\"/\" class=\"text-sm text-blue-600 dark:text-blue-400 hover:underline\">Back to demo</a>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = layout.ThemeToggle("Toggle dark mode", "").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div><div class=\"flex-1 flex items-center justify-center px-4 pb-12\"><div class=\"w-full max-w-sm\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 			templ_7745c5c3_Err = recipes.LoginCard(recipes.LoginCardProps{
 				Title:    "Sign in",
 				Subtitle: "Welcome back. Enter your credentials to continue.",
-				FormBody: templ.Raw(`<form class="space-y-4"><div><label for="email" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Email</label><input type="email" id="email" name="email" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-xs focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-white" placeholder="you@example.com"/></div><div><label for="password" class="block text-sm font-medium text-gray-700 dark:text-gray-300">Password</label><input type="password" id="password" name="password" class="mt-1 block w-full rounded-md border-gray-300 dark:border-gray-600 shadow-xs focus:border-blue-500 focus:ring-blue-500 dark:bg-gray-800 dark:text-white" placeholder="••••••••"/></div><button type="submit" class="w-full flex justify-center rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-500 dark:hover:bg-blue-400">Sign in</button></form>`),
+				FormBody: loginForm(),
 				Footer:   templ.Raw(`<p class="text-center text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a href="#" class="font-medium text-blue-600 dark:text-blue-400 hover:underline">Sign up</a></p>`),
 			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -66,7 +86,7 @@ func recipesLoginPage(props layout.PageProps) templ.Component {
 	})
 }
 
-func recipesSettingsPage(props layout.PageProps) templ.Component {
+func loginForm() templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -99,28 +119,41 @@ func recipesSettingsPage(props layout.PageProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<div class=\"max-w-3xl mx-auto px-4 py-8\"><div class=\"mb-8 flex items-center justify-between\"><div><h1 class=\"text-2xl font-bold text-gray-900 dark:text-white\">Settings</h1><p class=\"mt-1 text-sm text-gray-500 dark:text-gray-400\">Recipe: recipes.SettingsLayout</p></div><a href=\"/\" class=\"text-sm text-blue-600 dark:text-blue-400 hover:underline\">Back to demo</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "<div class=\"space-y-4\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = recipes.SettingsLayout(recipes.SettingsLayoutProps{
-				Aside: templ.Raw(`<nav class="space-y-1"><a href="#profile" class="block rounded-md bg-blue-50 dark:bg-blue-900/20 px-3 py-2 text-sm font-medium text-blue-700 dark:text-blue-300">Profile</a><a href="#security" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">Security</a><a href="#notifications" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">Notifications</a></nav>`),
-				Sections: []recipes.SettingsSection{
-					{ID: "profile", Title: "Profile", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Update your profile information, avatar, and display name.</p>`)},
-					{ID: "security", Title: "Security", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Change your password and enable two-factor authentication.</p>`)},
-					{ID: "notifications", Title: "Notifications", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Choose what you get notified about and how.</p>`)},
-				},
+			templ_7745c5c3_Err = forms.Input(forms.InputProps{
+				Name:        "email",
+				Type:        forms.InputEmail,
+				Label:       "Email",
+				Required:    true,
+				Placeholder: "you@example.com",
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "</div>")
+			templ_7745c5c3_Err = forms.Input(forms.InputProps{
+				Name:        "password",
+				Type:        forms.InputPassword,
+				Label:       "Password",
+				Required:    true,
+				Placeholder: "••••••••",
+			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = display.Button(display.ButtonProps{Text: "Sign in", Type: display.ButtonHTMLSubmit, BaseProps: utils.BaseProps{Class: "w-full justify-center"}}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = layout.Base(props).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: "/", Method: forms.FormGet}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var4), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -128,7 +161,7 @@ func recipesSettingsPage(props layout.PageProps) templ.Component {
 	})
 }
 
-func recipesDashboardPage(props layout.PageProps) templ.Component {
+func recipesAuthPage(props layout.PageProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -161,7 +194,174 @@ func recipesDashboardPage(props layout.PageProps) templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"px-4 py-8\"><div class=\"mb-8 flex items-center justify-between\"><div><h1 class=\"text-2xl font-bold text-gray-900 dark:text-white\">Dashboard</h1><p class=\"mt-1 text-sm text-gray-500 dark:text-gray-400\">Recipe: recipes.Dashboard</p></div><a href=\"/\" class=\"text-sm text-blue-600 dark:text-blue-400 hover:underline\">Back to demo</a></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<div class=\"min-h-dvh flex flex-col\"><div class=\"flex items-center justify-end px-4 py-3\"><a href=\"/\" class=\"me-4 text-sm text-blue-600 dark:text-blue-400 hover:underline\">Back to demo</a>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = layout.ThemeToggle("Toggle dark mode", "").Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</div><div class=\"flex-1\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = recipes.AuthLayout(recipes.AuthLayoutProps{
+				Card:       authLoginCard(),
+				PanelTitle: "templ-components",
+				PanelText:  "Server-rendered UI components for Go. Type-safe, accessible, CSP-ready.",
+				PanelFeatures: []string{
+					"116 components, zero JS required for most",
+					"Native dialog, details, and popover APIs",
+					"Dark mode + RTL out of the box",
+				},
+			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = layout.Base(props).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func authLoginCard() templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var7 == nil {
+			templ_7745c5c3_Var7 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = recipes.LoginCard(recipes.LoginCardProps{
+			Title:    "Create account",
+			Subtitle: "Start building in minutes.",
+			FormBody: loginForm(),
+		}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func recipesSettingsPage(props layout.PageProps) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var8 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var8 == nil {
+			templ_7745c5c3_Var8 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Var9 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div class=\"max-w-3xl mx-auto px-4 py-8\"><div class=\"mb-8 flex items-center justify-between\"><div><h1 class=\"text-2xl font-bold text-gray-900 dark:text-white\">Settings</h1><p class=\"mt-1 text-sm text-gray-500 dark:text-gray-400\">Recipe: recipes.SettingsLayout</p></div><a href=\"/\" class=\"text-sm text-blue-600 dark:text-blue-400 hover:underline\">Back to demo</a></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = recipes.SettingsLayout(recipes.SettingsLayoutProps{
+				Aside: templ.Raw(`<nav class="space-y-1"><a href="#profile" class="block rounded-md bg-blue-50 dark:bg-blue-900/20 px-3 py-2 text-sm font-medium text-blue-700 dark:text-blue-300">Profile</a><a href="#security" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">Security</a><a href="#notifications" class="block rounded-md px-3 py-2 text-sm font-medium text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-800">Notifications</a></nav>`),
+				Sections: []recipes.SettingsSection{
+					{ID: "profile", Title: "Profile", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Update your profile information, avatar, and display name.</p>`)},
+					{ID: "security", Title: "Security", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Change your password and enable two-factor authentication.</p>`)},
+					{ID: "notifications", Title: "Notifications", Body: templ.Raw(`<p class="text-sm text-gray-600 dark:text-gray-400">Choose what you get notified about and how.</p>`)},
+				},
+			}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			return nil
+		})
+		templ_7745c5c3_Err = layout.Base(props).Render(templ.WithChildren(ctx, templ_7745c5c3_Var9), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+func recipesDashboardPage(props layout.PageProps) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var10 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var10 == nil {
+			templ_7745c5c3_Var10 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Var11 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+			if !templ_7745c5c3_IsBuffer {
+				defer func() {
+					templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+					if templ_7745c5c3_Err == nil {
+						templ_7745c5c3_Err = templ_7745c5c3_BufErr
+					}
+				}()
+			}
+			ctx = templ.InitializeContext(ctx)
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"px-4 py-8\"><div class=\"mb-8 flex items-center justify-between\"><div><h1 class=\"text-2xl font-bold text-gray-900 dark:text-white\">Dashboard</h1><p class=\"mt-1 text-sm text-gray-500 dark:text-gray-400\">Recipe: recipes.Dashboard</p></div><a href=\"/\" class=\"text-sm text-blue-600 dark:text-blue-400 hover:underline\">Back to demo</a></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -181,13 +381,13 @@ func recipesDashboardPage(props layout.PageProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = layout.Base(props).Render(templ.WithChildren(ctx, templ_7745c5c3_Var6), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = layout.Base(props).Render(templ.WithChildren(ctx, templ_7745c5c3_Var11), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -211,12 +411,12 @@ func revenueTrendCard() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var7 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var7 == nil {
-			templ_7745c5c3_Var7 = templ.NopComponent
+		templ_7745c5c3_Var12 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var12 == nil {
+			templ_7745c5c3_Var12 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var8 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Var13 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 			if !templ_7745c5c3_IsBuffer {
@@ -228,13 +428,19 @@ func revenueTrendCard() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<div class=\"h-40 flex items-end justify-between gap-2\"><div class=\"flex-1 bg-blue-600 dark:bg-blue-500 rounded-t\" style=\"height: 40%\"></div><div class=\"flex-1 bg-blue-600 dark:bg-blue-500 rounded-t\" style=\"height: 65%\"></div><div class=\"flex-1 bg-blue-600 dark:bg-blue-500 rounded-t\" style=\"height: 50%\"></div><div class=\"flex-1 bg-blue-600 dark:bg-blue-500 rounded-t\" style=\"height: 80%\"></div><div class=\"flex-1 bg-blue-600 dark:bg-blue-500 rounded-t\" style=\"height: 95%\"></div></div>")
+			templ_7745c5c3_Err = display.LineChart(display.LineChartProps{
+				Series: []display.LineChartSeries{
+					{Name: "Revenue", Values: []float64{12, 18, 15, 24, 21, 29, 34}},
+				},
+				XAxisLabels: []string{"Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"},
+				BaseProps:   utils.BaseProps{AriaLabel: "Revenue by day of week"},
+			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = display.Card(display.CardProps{Title: "Revenue trend"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var8), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.Card(display.CardProps{Title: "Revenue trend"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var13), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -258,12 +464,12 @@ func recentActivityCard() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var9 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var9 == nil {
-			templ_7745c5c3_Var9 = templ.NopComponent
+		templ_7745c5c3_Var14 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var14 == nil {
+			templ_7745c5c3_Var14 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Var10 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_Var15 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
 			if !templ_7745c5c3_IsBuffer {
@@ -275,13 +481,45 @@ func recentActivityCard() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<p class=\"text-sm text-gray-500 dark:text-gray-400\">No recent activity to show.</p>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"space-y-4\"><div class=\"flex items-center gap-3\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=AS", Alt: "Alice Smith", Size: display.AvatarSizeSM, Status: display.AvatarStatusOnline}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "<div><p class=\"text-sm font-medium text-gray-900 dark:text-white\">Alice Smith deployed v2.3.0</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(-12 * time.Minute)}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</div></div><div class=\"flex items-center gap-3\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = display.Avatar(display.AvatarProps{Src: "https://ui-avatars.com/api/?name=BJ", Alt: "Bob Jones", Size: display.AvatarSizeSM}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "<div><p class=\"text-sm font-medium text-gray-900 dark:text-white\">Bob Jones invited Grace Lee</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = display.RelativeTime(display.RelativeTimeProps{Time: time.Now().Add(-3 * time.Hour)}).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "</div></div></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = display.Card(display.CardProps{Title: "Recent activity"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var10), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = display.Card(display.CardProps{Title: "Recent activity"}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var15), templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -305,9 +543,9 @@ func revenueStatCard() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var11 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var11 == nil {
-			templ_7745c5c3_Var11 = templ.NopComponent
+		templ_7745c5c3_Var16 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var16 == nil {
+			templ_7745c5c3_Var16 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		templ_7745c5c3_Err = display.StatCard(display.StatCardProps{Label: "Revenue", Value: "$48,250", Trend: display.TrendUp, Change: "+12.5%"}).Render(ctx, templ_7745c5c3_Buffer)
@@ -334,9 +572,9 @@ func usersStatCard() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var12 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var12 == nil {
-			templ_7745c5c3_Var12 = templ.NopComponent
+		templ_7745c5c3_Var17 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var17 == nil {
+			templ_7745c5c3_Var17 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		templ_7745c5c3_Err = display.StatCard(display.StatCardProps{Label: "Users", Value: "2,840", Trend: display.TrendUp, Change: "+4.3%"}).Render(ctx, templ_7745c5c3_Buffer)
@@ -363,9 +601,9 @@ func churnStatCard() templ.Component {
 			}()
 		}
 		ctx = templ.InitializeContext(ctx)
-		templ_7745c5c3_Var13 := templ.GetChildren(ctx)
-		if templ_7745c5c3_Var13 == nil {
-			templ_7745c5c3_Var13 = templ.NopComponent
+		templ_7745c5c3_Var18 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var18 == nil {
+			templ_7745c5c3_Var18 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
 		templ_7745c5c3_Err = display.StatCard(display.StatCardProps{Label: "Churn", Value: "1.8%", Trend: display.TrendDown, Change: "-0.4%"}).Render(ctx, templ_7745c5c3_Buffer)

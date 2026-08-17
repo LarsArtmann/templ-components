@@ -90,7 +90,7 @@ templ formsDemoSection() {
 		},
 	})
 	@demoSection("Inline Form (Filter Bar)", "forms-inline")
-	@forms.Form(forms.FormProps{Action: "/filter", Method: forms.FormGet, Layout: forms.FormLayoutInline}) {
+	@forms.Form(forms.FormProps{Action: "/users", Method: forms.FormGet, Layout: forms.FormLayoutInline}) {
 		@forms.Select(forms.SelectProps{
 			Name:  "status",
 			Label: "Status",
@@ -111,4 +111,7 @@ templ formsDemoSection() {
 		})
 		@display.Button(display.ButtonProps{Text: "Filter", Type: display.ButtonHTMLSubmit})
 	}
+	<div id="results" class="mt-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+		<p class="text-xs text-gray-400 dark:text-gray-500">Filter results appear here (change the Sort dropdown — it auto-submits via HTMX).</p>
+	</div>
 }

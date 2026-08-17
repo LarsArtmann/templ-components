@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strconv"
+
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
@@ -9,10 +11,11 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
+// Canonical counts from FEATURES.md ("Totals:" line, drift-guard verified).
+// demo_counts_test.go asserts these against FEATURES.md so they cannot drift.
 const (
-	componentCount = "107"
-	iconCount      = "106"
-	packageCount   = "10"
+	componentCount = "116"
+	packageCount   = "11"
 )
 
 templ demoPage(props layout.PageProps) {
@@ -43,9 +46,11 @@ templ demoContent() {
 				@formsDemoSection()
 				@navigationDemo()
 				@htmxDemo()
-			@datastarDemo()
+				@datastarDemo()
+				@echartsDemo()
 				@errorpageDemo()
 				@iconsDemo()
+				@recipesDemo()
 			</div>
 		}
 		@demoFilterScript()
@@ -59,7 +64,7 @@ templ demoHero() {
 				<div>
 					<div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 dark:bg-blue-950/30 border border-blue-100 dark:border-blue-900/30 text-xs font-medium text-blue-700 dark:text-blue-300 mb-5">
 						@icons.Icon(icons.Star, "h-3.5 w-3.5")
-						<span>v0.17.0</span>
+						<span>v{ utils.Version }</span>
 					</div>
 					<h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-gray-900 dark:text-white tracking-tight font-[Space_Grotesk]">
 						templ-components
@@ -81,7 +86,7 @@ templ demoHero() {
 				</div>
 				<div class="grid grid-cols-3 gap-3 sm:gap-4">
 					@demoStatCard(componentCount, "Components")
-					@demoStatCard(iconCount, "Icons")
+					@demoStatCard(strconv.Itoa(len(icons.AllIconNames())), "Icons")
 					@demoStatCard(packageCount, "Packages")
 				</div>
 			</div>
@@ -99,14 +104,17 @@ templ demoStatCard(value string, label string) {
 templ demoStickyNav() {
 	{{
 		tocLinks := []struct{ Label, Anchor string }{
+			{"Layout", "layout-primitives"},
 			{"Display", "display-cards"},
 			{"Feedback", "feedback-alerts"},
 			{"Forms", "forms-controls"},
 			{"Navigation", "nav-simplenav"},
 			{"HTMX", "htmx-loading-indicator"},
-			{"Datastar", "datastar-sdk-section"},
+			{"Datastar", "datastar-sdk-script"},
+			{"ECharts", "echarts-sdk"},
 			{"Error Pages", "errorpage-404"},
 			{"Icons", "icons-all"},
+			{"Recipes", "recipes-pages"},
 		}
 	}}
 	<div class="sticky top-0 z-30 border-b border-gray-200 dark:border-gray-800 bg-white/90 dark:bg-gray-950/90 backdrop-blur-xs">
@@ -181,4 +189,34 @@ templ demoFilterScript() {
 			});
 		});
 	</script>
+}
+
+// recipesDemo links the full-page demos: every page reachable from one place.
+templ recipesDemo() {
+	@demoSection("Recipes & Full Pages", "recipes-pages")
+	<div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+		@recipeLinkCard("/users", "Users list", "Server-driven DataTable with sorting + pagination round-trips.", icons.Users)
+		@recipeLinkCard("/forms", "Forms page", "Complete form with validation states and HTMX filter bar.", icons.Edit)
+		@recipeLinkCard("/recipes/dashboard", "Dashboard", "recipes.Dashboard — stat cards + charts composition.", icons.Squares2x2)
+		@recipeLinkCard("/recipes/settings", "Settings", "recipes.SettingsLayout — aside nav + section cards.", icons.Settings)
+		@recipeLinkCard("/recipes/login", "Login card", "recipes.LoginCard — centered sign-in card.", icons.UserCircle)
+		@recipeLinkCard("/recipes/auth", "Auth layout", "recipes.AuthLayout — split-screen branding + auth card.", icons.ShieldCheck)
+	</div>
+}
+
+templ recipeLinkCard(href, title, description string, icon icons.Name) {
+	<a
+		href={ templ.SafeURL(href) }
+		class="group rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-5 hover:border-blue-300 dark:hover:border-blue-700 hover:shadow-md dark:hover:shadow-black/20 transition-all motion-reduce:transition-none motion-reduce:duration-0"
+	>
+		<div class="flex items-start gap-4">
+			<span class="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-950/40 text-blue-600 dark:text-blue-400">
+				@icons.Icon(icon, "h-5 w-5")
+			</span>
+			<div>
+				<p class="font-semibold text-gray-900 dark:text-white group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors motion-reduce:transition-none motion-reduce:duration-0">{ title }</p>
+				<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{ description }</p>
+			</div>
+		</div>
+	</a>
 }

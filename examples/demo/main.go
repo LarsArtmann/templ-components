@@ -55,26 +55,50 @@ func main() {
 		)
 	})
 
-	// Mock HTMX endpoints for interactive demo components
-	mux.HandleFunc("/api/load-more", func(w http.ResponseWriter, _ *http.Request) {
+	// Mock HTMX endpoints for interactive demo components. Every endpoint the
+	// demo templates reference must exist — a 404 in a demo fires an error
+	// toast via GlobalErrorHandling.
+	mux.HandleFunc("/api/items", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		fmt.Fprint(
-			w,
-			`<div class="rounded-lg border border-gray-200 dark:border-gray-700 p-4 bg-white dark:bg-gray-800">
-			<p class="text-sm text-gray-600 dark:text-gray-400">Loaded via HTMX! This item was fetched from the server.</p>
-		</div>`,
-		)
+		componentOr500(w, r, loadMoreResponse(r.URL.Query().Get("cursor")))
 	})
 
-	mux.HandleFunc("/api/delete", func(w http.ResponseWriter, _ *http.Request) {
+	mux.HandleFunc("/api/items/123", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(
 			w,
 			`<div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
 			<p class="text-sm text-green-800 dark:text-green-200">Item deleted successfully (mock endpoint).</p>
 		</div>`,
 		)
+	})
+
+	mux.HandleFunc("/api/save", func(w http.ResponseWriter, _ *http.Request) {
+		// Small delay so the LoadingButton "Saving..." state is visible.
+		time.Sleep(600 * time.Millisecond)
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		fmt.Fprint(w, `<span class="text-sm text-green-700 dark:text-green-300">Saved.</span>`)
+	})
+
+	// PolledRegion demo: each poll returns a fresh region (hx-swap=outerHTML
+	// replaces the whole region, so the response must re-arm the poll).
+	// After the third tick the region is returned without polling — the demo
+	// settles instead of hammering the server forever.
+	mux.HandleFunc("/api/demo-stats", func(w http.ResponseWriter, r *http.Request) {
+		tick := 1
+		if v, err := strconv.Atoi(r.URL.Query().Get("tick")); err == nil {
+			tick = v + 1
+		}
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		componentOr500(w, r, polledStatsRegion(tick))
+	})
+
+	// FilterDropdown demo: returns a filtered user fragment.
+	mux.HandleFunc("/api/users", func(w http.ResponseWriter, r *http.Request) {
+		status := r.URL.Query().Get("status")
+		sort := r.URL.Query().Get("sort")
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		componentOr500(w, r, filteredUsersFragment(status, sort))
 	})
 
 	// Mock Datastar SSE endpoint — streams periodic updates in Datastar's
@@ -133,12 +157,16 @@ func main() {
 		switch r.URL.Path {
 		case "/forms":
 			renderPage(w, r, "Forms Demo - templ-components", "Complete form showcase with validation", formsDemoPage)
+		case "/users":
+			renderUsersPage(w, r)
 		case "/recipes/dashboard":
 			renderPage(w, r, "Dashboard Recipe - templ-components", "Dashboard recipe demo", recipesDashboardPage)
 		case "/recipes/settings":
 			renderPage(w, r, "Settings Recipe - templ-components", "Settings recipe demo", recipesSettingsPage)
 		case "/recipes/login":
 			renderPage(w, r, "Login Recipe - templ-components", "Login card recipe demo", recipesLoginPage)
+		case "/recipes/auth":
+			renderPage(w, r, "Auth Layout Recipe - templ-components", "Auth layout recipe demo", recipesAuthPage)
 		case "/":
 			renderPage(w, r, "templ-components Demo", "Showcase of all templ-components", demoPage)
 		default:
@@ -183,5 +211,12 @@ func renderPage(
 	props.HeadContent = demoFonts("demo-nonce")
 	if err := page(props).Render(r.Context(), w); err != nil {
 		http.Error(w, err.Error(), 500)
+	}
+}
+
+// componentOr500 renders a templ fragment handler response.
+func componentOr500(w http.ResponseWriter, r *http.Request, component templ.Component) {
+	if err := component.Render(r.Context(), w); err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
 	}
 }

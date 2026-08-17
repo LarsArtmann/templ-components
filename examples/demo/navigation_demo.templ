@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
@@ -15,8 +17,8 @@ templ navigationDemo() {
 		CurrentPath: "/",
 		Links: []navigation.NavLinkProps{
 			{Href: "/", Text: "Home"},
-			{Href: "/about", Text: "About"},
-			{Href: "/contact", Text: "Contact"},
+			{Href: "/users", Text: "Users"},
+			{Href: "/forms", Text: "Forms"},
 		},
 		RightItems: layout.ThemeToggle("Toggle dark mode", ""),
 	})
@@ -25,8 +27,8 @@ templ navigationDemo() {
 		CurrentPath: "/",
 		Links: []navigation.NavLinkProps{
 			{Href: "/", Text: "Home"},
-			{Href: "/about", Text: "About"},
-			{Href: "/contact", Text: "Contact"},
+			{Href: "/users", Text: "Users"},
+			{Href: "/forms", Text: "Forms"},
 		},
 	})
 	@demoSection("SidebarNav", "nav-sidebar")
@@ -45,7 +47,7 @@ templ navigationDemo() {
 	@navigation.Breadcrumbs(navigation.BreadcrumbsProps{Items: []navigation.BreadcrumbItem{
 		{Text: "Home", Href: "/"},
 		{Text: "Users", Href: "/users"},
-		{Text: "John Doe"},
+		{Text: "Alice Smith"},
 	}})
 	@demoSection("Pagination", "nav-pagination")
 	@navigation.Pagination(navigation.PaginationProps{
@@ -54,11 +56,40 @@ templ navigationDemo() {
 		BaseURL:     "/users",
 	})
 	@demoSection("LoadMore", "nav-load-more")
-	@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "next-page"})
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">Click to fetch the next batch from <code>/api/items</code> — the button replaces itself with the response:</p>
+	<div id="demo-load-more" class="space-y-3">
+		@loadMoreBatch(0)
+		@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "1"})
+	</div>
 	@demoSection("LoadMore (Infinite Scroll)", "nav-load-more-infinite")
-	@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "next-page-2", InfiniteScroll: true})
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-3"><code>hx-trigger="revealed"</code> — fires as soon as the button scrolls into view:</p>
+	<div class="space-y-3">
+		@loadMoreBatch(1)
+		@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "2"})
+	</div>
 	@demoSection("EndOfList", "nav-end-of-list")
 	@navigation.EndOfList(navigation.EndOfListProps{})
 	@demoSection("Footer", "nav-footer")
 	@navigation.Footer(navigation.FooterProps{BrandText: "templ-components v" + utils.Version})
+}
+
+// loadMoreResponse is the /api/items response: a batch of item cards plus
+// either the next LoadMore button or, on the last page, an EndOfList marker.
+templ loadMoreResponse(cursor string) {
+	if cursor == "1" {
+		@loadMoreBatch(1)
+		@navigation.LoadMore(navigation.LoadMoreProps{Endpoint: "/api/items", Cursor: "2"})
+	} else {
+		@loadMoreBatch(2)
+		@navigation.EndOfList(navigation.EndOfListProps{})
+	}
+}
+
+templ loadMoreBatch(offset int) {
+	for i := 1; i <= 2; i++ {
+		<div class="rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4">
+			<p class="text-sm font-medium text-gray-900 dark:text-white">Item { fmt.Sprintf("%03d", offset*2+i) }</p>
+			<p class="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Loaded from the server via HTMX.</p>
+		</div>
+	}
 }

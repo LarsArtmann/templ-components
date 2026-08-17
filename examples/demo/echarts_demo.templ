@@ -1,0 +1,48 @@
+package main
+
+import (
+	echarts "github.com/larsartmann/templ-components/charts/echarts"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// Hand-authored equivalents of go-echarts RenderSnippet() output — the
+// ECharts adapter accepts Element + Script strings, so the demo needs no
+// go-echarts dependency.
+const (
+	echartsDemoElement = `<div id="demo-echarts" style="width:100%;height:280px;"></div>`
+	echartsDemoScript  = `var demoChart = echarts.init(document.getElementById('demo-echarts'));
+demoChart.setOption({
+  tooltip: {trigger: 'axis'},
+  xAxis: {type: 'category', data: ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']},
+  yAxis: {type: 'value'},
+  series: [{type: 'bar', data: [120, 200, 150, 80, 70, 110, 130]}]
+});
+window.addEventListener('resize', function() { demoChart.resize(); });`
+)
+
+templ echartsDemo() {
+	{{ sdkProps := echarts.DefaultSDKScriptProps(); sdkProps.Nonce = "demo-nonce" }}
+	@demoSection("ECharts SDK + Chart (opt-in module)", "echarts-sdk")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">
+		<code>charts/echarts</code> is a separate opt-in module: it wraps go-echarts
+		<code>RenderSnippet()</code> output in a CSP-safe container and bridges dark mode —
+		toggle the theme and watch the chart re-theme.
+	</p>
+	@echarts.SDKScript(sdkProps)
+	<div class="rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900 p-4">
+		@echarts.EChart(echarts.EChartsProps{
+			BaseProps: utils.BaseProps{AriaLabel: "Weekly requests bar chart"},
+			Element:   echartsDemoElement,
+			Script:    echartsDemoScript,
+			Nonce:     "demo-nonce",
+		})
+	</div>
+	@demoCodeSnippet("Go", `import echarts "github.com/larsartmann/templ-components/charts/echarts"
+
+@echarts.SDKScript(echarts.DefaultSDKScriptProps())
+@echarts.EChart(echarts.EChartsProps{
+	Element: snippet.Element, // from go-echarts RenderSnippet()
+	Script:  snippet.Script,
+	Nonce:   nonce,
+})`)
+}

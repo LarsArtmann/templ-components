@@ -58,6 +58,14 @@ templ datastarDemo() {
 datastar.Post("/api/save")      // @post('/api/save')
 datastar.Delete("/api/items/1") // @delete('/api/items/1')`,
 	)
+	@demoSection("Datastar SSE Error Handling", "datastar-sse-errors")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Global listener for Datastar SSE errors (<code>datastar-sse-error</code>) that surfaces
+		streaming failures as accessible toasts — the Datastar counterpart to HTMX GlobalErrorHandling:
+	</p>
+	@datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: "demo-nonce"})
+	@demoCodeSnippet("Go", `@feedback.ToastContainer("")
+@datastar.SSEErrorHandling(datastar.DefaultSSEErrorHandlingConfig())`)
 	@display.Card(display.CardProps{
 		Title: "HTMX vs Datastar",
 	}) {

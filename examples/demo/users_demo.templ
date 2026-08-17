@@ -1,0 +1,69 @@
+package main
+
+import (
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/navigation"
+)
+
+templ usersDemoPage(props layout.PageProps, sortKey string, sortDir display.SortDirection, page, totalPages uint) {
+	@layout.Base(props) {
+		<div class="max-w-5xl mx-auto px-4 py-8">
+			<div class="flex items-center justify-between mb-6">
+				<div>
+					<h1 class="text-2xl font-bold text-gray-900 dark:text-white">Users</h1>
+					<p class="mt-1 text-sm text-gray-500 dark:text-gray-400">
+						Server-driven: click a column header or a page — the server re-renders with <code class="text-xs">?sort=&amp;dir=&amp;page=</code>.
+					</p>
+				</div>
+				<a href="/" class="text-sm text-blue-600 dark:text-blue-400 hover:underline">Back to demo</a>
+			</div>
+			@navigation.Breadcrumbs(navigation.BreadcrumbsProps{Items: []navigation.BreadcrumbItem{
+				{Text: "Home", Href: "/"},
+				{Text: "Users"},
+			}})
+			<div class="mt-6">
+				@display.Card(display.CardProps{Title: "Team members", Padding: display.CardPaddingNone}) {
+					@display.DataTable(display.DataTableProps{
+						Columns: []display.DataTableColumn{
+							{Label: "Name", Sortable: true},
+							{Label: "Email", Sortable: true, SortKey: "email"},
+							{Label: "Role"},
+							{Label: "Status"},
+						},
+						ActiveSortColumn: usersSortColumnLabel(sortKey),
+						ActiveSortDir:    sortDir,
+						SortBaseURL:      "/users",
+						Rows:             demoUserRows(pageDemoUsers(sortDemoUsers(demoUsers(), sortKey, sortDir), int(page))),
+						Flush:            true,
+						Hover:            true,
+						Striped:          true,
+						Pagination: navigation.Pagination(navigation.PaginationProps{
+							CurrentPage: page,
+							TotalPages:  totalPages,
+							BaseURL:     "/users",
+						}),
+					})
+				}
+			</div>
+		</div>
+	}
+}
+
+// filteredUsersFragment is the /api/users response for the FilterDropdown
+// demos: a filtered + sorted user list swapped into the results target.
+templ filteredUsersFragment(status, sortKey string) {
+	<div class="space-y-1">
+		{{ filtered := filterDemoUsers(status, sortKey) }}
+		if len(filtered) == 0 {
+			<p class="text-sm text-gray-500 dark:text-gray-400">No users match the current filters.</p>
+		} else {
+			for _, u := range filtered {
+				<p class="text-sm text-gray-700 dark:text-gray-300">
+					{ u.name } <span class="text-gray-400 dark:text-gray-500">·</span>
+					<span class="text-gray-500 dark:text-gray-400">{ u.email }</span>
+				</p>
+			}
+		}
+	</div>
+}

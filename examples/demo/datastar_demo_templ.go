@@ -131,6 +131,23 @@ datastar.Delete("/api/items/1") // @delete('/api/items/1')`,
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
+		templ_7745c5c3_Err = demoSection("Datastar SSE Error Handling", "datastar-sse-errors").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Global listener for Datastar SSE errors (<code>datastar-sse-error</code>) that surfaces streaming failures as accessible toasts — the Datastar counterpart to HTMX GlobalErrorHandling:</p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: "demo-nonce"}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = demoCodeSnippet("Go", `@feedback.ToastContainer("")
+@datastar.SSEErrorHandling(datastar.DefaultSSEErrorHandlingConfig())`).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
 		templ_7745c5c3_Var4 := templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 			templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 			templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
@@ -143,7 +160,7 @@ datastar.Delete("/api/items/1") // @delete('/api/items/1')`,
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<p class=\"text-sm text-gray-600 dark:text-gray-400 mb-3\">Both work side-by-side. HTMX uses <code>hx-*</code> attributes for hypermedia exchanges. Datastar uses <code>data-*</code> attributes for SSE streaming and reactive signals.</p><p class=\"text-sm text-gray-600 dark:text-gray-400\">Use HTMX for request-response (forms, navigation, CRUD). Use Datastar for real-time push (dashboards, live feeds, collaborative editing).</p>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<p class=\"text-sm text-gray-600 dark:text-gray-400 mb-3\">Both work side-by-side. HTMX uses <code>hx-*</code> attributes for hypermedia exchanges. Datastar uses <code>data-*</code> attributes for SSE streaming and reactive signals.</p><p class=\"text-sm text-gray-600 dark:text-gray-400\">Use HTMX for request-response (forms, navigation, CRUD). Use Datastar for real-time push (dashboards, live feeds, collaborative editing).</p>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

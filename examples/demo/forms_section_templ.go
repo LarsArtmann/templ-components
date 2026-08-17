@@ -265,7 +265,11 @@ func formsDemoSection() templ.Component {
 			}
 			return nil
 		})
-		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: "/filter", Method: forms.FormGet, Layout: forms.FormLayoutInline}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = forms.Form(forms.FormProps{Action: "/users", Method: forms.FormGet, Layout: forms.FormLayoutInline}).Render(templ.WithChildren(ctx, templ_7745c5c3_Var3), templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<div id=\"results\" class=\"mt-4 rounded-lg border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 p-4\"><p class=\"text-xs text-gray-400 dark:text-gray-500\">Filter results appear here (change the Sort dropdown — it auto-submits via HTMX).</p></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
