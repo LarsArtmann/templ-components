@@ -13,7 +13,7 @@ This repo is a **7-module Go workspace** (`github.com/larsartmann/templ-componen
 | `forms`             | 21 components                                       | Inputs, selects, toggles, combobox, slider, rating, tags input, calendar, validation                                                                                   |
 | `layout`            | 10 components                                       | Page shell, theme toggle, CSP-safe script/style tags, **body-layout primitives**: AppShell, Container, Split, Stack                                                    |
 | `navigation`        | 12 components                                       | Nav bars, pagination, breadcrumbs, sidebar, EndOfList                                                                                                                  |
-| `htmx`              | **Separate module** — 8 components                  | HTMX loading, error handling, OOB swaps, View Transitions                                                                                                              |
+| `htmx`              | **Separate module** — 9 components                  | HTMX loading, error handling, OOB swaps, View Transitions, PolledRegion                                                                                                |
 | `datastar`          | **Separate module** — 4 components + action helpers | Datastar runtime injection, SSE-powered LiveRegion, loading Indicator, SSE error handling. Pins version via `go-datastar/static`. Opt-in complement to HTMX (ADR-0030) |
 | `recipes`           | 4 composition screens                               | Dashboard, SettingsLayout, LoginCard, AuthLayout — screen-level compositions of display/forms/layout/navigation (ADR-0019)                                             |
 | `internal/contract` | Contract tests                                      | Cross-package interface verification                                                                                                                                   |
@@ -23,7 +23,7 @@ This repo is a **7-module Go workspace** (`github.com/larsartmann/templ-componen
 
 > **Note:** `go.work` and `go.work.sum` are in `.gitignore` (local dev only). CI and consumers use `replace` directives in each module's `go.mod`. `internal/` packages (`svg`, `cdn`, `golden`) were promoted to `utils/` sub-packages because Go's `internal/` rule blocks cross-module access.
 
-> **Datastar v1.0.2 runtime facts (2026-08-21 audit):** see `docs/datastar-runtime-facts.md` — only `datastar-patch-*` SSE events (keyed datalines, blank line terminates), lifecycle errors only on `datastar-fetch` (no `datastar-sse-error`), CSP needs `'unsafe-eval'`. Wire format pinned by `examples/demo/sse_test.go`.
+> **Datastar v1.0.2 runtime facts (2026-08-21 audit):** see `docs/datastar-runtime-facts.md` — only `datastar-patch-*` SSE events (keyed datalines, blank line terminates), lifecycle errors only on `datastar-fetch` (no `datastar-sse-error`), CSP needs `'unsafe-eval'`, clean stream EOF only reconnects under `retry: 'always'` (`LiveRegionProps.Retry`). Wire format pinned by `examples/demo/sse_test.go`; bundle contract pinned by `datastar.TestPinnedRuntimeBundleContract`.
 
 ## Build & Test Commands
 
@@ -73,7 +73,7 @@ files, consumers get uncompilable code (`undefined` errors on every component fu
 - The `.gitignore` uses `!*_templ.go` to override the global gitignore's `*_templ.go` entry
 - After editing any `.templ` file, always run `templ generate ./...` and commit the updated `*_templ.go` files alongside the source
 - Never add `*_templ.go` back to `.gitignore` — this is the standard pattern for publishable templ packages
-- 112 generated files across all packages
+- 114 generated files across all packages
 - **BuildFlow gotcha:** the BuildFlow pre-commit `templ-generate` step re-appends `*_templ.go` to `.gitignore` on every run, which (being the last pattern) overrides the `!*_templ.go` unignore and hides generated files from `git status`. This is harmless for already-tracked files (gitignore cannot untrack), but any NEW component's `*_templ.go` will be invisible until `git add -f`. After each commit, check `git status` for a re-added `*_templ.go` line and remove it. Consider fixing this in BuildFlow itself (it is `larsartmann/buildflow`).
 - **BuildFlow daemon commit messages (identified 2026-07-28, T13):** The auto-commit daemon commits with generic, hallucinated messages (e.g., `"chore: update project configuration and documentation"`) authored as `"Unknown Author <unknown@example.com>"`. These commits are invisible to `git log --grep` for specific features. 5+ sessions have documented this. The daemon also has a 60s budget and does NOT run `go test ./...`, meaning the `TestGolangciDisabledLinters` guard only fires in CI. Root cause: the daemon generates messages from a template, not from `git diff --stat`. Fix requires modifying BuildFlow (`larsartmann/buildflow`). The `.golangci.yml` regression root cause (T1) is directly related — the daemon commits a stale working tree without running tests.
 
@@ -279,18 +279,10 @@ Assisted-by: Crush:MiniMax-M3
   with a fresh empty `## [Unreleased]` inserted above it
 - The release notes in the commit body **and** the CHANGELOG (both kept in sync)
 
-**Tag format:** annotated + SSH-signed, message `<version>: <one-line summary>`,
-e.g., `v0.6.0: typed Props structs, tooltip a11y, error handler hardening`.
-Sign with the same key used for v0.5.0.
+**Tag format:** annotated + SSH-signed, message `<version>: <one-line summary>` (same key as v0.5.0).
 
-**Post-release commits** (e.g., backfilling tests, fixing docs, regenerating
-after a templ patch release) are committed normally on `master` and roll up
-into the next minor/patch release. Do not retag the same version.
-
-**Two-commit alternative was considered and rejected** for v0.6.0: it
-doubles the commit noise without improving the reviewability of the
-release. The one-commit convention keeps the release timeline obvious
-in `git log` and matches every prior release in this repo.
+**Post-release commits** (backfilling tests, doc fixes, post-release regeneration) land
+normally on `master` and roll into the next release. Never retag the same version.
 
 **To cut a release:** use `scripts/release.sh` (see "Release Script" below).
 
@@ -315,11 +307,7 @@ What it does:
 8. Regenerates `*_templ.go` and runs the full verify suite (build + test + lint)
 9. Asserts the version drift-guard (`TestVersionMatches(Changelog|Features)`)
 10. Stages and commits as `release: <version> — <summary>` (one-commit convention; body carries the release notes, `Assisted-by: Crush:${CRUSH_MODEL}`)
-11. Creates annotated, SSH-signed tags: root `v<version>` plus one
-    `<sub-module>/v<version>` per published sub-module, in lockstep —
-    guard with `scripts/check-release-tags.sh` before pushing (a root-only
-    release, like v1.8.3, breaks every consumer; checklist: CONTRIBUTING.md
-    § Release)
+11. Creates annotated, SSH-signed tags: root `v<version>` plus one `<sub-module>/v<version>` per published sub-module, in lockstep. Guard with `scripts/check-release-tags.sh` before pushing — a root-only release (like v1.8.3) breaks every consumer.
 
 The script does **not** push. House rule: "NEVER PUSH TO REMOTE". Push manually
 after reviewing the release commit and tag with `git show v<version>` and
@@ -328,20 +316,11 @@ after reviewing the release commit and tag with `git show v<version>` and
 ## Lint Command
 
 ```bash
-# Multi-module: lint each module independently (golangci-lint does not
-# support go.work workspace mode). Run from repo root.
+# Multi-module: golangci-lint does not support go.work workspace mode — lint per module.
 # Root module (examples/ excluded via .golangci.yml paths exclusion):
-golangci-lint run \
-  ./display/... ./feedback/... ./forms/... \
-  ./integration/... ./internal/... \
-  ./layout/... ./navigation/... ./recipes/... ./cmd/...
+golangci-lint run ./display/... ./feedback/... ./forms/... ./integration/... ./internal/... ./layout/... ./navigation/... ./recipes/... ./cmd/...
 # Sub-modules:
-(cd utils && golangci-lint run ./...)
-(cd icons && golangci-lint run ./...)
-(cd errorpage && golangci-lint run ./...)
-(cd charts/echarts && golangci-lint run ./...)
-(cd htmx && golangci-lint run ./...)
-(cd datastar && golangci-lint run ./...)
+for mod in utils icons errorpage charts/echarts htmx datastar; do (cd "$mod" && golangci-lint run ./...); done
 ```
 
 **Disabled linters (do NOT re-enable — fundamentally incompatible with this codebase):**
@@ -379,9 +358,7 @@ package also uses `encoding/json/v2`. Remaining packages (tests) still use
 - **SKILL.md drift-guard:** `utils.TestSkillComponentCount` logs actual vs documented component count. Informational (not failing) — intended to surface drift during code review.
 - **Fuzz tests:** `forms.FuzzInputType`, `forms.FuzzFormMethod`, `display.FuzzButtonHTMLType` verify enum validation never panics on arbitrary input. Run via `go test -fuzz=. -run=Fuzz ./...`.
 - **Benchmark suites:** Now in 7 packages (display, feedback, navigation, forms, layout, htmx, icons, utils). Run via `go test -bench=. -benchmem ./...`.
-- **goconst zero issues:** All repeated string literals extracted to named constants. `msgGoBack` in constructors.go uses `notFound404GoBackText` (single source of truth across errorpage package).
-- **Golden package coverage:** 81.8% (was 70.5%). New tests cover: `-update` flag, `MkdirAll`, normalization edge cases, diff identical/multi-line, `lineAt` out-of-range.
-- **FooterProps:** `navigation.Footer` now takes `FooterProps` (embeds `BaseProps`) instead of a raw `brandText string`. All components in the library now accept `BaseProps`.
+- **goconst zero issues:** all repeated string literals are named constants — keep it that way.
 - **CSRFTokenName:** `forms.FormProps` has a `CSRFTokenName` field (defaults to `"csrf_token"`) for framework compatibility.
 - **ErrorPage/NotFound404 landmark:** Both use `<main>` (not `<div role="region">`) for WCAG 2.4.1 Bypass Blocks compliance.
 - **FromError fallback:** Unknown errors return `FamilyCorruption` (→500), not `FamilyInfrastructure` (→503). An unrecognized error is a bug, not a transient outage.

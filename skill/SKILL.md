@@ -360,6 +360,14 @@ hand-rolled, and where the gaps are.
   maps with explicit fallbacks; the only permitted runtime panic is the single developer
   data-integrity check in `icons` (stray `|` in a path). Everything else degrades gracefully.
   This is a _library_: a panic in a consumer's render path is a bug we shipped.
+- **Verify integrations against the counterparty artifact, not its docs.** When a component
+  emits protocol another runtime consumes (SSE wire format, event names, HTMX attributes,
+  CSP requirements), the ground truth is the pinned counterparty source (e.g. the
+  `go-datastar/static` bundle bytes), never the docs — the 2026-08 SSE audit found the docs
+  wrong in three places and the shipped integration 100% inert. String-asserting our own
+  output cannot catch this class; pin the counterparty contract in a guard test
+  (`datastar.TestPinnedRuntimeBundleContract`) and degrade empty/unknown values gracefully
+  instead of emitting attributes the runtime rejects (`@get('')`, `data-show="$"`).
 - **HATEOAS-first ([htmx.org/essays/hateoas](https://htmx.org/essays/hateoas/)).** HTML is the source of truth.
   Prefer native HTML (`<details>`, forms, links) over scripts. When JavaScript enhances the hypermedia
   (modal, drawer, tooltip, relative time auto-refresh), it reads state FROM HTML attributes
