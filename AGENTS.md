@@ -247,6 +247,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 - **Docker builder + `replace` directives:** root `go.mod` replaces all 6 sub-modules with local paths, so `go mod download` needs every sub-module's `go.mod` copied into the stage BEFORE it runs (see `examples/demo/Dockerfile`). Copying only root manifests fails with `reading charts/echarts/go.mod: no such file or directory`.
 - **Visual tests need the pure fontconfig pin.** `makeFontsConf` is impure by design (includes `/etc/fonts/conf.d`, `/usr/share/fonts`, profile fonts) — never use it for cross-machine determinism. The `#visual` flake app uses a hand-written `fonts.conf` (`pkgs.writeText`) with ONLY `<dir>` entries for `pkgs.inter` + `pkgs.dejavu_fonts` and a tmp cachedir. If goldens flake: `rm -rf /tmp/tc-visualtest-fontconfig-cache` (the cache goes stale) and read the fc-match diagnostics the app echoes at startup.
 - **upload-artifact v4 hides dotfiles by default.** Visual-regression failure screenshots live under `testdata/.fail/` — without `include-hidden-files: true` the artifact uploads empty and the failure evidence is lost.
+- **BuildFlow `eslint-fix` breaks commits touching any `.ts`/`.js` file** (TODO #108): ESLint 10 runs at the repo root, which has no eslint config → exit 2. When a changeset includes website JS/TS, run the full verify matrix manually and commit with `--no-verify`, noting why in the body.
 
 ## Release Convention: One-Commit Release
 
