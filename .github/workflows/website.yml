@@ -49,7 +49,7 @@ jobs:
       - run: pnpm install
 
       - name: pnpm audit
-        run: pnpm audit --audit-level=high --omit=dev
+        run: pnpm audit --audit-level=high --prod
         continue-on-error: true
 
       - run: pnpm dlx astro check

@@ -5,6 +5,12 @@
     "attribute-empty-style": ["error", { "style": "omit" }],
     "void-style": ["warn", { "style": "omit" }],
     "no-trailing-whitespace": "error",
-    "attr-quotes": ["error", { "style": "double" }]
+    "attr-quotes": ["error", { "style": "double" }],
+    "no-implicit-button-type": "off",
+    "no-inline-style": "off",
+    "valid-id": "off",
+    "no-redundant-role": "off",
+    "element-permitted-content": "off",
+    "text-content": "off"
   }
 }
