@@ -23,7 +23,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `navigation`     | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                                                                                                                                                                 |
 | `recipes`        | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                                                                                                                                                            |
 
-**Totals:** 116 templ components (primitives, drift-guard verified) + 4 recipe screens = 120, 102 icon names, 52 typed enums (49 with `IsValid()`), 112 generated `*_templ.go` files, ~31,500 lines of Go/templ source
+**Totals:** 116 templ components (primitives, drift-guard verified) + 4 recipe screens = 120, 102 icon names, 53 typed enums (50 with `IsValid()`), 114 generated `*_templ.go` files, ~31,500 lines of Go/templ source
 
 ---
 
@@ -321,12 +321,12 @@ Opt-in Datastar integration. Does NOT import the Datastar SDK — consumer adds 
 
 ### Components
 
-| Component          | Status           | Description                | Key Features                                                                                                                                         |
-| ------------------ | ---------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `SDKScript`        | FULLY_FUNCTIONAL | Datastar runtime injection | Configurable version + CDN host, `<link rel="preconnect">` to CDN origin, self-hostable via `Src`, CSP nonce                                         |
-| `LiveRegion`       | FULLY_FUNCTIONAL | SSE-powered live region    | `data-init` + `@get()` auto-connect, `LivePoliteness` enum (Polite/Assertive), `aria-live` for a11y                                                  |
-| `Indicator`        | FULLY_FUNCTIONAL | Datastar loading indicator | Signal-based show/hide, empty signal degrades to hidden, motion-reduce, custom spinner fallback                                                      |
-| `SSEErrorHandling` | FULLY_FUNCTIONAL | SSE error feedback         | Listens for `datastar-fetch` (`error` / `retries-failed`), surfaces toast via `tcShowToast()`, `aria-live` announcer fallback, configurable duration |
+| Component          | Status           | Description                | Key Features                                                                                                                                                                                                                             |
+| ------------------ | ---------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SDKScript`        | FULLY_FUNCTIONAL | Datastar runtime injection | Configurable version + CDN host, `<link rel="preconnect">` to CDN origin, self-hostable via `Src`, CSP nonce                                                                                                                             |
+| `LiveRegion`       | FULLY_FUNCTIONAL | SSE-powered live region    | `data-init` + `@get()` auto-connect, `RetryMode` enum (Auto/Always/Error/Never — `RetryAlways` self-heals across server restarts), empty URL degrades to plain container, `LivePoliteness` enum (Polite/Assertive), `aria-live` for a11y |
+| `Indicator`        | FULLY_FUNCTIONAL | Datastar loading indicator | Signal-based show/hide, empty signal degrades to hidden, motion-reduce, custom spinner fallback                                                                                                                                          |
+| `SSEErrorHandling` | FULLY_FUNCTIONAL | SSE error feedback         | Listens for `datastar-fetch` (`error` / `retries-failed`), surfaces toast via `tcShowToast()`, `aria-live` announcer fallback, configurable duration                                                                                     |
 
 ### Action Helpers
 
@@ -340,10 +340,11 @@ Opt-in Datastar integration. Does NOT import the Datastar SDK — consumer adds 
 
 ### Enums
 
-| Type              | Values            |
-| ----------------- | ----------------- |
-| `DatastarVersion` | v0.1.x (default)  |
-| `LivePoliteness`  | Polite, Assertive |
+| Type              | Values                                                                                 |
+| ----------------- | -------------------------------------------------------------------------------------- |
+| `DatastarVersion` | v0.1.x (default)                                                                       |
+| `LivePoliteness`  | Polite, Assertive                                                                      |
+| `RetryMode`       | auto (default), always, error, never — runtime reconnection policy for backend actions |
 
 ---
 

@@ -44,3 +44,25 @@ func TestLivePolitenessIsValid(t *testing.T) {
 		}
 	}
 }
+
+func TestRetryModeIsValid(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		value RetryMode
+		want  bool
+	}{
+		{RetryAuto, true},
+		{RetryAlways, true},
+		{RetryError, true},
+		{RetryNever, true},
+		{"bogus", false},
+		{"", false},
+	}
+	for _, tt := range tests {
+		got := RetryModeIsValid(tt.value)
+		if got != tt.want {
+			t.Errorf("RetryModeIsValid(%q) = %v, want %v", tt.value, got, tt.want)
+		}
+	}
+}

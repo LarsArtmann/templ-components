@@ -54,6 +54,19 @@ func Get(url string) string {
 	return actionExpr("get", url)
 }
 
+// getActionExpr builds an @get expression with a retry option. RetryAuto
+// renders the bare @get('url') form (identical to Get); every other valid
+// mode appends the runtime's retry argument. Invalid modes degrade to auto.
+func getActionExpr(url string, retry RetryMode) string {
+	escaped := strings.ReplaceAll(url, "'", "\\'")
+
+	if mode := retryModeValue(retry); mode != RetryAuto {
+		return fmt.Sprintf("@get('%s', {retry: '%s'})", escaped, mode)
+	}
+
+	return fmt.Sprintf("@get('%s')", escaped)
+}
+
 // Post returns a Datastar @post('url') action expression.
 // Sends all signals as the request body.
 func Post(url string) string {

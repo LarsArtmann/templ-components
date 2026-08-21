@@ -62,7 +62,15 @@ type LiveRegionProps struct {
 	// AutoStart opens the SSE connection on page load via data-init.
 	// When false, the consumer triggers the stream manually (e.g. via a
 	// button with data-on:click="@get('/stream')").
+	// An empty URL degrades to a plain container (no data-init) — the
+	// runtime throws FetchNoUrlProvided for @get('').
 	AutoStart bool
+
+	// Retry controls automatic reconnection when the stream ends or the
+	// request fails. Defaults to RetryAuto: the runtime does NOT reconnect
+	// after a clean stream EOF (e.g. a server restart) unless this is
+	// RetryAlways. See RetryMode for the full behaviour matrix.
+	Retry RetryMode
 
 	// Live sets the aria-live politeness for screen-reader announcements.
 	// Defaults to LivePolite.

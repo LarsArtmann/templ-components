@@ -14,7 +14,8 @@ templ datastarDemo() {
 	@datastar.SDKScript(datastar.SDKScriptProps{BaseProps: demoBaseProps()})
 	@demoSection("Datastar LiveRegion", "datastar-live-region")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-		SSE-powered region that auto-connects on page load. The server pushes
+		SSE-powered region that auto-connects on page load and self-heals across
+		server restarts (<code>retry: 'always'</code>). The server pushes
 		<code>datastar-patch-elements</code> events to patch the content in real-time
 		(no polling):
 	</p>
@@ -22,6 +23,7 @@ templ datastarDemo() {
 		BaseProps: demoBaseProps(),
 		URL:       "/api/datastar/stream",
 		AutoStart: true,
+		Retry:     datastar.RetryAlways,
 	}) {
 		<div id="datastar-live-content" class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
 			<p class="text-sm text-gray-600 dark:text-gray-400">

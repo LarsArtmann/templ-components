@@ -35,6 +35,11 @@ func TestGoldenSweepLiveRegion(t *testing.T) {
 			URL:       "/stream/data",
 			AutoStart: false,
 		}))},
+		{Name: "live_region_retry_always", HTML: utils.Render(t, LiveRegion(LiveRegionProps{
+			URL:       "/stream/metrics",
+			AutoStart: true,
+			Retry:     RetryAlways,
+		}))},
 		{Name: "live_region_assertive", HTML: utils.Render(t, LiveRegion(LiveRegionProps{
 			URL:  "/stream/alerts",
 			Live: LiveAssertive,

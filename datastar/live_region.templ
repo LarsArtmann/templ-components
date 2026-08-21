@@ -7,6 +7,10 @@ import "github.com/larsartmann/templ-components/utils"
 // htmx.PolledRegion — but instead of polling on an interval, the server pushes
 // patches over a single long-lived connection.
 //
+// An empty URL degrades to a plain container (no data-init) — the runtime
+// throws FetchNoUrlProvided for @get(''). Wire the stream via data-on:*
+// on a trigger element instead.
+//
 // The server endpoint must return a text/event-stream response. Use
 // go-datastar (github.com/larsartmann/go-datastar) to patch elements or signals.
 // Target a child element of the region with WithSelector — patch modes other
@@ -34,12 +38,13 @@ import "github.com/larsartmann/templ-components/utils"
 //	}
 templ LiveRegion(props LiveRegionProps) {
 	{{ live := livePolitenessValue(props.Live) }}
+	{{ init := getActionExpr(props.URL, props.Retry) }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		if props.AutoStart {
-			data-init={ Get(props.URL) }
+		if props.AutoStart && props.URL != "" {
+			data-init={ init }
 		}
 		aria-live={ string(live) }
 		class={ utils.Class("", props.Class) }

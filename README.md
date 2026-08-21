@@ -22,7 +22,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-116 server-rendered components. 52 typed string enums (49 with IsValid()). 106 SVG icons. Zero client-side framework.
+116 server-rendered components. 53 typed string enums (50 with IsValid()). 106 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -236,7 +236,7 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 ## Design Principles
 
-**Type-safe.** 52 typed string enums (49 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 53 typed string enums (50 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 
@@ -304,7 +304,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | -------------- | --------------------------------------------------- |
 | Components     | 116                                                 |
 | SVG icons      | 102                                                 |
-| Typed enums    | 52 (49 with IsValid)                                |
+| Typed enums    | 53 (50 with IsValid)                                |
 | Packages       | 15                                                  |
 | Tests          | ~1,070 test functions + ~1,240 subtests             |
 | Visual goldens | 66 pixel-level regression tests (chromedp)          |

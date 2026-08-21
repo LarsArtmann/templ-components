@@ -29,6 +29,61 @@ func TestLiveRegionManualStart(t *testing.T) {
 	utils.AssertNotContains(t, output, "data-init")
 }
 
+func TestLiveRegionEmptyURLDegradesGracefully(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, LiveRegion(LiveRegionProps{
+		AutoStart: true,
+	}))
+
+	// @get('') makes the runtime throw FetchNoUrlProvided on every page
+	// load — an empty URL must render a plain container instead.
+	utils.AssertNotContains(t, output, "data-init")
+	utils.AssertContains(t, output, "<div")
+	utils.AssertContains(t, output, `aria-live="polite"`)
+}
+
+func TestLiveRegionRetryAlways(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, LiveRegion(LiveRegionProps{
+		URL:       "/stream/metrics",
+		AutoStart: true,
+		Retry:     RetryAlways,
+	}))
+
+	utils.AssertContains(t, output, `data-init="@get(&#39;/stream/metrics&#39;, {retry: &#39;always&#39;})"`)
+}
+
+func TestLiveRegionRetryModes(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		retry RetryMode
+		want  string
+	}{
+		{"empty defaults to auto", "", `data-init="@get(&#39;/stream/data&#39;)"`},
+		{"auto is bare", RetryAuto, `data-init="@get(&#39;/stream/data&#39;)"`},
+		{"error mode", RetryError, `data-init="@get(&#39;/stream/data&#39;, {retry: &#39;error&#39;})"`},
+		{"never mode", RetryNever, `data-init="@get(&#39;/stream/data&#39;, {retry: &#39;never&#39;})"`},
+		{"bogus degrades to auto", "bogus", `data-init="@get(&#39;/stream/data&#39;)"`},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			output := utils.Render(t, LiveRegion(LiveRegionProps{
+				URL:       "/stream/data",
+				AutoStart: true,
+				Retry:     tt.retry,
+			}))
+
+			utils.AssertContains(t, output, tt.want)
+		})
+	}
+}
+
 func TestLiveRegionWithID(t *testing.T) {
 	t.Parallel()
 

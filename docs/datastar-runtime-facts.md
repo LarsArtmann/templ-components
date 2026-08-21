@@ -39,8 +39,16 @@ Full audit context: `docs/research/2026-08-21_go-sse-go-datastar-deep-dive.html`
   (reconnects exhausted; defaults: 10 retries, 1s ×2 exponential backoff,
   30s cap).
 - **There is NO `datastar-sse-error` event** — listening for it is dead code.
-- GET SSE streams do not reconnect on clean EOF (default `retry: "auto"`);
-  only errors trigger reconnect.
+- Reconnection matrix for `@get`/`@post`/... actions (verified in the bundle's
+  fetch plugin): clean stream EOF reconnects **only** under `retry: 'always'`;
+  HTTP ≥ 400 under `'always'` or `'error'`; thrown network errors under every
+  mode. The failure counter resets on every successful (200) connect, so
+  `'always'` self-heals indefinitely across individual server restarts
+  (defaults: 10 retries, 1s ×2 exponential backoff, 30s cap).
+  `datastar.LiveRegionProps.Retry` maps to this argument
+  (`RetryAlways` → `@get(url, {retry: 'always'})`).
+- Enforced by `datastar.TestPinnedRuntimeBundleContract` (bundle byte-content
+  guard) — a pin bump that renames any of these tokens fails CI.
 
 ## CSP
 

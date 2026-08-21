@@ -14,3 +14,8 @@ func DatastarVersionIsValid(v DatastarVersion) bool {
 func LivePolitenessIsValid(v LivePoliteness) bool {
 	return validLivePoliteness[v]
 }
+
+// RetryModeIsValid reports whether v is one of the defined RetryMode constants.
+func RetryModeIsValid(v RetryMode) bool {
+	return validRetryModes[v]
+}
