@@ -914,23 +914,24 @@
           <h2><span class="num">00</span>Summary</h2>
           <p>
             templ-components deliberately depends on exactly one module of the
-            three-module SSE stack: <code>github.com/larsartmann/go-datastar/static</code>
-            &mdash; the zero-dependency module that embeds the Datastar JS
-            runtime. Neither <strong>go-sse</strong> (transport: Stream,
-            Broadcaster, Replay) nor <strong>go-datastar</strong> root (protocol:
-            Patch values, Response builder, MemoryStore) is a dependency. That
-            is the correct call &mdash; ADR-0030 keeps consumer dependency
-            graphs clean and the module DAG strict.
+            three-module SSE stack:
+            <code>github.com/larsartmann/go-datastar/static</code> &mdash; the
+            zero-dependency module that embeds the Datastar JS runtime. Neither
+            <strong>go-sse</strong> (transport: Stream, Broadcaster, Replay) nor
+            <strong>go-datastar</strong> root (protocol: Patch values, Response
+            builder, MemoryStore) is a dependency. That is the correct call
+            &mdash; ADR-0030 keeps consumer dependency graphs clean and the
+            module DAG strict.
           </p>
           <p>
             But "not importing the protocol library" only works if everything
             the library <em>emits</em> &mdash; attributes, wire format, event
-            names, CSP guidance &mdash; matches what the pinned runtime
-            actually accepts. Auditing against the pinned v1.0.2 bundle showed
-            it did not: the demo SSE stream had never delivered a single event,
-            and <code>SSEErrorHandling</code> listened for an event the runtime
-            has never dispatched. All eight findings are fixed in this session
-            and pinned by tests.
+            names, CSP guidance &mdash; matches what the pinned runtime actually
+            accepts. Auditing against the pinned v1.0.2 bundle showed it did
+            not: the demo SSE stream had never delivered a single event, and
+            <code>SSEErrorHandling</code> listened for an event the runtime has
+            never dispatched. All eight findings are fixed in this session and
+            pinned by tests.
           </p>
           <div class="callout callout-amber">
             <strong>The bottom line</strong>
@@ -952,7 +953,10 @@
               <div class="text">
                 <strong>Compile-time version pin, zero drift possible</strong>
                 <span
-                  ><code>DatastarVersion1_0_2 = DatastarVersion(static.Version)</code>
+                  ><code
+                    >DatastarVersion1_0_2 =
+                    DatastarVersion(static.Version)</code
+                  >
                   (datastar/version.go:21). The CDN URL and any self-hosted
                   bundle served from <code>static.Bytes()</code> are the same
                   bits by construction.</span
@@ -993,8 +997,8 @@
                   <code>data-show="$signal"</code> all verified against the
                   v1.0.2 bundle's attribute parser (plugin name split on the
                   first colon; signal access via <code>$name</code> rewriting).
-                  The <code>@get/@post/@put/@patch/@delete</code> action
-                  helpers match the five registered runtime actions.</span
+                  The <code>@get/@post/@put/@patch/@delete</code> action helpers
+                  match the five registered runtime actions.</span
                 >
               </div>
             </div>
@@ -1008,7 +1012,10 @@
             <span class="severity severity-critical"
               >Misused &middot; was active harm &middot; FIXED</span
             >
-            <h3>SSEErrorHandling listened for an event the runtime never dispatches</h3>
+            <h3>
+              SSEErrorHandling listened for an event the runtime never
+              dispatches
+            </h3>
             <div class="where">
               datastar/sse_error_handling.templ (before) &middot; no
               <code>datastar-sse-error</code> exists in the v1.0.2 bundle
@@ -1052,17 +1059,17 @@ document.addEventListener('datastar-fetch', function(evt) {
             >
             <h3>Demo SSE endpoint: four independent wire-format bugs</h3>
             <div class="where">
-              examples/demo/main.go (before: handler at the mux registration) &middot;
-              verified against the v1.0.2 bundle SSE parser
+              examples/demo/main.go (before: handler at the mux registration)
+              &middot; verified against the v1.0.2 bundle SSE parser
             </div>
             <p>
               (1) Format strings ended in <code>\\n</code> &mdash; literal
               backslash-n text, so the stream contained no blank line and the
               browser dispatched <strong>zero</strong> events. (2) The event
-              name <code>datastar-merge-fragments</code> was removed in
-              Datastar v1.0; only <code>datastar-patch-elements</code> /
-              <code>datastar-patch-signals</code> have registered handlers.
-              (3) The id-less fragment was dropped: the default
+              name <code>datastar-merge-fragments</code> was removed in Datastar
+              v1.0; only <code>datastar-patch-elements</code> /
+              <code>datastar-patch-signals</code> have registered handlers. (3)
+              The id-less fragment was dropped: the default
               <code>outer</code> mode matches incoming root elements by
               <code>getElementById</code>. (4) The server's
               <code>WriteTimeout: 10s</code> raced the 5th tick at exactly
@@ -1095,10 +1102,12 @@ data: elements &lt;p ...&gt;SSE update #1 — streamed at 12:00:02&lt;/p&gt;
               >Misused docs &middot; security-relevant &middot; FIXED</span
             >
             <h3>Recipe claimed Datastar needs no 'unsafe-eval' under CSP</h3>
-            <div class="where">docs/recipes/datastar-integration.md (CSP section)</div>
+            <div class="where">
+              docs/recipes/datastar-integration.md (CSP section)
+            </div>
             <p>
-              The runtime compiles every <code>data-*</code> expression with
-              the <code>Function()</code> constructor (verified in the bundle:
+              The runtime compiles every <code>data-*</code> expression with the
+              <code>Function()</code> constructor (verified in the bundle:
               <code>Function("el", "$", "__action", "evt", ...)</code>). CSP
               classifies that as eval &mdash; without
               <code>'unsafe-eval'</code> all expression attributes silently
@@ -1115,7 +1124,8 @@ script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval';
 
           <div class="issue issue-important" id="fixed-selector-docs">
             <span class="severity severity-important"
-              >Misused docs &middot; examples threw at runtime &middot; FIXED</span
+              >Misused docs &middot; examples threw at runtime &middot;
+              FIXED</span
             >
             <h3>Documented patch pattern omitted WithSelector</h3>
             <div class="where">
@@ -1138,7 +1148,9 @@ script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval';
               >Partially used &middot; dead helper &middot; FIXED</span
             >
             <h3>datastarCDNOrigin existed but was never called</h3>
-            <div class="where">datastar/version.go:62 &middot; datastar/sdk_script.templ</div>
+            <div class="where">
+              datastar/version.go:62 &middot; datastar/sdk_script.templ
+            </div>
             <p>
               The preconnect-origin helper (with its own tests) was a ghost
               system: <code>layout.Base</code> preconnects for HTMX, but
@@ -1184,24 +1196,49 @@ script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval';
             </thead>
             <tbody>
               <tr>
-                <td><code>Stream</code>, <code>Heartbeat</code>, <code>Broadcaster[T]</code>, <code>Replay</code>/<code>EventStore</code></td>
+                <td>
+                  <code>Stream</code>, <code>Heartbeat</code>,
+                  <code>Broadcaster[T]</code>, <code>Replay</code>/<code
+                    >EventStore</code
+                  >
+                </td>
                 <td>go-sse</td>
-                <td class="no">Consumer-side &mdash; documented in the recipe, never a library dep</td>
+                <td class="no">
+                  Consumer-side &mdash; documented in the recipe, never a
+                  library dep
+                </td>
               </tr>
               <tr>
-                <td><code>Patch</code> interface, <code>Response</code> builder, <code>MemoryStore</code>, <code>ReadSignals</code>, <code>GetSSE/PostSSE</code></td>
+                <td>
+                  <code>Patch</code> interface, <code>Response</code> builder,
+                  <code>MemoryStore</code>, <code>ReadSignals</code>,
+                  <code>GetSSE/PostSSE</code>
+                </td>
                 <td>go-datastar root</td>
-                <td class="no">Consumer-side &mdash; godoc points consumers at it (<code>go get</code> their own)</td>
+                <td class="no">
+                  Consumer-side &mdash; godoc points consumers at it (<code
+                    >go get</code
+                  >
+                  their own)
+                </td>
               </tr>
               <tr>
-                <td><code>ssetest</code> / <code>datastartest</code> E2E helpers</td>
+                <td>
+                  <code>ssetest</code> / <code>datastartest</code> E2E helpers
+                </td>
                 <td>both</td>
-                <td class="yes">Candidate for CI of the demo (see opportunities) &mdash; not a runtime dep</td>
+                <td class="yes">
+                  Candidate for CI of the demo (see opportunities) &mdash; not a
+                  runtime dep
+                </td>
               </tr>
               <tr>
                 <td>SRI integrity hashes</td>
                 <td>&mdash;</td>
-                <td class="no">Datastar publishes no official SRI; documented in version.go &mdash; self-host to get integrity</td>
+                <td class="no">
+                  Datastar publishes no official SRI; documented in version.go
+                  &mdash; self-host to get integrity
+                </td>
               </tr>
             </tbody>
           </table>
@@ -1227,8 +1264,15 @@ script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval';
               <tr>
                 <td>go-datastar [Unreleased]</td>
                 <td>Testing</td>
-                <td><code>datastartest</code>: <code>testing.TB</code>, Collect options (<code>WithPath</code>, <code>WithLastEventID</code>…), <code>RequireScript</code>, <code>RequireEventID</code></td>
-                <td class="yes">High — unlocks the E2E opportunity below once released</td>
+                <td>
+                  <code>datastartest</code>: <code>testing.TB</code>, Collect
+                  options (<code>WithPath</code>,
+                  <code>WithLastEventID</code>…), <code>RequireScript</code>,
+                  <code>RequireEventID</code>
+                </td>
+                <td class="yes">
+                  High — unlocks the E2E opportunity below once released
+                </td>
               </tr>
               <tr>
                 <td>static v0.2.0 (pinned)</td>
@@ -1255,21 +1299,33 @@ script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval';
             <tbody>
               <tr>
                 <td>1</td>
-                <td>Real-runtime E2E of the demo stream in CI via <code>datastartest</code> (WHATWG parser + <code>Collect*</code>; needs a dev-dependency or a separate visualtest-style module)</td>
+                <td>
+                  Real-runtime E2E of the demo stream in CI via
+                  <code>datastartest</code> (WHATWG parser +
+                  <code>Collect*</code>; needs a dev-dependency or a separate
+                  visualtest-style module)
+                </td>
                 <td class="yes">4</td>
                 <td class="yes">3</td>
                 <td><span class="highlight">12</span></td>
               </tr>
               <tr>
                 <td>2</td>
-                <td>Recipe: show <code>datastar.NewResponseFromHTTP(w, r)</code> one-liner and mention <code>stream.Heartbeat</code> for proxy keep-alive</td>
+                <td>
+                  Recipe: show
+                  <code>datastar.NewResponseFromHTTP(w, r)</code> one-liner and
+                  mention <code>stream.Heartbeat</code> for proxy keep-alive
+                </td>
                 <td class="yes">3</td>
                 <td class="yes">5</td>
                 <td><span class="highlight">15</span></td>
               </tr>
               <tr>
                 <td>3</td>
-                <td>Document a <code>datastar-fetch</code> "started/finished" hook for consumers building their own analytics</td>
+                <td>
+                  Document a <code>datastar-fetch</code> "started/finished" hook
+                  for consumers building their own analytics
+                </td>
                 <td class="yes">2</td>
                 <td class="yes">4</td>
                 <td><span class="highlight">8</span></td>
@@ -1282,9 +1338,11 @@ script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval';
           <p>
             Generated 2026-08-21 &middot; Reviewed against go-datastar/static
             v0.2.0 (Datastar runtime v1.0.2) &middot; All runtime behavior
-            claims verified against the pinned bundle
-            (<code>go mod download</code> copy) and go-datastar source &middot;
-            all 8 fixes landed with regression tests in the same session
+            claims verified against the pinned bundle (<code
+              >go mod download</code
+            >
+            copy) and go-datastar source &middot; all 8 fixes landed with
+            regression tests in the same session
           </p>
         </footer>
       </main>
