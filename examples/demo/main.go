@@ -40,7 +40,7 @@ func writeDatastarPatch(w io.Writer, selector, mode, html string) error {
 	if mode != "" {
 		b.WriteString("data: mode " + mode + "\n")
 	}
-	for _, line := range strings.Split(strings.TrimSpace(html), "\n") {
+	for line := range strings.SplitSeq(strings.TrimSpace(html), "\n") {
 		if line = strings.TrimSpace(line); line == "" {
 			continue
 		}
