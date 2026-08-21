@@ -9,4 +9,3 @@ require (
 )
 
 require github.com/Oudwins/tailwind-merge-go v0.2.3 // indirect
-
