@@ -15,7 +15,7 @@ templ datastarDemo() {
 	@demoSection("Datastar LiveRegion", "datastar-live-region")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
 		SSE-powered region that auto-connects on page load. The server pushes
-		<code>datastar-merge-fragments</code> events to patch the content in real-time
+		<code>datastar-patch-elements</code> events to patch the content in real-time
 		(no polling):
 	</p>
 	@datastar.LiveRegion(datastar.LiveRegionProps{
@@ -23,7 +23,7 @@ templ datastarDemo() {
 		URL:       "/api/datastar/stream",
 		AutoStart: true,
 	}) {
-		<div class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
+		<div id="datastar-live-content" class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">
 			<p class="text-sm text-gray-600 dark:text-gray-400">
 				Waiting for SSE stream...
 			</p>
@@ -48,6 +48,7 @@ templ datastarDemo() {
 			Spinner:   feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-blue-600 dark:text-blue-400"}),
 		})
 	</div>
+	<div id="datastar-action-result" class="mt-3"></div>
 	@demoSection("Datastar Action Expressions", "datastar-actions")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
 		Typed helpers for building Datastar action expressions:
@@ -60,8 +61,9 @@ datastar.Delete("/api/items/1") // @delete('/api/items/1')`,
 	)
 	@demoSection("Datastar SSE Error Handling", "datastar-sse-errors")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-		Global listener for Datastar SSE errors (<code>datastar-sse-error</code>) that surfaces
-		streaming failures as accessible toasts — the Datastar counterpart to HTMX GlobalErrorHandling:
+		Global listener for Datastar stream failures (<code>datastar-fetch</code> events with
+		type <code>error</code> or <code>retries-failed</code>) that surfaces them as accessible toasts —
+		the Datastar counterpart to HTMX GlobalErrorHandling:
 	</p>
 	@datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: "demo-nonce"})
 	@demoCodeSnippet("Go", `@feedback.ToastContainer("")

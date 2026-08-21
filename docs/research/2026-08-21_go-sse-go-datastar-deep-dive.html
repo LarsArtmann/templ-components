@@ -1,0 +1,1329 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Report Title</title>
+    <style>
+      /* =========================================================================
+         BAUHAUS LIGHT — Editorial template
+         Design language: form follows function. Primary colors on warm paper.
+         Zero external dependencies: system fonts, no CDN, no build step.
+         Token architecture: see references/bauhaus-tokens.md
+         ========================================================================= */
+
+      :root {
+        /* --- Primitive palette (Bauhaus Light) --- */
+        --color-paper: #f4f4f0;
+        --color-paper-2: #ffffff;
+        --color-paper-3: #e8e8e2;
+        --color-ink: #111111;
+        --color-red: #e63946;
+        --color-blue: #1d3557;
+        --color-yellow: #f4d35e;
+        --color-hairline: rgba(17, 17, 17, 0.14);
+        --color-hairline-strong: rgba(17, 17, 17, 0.3);
+
+        /* --- Semantic layer (shared vocabulary with dark template) --- */
+        --surface: var(--color-paper);
+        --surface-raised: var(--color-paper-2);
+        --surface-sunken: var(--color-paper-3);
+        --text: var(--color-ink);
+        --text-muted: rgba(17, 17, 17, 0.72);
+        --text-faint: rgba(17, 17, 17, 0.5);
+        --border: var(--color-hairline);
+        --border-strong: var(--color-hairline-strong);
+        --accent: var(--color-red);
+        --problem: var(--color-red);
+        --solution: var(--color-blue);
+        --warning: var(--color-yellow);
+
+        /* --- Backward-compatible aliases (do not break consumer skills) --- */
+        --bg: var(--surface);
+        --bg-elevated: var(--surface-raised);
+        --bg-sunken: var(--surface-sunken);
+        --bg-card: var(--surface-raised);
+        --bg-code: var(--surface-sunken);
+        --ink: var(--text);
+        --ink-secondary: var(--text-muted);
+        --ink-muted: var(--text-faint);
+        --rose: var(--problem);
+        --rose-glow: color-mix(in srgb, var(--problem) 15%, transparent);
+        --emerald: var(--solution);
+        --emerald-glow: color-mix(in srgb, var(--solution) 15%, transparent);
+        --amber: var(--warning);
+        --amber-glow: color-mix(in srgb, var(--warning) 15%, transparent);
+        --amber-light: color-mix(in srgb, var(--warning) 22%, transparent);
+        --coral: var(--problem);
+        --coral-light: color-mix(in srgb, var(--problem) 12%, transparent);
+        --teal: var(--solution);
+        --teal-light: color-mix(in srgb, var(--solution) 12%, transparent);
+
+        /* --- Shape --- */
+        --radius: 0px;
+        --radius-sm: 0px;
+
+        /* --- Type stacks (system only — zero external fonts) --- */
+        --font-heading:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-body:
+          ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
+          "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        --font-mono:
+          ui-monospace, "Cascadia Code", "Source Code Pro", "JetBrains Mono",
+          Menlo, Consolas, monospace;
+      }
+
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+      html {
+        scroll-behavior: smooth;
+      }
+      section[id],
+      [id] {
+        scroll-margin-top: 60px;
+      }
+
+      body {
+        background: var(--surface);
+        color: var(--text);
+        font-family: var(--font-body);
+        font-size: 16px;
+        line-height: 1.65;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      /* --- Accessibility: keyboard focus --- */
+      :focus-visible {
+        outline: 2px solid var(--accent);
+        outline-offset: 2px;
+      }
+      a:focus-visible {
+        outline-offset: -1px;
+      }
+
+      /* --- Full-bleed top bar --- */
+      .top-bar {
+        background: var(--text);
+        color: var(--surface);
+        padding: 0.6rem 2rem;
+        font-family: var(--font-mono);
+        font-size: 0.75rem;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      /* --- Layout: optional sticky sidebar TOC --- */
+      .layout {
+        display: flex;
+        gap: 2.5rem;
+        padding: 2rem;
+      }
+      .sidebar {
+        width: 220px;
+        flex-shrink: 0;
+        position: sticky;
+        top: 1rem;
+        align-self: flex-start;
+        height: calc(100vh - 2rem);
+        overflow-y: auto;
+        display: none;
+      }
+      .sidebar nav {
+        display: flex;
+        flex-direction: column;
+        gap: 0;
+      }
+      .sidebar .label {
+        font-family: var(--font-mono);
+        font-size: 0.68rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        color: var(--accent);
+        margin-bottom: 0.75rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 2px solid var(--text);
+      }
+      .sidebar a {
+        font-size: 0.86rem;
+        color: var(--text);
+        text-decoration: none;
+        padding: 0.5rem 0.75rem;
+        border-left: 4px solid transparent;
+        font-weight: 600;
+        transition: all 0.15s ease;
+        line-height: 1.4;
+      }
+      .sidebar a:hover,
+      .sidebar a.active {
+        border-left-color: var(--accent);
+        background: color-mix(in srgb, var(--accent) 8%, transparent);
+        color: var(--accent);
+      }
+      .main {
+        flex: 1;
+        min-width: 0;
+      }
+
+      /* --- Headings --- */
+      h1,
+      h2,
+      h3,
+      h4 {
+        font-family: var(--font-heading);
+        font-weight: 900;
+        letter-spacing: -0.02em;
+        color: var(--text);
+      }
+      h1 {
+        font-size: clamp(1.9rem, 4.5vw, 2.8rem);
+        line-height: 1.05;
+        margin: 0 0 0.6rem;
+      }
+      h2 {
+        font-size: 1.5rem;
+        margin: 2.5rem 0 1rem;
+        padding-bottom: 0.4rem;
+        border-bottom: 3px solid var(--text);
+        display: flex;
+        align-items: baseline;
+        gap: 0.7rem;
+      }
+      h2 .num {
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        color: var(--accent);
+        font-weight: 700;
+        letter-spacing: 0.04em;
+      }
+      h3 {
+        font-size: 1.15rem;
+        margin: 0 0 0.4rem;
+        font-weight: 700;
+      }
+      h4 {
+        font-size: 1rem;
+        margin: 0 0 0.3rem;
+        font-weight: 700;
+      }
+      p {
+        margin: 0 0 1rem;
+      }
+
+      /* --- Hero --- */
+      .hero {
+        padding: 1.5rem 0 2rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 3px solid var(--text);
+      }
+      .eyebrow {
+        font-family: var(--font-mono);
+        font-size: 0.72rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.16em;
+        color: var(--accent);
+        margin-bottom: 0.9rem;
+      }
+      .subtitle {
+        font-size: 1.1rem;
+        color: var(--text-muted);
+        max-width: 70ch;
+        margin: 0 0 1rem;
+      }
+      .meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+      }
+      .tag {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 0.04em;
+        padding: 0.25rem 0.6rem;
+        background: var(--surface-sunken);
+        color: var(--text);
+        border: 1px solid var(--border-strong);
+      }
+      .tag.amber {
+        background: var(--warning);
+        border-color: var(--warning);
+        color: var(--text);
+      }
+      .tag.teal {
+        background: var(--solution);
+        border-color: var(--solution);
+        color: var(--surface);
+      }
+
+      /* Bauhaus signature: geometric shape cluster (optional) */
+      .hero-shapes {
+        position: relative;
+        height: 90px;
+        margin-bottom: 1.2rem;
+      }
+      .hero-shapes .circle {
+        position: absolute;
+        top: 0;
+        right: 180px;
+        width: 64px;
+        height: 64px;
+        background: var(--problem);
+        border-radius: 50%;
+      }
+      .hero-shapes .square {
+        position: absolute;
+        top: 26px;
+        right: 90px;
+        width: 56px;
+        height: 56px;
+        background: var(--solution);
+      }
+      .hero-shapes .tri {
+        position: absolute;
+        top: 8px;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-left: 32px solid transparent;
+        border-right: 32px solid transparent;
+        border-bottom: 56px solid var(--warning);
+      }
+      .hero-shapes .bar {
+        position: absolute;
+        bottom: 0;
+        right: 230px;
+        width: 100px;
+        height: 14px;
+        background: var(--text);
+      }
+
+      /* --- Scorecard / stat cards --- */
+      .scorecard,
+      .stat-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+        gap: 0;
+        margin: 1.5rem 0 2rem;
+        border: 3px solid var(--text);
+      }
+      .score-card,
+      .stat-card {
+        padding: 1.3rem 1rem;
+        text-align: center;
+        border-right: 3px solid var(--text);
+        background: var(--surface-raised);
+      }
+      .score-card:last-child,
+      .stat-card:last-child {
+        border-right: none;
+      }
+
+      .score,
+      .stat-value {
+        font-family: var(--font-heading);
+        font-size: 2.6rem;
+        font-weight: 900;
+        line-height: 1;
+        letter-spacing: -0.04em;
+      }
+      .score-card .label,
+      .stat-label {
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.12em;
+        margin-top: 0.5rem;
+      }
+      /* Semantic state classes — no nth-child decoration, no !important */
+      .score-good,
+      .stat-good {
+        background: var(--solution);
+        color: var(--surface);
+      }
+      .score-warn,
+      .stat-warn {
+        background: var(--warning);
+        color: var(--text);
+      }
+      .score-bad,
+      .stat-bad {
+        background: var(--problem);
+        color: var(--surface);
+      }
+
+      /* --- General cards --- */
+      .card {
+        background: var(--surface-raised);
+        border: 2px solid var(--text);
+        padding: 1.2rem 1.4rem;
+        margin-bottom: 1rem;
+        border-left: 8px solid var(--border-strong);
+      }
+      .card-problem {
+        border-left-color: var(--problem);
+      }
+      .card-solution {
+        border-left-color: var(--solution);
+      }
+      .card-warning {
+        border-left-color: var(--warning);
+      }
+
+      /* --- Issue cards --- */
+      .issue {
+        background: var(--surface-raised);
+        border: 2px solid var(--text);
+        padding: 1.2rem 1.4rem;
+        margin-bottom: 1rem;
+        border-left: 8px solid var(--border-strong);
+      }
+      .issue-critical {
+        border-left-color: var(--problem);
+      }
+      .issue-important {
+        border-left-color: var(--warning);
+      }
+      .issue-nice {
+        border-left-color: var(--solution);
+      }
+      .issue h3 {
+        margin-bottom: 0.3rem;
+      }
+      .issue .where {
+        font-family: var(--font-mono);
+        font-size: 0.78rem;
+        color: var(--text-faint);
+        margin: 0.2rem 0 0.6rem;
+      }
+      .issue p:last-child {
+        margin-bottom: 0;
+      }
+
+      /* --- Severity badges --- */
+      .severity {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        padding: 0.22rem 0.6rem;
+        margin-bottom: 0.6rem;
+        color: var(--surface);
+      }
+      .severity-critical {
+        background: var(--problem);
+      }
+      .severity-important {
+        background: var(--warning);
+        color: var(--text);
+      }
+      .severity-nice {
+        background: var(--solution);
+      }
+
+      /* --- Inline badges --- */
+      .badge {
+        display: inline-block;
+        font-family: var(--font-mono);
+        font-size: 0.62rem;
+        font-weight: 700;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        padding: 0.2rem 0.55rem;
+        border: 1px solid var(--text);
+        color: var(--text);
+      }
+      .badge-critical {
+        background: var(--problem);
+        color: var(--surface);
+      }
+      .badge-high {
+        background: var(--warning);
+      }
+      .badge-medium {
+        background: var(--surface-sunken);
+      }
+      .badge-low {
+        background: var(--surface-raised);
+        color: var(--text-muted);
+      }
+      .badge-fixed {
+        background: var(--solution);
+        color: var(--surface);
+      }
+
+      /* --- Callouts --- */
+      .callout {
+        margin: 0.8rem 0 0;
+        padding: 0.8rem 1rem;
+        border: 1px solid var(--border-strong);
+        border-left: 4px solid var(--border-strong);
+        background: var(--surface-sunken);
+        font-size: 0.92rem;
+      }
+      .callout strong {
+        display: inline-block;
+        margin-right: 0.4rem;
+      }
+      .callout-teal,
+      .callout-solution {
+        border-left-color: var(--solution);
+        background: color-mix(
+          in srgb,
+          var(--solution) 10%,
+          var(--surface-raised)
+        );
+      }
+      .callout-amber,
+      .callout-warning {
+        border-left-color: var(--warning);
+        background: color-mix(
+          in srgb,
+          var(--warning) 18%,
+          var(--surface-raised)
+        );
+      }
+
+      /* --- Strengths --- */
+      .strengths {
+        display: grid;
+        gap: 0.5rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .strength {
+        display: grid;
+        grid-template-columns: auto 1fr;
+        gap: 0.9rem;
+        padding: 0.75rem 0;
+        border-bottom: 2px solid var(--border);
+      }
+      .strength .check {
+        font-family: var(--font-mono);
+        font-weight: 900;
+        color: var(--solution);
+        font-size: 1.3rem;
+        line-height: 1.3;
+      }
+      .strength .text strong {
+        display: block;
+        margin-bottom: 0.15rem;
+      }
+      .strength .text span {
+        color: var(--text-muted);
+        font-size: 0.92rem;
+      }
+
+      /* --- Tables --- */
+      .table-wrap {
+        overflow-x: auto;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 1rem 0 1.5rem;
+        font-size: 0.92rem;
+        border: 2px solid var(--text);
+      }
+      th {
+        text-align: left;
+        padding: 0.6rem 0.9rem;
+        background: var(--text);
+        color: var(--surface);
+        font-family: var(--font-mono);
+        font-size: 0.66rem;
+        font-weight: 700;
+        letter-spacing: 0.08em;
+        text-transform: uppercase;
+        border-right: 1px solid var(--border-strong);
+      }
+      th:last-child {
+        border-right: none;
+      }
+      td {
+        padding: 0.6rem 0.9rem;
+        border-top: 1px solid var(--border);
+        border-right: 1px solid var(--border);
+      }
+      td:last-child {
+        border-right: none;
+      }
+      tr:nth-child(even) td {
+        background: var(--surface-sunken);
+      }
+      table.compare td.yes {
+        color: var(--solution);
+        font-weight: 700;
+      }
+      table.compare td.no {
+        color: var(--problem);
+        font-weight: 700;
+      }
+
+      /* --- Code blocks + syntax highlighting --- */
+      pre {
+        background: var(--text);
+        color: var(--surface);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.65;
+        overflow-x: auto;
+        border: 2px solid var(--text);
+      }
+      code {
+        font-family: var(--font-mono);
+      }
+      p code,
+      li code,
+      td code {
+        font-size: 0.88em;
+        background: var(--surface-sunken);
+        padding: 0.1rem 0.35rem;
+      }
+      .tok-keyword {
+        color: var(--warning);
+      }
+      .tok-type {
+        color: var(--warning);
+      }
+      .tok-string {
+        color: #95e1d3;
+      }
+      .tok-comment {
+        color: rgba(244, 244, 240, 0.45);
+        font-style: italic;
+      }
+      .tok-func {
+        color: #6eb5ff;
+      }
+      .tok-number {
+        color: var(--warning);
+      }
+      .tok-generic {
+        color: var(--problem);
+      }
+      .tok-builtin {
+        color: #6eb5ff;
+      }
+      .tok-punct {
+        color: rgba(244, 244, 240, 0.7);
+      }
+      .tok-attr {
+        color: var(--warning);
+      }
+
+      /* --- Dependency tree / ASCII diagrams --- */
+      .dep-tree {
+        background: var(--surface-sunken);
+        border: 2px solid var(--text);
+        padding: 1rem 1.2rem;
+        margin: 1rem 0;
+        font-family: var(--font-mono);
+        font-size: 0.82rem;
+        line-height: 1.7;
+        white-space: pre;
+        overflow-x: auto;
+      }
+      .dep-tree .root {
+        color: var(--accent);
+        font-weight: 700;
+      }
+      .dep-tree .ok {
+        color: var(--solution);
+      }
+      .dep-tree .unwanted {
+        color: var(--problem);
+      }
+
+      /* --- Inline node-and-arrow diagrams --- */
+      .diagram {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 1rem;
+        margin: 1rem 0;
+        background: var(--surface-raised);
+        border: 2px solid var(--text);
+      }
+      .node {
+        display: inline-block;
+        padding: 0.4rem 0.75rem;
+        font-family: var(--font-mono);
+        font-size: 0.8rem;
+        font-weight: 700;
+        background: var(--surface-sunken);
+        border: 1px solid var(--text);
+      }
+      .node-core {
+        background: var(--accent);
+        color: var(--surface);
+      }
+      .node-problem {
+        background: var(--problem);
+        color: var(--surface);
+      }
+      .node-good {
+        background: var(--solution);
+        color: var(--surface);
+      }
+      .arrow {
+        color: var(--text-faint);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Grids --- */
+      .grid-2 {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+      .grid-3 {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 1rem;
+        margin: 1rem 0;
+      }
+
+      /* --- Inline TOC --- */
+      .toc {
+        background: var(--surface-raised);
+        border: 2px solid var(--text);
+        border-left: 6px solid var(--accent);
+        padding: 1rem 1.3rem;
+        margin: 1rem 0 1.5rem;
+      }
+      .toc h3 {
+        margin-bottom: 0.5rem;
+      }
+      .toc ul {
+        list-style: none;
+        padding: 0;
+      }
+      .toc li {
+        margin: 0.25rem 0;
+      }
+      .toc a {
+        color: var(--text);
+        text-decoration: none;
+        font-size: 0.92rem;
+        font-weight: 600;
+      }
+      .toc a:hover {
+        color: var(--accent);
+      }
+
+      /* --- Migration / numbered steps --- */
+      .migration-step {
+        display: grid;
+        grid-template-columns: 56px 1fr;
+        gap: 1rem;
+        margin: 1rem 0;
+        padding: 1.1rem;
+        background: var(--surface-raised);
+        border: 2px solid var(--text);
+        border-left: 6px solid var(--accent);
+      }
+      .migration-num {
+        font-family: var(--font-mono);
+        font-weight: 900;
+        font-size: 1.8rem;
+        color: var(--accent);
+        line-height: 1;
+      }
+      .migration-content h4 {
+        margin-bottom: 0.2rem;
+      }
+      .migration-content p {
+        margin-bottom: 0;
+        color: var(--text-muted);
+        font-size: 0.94rem;
+      }
+
+      /* --- Before/After comparison --- */
+      .compare-header {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin: 1rem 0 0.5rem;
+      }
+      .compare-before,
+      .compare-after {
+        font-family: var(--font-mono);
+        font-size: 0.7rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.1em;
+        padding: 0.4rem 0.7rem;
+        color: var(--surface);
+      }
+      .compare-before {
+        background: var(--problem);
+      }
+      .compare-after {
+        background: var(--solution);
+      }
+      .compare-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+      }
+      .compare-row pre {
+        margin: 0;
+      }
+
+      /* --- Footer --- */
+      .footer {
+        margin-top: 2rem;
+        padding-top: 1rem;
+        border-top: 3px solid var(--text);
+        font-size: 0.82rem;
+        color: var(--text-muted);
+        font-family: var(--font-mono);
+      }
+
+      /* --- Responsive --- */
+      @media (min-width: 1024px) {
+        .sidebar {
+          display: block;
+        }
+      }
+      @media (max-width: 768px) {
+        .layout {
+          flex-direction: column;
+          padding: 1rem;
+        }
+        .top-bar {
+          padding: 0.6rem 1rem;
+          flex-wrap: wrap;
+          gap: 0.3rem;
+        }
+        .grid-2,
+        .grid-3 {
+          grid-template-columns: 1fr;
+        }
+        .compare-header,
+        .compare-row {
+          grid-template-columns: 1fr;
+        }
+        .scorecard,
+        .stat-grid {
+          grid-template-columns: repeat(2, 1fr);
+        }
+        .score-card:nth-child(2),
+        .stat-card:nth-child(2) {
+          border-right: none;
+        }
+        .score-card:nth-child(1),
+        .stat-card:nth-child(1),
+        .score-card:nth-child(2),
+        .stat-card:nth-child(2) {
+          border-bottom: 3px solid var(--text);
+        }
+        .migration-step {
+          grid-template-columns: 1fr;
+        }
+        .hero-shapes {
+          display: none;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="top-bar">
+      <span>Library Deep Dive &middot; SSE Stack</span>
+      <span>2026-08-21</span>
+      <span>templ-components</span>
+    </div>
+
+    <div class="layout">
+      <aside class="sidebar" data-nav>
+        <nav>
+          <div class="label">Contents</div>
+          <a href="#summary">Summary</a>
+          <a href="#scorecard">Scorecard</a>
+          <a href="#strengths">What's leveraged</a>
+          <a href="#findings">Findings</a>
+          <a href="#notgaps">Not-applicable</a>
+          <a href="#versions">Version currency</a>
+          <a href="#proposal">Opportunities</a>
+        </nav>
+      </aside>
+
+      <main class="main">
+        <header class="hero">
+          <div class="hero-shapes">
+            <div class="bar"></div>
+            <div class="circle"></div>
+            <div class="square"></div>
+            <div class="tri"></div>
+          </div>
+          <div class="eyebrow">LIBRARY DEEP DIVE &middot; 2026-08-21</div>
+          <h1>go-sse + go-datastar — Adoption &amp; Utilization Audit</h1>
+          <p class="subtitle">
+            How much of LarsArtmann's SSE stack does templ-components actually
+            use, and is that "to the max"? Answer: one module of three, by
+            design &mdash; but until today every integration point that talks to
+            the runtime was silently broken.
+          </p>
+          <div class="meta">
+            <span class="tag amber">Dependency: go-datastar/static v0.2.0</span>
+            <span class="tag">Runtime: Datastar v1.0.2</span>
+            <span class="tag teal">Adoption: 92 / 100 (post-fix)</span>
+          </div>
+        </header>
+
+        <section id="scorecard" class="scorecard">
+          <div class="score-card score-good">
+            <div class="score">92</div>
+            <div class="label">Adoption score (post-fix)</div>
+          </div>
+          <div class="score-card score-warn">
+            <div class="score">8</div>
+            <div class="label">Bugs fixed this session</div>
+          </div>
+          <div class="score-card score-bad">
+            <div class="score">3</div>
+            <div class="label">Anti-patterns found (all fixed)</div>
+          </div>
+          <div class="score-card">
+            <div class="score">0</div>
+            <div class="label">Versions behind latest</div>
+          </div>
+        </section>
+
+        <section id="summary">
+          <h2><span class="num">00</span>Summary</h2>
+          <p>
+            templ-components deliberately depends on exactly one module of the
+            three-module SSE stack: <code>github.com/larsartmann/go-datastar/static</code>
+            &mdash; the zero-dependency module that embeds the Datastar JS
+            runtime. Neither <strong>go-sse</strong> (transport: Stream,
+            Broadcaster, Replay) nor <strong>go-datastar</strong> root (protocol:
+            Patch values, Response builder, MemoryStore) is a dependency. That
+            is the correct call &mdash; ADR-0030 keeps consumer dependency
+            graphs clean and the module DAG strict.
+          </p>
+          <p>
+            But "not importing the protocol library" only works if everything
+            the library <em>emits</em> &mdash; attributes, wire format, event
+            names, CSP guidance &mdash; matches what the pinned runtime
+            actually accepts. Auditing against the pinned v1.0.2 bundle showed
+            it did not: the demo SSE stream had never delivered a single event,
+            and <code>SSEErrorHandling</code> listened for an event the runtime
+            has never dispatched. All eight findings are fixed in this session
+            and pinned by tests.
+          </p>
+          <div class="callout callout-amber">
+            <strong>The bottom line</strong>
+            The pinning strategy was already "to the max" (version derived from
+            <code>static.Version</code> at compile time &mdash; CDN URL and
+            embedded bundle cannot drift). The runtime integration was at 0%
+            until today: every emitted protocol detail is now verified against
+            the pinned bundle, with wire-format and lifecycle-event regression
+            tests. Remaining upside is optional real-runtime E2E in CI via
+            go-datastar's <code>datastartest</code>.
+          </div>
+        </section>
+
+        <section id="strengths">
+          <h2><span class="num">&#9670;</span>What's already leveraged well</h2>
+          <div class="strengths">
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Compile-time version pin, zero drift possible</strong>
+                <span
+                  ><code>DatastarVersion1_0_2 = DatastarVersion(static.Version)</code>
+                  (datastar/version.go:21). The CDN URL and any self-hosted
+                  bundle served from <code>static.Bytes()</code> are the same
+                  bits by construction.</span
+                >
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Zero transitive dependencies honored</strong>
+                <span
+                  ><code>go-datastar/static</code>'s go.mod requires nothing
+                  (stdlib only), so the datastar module adds no consumer deps
+                  &mdash; the ADR-0030 promise is structurally enforced, not
+                  just documented.</span
+                >
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Self-host path first-class</strong>
+                <span
+                  ><code>SDKScriptProps.Src</code> (datastar/sdk_script.go:17)
+                  plus documented <code>static.Bytes()</code> serving in the
+                  recipe and package godoc; identical pattern to HTMX
+                  self-host.</span
+                >
+              </div>
+            </div>
+            <div class="strength">
+              <div class="check">+</div>
+              <div class="text">
+                <strong>Attribute surface matches the runtime parser</strong>
+                <span
+                  ><code>data-init</code>, <code>data-on:click</code>,
+                  <code>data-indicator:&lt;name&gt;</code>,
+                  <code>data-show="$signal"</code> all verified against the
+                  v1.0.2 bundle's attribute parser (plugin name split on the
+                  first colon; signal access via <code>$name</code> rewriting).
+                  The <code>@get/@post/@put/@patch/@delete</code> action
+                  helpers match the five registered runtime actions.</span
+                >
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="findings">
+          <h2><span class="num">01</span>Findings (all fixed this session)</h2>
+
+          <div class="issue issue-critical" id="fixed-inert-listener">
+            <span class="severity severity-critical"
+              >Misused &middot; was active harm &middot; FIXED</span
+            >
+            <h3>SSEErrorHandling listened for an event the runtime never dispatches</h3>
+            <div class="where">
+              datastar/sse_error_handling.templ (before) &middot; no
+              <code>datastar-sse-error</code> exists in the v1.0.2 bundle
+            </div>
+            <p>
+              The runtime reports the fetch/SSE lifecycle exclusively on the
+              document-level <code>datastar-fetch</code> event:
+              <code>detail.type</code> is one of <code>started</code>,
+              <code>finished</code>, <code>error</code> (HTTP status &ge; 400,
+              status in <code>detail.argsRaw.status</code>),
+              <code>retrying</code>, or <code>retries-failed</code> (gave up
+              after 10 attempts, exponential backoff). The old handler also read
+              <code>detail.message</code>/<code>detail.statusText</code> &mdash;
+              fields that do not exist; the real detail shape is
+              <code>{type, el, argsRaw}</code>. The component was 100% inert.
+            </p>
+            <pre><code>// Before — never fires:
+document.addEventListener('datastar-sse-error', function(evt) {
+    var reason = detail.message || detail.statusText || '...';
+
+// After — the real lifecycle event:
+document.addEventListener('datastar-fetch', function(evt) {
+    var detail = evt.detail || {};
+    if (detail.type === 'error') {            // HTTP-level failure
+        var status = (detail.argsRaw || {}).status;
+    } else if (detail.type === 'retries-failed') { // reconnects exhausted
+        // toast; stream is dead until the action re-runs
+    } // 'retrying' → console only (would spam up to 10 toasts)</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation (applied)</strong>
+              Terminal failure states toast + announce via
+              <code>aria-live</code>; transient <code>retrying</code> stays
+              console-only. A regression test asserts the dead event name never
+              returns; a golden snapshot pins the emitted script.
+            </div>
+          </div>
+
+          <div class="issue issue-critical" id="fixed-demo-stream">
+            <span class="severity severity-critical"
+              >Misused &middot; demo stream never worked &middot; FIXED</span
+            >
+            <h3>Demo SSE endpoint: four independent wire-format bugs</h3>
+            <div class="where">
+              examples/demo/main.go (before: handler at the mux registration) &middot;
+              verified against the v1.0.2 bundle SSE parser
+            </div>
+            <p>
+              (1) Format strings ended in <code>\\n</code> &mdash; literal
+              backslash-n text, so the stream contained no blank line and the
+              browser dispatched <strong>zero</strong> events. (2) The event
+              name <code>datastar-merge-fragments</code> was removed in
+              Datastar v1.0; only <code>datastar-patch-elements</code> /
+              <code>datastar-patch-signals</code> have registered handlers.
+              (3) The id-less fragment was dropped: the default
+              <code>outer</code> mode matches incoming root elements by
+              <code>getElementById</code>. (4) The server's
+              <code>WriteTimeout: 10s</code> raced the 5th tick at exactly
+              t=10s.
+            </p>
+            <pre><code>// Before (one of the broken writes — literal "\n" text):
+fmt.Fprintf(w, "event: datastar-merge-fragments\ndata: &lt;div ...&gt;\\n")
+
+// After — v1 wire format, keyed datalines, real newlines, blank terminator:
+event: datastar-patch-elements
+data: selector #datastar-live-content
+data: mode inner
+data: elements &lt;p ...&gt;SSE update #1 — streamed at 12:00:02&lt;/p&gt;
+
+// Plus: http.NewResponseController(w).SetWriteDeadline(time.Time{})
+// (SSE outlives the global WriteTimeout), X-Accel-Buffering: no,
+// and streaming until client disconnect with write-error bail.</code></pre>
+            <div class="callout callout-teal">
+              <strong>Recommendation (applied)</strong>
+              New <code>examples/demo/sse_test.go</code> pins the exact bytes of
+              <code>writeDatastarPatch</code> and exercises the handler over
+              HTTP (headers, framing, first event). The mux was extracted into
+              <code>newMux()</code> so endpoints are testable &mdash; the bug
+              shipped because nothing could reach them.
+            </div>
+          </div>
+
+          <div class="issue issue-critical" id="fixed-csp-docs">
+            <span class="severity severity-critical"
+              >Misused docs &middot; security-relevant &middot; FIXED</span
+            >
+            <h3>Recipe claimed Datastar needs no 'unsafe-eval' under CSP</h3>
+            <div class="where">docs/recipes/datastar-integration.md (CSP section)</div>
+            <p>
+              The runtime compiles every <code>data-*</code> expression with
+              the <code>Function()</code> constructor (verified in the bundle:
+              <code>Function("el", "$", "__action", "evt", ...)</code>). CSP
+              classifies that as eval &mdash; without
+              <code>'unsafe-eval'</code> all expression attributes silently
+              fail. Consumers copying the old snippet would break their Datastar
+              app while believing it was sandboxed.
+            </p>
+            <pre><code># Before — wrong:
+script-src 'self' https://cdn.jsdelivr.net;
+
+# After — truthful:
+script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval';
+# 'unsafe-inline' still NOT needed (external module + nonced inline scripts)</code></pre>
+          </div>
+
+          <div class="issue issue-important" id="fixed-selector-docs">
+            <span class="severity severity-important"
+              >Misused docs &middot; examples threw at runtime &middot; FIXED</span
+            >
+            <h3>Documented patch pattern omitted WithSelector</h3>
+            <div class="where">
+              datastar/doc.go, live_region.templ, live_region.go,
+              docs/recipes/datastar-integration.md
+            </div>
+            <p>
+              All godoc/recipe examples showed
+              <code>PatchElementsTempl(...)</code> without a selector &mdash;
+              the runtime throws <code>PatchElementsExpectedSelector</code> for
+              any non-default mode without one, and the default
+              <code>outer</code> mode drops id-less fragments. Every example now
+              pairs <code>WithSelector("#id")</code> with
+              <code>WithModeInner()</code> and gives the target element an id.
+            </p>
+          </div>
+
+          <div class="issue issue-important" id="fixed-preconnect">
+            <span class="severity severity-important"
+              >Partially used &middot; dead helper &middot; FIXED</span
+            >
+            <h3>datastarCDNOrigin existed but was never called</h3>
+            <div class="where">datastar/version.go:62 &middot; datastar/sdk_script.templ</div>
+            <p>
+              The preconnect-origin helper (with its own tests) was a ghost
+              system: <code>layout.Base</code> preconnects for HTMX, but
+              SDKScript did not. It now emits
+              <code>&lt;link rel="preconnect" crossorigin&gt;</code> for CDN
+              loads (skipped when self-hosting via <code>Src</code>).
+            </p>
+          </div>
+
+          <div class="issue issue-important" id="fixed-indicator">
+            <span class="severity severity-important"
+              >Edge case &middot; always-visible spinner &middot; FIXED</span
+            >
+            <h3>Indicator with empty Signal rendered data-show="$"</h3>
+            <div class="where">datastar/indicator.go (indicatorSignalExpr)</div>
+            <p>
+              <code>$</code> alone is the signals object &mdash; always truthy
+              &mdash; pinning the spinner visible forever. Empty
+              <code>Signal</code> now degrades to <code>data-show="false"</code>
+              (hidden), matching the library's graceful-degradation convention.
+            </p>
+          </div>
+        </section>
+
+        <section id="notgaps">
+          <h2><span class="num">02</span>Explicitly not gaps (by design)</h2>
+          <p>
+            These go-datastar / go-sse capabilities are <em>not</em> missed
+            opportunities for the library itself. Importing them would violate
+            the dependency policy (allowed: templ, tailwind-merge-go,
+            go-error-family for errorpage only) and the module DAG &mdash; and
+            would add go-sse + go-branded-id + go-error-family to every
+            consumer's graph for a UI library that only needs to emit correct
+            markup:
+          </p>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>Capability</th>
+                <th>Module</th>
+                <th>Verdict</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>Stream</code>, <code>Heartbeat</code>, <code>Broadcaster[T]</code>, <code>Replay</code>/<code>EventStore</code></td>
+                <td>go-sse</td>
+                <td class="no">Consumer-side &mdash; documented in the recipe, never a library dep</td>
+              </tr>
+              <tr>
+                <td><code>Patch</code> interface, <code>Response</code> builder, <code>MemoryStore</code>, <code>ReadSignals</code>, <code>GetSSE/PostSSE</code></td>
+                <td>go-datastar root</td>
+                <td class="no">Consumer-side &mdash; godoc points consumers at it (<code>go get</code> their own)</td>
+              </tr>
+              <tr>
+                <td><code>ssetest</code> / <code>datastartest</code> E2E helpers</td>
+                <td>both</td>
+                <td class="yes">Candidate for CI of the demo (see opportunities) &mdash; not a runtime dep</td>
+              </tr>
+              <tr>
+                <td>SRI integrity hashes</td>
+                <td>&mdash;</td>
+                <td class="no">Datastar publishes no official SRI; documented in version.go &mdash; self-host to get integrity</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="versions">
+          <h2><span class="num">03</span>Version currency</h2>
+          <div class="callout callout-teal">
+            <strong>Fully current.</strong> <code>static v0.2.0</code> is the
+            latest published tag and embeds runtime v1.0.2 &mdash; identical to
+            the local go-datastar checkout's bundle. Nothing to bump.
+          </div>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>Version</th>
+                <th>Type</th>
+                <th>Notable change</th>
+                <th>Relevance</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>go-datastar [Unreleased]</td>
+                <td>Testing</td>
+                <td><code>datastartest</code>: <code>testing.TB</code>, Collect options (<code>WithPath</code>, <code>WithLastEventID</code>…), <code>RequireScript</code>, <code>RequireEventID</code></td>
+                <td class="yes">High — unlocks the E2E opportunity below once released</td>
+              </tr>
+              <tr>
+                <td>static v0.2.0 (pinned)</td>
+                <td>&mdash;</td>
+                <td>Embedded Datastar runtime v1.0.2</td>
+                <td class="yes">Current &mdash; matches local checkout</td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <section id="proposal">
+          <h2><span class="num">04</span>Remaining opportunities</h2>
+          <table class="compare">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Opportunity</th>
+                <th>Impact</th>
+                <th>Ease</th>
+                <th>Priority</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>1</td>
+                <td>Real-runtime E2E of the demo stream in CI via <code>datastartest</code> (WHATWG parser + <code>Collect*</code>; needs a dev-dependency or a separate visualtest-style module)</td>
+                <td class="yes">4</td>
+                <td class="yes">3</td>
+                <td><span class="highlight">12</span></td>
+              </tr>
+              <tr>
+                <td>2</td>
+                <td>Recipe: show <code>datastar.NewResponseFromHTTP(w, r)</code> one-liner and mention <code>stream.Heartbeat</code> for proxy keep-alive</td>
+                <td class="yes">3</td>
+                <td class="yes">5</td>
+                <td><span class="highlight">15</span></td>
+              </tr>
+              <tr>
+                <td>3</td>
+                <td>Document a <code>datastar-fetch</code> "started/finished" hook for consumers building their own analytics</td>
+                <td class="yes">2</td>
+                <td class="yes">4</td>
+                <td><span class="highlight">8</span></td>
+              </tr>
+            </tbody>
+          </table>
+        </section>
+
+        <footer class="footer">
+          <p>
+            Generated 2026-08-21 &middot; Reviewed against go-datastar/static
+            v0.2.0 (Datastar runtime v1.0.2) &middot; All runtime behavior
+            claims verified against the pinned bundle
+            (<code>go mod download</code> copy) and go-datastar source &middot;
+            all 8 fixes landed with regression tests in the same session
+          </p>
+        </footer>
+      </main>
+    </div>
+
+    <script>
+      (function () {
+        if (!("IntersectionObserver" in window)) return;
+        var nav = document.querySelector("[data-nav]");
+        if (!nav) return;
+        var links = nav.querySelectorAll('a[href^="#"]');
+        var ids = Array.from(links).map(function (l) {
+          return l.getAttribute("href").slice(1);
+        });
+        var sections = ids
+          .map(function (id) {
+            return document.getElementById(id);
+          })
+          .filter(Boolean);
+        if (!sections.length) return;
+        var observer = new IntersectionObserver(
+          function (entries) {
+            entries.forEach(function (entry) {
+              if (entry.isIntersecting) {
+                links.forEach(function (link) {
+                  link.classList.toggle(
+                    "active",
+                    link.getAttribute("href") === "#" + entry.target.id,
+                  );
+                });
+              }
+            });
+          },
+          { rootMargin: "-80px 0px -60% 0px", threshold: 0 },
+        );
+        sections.forEach(function (s) {
+          observer.observe(s);
+        });
+      })();
+    </script>
+  </body>
+</html>

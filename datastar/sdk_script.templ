@@ -4,6 +4,8 @@ package datastar
 // per page in your layout, alongside or instead of the HTMX script.
 //
 // Datastar loads as type="module" (deferred by default — no render-blocking).
+// When loading from a CDN, a <link rel="preconnect"> to the CDN origin is
+// emitted first so the module fetch skips DNS + TLS on the critical path.
 //
 //	@datastar.SDKScript(datastar.DefaultSDKScriptProps())
 //
@@ -11,6 +13,15 @@ package datastar
 //
 //	@datastar.SDKScript(datastar.SDKScriptProps{Src: "/static/datastar.js", Nonce: nonce})
 templ SDKScript(props SDKScriptProps) {
+	{{
+		origin := ""
+		if props.Src == "" {
+			origin = datastarCDNOrigin(props.CDN)
+		}
+	}}
+	if origin != "" {
+		<link rel="preconnect" href={ origin } crossorigin/>
+	}
 	if props.Nonce != "" {
 		<script type="module" nonce={ props.Nonce } src={ scriptSrc(props) }></script>
 	} else {

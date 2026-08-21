@@ -321,12 +321,12 @@ Opt-in Datastar integration. Does NOT import the Datastar SDK — consumer adds 
 
 ### Components
 
-| Component          | Status           | Description                | Key Features                                                                                                                |
-| ------------------ | ---------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
-| `SDKScript`        | FULLY_FUNCTIONAL | Datastar runtime injection | Configurable version + CDN host, self-hostable via `Src`, CSP nonce                                                         |
-| `LiveRegion`       | FULLY_FUNCTIONAL | SSE-powered live region    | `data-signals-merge`, auto-connect, `LivePoliteness` enum (Polite/Assertive), `aria-live` for a11y                          |
-| `Indicator`        | FULLY_FUNCTIONAL | Datastar loading indicator | Signal-based show/hide, motion-reduce, custom spinner fallback                                                              |
-| `SSEErrorHandling` | FULLY_FUNCTIONAL | SSE error feedback         | Listens for `datastar-sse-error`, surfaces toast via `tcShowToast()`, `aria-live` announcer fallback, configurable duration |
+| Component          | Status           | Description                | Key Features                                                                                                                                         |
+| ------------------ | ---------------- | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SDKScript`        | FULLY_FUNCTIONAL | Datastar runtime injection | Configurable version + CDN host, `<link rel="preconnect">` to CDN origin, self-hostable via `Src`, CSP nonce                                         |
+| `LiveRegion`       | FULLY_FUNCTIONAL | SSE-powered live region    | `data-init` + `@get()` auto-connect, `LivePoliteness` enum (Polite/Assertive), `aria-live` for a11y                                                  |
+| `Indicator`        | FULLY_FUNCTIONAL | Datastar loading indicator | Signal-based show/hide, empty signal degrades to hidden, motion-reduce, custom spinner fallback                                                      |
+| `SSEErrorHandling` | FULLY_FUNCTIONAL | SSE error feedback         | Listens for `datastar-fetch` (`error` / `retries-failed`), surfaces toast via `tcShowToast()`, `aria-live` announcer fallback, configurable duration |
 
 ### Action Helpers
 

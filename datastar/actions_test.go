@@ -50,7 +50,7 @@ func TestIndicatorSignalExpr(t *testing.T) {
 	}{
 		{"saving", "$saving"},
 		{"fetching", "$fetching"},
-		{"", "$"},
+		{"", "false"},
 	}
 	for _, tt := range tests {
 		got := indicatorSignalExpr(tt.signal)

@@ -39,13 +39,18 @@ func livePolitenessValue(p LivePoliteness) LivePoliteness {
 //
 // The URL endpoint should return a text/event-stream response. The server
 // patches the region's children (or signals) using go-datastar
-// (github.com/larsartmann/go-datastar).
+// (github.com/larsartmann/go-datastar). Patch a child by selector — see the
+// example on LiveRegion in live_region.templ for the full handler.
 //
 //	@datastar.LiveRegion(datastar.LiveRegionProps{
 //	    URL:       "/stream/metrics",
 //	    AutoStart: true,
 //	}) {
-//	    @display.StatCard(display.StatCardProps{Label: "Users", Value: "—"})
+//	    @display.StatCard(display.StatCardProps{
+//	        BaseProps: utils.BaseProps{ID: "metrics"},
+//	        Label:     "Users",
+//	        Value:     "—",
+//	    })
 //	}
 type LiveRegionProps struct {
 	utils.BaseProps

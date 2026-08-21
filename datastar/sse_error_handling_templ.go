@@ -29,17 +29,31 @@ func (c *SSEErrorHandlingConfig) normalize() {
 	}
 }
 
-// SSEErrorHandling renders a global listener for DataStar SSE errors
-// (datastar-sse-error) and surfaces them as accessible toasts so streaming
-// failures are never silent. This is the DataStar counterpart to
-// htmx.GlobalErrorHandling, which covers HTMX request errors.
+// SSEErrorHandling renders a global listener for DataStar stream failures and
+// surfaces them as accessible toasts so streaming errors are never silent.
+// This is the DataStar counterpart to htmx.GlobalErrorHandling, which covers
+// HTMX request errors.
+//
+// The DataStar runtime (v1.x) reports the fetch/SSE lifecycle on the
+// document-level "datastar-fetch" event. detail.type is one of "started",
+// "finished", "error", "retrying", or "retries-failed" (plus the applied
+// patch event names for successful SSE messages). This handler reports the
+// two terminal failure states:
+//
+//   - "error": the endpoint answered with an HTTP error (status >= 400).
+//     Toasted with the status code from detail.argsRaw.status.
+//   - "retries-failed": the connection dropped and automatic reconnection
+//     exhausted its retries (default: 10 attempts, exponential backoff).
+//     Toasted; the stream stays dead until its action re-runs.
+//
+// Transient "retrying" events are logged to the console only — the runtime
+// keeps reconnecting on its own, and toasting each attempt would spam.
 //
 // Requires feedback.ToastContainer on the page for toast feedback (it provides
 // the global tcShowToast function). Without it, errors are still logged to the
 // console and announced via the aria-live region.
 //
-// DataStar reconnects its own SSE streams, so this handler only reports the
-// interruption; it does not retry. Typical layout wiring:
+// Typical layout wiring:
 //
 //	@feedback.ToastContainer("")
 //	@datastar.SSEErrorHandling(datastar.DefaultSSEErrorHandlingConfig())
@@ -72,7 +86,7 @@ func SSEErrorHandling(cfg SSEErrorHandlingConfig) templ.Component {
 		var templ_7745c5c3_Var2 string
 		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(cfg.Nonce)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/sse_error_handling.templ`, Line: 41, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/sse_error_handling.templ`, Line: 55, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
 		if templ_7745c5c3_Err != nil {
@@ -84,13 +98,13 @@ func SSEErrorHandling(cfg SSEErrorHandlingConfig) templ.Component {
 		}
 		templ_7745c5c3_Var3, templ_7745c5c3_Err := templruntime.ScriptContentOutsideStringLiteral(cfg.DurationMS)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/sse_error_handling.templ`, Line: 44, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/sse_error_handling.templ`, Line: 58, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, ";\n\t\t\tdocument.addEventListener('datastar-sse-error', function(evt) {\n\t\t\t\tvar detail = evt.detail || {};\n\t\t\t\tvar reason = detail.message || detail.statusText || 'Connection lost';\n\t\t\t\tconsole.error('DataStar SSE Error:', detail);\n\t\t\t\tif (typeof tcShowToast === 'function') {\n\t\t\t\t\ttcShowToast('The live stream was interrupted (' + reason + '). It will resume automatically.', 'error', 'Connection Lost', DURATION);\n\t\t\t\t}\n\t\t\t\tvar announcer = document.getElementById('tc-datastar-announcer');\n\t\t\t\tif (announcer) announcer.textContent = 'Connection Lost: ' + reason;\n\t\t\t});\n\t\t})();\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, ";\n\t\t\tfunction announce(text) {\n\t\t\t\tvar announcer = document.getElementById('tc-datastar-announcer');\n\t\t\t\tif (announcer) announcer.textContent = text;\n\t\t\t}\n\t\t\tdocument.addEventListener('datastar-fetch', function(evt) {\n\t\t\t\tvar detail = evt.detail || {};\n\t\t\t\tvar args = detail.argsRaw || {};\n\t\t\t\tif (detail.type === 'error') {\n\t\t\t\t\tvar status = args.status ? ' (HTTP ' + args.status + ')' : '';\n\t\t\t\t\tconsole.error('DataStar stream error:', detail);\n\t\t\t\t\tannounce('Stream error' + status);\n\t\t\t\t\tif (typeof tcShowToast === 'function') {\n\t\t\t\t\t\ttcShowToast('The live stream endpoint returned an error' + status + '.', 'error', 'Stream Error', DURATION);\n\t\t\t\t\t}\n\t\t\t\t} else if (detail.type === 'retries-failed') {\n\t\t\t\t\tconsole.error('DataStar stream failed: retries exhausted', detail);\n\t\t\t\t\tannounce('Live stream lost. Automatic reconnection failed.');\n\t\t\t\t\tif (typeof tcShowToast === 'function') {\n\t\t\t\t\t\ttcShowToast('The live stream was lost and automatic reconnection failed. Reload the page to resume.', 'error', 'Connection Lost', DURATION);\n\t\t\t\t\t}\n\t\t\t\t} else if (detail.type === 'retrying') {\n\t\t\t\t\tconsole.warn('DataStar stream interrupted, retrying...', detail);\n\t\t\t\t}\n\t\t\t});\n\t\t})();\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

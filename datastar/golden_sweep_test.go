@@ -51,3 +51,14 @@ func TestGoldenSweepIndicator(t *testing.T) {
 		}))},
 	})
 }
+
+func TestGoldenSweepSSEErrorHandling(t *testing.T) {
+	t.Parallel()
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "sse_error_handling_default", HTML: utils.Render(t, SSEErrorHandling(SSEErrorHandlingConfig{
+			Nonce:      "test-nonce",
+			DurationMS: 6000,
+		}))},
+	})
+}

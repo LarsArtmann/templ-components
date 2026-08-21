@@ -36,7 +36,13 @@ func DefaultIndicatorProps() IndicatorProps {
 
 // indicatorSignalExpr returns the Datastar show expression for an indicator.
 // Returns "$<signal>" which is true during in-flight requests.
+// An empty signal degrades to "false" so the indicator stays hidden — the
+// bare "$" object is always truthy and would pin the spinner visible.
 func indicatorSignalExpr(signal string) string {
+	if signal == "" {
+		return "false"
+	}
+
 	return "$" + signal
 }
 

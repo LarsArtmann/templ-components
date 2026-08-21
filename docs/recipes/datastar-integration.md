@@ -76,8 +76,9 @@ The library itself does **not** depend on it — only your application does.
     Live:      datastar.LivePolite,
 }) {
     @display.StatCard(display.StatCardProps{
-        Label: "Active Users",
-        Value: "—",
+        BaseProps: utils.BaseProps{ID: "metrics"},
+        Label:     "Active Users",
+        Value:     "—",
     })
 }
 ```
@@ -99,8 +100,13 @@ func streamMetrics(w http.ResponseWriter, r *http.Request) {
     for {
         metrics := fetchCurrentMetrics()
 
-        // Patch the StatCard's value by targeting its element ID
-        if err := resp.PatchElementsTempl(statCard(metrics),
+        // Patch the StatCard's content. WithSelector is REQUIRED with
+        // WithModeInner — the runtime rejects non-default modes without a
+        // target. (The default outer mode matches incoming root elements
+        // by their id instead, so fragments must carry an id that already
+        // exists in the DOM.)
+        if err := resp.PatchElementsTempl(statCardContent(metrics),
+            datastar.WithSelector("#metrics"),
             datastar.WithModeInner(),
         ); err != nil {
             return
@@ -120,13 +126,13 @@ func streamMetrics(w http.ResponseWriter, r *http.Request) {
 
 ### Why this is better than PolledRegion
 
-| Aspect       | PolledRegion (HTMX)            | LiveRegion (Datastar SSE)           |
-| ------------ | ------------------------------ | ----------------------------------- |
-| Requests     | N per minute (every interval)  | 1 long-lived connection             |
-| Latency      | Up to `interval` seconds stale | Sub-second (push on change)         |
-| Idle traffic | Full HTML fragment each poll   | Zero (server pushes only on change) |
-| Bandwidth    | Full HTML every poll           | Signal-only patches possible        |
-| Reconnection | Automatic (next poll)          | Automatic (Last-Event-ID resume)    |
+| Aspect       | PolledRegion (HTMX)            | LiveRegion (Datastar SSE)                                                            |
+| ------------ | ------------------------------ | ------------------------------------------------------------------------------------ |
+| Requests     | N per minute (every interval)  | 1 long-lived connection                                                              |
+| Latency      | Up to `interval` seconds stale | Sub-second (push on change)                                                          |
+| Idle traffic | Full HTML fragment each poll   | Zero (server pushes only on change)                                                  |
+| Bandwidth    | Full HTML every poll           | Signal-only patches possible                                                         |
+| Reconnection | Automatic (next poll)          | Automatic (retry w/ backoff; Last-Event-ID resume when the server assigns event ids) |
 
 ---
 
@@ -236,12 +242,18 @@ they can coexist on the same page without conflict:
 Datastar loads as `<script type="module" src="...">`. Under a strict CSP:
 
 ```
-script-src 'self' https://cdn.jsdelivr.net;
+script-src 'self' https://cdn.jsdelivr.net 'unsafe-eval';
 ```
 
-Or self-host and use `script-src 'self'` only. No `'unsafe-inline'` or
-`'unsafe-eval'` needed — Datastar's `data-*` expressions are sandboxed via
-`Function()` constructors, not `eval()`.
+**`'unsafe-eval'` is required**: the Datastar runtime compiles every `data-*`
+expression with the `Function()` constructor, and CSP classifies that as
+`eval` — without the directive all expression attributes silently fail.
+`'unsafe-inline'` is still NOT needed: the runtime script is external, and
+every inline script this library emits carries a nonce.
+
+If `'unsafe-eval'` is unacceptable for your threat model, self-host the
+bundle and avoid expression attributes — or use the HTMX path, which needs
+no eval.
 
 ---
 

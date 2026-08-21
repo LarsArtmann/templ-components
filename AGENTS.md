@@ -23,6 +23,8 @@ This repo is a **7-module Go workspace** (`github.com/larsartmann/templ-componen
 
 > **Note:** `go.work` and `go.work.sum` are in `.gitignore` (local dev only). CI and consumers use `replace` directives in each module's `go.mod`. `internal/` packages (`svg`, `cdn`, `golden`) were promoted to `utils/` sub-packages because Go's `internal/` rule blocks cross-module access.
 
+> **Datastar v1.0.2 runtime facts (2026-08-21 audit):** see `docs/datastar-runtime-facts.md` — only `datastar-patch-*` SSE events (keyed datalines, blank line terminates), lifecycle errors only on `datastar-fetch` (no `datastar-sse-error`), CSP needs `'unsafe-eval'`. Wire format pinned by `examples/demo/sse_test.go`.
+
 ## Build & Test Commands
 
 ```bash

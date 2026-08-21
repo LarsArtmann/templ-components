@@ -16,20 +16,29 @@ import "github.com/larsartmann/templ-components/utils"
 // patches over a single long-lived connection.
 //
 // The server endpoint must return a text/event-stream response. Use
-// go-datastar (github.com/larsartmann/go-datastar) to patch elements or signals:
+// go-datastar (github.com/larsartmann/go-datastar) to patch elements or signals.
+// Target a child element of the region with WithSelector — patch modes other
+// than the default (outer) require one, and the default outer mode matches
+// incoming root elements by their id (id-less fragments are dropped with a
+// console warning):
 //
 //	func streamHandler(w http.ResponseWriter, r *http.Request) {
 //	    stream := sse.NewStream(w, r)
 //	    defer func() { _ = stream.Close() }()
 //	    resp := datastar.NewResponse(stream)
-//	    _ = resp.PatchElementsTempl(metricsCard(currentMetrics()))
+//	    _ = resp.PatchElementsTempl(metricsCardContent(),
+//	        datastar.WithSelector("#metrics"), datastar.WithModeInner())
 //	}
 //
 //	@datastar.LiveRegion(datastar.LiveRegionProps{
 //	    URL:       "/stream/metrics",
 //	    AutoStart: true,
 //	}) {
-//	    @display.StatCard(display.StatCardProps{Label: "Active Users", Value: "—"})
+//	    @display.StatCard(display.StatCardProps{
+//	        BaseProps: utils.BaseProps{ID: "metrics"},
+//	        Label:     "Active Users",
+//	        Value:     "—",
+//	    })
 //	}
 func LiveRegion(props LiveRegionProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -70,7 +79,7 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 32, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 39, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -89,7 +98,7 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(Get(props.URL))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 35, Col: 29}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 42, Col: 29}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -107,7 +116,7 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(live))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 37, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 44, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -138,7 +147,7 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 40, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 47, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {

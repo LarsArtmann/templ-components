@@ -43,16 +43,24 @@
 //	    URL:       "/stream/metrics",
 //	    AutoStart: true,
 //	}) {
-//	    @display.StatCard(display.StatCardProps{Label: "Active Users", Value: "—"})
+//	    @display.StatCard(display.StatCardProps{
+//	        BaseProps: utils.BaseProps{ID: "metrics"},
+//	        Label:     "Active Users",
+//	        Value:     "—",
+//	    })
 //	}
 //
-// The server endpoint streams patches using go-datastar:
+// The server endpoint streams patches using go-datastar. Target a child
+// element by selector — patch modes other than the default outer mode
+// require one, and the default outer mode matches incoming root elements
+// by their id (id-less fragments are dropped with a console warning):
 //
 //	func streamHandler(w http.ResponseWriter, r *http.Request) {
 //	    stream := sse.NewStream(w, r)
 //	    defer func() { _ = stream.Close() }()
 //	    resp := datastar.NewResponse(stream)
-//	    _ = resp.PatchElementsTempl(metricsCard(currentMetrics()))
+//	    _ = resp.PatchElementsTempl(metricsCardContent(),
+//	        datastar.WithSelector("#metrics"), datastar.WithModeInner())
 //	}
 //
 // # When to choose Datastar over HTMX

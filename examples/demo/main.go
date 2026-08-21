@@ -4,14 +4,54 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io"
 	"net/http"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/layout"
 )
+
+// writeDatastarPatch writes one Datastar patch-elements SSE event in the
+// Datastar v1 wire format:
+//
+//	event: datastar-patch-elements
+//	data: selector #target
+//	data: mode inner
+//	data: elements <p>...</p>
+//
+// Two format details matter (both verified against the pinned v1.0.2 runtime
+// bundle):
+//
+//   - Every line needs a trailing REAL newline, and the event ends with a
+//     blank line — without it the browser never dispatches the event.
+//   - The client parses each dataline by splitting on the FIRST space, so
+//     multi-line HTML must repeat the "elements " key on every line; values
+//     for the same key are joined with newlines.
+func writeDatastarPatch(w io.Writer, selector, mode, html string) error {
+	var b strings.Builder
+	b.WriteString("event: datastar-patch-elements\n")
+	if selector != "" {
+		b.WriteString("data: selector " + selector + "\n")
+	}
+	if mode != "" {
+		b.WriteString("data: mode " + mode + "\n")
+	}
+	for _, line := range strings.Split(strings.TrimSpace(html), "\n") {
+		if line = strings.TrimSpace(line); line == "" {
+			continue
+		}
+		b.WriteString("data: elements " + line + "\n")
+	}
+	b.WriteString("\n")
+
+	_, err := io.WriteString(w, b.String())
+
+	return err
+}
 
 func main() {
 	prerenderDir := flag.String(
@@ -29,6 +69,17 @@ func main() {
 		return
 	}
 
+	server := newServer(newMux())
+
+	fmt.Printf("Demo running at http://localhost:%s\n", server.Addr)
+	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+		fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
+	}
+}
+
+// newMux builds the demo routes. Exposed for endpoint tests — the SSE wire
+// format broke silently for months because nothing exercised the handlers.
+func newMux() *http.ServeMux {
 	mux := http.NewServeMux()
 
 	// Health check endpoint for Cloud Run / container orchestration
@@ -102,9 +153,10 @@ func main() {
 	})
 
 	// Mock Datastar SSE endpoint — streams periodic updates in Datastar's
-	// datastar-merge-fragments event format. The LiveRegion component connects
-	// to this via data-init="@get('/api/datastar/stream')" when the Datastar
-	// runtime is loaded.
+	// v1 wire format (datastar-patch-elements events with keyed datalines).
+	// The LiveRegion component connects to this via
+	// data-init="@get('/api/datastar/stream')" when the Datastar runtime is
+	// loaded. See writeDatastarPatch for the format details.
 	mux.HandleFunc("/api/datastar/stream", func(w http.ResponseWriter, r *http.Request) {
 		flusher, ok := w.(http.Flusher)
 		if !ok {
@@ -113,37 +165,53 @@ func main() {
 			return
 		}
 
+		// The demo server sets WriteTimeout globally (see below), which would
+		// cut the stream off mid-flight. SSE connections live as long as the
+		// client stays connected, so clear the deadline for this connection.
+		_ = http.NewResponseController(w).SetWriteDeadline(time.Time{})
+
 		w.Header().Set("Content-Type", "text/event-stream")
 		w.Header().Set("Cache-Control", "no-cache")
-		w.Header().Set("Connection", "keep-alive")
+		// Disable proxy buffering (e.g. nginx) so events arrive as they are
+		// written instead of being batched.
+		w.Header().Set("X-Accel-Buffering", "no")
 
 		ctx := r.Context()
 		ticker := time.NewTicker(2 * time.Second)
 		defer ticker.Stop()
 
-		for i := 1; i <= 5; i++ {
+		for i := 1; ; i++ {
 			select {
 			case <-ctx.Done():
 				return
 			case <-ticker.C:
-				fmt.Fprintf(
+				err := writeDatastarPatch(
 					w,
-					"event: datastar-merge-fragments\ndata: <div class=\"rounded-lg bg-gray-50 dark:bg-gray-800 p-4\">\\n",
+					"#datastar-live-content",
+					"inner",
+					fmt.Sprintf(
+						`<p class="text-sm text-gray-600 dark:text-gray-400">SSE update #%d — streamed at %s</p>`,
+						i,
+						time.Now().Format("15:04:05"),
+					),
 				)
-				fmt.Fprintf(
-					w,
-					"data:   <p class=\"text-sm text-gray-600 dark:text-gray-400\">SSE update #%d — streamed at %s</p>\\n",
-					i,
-					time.Now().Format("15:04:05"),
-				)
-				fmt.Fprintf(w, "data: </div>\\n\\n")
+				if err != nil {
+					return // client went away
+				}
 				flusher.Flush()
 			}
 		}
 	})
 
+	// Mock Datastar action endpoint. For non-SSE responses the Datastar v1
+	// runtime reads the patch target from response headers: the body is the
+	// elements payload, Datastar-Selector picks the target, Datastar-Mode the
+	// merge mode. Without the headers the runtime drops id-less fragments
+	// with a "PatchElementsNoTargetsFound" console warning.
 	mux.HandleFunc("/api/datastar/action", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		w.Header().Set("Datastar-Selector", "#datastar-action-result")
+		w.Header().Set("Datastar-Mode", "inner")
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(
 			w,
@@ -174,7 +242,15 @@ func main() {
 		}
 	})
 
-	//nolint:exhaustruct // Demo code - HTTP server for demonstration only
+	return mux
+}
+
+// newServer wraps the mux in the demo HTTP server. The global WriteTimeout
+// is safe for the SSE endpoint because that handler clears the deadline
+// per-connection via http.NewResponseController.
+//
+//nolint:exhaustruct // Demo code - HTTP server for demonstration only
+func newServer(handler http.Handler) *http.Server {
 	port := os.Getenv("PORT")
 	if port == "" {
 		port = "8080"
@@ -182,17 +258,17 @@ func main() {
 	if _, err := strconv.Atoi(port); err != nil {
 		port = "8080"
 	}
-	server := &http.Server{
-		Addr:         ":" + port,
-		Handler:      mux,
+
+	return &http.Server{
+		Addr:    ":" + port,
+		Handler: handler,
+		// WriteTimeout would kill the SSE stream (/api/datastar/stream);
+		// that handler clears the deadline per-connection via
+		// http.NewResponseController. Keep the global timeout for everything
+		// else so stuck clients cannot pin connections forever.
 		ReadTimeout:  10 * time.Second,
 		WriteTimeout: 10 * time.Second,
 		IdleTimeout:  60 * time.Second,
-	}
-
-	fmt.Printf("Demo running at http://localhost:%s\n", port)
-	if err := server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-		fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
 	}
 }
 

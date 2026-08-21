@@ -51,7 +51,7 @@ func datastarDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">SSE-powered region that auto-connects on page load. The server pushes <code>datastar-merge-fragments</code> events to patch the content in real-time (no polling):</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">SSE-powered region that auto-connects on page load. The server pushes <code>datastar-patch-elements</code> events to patch the content in real-time (no polling):</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -67,7 +67,7 @@ func datastarDemo() templ.Component {
 				}()
 			}
 			ctx = templ.InitializeContext(ctx)
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div class=\"rounded-lg bg-gray-50 dark:bg-gray-800 p-4\"><p class=\"text-sm text-gray-600 dark:text-gray-400\">Waiting for SSE stream...</p></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<div id=\"datastar-live-content\" class=\"rounded-lg bg-gray-50 dark:bg-gray-800 p-4\"><p class=\"text-sm text-gray-600 dark:text-gray-400\">Waiting for SSE stream...</p></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -110,7 +110,7 @@ func datastarDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "</div><div id=\"datastar-action-result\" class=\"mt-3\"></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -135,7 +135,7 @@ datastar.Delete("/api/items/1") // @delete('/api/items/1')`,
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Global listener for Datastar SSE errors (<code>datastar-sse-error</code>) that surfaces streaming failures as accessible toasts — the Datastar counterpart to HTMX GlobalErrorHandling:</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Global listener for Datastar stream failures (<code>datastar-fetch</code> events with type <code>error</code> or <code>retries-failed</code>) that surfaces them as accessible toasts — the Datastar counterpart to HTMX GlobalErrorHandling:</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
