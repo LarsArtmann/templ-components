@@ -301,18 +301,29 @@ What it does:
 1. Validates the working tree is clean and on `master`
 2. Confirms the new version is greater than the current one (via `sort -V`)
 3. Collects release notes (`--notes-file FILE`, or auto-extracted from CHANGELOG `[Unreleased]`)
-4. Installs an `EXIT`-trap rollback (`release_rollback`) that restores `utils/version.go`, `CHANGELOG.md`, and `FEATURES.md` if any later step fails — so a failed verify never leaves a dirty tree
+4. Installs an `EXIT`-trap rollback (`release_cleanup`) that restores `utils/version.go`, all `go.mod` files, `CHANGELOG.md`, and `FEATURES.md` if any later step fails — so a failed verify never leaves a dirty tree
 5. Bumps `utils.Version` via in-place sed
 6. Moves the `[Unreleased]` body under a new `## [<version>] — YYYY-MM-DD` heading (inserts a fresh empty `[Unreleased]` above)
 7. Bumps `FEATURES.md` `**Version:**` + `**Updated:**` date (the three version files must move together; `utils.TestVersionMatchesFeatures` enforces it)
 8. Regenerates `*_templ.go` and runs the full verify suite (build + test + lint)
 9. Asserts the version drift-guard (`TestVersionMatches(Changelog|Features)`)
-10. Stages and commits as `release: <version> — <summary>` (one-commit convention; body carries the release notes, `Assisted-by: Crush:${CRUSH_MODEL}`)
-11. Creates annotated, SSH-signed tags: root `v<version>` plus one `<sub-module>/v<version>` per published sub-module, in lockstep. Guard with `scripts/check-release-tags.sh` before pushing — a root-only release (like v1.8.3) breaks every consumer.
+10. Strips the local `replace` directives (tagged `go.mod` files must be consumer-clean) and re-parses every `go.mod` as a sanity check
+11. Stages and commits as `release: <version> — <summary>` (one-commit convention; body carries the release notes, `Assisted-by: Crush:${CRUSH_MODEL}`)
+12. Creates annotated, SSH-signed tags: root `v<version>` plus one `<sub-module>/v<version>` per published sub-module, in lockstep. Guard with `scripts/check-release-tags.sh` before pushing — a root-only release (like v1.8.3) breaks every consumer.
 
 The script does **not** push. House rule: "NEVER PUSH TO REMOTE". Push manually
 after reviewing the release commit and tag with `git show v<version>` and
 `git show <commit>`.
+
+**Verify-before-strip (v1.9.0 lesson):** the script's build/test/lint phase MUST
+run while the local `replace` directives are still present. go1.26.5 workspace
+mode does NOT preempt module-graph resolution of `require` entries at unpushed
+versions — with replaces stripped and the new tags not yet on the proxy, every
+build fails with `unknown revision <sub>/v<version>` (GOPRIVATE is not a factor;
+proven with a 2x2 replaces/GOPRIVATE matrix during the v1.9.0 cut). Stripping
+now happens after verification. Also fixed then: bash keeps only ONE `EXIT`
+trap, so the script's second `trap` silently disabled the rollback trap — both
+cleanups now share one hook.
 
 ## Lint Command
 

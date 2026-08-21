@@ -19,11 +19,15 @@
 #   4. Collects release notes (--notes-file or CHANGELOG [Unreleased])
 #   5. Moves notes from [Unreleased] to a new versioned heading (inserts fresh [Unreleased])
 #   5b. Bumps require versions in every module go.mod (discovered, not hardcoded)
-#   5c. Removes replace directives (remove-at-release strategy)
-#   6. Regenerates *_templ.go and runs the full verify suite (workspace mode)
-#   7. Stages and commits as `release: <version> — <summary>` (one-commit convention)
-#   8. Creates annotated, SSH-signed tags: root `v<x>` + sub-module `utils/v<x>`, etc.
-#   9. Re-adds replace directives in a follow-up commit for local dev
+#   6. Moves release notes from [Unreleased] under the new version heading
+#   6b. Bumps FEATURES.md version + date (drift-guarded)
+#   7. Runs the full verify suite: templ generate + CSS + build/test/lint.
+#       CRITICAL: runs with replace directives still in place — see the
+#       ordering note below the env exports.
+#   7b. Strips replace directives (tagged go.mod files must be consumer-clean)
+#   8. Stages and commits as `release: <version> — <summary>` (one-commit convention)
+#   9. Creates annotated, SSH-signed tags: root `v<x>` + sub-module `utils/v<x>`, etc.
+#  10. Re-adds replace directives in a follow-up commit for local dev
 #
 # Required: GPG/SSH signing key configured (the tag signing matches v0.5.0).
 # Does NOT push. House rule: "NEVER PUSH TO REMOTE" — push manually after review.
@@ -79,10 +83,17 @@ fi
 TODAY="$(date -u +%Y-%m-%d)"
 
 export GOEXPERIMENT=jsonv2
-# NOTE: GOWORK is NOT set to off — we use go.work (workspace mode) for
-# verification because the release commit removes replace directives and
-# the new version tags don't exist on the proxy yet. Workspace mode resolves
-# sibling modules locally via the go.work "use" directives.
+# NOTE: GOWORK is NOT set to off — we use go.work (workspace mode).
+#
+# CRITICAL ORDERING: verification runs BEFORE replace directives are stripped.
+# go1.26.5 workspace mode does NOT preempt module-graph resolution of require
+# entries at unpushed versions: with replaces removed and the new tags not yet
+# on the proxy, `go build` fails with "unknown revision <sub>/v<version>" for
+# every sibling require (proven during the v1.9.0 cut; GOPRIVATE is NOT a
+# factor — verified with a 2x2 replaces/GOPRIVATE matrix). With replaces
+# present, sibling resolution is purely local, so the full build/test/lint
+# suite gates the release first; the strip happens afterwards so the tagged
+# go.mod files stay consumer-clean.
 
 cd "$(dirname "$0")/.."
 
@@ -176,14 +187,19 @@ RELEASE_NOTES="$(printf '%s\n' "$RELEASE_NOTES" | awk 'NF{p=1} p{lines[++n]=$0} 
 # drift-guard, etc.), restore the version files this script mutated so the tree
 # is left clean for retry. RELEASE_COMMITTED is flipped to 1 once the commit
 # lands, so a later tag failure keeps the commit (only the tag needs retrying).
+# NOTE: bash keeps only ONE EXIT trap — a second `trap ... EXIT` silently
+# replaces the first (this exact bug left a dirty tree behind when verify
+# failed during the v1.9.0 cut). Both cleanup concerns live in one hook.
 RELEASE_COMMITTED=0
-release_rollback() {
+REPLACE_BACKUP_DIR="$(mktemp -d)"
+release_cleanup() {
 	if [ "$RELEASE_COMMITTED" = "0" ]; then
 		echo "Release aborted; rolling back version files, go.mod files, CHANGELOG, FEATURES..." >&2
 		git restore utils/version.go $MODFILES CHANGELOG.md FEATURES.md 2>/dev/null || true
 	fi
+	rm -rf "$REPLACE_BACKUP_DIR"
 }
-trap release_rollback EXIT
+trap release_cleanup EXIT
 
 # 5. Bump utils.Version.
 sed -i.bak -E "s|^(const[[:space:]]+Version[[:space:]]+=[[:space:]]+\")[^\"]+(\")|\1${NEW_VERSION}\2|" utils/version.go
@@ -202,23 +218,6 @@ for modfile in $MODFILES; do
 	rm -f "${modfile}.bak"
 done
 echo "Bumped all internal module require entries to v${NEW_VERSION}."
-
-# 5c. Remove replace directives (remove-at-release strategy).
-#     The release commit ships WITHOUT replace directives so the tagged go.mod
-#     files are clean for consumers. After tagging (step 10), replaces are
-#     re-added in a follow-up commit for local dev convenience.
-REPLACE_BACKUP_DIR="$(mktemp -d)"
-trap 'rm -rf "$REPLACE_BACKUP_DIR"' EXIT # clean up temp dir (also fires after release_rollback)
-for modfile in $MODFILES; do
-	backup_name="$(echo "$modfile" | tr '/' '_')"
-	grep '^replace github.com/larsartmann/templ-components/' "$modfile" >"${REPLACE_BACKUP_DIR}/${backup_name}" 2>/dev/null || true
-	sed -i.bak '/^replace github.com\/larsartmann\/templ-components\//d' "$modfile"
-	rm -f "${modfile}.bak"
-	# Clean up resulting consecutive blank lines
-	sed -i.bak '/^$/N;/^\n$/d' "$modfile"
-	rm -f "${modfile}.bak"
-done
-echo "Removed replace directives from all go.mod files (backed up for re-addition after tagging)."
 
 # 6. Move release notes from [Unreleased] to the new version heading.
 #    On encountering [Unreleased]: emit fresh-empty [Unreleased], then the new
@@ -252,7 +251,7 @@ else
 	echo "Warning: FEATURES.md not found; skipped its version bump." >&2
 fi
 
-# 7. Run full verify (all modules).
+# 7. Run full verify (all modules — replaces still in place; see ordering note).
 echo "Running full verify (templ generate + CSS compile + per-module build/test/lint)..."
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...
@@ -288,12 +287,37 @@ done
 
 # Drift-guard: version files must agree with utils.Version (CHANGELOG heading
 # AND FEATURES.md version). The full suite ran above; this surfaces a targeted
-# message on mismatch. Rollback is handled by the EXIT trap (release_rollback),
+# message on mismatch. Rollback is handled by the EXIT trap (release_cleanup),
 # so no ad-hoc git restore is needed here.
 if ! (cd utils && go test ./... -run 'TestVersionMatches(Changelog|Features)' -count=1 >/dev/null 2>&1); then
 	echo "Error: version drift-guard failed. utils.Version, CHANGELOG heading, and FEATURES.md version must all agree." >&2
 	exit 1
 fi
+
+# 7b. Strip replace directives (remove-at-release strategy).
+#     Runs AFTER verification: go1.26.5 workspace mode still resolves require
+#     entries at unpushed versions, so the suite above must run while the
+#     replaces keep sibling resolution local. The release commit ships WITHOUT
+#     replace directives so the tagged go.mod files are clean for consumers;
+#     they are re-added after tagging (step 10).
+for modfile in $MODFILES; do
+	backup_name="$(echo "$modfile" | tr '/' '_')"
+	grep '^replace github.com/larsartmann/templ-components/' "$modfile" >"${REPLACE_BACKUP_DIR}/${backup_name}" 2>/dev/null || true
+	sed -i.bak '/^replace github.com\/larsartmann\/templ-components\//d' "$modfile"
+	rm -f "${modfile}.bak"
+	# Clean up resulting consecutive blank lines
+	sed -i.bak '/^$/N;/^\n$/d' "$modfile"
+	rm -f "${modfile}.bak"
+done
+echo "Removed replace directives from all go.mod files (backed up for re-addition after tagging)."
+
+# Sanity: every go.mod must still parse after the strip.
+for modfile in $MODFILES; do
+	go mod edit -json "$modfile" >/dev/null || {
+		echo "Error: $modfile failed to parse after stripping replace directives." >&2
+		exit 1
+	}
+done
 
 # 8. Stage and commit.
 git add utils/version.go CHANGELOG.md FEATURES.md
