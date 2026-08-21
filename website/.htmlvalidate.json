@@ -1,10 +1,10 @@
 {
   "extends": ["html-validate:recommended"],
   "rules": {
-    "attribute-boolean-style": ["error", "empty"],
-    "attribute-empty-style": ["error", "nokey"],
-    "void-style": ["warn", "void"],
+    "attribute-boolean-style": ["error", { "style": "omit" }],
+    "attribute-empty-style": ["error", { "style": "omit" }],
+    "void-style": ["warn", { "style": "omit" }],
     "no-trailing-whitespace": "error",
-    "attr-quotes": ["error", "double"]
+    "attr-quotes": ["error", { "style": "double" }]
   }
 }
