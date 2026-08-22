@@ -78,10 +78,10 @@ func TestScrollbackBehavior(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Scrollback(ScrollbackProps{Lines: scrollbackFixtureLines()}))
 		utils.AssertContainsAll(t, output,
-			"text-blue-600 dark:text-blue-400",
-			"text-red-600 dark:text-red-400",
-			"text-amber-600 dark:text-amber-400",
-			"text-green-600 dark:text-green-400",
+			"text-blue-600", "dark:text-blue-400",
+			"text-red-600", "dark:text-red-400",
+			"text-amber-600", "dark:text-amber-400",
+			"text-green-600", "dark:text-green-400",
 		)
 	})
 }
@@ -144,7 +144,7 @@ func TestScrollbackEdgeCases(t *testing.T) {
 		output := utils.Render(t, Scrollback(ScrollbackProps{
 			Lines: []ScrollbackLine{{Tag: "x", Text: "y", Tone: ScrollbackTone("bogus")}},
 		}))
-		utils.AssertContains(t, output, "text-gray-500 dark:text-gray-400")
+		utils.AssertContainsAll(t, output, "text-gray-500", "dark:text-gray-400")
 	})
 
 	t.Run("lines without timestamp or tag omit the empty columns", func(t *testing.T) {

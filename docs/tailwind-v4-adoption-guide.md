@@ -120,6 +120,16 @@ go mod vendor
 
 Then add the `@source` line pointing at the vendored path (shown above).
 
+> **Gotcha: `vendor/` is gitignored, and Tailwind v4 skips gitignored paths —
+> even ones listed explicitly via `@source`.** `go mod vendor` makes consumers
+> gitignore `vendor/` by convention, so pointing `@source` at the vendor tree
+> silently drops library classes in some environments (it may appear to work in
+> sandboxes without a `.gitignore`, then break in CI or on a fresh clone). The
+> deterministic fix is a **tracked class-inventory file**: concatenate the
+> library sources into one committed `.txt` and scan that instead. See
+> [`docs/recipes/vendored-tailwind-scanning.md`](recipes/vendored-tailwind-scanning.md)
+> for the full pattern (proven in a Nix-built production consumer).
+
 ### Go module cache (no vendoring)
 
 If you don't vendor, Tailwind can scan the module cache directly:
@@ -139,6 +149,46 @@ echo "@source \"$(go list -m -f '{{.Dir}}' github.com/larsartmann/templ-componen
 > **Troubleshooting:** If components render unstyled (no colors, no spacing), the
 > `@source` path is wrong and Tailwind can't find the class names. Verify the path
 > with `ls "$(go env GOMODCACHE)/github.com/larsartmann/templ-components@"*`.
+
+---
+
+## Deterministic scanning (recommended for CI and Nix builds)
+
+By default Tailwind's automatic source detection scans your **entire working
+directory** (respecting `.gitignore` where one exists). That makes the scan set
+depend on the build environment: a Nix sandbox has no `.gitignore`, a fresh
+clone has one, and a developer's scratch files leak classes into the output.
+For reproducible CSS, disable auto-detection and declare everything:
+
+```css
+/* source(none) disables automatic directory detection */
+@import "tailwindcss" source(none);
+
+/* Scan your own views explicitly (relative to this CSS file) */
+@source ".";
+
+/* Never scan generated templ Go files: they mirror the .templ sources, and
+   their generated identifiers leak utility-looking tokens that inflate the
+   output with dead CSS. */
+@source not "**/*_templ.go";
+
+/* Never scan the CSS outputs themselves: scanning them feeds the previous
+   build's class inventory back into the next one, hiding removed classes. */
+@source not "app.min.css";
+@source not "styles.css";
+```
+
+Rules of thumb:
+
+1. **`source(none)` + explicit `@source`** = the same CSS everywhere (dev, CI,
+   Nix sandbox, Docker).
+2. **Always exclude `*_templ.go`** — the `.templ` sources contain every class
+   already; the generated files only add noise.
+3. **Always exclude your own CSS outputs** — otherwise removed classes never
+   leave the build.
+4. **Never rely on scanning a gitignored directory** — gitignored paths are
+   skipped even when listed explicitly; use the
+   [class-inventory recipe](recipes/vendored-tailwind-scanning.md) instead.
 
 ---
 

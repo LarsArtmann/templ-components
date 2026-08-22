@@ -107,3 +107,37 @@ Tailwind v4 generates CSS from `@theme` tokens. When a component emits
 `bg-white`, Tailwind looks up `--color-white`. If you've set
 `--color-white: var(--color-surface)`, every `bg-white` in the library now renders
 your surface color — with zero Go code changes.
+
+## Two proven palette tricks
+
+### Warm paper instead of pure white (light mode)
+
+Pure `#ffffff` light surfaces read as "SaaS landing page". A warm paper tone
+(`#faf9f5`-ish) with slightly warm borders and muted text gives the light theme
+the same personality your dark theme has:
+
+```css
+@theme {
+  --color-paper-light: #faf9f5;
+  --color-paper-light-rule: #e8e3d8;
+  --color-paper-light-muted: #6b675e;
+}
+/* Then bridge library neutrals onto it in light mode only: */
+@layer base {
+  :root:not(.dark) {
+    --color-white: var(--color-paper-light);
+    --color-gray-100: var(--color-paper-light-rule);
+  }
+}
+```
+
+### One signal accent, used once
+
+Give the page family a single "signal" color (e.g. signal-red for "this domain
+is blocked") as dedicated `@theme` tokens, and use it only for the identity
+zone — the `display.Eyebrow` accent, a short rule above the headline, and the
+danger tones of a `display.Scrollback` trace. Semantic status colors (green /
+amber / red) everywhere else stay on Tailwind defaults, so the signal stays
+rare and loud. See
+[`docs/recipes/split-identity-page.md`](split-identity-page.md) for the full
+composition.

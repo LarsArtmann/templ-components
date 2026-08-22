@@ -328,6 +328,24 @@ templ displayDemo() {
 	</div>
 	@demoSection("ListNote", "display-list-note")
 	@display.ListNote(display.ListNoteProps{Shown: 50, Total: 127})
+	@demoSection("Eyebrow & Scrollback", "display-eyebrow-scrollback")
+	<div class="mb-6">
+		@display.Eyebrow(display.EyebrowProps{
+			Text:      "Deploy #142 · production",
+			BaseProps: utils.BaseProps{Class: "text-blue-600 dark:text-blue-400"},
+		})
+		<h2 class="mt-2 text-2xl font-semibold text-gray-900 dark:text-white">Build pipeline</h2>
+	</div>
+	@display.Scrollback(display.ScrollbackProps{
+		Stagger: true,
+		Lines: []display.ScrollbackLine{
+			{Timestamp: "12:47:03.184", Tag: "query", Text: "ads.example.com A", Tone: display.ScrollbackToneInfo},
+			{Timestamp: "12:47:03.184", Tag: "match", Text: "blocklist: StevenBlack/hosts", Tone: display.ScrollbackToneDanger},
+			{Timestamp: "12:47:03.185", Tag: "rule", Text: "category: ads", Tone: display.ScrollbackToneWarning},
+			{Timestamp: "12:47:03.185", Tag: "action", Text: "NXDOMAIN", Tone: display.ScrollbackToneDanger},
+			{Timestamp: "12:47:03.185", Tag: "ttl", Text: "86400s", Tone: display.ScrollbackToneSuccess},
+		},
+	})
 	@demoSection("Image", "display-image")
 	<div class="flex items-center gap-4">
 		@display.Image(display.ImageProps{Src: "https://ui-avatars.com/api/?name=Demo&size=96", Alt: "Demo", Width: 96, Height: 96})

@@ -61,7 +61,7 @@ func TestEyebrowA11y(t *testing.T) {
 	t.Run("neutral text has dark mode variant", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Eyebrow(EyebrowProps{Text: "x"}))
-		utils.AssertContains(t, output, "text-gray-500 dark:text-gray-400")
+		utils.AssertContainsAll(t, output, "text-gray-500", "dark:text-gray-400")
 	})
 }
 

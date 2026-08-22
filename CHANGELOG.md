@@ -6,6 +6,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`display.Eyebrow` — the overline label pattern lifted from the dnsblockd block-page UI.** A small uppercase monospace label rendered above a title (`Deploy #142 · production`), reading as status rather than decoration. Neutral gray by default; the consumer makes it the tonal signal of a page family via `BaseProps.Class` (`Class: "text-red-600 dark:text-red-400"`), matching the `@theme` remap theming model — no color props. Renders nothing when `Text` is empty. Pairs with `PageHeader`, card headers, and split-panel identity zones.
+- **`display.Scrollback` — a terminal-style log block with a CSS-only staggered line entrance, generalized from the dnsblockd block page's signature DNS-trace element.** Each `ScrollbackLine` renders a timestamp column, a tone-colored tag column (`ScrollbackTone`: neutral/info/success/warning/danger, unknown values fall back to neutral), and free text in monospace. The entrance animation is pure CSS (`.tc-log-line` nth-child delays in `templates/custom.css`, capped at 8 entries with an `n+9` catch-all): zero JavaScript, `prefers-reduced-motion: reduce` shows all lines immediately, and `Stagger: false` (the zero value — `DefaultScrollbackProps()` opts in) renders instantly. Decorative by default (`aria-hidden="true"`); pass `AriaLabel` when the trace carries real information. Long unbroken tokens wrap via `overflow-wrap: anywhere`.
+- **Tailwind scanning determinism docs** — `docs/tailwind-v4-adoption-guide.md` gained the `source(none)` + `@source not` + gitignored-vendor-path guidance proven in dnsblockd's Nix build, and a new recipe (`docs/recipes/vendored-tailwind-scanning.md`) documents the tracked class-inventory file pattern (`gen-library-classes.sh`) that makes vendored-library scanning environment-independent. `docs/recipes/split-identity-page.md` documents the two-zone identity/action page composition (Eyebrow + Scrollback + `layout.Split` + tone-driven accents) behind the dnsblockd block page.
+
 ## [1.9.0] — 2026-08-21
 
 ### Added

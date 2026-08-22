@@ -49,8 +49,14 @@ func TestReleaseScriptInvariants(t *testing.T) {
 	checkContains(
 		t,
 		script,
-		"trap release_rollback EXIT",
+		"trap release_cleanup EXIT",
 		"must install an EXIT-trap rollback so a failed verify restores version files",
+	)
+	checkContains(
+		t,
+		script,
+		"release_cleanup()",
+		"the rollback hook must exist (renamed from release_rollback when the v1.9.0 fix merged both EXIT traps into one)",
 	)
 	checkContains(
 		t,

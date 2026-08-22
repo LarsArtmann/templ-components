@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-116 components across 11 packages + 106 icons. If you're about to hand-roll
+118 components across 11 packages + 106 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -49,7 +49,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 38 components
+#### `display` — 40 components
 
 | Component            | Signature                                           | One-liner                                                                                                                                        |
 | -------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -75,6 +75,8 @@ Don't know what to look for? Find your page type:
 | `PageHeader`         | `PageHeader(props PageHeaderProps)`                 | Page title block — title, subtitle, breadcrumb, action slots                                                                                     |
 | `DefinitionList`     | `DefinitionList(props DefinitionListProps)`         | Two-column `<dl>` key/value list                                                                                                                 |
 | `ListNote`           | `ListNote(props ListNoteProps)`                     | "Showing N of M" truncation notice                                                                                                               |
+| `Eyebrow`            | `Eyebrow(props EyebrowProps)`                       | Small uppercase monospace overline above a title; accent color via `Class`                                                                        |
+| `Scrollback`         | `Scrollback(props ScrollbackProps)`                 | Terminal-style log block — timestamp + tone-colored tags, CSS-only staggered entrance, reduced-motion safe, zero JS                               |
 | `CopyButton`         | `CopyButton(props CopyButtonProps)`                 | Clipboard copy button or link — CSP-safe, "Copied!" feedback, optional `Href` variant                                                            |
 | `RelativeTime`       | `RelativeTime(props RelativeTimeProps)`             | `<time datetime>` with relative text ("2 hours ago")                                                                                             |
 | `CountBadge`         | `CountBadge(props CountBadgeProps)`                 | Icon + notification count overlay — overflow "N+"                                                                                                |

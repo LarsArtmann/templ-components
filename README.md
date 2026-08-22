@@ -22,7 +22,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-116 server-rendered components. 53 typed string enums (50 with IsValid()). 106 SVG icons. Zero client-side framework.
+118 server-rendered components. 54 typed string enums (51 with IsValid()). 106 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -31,7 +31,7 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **CSS approach**       | Tailwind v4 (CSS-first)                        | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
 | **JavaScript**         | HATEOAS (enhances HTML)                        | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js**   | No                                             | No                            | Yes                                            |
-| **Components**         | 116                                            | 40+                           | —                                              |
+| **Components**         | 118                                            | 40+                           | —                                              |
 | **Typed props**        | 52 enums                                       | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)                              | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts)                     | Yes                           | —                                              |
@@ -101,9 +101,9 @@ templ generate && go run .
 
 ## Component Catalog
 
-### `display` — Data Display (38 components)
+### `display` — Data Display (40 components)
 
-Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, collapsible sections, heatmaps, **native SVG charts** (LineChart, AreaChart, PieChart/Donut), and more.
+Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, collapsible sections, heatmaps, **native SVG charts** (LineChart, AreaChart, PieChart/Donut), eyebrows, terminal-style log scrollbacks, and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {
@@ -137,6 +137,16 @@ Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, toolt
 @display.Modal(display.ModalProps{Title: "Confirm", Size: display.ModalSizeSM}) {
     <p>Are you sure?</p>
 }
+
+@display.Eyebrow(display.EyebrowProps{Text: "Deploy #142 · production"})
+
+@display.Scrollback(display.ScrollbackProps{
+    Stagger: true,
+    Lines: []display.ScrollbackLine{
+        {Timestamp: "12:47:03.184", Tag: "query", Text: "ads.example.com A", Tone: display.ScrollbackToneInfo},
+        {Timestamp: "12:47:03.185", Tag: "action", Text: "NXDOMAIN", Tone: display.ScrollbackToneDanger},
+    },
+})
 ```
 
 ### `feedback` — User Feedback (13 components)
@@ -302,7 +312,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 
 | Metric         | Value                                               |
 | -------------- | --------------------------------------------------- |
-| Components     | 116                                                 |
+| Components     | 118                                                 |
 | SVG icons      | 102                                                 |
 | Typed enums    | 53 (50 with IsValid)                                |
 | Packages       | 15                                                  |
