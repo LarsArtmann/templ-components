@@ -54,17 +54,27 @@ func Get(url string) string {
 	return actionExpr("get", url)
 }
 
-// getActionExpr builds an @get expression with a retry option. RetryAuto
-// renders the bare @get('url') form (identical to Get); every other valid
-// mode appends the runtime's retry argument. Invalid modes degrade to auto.
-func getActionExpr(url string, retry RetryMode) string {
+// getActionExpr builds an @get expression with retry and requestCancellation
+// options. RetryAuto and CancellationNone are the runtime defaults and are
+// omitted; any other valid combination emits only the non-default options.
+func getActionExpr(url string, retry RetryMode, cancellation RequestCancellation) string {
 	escaped := strings.ReplaceAll(url, "'", "\\'")
 
+	var opts []string
+
 	if mode := retryModeValue(retry); mode != RetryAuto {
-		return fmt.Sprintf("@get('%s', {retry: '%s'})", escaped, mode)
+		opts = append(opts, fmt.Sprintf("retry: '%s'", mode))
 	}
 
-	return fmt.Sprintf("@get('%s')", escaped)
+	if requestCancellationValue(cancellation) == CancellationCleanup {
+		opts = append(opts, "requestCancellation: 'cleanup'")
+	}
+
+	if len(opts) == 0 {
+		return fmt.Sprintf("@get('%s')", escaped)
+	}
+
+	return fmt.Sprintf("@get('%s', {%s})", escaped, strings.Join(opts, ", "))
 }
 
 // Post returns a Datastar @post('url') action expression.

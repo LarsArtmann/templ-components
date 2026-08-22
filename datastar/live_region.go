@@ -72,6 +72,15 @@ type LiveRegionProps struct {
 	// RetryAlways. See RetryMode for the full behaviour matrix.
 	Retry RetryMode
 
+	// Cancellation controls whether the in-flight stream request is
+	// aborted when this element is removed from the DOM. Set
+	// CancellationCleanup when an HTMX swap replaces this region (e.g. a
+	// filter change re-renders it with a different URL): without it the
+	// old stream survives the swap and keeps re-patching the region with
+	// stale content that races the replacement's stream. Defaults to
+	// CancellationNone (the runtime default).
+	Cancellation RequestCancellation
+
 	// Live sets the aria-live politeness for screen-reader announcements.
 	// Defaults to LivePolite.
 	Live LivePoliteness

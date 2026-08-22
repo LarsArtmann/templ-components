@@ -84,6 +84,57 @@ func TestLiveRegionRetryModes(t *testing.T) {
 	}
 }
 
+func TestLiveRegionCancellation(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		retry        RetryMode
+		cancellation RequestCancellation
+		want         string
+	}{
+		{
+			"none is the bare runtime default",
+			RetryAuto, CancellationNone,
+			`data-init="@get(&#39;/stream/events&#39;)"`,
+		},
+		{
+			"cleanup alone",
+			RetryAuto, CancellationCleanup,
+			`data-init="@get(&#39;/stream/events&#39;, {requestCancellation: &#39;cleanup&#39;})"`,
+		},
+		{
+			"always plus cleanup — the swapped-region combination",
+			RetryAlways, CancellationCleanup,
+			`data-init="@get(&#39;/stream/events&#39;, {retry: &#39;always&#39;, requestCancellation: &#39;cleanup&#39;})"`,
+		},
+		{
+			"error retry plus cleanup keeps both options",
+			RetryError, CancellationCleanup,
+			`data-init="@get(&#39;/stream/events&#39;, {retry: &#39;error&#39;, requestCancellation: &#39;cleanup&#39;})"`,
+		},
+		{
+			"bogus cancellation degrades to none",
+			RetryAuto, "bogus",
+			`data-init="@get(&#39;/stream/events&#39;)"`,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			output := utils.Render(t, LiveRegion(LiveRegionProps{
+				URL:          "/stream/events",
+				AutoStart:    true,
+				Retry:        tt.retry,
+				Cancellation: tt.cancellation,
+			}))
+
+			utils.AssertContains(t, output, tt.want)
+		})
+	}
+}
+
 func TestLiveRegionWithID(t *testing.T) {
 	t.Parallel()
 

@@ -66,7 +66,7 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		live := livePolitenessValue(props.Live)
-		init := getActionExpr(props.URL, props.Retry)
+		init := getActionExpr(props.URL, props.Retry, props.Cancellation)
 		var templ_7745c5c3_Var2 = []any{utils.Class("", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {

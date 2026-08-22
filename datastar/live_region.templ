@@ -38,7 +38,7 @@ import "github.com/larsartmann/templ-components/utils"
 //	}
 templ LiveRegion(props LiveRegionProps) {
 	{{ live := livePolitenessValue(props.Live) }}
-	{{ init := getActionExpr(props.URL, props.Retry) }}
+	{{ init := getActionExpr(props.URL, props.Retry, props.Cancellation) }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
