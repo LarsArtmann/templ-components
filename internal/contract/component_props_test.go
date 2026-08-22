@@ -34,9 +34,11 @@ func componentTypes() []any {
 		datastar.LiveRegionProps{},
 		datastar.IndicatorProps{},
 
-		// display (28)
+		// display (32)
 		display.BadgeProps{},
 		display.AvatarProps{},
+		display.EyebrowProps{},
+		display.ScrollbackProps{},
 		display.TooltipProps{},
 		display.AccordionProps{},
 		display.ButtonProps{},

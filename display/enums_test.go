@@ -13,6 +13,10 @@ func TestIsValidEnums(t *testing.T) {
 		// BadgeType
 		{"BadgeType primary", func() bool { return BadgeTypeIsValid(BadgePrimary) }, true},
 		{"BadgeType invalid", func() bool { return BadgeTypeIsValid(BadgeType("bogus")) }, false},
+		// ScrollbackTone
+		{"ScrollbackTone Neutral", func() bool { return ScrollbackToneIsValid(ScrollbackToneNeutral) }, true},
+		{"ScrollbackTone Danger", func() bool { return ScrollbackToneIsValid(ScrollbackToneDanger) }, true},
+		{"ScrollbackTone invalid", func() bool { return ScrollbackToneIsValid(ScrollbackTone("bogus")) }, false},
 		// BadgeSize
 		{"BadgeSize SM", func() bool { return BadgeSizeIsValid(BadgeSizeSM) }, true},
 		{"BadgeSize invalid", func() bool { return BadgeSizeIsValid(BadgeSize("bogus")) }, false},
