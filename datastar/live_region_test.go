@@ -105,12 +105,14 @@ func TestLiveRegionCancellation(t *testing.T) {
 		},
 		{
 			"always plus cleanup — the swapped-region combination",
-			RetryAlways, CancellationCleanup,
+			RetryAlways,
+			CancellationCleanup,
 			`data-init="@get(&#39;/stream/events&#39;, {retry: &#39;always&#39;, requestCancellation: &#39;cleanup&#39;})"`,
 		},
 		{
 			"error retry plus cleanup keeps both options",
-			RetryError, CancellationCleanup,
+			RetryError,
+			CancellationCleanup,
 			`data-init="@get(&#39;/stream/events&#39;, {retry: &#39;error&#39;, requestCancellation: &#39;cleanup&#39;})"`,
 		},
 		{

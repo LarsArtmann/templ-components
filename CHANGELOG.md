@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`datastar.RequestCancellation` enum + `LiveRegionProps.Cancellation` — swapped regions can now abort their old stream.** When an HTMX swap replaces a LiveRegion (a filter change re-rendering it with a different stream URL), the runtime default lets the previous request survive element removal and keep re-patching the region with stale content that races the replacement's stream. `CancellationCleanup` renders `requestCancellation: 'cleanup'`, aborting the in-flight request the moment its element leaves the DOM. Combines with `Retry` for the resilient swapped-region form `@get(url, {retry: 'always', requestCancellation: 'cleanup'})`. `CancellationNone` (the default) keeps the bare expression; invalid values degrade to none; only non-default options are emitted. `TestPinnedRuntimeBundleContract` now also pins the `requestCancellation` token in the runtime bundle.
+
 ### Fixed
 
 - **Release-cut integrity after the v1.10.0 daemon race.** `scripts/release.sh` now compiles all five compiled-CSS distribution targets before committing (the v1.10.0 tag shipped `templates/styles.css`, `examples/demo/demo.out.css`, and the website stylesheet one release stale; master was refreshed immediately after the cut), strips the root self-replace directive along with the sub-module ones, and asserts the release commit's tree — version files agree, go.mod files replace-free — before creating the immutable tags. Verified against proxy-fetched v1.10.0: `go get`, consumer builds, and the `cmd/tc` CLI all work despite the tag's blemishes.

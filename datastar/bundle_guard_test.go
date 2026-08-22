@@ -35,6 +35,10 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 		`"always"`,
 		`"error"`,
 		`"never"`,
+		// Request-cancellation option consumed by
+		// LiveRegionProps.Cancellation — under cleanup mode the runtime
+		// aborts the in-flight stream when the element leaves the DOM.
+		"requestCancellation",
 	} {
 		if !strings.Contains(bundle, token) {
 			t.Errorf(

@@ -50,6 +50,17 @@
 //	    })
 //	}
 //
+// Two options are load-bearing on real deployments:
+//
+//   - Retry: RetryAlways — the runtime default ('auto') never reconnects
+//     after a clean stream EOF, which is exactly what a server restart
+//     produces. Without it the region goes permanently stale.
+//   - Cancellation: CancellationCleanup — when an HTMX swap replaces the
+//     region (e.g. a filter change re-renders it with a different URL),
+//     cleanup aborts the old stream so it cannot keep re-patching the
+//     region with stale content. The swapped-region combination renders
+//     @get(url, {retry: 'always', requestCancellation: 'cleanup'}).
+//
 // The server endpoint streams patches using go-datastar. Target a child
 // element by selector — patch modes other than the default outer mode
 // require one, and the default outer mode matches incoming root elements
