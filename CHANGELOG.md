@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.10.0] — 2026-08-22
+
 ### Added
 
 - **`display.Eyebrow` — the overline label pattern lifted from the dnsblockd block-page UI.** A small uppercase monospace label rendered above a title (`Deploy #142 · production`), reading as status rather than decoration. Neutral gray by default; the consumer makes it the tonal signal of a page family via `BaseProps.Class` (`Class: "text-red-600 dark:text-red-400"`), matching the `@theme` remap theming model — no color props. Renders nothing when `Text` is empty. Pairs with `PageHeader`, card headers, and split-panel identity zones.
