@@ -13,8 +13,8 @@ func TestEyebrowGoldenSweep(t *testing.T) {
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "eyebrow_default", HTML: utils.Render(t, Eyebrow(EyebrowProps{Text: "Deploy #142 · production"}))},
 		{Name: "eyebrow_accent", HTML: utils.Render(t, Eyebrow(EyebrowProps{
-			Text:       "DNS block · 12:47:03",
-			BaseProps:  utils.BaseProps{Class: "text-red-600 dark:text-red-400"},
+			Text:      "DNS block · 12:47:03",
+			BaseProps: utils.BaseProps{Class: "text-red-600 dark:text-red-400"},
 		}))},
 		{Name: "eyebrow_empty", HTML: utils.Render(t, Eyebrow(DefaultEyebrowProps()))},
 	})
@@ -70,6 +70,7 @@ func TestEyebrowEdgeCases(t *testing.T) {
 
 	t.Run("empty text renders nothing", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, Eyebrow(EyebrowProps{}))
 		if output != "" {
 			t.Errorf("expected empty output, got %q", output)
@@ -78,6 +79,7 @@ func TestEyebrowEdgeCases(t *testing.T) {
 
 	t.Run("propagates id and attrs", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, Eyebrow(EyebrowProps{
 			Text: "x",
 			BaseProps: utils.BaseProps{

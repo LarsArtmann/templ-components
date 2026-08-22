@@ -110,10 +110,12 @@ func TestScrollbackA11y(t *testing.T) {
 
 	t.Run("reduced-motion users see all lines immediately (CSS guard)", func(t *testing.T) {
 		t.Parallel()
+
 		css, err := os.ReadFile("../templates/custom.css")
 		if err != nil {
 			t.Fatalf("read custom.css: %v", err)
 		}
+
 		styles := string(css)
 		for _, want := range []string{
 			".tc-log-line",
@@ -133,6 +135,7 @@ func TestScrollbackEdgeCases(t *testing.T) {
 
 	t.Run("empty lines render nothing", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, Scrollback(DefaultScrollbackProps()))
 		if output != "" {
 			t.Errorf("expected empty output, got %q", output)
@@ -149,6 +152,7 @@ func TestScrollbackEdgeCases(t *testing.T) {
 
 	t.Run("lines without timestamp or tag omit the empty columns", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, Scrollback(ScrollbackProps{
 			Lines: []ScrollbackLine{{Text: "bare line"}},
 		}))
@@ -159,10 +163,12 @@ func TestScrollbackEdgeCases(t *testing.T) {
 
 	t.Run("more than 8 lines still render (stagger cap is CSS-only)", func(t *testing.T) {
 		t.Parallel()
+
 		lines := make([]ScrollbackLine, 12)
 		for i := range lines {
 			lines[i] = ScrollbackLine{Tag: "l", Text: strings.Repeat("x", i+1)}
 		}
+
 		output := utils.Render(t, Scrollback(ScrollbackProps{Stagger: true, Lines: lines}))
 		if got := strings.Count(output, "tc-log-line"); got != 12 {
 			t.Errorf("expected 12 line divs, got %d", got)
@@ -171,6 +177,7 @@ func TestScrollbackEdgeCases(t *testing.T) {
 
 	t.Run("no physical RTL properties are emitted", func(t *testing.T) {
 		t.Parallel()
+
 		output := utils.Render(t, Scrollback(ScrollbackProps{Lines: scrollbackFixtureLines()}))
 		for _, physical := range []string{" ml-", " mr-", " pl-", " pr-", "text-left", "text-right"} {
 			if strings.Contains(output, physical) {
