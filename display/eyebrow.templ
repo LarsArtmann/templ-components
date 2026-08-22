@@ -1,0 +1,39 @@
+package display
+
+import "github.com/larsartmann/templ-components/utils"
+
+// EyebrowProps configures a small uppercase overline label rendered above a
+// title. Eyebrows read as status, not decoration: use them to anchor the eye
+// before a headline (e.g. "DNS block · 12:47:03" above a page title).
+type EyebrowProps struct {
+	utils.BaseProps
+	Text string
+}
+
+// DefaultEyebrowProps returns sensible defaults
+func DefaultEyebrowProps() EyebrowProps {
+	return EyebrowProps{}
+}
+
+// Eyebrow renders a small monospace uppercase overline label. Rendered
+// neutral gray by default; pass an accent color via BaseProps.Class
+// (e.g. Class: "text-red-600 dark:text-red-400") to make it the tonal
+// signal of a page family. Renders nothing when Text is empty.
+//
+//	@display.Eyebrow(display.EyebrowProps{Text: "Deploy #142 · production"})
+templ Eyebrow(props EyebrowProps) {
+	if props.Text != "" {
+		<p
+			if props.ID != "" {
+				id={ props.ID }
+			}
+			class={ utils.Class("font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gray-500 dark:text-gray-400", props.Class) }
+			if props.AriaLabel != "" {
+				aria-label={ props.AriaLabel }
+			}
+			{ props.Attrs... }
+		>
+			{ props.Text }
+		</p>
+	}
+}

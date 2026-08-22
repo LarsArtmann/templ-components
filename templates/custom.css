@@ -208,6 +208,74 @@
   }
 }
 
+/* --- Scrollback: terminal-style log block --- */
+/* The .tc-log container wraps Scrollback's monospace lines; overflow-wrap
+   keeps long unbroken tokens (domains, hashes) from blowing out layouts. */
+.tc-log {
+  overflow-wrap: anywhere;
+}
+
+/* Line entrance: pure CSS, no JavaScript. With .tc-log-line each line fades
+   in 4px below its resting position; nth-child delays reveal lines
+   top-down. Delays are capped at 8 entries — the n+9 catch-all pins later
+   lines to the final delay so long logs still read sequentially. */
+.tc-log-line {
+  opacity: 0;
+  transform: translateY(4px);
+  animation: tc-log-in 360ms cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.tc-log-line:nth-child(1) {
+  animation-delay: 60ms;
+}
+.tc-log-line:nth-child(2) {
+  animation-delay: 360ms;
+}
+.tc-log-line:nth-child(3) {
+  animation-delay: 660ms;
+}
+.tc-log-line:nth-child(4) {
+  animation-delay: 960ms;
+}
+.tc-log-line:nth-child(5) {
+  animation-delay: 1260ms;
+}
+.tc-log-line:nth-child(6) {
+  animation-delay: 1560ms;
+}
+.tc-log-line:nth-child(7) {
+  animation-delay: 1860ms;
+}
+.tc-log-line:nth-child(8) {
+  animation-delay: 2160ms;
+}
+.tc-log-line:nth-child(n + 9) {
+  animation-delay: 2160ms;
+}
+
+@keyframes tc-log-in {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger disabled (ScrollbackProps.Stagger = false): render immediately. */
+.tc-log-line.tc-log-line-still {
+  opacity: 1;
+  transform: none;
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tc-log-line {
+    opacity: 1;
+    transform: none;
+    animation: none;
+  }
+}
+
+
 /* --- <details> marker reset (Accordion) --- */
 summary {
   list-style: none;
