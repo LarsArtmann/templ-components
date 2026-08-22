@@ -6,6 +6,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Release-cut integrity after the v1.10.0 daemon race.** `scripts/release.sh` now compiles all five compiled-CSS distribution targets before committing (the v1.10.0 tag shipped `templates/styles.css`, `examples/demo/demo.out.css`, and the website stylesheet one release stale; master was refreshed immediately after the cut), strips the root self-replace directive along with the sub-module ones, and asserts the release commit's tree — version files agree, go.mod files replace-free — before creating the immutable tags. Verified against proxy-fetched v1.10.0: `go get`, consumer builds, and the `cmd/tc` CLI all work despite the tag's blemishes.
+- `visualtest` module: sibling requires bumped to v1.10.0, matching the release cut.
+
 ## [1.10.0] — 2026-08-22
 
 ### Added

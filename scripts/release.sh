@@ -31,6 +31,16 @@
 #
 # Required: GPG/SSH signing key configured (the tag signing matches v0.5.0).
 # Does NOT push. House rule: "NEVER PUSH TO REMOTE" — push manually after review.
+#
+# NOTE (v1.10.0 incident): the auto-commit daemon raced this script mid-cut —
+# it committed the in-flight version bumps, pushed the tags before the script
+# finished, and BuildFlow recompiled the CSS distribution targets only AFTER
+# the release commit was written. Two blemishes shipped in the v1.10.0 tag: a
+# leftover root self-replace directive and compiled CSS one release stale.
+# Both are functionally harmless for consumers (dependency replace directives
+# are ignored; CSS compiles from source), but the multi-target CSS compile
+# below and the step-8b pre-tag tree assertions are the hardening. Pushed tags
+# are immutable — verify the release tree BEFORE creating them.
 
 set -euo pipefail
 
@@ -256,12 +266,18 @@ echo "Running full verify (templ generate + CSS compile + per-module build/test/
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...
 
-# Recompile demo CSS so committed static/app.css includes any new Tailwind
-# classes from source changes.
+# Recompile every compiled-CSS distribution target so the release commit
+# ships fresh artifacts (commands verified byte-identical to BuildFlow's
+# tailwind-build output). v1.10.0 shipped these one release stale because
+# BuildFlow only recompiled them after the release commit was written.
 if command -v tailwindcss &>/dev/null; then
+	tailwindcss -i templates/app.css -o templates/styles.css --minify
+	tailwindcss -i templates/templ-components-theme.css -o templates/templ-components-theme.out.css --minify
 	tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css --minify
+	tailwindcss -i examples/demo/demo.css -o examples/demo/demo.out.css --minify
+	tailwindcss -i website/src/styles/global.css -o website/src/styles/global.out.css --minify
 else
-	echo "Warning: tailwindcss not found — demo CSS not recompiled." >&2
+	echo "Warning: tailwindcss not found — compiled CSS not recompiled." >&2
 	echo "Run 'nix run .#build' or install tailwindcss to recompile." >&2
 fi
 
@@ -302,8 +318,11 @@ fi
 #     they are re-added after tagging (step 10).
 for modfile in $MODFILES; do
 	backup_name="$(echo "$modfile" | tr '/' '_')"
-	grep '^replace github.com/larsartmann/templ-components/' "$modfile" >"${REPLACE_BACKUP_DIR}/${backup_name}" 2>/dev/null || true
-	sed -i.bak '/^replace github.com\/larsartmann\/templ-components\//d' "$modfile"
+	# [ /] matches BOTH sub-module replaces (".../utils => ./utils") and the
+	# root self-replace ("...templ-components => ./"). The old trailing-slash
+	# pattern leaked the self-replace into the v1.10.0 tag's go.mod.
+	grep -E '^replace github\.com/larsartmann/templ-components[ /]' "$modfile" >"${REPLACE_BACKUP_DIR}/${backup_name}" 2>/dev/null || true
+	sed -i.bak -E '/^replace github\.com\/larsartmann\/templ-components[ \/]/d' "$modfile"
 	rm -f "${modfile}.bak"
 	# Clean up resulting consecutive blank lines
 	sed -i.bak '/^$/N;/^\n$/d' "$modfile"
@@ -341,6 +360,31 @@ Co-Authored-By: Crush <noreply@crush.lars.software>"
 
 RELEASE_COMMITTED=1 # commit landed; EXIT trap no longer rolls back
 RELEASE_COMMIT="$(git rev-parse HEAD)"
+
+# 8b. Assert the release commit's TREE before tagging. The auto-commit
+#     daemon can split a cut across intermediate commits (v1.10.0: the
+#     version bumps landed in a daemon commit, so the script's own commit
+#     only carried the replace strip). Tags are immutable once pushed —
+#     verify the tree, not the diff, before creating them.
+if [ "$(git show HEAD:utils/version.go | grep -E '^const[[:space:]]+Version' | sed -E 's/.*"([^"]+)".*/\1/')" != "$NEW_VERSION" ]; then
+	echo "Error: HEAD tree utils/version.go is not $NEW_VERSION (daemon race?)." >&2
+	exit 1
+fi
+git show HEAD:CHANGELOG.md | grep -q "^## \[${NEW_VERSION}\] — " || {
+	echo "Error: HEAD tree CHANGELOG.md lacks the [${NEW_VERSION}] heading." >&2
+	exit 1
+}
+git show HEAD:FEATURES.md | grep -q "\*\*Version:\*\* ${NEW_VERSION}" || {
+	echo "Error: HEAD tree FEATURES.md version is not ${NEW_VERSION}." >&2
+	exit 1
+}
+for modfile in $MODFILES; do
+	if git show "HEAD:${modfile}" | grep -qE '^replace github\.com/larsartmann/templ-components[ /]'; then
+		echo "Error: HEAD tree ${modfile} still contains templ-components replace directives." >&2
+		exit 1
+	fi
+done
+echo "Release commit tree verified: version files agree, go.mod files replace-free."
 
 # 9. Annotated, SSH-signed tags (root + all sub-modules).
 git tag -s "v${NEW_VERSION}" -m "v${NEW_VERSION}: ${RELEASE_SUMMARY}" "$RELEASE_COMMIT"
