@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.11.0] — 2026-08-22
+
 ### Added
 
 - **`datastar.RequestCancellation` enum + `LiveRegionProps.Cancellation` — swapped regions can now abort their old stream.** When an HTMX swap replaces a LiveRegion (a filter change re-rendering it with a different stream URL), the runtime default lets the previous request survive element removal and keep re-patching the region with stale content that races the replacement's stream. `CancellationCleanup` renders `requestCancellation: 'cleanup'`, aborting the in-flight request the moment its element leaves the DOM. Combines with `Retry` for the resilient swapped-region form `@get(url, {retry: 'always', requestCancellation: 'cleanup'})`. `CancellationNone` (the default) keeps the bare expression; invalid values degrade to none; only non-default options are emitted. `TestPinnedRuntimeBundleContract` now also pins the `requestCancellation` token in the runtime bundle.
