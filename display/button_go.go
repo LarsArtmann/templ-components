@@ -16,6 +16,15 @@ const (
 	ButtonDanger    ButtonType = "danger"
 	ButtonGhost     ButtonType = "ghost"
 	ButtonLink      ButtonType = "link"
+
+	// Outline variants: neutral shell (white/transparent, colored ring and
+	// text) for secondary destructive/warning/informative actions such as
+	// row-level Undo, Restore, or Report-spam buttons. They pair with the
+	// filled Primary/Danger for the main action of a toolbar.
+	ButtonOutlineDanger  ButtonType = "outline-danger"
+	ButtonOutlineWarning ButtonType = "outline-warning"
+	ButtonOutlineSuccess ButtonType = "outline-success"
+	ButtonOutlineInfo    ButtonType = "outline-info"
 )
 
 // ButtonSize defines the size of a button.
@@ -84,6 +93,11 @@ var buttonVariantLookup = map[ButtonType]string{
 	ButtonDanger:    "bg-red-600 text-white hover:bg-red-500 dark:bg-red-500 dark:hover:bg-red-400 focus-visible:outline-red-600 dark:focus-visible:outline-red-500",
 	ButtonGhost:     "bg-transparent text-gray-700 hover:bg-gray-100 dark:text-gray-200 dark:hover:bg-gray-700",
 	ButtonLink:      "bg-transparent text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300 underline-offset-2 hover:underline",
+
+	ButtonOutlineDanger:  "bg-transparent text-red-600 ring-1 ring-inset ring-red-300 hover:bg-red-50 dark:text-red-400 dark:ring-red-800 dark:hover:bg-red-900/20 focus-visible:outline-red-600 dark:focus-visible:outline-red-400",
+	ButtonOutlineWarning: "bg-transparent text-amber-600 ring-1 ring-inset ring-amber-300 hover:bg-amber-50 dark:text-amber-400 dark:ring-amber-800 dark:hover:bg-amber-900/20 focus-visible:outline-amber-600 dark:focus-visible:outline-amber-400",
+	ButtonOutlineSuccess: "bg-transparent text-green-600 ring-1 ring-inset ring-green-300 hover:bg-green-50 dark:text-green-400 dark:ring-green-800 dark:hover:bg-green-900/20 focus-visible:outline-green-600 dark:focus-visible:outline-green-400",
+	ButtonOutlineInfo:    "bg-transparent text-blue-600 ring-1 ring-inset ring-blue-300 hover:bg-blue-50 dark:text-blue-400 dark:ring-blue-800 dark:hover:bg-blue-900/20 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-400",
 }
 
 func buttonVariantClasses(v ButtonType) string {
