@@ -425,3 +425,24 @@ func TestStatCardTone(t *testing.T) {
 		}
 	}
 }
+
+// The default-tone back-compat promise: a StatCard without Tone renders
+// byte-identically to the explicit blue tone, so every pre-Tone call site
+// keeps its exact previous output when the library is bumped.
+func TestStatCardDefaultToneByteIdentical(t *testing.T) {
+	t.Parallel()
+
+	props := StatCardProps{Label: "Uptime", Value: "42", Icon: icons.Check}
+
+	unset := utils.Render(t, StatCard(props))
+	blue := utils.Render(t, StatCard(StatCardProps{
+		Label: props.Label,
+		Value: props.Value,
+		Icon:  props.Icon,
+		Tone:  StatToneBlue,
+	}))
+
+	if unset != blue {
+		t.Errorf("StatCard without Tone must render byte-identically to StatToneBlue\nunset: %s\nblue:  %s", unset, blue)
+	}
+}
