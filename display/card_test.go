@@ -2,6 +2,7 @@
 package display
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/a-h/templ"
@@ -385,4 +386,42 @@ func TestCardFeatures(t *testing.T) {
 		utils.AssertContains(t, output, "bg-white")
 		utils.AssertNotContains(t, output, "font-semibold")
 	})
+}
+
+// The Tone field selects the icon tile color (issue #3: dashboards need
+// semantic stat tones — green success, red failure, amber warning — instead
+// of a hard-coded blue tile). Unknown/empty tones keep the blue default.
+func TestStatCardTone(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		tone      StatTone
+		wantTile  string
+		notWanted string
+	}{
+		{StatToneGreen, "bg-green-50", "bg-blue-50"},
+		{StatToneYellow, "bg-yellow-50", "bg-blue-50"},
+		{StatToneRed, "bg-red-50", "bg-blue-50"},
+		{StatTonePurple, "bg-purple-50", "bg-blue-50"},
+		{StatToneBlue, "bg-blue-50", "bg-green-50"},
+		{StatTone("bogus"), "bg-blue-50", "bg-green-50"},
+		{StatTone(""), "bg-blue-50", "bg-green-50"},
+	}
+
+	for _, tc := range tests {
+		output := utils.Render(t, StatCard(StatCardProps{
+			Label: "Uptime",
+			Value: "42",
+			Icon:  icons.Check,
+			Tone:  tc.tone,
+		}))
+
+		if !strings.Contains(output, tc.wantTile) {
+			t.Errorf("tone %q: output missing tile class %q: %s", tc.tone, tc.wantTile, output)
+		}
+
+		if strings.Contains(output, tc.notWanted) && tc.notWanted != tc.wantTile {
+			t.Errorf("tone %q: output contains unexpected %q", tc.tone, tc.notWanted)
+		}
+	}
 }

@@ -1,6 +1,8 @@
 package display
 
 import (
+	"strings"
+
 	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
@@ -240,6 +242,20 @@ const (
 	TrendNone TrendDirection = "none"
 )
 
+// StatTone selects the semantic color of the StatCard icon tile. The zero
+// value is the neutral default (blue) so existing call sites are unaffected.
+type StatTone string
+
+// Stat tile tones. Match the palette of Badge/BadgeType: blue (default),
+// green, yellow, red, purple.
+const (
+	StatToneBlue   StatTone = "blue"
+	StatToneGreen  StatTone = "green"
+	StatToneYellow StatTone = "yellow"
+	StatToneRed    StatTone = "red"
+	StatTonePurple StatTone = "purple"
+)
+
 // StatCardProps configures a dashboard stat card
 type StatCardProps struct {
 	utils.BaseProps
@@ -247,6 +263,9 @@ type StatCardProps struct {
 	Label  string
 	Change string
 	Trend  TrendDirection
+	// Tone selects the semantic color of the Icon tile. Empty/unknown
+	// values fall back to the blue default.
+	Tone StatTone
 	// Icon optionally renders a leading icon tile (e.g. icons.Users).
 	Icon icons.Name
 	// Href, when non-empty, wraps the whole card in an <a> so the card acts
@@ -288,6 +307,31 @@ func normalizeTrend(t TrendDirection) TrendDirection {
 		return t
 	}
 	return TrendNone
+}
+
+// statTileLookup maps each StatTone onto the icon tile background and icon
+// color classes. Unknown/empty tones fall back to the blue default.
+//
+//nolint:gochecknoglobals // Package-level lookup table, same pattern as button variants
+var statTileLookup = map[StatTone]string{
+	StatToneBlue:   "bg-blue-50 dark:bg-blue-900/30|h-6 w-6 text-blue-600 dark:text-blue-400",
+	StatToneGreen:  "bg-green-50 dark:bg-green-900/30|h-6 w-6 text-green-600 dark:text-green-400",
+	StatToneYellow: "bg-yellow-50 dark:bg-yellow-900/30|h-6 w-6 text-yellow-600 dark:text-yellow-400",
+	StatToneRed:    "bg-red-50 dark:bg-red-900/30|h-6 w-6 text-red-600 dark:text-red-400",
+	StatTonePurple: "bg-purple-50 dark:bg-purple-900/30|h-6 w-6 text-purple-600 dark:text-purple-400",
+}
+
+// statTileClasses returns the tile background class and icon class for the
+// tone, falling back to blue for unknown values.
+func statTileClasses(tone StatTone) (tile, icon string) {
+	classes, ok := statTileLookup[tone]
+	if !ok {
+		classes = statTileLookup[StatToneBlue]
+	}
+
+	tile, icon, _ = strings.Cut(classes, "|")
+
+	return tile, icon
 }
 
 // StatCard renders a dashboard stat card with value, label, optional change
@@ -350,9 +394,7 @@ templ StatCard(props StatCardProps) {
 templ statCardInner(props StatCardProps) {
 	if props.Icon != "" {
 		<div class="flex items-center gap-4">
-			<div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/30">
-				@icons.Icon(props.Icon, "h-6 w-6 text-blue-600 dark:text-blue-400")
-			</div>
+			@statTile(props.Tone, props.Icon)
 			<dl class="min-w-0 flex-1">
 				@statCardFigures(props)
 			</dl>
@@ -362,6 +404,14 @@ templ statCardInner(props StatCardProps) {
 			@statCardFigures(props)
 		</dl>
 	}
+}
+
+// statTile renders the colored icon tile; the tone picks the semantic color.
+templ statTile(tone StatTone, icon icons.Name) {
+	{{ tile, iconClass := statTileClasses(tone) }}
+	<div class={ "flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg", tile }>
+		@icons.Icon(icon, iconClass)
+	</div>
 }
 
 // statCardFigures renders the label, value, and optional change indicator shared

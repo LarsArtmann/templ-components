@@ -1,6 +1,7 @@
 package display
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -119,4 +120,33 @@ func TestButtonVariants(t *testing.T) {
 		output := utils.Render(t, Button(ButtonProps{Text: "Link", Variant: ButtonLink}))
 		utils.AssertContains(t, output, `text-blue-600`)
 	})
+}
+
+// Outline variants render their colored ring/text classes (issue #4: row
+// actions need secondary destructive/warning/informative buttons that pair
+// with a filled primary action).
+func TestButtonOutlineVariants(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		variant ButtonType
+		want    string
+	}{
+		{ButtonOutlineDanger, "ring-red-300"},
+		{ButtonOutlineWarning, "ring-amber-300"},
+		{ButtonOutlineSuccess, "ring-green-300"},
+		{ButtonOutlineInfo, "ring-blue-300"},
+	}
+
+	for _, tc := range tests {
+		output := utils.Render(t, Button(ButtonProps{Text: "Undo", Variant: tc.variant}))
+
+		if !strings.Contains(output, tc.want) {
+			t.Errorf("variant %q: output missing %q: %s", tc.variant, tc.want, output)
+		}
+
+		if !ButtonTypeIsValid(tc.variant) {
+			t.Errorf("variant %q should be valid", tc.variant)
+		}
+	}
 }
