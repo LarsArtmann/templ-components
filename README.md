@@ -22,7 +22,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-118 server-rendered components. 54 typed string enums (51 with IsValid()). 106 SVG icons. Zero client-side framework.
+118 server-rendered components. 54 typed string enums (52 with IsValid()). 106 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -317,7 +317,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | Typed enums    | 53 (50 with IsValid)                                |
 | Packages       | 15                                                  |
 | Tests          | ~1,070 test functions + ~1,240 subtests             |
-| Visual goldens | 66 pixel-level regression tests (chromedp)          |
+| Visual goldens | 72 pixel-level regression tests (chromedp)          |
 | Dependencies   | 3 (`templ`, `tailwind-merge-go`, `go-error-family`) |
 
 ---

@@ -31,11 +31,14 @@ This repo is a **7-module Go workspace** (`github.com/larsartmann/templ-componen
 # Full build (workspace mode via go.work — builds all 7 modules)
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./...
 
-# Tests (all modules via go.work)
-go test ./...
-
-# Per-module isolation tests (verify each module builds standalone without go.work)
-for mod in utils icons errorpage charts/echarts datastar; do (cd "$mod" && GOWORK=off go test ./...); done
+# CAUTION: `go test ./...` from the repo root (workspace mode) only runs the
+# ROOT module's packages — `go list ./...` lists ZERO utils/icons/... packages
+# even with go.work active (verified 2026-08-31: a utils drift-guard failure
+# was invisible to the root-form run and only CI's per-module step caught it).
+# The per-module loop below is the only COMPLETE local test form — always run
+# it before pushing.
+for mod in utils icons errorpage charts/echarts datastar htmx; do (cd "$mod" && GOWORK=off go test ./...); done
+(cd visualtest && GOWORK=off go test ./...) # compile check; use nix run .#visual for real runs
 
 # All-in-one verification
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && nix run .#lint
