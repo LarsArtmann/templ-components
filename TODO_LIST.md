@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-08-21 | **Version:** 1.8.4
+**Updated:** 2026-08-31 | **Version:** 1.11.0
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
@@ -18,6 +18,8 @@
 | 106 | Go toolchain bump to 1.26.6                            | Fixes GO-2026-5972 (`encoding/asn1`), GO-2026-6089 (`net/http`), GO-2026-6090 (`crypto/tls`) — all reachable via the demo's `http.Server` under go1.26.5, all fixed in 1.26.6. nixpkgs unstable still packages go1.26.5 (verified 2026-08-21). When bumping: update flake nixpkgs + `go` directive in all 8 `go.mod` files (root, utils, icons, errorpage, charts/echarts, htmx, datastar, visualtest). Harvested from `docs/status/2026-08-21_08-36_sse-audit-and-sse-stack-leverage.md` (f6). |
 | 107 | BuildFlow preflight: jsonv2 "redundant" claim is false | BuildFlow preflight reports `GOEXPERIMENT=jsonv2` as redundant ("no encoding/json/v2 imports"), but `errorpage/handler.go:6-7` imports `encoding/json/v2` + `jsontext` — the flag is load-bearing. Fix the preflight's scan (likely root-module-only, missing the workspace's sub-modules) in `larsartmann/buildflow`. Until fixed, ignore the preflight warning. Same-repo family as #93. (f7, resolved as no-op in this repo.)                                                                |
 | 108 | BuildFlow eslint-fix fails on any JS/TS change         | `eslint-fix` runs ESLint 10 at the repo root, but this Go repo has no eslint config anywhere (website/ has none either) → exit 2 "couldn't find eslint.config" whenever a `.ts`/`.js` file is in the changeset (first hit: 2026-08-21, `website/src/data/sections.ts` in the RetryMode count bump — commits had to bypass the hook). Fix in `larsartmann/buildflow`: scope eslint to directories that own a config, or add one.                                                                 |
+| 123 | Branch protection + required checks on master            | Needs repo-owner decision in GitHub settings; would have blocked the 9-day-red master window. (2026-08-22 report f11, 2026-08-31 report f33)                                                                                                                      |
+| 124 | BuildFlow: stop re-appending `*_templ.go` to `.gitignore` | Every pre-commit run re-adds the pattern, hiding NEW generated files from `git status` until `git add -f`. Same repo family as #93/#108 — fix lives in `larsartmann/buildflow`. (AGENTS.md BuildFlow gotcha; 2026-08-31 report f27)                                 |
 
 ---
 
@@ -38,7 +40,21 @@ _Harvested 2026-08-21 from `docs/status/2026-08-21_08-36_sse-audit-and-sse-stack
 | 102 | `cmd/tc` scaffolder: datastar pattern check               | Templates may predate the audit (event names, `WithSelector` requirements). (f45)                                                                                                                                                                                |
 | 103 | Recipe doc additions (datastar-integration.md)            | `datastar.NewResponseFromHTTP(w, r)` one-liner variant; `datastar-fetch` `started`/`finished` hooks for consumer analytics; cross-link `docs/datastar-runtime-facts.md` from Further Reading. (f22, f23, f26)                                                    |
 | 104 | CI upstream watch for `go-datastar/static` tags           | A scheduled check (or Dependabot/Renovate on the pin) that alerts when a new static bundle is published — the bundle-content guard (`TestPinnedRuntimeBundleContract`) turns a silent break into a red test, but the bump still needs a human to re-audit. (f33) |
-| 105 | Demo polish: short-mode guard + nonce consistency         | `testing.Short()` guard for the 2s-ticker endpoint test; replace hardcoded `Nonce: "demo-nonce"` in the SSEErrorHandling demo with `demoBaseProps()`. (f13, f14)                                                                                                 |
+| 105 | Demo polish: short-mode guard + nonce consistency         | `testing.Short()` guard for the 2s-ticker endpoint test; replace hardcoded `Nonce: "demo-nonce"` in the SSEErrorHandling demo with `demoBaseProps()`. (f13, f14)                                                                                                    |
+| 109 | Visual goldens: remaining tone/outline variants           | Only green/red StatTone and danger/warning outline have PNGs (`visualtest/visual_test.go`: `TestStatCardTones`, `TestButtonOutlineVariants`); add yellow/purple tones and success/info outline, light+dark. (2026-08-31 report f14) |
+| 110 | Eyebrow + Scrollback visual goldens                        | Still zero PNG coverage (`visualtest/testdata` has no eyebrow/scrollback dirs); add final-state light+dark plus a composition snapshot (Eyebrow+Scrollback+PageHeader). (2026-08-22 report f19–21, dnsblockd report f7/f12) |
+| 111 | Move CI "Verify no untracked changes" before the Test step | Fail fast on go.sum drift — the v1.11.0 class dirtied the tree but CI only reported it after tests. (2026-08-31 report f23) |
+| 112 | Add visualtest to `scripts/check-version-sync.sh`          | `check-module-sync.sh` covers it since `4833206`; the version-sync twin does not. (2026-08-31 report f24) |
+| 113 | Deflake the visualtest compile step in CI                  | proxy.golang.org `INTERNAL_ERROR` aborted run 33399151599 (rerun passed); add GOPROXY fallback or retry. (2026-08-31 report f12) |
+| 114 | Audit website pnpm lockfile for more manifest/lockfile splits | typescript was one instance of ERR_PNPM_OUTDATED_LOCKFILE (red since 2026-08-21, fixed in `423ea1b`); sweep for others. (2026-08-31 report f20) |
+| 115 | Document the visualtest sibling-pin policy                 | `docs/modularization/README.md` should state: visualtest requires siblings at the latest release version, re-tidied by `release.sh` step 10b (since `73cf7e5`). (2026-08-31 report f22) |
+| 116 | CI guard: PR touching components without CHANGELOG diff   | Mechanical enforcement of the always-warm `[Unreleased]` rule (was empty when PR #5 opened). (2026-08-31 report f18) |
+| 117 | Re-request or drop CodeRabbit                              | Rate-limited on both PR #5 runs — zero automated reviews actually happened. (2026-08-31 report f30) |
+| 118 | `docs/release-checklist.md` from the v1.9.0–v1.11.0 lessons | Distill verify-before-strip, single-EXIT-trap, re-add+tidy, tag lockstep, daemon races into one page. (2026-08-31 report f34) |
+| 119 | Fix local pnpm (bun shim lacks `node:sqlite`)              | `pnpm install` fails locally, so website lockfile changes can only be validated in CI. (2026-08-31 report f11) |
+| 120 | Investigate the CSS-recompile false negative               | Local `nix run .#css` showed no diff where CI's CSS Freshness did (2026-08-31, pre-`fabd1fb`); a repeat would rely on CI to catch stale CSS. (2026-08-31 session) |
+| 121 | `scripts/ci-repro.sh` — cold-cache local CI sequence       | Pre-push reproduction of CI's exact step order (incl. per-module GOWORK=off tests — the root-form workspace run misses sub-modules entirely, see AGENTS.md CAUTION). (2026-08-22 report f8) |
+| 122 | Bump `actions/checkout` + `upload-artifact` past Node-20   | Deprecation annotations in every run. (2026-08-22 report f12) |
 
 ---
 
