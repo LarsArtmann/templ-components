@@ -14,6 +14,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ### Fixed
 
 - **Master CI recovery after v1.11.0: the sub-module `go.sum` files and the `visualtest` module were left at v1.10.0, keeping every pipeline red for 9 days.** The post-release "re-add replace directives" commit restored local replaces but not the checksum refresh, so CI's per-module `go mod tidy` produced a dirty tree (Build & Test "Verify no untracked changes") and the Visual Regression job aborted on stale visualtest requires. All modules tidied to v1.11.0, a golines violation in the new StatCard back-compat test reformatted, and the demo CSS recompiled for the new outline/tone classes.
+- **Website workflow green again: the v1.9.0 release commit bumped `website/package.json` typescript to ^7.0.2 without updating the lockfile, so every `pnpm install --frozen-lockfile` since 2026-08-21 failed with `ERR_PNPM_OUTDATED_LOCKFILE`.** Reverted the manifest to the lockfile's ^6.0.3 pin — `astro check` needs TypeScript 6.x until it supports the 7.x native compiler.
 
 ## [1.11.0] — 2026-08-22
 
