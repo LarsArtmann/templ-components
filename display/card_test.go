@@ -443,6 +443,10 @@ func TestStatCardDefaultToneByteIdentical(t *testing.T) {
 	}))
 
 	if unset != blue {
-		t.Errorf("StatCard without Tone must render byte-identically to StatToneBlue\nunset: %s\nblue:  %s", unset, blue)
+		t.Errorf(
+			"StatCard without Tone must render byte-identically to StatToneBlue\nunset: %s\nblue:  %s",
+			unset,
+			blue,
+		)
 	}
 }
