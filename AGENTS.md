@@ -326,6 +326,17 @@ now happens after verification. Also fixed then: bash keeps only ONE `EXIT`
 trap, so the script's second `trap` silently disabled the rollback trap — both
 cleanups now share one hook.
 
+**Re-add-replaces lesson (v1.11.0):** the post-release `chore: re-add replace
+directives` commit must ALSO refresh module checksums — with the cut's stripped
+replaces, the sub-module `go.sum` files kept the previous version's hashes and
+the `visualtest` module kept stale sibling `require`s, so master CI stayed red
+for 9 days (Build & Test "Verify no untracked changes" via CI's per-module
+`go mod tidy`, Visual Regression aborting on `go mod tidy`-needed, plus the
+website typescript manifest/lockfile split from v1.9.0). After every
+release-cut/re-add cycle, run `go mod tidy` with `GOWORK=off` in all 7 modules
+plus `visualtest`, commit the diff, and confirm the master CI + Website runs
+are green before walking away.
+
 ## Lint Command
 
 ```bash
