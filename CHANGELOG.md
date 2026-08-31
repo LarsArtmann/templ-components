@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`display.StatCardProps.Tone` + typed `StatTone` enum — stat-card icon tiles can now carry semantic tones.** Dashboards routinely need green uptime, red failures, amber warnings, or purple custom metrics, and had to fork the whole component because the tile was hard-coded blue. `StatToneBlue` (the default), `StatToneGreen`, `StatToneYellow`, `StatToneRed`, `StatTonePurple` map onto tinted tile backgrounds with matching icon colors and dark-mode variants; empty and unknown values keep the blue default, pinned by a byte-identical test so existing call sites keep their exact previous HTML. Fixes #3.
+- **`display.Button` outline variants (`ButtonOutlineDanger`/`ButtonOutlineWarning`/`ButtonOutlineSuccess`/`ButtonOutlineInfo`) — secondary colored actions no longer need local forks.** Row-level Undo, Restore, or Report-spam buttons that sit next to a filled primary action read wrong as filled chips and disappear as ghost buttons: the outline variants give them a neutral shell with a colored ring and text, matching the dark-mode and focus-visible treatment of the existing variants. Fixes #4.
+
+### Fixed
+
+- **Master CI recovery after v1.11.0: the sub-module `go.sum` files and the `visualtest` module were left at v1.10.0, keeping every pipeline red for 9 days.** The post-release "re-add replace directives" commit restored local replaces but not the checksum refresh, so CI's per-module `go mod tidy` produced a dirty tree (Build & Test "Verify no untracked changes") and the Visual Regression job aborted on stale visualtest requires. All modules tidied to v1.11.0, a golines violation in the new StatCard back-compat test reformatted, and the demo CSS recompiled for the new outline/tone classes.
+
 ## [1.11.0] — 2026-08-22
 
 ### Added
