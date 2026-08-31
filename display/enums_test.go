@@ -36,6 +36,10 @@ func TestIsValidEnums(t *testing.T) {
 		{"TrendDirection Up", func() bool { return TrendDirectionIsValid(TrendUp) }, true},
 		{"TrendDirection Warn", func() bool { return TrendDirectionIsValid(TrendWarn) }, true},
 		{"TrendDirection invalid", func() bool { return TrendDirectionIsValid(TrendDirection("bogus")) }, false},
+		// StatTone
+		{"StatTone Blue", func() bool { return StatToneIsValid(StatToneBlue) }, true},
+		{"StatTone Purple", func() bool { return StatToneIsValid(StatTonePurple) }, true},
+		{"StatTone invalid", func() bool { return StatToneIsValid(StatTone("bogus")) }, false},
 		// AvatarSize
 		{"AvatarSize SM", func() bool { return AvatarSizeIsValid(AvatarSizeSM) }, true},
 		{"AvatarSize invalid", func() bool { return AvatarSizeIsValid(AvatarSize("bogus")) }, false},

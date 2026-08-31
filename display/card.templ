@@ -256,6 +256,14 @@ const (
 	StatTonePurple StatTone = "purple"
 )
 
+// StatToneIsValid reports whether v is one of the defined StatTone constants.
+// Map-driven off statTileLookup, so adding a tone constant keeps it in sync.
+func StatToneIsValid(v StatTone) bool {
+	_, ok := statTileLookup[v]
+
+	return ok
+}
+
 // StatCardProps configures a dashboard stat card
 type StatCardProps struct {
 	utils.BaseProps

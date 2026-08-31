@@ -36,6 +36,15 @@ templ displayDemo() {
 		@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Icon: icons.CheckCircle, Trend: display.TrendNone})
 		@display.StatCard(display.StatCardProps{Value: "42", Label: "Active", Trend: display.TrendWarn})
 	}
+	@demoSection("Stat Card Tones", "display-stat-card-tones")
+	@display.Grid(display.GridProps{Cols: display.GridCols3}) {
+		@display.StatCard(display.StatCardProps{Value: "1,204", Label: "Users", Icon: icons.Users, Tone: display.StatToneBlue})
+		@display.StatCard(display.StatCardProps{Value: "99.9%", Label: "Uptime", Icon: icons.CheckCircle, Tone: display.StatToneGreen})
+		@display.StatCard(display.StatCardProps{Value: "3", Label: "Degraded", Icon: icons.ExclamationTriangle, Change: "+2", Trend: display.TrendUp, Tone: display.StatToneYellow})
+		@display.StatCard(display.StatCardProps{Value: "7", Label: "Failures", Icon: icons.XCircle, Change: "+5", Trend: display.TrendUp, Tone: display.StatToneRed})
+		@display.StatCard(display.StatCardProps{Value: "12", Label: "Custom", Icon: icons.Bolt, Tone: display.StatTonePurple})
+	}
+	@demoCodeSnippet("Go", `display.StatCard(display.StatCardProps{Label: "Uptime", Icon: icons.CheckCircle, Tone: display.StatToneGreen})`)
 	@demoSection("Badges", "display-badges")
 	<div class="flex flex-wrap gap-2">
 		@display.Badge(display.BadgeProps{Text: "Default"})
@@ -60,6 +69,10 @@ templ displayDemo() {
 		@display.Button(display.ButtonProps{Text: "Danger", Variant: display.ButtonDanger})
 		@display.Button(display.ButtonProps{Text: "Ghost", Variant: display.ButtonGhost})
 		@display.Button(display.ButtonProps{Text: "Link", Variant: display.ButtonLink})
+		@display.Button(display.ButtonProps{Text: "Undo", Variant: display.ButtonOutlineDanger})
+		@display.Button(display.ButtonProps{Text: "Restore", Variant: display.ButtonOutlineWarning})
+		@display.Button(display.ButtonProps{Text: "Report spam", Variant: display.ButtonOutlineSuccess})
+		@display.Button(display.ButtonProps{Text: "Details", Variant: display.ButtonOutlineInfo})
 		@display.Button(display.ButtonProps{Text: "Small", Size: display.ButtonSizeSM})
 		@display.Button(display.ButtonProps{Text: "Large", Size: display.ButtonSizeLG})
 		@display.Button(display.ButtonProps{Text: "Disabled", Disabled: true})

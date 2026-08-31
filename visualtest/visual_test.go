@@ -11,6 +11,7 @@ import (
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/htmx"
+	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/visualtest"
 )
 
@@ -70,6 +71,62 @@ func TestButtonStates(t *testing.T) {
 	disabled.Text = "Save changes"
 	disabled.Disabled = true
 	visualtest.AssertScreenshot(t, "button/primary_disabled", display.Button(disabled))
+}
+
+// TestButtonOutlineVariants covers the outline button family — the ring and
+// text colors are the feature, and dark-mode ring/text tints are exactly the
+// regression class HTML goldens cannot see.
+func TestButtonOutlineVariants(t *testing.T) {
+	t.Parallel()
+
+	danger := display.DefaultButtonProps()
+	danger.Text = "Undo"
+	danger.Variant = display.ButtonOutlineDanger
+	visualtest.AssertScreenshot(t, "button/outline_danger_light", display.Button(danger))
+	visualtest.AssertScreenshot(
+		t,
+		"button/outline_danger_dark",
+		display.Button(danger),
+		visualtest.Options{Dark: new(true)},
+	)
+
+	warning := display.DefaultButtonProps()
+	warning.Text = "Restore"
+	warning.Variant = display.ButtonOutlineWarning
+	visualtest.AssertScreenshot(t, "button/outline_warning_light", display.Button(warning))
+}
+
+// TestStatCardTones covers the StatCard tone system — first visual coverage
+// for StatCard at all. The tinted icon tile is the feature; the dark-mode
+// 900/30 tile tints only exist in CSS and drift silently.
+func TestStatCardTones(t *testing.T) {
+	t.Parallel()
+
+	green := display.StatCardProps{
+		Label:  "Uptime",
+		Value:  "99.9%",
+		Icon:   icons.CheckCircle,
+		Change: "0.1%",
+		Trend:  display.TrendUp,
+		Tone:   display.StatToneGreen,
+	}
+	visualtest.AssertScreenshot(t, "statcard/green_light", display.StatCard(green))
+	visualtest.AssertScreenshot(
+		t,
+		"statcard/green_dark",
+		display.StatCard(green),
+		visualtest.Options{Dark: new(true)},
+	)
+
+	red := display.StatCardProps{
+		Label:  "Failures",
+		Value:  "7",
+		Icon:   icons.XCircle,
+		Change: "+5",
+		Trend:  display.TrendUp,
+		Tone:   display.StatToneRed,
+	}
+	visualtest.AssertScreenshot(t, "statcard/red_light", display.StatCard(red))
 }
 
 // TestAlerts covers all four feedback types with icons and colors.

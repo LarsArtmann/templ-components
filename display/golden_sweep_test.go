@@ -148,3 +148,40 @@ func TestGoldenSweepEmptyState(t *testing.T) {
 		{Name: "empty_state_minimal", HTML: utils.Render(t, EmptyState(DefaultEmptyStateProps()))},
 	})
 }
+
+func TestGoldenSweepStatCardTones(t *testing.T) {
+	t.Parallel()
+
+	base := StatCardProps{Label: "Uptime", Value: "99.9%", Icon: icons.Check, Change: "0.1%", Trend: TrendUp}
+
+	renderTone := func(tone StatTone) string {
+		props := base
+		props.Tone = tone
+
+		return utils.Render(t, StatCard(props))
+	}
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "stat_card_tone_blue", HTML: renderTone(StatToneBlue)},
+		{Name: "stat_card_tone_green", HTML: renderTone(StatToneGreen)},
+		{Name: "stat_card_tone_yellow", HTML: renderTone(StatToneYellow)},
+		{Name: "stat_card_tone_red", HTML: renderTone(StatToneRed)},
+		{Name: "stat_card_tone_purple", HTML: renderTone(StatTonePurple)},
+		{Name: "stat_card_tone_unknown_falls_back_blue", HTML: renderTone(StatTone("bogus"))},
+	})
+}
+
+func TestGoldenSweepButtonOutlineVariants(t *testing.T) {
+	t.Parallel()
+
+	renderVariant := func(variant ButtonType) string {
+		return utils.Render(t, Button(ButtonProps{Text: "Undo", Variant: variant}))
+	}
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "button_outline_danger", HTML: renderVariant(ButtonOutlineDanger)},
+		{Name: "button_outline_warning", HTML: renderVariant(ButtonOutlineWarning)},
+		{Name: "button_outline_success", HTML: renderVariant(ButtonOutlineSuccess)},
+		{Name: "button_outline_info", HTML: renderVariant(ButtonOutlineInfo)},
+	})
+}
