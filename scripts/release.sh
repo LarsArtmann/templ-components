@@ -407,7 +407,33 @@ for modfile in $MODFILES; do
 		cat "$backup_file" >>"$modfile"
 	fi
 done
+
+# 10b. Re-tidy every module so go.sum checksums and the visualtest requires
+#      match the freshly released version. v1.11.0 lesson: a re-add commit
+#      without the tidy left sub-module go.sums at the previous version and
+#      master CI red for 9 days (CI's per-module tidy dirtied the tree; the
+#      Visual Regression job aborted on stale visualtest requires).
+#      GOWORK=off mirrors CI and consumers, where no go.work exists.
+tidy_all_modules() {
+	go mod tidy
+	for mod in $SUBMODULE_PATHS visualtest; do
+		(cd "$mod" && GOWORK=off go mod tidy)
+	done
+}
+tidy_all_modules
+
 git add $MODFILES
+git add -u # go.sum refreshes from the tidy above
+
+# 10c. Idempotence gate: a second tidy must produce zero unstaged changes —
+#      the same invariant CI enforces in "Verify no untracked changes".
+tidy_all_modules
+if ! git diff --exit-code >/dev/null; then
+	echo "Error: go mod tidy is not idempotent after the replace re-add —" >&2
+	echo "master CI would go red ('Verify no untracked changes'). Inspect: git diff" >&2
+	exit 1
+fi
+
 git commit -m "chore: re-add replace directives after v${NEW_VERSION} release
 
 These local replace directives were removed for the release commit so the
@@ -415,8 +441,12 @@ tagged go.mod files are clean for consumers. They are re-added here for
 local development convenience (go.work provides workspace resolution, but
 replace directives are needed for GOWORK=off standalone testing).
 
+go.sum checksums and the visualtest module requires are re-tidied to
+v${NEW_VERSION} in the same commit so master CI stays green (v1.11.0
+lesson: skipping this left every pipeline red for 9 days).
+
 Co-Authored-By: Crush <noreply@crush.lars.software>"
-echo "Re-added replace directives for local dev."
+echo "Re-added replace directives and re-tidied all modules for local dev."
 
 echo ""
 echo "Release v${NEW_VERSION} cut at commit ${RELEASE_COMMIT}."
