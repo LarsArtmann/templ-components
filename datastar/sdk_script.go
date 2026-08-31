@@ -25,7 +25,7 @@ type SDKScriptProps struct {
 
 // DefaultSDKScriptProps returns sensible defaults for the Datastar runtime script.
 func DefaultSDKScriptProps() SDKScriptProps {
-	return SDKScriptProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return SDKScriptProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Version: defaultDatastarVersion,
 	}
 }

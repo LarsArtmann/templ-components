@@ -31,7 +31,7 @@ type IndicatorProps struct {
 
 // DefaultIndicatorProps returns sensible defaults for an indicator.
 func DefaultIndicatorProps() IndicatorProps {
-	return IndicatorProps{} //nolint:exhaustruct // intentionally minimal defaults
+	return IndicatorProps{} //nolint:exhaustruct_v5 // intentionally minimal defaults
 }
 
 // indicatorSignalExpr returns the Datastar show expression for an indicator.

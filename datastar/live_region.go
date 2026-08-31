@@ -88,7 +88,7 @@ type LiveRegionProps struct {
 
 // DefaultLiveRegionProps returns sensible defaults for a live region.
 func DefaultLiveRegionProps() LiveRegionProps {
-	return LiveRegionProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return LiveRegionProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		AutoStart: true,
 		Live:      LivePolite,
 	}

@@ -20,7 +20,7 @@ type RadioProps struct {
 
 // DefaultRadioProps returns sensible defaults.
 func DefaultRadioProps() RadioProps {
-	return RadioProps{} //nolint:exhaustruct // intentionally minimal defaults
+	return RadioProps{} //nolint:exhaustruct_v5 // intentionally minimal defaults
 }
 
 // RadioOption represents a single option in a radio group.
@@ -46,13 +46,13 @@ type RadioGroupProps struct {
 
 // DefaultRadioGroupProps returns sensible defaults.
 func DefaultRadioGroupProps() RadioGroupProps {
-	return RadioGroupProps{} //nolint:exhaustruct // intentionally minimal defaults
+	return RadioGroupProps{} //nolint:exhaustruct_v5 // intentionally minimal defaults
 }
 
 // radioItemProps builds a RadioProps for an option within a group.
 // Auto-generates the ID from the group ID and option value.
 func radioItemProps(groupID, name string, opt RadioOption, required bool, ariaAttrs templ.Attributes) RadioProps {
-	p := RadioProps{ //nolint:exhaustruct // BaseProps.ID set conditionally below
+	p := RadioProps{ //nolint:exhaustruct_v5 // BaseProps.ID set conditionally below
 		Name:     name,
 		Value:    opt.Value,
 		Label:    opt.Label,

@@ -33,7 +33,7 @@ type LoginCardProps struct {
 
 // DefaultLoginCardProps returns sensible defaults (Title: "Sign in").
 //
-//nolint:exhaustruct // constructor intentionally sets only non-zero defaults
+//nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
 func DefaultLoginCardProps() LoginCardProps {
 	return LoginCardProps{
 		Title: loginDefaultTitle,

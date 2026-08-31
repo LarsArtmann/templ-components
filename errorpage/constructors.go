@@ -23,7 +23,7 @@ const (
 
 // NotFound returns a 404-style error page.
 func NotFound() ErrorPageProps {
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
+	return ErrorPageProps{ //nolint:exhaustruct_v5 // pre-built with intentional defaults
 		Family:        FamilyRejection,
 		StatusCode:    404,
 		Code:          CodePageNotFound,
@@ -38,7 +38,7 @@ func NotFound() ErrorPageProps {
 
 // Forbidden returns a 403-style error page.
 func Forbidden() ErrorPageProps {
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
+	return ErrorPageProps{ //nolint:exhaustruct_v5 // pre-built with intentional defaults
 		Family:        FamilyRejection,
 		StatusCode:    403,
 		Code:          CodeAccessForbidden,
@@ -57,7 +57,7 @@ func BadRequest(message string) ErrorPageProps {
 		message = msgBadRequestDefault
 	}
 
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
+	return ErrorPageProps{ //nolint:exhaustruct_v5 // pre-built with intentional defaults
 		Family:        FamilyRejection,
 		Code:          CodeBadRequest,
 		Title:         "Bad request",
@@ -74,7 +74,7 @@ func Conflict(message string) ErrorPageProps {
 		message = msgConflictDefault
 	}
 
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
+	return ErrorPageProps{ //nolint:exhaustruct_v5 // pre-built with intentional defaults
 		Family:        FamilyConflict,
 		Code:          CodeConflict,
 		Title:         "Conflict detected",
@@ -87,7 +87,7 @@ func Conflict(message string) ErrorPageProps {
 
 // ServiceUnavailable returns a 503-style error page.
 func ServiceUnavailable() ErrorPageProps {
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
+	return ErrorPageProps{ //nolint:exhaustruct_v5 // pre-built with intentional defaults
 		Family:        FamilyTransient,
 		Code:          CodeUnavailable,
 		Title:         "Service temporarily unavailable",
@@ -102,7 +102,7 @@ func ServiceUnavailable() ErrorPageProps {
 
 // InternalError returns a 500-style error page.
 func InternalError() ErrorPageProps {
-	return ErrorPageProps{ //nolint:exhaustruct // pre-built with intentional defaults
+	return ErrorPageProps{ //nolint:exhaustruct_v5 // pre-built with intentional defaults
 		Family:        FamilyInfrastructure,
 		StatusCode:    500,
 		Code:          CodeInternalError,

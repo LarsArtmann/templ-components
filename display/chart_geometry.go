@@ -127,7 +127,7 @@ func computeChartRenderData(
 	attrs templ.Attributes,
 ) ChartRenderData {
 	padding = padding.Sanitize()
-	if padding == (ChartPadding{}) { //nolint:exhaustruct // zero-value sentinel detects unset padding
+	if padding == (ChartPadding{}) { //nolint:exhaustruct_v5 // zero-value sentinel detects unset padding
 		padding = DefaultChartPadding()
 	}
 

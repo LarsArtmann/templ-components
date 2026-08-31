@@ -249,7 +249,7 @@ func newMux() *http.ServeMux {
 // is safe for the SSE endpoint because that handler clears the deadline
 // per-connection via http.NewResponseController.
 //
-//nolint:exhaustruct // Demo code - HTTP server for demonstration only
+//nolint:exhaustruct_v5 // Demo code - HTTP server for demonstration only
 func newServer(handler http.Handler) *http.Server {
 	port := os.Getenv("PORT")
 	if port == "" {

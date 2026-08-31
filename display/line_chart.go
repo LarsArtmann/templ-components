@@ -148,7 +148,7 @@ var lineChartPalette = []string{
 
 // DefaultLineChartProps returns sensible defaults for a line chart.
 func DefaultLineChartProps() LineChartProps {
-	return LineChartProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return LineChartProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Width:        lineChartDefaultWidth,
 		Height:       lineChartDefaultHeight,
 		Padding:      DefaultChartPadding(),

@@ -58,7 +58,7 @@ type PolledRegionProps struct {
 
 // DefaultPolledRegionProps returns sensible defaults for a polled region.
 func DefaultPolledRegionProps() PolledRegionProps {
-	return PolledRegionProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return PolledRegionProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Every:         defaultPollInterval,
 		Swap:          SwapOuterHTML,
 		Live:          PolledLivePolite,

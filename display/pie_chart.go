@@ -111,7 +111,7 @@ var pieChartPalette = []string{
 
 // DefaultPieChartProps returns sensible defaults for a pie chart.
 func DefaultPieChartProps() PieChartProps {
-	return PieChartProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return PieChartProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Width:        pieChartDefaultWidth,
 		Height:       pieChartDefaultHeight,
 		InnerRadius:  pieChartDefaultInner,

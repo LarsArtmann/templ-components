@@ -38,7 +38,7 @@ func comparePixels(
 	actualBounds := actual.Bounds()
 
 	if !goldenBounds.Eq(actualBounds) {
-		return diffResult{ //nolint:exhaustruct
+		return diffResult{ //nolint:exhaustruct_v5
 			Match:       false,
 			MismatchPct: percentMultiplier,
 			Width:       actualBounds.Dx(),
@@ -48,7 +48,7 @@ func comparePixels(
 
 	total := goldenBounds.Dx() * goldenBounds.Dy()
 	if total == 0 {
-		return diffResult{Match: true, Width: goldenBounds.Dx(), Height: goldenBounds.Dy()}, nil //nolint:exhaustruct
+		return diffResult{Match: true, Width: goldenBounds.Dx(), Height: goldenBounds.Dy()}, nil //nolint:exhaustruct_v5
 	}
 
 	var diffImg image.Image
@@ -63,7 +63,7 @@ func comparePixels(
 	if err != nil && !errors.Is(err, pixelmatch.ErrImageSizesNotMatch) {
 		// An unexpected error from pixelmatch is a test-harness bug, not a
 		// visual regression — surface it loudly.
-		return diffResult{ //nolint:exhaustruct
+		return diffResult{ //nolint:exhaustruct_v5
 			Match:       false,
 			MismatchPct: percentMultiplier,
 			Width:       goldenBounds.Dx(),

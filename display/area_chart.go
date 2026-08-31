@@ -66,7 +66,7 @@ const (
 
 // DefaultAreaChartProps returns sensible defaults for an area chart.
 func DefaultAreaChartProps() AreaChartProps {
-	return AreaChartProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return AreaChartProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Width:        areaChartDefaultWidth,
 		Height:       areaChartDefaultHeight,
 		Padding:      DefaultChartPadding(),

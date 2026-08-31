@@ -37,7 +37,7 @@ type AuthLayoutProps struct {
 
 // DefaultAuthLayoutProps returns sensible defaults (empty).
 //
-//nolint:exhaustruct // constructor intentionally sets only non-zero defaults
+//nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
 func DefaultAuthLayoutProps() AuthLayoutProps {
 	return AuthLayoutProps{}
 }

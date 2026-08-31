@@ -43,5 +43,5 @@ type SettingsSection struct {
 
 // DefaultSettingsLayoutProps returns sensible defaults (empty).
 func DefaultSettingsLayoutProps() SettingsLayoutProps {
-	return SettingsLayoutProps{} //nolint:exhaustruct // intentionally minimal
+	return SettingsLayoutProps{} //nolint:exhaustruct_v5 // intentionally minimal
 }

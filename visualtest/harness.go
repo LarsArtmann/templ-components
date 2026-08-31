@@ -81,7 +81,7 @@ func AssertScreenshot(t *testing.T, name string, component templ.Component, opts
 // earlier one; nil means "unset" so composing {Dark:Bool(true)} with
 // {RTL:Bool(true)} yields dark+RTL. FullViewport ORs together.
 func resolveOptions(opts []Options) Options {
-	merged := Options{} //nolint:exhaustruct // zero value is the intended "unset" sentinel; merged below
+	merged := Options{} //nolint:exhaustruct_v5 // zero value is the intended "unset" sentinel; merged below
 
 	for _, opt := range opts {
 		if opt.Dark != nil {

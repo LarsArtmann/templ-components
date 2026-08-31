@@ -28,7 +28,7 @@ type ModalProps struct {
 
 // DefaultModalProps returns sensible defaults.
 func DefaultModalProps() ModalProps {
-	return ModalProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return ModalProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Size: ModalSizeMD,
 	}
 }

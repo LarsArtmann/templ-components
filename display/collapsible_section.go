@@ -31,7 +31,7 @@ type CollapsibleSectionProps struct {
 
 // DefaultCollapsibleSectionProps returns sensible defaults.
 func DefaultCollapsibleSectionProps() CollapsibleSectionProps {
-	return CollapsibleSectionProps{ //nolint:exhaustruct // intentionally minimal
+	return CollapsibleSectionProps{ //nolint:exhaustruct_v5 // intentionally minimal
 		TitleTag:  "h3",
 		Collapsed: false,
 		Icon:      icons.ChevronDown,

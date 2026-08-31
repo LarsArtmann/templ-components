@@ -53,7 +53,7 @@ type DashboardProps struct {
 
 // DefaultDashboardProps returns sensible defaults (MD sidebar, no slots).
 //
-//nolint:exhaustruct // constructor intentionally sets only non-zero defaults
+//nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
 func DefaultDashboardProps() DashboardProps {
 	return DashboardProps{
 		SidebarWidth: layout.SidebarWidthDefault,

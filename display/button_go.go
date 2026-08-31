@@ -77,7 +77,7 @@ type ButtonProps struct {
 
 // DefaultButtonProps returns sensible defaults.
 func DefaultButtonProps() ButtonProps {
-	return ButtonProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return ButtonProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Type:    ButtonHTMLButton,
 		Variant: ButtonPrimary,
 		Size:    ButtonSizeMD,

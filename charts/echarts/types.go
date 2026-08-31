@@ -41,7 +41,7 @@ type EChartsProps struct {
 
 // DefaultEChartsProps returns sensible defaults for the EChart component.
 func DefaultEChartsProps() EChartsProps {
-	return EChartsProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return EChartsProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		DarkModeBridge: true,
 	}
 }
@@ -69,7 +69,7 @@ type SDKScriptProps struct {
 
 // DefaultSDKScriptProps returns sensible defaults for the ECharts runtime script.
 func DefaultSDKScriptProps() SDKScriptProps {
-	return SDKScriptProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return SDKScriptProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Version: DefaultEChartsVersion,
 	}
 }

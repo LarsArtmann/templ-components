@@ -108,7 +108,7 @@ type AppShellProps struct {
 // DefaultAppShellProps returns sensible defaults: MD sidebar, sticky header,
 // Content wrapped in a Container at LG width.
 //
-//nolint:exhaustruct // constructor intentionally sets only non-zero defaults
+//nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
 func DefaultAppShellProps() AppShellProps {
 	return AppShellProps{
 		SidebarWidth:   SidebarWidthDefault,

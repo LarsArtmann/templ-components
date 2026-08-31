@@ -84,7 +84,7 @@ type SplitProps struct {
 
 // DefaultSplitProps returns sensible defaults: aside at end, 1To3 ratio, gap-6.
 //
-//nolint:exhaustruct // constructor intentionally sets only non-zero defaults
+//nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
 func DefaultSplitProps() SplitProps {
 	return SplitProps{
 		AsidePosition:  AsidePositionDefault,

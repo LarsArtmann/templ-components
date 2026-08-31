@@ -75,7 +75,7 @@ type ContainerProps struct {
 // DefaultContainerProps returns sensible defaults: LG width with responsive
 // padding enabled.
 //
-//nolint:exhaustruct // constructor intentionally sets only non-zero defaults
+//nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
 func DefaultContainerProps() ContainerProps {
 	return ContainerProps{
 		Width: ContainerWidthDefault,

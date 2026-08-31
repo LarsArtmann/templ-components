@@ -118,7 +118,7 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 // WriteError writes an error page to an http.ResponseWriter.
 // Convenience wrapper around ErrorHandler for simpler usage.
 func WriteError(w http.ResponseWriter, r *http.Request, err error, nonce string) {
-	ErrorHandler(err, ErrorHandlerConfig{Nonce: nonce}).ServeHTTP(w, r) //nolint:exhaustruct // minimal config
+	ErrorHandler(err, ErrorHandlerConfig{Nonce: nonce}).ServeHTTP(w, r) //nolint:exhaustruct_v5 // minimal config
 }
 
 // WriteErrorPage writes a pre-configured error page with the given HTTP status code.
@@ -176,7 +176,7 @@ func WriteNotFound404(w http.ResponseWriter, r *http.Request, props NotFound404P
 }
 
 func writeJSONError(w http.ResponseWriter, statusCode int, props ErrorPageProps) {
-	resp := errorResponse{ //nolint:exhaustruct // Context set conditionally below
+	resp := errorResponse{ //nolint:exhaustruct_v5 // Context set conditionally below
 		Family:  string(props.Family),
 		Code:    string(props.Code),
 		Message: props.Message,
@@ -257,4 +257,4 @@ func writeFallbackError(w http.ResponseWriter, statusCode int) {
 }
 
 // Verify interface compliance.
-var _ http.Handler = ErrorHandler(nil, ErrorHandlerConfig{}) //nolint:exhaustruct // type check only
+var _ http.Handler = ErrorHandler(nil, ErrorHandlerConfig{}) //nolint:exhaustruct_v5 // type check only

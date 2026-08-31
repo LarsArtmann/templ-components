@@ -37,12 +37,12 @@ func FromErrorFamily(f errorfamily.Family) Family {
 // since an unknown error is most likely a bug rather than a temporary outage.
 func FromError(err error) ErrorPageProps {
 	if err == nil {
-		return ErrorPageProps{Family: FamilyTransient} //nolint:exhaustruct // minimal nil response
+		return ErrorPageProps{Family: FamilyTransient} //nolint:exhaustruct_v5 // minimal nil response
 	}
 
 	family := familyFromError(err)
 
-	props := ErrorPageProps{ //nolint:exhaustruct // filled incrementally
+	props := ErrorPageProps{ //nolint:exhaustruct_v5 // filled incrementally
 		Family:     family,
 		Message:    sanitizeErrorMessage(err),
 		CauseChain: ExtractCauseChain(err, 5),

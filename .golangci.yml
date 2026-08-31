@@ -38,7 +38,7 @@ linters:
     - errname
     - errorlint
     - exhaustive
-    - exhaustruct
+    - exhaustruct_v5
     - exptostd
     - fatcontext
     - forbidigo
@@ -146,7 +146,7 @@ linters:
         - fmt.Println
         - (*strings.Builder).WriteString
         - (*bytes.Buffer).WriteString
-    exhaustruct:
+    exhaustruct_v5:
       exclude:
         - os/exec.Cmd
     funlen:
@@ -249,12 +249,12 @@ linters:
     rules:
       - path: _test\.go$
         linters:
-          - exhaustruct
+          - exhaustruct_v5
           - funlen
           - goconst
       - path: _test\.go
         linters:
-          - exhaustruct
+          - exhaustruct_v5
           - testpackage
           - gochecknoglobals
           - funlen

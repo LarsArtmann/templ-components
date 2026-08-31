@@ -53,7 +53,7 @@ type StackProps struct {
 
 // DefaultStackProps returns sensible defaults: MD gap.
 //
-//nolint:exhaustruct // constructor intentionally sets only non-zero defaults
+//nolint:exhaustruct_v5 // constructor intentionally sets only non-zero defaults
 func DefaultStackProps() StackProps {
 	return StackProps{
 		Gap: StackGapDefault,

@@ -105,7 +105,7 @@ const (
 
 // DefaultBarChartProps returns sensible defaults for a bar chart.
 func DefaultBarChartProps() BarChartProps {
-	return BarChartProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return BarChartProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Orient:       BarHorizontal,
 		BarColor:     defaultBarColor,
 		LabelWidth:   defaultLabelWidth,

@@ -43,7 +43,7 @@ const (
 
 // DefaultSparklineProps returns sensible defaults for a sparkline.
 func DefaultSparklineProps() SparklineProps {
-	return SparklineProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return SparklineProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Width:       sparklineDefaultWidth,
 		Height:      sparklineDefaultHeight,
 		StrokeWidth: sparklineDefaultStroke,

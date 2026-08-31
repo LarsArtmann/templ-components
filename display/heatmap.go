@@ -71,7 +71,7 @@ const (
 
 // DefaultHeatmapProps returns sensible defaults for a heatmap.
 func DefaultHeatmapProps() HeatmapProps {
-	return HeatmapProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return HeatmapProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		ColorVar:     defaultHeatmapColorVar,
 		CellSize:     defaultHeatmapCellSize,
 		ShowValues:   false,

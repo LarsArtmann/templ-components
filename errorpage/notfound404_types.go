@@ -40,7 +40,7 @@ type NotFound404Props struct {
 }
 
 func DefaultNotFound404Props() NotFound404Props {
-	return NotFound404Props{ //nolint:exhaustruct // intentional defaults
+	return NotFound404Props{ //nolint:exhaustruct_v5 // intentional defaults
 		Numeral:           notFound404DefaultNumeral,
 		Title:             notFound404DefaultTitle,
 		Message:           notFound404DefaultMessage,

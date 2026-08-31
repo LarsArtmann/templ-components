@@ -36,7 +36,7 @@ type DrawerProps struct {
 
 // DefaultDrawerProps returns sensible defaults.
 func DefaultDrawerProps() DrawerProps {
-	return DrawerProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return DrawerProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Side: DrawerRight,
 		Size: DrawerSizeMD,
 	}

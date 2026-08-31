@@ -227,7 +227,7 @@ var (
 
 // DefaultErrorPageProps returns sensible defaults.
 func DefaultErrorPageProps() ErrorPageProps {
-	return ErrorPageProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return ErrorPageProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Family: FamilyTransient,
 	}
 }
@@ -248,7 +248,7 @@ type ErrorDetailProps struct {
 
 // DefaultErrorDetailProps returns sensible defaults.
 func DefaultErrorDetailProps() ErrorDetailProps {
-	return ErrorDetailProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return ErrorDetailProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Family: FamilyTransient,
 	}
 }
@@ -266,7 +266,7 @@ type ErrorAlertProps struct {
 
 // DefaultErrorAlertProps returns sensible defaults.
 func DefaultErrorAlertProps() ErrorAlertProps {
-	return ErrorAlertProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return ErrorAlertProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Family: FamilyTransient,
 	}
 }
@@ -351,7 +351,7 @@ func appendJoinSiblings(chain []CauseItem, current error, maxDepth int) []CauseI
 
 // causeItemFromError builds a CauseItem from an error, extracting ErrorCode if available.
 func causeItemFromError(err error) CauseItem {
-	item := CauseItem{Message: err.Error()} //nolint:exhaustruct // Code set conditionally below
+	item := CauseItem{Message: err.Error()} //nolint:exhaustruct_v5 // Code set conditionally below
 	if c, ok := err.(interface{ ErrorCode() string }); ok {
 		item.Code = Code(c.ErrorCode())
 	}

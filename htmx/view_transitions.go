@@ -33,7 +33,7 @@ type ViewTransitionsProps struct {
 
 // DefaultViewTransitionsProps returns sensible defaults.
 func DefaultViewTransitionsProps() ViewTransitionsProps {
-	return ViewTransitionsProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return ViewTransitionsProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		Global: true,
 	}
 }

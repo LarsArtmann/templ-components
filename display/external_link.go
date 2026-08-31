@@ -21,7 +21,7 @@ type ExternalLinkProps struct {
 
 // DefaultExternalLinkProps returns sensible defaults for an external link.
 func DefaultExternalLinkProps() ExternalLinkProps {
-	return ExternalLinkProps{ //nolint:exhaustruct // intentionally minimal defaults
+	return ExternalLinkProps{ //nolint:exhaustruct_v5 // intentionally minimal defaults
 		ShowIcon: true,
 	}
 }
