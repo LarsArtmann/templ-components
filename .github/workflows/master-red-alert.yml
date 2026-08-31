@@ -1,0 +1,26 @@
+name: Master Red Alert
+
+# The v1.11.0 lesson: master CI stayed red for 9 days unnoticed. This daily
+# check turns a red default branch into an open issue instead of silence:
+# it opens one tracking issue on first failure and comments while red.
+
+on:
+  schedule:
+    - cron: "23 5 * * *" # daily 05:23 UTC — off-peak minute
+  workflow_dispatch:
+
+permissions:
+  actions: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          persist-credentials: false
+      - name: Open or update an issue when master pipelines are red
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: scripts/check-master-green.sh
