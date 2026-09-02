@@ -67,7 +67,7 @@ datastar.Delete("/api/items/1") // @delete('/api/items/1')`,
 		type <code>error</code> or <code>retries-failed</code>) that surfaces them as accessible toasts —
 		the Datastar counterpart to HTMX GlobalErrorHandling:
 	</p>
-	@datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: "demo-nonce"})
+	@datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: demoBaseProps().Nonce})
 	@demoCodeSnippet("Go", `@feedback.ToastContainer("")
 @datastar.SSEErrorHandling(datastar.DefaultSSEErrorHandlingConfig())`)
 	@display.Card(display.CardProps{
