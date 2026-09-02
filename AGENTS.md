@@ -40,6 +40,10 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 for mod in utils icons errorpage charts/echarts datastar htmx; do (cd "$mod" && GOWORK=off go test ./...); done
 (cd visualtest && GOWORK=off go test ./...) # compile check; use nix run .#visual for real runs
 
+# Pre-push CI reproduction — runs CI's Build & Test job step-for-step (the
+# only complete local form; flags add the Lint/CSS/Visual jobs):
+scripts/ci-repro.sh --lint
+
 # All-in-one verification
 find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go build ./... && go test ./... && nix run .#lint
 ```
@@ -104,6 +108,12 @@ import-style changes; the generated code is semantically identical.
 
 **Do not bump `go.mod` to v0.3.1036** — that version is not yet on the module proxy, so consumers
 who `go get` this package would fail. Wait for the official upstream release, then bump in lockstep.
+
+**Toolchain input split (2026-09-02):** the Go toolchain comes from a dedicated `nixpkgs-go`
+flake input (nixos-unstable, currently 1.26.7 for GO-2026-5972/6089/6090) while `templ`,
+`golangci-lint`, etc. stay on the older locked `nixpkgs` — a wholesale input bump would drift
+`pkgs.templ` past v0.3.1020 and break the zero-diff generate invariant. Same isolation pattern
+as `nixpkgs-chromium`; fold back together at the next deliberate full-flake update.
 
 ## Architecture
 
@@ -247,6 +257,7 @@ who `go get` this package would fail. Wait for the official upstream release, th
 
 - **pnpm 11 build-script approval is load-bearing in 2 config files.** pnpm 11 hard-fails (`ERR_PNPM_IGNORED_BUILDS`) any install whose dependency ships a build script that was not explicitly approved. The `pnpm` field in `package.json` is dead (warned + ignored); approvals live in `pnpm-workspace.yaml` under `allowBuilds: <pkg>: true`. Current sites: `website/pnpm-workspace.yaml` (`esbuild`, `sharp`) and the demo Dockerfile CSS stage (`@parcel/watcher`, written inline via `printf` before `pnpm add`). `pnpm init` auto-writes `devEngines.packageManager: "^11.x"`, so pnpm self-resolves to the latest 11.x at run time — the Docker CSS stage tracks pnpm 11.x minors. `pnpm dlx` inherits the same policy.
 - **Never `pnpm add -g` on GitHub runners.** It fails preflight ("configured global bin directory ... is not in PATH") because runners do not set `PNPM_HOME` and corepack does not either (verified by container replication on node:24 + corepack pnpm@11.20.0). Use `npm install -g <cli>` for one-off global tools — the deploy job does this for firebase-tools.
+- **Local `pnpm` fails with "No such built-in module: node:sqlite / Bun v1.3.13" when `~/.local/bin/node` is a bun shim.** pnpm 11 needs real node for its subprocesses; prepend a real node to PATH (e.g. the nix nodejs-slim bin dir) and `pnpm install --frozen-lockfile` passes in `website/` (validated 2026-09-02 — also proves the lockfile is in sync; no manifest/lockfile splits remain post-`423ea1b`). Durable fix: remove the bun shim.
 - **Docker builder + `replace` directives:** root `go.mod` replaces all 6 sub-modules with local paths, so `go mod download` needs every sub-module's `go.mod` copied into the stage BEFORE it runs (see `examples/demo/Dockerfile`). Copying only root manifests fails with `reading charts/echarts/go.mod: no such file or directory`.
 - **Visual tests need the pure fontconfig pin.** `makeFontsConf` is impure by design (includes `/etc/fonts/conf.d`, `/usr/share/fonts`, profile fonts) — never use it for cross-machine determinism. The `#visual` flake app uses a hand-written `fonts.conf` (`pkgs.writeText`) with ONLY `<dir>` entries for `pkgs.inter` + `pkgs.dejavu_fonts` and a tmp cachedir. If goldens flake: `rm -rf /tmp/tc-visualtest-fontconfig-cache` (the cache goes stale) and read the fc-match diagnostics the app echoes at startup.
 - **upload-artifact v4 hides dotfiles by default.** Visual-regression failure screenshots live under `testdata/.fail/` — without `include-hidden-files: true` the artifact uploads empty and the failure evidence is lost.
@@ -292,6 +303,9 @@ normally on `master` and roll into the next release. Never retag the same versio
 **To cut a release:** use `scripts/release.sh` (see "Release Script" below).
 
 ## Release Script
+
+The operational audit for cutting a release lives in **`docs/release-checklist.md`** — read it
+before running the script (it maps every hardening step to the incident that caused it).
 
 `scripts/release.sh` automates the full release cut in one command:
 
