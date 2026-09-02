@@ -1051,11 +1051,10 @@ func TestLiveRegionAndIndicator(t *testing.T) {
 		Signal:  "fetching",
 		Spinner: spinner,
 	})
-	visualtest.AssertScreenshot(t, "datastar/indicator_light", indicator)
-	visualtest.AssertScreenshot(
-		t,
-		"datastar/indicator_dark",
-		indicator,
-		visualtest.Options{Dark: new(true)},
-	)
+	// MaxMismatch raised like TestSpinner: the spinner animates via CSS, so
+	// the captured rotation frame differs between runs.
+	indicatorOpts := visualtest.Options{MaxMismatch: 0.08}
+	visualtest.AssertScreenshot(t, "datastar/indicator_light", indicator, indicatorOpts)
+	indicatorOpts.Dark = new(true)
+	visualtest.AssertScreenshot(t, "datastar/indicator_dark", indicator, indicatorOpts)
 }
