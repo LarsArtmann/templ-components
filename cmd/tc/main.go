@@ -42,7 +42,7 @@ func newRegistry() *registry {
 		pkg:   map[string]string{},
 		pkgs: []string{
 			"display", "feedback", "forms", "layout",
-			"navigation", "htmx", "errorpage", "recipes",
+			"navigation", "htmx", "datastar", "errorpage", "recipes",
 		},
 	}
 
@@ -102,6 +102,13 @@ var packageDeps = map[string][]string{
 	"htmx": {
 		enumsGoFile, "polled_region.go",
 		"view_transitions.go",
+	},
+	"datastar": {
+		"cancellation.go", enumsGoFile, "indicator.go",
+		"live_region.go", "retry.go", "sdk_script.go",
+		// version.go additionally pulls in go-datastar/static (embedded
+		// runtime bundle) + utils/cdn — SDKScript consumers only.
+		"version.go",
 	},
 	"errorpage": {
 		"constructors.go", "fromerror.go", "handler.go",

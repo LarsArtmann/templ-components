@@ -1,0 +1,100 @@
+package datastar
+
+import (
+	"strings"
+
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// LiveRegion renders a container that auto-connects to an SSE endpoint and
+// receives server-patched updates. This is the Datastar equivalent of
+// htmx.PolledRegion — but instead of polling on an interval, the server pushes
+// patches over a single long-lived connection.
+//
+// An empty URL degrades to a plain container (no data-init) — the runtime
+// throws FetchNoUrlProvided for @get(''). Wire the stream via data-on:*
+// on a trigger element instead.//
+// The server endpoint must return a text/event-stream response. Use
+// go-datastar (github.com/larsartmann/go-datastar) to patch elements or signals.
+// Target a child element of the region with WithSelector — patch modes other
+// than the default (outer) require one, and the default outer mode matches
+// incoming root elements by their id (id-less fragments are dropped with a
+// console warning):
+//
+//	func streamHandler(w http.ResponseWriter, r *http.Request) {
+//	    stream := sse.NewStream(w, r)
+//	    defer func() { _ = stream.Close() }()
+//	    resp := datastar.NewResponse(stream)
+//	    _ = resp.PatchElementsTempl(metricsCardContent(),
+//	        datastar.WithSelector("#metrics"), datastar.WithModeInner())
+//	}
+//
+//	@datastar.LiveRegion(datastar.LiveRegionProps{
+//	    URL:       "/stream/metrics",
+//	    AutoStart: true,
+//	}) {
+//	    @display.StatCard(display.StatCardProps{
+//	        BaseProps: utils.BaseProps{ID: "metrics"},
+//	        Label:     "Active Users",
+//	        Value:     "—",
+//	    })
+//	}
+templ LiveRegion(props LiveRegionProps) {
+	{{ live := livePolitenessValue(props.Live) }}
+	{{ init := getActionExpr(props.URL, props.Retry, props.Cancellation) }}
+	{{ hasURL := strings.TrimSpace(props.URL) != "" }}
+	{{ autoStart := props.AutoStart && hasURL }}
+	<div
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		if autoStart {
+			data-init={ init }
+			aria-busy="true"
+			data-tc-live-busy
+		}
+		aria-live={ string(live) }
+		class={ utils.Class("", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		{ props.Attrs... }
+	>
+		{ children... }
+	</div>
+	if autoStart {
+		@liveRegionBusyScript(props.Nonce)
+	}
+}
+
+// liveRegionBusyScript clears the aria-busy loading cue once the stream
+// delivers its first patch (or fails terminally), so screen readers stop
+// queueing and announce the live content. Singleton-guarded: safe across
+// HTMX re-renders and multiple regions on one page.
+//
+// The datastar-fetch event also fires with the applied patch event names
+// ("datastar-patch-elements"/"datastar-patch-signals") for successful SSE
+// messages — that is the "first patch arrived" signal. Terminal failures
+// clear the busy state too so the static region content stays readable
+// (the global SSEErrorHandling handler announces the failure itself).
+templ liveRegionBusyScript(nonce string) {
+	<script nonce={ nonce }>
+		(function() {
+			'use strict';
+			if (window.tcLiveBusyAttached) return;
+			window.tcLiveBusyAttached = true;
+			function tcClearLiveBusy() {
+				document.querySelectorAll('[data-tc-live-busy]').forEach(function(el) {
+					el.removeAttribute('aria-busy');
+					el.removeAttribute('data-tc-live-busy');
+				});
+			}
+			document.addEventListener('datastar-fetch', function(evt) {
+				var type = (evt.detail || {}).type;
+				if (type === 'datastar-patch-elements' || type === 'datastar-patch-signals' || type === 'error' || type === 'retries-failed') {
+					tcClearLiveBusy();
+				}
+			});
+		})();
+	</script>
+}

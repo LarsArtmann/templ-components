@@ -1,0 +1,85 @@
+package datastar
+
+// SSEErrorHandlingConfig configures global DataStar SSE error handling.
+type SSEErrorHandlingConfig struct {
+	// Nonce is the CSP nonce for the inline script.
+	Nonce string
+	// DurationMS is the toast auto-dismiss delay in milliseconds (default: 6000).
+	DurationMS int
+}
+
+// DefaultSSEErrorHandlingConfig returns sensible defaults for SSE error handling.
+func DefaultSSEErrorHandlingConfig() SSEErrorHandlingConfig {
+	return SSEErrorHandlingConfig{
+		DurationMS: 6000,
+	}
+}
+
+func (c *SSEErrorHandlingConfig) normalize() {
+	if c.DurationMS <= 0 {
+		c.DurationMS = 6000
+	}
+}
+
+// SSEErrorHandling renders a global listener for DataStar stream failures and
+// surfaces them as accessible toasts so streaming errors are never silent.
+// This is the DataStar counterpart to htmx.GlobalErrorHandling, which covers
+// HTMX request errors.
+//
+// The DataStar runtime (v1.x) reports the fetch/SSE lifecycle on the
+// document-level "datastar-fetch" event. detail.type is one of "started",
+// "finished", "error", "retrying", or "retries-failed" (plus the applied
+// patch event names for successful SSE messages). This handler reports the
+// two terminal failure states:
+//
+//   - "error": the endpoint answered with an HTTP error (status >= 400).
+//     Toasted with the status code from detail.argsRaw.status.
+//   - "retries-failed": the connection dropped and automatic reconnection
+//     exhausted its retries (default: 10 attempts, exponential backoff).
+//     Toasted; the stream stays dead until its action re-runs.
+//
+// Transient "retrying" events are logged to the console only — the runtime
+// keeps reconnecting on its own, and toasting each attempt would spam.
+//
+// Requires feedback.ToastContainer on the page for toast feedback (it provides
+// the global tcShowToast function). Without it, errors are still logged to the
+// console and announced via the aria-live region.
+//
+// Typical layout wiring:
+//
+//	@feedback.ToastContainer("")
+//	@datastar.SSEErrorHandling(datastar.DefaultSSEErrorHandlingConfig())
+templ SSEErrorHandling(cfg SSEErrorHandlingConfig) {
+	{{ cfg.normalize() }}
+	<div id="tc-datastar-announcer" aria-live="polite" class="sr-only"></div>
+	<script nonce={ cfg.Nonce }>
+		(function() {
+			'use strict';
+			var DURATION = {{ cfg.DurationMS }};
+			function announce(text) {
+				var announcer = document.getElementById('tc-datastar-announcer');
+				if (announcer) announcer.textContent = text;
+			}
+			document.addEventListener('datastar-fetch', function(evt) {
+				var detail = evt.detail || {};
+				var args = detail.argsRaw || {};
+				if (detail.type === 'error') {
+					var status = args.status ? ' (HTTP ' + args.status + ')' : '';
+					console.error('DataStar stream error:', detail);
+					announce('Stream error' + status);
+					if (typeof tcShowToast === 'function') {
+						tcShowToast('The live stream endpoint returned an error' + status + '.', 'error', 'Stream Error', DURATION);
+					}
+				} else if (detail.type === 'retries-failed') {
+					console.error('DataStar stream failed: retries exhausted', detail);
+					announce('Live stream lost. Automatic reconnection failed.');
+					if (typeof tcShowToast === 'function') {
+						tcShowToast('The live stream was lost and automatic reconnection failed. Reload the page to resume.', 'error', 'Connection Lost', DURATION);
+					}
+				} else if (detail.type === 'retrying') {
+					console.warn('DataStar stream interrupted, retrying...', detail);
+				}
+			});
+		})();
+	</script>
+}
