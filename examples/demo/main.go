@@ -23,15 +23,26 @@ import (
 //	data: mode inner
 //	data: elements <p>...</p>
 //
-// Two format details matter (both verified against the pinned v1.0.2 runtime
-// bundle):
+// Format details (all verified against the pinned v1.0.2 runtime bundle):
 //
 //   - Every line needs a trailing REAL newline, and the event ends with a
 //     blank line — without it the browser never dispatches the event.
 //   - The client parses each dataline by splitting on the FIRST space, so
 //     multi-line HTML must repeat the "elements " key on every line; values
 //     for the same key are joined with newlines.
+//   - Interior blank lines are PRESERVED: an empty line is emitted as an
+//     empty-value dataline ("data: elements " with trailing space), which the
+//     runtime joins back to "\n" — <pre> content survives the round-trip.
+//     A truly empty byte line would terminate the event early, so lines are
+//     never dropped.
+//   - selector/mode are single-line protocol values; CR/LF is replaced with
+//     spaces so a crafted selector cannot inject datalines.
 func writeDatastarPatch(w io.Writer, selector, mode, html string) error {
+	selector = strings.ReplaceAll(selector, "\r", " ")
+	selector = strings.ReplaceAll(selector, "\n", " ")
+	mode = strings.ReplaceAll(mode, "\r", " ")
+	mode = strings.ReplaceAll(mode, "\n", " ")
+
 	var b strings.Builder
 	b.WriteString("event: datastar-patch-elements\n")
 	if selector != "" {
@@ -40,11 +51,11 @@ func writeDatastarPatch(w io.Writer, selector, mode, html string) error {
 	if mode != "" {
 		b.WriteString("data: mode " + mode + "\n")
 	}
-	for line := range strings.SplitSeq(strings.TrimSpace(html), "\n") {
-		if line = strings.TrimSpace(line); line == "" {
-			continue
+	if payload := strings.TrimSpace(html); payload != "" {
+		for line := range strings.SplitSeq(payload, "\n") {
+			line = strings.TrimSuffix(line, "\r")
+			b.WriteString("data: elements " + line + "\n")
 		}
-		b.WriteString("data: elements " + line + "\n")
 	}
 	b.WriteString("\n")
 

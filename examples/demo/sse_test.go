@@ -41,9 +41,101 @@ func TestDatastarPatchWireFormat(t *testing.T) {
 	}
 }
 
+// TestDatastarPatchPreservesBlankLines pins the <pre> round-trip: interior
+// blank lines are emitted as empty-value datalines ("data: elements " with
+// trailing space) which the runtime joins back to "\n". Dropping them used to
+// silently corrupt preformatted content.
+func TestDatastarPatchPreservesBlankLines(t *testing.T) {
+	var b strings.Builder
+
+	err := writeDatastarPatch(&b, "#pre", "inner", "<pre>\nline1\n\nline3\n</pre>")
+	if err != nil {
+		t.Fatalf("writeDatastarPatch returned error: %v", err)
+	}
+
+	want := "event: datastar-patch-elements\n" +
+		"data: selector #pre\n" +
+		"data: mode inner\n" +
+		"data: elements <pre>\n" +
+		"data: elements line1\n" +
+		"data: elements \n" +
+		"data: elements line3\n" +
+		"data: elements </pre>\n" +
+		"\n"
+
+	if got := b.String(); got != want {
+		t.Errorf("blank-line round-trip mismatch:\ngot:  %q\nwant: %q", got, want)
+	}
+}
+
+// FuzzWriteDatastarPatch verifies the writer never emits a corrupt SSE event
+// for arbitrary input:
+//
+//   - the event header is intact and the event ends with exactly one blank
+//     line (the dispatch terminator),
+//   - no byte line inside the event is empty (an empty line would terminate
+//     the event early),
+//   - the elements datalines round-trip: joined values equal the payload with
+//     outer whitespace trimmed and CR suffixes removed.
+func FuzzWriteDatastarPatch(f *testing.F) {
+	f.Add("#target", "inner", "<div>\n<p>hello</p>\n</div>")
+	f.Add("", "", "")
+	f.Add("#pre", "outer", "<pre>\na\n\nb\n</pre>")
+	f.Add("#x\ninjected", "inner\nevent: datastar-patch-signals", "<p>ok</p>")
+	f.Add("#w", "", "\n\n   \n<p>ws</p>\n\r\n")
+
+	f.Fuzz(func(t *testing.T, selector, mode, html string) {
+		var b strings.Builder
+		if err := writeDatastarPatch(&b, selector, mode, html); err != nil {
+			t.Fatalf("writeDatastarPatch returned error: %v", err)
+		}
+		out := b.String()
+
+		if !strings.HasPrefix(out, "event: datastar-patch-elements\n") {
+			t.Fatalf("event header missing:\n%q", out)
+		}
+		if !strings.HasSuffix(out, "\n\n") {
+			t.Fatalf("event does not end with a blank-line terminator:\n%q", out)
+		}
+
+		// No empty byte line inside the event body: an empty line is the SSE
+		// event terminator and would truncate the event.
+		body := strings.TrimSuffix(out, "\n\n")
+		for line := range strings.SplitSeq(body, "\n") {
+			if line == "" {
+				t.Fatalf("empty byte line inside event (premature terminator):\n%q", out)
+			}
+		}
+
+		// Round-trip: every payload line appears exactly once, in order, as an
+		// elements dataline — including blank lines (empty-value datalines).
+		var gotLines []string
+		for line := range strings.SplitSeq(body, "\n") {
+			if v, ok := strings.CutPrefix(line, "data: elements "); ok {
+				gotLines = append(gotLines, v)
+			}
+		}
+		var wantLines []string
+		if payload := strings.TrimSpace(html); payload != "" {
+			for line := range strings.SplitSeq(payload, "\n") {
+				wantLines = append(wantLines, strings.TrimSuffix(line, "\r"))
+			}
+		}
+
+		if got, want := strings.Join(gotLines, "\n"), strings.Join(wantLines, "\n"); got != want {
+			t.Fatalf("elements round-trip mismatch:\ngot:  %q\nwant: %q\nin:\n%q", got, want, out)
+		}
+	})
+}
+
 // TestDatastarStreamEndpoint exercises the real handler over HTTP: headers,
 // framing of the first event, and that a client disconnect ends the stream.
+// Skipped in -short mode: the stream's first tick fires after 2s.
 func TestDatastarStreamEndpoint(t *testing.T) {
+	if testing.Short() {
+		t.Skip("2s ticker: skipped in -short mode")
+	}
+
 	server := httptest.NewServer(newMux())
 	t.Cleanup(server.Close)
 
