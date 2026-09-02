@@ -3,6 +3,17 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # Separate rolling nixpkgs pin for the GO TOOLCHAIN. The security-fix
+    # patches (GO-2026-5972 encoding/asn1, GO-2026-6089 net/http,
+    # GO-2026-6090 crypto/tls — all reachable via the demo's http.Server)
+    # landed in go 1.26.6, but the locked `nixpkgs` input still packages
+    # 1.26.5. Updating `nixpkgs` wholesale would ALSO drift pkgs.templ
+    # (breaking the v0.3.1020 generate pin — see AGENTS.md "templ Version
+    # Pin") and pkgs.golangci-lint (breaking lint reproducibility), so the
+    # toolchain rides its own input — same isolation pattern as
+    # nixpkgs-chromium. Fold this input back into `nixpkgs` at the next
+    # deliberate full-flake update.
+    nixpkgs-go.url = "github:NixOS/nixpkgs/nixos-unstable";
     # Separate nixpkgs pin for Chromium. Visual regression tests are
     # pixel-sensitive: a Chromium major bump can shift font AA, sub-pixel
     # layout, or rendering timings enough to flip goldens. Pinning Chromium
@@ -42,10 +53,16 @@
           inputs',
           ...
         }:
+        let
+          # Go toolchain from the dedicated nixpkgs-go input (1.26.6+ for the
+          # security fixes above); everything else stays on the locked
+          # nixpkgs so templ/golangci-lint pins hold.
+          goToolchain = inputs'.nixpkgs-go.legacyPackages.go_1_26;
+        in
         {
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
-              go_1_26
+              goToolchain
               gopls
               golangci-lint
               templ
@@ -66,7 +83,7 @@
               meta.description = "Run all tests with race detector (all modules via go.work)";
               program = pkgs.writeShellApplication {
                 name = "run-tests";
-                runtimeInputs = [ pkgs.go_1_26 ];
+                runtimeInputs = [ goToolchain ];
                 text = ''
                   export GOEXPERIMENT=jsonv2
                   go test ./... -count=1 -race
@@ -108,7 +125,7 @@
               program = pkgs.writeShellApplication {
                 name = "run-build";
                 runtimeInputs = [
-                  pkgs.go_1_26
+                  goToolchain
                   pkgs.templ
                 ];
                 text = ''
@@ -127,7 +144,7 @@
               program = pkgs.writeShellApplication {
                 name = "run-verify";
                 runtimeInputs = [
-                  pkgs.go_1_26
+                  goToolchain
                   pkgs.golangci-lint
                   pkgs.templ
                 ];
@@ -164,7 +181,7 @@
               meta.description = "Run tests with coverage report (all modules)";
               program = pkgs.writeShellApplication {
                 name = "run-coverage";
-                runtimeInputs = [ pkgs.go_1_26 ];
+                runtimeInputs = [ goToolchain ];
                 text = ''
                   export GOEXPERIMENT=jsonv2
                   echo "=== Root module ==="
@@ -200,7 +217,7 @@
               program = pkgs.writeShellApplication {
                 name = "run-visual";
                 runtimeInputs = [
-                  pkgs.go_1_26
+                  goToolchain
                   # fc-match for the font diagnostics below.
                   pkgs.fontconfig
                   # Use Chromium from the pinned nixpkgs-chromium input (not the
