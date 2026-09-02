@@ -71,6 +71,7 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 		live := livePolitenessValue(props.Live)
 		init := getActionExpr(props.URL, props.Retry, props.Cancellation)
 		hasURL := strings.TrimSpace(props.URL) != ""
+		autoStart := props.AutoStart && hasURL
 		var templ_7745c5c3_Var2 = []any{utils.Class("", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
@@ -88,7 +89,7 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 48, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 49, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -99,7 +100,7 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		if props.AutoStart && hasURL {
+		if autoStart {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, " data-init=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -107,13 +108,13 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(init)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 51, Col: 19}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 52, Col: 19}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\" aria-busy=\"true\" data-tc-live-busy")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -125,7 +126,7 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(live))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 53, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 56, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -156,7 +157,7 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 56, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 59, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 			if templ_7745c5c3_Err != nil {
@@ -180,6 +181,64 @@ func LiveRegion(props LiveRegionProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if autoStart {
+			templ_7745c5c3_Err = liveRegionBusyScript(props.Nonce).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		return nil
+	})
+}
+
+// liveRegionBusyScript clears the aria-busy loading cue once the stream
+// delivers its first patch (or fails terminally), so screen readers stop
+// queueing and announce the live content. Singleton-guarded: safe across
+// HTMX re-renders and multiple regions on one page.
+//
+// The datastar-fetch event also fires with the applied patch event names
+// ("datastar-patch-elements"/"datastar-patch-signals") for successful SSE
+// messages — that is the "first patch arrived" signal. Terminal failures
+// clear the busy state too so the static region content stays readable
+// (the global SSEErrorHandling handler announces the failure itself).
+func liveRegionBusyScript(nonce string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var8 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var8 == nil {
+			templ_7745c5c3_Var8 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<script nonce=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var9 string
+		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 81, Col: 22}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\">\n\t\t(function() {\n\t\t\t'use strict';\n\t\t\tif (window.tcLiveBusyAttached) return;\n\t\t\twindow.tcLiveBusyAttached = true;\n\t\t\tfunction tcClearLiveBusy() {\n\t\t\t\tdocument.querySelectorAll('[data-tc-live-busy]').forEach(function(el) {\n\t\t\t\t\tel.removeAttribute('aria-busy');\n\t\t\t\t\tel.removeAttribute('data-tc-live-busy');\n\t\t\t\t});\n\t\t\t}\n\t\t\tdocument.addEventListener('datastar-fetch', function(evt) {\n\t\t\t\tvar type = (evt.detail || {}).type;\n\t\t\t\tif (type === 'datastar-patch-elements' || type === 'datastar-patch-signals' || type === 'error' || type === 'retries-failed') {\n\t\t\t\t\ttcClearLiveBusy();\n\t\t\t\t}\n\t\t\t});\n\t\t})();\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

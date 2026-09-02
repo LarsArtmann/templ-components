@@ -68,11 +68,27 @@ func TestLiveRegionUserSeesAutoStreamingContent(t *testing.T) {
 		utils.AssertNotContains(t, output, "data-init")
 	})
 
-	t.Run("aria-live polite by default for screen readers", func(t *testing.T) {
+	t.Run("region announces streamed updates politely by default", func(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, LiveRegion(DefaultLiveRegionProps()))
 		utils.AssertContains(t, output, `aria-live="polite"`)
+	})
+
+	t.Run("auto-connected region signals loading until the first patch arrives", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, LiveRegion(LiveRegionProps{
+			URL:       "/stream/metrics",
+			AutoStart: true,
+		}))
+		// aria-busy=true between page load and the first datastar-patch-*
+		// event gives screen readers a loading cue instead of silence; the
+		// singleton script removes it once patches flow (or the stream
+		// fails terminally) so live content is announced.
+		utils.AssertContains(t, output, `aria-busy="true"`)
+		utils.AssertContains(t, output, "datastar-patch-elements")
+		utils.AssertContains(t, output, "removeAttribute('aria-busy')")
 	})
 
 	t.Run("invalid politeness falls back to polite gracefully", func(t *testing.T) {

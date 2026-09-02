@@ -188,14 +188,22 @@ func newMux() *http.ServeMux {
 		w.Header().Set("X-Accel-Buffering", "no")
 
 		ctx := r.Context()
-		ticker := time.NewTicker(2 * time.Second)
-		defer ticker.Stop()
+		patches := time.NewTicker(2 * time.Second)
+		defer patches.Stop()
+		// SSE comment frames keep reverse proxies and firewalls from killing
+		// the "idle" connection; browsers ignore them entirely. The 15s
+		// interval mirrors stream.Heartbeat from go-sse (see
+		// docs/recipes/datastar-integration.md).
+		keepalive := time.NewTicker(15 * time.Second)
+		defer keepalive.Stop()
 
-		for i := 1; ; i++ {
+		i := 0
+		for {
 			select {
 			case <-ctx.Done():
 				return
-			case <-ticker.C:
+			case <-patches.C:
+				i++
 				err := writeDatastarPatch(
 					w,
 					"#datastar-live-content",
@@ -207,6 +215,11 @@ func newMux() *http.ServeMux {
 					),
 				)
 				if err != nil {
+					return // client went away
+				}
+				flusher.Flush()
+			case <-keepalive.C:
+				if _, err := io.WriteString(w, ": ping\n\n"); err != nil {
 					return // client went away
 				}
 				flusher.Flush()

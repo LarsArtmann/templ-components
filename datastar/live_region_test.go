@@ -58,6 +58,59 @@ func TestLiveRegionWhitespaceURLDegradesGracefully(t *testing.T) {
 	utils.AssertContains(t, output, "<div")
 }
 
+// Auto-started regions carry the aria-busy loading cue and the singleton
+// script that clears it once the first patch arrives. Manual regions (no
+// auto-connect) must not claim a busy state — nothing is loading yet.
+func TestLiveRegionBusyState(t *testing.T) {
+	t.Parallel()
+
+	t.Run("auto-start marks the region aria-busy", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, LiveRegion(LiveRegionProps{
+			URL:       "/stream/metrics",
+			AutoStart: true,
+		}))
+
+		utils.AssertContains(t, output, `aria-busy="true"`)
+		utils.AssertContains(t, output, "data-tc-live-busy")
+		utils.AssertContains(t, output, "tcLiveBusyAttached")
+	})
+
+	t.Run("manual start renders no busy state and no script", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, LiveRegion(LiveRegionProps{
+			URL:       "/stream/metrics",
+			AutoStart: false,
+		}))
+
+		utils.AssertNotContains(t, output, "aria-busy")
+		utils.AssertNotContains(t, output, "tcLiveBusyAttached")
+	})
+
+	t.Run("empty URL renders no busy state and no script", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, LiveRegion(DefaultLiveRegionProps()))
+
+		utils.AssertNotContains(t, output, "aria-busy")
+		utils.AssertNotContains(t, output, "tcLiveBusyAttached")
+	})
+
+	t.Run("clearing script carries the CSP nonce", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, LiveRegion(LiveRegionProps{
+			BaseProps: utils.BaseProps{Nonce: "busy-nonce"},
+			URL:       "/stream/metrics",
+			AutoStart: true,
+		}))
+
+		utils.AssertContains(t, output, `<script nonce="busy-nonce">`)
+	})
+}
+
 // URL-with-quotes must escape the single quotes so a crafted URL cannot
 // inject Datastar expression syntax into the data-init attribute. LiveRegion
 // shares the escaping used by datastar.Get — this test pins the inheritance.

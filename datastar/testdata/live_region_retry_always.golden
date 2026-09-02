@@ -1,1 +1,19 @@
-<div data-init="@get(&#39;/stream/metrics&#39;, {retry: &#39;always&#39;})" aria-live="polite" class=""></div>
+<div data-init="@get(&#39;/stream/metrics&#39;, {retry: &#39;always&#39;})" aria-busy="true" data-tc-live-busy aria-live="polite" class=""></div><script nonce="">
+		(function() {
+			'use strict';
+			if (window.tcLiveBusyAttached) return;
+			window.tcLiveBusyAttached = true;
+			function tcClearLiveBusy() {
+				document.querySelectorAll('[data-tc-live-busy]').forEach(function(el) {
+					el.removeAttribute('aria-busy');
+					el.removeAttribute('data-tc-live-busy');
+				});
+			}
+			document.addEventListener('datastar-fetch', function(evt) {
+				var type = (evt.detail || {}).type;
+				if (type === 'datastar-patch-elements' || type === 'datastar-patch-signals' || type === 'error' || type === 'retries-failed') {
+					tcClearLiveBusy();
+				}
+			});
+		})();
+	</script>

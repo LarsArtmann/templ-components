@@ -43,12 +43,15 @@ templ LiveRegion(props LiveRegionProps) {
 	{{ live := livePolitenessValue(props.Live) }}
 	{{ init := getActionExpr(props.URL, props.Retry, props.Cancellation) }}
 	{{ hasURL := strings.TrimSpace(props.URL) != "" }}
+	{{ autoStart := props.AutoStart && hasURL }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		if props.AutoStart && hasURL {
+		if autoStart {
 			data-init={ init }
+			aria-busy="true"
+			data-tc-live-busy
 		}
 		aria-live={ string(live) }
 		class={ utils.Class("", props.Class) }
@@ -59,4 +62,39 @@ templ LiveRegion(props LiveRegionProps) {
 	>
 		{ children... }
 	</div>
+	if autoStart {
+		@liveRegionBusyScript(props.Nonce)
+	}
+}
+
+// liveRegionBusyScript clears the aria-busy loading cue once the stream
+// delivers its first patch (or fails terminally), so screen readers stop
+// queueing and announce the live content. Singleton-guarded: safe across
+// HTMX re-renders and multiple regions on one page.
+//
+// The datastar-fetch event also fires with the applied patch event names
+// ("datastar-patch-elements"/"datastar-patch-signals") for successful SSE
+// messages — that is the "first patch arrived" signal. Terminal failures
+// clear the busy state too so the static region content stays readable
+// (the global SSEErrorHandling handler announces the failure itself).
+templ liveRegionBusyScript(nonce string) {
+	<script nonce={ nonce }>
+		(function() {
+			'use strict';
+			if (window.tcLiveBusyAttached) return;
+			window.tcLiveBusyAttached = true;
+			function tcClearLiveBusy() {
+				document.querySelectorAll('[data-tc-live-busy]').forEach(function(el) {
+					el.removeAttribute('aria-busy');
+					el.removeAttribute('data-tc-live-busy');
+				});
+			}
+			document.addEventListener('datastar-fetch', function(evt) {
+				var type = (evt.detail || {}).type;
+				if (type === 'datastar-patch-elements' || type === 'datastar-patch-signals' || type === 'error' || type === 'retries-failed') {
+					tcClearLiveBusy();
+				}
+			});
+		})();
+	</script>
 }
