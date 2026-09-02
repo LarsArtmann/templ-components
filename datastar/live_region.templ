@@ -1,6 +1,10 @@
 package datastar
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"strings"
+
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // LiveRegion renders a container that auto-connects to an SSE endpoint and
 // receives server-patched updates. This is the Datastar equivalent of
@@ -9,8 +13,7 @@ import "github.com/larsartmann/templ-components/utils"
 //
 // An empty URL degrades to a plain container (no data-init) — the runtime
 // throws FetchNoUrlProvided for @get(''). Wire the stream via data-on:*
-// on a trigger element instead.
-//
+// on a trigger element instead.//
 // The server endpoint must return a text/event-stream response. Use
 // go-datastar (github.com/larsartmann/go-datastar) to patch elements or signals.
 // Target a child element of the region with WithSelector — patch modes other
@@ -39,11 +42,12 @@ import "github.com/larsartmann/templ-components/utils"
 templ LiveRegion(props LiveRegionProps) {
 	{{ live := livePolitenessValue(props.Live) }}
 	{{ init := getActionExpr(props.URL, props.Retry, props.Cancellation) }}
+	{{ hasURL := strings.TrimSpace(props.URL) != "" }}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		if props.AutoStart && props.URL != "" {
+		if props.AutoStart && hasURL {
 			data-init={ init }
 		}
 		aria-live={ string(live) }

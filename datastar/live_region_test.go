@@ -43,6 +43,37 @@ func TestLiveRegionEmptyURLDegradesGracefully(t *testing.T) {
 	utils.AssertContains(t, output, `aria-live="polite"`)
 }
 
+// A whitespace-only URL is morally empty: @get('   ') would fetch a garbage
+// relative URL (or throw) on every page load. It must degrade exactly like
+// the empty URL case.
+func TestLiveRegionWhitespaceURLDegradesGracefully(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, LiveRegion(LiveRegionProps{
+		URL:       "   ",
+		AutoStart: true,
+	}))
+
+	utils.AssertNotContains(t, output, "data-init")
+	utils.AssertContains(t, output, "<div")
+}
+
+// URL-with-quotes must escape the single quotes so a crafted URL cannot
+// inject Datastar expression syntax into the data-init attribute. LiveRegion
+// shares the escaping used by datastar.Get — this test pins the inheritance.
+func TestLiveRegionURLEscaping(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, LiveRegion(LiveRegionProps{
+		URL:       "/stream?q='",
+		AutoStart: true,
+	}))
+
+	// The injected quote becomes \' inside the expression; templ renders
+	// both the expression quotes and the escaped quote as &#39;.
+	utils.AssertContains(t, output, `@get(&#39;/stream?q=\&#39;&#39;)`)
+}
+
 func TestLiveRegionRetryAlways(t *testing.T) {
 	t.Parallel()
 
