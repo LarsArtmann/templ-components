@@ -61,6 +61,30 @@ The Go module proxy resolves sub-module versions via these directory-prefixed
 tags. The `replace` directives in each `go.mod` are for local dev only; proxy
 consumers resolve via the published tags.
 
+## visualtest sibling-pin policy
+
+`visualtest/` is a separate Go module but is **not published** (no proxy tags).
+It has its own pin policy, distinct from the seven published modules:
+
+- **Pins:** `visualtest/go.mod` requires its sibling modules (`utils`, `icons`,
+  `errorpage`, `htmx`) at the **latest released version** — the same version as
+  `utils.Version`. `scripts/release.sh` bumps these pins in step 5b, so they
+  move in the release commit itself.
+- **Local replaces:** because visualtest is never fetched from the proxy, its
+  `go.mod` permanently carries relative `replace` directives for the root
+  module and all siblings (like root's local-dev replaces). This keeps
+  `GOWORK=off go build/test/tidy` working locally and in CI **before the
+  release tags are pushed** — stale pins can no longer leave master red (the
+  v1.11.0 incident: 9 days red because pins were bumped by hand after push).
+- **Enforcement:** `scripts/check-version-sync.sh` (pre-commit + CI) fails if
+  any go.mod — visualtest included — pins a templ-components sibling at a
+  version other than `utils.Version`. `scripts/check-module-sync.sh` verifies
+  module paths and relative replace paths.
+
+After every release cut, the post-release "re-add replace directives" commit
+re-tidies all modules (release.sh step 10b/10c) and asserts the second tidy is
+a no-op — the same invariant CI enforces via "Verify no untracked changes".
+
 ## Contributing
 
 `go.work` is gitignored. Contributors create it automatically when they run

@@ -1,0 +1,65 @@
+name: Upstream watch
+
+# Weekly check that a newer go-datastar/static bundle has not been published
+# upstream. The pinned bundle's wire format is guarded by
+# datastar.TestPinnedRuntimeBundleContract (a silent upstream break turns into
+# a red test), but a VERSION bump still needs a human to re-audit the bundle
+# bytes against docs/datastar-runtime-facts.md. This workflow opens a single
+# tracking issue when a new version appears upstream so that re-audit gets
+# scheduled instead of silently never happening.
+
+on:
+  schedule:
+    - cron: "23 5 * * 1" # Mondays 05:23 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  go-datastar-static:
+    name: go-datastar/static new-tag watch
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Compare pinned go-datastar/static with the latest published version
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          PINNED="$(grep -oE 'github\.com/larsartmann/go-datastar/static v[0-9]+\.[0-9]+\.[0-9]+' datastar/go.mod | awk '{print $2}')"
+          if [ -z "$PINNED" ]; then
+            echo "::error::Could not extract the pinned go-datastar/static version from datastar/go.mod"
+            exit 1
+          fi
+          LATEST="$(curl -fsSL https://proxy.golang.org/github.com/larsartmann/go-datastar/static/@latest | jq -r .Version)"
+          echo "Pinned: ${PINNED}"
+          echo "Latest upstream: ${LATEST}"
+          if [ "$PINNED" = "$LATEST" ]; then
+            echo "Upstream is in sync with the pin."
+            exit 0
+          fi
+          TITLE="upstream-watch: go-datastar/static ${LATEST} published (pinned: ${PINNED})"
+          if gh issue list --state open --search "upstream-watch go-datastar in:title" | grep -q .; then
+            echo "A watch issue is already open — not duplicating."
+            exit 0
+          fi
+          BODY="$(cat <<BODY_EOF
+          A new go-datastar/static bundle ($LATEST) is published upstream; this repo pins $PINNED.
+
+          **What to do (human required, by design):**
+
+          1. \`go get github.com/larsartmann/go-datastar/static@$LATEST\` in \`datastar/\`
+          2. Re-run \`go test ./...\` in \`datastar/\` — \`TestPinnedRuntimeBundleContract\` pins the bundle bytes and will flag wire-format changes
+          3. Re-audit the new bundle against \`docs/datastar-runtime-facts.md\` (event names, CSP requirements, retry semantics)
+          4. Bump the version reference in \`docs/datastar-runtime-facts.md\` + \`datastar/doc.go\` if changed
+          5. Warm \`[Unreleased]\` in CHANGELOG.md, then release per \`docs/release-checklist.md\`
+
+          The red test only fires AFTER the bump — this issue is the proactive signal.
+
+          _Automated by the \`Upstream watch\` workflow. Close this issue after the bump lands._
+          BODY_EOF
+          )"
+          gh issue create --title "$TITLE" --body "$BODY"
+          echo "Created watch issue for ${LATEST}."

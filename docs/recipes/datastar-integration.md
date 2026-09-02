@@ -97,8 +97,7 @@ func streamMetrics(w http.ResponseWriter, r *http.Request) {
 
     resp := datastar.NewResponse(stream)
 
-    for {
-        metrics := fetchCurrentMetrics()
+    for {        metrics := fetchCurrentMetrics()
 
         // Patch the StatCard's content. WithSelector is REQUIRED with
         // WithModeInner — the runtime rejects non-default modes without a
@@ -123,6 +122,33 @@ func streamMetrics(w http.ResponseWriter, r *http.Request) {
     }
 }
 ```
+
+### One-liner variant and proxy keep-alive
+
+`NewResponseFromHTTP` collapses the two setup lines into one:
+
+```go
+func streamMetrics(w http.ResponseWriter, r *http.Request) {
+    resp := datastar.NewResponseFromHTTP(w, r)
+    defer sse.CloseFromHTTP(w, r) // or keep the explicit Stream handle
+
+    // ...
+}
+```
+
+Production streams behind a reverse proxy (Nginx, Cloudflare, AWS ALB) should
+also run a heartbeat goroutine — proxies kill "idle" connections after 30–60s
+of silence, and a metrics stream can legitimately be quiet that long:
+
+```go
+stream := sse.NewStream(w, r)
+go stream.Heartbeat(stream.Context(), 15*time.Second)
+```
+
+The heartbeat is a standard SSE comment frame (`: heartbeat`) — browsers ignore
+it, proxies reset their idle timer. Datastar's runtime parses datalines keyed
+terminated by a blank line, so comment frames are safely ignored on the wire
+(verified against the pinned bundle; see `docs/datastar-runtime-facts.md`).
 
 ### Why this is better than PolledRegion
 
@@ -187,6 +213,35 @@ datastar.Put("/api/update/1")    // → "@put('/api/update/1')"
 datastar.Patch("/api/patch/1")   // → "@patch('/api/update/1')"
 datastar.Delete("/api/del/1")    // → "@delete('/api/del/1')"
 ```
+
+---
+
+## Lifecycle observability (analytics hooks)
+
+The runtime emits a document-level `datastar-fetch` CustomEvent for every
+action (`@get`, `@post`, ...) and SSE stream. Hook it for analytics, loading
+counters, or telemetry:
+
+```js
+document.addEventListener('datastar-fetch', (e) => {
+    const { type, el, argsRaw } = e.detail;
+    switch (type) {
+        case 'started':  analytics.track('stream:start', { url: argsRaw.url }); break;
+        case 'finished': analytics.track('stream:end',   { status: argsRaw.status }); break;
+        case 'error':    analytics.track('stream:error', { status: argsRaw.status }); break;
+        // 'retrying' and 'retries-failed' also exist (reconnect exhaustion)
+    }
+});
+```
+
+Facts (pinned by `datastar.TestPinnedRuntimeBundleContract`, so renames fail CI):
+
+- `type` ∈ `started`, `finished`, `error` (HTTP ≥ 400; status in
+  `argsRaw.status`), `retrying`, `retries-failed`
+- There is **no `datastar-sse-error` event** — listening for it is dead code
+- Reconnection: clean stream EOF reconnects only with `retry: 'always'`
+  (`LiveRegionProps.Retry: datastar.RetryAlways`); defaults are 10 retries,
+  1s ×2 exponential backoff, 30s cap
 
 ---
 
@@ -259,6 +314,9 @@ no eval.
 
 ## Further reading
 
+- `docs/datastar-runtime-facts.md` — audited runtime facts (SSE wire format,
+  lifecycle events, CSP, reconnect matrix); the source of truth for everything
+  summarized above
 - [Datastar official docs](https://data-star.dev/)
 - [go-datastar](https://github.com/LarsArtmann/go-datastar) — Go protocol library (patches as values)
 - [go-datastar/static](https://pkg.go.dev/github.com/larsartmann/go-datastar/static) — embedded JS bundle (zero deps)

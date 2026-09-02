@@ -8,6 +8,34 @@ on:
     branches: [master, main]
 
 jobs:
+  # Mechanical enforcement of the always-warm [Unreleased] rule: a PR that
+  # touches library component code must also diff CHANGELOG.md (2026-08-31:
+  # PR #5 shipped component changes with an empty [Unreleased]). Uses the PR
+  # files API, so no git history fetch is needed.
+  changelog-guard:
+    name: CHANGELOG warmth (component PRs)
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require a CHANGELOG.md diff when library code changes
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          FILES="$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/files" --paginate --jq '.[].filename')"
+          echo "Changed files:"
+          echo "$FILES"
+          if echo "$FILES" | grep -Eq '\.templ$|^(display|feedback|forms|layout|navigation|htmx|datastar|errorpage|icons|utils|charts)/.*\.go$'; then
+            if ! echo "$FILES" | grep -q '^CHANGELOG.md$'; then
+              echo "::error::This PR changes library components but does not touch CHANGELOG.md."
+              echo "::error::House rule: every feature/fix change warms [Unreleased] in the same change."
+              exit 1
+            fi
+            echo "CHANGELOG.md is part of the diff — guard satisfied."
+          else
+            echo "No library component code changed; CHANGELOG not required."
+          fi
+
   release-tags:
     name: Release tag completeness
     if: startsWith(github.ref, 'refs/tags/v')
@@ -15,7 +43,7 @@ jobs:
     steps:
       # fetch-depth: 0 pulls every tag: the sub-module tags live on the same
       # release commit as the pushed root tag and must all be present.
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0
       - name: Verify every sub-module carries the release tag
@@ -27,8 +55,8 @@ jobs:
     env:
       GOEXPERIMENT: jsonv2
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
-      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: "1.26"
 
@@ -86,9 +114,9 @@ jobs:
     env:
       GOEXPERIMENT: jsonv2
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-go@40f1582b2485089dde7abd97c1529aa768e1baff # v5
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
         with:
           go-version: "1.26"
 
@@ -114,8 +142,12 @@ jobs:
       - name: Go mod tidy (all modules)
         run: |
           go mod tidy
-          for mod in utils icons errorpage charts/echarts datastar htmx; do
-            (cd "$mod" && go mod tidy)
+          # visualtest included: its go.sum drift (the v1.11.0 class) used to
+          # surface only in the separate Visual Regression job. Tidying it here
+          # lets the "Verify no untracked changes" step below fail fast. Works
+          # offline: visualtest/go.mod carries local replace directives.
+          for mod in utils icons errorpage charts/echarts datastar htmx visualtest; do
+            (cd "$mod" && GOWORK=off go mod tidy)
           done
 
       - name: Verify no untracked changes
@@ -138,7 +170,20 @@ jobs:
           done
 
       - name: Compile visualtest module (separate go.mod, would otherwise be skipped)
-        run: cd visualtest && GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./...
+        run: |
+          cd visualtest
+          # Retry: proxy.golang.org INTERNAL_ERROR flaked one run (33399151599);
+          # a rerun passed. Compile checks are cheap, so retry twice before
+          # failing the pipeline.
+          for attempt in 1 2 3; do
+            if GOWORK=off GOEXPERIMENT=jsonv2 go test -count=1 ./...; then
+              exit 0
+            fi
+            echo "::warning::visualtest compile attempt ${attempt}/3 failed — retrying after backoff"
+            sleep $((attempt * 5))
+          done
+          echo "::error::visualtest compile failed after 3 attempts (not a proxy flake — inspect the logs)."
+          exit 1
         # Compile-only check: this step has no Chromium, so tests skip.
         # Actual visual regression runs in the dedicated "Visual Regression"
         # job below (hard gate — fails the pipeline if any test skips or fails).
@@ -159,7 +204,7 @@ jobs:
         run: go build ./examples/...
 
       - name: Upload coverage
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: coverage-report
           path: coverage.out
@@ -172,7 +217,7 @@ jobs:
     name: CSS Freshness
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: cachix/install-nix-action@630ae543ea3a38a9a4166f03376c02c50f408342 # v31
         with:
           nix_path: nixpkgs=channel:nixos-unstable
@@ -197,7 +242,7 @@ jobs:
     name: Visual Regression
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - uses: cachix/install-nix-action@630ae543ea3a38a9a4166f03376c02c50f408342 # v31
         with:
           nix_path: nixpkgs=channel:nixos-unstable
@@ -220,7 +265,7 @@ jobs:
           fi
       - name: Upload failure artifacts (actual + diff PNGs)
         if: failure()
-        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
         with:
           name: visual-failures
           path: visualtest/testdata/.fail/
