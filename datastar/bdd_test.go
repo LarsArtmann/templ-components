@@ -266,7 +266,11 @@ func TestSSEErrorHandlingUserIsToldAboutStreamFailures(t *testing.T) {
 			output,
 			`tcShowToast('The live stream endpoint returned an error' + status + '.', 'error', 'Stream Error', DURATION)`,
 		)
-		utils.AssertContains(t, output, `tcShowToast('The live stream was lost and automatic reconnection failed. Reload the page to resume.', 'error', 'Connection Lost', DURATION)`)
+		utils.AssertContains(
+			t,
+			output,
+			`tcShowToast('The live stream was lost and automatic reconnection failed. Reload the page to resume.', 'error', 'Connection Lost', DURATION)`,
+		)
 	})
 
 	t.Run("toasts auto-dismiss after the configured duration", func(t *testing.T) {
