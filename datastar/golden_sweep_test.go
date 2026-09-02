@@ -19,6 +19,10 @@ func TestGoldenSweepSDKScript(t *testing.T) {
 			CDN:     "https://unpkg.com",
 			Version: DatastarVersion1_0_2,
 		}))},
+		{Name: "sdk_script_cdn_nonce", HTML: utils.Render(t, SDKScript(SDKScriptProps{
+			BaseProps: utils.BaseProps{Nonce: "test-nonce-123"},
+			Version:   DatastarVersion1_0_2,
+		}))},
 	})
 }
 

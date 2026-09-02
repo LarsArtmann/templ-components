@@ -97,7 +97,8 @@ func streamMetrics(w http.ResponseWriter, r *http.Request) {
 
     resp := datastar.NewResponse(stream)
 
-    for {        metrics := fetchCurrentMetrics()
+    for {
+        metrics := fetchCurrentMetrics()
 
         // Patch the StatCard's content. WithSelector is REQUIRED with
         // WithModeInner — the runtime rejects non-default modes without a
@@ -130,9 +131,9 @@ func streamMetrics(w http.ResponseWriter, r *http.Request) {
 ```go
 func streamMetrics(w http.ResponseWriter, r *http.Request) {
     resp := datastar.NewResponseFromHTTP(w, r)
-    defer sse.CloseFromHTTP(w, r) // or keep the explicit Stream handle
-
-    // ...
+    // NOTE: this variant does not hand you the *sse.Stream handle. Use the
+    // explicit NewResponse form above whenever you need one (heartbeats,
+    // Last-Event-ID, onDisconnect hooks).
 }
 ```
 

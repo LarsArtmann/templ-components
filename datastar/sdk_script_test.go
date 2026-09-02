@@ -27,6 +27,46 @@ func TestSDKScriptSelfHosted(t *testing.T) {
 	utils.AssertNotContains(t, output, "cdn.jsdelivr.net")
 }
 
+// Self-hosting must not emit the CDN preconnect: there is no cross-origin
+// connection to warm, and a dangling preconnect to jsdelivr would leak the
+// page load to a third party even on fully self-hosted deployments.
+func TestSDKScriptSelfHostedOmitsPreconnect(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, SDKScript(SDKScriptProps{
+		Src: "/static/datastar.js",
+	}))
+
+	utils.AssertNotContains(t, output, "preconnect")
+}
+
+func TestSDKScriptPreconnect(t *testing.T) {
+	t.Parallel()
+
+	defaultCDN := utils.Render(t, SDKScript(DefaultSDKScriptProps()))
+	utils.AssertContains(t, defaultCDN, `<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>`)
+
+	customCDN := utils.Render(t, SDKScript(SDKScriptProps{
+		CDN: "https://unpkg.com",
+	}))
+	utils.AssertContains(t, customCDN, `<link rel="preconnect" href="https://unpkg.com" crossorigin>`)
+}
+
+// CDN + nonce must combine: preconnect link first, then the nonced module
+// script. Guarded by sdk_script_cdn_nonce.golden for the full document shape.
+func TestSDKScriptCDNWithNonce(t *testing.T) {
+	t.Parallel()
+
+	output := utils.Render(t, SDKScript(SDKScriptProps{
+		BaseProps: utils.BaseProps{Nonce: "test-nonce-123"},
+		Version:   DatastarVersion1_0_2,
+	}))
+
+	utils.AssertContains(t, output, `<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>`)
+	utils.AssertContains(t, output, `<script type="module" nonce="test-nonce-123"`)
+	utils.AssertContains(t, output, `src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js"`)
+}
+
 func TestSDKScriptCustomCDN(t *testing.T) {
 	t.Parallel()
 
