@@ -309,6 +309,12 @@
               nixfmt.enable = true;
               gofumpt.enable = true;
               goimports.enable = true;
+              # gotools (goimports) shells out to `go` at format time: that
+              # go must match the go.mod toolchain (1.26.7) or it tries to
+              # DOWNLOAD the newer toolchain, which fails inside the
+              # flake-check sandbox (no network). Same input as
+              # goToolchain.
+              goimports.package = inputs'.nixpkgs-go.legacyPackages.gotools;
             };
           };
 
