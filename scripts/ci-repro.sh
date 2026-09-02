@@ -107,7 +107,9 @@ step "Docs-health drift guard"
 step "Coverage threshold (>= 70%)"
 COVERAGE="$(go tool cover -func=coverage.out | grep total | awk '{print $3}' | tr -d '%')"
 echo "Total coverage: ${COVERAGE}%"
-if [ "$(echo "$COVERAGE < 70" | bc -l)" -eq 1 ]; then
+# awk, not bc: bc is missing on some dev machines and the check would
+# silently pass (CI's ubuntu runner has bc, so this stays CI-equivalent).
+if awk "BEGIN{exit !($COVERAGE < 70)}"; then
 	echo "Coverage ${COVERAGE}% is below 70% threshold" >&2
 	exit 1
 fi
