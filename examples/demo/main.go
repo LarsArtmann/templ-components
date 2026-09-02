@@ -122,11 +122,13 @@ func newMux() *http.ServeMux {
 	// toast via GlobalErrorHandling.
 	mux.HandleFunc("/api/items", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
 		componentOr500(w, r, loadMoreResponse(r.URL.Query().Get("cursor")))
 	})
 
 	mux.HandleFunc("/api/items/123", func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
 		fmt.Fprint(
 			w,
 			`<div class="rounded-lg border border-green-200 dark:border-green-800 bg-green-50 dark:bg-green-900/20 p-4">
@@ -139,6 +141,7 @@ func newMux() *http.ServeMux {
 		// Small delay so the LoadingButton "Saving..." state is visible.
 		time.Sleep(600 * time.Millisecond)
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
 		fmt.Fprint(w, `<span class="text-sm text-green-700 dark:text-green-300">Saved.</span>`)
 	})
 
@@ -152,6 +155,7 @@ func newMux() *http.ServeMux {
 			tick = v + 1
 		}
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
 		componentOr500(w, r, polledStatsRegion(tick))
 	})
 
@@ -160,6 +164,7 @@ func newMux() *http.ServeMux {
 		status := r.URL.Query().Get("status")
 		sort := r.URL.Query().Get("sort")
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
 		componentOr500(w, r, filteredUsersFragment(status, sort))
 	})
 
@@ -312,6 +317,12 @@ func renderPage(
 	if err := page(props).Render(r.Context(), w); err != nil {
 		http.Error(w, err.Error(), 500)
 	}
+}
+
+// noStore marks a response as uncacheable: HTMX GET fragments must never be
+// served from a browser/proxy cache or a stale fragment lands in a live swap.
+func noStore(w http.ResponseWriter) {
+	w.Header().Set("Cache-Control", "no-store")
 }
 
 // componentOr500 renders a templ fragment handler response.

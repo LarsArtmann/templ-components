@@ -211,6 +211,71 @@ func TestDatastarActionEndpointHeaders(t *testing.T) {
 	}
 }
 
+// TestHTMXEndpointHeaders is the headers-contract audit for every HTMX demo
+// endpoint: the counterparty is HTMX's swap machinery plus any browser cache
+// between them, so each fragment response must (a) declare text/html and
+// (b) forbid caching — a cached GET fragment would land stale content in a
+// live swap (the same contract-vs-counterparty lens the SSE audit applied).
+func TestHTMXEndpointHeaders(t *testing.T) {
+	tests := []struct {
+		name    string
+		method  string
+		path    string
+		body    string
+		wantIn  []string // substrings the response body must contain
+		skipDur bool     // endpoint has an artificial delay
+	}{
+		{name: "load-more", method: http.MethodGet, path: "/api/items?cursor=1", wantIn: []string{"hx-get", "/api/items?cursor=2", "Item"}},
+		{name: "load-more last page settles with end-of-list", method: http.MethodGet, path: "/api/items?cursor=2", wantIn: []string{"You&#39;ve reached the end"}},
+		{name: "confirm-delete target fragment", method: http.MethodDelete, path: "/api/items/123", wantIn: []string{"deleted successfully"}},
+		{name: "save acknowledges without swapping", method: http.MethodPost, path: "/api/save", wantIn: []string{"Saved."}, skipDur: true},
+		{name: "polled region re-arms with next tick", method: http.MethodGet, path: "/api/demo-stats?tick=1", wantIn: []string{"tick=2", "hx-get"}},
+		{name: "polled region settles on final tick", method: http.MethodGet, path: "/api/demo-stats?tick=3", wantIn: []string{"Requests served"}},
+		{name: "filter dropdown fragment", method: http.MethodGet, path: "/api/users?status=active&sort=name"},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+			if testing.Short() && tt.skipDur {
+				t.Skip("artificial delay: skipped in -short mode")
+			}
+
+			server := httptest.NewServer(newMux())
+			t.Cleanup(server.Close)
+
+			req, err := http.NewRequestWithContext(context.Background(), tt.method, server.URL+tt.path, nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			resp, err := server.Client().Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			if resp.StatusCode != http.StatusOK {
+				t.Errorf("status = %d, want 200", resp.StatusCode)
+			}
+			if got := resp.Header.Get("Content-Type"); got != "text/html; charset=utf-8" {
+				t.Errorf("Content-Type = %q, want text/html; charset=utf-8", got)
+			}
+			if got := resp.Header.Get("Cache-Control"); got != "no-store" {
+				t.Errorf("Cache-Control = %q, want no-store", got)
+			}
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, want := range tt.wantIn {
+				if want != "" && !strings.Contains(string(body), want) {
+					t.Errorf("response missing %q\nbody:\n%s", want, body)
+				}
+			}
+		})
+	}
+}
+
 // readUntilBlankLine reads bytes until "\n\n" (the SSE event terminator) and
 // returns everything up to and including it.
 func readUntilBlankLine(r io.Reader) (string, error) {
