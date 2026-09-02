@@ -64,7 +64,11 @@ func TestSDKScriptCDNWithNonce(t *testing.T) {
 
 	utils.AssertContains(t, output, `<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>`)
 	utils.AssertContains(t, output, `<script type="module" nonce="test-nonce-123"`)
-	utils.AssertContains(t, output, `src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js"`)
+	utils.AssertContains(
+		t,
+		output,
+		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js"`,
+	)
 }
 
 func TestSDKScriptCustomCDN(t *testing.T) {

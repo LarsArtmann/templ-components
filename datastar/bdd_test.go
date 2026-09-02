@@ -261,7 +261,11 @@ func TestSSEErrorHandlingUserIsToldAboutStreamFailures(t *testing.T) {
 		output := utils.Render(t, SSEErrorHandling(DefaultSSEErrorHandlingConfig()))
 		// tcShowToast(message, type, title, duration) — type 'error' selects
 		// the error toast styling (red border, error icon).
-		utils.AssertContains(t, output, `tcShowToast('The live stream endpoint returned an error' + status + '.', 'error', 'Stream Error', DURATION)`)
+		utils.AssertContains(
+			t,
+			output,
+			`tcShowToast('The live stream endpoint returned an error' + status + '.', 'error', 'Stream Error', DURATION)`,
+		)
 		utils.AssertContains(t, output, `tcShowToast('The live stream was lost and automatic reconnection failed. Reload the page to resume.', 'error', 'Connection Lost', DURATION)`)
 	})
 
