@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/feedback"
@@ -94,6 +95,28 @@ func TestButtonOutlineVariants(t *testing.T) {
 	warning.Text = "Restore"
 	warning.Variant = display.ButtonOutlineWarning
 	visualtest.AssertScreenshot(t, "button/outline_warning_light", display.Button(warning))
+
+	success := display.DefaultButtonProps()
+	success.Text = "Approve"
+	success.Variant = display.ButtonOutlineSuccess
+	visualtest.AssertScreenshot(t, "button/outline_success_light", display.Button(success))
+	visualtest.AssertScreenshot(
+		t,
+		"button/outline_success_dark",
+		display.Button(success),
+		visualtest.Options{Dark: new(true)},
+	)
+
+	info := display.DefaultButtonProps()
+	info.Text = "Details"
+	info.Variant = display.ButtonOutlineInfo
+	visualtest.AssertScreenshot(t, "button/outline_info_light", display.Button(info))
+	visualtest.AssertScreenshot(
+		t,
+		"button/outline_info_dark",
+		display.Button(info),
+		visualtest.Options{Dark: new(true)},
+	)
 }
 
 // TestStatCardTones covers the StatCard tone system — first visual coverage
@@ -127,6 +150,38 @@ func TestStatCardTones(t *testing.T) {
 		Tone:   display.StatToneRed,
 	}
 	visualtest.AssertScreenshot(t, "statcard/red_light", display.StatCard(red))
+
+	yellow := display.StatCardProps{
+		Label:  "Warnings",
+		Value:  "3",
+		Icon:   icons.ExclamationTriangle,
+		Change: "+1",
+		Trend:  display.TrendUp,
+		Tone:   display.StatToneYellow,
+	}
+	visualtest.AssertScreenshot(t, "statcard/yellow_light", display.StatCard(yellow))
+	visualtest.AssertScreenshot(
+		t,
+		"statcard/yellow_dark",
+		display.StatCard(yellow),
+		visualtest.Options{Dark: new(true)},
+	)
+
+	purple := display.StatCardProps{
+		Label:  "New users",
+		Value:  "128",
+		Icon:   icons.UserPlus,
+		Change: "+12%",
+		Trend:  display.TrendUp,
+		Tone:   display.StatTonePurple,
+	}
+	visualtest.AssertScreenshot(t, "statcard/purple_light", display.StatCard(purple))
+	visualtest.AssertScreenshot(
+		t,
+		"statcard/purple_dark",
+		display.StatCard(purple),
+		visualtest.Options{Dark: new(true)},
+	)
 }
 
 // TestAlerts covers all four feedback types with icons and colors.
@@ -908,4 +963,98 @@ func TestDataTable(t *testing.T) {
 		{Cells: []display.TableCell{{Text: "Carol"}, {Text: "Viewer"}, {Text: "Offline"}}},
 	}
 	visualtest.AssertScreenshot(t, "datatable/light", display.DataTable(props))
+}
+
+// TestEyebrowScrollbackAndPageHeader covers the remaining zero-PNG display
+// components plus a composition snapshot: the Eyebrow overline, the
+// terminal-style Scrollback log (staggered entrance settles to a static
+// layout), and the three stacked as they appear on a real page.
+func TestEyebrowScrollbackAndPageHeader(t *testing.T) {
+	t.Parallel()
+
+	eyebrow := display.EyebrowProps{
+		Class: "text-blue-600 dark:text-blue-400",
+		Text:  "Deploy pipeline",
+	}
+	visualtest.AssertScreenshot(t, "eyebrow/light", display.Eyebrow(eyebrow))
+	visualtest.AssertScreenshot(
+		t,
+		"eyebrow/dark",
+		display.Eyebrow(eyebrow),
+		visualtest.Options{Dark: new(true)},
+	)
+
+	scrollback := display.ScrollbackProps{
+		Stagger: true,
+		Lines: []display.ScrollbackLine{
+			{Timestamp: "10:02:41", Tag: "deploy", Text: "Building image (layer 3/7)", Tone: display.ScrollbackToneInfo},
+			{Timestamp: "10:03:12", Tag: "deploy", Text: "Image pushed to registry", Tone: display.ScrollbackToneSuccess},
+			{Timestamp: "10:03:14", Tag: "health", Text: "Waiting for /health to return 200", Tone: display.ScrollbackToneNeutral},
+			{Timestamp: "10:03:19", Tag: "health", Text: "Retry in 5s: connection refused", Tone: display.ScrollbackToneWarning},
+			{Timestamp: "10:03:26", Tag: "traffic", Text: "Traffic shifted to revision 12", Tone: display.ScrollbackToneSuccess},
+		},
+	}
+	visualtest.AssertScreenshot(t, "scrollback/light", display.Scrollback(scrollback))
+	visualtest.AssertScreenshot(
+		t,
+		"scrollback/dark",
+		display.Scrollback(scrollback),
+		visualtest.Options{Dark: new(true)},
+	)
+
+	composition := func() templ.Component {
+		return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+			parts := []templ.Component{
+				display.Eyebrow(eyebrow),
+				display.PageHeader(display.DefaultPageHeaderProps()),
+				display.Scrollback(scrollback),
+			}
+			for _, p := range parts {
+				if err := p.Render(ctx, w); err != nil {
+					return err
+				}
+			}
+			return nil
+		})
+	}()
+	visualtest.AssertScreenshot(t, "eyebrow_scrollback_pageheader/light", composition)
+}
+
+// TestLiveRegionAndIndicator gives the datastar package its first pixel-level
+// goldens. SDKScript is intentionally excluded: it renders only <script> and
+// <link> tags — no visual footprint to pin.
+func TestLiveRegionAndIndicator(t *testing.T) {
+	t.Parallel()
+
+	liveRegionProps := datastar.LiveRegionProps{
+		URL:       "/api/datastar/stream",
+		AutoStart: true,
+	}
+	liveRegion := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		ctx = templ.WithChildren(ctx, templ.Raw(
+			`<div class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">` +
+				`<p class="text-sm text-gray-600 dark:text-gray-400">SSE update #7 — streamed at 10:03:26</p></div>`,
+		))
+		return datastar.LiveRegion(liveRegionProps).Render(ctx, w)
+	})
+	visualtest.AssertScreenshot(t, "datastar/live_region_light", liveRegion)
+	visualtest.AssertScreenshot(
+		t,
+		"datastar/live_region_dark",
+		liveRegion,
+		visualtest.Options{Dark: new(true)},
+	)
+
+	spinner := feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM})
+	indicator := datastar.Indicator(datastar.IndicatorProps{
+		Signal:  "fetching",
+		Spinner: spinner,
+	})
+	visualtest.AssertScreenshot(t, "datastar/indicator_light", indicator)
+	visualtest.AssertScreenshot(
+		t,
+		"datastar/indicator_dark",
+		indicator,
+		visualtest.Options{Dark: new(true)},
+	)
 }
