@@ -56,15 +56,19 @@
         let
           # Go toolchain from the dedicated nixpkgs-go input (1.26.6+ for the
           # security fixes above); everything else stays on the locked
-          # nixpkgs so templ/golangci-lint pins hold.
+          # nixpkgs so the templ pin holds. golangci-lint also rides this
+          # input: the locked nixpkgs ships 2.12.2, which predates the
+          # exhaustruct_v5 migration used by .golangci.yml (CI pins 2.13.2;
+          # 2.13.1 accepts the same config).
           goToolchain = inputs'.nixpkgs-go.legacyPackages.go_1_26;
+          golangciLint = inputs'.nixpkgs-go.legacyPackages.golangci-lint;
         in
         {
           devShells.default = pkgs.mkShellNoCC {
             packages = with pkgs; [
               goToolchain
               gopls
-              golangci-lint
+              golangciLint
               templ
               tailwindcss_4
             ];
@@ -96,7 +100,7 @@
               meta.description = "Run golangci-lint across all modules";
               program = pkgs.writeShellApplication {
                 name = "run-lint";
-                runtimeInputs = [ pkgs.golangci-lint ];
+                runtimeInputs = [ golangciLint ];
                 text = ''
                   # golangci-lint does not support go.work workspace mode.
                   # Lint each module independently with GOWORK=off.
@@ -145,7 +149,7 @@
                 name = "run-verify";
                 runtimeInputs = [
                   goToolchain
-                  pkgs.golangci-lint
+                  golangciLint
                   pkgs.templ
                 ];
                 text = ''

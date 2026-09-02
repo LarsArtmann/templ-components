@@ -13,8 +13,8 @@ import (
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/visualtest"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/visualtest"
 )
 
 // TestButtons covers the button color system in both light and dark mode —
@@ -1033,7 +1033,7 @@ func TestLiveRegionAndIndicator(t *testing.T) {
 	}
 	liveRegion := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		ctx = templ.WithChildren(ctx, templ.Raw(
-			`<div class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">` +
+			`<div class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">`+
 				`<p class="text-sm text-gray-600 dark:text-gray-400">SSE update #7 — streamed at 10:03:26</p></div>`,
 		))
 		return datastar.LiveRegion(liveRegionProps).Render(ctx, w)
