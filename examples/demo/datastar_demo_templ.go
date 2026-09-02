@@ -140,7 +140,7 @@ datastar.Delete("/api/items/1") // @delete('/api/items/1')`,
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: "demo-nonce"}).Render(ctx, templ_7745c5c3_Buffer)
+		templ_7745c5c3_Err = datastar.SSEErrorHandling(datastar.SSEErrorHandlingConfig{Nonce: demoBaseProps().Nonce}).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

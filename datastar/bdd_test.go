@@ -187,6 +187,77 @@ func TestActionExpressionsUserTriggersBackendActions(t *testing.T) {
 	})
 }
 
+// --- SSEErrorHandling Behavior ---
+
+func TestSSEErrorHandlingUserIsToldAboutStreamFailures(t *testing.T) {
+	t.Parallel()
+
+	t.Run("screen reader hears about an HTTP stream error", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, SSEErrorHandling(DefaultSSEErrorHandlingConfig()))
+		// The 'error' branch writes to the polite announcer...
+		utils.AssertContains(t, output, `announce('Stream error' + status)`)
+		// ...and includes the HTTP status so the user can judge severity.
+		utils.AssertContains(t, output, `' (HTTP ' + args.status + ')'`)
+	})
+
+	t.Run("screen reader hears when reconnection gives up", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, SSEErrorHandling(DefaultSSEErrorHandlingConfig()))
+		utils.AssertContains(t, output, "announce('Live stream lost. Automatic reconnection failed.')")
+	})
+
+	t.Run("user gets a recovery action when reconnection fails", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, SSEErrorHandling(DefaultSSEErrorHandlingConfig()))
+		// The toast copy must tell the user HOW to recover, not just that
+		// something broke.
+		utils.AssertContains(t, output, "Reload the page to resume.")
+	})
+
+	t.Run("transient retries stay quiet for the user", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, SSEErrorHandling(DefaultSSEErrorHandlingConfig()))
+		// The 'retrying' branch logs to console only: the runtime keeps
+		// reconnecting on its own, and announcing every attempt would spam
+		// screen readers and toast stacks.
+		utils.AssertContains(t, output, `detail.type === 'retrying'`)
+		utils.AssertNotContains(t, output, `announce('Stream interrupted`)
+		utils.AssertNotContains(t, output, "tcShowToast('DataStar stream interrupted")
+	})
+
+	t.Run("toast is best-effort: absence of the toast container must not throw", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, SSEErrorHandling(DefaultSSEErrorHandlingConfig()))
+		// Guards both call sites with a typeof check so pages without
+		// feedback.ToastContainer still get console + announcer feedback.
+		utils.AssertContains(t, output, "typeof tcShowToast === 'function'")
+	})
+
+	t.Run("toasts carry the error type so they render as error feedback", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, SSEErrorHandling(DefaultSSEErrorHandlingConfig()))
+		// tcShowToast(message, type, title, duration) — type 'error' selects
+		// the error toast styling (red border, error icon).
+		utils.AssertContains(t, output, `tcShowToast('The live stream endpoint returned an error' + status + '.', 'error', 'Stream Error', DURATION)`)
+		utils.AssertContains(t, output, `tcShowToast('The live stream was lost and automatic reconnection failed. Reload the page to resume.', 'error', 'Connection Lost', DURATION)`)
+	})
+
+	t.Run("toasts auto-dismiss after the configured duration", func(t *testing.T) {
+		t.Parallel()
+
+		output := utils.Render(t, SSEErrorHandling(SSEErrorHandlingConfig{DurationMS: 4500}))
+		utils.AssertContains(t, output, "var DURATION = 4500;")
+		utils.AssertContains(t, output, "DURATION)")
+	})
+}
+
 // --- Cross-Cutting Concerns ---
 
 func TestDatastarComponentsRenderValidHTML(t *testing.T) {
