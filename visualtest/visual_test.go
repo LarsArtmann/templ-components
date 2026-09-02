@@ -14,6 +14,7 @@ import (
 	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/visualtest"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 // TestButtons covers the button color system in both light and dark mode —
@@ -973,8 +974,8 @@ func TestEyebrowScrollbackAndPageHeader(t *testing.T) {
 	t.Parallel()
 
 	eyebrow := display.EyebrowProps{
-		Class: "text-blue-600 dark:text-blue-400",
-		Text:  "Deploy pipeline",
+		BaseProps: utils.BaseProps{Class: "text-blue-600 dark:text-blue-400"},
+		Text:      "Deploy pipeline",
 	}
 	visualtest.AssertScreenshot(t, "eyebrow/light", display.Eyebrow(eyebrow))
 	visualtest.AssertScreenshot(
