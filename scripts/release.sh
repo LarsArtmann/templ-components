@@ -19,6 +19,8 @@
 #   4. Collects release notes (--notes-file or CHANGELOG [Unreleased])
 #   5. Moves notes from [Unreleased] to a new versioned heading (inserts fresh [Unreleased])
 #   5b. Bumps require versions in every module go.mod (discovered, not hardcoded)
+#       and in visualtest/go.mod (internal-only; its sibling pins ride the same
+#       release commit so check-version-sync.sh's pin guard stays satisfied).
 #   6. Moves release notes from [Unreleased] under the new version heading
 #   6b. Bumps FEATURES.md version + date (drift-guarded)
 #   7. Runs the full verify suite: templ generate + CSS + build/test/lint.
@@ -205,7 +207,7 @@ REPLACE_BACKUP_DIR="$(mktemp -d)"
 release_cleanup() {
 	if [ "$RELEASE_COMMITTED" = "0" ]; then
 		echo "Release aborted; rolling back version files, go.mod files, CHANGELOG, FEATURES..." >&2
-		git restore utils/version.go $MODFILES CHANGELOG.md FEATURES.md 2>/dev/null || true
+		git restore utils/version.go $MODFILES visualtest/go.mod CHANGELOG.md FEATURES.md 2>/dev/null || true
 	fi
 	rm -rf "$REPLACE_BACKUP_DIR"
 }
@@ -221,7 +223,11 @@ echo "Bumped utils.Version to $NEW_VERSION"
 #     proxy resolves these via directory-prefixed tags (utils/v2.0.0, etc.).
 #     The replace directives override these for local dev; at publish time the
 #     proxy uses the tagged version.
-for modfile in $MODFILES; do
+#     visualtest/go.mod is bumped too (but is NOT in the 7b strip set): it is
+#     internal-only, pins its siblings at the released version, and carries
+#     local replace directives so GOWORK=off resolution works before the tags
+#     are pushed (v1.11.0 lesson: stale pins left master red for 9 days).
+for modfile in $MODFILES visualtest/go.mod; do
 	sed -i.bak -E \
 		"s|(github.com/larsartmann/templ-components/[a-z/]+) v[0-9]+\.[0-9]+\.[0-9]+|\1 v${NEW_VERSION}|g" \
 		"$modfile"
@@ -408,12 +414,15 @@ for modfile in $MODFILES; do
 	fi
 done
 
-# 10b. Re-tidy every module so go.sum checksums and the visualtest requires
-#      match the freshly released version. v1.11.0 lesson: a re-add commit
-#      without the tidy left sub-module go.sums at the previous version and
-#      master CI red for 9 days (CI's per-module tidy dirtied the tree; the
-#      Visual Regression job aborted on stale visualtest requires).
-#      GOWORK=off mirrors CI and consumers, where no go.work exists.
+# 10b. Re-tidy every module so go.sum checksums match the freshly released
+#      version. v1.11.0 lesson: a re-add commit without the tidy left
+#      sub-module go.sums at the previous version and master CI red for 9
+#      days (CI's per-module tidy dirtied the tree; the Visual Regression
+#      job aborted on stale visualtest requires).
+#      GOWORK=off mirrors CI and consumers, where no go.work exists. This is
+#      safe pre-push because visualtest/go.mod carries local replace
+#      directives for its siblings (added with its version bump in step 5b),
+#      so nothing here needs the tags to be on the proxy yet.
 tidy_all_modules() {
 	go mod tidy
 	for mod in $SUBMODULE_PATHS visualtest; do

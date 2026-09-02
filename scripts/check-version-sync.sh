@@ -4,6 +4,10 @@
 #   1. utils/version.go   (const Version = "X.Y.Z")
 #   2. CHANGELOG.md       (## [X.Y.Z] — latest released heading)
 #   3. FEATURES.md        (**Version:** X.Y.Z)
+# ...and if any go.mod pins a templ-components sibling at a different
+# released version (4th check). visualtest is included: it is internal-only
+# and its pins move in the same release commit (release.sh step 5b), so the
+# pinned graph and the version constant can never disagree.
 #
 # Mirrors the logic of TestVersionMatchesChangelog + TestVersionMatchesFeatures
 # but runs in <50ms so it fits within BuildFlow's pre-commit budget.
@@ -67,13 +71,33 @@ if [ "$VERSION_GO" != "$VERSION_FEATURES" ]; then
 	MISMATCH=1
 fi
 
+# --- Sibling-module pin check ---
+
+# Every require of a templ-components sibling at a semver version must equal
+# utils.Version. The root pseudo-version require in visualtest
+# (v0.0.0-00010101000000-...) is exempt: it is a placeholder satisfied by the
+# local replace directive, not a released version.
+for modfile in go.mod utils/go.mod icons/go.mod errorpage/go.mod charts/echarts/go.mod datastar/go.mod htmx/go.mod visualtest/go.mod; do
+	[ -f "$REPO_ROOT/$modfile" ] || continue
+	while IFS= read -r pin_line; do
+		pinned_version="$(printf '%s\n' "$pin_line" | awk '{print $2}')"
+		pinned_version="${pinned_version#v}"
+		pinned_path="$(printf '%s\n' "$pin_line" | awk '{print $1}')"
+		if [ "$pinned_version" != "$VERSION_GO" ]; then
+			OUTPUT+="  $modfile pins ${pinned_path} at ${pinned_version}, expected ${VERSION_GO}\n"
+			MISMATCH=1
+		fi
+	done < <(grep -E '^\s+github\.com/larsartmann/templ-components/[a-z/]+ v[0-9]+\.[0-9]+\.[0-9]+' "$REPO_ROOT/$modfile" 2>/dev/null || true)
+done
+
 if [ "$MISMATCH" -ne 0 ]; then
 	if [ "$QUIET" != "--quiet" ]; then
 		echo "" >&2
 		echo "BLOCKED: Version numbers are out of sync across files." >&2
 		echo "" >&2
 		echo -e "$OUTPUT" >&2
-		echo "Fix: bump all three together — utils/version.go, CHANGELOG.md, FEATURES.md." >&2
+		echo "Fix: bump all three together — utils/version.go, CHANGELOG.md, FEATURES.md —" >&2
+		echo "and move every templ-components sibling pin to the same version." >&2
 		echo "Or run: scripts/release.sh <new-version> \"<summary>\"" >&2
 		echo "" >&2
 	fi

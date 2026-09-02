@@ -26,3 +26,11 @@ require (
 )
 
 replace github.com/larsartmann/templ-components => ..
+
+replace github.com/larsartmann/templ-components/errorpage => ../errorpage
+
+replace github.com/larsartmann/templ-components/htmx => ../htmx
+
+replace github.com/larsartmann/templ-components/icons => ../icons
+
+replace github.com/larsartmann/templ-components/utils => ../utils
