@@ -57,9 +57,9 @@
           # Go toolchain from the dedicated nixpkgs-go input (1.26.6+ for the
           # security fixes above); everything else stays on the locked
           # nixpkgs so the templ pin holds. golangci-lint also rides this
-          # input: the locked nixpkgs ships 2.12.2, which predates the
-          # exhaustruct_v5 migration used by .golangci.yml (CI pins 2.13.2;
-          # 2.13.1 accepts the same config).
+          # input: its locked rev ships 2.13.2, the exact version CI pins
+          # (.github/workflows/ci.yaml), so local `nix run .#lint` and CI
+          # run the same scanner.
           goToolchain = inputs'.nixpkgs-go.legacyPackages.go_1_26;
           golangciLint = inputs'.nixpkgs-go.legacyPackages.golangci-lint;
         in
