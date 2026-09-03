@@ -105,7 +105,7 @@ jobs:
 
       - name: Actionlint (lint GitHub Actions workflows)
         run: |
-          go install github.com/rhysd/actionlint/cmd/actionlint@latest
+          go install github.com/rhysd/actionlint/cmd/actionlint@v1.7.12
           actionlint
 
   build:
@@ -187,6 +187,21 @@ jobs:
         # Compile-only check: this step has no Chromium, so tests skip.
         # Actual visual regression runs in the dedicated "Visual Regression"
         # job below (hard gate — fails the pipeline if any test skips or fails).
+
+      - name: Vulnerability gate (govulncheck, root + all modules)
+        run: |
+          # Reachable-vuln findings fail the build: govulncheck only reports
+          # symbols this code actually calls, so every finding is actionable.
+          # Pinned v1.7.0 (the golangci-lint lesson: never @latest a scanner —
+          # upstream releases must not change CI behavior overnight). The same
+          # version ships in nixpkgs for local parity via ci-repro.sh --vuln.
+          go install golang.org/x/vuln/cmd/govulncheck@v1.7.0
+          echo "==> Root module..."
+          govulncheck ./...
+          for mod in utils icons errorpage charts/echarts datastar htmx visualtest; do
+            echo "==> $mod..."
+            (cd "$mod" && GOWORK=off govulncheck ./...)
+          done
 
       - name: Docs-health drift guard
         run: cd utils && go test ./... -run TestDocsCountDrift
