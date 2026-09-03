@@ -307,6 +307,24 @@ for mod in utils icons errorpage charts/echarts datastar htmx; do
 	(cd "$mod" && golangci-lint run ./...)
 done
 
+# Vulnerability gate. govulncheck reports only symbols reachable from this
+# code, so a finding is release-blocking by definition — the Go 1.26.7 floor
+# exists precisely because GO-2026-5972/6089/6090 reached net/http via the
+# demo server. Fail loud when the binary is missing (a gate that silently
+# skips is worse than none). website/ npm audit runs via ci-repro.sh --vuln.
+if command -v govulncheck &>/dev/null; then
+	echo "==> govulncheck (root + sub-modules; reachable-vuln findings abort the cut)"
+	govulncheck ./...
+	for mod in utils icons errorpage charts/echarts datastar htmx; do
+		echo "==> govulncheck $mod"
+		(cd "$mod" && GOWORK=off govulncheck ./...)
+	done
+else
+	echo "Error: govulncheck not found — install it (nix shell nixpkgs#govulncheck," >&2
+	echo "v1.7.0) so the release can gate on known vulnerabilities." >&2
+	exit 1
+fi
+
 # Drift-guard: version files must agree with utils.Version (CHANGELOG heading
 # AND FEATURES.md version). The full suite ran above; this surfaces a targeted
 # message on mismatch. Rollback is handled by the EXIT trap (release_cleanup),
