@@ -354,6 +354,21 @@ release-cut/re-add cycle, run `go mod tidy` with `GOWORK=off` in all 7 modules
 plus `visualtest`, commit the diff, and confirm the master CI + Website runs
 are green before walking away.
 
+**Post-propagation tidy lesson (v1.12.0, repeats v1.11.0):** the pre-push tidy
+sweep CANNOT finalize the five replace-less published sub-modules
+(icons, errorpage, charts/echarts, datastar, htmx) — their sibling checksums
+resolve against the module proxy, where the new tags don't exist yet, so the
+sweep no-ops and the stale `go.sum` files ship. Once the tags propagate
+(`go list -m <module>@<version>` resolves), re-run the GOWORK=off tidy sweep and
+commit the go.sum refresh — CI's Build & Test ("Verify no untracked changes")
+and Lint (missing go.sum entries) stay red until then. Also from v1.12.0:
+`release.sh`'s 8b tree assertions must use `grep -c` not `grep -q` (`git show |
+grep -q` under `set -o pipefail` self-aborts with exit 141 via SIGPIPE once the
+asserted file exceeds the 64KB pipe buffer — CHANGELOG.md was 155KB); the
+visualtest harness settles every FINITE document animation before capture
+(scrollback's ~2.5s stagger was captured mid-fade; infinite animations like
+spinners are filtered out) — goldens regenerated to the settled state.
+
 ## Lint Command
 
 ```bash

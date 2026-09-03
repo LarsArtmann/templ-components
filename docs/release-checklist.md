@@ -48,10 +48,25 @@ understand _why_, so a refactor never quietly removes a guard.
 | 10b  | `GOWORK=off go mod tidy` in all modules **including visualtest**; stage the diff                                       | v1.11.0: skipping the tidy left go.sums at the previous version — 9 days red                                                                                                                                                       |
 | 10c  | Second tidy must be a no-op (`git diff --exit-code`)                                                                   | same invariant CI enforces in "Verify no untracked changes"                                                                                                                                                                        |
 
-Why pre-push tidying is safe: `visualtest/go.mod` carries local replace
-directives for its siblings (bumped together with its pins in 5b), so nothing in
-10b/10c needs the new tags to exist on the module proxy yet. See
-`docs/modularization/README.md` ("visualtest sibling-pin policy").
+Why pre-push tidying is only PARTIALLY safe: `visualtest/go.mod` carries local
+replace directives for its siblings, so ITS tidy needs no proxy. The five
+published sub-modules (icons, errorpage, charts/echarts, datastar, htmx) have no
+replaces — their 10b tidy resolves siblings against the module proxy, where the
+new tags do not exist yet. Pre-push, their `go.sum` files therefore CANNOT be
+moved to the new version: the sweep no-ops and the stale checksums ship. That is
+why the 24-hour watch repeats the tidy after propagation (v1.11.0 red for 9 days;
+v1.12.0 repeated it). See `docs/modularization/README.md` ("visualtest
+sibling-pin policy").
+
+### If the cut aborts after step 8 (the release commit exists)
+
+Never re-run the script from the top and never `git reset`. The release commit is
+created only after the full verify suite passes, so it is almost always correct:
+verify its tree by hand (`git show <commit>:utils/version.go`, the CHANGELOG
+heading, `grep -c '^replace' <sub>/go.mod` per tagged module), create the tags on
+it (`git tag -a ...` per module), then perform steps 10/10b manually. v1.12.0's
+8b assertions aborted exactly this way (SIGPIPE — see incident index) and the
+commit was verified byte-correct.
 
 ## After the script, before pushing
 
@@ -83,9 +98,19 @@ still 404 until ingestion completes.
 ## After pushing — the 24-hour watch
 
 - [ ] **CI + Website green on master AND on the tag.**
-- [ ] **`go mod tidy` round-trip:** after the re-add commit lands, CI's
-      per-module tidy must leave the tree clean. v1.11.0's 9-day red was exactly
-      this check failing silently.
+- [ ] **Post-propagation tidy sweep:** once `go list -m
+      github.com/larsartmann/templ-components@<version>` resolves, re-run the
+      `GOWORK=off go mod tidy` sweep across all 8 modules and commit the go.sum
+      refresh. The pre-push 10b sweep cannot update the five replace-less
+      sub-modules (see the note above the step table); CI's tidy can, and fails
+      "Verify no untracked changes" + Lint until the refresh lands. v1.11.0 sat
+      red 9 days for exactly this; v1.12.0 repeated it.
+- [ ] **GitHub Release page** created from the release notes (`gh release create
+      v<version> --notes-file ... --latest`); v1.11.0 and v1.12.0 shipped
+      tag-only for days before the pages were backfilled.
+- [ ] **Dependabot alerts resolved** — a security-update workflow can run
+      "successfully" while changing nothing; verify open alerts actually close
+      after the fix lands on master (`gh api repos/.../dependabot/alerts`).
 - [ ] `go list -m github.com/larsartmann/templ-components@<version>` (and one
       sub-module) resolves from the proxy.
 - [ ] **pkg.go.dev** shows the new version for root + sub-modules.
@@ -101,3 +126,4 @@ still 404 until ingestion completes.
 | v1.9.0  | Verify after replace-strip → `unknown revision` everywhere                      | verify-before-strip ordering; single shared EXIT trap                                |
 | v1.10.0 | Daemon race: split commits, pushed tags mid-cut, stale CSS, leaked self-replace | 8b tree assertions; CSS recompile inside step 7; `[ /]` strip pattern                |
 | v1.11.0 | Re-add commit without re-tidy → go.sum drift → 9-day red master                 | 10b tidy (visualtest included) + 10c idempotence gate; visualtest sibling-pin policy |
+| v1.12.0 | 8b assertion SIGPIPE (`git show \| grep -q` exit 141 past the 64KB pipe buffer, CHANGELOG at 155KB) aborted the cut post-commit; recovery skipped no module, but the pre-push tidy still left sub-module go.sums stale → CI red ×3 (Build & Test drift, Lint missing go.sum, Visual Regression mid-animation capture) | 8b assertions use `grep -c`; late-abort recovery procedure documented above this table; post-propagation tidy added to the 24-hour watch; visualtest harness settles all finite animations before capture |
