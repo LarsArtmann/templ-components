@@ -6,6 +6,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **release.sh's pre-tag tree assertion could self-sabotage via SIGPIPE.** `git show <file> | grep -q` under `set -o pipefail` reports exit 141 once the file exceeds the 64KB pipe buffer — `grep -q` exits at the first match and closes the pipe while `git show` is still writing. The v1.12.0 cut tripped exactly this: CHANGELOG.md had grown to 155KB, the (perfectly correct) release commit was created, and the assertion aborted the cut before tagging. All three `git show | grep -q` assertions (CHANGELOG heading, FEATURES.md version, replace-leak sweep) now use `grep -c`, which reads the whole input so the pipeline exit reflects the match alone. Recovered cut: the release commit's tree was re-verified manually (version files agree, tagged go.mods replace-free), the 7 tags created on it, and replaces re-added with a no-op tidy sweep across all 8 modules.
+
 ## [1.12.0] — 2026-09-03
 
 ### Added
