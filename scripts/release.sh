@@ -376,16 +376,21 @@ if [ "$(git show HEAD:utils/version.go | grep -E '^const[[:space:]]+Version' | s
 	echo "Error: HEAD tree utils/version.go is not $NEW_VERSION (daemon race?)." >&2
 	exit 1
 fi
-git show HEAD:CHANGELOG.md | grep -q "^## \[${NEW_VERSION}\] — " || {
+# grep -q exits at the first match, so under `set -o pipefail` the upstream
+# `git show` dies of SIGPIPE once the file exceeds the 64KB pipe buffer and the
+# pipeline reports 141 even when the match exists (v1.12.0 cut: CHANGELOG.md at
+# 155KB tripped the heading assertion and aborted pre-tag). `grep -c` reads the
+# whole input, so the pipeline exit is the match result alone.
+git show HEAD:CHANGELOG.md | grep -c "^## \[${NEW_VERSION}\] — " >/dev/null || {
 	echo "Error: HEAD tree CHANGELOG.md lacks the [${NEW_VERSION}] heading." >&2
 	exit 1
 }
-git show HEAD:FEATURES.md | grep -q "\*\*Version:\*\* ${NEW_VERSION}" || {
+git show HEAD:FEATURES.md | grep -c "\*\*Version:\*\* ${NEW_VERSION}" >/dev/null || {
 	echo "Error: HEAD tree FEATURES.md version is not ${NEW_VERSION}." >&2
 	exit 1
 }
 for modfile in $MODFILES; do
-	if git show "HEAD:${modfile}" | grep -qE '^replace github\.com/larsartmann/templ-components[ /]'; then
+	if git show "HEAD:${modfile}" | grep -cE '^replace github\.com/larsartmann/templ-components[ /]' >/dev/null; then
 		echo "Error: HEAD tree ${modfile} still contains templ-components replace directives." >&2
 		exit 1
 	fi
