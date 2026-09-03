@@ -22,6 +22,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **`go-datastar/static` pin bumped v0.2.0 → v0.4.0 — the upstream watch workflow's first exercise, resolved before its first cron run.** Verified at source before bumping: the embedded `datastar.js` bundle is byte-identical across static v0.2.0–v0.4.0 (same sha256) and `static.Version` still reports Datastar 1.0.2 — the only delta is the module's `go` directive (1.26.5 → 1.26.7, matching this repo's pins). `docs/datastar-runtime-facts.md` needed no fact changes, `DatastarVersion1_0_2` stays truthful, and `TestPinnedRuntimeBundleContract` passes unchanged. Pins updated in `datastar/go.mod` plus the indirect requires in root and `visualtest/go.mod`.
+
 - **CI stays fail-fast on tree drift and stops flaking on the module proxy.** The `Go mod tidy (all modules)` step now includes visualtest (with local replaces, so it works offline), letting "Verify no untracked changes" catch the v1.11.0 go.sum-drift class in Build & Test instead of first failing in the separate Visual Regression job; and the visualtest compile step retries twice with backoff before failing (one `proxy.golang.org` INTERNAL_ERROR aborted run 33399151599 that a rerun passed). Also: first-party actions bumped past the Node-20 deprecation (checkout v7.0.1, setup-go v7.0.0, setup-node v7.0.0, upload-artifact v7.0.1, download-artifact v8.0.1 — SHAs verified against the GitHub API; the checkout v7 fork-PR blocking change does not apply to this repo's pull_request flows), and the stale "move Verify no untracked changes before Test" TODO premise was corrected — the step has preceded Test since the initial workflow commit.
 
 ### Fixed
