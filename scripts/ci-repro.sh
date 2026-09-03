@@ -132,6 +132,7 @@ if [ "$RUN_LINT" = "1" ]; then
 	scripts/check-version-sync.sh
 	scripts/check-module-sync.sh
 	scripts/check-module-layers.sh
+	scripts/test-release-assertions.sh
 
 	step "golangci-lint (root module)"
 	golangci-lint run --timeout=5m \

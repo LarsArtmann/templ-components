@@ -81,6 +81,9 @@ jobs:
       - name: Module DAG layer guard (fast, catches upward dependencies)
         run: scripts/check-module-layers.sh
 
+      - name: Release-assertion fixture test (pins the v1.12.0 SIGPIPE fix)
+        run: scripts/test-release-assertions.sh
+
       - name: Run golangci-lint
         run: |
           # Multi-module: lint each module independently (golangci-lint
