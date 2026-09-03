@@ -62,13 +62,13 @@ is complete with in-session verification (not just "wrote code, assume it works"
 
 ## c) NOT STARTED — untouched this session (blocked or out of scope)
 
-- **go-datastar/static v0.3.0 bump + wire-format re-audit** — now surfaced by the watch workflow; needs human-audited bundle diff against `docs/datastar-runtime-facts.md`.
+- ~~**go-datastar/static v0.3.0 bump + wire-format re-audit** — now surfaced by the watch workflow; needs human-audited bundle diff against `docs/datastar-runtime-facts.md`.~~ done at `bb2d77d` — bumped to v0.4.0 (superseding v0.3.0) with the byte-audit.
 - **#80** human eyeball of overlay PNGs (now 16 more agent PNGs on top).
 - **#28 / #29** awesome-templ + templ.guide upstream submissions (maintainer approval).
 - **#93 / #107 / #108 / #124** BuildFlow daemon family (separate repo; this session produced 21 more hallucinated auto-commit messages — the problem is live).
 - **#123** branch protection + required checks (repo-owner GitHub settings).
 - **#39** compound overlay components (v2.0/ADR-0023), **#33** `Validate()` methods, **#34** internal/testutil migration — deferred by prior decisions.
-- **v1.12.0 release cut** — this session's body of work is unreleased (sits in `[Unreleased]`).
+- ~~**v1.12.0 release cut** — this session's body of work is unreleased (sits in `[Unreleased]`).~~ done at `c35bdf5`.
 
 ---
 
@@ -101,10 +101,10 @@ is complete with in-session verification (not just "wrote code, assume it works"
 **Ship & verify (highest impact)**
 
 1. Human eyeball of all 16 new PNGs + the 5 overlay sets (blocked #80) — 10 minutes, closes #80.
-2. Audit the 21 daemon commits diff-by-diff (`git diff a62c6ca..HEAD --stat` per commit) before anything is pushed; enshrined-stale-file check per AGENTS.md.
-3. Cut **v1.12.0** via release.sh (release-checklist pre-push audit included) — ships StatTone-era leftovers + this session.
+2. ~~Audit the 21 daemon commits diff-by-diff (`git diff a62c6ca..HEAD --stat` per commit) before anything is pushed; enshrined-stale-file check per AGENTS.md.~~ **Won't implement — moot — the daemon had already pushed; targeted reviews of the suspicious commits happened in the 2026-09-03 sessions.**
+3. ~~Cut **v1.12.0** via release.sh (release-checklist pre-push audit included) — ships StatTone-era leftovers + this session.~~ done at `c35bdf5`
 4. Post-push 24-hour watch per checklist: CI/Website green, per-module tidy clean, proxy + pkg.go.dev resolution.
-5. **Bump go-datastar/static v0.2.0 → v0.3.0** with the mandated bundle re-audit (event names, CSP, retry matrix vs runtime facts).
+5. ~~**Bump go-datastar/static v0.2.0 → v0.3.0** with the mandated bundle re-audit (event names, CSP, retry matrix vs runtime facts).~~ done (bumped to v0.4.0 (superseding v0.3.0) with the byte-audit at bb2d77d)
 6. Real-CI shakedown of the two new workflows (changelog-guard on a test PR; upstream-watch via workflow_dispatch before Monday's cron).
 7. Confirm changelog-guard behaves on a docs-only PR (should pass) and a components PR without changelog (should fail) — two throwaway PRs.
 8. Add `workflow_dispatch` inputs / dry-run mode to upstream-watch for testing without issue creation.
@@ -126,7 +126,7 @@ is complete with in-session verification (not just "wrote code, assume it works"
 **Open-source / upstream**
 21. File the upstream go-sse feature request if `CloseFromHTTP`-style helper is genuinely wanted (verify-before-filing first).
 22. CodeRabbit: enable explicit review request on next PR to confirm rate-limit recovery (verifies the 2026-08-31 hypothesis).
-23. Check whether go-datastar v0.3.0 changed the SSE `: comment` heartbeat contract we now rely on in the demo.
+23. ~~Check whether go-datastar v0.3.0 changed the SSE `: comment` heartbeat contract we now rely on in the demo.~~ done at `bb2d77d`
 24. awesome-templ + templ.guide submissions (#28/#29) — draft + submit.
 
 **Library substance (ROADMAP fuel)**
@@ -143,7 +143,7 @@ is complete with in-session verification (not just "wrote code, assume it works"
 35. `_sources/` drift guard generally: sources were copied by hand; a checksum test would catch package-vs-scaffolder drift.
 36. Demo: `/api/save` returns "Saved." that nothing displays (hx-swap="none") — either surface a toast or drop the response body.
 37. Demo: heartbeat visibility — surface "last ping" text so the keep-alive is demonstrable in the UI.
-38. website: exercise `pnpm build` locally with the PATH workaround (only install/frozen-lockfile was validated).
+38. ~~website: exercise `pnpm build` locally with the PATH workaround (only install/frozen-lockfile was validated).~~ done at `03eebbe`
 39. Coverage: 71.7% is barely over the 70% gate — the new code paths (busy script, fuzz writer) probably moved it; consider raising the gate or adding missing-coverage tests.
 40. Make `TestCSSFreshness` fail locally too (it warns off-CI today) behind a flag, complementing `ci-repro --css`.
 41. AGENTS.md is ~40 KB of accreted context — consider splitting "release/release-script" sections to point at the new checklist doc only (started with #118).
@@ -161,8 +161,8 @@ is complete with in-session verification (not just "wrote code, assume it works"
 
 ## g) Questions I cannot answer myself
 
-1. **go-datastar/static v0.3.0:** do you want me to bump + re-audit the new bundle **now** (it's the only pending functional change and the watch workflow's first real case), or leave it as the watch-issue exercise for a later session?
-2. **Daemon history:** the 21 auto-commits between `a62c6ca` and HEAD are unpushed. Should I squash/rewrite them into logical commits before any push (needs your explicit approval since it rewrites history), or leave them as-is per the "daemon is expected" doctrine?
+1. ~~**go-datastar/static v0.3.0:** do you want me to bump + re-audit the new bundle **now** (it's the only pending functional change and the watch workflow's first real case), or leave it as the watch-issue exercise for a later session?~~ done (answered — bumped to static v0.4.0 with the byte-audit at bb2d77d)
+2. ~~**Daemon history:** the 21 auto-commits between `a62c6ca` and HEAD are unpushed. Should I squash/rewrite them into logical commits before any push (needs your explicit approval since it rewrites history), or leave them as-is per the "daemon is expected" doctrine?~~ done (moot — the daemon had already pushed the commits; no history rewrite)
 3. **CHANGELOG-guard policy:** should test-only PRs (`_test.go` diffs) keep requiring a CHANGELOG entry (current behavior), or be relaxed to non-test source only?
 
 ---
