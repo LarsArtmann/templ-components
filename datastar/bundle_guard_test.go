@@ -70,8 +70,10 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 	sum := sha256.Sum256(static.Bytes())
 	if got := hex.EncodeToString(sum[:]); got != pinnedBundleSHA256 {
 		t.Errorf(
-			"embedded runtime bundle sha256 changed: got %s, want %s (go-datastar/static v%s) — the runtime bytes moved; re-audit per docs/datastar-runtime-facts.md and update pinnedBundleSHA256 only if the change is understood",
-			got, pinnedBundleSHA256, static.Version,
+			"embedded bundle sha256 changed: got %s, want %s (static v%s) — re-audit per docs/datastar-runtime-facts.md",
+			got,
+			pinnedBundleSHA256,
+			static.Version,
 		)
 	}
 }
