@@ -46,6 +46,13 @@
 
 set -euo pipefail
 
+# Tree assertions live in their own file so the fixture test
+# (scripts/test-release-assertions.sh) can exercise them without cutting a
+# release.
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+# shellcheck source=lib-release-assertions.sh
+source "${SCRIPT_DIR}/lib-release-assertions.sh"
+
 NEW_VERSION=""
 RELEASE_SUMMARY=""
 NOTES_FILE=""
@@ -390,29 +397,9 @@ RELEASE_COMMIT="$(git rev-parse HEAD)"
 #     version bumps landed in a daemon commit, so the script's own commit
 #     only carried the replace strip). Tags are immutable once pushed —
 #     verify the tree, not the diff, before creating them.
-if [ "$(git show HEAD:utils/version.go | grep -E '^const[[:space:]]+Version' | sed -E 's/.*"([^"]+)".*/\1/')" != "$NEW_VERSION" ]; then
-	echo "Error: HEAD tree utils/version.go is not $NEW_VERSION (daemon race?)." >&2
+if ! assert_release_tree "$NEW_VERSION" $MODFILES; then
 	exit 1
 fi
-# grep -q exits at the first match, so under `set -o pipefail` the upstream
-# `git show` dies of SIGPIPE once the file exceeds the 64KB pipe buffer and the
-# pipeline reports 141 even when the match exists (v1.12.0 cut: CHANGELOG.md at
-# 155KB tripped the heading assertion and aborted pre-tag). `grep -c` reads the
-# whole input, so the pipeline exit is the match result alone.
-git show HEAD:CHANGELOG.md | grep -c "^## \[${NEW_VERSION}\] — " >/dev/null || {
-	echo "Error: HEAD tree CHANGELOG.md lacks the [${NEW_VERSION}] heading." >&2
-	exit 1
-}
-git show HEAD:FEATURES.md | grep -c "\*\*Version:\*\* ${NEW_VERSION}" >/dev/null || {
-	echo "Error: HEAD tree FEATURES.md version is not ${NEW_VERSION}." >&2
-	exit 1
-}
-for modfile in $MODFILES; do
-	if git show "HEAD:${modfile}" | grep -cE '^replace github\.com/larsartmann/templ-components[ /]' >/dev/null; then
-		echo "Error: HEAD tree ${modfile} still contains templ-components replace directives." >&2
-		exit 1
-	fi
-done
 echo "Release commit tree verified: version files agree, go.mod files replace-free."
 
 # 9. Annotated, SSH-signed tags (root + all sub-modules).
