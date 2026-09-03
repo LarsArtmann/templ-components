@@ -83,11 +83,11 @@ a CI check that rebuilds the CSS and diffs it catches a forgotten regeneration.
 
 ## Why a `.txt` file and not the vendor tree?
 
-| Approach                     | Fresh clone | Nix sandbox | Docker | Hermetic |
-| ---------------------------- | ----------- | ----------- | ------ | -------- |
-| `@source "vendor/..."`       | ❌ skipped (gitignored) | ✅ | depends | no |
-| `@source` on module cache    | ✅          | ❌ (no cache) | ❌     | no       |
-| Tracked `library-classes.txt` | ✅         | ✅          | ✅     | **yes**  |
+| Approach                      | Fresh clone             | Nix sandbox   | Docker  | Hermetic |
+| ----------------------------- | ----------------------- | ------------- | ------- | -------- |
+| `@source "vendor/..."`        | ❌ skipped (gitignored) | ✅            | depends | no       |
+| `@source` on module cache     | ✅                      | ❌ (no cache) | ❌      | no       |
+| Tracked `library-classes.txt` | ✅                      | ✅            | ✅      | **yes**  |
 
 The inventory file is a build input like any other: versioned, hashable, and
 identical everywhere. Proven in production by

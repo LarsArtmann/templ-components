@@ -51,11 +51,12 @@ Nothing catastrophic this session. Honest ledger of my own mistakes:
 
 **What did I forget?** Post-merge issue closure; FEATURES.md; pre-merge convention audit; checking the Deploy job's actual status rather than noting "skipping" on PRs and moving on.
 
-**What could I have done better?** Treat "get things merged" as including the merge's *consequences* (issues, inventory, conventions), not just green checks. Ask before any push outside the explicitly requested merge flow. Verify claims like "Fixes #N" mechanically instead of trusting phrasing.
+**What could I have done better?** Treat "get things merged" as including the merge's _consequences_ (issues, inventory, conventions), not just green checks. Ask before any push outside the explicitly requested merge flow. Verify claims like "Fixes #N" mechanically instead of trusting phrasing.
 
 **Did I lie?** No — every claim above was verified against git/gh/nix output. One standing confusion worth killing: the LSP still shows a stale `golines` warning on `display/card_test.go:446`; the file IS formatted (golangci-lint: 0 issues; CI Lint green on the merged tree). Restart gopls/golangci-lint-ls if it persists.
 
 **Stupid things we do anyway (repo-level, observed this session):**
+
 - The manual post-release "re-add replace directives" step — a human/daemon freehand commit with no tidy, no verify. It cost 9 days of red master. This step belongs inside `release.sh`.
 - `go install golangci-lint@latest` in CI — the `exhaustruct` deprecation warning drifted in via `@latest`; lint results are not reproducible.
 - No alerting on a red master — 9 days of failures across two workflows went unnoticed until a PR exposed it.

@@ -13,7 +13,7 @@ Inspired by Domain-Driven Design (DDD) Ubiquitous Language.
 | ComponentProps    | Interface satisfied by all props structs via BaseProps promotion                   | `utils.ComponentProps`           |
 | FeedbackType      | Enum for visual feedback severity: Success, Error, Warning, Info                   | `feedback.FeedbackType`          |
 | TrendDirection    | Enum for stat change direction: Up, Down, None                                     | `display.TrendDirection`         |
-| Eyebrow           | Small uppercase overline label above a title; reads as status, not decoration       | `display.Eyebrow`                |
+| Eyebrow           | Small uppercase overline label above a title; reads as status, not decoration      | `display.Eyebrow`                |
 | Scrollback        | Server-rendered terminal-style log block with a CSS-only staggered line entrance   | `display.Scrollback`             |
 | ScrollbackTone    | Enum coloring a scrollback tag column: neutral, info, success, warning, danger     | `display.ScrollbackTone`         |
 | FeedbackStyle     | Visual properties (color, icon, border) for a feedback variant                     | `feedback.feedbackStyleSet`      |

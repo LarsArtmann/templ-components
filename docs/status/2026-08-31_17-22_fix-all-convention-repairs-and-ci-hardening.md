@@ -48,7 +48,7 @@
 
 **What could I have done better?** Mirror CI's exact step order locally before pushing — the pieces existed (per-module loop, CSS recompile, drift guard) but I assembled them ad-hoc and skipped two. `scripts/ci-repro.sh` (#121) turns that lesson into a command. Diagnose-first instinct was right (exhaustruct findings → stale nolint names, not violations; symlink surprise → investigate before committing) — keep that.
 
-**Did I lie?** No — but "verified locally, all green" was *technically true and materially incomplete* twice. That's the most dangerous kind of true; the fix is methodological (complete local gate), not softer claims.
+**Did I lie?** No — but "verified locally, all green" was _technically true and materially incomplete_ twice. That's the most dangerous kind of true; the fix is methodological (complete local gate), not softer claims.
 
 **Still improve:** alert cadence is daily — a master broken at 06:00 waits up to ~23h for its issue; every-6h costs nothing (Q3). New workflows should get a `workflow_dispatch` smoke-run in the same session that adds them. Race coverage belongs in the per-module local loop, not just CI.
 

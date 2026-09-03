@@ -988,11 +988,36 @@ func TestEyebrowScrollbackAndPageHeader(t *testing.T) {
 	scrollback := display.ScrollbackProps{
 		Stagger: true,
 		Lines: []display.ScrollbackLine{
-			{Timestamp: "10:02:41", Tag: "deploy", Text: "Building image (layer 3/7)", Tone: display.ScrollbackToneInfo},
-			{Timestamp: "10:03:12", Tag: "deploy", Text: "Image pushed to registry", Tone: display.ScrollbackToneSuccess},
-			{Timestamp: "10:03:14", Tag: "health", Text: "Waiting for /health to return 200", Tone: display.ScrollbackToneNeutral},
-			{Timestamp: "10:03:19", Tag: "health", Text: "Retry in 5s: connection refused", Tone: display.ScrollbackToneWarning},
-			{Timestamp: "10:03:26", Tag: "traffic", Text: "Traffic shifted to revision 12", Tone: display.ScrollbackToneSuccess},
+			{
+				Timestamp: "10:02:41",
+				Tag:       "deploy",
+				Text:      "Building image (layer 3/7)",
+				Tone:      display.ScrollbackToneInfo,
+			},
+			{
+				Timestamp: "10:03:12",
+				Tag:       "deploy",
+				Text:      "Image pushed to registry",
+				Tone:      display.ScrollbackToneSuccess,
+			},
+			{
+				Timestamp: "10:03:14",
+				Tag:       "health",
+				Text:      "Waiting for /health to return 200",
+				Tone:      display.ScrollbackToneNeutral,
+			},
+			{
+				Timestamp: "10:03:19",
+				Tag:       "health",
+				Text:      "Retry in 5s: connection refused",
+				Tone:      display.ScrollbackToneWarning,
+			},
+			{
+				Timestamp: "10:03:26",
+				Tag:       "traffic",
+				Text:      "Traffic shifted to revision 12",
+				Tone:      display.ScrollbackToneSuccess,
+			},
 		},
 	}
 	visualtest.AssertScreenshot(t, "scrollback/light", display.Scrollback(scrollback))
@@ -1015,6 +1040,7 @@ func TestEyebrowScrollbackAndPageHeader(t *testing.T) {
 					return err
 				}
 			}
+
 			return nil
 		})
 	}()
@@ -1036,6 +1062,7 @@ func TestLiveRegionAndIndicator(t *testing.T) {
 			`<div class="rounded-lg bg-gray-50 dark:bg-gray-800 p-4">`+
 				`<p class="text-sm text-gray-600 dark:text-gray-400">SSE update #7 — streamed at 10:03:26</p></div>`,
 		))
+
 		return datastar.LiveRegion(liveRegionProps).Render(ctx, w)
 	})
 	visualtest.AssertScreenshot(t, "datastar/live_region_light", liveRegion)

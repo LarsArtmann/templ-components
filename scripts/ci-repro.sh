@@ -46,7 +46,10 @@ if [ "$COLD" = "1" ]; then
 	echo "==> Cold cache: $COLD_CACHE"
 fi
 
-step() { echo ""; echo "==> $1"; }
+step() {
+	echo ""
+	echo "==> $1"
+}
 MODULES="utils icons errorpage charts/echarts datastar htmx"
 
 step "Generate templ files (pinned templ via PATH — use nix develop for the pinned binary)"

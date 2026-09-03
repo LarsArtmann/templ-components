@@ -35,15 +35,15 @@ before offering controls), actions after.
 
 ## Ingredients
 
-| Element              | Library piece                                                                                          |
-| -------------------- | ------------------------------------------------------------------------------------------------------ |
-| Two-zone shell       | `layout.Split` with `Ratio: SplitRatio1To2`, or a CSS grid `minmax(0,2fr) minmax(0,3fr)` via `Class`  |
-| Overline status      | `display.Eyebrow` (accent color via `Class`)                                                           |
-| Headline             | any heading; oversized monospace (`font-mono` + `break-all`) reads as "this is a machine fact"          |
-| Badges / meta row    | `display.Badge` (`Pill: true`, `font-mono` class)                                                      |
-| Trace / log          | `display.Scrollback` (staggered entrance is the page's single motion moment)                           |
-| Explainer            | native `<details>` (or `display.CollapsibleSection`)                                                   |
-| Full-height          | `min-h-dvh` on the shell; identity panel `justify-between` pushes the trace down                        |
+| Element           | Library piece                                                                                        |
+| ----------------- | ---------------------------------------------------------------------------------------------------- |
+| Two-zone shell    | `layout.Split` with `Ratio: SplitRatio1To2`, or a CSS grid `minmax(0,2fr) minmax(0,3fr)` via `Class` |
+| Overline status   | `display.Eyebrow` (accent color via `Class`)                                                         |
+| Headline          | any heading; oversized monospace (`font-mono` + `break-all`) reads as "this is a machine fact"       |
+| Badges / meta row | `display.Badge` (`Pill: true`, `font-mono` class)                                                    |
+| Trace / log       | `display.Scrollback` (staggered entrance is the page's single motion moment)                         |
+| Explainer         | native `<details>` (or `display.CollapsibleSection`)                                                 |
+| Full-height       | `min-h-dvh` on the shell; identity panel `justify-between` pushes the trace down                     |
 
 ## Sketch
 
@@ -88,9 +88,9 @@ templ BlockPage(domain string) {
    a single "signal" color (via `@theme` remap or `Class` overrides). Semantic
    status colors (green/amber/red) stay Tailwind defaults everywhere else.
 4. **Tone switching without new markup.** A `data-tone` attribute on the panel
-   + CSS attribute selectors lets the same layout serve a page family (blocked
-   = red, allowed = green, reported = blue) without per-page class plumbing —
-   keep the overrides in your CSS tokens, not scattered inline styles.
+   - CSS attribute selectors lets the same layout serve a page family (blocked
+     = red, allowed = green, reported = blue) without per-page class plumbing —
+     keep the overrides in your CSS tokens, not scattered inline styles.
 5. **Identity answers first.** On mobile the identity zone renders before the
    actions: the visitor's question ("what happened?") precedes your controls.
 6. **`min-h-dvh`, not `min-h-screen`.** Dynamic viewport units keep the split
