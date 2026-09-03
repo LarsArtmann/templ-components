@@ -11,11 +11,12 @@ import (
 	"github.com/chromedp/chromedp"
 )
 
-// TestWaitAnimationSettled exercises the three code paths in
-// waitAnimationSettled: (1) element with no animations returns immediately,
-// (2) element with finished animations returns, (3) element with running
-// animations times out gracefully. All paths must return without error.
-func TestWaitAnimationSettled(t *testing.T) {
+// TestWaitAnimationsSettled exercises the code paths in
+// waitAnimationsSettled: (1) page with no animations returns after the
+// registration window, (2) finished animations return, (3) infinite running
+// animations are filtered out (never block), (4) finite running animations
+// are waited out. All paths must return without error.
+func TestWaitAnimationsSettled(t *testing.T) {
 	t.Parallel()
 
 	pages := map[string]string{
@@ -31,6 +32,11 @@ func TestWaitAnimationSettled(t *testing.T) {
 <div id="test" style="width:100px;height:100px;background:green;
   animation: spin 10s infinite;"></div>
 <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+</body></html>`,
+		"finite_running": `<!DOCTYPE html><html><body>
+<div id="test" style="width:100px;height:100px;background:orange;
+  animation: slide 2s forwards;"></div>
+<style>@keyframes slide { to { transform: translateX(50px); } }</style>
 </body></html>`,
 	}
 
@@ -58,8 +64,8 @@ func TestWaitAnimationSettled(t *testing.T) {
 
 			start := time.Now()
 
-			if err := chromedp.Run(taskCtx, waitAnimationSettled("#test")); err != nil {
-				t.Fatalf("waitAnimationSettled(%s): %v", name, err)
+			if err := chromedp.Run(taskCtx, waitAnimationsSettled()); err != nil {
+				t.Fatalf("waitAnimationsSettled(%s): %v", name, err)
 			}
 
 			elapsed := time.Since(start)
@@ -78,13 +84,23 @@ func TestWaitAnimationSettled(t *testing.T) {
 					t.Errorf("finished_animations took %v — should return quickly", elapsed)
 				}
 			case "long_running":
-				// Should poll for the full 800ms deadline before giving up.
-				if elapsed < 800*time.Millisecond {
-					t.Errorf("long_running took %v — should wait at least 800ms before timeout", elapsed)
+				// Infinite animations are filtered out — they never finish, so
+				// the helper must not block on them. Returns after the
+				// registration window.
+				if elapsed > 500*time.Millisecond {
+					t.Errorf("long_running took %v — infinite animations must not block", elapsed)
+				}
+			case "finite_running":
+				// Finite animations are waited out. The 2s animation may have
+				// partially elapsed during navigation, so only bound away from
+				// the failure modes: returning at the registration window
+				// (~300ms) or burning the full 8s deadline.
+				if elapsed < 1*time.Second {
+					t.Errorf("finite_running took %v — finite animations must be waited out", elapsed)
 				}
 
-				if elapsed > 1200*time.Millisecond {
-					t.Errorf("long_running took %v — should not exceed ~900ms total (80ms sleep + 800ms poll)", elapsed)
+				if elapsed > 4*time.Second {
+					t.Errorf("finite_running took %v — should return soon after the animation finishes", elapsed)
 				}
 			}
 		})

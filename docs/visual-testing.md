@@ -141,10 +141,18 @@ suite** flaked ~20% of the time on Modal/Drawer captures (~90% false mismatch).
 Root cause: `WaitVisible("dialog")` returns the instant `showModal()` makes the
 `<dialog>` `display:block`, but the `@starting-style` slide-in transition
 (200ms, defined in `templates/custom.css`) can still be mid-flight under
-parallel load — capturing the drawer off-screen. The harness now calls
-`waitAnimationSettled` after `WaitVisible`, which polls `getAnimations()` until
-all CSS transitions finish before capturing. After the fix the full parallel
-suite passes 8/8 with 0.0000% overlay mismatch.
+parallel load — capturing the drawer off-screen. The fix: `waitAnimationsSettled`
+runs on **every** capture and polls `document.getAnimations()` until every
+**finite** animation/transition reports `finished` (deadline `animMaxSettle`,
+8s). Infinite animations (spinners, shimmer) are filtered out — they never
+finish, and their capture frame is inherently arbitrary.
+
+The same mechanism covers staggered entrances (`display.Scrollback` runs up to
+~2.5s of nth-child delays before settling). A v1.12.0 CI run caught the
+combined `eyebrow_scrollback_pageheader` capture mid-stagger (~1.9% false
+mismatch): background-tab throttling under parallel load stretches animation
+time far past the fixed 200ms `settleDelay`, so polling the animation clock —
+not sleeping wall time — is the only robust guard.
 
 ## When a visual test fails
 

@@ -163,14 +163,11 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	}
 
 	// After the interaction, optionally wait for a selector to become visible
-	// — e.g. an overlay menu opened by StateClick — then settle and capture.
+	// — e.g. an overlay menu opened by StateClick — so the capture frames the
+	// overlay. Animation settling is handled document-wide for every capture
+	// (see waitAnimationsSettled below).
 	if opts.WaitSelector != "" {
 		tasks = append(tasks, chromedp.WaitVisible(opts.WaitSelector, chromedp.ByQuery))
-		// Wait for CSS @starting-style transitions to finish so the overlay is
-		// captured in its settled state, not mid-slide. Without this, parallel
-		// test load can delay the transition start past the fixed settleDelay,
-		// capturing the drawer off-screen (a ~90% false mismatch).
-		tasks = append(tasks, waitAnimationSettled(opts.WaitSelector))
 	}
 
 	var capture chromedp.Action = chromedp.Screenshot(rootSel, &screenshot, chromedp.ByQuery, chromedp.NodeVisible)
@@ -181,8 +178,16 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 		capture = chromedp.CaptureScreenshot(&screenshot)
 	}
 
+	// Wait for finite CSS animations/transitions anywhere in the document to
+	// finish (staggered entrances, @starting-style slides) so every screenshot
+	// captures the settled state. Under parallel load, background-tab
+	// throttling can stretch animation time far past the fixed settleDelay —
+	// polling the animation clock (not wall time) is the only robust guard.
+	// Infinite animations (spinners, shimmer) are skipped: they never finish
+	// and their capture frame is inherently arbitrary.
 	tasks = append(
 		tasks,
+		waitAnimationsSettled(),
 		chromedp.Sleep(settleDelay),
 		capture,
 	)
@@ -193,38 +198,39 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	return screenshot, nil
 }
 
-// waitAnimationSettled blocks until all CSS animations/transitions on the first
-// element matching sel have finished, with a best-effort timeout. It uses a
-// two-phase approach: (1) wait up to animRegisterDelay for @starting-style
-// transitions to register (getAnimations() is transiently empty before the
-// browser creates the transition), then (2) poll until all animations report
-// "finished". If no animations appear within the registration window, the
-// function returns immediately (the element genuinely has no transition).
-func waitAnimationSettled(sel string) chromedp.Action {
+// waitAnimationsSettled blocks until all finite CSS animations/transitions in
+// the document have finished, with a best-effort timeout. It uses a two-phase
+// approach: (1) wait up to animRegisterDelay for @starting-style transitions
+// to register (getAnimations() is transiently empty before the browser
+// creates the transition), then (2) poll until every finite animation reports
+// "finished". Infinite animations (spinners, shimmer) never finish, so they
+// are filtered out — blocking on them would burn the whole deadline on every
+// spinner capture. If no finite animation appears within the registration
+// window, the function returns immediately (the page genuinely has none).
+func waitAnimationsSettled() chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
 		if err := chromedp.Sleep(animInitialDelay).Do(ctx); err != nil {
-			return fmt.Errorf("wait animation settled: initial sleep: %w", err)
+			return fmt.Errorf("wait animations settled: initial sleep: %w", err)
 		}
 
-		expr := fmt.Sprintf(
-			`(()=>{const el=document.querySelector(%q);if(!el)return"none";`+
-				`const a=el.getAnimations();if(a.length===0)return"empty";`+
-				`return a.every(x=>x.playState==='finished')?"done":"running";})()`, sel,
-		)
+		expr := `(()=>{const a=document.getAnimations();` +
+			`const f=a.filter(x=>{try{return x.effect&&x.effect.getTiming().iterations!==Infinity}catch(e){return false}});` +
+			`if(f.length===0)return"empty";` +
+			`return f.every(x=>x.playState==='finished')?"done":"running";})()`
 
 		registerDeadline := time.Now().Add(animRegisterDelay)
-		settleDeadline := time.Now().Add(animSettleDelay)
+		settleDeadline := time.Now().Add(animMaxSettle)
 		animSeen := false
 
 		for time.Now().Before(settleDeadline) {
 			var state string
 
 			if err := chromedp.Evaluate(expr, &state).Do(ctx); err != nil {
-				return fmt.Errorf("wait animation settled: evaluate: %w", err)
+				return fmt.Errorf("wait animations settled: evaluate: %w", err)
 			}
 
 			switch state {
-			case "none", "done":
+			case "done":
 				return nil
 			case "running":
 				animSeen = true
@@ -235,7 +241,7 @@ func waitAnimationSettled(sel string) chromedp.Action {
 			}
 
 			if err := chromedp.Sleep(animPollDelay).Do(ctx); err != nil {
-				return fmt.Errorf("wait animation settled: poll sleep: %w", err)
+				return fmt.Errorf("wait animations settled: poll sleep: %w", err)
 			}
 		}
 
@@ -248,8 +254,12 @@ const (
 	settleDelay       = 200 * time.Millisecond
 	animInitialDelay  = 80 * time.Millisecond
 	animRegisterDelay = 300 * time.Millisecond
-	animSettleDelay   = 800 * time.Millisecond
-	animPollDelay     = 40 * time.Millisecond
+	// animMaxSettle bounds the wait for finite animations. It must cover the
+	// longest stagger in the library — Scrollback's nth-child delays cap at
+	// 2160ms + 360ms per-line duration — with headroom for background-tab
+	// throttling under parallel test load.
+	animMaxSettle = 8 * time.Second
+	animPollDelay = 40 * time.Millisecond
 )
 
 // hoverAction returns a chromedp action that moves the mouse to the center of
