@@ -12,6 +12,9 @@
 #   scripts/ci-repro.sh --lint       # also run the Lint job (guards + golangci-lint per module)
 #   scripts/ci-repro.sh --css        # also run the CSS Freshness job (needs Nix)
 #   scripts/ci-repro.sh --visual     # also run the Visual Regression job (needs Nix + Chromium)
+#   scripts/ci-repro.sh --vuln       # also run the vulnerability gates: govulncheck (all Go modules)
+#                                    # + pnpm audit --prod (website/; needs real node — the bun shim breaks pnpm,
+#                                    # so run under `nix develop` or with the PATH workaround)
 #   scripts/ci-repro.sh --cold       # use a throwaway GOCACHE (simulates a cache-less runner;
 #                                    # module downloads still hit the local GOMODCACHE)
 #
@@ -22,16 +25,18 @@ set -euo pipefail
 RUN_LINT=0
 RUN_CSS=0
 RUN_VISUAL=0
+RUN_VULN=0
 COLD=0
 for arg in "$@"; do
 	case "$arg" in
 	--lint) RUN_LINT=1 ;;
 	--css) RUN_CSS=1 ;;
 	--visual) RUN_VISUAL=1 ;;
+	--vuln) RUN_VULN=1 ;;
 	--cold) COLD=1 ;;
 	*)
 		echo "Unknown flag: $arg" >&2
-		echo "Usage: $0 [--lint] [--css] [--visual] [--cold]" >&2
+		echo "Usage: $0 [--lint] [--css] [--visual] [--vuln] [--cold]" >&2
 		exit 2
 		;;
 	esac
@@ -156,6 +161,26 @@ fi
 if [ "$RUN_VISUAL" = "1" ]; then
 	step "Visual Regression (Nix Chromium; hard gate in CI)"
 	nix run .#visual
+fi
+
+if [ "$RUN_VULN" = "1" ]; then
+	step "govulncheck (root + sub-modules; symbol-level findings fail the gate)"
+	command -v govulncheck >/dev/null || {
+		echo "ERROR: govulncheck not found — run under nix develop or:" >&2
+		echo "  nix shell nixpkgs#govulncheck -c $0 --vuln" >&2
+		exit 1
+	}
+	govulncheck ./...
+	for mod in $MODULES visualtest; do
+		echo "---- $mod"
+		(cd "$mod" && GOWORK=off govulncheck ./...)
+	done
+
+	step "pnpm audit --prod (website; fails on known-vulnerable prod dependencies)"
+	(
+		cd website
+		CI=true pnpm audit --prod
+	)
 fi
 
 echo ""
