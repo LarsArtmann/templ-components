@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.12.0] — 2026-09-03
+
 ### Added
 
 - **`display.StatCardProps.Tone` + typed `StatTone` enum — stat-card icon tiles can now carry semantic tones.** Dashboards routinely need green uptime, red failures, amber warnings, or purple custom metrics, and had to fork the whole component because the tile was hard-coded blue. `StatToneBlue` (the default), `StatToneGreen`, `StatToneYellow`, `StatToneRed`, `StatTonePurple` map onto tinted tile backgrounds with matching icon colors and dark-mode variants; empty and unknown values keep the blue default, pinned by a byte-identical test so existing call sites keep their exact previous HTML. Fixes #3.
