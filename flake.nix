@@ -100,7 +100,13 @@
               meta.description = "Run golangci-lint across all modules";
               program = pkgs.writeShellApplication {
                 name = "run-lint";
-                runtimeInputs = [ golangciLint ];
+                runtimeInputs = [
+                  golangciLint
+                  # Same version CI pins (.github/workflows/ci.yaml Actionlint
+                  # step) so local `nix run .#lint` and CI agree on workflow
+                  # findings.
+                  pkgs.actionlint
+                ];
                 text = ''
                   # golangci-lint does not support go.work workspace mode.
                   # Lint each module independently with GOWORK=off.
@@ -119,6 +125,8 @@
                   (cd datastar && GOWORK=off golangci-lint run ./...)
                   echo "==> Linting htmx module..."
                   (cd htmx && GOWORK=off golangci-lint run ./...)
+                  echo "==> Actionlint (GitHub Actions workflows)..."
+                  actionlint
                 '';
               };
             };
