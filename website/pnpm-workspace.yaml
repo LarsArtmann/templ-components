@@ -3,3 +3,4 @@ allowBuilds:
   sharp: true
 minimumReleaseAgeExclude:
   - html-validate@11.9.0
+  - astro@7.3.1
