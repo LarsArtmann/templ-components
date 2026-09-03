@@ -1,7 +1,9 @@
 # Datastar v1.0.2 Runtime Facts
 
 Extracted from the pinned runtime bundle (`go-datastar/static` v0.2.0, Datastar
-v1.0.2) during the 2026-08-21 SSE integration audit. These contradict several
+v1.0.2) during the 2026-08-21 SSE integration audit. Re-verified 2026-09-02 at
+pin v0.4.0: the embedded `datastar.js` is byte-identical (same sha256) across
+static v0.2.0–v0.4.0 — every fact below still applies. These contradict several
 plausible-but-wrong assumptions that caused shipped bugs — re-verify against
 the bundle if the version pin ever bumps. Enforcement lives in tests:
 `examples/demo/sse_test.go` (wire format) and

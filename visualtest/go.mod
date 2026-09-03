@@ -11,6 +11,7 @@ require (
 	github.com/larsartmann/templ-components/errorpage v1.11.0
 	github.com/larsartmann/templ-components/htmx v1.11.0
 	github.com/larsartmann/templ-components/icons v1.11.0
+	github.com/larsartmann/templ-components/utils v1.11.0
 	github.com/orisano/pixelmatch v0.0.0-20230914042517-fa304d1dc785
 )
 
@@ -21,9 +22,8 @@ require (
 	github.com/gobwas/httphead v0.1.0 // indirect
 	github.com/gobwas/pool v0.2.1 // indirect
 	github.com/gobwas/ws v1.4.0 // indirect
-	github.com/larsartmann/go-datastar/static v0.2.0 // indirect
+	github.com/larsartmann/go-datastar/static v0.4.0 // indirect
 	github.com/larsartmann/go-error-family v0.10.0 // indirect
-	github.com/larsartmann/templ-components/utils v1.11.0 // indirect
 	golang.org/x/sys v0.47.0 // indirect
 )
 
