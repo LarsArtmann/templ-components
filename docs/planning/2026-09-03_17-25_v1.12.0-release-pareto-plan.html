@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>v1.12.0 Release Plan — templ-components</title>
+<style>
+:root{
+  --color-graphite:#0e0e10;--color-graphite-2:#18181d;--color-graphite-3:#16161a;
+  --color-bone:#f4f4f0;--color-red:#ff6b6b;--color-blue:#6eb5ff;--color-yellow:#f4d35e;--color-amber:#ffb347;
+  --surface:var(--color-graphite);--surface-raised:var(--color-graphite-2);--surface-sunken:var(--color-graphite-3);
+  --text:var(--color-bone);--accent:var(--color-amber);--problem:var(--color-red);--solution:var(--color-blue);--warning:var(--color-yellow);
+  --text-muted:#9a9aa2;--text-faint:#6b6b73;--border:#2a2a31;--border-strong:#3d3d46;
+  --radius:0px;--font-heading:system-ui,-apple-system,sans-serif;--font-body:system-ui,-apple-system,sans-serif;--font-mono:ui-monospace,'SF Mono',Menlo,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--surface);color:var(--text);font-family:var(--font-body);line-height:1.55;padding:48px 24px;max-width:1200px;margin:0 auto}
+h1{font-family:var(--font-heading);font-weight:900;font-size:2rem;letter-spacing:-0.02em;text-transform:uppercase}
+h2{font-family:var(--font-heading);font-weight:800;font-size:1.25rem;letter-spacing:-0.01em;text-transform:uppercase;margin:48px 0 16px;padding-bottom:8px;border-bottom:2px solid var(--border-strong)}
+.sub{color:var(--text-muted);margin-top:8px;max-width:70ch}
+.kicker{color:var(--accent);font-family:var(--font-mono);font-size:.75rem;letter-spacing:.15em;text-transform:uppercase;margin-bottom:12px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px;margin:32px 0}
+.stat{background:var(--surface-raised);border:1px solid var(--border);padding:16px}
+.stat .n{font-family:var(--font-heading);font-weight:900;font-size:2rem;line-height:1}
+.stat .l{color:var(--text-faint);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;margin-top:6px}
+.stat-good .n{color:var(--solution)}.stat-warn .n{color:var(--warning)}.stat-bad .n{color:var(--problem)}.stat-accent .n{color:var(--accent)}
+.tiers{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:12px;margin:16px 0}
+.tier{background:var(--surface-raised);border:1px solid var(--border);border-top:4px solid var(--accent);padding:16px}
+.tier h3{font-size:.8rem;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin-bottom:8px}
+.tier p{font-size:.85rem;color:var(--text-muted)}
+.tier .big{font-family:var(--font-heading);font-weight:900;font-size:1.4rem;color:var(--text);margin-bottom:4px}
+.card-problem,.card-warning,.card-solution{background:var(--surface-raised);border:1px solid var(--border);border-left:4px solid var(--problem);padding:16px;margin:12px 0}
+.card-warning{border-left-color:var(--warning)}.card-solution{border-left-color:var(--solution)}
+table{width:100%;border-collapse:collapse;margin:16px 0;font-size:.83rem}
+th{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.1em;text-transform:uppercase;color:var(--text-faint);text-align:left;padding:10px 8px;border-bottom:2px solid var(--border-strong)}
+td{padding:9px 8px;border-bottom:1px solid var(--border);vertical-align:top}
+tr:hover td{background:var(--surface-raised)}
+.badge{display:inline-block;font-family:var(--font-mono);font-size:.65rem;font-weight:700;letter-spacing:.06em;padding:2px 7px;text-transform:uppercase}
+.badge-critical{background:color-mix(in srgb,var(--problem) 18%,transparent);color:var(--problem)}
+.badge-important{background:color-mix(in srgb,var(--warning) 18%,transparent);color:var(--warning)}
+.badge-nice{background:color-mix(in srgb,var(--solution) 18%,transparent);color:var(--solution)}
+.badge-tier{background:color-mix(in srgb,var(--accent) 18%,transparent);color:var(--accent)}
+.mono{font-family:var(--font-mono);font-size:.78rem}
+.dim{color:var(--text-muted)}
+.graph{background:var(--surface-raised);border:1px solid var(--border);padding:24px;margin:16px 0;overflow-x:auto}
+.graph svg{max-width:100%;height:auto}
+.callout{border:1px solid var(--warning);background:color-mix(in srgb,var(--warning) 8%,transparent);padding:16px;margin:16px 0;font-size:.9rem}
+footer{margin-top:56px;padding-top:16px;border-top:2px solid var(--border-strong);color:var(--text-faint);font-size:.78rem}
+@media(max-width:720px){body{padding:24px 12px}h1{font-size:1.5rem}}
+</style>
+</head>
+<body>
+
+<div class="kicker">Pareto Execution Plan · templ-components · 2026-09-03 17:25</div>
+<h1>v1.12.0 Release — 34 tasks ≤ 12 min each</h1>
+<p class="sub">Every task from the pre-release analysis (P0/P1/P2), the release checklist, and the session findings — split to fine granularity, sorted by importance / impact / effort / customer-value. Gates: <strong>A→B→C</strong> must be green before anything else; E and F ride in parallel; the cut (G) consumes D+E+F.</p>
+
+<div class="stats">
+  <div class="stat stat-accent"><div class="n">34</div><div class="l">Tasks ≤12min</div></div>
+  <div class="stat stat-warn"><div class="n">~5h</div><div class="l">Total (incl. waits)</div></div>
+  <div class="stat stat-bad"><div class="n">7</div><div class="l">P0 blocking</div></div>
+  <div class="stat stat-good"><div class="n">3</div><div class="l">Decision gates</div></div>
+  <div class="stat"><div class="n">1</div><div class="l">User-gated step (push)</div></div>
+</div>
+
+<h2>Pareto tiers</h2>
+<div class="tiers">
+  <div class="tier"><div class="big">1% → 51%</div><h3>3 tasks · ~27 min</h3><p>Defuse the daemon regression on master (typescript ^7.0.2 flip + un-minified app.css). Everything else inherits this state — tags are immutable, so a red Website/CSS-Freshness CI at cut time is the v1.9.0 incident again.</p></div>
+  <div class="tier"><div class="big">4% → 64%</div><h3>5 tasks · ~33 min</h3><p>Ground truth before the cut: CI status of today's pushed commits, lint-config guard on the .golangci.yml alignment, visual goldens (89), go mod verify ×8 — immutability insurance.</p></div>
+  <div class="tier"><div class="big">20% → 80%</div><h3>12 tasks · ~1.7h</h3><p>Canonical verify (build/test/lint/flake), datastar hardening ride-along (sha256 pin + literal version guard), release notes + drift guards. After this, the cut is mechanical.</p></div>
+</div>
+
+<h2>Execution graph</h2>
+<div class="graph">
+<?xml version="1.0" encoding="utf-8"?><svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" data-d2-version="v0.8.1-HEAD" preserveAspectRatio="xMinYMin meet" viewBox="0 0 2982 520"><svg class="d2-2065645618 d2-svg" width="2982" height="520" viewBox="-101 -101 2982 520"><rect x="-101.000000" y="-101.000000" width="2982.000000" height="520.000000" rx="0.000000" fill="#FFFFFF" class=" fill-N7" stroke-width="0" /><style type="text/css"><![CDATA[
+.d2-2065645618 .text-bold {
+	font-family: "d2-2065645618-font-bold";
+}
+@font-face {
+	font-family: d2-2065645618-font-bold;
+	src: url("data:application/font-woff;base64,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");
+}
+.d2-2065645618 .text-italic {
+	font-family: "d2-2065645618-font-italic";
+}
+@font-face {
+	font-family: d2-2065645618-font-italic;
+	src: url("data:application/font-woff;base64,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");
+}]]></style><style type="text/css"><![CDATA[.shape {
+  shape-rendering: geometricPrecision;
+  stroke-linejoin: round;
+}
+.connection {
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.blend {
+  mix-blend-mode: multiply;
+  opacity: 0.5;
+}
+
+		.d2-2065645618 .fill-N1{fill:#0A0F25;}
+		.d2-2065645618 .fill-N2{fill:#676C7E;}
+		.d2-2065645618 .fill-N3{fill:#9499AB;}
+		.d2-2065645618 .fill-N4{fill:#CFD2DD;}
+		.d2-2065645618 .fill-N5{fill:#DEE1EB;}
+		.d2-2065645618 .fill-N6{fill:#EEF1F8;}
+		.d2-2065645618 .fill-N7{fill:#FFFFFF;}
+		.d2-2065645618 .fill-B1{fill:#0D32B2;}
+		.d2-2065645618 .fill-B2{fill:#0D32B2;}
+		.d2-2065645618 .fill-B3{fill:#E3E9FD;}
+		.d2-2065645618 .fill-B4{fill:#E3E9FD;}
+		.d2-2065645618 .fill-B5{fill:#EDF0FD;}
+		.d2-2065645618 .fill-B6{fill:#F7F8FE;}
+		.d2-2065645618 .fill-AA2{fill:#4A6FF3;}
+		.d2-2065645618 .fill-AA4{fill:#EDF0FD;}
+		.d2-2065645618 .fill-AA5{fill:#F7F8FE;}
+		.d2-2065645618 .fill-AB4{fill:#EDF0FD;}
+		.d2-2065645618 .fill-AB5{fill:#F7F8FE;}
+		.d2-2065645618 .stroke-N1{stroke:#0A0F25;}
+		.d2-2065645618 .stroke-N2{stroke:#676C7E;}
+		.d2-2065645618 .stroke-N3{stroke:#9499AB;}
+		.d2-2065645618 .stroke-N4{stroke:#CFD2DD;}
+		.d2-2065645618 .stroke-N5{stroke:#DEE1EB;}
+		.d2-2065645618 .stroke-N6{stroke:#EEF1F8;}
+		.d2-2065645618 .stroke-N7{stroke:#FFFFFF;}
+		.d2-2065645618 .stroke-B1{stroke:#0D32B2;}
+		.d2-2065645618 .stroke-B2{stroke:#0D32B2;}
+		.d2-2065645618 .stroke-B3{stroke:#E3E9FD;}
+		.d2-2065645618 .stroke-B4{stroke:#E3E9FD;}
+		.d2-2065645618 .stroke-B5{stroke:#EDF0FD;}
+		.d2-2065645618 .stroke-B6{stroke:#F7F8FE;}
+		.d2-2065645618 .stroke-AA2{stroke:#4A6FF3;}
+		.d2-2065645618 .stroke-AA4{stroke:#EDF0FD;}
+		.d2-2065645618 .stroke-AA5{stroke:#F7F8FE;}
+		.d2-2065645618 .stroke-AB4{stroke:#EDF0FD;}
+		.d2-2065645618 .stroke-AB5{stroke:#F7F8FE;}
+		.d2-2065645618 .background-color-N1{background-color:#0A0F25;}
+		.d2-2065645618 .background-color-N2{background-color:#676C7E;}
+		.d2-2065645618 .background-color-N3{background-color:#9499AB;}
+		.d2-2065645618 .background-color-N4{background-color:#CFD2DD;}
+		.d2-2065645618 .background-color-N5{background-color:#DEE1EB;}
+		.d2-2065645618 .background-color-N6{background-color:#EEF1F8;}
+		.d2-2065645618 .background-color-N7{background-color:#FFFFFF;}
+		.d2-2065645618 .background-color-B1{background-color:#0D32B2;}
+		.d2-2065645618 .background-color-B2{background-color:#0D32B2;}
+		.d2-2065645618 .background-color-B3{background-color:#E3E9FD;}
+		.d2-2065645618 .background-color-B4{background-color:#E3E9FD;}
+		.d2-2065645618 .background-color-B5{background-color:#EDF0FD;}
+		.d2-2065645618 .background-color-B6{background-color:#F7F8FE;}
+		.d2-2065645618 .background-color-AA2{background-color:#4A6FF3;}
+		.d2-2065645618 .background-color-AA4{background-color:#EDF0FD;}
+		.d2-2065645618 .background-color-AA5{background-color:#F7F8FE;}
+		.d2-2065645618 .background-color-AB4{background-color:#EDF0FD;}
+		.d2-2065645618 .background-color-AB5{background-color:#F7F8FE;}
+		.d2-2065645618 .color-N1{color:#0A0F25;}
+		.d2-2065645618 .color-N2{color:#676C7E;}
+		.d2-2065645618 .color-N3{color:#9499AB;}
+		.d2-2065645618 .color-N4{color:#CFD2DD;}
+		.d2-2065645618 .color-N5{color:#DEE1EB;}
+		.d2-2065645618 .color-N6{color:#EEF1F8;}
+		.d2-2065645618 .color-N7{color:#FFFFFF;}
+		.d2-2065645618 .color-B1{color:#0D32B2;}
+		.d2-2065645618 .color-B2{color:#0D32B2;}
+		.d2-2065645618 .color-B3{color:#E3E9FD;}
+		.d2-2065645618 .color-B4{color:#E3E9FD;}
+		.d2-2065645618 .color-B5{color:#EDF0FD;}
+		.d2-2065645618 .color-B6{color:#F7F8FE;}
+		.d2-2065645618 .color-AA2{color:#4A6FF3;}
+		.d2-2065645618 .color-AA4{color:#EDF0FD;}
+		.d2-2065645618 .color-AA5{color:#F7F8FE;}
+		.d2-2065645618 .color-AB4{color:#EDF0FD;}
+		.d2-2065645618 .color-AB5{color:#F7F8FE;}.appendix text.text{fill:#0A0F25}.md{--color-fg-default:#0A0F25;--color-fg-muted:#676C7E;--color-fg-subtle:#9499AB;--color-canvas-default:#FFFFFF;--color-canvas-subtle:#EEF1F8;--color-border-default:#0D32B2;--color-border-muted:#0D32B2;--color-neutral-muted:#EEF1F8;--color-accent-fg:#0D32B2;--color-accent-emphasis:#0D32B2;--color-attention-subtle:#676C7E;--color-danger-fg:red;}.sketch-overlay-B1{fill:url(#streaks-darker-d2-2065645618);mix-blend-mode:lighten}.sketch-overlay-B2{fill:url(#streaks-darker-d2-2065645618);mix-blend-mode:lighten}.sketch-overlay-B3{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.sketch-overlay-B4{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.sketch-overlay-B5{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.sketch-overlay-B6{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.sketch-overlay-AA2{fill:url(#streaks-dark-d2-2065645618);mix-blend-mode:overlay}.sketch-overlay-AA4{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.sketch-overlay-AA5{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.sketch-overlay-AB4{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.sketch-overlay-AB5{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.sketch-overlay-N1{fill:url(#streaks-darker-d2-2065645618);mix-blend-mode:lighten}.sketch-overlay-N2{fill:url(#streaks-dark-d2-2065645618);mix-blend-mode:overlay}.sketch-overlay-N3{fill:url(#streaks-normal-d2-2065645618);mix-blend-mode:color-burn}.sketch-overlay-N4{fill:url(#streaks-normal-d2-2065645618);mix-blend-mode:color-burn}.sketch-overlay-N5{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.sketch-overlay-N6{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.sketch-overlay-N7{fill:url(#streaks-bright-d2-2065645618);mix-blend-mode:darken}.light-code{display: block}.dark-code{display: none}]]></style><g class="QQ=="><g class="shape" ><rect x="0.000000" y="126.000000" width="231.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="115.500000" y="164.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">Defuse daemon regression</text></g><g class="Qg=="><g class="shape" ><rect x="331.000000" y="126.000000" width="154.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="408.000000" y="164.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">Master CI green</text></g><g class="Qw=="><g class="shape" ><rect x="585.000000" y="126.000000" width="373.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="771.500000" y="164.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">Canonical verify (build+test+lint+flake+visual)</text></g><g class="RA=="><g class="shape" ><rect x="1158.000000" y="0.000000" width="162.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="1239.000000" y="38.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">go mod verify x8</text></g><g class="RQ=="><g class="shape" ><rect x="1110.000000" y="126.000000" width="258.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="1239.000000" y="164.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">Datastar hardening ride-along</text></g><g class="Rg=="><g class="shape" ><rect x="1119.000000" y="252.000000" width="240.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="1239.000000" y="290.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">Release notes + drift guards</text></g><g class="Rw=="><g class="shape" ><path d="M 1540 125 L 1468 159 L 1540 194 L 1683 194 L 1755 159 L 1683 125 Z" stroke="#0D32B2" fill="#DEE1EB" class=" stroke-B1 fill-N5" style="stroke-width:2;" /></g><text x="1611.500000" y="165.000000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">Cut v1.12.0 (release.sh)</text></g><g class="SA=="><g class="shape" ><rect x="1855.000000" y="126.000000" width="249.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="1979.500000" y="164.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">Re-add replaces + tidy sweep</text></g><g class="SQ=="><g class="shape" ><ellipse rx="142.000000" ry="142.000000" cx="2346.000000" cy="159.000000" stroke="#0D32B2" fill="#F7F8FE" class="shape stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="2346.000000" y="164.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">USER push master+tags</text></g><g class="Sg=="><g class="shape" ><rect x="2588.000000" y="126.000000" width="192.000000" height="66.000000" stroke="#0D32B2" fill="#F7F8FE" class=" stroke-B1 fill-B6" style="stroke-width:2;" /></g><text x="2684.000000" y="164.500000" fill="#0A0F25" class="text-bold fill-N1" style="text-anchor:middle;font-size:16px">24h post-push watch</text></g><g class="KEEgLSZndDsgQilbMF0="><marker id="mk-d2-2065645618-3488378134" markerWidth="10.000000" markerHeight="12.000000" refX="7.000000" refY="6.000000" viewBox="0.000000 0.000000 10.000000 12.000000" orient="auto" markerUnits="userSpaceOnUse"> <polygon points="0.000000,0.000000 10.000000,6.000000 0.000000,12.000000" fill="#0D32B2" class="connection fill-B1" stroke-width="2" /> </marker><path d="M 233.000000 159.000000 C 271.000000 159.000000 291.000000 159.000000 327.000000 159.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /></g><g class="KEIgLSZndDsgQylbMF0="><path d="M 487.000000 159.000000 C 525.000000 159.000000 545.000000 159.000000 581.000000 159.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /></g><g class="KEMgLSZndDsgRClbMF0="><path d="M 841.803477 125.135435 C 995.200012 51.598999 1058.800049 33.000000 1154.000000 33.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /></g><g class="KEMgLSZndDsgRSlbMF0="><path d="M 960.000000 159.000000 C 1018.799988 159.000000 1049.199951 159.000000 1106.000000 159.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /><text x="1034.000000" y="165.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">parallel</text></g><g class="KEMgLSZndDsgRilbMF0="><path d="M 841.803481 192.864555 C 995.200012 266.399994 1051.000000 285.000000 1115.000000 285.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /><text x="975.000000" y="262.000000" fill="#676C7E" class="text-italic fill-N2" style="text-anchor:middle;font-size:16px">parallel</text></g><g class="KEQgLSZndDsgRylbMF0="><path d="M 1322.000000 33.000000 C 1398.400024 33.000000 1446.199951 51.400002 1555.650030 122.814205" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /></g><g class="KEUgLSZndDsgRylbMF0="><path d="M 1370.000000 159.000000 C 1408.000000 159.000000 1428.000000 159.000000 1464.000000 159.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /></g><g class="KEYgLSZndDsgRylbMF0="><path d="M 1361.000000 285.000000 C 1406.199951 285.000000 1446.000000 266.799988 1554.646225 196.179953" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /></g><g class="KEcgLSZndDsgSClbMF0="><path d="M 1757.000000 159.000000 C 1795.000000 159.000000 1815.000000 159.000000 1851.000000 159.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /></g><g class="KEggLSZndDsgSSlbMF0="><path d="M 2106.000000 159.000000 C 2144.000000 159.000000 2164.000000 159.000000 2200.000000 159.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /></g><g class="KEkgLSZndDsgSilbMF0="><path d="M 2490.000000 159.000000 C 2528.000000 159.000000 2548.000000 159.000000 2584.000000 159.000000" stroke="#0D32B2" fill="none" class="connection stroke-B1" style="stroke-width:2;" marker-end="url(#mk-d2-2065645618-3488378134)" mask="url(#d2-2065645618)" /></g><mask id="d2-2065645618" maskUnits="userSpaceOnUse" x="-101" y="-101" width="2982" height="520">
+<rect x="-101" y="-101" width="2982" height="520" fill="white"></rect>
+<rect x="1006.000000" y="149.000000" width="56" height="21" fill="black"></rect>
+<rect x="947.000000" y="246.000000" width="56" height="21" fill="black"></rect>
+</mask></svg></svg>
+
+</div>
+
+<div class="callout"><strong>Decision gates (need your call):</strong> ① G-D1 — keep typescript ^7.0.2 only if astro ^7.3.1 verifiably fixed TS-7 support; otherwise revert to ^6.0.3. ② G-H3 — the post-cut re-add-replaces commit: daemon-collect or explicit. ③ G-H4 — push is yours (master + all submodule tags, after reviewing <span class="mono">git show v1.12.0</span>).</div>
+
+<h2>Master task table — sorted by importance</h2>
+<table>
+<thead><tr><th>#</th><th>Tier</th><th>Task</th><th>Why / impact</th><th>Eff</th><th>Val</th><th>Phase</th></tr></thead>
+<tbody>
+<tr><td>1</td><td><span class="badge badge-tier">1%</span></td><td>Verify astro ^7.3.1 + TS 7 compatibility (website build or upstream evidence)</td><td>Decision input for the documented astro-check crasher</td><td>12m</td><td>5</td><td>A</td></tr>
+<tr><td>2</td><td><span class="badge badge-tier">1%</span></td><td>Execute G-D1: revert typescript to ^6.0.3, or keep with recorded evidence</td><td>Removes the known website-CI breaker from the release base</td><td>5m</td><td>5</td><td>A</td></tr>
+<tr><td>3</td><td><span class="badge badge-tier">1%</span></td><td><span class="mono">nix run .#css</span> → inspect diff → restore byte-stable app.css</td><td>+4951 un-minified lines = CSS Freshness CI failure at cut</td><td>10m</td><td>4</td><td>A</td></tr>
+<tr><td>4</td><td><span class="badge badge-tier">4%</span></td><td>Check CI runs for bb2d77d / 04c8adf / 8a9bb87 (Build&amp;Test, CSS, Website, Visual)</td><td>Master must be green pre-cut; confirms/refutes the regression impact</td><td>5m</td><td>4</td><td>B</td></tr>
+<tr><td>5</td><td><span class="badge badge-tier">4%</span></td><td><span class="mono">nix run .#visual</span> — full 89-golden run after CSS restore</td><td>Goldens are the tripwire for CSS class loss from the rebuild</td><td>12m</td><td>4</td><td>C</td></tr>
+<tr><td>6</td><td><span class="badge badge-tier">4%</span></td><td><span class="mono">go mod verify</span> in all 8 modules (GOWORK=off loop)</td><td>go.sum integrity BEFORE tagging — tags are permanently immutable</td><td>8m</td><td>3</td><td>D</td></tr>
+<tr><td>7</td><td><span class="badge badge-tier">4%</span></td><td><span class="mono">scripts/check-lint-config.sh</span> + TestGolangciDisabledLinters</td><td>8a9bb87 touched .golangci.yml — the 5× regression champion file</td><td>5m</td><td>3</td><td>A</td></tr>
+<tr><td>8</td><td><span class="badge badge-tier">4%</span></td><td>Sweep 8a9bb87 remaining diffs (visual_test.go, ci-repro.sh) for hidden logic</td><td>Formatting-looking commits have hidden regressions before</td><td>6m</td><td>3</td><td>A</td></tr>
+<tr><td>9</td><td><span class="badge badge-tier">20%</span></td><td><span class="mono">nix run .#build</span> — generate + workspace build, templ-pin zero-diff</td><td>Confirms v0.3.1020 pin intact; canonical build green</td><td>12m</td><td>4</td><td>C</td></tr>
+<tr><td>10</td><td><span class="badge badge-tier">20%</span></td><td><span class="mono">nix run .#test</span> — workspace -race suite</td><td>Canonical test pass on the release base</td><td>12m</td><td>4</td><td>C</td></tr>
+<tr><td>11</td><td><span class="badge badge-tier">20%</span></td><td>Per-module GOWORK=off test loop (6 sub-modules + visualtest vet)</td><td>Workspace blind spot: root run cannot see sub-modules</td><td>12m</td><td>4</td><td>C</td></tr>
+<tr><td>12</td><td><span class="badge badge-tier">20%</span></td><td>Add bundle sha256 pin to TestPinnedRuntimeBundleContract</td><td>Byte change without token rename currently passes silently</td><td>10m</td><td>3</td><td>E</td></tr>
+<tr><td>13</td><td><span class="badge badge-tier">20%</span></td><td>Add literal DatastarVersion1_0_2 == "1.0.2" drift guard</td><td>Constant NAME can silently lie when static.Version moves</td><td>8m</td><td>3</td><td>E</td></tr>
+<tr><td>14</td><td><span class="badge badge-tier">20%</span></td><td><span class="mono">nix run .#lint</span> — golangci-lint all modules</td><td>0 findings required pre-commit of the release</td><td>12m</td><td>3</td><td>C</td></tr>
+<tr><td>15</td><td><span class="badge badge-tier">20%</span></td><td>Draft release summary (features + Go 1.26.7 floor + datastar v0.4.0)</td><td>Toolchain floor raise deserves an explicit headline</td><td>12m</td><td>4</td><td>F</td></tr>
+<tr><td>16</td><td><span class="badge badge-tier">20%</span></td><td>Audit CHANGELOG [Unreleased] vs git log — nothing unrecorded</td><td>release.sh fails on empty; consumers read this as the release truth</td><td>8m</td><td>3</td><td>F</td></tr>
+<tr><td>17</td><td><span class="badge badge-tier">20%</span></td><td>Run datastar tests after E-hardening; update goldens if any</td><td>Hardening must not break the 89-green baseline</td><td>5m</td><td>2</td><td>E</td></tr>
+<tr><td>18</td><td><span class="badge badge-tier">20%</span></td><td>CHANGELOG entry for the hardening pair</td><td>Always-warm rule; changelog-guard parity</td><td>5m</td><td>2</td><td>E</td></tr>
+<tr><td>19</td><td><span class="badge badge-important">post</span></td><td><span class="mono">nix flake check</span> — treefmt/format gate</td><td>Format drift fails CI before tests even run</td><td>5m</td><td>2</td><td>C</td></tr>
+<tr><td>20</td><td><span class="badge badge-important">post</span></td><td>Docs drift guards: TestDocsCountDrift, TestVersionMatches*</td><td>release.sh step 9 asserts them — fail now, not mid-cut</td><td>5m</td><td>2</td><td>F</td></tr>
+<tr><td>21</td><td><span class="badge badge-nice">exec</span></td><td>Confirm tree clean (daemon collected CHANGELOG fix)</td><td>release.sh precondition</td><td>2m</td><td>3</td><td>F</td></tr>
+<tr><td>22</td><td><span class="badge badge-nice">exec</span></td><td>Pre-flight: git fetch, confirm clean master, note HEAD</td><td>Daemon pushes continuously — know your base commit</td><td>3m</td><td>3</td><td>G</td></tr>
+<tr><td>23</td><td><span class="badge badge-critical">cut</span></td><td><span class="mono">scripts/release.sh 1.12.0 "&lt;summary&gt;"</span></td><td>The cut: bump, notes, verify, strip, commit, 9 tags</td><td>12m</td><td>5</td><td>G</td></tr>
+<tr><td>24</td><td><span class="badge badge-critical">cut</span></td><td>Inspect release commit: replaces stripped, visualtest step-5b bump</td><td>v1.9.0/v1.11.0 lessons live exactly here</td><td>8m</td><td>4</td><td>G</td></tr>
+<tr><td>25</td><td><span class="badge badge-critical">cut</span></td><td><span class="mono">scripts/check-release-tags.sh</span></td><td>Root-only release breaks every consumer (v1.8.3 class)</td><td>5m</td><td>4</td><td>G</td></tr>
+<tr><td>26</td><td><span class="badge badge-critical">cut</span></td><td>Verify CHANGELOG heading + fresh empty [Unreleased]</td><td>Consumer-facing release truth</td><td>3m</td><td>3</td><td>G</td></tr>
+<tr><td>27</td><td><span class="badge badge-important">post</span></td><td>Re-add replaces + GOWORK=off tidy sweep, all 8 modules</td><td>v1.11.0 nine-day-red class — checksums must refresh</td><td>12m</td><td>5</td><td>H</td></tr>
+<tr><td>28</td><td><span class="badge badge-important">post</span></td><td>Verify tidy diff minimal; commit re-add (G-H3 gate)</td><td>Stale go.sum = red CI for days</td><td>5m</td><td>4</td><td>H</td></tr>
+<tr><td>29</td><td><span class="badge badge-critical">cut</span></td><td>USER: review <span class="mono">git show v1.12.0</span>, push master + all tags</td><td>House rule — push is human-gated</td><td>5m</td><td>5</td><td>I</td></tr>
+<tr><td>30</td><td><span class="badge badge-nice">watch</span></td><td>Watch master/Website/Visual CI until green (24h window)</td><td>Post-push verification per checklist</td><td>12m</td><td>4</td><td>J</td></tr>
+<tr><td>31</td><td><span class="badge badge-nice">watch</span></td><td>Proxy propagation + pkg.go.dev check (root + sub-modules)</td><td>Consumers hit the proxy, not git</td><td>12m</td><td>4</td><td>J</td></tr>
+<tr><td>32</td><td><span class="badge badge-nice">watch</span></td><td>go get validation from clean cache @v1.12.0</td><td>The definitive consumer-experience test</td><td>10m</td><td>4</td><td>J</td></tr>
+<tr><td>33</td><td><span class="badge badge-nice">watch</span></td><td>GitHub Release page with curated notes</td><td>Release notes reach humans here</td><td>10m</td><td>3</td><td>J</td></tr>
+<tr><td>34</td><td><span class="badge badge-nice">watch</span></td><td>docs-health HARVEST kickoff (2 reports → TODO_LIST/ROADMAP)</td><td>50+ brainstorm items must not rot in timestamped files</td><td>12m</td><td>3</td><td>J</td></tr>
+</tbody>
+</table>
+
+<h2>Sequencing rules</h2>
+<div class="card-problem"><strong>Hard gate:</strong> tasks 1–8 (tiers 1%+4%) MUST be green before task 23 (the cut). Cutting with a red Website/CSS-Freshness CI is the v1.9.0 incident — the release commit would immortalize a broken master.</div>
+<div class="card-warning"><strong>Parallel band:</strong> tasks 9–20 (verify + hardening + notes) run in any order after the gate; D (go mod verify) must re-run if any go.mod/go.sum changes after it.</div>
+<div class="card-solution"><strong>Mechanical tail:</strong> tasks 21–34 follow docs/release-checklist.md steps 1–9 + the 24-hour post-push watch. No judgment calls left except G-H3/H4 (your gates).</div>
+
+<footer>templ-components · v1.12.0 pre-release Pareto plan · generated 2026-09-03 17:25 CEST · 34 tasks, all ≤ 12 min · sources: 2026-09-02 + 2026-09-03 status reports, docs/release-checklist.md, this session's daemon-regression findings · waiting for approval before execution</footer>
+
+</body>
+</html>
