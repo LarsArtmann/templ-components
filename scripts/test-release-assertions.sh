@@ -7,10 +7,10 @@
 # second, so it can run in CI for pennies.
 #
 # The CHANGELOG fixture deliberately exceeds the 64KB pipe buffer with the
-# heading BEYOND it, reproducing the v1.12.0 SIGPIPE geometry: a regression
-# back to `grep -q` would kill `git show` with exit 141 under pipefail and the
-# positive cases below would fail. The tmpdir is left for tmpfs cleanup (the
-# house rule bans rm, and the dir was created seconds earlier).
+# heading at the TOP (real CHANGELOGs are newest-first), reproducing the
+# v1.12.0 SIGPIPE geometry — see the comment at the fixture. The tmpdir is
+# left for tmpfs cleanup (the house rule bans rm, and the dir was created
+# seconds earlier).
 set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
@@ -30,10 +30,17 @@ package utils
 
 const Version = "${VERSION}"
 EOF
+# Heading EARLY, bulk after — real CHANGELOGs are newest-first, and this is
+# the v1.12.0 SIGPIPE geometry: grep finds the match in the first bytes and
+# exits while `git show` is still pumping ~150KB through the 64KB pipe. A
+# `grep -q` regression then kills the pipeline with 141 under pipefail and
+# the positive cases below fail. (Heading at the END would let grep read to
+# EOF and never SIGPIPE — the fixture would test nothing.)
 {
-	head -c 80000 /dev/zero | tr '\0' '#'
-	echo ""
 	echo "## [${VERSION}] — 2026-09-03"
+	echo ""
+	head -c 150000 /dev/zero | tr '\0' '#'
+	echo ""
 } >CHANGELOG.md
 echo "**Version:** ${VERSION}" >FEATURES.md
 cat >go.mod <<'EOF'
