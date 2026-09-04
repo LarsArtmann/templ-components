@@ -466,9 +466,9 @@ func TestStatCard_DLGroupContainsDtAndDd(t *testing.T) {
 
 	html := utils.Render(t, StatCard(props))
 
-
 	dlStart := strings.Index(html, "<dl")
 	dlEnd := strings.Index(html, "</dl>")
+
 	if dlStart == -1 || dlEnd == -1 {
 		t.Fatalf("StatCard did not render a dl: %s", html)
 	}
