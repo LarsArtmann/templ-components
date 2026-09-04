@@ -67,16 +67,16 @@ type BaseProps struct {
 
 One typed `wire.Action` spec rendered as htmx or Datastar attributes depending on the configured Transport. Composes with every component via `BaseProps.Attrs`; `display.Button` additionally accepts it directly via `Wire *wire.Action`.
 
-| API                   | Purpose                                                                                  |
-| --------------------- | ---------------------------------------------------------------------------------------- |
-| `Transport`           | `TransportHTMX` (default) / `TransportDatastar`; zero value resolves to htmx (ADR-0030)  |
-| `Method`              | `MethodGet/Post/Put/Patch/Delete`; zero value GET                                        |
-| `Event`               | `EventClick/Submit/Change/Input/KeyDown/KeyUp/Focus/Blur`; zero value = dialect default  |
-| `Action`              | Method + URL + Event + Target; empty URL wires nothing                                   |
-| `Action.Attributes()` | Renders the dialect: `hx-*` for htmx, `data-on:<event>="@<method>('url')"` for Datastar  |
+| API                   | Purpose                                                                                                                                                              |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `Transport`           | `TransportHTMX` (default) / `TransportDatastar`; zero value resolves to htmx (ADR-0030)                                                                              |
+| `Method`              | `MethodGet/Post/Put/Patch/Delete`; zero value GET                                                                                                                    |
+| `Event`               | `EventClick/Submit/Change/Input/KeyDown/KeyUp/Focus/Blur`; zero value = dialect default                                                                              |
+| `Action`              | Method + URL + Event + Target; empty URL wires nothing                                                                                                               |
+| `Action.Attributes()` | Renders the dialect: `hx-*` for htmx, `data-on:<event>="@<method>('url')"` for Datastar                                                                              |
 | `Handler`             | Both-transports endpoint middleware: Datastar callers get response-header targeting (`PatchTarget{Selector, Mode}`, typed `PatchMode` enum), htmx/plain pass through |
-| `IsDatastar`/`IsHTMX` | Request predicates on the `Datastar-Request`/`HX-Request` headers for custom branching   |
-| Header constants      | `Datastar-Request`/`Datastar-Selector`/`Datastar-Mode`/`HX-Request` for transport-branching handlers |
+| `IsDatastar`/`IsHTMX` | Request predicates on the `Datastar-Request`/`HX-Request` headers for custom branching                                                                               |
+| Header constants      | `Datastar-Request`/`Datastar-Selector`/`Datastar-Mode`/`HX-Request` for transport-branching handlers                                                                 |
 
 Scope note: Datastar v1.0.2 fetch actions accept no target option — `Action.Target` renders only for htmx; Datastar targeting is response-driven (echo the selector back on `Datastar-Selector`). Polling/reveal triggers and OOB swaps stay transport-specific (htmx `PolledRegion`, `LoadMore`, `SwapOOB`). See `docs/transport-wiring.md`.
 
@@ -90,7 +90,7 @@ Scope note: Datastar v1.0.2 fetch actions accept no target option — `Action.Ta
 | -------------------- | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Accordion`          | FULLY_FUNCTIONAL | Collapsible accordion panels    | Native `<details>/<summary>`, zero JS, chevron rotation via CSS, `role=group`                                                                                                                                                                   |
 | `Avatar`             | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                                                                                                                                                                                   |
-| `Button`             | FULLY_FUNCTIONAL | Action button                   | 9 variants (primary/secondary/danger/ghost/link + 4 outline: danger/warning/success/info), 3 sizes, href (link mode), loading state, `Wire` field for transport-agnostic htmx/Datastar wiring (ADR-0036)                                       |
+| `Button`             | FULLY_FUNCTIONAL | Action button                   | 9 variants (primary/secondary/danger/ghost/link + 4 outline: danger/warning/success/info), 3 sizes, href (link mode), loading state, `Wire` field for transport-agnostic htmx/Datastar wiring (ADR-0036)                                        |
 | `Badge`              | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                                                                                                                                                                                               |
 | `StatusBadge`        | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                                                                                                                                                                                                          |
 | `Card`               | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, `Header` slot override, 4 padding sizes, `Body` slot override, `CardPaddingNone` skips wrapper div, `TitleClass`/`HeaderClass` override props, `ContainerAware` (padding breakpoints via `@container`) |

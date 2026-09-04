@@ -56,20 +56,20 @@ Any component, even without a `Wire` field — spread the attributes yourself:
 
 | Field       | Zero value behavior                                                                       |
 | ----------- | ----------------------------------------------------------------------------------------- |
-| `Transport` | `""` → htmx (library default)                                                              |
-| `Method`    | `""` → GET                                                                                 |
+| `Transport` | `""` → htmx (library default)                                                             |
+| `Method`    | `""` → GET                                                                                |
 | `Event`     | `""` → htmx: attribute omitted (element defaults: click/submit/change); Datastar: `click` |
-| `URL`       | `""` → renders nothing (inert)                                                             |
-| unknowns    | `TransportIsValid`/`MethodIsValid`/`EventIsValid` exist; rendering falls back to defaults  |
+| `URL`       | `""` → renders nothing (inert)                                                            |
+| unknowns    | `TransportIsValid`/`MethodIsValid`/`EventIsValid` exist; rendering falls back to defaults |
 
 ## Dialect mapping
 
-| `wire.Action`        | htmx rendering                       | Datastar rendering                          |
-| -------------------- | ------------------------------------ | ------------------------------------------- |
-| `Method` + `URL`     | `hx-get="/api/fragment"`             | `data-on:click="@get('/api/fragment')"`     |
-| `Event: EventSubmit` | `hx-trigger="submit"`                | event key: `data-on:submit="…"`             |
-| `Target: "#out"`     | `hx-target="#out"`                   | *not rendered* — see below                  |
-| `URL: ""`            | nothing                              | nothing                                     |
+| `wire.Action`        | htmx rendering           | Datastar rendering                      |
+| -------------------- | ------------------------ | --------------------------------------- |
+| `Method` + `URL`     | `hx-get="/api/fragment"` | `data-on:click="@get('/api/fragment')"` |
+| `Event: EventSubmit` | `hx-trigger="submit"`    | event key: `data-on:submit="…"`         |
+| `Target: "#out"`     | `hx-target="#out"`       | _not rendered_ — see below              |
+| `URL: ""`            | nothing                  | nothing                                 |
 
 ### Why Target is htmx-only (the #1 FAQ)
 
@@ -119,12 +119,12 @@ if wire.IsDatastar(r) {
 }
 ```
 
-| Constant                 | Direction | Meaning                                             |
-| ------------------------ | --------- | --------------------------------------------------- |
-| `wire.HeaderHXRequest`   | request   | set by htmx on every AJAX request                    |
-| `wire.HeaderDatastarRequest` | request | set by Datastar on every fetch action              |
-| `wire.HeaderDatastarSelector` | response | names the patch region for non-SSE HTML responses |
-| `wire.HeaderDatastarMode` | response  | merge mode (`inner`, `outer`, …)                    |
+| Constant                      | Direction | Meaning                                           |
+| ----------------------------- | --------- | ------------------------------------------------- |
+| `wire.HeaderHXRequest`        | request   | set by htmx on every AJAX request                 |
+| `wire.HeaderDatastarRequest`  | request   | set by Datastar on every fetch action             |
+| `wire.HeaderDatastarSelector` | response  | names the patch region for non-SSE HTML responses |
+| `wire.HeaderDatastarMode`     | response  | merge mode (`inner`, `outer`, …)                  |
 
 The demo implements this end-to-end: `examples/demo/wire_demo.templ` renders
 the same Action under both transports, `/api/wire/fragment` serves both, and
@@ -153,12 +153,12 @@ pinned bundles, so you don't have to:
 contract for now.** The pinned Datastar v1.0.2 bundle includes
 `data-on-interval` and `data-on-intersect` (IntersectionObserver is in the
 bundle), and htmx has `hx-trigger="every 2s"` / `revealed` — but the trigger
-*syntax* is dialect-specific (durations, options, filters). Extending
+_syntax_ is dialect-specific (durations, options, filters). Extending
 `wire.Event` would mean modeling a mini trigger language; that is a future
 ADR-sized decision, deliberately not smuggled into the current common subset.
 
 **Form-submit parity has the same boundary.** `wire.EventSubmit` renders
-`hx-trigger="submit"` / `data-on:submit` fine, but carrying *field values* is
+`hx-trigger="submit"` / `data-on:submit` fine, but carrying _field values_ is
 asymmetric: htmx includes the requesting element's (or form's) fields
 natively, while Datastar needs bound signals
 (`data-bind:value` + an interpolated expression like
@@ -171,14 +171,14 @@ under htmx, the `Attrs` escape hatch under Datastar.
 `wire` covers only the dialects' common subset. Transport-specific machinery
 stays in its module, where it already exists:
 
-| Need                        | Use instead                            |
-| --------------------------- | -------------------------------------- |
-| Polling / reveal / lazy load | `htmx.PolledRegion`, `navigation.LoadMore` |
-| Out-of-band swaps           | `htmx.SwapOOB`                          |
-| Confirm dialogs             | `htmx.ConfirmDelete` (`hx-confirm`)     |
-| Loading indicators          | `htmx.InlineLoadingOverlay`, `datastar.Indicator` |
-| SSE streams / signals       | `datastar.LiveRegion`, `datastar.Get/Post/...` with retry options |
-| View transitions            | `htmx.ViewTransitions`                  |
+| Need                         | Use instead                                                       |
+| ---------------------------- | ----------------------------------------------------------------- |
+| Polling / reveal / lazy load | `htmx.PolledRegion`, `navigation.LoadMore`                        |
+| Out-of-band swaps            | `htmx.SwapOOB`                                                    |
+| Confirm dialogs              | `htmx.ConfirmDelete` (`hx-confirm`)                               |
+| Loading indicators           | `htmx.InlineLoadingOverlay`, `datastar.Indicator`                 |
+| SSE streams / signals        | `datastar.LiveRegion`, `datastar.Get/Post/...` with retry options |
+| View transitions             | `htmx.ViewTransitions`                                            |
 
 If you need htmx trigger-engine power beyond a plain event (`hx-trigger="click
 delay:1s"`, `from:`, `once:`), pass raw attributes via `Attrs` — that is the
@@ -187,7 +187,7 @@ designed escape hatch, not a wire gap.
 ## Web Components: the consumer-side recipe (ADR-0033 stands)
 
 The library ships **no** custom elements — Shadow DOM would break Tailwind
-theming, and the zero-JS identity is a feature (ADR-0033). But if *you* want
+theming, and the zero-JS identity is a feature (ADR-0033). But if _you_ want
 custom elements in your app, light-DOM custom elements compose with
 everything in this library with zero library changes:
 
@@ -221,7 +221,7 @@ Why this works when "Web Components" usually would not:
   overrides) styles it like any other markup.
 - **htmx-compatible** — swaps into or out of the element's light-DOM children
   do not desync anything (there is no parallel shadow tree); `wire.Action`
-  attributes on elements *inside* the custom element fire normally.
+  attributes on elements _inside_ the custom element fire normally.
 - **Datastar-compatible** — the runtime observes `data-*` attributes in the
   whole document (including inside custom elements) via MutationObserver.
 
@@ -234,7 +234,7 @@ Constraints to respect (same list as ADR-0033, minus the ones light DOM fixes):
 - Anything needing styling isolation must not reach for Shadow DOM; use
   scoped class names or container queries (`@container`) instead.
 
-If demand ever justifies a wrapper *module* (ADR-0033's narrow exception), it
+If demand ever justifies a wrapper _module_ (ADR-0033's narrow exception), it
 would look exactly like this recipe packaged as Go — light-DOM hosts only,
 never Shadow DOM — and would need its own superseding ADR.
 

@@ -11,15 +11,15 @@
 
 ## Executive summary
 
-| Dimension | State |
-| --- | --- |
-| Pin bump v0.2.0 → v0.4.0 | ✅ DONE, verified at 3 layers (git tags, bundle sha256, go.mod/go.sum persistence) |
-| Bundle re-audit burden | ✅ ZERO — embedded `datastar.js` is byte-identical across v0.2.0–v0.4.0 (same sha256); `static.Version` still Datastar 1.0.2 |
-| Tests | ✅ Contract + drift tests green (with -race); all 6 sub-modules + all root packages green |
-| Docs | ✅ Facts-doc re-verification note + CHANGELOG `[Unreleased]` warm (watcher entry corrected + new Changed entry) |
-| Upstream watch workflow | ✅ Confirmed quiet (0 runs, 0 issues) — pin == latest, first cron run will find nothing |
-| **Master tree** | 🔴 **Daemon commit `8a9bb87` (today 15:47) re-introduced two documented v1.9.0-class regressions: website `typescript ^7.0.2` flip and un-minified `app.css` rebuild (+4951 lines)** |
-| Daemon push behavior | ⚠️ Confirmed: daemon pushes to `origin/master` continuously — the prior "24 unpushed commits" premise was wrong |
+| Dimension                | State                                                                                                                                                                                |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Pin bump v0.2.0 → v0.4.0 | ✅ DONE, verified at 3 layers (git tags, bundle sha256, go.mod/go.sum persistence)                                                                                                   |
+| Bundle re-audit burden   | ✅ ZERO — embedded `datastar.js` is byte-identical across v0.2.0–v0.4.0 (same sha256); `static.Version` still Datastar 1.0.2                                                         |
+| Tests                    | ✅ Contract + drift tests green (with -race); all 6 sub-modules + all root packages green                                                                                            |
+| Docs                     | ✅ Facts-doc re-verification note + CHANGELOG `[Unreleased]` warm (watcher entry corrected + new Changed entry)                                                                      |
+| Upstream watch workflow  | ✅ Confirmed quiet (0 runs, 0 issues) — pin == latest, first cron run will find nothing                                                                                              |
+| **Master tree**          | 🔴 **Daemon commit `8a9bb87` (today 15:47) re-introduced two documented v1.9.0-class regressions: website `typescript ^7.0.2` flip and un-minified `app.css` rebuild (+4951 lines)** |
+| Daemon push behavior     | ⚠️ Confirmed: daemon pushes to `origin/master` continuously — the prior "24 unpushed commits" premise was wrong                                                                       |
 
 **Commits this session (all daemon-authored):** `bb2d77d` (the bump, 8 files),
 `04c8adf` (CHANGELOG Changed entry), `8a9bb87` (22-file formatting/regression
@@ -41,8 +41,8 @@ still dirty; the daemon will collect it.
    - `static/datastar.js`: **sha256 `4df1f98a…` identical in both tags** (verified by hashing both blobs).
    - `static/version.go`: unchanged (`Version = "1.0.2"`, `Bytes()` API intact).
    - Sole delta: `static/go.mod` `go 1.26.5` → `go 1.26.7` (matches this repo's pins).
-   ⇒ Additive/zero-impact bump. No runtime-fact re-audit needed because the audited
-   bytes did not change — the strongest possible re-audit result.
+     ⇒ Additive/zero-impact bump. No runtime-fact re-audit needed because the audited
+     bytes did not change — the strongest possible re-audit result.
 4. **Pin bumped everywhere it appears.** `datastar/go.mod` (direct, via
    `go get @v0.4.0` + `go mod tidy`, GOWORK=off), root `go.mod` and
    `visualtest/go.mod` (indirect `// indirect` requires, via per-module tidy).
@@ -272,7 +272,7 @@ still dirty; the daemon will collect it.
 40. `[ROADMAP]` Release checklist: add "check daemon didn't regress pins/CSS in
     the window between verify and tag" step.
 41. `[ROADMAP]` `datastar` package README: state the re-audit contract (facts doc
-    + contract test + sha256 pin) for contributors.
+    - contract test + sha256 pin) for contributors.
 42. `[ROADMAP]` Golden sweep: assert `datastarScriptURL` output for CDN + custom
     base + default cases (URL interpolation coverage).
 43. ~~`[ROADMAP]` Consider surfacing `static.Version` in SDKScript as a data~~ **Won't implement — routed to ROADMAP by the 2026-09-03 harvest.**
@@ -314,7 +314,7 @@ still dirty; the daemon will collect it.
 
 ---
 
-*Point-in-time snapshot — 2026-09-03 15:49 CEST. Verification evidence: git
+_Point-in-time snapshot — 2026-09-03 15:49 CEST. Verification evidence: git
 ls-remote (tags), sha256 of both tag blobs, gh run/issue lists (empty), full
 local test matrix (6 sub-modules + root packages + guards). Waiting for
-instructions.*
+instructions._

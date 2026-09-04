@@ -78,13 +78,13 @@ control (`examples/demo/wire_demo.templ`).
 
 ## What does NOT migrate (by design)
 
-| htmx feature                         | Datastar equivalent                          | Verdict |
-| ------------------------------------ | -------------------------------------------- | ------- |
-| `hx-trigger="every 2s"` polling      | `data-on-interval`                           | Stay in modules: `htmx.PolledRegion` / datastar actions. See the [signaling notes](../transport-wiring.md). |
-| `hx-trigger="revealed"`              | `data-on-intersect`                          | Same — `navigation.LoadMore`'s `InfiniteScroll` stays htmx-only under `Wire`. |
-| `hx-swap-oob` out-of-band swaps      | SSE patch events with selectors              | `htmx.SwapOOB` / `datastar.LiveRegion`. |
-| `hx-confirm`                         | none in the pinned runtime                   | `htmx.ConfirmDelete` stays htmx-only. |
-| Carrying field values on `change`    | bound signals + interpolated expressions     | htmx: typed contract works. Datastar: `Attrs` escape hatch (demo's `/api/wire/validate` block shows both). |
+| htmx feature                      | Datastar equivalent                      | Verdict                                                                                                     |
+| --------------------------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `hx-trigger="every 2s"` polling   | `data-on-interval`                       | Stay in modules: `htmx.PolledRegion` / datastar actions. See the [signaling notes](../transport-wiring.md). |
+| `hx-trigger="revealed"`           | `data-on-intersect`                      | Same — `navigation.LoadMore`'s `InfiniteScroll` stays htmx-only under `Wire`.                               |
+| `hx-swap-oob` out-of-band swaps   | SSE patch events with selectors          | `htmx.SwapOOB` / `datastar.LiveRegion`.                                                                     |
+| `hx-confirm`                      | none in the pinned runtime               | `htmx.ConfirmDelete` stays htmx-only.                                                                       |
+| Carrying field values on `change` | bound signals + interpolated expressions | htmx: typed contract works. Datastar: `Attrs` escape hatch (demo's `/api/wire/validate` block shows both).  |
 
 The rule (ADR-0036): the wire contract covers only what both dialects express
 the same way. Everything else keeps living in its transport module, where the

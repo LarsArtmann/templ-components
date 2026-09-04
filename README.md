@@ -101,7 +101,7 @@ templ generate && go run .
 
 ## Component Catalog
 
-### `display` — Data Display (40 components)
+### `display` — Data Display (42 components)
 
 Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, collapsible sections, heatmaps, **native SVG charts** (LineChart, AreaChart, PieChart/Donut), eyebrows, terminal-style log scrollbacks, and more.
 
@@ -149,7 +149,7 @@ Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, toolt
 })
 ```
 
-### `feedback` — User Feedback (13 components)
+### `feedback` — User Feedback (14 components)
 
 Alerts, toasts, spinners, progress bars, skeletons, step indicators, loading states.
 
@@ -206,7 +206,7 @@ Loading indicators, error handling, CSRF protection, out-of-band swaps, View Tra
 @htmx.ViewTransitions(htmx.ViewTransitionsProps{Global: true})
 ```
 
-### `datastar` — Datastar Integration (3 components)
+### `datastar` — Datastar Integration (4 components)
 
 [Datastar](https://data-star.dev) runtime injection, SSE-powered live regions, and loading indicators. An opt-in complement to HTMX for real-time streaming apps — zero new Go dependencies.
 

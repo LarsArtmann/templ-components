@@ -5,31 +5,31 @@ Inspired by Domain-Driven Design (DDD) Ubiquitous Language.
 
 ## Glossary
 
-| Term              | Definition                                                                         | Context                          |
-| ----------------- | ---------------------------------------------------------------------------------- | -------------------------------- |
-| Component         | A reusable UI building block with typed Go props                                   | `display.Card`, `feedback.Alert` |
-| Props             | Typed configuration struct for a component                                         | `CardProps`, `AlertProps`        |
-| BaseProps         | Shared fields (ID, Class, Attrs, AriaLabel, Nonce) embedded in all component props | `utils.BaseProps`                |
-| ComponentProps    | Interface satisfied by all props structs via BaseProps promotion                   | `utils.ComponentProps`           |
-| FeedbackType      | Enum for visual feedback severity: Success, Error, Warning, Info                   | `feedback.FeedbackType`          |
-| TrendDirection    | Enum for stat change direction: Up, Down, None                                     | `display.TrendDirection`         |
-| Eyebrow           | Small uppercase overline label above a title; reads as status, not decoration      | `display.Eyebrow`                |
-| Scrollback        | Server-rendered terminal-style log block with a CSS-only staggered line entrance   | `display.Scrollback`             |
-| ScrollbackTone    | Enum coloring a scrollback tag column: neutral, info, success, warning, danger     | `display.ScrollbackTone`         |
-| FeedbackStyle     | Visual properties (color, icon, border) for a feedback variant                     | `feedback.feedbackStyleSet`      |
-| FillIcon          | SVG rendered with `fill="currentColor"`; used for small 20x20 indicators           | `utils/svg.FillIcon`             |
-| StrokeIcon        | SVG rendered with `stroke="currentColor"`; standard 24x24 UI icons                 | `icons.Icon`                     |
-| IconPath          | SVG path data string; multi-path icons use a pipe separator                        | `icons.iconPathData`             |
-| CardShell         | Shared CSS class for consistent card appearance (border, shadow, radius)           | `display.cardShellClass`         |
-| ThemeColor        | CSS custom property for light/dark mode theming                                    | `layout.DefaultThemeColor`       |
-| CSP Nonce         | Cryptographic nonce for Content Security Policy compliance                         | All `<script>` tags              |
-| Event Delegation  | JS pattern: listeners on `document` for HTMX DOM swap compatibility                | Accordion, Dropdown, ThemeToggle |
-| HTMX Error Family | Structured error classification for family-aware toast rendering                   | `htmx.ErrorHandlingConfig`       |
-| Transport         | The client runtime that executes a wiring: `htmx` (default) or `datastar`           | `wire.Transport`                 |
-| Action            | One hypermedia exchange (transport, method, URL, event, target) rendered in either dialect | `wire.Action`              |
-| Wiring            | The act of connecting a component to a backend endpoint via a transport's attributes | `display.ButtonProps.Wire`       |
-| Dialect           | The attribute syntax a transport speaks: `hx-*` or `data-on:*` + `@action()`        | `wire.Attributes()`              |
-| Patch Mode        | How Datastar merges a fragment response into the region: inner, outer, append, ...  | `wire.PatchMode`                 |
+| Term              | Definition                                                                                 | Context                          |
+| ----------------- | ------------------------------------------------------------------------------------------ | -------------------------------- |
+| Component         | A reusable UI building block with typed Go props                                           | `display.Card`, `feedback.Alert` |
+| Props             | Typed configuration struct for a component                                                 | `CardProps`, `AlertProps`        |
+| BaseProps         | Shared fields (ID, Class, Attrs, AriaLabel, Nonce) embedded in all component props         | `utils.BaseProps`                |
+| ComponentProps    | Interface satisfied by all props structs via BaseProps promotion                           | `utils.ComponentProps`           |
+| FeedbackType      | Enum for visual feedback severity: Success, Error, Warning, Info                           | `feedback.FeedbackType`          |
+| TrendDirection    | Enum for stat change direction: Up, Down, None                                             | `display.TrendDirection`         |
+| Eyebrow           | Small uppercase overline label above a title; reads as status, not decoration              | `display.Eyebrow`                |
+| Scrollback        | Server-rendered terminal-style log block with a CSS-only staggered line entrance           | `display.Scrollback`             |
+| ScrollbackTone    | Enum coloring a scrollback tag column: neutral, info, success, warning, danger             | `display.ScrollbackTone`         |
+| FeedbackStyle     | Visual properties (color, icon, border) for a feedback variant                             | `feedback.feedbackStyleSet`      |
+| FillIcon          | SVG rendered with `fill="currentColor"`; used for small 20x20 indicators                   | `utils/svg.FillIcon`             |
+| StrokeIcon        | SVG rendered with `stroke="currentColor"`; standard 24x24 UI icons                         | `icons.Icon`                     |
+| IconPath          | SVG path data string; multi-path icons use a pipe separator                                | `icons.iconPathData`             |
+| CardShell         | Shared CSS class for consistent card appearance (border, shadow, radius)                   | `display.cardShellClass`         |
+| ThemeColor        | CSS custom property for light/dark mode theming                                            | `layout.DefaultThemeColor`       |
+| CSP Nonce         | Cryptographic nonce for Content Security Policy compliance                                 | All `<script>` tags              |
+| Event Delegation  | JS pattern: listeners on `document` for HTMX DOM swap compatibility                        | Accordion, Dropdown, ThemeToggle |
+| HTMX Error Family | Structured error classification for family-aware toast rendering                           | `htmx.ErrorHandlingConfig`       |
+| Transport         | The client runtime that executes a wiring: `htmx` (default) or `datastar`                  | `wire.Transport`                 |
+| Action            | One hypermedia exchange (transport, method, URL, event, target) rendered in either dialect | `wire.Action`                    |
+| Wiring            | The act of connecting a component to a backend endpoint via a transport's attributes       | `display.ButtonProps.Wire`       |
+| Dialect           | The attribute syntax a transport speaks: `hx-*` or `data-on:*` + `@action()`               | `wire.Attributes()`              |
+| Patch Mode        | How Datastar merges a fragment response into the region: inner, outer, append, ...         | `wire.PatchMode`                 |
 
 ## Entities
 

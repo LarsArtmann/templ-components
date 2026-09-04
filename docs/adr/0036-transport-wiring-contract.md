@@ -35,12 +35,12 @@ sense:
 
 1. **The transport axis** — which client runtime executes a hypermedia
    exchange: htmx (`hx-*` attributes) or Datastar (`data-on:*` +
-   `@action()` expressions). htmx and Datastar are *dialects of the same
-   operation*: method + URL, triggered by a DOM event, patching a target
+   `@action()` expressions). htmx and Datastar are _dialects of the same
+   operation_: method + URL, triggered by a DOM event, patching a target
    region. This axis is real, and the dialect duplication is paid by every
    consumer who supports both runtimes.
 2. **The element-model axis** — whether markup lives in native elements or in
-   consumer-defined custom elements. This is *orthogonal* to transport, not a
+   consumer-defined custom elements. This is _orthogonal_ to transport, not a
    third transport: both runtimes traverse light-DOM custom elements without
    modification.
 3. **The encapsulation axis** — Shadow DOM/DSD style isolation. ADR-0033's
@@ -113,7 +113,7 @@ ADR-0033, whose rationale survives this analysis untouched:
 - The distribution problem Web Components solve (framework-agnostic widgets
   for JS consumers) does not exist for a vendored Go library.
 
-What *is* true, and is now documented instead of hinted at: **light-DOM custom
+What _is_ true, and is now documented instead of hinted at: **light-DOM custom
 elements defined by consumers compose perfectly with everything this library
 ships.** A `customElements.define`d element that renders its children in the
 light DOM receives the consumer's Tailwind classes, and htmx swaps and

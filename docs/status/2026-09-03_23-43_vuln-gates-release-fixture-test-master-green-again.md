@@ -1,6 +1,6 @@
 # Status Report — Vulnerability Gates, Release-Assertion Fixture Test, Master Green Again
 
-*Point-in-time snapshot — 2026-09-03 23:43 CEST. Scope: the session that ran from ~22:00 to 23:43 CEST on the post-release CI repair (previous session) and its follow-through: push authorization, vuln gates, release-assertion fixtures, actionlint/golangci parity, TODO hygiene, and the all-green CI confirmation. Evidence: `gh api …/check-runs` on `b770ab2`, live `ci-repro.sh --vuln` run, mutation test transcripts, `git log b770ab2`.*
+_Point-in-time snapshot — 2026-09-03 23:43 CEST. Scope: the session that ran from ~22:00 to 23:43 CEST on the post-release CI repair (previous session) and its follow-through: push authorization, vuln gates, release-assertion fixtures, actionlint/golangci parity, TODO hygiene, and the all-green CI confirmation. Evidence: `gh api …/check-runs` on `b770ab2`, live `ci-repro.sh --vuln` run, mutation test transcripts, `git log b770ab2`._
 
 ## Executive summary
 
@@ -70,7 +70,7 @@ Master is **green again and pushed** (`47ddd73..b770ab2`, 16 commits). The three
 
 ## f) 50 things we should get done next
 
-*Brainstorm per the status-report skill; `[TODO]` = bounded/actionable, `[ROADMAP]` = deferred/owner-needed. The `[NEW]` items are from this session; the rest are the still-open harvested backlog.*
+_Brainstorm per the status-report skill; `[TODO]` = bounded/actionable, `[ROADMAP]` = deferred/owner-needed. The `[NEW]` items are from this session; the rest are the still-open harvested backlog._
 
 **This session's direct follow-ups (small, do first):**
 
@@ -142,4 +142,4 @@ Master is **green again and pushed** (`47ddd73..b770ab2`, 16 commits). The three
 
 ---
 
-*Awaiting instructions. Verification evidence for every claim above is in-session: check-runs API for CI conclusions, alerts API for the 0-open count, the live `--vuln` transcript, and the mutation-test outputs (original 4/4, mutant 2/4).*
+_Awaiting instructions. Verification evidence for every claim above is in-session: check-runs API for CI conclusions, alerts API for the 0-open count, the live `--vuln` transcript, and the mutation-test outputs (original 4/4, mutant 2/4)._

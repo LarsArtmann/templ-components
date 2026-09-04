@@ -6,7 +6,7 @@
 
 ## Status
 
-**Proposed — not ratified.** This ADR is committed as a *draft* so that the
+**Proposed — not ratified.** This ADR is committed as a _draft_ so that the
 decision it enables is one word, not one session (gate D1 in
 `docs/wire-gates-d1-d2-d3.md`). If ratified, it supersedes the "narrow
 exception" carve-out of [ADR-0033](0033-web-components-rejection.md) for this
