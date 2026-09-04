@@ -158,7 +158,7 @@ templ wireValidateResult(message string, ok bool) {
 // (CSP-safe, no JS). The active option gets inverted colors.
 templ wireTransportLink(label string, value demoTransport, active demoTransport) {
 	if value == active {
-		<a href={ templ.URL("?transport=" + string(value) + "#wire-transport") } class="px-3 py-1.5 text-sm font-medium bg-blue-600 text-white" aria-current="true">{ label }</a>
+		<a href={ templ.URL("?transport=" + string(value) + "#wire-transport") } class="px-3 py-1.5 text-sm font-medium bg-blue-600 dark:bg-blue-500 text-white" aria-current="true">{ label }</a>
 	} else {
 		<a href={ templ.URL("?transport=" + string(value) + "#wire-transport") } class="px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800">{ label }</a>
 	}
