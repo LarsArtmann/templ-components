@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.13.0] — 2026-09-04
+
 ### Added
 
 - **`wire.Handler` — the both-transports endpoint middleware.** The header-branching recipe (branch on `Datastar-Request`, set `Datastar-Selector`/`Datastar-Mode`, pass everyone else through) is now a library function: wrap your fragment handler and it serves htmx, Datastar, and plain-browser callers. `PatchTarget{Selector, Mode}` names the region (typed `PatchMode` enum: inner/outer/prepend/append/before/after/replace, all seven verified against the pinned v1.0.2 bundle; empty Selector degrades to Datastar's id-matched patching), `IsDatastar`/`IsHTMX` expose the predicates for custom branching. The demo endpoint delegates to it, and a browser-level E2E proves the whole contract end-to-end.

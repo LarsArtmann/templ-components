@@ -5,12 +5,12 @@ go 1.26.7
 require github.com/a-h/templ v0.3.1020
 
 require (
-	github.com/larsartmann/templ-components/charts/echarts v1.12.0
-	github.com/larsartmann/templ-components/datastar v1.12.0
-	github.com/larsartmann/templ-components/errorpage v1.12.0
-	github.com/larsartmann/templ-components/htmx v1.12.0
-	github.com/larsartmann/templ-components/icons v1.12.0
-	github.com/larsartmann/templ-components/utils v1.12.0
+	github.com/larsartmann/templ-components/charts/echarts v1.13.0
+	github.com/larsartmann/templ-components/datastar v1.13.0
+	github.com/larsartmann/templ-components/errorpage v1.13.0
+	github.com/larsartmann/templ-components/htmx v1.13.0
+	github.com/larsartmann/templ-components/icons v1.13.0
+	github.com/larsartmann/templ-components/utils v1.13.0
 	github.com/stretchr/testify v1.11.1
 )
 
@@ -27,16 +27,3 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
 
-replace github.com/larsartmann/templ-components => ./
-
-replace github.com/larsartmann/templ-components/utils => ./utils
-
-replace github.com/larsartmann/templ-components/icons => ./icons
-
-replace github.com/larsartmann/templ-components/errorpage => ./errorpage
-
-replace github.com/larsartmann/templ-components/charts/echarts => ./charts/echarts
-
-replace github.com/larsartmann/templ-components/datastar => ./datastar
-
-replace github.com/larsartmann/templ-components/htmx => ./htmx
