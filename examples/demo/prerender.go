@@ -23,7 +23,9 @@ func prerender(outputDir string) error {
 	cssHead := demoFonts(nonce)
 
 	pages := []prerenderPage{
-		{"index.html", "templ-components Demo", "Showcase of all templ-components", demoPage},
+		{"index.html", "templ-components Demo", "Showcase of all templ-components", func(props layout.PageProps) templ.Component {
+			return demoPage(props, demoTransportBoth)
+		}},
 		{"forms/index.html", "Forms Demo - templ-components", "Complete form showcase with validation", formsDemoPage},
 		{
 			"recipes/dashboard.html",

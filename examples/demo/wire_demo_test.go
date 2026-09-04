@@ -119,3 +119,63 @@ func TestWireDemoSectionRendersBothDialects(t *testing.T) {
 		}
 	}
 }
+
+// TestWireDemoTransportToggle pins the ?transport= selector contract: the
+// chosen dialect renders, the other one does not, an unknown value falls back
+// to the both-dialect default, and the segmented control offers all three.
+func TestWireDemoTransportToggle(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		transport    string
+		wantHTMX     bool
+		wantDatastar bool
+	}{
+		{name: "htmx param renders only the htmx dialect", transport: "htmx", wantHTMX: true, wantDatastar: false},
+		{name: "datastar param renders only the datastar dialect", transport: "datastar", wantHTMX: false, wantDatastar: true},
+		{name: "both param renders both dialects", transport: "both", wantHTMX: true, wantDatastar: true},
+		{name: "unknown param falls back to both", transport: "webcomponents", wantHTMX: true, wantDatastar: true},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			server := httptest.NewServer(newMux())
+			t.Cleanup(server.Close)
+
+			resp, err := server.Client().Get(server.URL + "/?transport=" + tt.transport)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			html := string(body)
+
+			hasHTMX := strings.Contains(html, `hx-get="/api/wire/fragment"`)
+			hasDatastar := strings.Contains(html, `data-on:click="@get(&#39;/api/wire/fragment&#39;)"`)
+
+			if hasHTMX != tt.wantHTMX {
+				t.Errorf("htmx dialect presence = %v, want %v", hasHTMX, tt.wantHTMX)
+			}
+
+			if hasDatastar != tt.wantDatastar {
+				t.Errorf("datastar dialect presence = %v, want %v", hasDatastar, tt.wantDatastar)
+			}
+
+			for _, want := range []string{
+				`?transport=both`, `?transport=htmx`, `?transport=datastar`,
+			} {
+				if !strings.Contains(html, want) {
+					t.Errorf("transport selector missing option link %q", want)
+				}
+			}
+		})
+	}
+}
