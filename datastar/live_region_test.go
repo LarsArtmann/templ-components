@@ -287,6 +287,8 @@ func TestLiveRegionRendersChildren(t *testing.T) {
 // regression (issue #7): the auto-start busy script used to render
 // nonce="" unconditionally, which breaks no-nonce renders and strict CSPs.
 func TestLiveRegion_BusyScriptOmitsEmptyNonce(t *testing.T) {
+	t.Parallel()
+
 	props := DefaultLiveRegionProps()
 	props.URL = "/stream"
 	props.AutoStart = true
@@ -305,6 +307,8 @@ func TestLiveRegion_BusyScriptOmitsEmptyNonce(t *testing.T) {
 // TestLiveRegion_BusyScriptCarriesNonce verifies the nonce is still set
 // when the consumer provides one.
 func TestLiveRegion_BusyScriptCarriesNonce(t *testing.T) {
+	t.Parallel()
+
 	props := DefaultLiveRegionProps()
 	props.URL = "/stream"
 	props.AutoStart = true
