@@ -12,6 +12,7 @@ import (
 	"net/url"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // LoadMoreProps configures a "Load more" button for cursor-based pagination.
@@ -28,8 +29,20 @@ type LoadMoreProps struct {
 	// Label is the button text. Defaults to "Load more".
 	Label string
 	// InfiniteScroll, when true, adds hx-trigger="revealed" so the button
-	// auto-fires when scrolled into view (infinite scroll pattern).
+	// auto-fires when scrolled into view (infinite scroll pattern). This is
+	// htmx-specific: the Datastar dialect cannot express it in the wire
+	// contract's common subset, so it is ignored when Wire is set to the
+	// Datastar transport.
 	InfiniteScroll bool
+	// Wire, when set, re-renders the request wiring in the configured
+	// transport (see the utils/wire package, ADR-0036). Wire.URL replaces
+	// Endpoint (the cursor is appended to it exactly the same way); swap
+	// semantics stay self-replacement: under htmx the button keeps
+	// hx-swap="outerHTML" hx-target="this", under Datastar the fragment
+	// replaces this region by id-matching — set ID explicitly so the server
+	// can echo the wrapper id back (wire.Handler-style). Wire.Target and
+	// Wire.Method are ignored: pagination is a GET that replaces itself.
+	Wire *wire.Action
 }
 
 // DefaultLoadMoreProps returns sensible defaults.
@@ -47,6 +60,14 @@ func DefaultLoadMoreProps() LoadMoreProps {
 //	@navigation.LoadMore(navigation.LoadMoreProps{
 //	   Endpoint: "/api/items",
 //	   Cursor:   nextCursor,
+//	})
+//
+// Pass Wire to switch the dialect while keeping the semantics identical:
+//
+//	@navigation.LoadMore(navigation.LoadMoreProps{
+//	   ID:        "items-load-more",
+//	   Wire:      &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
+//	   Cursor:    nextCursor,
 //	})
 func LoadMore(props LoadMoreProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -74,6 +95,9 @@ func LoadMore(props LoadMoreProps) templ.Component {
 			label = "Load more"
 		}
 		href := props.Endpoint
+		if props.Wire != nil {
+			href = props.Wire.URL
+		}
 		if props.Cursor != "" {
 			parsed, err := url.Parse(href)
 			if err == nil {
@@ -84,6 +108,15 @@ func LoadMore(props LoadMoreProps) templ.Component {
 			} else {
 				href = href + "?cursor=" + url.QueryEscape(props.Cursor)
 			}
+		}
+		wired := templ.Attributes{}
+		isDatastar := false
+		if props.Wire != nil {
+			a := *props.Wire
+			a.URL = href
+			a.Target = ""
+			wired = a.Attributes()
+			isDatastar = a.Transport == wire.TransportDatastar
 		}
 		var templ_7745c5c3_Var2 = []any{utils.Class("flex justify-center py-6", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
@@ -97,7 +130,7 @@ func LoadMore(props LoadMoreProps) templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.EnsureID("load-more", props.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 63, Col: 44}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 96, Col: 44}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -133,30 +166,53 @@ func LoadMore(props LoadMoreProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<button type=\"button\" hx-get=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "<button type=\"button\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(href)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 69, Col: 16}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, wired)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\" hx-swap=\"outerHTML\" hx-target=\"this\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		if props.InfiniteScroll {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, " hx-trigger=\"revealed\"")
+		if props.Wire == nil {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, " hx-get=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
+			var templ_7745c5c3_Var6 string
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(href)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 104, Col: 17}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\" hx-swap=\"outerHTML\" hx-target=\"this\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			if props.InfiniteScroll {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, " hx-trigger=\"revealed\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+		} else {
+			if !isDatastar && href != "" {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, " hx-swap=\"outerHTML\" hx-target=\"this\"")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				if props.InfiniteScroll {
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, " hx-trigger=\"revealed\"")
+					if templ_7745c5c3_Err != nil {
+						return templ_7745c5c3_Err
+					}
+				}
+			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, " class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, " class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -169,43 +225,43 @@ func LoadMore(props LoadMoreProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if props.AriaLabel != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, " aria-label=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, " aria-label=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 77, Col: 32}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 121, Col: 32}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, ">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, ">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 80, Col: 10}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `navigation/loadmore.templ`, Line: 124, Col: 10}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</button></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</button></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
