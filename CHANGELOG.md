@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`datastar.LiveRegion` busy-script nonce regression (issue #7).** The
+  auto-start busy script rendered `nonce=""` unconditionally, breaking
+  no-nonce renders (a strict CSP rejects `nonce=""` as an unknown source)
+  and ignoring the omit-when-empty rule every other script follows
+  (`ThemeScript`, `ThemeToggle`, `SDKScript`). The script now omits the
+  attribute entirely when `Nonce` is empty via a conditional
+  `templ.Attributes` splat — single JS source, no if/else duplication — and
+  carries the nonce untouched when provided. Two regression tests pin both
+  branches (`TestLiveRegion_BusyScriptOmitsEmptyNonce`/
+  `TestLiveRegion_BusyScriptCarriesNonce`); goldens updated. Fixes #7.
+
 ## [1.13.0] — 2026-09-04
 
 ### Added

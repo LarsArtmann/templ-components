@@ -1,19 +1,19 @@
-<div data-init="@get(&#39;/stream/metrics&#39;)" aria-busy="true" data-tc-live-busy aria-live="polite" class=""></div><script nonce="">
-		(function() {
-			'use strict';
-			if (window.tcLiveBusyAttached) return;
-			window.tcLiveBusyAttached = true;
-			function tcClearLiveBusy() {
-				document.querySelectorAll('[data-tc-live-busy]').forEach(function(el) {
-					el.removeAttribute('aria-busy');
-					el.removeAttribute('data-tc-live-busy');
-				});
-			}
-			document.addEventListener('datastar-fetch', function(evt) {
-				var type = (evt.detail || {}).type;
-				if (type === 'datastar-patch-elements' || type === 'datastar-patch-signals' || type === 'error' || type === 'retries-failed') {
-					tcClearLiveBusy();
+<div data-init="@get(&#39;/stream/metrics&#39;)" aria-busy="true" data-tc-live-busy aria-live="polite" class=""></div><script>
+			(function() {
+				'use strict';
+				if (window.tcLiveBusyAttached) return;
+				window.tcLiveBusyAttached = true;
+				function tcClearLiveBusy() {
+					document.querySelectorAll('[data-tc-live-busy]').forEach(function(el) {
+						el.removeAttribute('aria-busy');
+						el.removeAttribute('data-tc-live-busy');
+					});
 				}
-			});
-		})();
-	</script>
+				document.addEventListener('datastar-fetch', function(evt) {
+					var type = (evt.detail || {}).type;
+					if (type === 'datastar-patch-elements' || type === 'datastar-patch-signals' || type === 'error' || type === 'retries-failed') {
+						tcClearLiveBusy();
+					}
+				});
+			})();
+		</script>

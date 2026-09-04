@@ -1,6 +1,7 @@
 package datastar
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
@@ -280,4 +281,38 @@ func TestLiveRegionRendersChildren(t *testing.T) {
 	// The div should be present even with no children
 	utils.AssertContains(t, output, "<div")
 	utils.AssertContains(t, output, "</div>")
+}
+
+// TestLiveRegion_BusyScriptOmitsEmptyNonce guards against the v1.12.0
+// regression (issue #7): the auto-start busy script used to render
+// nonce="" unconditionally, which breaks no-nonce renders and strict CSPs.
+func TestLiveRegion_BusyScriptOmitsEmptyNonce(t *testing.T) {
+	props := DefaultLiveRegionProps()
+	props.URL = "/stream"
+	props.AutoStart = true
+
+	html := utils.Render(t, LiveRegion(props))
+
+	if strings.Contains(html, `nonce=""`) {
+		t.Errorf("busy script emitted nonce=\"\" (issue #7):\n%s", html)
+	}
+
+	if !strings.Contains(html, "<script>") {
+		t.Errorf("busy script should render a plain <script> when Nonce is empty:\n%s", html)
+	}
+}
+
+// TestLiveRegion_BusyScriptCarriesNonce verifies the nonce is still set
+// when the consumer provides one.
+func TestLiveRegion_BusyScriptCarriesNonce(t *testing.T) {
+	props := DefaultLiveRegionProps()
+	props.URL = "/stream"
+	props.AutoStart = true
+	props.Nonce = "abc123"
+
+	html := utils.Render(t, LiveRegion(props))
+
+	if !strings.Contains(html, `nonce="abc123"`) {
+		t.Errorf("busy script lost the provided nonce:\n%s", html)
+	}
 }
