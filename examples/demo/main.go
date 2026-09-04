@@ -320,6 +320,27 @@ func newMux() *http.ServeMux {
 		componentOr500(w, r, wireFragment(time.Now().Format("15:04:05")))
 	})))
 
+	// Wire demo: server-side validation. The fragment renders a success or
+	// error line for the submitted value; wire.Handler routes Datastar
+	// callers to #wire-validate-out via response headers.
+	mux.Handle("/api/wire/validate", wire.Handler(wire.PatchTarget{
+		Selector: "#wire-validate-out",
+		Mode:     wire.PatchModeInner,
+	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+
+		value := strings.TrimSpace(r.URL.Query().Get("value"))
+		switch {
+		case value == "":
+			componentOr500(w, r, wireValidateResult("Type an email address, then blur the field.", false))
+		case strings.Contains(value, "@"):
+			componentOr500(w, r, wireValidateResult("Looks like an email address — the server checked it.", true))
+		default:
+			componentOr500(w, r, wireValidateResult("No @ in that value — that is not an email address.", false))
+		}
+	})))
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/forms":

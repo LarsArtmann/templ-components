@@ -5,6 +5,7 @@ import (
 
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/golden"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 func TestGoldenLoadMore(t *testing.T) {
@@ -17,6 +18,92 @@ func TestGoldenLoadMore(t *testing.T) {
 		},
 	}))
 	golden.Assert(t, "loadmore", output)
+}
+
+func TestGoldenLoadMoreWired(t *testing.T) {
+	t.Parallel()
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "loadmore_wired_htmx", HTML: utils.Render(t, LoadMore(LoadMoreProps{
+			BaseProps: utils.BaseProps{ID: "items-more"},
+			Wire:      &wire.Action{URL: "/api/items"},
+			Cursor:    "next",
+		}))},
+		{Name: "loadmore_wired_datastar", HTML: utils.Render(t, LoadMore(LoadMoreProps{
+			BaseProps: utils.BaseProps{ID: "items-more"},
+			Wire:      &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
+			Cursor:    "next",
+		}))},
+		{Name: "loadmore_wired_datastar_infinite_scroll_ignored", HTML: utils.Render(t, LoadMore(LoadMoreProps{
+			BaseProps:      utils.BaseProps{ID: "items-more"},
+			Wire:           &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
+			InfiniteScroll: true,
+		}))},
+		{Name: "loadmore_wired_empty_url_inert", HTML: utils.Render(t, LoadMore(LoadMoreProps{
+			BaseProps: utils.BaseProps{ID: "items-more"},
+			Wire:      &wire.Action{},
+		}))},
+	})
+}
+
+func TestLoadMoreWire(t *testing.T) {
+	t.Parallel()
+
+	t.Run("htmx wire keeps self-replacement and appends cursor to Wire.URL", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadMore(LoadMoreProps{
+			BaseProps: utils.BaseProps{ID: "items-more"},
+			Wire:      &wire.Action{URL: "/api/items"},
+			Cursor:    "next",
+		}))
+		utils.AssertContains(t, output, `hx-get="/api/items?cursor=next"`)
+		utils.AssertContains(t, output, `hx-swap="outerHTML"`)
+		utils.AssertContains(t, output, `hx-target="this"`)
+		utils.AssertNotContains(t, output, "data-on:")
+	})
+
+	t.Run("datastar wire renders the expression and never a target", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadMore(LoadMoreProps{
+			BaseProps: utils.BaseProps{ID: "items-more"},
+			Wire:      &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
+			Cursor:    "next",
+		}))
+		utils.AssertContains(t, output, `data-on:click="@get(&#39;/api/items?cursor=next&#39;)"`)
+		utils.AssertNotContains(t, output, "hx-")
+	})
+
+	t.Run("InfiniteScroll is ignored under datastar", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadMore(LoadMoreProps{
+			BaseProps:      utils.BaseProps{ID: "items-more"},
+			Wire:           &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
+			InfiniteScroll: true,
+		}))
+		utils.AssertNotContains(t, output, "revealed")
+		utils.AssertNotContains(t, output, "hx-trigger")
+	})
+
+	t.Run("InfiniteScroll survives the htmx wire path", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadMore(LoadMoreProps{
+			BaseProps:      utils.BaseProps{ID: "items-more"},
+			Wire:           &wire.Action{URL: "/api/items"},
+			InfiniteScroll: true,
+		}))
+		utils.AssertContains(t, output, `hx-trigger="revealed"`)
+	})
+
+	t.Run("empty Wire URL wires nothing", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, LoadMore(LoadMoreProps{
+			BaseProps: utils.BaseProps{ID: "items-more"},
+			Wire:      &wire.Action{},
+		}))
+		utils.AssertNotContains(t, output, "hx-get")
+		utils.AssertNotContains(t, output, "data-on:")
+		utils.AssertNotContains(t, output, "hx-swap")
+	})
 }
 
 func TestLoadMoreBehavior(t *testing.T) {
