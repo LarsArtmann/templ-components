@@ -13,6 +13,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/layout"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // writeDatastarPatch writes one Datastar patch-elements SSE event in the
@@ -248,6 +249,20 @@ func newMux() *http.ServeMux {
 			<p class="text-sm text-green-800 dark:text-green-200">Datastar action received (mock endpoint).</p>
 		</div>`,
 		)
+	})
+
+	// Wire demo: one endpoint serving both transports. htmx targets
+	// client-side via hx-target; the Datastar runtime is told where to patch
+	// via response headers (Datastar v1.0.2 fetch actions have no target
+	// option — see docs/datastar-runtime-facts.md).
+	mux.HandleFunc("/api/wire/fragment", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+		if r.Header.Get(wire.HeaderDatastarRequest) != "" {
+			w.Header().Set(wire.HeaderDatastarSelector, "#wire-datastar-out")
+			w.Header().Set(wire.HeaderDatastarMode, "inner")
+		}
+		componentOr500(w, r, wireFragment(time.Now().Format("15:04:05")))
 	})
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
