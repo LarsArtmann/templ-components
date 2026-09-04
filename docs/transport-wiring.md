@@ -130,6 +130,42 @@ The demo implements this end-to-end: `examples/demo/wire_demo.templ` renders
 the same Action under both transports, `/api/wire/fragment` serves both, and
 `examples/demo/wire_demo_test.go` pins the branching contract.
 
+## Busy, polling, and reveal signaling (research notes, 2026-09-04)
+
+How the two runtimes communicate "work in progress" — verified against the
+pinned bundles, so you don't have to:
+
+- **htmx 2.0.10 (the self-hosted bundle here) sets no `aria-busy`.** The
+  embedded bundle contains no aria attributes at all. Loading state is CSS:
+  the `htmx-request` class on the requesting element plus
+  `htmx-indicator`-style visibility rules. The `htmx` module's components
+  (`LoadingButton`, `InlineLoadingOverlay` with `role="status"`,
+  `LoadingIndicator`) are the accessible surface — use them, they announce.
+- **Datastar signals busy through its engine.** `datastar.Indicator` wires a
+  fetch-in-progress signal to any spinner, and `datastar.LiveRegion` emits
+  `aria-busy` on its live region while streaming (its busy script).
+- **Decision: docs, not a helper.** The signaling models (CSS classes vs
+  signals) are too different for a common `wire` helper without inventing a
+  third abstraction. Each transport module already ships the accessible
+  component for its model.
+
+**Interval and intersect triggers are symmetric concepts that stay out of the
+contract for now.** The pinned Datastar v1.0.2 bundle includes
+`data-on-interval` and `data-on-intersect` (IntersectionObserver is in the
+bundle), and htmx has `hx-trigger="every 2s"` / `revealed` — but the trigger
+*syntax* is dialect-specific (durations, options, filters). Extending
+`wire.Event` would mean modeling a mini trigger language; that is a future
+ADR-sized decision, deliberately not smuggled into the current common subset.
+
+**Form-submit parity has the same boundary.** `wire.EventSubmit` renders
+`hx-trigger="submit"` / `data-on:submit` fine, but carrying *field values* is
+asymmetric: htmx includes the requesting element's (or form's) fields
+natively, while Datastar needs bound signals
+(`data-bind:value` + an interpolated expression like
+`@get('/api/validate?value=' + encodeURIComponent($value || ''))`). The demo's
+server-validation block (`/api/wire/validate`) shows both: the typed contract
+under htmx, the `Attrs` escape hatch under Datastar.
+
 ## Deliberate scope boundaries
 
 `wire` covers only the dialects' common subset. Transport-specific machinery
@@ -206,8 +242,15 @@ never Shadow DOM — and would need its own superseding ADR.
 
 - `utils/wire` ships table tests for every enum and dialect path, a render
   test through `templ.RenderAttributes` (proves `data-on:<event>` colon keys
-  survive the attribute writer), and a fuzz target (`FuzzAction`) asserting
+  survive the attribute writer), invariant tests pinning the cross-dialect
+  guarantees (empty URL inert, URL present in both dialects, no target under
+  Datastar, no script emission), and a fuzz target (`FuzzAction`) asserting
   no panic and no empty-valued attributes on arbitrary input.
 - Attribute values are HTML-entity encoded in source (`'` → `&#39;`) and
   decode back in the DOM — assert on the decoded meaning in DOM-level tests,
   or on the encoded form in string tests (see `TestActionAttributesRender`).
+- Browser-level proof lives in `visualtest/wire_e2e_test.go`: real Chromium,
+  both runtimes, one `wire.Handler` endpoint. Copy it when wiring new
+  components.
+- Migrating an existing htmx page? `docs/recipes/transport-migration.md` is
+  the step-by-step recipe, including the what-does-NOT-migrate table.
