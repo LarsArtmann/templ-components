@@ -7,6 +7,7 @@ import (
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/golden"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // Golden sweep for display components that previously lacked golden tests.
@@ -183,5 +184,48 @@ func TestGoldenSweepButtonOutlineVariants(t *testing.T) {
 		{Name: "button_outline_warning", HTML: renderVariant(ButtonOutlineWarning)},
 		{Name: "button_outline_success", HTML: renderVariant(ButtonOutlineSuccess)},
 		{Name: "button_outline_info", HTML: renderVariant(ButtonOutlineInfo)},
+	})
+}
+
+func TestGoldenSweepButtonWired(t *testing.T) {
+	t.Parallel()
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "button_wired_htmx_full", HTML: utils.Render(t, Button(ButtonProps{
+			Text: "Load more",
+			Wire: &wire.Action{
+				URL:    "/api/items",
+				Event:  wire.EventClick,
+				Target: "#items",
+			},
+		}))},
+		{Name: "button_wired_htmx_post", HTML: utils.Render(t, Button(ButtonProps{
+			Text: "Save",
+			Wire: &wire.Action{Method: wire.MethodPost, URL: "/api/items"},
+		}))},
+		{Name: "button_wired_datastar", HTML: utils.Render(t, Button(ButtonProps{
+			Text: "Load via Datastar",
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				URL:       "/api/items",
+			},
+		}))},
+		{Name: "button_wired_datastar_custom_event", HTML: utils.Render(t, Button(ButtonProps{
+			Text: "Search",
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				URL:       "/api/search",
+				Event:     wire.EventInput,
+			},
+		}))},
+		{Name: "button_wired_empty_url_inert", HTML: utils.Render(t, Button(ButtonProps{
+			Text: "Inert",
+			Wire: &wire.Action{Target: "#nowhere"},
+		}))},
+		{Name: "button_wired_link_href", HTML: utils.Render(t, Button(ButtonProps{
+			Text: "Wired link",
+			Href: "/fallback",
+			Wire: &wire.Action{URL: "/api/items"},
+		}))},
 	})
 }
