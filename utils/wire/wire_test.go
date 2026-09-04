@@ -312,17 +312,18 @@ func renderAttributes(t *testing.T, attrs templ.Attributes) string {
 // FuzzAction verifies attribute rendering never panics and never emits an
 // empty-valued attribute on arbitrary input.
 func FuzzAction(f *testing.F) {
-	f.Add("htmx", "post", "click", "/api/items")
-	f.Add("datastar", "", "", "")
-	f.Add("", "fetch", "hover", "it's")
-	f.Add("unknown", "GET", "load", "#")
+	f.Add("htmx", "post", "click", "/api/items", "#out")
+	f.Add("datastar", "", "", "", "")
+	f.Add("", "fetch", "hover", "it's", `"><script>alert(1)</script>`)
+	f.Add("unknown", "GET", "load", "#", "closest div")
 
-	f.Fuzz(func(t *testing.T, transport, method, event, url string) {
+	f.Fuzz(func(t *testing.T, transport, method, event, url, target string) {
 		action := Action{
 			Transport: Transport(transport),
 			Method:    Method(method),
 			URL:       url,
 			Event:     Event(event),
+			Target:    target,
 		}
 
 		attrs := action.Attributes()
