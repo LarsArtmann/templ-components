@@ -90,6 +90,18 @@ honor it by echoing it back: the wire package exports
 the request header and setting the response headers. The demo's
 `/api/wire/fragment` endpoint implements this and its test pins the contract.
 
+> **Annotation (2026-09-04, same day):** the section-2 recipe is now packaged
+> as `wire.Handler(PatchTarget, next http.Handler)` — Datastar callers get
+> response-header targeting (`PatchTarget.Selector`/`PatchTarget.Mode`, typed
+> `PatchMode` enum with all seven merge modes verified against the pinned
+> bundle), htmx and plain callers pass through; `IsDatastar`/`IsHTMX` expose
+> the branch predicates. An empty `Selector` degrades to the runtime's
+> id-matched patching. The demo endpoint delegates to it, and a browser-level
+> E2E (`visualtest/wire_e2e_test.go`, real Chromium, both runtimes) proves the
+> contract end-to-end: same Action, same endpoint, fragment lands in the right
+> region under both dialects. The manual header recipe remains valid for
+> consumers who need custom branching.
+
 ### 3. Web Components: ADR-0033 stands; document the consumer recipe
 
 Supporting Web Components **as a library feature** would require superseding

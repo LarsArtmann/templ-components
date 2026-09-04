@@ -6,7 +6,11 @@
 
 ## Status
 
-Accepted
+Accepted. **Partially superseded (2026-09-04):** the "no attribute-helper
+surface" clause was superseded by [ADR-0036](0036-transport-wiring-contract.md)
+via this ADR's own revisit trigger (explicit owner request). The freeze on the
+`datastar` module itself remains in full force — the wire contract lives in
+`utils/wire` and adds nothing to this module.
 
 ## Context
 

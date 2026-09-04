@@ -90,20 +90,33 @@ to do that cleanly:
 
 ## One handler, both transports
 
+The library packages the branching for you: wrap your fragment handler in
+`wire.Handler` and it becomes a both-transports endpoint.
+
 ```go
-mux.HandleFunc("/api/fragment", func(w http.ResponseWriter, r *http.Request) {
+mux.Handle("/api/fragment", wire.Handler(wire.PatchTarget{
+    Selector: "#out",
+    Mode:     wire.PatchModeInner, // zero value resolves to inner
+}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "text/html; charset=utf-8")
     noStore(w)
-
-    if r.Header.Get(wire.HeaderDatastarRequest) != "" {
-        // Echo the region back: Datastar decides where to patch from the response.
-        w.Header().Set(wire.HeaderDatastarSelector, "#out")
-        w.Header().Set(wire.HeaderDatastarMode, "inner")
-    }
-    // htmx needs nothing: its hx-target already named the region client-side.
-    // Plain browser navigations fall through to both and get the fragment.
     componentOr500(w, r, fragment(time.Now().Format("15:04:05")))
-})
+})))
+```
+
+`wire.Handler` inspects the request headers: a Datastar caller (marked by
+`Datastar-Request`) receives `Datastar-Selector`/`Datastar-Mode` response
+headers targeting the `PatchTarget` — Datastar decides where to patch from the
+response. htmx and plain callers pass through untouched: htmx targets
+client-side via `hx-target`, and a plain navigation just renders the fragment.
+An empty `PatchTarget.Selector` degrades to Datastar's default id-matched
+patching. For custom branching, the building blocks are exported too:
+
+```go
+if wire.IsDatastar(r) {
+    w.Header().Set(wire.HeaderDatastarSelector, "#out")
+    w.Header().Set(wire.HeaderDatastarMode, "inner")
+}
 ```
 
 | Constant                 | Direction | Meaning                                             |

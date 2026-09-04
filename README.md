@@ -222,6 +222,22 @@ Loading indicators, error handling, CSRF protection, out-of-band swaps, View Tra
 
 See [`docs/recipes/datastar-integration.md`](docs/recipes/datastar-integration.md) for the HTMX-to-Datastar migration guide.
 
+### `utils/wire` — One Action, Both Transports
+
+A transport-agnostic wiring contract: describe a hypermedia exchange once as a typed `wire.Action`, render it as htmx or Datastar attributes, and serve both from one endpoint with `wire.Handler`.
+
+```go
+// Same Action shape, either dialect — one field switches the transport.
+wire.Action{URL: "/api/items", Target: "#items"}                          // htmx (default)
+wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"}         // datastar
+
+// One endpoint serves both: Datastar callers get response-header targeting,
+// htmx and plain callers pass through.
+mux.Handle("/api/items", wire.Handler(wire.PatchTarget{Selector: "#items"}, fragmentHandler))
+```
+
+Components take it via `BaseProps.Attrs` (spread `Attributes()` anywhere) or a typed `Wire` field (`display.Button`). Zero-JS contract: attributes only, CSP-safe without a nonce. See [`docs/transport-wiring.md`](docs/transport-wiring.md).
+
 ### `charts/echarts` — ECharts Adapter (2 components, opt-in)
 
 CSP-safe wrapper for Apache ECharts interactive charts (tooltips, zoom, 25+ chart types). Follows the same opt-in pattern as `datastar` — does NOT import go-echarts. Consumer builds charts with go-echarts and passes `RenderSnippet()` output.
