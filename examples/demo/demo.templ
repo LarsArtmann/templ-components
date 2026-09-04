@@ -9,7 +9,6 @@ import (
 	"github.com/larsartmann/templ-components/icons"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/utils"
-	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // Canonical counts from FEATURES.md ("Totals:" line, drift-guard verified).
@@ -85,10 +84,8 @@ templ demoHero() {
 							@icons.Icon(icons.ExternalLink, "h-4 w-4")
 						</a>
 					</div>
-					<p class="mt-5 text-sm text-gray-500 dark:text-gray-400 font-mono bg-gray-50 dark:bg-gray-800/60 border border-gray-200 dark:border-gray-800 rounded-lg px-3 py-2 inline-block">
-						HELLO<br/>
-						<span class="text-gray-400 dark:text-gray-600">// same component, either runtime — see Wire below</span>
-					</p>
+					<p class="mt-5 text-sm">HELLO<br/>
+						<span class="text-gray-400 dark:text-gray-600">same component, either runtime — see the Wire section below</span></p>
 				</div>
 				<div class="grid grid-cols-3 gap-3 sm:gap-4">
 					@demoStatCard(componentCount, "Components")
