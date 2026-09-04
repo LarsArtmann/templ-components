@@ -3,6 +3,7 @@ package main
 import (
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
+	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
@@ -138,11 +139,7 @@ templ wireDemoValidateInput(transport demoTransport) {
 			Label:       "Email address",
 			Placeholder: "you@example.com",
 			BaseProps: utils.BaseProps{
-				Attrs: utils.RenderWire(wire.Action{
-					URL:    "/api/wire/validate",
-					Event:  wire.EventChange,
-					Target: "#wire-validate-out",
-				}),
+				Attrs: wireValidateAttrs(),
 			},
 		})
 	}

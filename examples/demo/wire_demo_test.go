@@ -5,6 +5,7 @@ import (
 	"io"
 	"net/http"
 	"net/http/httptest"
+	"net/url"
 	"strings"
 	"testing"
 
@@ -174,6 +175,158 @@ func TestWireDemoTransportToggle(t *testing.T) {
 			} {
 				if !strings.Contains(html, want) {
 					t.Errorf("transport selector missing option link %q", want)
+				}
+			}
+		})
+	}
+}
+
+// TestWireValidateEndpoint verifies the server-validation endpoint contract:
+// wire.Handler routes Datastar callers to #wire-validate-out, and the verdict
+// fragment reflects the submitted value.
+func TestWireValidateEndpoint(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name          string
+		value         string
+		datastarCall  bool
+		wantInBody    string
+		wantNotInBody string
+		wantSelector  string
+	}{
+		{
+			name:         "empty value asks for input",
+			value:        "",
+			wantInBody:   "Type an email address",
+			wantSelector: "",
+		},
+		{
+			name:         "email-looking value passes",
+			value:        "you@example.com",
+			wantInBody:   "Looks like an email address",
+			wantSelector: "",
+		},
+		{
+			name:          "value without @ fails",
+			value:         "not-an-email",
+			wantInBody:    "not an email address",
+			wantNotInBody: "Looks like",
+			wantSelector:  "",
+		},
+		{
+			name:         "datastar caller gets response-header targeting",
+			value:        "nope",
+			datastarCall: true,
+			wantInBody:   "not an email address",
+			wantSelector: "#wire-validate-out",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			server := httptest.NewServer(newMux())
+			t.Cleanup(server.Close)
+
+			req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, server.URL+"/api/wire/validate?value="+url.QueryEscape(tt.value), nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if tt.datastarCall {
+				req.Header.Set(wire.HeaderDatastarRequest, "true")
+			}
+
+			resp, err := server.Client().Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			if got := resp.Header.Get(wire.HeaderDatastarSelector); got != tt.wantSelector {
+				t.Errorf("Datastar-Selector = %q, want %q", got, tt.wantSelector)
+			}
+
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			if !strings.Contains(string(body), tt.wantInBody) {
+				t.Errorf("body %q missing %q", body, tt.wantInBody)
+			}
+
+			if tt.wantNotInBody != "" && strings.Contains(string(body), tt.wantNotInBody) {
+				t.Errorf("body %q must not contain %q", body, tt.wantNotInBody)
+			}
+		})
+	}
+}
+
+// TestWireDemoValidateInputDialects verifies the validation input renders the
+// typed wire contract under htmx and the bound-signal escape hatch under
+// Datastar.
+func TestWireDemoValidateInputDialects(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		transport       string
+		wantContains    []string
+		wantNotContains []string
+	}{
+		{
+			name:      "htmx uses the typed wire contract",
+			transport: "htmx",
+			wantContains: []string{
+				`hx-get="/api/wire/validate"`,
+				`hx-trigger="change"`,
+				`hx-target="#wire-validate-out"`,
+				`name="value"`,
+			},
+			wantNotContains: []string{"data-bind"},
+		},
+		{
+			name:      "datastar uses the Attrs escape hatch with a bound signal",
+			transport: "datastar",
+			wantContains: []string{
+				`data-bind:value`,
+				`data-on:change="@get(&#39;/api/wire/validate?value=&#39; + encodeURIComponent($value || &#39;&#39;))"`,
+			},
+			wantNotContains: []string{"hx-get"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			server := httptest.NewServer(newMux())
+			t.Cleanup(server.Close)
+
+			resp, err := server.Client().Get(server.URL + "/?transport=" + tt.transport)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			html := string(body)
+			for _, want := range tt.wantContains {
+				if !strings.Contains(html, want) {
+					t.Errorf("page missing %q", want)
+				}
+			}
+
+			for _, banned := range tt.wantNotContains {
+				if strings.Contains(html, banned) {
+					t.Errorf("page must not contain %q", banned)
 				}
 			}
 		})

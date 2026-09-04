@@ -145,6 +145,16 @@ func (t demoTransport) humanName() string {
 	return "htmx"
 }
 
+// wireValidateAttrs renders the htmx wiring for the server-validation input
+// (typed wire contract; the input carries its own name/value).
+func wireValidateAttrs() templ.Attributes {
+	return wire.Action{
+		URL:    "/api/wire/validate",
+		Event:  wire.EventChange,
+		Target: "#wire-validate-out",
+	}.Attributes()
+}
+
 // newMux builds the demo routes. Exposed for endpoint tests — the SSE wire
 // format broke silently for months because nothing exercised the handlers.
 func newMux() *http.ServeMux {
