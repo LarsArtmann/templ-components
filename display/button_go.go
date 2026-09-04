@@ -4,6 +4,7 @@ package display
 import (
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // ButtonType defines the visual style of a button.
@@ -73,6 +74,11 @@ type ButtonProps struct {
 	Disabled bool
 	Icon     templ.Component
 	External bool // adds target="_blank" and rel="noopener noreferrer" for links
+	// Wire is the optional transport-agnostic wiring (see the wire package).
+	// When set, the action's attributes are rendered on the element in the
+	// configured transport's dialect (htmx by default, Datastar opt-in) so
+	// the same props work under either runtime. Composes with Attrs.
+	Wire *wire.Action
 }
 
 // DefaultButtonProps returns sensible defaults.

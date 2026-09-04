@@ -35,6 +35,9 @@ templ Button(props ButtonProps) {
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
 			}
+			if props.Wire != nil {
+				{ props.Wire.Attributes()... }
+			}
 			{ props.Attrs... }
 		>
 			if props.Icon != nil {
@@ -54,6 +57,9 @@ templ Button(props ButtonProps) {
 			}
 			if props.AriaLabel != "" {
 				aria-label={ props.AriaLabel }
+			}
+			if props.Wire != nil {
+				{ props.Wire.Attributes()... }
 			}
 			{ props.Attrs... }
 		>
