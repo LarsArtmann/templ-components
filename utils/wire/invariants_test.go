@@ -14,8 +14,21 @@ import (
 func TestEmptyURLIsInertForEveryEnumCombo(t *testing.T) {
 	t.Parallel()
 
-	transports := []Transport{TransportUnspecified, TransportHTMX, TransportDatastar, Transport("bogus")}
-	methods := []Method{MethodUnspecified, MethodGet, MethodPost, MethodPut, MethodPatch, MethodDelete, Method("bogus")}
+	transports := []Transport{
+		TransportUnspecified,
+		TransportHTMX,
+		TransportDatastar,
+		Transport("bogus"),
+	}
+	methods := []Method{
+		MethodUnspecified,
+		MethodGet,
+		MethodPost,
+		MethodPut,
+		MethodPatch,
+		MethodDelete,
+		Method("bogus"),
+	}
 	events := []Event{
 		EventUnspecified, EventClick, EventSubmit, EventChange, EventInput,
 		EventKeyDown, EventKeyUp, EventFocus, EventBlur, Event("hover"),
@@ -47,7 +60,14 @@ func TestURLReferencedInBothDialects(t *testing.T) {
 	t.Parallel()
 
 	transports := []Transport{TransportUnspecified, TransportHTMX, TransportDatastar}
-	methods := []Method{MethodUnspecified, MethodGet, MethodPost, MethodPut, MethodPatch, MethodDelete}
+	methods := []Method{
+		MethodUnspecified,
+		MethodGet,
+		MethodPost,
+		MethodPut,
+		MethodPatch,
+		MethodDelete,
+	}
 	events := []Event{EventUnspecified, EventClick, EventSubmit, EventChange, EventInput}
 	targets := []string{"", "#out"}
 
@@ -65,26 +85,35 @@ func TestURLReferencedInBothDialects(t *testing.T) {
 						Target:    target,
 					}
 
-					attrs := action.Attributes()
-					if attrs == nil {
-						t.Fatalf("URL %q vanished for %+v", url, action)
-					}
-
-					found := false
-					for _, attrValue := range attrs {
-						if value, ok := attrValue.(string); ok && strings.Contains(value, url) {
-							found = true
-
-							break
-						}
-					}
-
-					if !found {
-						t.Fatalf("no attribute references URL %q for %+v: %v", url, action, attrs)
-					}
+					assertURLReferenced(t, action, url)
 				}
 			}
 		}
+	}
+}
+
+// assertURLReferenced fails when no rendered attribute value carries the
+// action's URL.
+func assertURLReferenced(t *testing.T, action Action, url string) {
+	t.Helper()
+
+	attrs := action.Attributes()
+	if attrs == nil {
+		t.Fatalf("URL %q vanished for %+v", url, action)
+	}
+
+	found := false
+
+	for _, attrValue := range attrs {
+		if value, ok := attrValue.(string); ok && strings.Contains(value, url) {
+			found = true
+
+			break
+		}
+	}
+
+	if !found {
+		t.Fatalf("no attribute references URL %q for %+v: %v", url, action, attrs)
 	}
 }
 
@@ -115,7 +144,13 @@ func TestWireRenderingEmitsNoScript(t *testing.T) {
 		{URL: "/api/items"},
 		{Method: MethodPost, URL: "/api/items"},
 		{Transport: TransportDatastar, URL: "/api/items"},
-		{Transport: TransportDatastar, Method: MethodPost, URL: "/api/items?filter=it's", Event: EventInput, Target: "#out"},
+		{
+			Transport: TransportDatastar,
+			Method:    MethodPost,
+			URL:       "/api/items?filter=it's",
+			Event:     EventInput,
+			Target:    "#out",
+		},
 	}
 
 	for _, action := range actions {
@@ -129,7 +164,12 @@ func TestWireRenderingEmitsNoScript(t *testing.T) {
 
 func BenchmarkActionAttributes(b *testing.B) {
 	htmx := Action{Method: MethodPost, URL: "/api/items", Event: EventClick, Target: "#out"}
-	datastar := Action{Transport: TransportDatastar, Method: MethodPost, URL: "/api/items", Event: EventClick}
+	datastar := Action{
+		Transport: TransportDatastar,
+		Method:    MethodPost,
+		URL:       "/api/items",
+		Event:     EventClick,
+	}
 
 	b.Run("htmx full", func(b *testing.B) {
 		b.ReportAllocs()

@@ -17,7 +17,7 @@ const (
 	HeaderDatastarRequest  = "Datastar-Request"
 	HeaderDatastarSelector = "Datastar-Selector"
 	HeaderDatastarMode     = "Datastar-Mode"
-	HeaderHXRequest        = "HX-Request"
+	HeaderHXRequest        = "Hx-Request"
 )
 
 // Transport selects the client-side runtime that executes an Action.

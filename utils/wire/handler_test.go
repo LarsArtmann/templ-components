@@ -1,6 +1,7 @@
 package wire
 
 import (
+	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -70,7 +71,8 @@ func TestRequestPredicates(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			r := httptest.NewRequest(http.MethodGet, "/api/fragment", nil)
+			r := httptest.NewRequestWithContext(context.Background(), http.MethodGet, "/api/fragment", nil)
+
 			for k, v := range tt.headers {
 				r.Header.Set(k, v)
 			}
@@ -90,6 +92,7 @@ func TestHandler(t *testing.T) {
 	t.Parallel()
 
 	const body = "<p>fragment</p>"
+
 	next := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		_, _ = io.WriteString(w, body)
@@ -146,7 +149,7 @@ func TestHandler(t *testing.T) {
 			srv := httptest.NewServer(Handler(tt.target, next))
 			t.Cleanup(srv.Close)
 
-			req, err := http.NewRequest(http.MethodGet, srv.URL+"/api/fragment", nil)
+			req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, srv.URL+"/api/fragment", nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -159,6 +162,7 @@ func TestHandler(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
+
 			t.Cleanup(func() { _ = resp.Body.Close() })
 
 			if resp.StatusCode != http.StatusOK {
