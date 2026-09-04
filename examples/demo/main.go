@@ -145,6 +145,11 @@ func (t demoTransport) humanName() string {
 	return "htmx"
 }
 
+// heroWireLine is the install-snippet text shown in the demo hero.
+func heroWireLine() string {
+	return `wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"}`
+}
+
 // wireValidateAttrs renders the htmx wiring for the server-validation input
 // (typed wire contract; the input carries its own name/value).
 func wireValidateAttrs() templ.Attributes {
