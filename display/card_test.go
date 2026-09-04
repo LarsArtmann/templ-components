@@ -450,3 +450,45 @@ func TestStatCardDefaultToneByteIdentical(t *testing.T) {
 		)
 	}
 }
+
+// TestStatCard_DLGroupContainsDtAndDd guards the axe-core
+// definition-list violation fixed for issue #6: the div child of the dl
+// used to wrap only the dd, while its dt sat outside the group — an
+// invalid dl structure that axe flags as a serious violation. The group
+// div must contain both the dt and the dd.
+func TestStatCard_DLGroupContainsDtAndDd(t *testing.T) {
+	props := DefaultStatCardProps()
+	props.Label = "Uptime"
+	props.Value = "99.9%"
+	props.Change = "+0.1%"
+
+	html := utils.Render(t, StatCard(props))
+
+	dlStart := strings.Index(html, "<dl")
+	dlEnd := strings.Index(html, "</dl>")
+	if dlStart == -1 || dlEnd == -1 {
+		t.Fatalf("StatCard did not render a dl: %s", html)
+	}
+
+	dl := html[dlStart:dlEnd]
+
+	// Exactly one direct child group, containing the dt and the dd.
+	if strings.Count(dl, "<dt") != 1 || strings.Count(dl, "<dd") != 1 {
+		t.Fatalf("expected one dt and one dd inside the dl: %s", dl)
+	}
+
+	groupStart := strings.Index(dl, "<div")
+	if groupStart == -1 {
+		t.Fatal("dl has no div group child")
+	}
+
+	group := dl[groupStart:]
+	if !strings.Contains(group, "<dt") || !strings.Contains(group, "<dd") {
+		t.Errorf("dl>div group does not contain its dt+dd pair (axe definition-list): %s", group)
+	}
+
+	// The dt must precede the dd inside the group.
+	if strings.Index(group, "<dt") > strings.Index(group, "<dd") {
+		t.Errorf("dt must precede dd inside the dl>div group: %s", group)
+	}
+}

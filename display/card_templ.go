@@ -1371,20 +1371,20 @@ func statCardFigures(props StatCardProps) templ.Component {
 		}
 		ctx = templ.ClearChildren(ctx)
 		trend := normalizeTrend(props.Trend)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 87, "<dt class=\"text-sm font-medium text-gray-500 dark:text-gray-400 truncate\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 87, "<div class=\"mt-1 flex flex-col\"><dt class=\"text-sm font-medium text-gray-500 dark:text-gray-400 truncate\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var61 string
 		templ_7745c5c3_Var61, templ_7745c5c3_Err = templ.JoinStringErrs(props.Label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 429, Col: 88}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 430, Col: 89}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var61))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 88, "</dt><div class=\"mt-1 flex items-baseline\"><dd")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 88, "</dt><div class=\"flex items-baseline\"><dd")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -1396,7 +1396,7 @@ func statCardFigures(props StatCardProps) templ.Component {
 			var templ_7745c5c3_Var62 string
 			templ_7745c5c3_Var62, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ValueID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 433, Col: 22}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 434, Col: 23}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var62)
 			if templ_7745c5c3_Err != nil {
@@ -1414,7 +1414,7 @@ func statCardFigures(props StatCardProps) templ.Component {
 		var templ_7745c5c3_Var63 string
 		templ_7745c5c3_Var63, templ_7745c5c3_Err = templ.JoinStringErrs(props.Value)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 436, Col: 16}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 437, Col: 17}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var63))
 		if templ_7745c5c3_Err != nil {
@@ -1495,7 +1495,7 @@ func statCardFigures(props StatCardProps) templ.Component {
 			var templ_7745c5c3_Var66 string
 			templ_7745c5c3_Var66, templ_7745c5c3_Err = templ.JoinStringErrs(props.Change)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 462, Col: 18}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/card.templ`, Line: 463, Col: 19}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var66))
 			if templ_7745c5c3_Err != nil {
@@ -1506,7 +1506,7 @@ func statCardFigures(props StatCardProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 101, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 101, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
