@@ -43,7 +43,7 @@ export const comparisons: ComparisonItem[] = [
     accent: true,
     pros: [
       "118 components across 11 packages",
-      "55 typed string enums",
+      "56 typed string enums",
       "Tailwind v4 CSS-first config",
       "CSP nonce on every inline script",
       "Built-in HTMX integration package",
