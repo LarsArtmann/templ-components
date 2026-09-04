@@ -324,7 +324,11 @@ if command -v govulncheck &>/dev/null; then
 	govulncheck ./...
 	for mod in utils icons errorpage charts/echarts datastar htmx; do
 		echo "==> govulncheck $mod"
-		(cd "$mod" && GOWORK=off govulncheck ./...)
+		# Workspace mode (NO GOWORK=off), mirroring the build/test phase
+		# above: step 5b has already bumped sibling requires to this
+		# unpushed version, so module mode resolves from the proxy and
+		# dies on missing go.sum entries (first live exercise, v1.13.0).
+		(cd "$mod" && govulncheck ./...)
 	done
 else
 	echo "Error: govulncheck not found — install it (nix shell nixpkgs#govulncheck," >&2
@@ -429,14 +433,17 @@ done
 #      sub-module go.sums at the previous version and master CI red for 9
 #      days (CI's per-module tidy dirtied the tree; the Visual Regression
 #      job aborted on stale visualtest requires).
-#      GOWORK=off mirrors CI and consumers, where no go.work exists. This is
-#      safe pre-push because visualtest/go.mod carries local replace
-#      directives for its siblings (added with its version bump in step 5b),
-#      so nothing here needs the tags to be on the proxy yet.
+#      REALITY (v1.13.0 cut, empirically proven): `go mod tidy` ignores
+#      go.work entirely, and sub-modules carry no replace directives at
+#      HEAD — so before the tags propagate, NO tidy can resolve the
+#      bumped sibling requires (root included once 7b strips its
+#      replaces). Tolerate and warn: the canonical go.sum refresh is the
+#      post-propagation sweep (AGENTS.md, v1.12.0 lesson), which is what
+#      actually turned CI green after v1.12.0.
 tidy_all_modules() {
-	go mod tidy
+	go mod tidy || echo "WARN: root tidy skipped — sibling tags not on the proxy yet; the post-propagation sweep will finalize go.sums." >&2
 	for mod in $SUBMODULE_PATHS visualtest; do
-		(cd "$mod" && GOWORK=off go mod tidy)
+		(cd "$mod" && GOWORK=off go mod tidy) || echo "WARN: $mod tidy skipped — tag not propagated yet; post-propagation sweep will finalize go.sum." >&2
 	done
 }
 tidy_all_modules

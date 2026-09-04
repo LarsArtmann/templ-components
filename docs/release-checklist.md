@@ -25,6 +25,12 @@ understand _why_, so a refactor never quietly removes a guard.
       (v1.10.0): it committed the in-flight version bumps and pushed tags before
       the script finished. `git log --oneline -3` — if the daemon just committed,
       wait or pause it before starting.
+- [ ] **Cutting from a fresh worktree? Copy `go.work` in first.** `go.work` is
+      gitignored, so a fresh worktree has none — and the script's verify phase
+      runs in workspace mode (sub-modules carry no replace directives at HEAD,
+      so without go.work the bumped-but-unpushed sibling requires resolve from
+      the proxy and die on missing go.sum entries; v1.13.0 attempt one).
+      `cp /path/to/main-checkout/go.work /path/to/worktree/`.
 - [ ] **Version number sanity.** New > current (`sort -V`), correct semver
       increment for the changes (breaking changes → major per the v2 policy).
 
