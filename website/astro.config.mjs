@@ -61,6 +61,7 @@ export default defineConfig({
             { label: "Theming", slug: "guides/theming" },
             { label: "Dark Mode", slug: "guides/dark-mode" },
             { label: "HTMX Integration", slug: "guides/htmx-integration" },
+            { label: "Transport Wiring", slug: "guides/transport-wiring" },
             { label: "Accessibility", slug: "guides/accessibility" },
             { label: "CSP Compliance", slug: "guides/csp-compliance" },
           ],

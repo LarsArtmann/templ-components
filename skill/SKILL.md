@@ -221,6 +221,18 @@ Don't know what to look for? Find your page type:
 | `EnsureID(prefix, id)`     | Auto-generate DOM-safe IDs (crypto/rand)                         |
 | `Version`                  | Library version string (matches CHANGELOG)                       |
 
+#### `utils/wire` — transport-agnostic wiring (ADR-0036)
+
+| Function                                  | One-liner                                                                            |
+| ----------------------------------------- | ------------------------------------------------------------------------------------ |
+| `Action{Transport, Method, URL, Event, Target}` | One typed wiring spec; `.Attributes()` renders the htmx or Datastar dialect     |
+| `Handler(target PatchTarget, next)`       | Both-transports endpoint middleware: Datastar callers get response-header targeting  |
+| `IsDatastar(r)` / `IsHTMX(r)`             | Request predicates on `Datastar-Request` / `HX-Request` headers                      |
+| `PatchTarget{Selector, Mode}`             | Server-side patch region for Datastar callers (`PatchMode` typed enum, 7 modes)      |
+| `HeaderDatastarRequest` etc.              | Typed constants for the request/response marker headers                              |
+
+Scope: common subset only (ADR-0036) — polling/OOB/confirm/indicators/SSE stay in the `htmx`/`datastar` modules. `Action.Target` renders only for htmx (Datastar targeting is response-driven). Components take wiring via `BaseProps.Attrs` or a typed `Wire` field (`display.Button`).
+
 ## Quick start: adopting the library
 
 ```bash
