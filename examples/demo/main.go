@@ -89,6 +89,62 @@ func main() {
 	}
 }
 
+// demoTransport selects which wire dialect the wire demo section renders.
+type demoTransport string
+
+const (
+	demoTransportBoth     demoTransport = "both"
+	demoTransportHTMX     demoTransport = "htmx"
+	demoTransportDatastar demoTransport = "datastar"
+)
+
+// parseDemoTransport resolves the ?transport= query value; anything unknown
+// falls back to the both-dialect default (repo convention: graceful fallback).
+func parseDemoTransport(s string) demoTransport {
+	switch demoTransport(s) {
+	case demoTransportHTMX, demoTransportDatastar:
+		return demoTransport(s)
+	default:
+		return demoTransportBoth
+	}
+}
+
+// wireTransport maps the demo selection to the wire package's Transport.
+func (t demoTransport) wireTransport() wire.Transport {
+	if t == demoTransportDatastar {
+		return wire.TransportDatastar
+	}
+
+	return wire.TransportHTMX
+}
+
+// wireTarget is the htmx target for the single-transport view.
+func (t demoTransport) wireTarget() string {
+	if t == demoTransportHTMX {
+		return "#wire-htmx-out"
+	}
+
+	return ""
+}
+
+// outID is the region id the single-transport view renders.
+func (t demoTransport) outID() string {
+	if t == demoTransportHTMX {
+		return "wire-htmx-out"
+	}
+
+	return "wire-datastar-out"
+}
+
+// humanName is the display name used in button labels.
+func (t demoTransport) humanName() string {
+	if t == demoTransportDatastar {
+		return "Datastar"
+	}
+
+	return "htmx"
+}
+
 // newMux builds the demo routes. Exposed for endpoint tests — the SSE wire
 // format broke silently for months because nothing exercised the handlers.
 func newMux() *http.ServeMux {
@@ -279,7 +335,10 @@ func newMux() *http.ServeMux {
 		case "/recipes/auth":
 			renderPage(w, r, "Auth Layout Recipe - templ-components", "Auth layout recipe demo", recipesAuthPage)
 		case "/":
-			renderPage(w, r, "templ-components Demo", "Showcase of all templ-components", demoPage)
+			transport := parseDemoTransport(r.URL.Query().Get("transport"))
+			renderPage(w, r, "templ-components Demo", "Showcase of all templ-components", func(props layout.PageProps) templ.Component {
+				return demoPage(props, transport)
+			})
 		default:
 			http.NotFound(w, r)
 		}

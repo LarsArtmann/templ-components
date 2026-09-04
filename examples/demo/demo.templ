@@ -18,10 +18,10 @@ const (
 	packageCount   = "11"
 )
 
-templ demoPage(props layout.PageProps) {
+templ demoPage(props layout.PageProps, transport demoTransport) {
 	@layout.Base(props) {
 		@feedback.ToastContainer("demo-nonce")
-		@demoContent()
+		@demoContent(transport)
 	}
 }
 
@@ -34,7 +34,7 @@ templ demoFonts(nonce string) {
 	/>
 }
 
-templ demoContent() {
+templ demoContent(transport demoTransport) {
 	<div class="min-h-screen bg-gray-50 dark:bg-gray-950">
 		@demoHero()
 		@demoStickyNav()
@@ -47,7 +47,7 @@ templ demoContent() {
 				@navigationDemo()
 				@htmxDemo()
 				@datastarDemo()
-				@wireDemo()
+				@wireDemo(transport)
 				@echartsDemo()
 				@errorpageDemo()
 				@iconsDemo()
