@@ -160,7 +160,7 @@ func (a Action) htmxAttributes() templ.Attributes {
 	method := htmxMethod(a.Method)
 
 	attrs := templ.Attributes{
-		"hx-"+method: a.URL,
+		"hx-" + method: a.URL,
 	}
 
 	if a.Event != EventUnspecified && EventIsValid(a.Event) {
@@ -182,7 +182,7 @@ func (a Action) datastarAttributes() templ.Attributes {
 	}
 
 	return templ.Attributes{
-		"data-on:"+event: datastarActionExpr(a.method(), a.URL),
+		"data-on:" + event: datastarActionExpr(a.method(), a.URL),
 	}
 }
 

@@ -9,44 +9,87 @@ import (
 	"github.com/a-h/templ"
 )
 
-func TestIsValidEnums(t *testing.T) {
+func TestTransportIsValid(t *testing.T) {
 	t.Parallel()
 
 	tests := []struct {
 		name  string
+		value Transport
 		valid bool
-		value any
-		check func(any) bool
 	}{
-		{name: "TransportUnspecified", value: TransportUnspecified, check: func(v any) bool { return TransportIsValid(v.(Transport)) }, valid: true},
-		{name: "TransportHTMX", value: TransportHTMX, check: func(v any) bool { return TransportIsValid(v.(Transport)) }, valid: true},
-		{name: "TransportDatastar", value: TransportDatastar, check: func(v any) bool { return TransportIsValid(v.(Transport)) }, valid: true},
-		{name: "TransportUnknown", value: Transport("sse"), check: func(v any) bool { return TransportIsValid(v.(Transport)) }, valid: false},
-		{name: "MethodUnspecified", value: MethodUnspecified, check: func(v any) bool { return MethodIsValid(v.(Method)) }, valid: true},
-		{name: "MethodGet", value: MethodGet, check: func(v any) bool { return MethodIsValid(v.(Method)) }, valid: true},
-		{name: "MethodPost", value: MethodPost, check: func(v any) bool { return MethodIsValid(v.(Method)) }, valid: true},
-		{name: "MethodPut", value: MethodPut, check: func(v any) bool { return MethodIsValid(v.(Method)) }, valid: true},
-		{name: "MethodPatch", value: MethodPatch, check: func(v any) bool { return MethodIsValid(v.(Method)) }, valid: true},
-		{name: "MethodDelete", value: MethodDelete, check: func(v any) bool { return MethodIsValid(v.(Method)) }, valid: true},
-		{name: "MethodUnknown", value: Method("fetch"), check: func(v any) bool { return MethodIsValid(v.(Method)) }, valid: false},
-		{name: "EventUnspecified", value: EventUnspecified, check: func(v any) bool { return EventIsValid(v.(Event)) }, valid: true},
-		{name: "EventClick", value: EventClick, check: func(v any) bool { return EventIsValid(v.(Event)) }, valid: true},
-		{name: "EventSubmit", value: EventSubmit, check: func(v any) bool { return EventIsValid(v.(Event)) }, valid: true},
-		{name: "EventChange", value: EventChange, check: func(v any) bool { return EventIsValid(v.(Event)) }, valid: true},
-		{name: "EventInput", value: EventInput, check: func(v any) bool { return EventIsValid(v.(Event)) }, valid: true},
-		{name: "EventKeyDown", value: EventKeyDown, check: func(v any) bool { return EventIsValid(v.(Event)) }, valid: true},
-		{name: "EventKeyUp", value: EventKeyUp, check: func(v any) bool { return EventIsValid(v.(Event)) }, valid: true},
-		{name: "EventFocus", value: EventFocus, check: func(v any) bool { return EventIsValid(v.(Event)) }, valid: true},
-		{name: "EventBlur", value: EventBlur, check: func(v any) bool { return EventIsValid(v.(Event)) }, valid: true},
-		{name: "EventUnknown", value: Event("hover"), check: func(v any) bool { return EventIsValid(v.(Event)) }, valid: false},
+		{name: "unspecified is the defined zero value", value: TransportUnspecified, valid: true},
+		{name: "htmx", value: TransportHTMX, valid: true},
+		{name: "datastar", value: TransportDatastar, valid: true},
+		{name: "unknown", value: Transport("sse"), valid: false},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			if got := tt.check(tt.value); got != tt.valid {
-				t.Errorf("IsValid(%v) = %v, want %v", tt.value, got, tt.valid)
+			if got := TransportIsValid(tt.value); got != tt.valid {
+				t.Errorf(
+					"TransportIsValid(%q) = %v, want %v", tt.value, got, tt.valid,
+				)
+			}
+		})
+	}
+}
+
+func TestMethodIsValid(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		value Method
+		valid bool
+	}{
+		{name: "unspecified is the defined zero value", value: MethodUnspecified, valid: true},
+		{name: "get", value: MethodGet, valid: true},
+		{name: "post", value: MethodPost, valid: true},
+		{name: "put", value: MethodPut, valid: true},
+		{name: "patch", value: MethodPatch, valid: true},
+		{name: "delete", value: MethodDelete, valid: true},
+		{name: "unknown", value: Method("fetch"), valid: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got := MethodIsValid(tt.value); got != tt.valid {
+				t.Errorf("MethodIsValid(%q) = %v, want %v", tt.value, got, tt.valid)
+			}
+		})
+	}
+}
+
+func TestEventIsValid(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		value Event
+		valid bool
+	}{
+		{name: "unspecified is the defined zero value", value: EventUnspecified, valid: true},
+		{name: "click", value: EventClick, valid: true},
+		{name: "submit", value: EventSubmit, valid: true},
+		{name: "change", value: EventChange, valid: true},
+		{name: "input", value: EventInput, valid: true},
+		{name: "keydown", value: EventKeyDown, valid: true},
+		{name: "keyup", value: EventKeyUp, valid: true},
+		{name: "focus", value: EventFocus, valid: true},
+		{name: "blur", value: EventBlur, valid: true},
+		{name: "unknown", value: Event("hover"), valid: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got := EventIsValid(tt.value); got != tt.valid {
+				t.Errorf("EventIsValid(%q) = %v, want %v", tt.value, got, tt.valid)
 			}
 		})
 	}
@@ -61,53 +104,117 @@ func TestActionAttributes(t *testing.T) {
 		expected templ.Attributes
 	}{
 		{
-			name:     "empty URL wires nothing",
-			action:   Action{Transport: TransportHTMX, Method: MethodGet, URL: "", Event: EventUnspecified, Target: ""},
+			name: "empty URL wires nothing",
+			action: Action{
+				Transport: TransportHTMX,
+				Method:    MethodGet,
+				URL:       "",
+				Event:     EventUnspecified,
+				Target:    "",
+			},
 			expected: nil,
 		},
 		{
-			name:     "htmx defaults (zero values resolve to GET)",
-			action:   Action{Transport: TransportUnspecified, Method: MethodUnspecified, URL: "/api/items", Event: EventUnspecified, Target: ""},
+			name: "htmx defaults (zero values resolve to GET)",
+			action: Action{
+				Transport: TransportUnspecified,
+				Method:    MethodUnspecified,
+				URL:       "/api/items",
+				Event:     EventUnspecified,
+				Target:    "",
+			},
 			expected: templ.Attributes{"hx-get": "/api/items"},
 		},
 		{
-			name:     "htmx full",
-			action:   Action{Transport: TransportHTMX, Method: MethodPost, URL: "/api/items", Event: EventSubmit, Target: "#list"},
-			expected: templ.Attributes{"hx-post": "/api/items", "hx-trigger": "submit", "hx-target": "#list"},
+			name: "htmx full",
+			action: Action{
+				Transport: TransportHTMX,
+				Method:    MethodPost,
+				URL:       "/api/items",
+				Event:     EventSubmit,
+				Target:    "#list",
+			},
+			expected: templ.Attributes{
+				"hx-post":    "/api/items",
+				"hx-trigger": "submit",
+				"hx-target":  "#list",
+			},
 		},
 		{
-			name:     "htmx unknown method falls back to get",
-			action:   Action{Transport: TransportHTMX, Method: Method("fetch"), URL: "/api/items", Event: EventUnspecified, Target: ""},
+			name: "htmx unknown method falls back to get",
+			action: Action{
+				Transport: TransportHTMX,
+				Method:    Method("fetch"),
+				URL:       "/api/items",
+				Event:     EventUnspecified,
+				Target:    "",
+			},
 			expected: templ.Attributes{"hx-get": "/api/items"},
 		},
 		{
-			name:     "htmx unknown event is omitted (element default applies)",
-			action:   Action{Transport: TransportHTMX, Method: MethodDelete, URL: "/api/items/1", Event: Event("hover"), Target: ""},
+			name: "htmx unknown event is omitted (element default applies)",
+			action: Action{
+				Transport: TransportHTMX,
+				Method:    MethodDelete,
+				URL:       "/api/items/1",
+				Event:     Event("hover"),
+				Target:    "",
+			},
 			expected: templ.Attributes{"hx-delete": "/api/items/1"},
 		},
 		{
-			name:     "datastar defaults (click event injected)",
-			action:   Action{Transport: TransportDatastar, Method: MethodUnspecified, URL: "/api/items", Event: EventUnspecified, Target: ""},
+			name: "datastar defaults (click event injected)",
+			action: Action{
+				Transport: TransportDatastar,
+				Method:    MethodUnspecified,
+				URL:       "/api/items",
+				Event:     EventUnspecified,
+				Target:    "",
+			},
 			expected: templ.Attributes{"data-on:click": "@get('/api/items')"},
 		},
 		{
-			name:     "datastar full (target is response-driven, never emitted)",
-			action:   Action{Transport: TransportDatastar, Method: MethodPost, URL: "/api/items", Event: EventChange, Target: "#list"},
+			name: "datastar full (target is response-driven, never emitted)",
+			action: Action{
+				Transport: TransportDatastar,
+				Method:    MethodPost,
+				URL:       "/api/items",
+				Event:     EventChange,
+				Target:    "#list",
+			},
 			expected: templ.Attributes{"data-on:change": "@post('/api/items')"},
 		},
 		{
-			name:     "datastar single quotes in URL are escaped",
-			action:   Action{Transport: TransportDatastar, Method: MethodGet, URL: "/api/search?q=it's", Event: EventUnspecified, Target: ""},
+			name: "datastar single quotes in URL are escaped",
+			action: Action{
+				Transport: TransportDatastar,
+				Method:    MethodGet,
+				URL:       "/api/search?q=it's",
+				Event:     EventUnspecified,
+				Target:    "",
+			},
 			expected: templ.Attributes{"data-on:click": `@get('/api/search?q=it\'s')`},
 		},
 		{
-			name:     "datastar unknown event falls back to click",
-			action:   Action{Transport: TransportDatastar, Method: MethodDelete, URL: "/api/items/1", Event: Event("hover"), Target: ""},
+			name: "datastar unknown event falls back to click",
+			action: Action{
+				Transport: TransportDatastar,
+				Method:    MethodDelete,
+				URL:       "/api/items/1",
+				Event:     Event("hover"),
+				Target:    "",
+			},
 			expected: templ.Attributes{"data-on:click": "@delete('/api/items/1')"},
 		},
 		{
-			name:     "datastar unknown method falls back to get",
-			action:   Action{Transport: TransportDatastar, Method: Method("fetch"), URL: "/api/items", Event: EventUnspecified, Target: ""},
+			name: "datastar unknown method falls back to get",
+			action: Action{
+				Transport: TransportDatastar,
+				Method:    Method("fetch"),
+				URL:       "/api/items",
+				Event:     EventUnspecified,
+				Target:    "",
+			},
 			expected: templ.Attributes{"data-on:click": "@get('/api/items')"},
 		},
 	}
@@ -170,10 +277,7 @@ func TestActionAttributesRender(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			html, err := renderAttributes(tt.action.Attributes())
-			if err != nil {
-				t.Fatalf("render: %v", err)
-			}
+			html := renderAttributes(t, tt.action.Attributes())
 
 			for _, want := range tt.contains {
 				if !strings.Contains(html, want) {
@@ -185,22 +289,24 @@ func TestActionAttributesRender(t *testing.T) {
 }
 
 // renderAttributes mimics what a templ attribute spread compiles to.
-func renderAttributes(attrs templ.Attributes) (string, error) {
+func renderAttributes(t *testing.T, attrs templ.Attributes) string {
+	t.Helper()
+
 	var sb strings.Builder
 
 	if _, err := io.WriteString(&sb, "<button"); err != nil {
-		return "", err
+		t.Fatalf("write open tag: %v", err)
 	}
 
 	if err := templ.RenderAttributes(context.Background(), &sb, attrs); err != nil {
-		return "", err
+		t.Fatalf("render attributes: %v", err)
 	}
 
 	if _, err := io.WriteString(&sb, "></button>"); err != nil {
-		return "", err
+		t.Fatalf("write close tag: %v", err)
 	}
 
-	return sb.String(), nil
+	return sb.String()
 }
 
 // FuzzAction verifies attribute rendering never panics and never emits an
