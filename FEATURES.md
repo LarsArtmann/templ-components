@@ -23,7 +23,7 @@ A Go component library built on [templ](https://templ.guide) and [Tailwind CSS v
 | `navigation`     | 12            | Navigation: nav bars, breadcrumbs, pagination, mobile menus, sidebar nav, load more, end-of-list                                                                                                                                                                                                                                                                                                                                      |
 | `recipes`        | 4 screens     | Composition screens (not primitives): `Dashboard`, `SettingsLayout`, `LoginCard`, `AuthLayout`. Composes display/forms/layout/navigation downward. Counted separately from the primitive total below.                                                                                                                                                                                                                                 |
 
-**Totals:** 118 templ components (primitives, drift-guard verified) + 4 recipe screens = 122, 102 icon names, 54 typed enums (51 with `IsValid()`), 116 generated `*_templ.go` files, ~31,500 lines of Go/templ source
+**Totals:** 118 templ components (primitives, drift-guard verified) + 4 recipe screens = 122, 102 icon names, 57 typed enums (54 with `IsValid()`), 117 generated `*_templ.go` files, ~31,500 lines of Go/templ source
 
 ---
 
@@ -63,6 +63,21 @@ type BaseProps struct {
 | `AssertContainsAll` | Asserts output contains every substring            |
 | `AssertEqual`       | Asserts two values are equal                       |
 
+### `utils/wire` (transport-agnostic wiring, ADR-0036)
+
+One typed `wire.Action` spec rendered as htmx or Datastar attributes depending on the configured Transport. Composes with every component via `BaseProps.Attrs`; `display.Button` additionally accepts it directly via `Wire *wire.Action`.
+
+| API                   | Purpose                                                                                  |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| `Transport`           | `TransportHTMX` (default) / `TransportDatastar`; zero value resolves to htmx (ADR-0030)  |
+| `Method`              | `MethodGet/Post/Put/Patch/Delete`; zero value GET                                        |
+| `Event`               | `EventClick/Submit/Change/Input/KeyDown/KeyUp/Focus/Blur`; zero value = dialect default  |
+| `Action`              | Method + URL + Event + Target; empty URL wires nothing                                   |
+| `Action.Attributes()` | Renders the dialect: `hx-*` for htmx, `data-on:<event>="@<method>('url')"` for Datastar  |
+| Header constants      | `Datastar-Request`/`Datastar-Selector`/`Datastar-Mode`/`HX-Request` for transport-branching handlers |
+
+Scope note: Datastar v1.0.2 fetch actions accept no target option — `Action.Target` renders only for htmx; Datastar targeting is response-driven (echo the selector back on `Datastar-Selector`). Polling/reveal triggers and OOB swaps stay transport-specific (htmx `PolledRegion`, `LoadMore`, `SwapOOB`). See `docs/transport-wiring.md`.
+
 ---
 
 ## Package: `display`
@@ -73,7 +88,7 @@ type BaseProps struct {
 | -------------------- | ---------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Accordion`          | FULLY_FUNCTIONAL | Collapsible accordion panels    | Native `<details>/<summary>`, zero JS, chevron rotation via CSS, `role=group`                                                                                                                                                                   |
 | `Avatar`             | FULLY_FUNCTIONAL | User avatar with image/initials | AvatarStatus enum, 5 sizes, circle/square, online/offline dot                                                                                                                                                                                   |
-| `Button`             | FULLY_FUNCTIONAL | Action button                   | 9 variants (primary/secondary/danger/ghost/link + 4 outline: danger/warning/success/info), 3 sizes, href (link mode), loading state                                                                                                             |
+| `Button`             | FULLY_FUNCTIONAL | Action button                   | 9 variants (primary/secondary/danger/ghost/link + 4 outline: danger/warning/success/info), 3 sizes, href (link mode), loading state, `Wire` field for transport-agnostic htmx/Datastar wiring (ADR-0036)                                       |
 | `Badge`              | FULLY_FUNCTIONAL | Status label                    | 7 color types, 3 sizes, pill shape, dot indicator                                                                                                                                                                                               |
 | `StatusBadge`        | FULLY_FUNCTIONAL | Auto-mapped status badge        | Maps ~20 status strings to badge types                                                                                                                                                                                                          |
 | `Card`               | FULLY_FUNCTIONAL | Bordered card container         | Header, subtitle, footer, header action, `Header` slot override, 4 padding sizes, `Body` slot override, `CardPaddingNone` skips wrapper div, `TitleClass`/`HeaderClass` override props, `ContainerAware` (padding breakpoints via `@container`) |
@@ -469,7 +484,7 @@ _(None currently)_
 - **Tailwind Class Merging:** `utils.Class()` uses tailwind-merge-go for conflict resolution
 - **Accessibility:** `aria-*` attributes, `role` attributes, screen-reader text, keyboard navigation (modal focus trap, dropdown arrows, tabs)
 - **Responsive:** Mobile-first viewport breakpoints (`sm:`/`md:`/`lg:`) plus **container queries** — 8 components accept `ContainerAware` to adapt to their parent container width via `@container` instead of the viewport (ADR-0018). Since v2.0, `Grid`, `Card`, and `Split` default `ContainerAware: true` (opt-out); the other 5 default `false` (opt-in). **Fluid typography** via container query units (`cqi`) — `.tc-fluid-*` utility classes scale text with container width (ADR-0018 analog; recipe: `docs/recipes/fluid-typography.md`).
-- **Type Safety:** 52 typed string enums (49 with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
+- **Type Safety:** 55 typed string enums (52 with `IsValid()` methods + tests), `utils.BaseProps` embedded in all Props structs
 - **Test Coverage:** 72.3% total statement coverage across library packages (range 48.2%–81.8%; CI-enforced ≥ 70% via `go test -race -coverprofile=...`; recompute with `nix run .#coverage`). BDD + golden-file HTML snapshots (`utils/golden` in 5 packages, 175 baselines) + a11y + benchmark + integration tests, plus pixel-level **visual regression** tests (`visualtest/` — chromedp + pixelmatch, `nix run .#visual`; 66 goldens incl. charts, dark-mode variants, and RTL coverage) and drift-guard tests enforcing doc/code count consistency (component, enum, generated-file, dark-mode, motion-reduce, RTL, container-query, CSS-freshness, lint-config).
 - **Theming:** Tailwind v4 `@theme` override support via `templ-components-theme.css`. Components emit standard utility classes (`bg-blue-600`, `text-gray-900`) — consumers override `--color-*` variables to theme globally without touching component code.
 - **CSS Automation:** `templates/app.css` + `templates/custom.css` starter entry-point + BuildFlow `tailwind-build` provider (auto-discovers CSS entry-points, compiles via `tailwindcss` in the DAG). See `docs/tailwind-v4-adoption-guide.md`.

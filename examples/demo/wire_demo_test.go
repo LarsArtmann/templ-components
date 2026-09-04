@@ -46,7 +46,7 @@ func TestWireFragmentEndpointServesBothTransports(t *testing.T) {
 			server := httptest.NewServer(newMux())
 			t.Cleanup(server.Close)
 
-			req, err := http.NewRequestWithContext(http.MethodGet, server.URL+"/api/wire/fragment", nil)
+			req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, server.URL+"/api/wire/fragment", nil)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -119,5 +119,3 @@ func TestWireDemoSectionRendersBothDialects(t *testing.T) {
 		}
 	}
 }
-
-var _ = context.Background // keep context import if assertions change
