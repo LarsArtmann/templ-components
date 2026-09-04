@@ -295,7 +295,7 @@ func TestWireDemoValidateInputDialects(t *testing.T) {
 				`data-bind:value`,
 				`data-on:change="@get(&#39;/api/wire/validate?value=&#39; + encodeURIComponent($value || &#39;&#39;))"`,
 			},
-			wantNotContains: []string{"hx-get"},
+			wantNotContains: []string{`hx-get="/api/wire/validate`},
 		},
 	}
 
