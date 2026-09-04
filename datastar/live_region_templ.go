@@ -225,25 +225,32 @@ func liveRegionBusyScript(nonce string) templ.Component {
 			templ_7745c5c3_Var8 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<script nonce=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<script")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var9 string
-		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `datastar/live_region.templ`, Line: 81, Col: 22}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, liveRegionBusyScriptAttrs(nonce))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\">\n\t\t(function() {\n\t\t\t'use strict';\n\t\t\tif (window.tcLiveBusyAttached) return;\n\t\t\twindow.tcLiveBusyAttached = true;\n\t\t\tfunction tcClearLiveBusy() {\n\t\t\t\tdocument.querySelectorAll('[data-tc-live-busy]').forEach(function(el) {\n\t\t\t\t\tel.removeAttribute('aria-busy');\n\t\t\t\t\tel.removeAttribute('data-tc-live-busy');\n\t\t\t\t});\n\t\t\t}\n\t\t\tdocument.addEventListener('datastar-fetch', function(evt) {\n\t\t\t\tvar type = (evt.detail || {}).type;\n\t\t\t\tif (type === 'datastar-patch-elements' || type === 'datastar-patch-signals' || type === 'error' || type === 'retries-failed') {\n\t\t\t\t\ttcClearLiveBusy();\n\t\t\t\t}\n\t\t\t});\n\t\t})();\n\t</script>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, ">\n\t\t\t(function() {\n\t\t\t\t'use strict';\n\t\t\t\tif (window.tcLiveBusyAttached) return;\n\t\t\t\twindow.tcLiveBusyAttached = true;\n\t\t\t\tfunction tcClearLiveBusy() {\n\t\t\t\t\tdocument.querySelectorAll('[data-tc-live-busy]').forEach(function(el) {\n\t\t\t\t\t\tel.removeAttribute('aria-busy');\n\t\t\t\t\t\tel.removeAttribute('data-tc-live-busy');\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t\tdocument.addEventListener('datastar-fetch', function(evt) {\n\t\t\t\t\tvar type = (evt.detail || {}).type;\n\t\t\t\t\tif (type === 'datastar-patch-elements' || type === 'datastar-patch-signals' || type === 'error' || type === 'retries-failed') {\n\t\t\t\t\t\ttcClearLiveBusy();\n\t\t\t\t\t}\n\t\t\t\t});\n\t\t\t})();\n\t\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		return nil
 	})
+}
+
+// liveRegionBusyScriptAttrs returns the nonce attribute for the busy
+// script. An empty nonce emits NO attribute at all — rendering
+// nonce="" breaks no-nonce and strict-CSP pages (issue #7), and the
+// theme scripts follow the same omit-when-empty rule.
+func liveRegionBusyScriptAttrs(nonce string) templ.Attributes {
+	if nonce == "" {
+		return nil
+	}
+
+	return templ.Attributes{"nonce": nonce}
 }
 
 var _ = templruntime.GeneratedTemplate
