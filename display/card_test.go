@@ -457,12 +457,15 @@ func TestStatCardDefaultToneByteIdentical(t *testing.T) {
 // invalid dl structure that axe flags as a serious violation. The group
 // div must contain both the dt and the dd.
 func TestStatCard_DLGroupContainsDtAndDd(t *testing.T) {
+	t.Parallel()
+
 	props := DefaultStatCardProps()
 	props.Label = "Uptime"
 	props.Value = "99.9%"
 	props.Change = "+0.1%"
 
 	html := utils.Render(t, StatCard(props))
+
 
 	dlStart := strings.Index(html, "<dl")
 	dlEnd := strings.Index(html, "</dl>")
