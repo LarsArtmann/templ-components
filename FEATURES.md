@@ -74,6 +74,8 @@ One typed `wire.Action` spec rendered as htmx or Datastar attributes depending o
 | `Event`               | `EventClick/Submit/Change/Input/KeyDown/KeyUp/Focus/Blur`; zero value = dialect default  |
 | `Action`              | Method + URL + Event + Target; empty URL wires nothing                                   |
 | `Action.Attributes()` | Renders the dialect: `hx-*` for htmx, `data-on:<event>="@<method>('url')"` for Datastar  |
+| `Handler`             | Both-transports endpoint middleware: Datastar callers get response-header targeting (`PatchTarget{Selector, Mode}`, typed `PatchMode` enum), htmx/plain pass through |
+| `IsDatastar`/`IsHTMX` | Request predicates on the `Datastar-Request`/`HX-Request` headers for custom branching   |
 | Header constants      | `Datastar-Request`/`Datastar-Selector`/`Datastar-Mode`/`HX-Request` for transport-branching handlers |
 
 Scope note: Datastar v1.0.2 fetch actions accept no target option — `Action.Target` renders only for htmx; Datastar targeting is response-driven (echo the selector back on `Datastar-Selector`). Polling/reveal triggers and OOB swaps stay transport-specific (htmx `PolledRegion`, `LoadMore`, `SwapOOB`). See `docs/transport-wiring.md`.

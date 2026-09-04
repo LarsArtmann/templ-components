@@ -8,13 +8,17 @@ The single-module library was split into **7 Go modules** connected by a
 `go.work` workspace (local dev) and `replace` directives (CI/consumers).
 
 ```
-Layer 0 (leaf):  utils (utils, utils/svg, utils/cdn, utils/golden)
+Layer 0 (leaf):  utils (utils, utils/svg, utils/cdn, utils/golden, utils/wire)
 Layer 1:         icons, charts/echarts, datastar, htmx    [depend on utils]
 Layer 2:         errorpage                [depends on utils, icons]
 Layer 3:         root (display, feedback, forms, layout, navigation,
                           recipes, integration, cmd/tc,
                           internal/contract, examples/demo)
 ```
+
+`utils/wire` (ADR-0036) is the transport-agnostic wiring contract — a leaf
+package inside the utils module (per the ADR-0035 freeze, it adds no surface to
+the `datastar` module). It depends only on templ + stdlib.
 
 ## Why 7 modules (not per-package)
 
