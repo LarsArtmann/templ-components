@@ -6,6 +6,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+## [1.13.1] — 2026-09-05
+
 ### Fixed
 
 - **Datastar runtime pin reconciled: `go-datastar/static` v0.4.0 → v0.5.0

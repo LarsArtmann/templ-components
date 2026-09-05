@@ -8,11 +8,11 @@ require (
 	github.com/chromedp/chromedp v0.16.0
 	github.com/larsartmann/go-datastar/static v0.5.0
 	github.com/larsartmann/templ-components v0.0.0-00010101000000-000000000000
-	github.com/larsartmann/templ-components/datastar v1.13.0
-	github.com/larsartmann/templ-components/errorpage v1.13.0
-	github.com/larsartmann/templ-components/htmx v1.13.0
-	github.com/larsartmann/templ-components/icons v1.13.0
-	github.com/larsartmann/templ-components/utils v1.13.0
+	github.com/larsartmann/templ-components/datastar v1.13.1
+	github.com/larsartmann/templ-components/errorpage v1.13.1
+	github.com/larsartmann/templ-components/htmx v1.13.1
+	github.com/larsartmann/templ-components/icons v1.13.1
+	github.com/larsartmann/templ-components/utils v1.13.1
 	github.com/orisano/pixelmatch v0.0.0-20230914042517-fa304d1dc785
 )
 
