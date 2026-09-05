@@ -6,8 +6,8 @@ github.com/davecgh/go-spew v1.1.1 h1:vj9j/u1bqnvCEfJOwUhtlOARqs3+rkHYY13jYWTU97c
 github.com/davecgh/go-spew v1.1.1/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/google/go-cmp v0.6.0 h1:ofyhxvXcZhMsU5ulbFiLKl/XBFqE1GSq7atu8tAmTRI=
 github.com/google/go-cmp v0.6.0/go.mod h1:17dUlkBOakJ0+DkrSSNjCkIjxS6bF9zb3elmeNGIjoY=
-github.com/larsartmann/go-datastar/static v0.4.0 h1:HLlIxY3uXg7FIlbxWv7A0NMTHRpv50u6PRc5JLL8x44=
-github.com/larsartmann/go-datastar/static v0.4.0/go.mod h1:J5d13HKqAKSH67hTgOcGTQQtv8UXmm5jm5tcM4+/tnM=
+github.com/larsartmann/go-datastar/static v0.5.0 h1:ChzYyzDQIHSpdMOVpa7K4z2RkAe9B+RWTKn5/P30DT0=
+github.com/larsartmann/go-datastar/static v0.5.0/go.mod h1:J5d13HKqAKSH67hTgOcGTQQtv8UXmm5jm5tcM4+/tnM=
 github.com/larsartmann/templ-components/utils v1.13.0 h1:YJ8Jhkl/OBqf8sNOaKDiZ8BiBVgS2nmIO9poMMpENUw=
 github.com/larsartmann/templ-components/utils v1.13.0/go.mod h1:TMNksqxKc069NOZFa2ggm7taiDulJWT4kf+HYJCeNpY=
 github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZbAQM=

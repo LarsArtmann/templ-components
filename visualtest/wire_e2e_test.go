@@ -41,8 +41,10 @@ func wireE2EPage() templ.Component {
 	props.Title = "Wire E2E — templ-components"
 	props.CSSPath = "/app.css"
 	props.HeadContent = templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		_, err := io.WriteString(w,
-			`<script>window.__dsReady=false;document.addEventListener('datastar-ready',function(){window.__dsReady=true;},{once:true});</script>`)
+		_, err := io.WriteString(
+			w,
+			`<script>window.__dsReady=false;document.addEventListener('datastar-ready',function(){window.__dsReady=true;},{once:true});</script>`,
+		)
 
 		return err
 	})
@@ -127,6 +129,7 @@ func wireE2EServer(t *testing.T) *httptest.Server {
 
 	fragment := http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
 		if err := feedback.InlineSuccess(wireFragmentText).Render(context.Background(), w); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -138,6 +141,7 @@ func wireE2EServer(t *testing.T) *httptest.Server {
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
 		if err := wireE2EPage().Render(context.Background(), w); err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 		}
@@ -163,8 +167,10 @@ func TestWireE2EHTMXButtonPatchesTarget(t *testing.T) {
 	ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
 	defer cancelTimeout()
 
-	var htmxDefined, fragment bool
-	var out string
+	var (
+		htmxDefined, fragment bool
+		out                   string
+	)
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
@@ -192,8 +198,10 @@ func TestWireE2EDatastarButtonPatchesSelector(t *testing.T) {
 	ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
 	defer cancelTimeout()
 
-	var dsReady, fragment bool
-	var out string
+	var (
+		dsReady, fragment bool
+		out               string
+	)
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),

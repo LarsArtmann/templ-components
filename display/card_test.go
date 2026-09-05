@@ -494,4 +494,14 @@ func TestStatCard_DLGroupContainsDtAndDd(t *testing.T) {
 	if strings.Index(group, "<dt") > strings.Index(group, "<dd") {
 		t.Errorf("dt must precede dd inside the dl>div group: %s", group)
 	}
+
+	// The group div may contain ONLY the dt/dd pair — a nested div inside
+	// the group is still an axe-core dlitem/definition-list violation (the
+	// dd's ancestor chain then passes through a div that is not a direct dl
+	// child), which shipped in the v1.13.0 fix's first cut: the value row
+	// kept its own wrapper div inside the group. The Change badge now rides
+	// inside the dd as a span, so the group stays flat.
+	if strings.Contains(group[1:], "<div") {
+		t.Errorf("dl>div group must not nest further divs (axe dlitem): %s", group)
+	}
 }
