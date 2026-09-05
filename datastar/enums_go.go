@@ -3,7 +3,8 @@ package datastar
 // DatastarVersionIsValid reports whether v is one of the defined DatastarVersion constants.
 func DatastarVersionIsValid(v DatastarVersion) bool {
 	switch v {
-	case DatastarVersion1_0_3:
+	case DatastarVersion1_0_3,
+		DatastarVersion1_0_2: // deprecated compile-compat alias; still a defined version
 		return true
 	default:
 		return false
