@@ -18,6 +18,17 @@ const (
 	// CDN URL can never drift apart.
 	DatastarVersion1_0_3 DatastarVersion = DatastarVersion(static.Version)
 
+	// DatastarVersion1_0_2 is a compile-compatibility alias for downstream
+	// consumers still referencing the pre-1.0.3 constant name
+	// (go-health-dashboard v0.5.0 broke at compile time under the v1.13.1
+	// rename — MVS resolves their templ-components/datastar require to the
+	// highest version). Unlike the pin constant it is a LITERAL "1.0.2": it
+	// renders the 1.0.2 CDN runtime, deliberately NOT derived from
+	// [static.Version], so the name keeps telling the truth. Deprecated:
+	// consumers should move to DatastarVersion1_0_3 (or drop the explicit
+	// Version to follow the pin).
+	DatastarVersion1_0_2 DatastarVersion = "1.0.2"
+
 	// defaultDatastarVersion is the internal default; always equals the latest
 	// exported DatastarVersion constant.
 	defaultDatastarVersion DatastarVersion = DatastarVersion1_0_3

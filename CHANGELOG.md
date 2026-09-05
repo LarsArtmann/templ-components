@@ -6,6 +6,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`datastar.DatastarVersion1_0_2` restored as a deprecated compile-compat
+  alias.** The v1.13.1 rename to `DatastarVersion1_0_3` (forced by the
+  name-matches-value truth pin when the runtime pin moved to 1.0.3) broke
+  downstream modules at COMPILE time — `go-health-dashboard` v0.5.0
+  references the old name, and MVS resolves its `templ-components/datastar`
+  require to the highest version. The alias is a deliberate literal
+  `"1.0.2"` (never derived from `static.Version`), so consumers keep
+  compiling and keep rendering the 1.0.2 CDN runtime they asked for; the
+  truth pin now guards the literal too. Downstream fix: move to
+  `DatastarVersion1_0_3` (go-health-dashboard follow-up).
+
 ## [1.13.1] — 2026-09-05
 
 ### Fixed

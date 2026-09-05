@@ -95,4 +95,10 @@ func TestDatastarVersionConstantNameMatchesValue(t *testing.T) {
 			got,
 		)
 	}
+
+	// The compat alias is a deliberate LITERAL (never derived), so the name
+	// keeps telling the truth even when the pin moves again.
+	if got := string(DatastarVersion1_0_2); got != "1.0.2" {
+		t.Errorf("DatastarVersion1_0_2 compat alias = %q, want literal %q — a lying alias is worse than none", got, "1.0.2")
+	}
 }
