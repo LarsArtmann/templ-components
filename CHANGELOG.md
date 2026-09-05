@@ -8,6 +8,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`display.StatCard` dl group is now flat (completes the v1.13.0 axe
+  fix).** The v1.13.0 restructure moved the dt into the dl's group div but
+  kept the value row's own wrapper div inside it — and axe-core still
+  flagged every card: `dlitem` requires the dd's ancestor chain to pass
+  through only divs that are DIRECT dl children, so the nested wrapper
+  re-violated the rule (verified live against axe 4.13 from a consumer's
+  e2e gate). The group div now contains only the dt+dd pair; the Change
+  badge (trend arrow + sr-only text) rides inside the dd as a styled span
+  with `flex flex-wrap items-baseline` on the dd, which preserves the exact
+  baseline alignment without the extra div. `TestStatCard_DLGroupContainsDtAndDd`
+  now also rejects any nested div inside the group so the regression class
+  is dead structurally, not just by eyeball; goldens updated (11 files).
+
 - **`feedback.Alert` dismiss-script nonce regression (issue #9).** The
   dismissible Alert rendered its dismiss handler as
   `<script nonce="{ props.Nonce }">` unconditionally, so a render without
