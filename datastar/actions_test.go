@@ -73,25 +73,25 @@ func TestDatastarScriptURL(t *testing.T) {
 			name:    "default CDN and version",
 			version: DatastarVersion1_0_3,
 			cdn:     "",
-			want:    "https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js",
+			want:    "https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.3/bundles/datastar.js",
 		},
 		{
 			name:    "custom CDN",
 			version: DatastarVersion1_0_3,
 			cdn:     "https://unpkg.com",
-			want:    "https://unpkg.com/starfederation/datastar@1.0.2/bundles/datastar.js",
+			want:    "https://unpkg.com/starfederation/datastar@1.0.3/bundles/datastar.js",
 		},
 		{
 			name:    "custom CDN with trailing slash",
 			version: DatastarVersion1_0_3,
 			cdn:     "https://unpkg.com/",
-			want:    "https://unpkg.com/starfederation/datastar@1.0.2/bundles/datastar.js",
+			want:    "https://unpkg.com/starfederation/datastar@1.0.3/bundles/datastar.js",
 		},
 		{
 			name:    "empty version defaults to pinned",
 			version: "",
 			cdn:     "",
-			want:    "https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js",
+			want:    "https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.3/bundles/datastar.js",
 		},
 	}
 

@@ -10,9 +10,12 @@ import (
 )
 
 // pinnedBundleSHA256 is the SHA-256 of the embedded runtime bundle
-// (static.Bytes()) at go-datastar/static v0.4.0 — Datastar 1.0.2, 56330 bytes.
-// Verified byte-identical across static v0.2.0–v0.4.0 on 2026-09-02.
-const pinnedBundleSHA256 = "4df1f98ac52c6ec8986375b8394c90ddd739a381cda05011edd1c18bf33a1625"
+// (static.Bytes()) at go-datastar/static v0.5.0 — Datastar 1.0.3, 33538 bytes.
+// Re-audited 2026-09-05 on the v0.4.0 → v0.5.0 bump: every pinned token
+// survived; the bundle shrank (56330 → 33538 bytes, upstream minification
+// refactor) and the retry machinery (retryInterval/retryMax/retryMaxCount +
+// auto/error/never/always literals) is intact.
+const pinnedBundleSHA256 = "5d6b7794a50a83d82da962aec5e382f5ae83ac7afbc751f903f7a9c6bd433c65"
 
 // TestPinnedRuntimeBundleContract pins the runtime surface this library
 // integrates against, as verified byte-for-byte in the embedded bundle.
@@ -81,12 +84,12 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 // TestDatastarVersionConstantNameMatchesValue guards the literal behind
 // DatastarVersion1_0_3. Its value is derived from static.Version, so a
 // go-datastar/static bump silently re-points the value while the NAME still
-// claims 1.0.2 — a name that lies about its value is worse than none. On
+// claims 1.0.3 — a name that lies about its value is worse than none. On
 // failure: re-audit the new runtime, rename the constant, update references.
 func TestDatastarVersionConstantNameMatchesValue(t *testing.T) {
 	t.Parallel()
 
-	if got := string(DatastarVersion1_0_3); got != "1.0.2" {
+	if got := string(DatastarVersion1_0_3); got != "1.0.3" {
 		t.Errorf(
 			"DatastarVersion1_0_3 = %q — static.Version moved and the constant name no longer tells the truth; re-audit the new bundle, rename the constant, and update references",
 			got,

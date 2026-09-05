@@ -13,7 +13,7 @@ func TestSDKScriptDefault(t *testing.T) {
 
 	utils.AssertContains(t, output, `<script type="module"`)
 	utils.AssertContains(t, output,
-		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js"`)
+		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.3/bundles/datastar.js"`)
 }
 
 func TestSDKScriptSelfHosted(t *testing.T) {
@@ -67,7 +67,7 @@ func TestSDKScriptCDNWithNonce(t *testing.T) {
 	utils.AssertContains(
 		t,
 		output,
-		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.2/bundles/datastar.js"`,
+		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@1.0.3/bundles/datastar.js"`,
 	)
 }
 
@@ -79,7 +79,7 @@ func TestSDKScriptCustomCDN(t *testing.T) {
 		Version: DatastarVersion1_0_3,
 	}))
 
-	utils.AssertContains(t, output, `src="https://unpkg.com/starfederation/datastar@1.0.2/bundles/datastar.js"`)
+	utils.AssertContains(t, output, `src="https://unpkg.com/starfederation/datastar@1.0.3/bundles/datastar.js"`)
 }
 
 func TestSDKScriptNonce(t *testing.T) {

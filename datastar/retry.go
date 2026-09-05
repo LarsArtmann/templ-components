@@ -4,7 +4,8 @@ package datastar
 // when a stream ends or a request fails. Mirrors the retry argument the
 // runtime accepts on @get/@post/... action expressions.
 //
-// Runtime behaviour matrix (verified against datastar.js v1.0.2):
+// Runtime behaviour matrix (behaviour verified against datastar.js v1.0.2;
+// pinned tokens re-verified present in the v1.0.3 bundle on 2026-09-05):
 //
 //   - clean stream EOF (e.g. server restart): only RetryAlways reconnects.
 //     The default auto disposes the connection, leaving the region stale.
