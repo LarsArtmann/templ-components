@@ -6,21 +6,21 @@ import (
 )
 
 // DatastarVersion is a pinned Datastar runtime version. Use the exported
-// constants (e.g. DatastarVersion1_0_2) for compile-time safety; custom
+// constants (e.g. DatastarVersion1_0_3) for compile-time safety; custom
 // versions can be constructed via DatastarVersion("x.y.z") but will render
 // without SRI (no integrity hash — Datastar does not publish official SRI
 // hashes; self-host and compute your own if integrity is required).
 type DatastarVersion string
 
 const (
-	// DatastarVersion1_0_2 is the Datastar runtime version this package pins.
+	// DatastarVersion1_0_3 is the Datastar runtime version this package pins.
 	// The value is derived from [static.Version] so the embedded bundle and the
 	// CDN URL can never drift apart.
-	DatastarVersion1_0_2 DatastarVersion = DatastarVersion(static.Version)
+	DatastarVersion1_0_3 DatastarVersion = DatastarVersion(static.Version)
 
 	// defaultDatastarVersion is the internal default; always equals the latest
 	// exported DatastarVersion constant.
-	defaultDatastarVersion DatastarVersion = DatastarVersion1_0_2
+	defaultDatastarVersion DatastarVersion = DatastarVersion1_0_3
 )
 
 // Datastar CDN paths. Datastar is served from jsDelivr's GitHub path

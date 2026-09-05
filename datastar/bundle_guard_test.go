@@ -79,16 +79,16 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 }
 
 // TestDatastarVersionConstantNameMatchesValue guards the literal behind
-// DatastarVersion1_0_2. Its value is derived from static.Version, so a
+// DatastarVersion1_0_3. Its value is derived from static.Version, so a
 // go-datastar/static bump silently re-points the value while the NAME still
 // claims 1.0.2 — a name that lies about its value is worse than none. On
 // failure: re-audit the new runtime, rename the constant, update references.
 func TestDatastarVersionConstantNameMatchesValue(t *testing.T) {
 	t.Parallel()
 
-	if got := string(DatastarVersion1_0_2); got != "1.0.2" {
+	if got := string(DatastarVersion1_0_3); got != "1.0.2" {
 		t.Errorf(
-			"DatastarVersion1_0_2 = %q — static.Version moved and the constant name no longer tells the truth; re-audit the new bundle, rename the constant, and update references",
+			"DatastarVersion1_0_3 = %q — static.Version moved and the constant name no longer tells the truth; re-audit the new bundle, rename the constant, and update references",
 			got,
 		)
 	}

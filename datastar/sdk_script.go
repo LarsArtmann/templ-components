@@ -10,7 +10,7 @@ import "github.com/larsartmann/templ-components/utils"
 type SDKScriptProps struct {
 	utils.BaseProps
 
-	// Version pins the Datastar runtime version. Defaults to DatastarVersion1_0_2.
+	// Version pins the Datastar runtime version. Defaults to DatastarVersion1_0_3.
 	// Set to "" to use the default.
 	Version DatastarVersion
 

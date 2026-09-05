@@ -5,7 +5,7 @@
 //
 // This package mirrors the [htmx] package: it emits data-* attributes and
 // injects the Datastar runtime <script> tag without importing any server-side
-// SDK. The pinned version ([DatastarVersion1_0_2]) is derived from
+// SDK. The pinned version ([DatastarVersion1_0_3]) is derived from
 // [github.com/larsartmann/go-datastar/static].Version so the CDN URL and the
 // embedded bundle can never drift.
 //

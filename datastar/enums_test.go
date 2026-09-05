@@ -11,7 +11,7 @@ func TestDatastarVersionIsValid(t *testing.T) {
 		value DatastarVersion
 		want  bool
 	}{
-		{DatastarVersion1_0_2, true},
+		{DatastarVersion1_0_3, true},
 		{"0.9.0", false},
 		{"", false},
 		{"bogus", false},

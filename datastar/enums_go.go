@@ -3,7 +3,7 @@ package datastar
 // DatastarVersionIsValid reports whether v is one of the defined DatastarVersion constants.
 func DatastarVersionIsValid(v DatastarVersion) bool {
 	switch v {
-	case DatastarVersion1_0_2:
+	case DatastarVersion1_0_3:
 		return true
 	default:
 		return false

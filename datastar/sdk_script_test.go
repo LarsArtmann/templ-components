@@ -59,7 +59,7 @@ func TestSDKScriptCDNWithNonce(t *testing.T) {
 
 	output := utils.Render(t, SDKScript(SDKScriptProps{
 		BaseProps: utils.BaseProps{Nonce: "test-nonce-123"},
-		Version:   DatastarVersion1_0_2,
+		Version:   DatastarVersion1_0_3,
 	}))
 
 	utils.AssertContains(t, output, `<link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>`)
@@ -76,7 +76,7 @@ func TestSDKScriptCustomCDN(t *testing.T) {
 
 	output := utils.Render(t, SDKScript(SDKScriptProps{
 		CDN:     "https://unpkg.com",
-		Version: DatastarVersion1_0_2,
+		Version: DatastarVersion1_0_3,
 	}))
 
 	utils.AssertContains(t, output, `src="https://unpkg.com/starfederation/datastar@1.0.2/bundles/datastar.js"`)
@@ -97,7 +97,7 @@ func TestSDKScriptDefaultProps(t *testing.T) {
 
 	props := DefaultSDKScriptProps()
 
-	if props.Version != DatastarVersion1_0_2 {
-		t.Errorf("expected Version=%s, got %s", DatastarVersion1_0_2, props.Version)
+	if props.Version != DatastarVersion1_0_3 {
+		t.Errorf("expected Version=%s, got %s", DatastarVersion1_0_3, props.Version)
 	}
 }
