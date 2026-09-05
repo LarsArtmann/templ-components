@@ -78,7 +78,7 @@ One typed `wire.Action` spec rendered as htmx or Datastar attributes depending o
 | `IsDatastar`/`IsHTMX` | Request predicates on the `Datastar-Request`/`HX-Request` headers for custom branching                                                                               |
 | Header constants      | `Datastar-Request`/`Datastar-Selector`/`Datastar-Mode`/`HX-Request` for transport-branching handlers                                                                 |
 
-Scope note: Datastar v1.0.2 fetch actions accept no target option — `Action.Target` renders only for htmx; Datastar targeting is response-driven (echo the selector back on `Datastar-Selector`). Polling/reveal triggers and OOB swaps stay transport-specific (htmx `PolledRegion`, `LoadMore`, `SwapOOB`). See `docs/transport-wiring.md`.
+Scope note: Datastar fetch actions accept no target option on the audited pin (v1.0.2; v1.0.3 added a client-side `selector` option, deliberately unadopted) — `Action.Target` renders only for htmx; Datastar targeting is response-driven (echo the selector back on `Datastar-Selector`). Polling/reveal triggers and OOB swaps stay transport-specific (htmx `PolledRegion`, `LoadMore`, `SwapOOB`). See `docs/transport-wiring.md`.
 
 ---
 

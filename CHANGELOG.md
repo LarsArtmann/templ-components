@@ -8,6 +8,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **Datastar runtime pin reconciled: `go-datastar/static` v0.4.0 → v0.5.0
+  (Datastar 1.0.2 → 1.0.3).** The bump landed in a merge commit without the
+  re-audit its guard tests demand, leaving the `datastar` package red
+  (`TestDatastarScriptURL`, `TestGoldenSweepSDKScript`,
+  `TestDatastarVersionConstantNameMatchesValue`,
+  `TestPinnedRuntimeBundleContract`). Full re-audit performed against the
+  new 33538-byte bundle (sha256 `5d6b7794…`): all pinned tokens survived
+  (`datastar-patch-elements`/`-signals`, `datastar-fetch`, retry literals,
+  `requestCancellation`); `datastar-sse-error` remains absent; retry
+  defaults unchanged (1s ×2, 30s cap, 10 retries). One fact CHANGED:
+  v1.0.3 fetch actions accept a client-side `selector` option (v1.0.2 had
+  none) — recorded in `docs/datastar-runtime-facts.md`; `wire.Action`
+  still renders `Target` htmx-only (ADR-0036 response-driven targeting
+  stands). `DatastarVersion1_0_2` renamed to `DatastarVersion1_0_3` (the
+  name-lies-about-value guard forced the rename), bundle sha256 pin
+  updated, goldens regenerated.
+
 - **`display.StatCard` dl group is now flat (completes the v1.13.0 axe
   fix).** The v1.13.0 restructure moved the dt into the dl's group div but
   kept the value row's own wrapper div inside it — and axe-core still

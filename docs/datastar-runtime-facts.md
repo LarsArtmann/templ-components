@@ -1,4 +1,4 @@
-# Datastar v1.0.2 Runtime Facts
+# Datastar Runtime Facts
 
 Extracted from the pinned runtime bundle (`go-datastar/static` v0.2.0, Datastar
 v1.0.2) during the 2026-08-21 SSE integration audit. Re-verified 2026-09-02 at
@@ -8,6 +8,28 @@ plausible-but-wrong assumptions that caused shipped bugs — re-verify against
 the bundle if the version pin ever bumps. Enforcement lives in tests:
 `examples/demo/sse_test.go` (wire format) and
 `datastar/sse_error_handling_test.go` (lifecycle event names).
+
+## v1.0.3 re-audit (2026-09-05, `go-datastar/static` v0.5.0)
+
+The bundle CHANGED (sha256 `4df1f98a…` → `5d6b7794…`, 56330 → 33538 bytes —
+upstream minification refactor). Every fact below was re-verified against the
+new bundle unless marked otherwise:
+
+- **Unchanged**: only `datastar-patch-elements`/`datastar-patch-signals` have
+  registered handlers; `datastar-sse-error` and the pre-v1.0 `datastar-merge-*`
+  names remain absent; `PatchElementsExpectedSelector` /
+  `PatchElementsNoTargetsFound` enforcement intact; attribute syntax unchanged.
+- **Unchanged (machinery verified)**: retry defaults in the bundle's fetch
+  options destructure (`retryInterval=1000`, `retryScaler=2`, `retryMaxWait=30000`,
+  `retryMaxCount=10`, `retry='auto'`). The reconnect matrix itself
+  (which mode reconnects on clean EOF) was verified behaviorally on v1.0.2 and
+  the machinery is byte-present in v1.0.3; no behavioral counter-evidence found.
+- **CHANGED — fetch actions now accept a client-side `selector` option**:
+  the v1.0.3 fetch options destructure includes `selector` (v1.0.2 had none).
+  The v1.0.2-era fact "fetch actions accept no target option" is therefore
+  OUTDATED. `wire.Action` still renders `Target` for htmx only — adopting
+  `{selector: …}` for Datastar is a deliberate future contract change (the
+  response-driven targeting contract, ADR-0036, stands until then).
 
 Full audit context: `docs/research/2026-08-21_go-sse-go-datastar-deep-dive.html`.
 
@@ -59,7 +81,7 @@ Full audit context: `docs/research/2026-08-21_go-sse-go-datastar-deep-dive.html`
 - `'unsafe-inline'` is NOT needed (external module script + nonced inline
   scripts).
 
-## Attribute syntax (v1.0.2)
+## Attribute syntax
 
 - `data-<plugin>:<key>` (split on the first colon) is correct:
   `data-init` (no key), `data-on:click`, `data-indicator:<signal>`,
