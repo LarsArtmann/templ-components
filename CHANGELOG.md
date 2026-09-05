@@ -8,6 +8,18 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`feedback.Alert` dismiss-script nonce regression (issue #9).** The
+  dismissible Alert rendered its dismiss handler as
+  `<script nonce="{ props.Nonce }">` unconditionally, so a render without
+  an explicit nonce emitted `nonce=""` — which a strict CSP rejects as an
+  unknown source, silently killing the dismiss button. The script now
+  follows the omit-when-empty rule every other script follows, with one
+  Alert-specific twist: when `props.Nonce` is empty it falls back to
+  `templ.GetNonce(ctx)`, picking up the page nonce `layout.Base` places on
+  the render context, and emits a bare `<script>` only when neither source
+  provides one. A table-driven regression test pins all three paths (prop
+  nonce wins, context fallback, neither omits the attribute); the
+  dismissible golden updated. Fixes #9.
 - **`datastar.LiveRegion` busy-script nonce regression (issue #7).** The
   auto-start busy script rendered `nonce=""` unconditionally, breaking
   no-nonce renders (a strict CSP rejects `nonce=""` as an unknown source)
