@@ -6,8 +6,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
-## [1.13.2] — 2026-09-05
-
 ### Fixed
 
 - **`datastar.DatastarVersion1_0_2` restored as a deprecated compile-compat
