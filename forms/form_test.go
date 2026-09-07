@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 func TestFormMethod(t *testing.T) {
@@ -39,6 +40,39 @@ func TestFormMethod(t *testing.T) {
 		output := utils.Render(t, Form(FormProps{Action: "/save", Method: FormPost, CSRFToken: "abc"}))
 		utils.AssertContains(t, output, `name="csrf_token"`)
 		utils.AssertContains(t, output, `value="abc"`)
+	})
+}
+
+func TestFormNoValidate(t *testing.T) {
+	t.Parallel()
+
+	t.Run("renders novalidate when set", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/save", NoValidate: true}))
+		utils.AssertContains(t, output, "novalidate")
+	})
+
+	t.Run("absent by default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/save"}))
+		utils.AssertNotContains(t, output, "novalidate")
+	})
+
+	t.Run("composes with hx-validate", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/save", Validate: true, NoValidate: true}))
+		utils.AssertContains(t, output, `hx-validate="true"`)
+		utils.AssertContains(t, output, "novalidate")
+	})
+
+	t.Run("composes with datastar wire", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Wire: &wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/save"},
+			NoValidate: true,
+		}))
+		utils.AssertContains(t, output, "novalidate")
+		utils.AssertContains(t, output, `data-on:submit`)
 	})
 }
 

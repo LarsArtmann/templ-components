@@ -116,6 +116,16 @@ type FormProps struct {
 	// Validate, when true, adds hx-validate="true" for HTML5 constraint
 	// validation before HTMX submit.
 	Validate bool
+	// NoValidate renders the HTML novalidate attribute, disabling the
+	// browser's native constraint validation on submit. Symmetric across
+	// transports: under htmx it suppresses the built-in reportValidity UI;
+	// under Datastar it lifts the pinned bundle's form-encoding validation
+	// gate (the runtime only calls checkValidity when the form lacks
+	// novalidate), letting server-side validation own the error UX — see
+	// docs/recipes/server-side-validation.md. Pair with Validate
+	// (hx-validate="true") to keep htmx's pre-submit check while dropping
+	// the native tooltips.
+	NoValidate bool
 	// ContainerAware, when true, wraps the form in a @container div and swaps
 	// sm: breakpoint classes for @sm: so the Grid layout responds to the
 	// parent container's width, not the viewport. Useful when a form is placed
@@ -210,6 +220,9 @@ templ formInner(props FormProps) {
 		method={ formMethod(props.Method) }
 		if props.Validate {
 			hx-validate="true"
+		}
+		if props.NoValidate {
+			novalidate
 		}
 		class={ utils.Class(formLayoutClass(formLayoutEffective(props), props.ContainerAware), props.Class) }
 		if props.AriaLabel != "" {

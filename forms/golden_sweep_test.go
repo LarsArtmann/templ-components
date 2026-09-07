@@ -130,6 +130,16 @@ func TestGoldenSweepForm(t *testing.T) {
 				URL:    "",
 			},
 		}))},
+		{Name: "form_novalidate_with_wire", HTML: utils.Render(t, Form(FormProps{
+			Action:     "/submit",
+			Method:     FormPost,
+			NoValidate: true,
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				Method:    wire.MethodPost,
+				URL:       "/api/submit",
+			},
+		}))},
 		// The canonical server-side-validation round-trip fragment: the
 		// endpoint re-renders the wired form with a ValidationSummary and
 		// inline field errors, preserving the submitted values. Pinned so

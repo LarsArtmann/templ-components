@@ -6,6 +6,16 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`forms.FormProps.NoValidate` — symmetric validation opt-out.** Renders
+  the HTML `novalidate` attribute on the form. Under Datastar it lifts the
+  pinned bundle's form-encoding `checkValidity` gate (the runtime only gates
+  when the form lacks `novalidate`); under htmx it suppresses the native
+  `reportValidity` UI — letting server-side validation own the error UX (see
+  `docs/recipes/server-side-validation.md`). Composes with `Validate`
+  (`hx-validate="true"`) and with `Wire`. Golden: `form_novalidate_with_wire`.
+
 ## [1.13.3] — 2026-09-07
 
 ### Added

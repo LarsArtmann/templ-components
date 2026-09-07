@@ -52,12 +52,18 @@ new bundle unless marked otherwise:
     a `HTMLFormElement` and the event is `submit`** — so
     `data-on:submit="@post('/x', {contentType: 'form'})"` on a `<form>`
     suppresses the native full-page submission with no explicit modifier.
-  - Event modifier MACHINERY exists in the bundle (`debounce` with duration
-    parsing + `leading`/`notrailing` flags, `throttle`, `delay`,
-    `prevent`/`stop` flags) — verified as tokens, but the exact attribute-key
-    spelling was not decoded from the minified parser. Re-audit before
-    adopting any modifier into the wire contract (trigger syntax stays
-    dialect-specific per ADR-0036's scope rule regardless).
+  - **NEW (2026-09-07, decoded from the pinned bundle) — `data-on` modifier
+    spelling**: the attribute-name parser splits the name on `__` (the first
+    segment is `plugin:event`, each further segment is one modifier group),
+    and each group splits on `.` into `name.arg1.arg2…`. A debounced search
+    input is therefore `data-on:input__debounce.300ms`. Durations parse as
+    `500ms` / `2s` / bare `300` (first arg wins). Verified flags: `debounce`
+    (trailing by default; `leading` opt-in, `notrailing` opt-out),
+    `throttle` (leading by default; `trailing` opt-in, `noleading` opt-out),
+    `delay.<dur>`, `window`, `document`, `capture`, `passive`, `once`,
+    `outside`, `prevent`, `stop`, `viewtransition`, and `case.<x>`
+    (event-name casing; `on` defaults to kebab). Trigger syntax stays
+    dialect-specific per ADR-0036's scope rule regardless.
   - **NEW (2026-09-07, e2e-proven) — fetch error status dispatches a
     lifecycle error event**: the fetch options include an error hook that
     fires when `response.status >= 400` (dispatches the `datastar-fetch`

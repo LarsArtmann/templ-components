@@ -196,7 +196,7 @@ CSRF hidden input — traveling in both dialects.
 | ------------------ | ------------------------------------------------------------ | -------------------------------------------------------------- |
 | Rendering          | `hx-post="/api/save" hx-trigger="submit"` (implicit trigger) | `data-on:submit="@post('/api/save', {contentType: 'form'})"`  |
 | Field values       | native serialization (urlencoded; multipart with `enctype`)  | same — FormData → urlencoded (or multipart with `enctype`)      |
-| HTML5 validation   | `Validate: true` adds `hx-validate="true"`                   | automatic (`checkValidity` gate, `novalidate` skips)            |
+| HTML5 validation   | `Validate: true` adds `hx-validate="true"`; `NoValidate: true` renders `novalidate` | automatic (`checkValidity` gate); `NoValidate: true` renders `novalidate`, which skips the gate |
 | Submitter button   | name/value included                                          | name/value appended by the runtime                             |
 | Response targeting | `Wire.Target` → `hx-target` (default swaps into the form)    | response-driven — wrap the handler in `wire.Handler`            |
 
