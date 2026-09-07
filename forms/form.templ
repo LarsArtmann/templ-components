@@ -154,6 +154,10 @@ type FormProps struct {
 	// Validate, when true, adds hx-validate="true" for HTML5 constraint
 	// validation before HTMX submit.
 	Validate bool
+	// DirtyGuard opts this form into the unsaved-changes guard: render
+	// forms.DirtyGuard once on the page and the browser warns before
+	// leaving with unsaved changes in this form (see DirtyGuardProps).
+	DirtyGuard bool
 	// NoValidate renders the HTML novalidate attribute, disabling the
 	// browser's native constraint validation on submit. Symmetric across
 	// transports: under htmx it suppresses the built-in reportValidity UI;
@@ -280,6 +284,9 @@ templ formInner(props FormProps) {
 		}
 		if props.NoValidate {
 			novalidate
+		}
+		if props.DirtyGuard {
+			data-tc-dirty-guard="true"
 		}
 		class={ utils.Class(formLayoutClass(formLayoutEffective(props), props.ContainerAware), props.Class) }
 		if props.AriaLabel != "" {

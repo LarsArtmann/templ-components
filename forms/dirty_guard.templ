@@ -1,0 +1,67 @@
+package forms
+
+import (
+	"context"
+	"fmt"
+	"html"
+	"io"
+
+	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/utils"
+)
+
+// DirtyGuardProps configures the unsaved-changes guard script.
+type DirtyGuardProps struct {
+	utils.BaseProps
+}
+
+// dirtyGuardJS is the unsaved-changes guard: event delegation on document
+// (capture phase, so control-level events are caught without per-form
+// listeners), a WeakSet of dirty forms, and a beforeunload check.
+const dirtyGuardJS = `
+if (!window.tcDirtyGuardAttached) {
+  window.tcDirtyGuardAttached = true;
+  var tcDirtyForms = new WeakSet();
+  var tcDirtyMark = function (e) {
+    var f = e.target && e.target.closest ? e.target.closest('[data-tc-dirty-guard]') : null;
+    if (f) tcDirtyForms.add(f);
+  };
+  document.addEventListener('input', tcDirtyMark, true);
+  document.addEventListener('change', tcDirtyMark, true);
+  document.addEventListener('submit', function (e) {
+    if (e.target && e.target.matches && e.target.matches('[data-tc-dirty-guard]')) tcDirtyForms.delete(e.target);
+  }, true);
+  window.addEventListener('beforeunload', function (e) {
+    var forms = document.querySelectorAll('[data-tc-dirty-guard]');
+    for (var i = 0; i < forms.length; i++) {
+      if (tcDirtyForms.has(forms[i])) {
+        e.preventDefault();
+        e.returnValue = '';
+        return;
+      }
+    }
+  });
+}
+`
+
+// DirtyGuard renders the page-level script for the unsaved-changes guard.
+// Include it once per page; forms opt in by rendering the
+// `data-tc-dirty-guard` attribute (forms.FormProps.DirtyGuard does this).
+// The guard marks a guarded form dirty on any input or change and clears it
+// when that form submits (native and wired submits both dispatch the submit
+// event, so HTMX and Datastar submissions clear the flag too). When the
+// user tries to leave with a dirty form, the browser's native confirmation
+// dialog appears — the dialog text is chosen by the browser, not the page.
+//
+// The script is idempotent across HTMX swaps and Datastar patches (global
+// singleton flag, ADR-0005) and tracks form elements in a WeakSet, so
+// swapped-in forms start clean without any re-initialization. Auto-submit
+// filter components (FilterInput) do not dispatch submit events — apply the
+// guard to save-style forms, not live filters.
+//
+//	@forms.DirtyGuard(forms.DirtyGuardProps{Nonce: nonce})
+//	...
+//	@forms.Form(forms.FormProps{Action: "/save", DirtyGuard: true}) { ... }
+templ DirtyGuard(props DirtyGuardProps) {
+	{{ rawScript(nonce, dirtyGuardJS).Render(ctx, templ_7745c5c3_Buffer) }}
+}

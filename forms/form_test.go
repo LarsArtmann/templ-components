@@ -143,3 +143,19 @@ func TestFormEnctype(t *testing.T) {
 		utils.AssertContains(t, output, `data-on:submit=`)
 	})
 }
+
+func TestFormDirtyGuard(t *testing.T) {
+	t.Parallel()
+
+	t.Run("renders the opt-in attribute", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/save", DirtyGuard: true}))
+		utils.AssertContains(t, output, `data-tc-dirty-guard="true"`)
+	})
+
+	t.Run("absent by default", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/save"}))
+		utils.AssertNotContains(t, output, "data-tc-dirty-guard")
+	})
+}
