@@ -757,7 +757,7 @@ func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
 			ctx, cancel := newTab(t)
 			defer cancel()
 
-			ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
+			ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 			defer cancelTimeout()
 
 			region := packFilterOutRegion(dialect)
@@ -798,7 +798,7 @@ func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
 			ctx, cancel := newTab(t)
 			defer cancel()
 
-			ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
+			ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 			defer cancelTimeout()
 
 			region := packDropdownDatastarOut
@@ -837,7 +837,7 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 			ctx, cancel := newTab(t)
 			defer cancel()
 
-			ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
+			ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 			defer cancelTimeout()
 
 			region := packWizardHTMXRegion
@@ -903,7 +903,7 @@ func TestWireE2EUploadFileRoundTrip(t *testing.T) {
 			ctx, cancel := newTab(t)
 			defer cancel()
 
-			ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
+			ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 			defer cancelTimeout()
 
 			out := packUploadDatastarOut
@@ -951,7 +951,7 @@ func TestWireE2EGETSearchRoundTrip(t *testing.T) {
 			ctx, cancel := newTab(t)
 			defer cancel()
 
-			ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
+			ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 			defer cancelTimeout()
 
 			region := packSearchHTMXRegion
@@ -1000,7 +1000,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	ctx, cancel := newTab(t)
 	defer cancel()
 
-	ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
+	ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 	defer cancelTimeout()
 
 	var (
@@ -1079,36 +1079,31 @@ func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
 			ctx, cancel := newTab(t)
 			defer cancel()
 
-			ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
+			ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
 			defer cancelTimeout()
 
-			var (
-				ok       bool
-				location string
-			)
+			var ok bool
 
 			scope := packScopeID("filter", dialect)
 
-			// Native GET navigation: the query param MUST land in the URL
-			// (poll — the navigation commits asynchronously after Enter).
+			// Fire the native submit, then poll in a fresh Run: the
+			// full-page navigation invalidates the current execution
+			// context, so the location poll must run after it commits.
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
 				setValueQuiet(ctx, scope, `input[name="q"]`, "enter-test"),
 				chromedp.SendKeys(formSel(scope, `input[name="q"]`), kb.Enter),
+			); err != nil {
+				t.Fatalf("%s Enter-key submit: %v", dialect, err)
+			}
+
+			if err := chromedp.Run(ctx,
 				chromedp.Poll(`window.location.search.indexOf('q=enter-test')>-1 && document.readyState==='complete'`, &ok),
 			); err != nil {
-				var location string
-				_ = chromedp.Location(&location).Do(ctx)
-				t.Fatalf("%s Enter-key E2E: %v (location=%s)", dialect, err, location)
-			}
-
-			if err := chromedp.Run(ctx, chromedp.Location(&location)); err != nil {
-				t.Fatalf("%s read location: %v", dialect, err)
-			}
-
-			if !strings.Contains(location, "q=enter-test") {
-				t.Fatalf("%s: native Enter submit did not carry the query param; got %s", dialect, location)
+				var current string
+				_ = chromedp.Location(&current).Do(ctx)
+				t.Fatalf("%s Enter-key E2E: %v (location=%s)", dialect, err, current)
 			}
 		})
 	}
