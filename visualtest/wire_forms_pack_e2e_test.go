@@ -314,33 +314,8 @@ func packWizardStep(dialect wire.Transport, step int, message string) templ.Comp
 				return err
 			}
 
-			if step == 0 {
-				if message != "" {
-					if err := forms.FieldError("pack-wizard-email", message).Render(ctx, w); err != nil {
-						return err
-					}
-				}
-
-				if err := forms.Input(forms.InputProps{
-					Name:  "email",
-					Type:  forms.InputEmail,
-					Label: "Email",
-				}).Render(ctx, w); err != nil {
-					return err
-				}
-			} else {
-				if message != "" {
-					if err := forms.FieldError("pack-wizard-name", message).Render(ctx, w); err != nil {
-						return err
-					}
-				}
-
-				if err := forms.Input(forms.InputProps{
-					Name:  "name",
-					Label: "Full name",
-				}).Render(ctx, w); err != nil {
-					return err
-				}
+			if err := packWizardField(ctx, w, step, message); err != nil {
+				return err
 			}
 
 			return display.Button(display.ButtonProps{
@@ -361,6 +336,35 @@ func packWizardStep(dialect wire.Transport, step int, message string) templ.Comp
 	})
 
 	return body
+}
+
+// packWizardField renders the step's field with its optional inline error
+// (step 0 = account email, step 1 = profile name).
+func packWizardField(ctx context.Context, w io.Writer, step int, message string) error {
+	if step == 0 {
+		if message != "" {
+			if err := forms.FieldError("pack-wizard-email", message).Render(ctx, w); err != nil {
+				return err
+			}
+		}
+
+		return forms.Input(forms.InputProps{
+			Name:  "email",
+			Type:  forms.InputEmail,
+			Label: "Email",
+		}).Render(ctx, w)
+	}
+
+	if message != "" {
+		if err := forms.FieldError("pack-wizard-name", message).Render(ctx, w); err != nil {
+			return err
+		}
+	}
+
+	return forms.Input(forms.InputProps{
+		Name:  "name",
+		Label: "Full name",
+	}).Render(ctx, w)
 }
 
 // packUploadResult is the upload endpoint fragment.
@@ -1224,7 +1228,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	// Typing marks the form dirty (capture-phase input listener).
 	if err := chromedp.Run(
 		ctx,
-		setFieldValue(ctx, packDirtyRegion, `input[name="project"]`, "Graf Zeppelin"),
+		setFieldValue(packDirtyRegion, `input[name="project"]`, "Graf Zeppelin"),
 	); err != nil {
 		t.Fatalf("dirty the form: %v", err)
 	}
@@ -1248,7 +1252,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 
 	if err := chromedp.Run(
 		ctx,
-		setFieldValue(ctx, packDirtyRegion, `input[name="project"]`, "Hindenburg"),
+		setFieldValue(packDirtyRegion, `input[name="project"]`, "Hindenburg"),
 	); err != nil {
 		t.Fatalf("dirty the swapped-in form: %v", err)
 	}
