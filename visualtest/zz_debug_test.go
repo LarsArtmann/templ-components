@@ -43,10 +43,9 @@ func TestZZWizardParallelPair(t *testing.T) {
 				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
 				chromedp.Poll(regionHasText(region, packWizardEmailBad), &ok),
 			); err != nil {
-				text, textErr := regionText(ctx, region)
 				t.Logf("[%s] wizard FAILED: %v", dialect, err)
-				text, textErr := regionText(ctx, region)
-				t.Logf("[%s] region: %.300s read-err=%v", dialect, text, textErr)
+				dtext, derr := regionText(ctx, region)
+				t.Logf("[%s] region: %.300s read-err=%v", dialect, dtext, derr)
 			}
 		})
 	}

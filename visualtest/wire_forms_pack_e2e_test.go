@@ -124,6 +124,7 @@ func packE2EServer(t *testing.T) *httptest.Server {
 		Selector: packWizardDatastarRegion,
 		Mode:     wire.PatchModeInner,
 	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		t.Logf("WIZARD HIT: datastar=%v", wire.IsDatastar(r))
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 		if err := r.ParseForm(); err != nil {
@@ -134,6 +135,7 @@ func packE2EServer(t *testing.T) *httptest.Server {
 
 		dialect := packDialect(r)
 		step, _ := strconv.Atoi(r.PostFormValue("step"))
+		t.Logf("WIZARD: step=%d dialect=%s", step, dialect)
 		switch step {
 		case 0:
 			email := strings.TrimSpace(r.PostFormValue("email"))
