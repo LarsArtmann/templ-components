@@ -601,3 +601,101 @@ func TestWireDemoFilterInputRendersBothDialects(t *testing.T) {
 		}
 	}
 }
+
+// TestWireBusyEndpoint pins the busy-state demo endpoint: a deliberately
+// slow fragment for both dialects, with dialect-conditional Datastar
+// response-header targeting.
+func TestWireBusyEndpoint(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		datastarRequest bool
+		wantSelector    string
+		wantContains    string
+	}{
+		{
+			name:         "htmx caller gets the done fragment without routing headers",
+			wantContains: "Job finished via htmx",
+		},
+		{
+			name:            "datastar caller gets response-header targeting",
+			datastarRequest: true,
+			wantSelector:    "#wire-busy-datastar-out",
+			wantContains:    "Job finished via datastar",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			server := httptest.NewServer(newMux())
+			t.Cleanup(server.Close)
+
+			req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, server.URL+"/api/wire/busy", nil)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if tt.datastarRequest {
+				req.Header.Set(wire.HeaderDatastarRequest, "true")
+			}
+
+			resp, err := server.Client().Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			if resp.StatusCode != http.StatusOK {
+				t.Errorf("status = %d, want 200", resp.StatusCode)
+			}
+			if got := resp.Header.Get(wire.HeaderDatastarSelector); got != tt.wantSelector {
+				t.Errorf("Datastar-Selector = %q, want %q", got, tt.wantSelector)
+			}
+
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !strings.Contains(string(body), tt.wantContains) {
+				t.Errorf("busy body missing %q", tt.wantContains)
+			}
+		})
+	}
+}
+
+// TestWireDemoBusyCardRendersBothDialects pins the busy-state card wiring:
+// the htmx button posts to the slow endpoint, the Datastar button carries
+// the data-indicator signal, and the Indicator announces via role="status".
+func TestWireDemoBusyCardRendersBothDialects(t *testing.T) {
+	t.Parallel()
+
+	server := httptest.NewServer(newMux())
+	t.Cleanup(server.Close)
+
+	resp, err := server.Client().Get(server.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = resp.Body.Close() })
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	html := string(body)
+	for _, want := range []string{
+		`hx-post="/api/wire/busy"`,
+		`hx-target="#wire-busy-htmx-out"`,
+		`data-on:click="@post('/api/wire/busy')"`,
+		`data-indicator:saving`,
+		`role="status"`,
+		`id="wire-busy-datastar-out"`,
+	} {
+		if !strings.Contains(html, want) {
+			t.Errorf("demo page missing %q", want)
+		}
+	}
+}

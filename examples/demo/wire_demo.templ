@@ -2,10 +2,13 @@ package main
 
 import (
 	"strings"
+	"time"
 
+	"github.com/larsartmann/templ-components/datastar"
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
+	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
@@ -194,6 +197,75 @@ templ wireDemo(transport demoTransport) {
 			</div>
 		</div>
 	</div>
+
+	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Busy state</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+			Perceived performance on wired submits. htmx swaps to a <code>LoadingButton</code>
+			during the request; Datastar toggles an <code>Indicator</code> via the
+			<code>data-indicator</code> signal (composed on the same wired
+			<code>display.Button</code> through <code>Attrs</code>). The endpoint sleeps 800ms
+			so the busy state is actually visible.
+		</p>
+		if transport == demoTransportBoth {
+			@display.Grid(display.GridProps{
+				Cols: display.GridCols2,
+				Gap:  display.GridGapMD,
+			}) {
+				<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+					<h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">HTMX</h4>
+					@wireBusyButtonHTMX()
+					<div id="wire-busy-htmx-out" class="mt-3" aria-live="polite"></div>
+				</div>
+				<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4">
+					<h4 class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Datastar</h4>
+					@wireBusyButtonDatastar()
+					<div id="wire-busy-datastar-out" class="mt-3" aria-live="polite"></div>
+				</div>
+			}
+		} else if transport.wireTransport() == wire.TransportDatastar {
+			@wireBusyButtonDatastar()
+			<div id="wire-busy-datastar-out" class="mt-3" aria-live="polite"></div>
+		} else {
+			@wireBusyButtonHTMX()
+			<div id="wire-busy-htmx-out" class="mt-3" aria-live="polite"></div>
+		}
+	</div>
+}
+
+// wireBusyButtonHTMX renders the htmx busy-state button: a plain button
+// element wrapping htmx.LoadingButton — the default label hides and the
+// "Running…" label + spinner appear while the button carries .htmx-request.
+templ wireBusyButtonHTMX() {
+	<button
+		class="inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
+		hx-post="/api/wire/busy"
+		hx-target="#wire-busy-htmx-out"
+		hx-swap="innerHTML"
+	>
+		@htmx.LoadingButton("Run job", "Running…", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-white"}))
+	</button>
+}
+
+// wireBusyButtonDatastar renders the Datastar busy-state button: the wired
+// display.Button composes with a data-indicator signal via Attrs, and
+// datastar.Indicator shows while the fetch runs (role="status").
+templ wireBusyButtonDatastar() {
+	<div class="flex items-center gap-3">
+		@display.Button(display.ButtonProps{
+			Text:    "Run job",
+			Variant: display.ButtonPrimary,
+			Size:    display.ButtonSizeSM,
+			Wire:    &wire.Action{Transport: wire.TransportDatastar, URL: "/api/wire/busy"},
+			BaseProps: utils.BaseProps{
+				Attrs: templ.Attributes{"data-indicator:saving": true},
+			},
+		})
+		@datastar.Indicator(datastar.IndicatorProps{
+			Signal:    "saving",
+			BaseProps: utils.BaseProps{AriaLabel: "Running job"},
+		})
+	</div>
 }
 
 // wireDemoValidateInput wires the validation input in the selected dialect:
@@ -378,4 +450,12 @@ templ wireFilterResults(query string) {
 			}
 		</ul>
 	}
+}
+
+// wireBusyDelay makes the busy state visible to humans and e2e drivers.
+const wireBusyDelay = 800 * time.Millisecond
+
+// wireBusyDone is the shared response body for the busy-state endpoint.
+templ wireBusyDone(transport string) {
+	@feedback.InlineSuccess("Job finished via " + transport + " — swapped into this region while the button showed its busy state.")
 }
