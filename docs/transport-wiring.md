@@ -309,6 +309,38 @@ Both runtimes produce `/api/wire/search?q=<value>` — pinned by the demo's
 form-encoding path with multipart — see
 **[`docs/recipes/file-upload.md`](recipes/file-upload.md)**.
 
+## Practical notes (audited 2026-09-07)
+
+- **Button vs `Form.Wire`**: prefer `FormProps.Wire` (submit on the form).
+  A `display.Button` with its own `Wire` inside a wired form double-fires —
+  the button's click request AND the form's submit request. Keep buttons
+  plain (`Type: display.ButtonHTMLSubmit`) inside wired forms; give a
+  button its own `Wire` only when it acts alone (the busy-card demo).
+- **Enter key**: in a wired form, Enter fires `submit` — the same event the
+  wiring handles — so both runtimes intercept it (Datastar auto-preventDefaults
+  form submits). In filter components (form wraps the input but the wiring
+  rides `input`/`change` events), Enter still performs the no-JS full-page
+  GET to `Action`; that is correct HATEOAS degradation, not a bug.
+- **Rate limiting**: every wired request is an ordinary HTTP request — rate
+  limit wired endpoints like any JSON endpoint. Debounced inputs
+  (`DebounceMS`) reduce request volume but are a UX affordance, not abuse
+  protection. The demo endpoints ship `noStore` + size caps
+  (`http.MaxBytesReader`); production endpoints add auth + quotas.
+- **CSP**: Datastar's expression evaluation classifies as eval — pages
+  serving Datastar need `script-src 'unsafe-eval'` (see
+  `docs/datastar-runtime-facts.md`); htmx needs no eval. All library JS is
+  nonce-carried and CSP-safe either way.
+- **Combobox / TagsInput round-trip**: both render hidden inputs inside the
+  component (Combobox: one mirrored input; TagsInput: one per value), so
+  form encoding carries their values under both runtimes; both re-render
+  from props (`Value` / `Values`) so server round-trips preserve state.
+  Verified in the component tests — no extra wiring needed.
+- **Calendar / DatePicker**: `Calendar` navigates with plain links
+  (`HrefPrev`/`HrefNext`/day hrefs) — server-driven and
+  transport-agnostic by construction. Adopting `Wire` for month navigation
+  is a deliberate future candidate (see TODO_LIST), not a gap: the
+  no-JS-first design already works under either runtime.
+
 ## Deliberate scope boundaries
 
 `wire` covers only the dialects' common subset. Transport-specific machinery
