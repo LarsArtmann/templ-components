@@ -108,7 +108,7 @@ Don't know what to look for? Find your page type:
 | `Combobox`          | `Combobox(props ComboboxProps)`                   | Autocomplete input with filterable dropdown                                                                   |
 | `DatePicker`        | `DatePicker(props DatePickerProps)`               | Date input with label                                                                                         |
 | `FileInput`         | `FileInput(props FileInputProps)`                 | File upload input with label, accept types                                                                    |
-| `Form`              | `Form(props FormProps)`                           | Form wrapper with action, method, CSRF token, `ContainerAware`                                                |
+| `Form`              | `Form(props FormProps)`                           | Form wrapper with action, method, CSRF token, `ContainerAware`, `Wire` for dual-transport submit (fields serialize in both dialects) |
 | `Label`             | `Label(forID, text string, required bool)`        | Form label element                                                                                            |
 | `FieldError`        | `FieldError(fieldID, message string)`             | Inline field error message                                                                                    |
 | `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                                     |
@@ -225,13 +225,13 @@ Don't know what to look for? Find your page type:
 
 | Function                                        | One-liner                                                                           |
 | ----------------------------------------------- | ----------------------------------------------------------------------------------- |
-| `Action{Transport, Method, URL, Event, Target}` | One typed wiring spec; `.Attributes()` renders the htmx or Datastar dialect         |
+| `Action{Transport, Method, URL, Event, Target, ContentType}` | One typed wiring spec; `.Attributes()` renders the htmx or Datastar dialect; `ContentTypeForm` serializes the enclosing form's fields under Datastar (`{contentType: 'form'}`, verified v1.0.3 runtime), ignored by htmx |
 | `Handler(target PatchTarget, next)`             | Both-transports endpoint middleware: Datastar callers get response-header targeting |
 | `IsDatastar(r)` / `IsHTMX(r)`                   | Request predicates on `Datastar-Request` / `HX-Request` headers                     |
 | `PatchTarget{Selector, Mode}`                   | Server-side patch region for Datastar callers (`PatchMode` typed enum, 7 modes)     |
 | `HeaderDatastarRequest` etc.                    | Typed constants for the request/response marker headers                             |
 
-Scope: common subset only (ADR-0036) — polling/OOB/confirm/indicators/SSE stay in the `htmx`/`datastar` modules. `Action.Target` renders only for htmx (Datastar targeting is response-driven). Components take wiring via `BaseProps.Attrs` or a typed `Wire` field (`display.Button`).
+Scope: common subset only (ADR-0036) — polling/OOB/confirm/indicators/SSE stay in the `htmx`/`datastar` modules. `Action.Target` renders only for htmx (Datastar targeting is response-driven). Whole-form submission IS symmetric (`forms.FormProps.Wire` defaults to `ContentTypeForm`). Per-field value binding stays asymmetric under Datastar (bound signals escape hatch). Components take wiring via `BaseProps.Attrs` or a typed `Wire` field (`display.Button`, `navigation.LoadMore`, `forms.Form`).
 
 ## Quick start: adopting the library
 

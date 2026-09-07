@@ -22,7 +22,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-118 server-rendered components. 57 typed string enums (56 with IsValid()). 106 SVG icons. Zero client-side framework.
+118 server-rendered components. 58 typed string enums (57 with IsValid()). 106 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -266,7 +266,7 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 ## Design Principles
 
-**Type-safe.** 56 typed string enums (53 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 58 typed string enums (57 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 

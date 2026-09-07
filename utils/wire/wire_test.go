@@ -345,12 +345,12 @@ func TestActionAttributesRender(t *testing.T) {
 			action: Action{Transport: TransportDatastar, Method: MethodGet, URL: "/api/items"},
 			contains: []string{
 				`data-on:click="@get(&#39;/api/items&#39;)"`,
-			`data-on:click="@get(`,
-			`/api/items&#39;)"`,
+				`data-on:click="@get(`,
+				`/api/items&#39;)"`,
 			},
 		},
 		{
-			name:   "datastar form expression survives the attribute writer",
+			name: "datastar form expression survives the attribute writer",
 			action: Action{
 				Transport:   TransportDatastar,
 				Method:      MethodPost,
