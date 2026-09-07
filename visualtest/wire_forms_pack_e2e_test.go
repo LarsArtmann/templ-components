@@ -946,7 +946,18 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 				t.Fatalf("%s wizard settle: %v", dialect, err)
 			}
 
-			// Step 1: empty name → inline error.
+			// Step 1: empty name → inline error. The field is cleared
+			// EXPLICITLY first: Datastar's inner-mode patch morphs swapped-in
+			// forms and preserves the previous field's value by position
+			// (the typed email leaks into the name field), so "just submit
+			// empty" is not a runtime-invariant — clearing is.
+			if err := chromedp.Run(ctx,
+				waitSwapSettled(),
+				setFieldValue(ctx, region, `input[name="name"]`, ""),
+			); err != nil {
+				t.Fatalf("%s wizard step 1 clear: %v", dialect, err)
+			}
+
 			if err := packSubmitUntil(ctx, region, region, packWizardNameBad); err != nil {
 				t.Fatalf("%s wizard step 1 (invalid): %v", dialect, err)
 			}
@@ -1182,9 +1193,9 @@ func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
 
 			scope := packScopeID("filter", dialect)
 
-			// Fire the native submit, then poll in a fresh Run: the
-			// full-page navigation invalidates the current execution
-			// context, so the location poll must run after it commits.
+			// Fire the native submit, then wait out the navigation commit
+			// before polling: the full-page navigation invalidates the
+			// current execution context mid-poll, so give it a beat first.
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
@@ -1194,12 +1205,18 @@ func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
 				t.Fatalf("%s Enter-key submit: %v", dialect, err)
 			}
 
+			var location string
+
 			if err := chromedp.Run(ctx,
-				chromedp.Poll(`window.location.search.indexOf('q=enter-test')>-1 && document.readyState==='complete'`, &ok),
+				chromedp.Sleep(wireFormSettleWait),
+				chromedp.Sleep(750*time.Millisecond),
+				chromedp.Location(&location),
 			); err != nil {
-				var current string
-				_ = chromedp.Run(ctx, chromedp.Location(&current))
-				t.Fatalf("%s Enter-key E2E: %v (location=%s)", dialect, err, current)
+				t.Fatalf("%s Enter-key location: %v", dialect, err)
+			}
+
+			if !strings.Contains(location, "q=enter-test") {
+				t.Fatalf("%s: native Enter submit did not carry the query param; got %s", dialect, location)
 			}
 		})
 	}
