@@ -89,7 +89,7 @@ func filterInputWireAttributes(w *wire.Action, debounceMS int) templ.Attributes 
 //	   Wire:        &wire.Action{URL: "/api/users/search", Target: "#user-list"},
 //	})
 templ FilterInput(props FilterInputProps) {
-	{{ inputID := utils.EnsureID("tc-filter-input", props.ID) }}
+	{{ inputID := utils.EnsureID("filter-input", props.ID) }}
 	{{ wired := filterInputWireAttributes(props.Wire, props.DebounceMS) }}
 	<search>
 		<form

@@ -117,7 +117,7 @@ func FilterInput(props FilterInputProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		inputID := utils.EnsureID("tc-filter-input", props.ID)
+		inputID := utils.EnsureID("filter-input", props.ID)
 		wired := filterInputWireAttributes(props.Wire, props.DebounceMS)
 		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<search>")
 		if templ_7745c5c3_Err != nil {
