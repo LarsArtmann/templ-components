@@ -1605,8 +1605,11 @@ func wireBusyDone(transport string) templ.Component {
 	})
 }
 
-// wireWizardStepResult is the re-rendered region for the wizard endpoint:
-// the outer region (whose id the runtime targets) wrapping the step.
+// wireWizardStepResult is the re-rendered region content for the wizard
+// endpoint: the bare step fragment. Both runtimes patch the region's inner
+// HTML (htmx via hx-target, Datastar via the wire.Handler response headers),
+// so the fragment must NOT repeat the region id — that would duplicate the
+// id inside the swapped region.
 func wireWizardStepResult(dialect wire.Transport, step int, message string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -1628,28 +1631,7 @@ func wireWizardStepResult(dialect wire.Transport, step int, message string) temp
 			templ_7745c5c3_Var32 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 86, "<div id=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var33 string
-		templ_7745c5c3_Var33, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(dialect == wire.TransportDatastar, "wizard-datastar-region", "wizard-htmx-region"))
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 719, Col: 107}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var33)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 87, "\">")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
 		templ_7745c5c3_Err = wireWizardStep(dialect, step, message).Render(ctx, templ_7745c5c3_Buffer)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 88, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

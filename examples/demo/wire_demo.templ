@@ -713,10 +713,11 @@ templ wireBusyDone(transport string) {
 	@feedback.InlineSuccess("Job finished via " + transport + " — swapped into this region while the button showed its busy state.")
 }
 
-// wireWizardStepResult is the re-rendered region for the wizard endpoint:
-// the outer region (whose id the runtime targets) wrapping the step.
+// wireWizardStepResult is the re-rendered region content for the wizard
+// endpoint: the bare step fragment. Both runtimes patch the region's inner
+// HTML (htmx via hx-target, Datastar via the wire.Handler response headers),
+// so the fragment must NOT repeat the region id — that would duplicate the
+// id inside the swapped region.
 templ wireWizardStepResult(dialect wire.Transport, step int, message string) {
-	<div id={ utils.Ternary(dialect == wire.TransportDatastar, "wizard-datastar-region", "wizard-htmx-region") }>
-		@wireWizardStep(dialect, step, message)
-	</div>
+	@wireWizardStep(dialect, step, message)
 }

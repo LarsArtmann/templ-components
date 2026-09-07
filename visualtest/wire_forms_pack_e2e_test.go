@@ -135,6 +135,7 @@ func packE2EServer(t *testing.T) *httptest.Server {
 		}
 
 		dialect := packDialect(r)
+
 		step, _ := strconv.Atoi(r.PostFormValue("step"))
 		switch step {
 		case 0:
@@ -144,6 +145,7 @@ func packE2EServer(t *testing.T) *httptest.Server {
 
 				return
 			}
+
 			packWriteComponent(w, r, packWizardStep(dialect, 1, ""))
 		case 1:
 			if strings.TrimSpace(r.PostFormValue("name")) == "" {
@@ -151,6 +153,7 @@ func packE2EServer(t *testing.T) *httptest.Server {
 
 				return
 			}
+
 			packWriteComponent(w, r, packWizardStep(dialect, 2, ""))
 		default:
 			packWriteComponent(w, r, packWizardStep(dialect, 0, ""))
@@ -164,8 +167,9 @@ func packE2EServer(t *testing.T) *httptest.Server {
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 		const maxBytes int64 = 8 << 20
+
 		r.Body = http.MaxBytesReader(w, r.Body, maxBytes)
-		if err := r.ParseMultipartForm(maxBytes); err != nil {
+		if err := r.ParseMultipartForm(maxBytes); err != nil { //nolint:gosec // bounded by MaxBytesReader above
 			http.Error(w, "invalid multipart body", http.StatusBadRequest)
 
 			return
@@ -375,7 +379,7 @@ func packSearchResult(dialect wire.Transport, q string) templ.Component {
 				return err
 			}
 		} else if err := feedback.InlineSuccess(
-			"GET received q=“" + q + "” via " + packTransportWireName(dialect) + ".",
+			"GET received q=“"+q+"” via "+packTransportWireName(dialect)+".",
 		).Render(ctx, w); err != nil {
 			return err
 		}
@@ -461,7 +465,7 @@ func packDirtyForm(value string) templ.Component {
 // fresh guarded form.
 func packDirtyRoundTrip(value string) templ.Component {
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-		if err := feedback.InlineSuccess("Saved " + value + " via htmx.").Render(ctx, w); err != nil {
+		if err := feedback.InlineSuccess("Saved "+value+" via htmx.").Render(ctx, w); err != nil {
 			return err
 		}
 
@@ -535,13 +539,24 @@ func packE2EPage(props layout.PageProps) templ.Component {
 		// Filter pane per dialect.
 		for _, dialect := range []wire.Transport{wire.TransportHTMX, wire.TransportDatastar} {
 			outID := packFilterOutRegion(dialect)
-			if err := write(`<section id="` + strings.TrimPrefix(packScopeID("filter", dialect), "#") + `"><h2 class="text-sm font-semibold mb-2">filter ` + string(dialect) + `</h2>`); err != nil {
+			if err := write(
+				`<section id="` + strings.TrimPrefix(
+					packScopeID("filter", dialect),
+					"#",
+				) + `"><h2 class="text-sm font-semibold mb-2">filter ` + string(
+					dialect,
+				) + `</h2>`,
+			); err != nil {
 				return err
 			}
+
 			if err := packFilterInput(dialect).Render(ctx, w); err != nil {
 				return err
 			}
-			if err := write(`<div id="` + strings.TrimPrefix(outID, "#") + `" aria-live="polite"></div></section>`); err != nil {
+
+			if err := write(
+				`<div id="` + strings.TrimPrefix(outID, "#") + `" aria-live="polite"></div></section>`,
+			); err != nil {
 				return err
 			}
 		}
@@ -550,13 +565,23 @@ func packE2EPage(props layout.PageProps) templ.Component {
 		for _, dialect := range []wire.Transport{wire.TransportHTMX, wire.TransportDatastar} {
 			outID := packDropdownDatastarOut
 			target := ""
+
 			if dialect == wire.TransportHTMX {
 				outID = packDropdownHTMXOut
 				target = outID
 			}
-			if err := write(`<section id="` + strings.TrimPrefix(packScopeID("dropdown", dialect), "#") + `"><h2 class="text-sm font-semibold mb-2">dropdown ` + string(dialect) + `</h2>`); err != nil {
+
+			if err := write(
+				`<section id="` + strings.TrimPrefix(
+					packScopeID("dropdown", dialect),
+					"#",
+				) + `"><h2 class="text-sm font-semibold mb-2">dropdown ` + string(
+					dialect,
+				) + `</h2>`,
+			); err != nil {
 				return err
 			}
+
 			if err := forms.FilterDropdown(forms.FilterDropdownProps{
 				Name:  "framework",
 				Label: "Framework",
@@ -569,7 +594,10 @@ func packE2EPage(props layout.PageProps) templ.Component {
 			}).Render(ctx, w); err != nil {
 				return err
 			}
-			if err := write(`<div id="` + strings.TrimPrefix(outID, "#") + `" aria-live="polite"></div></section>`); err != nil {
+
+			if err := write(
+				`<div id="` + strings.TrimPrefix(outID, "#") + `" aria-live="polite"></div></section>`,
+			); err != nil {
 				return err
 			}
 		}
@@ -580,12 +608,22 @@ func packE2EPage(props layout.PageProps) templ.Component {
 			if dialect == wire.TransportDatastar {
 				regionID = packWizardDatastarRegion
 			}
-			if err := write(`<section><h2 class="text-sm font-semibold mb-2">wizard ` + string(dialect) + `</h2><div id="` + strings.TrimPrefix(regionID, "#") + `">`); err != nil {
+
+			if err := write(
+				`<section><h2 class="text-sm font-semibold mb-2">wizard ` + string(
+					dialect,
+				) + `</h2><div id="` + strings.TrimPrefix(
+					regionID,
+					"#",
+				) + `">`,
+			); err != nil {
 				return err
 			}
+
 			if err := packWizardStep(dialect, 0, "").Render(ctx, w); err != nil {
 				return err
 			}
+
 			if err := write(`</div></section>`); err != nil {
 				return err
 			}
@@ -595,15 +633,26 @@ func packE2EPage(props layout.PageProps) templ.Component {
 		for _, dialect := range []wire.Transport{wire.TransportHTMX, wire.TransportDatastar} {
 			outID := packUploadDatastarOut
 			target := ""
+
 			if dialect == wire.TransportHTMX {
 				outID = packUploadHTMXOut
 				target = outID
 			}
-			if err := write(`<section id="` + strings.TrimPrefix(packScopeID("upload", dialect), "#") + `"><h2 class="text-sm font-semibold mb-2">upload ` + string(dialect) + `</h2>`); err != nil {
+
+			if err := write(
+				`<section id="` + strings.TrimPrefix(
+					packScopeID("upload", dialect),
+					"#",
+				) + `"><h2 class="text-sm font-semibold mb-2">upload ` + string(
+					dialect,
+				) + `</h2>`,
+			); err != nil {
 				return err
 			}
+
 			uploadChildren := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-				if err := forms.FileInput(forms.FileInputProps{Name: "attachment", Label: "Attachment"}).Render(ctx, w); err != nil {
+				if err := forms.FileInput(forms.FileInputProps{Name: "attachment", Label: "Attachment"}).
+					Render(ctx, w); err != nil {
 					return err
 				}
 
@@ -626,7 +675,10 @@ func packE2EPage(props layout.PageProps) templ.Component {
 			}).Render(templ.WithChildren(ctx, uploadChildren), w); err != nil {
 				return err
 			}
-			if err := write(`<div id="` + strings.TrimPrefix(outID, "#") + `" class="mt-3" aria-live="polite"></div></section>`); err != nil {
+
+			if err := write(
+				`<div id="` + strings.TrimPrefix(outID, "#") + `" class="mt-3" aria-live="polite"></div></section>`,
+			); err != nil {
 				return err
 			}
 		}
@@ -637,24 +689,38 @@ func packE2EPage(props layout.PageProps) templ.Component {
 			if dialect == wire.TransportDatastar {
 				regionID = packSearchDatastarRegion
 			}
-			if err := write(`<section><h2 class="text-sm font-semibold mb-2">search ` + string(dialect) + `</h2><div id="` + strings.TrimPrefix(regionID, "#") + `" aria-live="polite">`); err != nil {
+
+			if err := write(
+				`<section><h2 class="text-sm font-semibold mb-2">search ` + string(
+					dialect,
+				) + `</h2><div id="` + strings.TrimPrefix(
+					regionID,
+					"#",
+				) + `" aria-live="polite">`,
+			); err != nil {
 				return err
 			}
+
 			if err := packSearchForm(dialect, "").Render(ctx, w); err != nil {
 				return err
 			}
+
 			if err := write(`</div></section>`); err != nil {
 				return err
 			}
 		}
 
 		// DirtyGuard pane (htmx only — the lifecycle is transport-agnostic).
-		if err := write(`<section><h2 class="text-sm font-semibold mb-2">dirty guard</h2><div id="pack-dirty-region" aria-live="polite">`); err != nil {
+		if err := write(
+			`<section><h2 class="text-sm font-semibold mb-2">dirty guard</h2><div id="pack-dirty-region" aria-live="polite">`,
+		); err != nil {
 			return err
 		}
+
 		if err := packDirtyForm("").Render(ctx, w); err != nil {
 			return err
 		}
+
 		if err := write(`</div></section></div>`); err != nil {
 			return err
 		}
@@ -683,21 +749,23 @@ func packDialects() []wire.Transport {
 
 // setSelectValue sets a select's value and fires the change event (the
 // trigger both dialects' dropdown wiring listens for).
-func setSelectValue(ctx context.Context, region, sel, value string) chromedp.ActionFunc {
+func setSelectValue(region, sel, value string) chromedp.ActionFunc {
 	return chromedp.ActionFunc(func(cctx context.Context) error {
 		expr := `var s=document.querySelector('` + formSel(region, sel) + `'); s.value=` + jsString(value) +
 			`; s.dispatchEvent(new Event('change',{bubbles:true})); s.value`
+
 		var out string
 
-		return chromedp.Evaluate(expr, &out).Do(cctx) //nolint:staticcheck // action inside Run
+		return chromedp.Evaluate(expr, &out).Do(cctx)
 	})
 }
 
 // setValueQuiet sets an input's value WITHOUT firing events — used by the
 // Enter-key test so the debounce never races the native submit.
-func setValueQuiet(ctx context.Context, region, sel, value string) chromedp.ActionFunc {
+func setValueQuiet(region, sel, value string) chromedp.ActionFunc {
 	return chromedp.ActionFunc(func(cctx context.Context) error {
 		expr := `var i=document.querySelector('` + formSel(region, sel) + `'); i.value=` + jsString(value) + `; i.value`
+
 		var out string
 
 		return chromedp.Evaluate(expr, &out).Do(cctx)
@@ -712,10 +780,11 @@ func regionExistsExpr(region, sel string) string {
 
 // fireInputBurst sets the value and fires n synchronous input events in one
 // JS tick — a working debounce collapses the whole burst into one request.
-func fireInputBurst(ctx context.Context, region, sel, value string, n int) chromedp.ActionFunc {
+func fireInputBurst(region, sel, value string, n int) chromedp.ActionFunc {
 	return chromedp.ActionFunc(func(cctx context.Context) error {
 		expr := `var i=document.querySelector('` + formSel(region, sel) + `'); i.value=` + jsString(value) +
 			`; for (var k=0;k<` + strconv.Itoa(n) + `;k++) { i.dispatchEvent(new Event('input',{bubbles:true})); } 'burst'`
+
 		var out string
 
 		return chromedp.Evaluate(expr, &out).Do(cctx)
@@ -742,7 +811,7 @@ func beforeUnloadPrevented(ctx context.Context) (bool, error) {
 func regionText(ctx context.Context, region string) (string, error) {
 	var text string
 
-	err := chromedp.Run(ctx, chromedp.Evaluate(`document.querySelector('` + region + `').innerText`, &text))
+	err := chromedp.Run(ctx, chromedp.Evaluate(`document.querySelector('`+region+`').innerText`, &text))
 
 	return text, err
 }
@@ -763,7 +832,7 @@ func packPollOnce(ctx context.Context, expr string) bool {
 // (the page guard prevents a native-submit fallback), so retrying mirrors a
 // real user clicking again and makes the test deterministic.
 func packSubmitUntil(ctx context.Context, scope, needleRegion, needle string) error {
-	for attempt := 0; attempt < 20; attempt++ {
+	for range 20 {
 		if err := chromedp.Run(ctx,
 			chromedp.Click(formSel(scope, `button[type="submit"]`), chromedp.NodeVisible),
 		); err != nil {
@@ -786,7 +855,7 @@ func packSubmitUntil(ctx context.Context, scope, needleRegion, needle string) er
 // packFireUntil performs action until needle appears in needleRegion's text
 // (bounded retries) — the debounce/autocomplete twin of packSubmitUntil.
 func packFireUntil(ctx context.Context, action chromedp.Action, needleRegion, needle string) error {
-	for attempt := 0; attempt < 20; attempt++ {
+	for range 20 {
 		if err := chromedp.Run(ctx, action); err != nil {
 			return err
 		}
@@ -809,10 +878,8 @@ func packFireUntil(ctx context.Context, action chromedp.Action, needleRegion, ne
 // request (the debounce), the response swaps into the results region, and a
 // later keystroke fires exactly one more request.
 func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
-
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-
 			srv := packE2EServer(t)
 
 			ctx, cancel := newTab(t)
@@ -823,6 +890,7 @@ func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
 
 			region := packFilterOutRegion(dialect)
 			scope := packScopeID("filter", dialect)
+
 			var ok bool
 
 			if err := chromedp.Run(ctx,
@@ -835,7 +903,7 @@ func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
 			// A burst of three input events collapses into exactly one
 			// request — the debounce — and the response swaps in.
 			if err := packFireUntil(ctx,
-				fireInputBurst(ctx, scope, `input[name="q"]`, "fltr", 3),
+				fireInputBurst(scope, `input[name="q"]`, "fltr", 3),
 				region, "Filter results for “fltr” (1 request)",
 			); err != nil {
 				t.Fatalf("%s filter input E2E: %v", dialect, err)
@@ -843,7 +911,7 @@ func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
 
 			// A later keystroke fires exactly one more request.
 			if err := packFireUntil(ctx,
-				setFieldValue(ctx, scope, `input[name="q"]`, "templ"),
+				setFieldValue(scope, `input[name="q"]`, "templ"),
 				region, "Filter results for “templ” (2 request)",
 			); err != nil {
 				t.Fatalf("%s filter input second keystroke: %v", dialect, err)
@@ -856,10 +924,8 @@ func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
 // runtimes: changing the select fires the wired request and the region
 // receives the verdict naming the picked value and the transport.
 func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
-
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-
 			srv := packE2EServer(t)
 
 			ctx, cancel := newTab(t)
@@ -872,6 +938,7 @@ func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
 			if dialect == wire.TransportHTMX {
 				region = packDropdownHTMXOut
 			}
+
 			scope := packScopeID("dropdown", dialect)
 
 			var ok bool
@@ -884,7 +951,7 @@ func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
 			}
 
 			if err := packFireUntil(ctx,
-				setSelectValue(ctx, scope, `select[name="framework"]`, "beta"),
+				setSelectValue(scope, `select[name="framework"]`, "beta"),
 				region, "Picked beta via "+string(dialect)+".",
 			); err != nil {
 				t.Fatalf("%s filter dropdown E2E: %v", dialect, err)
@@ -898,10 +965,8 @@ func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
 // a valid one advances to the profile step, and a valid name completes the
 // wizard — every response swapped into the same region.
 func TestWireE2EWizardStepsAdvances(t *testing.T) {
-
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-
 			srv := packE2EServer(t)
 
 			ctx, cancel := newTab(t)
@@ -933,7 +998,7 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 				chromedp.Poll(regionExistsExpr(region, `input[name="email"]`), &ok),
 				waitSwapSettled(),
 				// Step 0: valid email → advance to profile.
-				setFieldValue(ctx, region, `input[name="email"]`, "ada@example.com"),
+				setFieldValue(region, `input[name="email"]`, "ada@example.com"),
 			); err != nil {
 				t.Fatalf("%s wizard step 0 fill: %v", dialect, err)
 			}
@@ -953,7 +1018,7 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 			// empty" is not a runtime-invariant — clearing is.
 			if err := chromedp.Run(ctx,
 				waitSwapSettled(),
-				setFieldValue(ctx, region, `input[name="name"]`, ""),
+				setFieldValue(region, `input[name="name"]`, ""),
 			); err != nil {
 				t.Fatalf("%s wizard step 1 clear: %v", dialect, err)
 			}
@@ -965,7 +1030,7 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 			if err := chromedp.Run(ctx,
 				waitSwapSettled(),
 				// Step 1: valid name → wizard complete.
-				setFieldValue(ctx, region, `input[name="name"]`, "Ada Lovelace"),
+				setFieldValue(region, `input[name="name"]`, "Ada Lovelace"),
 			); err != nil {
 				t.Fatalf("%s wizard step 1 fill: %v", dialect, err)
 			}
@@ -982,9 +1047,9 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 // file selected via the browser's file input uploads and the shared results
 // region names the file, its size, and the transport.
 func TestWireE2EUploadFileRoundTrip(t *testing.T) {
-
 	dir := t.TempDir()
 	filePath := filepath.Join(dir, packUploadFileName)
+
 	content := strings.Repeat("a", packUploadFileSize)
 	if err := os.WriteFile(filePath, []byte(content), 0o600); err != nil {
 		t.Fatalf("write upload fixture: %v", err)
@@ -992,7 +1057,6 @@ func TestWireE2EUploadFileRoundTrip(t *testing.T) {
 
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-
 			srv := packE2EServer(t)
 
 			ctx, cancel := newTab(t)
@@ -1005,6 +1069,7 @@ func TestWireE2EUploadFileRoundTrip(t *testing.T) {
 			if dialect == wire.TransportHTMX {
 				out = packUploadHTMXOut
 			}
+
 			scope := packScopeID("upload", dialect)
 
 			var ok bool
@@ -1043,10 +1108,8 @@ func TestWireE2EUploadFileRoundTrip(t *testing.T) {
 // verdict naming the transport, the submitted value survives into the fresh
 // form, and a correction resubmits in place.
 func TestWireE2EGETSearchRoundTrip(t *testing.T) {
-
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-
 			srv := packE2EServer(t)
 
 			ctx, cancel := newTab(t)
@@ -1068,12 +1131,17 @@ func TestWireE2EGETSearchRoundTrip(t *testing.T) {
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
-				setFieldValue(ctx, region, `input[name="q"]`, "ada"),
+				setFieldValue(region, `input[name="q"]`, "ada"),
 			); err != nil {
 				t.Fatalf("%s search setup: %v", dialect, err)
 			}
 
-			if err := packSubmitUntil(ctx, region, region, "GET received q=“ada” via "+string(dialect)+"."); err != nil {
+			if err := packSubmitUntil(
+				ctx,
+				region,
+				region,
+				"GET received q=“ada” via "+string(dialect)+".",
+			); err != nil {
 				t.Fatalf("%s search first submit: %v", dialect, err)
 			}
 
@@ -1082,12 +1150,17 @@ func TestWireE2EGETSearchRoundTrip(t *testing.T) {
 				// The submitted value survived the round-trip re-render.
 				chromedp.Evaluate(formValueExpr(region, `input[name="q"]`), &preserved),
 				// A correction resubmits in place.
-				setFieldValue(ctx, region, `input[name="q"]`, "grace"),
+				setFieldValue(region, `input[name="q"]`, "grace"),
 			); err != nil {
 				t.Fatalf("%s search re-fill: %v", dialect, err)
 			}
 
-			if err := packSubmitUntil(ctx, region, region, "GET received q=“grace” via "+string(dialect)+"."); err != nil {
+			if err := packSubmitUntil(
+				ctx,
+				region,
+				region,
+				"GET received q=“grace” via "+string(dialect)+".",
+			); err != nil {
 				t.Fatalf("%s search second submit: %v", dialect, err)
 			}
 
@@ -1103,7 +1176,6 @@ func TestWireE2EGETSearchRoundTrip(t *testing.T) {
 // typing marks the form dirty, the wired submit clears the flag, and the
 // swapped-in form starts clean — then can be dirtied again.
 func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
-
 	srv := packE2EServer(t)
 
 	ctx, cancel := newTab(t)
@@ -1128,6 +1200,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	if err := chromedp.Run(ctx, chromedp.Evaluate(`window.tcDirtyGuardAttached===true`, &attached)); err != nil {
 		t.Fatalf("read guard singleton: %v", err)
 	}
+
 	if !attached {
 		t.Fatal("tcDirtyGuardAttached is not set — the guard script did not run")
 	}
@@ -1139,6 +1212,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 		if err != nil {
 			t.Fatalf("%s: beforeunload probe: %v", stage, err)
 		}
+
 		if got != want {
 			t.Fatalf("%s: beforeunload preventDefault = %v, want %v", stage, got, want)
 		}
@@ -1148,9 +1222,13 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	assertPrevented(false, "clean form")
 
 	// Typing marks the form dirty (capture-phase input listener).
-	if err := chromedp.Run(ctx, setFieldValue(ctx, packDirtyRegion, `input[name="project"]`, "Graf Zeppelin")); err != nil {
+	if err := chromedp.Run(
+		ctx,
+		setFieldValue(ctx, packDirtyRegion, `input[name="project"]`, "Graf Zeppelin"),
+	); err != nil {
 		t.Fatalf("dirty the form: %v", err)
 	}
+
 	assertPrevented(true, "dirty form")
 
 	// The wired submit dispatches submit, which clears the flag; the
@@ -1162,13 +1240,19 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	); err != nil {
 		t.Fatalf("submit dirty form: %v", err)
 	}
+
 	assertPrevented(false, "after submit")
 
 	// The swapped-in form starts clean — and tracks dirt again.
 	assertPrevented(false, "swapped-in form")
-	if err := chromedp.Run(ctx, setFieldValue(ctx, packDirtyRegion, `input[name="project"]`, "Hindenburg")); err != nil {
+
+	if err := chromedp.Run(
+		ctx,
+		setFieldValue(ctx, packDirtyRegion, `input[name="project"]`, "Hindenburg"),
+	); err != nil {
 		t.Fatalf("dirty the swapped-in form: %v", err)
 	}
+
 	assertPrevented(true, "swapped-in form dirty")
 }
 
@@ -1177,10 +1261,8 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 // native GET form submits full-page with the field as a query parameter and
 // the reloaded page stays interactive.
 func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
-
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-
 			srv := packE2EServer(t)
 
 			ctx, cancel := newTab(t)
@@ -1199,7 +1281,7 @@ func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
-				setValueQuiet(ctx, scope, `input[name="q"]`, "enter-test"),
+				setValueQuiet(scope, `input[name="q"]`, "enter-test"),
 				chromedp.SendKeys(formSel(scope, `input[name="q"]`), kb.Enter),
 			); err != nil {
 				t.Fatalf("%s Enter-key submit: %v", dialect, err)

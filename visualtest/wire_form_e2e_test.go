@@ -72,6 +72,7 @@ func setFieldValue(ctx context.Context, region, field, value string) chromedp.Ac
 	return chromedp.ActionFunc(func(cctx context.Context) error {
 		expr := `var i=document.querySelector('` + formSel(region, field) + `'); i.value=` + jsString(value) +
 			`; i.dispatchEvent(new Event('input',{bubbles:true})); i.value`
+
 		var out string
 
 		return chromedp.Evaluate(expr, &out).Do(cctx)
@@ -102,6 +103,7 @@ func (s wireFormState) summaryErrors() []forms.ValidationError {
 	if s.NameErr != "" {
 		errs = append(errs, forms.ValidationError{Field: "name", Message: s.NameErr})
 	}
+
 	if s.EmailErr != "" {
 		errs = append(errs, forms.ValidationError{Field: "email", Message: s.EmailErr})
 	}
@@ -198,12 +200,14 @@ func wireFormEndpoint(w http.ResponseWriter, r *http.Request) {
 	if st.Name == "" {
 		st.NameErr = wireFormNameMissing
 	}
+
 	if !strings.Contains(st.Email, "@") || !strings.Contains(st.Email, ".") {
 		st.EmailErr = wireFormEmailBad
 	}
 
 	dialect := wire.TransportHTMX
 	transport := "htmx"
+
 	if wire.IsDatastar(r) {
 		dialect = wire.TransportDatastar
 		transport = "datastar"
@@ -371,13 +375,21 @@ func TestWireE2EDatastarFormSubmitsFields(t *testing.T) {
 
 	var ok bool
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Run(
+		ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		chromedp.Poll(`window.__dsReady===true`, &ok),
 		chromedp.SendKeys(formSel(wireFormDatastarRegion, `input[name="name"]`), "Grace Hopper", chromedp.NodeVisible),
-		chromedp.SendKeys(formSel(wireFormDatastarRegion, `input[name="email"]`), "grace@example.com", chromedp.NodeVisible),
+		chromedp.SendKeys(
+			formSel(wireFormDatastarRegion, `input[name="email"]`),
+			"grace@example.com",
+			chromedp.NodeVisible,
+		),
 		chromedp.Click(formSel(wireFormDatastarRegion, `button[type="submit"]`), chromedp.NodeVisible),
-		chromedp.Poll(regionHasText(wireFormDatastarRegion, "Subscribed Grace Hopper (grace@example.com) via datastar."), &ok),
+		chromedp.Poll(
+			regionHasText(wireFormDatastarRegion, "Subscribed Grace Hopper (grace@example.com) via datastar."),
+			&ok,
+		),
 	); err != nil {
 		t.Fatalf("datastar form E2E: %v", err)
 	}

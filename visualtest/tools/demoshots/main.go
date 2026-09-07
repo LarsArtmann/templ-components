@@ -39,6 +39,7 @@ const settle = 600 * time.Millisecond
 func main() {
 	base := flag.String("base", "http://localhost:8901", "demo server base URL")
 	out := flag.String("out", "/tmp/tc-shots", "output directory for PNGs")
+
 	flag.Parse()
 
 	if err := os.MkdirAll(*out, 0o755); err != nil {
@@ -81,6 +82,7 @@ func capturePage(execPath, base, out string, p page) error {
 
 	browserCtx, cancelBrowser := chromedp.NewContext(allocCtx)
 	defer cancelBrowser()
+
 	ctx, cancelTimeout := context.WithTimeout(browserCtx, 120*time.Second)
 	defer cancelTimeout()
 
