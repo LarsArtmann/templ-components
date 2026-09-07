@@ -117,12 +117,15 @@ func TestFormEnctype(t *testing.T) {
 
 	t.Run("IsValid accepts zero value and known values", func(t *testing.T) {
 		t.Parallel()
+
 		if !FormEnctypeIsValid("") {
 			t.Error(`FormEnctypeIsValid("") = false, want true`)
 		}
+
 		if !FormEnctypeIsValid(FormEnctypeUrlencoded) || !FormEnctypeIsValid(FormEnctypeMultipart) {
 			t.Error("FormEnctypeIsValid rejected known values")
 		}
+
 		if FormEnctypeIsValid(FormEnctype("text/plain")) {
 			t.Error("FormEnctypeIsValid accepted unknown value")
 		}

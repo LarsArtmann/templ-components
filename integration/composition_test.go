@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/a-h/templ"
-
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
@@ -407,11 +406,13 @@ func TestWiredFormCompositionStack(t *testing.T) {
 				return fmt.Errorf("render input: %w", err)
 			}
 
-			return display.Button(display.ButtonProps{
+			btn := display.Button(display.ButtonProps{
 				Text:    "Save",
 				Variant: display.ButtonPrimary,
 				Type:    display.ButtonHTMLSubmit,
-			}).Render(ctx, w)
+			})
+
+			return btn.Render(ctx, w)
 		},
 	))
 

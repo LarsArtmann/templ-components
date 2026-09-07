@@ -40,6 +40,7 @@ func TestDirtyGuardScript(t *testing.T) {
 	t.Run("no HTML beyond the script element", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, DirtyGuard(DirtyGuardProps{}))
+
 		if strings.Contains(strings.ReplaceAll(output, "<script", ""), "</script>") &&
 			strings.Contains(output, "<div") {
 			t.Error("DirtyGuard must render only a script element")
