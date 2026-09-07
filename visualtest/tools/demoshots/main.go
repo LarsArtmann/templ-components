@@ -45,28 +45,15 @@ func main() {
 		log.Fatal(err)
 	}
 
-	allocCtx, cancelAlloc := chromedp.NewExecAllocator(
-		context.Background(),
-		append(chromedp.DefaultExecAllocatorOptions[:],
-			chromedp.ExecPath(chromePath()),
-			chromedp.Flag("window-size", "1280,900"),
-			chromedp.Flag("force-device-scale-factor", "1"),
-		)...)
-	defer cancelAlloc()
-
-	browserCtx, cancelBrowser := chromedp.NewContext(allocCtx)
-	defer cancelBrowser()
-	browserCtx, cancelBrowserTimeout := context.WithTimeout(browserCtx, 30*time.Minute)
-	defer cancelBrowserTimeout()
-
-	if err := chromedp.Run(browserCtx); err != nil {
-		log.Fatalf("start browser: %v", err)
-	}
-
 	for _, p := range pages {
-		if err := capturePage(browserCtx, *base, *out, p); err != nil {
+		// Fresh browser per page: a long-lived shared browser degrades across
+		// very tall captures (multi-minute hangs); an isolated instance
+		// captures each page in ~2s.
+		if err := capturePage(chromePath(), *base, *out, p); err != nil {
 			log.Fatalf("capture %s: %v", p.name, err)
 		}
+
+		fmt.Printf("captured %s\n", p.name)
 	}
 
 	fmt.Println("done")
@@ -82,10 +69,19 @@ func chromePath() string {
 
 // capturePage screenshots one page in light mode, then toggles the dark
 // class on the same tab and screenshots again (no second navigation).
-func capturePage(parent context.Context, base, out string, p page) error {
-	ctx, cancel := chromedp.NewContext(parent)
-	defer cancel()
-	ctx, cancelTimeout := context.WithTimeout(ctx, 180*time.Second)
+func capturePage(execPath, base, out string, p page) error {
+	allocCtx, cancelAlloc := chromedp.NewExecAllocator(
+		context.Background(),
+		append(chromedp.DefaultExecAllocatorOptions[:],
+			chromedp.ExecPath(execPath),
+			chromedp.Flag("window-size", "1280,900"),
+			chromedp.Flag("force-device-scale-factor", "1"),
+		)...)
+	defer cancelAlloc()
+
+	browserCtx, cancelBrowser := chromedp.NewContext(allocCtx)
+	defer cancelBrowser()
+	ctx, cancelTimeout := context.WithTimeout(browserCtx, 120*time.Second)
 	defer cancelTimeout()
 
 	var light, dark []byte

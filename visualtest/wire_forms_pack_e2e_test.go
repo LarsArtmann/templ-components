@@ -860,7 +860,10 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 				})
 			}
 
-			var ok bool
+			var (
+				ok    bool
+				probe string
+			)
 
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
@@ -883,10 +886,12 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 				setFieldValue(ctx, region, `input[name="name"]`, "Ada Lovelace"),
 				chromedp.Evaluate(`document.querySelector('` + formSel(region, `button[type="submit"]`) + `').click(); true`, &ok),
 				chromedp.Sleep(1 * time.Second),
-				chromedp.Evaluate(`1+1`, &ok),
-				chromedp.Evaluate(`document.querySelectorAll('#pack-wizard-datastar-region form').length`, &ok),
-				chromedp.Evaluate(`!!document.querySelector('#pack-wizard-datastar-region button[type="submit"]')`, &ok),
-				chromedp.Evaluate(`typeof window.__dsReady`, &ok),
+				chromedp.Evaluate(`JSON.stringify({
+					forms: document.querySelectorAll('` + region + ` form').length,
+					attr: (document.querySelector('` + region + ` form') || {getAttribute: function(){return 'NOFORM';}}).getAttribute('data-on:submit'),
+					buttons: document.querySelectorAll('` + region + ` button').length,
+					txt: (document.querySelector('` + region + `') || {innerText: 'NOREGION'}).innerText.slice(0, 150)
+				})`, &probe),
 				chromedp.Poll(regionHasText(region, "Wizard complete"), &ok),
 			); err != nil {
 				text, textErr := regionText(ctx, region)
@@ -896,7 +901,7 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 
 				var loc string
 				_ = chromedp.Location(&loc).Do(ctx)
-				t.Fatalf("%s wizard E2E: %v\nlocation: %s\nregion text: %.600s", dialect, err, loc, text)
+				t.Fatalf("%s wizard E2E: %v\nprobe: %s\nlocation: %s\nregion text: %.600s", dialect, err, probe, loc, text)
 			}
 		})
 	}
