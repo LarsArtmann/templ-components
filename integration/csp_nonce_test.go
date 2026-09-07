@@ -9,6 +9,7 @@ import (
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/errorpage"
 	"github.com/larsartmann/templ-components/feedback"
+	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
