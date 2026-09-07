@@ -73,17 +73,13 @@ func TestDebugHtmxSwapControl(t *testing.T) {
 		chromedp.Evaluate(`window.__events=[]; ['htmx:afterSwap','htmx:afterSettle','htmx:load','htmx:afterProcessNode','htmx:error','htmx:sendError'].forEach(function(n){ document.addEventListener(n, function(e){ window.__events.push(n + (e.target && e.target.id ? ':'+e.target.id : '')); }); }); 'armed'`, &evts),
 		chromedp.Click("#btn1", chromedp.NodeVisible),
 		chromedp.Poll(`document.querySelector('#btn2')!==null`, &ok),
-		chromedp.Evaluate(`new Promise(function(res){ setTimeout(function(){ res(JSON.stringify(window.__events)); }, 300); })`, &evts),
+		chromedp.Sleep(400 * time.Millisecond),
 		chromedp.Poll(`document.querySelector('#region').innerText.includes('hit 2')`, &ok),
 	); err != nil {
 		t.Fatalf("control: %v (hits=%d) events=%v", err, hits, evts)
 	}
 	t.Logf("EVENTS: %v", evts)
-	var evts2 string
-	if err := chromedp.Run(ctx, chromedp.Evaluate(`JSON.stringify(window.__events)`, &evts2)); err != nil {
-		t.Fatalf("evts2: %v", err)
-	}
-	t.Logf("EVENTS2: %s", evts2)
+
 
 	t.Logf("control passed: hits=%d", hits)
 }
