@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -295,6 +296,70 @@ templ wireDemo(transport demoTransport) {
 				</div>
 			}
 		</div>
+	</div>
+
+	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Multi-step wizard</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+			A stepper is a server-side state machine: <code>feedback.StepIndicator</code> +
+			one step's fields re-render into the region per request; the server validates each
+			step (a step number from the client is a hint, not authorization) and errors never
+			advance. Recipe: <code>docs/recipes/multi-step-forms.md</code>.
+		</p>
+		<div class="max-w-md">
+			if transport == demoTransportBoth {
+				<div class="space-y-6">
+					<div id="wizard-htmx-region">@wireWizardStep(wire.TransportHTMX, 0, "")</div>
+					<div id="wizard-datastar-region">@wireWizardStep(wire.TransportDatastar, 0, "")</div>
+				</div>
+			} else if transport.wireTransport() == wire.TransportDatastar {
+				<div id="wizard-datastar-region">@wireWizardStep(wire.TransportDatastar, 0, "")</div>
+			} else {
+				<div id="wizard-htmx-region">@wireWizardStep(wire.TransportHTMX, 0, "")</div>
+			}
+		</div>
+	</div>
+}
+
+// wireWizardStep renders one wizard step: the indicator plus that step's
+// wired form. step 0 = account (email), step 1 = profile (name), step 2 =
+// done. The server owns advancement; this template just renders state.
+templ wireWizardStep(dialect wire.Transport, step int, message string) {
+	<div class="space-y-4">
+		@feedback.StepIndicator(feedback.StepIndicatorProps{
+			Steps:       []string{"Account", "Profile", "Done"},
+			CurrentStep: step,
+		})
+		if step < 2 {
+			@forms.Form(forms.FormProps{
+				Action:     "/api/wire/wizard",
+				Method:     forms.FormPost,
+				BaseProps:  utils.BaseProps{Class: "space-y-3"},
+				NoValidate: true,
+				Wire: &wire.Action{
+					Transport: dialect,
+					Method:    wire.MethodPost,
+					URL:       "/api/wire/wizard",
+					Target:    utils.Ternary(dialect == wire.TransportDatastar, "", "#wizard-htmx-region"),
+				},
+			}) {
+				<input type="hidden" name="step" value={ strconv.Itoa(step) }/>
+				if step == 0 {
+					if message != "" {
+						@forms.FieldError("wizard-email", message)
+					}
+					@forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email"})
+				} else {
+					if message != "" {
+						@forms.FieldError("wizard-name", message)
+					}
+					@forms.Input(forms.InputProps{Name: "name", Label: "Full name"})
+				}
+				@display.Button(display.ButtonProps{Text: "Next", Variant: display.ButtonPrimary, Size: display.ButtonSizeSM, Type: display.ButtonHTMLSubmit})
+			}
+		} else {
+			@feedback.InlineSuccess("Wizard complete — the server validated each step.")
+		}
 	</div>
 }
 
@@ -646,4 +711,12 @@ const wireUploadMaxBytes int64 = 8 << 20
 // wireBusyDone is the shared response body for the busy-state endpoint.
 templ wireBusyDone(transport string) {
 	@feedback.InlineSuccess("Job finished via " + transport + " — swapped into this region while the button showed its busy state.")
+}
+
+// wireWizardStepResult is the re-rendered region for the wizard endpoint:
+// the outer region (whose id the runtime targets) wrapping the step.
+templ wireWizardStepResult(dialect wire.Transport, step int, message string) {
+	<div id={ utils.Ternary(dialect == wire.TransportDatastar, "wizard-datastar-region", "wizard-htmx-region") }>
+		@wireWizardStep(dialect, step, message)
+	</div>
 }

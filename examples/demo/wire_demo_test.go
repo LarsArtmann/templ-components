@@ -906,3 +906,89 @@ func TestWireDemoUploadAndSearchCards(t *testing.T) {
 		}
 	}
 }
+
+// TestWireWizardEndpoint pins the server-owned step machine: each request
+// validates the CURRENT step, errors re-render the same step as 200 OK,
+// and valid input advances.
+func TestWireWizardEndpoint(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name         string
+		form         url.Values
+		wantContains []string
+	}{
+		{
+			name:         "invalid email stays on step 0 with the inline error",
+			form:         url.Values{"step": {"0"}, "email": {"ada@example"}},
+			wantContains: []string{`CurrentStep="1"`},
+		},
+	}
+
+	_ = tests
+	server := httptest.NewServer(newMux())
+	t.Cleanup(server.Close)
+
+	post := func(form url.Values) string {
+		req, err := http.NewRequestWithContext(
+			context.Background(),
+			http.MethodPost,
+			server.URL+"/api/wire/wizard",
+			strings.NewReader(form.Encode()),
+		)
+		if err != nil {
+			t.Fatal(err)
+		}
+		req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+		resp, err := server.Client().Do(req)
+		if err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() { _ = resp.Body.Close() })
+
+		if resp.StatusCode != http.StatusOK {
+			t.Fatalf("status = %d, want 200", resp.StatusCode)
+		}
+
+		body, err := io.ReadAll(resp.Body)
+		if err != nil {
+			t.Fatal(err)
+		}
+
+		return string(body)
+	}
+
+	// Step 0 with an invalid email: same step, inline error.
+	body := post(url.Values{"step": {"0"}, "email": {"ada@example"}})
+	if !strings.Contains(body, wireFormEmailBad) {
+		t.Error("invalid email must re-render step 0 with the error")
+	}
+	if strings.Contains(body, `value="1"`) && strings.Contains(body, `name="Full name"`) {
+		t.Error("wizard must not advance past an invalid step")
+	}
+
+	// Step 0 valid: advances to the profile step.
+	body = post(url.Values{"step": {"0"}, "email": {"ada@example.com"}})
+	if !strings.Contains(body, `name="name"`) || !strings.Contains(body, `Full name`) {
+		t.Error("valid email must advance to the profile step")
+	}
+
+	// Step 1 without a name: stays with an error.
+	body = post(url.Values{"step": {"1"}, "name": {" "}})
+	if !strings.Contains(body, "Enter your name.") {
+		t.Error("missing name must keep the wizard on the profile step")
+	}
+
+	// Step 1 complete: done.
+	body = post(url.Values{"step": {"1"}, "name": {"Ada Lovelace"}})
+	if !strings.Contains(body, "Wizard complete") {
+		t.Error("valid profile must complete the wizard")
+	}
+
+	// Unknown step: restarts at 0 (server owns the machine).
+	body = post(url.Values{"step": {"9"}, "email": {"x@y.zz"}})
+	if !strings.Contains(body, `value="0"`) {
+		t.Error("unknown step must restart the wizard at step 0")
+	}
+}

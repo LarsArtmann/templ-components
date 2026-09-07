@@ -16,5 +16,6 @@ Practical guides for common templ-components patterns.
 | [HTMX Error Feedback](server-rendered-htmx-error-feedback.md) | Server-rendered toast/error pipeline for HTMX responses                         |
 | [Server-Side Validation](server-side-validation.md)           | Dual-transport form validation round-trip (200-OK error fragments)              |
 | [File Uploads](file-upload.md)                                 | Multipart uploads over wire — `Enctype` + `FileInput` + one handler, both dialects                                                              |
+| [Multi-Step Forms](multi-step-forms.md)                         | Server-owned wizard state machine — `StepIndicator` + per-step wired fragments, both dialects                                                                                                                 |
 | [Split Identity Page](split-identity-page.md)                 | Two-zone status page (identity + actions) with Eyebrow + Scrollback             |
 | [Vendored Tailwind Scanning](vendored-tailwind-scanning.md)   | Deterministic `@source` scanning for vendored consumers (class-inventory file)  |

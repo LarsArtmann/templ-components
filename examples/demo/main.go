@@ -491,6 +491,49 @@ func newMux() *http.ServeMux {
 		componentOr500(w, r, wireSearchResult(dialect, strings.TrimSpace(r.URL.Query().Get("q"))))
 	})
 
+	// Multi-step wizard demo: the server owns the step machine. A step
+	// number from the client is a hint — each request validates the CURRENT
+	// step and only then advances. Errors re-render the same step as a 200
+	// OK fragment (the validation rule).
+	mux.HandleFunc("POST /api/wire/wizard", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+
+		dialect := wire.TransportHTMX
+		if wire.IsDatastar(r) {
+			dialect = wire.TransportDatastar
+			w.Header().Set(wire.HeaderDatastarSelector, "#wizard-datastar-region")
+			w.Header().Set(wire.HeaderDatastarMode, "inner")
+		}
+
+		if err := r.ParseForm(); err != nil {
+			componentOr500(w, r, wireWizardStepResult(dialect, 0, "Invalid submission."))
+
+			return
+		}
+
+		step, _ := strconv.Atoi(r.PostFormValue("step"))
+		switch step {
+		case 0:
+			email := strings.TrimSpace(r.PostFormValue("email"))
+			if email == "" || !strings.Contains(email, "@") || !strings.Contains(email, ".") {
+				componentOr500(w, r, wireWizardStepResult(dialect, 0, wireFormEmailBad))
+
+				return
+			}
+			componentOr500(w, r, wireWizardStepResult(dialect, 1, ""))
+		case 1:
+			if strings.TrimSpace(r.PostFormValue("name")) == "" {
+				componentOr500(w, r, wireWizardStepResult(dialect, 1, "Enter your name."))
+
+				return
+			}
+			componentOr500(w, r, wireWizardStepResult(dialect, 2, ""))
+		default:
+			componentOr500(w, r, wireWizardStepResult(dialect, 0, ""))
+		}
+	})
+
 	mux.Handle("GET /api/wire/filter", wire.Handler(wire.PatchTarget{
 		Selector: "#wire-filter-out",
 		Mode:     wire.PatchModeInner,

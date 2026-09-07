@@ -8,6 +8,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Multi-step wizard recipe + demo.** Server-owned step machine:
+  `feedback.StepIndicator` + one step's wired form re-render into the
+  region per request; each step validates before advancing (a client-sent
+  step number is a hint, not authorization), errors never advance and
+  travel as 200 OK fragments. Recipe:
+  `docs/recipes/multi-step-forms.md`. Demo: the wire page's "Multi-step
+  wizard" card (`/api/wire/wizard`).
 - **`forms.DirtyGuard` + `FormProps.DirtyGuard` — unsaved-changes guard**
   (forms is now 23 components). Render the page-level script once; forms
   opt in with a flag. Any input/change marks the form dirty (capture-phase
