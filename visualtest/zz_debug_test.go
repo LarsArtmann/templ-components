@@ -1,8 +1,13 @@
 package visualtest
 
 import (
+	"bytes"
 	"context"
+	"io"
+	"net/http"
 	"os"
+	"strings"
+	"sync"
 	"testing"
 	"time"
 
@@ -13,6 +18,27 @@ import (
 
 func TestZZDatastarWizardReplica(t *testing.T) {
 	srv := packE2EServer(t)
+
+	var (
+		mu     sync.Mutex
+		bodies []string
+	)
+	orig := srv.Config.Handler
+	srv.Config.Handler = http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if strings.Contains(r.URL.Path, "wizard") && r.Method == http.MethodPost {
+			b, _ := io.ReadAll(r.Body)
+			r.Body = io.NopCloser(bytes.NewReader(b))
+			mu.Lock()
+			bodies = append(bodies, string(b))
+			mu.Unlock()
+		}
+		orig.ServeHTTP(w, r)
+	})
+	t.Cleanup(func() {
+		mu.Lock()
+		defer mu.Unlock()
+		t.Logf("WIZARD BODIES: %q", bodies)
+	})
 
 	opts := append(chromedp.DefaultExecAllocatorOptions[:],
 		chromedp.ExecPath(os.Getenv("CHROMEDP_CHROME_PATH")),
