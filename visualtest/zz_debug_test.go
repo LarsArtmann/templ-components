@@ -2,77 +2,63 @@ package visualtest
 
 import (
 	"context"
+	"os"
 	"testing"
 	"time"
 
-	"github.com/chromedp/cdproto/runtime"
 	"github.com/chromedp/chromedp"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
-func TestZZWizardParallelPair(t *testing.T) {
-	t.Parallel()
-	for _, dialect := range []wire.Transport{wire.TransportHTMX, wire.TransportDatastar} {
-		t.Run(string(dialect), func(t *testing.T) {
-			t.Parallel()
-			srv := packE2EServer(t)
-			ctx, cancel := newTab(t)
-			defer cancel()
-			ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
-			defer cancelTimeout()
-
-			chromedp.ListenTarget(ctx, func(ev interface{}) {
-				if e, ok := ev.(*runtime.EventConsoleAPICalled); ok {
-					for _, a := range e.Args {
-						t.Logf("[%s] console %s: %s", dialect, e.Type, a.Value)
-					}
-				}
-				if e, ok := ev.(*runtime.EventExceptionThrown); ok {
-					t.Logf("[%s] exception: %s", dialect, e.ExceptionDetails.Text)
-				}
-			})
-
-			region := packWizardDatastarRegion
-			if dialect == wire.TransportHTMX {
-				region = packWizardHTMXRegion
-			}
-			var ok bool
-			if err := chromedp.Run(ctx,
-				chromedp.Navigate(srv.URL+"/"),
-				chromedp.Poll(packGate(dialect), &ok),
-				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
-				chromedp.Poll(regionHasText(region, packWizardEmailBad), &ok),
-			); err != nil {
-				t.Logf("[%s] wizard FAILED: %v", dialect, err)
-				dtext, derr := regionText(ctx, region)
-				t.Logf("[%s] region: %.300s read-err=%v", dialect, dtext, derr)
-			}
-		})
-	}
-}
-
-func TestZZWizardSerial(t *testing.T) {
-	// EXACT copy of the suite subtest, minus t.Parallel.
+func TestZZOwnBrowserDatastarWizard(t *testing.T) {
 	srv := packE2EServer(t)
 
-	ctx, cancel := newTab(t)
-	defer cancel()
+	opts := append(chromedp.DefaultExecAllocatorOptions[:],
+		chromedp.ExecPath(os.Getenv("CHROMEDP_CHROME_PATH")),
+		chromedp.NoSandbox,
+		chromedp.DisableGPU,
+	)
+	allocCtx, allocCancel := chromedp.NewExecAllocator(context.Background(), opts...)
+	defer allocCancel()
 
-	ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
+	ctx, tabCancel := chromedp.NewContext(allocCtx)
+	defer tabCancel()
+
+	ctx, cancelTimeout := context.WithTimeout(ctx, 45*time.Second)
 	defer cancelTimeout()
 
 	region := packWizardDatastarRegion
 	dialect := wire.TransportDatastar
 
 	var ok bool
+	var one string
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		chromedp.Poll(packGate(dialect), &ok),
 		chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
 		chromedp.Poll(regionHasText(region, packWizardEmailBad), &ok),
+		waitSwapSettled(),
+		setFieldValue(ctx, region, `input[name="email"]`, "ada@example.com"),
+		chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
+		chromedp.Poll(regionExistsExpr(region, `input[name="name"]`), &ok),
+		waitSwapSettled(),
+		chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
+		chromedp.Poll(regionHasText(region, packWizardNameBad), &ok),
+		chromedp.Evaluate(`'alive-before'`, &one),
 	); err != nil {
-		text, textErr := regionText(ctx, region)
-		t.Logf("serial wizard E2E: %v\nregion text: %.600s (read err: %v)", err, text, textErr)
+		t.Fatalf("flow up to step6: %v", err)
 	}
+	t.Logf("before final click: %s", one)
+
+	err := chromedp.Run(ctx,
+		setFieldValue(ctx, region, `input[name="name"]`, "Ada Lovelace"),
+		chromedp.Evaluate(`document.querySelector('#pack-wizard-datastar-region button[type="submit"]').click(); 'clicked'`, &one),
+		chromedp.Sleep(1 * time.Second),
+		chromedp.Evaluate(`'alive-after'`, &one),
+	)
+	t.Logf("final click run: err=%v value=%q", err, one)
+
+	err2 := chromedp.Run(ctx, chromedp.Evaluate(`'zombie-check'`, &one))
+	t.Logf("zombie check: err=%v value=%q", err2, one)
 }
