@@ -704,11 +704,12 @@ func regionExistsExpr(region, sel string) string {
 	return `!!document.querySelector('` + formSel(region, sel) + `')`
 }
 
-// fireInputBurst fires n synchronous input events on the region's input —
-// one JS tick, so a working debounce collapses the burst into one request.
-func fireInputBurst(ctx context.Context, region, sel string, n int) chromedp.ActionFunc {
+// fireInputBurst sets the value and fires n synchronous input events in one
+// JS tick — a working debounce collapses the whole burst into one request.
+func fireInputBurst(ctx context.Context, region, sel, value string, n int) chromedp.ActionFunc {
 	return chromedp.ActionFunc(func(cctx context.Context) error {
-		expr := `var i=document.querySelector('` + formSel(region, sel) + `'); for (var k=0;k<` + strconv.Itoa(n) + `;k++) { i.dispatchEvent(new Event('input',{bubbles:true})); } 'burst'`
+		expr := `var i=document.querySelector('` + formSel(region, sel) + `'); i.value=` + jsString(value) +
+			`; for (var k=0;k<` + strconv.Itoa(n) + `;k++) { i.dispatchEvent(new Event('input',{bubbles:true})); } 'burst'`
 		var out string
 
 		return chromedp.Evaluate(expr, &out).Do(cctx)
@@ -766,7 +767,7 @@ func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
-				fireInputBurst(ctx, scope, `input[name="q"]`, 3),
+				fireInputBurst(ctx, scope, `input[name="q"]`, "fltr", 3),
 				chromedp.Poll(regionHasText(region, "Filter results for “fltr” (1 request)"), &ok),
 				waitSwapSettled(),
 				// A later keystroke fires exactly one more request.
@@ -868,7 +869,12 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
 				chromedp.Poll(regionHasText(region, "Wizard complete"), &ok),
 			); err != nil {
-				t.Fatalf("%s wizard E2E: %v", dialect, err)
+				text, textErr := regionText(ctx, region)
+				if textErr != nil {
+					text = "<region read failed: " + textErr.Error() + ">"
+				}
+
+				t.Fatalf("%s wizard E2E: %v\nregion text: %s", dialect, err, text)
 			}
 		})
 	}
@@ -1083,16 +1089,18 @@ func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
 
 			scope := packScopeID("filter", dialect)
 
-			// Set the value WITHOUT events so the debounce never races the
-			// native submit.
+			// Native GET navigation: the query param MUST land in the URL
+			// (poll — the navigation commits asynchronously after Enter).
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
 				setValueQuiet(ctx, scope, `input[name="q"]`, "enter-test"),
 				chromedp.SendKeys(formSel(scope, `input[name="q"]`), kb.Enter),
-				chromedp.Poll(`document.readyState==='complete'`, &ok),
+				chromedp.Poll(`window.location.search.indexOf('q=enter-test')>-1 && document.readyState==='complete'`, &ok),
 			); err != nil {
-				t.Fatalf("%s Enter-key E2E: %v", dialect, err)
+				var location string
+				_ = chromedp.Location(&location).Do(ctx)
+				t.Fatalf("%s Enter-key E2E: %v (location=%s)", dialect, err, location)
 			}
 
 			if err := chromedp.Run(ctx, chromedp.Location(&location)); err != nil {
