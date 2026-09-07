@@ -130,6 +130,16 @@ func TestGoldenSweepForm(t *testing.T) {
 				URL:    "",
 			},
 		}))},
+		{Name: "form_multipart_upload", HTML: utils.Render(t, Form(FormProps{
+			Action:  "/api/upload",
+			Method:  FormPost,
+			Enctype: FormEnctypeMultipart,
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				Method:    wire.MethodPost,
+				URL:       "/api/upload",
+			},
+		}))},
 		{Name: "form_novalidate_with_wire", HTML: utils.Render(t, Form(FormProps{
 			Action:     "/submit",
 			Method:     FormPost,

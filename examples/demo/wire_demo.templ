@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"strings"
 	"time"
 
@@ -231,6 +232,183 @@ templ wireDemo(transport demoTransport) {
 			<div id="wire-busy-htmx-out" class="mt-3" aria-live="polite"></div>
 		}
 	</div>
+
+	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">File upload</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+			The classic hypermedia wallflower: <code>Enctype: forms.FormEnctypeMultipart</code>
+			on a wired <code>forms.Form</code> with a <code>FileInput</code>. htmx serializes the
+			FormData natively; the pinned Datastar bundle sends a FormData body exactly when
+			enctype is multipart. The endpoint echoes the file's name and size into the region
+			below — errors travel as 200 OK fragments (the validation rule).
+		</p>
+		@demoCodeSnippet(
+			"Go",
+			`forms.FormProps{Method: forms.FormPost, Enctype: forms.FormEnctypeMultipart,
+	Wire: &wire.Action{Method: wire.MethodPost, URL: "/api/wire/upload"}}`,
+		)
+		<div class="max-w-md">
+			if transport == demoTransportBoth {
+				<div class="space-y-6">
+					<div>
+						<p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">HTMX</p>
+						@wireUploadForm(wire.TransportHTMX)
+					</div>
+					<div>
+						<p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Datastar</p>
+						@wireUploadForm(wire.TransportDatastar)
+					</div>
+				</div>
+			} else {
+				@wireUploadForm(transport.wireTransport())
+			}
+			<div id="wire-upload-out" class="mt-3" aria-live="polite"></div>
+		</div>
+	</div>
+
+	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">GET search form</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+			Search-as-a-GET: a <code>forms.Form</code> with <code>Method: forms.FormGet</code> and a
+			wired submit. Under htmx the fields ride the query string natively; under Datastar a
+			GET with <code>contentType: 'form'</code> carries the fields as query parameters too —
+			identical URLs, one endpoint.
+		</p>
+		<div class="max-w-md">
+			if transport == demoTransportBoth {
+				<div class="space-y-6">
+					<div id="wire-search-htmx-region" aria-live="polite">
+						@wireSearchForm(wire.TransportHTMX, "")
+					</div>
+					<div id="wire-search-datastar-region" aria-live="polite">
+						@wireSearchForm(wire.TransportDatastar, "")
+					</div>
+				</div>
+			} else if transport.wireTransport() == wire.TransportDatastar {
+				<div id="wire-search-datastar-region" aria-live="polite">
+					@wireSearchForm(wire.TransportDatastar, "")
+				</div>
+			} else {
+				<div id="wire-search-htmx-region" aria-live="polite">
+					@wireSearchForm(wire.TransportHTMX, "")
+				</div>
+			}
+		</div>
+	</div>
+}
+
+// wireUploadForm renders the wired multipart upload form in the given
+// dialect. Both dialects share the #wire-upload-out results region.
+templ wireUploadForm(dialect wire.Transport) {
+	@forms.Form(forms.FormProps{
+		Action:  "/api/wire/upload",
+		Method:  forms.FormPost,
+		Enctype: forms.FormEnctypeMultipart,
+		BaseProps: utils.BaseProps{
+			Class: "space-y-3",
+		},
+		Wire: &wire.Action{
+			Transport: dialect,
+			Method:    wire.MethodPost,
+			URL:       "/api/wire/upload",
+			Target:    utils.Ternary(dialect == wire.TransportDatastar, "", "#wire-upload-out"),
+		},
+	}) {
+		@forms.FileInput(forms.FileInputProps{Name: "attachment", Label: "Attachment"})
+		@display.Button(display.ButtonProps{
+			Text:    "Upload",
+			Variant: display.ButtonPrimary,
+			Size:    display.ButtonSizeSM,
+			Type:    display.ButtonHTMLSubmit,
+		})
+	}
+}
+
+// wireUploadResult is the shared response body for the upload endpoint:
+// the file's name and size, or an inline error fragment (200 OK — the
+// validation rule keeps both runtimes swapping).
+templ wireUploadResult(name string, size int64, transport string) {
+	if name == "" {
+		@feedback.InlineError("No attachment received — choose a file and try again.")
+	} else {
+		@feedback.InlineSuccess("Uploaded “" + name + "” (" + wireFormatBytes(size) + ") via " + transport + ".")
+	}
+}
+
+// wireFormatBytes renders a byte count for the upload result fragment.
+func wireFormatBytes(n int64) string {
+	switch {
+	case n >= 1<<20:
+		return fmt.Sprintf("%.1f MiB", float64(n)/(1<<20))
+	case n >= 1<<10:
+		return fmt.Sprintf("%.1f KiB", float64(n)/(1<<10))
+	default:
+		return fmt.Sprintf("%d B", n)
+	}
+}
+
+// wireSearchForm renders the wired GET search form in the given dialect.
+// The form re-renders inside its region: the endpoint echoes the query and
+// appends a fresh form, so a correction resubmits in place.
+templ wireSearchForm(dialect wire.Transport, query string) {
+	@forms.Form(forms.FormProps{
+		Action: "/api/wire/search",
+		Method: forms.FormGet,
+		BaseProps: utils.BaseProps{
+			Class: "flex flex-wrap items-end gap-3",
+		},
+		Wire: &wire.Action{
+			Transport: dialect,
+			Method:    wire.MethodGet,
+			URL:       "/api/wire/search",
+			Target:    utils.Ternary(dialect == wire.TransportDatastar, "", wireSearchRegionID(dialect)),
+		},
+	}) {
+		@forms.Input(forms.InputProps{
+			Name:        "q",
+			Type:        forms.InputSearch,
+			Label:       "Search",
+			Value:       query,
+			Placeholder: "Try: ada",
+		})
+		@display.Button(display.ButtonProps{
+			Text:    "Search",
+			Variant: display.ButtonSecondary,
+			Size:    display.ButtonSizeSM,
+			Type:    display.ButtonHTMLSubmit,
+		})
+	}
+}
+
+// wireSearchRegionID returns the swap region for the GET search form in the
+// given dialect (empty under Datastar — response-driven targeting).
+func wireSearchRegionID(dialect wire.Transport) string {
+	if dialect == wire.TransportDatastar {
+		return ""
+	}
+
+	return "#wire-search-htmx-region"
+}
+
+// wireSearchResult is the re-rendered region for the GET search endpoint:
+// the echoed query plus a fresh wired form (the round-trip pattern).
+templ wireSearchResult(dialect wire.Transport, query string) {
+	if query == "" {
+		<p class="text-sm text-gray-500 dark:text-gray-400">Type a query and submit — the fields travel as query parameters on either runtime.</p>
+		@wireSearchForm(dialect, query)
+	} else {
+		@feedback.InlineSuccess("GET received q=“" + query + "” via " + wireSearchTransportName(dialect) + ".")
+		@wireSearchForm(dialect, query)
+	}
+}
+
+// wireSearchTransportName names the dialect for the search result fragment.
+func wireSearchTransportName(dialect wire.Transport) string {
+	if dialect == wire.TransportDatastar {
+		return "datastar"
+	}
+
+	return "htmx"
 }
 
 // wireBusyButtonHTMX renders the htmx busy-state button: a plain button
@@ -454,6 +632,9 @@ templ wireFilterResults(query string) {
 
 // wireBusyDelay makes the busy state visible to humans and e2e drivers.
 const wireBusyDelay = 800 * time.Millisecond
+
+// wireUploadMaxBytes caps the demo upload endpoint's request body (8 MiB).
+const wireUploadMaxBytes int64 = 8 << 20
 
 // wireBusyDone is the shared response body for the busy-state endpoint.
 templ wireBusyDone(transport string) {

@@ -99,3 +99,47 @@ func TestFormContainerAware(t *testing.T) {
 		utils.AssertNotContains(t, output, " sm:")
 	})
 }
+
+func TestFormEnctype(t *testing.T) {
+	t.Parallel()
+
+	t.Run("multipart renders enctype", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/upload", Enctype: FormEnctypeMultipart}))
+		utils.AssertContains(t, output, `enctype="multipart/form-data"`)
+	})
+
+	t.Run("default omits enctype (HTML default applies)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Action: "/save"}))
+		utils.AssertNotContains(t, output, "enctype=")
+	})
+
+	t.Run("IsValid accepts zero value and known values", func(t *testing.T) {
+		t.Parallel()
+		if !FormEnctypeIsValid("") {
+			t.Error(`FormEnctypeIsValid("") = false, want true`)
+		}
+		if !FormEnctypeIsValid(FormEnctypeUrlencoded) || !FormEnctypeIsValid(FormEnctypeMultipart) {
+			t.Error("FormEnctypeIsValid rejected known values")
+		}
+		if FormEnctypeIsValid(FormEnctype("text/plain")) {
+			t.Error("FormEnctypeIsValid accepted unknown value")
+		}
+	})
+
+	t.Run("multipart composes with wire for uploads", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Method:  FormPost,
+			Enctype: FormEnctypeMultipart,
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				Method:    wire.MethodPost,
+				URL:       "/api/upload",
+			},
+		}))
+		utils.AssertContains(t, output, `enctype="multipart/form-data"`)
+		utils.AssertContains(t, output, `data-on:submit=`)
+	})
+}

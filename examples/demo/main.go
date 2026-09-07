@@ -439,6 +439,58 @@ func newMux() *http.ServeMux {
 		componentOr500(w, r, wireBusyDone(transport))
 	})
 
+	// File-upload demo: multipart endpoint shared by both dialects. The
+	// wired form travels the CSRF hidden input too — FormData serializes the
+	// whole form in both runtimes.
+	mux.HandleFunc("POST /api/wire/upload", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+
+		transport := "htmx"
+		if wire.IsDatastar(r) {
+			transport = "datastar"
+			w.Header().Set(wire.HeaderDatastarSelector, "#wire-upload-out")
+			w.Header().Set(wire.HeaderDatastarMode, "inner")
+		}
+
+		r.Body = http.MaxBytesReader(w, r.Body, wireUploadMaxBytes)
+		if err := r.ParseMultipartForm(wireUploadMaxBytes); err != nil {
+			componentOr500(w, r, wireUploadResult("", 0, transport))
+
+			return
+		}
+
+		file, header, err := r.FormFile("attachment")
+		if err != nil {
+			componentOr500(w, r, wireUploadResult("", 0, transport))
+
+			return
+		}
+		defer file.Close()
+
+		size, _ := file.Seek(0, io.SeekEnd)
+		_, _ = file.Seek(0, io.SeekStart)
+
+		componentOr500(w, r, wireUploadResult(header.Filename, size, transport))
+	})
+
+	// GET search demo: fields travel as query parameters on both dialects
+	// (htmx native GET serialization; Datastar GET + contentType form). The
+	// region re-renders the echoed query plus a fresh wired form.
+	mux.HandleFunc("GET /api/wire/search", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+
+		dialect := wire.TransportHTMX
+		if wire.IsDatastar(r) {
+			dialect = wire.TransportDatastar
+			w.Header().Set(wire.HeaderDatastarSelector, "#wire-search-datastar-region")
+			w.Header().Set(wire.HeaderDatastarMode, "inner")
+		}
+
+		componentOr500(w, r, wireSearchResult(dialect, strings.TrimSpace(r.URL.Query().Get("q"))))
+	})
+
 	mux.Handle("GET /api/wire/filter", wire.Handler(wire.PatchTarget{
 		Selector: "#wire-filter-out",
 		Mode:     wire.PatchModeInner,
