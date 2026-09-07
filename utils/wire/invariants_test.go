@@ -1,6 +1,7 @@
 package wire
 
 import (
+	"fmt"
 	"strings"
 	"testing"
 )
@@ -34,21 +35,30 @@ func TestEmptyURLIsInertForEveryEnumCombo(t *testing.T) {
 		EventKeyDown, EventKeyUp, EventFocus, EventBlur, Event("hover"),
 	}
 	targets := []string{"", "#out", "closest div"}
+	contentTypes := []ContentType{
+		ContentTypeUnspecified,
+		ContentTypeJSON,
+		ContentTypeForm,
+		ContentType("multipart"),
+	}
 
 	for _, transport := range transports {
 		for _, method := range methods {
 			for _, event := range events {
 				for _, target := range targets {
-					action := Action{
-						Transport: transport,
-						Method:    method,
-						URL:       "",
-						Event:     event,
-						Target:    target,
-					}
+					for _, contentType := range contentTypes {
+						action := Action{
+							Transport:   transport,
+							Method:      method,
+							URL:         "",
+							Event:       event,
+							Target:      target,
+							ContentType: contentType,
+						}
 
-					if attrs := action.Attributes(); attrs != nil {
-						t.Fatalf("empty URL must wire nothing, got %v for %+v", attrs, action)
+						if attrs := action.Attributes(); attrs != nil {
+							t.Fatalf("empty URL must wire nothing, got %v for %+v", attrs, action)
+						}
 					}
 				}
 			}
@@ -70,6 +80,7 @@ func TestURLReferencedInBothDialects(t *testing.T) {
 	}
 	events := []Event{EventUnspecified, EventClick, EventSubmit, EventChange, EventInput}
 	targets := []string{"", "#out"}
+	contentTypes := []ContentType{ContentTypeUnspecified, ContentTypeJSON, ContentTypeForm}
 
 	const url = "/api/items?filter=x"
 
@@ -77,15 +88,18 @@ func TestURLReferencedInBothDialects(t *testing.T) {
 		for _, method := range methods {
 			for _, event := range events {
 				for _, target := range targets {
-					action := Action{
-						Transport: transport,
-						Method:    method,
-						URL:       url,
-						Event:     event,
-						Target:    target,
-					}
+					for _, contentType := range contentTypes {
+						action := Action{
+							Transport:   transport,
+							Method:      method,
+							URL:         url,
+							Event:       event,
+							Target:      target,
+							ContentType: contentType,
+						}
 
-					assertURLReferenced(t, action, url)
+						assertURLReferenced(t, action, url)
+					}
 				}
 			}
 		}
@@ -132,6 +146,31 @@ func TestTargetNeverRenderedForDatastar(t *testing.T) {
 		for key := range action.Attributes() {
 			if strings.Contains(strings.ToLower(key), "target") {
 				t.Fatalf("datastar dialect must never render a target attribute, got %q", key)
+			}
+		}
+	}
+}
+
+// TestContentTypeHTMXInert pins that the content-type option never leaks
+// into the htmx dialect: hx-* requests serialize forms natively, so the
+// option has no hx-* spelling. Any htmx attribute value mentioning
+// "contentType" would be a dialect leak.
+func TestContentTypeHTMXInert(t *testing.T) {
+	t.Parallel()
+
+	for _, contentType := range []ContentType{ContentTypeUnspecified, ContentTypeJSON, ContentTypeForm, ContentType("bogus")} {
+		for _, method := range []Method{MethodUnspecified, MethodGet, MethodPost, MethodPut, MethodPatch, MethodDelete} {
+			action := Action{
+				Transport:   TransportHTMX,
+				Method:      method,
+				URL:         "/api/items",
+				ContentType: contentType,
+			}
+
+			for key, value := range action.Attributes() {
+				if strings.Contains(key, "contentType") || strings.Contains(fmt.Sprint(value), "contentType") {
+					t.Fatalf("htmx dialect must not render the content-type option, got %q=%v for %+v", key, value, action)
+				}
 			}
 		}
 	}

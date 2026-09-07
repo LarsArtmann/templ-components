@@ -8,16 +8,19 @@ package forms
 import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
+)
 
 // FormMethod defines the HTTP method for a form.
 // HTML forms only support GET and POST (per the HTML spec).
-// For HTMX requests using other verbs (PUT, DELETE, PATCH),
-// set Method to FormPost and add the appropriate hx-* attribute via Attrs:
+// For transport-agnostic requests using other verbs (PUT, DELETE, PATCH),
+// keep Method as the no-JS fallback (typically FormPost) and set Wire:
 //
 //	forms.FormProps{
 //	    Method: forms.FormPost,
-//	    Attrs:  templ.Attributes{"hx-put": "/api/item/123"},
+//	    Wire:   &wire.Action{Method: wire.MethodPut, URL: "/api/item/123"},
 //	}
 type FormMethod string
 
@@ -127,6 +130,23 @@ type FormProps struct {
 	// inside a modal, drawer, sidebar, or other constrained layout. Default
 	// false (viewport breakpoints). See ADR-0018.
 	ContainerAware bool
+	// Wire, when set, submits the form via the configured transport instead
+	// of a full page load (see the wire package, ADR-0036). The form's fields
+	// serialize in both dialects: htmx natively (hx-post + hx-trigger
+	// "submit"), Datastar via {contentType: 'form'} on data-on:submit — a
+	// runtime capability verified against the pinned v1.0.3 bundle (HTML5
+	// validation gates the request, the submitter button's name/value is
+	// appended, enctype selects multipart for file uploads, GET carries the
+	// fields as query parameters).
+	//
+	// Field defaults: an unspecified Event resolves to submit, an unspecified
+	// ContentType resolves to form encoding (set ContentTypeJSON explicitly to
+	// submit Datastar signals instead — then no form fields travel). Wire.URL
+	// replaces Action for the wired request; Action/Method stay as the no-JS
+	// fallback. Wire.Target renders only for htmx (hx-target); Datastar
+	// targeting is response-driven — wrap the handler in wire.Handler.
+	// An empty Wire.URL wires nothing (the form stays a plain HTML form).
+	Wire *wire.Action
 }
 
 // DefaultFormProps returns sensible defaults
@@ -137,11 +157,41 @@ func DefaultFormProps() FormProps {
 	}
 }
 
+// formWireAttributes renders the wiring for a Form. It copies the action
+// (never mutates the consumer's) and applies the form defaults: an
+// unspecified Event becomes submit (the only event that submits a form, and
+// the one Datastar's runtime auto-preventDefaults on form elements), and an
+// unspecified ContentType becomes form encoding so the form's fields travel
+// under Datastar too. An empty URL wires nothing (inert HTML form).
+func formWireAttributes(w *wire.Action) templ.Attributes {
+	if w == nil {
+		return nil
+	}
+
+	action := *w
+	if action.Event == wire.EventUnspecified {
+		action.Event = wire.EventSubmit
+	}
+	if action.ContentType == wire.ContentTypeUnspecified {
+		action.ContentType = wire.ContentTypeForm
+	}
+
+	return action.Attributes()
+}
+
 // Form renders a form element with optional CSRF token
 //
 //	@forms.Form(forms.FormProps{Action: "/submit", CSRFToken: "token123"}) {
-//	   @forms.Input(forms.InputProps{Name: "email"})
-//	}
+//		   @forms.Input(forms.InputProps{Name: "email"})
+//		}
+//
+// Dual-transport submit — the same props under either runtime:
+//
+//	@forms.Form(forms.FormProps{
+//		   Wire: &wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/save"},
+//		}) {
+//		   @forms.Input(forms.InputProps{Name: "email"})
+//		}
 func Form(props FormProps) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
@@ -243,6 +293,7 @@ func formInner(props FormProps) templ.Component {
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
+		wired := formWireAttributes(props.Wire)
 		var templ_7745c5c3_Var5 = []any{utils.Class(formLayoutClass(formLayoutEffective(props), props.ContainerAware), props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var5...)
 		if templ_7745c5c3_Err != nil {
@@ -260,7 +311,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 154, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 205, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -278,7 +329,7 @@ func formInner(props FormProps) templ.Component {
 		var templ_7745c5c3_Var7 templ.SafeURL
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(props.Action)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 156, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 207, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -291,7 +342,7 @@ func formInner(props FormProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(formMethod(props.Method))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 157, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 208, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
@@ -332,7 +383,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 163, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 214, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var10)
 			if templ_7745c5c3_Err != nil {
@@ -342,6 +393,10 @@ func formInner(props FormProps) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
+		}
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, wired)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, props.Attrs)
 		if templ_7745c5c3_Err != nil {
@@ -360,7 +415,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 169, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 221, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 			if templ_7745c5c3_Err != nil {
@@ -373,7 +428,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.CSRFToken)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 169, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 221, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {

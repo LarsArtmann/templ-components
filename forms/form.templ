@@ -1,15 +1,18 @@
 package forms
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
+)
 
 // FormMethod defines the HTTP method for a form.
 // HTML forms only support GET and POST (per the HTML spec).
-// For HTMX requests using other verbs (PUT, DELETE, PATCH),
-// set Method to FormPost and add the appropriate hx-* attribute via Attrs:
+// For transport-agnostic requests using other verbs (PUT, DELETE, PATCH),
+// keep Method as the no-JS fallback (typically FormPost) and set Wire:
 //
 //	forms.FormProps{
 //	    Method: forms.FormPost,
-//	    Attrs:  templ.Attributes{"hx-put": "/api/item/123"},
+//	    Wire:   &wire.Action{Method: wire.MethodPut, URL: "/api/item/123"},
 //	}
 type FormMethod string
 
@@ -119,6 +122,23 @@ type FormProps struct {
 	// inside a modal, drawer, sidebar, or other constrained layout. Default
 	// false (viewport breakpoints). See ADR-0018.
 	ContainerAware bool
+	// Wire, when set, submits the form via the configured transport instead
+	// of a full page load (see the wire package, ADR-0036). The form's fields
+	// serialize in both dialects: htmx natively (hx-post + hx-trigger
+	// "submit"), Datastar via {contentType: 'form'} on data-on:submit — a
+	// runtime capability verified against the pinned v1.0.3 bundle (HTML5
+	// validation gates the request, the submitter button's name/value is
+	// appended, enctype selects multipart for file uploads, GET carries the
+	// fields as query parameters).
+	//
+	// Field defaults: an unspecified Event resolves to submit, an unspecified
+	// ContentType resolves to form encoding (set ContentTypeJSON explicitly to
+	// submit Datastar signals instead — then no form fields travel). Wire.URL
+	// replaces Action for the wired request; Action/Method stay as the no-JS
+	// fallback. Wire.Target renders only for htmx (hx-target); Datastar
+	// targeting is response-driven — wrap the handler in wire.Handler.
+	// An empty Wire.URL wires nothing (the form stays a plain HTML form).
+	Wire *wire.Action
 }
 
 // DefaultFormProps returns sensible defaults
@@ -129,11 +149,41 @@ func DefaultFormProps() FormProps {
 	}
 }
 
+// formWireAttributes renders the wiring for a Form. It copies the action
+// (never mutates the consumer's) and applies the form defaults: an
+// unspecified Event becomes submit (the only event that submits a form, and
+// the one Datastar's runtime auto-preventDefaults on form elements), and an
+// unspecified ContentType becomes form encoding so the form's fields travel
+// under Datastar too. An empty URL wires nothing (inert HTML form).
+func formWireAttributes(w *wire.Action) templ.Attributes {
+	if w == nil {
+		return nil
+	}
+
+	action := *w
+	if action.Event == wire.EventUnspecified {
+		action.Event = wire.EventSubmit
+	}
+	if action.ContentType == wire.ContentTypeUnspecified {
+		action.ContentType = wire.ContentTypeForm
+	}
+
+	return action.Attributes()
+}
+
 // Form renders a form element with optional CSRF token
 //
 //	@forms.Form(forms.FormProps{Action: "/submit", CSRFToken: "token123"}) {
-//	   @forms.Input(forms.InputProps{Name: "email"})
-//	}
+//		   @forms.Input(forms.InputProps{Name: "email"})
+//		}
+//
+// Dual-transport submit — the same props under either runtime:
+//
+//	@forms.Form(forms.FormProps{
+//		   Wire: &wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/save"},
+//		}) {
+//		   @forms.Input(forms.InputProps{Name: "email"})
+//		}
 templ Form(props FormProps) {
 	if props.ContainerAware {
 		<div class="@container">
@@ -149,6 +199,7 @@ templ Form(props FormProps) {
 }
 
 templ formInner(props FormProps) {
+	{{ wired := formWireAttributes(props.Wire) }}
 	<form
 		if props.ID != "" {
 			id={ props.ID }
@@ -162,6 +213,7 @@ templ formInner(props FormProps) {
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}
+		{ wired... }
 		{ props.Attrs... }
 	>
 		if props.CSRFToken != "" {
