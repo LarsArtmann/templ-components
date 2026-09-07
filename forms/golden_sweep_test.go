@@ -287,3 +287,13 @@ func TestGoldenSweepDatePicker(t *testing.T) {
 		}))},
 	})
 }
+
+func TestGoldenSweepDirtyGuard(t *testing.T) {
+	t.Parallel()
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "dirty_guard_script", HTML: utils.Render(t, DirtyGuard(DirtyGuardProps{
+			BaseProps: utils.BaseProps{Nonce: "nonce-123"},
+		}))},
+	})
+}

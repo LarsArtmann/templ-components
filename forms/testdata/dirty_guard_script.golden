@@ -1,0 +1,25 @@
+<script nonce="nonce-123">
+if (!window.tcDirtyGuardAttached) {
+  window.tcDirtyGuardAttached = true;
+  var tcDirtyForms = new WeakSet();
+  var tcDirtyMark = function (e) {
+    var f = e.target && e.target.closest ? e.target.closest('[data-tc-dirty-guard]') : null;
+    if (f) tcDirtyForms.add(f);
+  };
+  document.addEventListener('input', tcDirtyMark, true);
+  document.addEventListener('change', tcDirtyMark, true);
+  document.addEventListener('submit', function (e) {
+    if (e.target && e.target.matches && e.target.matches('[data-tc-dirty-guard]')) tcDirtyForms.delete(e.target);
+  }, true);
+  window.addEventListener('beforeunload', function (e) {
+    var forms = document.querySelectorAll('[data-tc-dirty-guard]');
+    for (var i = 0; i < forms.length; i++) {
+      if (tcDirtyForms.has(forms[i])) {
+        e.preventDefault();
+        e.returnValue = '';
+        return;
+      }
+    }
+  });
+}
+</script>

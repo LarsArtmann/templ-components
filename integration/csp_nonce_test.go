@@ -74,6 +74,9 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 		{"GlobalErrorHandling", utils.Render(t, htmx.GlobalErrorHandling(htmx.ErrorHandlingConfig{
 			Nonce: testNonce,
 		}))},
+		{"DirtyGuard", utils.Render(t, forms.DirtyGuard(forms.DirtyGuardProps{
+			BaseProps: utils.BaseProps{Nonce: testNonce},
+		}))},
 		{"ThemeScript", utils.Render(t, layout.ThemeScript(testNonce))},
 		{"ThemeToggle", utils.Render(t, layout.ThemeToggle("Toggle theme", testNonce))},
 		{"MobileMenu", utils.Render(t, navigation.MobileMenu(nil, "/", testNonce, "mm", false))},

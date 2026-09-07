@@ -24,6 +24,7 @@ import (
 // dialect — the SDK pitch: the Action stays identical, one field switches the
 // runtime.
 templ wireDemo(transport demoTransport) {
+	@forms.DirtyGuard(forms.DirtyGuardProps{})
 	@demoSection("Wire — One Action, Both Transports", "wire-transport")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
 		Every button here is the same <code>display.Button</code> with the same
@@ -527,6 +528,7 @@ templ wireDemoForm(dialect wire.Transport, st wireFormState) {
 		@forms.ValidationSummary(forms.ValidationSummaryProps{Errors: errs})
 	}
 	@forms.Form(forms.FormProps{
+		DirtyGuard: true,
 		Method: forms.FormPost,
 		Wire: &wire.Action{
 			Transport: dialect,

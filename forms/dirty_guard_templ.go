@@ -9,12 +9,61 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"context"
+	"fmt"
+	"html"
+	"io"
+
 	"github.com/larsartmann/templ-components/utils"
 )
 
 // DirtyGuardProps configures the unsaved-changes guard script.
 type DirtyGuardProps struct {
 	utils.BaseProps
+}
+
+// dirtyGuardJS is the unsaved-changes guard: event delegation on document
+// (capture phase, so control-level events are caught without per-form
+// listeners), a WeakSet of dirty forms, and a beforeunload check.
+const dirtyGuardJS = `
+if (!window.tcDirtyGuardAttached) {
+  window.tcDirtyGuardAttached = true;
+  var tcDirtyForms = new WeakSet();
+  var tcDirtyMark = function (e) {
+    var f = e.target && e.target.closest ? e.target.closest('[data-tc-dirty-guard]') : null;
+    if (f) tcDirtyForms.add(f);
+  };
+  document.addEventListener('input', tcDirtyMark, true);
+  document.addEventListener('change', tcDirtyMark, true);
+  document.addEventListener('submit', function (e) {
+    if (e.target && e.target.matches && e.target.matches('[data-tc-dirty-guard]')) tcDirtyForms.delete(e.target);
+  }, true);
+  window.addEventListener('beforeunload', function (e) {
+    var forms = document.querySelectorAll('[data-tc-dirty-guard]');
+    for (var i = 0; i < forms.length; i++) {
+      if (tcDirtyForms.has(forms[i])) {
+        e.preventDefault();
+        e.returnValue = '';
+        return;
+      }
+    }
+  });
+}
+`
+
+// dirtyGuardScriptComponent writes the guard script raw: templ's <script>
+// context sanitizes interpolations, and the JS must land verbatim (same
+// pattern as the echarts chartScriptComponent).
+func dirtyGuardScriptComponent(nonce string) templ.Component {
+	escapedNonce := html.EscapeString(nonce)
+
+	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+		if _, err := fmt.Fprintf(w, "<script nonce=\"%s\">%s</script>\n", escapedNonce, dirtyGuardJS); err != nil {
+			return fmt.Errorf("write dirty guard script: %w", err)
+		}
+
+		return nil
+	})
 }
 
 // DirtyGuard renders the page-level script for the unsaved-changes guard.
@@ -28,7 +77,9 @@ type DirtyGuardProps struct {
 //
 // The script is idempotent across HTMX swaps and Datastar patches (global
 // singleton flag, ADR-0005) and tracks form elements in a WeakSet, so
-// swapped-in forms start clean without any re-initialization.
+// swapped-in forms start clean without any re-initialization. Auto-submit
+// filter components (FilterInput) do not dispatch submit events — apply the
+// guard to save-style forms, not live filters.
 //
 //	@forms.DirtyGuard(forms.DirtyGuardProps{Nonce: nonce})
 //	...
@@ -54,67 +105,12 @@ func DirtyGuard(props DirtyGuardProps) templ.Component {
 			templ_7745c5c3_Var1 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 1, "<script nonce=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var2 string
-		templ_7745c5c3_Var2, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/dirty_guard.templ`, Line: 30, Col: 21}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var2)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "\" defer dangerouslySetInnerHTML=\"")
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		var templ_7745c5c3_Var3 string
-		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(dirtyGuardJS)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/dirty_guard.templ`, Line: 32, Col: 40}
-		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "\"></script>")
+		templ_7745c5c3_Err = dirtyGuardScriptComponent(props.Nonce).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		return nil
 	})
 }
-
-// dirtyGuardJS is the unsaved-changes guard: event delegation on document
-// (capture phase, so control-level events are caught without per-form
-// listeners), a WeakSet of dirty forms, and a beforeunload check.
-var dirtyGuardJS = `
-if (!window.tcDirtyGuardAttached) {
-  window.tcDirtyGuardAttached = true;
-  var tcDirtyForms = new WeakSet();
-  var tcDirtyMark = function (e) {
-    var t = e.target;
-    if (t && t.closest && t.closest('[data-tc-dirty-guard]')) tcDirtyForms.add(t.closest('[data-tc-dirty-guard]'));
-  };
-  document.addEventListener('input', tcDirtyMark, true);
-  document.addEventListener('change', tcDirtyMark, true);
-  document.addEventListener('submit', function (e) {
-    if (e.target && e.target.matches && e.target.matches('[data-tc-dirty-guard]')) tcDirtyForms.delete(e.target);
-  }, true);
-  window.addEventListener('beforeunload', function (e) {
-    var forms = document.querySelectorAll('[data-tc-dirty-guard]');
-    for (var i = 0; i < forms.length; i++) {
-      if (tcDirtyForms.has(forms[i])) {
-        e.preventDefault();
-        e.returnValue = '';
-        return;
-      }
-    }
-  });
-}
-`
 
 var _ = templruntime.GeneratedTemplate

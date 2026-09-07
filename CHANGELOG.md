@@ -8,6 +8,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`forms.DirtyGuard` + `FormProps.DirtyGuard` — unsaved-changes guard**
+  (forms is now 23 components). Render the page-level script once; forms
+  opt in with a flag. Any input/change marks the form dirty (capture-phase
+  delegation, WeakSet-tracked); submitting — native or wired, both
+  dialects dispatch submit — clears it; leaving with a dirty form raises
+  the browser's native confirmation dialog (dialog text is browser-owned).
+  Idempotent across HTMX swaps and Datastar patches (ADR-0005 singleton);
+  CSP nonce carried. Demo: the wire page's dual-transport form is guarded.
 - **`wire.Action.Selector` — client-side targeting under Datastar.**
   Renders the v1.0.3 `{selector: …}` fetch option (Datastar only — the
   htmx twin is `Target`), which patches the response into the matching

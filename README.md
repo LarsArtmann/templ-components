@@ -22,7 +22,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-119 server-rendered components. 59 typed string enums (58 with IsValid()). 106 SVG icons. Zero client-side framework.
+120 server-rendered components. 59 typed string enums (58 with IsValid()). 106 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -161,7 +161,7 @@ Alerts, toasts, spinners, progress bars, skeletons, step indicators, loading sta
 @feedback.SkeletonCardGrid(feedback.SkeletonCardGridProps{Count: 6})
 ```
 
-### `forms` — Form Controls (22 components)
+### `forms` — Form Controls (23 components)
 
 Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, sliders, ratings, tags input, validation, debounced filter inputs.
 

@@ -475,6 +475,9 @@ func TestWireDemoFormRendersBothDialects(t *testing.T) {
 		// makes screen readers announce the server's response.
 		`<div id="wire-form-htmx-region" aria-live="polite">`,
 		`<div id="wire-form-out" aria-live="polite">`,
+		// Unsaved-changes guard: the page script plus the guarded form.
+		`tcDirtyGuardAttached`,
+		`data-tc-dirty-guard="true"`,
 	} {
 		if !strings.Contains(html, want) {
 			t.Errorf("demo page missing %q", want)
