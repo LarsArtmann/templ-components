@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
+	"github.com/chromedp/cdproto/runtime"
 	"github.com/chromedp/chromedp"
 	"github.com/chromedp/chromedp/kb"
 	"github.com/larsartmann/go-datastar/static"
@@ -845,6 +846,18 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 			region := packWizardHTMXRegion
 			if dialect == wire.TransportDatastar {
 				region = packWizardDatastarRegion
+
+				chromedp.ListenTarget(ctx, func(ev interface{}) {
+					if e, ok := ev.(*runtime.EventConsoleAPICalled); ok {
+						for _, a := range e.Args {
+							t.Logf("[ds] console %s: %s", e.Type, a.Value)
+						}
+					}
+
+					if e, ok := ev.(*runtime.EventExceptionThrown); ok {
+						t.Logf("[ds] exception: %s", e.ExceptionDetails.Text)
+					}
+				})
 			}
 
 			var ok bool
@@ -868,7 +881,12 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 				chromedp.Sleep(2 * time.Second),
 				// Step 1: valid name → wizard complete.
 				setFieldValue(ctx, region, `input[name="name"]`, "Ada Lovelace"),
-				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
+				chromedp.Evaluate(`document.querySelector('` + formSel(region, `button[type="submit"]`) + `').click(); true`, &ok),
+				chromedp.Sleep(1 * time.Second),
+				chromedp.Evaluate(`1+1`, &ok),
+				chromedp.Evaluate(`document.querySelectorAll('#pack-wizard-datastar-region form').length`, &ok),
+				chromedp.Evaluate(`!!document.querySelector('#pack-wizard-datastar-region button[type="submit"]')`, &ok),
+				chromedp.Evaluate(`typeof window.__dsReady`, &ok),
 				chromedp.Poll(regionHasText(region, "Wizard complete"), &ok),
 			); err != nil {
 				text, textErr := regionText(ctx, region)
@@ -876,7 +894,9 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 					text = "<region read failed: " + textErr.Error() + ">"
 				}
 
-				t.Fatalf("%s wizard E2E: %v\nregion text: %s", dialect, err, text)
+				var loc string
+				_ = chromedp.Location(&loc).Do(ctx)
+				t.Fatalf("%s wizard E2E: %v\nlocation: %s\nregion text: %.600s", dialect, err, loc, text)
 			}
 		})
 	}
