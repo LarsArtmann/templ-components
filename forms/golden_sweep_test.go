@@ -3,6 +3,7 @@ package forms
 import (
 	"bytes"
 	"context"
+	"fmt"
 	"io"
 	"strings"
 	"testing"
@@ -160,15 +161,17 @@ func renderFormWithChildren(t *testing.T, props FormProps, children ...templ.Com
 	var buf bytes.Buffer
 
 	form := Form(props)
+
 	ctx := templ.WithChildren(context.Background(), templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		for _, child := range children {
 			if err := child.Render(ctx, w); err != nil {
-				return err
+				return fmt.Errorf("render child: %w", err)
 			}
 		}
 
 		return nil
 	}))
+
 	if err := form.Render(ctx, &buf); err != nil {
 		t.Fatalf("failed to render form with children: %v", err)
 	}
