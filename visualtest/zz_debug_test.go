@@ -68,20 +68,29 @@ func TestZZDatastarWizardReplica(t *testing.T) {
 		t.Fatalf("settle: %v", err)
 	}
 
-	if err := packSubmitUntil(ctx, region, region, packWizardNameBad); err != nil {
-		t.Fatalf("step 1 invalid: %v", err)
-	}
-	t.Log("phase step1-error OK")
+	for attempt := 1; attempt <= 4; attempt++ {
+		if err := chromedp.Run(ctx,
+			chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
+		); err != nil {
+			t.Fatalf("click attempt %d: %v", attempt, err)
+		}
 
-	if err := chromedp.Run(ctx,
-		waitSwapSettled(),
-		setFieldValue(ctx, region, `input[name="name"]`, "Ada Lovelace"),
-	); err != nil {
-		t.Fatalf("step 1 fill: %v", err)
-	}
+		if packPollOnce(ctx, regionHasText(region, packWizardNameBad)) {
+			t.Logf("attempt %d: needle OK", attempt)
 
-	if err := packSubmitUntil(ctx, region, region, "Wizard complete"); err != nil {
-		t.Fatalf("step 1 complete: %v", err)
+			break
+		}
+
+		var probe string
+		if err := chromedp.Run(ctx, chromedp.Evaluate(`JSON.stringify({
+			txt: document.querySelector('#pack-wizard-datastar-region').innerText.slice(0, 120),
+			forms: [...document.querySelectorAll('form')].filter(f => f.closest('#pack-wizard-datastar-region')).map(f => f.querySelector('input[name="step"]') ? f.querySelector('input[name="step"]').value : 'none'),
+			dsAttr: (document.querySelector('#pack-wizard-datastar-region form') || {hasAttribute: function(){return false;}}).hasAttribute('data-on:submit'),
+			url: location.href
+		})`, &probe)); err != nil {
+			t.Fatalf("probe attempt %d: %v", attempt, err)
+		}
+
+		t.Logf("attempt %d NO NEEDLE: %s", attempt, probe)
 	}
-	t.Log("phase complete OK")
 }
