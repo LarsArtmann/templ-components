@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // --- FilterDropdown Behavior (BDD-style) ---
@@ -409,4 +410,59 @@ func TestPluralStars(t *testing.T) {
 	if got := pluralStars(2); got != "s" {
 		t.Errorf("pluralStars(2) = %q, want %q", got, "s")
 	}
+}
+
+// --- FilterInput Behavior (BDD-style) ---
+
+func TestFilterInputUserCanSearchAsTheyType(t *testing.T) {
+	t.Parallel()
+
+	t.Run("user sees a labeled search box with a hint", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterInput(FilterInputProps{
+			Name:        "q",
+			Label:       "Search users",
+			Placeholder: "Type to filter…",
+			HelpText:    "Matches name or email",
+		}))
+		utils.AssertContains(t, output, "Search users")
+		utils.AssertContains(t, output, "Type to filter…")
+		utils.AssertContains(t, output, "Matches name or email")
+	})
+
+	t.Run("user's typed query stays visible after server re-render", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterInput(FilterInputProps{
+			Name:  "q",
+			Label: "Search users",
+			Value: "ada",
+		}))
+		utils.AssertContains(t, output, `value="ada"`)
+	})
+
+	t.Run("typing pauses long enough fire one request targeting the results region", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterInput(FilterInputProps{
+			Name:       "q",
+			Label:      "Search users",
+			DebounceMS: 300,
+			Wire: &wire.Action{
+				URL:    "/api/users/search",
+				Target: "#user-list",
+			},
+		}))
+		utils.AssertContains(t, output, `hx-target="#user-list"`)
+		utils.AssertContains(t, output, `hx-trigger="input changed delay:300ms"`)
+	})
+
+	t.Run("without javascript the form still submits natively", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterInput(FilterInputProps{
+			Name:   "q",
+			Label:  "Search users",
+			Action: "/users",
+		}))
+		utils.AssertContains(t, output, `action="/users"`)
+		utils.AssertContains(t, output, `method="GET"`)
+	})
 }

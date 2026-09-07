@@ -1,5 +1,7 @@
 package forms
 
+import "github.com/larsartmann/templ-components/utils/wire"
+
 func ExampleFilterDropdown() {
 	_ = FilterDropdown(FilterDropdownProps{
 		Name:     "status",
@@ -44,6 +46,20 @@ func ExampleRating_readOnly() {
 		Value:    3,
 		Max:      5,
 		ReadOnly: true,
+	})
+	// Output:
+}
+
+func ExampleFilterInput() {
+	_ = FilterInput(FilterInputProps{
+		Name:        "q",
+		Label:       "Search users",
+		Placeholder: "Type to filter…",
+		DebounceMS:  300,
+		Wire: &wire.Action{
+			URL:    "/api/users/search",
+			Target: "#user-list",
+		},
 	})
 	// Output:
 }

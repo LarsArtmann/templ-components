@@ -37,7 +37,7 @@ func TestFilterInputWiring(t *testing.T) {
 			},
 		}))
 		utils.AssertContains(t, output, `data-on:input__debounce.300ms=`)
-		utils.AssertContains(t, output, `@get('/api/search', {contentType: 'form'})`)
+		utils.AssertContains(t, output, `@get(&#39;/api/search&#39;, {contentType: &#39;form&#39;})`)
 	})
 
 	t.Run("zero debounce emits no delay modifier", func(t *testing.T) {
@@ -49,7 +49,7 @@ func TestFilterInputWiring(t *testing.T) {
 				URL: "/api/search",
 			},
 		}))
-		utils.AssertContains(t, output, `hx-trigger="input changed"`)
+		utils.AssertContains(t, output, `hx-trigger="input"`)
 		utils.AssertNotContains(t, output, "delay:")
 	})
 
