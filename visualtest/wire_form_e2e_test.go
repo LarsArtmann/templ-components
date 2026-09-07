@@ -36,6 +36,12 @@ const (
 
 	wireFormNameMissing = "Name is required."
 	wireFormEmailBad    = "Enter an email address with a domain."
+
+	// wireFormSettleWait gives htmx's settle phase (default 20ms) time to
+	// process swapped-in nodes before the test interacts with them again —
+// a click inside that window hits an unwired form and falls through to a
+	// native submit. Real users cannot click this fast; e2e clients can.
+	wireFormSettleWait = 250 * time.Millisecond
 )
 
 // formSel scopes a CSS selector to one dialect's form region.
@@ -56,6 +62,26 @@ func formValueExpr(region, field string) string {
 // jsString quotes a Go string as a single-quoted JS literal.
 func jsString(s string) string {
 	return "'" + strings.ReplaceAll(s, `\`, `\\`) + "'"
+}
+
+// setFieldValue sets an input's value programmatically and fires the input
+// event, so runtimes tracking the field observe the change. Deterministic
+// replacement — unlike chromedp.SendKeys, which types at the cursor (position
+// 0 for values set via the value attribute) and prepends.
+func setFieldValue(ctx context.Context, region, field, value string) chromedp.ActionFunc {
+	return chromedp.ActionFunc(func(cctx context.Context) error {
+		expr := `var i=document.querySelector('` + formSel(region, field) + `'); i.value=` + jsString(value) +
+			`; i.dispatchEvent(new Event('input',{bubbles:true})); i.value`
+		var out string
+
+		return chromedp.Evaluate(expr, &out).Do(cctx)
+	})
+}
+
+// waitSwapSettled blocks until a freshly swapped region is safe to interact
+// with again (see wireFormSettleWait).
+func waitSwapSettled() chromedp.Action {
+	return chromedp.Sleep(wireFormSettleWait)
 }
 
 // wireFormState carries the submitted values and server-side validation
@@ -397,13 +423,17 @@ func TestWireE2EFormValidationRoundTrip(t *testing.T) {
 				chromedp.SendKeys(formSel(tc.region, `input[name="name"]`), "Ada Lovelace", chromedp.NodeVisible),
 				chromedp.SendKeys(formSel(tc.region, `input[name="email"]`), "ada@example", chromedp.NodeVisible),
 				chromedp.Click(formSel(tc.region, `button[type="submit"]`), chromedp.NodeVisible),
-				// Error round-trip: summary + inline error visible.
+				// Error round-trip: summary + inline error visible, then let
+				// the runtime settle before re-interacting (htmx wires swapped
+				// nodes during its 20ms settle phase; Datastar initializes
+				// observed mutations asynchronously too).
 				chromedp.Poll(regionHasText(tc.region, "1 error found"), &ok),
 				chromedp.Poll(regionHasText(tc.region, wireFormEmailBad), &ok),
+				waitSwapSettled(),
 				// The submitted value survived the re-render.
 				chromedp.Evaluate(formValueExpr(tc.region, `input[name="email"]`), &preserved),
 				// Fix the email in the re-rendered form and resubmit.
-				chromedp.SendKeys(formSel(tc.region, `input[name="email"]`), ".com", chromedp.NodeVisible),
+				setFieldValue(ctx, tc.region, `input[name="email"]`, "ada@example.com"),
 				chromedp.Click(formSel(tc.region, `button[type="submit"]`), chromedp.NodeVisible),
 				chromedp.Poll(regionHasText(tc.region, "Subscribed Ada Lovelace (ada@example.com)"), &ok),
 			); err != nil {
