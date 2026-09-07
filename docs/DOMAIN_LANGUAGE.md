@@ -30,6 +30,10 @@ Inspired by Domain-Driven Design (DDD) Ubiquitous Language.
 | Wiring            | The act of connecting a component to a backend endpoint via a transport's attributes       | `display.ButtonProps.Wire`       |
 | Dialect           | The attribute syntax a transport speaks: `hx-*` or `data-on:*` + `@action()`               | `wire.Attributes()`              |
 | Patch Mode        | How Datastar merges a fragment response into the region: inner, outer, append, ...         | `wire.PatchMode`                 |
+| ContentType       | Request-body encoding a wired exchange uses: form fields (urlencoded/multipart) or a JSON signals object. Mirrors the Datastar fetch option vocabulary; htmx serializes forms natively and ignores the field | `wire.ContentType` |
+| Form Encoding     | `{contentType: 'form'}` — the pinned Datastar runtime capability that serializes a form's fields (HTML5 validation gate, submitter name/value, enctype-aware body). The default `forms.FormProps.Wire` applies | `forms.FormProps.Wire`, `docs/datastar-runtime-facts.md` |
+| Response-Driven Targeting | The Datastar targeting contract: fetch actions carry no client-side target, so the SERVER names the patch region (`wire.Handler` → `Datastar-Selector`/`Datastar-Mode` response headers). Contrasts with htmx's client-side `hx-target` | `wire.Handler`, ADR-0036 |
+| Validation Round-Trip | submit → server validation → re-rendered form fragment (`ValidationSummary` + inline errors, values preserved) landing back in the form's swap region on either transport | `docs/recipes/server-side-validation.md` |
 
 ## Entities
 

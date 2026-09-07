@@ -116,6 +116,13 @@ flake input (nixos-unstable, currently 1.26.7 for GO-2026-5972/6089/6090) while 
 `pkgs.templ` past v0.3.1020 and break the zero-diff generate invariant. Same isolation pattern
 as `nixpkgs-chromium`; fold back together at the next deliberate full-flake update.
 
+**Never import `"github.com/a-h/templ"` explicitly in a `.templ` file** (2026-09-07). The
+generator auto-injects the templ import for `templ.Attributes`/`templ.Component` usage; an
+explicit import produces `templ redeclared in this block` build errors in the generated
+`*_templ.go` (found while adding `formWireAttributes` to `forms/form.templ`). Relatedly, the
+templ LSP reports stale cross-module diagnostics long after edits — `nix run .#build` is
+ground truth.
+
 ## Architecture
 
 - **Module:** `github.com/larsartmann/templ-components`
