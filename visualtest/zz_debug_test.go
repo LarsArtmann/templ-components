@@ -6,6 +6,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/chromedp/cdproto/runtime"
 	"github.com/chromedp/chromedp"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
@@ -31,34 +32,53 @@ func TestZZOwnBrowserDatastarWizard(t *testing.T) {
 	dialect := wire.TransportDatastar
 
 	var ok bool
-	var one string
+	var probe string
+
+	chromedp.ListenTarget(ctx, func(ev interface{}) {
+		if e, isCT := ev.(*runtime.EventConsoleAPICalled); isCT {
+			for _, a := range e.Args {
+				t.Logf("CONSOLE %s: %s", e.Type, a.Value)
+			}
+		}
+
+		if e, isEX := ev.(*runtime.EventExceptionThrown); isEX {
+			t.Logf("EXCEPTION: %s", e.ExceptionDetails.Text)
+		}
+	})
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
 		chromedp.Poll(packGate(dialect), &ok),
 		chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
 		chromedp.Poll(regionHasText(region, packWizardEmailBad), &ok),
+		chromedp.Evaluate(`JSON.stringify({
+			stepForms: [...document.querySelectorAll('form')].map(f => ({
+				step: f.querySelector('input[name="step"]') ? f.querySelector('input[name="step"]').value : 'none',
+				ds: f.hasAttribute('data-on:submit'),
+				inDsRegion: !!f.closest('#pack-wizard-datastar-region'),
+			})),
+			regionHTML: document.querySelector('#pack-wizard-datastar-region').innerHTML.slice(0, 400),
+		})`, &probe),
+	); err != nil {
+		t.Fatalf("probe after step0 error: %v", err)
+	}
+	t.Logf("probe-after-req1: %s", probe)
+
+	if err := chromedp.Run(ctx,
 		waitSwapSettled(),
 		setFieldValue(ctx, region, `input[name="email"]`, "ada@example.com"),
 		chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
-		chromedp.Poll(regionExistsExpr(region, `input[name="name"]`), &ok),
-		waitSwapSettled(),
-		chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
-		chromedp.Poll(regionHasText(region, packWizardNameBad), &ok),
-		chromedp.Evaluate(`'alive-before'`, &one),
+		chromedp.Sleep(3 * time.Second),
+		chromedp.Evaluate(`JSON.stringify({
+			stepForms: [...document.querySelectorAll('form')].map(f => ({
+				step: f.querySelector('input[name="step"]') ? f.querySelector('input[name="step"]').value : 'none',
+				inDsRegion: !!f.closest('#pack-wizard-datastar-region'),
+			})),
+			regionText2: document.querySelector('#pack-wizard-datastar-region').innerText,
+			nameInput: !!document.querySelector('#pack-wizard-datastar-region input[name="name"]'),
+		})`, &probe),
 	); err != nil {
-		t.Fatalf("flow up to step6: %v", err)
+		t.Fatalf("probe after step1: %v", err)
 	}
-	t.Logf("before final click: %s", one)
-
-	err := chromedp.Run(ctx,
-		setFieldValue(ctx, region, `input[name="name"]`, "Ada Lovelace"),
-		chromedp.Evaluate(`document.querySelector('#pack-wizard-datastar-region button[type="submit"]').click(); 'clicked'`, &one),
-		chromedp.Sleep(1 * time.Second),
-		chromedp.Evaluate(`'alive-after'`, &one),
-	)
-	t.Logf("final click run: err=%v value=%q", err, one)
-
-	err2 := chromedp.Run(ctx, chromedp.Evaluate(`'zombie-check'`, &one))
-	t.Logf("zombie check: err=%v value=%q", err2, one)
+	t.Logf("probe-after-req2: %s", probe)
 }
