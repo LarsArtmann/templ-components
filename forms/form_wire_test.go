@@ -214,3 +214,71 @@ func TestFormWireAttributesDefaults(t *testing.T) {
 		t.Fatalf("defaulted datastar expression = %v, want form-encoded submit", got)
 	}
 }
+
+// FuzzFormWireAttributes proves the form-level wire defaulting (submit
+// event, form encoding) never panics and never emits an empty-valued
+// attribute on arbitrary input — including negative debounce values.
+func FuzzFormWireAttributes(f *testing.F) {
+	f.Add("htmx", "post", "submit", "/api/items", "#out", "", 300)
+	f.Add("datastar", "", "", "", "", "json", 0)
+	f.Add("", "fetch", "hover", "it's", `"><script>`, "form", -5)
+	f.Add("unknown", "GET", "load", "#", "closest div", "multipart", 1)
+
+	f.Fuzz(func(t *testing.T, transport, method, event, url, target, contentType string, debounce int) {
+		action := wire.Action{
+			Transport:   wire.Transport(transport),
+			Method:      wire.Method(method),
+			URL:         url,
+			Event:       wire.Event(event),
+			Target:      target,
+			ContentType: wire.ContentType(contentType),
+			DebounceMS:  debounce,
+		}
+
+		attrs := formWireAttributes(&action)
+		for key, value := range attrs {
+			if key == "" {
+				t.Fatalf("empty attribute key for %+v", action)
+			}
+
+			if value == "" {
+				t.Fatalf("attribute %q has empty value for %+v", key, action)
+			}
+		}
+	})
+}
+
+// TestFormValidateWireDialect pins the Validate semantics across transports:
+// hx-validate renders for htmx wiring (and unwired forms), and is omitted
+// under Datastar wiring — the runtime's form-encoding validation gate owns
+// the native check there.
+func TestFormValidateWireDialect(t *testing.T) {
+	t.Parallel()
+
+	t.Run("unwired form renders hx-validate", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{Validate: true}))
+		utils.AssertContains(t, output, `hx-validate="true"`)
+	})
+
+	t.Run("htmx wiring renders hx-validate", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Validate: true,
+			Wire:     &wire.Action{URL: "/api/save"},
+		}))
+		utils.AssertContains(t, output, `hx-validate="true"`)
+	})
+
+	t.Run("datastar wiring omits hx-validate", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Validate: true,
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				URL:       "/api/save",
+			},
+		}))
+		utils.AssertNotContains(t, output, "hx-validate")
+	})
+}

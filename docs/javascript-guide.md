@@ -11,6 +11,12 @@
 Before writing ANY JavaScript, walk this ladder. Stop at the first rung that solves
 your problem.
 
+> **Forms note:** a plain HTML `<form>` is rung 1 — zero JS. The `wire`
+> package (`utils/wire`) keeps you on rungs 1-2 while making the same markup
+> work under either runtime: `forms.FormProps.Wire` submits over htmx
+> attributes or Datastar expressions, no hand-written JS. See
+> `docs/transport-wiring.md`.
+
 | Rung | Tool                          | When to use                                                              | JS required         |
 | ---- | ----------------------------- | ------------------------------------------------------------------------ | ------------------- |
 | 1    | Native HTML                   | `<details>`, `<form>`, `:checked`, `:target`                             | Zero                |

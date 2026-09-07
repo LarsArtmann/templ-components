@@ -79,3 +79,17 @@ func ExampleFilterDropdown_wired() {
 	})
 	// Output:
 }
+
+func ExampleForm_wire() {
+	_ = Form(FormProps{
+		Method:     FormPost,
+		CSRFToken:  "session-token",
+		NoValidate: true,
+		Wire: &wire.Action{
+			Method: wire.MethodPost,
+			URL:    "/api/save",
+			Target: "#save-region",
+		},
+	})
+	// Output:
+}

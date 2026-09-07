@@ -165,6 +165,13 @@ Alerts, toasts, spinners, progress bars, skeletons, step indicators, loading sta
 
 Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, sliders, ratings, tags input, validation, debounced filter inputs.
 
+Forms are **dual-transport**: `FormProps.Wire` submits the same form over
+HTMX or Datastar (server-side validation round-trip included — see
+[`docs/recipes/server-side-validation.md`](docs/recipes/server-side-validation.md)),
+with debounced search (`FilterInput`) and multipart uploads
+([`docs/recipes/file-upload.md`](docs/recipes/file-upload.md)) working under
+both runtimes.
+
 ```templ
 @forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email"})
 @forms.Select(forms.SelectProps{Name: "country", Label: "Country",

@@ -471,6 +471,10 @@ func TestWireDemoFormRendersBothDialects(t *testing.T) {
 		`hx-target="#wire-form-htmx-region"`,
 		`data-on:submit="@post(&#39;/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
 		`id="wire-form-out"`,
+		// The verdict/error fragments land inside these regions; aria-live
+		// makes screen readers announce the server's response.
+		`<div id="wire-form-htmx-region" aria-live="polite">`,
+		`<div id="wire-form-out" aria-live="polite">`,
 	} {
 		if !strings.Contains(html, want) {
 			t.Errorf("demo page missing %q", want)

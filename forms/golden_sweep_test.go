@@ -130,6 +130,15 @@ func TestGoldenSweepForm(t *testing.T) {
 				URL:    "",
 			},
 		}))},
+		{Name: "form_validate_wire_datastar_no_hx_validate", HTML: utils.Render(t, Form(FormProps{
+			Method:   FormPost,
+			Validate: true,
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				Method:    wire.MethodPost,
+				URL:       "/api/submit",
+			},
+		}))},
 		{Name: "form_multipart_upload", HTML: utils.Render(t, Form(FormProps{
 			Action:  "/api/upload",
 			Method:  FormPost,

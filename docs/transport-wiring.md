@@ -1,6 +1,8 @@
 # Transport Wiring Guide — one `wire.Action`, htmx & Datastar
 
-`utils/wire` is a transport-agnostic wiring contract (ADR-0036): you describe
+`utils/wire` is a transport-agnostic wiring contract (ADR-0036, extended by
+[ADR-0038](adr/0038-common-subset-extensions.md) with `ContentType` and
+`DebounceMS`): you describe
 a client-initiated hypermedia exchange **once**, and the package renders it as
 the attribute dialect of the runtime your page loaded. It composes with every
 component in this library, because every component spreads `BaseProps.Attrs`

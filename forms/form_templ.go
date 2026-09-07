@@ -217,6 +217,14 @@ func formWireAttributes(w *wire.Action) templ.Attributes {
 	return wireAttributesWithDefaults(w, wire.EventSubmit)
 }
 
+// wireValidateHTMX reports whether hx-validate applies to the form's
+// wiring: it is an htmx attribute (pre-submit HTML5 check), meaningless to
+// Datastar — where the runtime's form-encoding validation gate handles the
+// native check. Unwired forms keep it (the no-JS/htmx default).
+func wireValidateHTMX(w *wire.Action) bool {
+	return w == nil || w.Transport != wire.TransportDatastar
+}
+
 // wireAttributesWithDefaults copies the action (never mutates the
 // consumer's) and applies the shared component defaults: an unspecified
 // Event becomes defaultEvent and an unspecified ContentType becomes form
@@ -369,7 +377,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 263, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 271, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -387,7 +395,7 @@ func formInner(props FormProps) templ.Component {
 		var templ_7745c5c3_Var7 templ.SafeURL
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(props.Action)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 265, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 273, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -400,7 +408,7 @@ func formInner(props FormProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(formMethod(props.Method))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 266, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 274, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
@@ -418,7 +426,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(formEnctype(props.Enctype))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 268, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 276, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
@@ -429,7 +437,7 @@ func formInner(props FormProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		if props.Validate {
+		if props.Validate && wireValidateHTMX(props.Wire) {
 			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, " hx-validate=\"true\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
@@ -466,7 +474,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 278, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 286, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 			if templ_7745c5c3_Err != nil {
@@ -498,7 +506,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 285, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 293, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {
@@ -511,7 +519,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.CSRFToken)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 285, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 293, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 			if templ_7745c5c3_Err != nil {

@@ -209,6 +209,14 @@ func formWireAttributes(w *wire.Action) templ.Attributes {
 	return wireAttributesWithDefaults(w, wire.EventSubmit)
 }
 
+// wireValidateHTMX reports whether hx-validate applies to the form's
+// wiring: it is an htmx attribute (pre-submit HTML5 check), meaningless to
+// Datastar — where the runtime's form-encoding validation gate handles the
+// native check. Unwired forms keep it (the no-JS/htmx default).
+func wireValidateHTMX(w *wire.Action) bool {
+	return w == nil || w.Transport != wire.TransportDatastar
+}
+
 // wireAttributesWithDefaults copies the action (never mutates the
 // consumer's) and applies the shared component defaults: an unspecified
 // Event becomes defaultEvent and an unspecified ContentType becomes form
@@ -267,7 +275,7 @@ templ formInner(props FormProps) {
 		if props.Enctype == FormEnctypeMultipart {
 			enctype={ formEnctype(props.Enctype) }
 		}
-		if props.Validate {
+		if props.Validate && wireValidateHTMX(props.Wire) {
 			hx-validate="true"
 		}
 		if props.NoValidate {

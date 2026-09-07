@@ -313,6 +313,13 @@ no eval.
 
 ---
 
+## Forms over Datastar
+
+`forms.Form`, `forms.FilterInput`, and `FilterDropdown.Wire` speak Datastar
+natively via the `wire` package (`contentType: 'form'`, debounced
+`data-on` modifiers) — see `docs/transport-wiring.md` and the validation
+round-trip recipe (`docs/recipes/server-side-validation.md`).
+
 ## Further reading
 
 - `docs/datastar-runtime-facts.md` — audited runtime facts (SSE wire format,

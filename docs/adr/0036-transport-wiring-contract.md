@@ -152,4 +152,7 @@ Shadow DOM.
   reaffirmed
 - `docs/datastar-runtime-facts.md` — the verified bundle facts behind the
   Target decision
+- [ADR-0038: common-subset extensions](0038-common-subset-extensions.md) —
+  ContentType and DebounceMS, the first sanctioned extensions of this
+  contract
 - `docs/transport-wiring.md` — the consumer guide and the WC recipe

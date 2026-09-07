@@ -425,8 +425,7 @@ func TestWiredFormCompositionStack(t *testing.T) {
 		},
 	})
 
-	output := formOut.String() + "
-" + utils.Render(t, summary)
+	output := formOut.String() + "\n" + utils.Render(t, summary)
 
 	for _, want := range []string{
 		`hx-post="/api/save"`,

@@ -502,3 +502,51 @@ func TestFilterDropdownUserCanFilterUnderEitherTransport(t *testing.T) {
 		utils.AssertContains(t, output, "Apply")
 	})
 }
+
+// --- Form Wire Behavior (BDD-style) ---
+
+func TestFormUserCanSubmitWithoutPageReload(t *testing.T) {
+	t.Parallel()
+
+	t.Run("the wired form posts to the API and targets the results region", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Method:    FormPost,
+			CSRFToken: "session-token",
+			Wire: &wire.Action{
+				Method: wire.MethodPost,
+				URL:    "/api/save",
+				Target: "#save-region",
+			},
+		}))
+		utils.AssertContains(t, output, `hx-post="/api/save"`)
+		utils.AssertContains(t, output, `hx-trigger="submit"`)
+		utils.AssertContains(t, output, `hx-target="#save-region"`)
+		utils.AssertContains(t, output, `value="session-token"`)
+	})
+
+	t.Run("without javascript the form still submits natively to the action", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Action: "/api/save",
+			Method: FormPost,
+			Wire: &wire.Action{
+				Method: wire.MethodPost,
+				URL:    "/api/save",
+			},
+		}))
+		utils.AssertContains(t, output, `action="/api/save"`)
+		utils.AssertContains(t, output, `method="POST"`)
+	})
+
+	t.Run("an empty wire URL leaves the form as a plain HTML form", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, Form(FormProps{
+			Action: "/api/save",
+			Method: FormPost,
+			Wire:   &wire.Action{URL: ""},
+		}))
+		utils.AssertNotContains(t, output, "data-on:")
+		utils.AssertNotContains(t, output, "hx-post")
+	})
+}

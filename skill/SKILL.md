@@ -264,6 +264,28 @@ go get github.com/larsartmann/templ-components@latest
 }
 ```
 
+### Dual-transport form (HTMX + Datastar)
+
+One `wire.Action`, either runtime — submit, server-side validation, inline
+field errors (see `docs/recipes/server-side-validation.md`):
+
+```templ
+@forms.Form(forms.FormProps{
+	Method:     forms.FormPost,
+	CSRFToken:  csrf,
+	NoValidate: true, // let server-side validation own the error UX
+	Wire:       &wire.Action{Method: wire.MethodPost, URL: "/api/subscribe", Target: "#form-region"},
+}) {
+	@forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email"})
+	@display.Button(display.ButtonProps{Text: "Subscribe", Type: display.ButtonHTMLSubmit})
+}
+<div id="form-region" aria-live="polite"></div>
+```
+
+Render the form INSIDE its swap region and re-render it on validation
+errors (values preserved); wrap the handler in `wire.Handler` and answer
+200 OK even for errors.
+
 ### Suppressing auto-injected `<head>` tags
 
 `DefaultPageProps()` auto-injects two tags. Override them in your `PageProps`:
