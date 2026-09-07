@@ -9,6 +9,8 @@ import "github.com/a-h/templ"
 import templruntime "github.com/a-h/templ/runtime"
 
 import (
+	"strings"
+
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
@@ -177,7 +179,7 @@ func wireDemo(transport demoTransport) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(transport.outID())
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 91, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 93, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -260,7 +262,58 @@ func wireDemo(transport demoTransport) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div><p class=\"mt-3 text-sm text-gray-500 dark:text-gray-400\">Submit invalid data (an email without a domain): the server re-renders the form with a <code>ValidationSummary</code> and inline field errors, preserving what you typed — on either runtime. Valid data renders the success verdict plus a fresh form. Errors travel as 200 OK: htmx 2's default response handling does not swap 4xx responses, and Datastar dispatches a fetch error event at status >= 400 — 200 keeps both zero-config.</p></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div><p class=\"mt-3 text-sm text-gray-500 dark:text-gray-400\">Submit invalid data (an email without a domain): the server re-renders the form with a <code>ValidationSummary</code> and inline field errors, preserving what you typed — on either runtime. Valid data renders the success verdict plus a fresh form. Errors travel as 200 OK: htmx 2's default response handling does not swap 4xx responses, and Datastar dispatches a fetch error event at status >= 400 — 200 keeps both zero-config.</p></div><div class=\"rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4\"><h3 class=\"text-sm font-semibold text-gray-900 dark:text-white mb-2\">Debounced filter</h3><p class=\"text-sm text-gray-500 dark:text-gray-400 mb-3\"><code>forms.FilterInput</code>: a <code>&lt;search&gt;</code> form whose input auto-submits as you type, debounced 300ms. Under htmx it renders <code>hx-trigger=\"input changed delay:300ms\"</code>; under Datastar <code>data-on:input__debounce.300ms</code> (the modifier spelling decoded from the pinned bundle) with the form encoding path — so the query travels as a clean <code>?q=</code> parameter on either runtime. One endpoint serves both via <code>wire.Handler</code>.</p>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = demoCodeSnippet(
+			"Go",
+			`&wire.Action{URL: "/api/wire/filter", Target: "#wire-filter-out"} // hx-trigger="input changed delay:300ms"
+&wire.Action{Transport: wire.TransportDatastar, URL: "/api/wire/filter"} // data-on:input__debounce.300ms`,
+		).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div class=\"max-w-md\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if transport == demoTransportBoth {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "<div class=\"space-y-6\"><div><p class=\"text-xs font-medium text-gray-500 dark:text-gray-400 mb-1\">HTMX</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = wireDemoFilterInput(wire.TransportHTMX).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</div><div><p class=\"text-xs font-medium text-gray-500 dark:text-gray-400 mb-1\">Datastar</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = wireDemoFilterInput(wire.TransportDatastar).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</div></div>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Err = wireDemoFilterInput(transport.wireTransport()).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<div id=\"wire-filter-out\" class=\"mt-3\" aria-live=\"polite\">")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = wireFilterResults("").Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</div></div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -444,7 +497,7 @@ func wireDemoForm(dialect wire.Transport, st wireFormState) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, " ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, " ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -458,7 +511,7 @@ func wireDemoForm(dialect wire.Transport, st wireFormState) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, " <div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, " <div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -471,7 +524,7 @@ func wireDemoForm(dialect wire.Transport, st wireFormState) templ.Component {
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "</div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "</div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -548,64 +601,64 @@ func wireTransportLink(label string, value demoTransport, active demoTransport) 
 		}
 		ctx = templ.ClearChildren(ctx)
 		if value == active {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "<a href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 32, "<a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var10 templ.SafeURL
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL("?transport=" + string(value) + "#wire-transport"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 280, Col: 72}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 318, Col: 72}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "\" class=\"px-3 py-1.5 text-sm font-medium bg-blue-600 dark:bg-blue-500 text-white\" aria-current=\"true\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 33, "\" class=\"px-3 py-1.5 text-sm font-medium bg-blue-600 dark:bg-blue-500 text-white\" aria-current=\"true\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 280, Col: 182}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 318, Col: 182}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</a>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 34, "</a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		} else {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<a href=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 35, "<a href=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var12 templ.SafeURL
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.JoinURLErrs(templ.URL("?transport=" + string(value) + "#wire-transport"))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 282, Col: 72}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 320, Col: 72}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var12))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\" class=\"px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 36, "\" class=\"px-3 py-1.5 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.JoinStringErrs(label)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 282, Col: 196}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 320, Col: 196}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var13))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "</a>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 37, "</a>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -639,6 +692,145 @@ func wireFragment(loadedAt string) templ.Component {
 		templ_7745c5c3_Err = feedback.InlineSuccess("Fragment loaded via the transport-agnostic wire contract at "+loadedAt).Render(ctx, templ_7745c5c3_Buffer)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+// wireDemoFilterInput renders the debounced filter input in the given
+// dialect. Both dialects target the shared #wire-filter-out region: htmx
+// client-side via Wire.Target, Datastar via the wire.Handler response
+// headers.
+func wireDemoFilterInput(dialect wire.Transport) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var15 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var15 == nil {
+			templ_7745c5c3_Var15 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = forms.FilterInput(forms.FilterInputProps{
+			Name:        "q",
+			Label:       "Filter frameworks",
+			Placeholder: "Type to filter…",
+			HelpText:    "Debounced 300ms — results update as you type",
+			DebounceMS:  300,
+			Wire: &wire.Action{
+				Transport: dialect,
+				URL:       "/api/wire/filter",
+				Target:    utils.Ternary(dialect == wire.TransportDatastar, "", "#wire-filter-out"),
+			},
+		}).Render(ctx, templ_7745c5c3_Buffer)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		return nil
+	})
+}
+
+// wireFilterDataset is the static demo dataset for the debounced filter.
+var wireFilterDataset = []string{"Alpine.js", "Datastar", "Htmx", "Hyperscript", "Tailwind", "Templ"}
+
+// wireFilterMatches returns the dataset entries containing the query
+// (case-insensitive). An empty query matches everything.
+func wireFilterMatches(query string) []string {
+	query = strings.ToLower(strings.TrimSpace(query))
+	if query == "" {
+		return wireFilterDataset
+	}
+
+	var out []string
+	for _, name := range wireFilterDataset {
+		if strings.Contains(strings.ToLower(name), query) {
+			out = append(out, name)
+		}
+	}
+
+	return out
+}
+
+// wireFilterResults is the shared response body for the debounced filter
+// endpoint (both transports).
+func wireFilterResults(query string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var16 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var16 == nil {
+			templ_7745c5c3_Var16 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		if len(wireFilterMatches(query)) == 0 {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 38, "<p class=\"text-sm text-gray-500 dark:text-gray-400\">No matches for “")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var17 string
+			templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.JoinStringErrs(query)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 373, Col: 79}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var17))
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 39, "”.</p>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		} else {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 40, "<ul class=\"divide-y divide-gray-200 dark:divide-gray-700 text-sm text-gray-900 dark:text-white\">")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			for _, name := range wireFilterMatches(query) {
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 41, "<li class=\"py-1.5\">")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				var templ_7745c5c3_Var18 string
+				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.JoinStringErrs(name)
+				if templ_7745c5c3_Err != nil {
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/wire_demo.templ`, Line: 377, Col: 29}
+				}
+				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var18))
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 42, "</li>")
+				if templ_7745c5c3_Err != nil {
+					return templ_7745c5c3_Err
+				}
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 43, "</ul>")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
 		return nil
 	})

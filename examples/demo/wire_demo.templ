@@ -1,6 +1,8 @@
 package main
 
 import (
+	"strings"
+
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
 	"github.com/larsartmann/templ-components/forms"
@@ -156,6 +158,42 @@ templ wireDemo(transport demoTransport) {
 			fetch error event at status >= 400 — 200 keeps both zero-config.
 		</p>
 	</div>
+
+	<div class="rounded-lg border border-gray-200 dark:border-gray-800 p-4 mt-4">
+		<h3 class="text-sm font-semibold text-gray-900 dark:text-white mb-2">Debounced filter</h3>
+		<p class="text-sm text-gray-500 dark:text-gray-400 mb-3">
+			<code>forms.FilterInput</code>: a <code>&lt;search&gt;</code> form whose input auto-submits
+			as you type, debounced 300ms. Under htmx it renders
+			<code>hx-trigger="input changed delay:300ms"</code>; under Datastar
+			<code>data-on:input__debounce.300ms</code> (the modifier spelling decoded from the pinned
+			bundle) with the form encoding path — so the query travels as a clean <code>?q=</code>
+			parameter on either runtime. One endpoint serves both via <code>wire.Handler</code>.
+		</p>
+		@demoCodeSnippet(
+			"Go",
+			`&wire.Action{URL: "/api/wire/filter", Target: "#wire-filter-out"} // hx-trigger="input changed delay:300ms"
+&wire.Action{Transport: wire.TransportDatastar, URL: "/api/wire/filter"} // data-on:input__debounce.300ms`,
+		)
+		<div class="max-w-md">
+			if transport == demoTransportBoth {
+				<div class="space-y-6">
+					<div>
+						<p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">HTMX</p>
+						@wireDemoFilterInput(wire.TransportHTMX)
+					</div>
+					<div>
+						<p class="text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Datastar</p>
+						@wireDemoFilterInput(wire.TransportDatastar)
+					</div>
+				</div>
+			} else {
+				@wireDemoFilterInput(transport.wireTransport())
+			}
+			<div id="wire-filter-out" class="mt-3" aria-live="polite">
+				@wireFilterResults("")
+			</div>
+		</div>
+	</div>
 }
 
 // wireDemoValidateInput wires the validation input in the selected dialect:
@@ -286,4 +324,58 @@ templ wireTransportLink(label string, value demoTransport, active demoTransport)
 // wireFragment is the shared response body for both wire demo transports.
 templ wireFragment(loadedAt string) {
 	@feedback.InlineSuccess("Fragment loaded via the transport-agnostic wire contract at " + loadedAt)
+}
+
+// wireDemoFilterInput renders the debounced filter input in the given
+// dialect. Both dialects target the shared #wire-filter-out region: htmx
+// client-side via Wire.Target, Datastar via the wire.Handler response
+// headers.
+templ wireDemoFilterInput(dialect wire.Transport) {
+	@forms.FilterInput(forms.FilterInputProps{
+		Name:        "q",
+		Label:       "Filter frameworks",
+		Placeholder: "Type to filter…",
+		HelpText:    "Debounced 300ms — results update as you type",
+		DebounceMS:  300,
+		Wire: &wire.Action{
+			Transport: dialect,
+			URL:       "/api/wire/filter",
+			Target:    utils.Ternary(dialect == wire.TransportDatastar, "", "#wire-filter-out"),
+		},
+	})
+}
+
+// wireFilterDataset is the static demo dataset for the debounced filter.
+var wireFilterDataset = []string{"Alpine.js", "Datastar", "Htmx", "Hyperscript", "Tailwind", "Templ"}
+
+// wireFilterMatches returns the dataset entries containing the query
+// (case-insensitive). An empty query matches everything.
+func wireFilterMatches(query string) []string {
+	query = strings.ToLower(strings.TrimSpace(query))
+	if query == "" {
+		return wireFilterDataset
+	}
+
+	var out []string
+	for _, name := range wireFilterDataset {
+		if strings.Contains(strings.ToLower(name), query) {
+			out = append(out, name)
+		}
+	}
+
+	return out
+}
+
+// wireFilterResults is the shared response body for the debounced filter
+// endpoint (both transports).
+templ wireFilterResults(query string) {
+	if len(wireFilterMatches(query)) == 0 {
+		<p class="text-sm text-gray-500 dark:text-gray-400">No matches for “{ query }”.</p>
+	} else {
+		<ul class="divide-y divide-gray-200 dark:divide-gray-700 text-sm text-gray-900 dark:text-white">
+			for _, name := range wireFilterMatches(query) {
+				<li class="py-1.5">{ name }</li>
+			}
+		</ul>
+	}
 }

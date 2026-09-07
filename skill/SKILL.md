@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-118 components across 11 packages + 106 icons. If you're about to hand-roll
+119 components across 11 packages + 106 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -94,7 +94,7 @@ Don't know what to look for? Find your page type:
 | `PieChart`           | `PieChart(props PieChartProps)`                     | Pure SVG pie/donut chart — arc paths, external labels, legend, center label, custom colors, ARIA. Zero JS                                        |
 | `AreaChart`          | `AreaChart(props AreaChartProps)`                   | Pure SVG area chart — filled areas, multi-series, fill opacity, smooth curves, ARIA. Zero JS                                                     |
 
-#### `forms` — 21 components
+#### `forms` — 22 components
 
 | Component           | Signature                                         | One-liner                                                                                                     |
 | ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
@@ -115,6 +115,7 @@ Don't know what to look for? Find your page type:
 | `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                                      |
 | `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                                      |
 | `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | HTMX auto-submit select for filter bars                                                                       |
+| `FilterInput`       | `FilterInput(props FilterInputProps)`             | Debounced dual-transport search input — `<search>` form, auto-submits as you type (`Wire` + `DebounceMS`)     |
 | `Slider`            | `Slider(props SliderProps)`                       | Range input slider with label, value display, help text                                                       |
 | `Rating`            | `Rating(props RatingProps)`                       | Accessible star rating — radio inputs, read-only mode, 3 sizes                                                |
 | `TagsInput`         | `TagsInput(props TagsInputProps)`                 | Tag input with add/remove — hidden inputs for submission, MaxTags/AllowDuplicate                              |

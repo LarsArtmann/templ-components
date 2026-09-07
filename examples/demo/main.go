@@ -419,6 +419,16 @@ func newMux() *http.ServeMux {
 		componentOr500(w, r, response)
 	})))
 
+	mux.Handle("GET /api/wire/filter", wire.Handler(wire.PatchTarget{
+		Selector: "#wire-filter-out",
+		Mode:     wire.PatchModeInner,
+	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+
+		componentOr500(w, r, wireFilterResults(r.URL.Query().Get("q")))
+	})))
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/forms":

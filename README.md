@@ -161,9 +161,9 @@ Alerts, toasts, spinners, progress bars, skeletons, step indicators, loading sta
 @feedback.SkeletonCardGrid(feedback.SkeletonCardGridProps{Count: 6})
 ```
 
-### `forms` — Form Controls (21 components)
+### `forms` — Form Controls (22 components)
 
-Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, sliders, ratings, tags input, validation.
+Inputs, selects, textareas, checkboxes, radios, toggles, file inputs, date pickers, comboboxes, sliders, ratings, tags input, validation, debounced filter inputs.
 
 ```templ
 @forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email"})

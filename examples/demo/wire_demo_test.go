@@ -475,3 +475,129 @@ func TestWireDemoFormRendersBothDialects(t *testing.T) {
 		}
 	}
 }
+
+// TestWireFilterEndpointServesBothTransports pins the debounced-filter
+// endpoint: GET with the query parameter, response-header targeting for
+// Datastar callers, and the shared results fragment for both dialects.
+func TestWireFilterEndpointServesBothTransports(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		query           string
+		datastarRequest bool
+		wantContains    []string
+		wantAbsent      string
+	}{
+		{
+			name:         "empty query lists everything",
+			query:        "",
+			wantContains: []string{"Alpine.js", "Datastar", "Templ"},
+		},
+		{
+			name:         "query narrows the results case-insensitively",
+			query:        "data",
+			wantContains: []string{"Datastar"},
+			wantAbsent:   "Tailwind",
+		},
+		{
+			name:         "no match renders the empty state",
+			query:        "zzzz",
+			wantContains: []string{"No matches for"},
+			wantAbsent:   "Htmx",
+		},
+		{
+			name:            "datastar caller gets response-header targeting",
+			query:           "star",
+			datastarRequest: true,
+			wantContains:    []string{"Datastar"},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			server := httptest.NewServer(newMux())
+			t.Cleanup(server.Close)
+
+			req, err := http.NewRequestWithContext(
+				context.Background(),
+				http.MethodGet,
+				server.URL+"/api/wire/filter?q="+url.QueryEscape(tt.query),
+				nil,
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+
+			wantSelector := ""
+			if tt.datastarRequest {
+				req.Header.Set(wire.HeaderDatastarRequest, "true")
+				wantSelector = "#wire-filter-out"
+			}
+
+			resp, err := server.Client().Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			if resp.StatusCode != http.StatusOK {
+				t.Errorf("status = %d, want 200", resp.StatusCode)
+			}
+
+			if got := resp.Header.Get(wire.HeaderDatastarSelector); got != wantSelector {
+				t.Errorf("Datastar-Selector = %q, want %q", got, wantSelector)
+			}
+
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatal(err)
+			}
+			for _, want := range tt.wantContains {
+				if !strings.Contains(string(body), want) {
+					t.Errorf("filter body missing %q", want)
+				}
+			}
+			if tt.wantAbsent != "" && strings.Contains(string(body), tt.wantAbsent) {
+				t.Errorf("filter body must not contain %q", tt.wantAbsent)
+			}
+		})
+	}
+}
+
+// TestWireDemoFilterInputRendersBothDialects pins the demo page's debounced
+// filter wiring: the htmx input carries the debounce trigger + target, the
+// Datastar input carries the decoded __debounce modifier, and both share
+// the results region.
+func TestWireDemoFilterInputRendersBothDialects(t *testing.T) {
+	t.Parallel()
+
+	server := httptest.NewServer(newMux())
+	t.Cleanup(server.Close)
+
+	resp, err := server.Client().Get(server.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = resp.Body.Close() })
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	html := string(body)
+	for _, want := range []string{
+		`hx-get="/api/wire/filter"`,
+		`hx-trigger="input changed delay:300ms"`,
+		`hx-target="#wire-filter-out"`,
+		`data-on:input__debounce.300ms="@get(&#39;/api/wire/filter&#39;, {contentType: &#39;form&#39;})"`,
+		`id="wire-filter-out"`,
+	} {
+		if !strings.Contains(html, want) {
+			t.Errorf("demo page missing %q", want)
+		}
+	}
+}
