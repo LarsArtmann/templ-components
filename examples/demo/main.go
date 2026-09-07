@@ -421,8 +421,10 @@ func newMux() *http.ServeMux {
 
 	// Busy-state demo: a deliberately slow endpoint so the busy UI (htmx
 	// LoadingButton / Datastar indicator) is visible. One endpoint, both
-	// dialects: the Datastar response-header targeting is dialect-conditional
-	// here because each transport's card owns a different region.
+	// dialects, zero response-header routing: the htmx button targets its
+	// region via hx-target, and the Datastar button carries the client-side
+	// {selector: …} fetch option (wire.Action.Selector) — each client
+	// patches its own region.
 	mux.HandleFunc("POST /api/wire/busy", func(w http.ResponseWriter, r *http.Request) {
 		time.Sleep(wireBusyDelay)
 
@@ -432,8 +434,6 @@ func newMux() *http.ServeMux {
 		transport := "htmx"
 		if wire.IsDatastar(r) {
 			transport = "datastar"
-			w.Header().Set(wire.HeaderDatastarSelector, "#wire-busy-datastar-out")
-			w.Header().Set(wire.HeaderDatastarMode, "inner")
 		}
 
 		componentOr500(w, r, wireBusyDone(transport))

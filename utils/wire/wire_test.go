@@ -585,10 +585,6 @@ func TestActionSelector(t *testing.T) {
 			Selector:    "#form-region",
 			ContentType: ContentTypeForm,
 		}
-		expected := templ.Attributes{
-			"data-on:click": `@get('/api/save', {selector: '#form-region'}, {contentType: 'form'})`,
-		}
-		_ = expected
 		got := action.Attributes()["data-on:click"]
 		want := `@get('/api/save', {selector: '#form-region'}, {contentType: 'form'})`
 		if got != want {

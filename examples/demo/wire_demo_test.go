@@ -625,9 +625,9 @@ func TestWireBusyEndpoint(t *testing.T) {
 			wantContains: "Job finished via htmx",
 		},
 		{
-			name:            "datastar caller gets response-header targeting",
+			name:            "datastar caller gets the plain fragment (selector option targets client-side)",
 			datastarRequest: true,
-			wantSelector:    "#wire-busy-datastar-out",
+			wantSelector:    "",
 			wantContains:    "Job finished via datastar",
 		},
 	}
@@ -695,7 +695,7 @@ func TestWireDemoBusyCardRendersBothDialects(t *testing.T) {
 	for _, want := range []string{
 		`hx-post="/api/wire/busy"`,
 		`hx-target="#wire-busy-htmx-out"`,
-		`data-on:click="@post(&#39;/api/wire/busy&#39;)"`,
+		`data-on:click="@post(&#39;/api/wire/busy&#39;, {selector: &#39;#wire-busy-datastar-out&#39;})"`,
 		`data-indicator:saving`,
 		`role="status"`,
 		`id="wire-busy-datastar-out"`,

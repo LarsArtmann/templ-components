@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 	"testing"
+
+	"github.com/a-h/templ"
 )
 
 // Invariants that must hold for EVERY Action, regardless of field values.
@@ -252,4 +254,64 @@ func BenchmarkActionAttributes(b *testing.B) {
 			_ = datastar.Attributes()
 		}
 	})
+}
+
+// BenchmarkFormWireExpression pins the cost of the form-submission
+// expression path — the option-building hot path behind forms.Form,
+// FilterInput, and FilterDropdown.Wire (defaults applied per render).
+func BenchmarkFormWireExpression(b *testing.B) {
+	unwired := Action{URL: ""}
+
+	htmxForm := Action{Method: MethodPost, URL: "/api/submit", Target: "#form-out"}
+	datastarForm := Action{
+		Transport:   TransportDatastar,
+		Method:      MethodPost,
+		URL:         "/api/submit",
+		Selector:    "#form-out",
+		ContentType: ContentTypeForm,
+		DebounceMS:  300,
+	}
+
+	b.Run("inert empty URL", func(b *testing.B) {
+		b.ReportAllocs()
+
+		for b.Loop() {
+			_ = formWireAttributesLike(&unwired)
+		}
+	})
+
+	b.Run("htmx form defaults", func(b *testing.B) {
+		b.ReportAllocs()
+
+		for b.Loop() {
+			_ = formWireAttributesLike(&htmxForm)
+		}
+	})
+
+	b.Run("datastar form expression (selector+contentType+debounce)", func(b *testing.B) {
+		b.ReportAllocs()
+
+		for b.Loop() {
+			_ = datastarForm.Attributes()
+		}
+	})
+}
+
+// formWireAttributesLike mirrors forms.formWireAttributes (the copy +
+// defaults + render path) without importing the forms package (which would
+// cycle the module graph in tests).
+func formWireAttributesLike(w *Action) templ.Attributes {
+	if w == nil {
+		return nil
+	}
+
+	action := *w
+	if action.Event == EventUnspecified {
+		action.Event = EventSubmit
+	}
+	if action.ContentType == ContentTypeUnspecified {
+		action.ContentType = ContentTypeForm
+	}
+
+	return action.Attributes()
 }

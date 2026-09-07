@@ -200,7 +200,7 @@ CSRF hidden input — traveling in both dialects.
 | Field values       | native serialization (urlencoded; multipart with `enctype`)  | same — FormData → urlencoded (or multipart with `enctype`)      |
 | HTML5 validation   | `Validate: true` adds `hx-validate="true"`; `NoValidate: true` renders `novalidate` | automatic (`checkValidity` gate); `NoValidate: true` renders `novalidate`, which skips the gate |
 | Submitter button   | name/value included                                          | name/value appended by the runtime                             |
-| Response targeting | `Wire.Target` → `hx-target` (default swaps into the form)    | response-driven — wrap the handler in `wire.Handler`            |
+| Response targeting | `Wire.Target` → `hx-target` (default swaps into the form)    | response-driven (`wire.Handler`), or client-side `Wire.Selector` → `{selector: …}` (overrides the response header) |
 
 The form-level defaults: an unspecified `Event` becomes `submit`, an
 unspecified `ContentType` becomes `ContentTypeForm` (set `ContentTypeJSON`
@@ -226,6 +226,19 @@ One timing note for test automation: htmx wires swapped-in nodes during its
 ~20ms settle phase; a client that clicks a freshly swapped submit button
 inside that window falls through to a native submit. Humans cannot click
 that fast — e2e drivers must wait for the swap to settle first.
+
+### Client-side targeting under Datastar: `Wire.Selector`
+
+Datastar v1.0.3 added a fetch option our pinned bundle carries:
+`{selector: '#region'}` patches the response into the matching element
+client-side. `wire.Action.Selector` renders it (Datastar only; the htmx
+twin is `Target`) and **overrides `Datastar-Selector` response-header
+targeting when set** — the option is checked first in the bundle's
+response dispatcher. With `Selector` set per trigger, one endpoint can
+serve several regions with zero response-header routing (the demo's busy
+card does exactly this). Empty `Selector` keeps `wire.Handler`
+response-header targeting authoritative (ADR-0036, narrowed by
+[ADR-0038](adr/0038-common-subset-extensions.md)).
 
 ### Auto-submit filter components (FilterInput, FilterDropdown)
 

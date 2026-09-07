@@ -82,6 +82,24 @@ describes ONE exchange, not to change htmx behavior.
   rejected: those have no common semantics to render; the scope boundary
   stays.
 
+## Second Extension (2026-09-07): Selector
+
+Datastar v1.0.3 added a client-side fetch option our pinned bundle now
+carries: `{selector: '<css>'}` — patch the response into the element(s)
+matching the selector, **overriding `Datastar-Selector` response-header
+targeting when both are present** (decoded from the bundle's response
+dispatcher: the option is checked first, the header second). Under
+`contentType: 'form'` the same option additionally selects which form
+serializes (`querySelector(sel)` over `closest("form")`).
+
+Decision: `wire.Action.Selector` renders that option, Datastar-only — the
+exact twin of `Target` (htmx-only). Response-driven targeting stays the
+default when `Selector` is empty; ADR-0036's rule is narrowed, not
+replaced: *Target renders for htmx only; Selector renders for Datastar
+only; empty Selector keeps response-header targeting authoritative.* The
+invariant tests pin both directions, and the busy-state demo endpoint now
+runs with zero response-header routing to prove the client-side path.
+
 ## Related
 
 - `docs/transport-wiring.md` — the living contract and pattern pack.

@@ -24,12 +24,19 @@ new bundle unless marked otherwise:
   `retryMaxCount=10`, `retry='auto'`). The reconnect matrix itself
   (which mode reconnects on clean EOF) was verified behaviorally on v1.0.2 and
   the machinery is byte-present in v1.0.3; no behavioral counter-evidence found.
-- **CHANGED — fetch actions now accept a client-side `selector` option**:
-  the v1.0.3 fetch options destructure includes `selector` (v1.0.2 had none).
-  The v1.0.2-era fact "fetch actions accept no target option" is therefore
-  OUTDATED. `wire.Action` still renders `Target` for htmx only — adopting
-  `{selector: …}` for Datastar is a deliberate future contract change (the
-  response-driven targeting contract, ADR-0036, stands until then).
+- **ADOPTED (2026-09-07) — fetch actions accept a client-side `selector`
+  option**: the v1.0.3 fetch options destructure includes `selector`
+  (v1.0.2 had none). The v1.0.2-era fact "fetch actions accept no target
+  option" is therefore OUTDATED. Response dispatch decodes (from the
+  bundle's response handler): for a non-SSE `text/html` response the
+  runtime reads `datastar-selector` / `datastar-mode` / … response
+  headers, then **the fetch options override them field-by-field** — a
+  string `selector` option replaces the header value (`mode`,
+  `namespace`, `useViewTransition` behave the same). Under
+  `contentType: 'form'` the `selector` option additionally picks which
+  form serializes (`querySelector(sel)` over `closest("form")`).
+  Consumed by `wire.Action.Selector` (ADR-0038): renders Datastar-only,
+  empty keeps response-header targeting authoritative.
 - **NEW (2026-09-07) — fetch actions accept `contentType: 'form'`** for
   whole-form serialization (consumed by `wire.ContentTypeForm` /
   `forms.FormProps.Wire`):

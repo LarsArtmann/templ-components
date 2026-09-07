@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`wire.Action.Selector` — client-side targeting under Datastar.**
+  Renders the v1.0.3 `{selector: …}` fetch option (Datastar only — the
+  htmx twin is `Target`), which patches the response into the matching
+  element and overrides `Datastar-Selector` response-header targeting when
+  both are present (bundle-verified: the option is checked first in the
+  response dispatcher). Under `contentType: 'form'` it also selects which
+  form serializes. Empty keeps response-header targeting authoritative
+  (ADR-0036 narrowed by ADR-0038). Demo: the busy card now routes both
+  dialects with zero response headers.
 - **`forms.FormEnctype` — typed enctype for file uploads.** New
   `FormProps.Enctype` enum (`FormEnctypeUrlencoded` HTML default,
   `FormEnctypeMultipart` for `FileInput` uploads). The attribute renders
