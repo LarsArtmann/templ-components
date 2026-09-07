@@ -65,20 +65,21 @@ type BaseProps struct {
 
 ### `utils/wire` (transport-agnostic wiring, ADR-0036)
 
-One typed `wire.Action` spec rendered as htmx or Datastar attributes depending on the configured Transport. Composes with every component via `BaseProps.Attrs`; `display.Button` additionally accepts it directly via `Wire *wire.Action`.
+One typed `wire.Action` spec rendered as htmx or Datastar attributes depending on the configured Transport. Composes with every component via `BaseProps.Attrs`; `display.Button`, `navigation.LoadMore`, and `forms.Form` additionally accept it directly via `Wire *wire.Action`.
 
 | API                   | Purpose                                                                                                                                                              |
 | --------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `Transport`           | `TransportHTMX` (default) / `TransportDatastar`; zero value resolves to htmx (ADR-0030)                                                                              |
 | `Method`              | `MethodGet/Post/Put/Patch/Delete`; zero value GET                                                                                                                    |
 | `Event`               | `EventClick/Submit/Change/Input/KeyDown/KeyUp/Focus/Blur`; zero value = dialect default                                                                              |
-| `Action`              | Method + URL + Event + Target; empty URL wires nothing                                                                                                               |
+| `ContentType`         | `ContentTypeForm` serializes the enclosing form's fields under Datastar (`{contentType: 'form'}`; zero value/`ContentTypeJSON` = signals as JSON); htmx ignores it (native form serialization) |
+| `Action`              | Method + URL + Event + Target + ContentType; empty URL wires nothing                                                                                                 |
 | `Action.Attributes()` | Renders the dialect: `hx-*` for htmx, `data-on:<event>="@<method>('url')"` for Datastar                                                                              |
 | `Handler`             | Both-transports endpoint middleware: Datastar callers get response-header targeting (`PatchTarget{Selector, Mode}`, typed `PatchMode` enum), htmx/plain pass through |
 | `IsDatastar`/`IsHTMX` | Request predicates on the `Datastar-Request`/`HX-Request` headers for custom branching                                                                               |
 | Header constants      | `Datastar-Request`/`Datastar-Selector`/`Datastar-Mode`/`HX-Request` for transport-branching handlers                                                                 |
 
-Scope note: Datastar fetch actions accept no target option on the audited pin (v1.0.2; v1.0.3 added a client-side `selector` option, deliberately unadopted) — `Action.Target` renders only for htmx; Datastar targeting is response-driven (echo the selector back on `Datastar-Selector`). Polling/reveal triggers and OOB swaps stay transport-specific (htmx `PolledRegion`, `LoadMore`, `SwapOOB`). See `docs/transport-wiring.md`.
+Scope note: Datastar fetch actions accept no target option on the audited pin (v1.0.2; v1.0.3 added a client-side `selector` option, deliberately unadopted) — `Action.Target` renders only for htmx; Datastar targeting is response-driven (echo the selector back on `Datastar-Selector`). Whole-form submission IS symmetric since v1.13.3: `ContentTypeForm` serializes form fields under Datastar (verified v1.0.3 runtime capability), powering `forms.FormProps.Wire`. Per-field value binding stays asymmetric (Datastar needs bound signals). Polling/reveal triggers and OOB swaps stay transport-specific (htmx `PolledRegion`, `LoadMore`, `SwapOOB`). See `docs/transport-wiring.md`.
 
 ---
 
@@ -285,7 +286,7 @@ Used by both Alert and Toast for consistent visual styling.
 | `Label`             | FULLY_FUNCTIONAL | Form label               | Optional `for` attribute, required indicator                                                                                                                                            |
 | `FieldError`        | FULLY_FUNCTIONAL | Field validation error   | Accessible with ID linking for aria-describedby                                                                                                                                         |
 | `ValidationSummary` | FULLY_FUNCTIONAL | Accessible error summary | Icon, error count, linked fields, `role="alert"`                                                                                                                                        |
-| `Form`              | FULLY_FUNCTIONAL | Form wrapper             | Action, Method (GET/POST), CSRF token, `Layout` enum (Stack/Inline/Grid), `Validate` (hx-validate), `ContainerAware` (grid columns via `@container`), `CSRFTokenName`, children pattern |
+| `Form`              | FULLY_FUNCTIONAL | Form wrapper             | Action, Method (GET/POST), CSRF token, `Layout` enum (Stack/Inline/Grid), `Validate` (hx-validate), `ContainerAware` (grid columns via `@container`), `CSRFTokenName`, `Wire` field for dual-transport submission (htmx native serialization / Datastar `contentType: 'form'`, ADR-0036), children pattern |
 | `InputGroup`        | FULLY_FUNCTIONAL | Input group container    | Groups multiple inputs with shared styling                                                                                                                                              |
 | `FormFieldWrapper`  | FULLY_FUNCTIONAL | Shared field chrome      | Label + FieldError + helpText, used by Input/Select/Textarea                                                                                                                            |
 | `Radio`             | FULLY_FUNCTIONAL | Single radio button      | Sub-component of RadioGroup                                                                                                                                                             |

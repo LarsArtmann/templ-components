@@ -231,12 +231,16 @@ A transport-agnostic wiring contract: describe a hypermedia exchange once as a t
 wire.Action{URL: "/api/items", Target: "#items"}                          // htmx (default)
 wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"}         // datastar
 
+// Whole-form submission is symmetric too — forms.Form wires both dialects,
+// fields serialize natively (htmx) or via contentType:'form' (Datastar).
+forms.FormProps{Wire: &wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/save"}}
+
 // One endpoint serves both: Datastar callers get response-header targeting,
 // htmx and plain callers pass through.
 mux.Handle("/api/items", wire.Handler(wire.PatchTarget{Selector: "#items"}, fragmentHandler))
 ```
 
-Components take it via `BaseProps.Attrs` (spread `Attributes()` anywhere) or a typed `Wire` field (`display.Button`). Zero-JS contract: attributes only, CSP-safe without a nonce. See [`docs/transport-wiring.md`](docs/transport-wiring.md).
+Components take it via `BaseProps.Attrs` (spread `Attributes()` anywhere) or a typed `Wire` field (`display.Button`, `navigation.LoadMore`, `forms.Form`). Zero-JS contract: attributes only, CSP-safe without a nonce. See [`docs/transport-wiring.md`](docs/transport-wiring.md).
 
 ### `charts/echarts` — ECharts Adapter (2 components, opt-in)
 

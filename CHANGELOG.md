@@ -6,6 +6,38 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`wire.Action.ContentType` — form-field serialization for both transports.**
+  The pinned Datastar v1.0.3 runtime accepts `{contentType: 'form'}` on fetch
+  actions (verified against the embedded bundle — see the new facts in
+  `docs/datastar-runtime-facts.md`): the enclosing form's fields serialize
+  with an HTML5 validation gate, the submitter button's name/value appended,
+  enctype-aware bodies (multipart for file uploads), and GET requests carrying
+  fields as query parameters. `ContentTypeForm` renders that option under
+  Datastar; htmx ignores the field (hx-* requests serialize forms natively).
+  Guarded by new pinned tokens in `datastar.TestPinnedRuntimeBundleContract`
+  (`contentType`, `FetchFormNotFound`, `FetchInvalidContentType`).
+- **`forms.FormProps.Wire` — dual-transport form submission** (TODO #153's
+  named survey candidate). The same `forms.Form` submits under htmx
+  (`hx-post` + implicit submit trigger) or Datastar
+  (`data-on:submit="@post(..., {contentType: 'form'})"`), with the form's
+  fields — including the CSRF hidden input — traveling in both dialects.
+  Form-level defaults: unspecified `Event` → `submit`, unspecified
+  `ContentType` → form encoding (explicit `ContentTypeJSON` submits signals
+  instead). `Action`/`Method` remain the no-JS fallback; `Wire.Target`
+  renders for htmx only (Datastar targeting stays response-driven via
+  `wire.Handler`). Empty `Wire.URL` wires nothing. Demo:
+  `examples/demo/wire_demo.templ` "Dual-transport form" section +
+  `/api/wire/form` endpoint, with both-dialect rendering and endpoint
+  contract tests.
+
+### Fixed
+
+- Refreshed `datastar/go.sum` against the published `utils` v1.13.2 tag (the
+  post-release tidy sweep had not run for the datastar module; per-module
+  `GOWORK=off` testing failed setup until now).
+
 ## [1.13.2] — 2026-09-05
 
 ### Fixed

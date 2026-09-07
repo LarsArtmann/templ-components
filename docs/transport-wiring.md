@@ -4,7 +4,8 @@
 a client-initiated hypermedia exchange **once**, and the package renders it as
 the attribute dialect of the runtime your page loaded. It composes with every
 component in this library, because every component spreads `BaseProps.Attrs`
-— and `display.Button` additionally accepts a `Wire` field directly.
+— and `display.Button`, `navigation.LoadMore`, and `forms.Form` additionally
+accept a `Wire` field directly.
 
 ## The model: two orthogonal axes
 
@@ -60,7 +61,8 @@ Any component, even without a `Wire` field — spread the attributes yourself:
 | `Method`    | `""` → GET                                                                                |
 | `Event`     | `""` → htmx: attribute omitted (element defaults: click/submit/change); Datastar: `click` |
 | `URL`       | `""` → renders nothing (inert)                                                            |
-| unknowns    | `TransportIsValid`/`MethodIsValid`/`EventIsValid` exist; rendering falls back to defaults |
+| `ContentType` | `""` → Datastar signals as JSON (runtime default); `ContentTypeForm` serializes the enclosing form's fields; htmx ignores it |
+| unknowns    | `TransportIsValid`/`MethodIsValid`/`EventIsValid`/`ContentTypeIsValid` exist; rendering falls back to defaults |
 
 ## Dialect mapping
 
@@ -69,6 +71,7 @@ Any component, even without a `Wire` field — spread the attributes yourself:
 | `Method` + `URL`     | `hx-get="/api/fragment"` | `data-on:click="@get('/api/fragment')"` |
 | `Event: EventSubmit` | `hx-trigger="submit"`    | event key: `data-on:submit="…"`         |
 | `Target: "#out"`     | `hx-target="#out"`       | _not rendered_ — see below              |
+| `ContentType: ContentTypeForm` | _not rendered_ (native form serialization) | `{contentType: 'form'}` appended — serializes the enclosing form |
 | `URL: ""`            | nothing                  | nothing                                 |
 
 ### Why Target is htmx-only (the #1 FAQ)
@@ -157,14 +160,52 @@ _syntax_ is dialect-specific (durations, options, filters). Extending
 `wire.Event` would mean modeling a mini trigger language; that is a future
 ADR-sized decision, deliberately not smuggled into the current common subset.
 
-**Form-submit parity has the same boundary.** `wire.EventSubmit` renders
-`hx-trigger="submit"` / `data-on:submit` fine, but carrying _field values_ is
-asymmetric: htmx includes the requesting element's (or form's) fields
-natively, while Datastar needs bound signals
+**Form-submit parity, updated 2026-09-07.** `wire.EventSubmit` renders
+`hx-trigger="submit"` / `data-on:submit` fine, and whole-**form** submission
+is now symmetric: the pinned Datastar v1.0.3 runtime accepts
+`{contentType: 'form'}` on fetch actions, which serializes the enclosing
+form's fields (with an HTML5 validation gate, the submitter button's
+name/value, and enctype-aware bodies — see
+`docs/datastar-runtime-facts.md`). `wire.Action.ContentType` models that
+option, and `forms.FormProps.Wire` applies it by default. What stays
+asymmetric is **per-field value binding**: htmx includes the triggering
+element's (or form's) fields natively, while a Datastar action with a static
+URL needs bound signals
 (`data-bind:value` + an interpolated expression like
 `@get('/api/validate?value=' + encodeURIComponent($value || ''))`). The demo's
 server-validation block (`/api/wire/validate`) shows both: the typed contract
 under htmx, the `Attrs` escape hatch under Datastar.
+
+## Dual-transport forms
+
+`forms.Form` ships a `Wire` field (the TODO #153 survey candidate): the same
+form submits under either runtime, with the form's fields — including the
+CSRF hidden input — traveling in both dialects.
+
+```go
+@forms.Form(forms.FormProps{
+    Method: forms.FormPost, // no-JS fallback
+    Wire:   &wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/save"},
+}) {
+    @forms.Input(forms.InputProps{Name: "email", Type: forms.InputEmail, Label: "Email"})
+    @display.Button(display.ButtonProps{Text: "Save", Type: display.ButtonHTMLSubmit})
+}
+```
+
+| Aspect             | htmx dialect                                                 | Datastar dialect (`ContentTypeForm`, applied by Form)          |
+| ------------------ | ------------------------------------------------------------ | -------------------------------------------------------------- |
+| Rendering          | `hx-post="/api/save" hx-trigger="submit"` (implicit trigger) | `data-on:submit="@post('/api/save', {contentType: 'form'})"`  |
+| Field values       | native serialization (urlencoded; multipart with `enctype`)  | same — FormData → urlencoded (or multipart with `enctype`)      |
+| HTML5 validation   | `Validate: true` adds `hx-validate="true"`                   | automatic (`checkValidity` gate, `novalidate` skips)            |
+| Submitter button   | name/value included                                          | name/value appended by the runtime                             |
+| Response targeting | `Wire.Target` → `hx-target` (default swaps into the form)    | response-driven — wrap the handler in `wire.Handler`            |
+
+The form-level defaults: an unspecified `Event` becomes `submit`, an
+unspecified `ContentType` becomes `ContentTypeForm` (set `ContentTypeJSON`
+explicitly to submit signals instead — then no form fields travel). `Method`
+follows wire's zero-value contract (GET) — set `MethodPost` for mutating
+submissions. The demo implements this end-to-end in
+`examples/demo/wire_demo.templ` (`/api/wire/form`).
 
 ## Deliberate scope boundaries
 

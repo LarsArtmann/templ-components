@@ -130,7 +130,10 @@ templ wireDemo(transport demoTransport) {
 		)
 		<div class="max-w-md">
 			if transport == demoTransportBoth {
-				@wireDemoForm(wire.TransportHTMX)
+				<div class="space-y-6">
+					@wireDemoForm(wire.TransportHTMX)
+					@wireDemoForm(wire.TransportDatastar)
+				</div>
 			} else {
 				@wireDemoForm(transport.wireTransport())
 			}
