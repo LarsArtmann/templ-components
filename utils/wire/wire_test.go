@@ -95,6 +95,31 @@ func TestEventIsValid(t *testing.T) {
 	}
 }
 
+func TestContentTypeIsValid(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name  string
+		value ContentType
+		valid bool
+	}{
+		{name: "unspecified is the defined zero value", value: ContentTypeUnspecified, valid: true},
+		{name: "json", value: ContentTypeJSON, valid: true},
+		{name: "form", value: ContentTypeForm, valid: true},
+		{name: "unknown", value: ContentType("multipart"), valid: false},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			if got := ContentTypeIsValid(tt.value); got != tt.valid {
+				t.Errorf("ContentTypeIsValid(%q) = %v, want %v", tt.value, got, tt.valid)
+			}
+		})
+	}
+}
+
 func TestActionAttributes(t *testing.T) {
 	t.Parallel()
 
@@ -217,6 +242,59 @@ func TestActionAttributes(t *testing.T) {
 			},
 			expected: templ.Attributes{"data-on:click": "@get('/api/items')"},
 		},
+		{
+			name: "datastar form content type appends the option",
+			action: Action{
+				Transport:   TransportDatastar,
+				Method:      MethodPost,
+				URL:         "/api/save",
+				Event:       EventSubmit,
+				Target:      "",
+				ContentType: ContentTypeForm,
+			},
+			expected: templ.Attributes{
+				"data-on:submit": "@post('/api/save', {contentType: 'form'})",
+			},
+		},
+		{
+			name: "datastar json content type is the runtime default and is omitted",
+			action: Action{
+				Transport:   TransportDatastar,
+				Method:      MethodPost,
+				URL:         "/api/save",
+				Event:       EventSubmit,
+				Target:      "",
+				ContentType: ContentTypeJSON,
+			},
+			expected: templ.Attributes{"data-on:submit": "@post('/api/save')"},
+		},
+		{
+			name: "datastar unknown content type degrades to the runtime default",
+			action: Action{
+				Transport:   TransportDatastar,
+				Method:      MethodGet,
+				URL:         "/api/items",
+				Event:       EventUnspecified,
+				Target:      "",
+				ContentType: ContentType("multipart"),
+			},
+			expected: templ.Attributes{"data-on:click": "@get('/api/items')"},
+		},
+		{
+			name: "htmx ignores the content type (forms serialize natively)",
+			action: Action{
+				Transport:   TransportHTMX,
+				Method:      MethodPost,
+				URL:         "/api/save",
+				Event:       EventSubmit,
+				Target:      "",
+				ContentType: ContentTypeForm,
+			},
+			expected: templ.Attributes{
+				"hx-post":    "/api/save",
+				"hx-trigger": "submit",
+			},
+		},
 	}
 
 	for _, tt := range tests {
@@ -267,8 +345,21 @@ func TestActionAttributesRender(t *testing.T) {
 			action: Action{Transport: TransportDatastar, Method: MethodGet, URL: "/api/items"},
 			contains: []string{
 				`data-on:click="@get(&#39;/api/items&#39;)"`,
-				`data-on:click="@get(`,
-				`/api/items&#39;)"`,
+			`data-on:click="@get(`,
+			`/api/items&#39;)"`,
+			},
+		},
+		{
+			name:   "datastar form expression survives the attribute writer",
+			action: Action{
+				Transport:   TransportDatastar,
+				Method:      MethodPost,
+				URL:         "/api/save",
+				Event:       EventSubmit,
+				ContentType: ContentTypeForm,
+			},
+			contains: []string{
+				`data-on:submit="@post(&#39;/api/save&#39;, {contentType: &#39;form&#39;})"`,
 			},
 		},
 	}
@@ -312,18 +403,19 @@ func renderAttributes(t *testing.T, attrs templ.Attributes) string {
 // FuzzAction verifies attribute rendering never panics and never emits an
 // empty-valued attribute on arbitrary input.
 func FuzzAction(f *testing.F) {
-	f.Add("htmx", "post", "click", "/api/items", "#out")
-	f.Add("datastar", "", "", "", "")
-	f.Add("", "fetch", "hover", "it's", `"><script>alert(1)</script>`)
-	f.Add("unknown", "GET", "load", "#", "closest div")
+	f.Add("htmx", "post", "click", "/api/items", "#out", "")
+	f.Add("datastar", "", "", "", "", "form")
+	f.Add("", "fetch", "hover", "it's", `"><script>alert(1)</script>`, "json")
+	f.Add("unknown", "GET", "load", "#", "closest div", "multipart")
 
-	f.Fuzz(func(t *testing.T, transport, method, event, url, target string) {
+	f.Fuzz(func(t *testing.T, transport, method, event, url, target, contentType string) {
 		action := Action{
-			Transport: Transport(transport),
-			Method:    Method(method),
-			URL:       url,
-			Event:     Event(event),
-			Target:    target,
+			Transport:   Transport(transport),
+			Method:      Method(method),
+			URL:         url,
+			Event:       Event(event),
+			Target:      target,
+			ContentType: ContentType(contentType),
 		}
 
 		attrs := action.Attributes()

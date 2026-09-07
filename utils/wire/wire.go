@@ -100,6 +100,40 @@ func EventIsValid(e Event) bool {
 	}
 }
 
+// ContentType selects how field values travel to the server. It mirrors the
+// Datastar fetch action's contentType option (verified against the pinned
+// v1.0.3 bundle — see docs/datastar-runtime-facts.md); htmx ignores it
+// because hx-* requests serialize the enclosing form natively.
+type ContentType string
+
+const (
+	// ContentTypeUnspecified is the zero value. It resolves to ContentTypeJSON
+	// (the Datastar runtime default: all signals as a JSON body).
+	ContentTypeUnspecified ContentType = ""
+	// ContentTypeJSON sends the Datastar signals object as a JSON body — the
+	// runtime default.
+	ContentTypeJSON ContentType = "json"
+	// ContentTypeForm serializes the enclosing <form>'s fields: HTML5
+	// constraint validation gates the request, the submitter button's
+	// name/value is appended, enctype="multipart/form-data" sends a FormData
+	// body (file uploads), anything else sends application/x-www-form-
+	// urlencoded, and GET requests carry the fields as query parameters.
+	// This is the Datastar twin of htmx's native form serialization — the
+	// piece that makes whole-form submission transport-symmetric.
+	ContentTypeForm ContentType = "form"
+)
+
+// ContentTypeIsValid reports whether c is a defined content type (the zero
+// value counts as defined: it means "use the runtime default").
+func ContentTypeIsValid(c ContentType) bool {
+	switch c {
+	case ContentTypeUnspecified, ContentTypeJSON, ContentTypeForm:
+		return true
+	default:
+		return false
+	}
+}
+
 // Action describes one client-initiated hypermedia exchange in transport
 // dialects' common subset: a method on a URL, triggered by a DOM event,
 // patching a target region.
@@ -121,6 +155,13 @@ type Action struct {
 	// the target id patches it in the default outer mode). Handlers honor it
 	// by echoing the selector back on HeaderDatastarSelector.
 	Target string
+	// ContentType selects how field values travel to the server. Under
+	// Datastar, ContentTypeForm renders {contentType: 'form'} so the action
+	// serializes the enclosing form's fields (validation gate, submitter
+	// name/value, enctype-aware body); the zero value and ContentTypeJSON use
+	// the runtime default (signals as JSON). htmx ignores this field — hx-*
+	// requests serialize the enclosing form natively either way.
+	ContentType ContentType
 }
 
 // Attributes renders the action as templ attributes in the transport's
@@ -166,7 +207,7 @@ func (a Action) htmxAttributes() templ.Attributes {
 	return attrs
 }
 
-// datastarAttributes renders data-on:<event>="@<method>('<url>')".
+// datastarAttributes renders data-on:<event>="@<method>('<url>', <opts>)".
 func (a Action) datastarAttributes() templ.Attributes {
 	event := string(a.Event)
 	if !EventIsValid(a.Event) || a.Event == EventUnspecified {
@@ -174,7 +215,7 @@ func (a Action) datastarAttributes() templ.Attributes {
 	}
 
 	return templ.Attributes{
-		"data-on:" + event: datastarActionExpr(a.method(), a.URL),
+		"data-on:" + event: datastarActionExpr(a.method(), a.URL, a.ContentType),
 	}
 }
 
@@ -196,11 +237,18 @@ func htmxMethod(m Method) string {
 	return string(MethodGet)
 }
 
-// datastarActionExpr builds a @<method>('<url>') expression. Single quotes
-// are escaped so a URL cannot inject into the expression (mirrors the
+// datastarActionExpr builds a @<method>('<url>') expression, appending
+// {contentType: 'form'} when the action selects form encoding — the only
+// non-default option the common subset expresses (JSON is the runtime
+// default and is omitted; unknown values degrade to the default). Single
+// quotes are escaped so a URL cannot inject into the expression (mirrors the
 // datastar package's actionExpr).
-func datastarActionExpr(method Method, url string) string {
+func datastarActionExpr(method Method, url string, contentType ContentType) string {
 	escaped := strings.ReplaceAll(url, `'`, `\'`)
+
+	if contentType == ContentTypeForm {
+		return fmt.Sprintf("@%s('%s', {contentType: 'form'})", method, escaped)
+	}
 
 	return fmt.Sprintf("@%s('%s')", method, escaped)
 }
