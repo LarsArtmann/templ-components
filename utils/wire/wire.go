@@ -283,6 +283,7 @@ func datastarActionExpr(method Method, url string, contentType ContentType, sele
 	if selector != "" {
 		opts = append(opts, fmt.Sprintf("{selector: '%s'}", strings.ReplaceAll(selector, `'`, `\'`)))
 	}
+
 	if contentType == ContentTypeForm {
 		opts = append(opts, "{contentType: 'form'}")
 	}

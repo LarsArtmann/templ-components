@@ -561,6 +561,7 @@ func TestActionSelector(t *testing.T) {
 
 	t.Run("selector renders as a fetch option", func(t *testing.T) {
 		t.Parallel()
+
 		action := Action{
 			Transport: TransportDatastar,
 			URL:       "/api/search",
@@ -572,6 +573,7 @@ func TestActionSelector(t *testing.T) {
 		}
 
 		got := action.Attributes()
+
 		if len(got) != len(expected) || got["data-on:input"] != expected["data-on:input"] {
 			t.Fatalf("Attributes() = %v, want %v", got, expected)
 		}
@@ -579,14 +581,17 @@ func TestActionSelector(t *testing.T) {
 
 	t.Run("selector composes with contentType form", func(t *testing.T) {
 		t.Parallel()
+
 		action := Action{
 			Transport:   TransportDatastar,
 			URL:         "/api/save",
 			Selector:    "#form-region",
 			ContentType: ContentTypeForm,
 		}
+
 		got := action.Attributes()["data-on:click"]
 		want := `@get('/api/save', {selector: '#form-region'}, {contentType: 'form'})`
+
 		if got != want {
 			t.Fatalf("expression = %q, want %q", got, want)
 		}
@@ -594,12 +599,15 @@ func TestActionSelector(t *testing.T) {
 
 	t.Run("selector single quotes are escaped", func(t *testing.T) {
 		t.Parallel()
+
 		action := Action{
 			Transport: TransportDatastar,
 			URL:       "/api/save",
 			Selector:  `#it's`,
 		}
+
 		got, _ := action.Attributes()["data-on:click"].(string)
+
 		if strings.Contains(got, `#it's`) {
 			t.Fatalf("selector not escaped: %q", got)
 		}

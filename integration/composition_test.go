@@ -396,23 +396,28 @@ func TestWiredFormCompositionStack(t *testing.T) {
 
 	var formOut bytes.Buffer
 
+	children := []templ.Component{
+		forms.Input(forms.InputProps{
+			Name:  "email",
+			Type:  forms.InputEmail,
+			Label: "Email address",
+		}),
+		display.Button(display.ButtonProps{
+			Text:    "Save",
+			Variant: display.ButtonPrimary,
+			Type:    display.ButtonHTMLSubmit,
+		}),
+	}
+
 	formCtx := templ.WithChildren(context.Background(), templ.ComponentFunc(
 		func(ctx context.Context, w io.Writer) error {
-			if err := forms.Input(forms.InputProps{
-				Name:  "email",
-				Type:  forms.InputEmail,
-				Label: "Email address",
-			}).Render(ctx, w); err != nil {
-				return fmt.Errorf("render input: %w", err)
+			for _, child := range children {
+				if err := child.Render(ctx, w); err != nil {
+					return fmt.Errorf("render child: %w", err)
+				}
 			}
 
-			btn := display.Button(display.ButtonProps{
-				Text:    "Save",
-				Variant: display.ButtonPrimary,
-				Type:    display.ButtonHTMLSubmit,
-			})
-
-			return btn.Render(ctx, w)
+			return nil
 		},
 	))
 

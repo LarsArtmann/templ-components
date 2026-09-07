@@ -275,8 +275,14 @@ func BenchmarkFormWireExpression(b *testing.B) {
 	b.Run("inert empty URL", func(b *testing.B) {
 		b.ReportAllocs()
 
+		var sink templ.Attributes
+
 		for b.Loop() {
-			_ = formWireAttributesLike(&unwired)
+			sink = formWireAttributesLike(&unwired)
+		}
+
+		if sink == nil {
+			b.Fatal("inert path must return nil")
 		}
 	})
 
@@ -306,9 +312,11 @@ func formWireAttributesLike(w *Action) templ.Attributes {
 	}
 
 	action := *w
+
 	if action.Event == EventUnspecified {
 		action.Event = EventSubmit
 	}
+
 	if action.ContentType == ContentTypeUnspecified {
 		action.ContentType = ContentTypeForm
 	}
