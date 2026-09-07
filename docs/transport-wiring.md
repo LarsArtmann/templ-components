@@ -269,6 +269,31 @@ orthogonal to the wiring attributes.
 Both patterns are live in the demo's "Busy state" card (the endpoint sleeps
 800ms so the state is visible): `examples/demo/wire_demo.templ`.
 
+### GET search forms
+
+Search-as-a-GET needs no special API: `forms.Form` with
+`Method: forms.FormGet` and a wired submit. Under htmx the fields ride the
+query string natively; under Datastar a GET fetch with
+`contentType: 'form'` carries the fields as **query parameters too**
+(bundle-verified) — identical URLs, one endpoint:
+
+```templ
+@forms.Form(forms.FormProps{
+	Method: forms.FormGet,
+	Action: "/search", // no-JS fallback
+	Wire:   &wire.Action{Method: wire.MethodGet, URL: "/api/wire/search", Target: "#results"},
+}) {
+	@forms.Input(forms.InputProps{Name: "q", Type: forms.InputSearch, Label: "Search"})
+	@display.Button(display.ButtonProps{Text: "Search", Type: display.ButtonHTMLSubmit})
+}
+```
+
+Both runtimes produce `/api/wire/search?q=<value>` — pinned by the demo's
+"GET search form" card and its tests (`TestWireSearchEndpoint`,
+`TestWireDemoUploadAndSearchCards`). File uploads follow the same
+form-encoding path with multipart — see
+**[`docs/recipes/file-upload.md`](recipes/file-upload.md)**.
+
 ## Deliberate scope boundaries
 
 `wire` covers only the dialects' common subset. Transport-specific machinery

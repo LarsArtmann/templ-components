@@ -1,8 +1,14 @@
 package integration_test
 
 import (
+	"bytes"
+	"context"
+	"fmt"
+	"io"
 	"strings"
 	"testing"
+
+	"github.com/a-h/templ"
 
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/feedback"
@@ -10,6 +16,7 @@ import (
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 func TestFullPageComposition(t *testing.T) {
@@ -364,4 +371,76 @@ func TestTableInCardNoDoubleBorder(t *testing.T) {
 			)
 		}
 	})
+}
+
+// TestWiredFormCompositionStack proves the dual-transport form stack
+// composes end-to-end at the library level: a wired forms.Form with
+// NoValidate, an inline Input, a wired submit display.Button, and a
+// ValidationSummary — the exact pieces the server-side-validation recipe
+// stitches together, rendered together on one page fragment.
+func TestWiredFormCompositionStack(t *testing.T) {
+	t.Parallel()
+
+	wiredHTMX := &wire.Action{
+		Method: wire.MethodPost,
+		URL:    "/api/save",
+		Target: "#save-region",
+	}
+
+	wiredForm := forms.Form(forms.FormProps{
+		Action:     "/api/save",
+		Method:     forms.FormPost,
+		CSRFToken:  "test-token",
+		NoValidate: true,
+		Wire:       wiredHTMX,
+	})
+
+	var formOut bytes.Buffer
+
+	formCtx := templ.WithChildren(context.Background(), templ.ComponentFunc(
+		func(ctx context.Context, w io.Writer) error {
+			if err := forms.Input(forms.InputProps{
+				Name:  "email",
+				Type:  forms.InputEmail,
+				Label: "Email address",
+			}).Render(ctx, w); err != nil {
+				return fmt.Errorf("render input: %w", err)
+			}
+
+			return display.Button(display.ButtonProps{
+				Text:    "Save",
+				Variant: display.ButtonPrimary,
+				Type:    display.ButtonHTMLSubmit,
+			}).Render(ctx, w)
+		},
+	))
+
+	if err := wiredForm.Render(formCtx, &formOut); err != nil {
+		t.Fatalf("render form: %v", err)
+	}
+
+	summary := forms.ValidationSummary(forms.ValidationSummaryProps{
+		Errors: []forms.ValidationError{
+			{Field: "email", Message: "Enter an email address with a domain."},
+		},
+	})
+
+	output := formOut.String() + "
+" + utils.Render(t, summary)
+
+	for _, want := range []string{
+		`hx-post="/api/save"`,
+		`hx-target="#save-region"`,
+		`hx-trigger="submit"`,
+		`novalidate`,
+		`name="csrf_token"`,
+		`value="test-token"`,
+		`type="email"`,
+		`type="submit"`,
+		`role="alert"`,
+	} {
+		if !strings.Contains(output, want) {
+			t.Errorf("wired form composition missing %q", want)
+		}
+	}
 }

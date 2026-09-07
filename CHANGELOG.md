@@ -8,6 +8,21 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`forms.FormEnctype` — typed enctype for file uploads.** New
+  `FormProps.Enctype` enum (`FormEnctypeUrlencoded` HTML default,
+  `FormEnctypeMultipart` for `FileInput` uploads). The attribute renders
+  only when multipart is selected (no redundant default churns consumer
+  output). Both runtimes honor it: htmx serializes natively; the pinned
+  Datastar bundle sends a FormData body exactly when enctype is multipart.
+  Demo: the wire page's "File upload" card (`/api/wire/upload`, 200-OK
+  error fragments, `MaxBytesReader` size cap). Recipe:
+  `docs/recipes/file-upload.md`.
+- **GET search-form pattern + demo.** `forms.Form` with
+  `Method: forms.FormGet` plus a wired submit: htmx serializes the query
+  string natively and Datastar's GET + `contentType: 'form'` carries fields
+  as query parameters too — identical URLs against one endpoint. Demo: the
+  wire page's "GET search form" card (`/api/wire/search`) with the
+  re-render-on-response round-trip.
 - **`FilterDropdown.Wire` — dual-transport auto-submit for the filter
   select.** When `Wire` is set (non-empty URL), the component owns the
   wiring in both dialects (`change` event + form encoding by default) and

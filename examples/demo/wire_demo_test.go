@@ -1,8 +1,10 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"io"
+	"mime/multipart"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -693,6 +695,204 @@ func TestWireDemoBusyCardRendersBothDialects(t *testing.T) {
 		`data-indicator:saving`,
 		`role="status"`,
 		`id="wire-busy-datastar-out"`,
+	} {
+		if !strings.Contains(html, want) {
+			t.Errorf("demo page missing %q", want)
+		}
+	}
+}
+
+// TestWireUploadEndpoint pins the multipart upload demo: a file travels the
+// wired form under both dialects and the endpoint answers with a 200 OK
+// result fragment (errors included — the validation rule).
+func TestWireUploadEndpoint(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		datastarRequest bool
+		wantSelector    string
+		wantContains    string
+	}{
+		{
+			name:         "htmx caller uploads a file",
+			wantContains: "Uploaded “demo.txt”",
+		},
+		{
+			name:            "datastar caller uploads a file with response-header targeting",
+			datastarRequest: true,
+			wantSelector:    "#wire-upload-out",
+			wantContains:    "Uploaded “demo.txt”",
+		},
+		{
+			name:         "missing file renders the error fragment as 200 OK",
+			wantContains: "No attachment received",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			server := httptest.NewServer(newMux())
+			t.Cleanup(server.Close)
+
+			body := &bytes.Buffer{}
+			writer := multipart.NewWriter(body)
+			if tt.name != "missing file renders the error fragment as 200 OK" {
+				part, partErr := writer.CreateFormFile("attachment", "demo.txt")
+				if partErr != nil {
+					t.Fatal(partErr)
+				}
+				if _, partErr = part.Write([]byte("hello templ-components")); partErr != nil {
+					t.Fatal(partErr)
+				}
+			}
+			if err := writer.Close(); err != nil {
+				t.Fatal(err)
+			}
+
+			req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, server.URL+"/api/wire/upload", body)
+			if err != nil {
+				t.Fatal(err)
+			}
+			req.Header.Set("Content-Type", writer.FormDataContentType())
+
+			wantSelector := ""
+			if tt.datastarRequest {
+				req.Header.Set(wire.HeaderDatastarRequest, "true")
+				wantSelector = tt.wantSelector
+			}
+
+			resp, err := server.Client().Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			if resp.StatusCode != http.StatusOK {
+				t.Errorf("status = %d, want 200", resp.StatusCode)
+			}
+			if got := resp.Header.Get(wire.HeaderDatastarSelector); got != wantSelector {
+				t.Errorf("Datastar-Selector = %q, want %q", got, wantSelector)
+			}
+
+			respBody, err := io.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !strings.Contains(string(respBody), tt.wantContains) {
+				t.Errorf("upload body missing %q", tt.wantContains)
+			}
+		})
+	}
+}
+
+// TestWireSearchEndpoint pins the GET search demo: fields travel as query
+// parameters on both dialects and the region re-renders with a fresh form.
+func TestWireSearchEndpoint(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		query           string
+		datastarRequest bool
+		wantSelector    string
+		wantContains    string
+	}{
+		{
+			name:         "htmx caller echoes the query",
+			query:        "ada",
+			wantContains: `GET received q=“ada” via htmx`,
+		},
+		{
+			name:            "datastar caller echoes the query with response-header targeting",
+			query:           "grace",
+			datastarRequest: true,
+			wantSelector:    "#wire-search-datastar-region",
+			wantContains:    `GET received q=“grace” via datastar`,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			server := httptest.NewServer(newMux())
+			t.Cleanup(server.Close)
+
+			req, err := http.NewRequestWithContext(
+				context.Background(),
+				http.MethodGet,
+				server.URL+"/api/wire/search?q="+url.QueryEscape(tt.query),
+				nil,
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if tt.datastarRequest {
+				req.Header.Set(wire.HeaderDatastarRequest, "true")
+			}
+
+			resp, err := server.Client().Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			if resp.StatusCode != http.StatusOK {
+				t.Errorf("status = %d, want 200", resp.StatusCode)
+			}
+			if got := resp.Header.Get(wire.HeaderDatastarSelector); got != tt.wantSelector {
+				t.Errorf("Datastar-Selector = %q, want %q", got, tt.wantSelector)
+			}
+
+			respBody, err := io.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !strings.Contains(string(respBody), tt.wantContains) {
+				t.Errorf("search body missing %q", tt.wantContains)
+			}
+			freshFormWiring := `data-on:submit="@get(&#39;/api/wire/search&#39;`
+			if !tt.datastarRequest {
+				freshFormWiring = `hx-get="/api/wire/search"`
+			}
+			if !strings.Contains(string(respBody), freshFormWiring) {
+				t.Errorf("re-rendered region must contain a fresh wired form (%s)", freshFormWiring)
+			}
+		})
+	}
+}
+
+// TestWireDemoUploadAndSearchCards pins the page wiring of the upload and
+// GET search cards.
+func TestWireDemoUploadAndSearchCards(t *testing.T) {
+	t.Parallel()
+
+	server := httptest.NewServer(newMux())
+	t.Cleanup(server.Close)
+
+	resp, err := server.Client().Get(server.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = resp.Body.Close() })
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	html := string(body)
+	for _, want := range []string{
+		`enctype="multipart/form-data"`,
+		`hx-post="/api/wire/upload"`,
+		`hx-target="#wire-upload-out"`,
+		`data-on:submit="@post(&#39;/api/wire/upload&#39;, {contentType: &#39;form&#39;})"`,
+		`hx-get="/api/wire/search"`,
+		`hx-target="#wire-search-htmx-region"`,
+		`data-on:submit="@get(&#39;/api/wire/search&#39;, {contentType: &#39;form&#39;})"`,
 	} {
 		if !strings.Contains(html, want) {
 			t.Errorf("demo page missing %q", want)
