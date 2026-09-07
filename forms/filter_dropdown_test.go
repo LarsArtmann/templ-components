@@ -4,6 +4,7 @@ import (
 	"testing"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 func TestDefaultFilterDropdownProps(t *testing.T) {
@@ -178,4 +179,111 @@ func TestFilterDropdownDarkModeCompliance(t *testing.T) {
 	// Select input should have dark mode classes
 	utils.AssertContains(t, output, "dark:bg-gray-800")
 	utils.AssertContains(t, output, "dark:text-white")
+}
+
+func TestFilterDropdownWire(t *testing.T) {
+	t.Parallel()
+
+	t.Run("wired htmx renders debounce-free change trigger and target", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterDropdown(FilterDropdownProps{
+			Name:    "status",
+			Options: testFilterDropdownOptions(),
+			Wire: &wire.Action{
+				URL:    "/api/filter",
+				Target: "#results",
+			},
+		}))
+		utils.AssertContains(t, output, `hx-get="/api/filter"`)
+		utils.AssertContains(t, output, `hx-trigger="change"`)
+		utils.AssertContains(t, output, `hx-target="#results"`)
+	})
+
+	t.Run("wired datastar renders form-encoded change expression", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterDropdown(FilterDropdownProps{
+			Name:    "status",
+			Options: testFilterDropdownOptions(),
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				URL:       "/api/filter",
+			},
+		}))
+		utils.AssertContains(t, output, `data-on:change="@get(&#39;/api/filter&#39;, {contentType: &#39;form&#39;})"`)
+	})
+
+	t.Run("wire owns the wiring: legacy HxGet/HxTarget/HxTrigger are ignored", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterDropdown(FilterDropdownProps{
+			Name:      "status",
+			Options:   testFilterDropdownOptions(),
+			HxGet:     "/legacy",
+			HxTarget:  "#legacy",
+			HxTrigger: "change delay:99ms",
+			Wire: &wire.Action{
+				URL:    "/api/filter",
+				Target: "#results",
+			},
+		}))
+		utils.AssertContains(t, output, `hx-get="/api/filter"`)
+		utils.AssertContains(t, output, `hx-target="#results"`)
+		utils.AssertNotContains(t, output, "/legacy")
+		utils.AssertNotContains(t, output, "delay:99ms")
+	})
+
+	t.Run("htmx extras HxInclude/HxIndicator still render when wired", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterDropdown(FilterDropdownProps{
+			Name:        "status",
+			Options:     testFilterDropdownOptions(),
+			HxInclude:   "closest form",
+			HxIndicator: "#spinner",
+			Wire: &wire.Action{
+				URL: "/api/filter",
+			},
+		}))
+		utils.AssertContains(t, output, `hx-include="closest form"`)
+		utils.AssertContains(t, output, `hx-indicator="#spinner"`)
+	})
+
+	t.Run("wired select wraps in a GET form with noscript Apply button", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterDropdown(FilterDropdownProps{
+			Name:    "status",
+			Options: testFilterDropdownOptions(),
+			Action:  "/users",
+			Wire: &wire.Action{
+				URL: "/api/filter",
+			},
+		}))
+		utils.AssertContains(t, output, `action="/users"`)
+		utils.AssertContains(t, output, `method="GET"`)
+		utils.AssertContains(t, output, "<noscript>")
+		utils.AssertContains(t, output, `type="submit"`)
+		utils.AssertContains(t, output, "Apply")
+	})
+
+	t.Run("empty URL wires nothing (legacy rendering)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterDropdown(FilterDropdownProps{
+			Name:    "status",
+			Options: testFilterDropdownOptions(),
+			HxGet:   "/api/filter",
+			Wire: &wire.Action{
+				URL: "",
+			},
+		}))
+		utils.AssertContains(t, output, `hx-get="/api/filter"`)
+		utils.AssertNotContains(t, output, "<noscript>")
+		utils.AssertNotContains(t, output, "<form")
+	})
+}
+
+// testFilterDropdownOptions is the shared option set for FilterDropdown wire
+// tests.
+func testFilterDropdownOptions() []SelectOption {
+	return []SelectOption{
+		{Value: "", Label: "All"},
+		{Value: "active", Label: "Active"},
+	}
 }
