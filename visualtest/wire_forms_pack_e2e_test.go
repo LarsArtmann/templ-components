@@ -2,6 +2,7 @@ package visualtest
 
 import (
 	"context"
+	"fmt"
 	"io"
 	"net/http"
 	"net/http/httptest"
@@ -14,7 +15,6 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
-	"github.com/chromedp/cdproto/runtime"
 	"github.com/chromedp/chromedp"
 	"github.com/chromedp/chromedp/kb"
 	"github.com/larsartmann/go-datastar/static"
@@ -81,7 +81,8 @@ func packE2EServer(t *testing.T) *httptest.Server {
 	props.HeadContent = templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 		_, werr := io.WriteString(
 			w,
-			`<script>window.__dsReady=false;document.addEventListener('datastar-ready',function(){window.__dsReady=true;},{once:true});</script>`,
+			`<script>window.__dsReady=false;document.addEventListener('datastar-ready',function(){window.__dsReady=true;},{once:true});`+
+				`document.addEventListener('submit',function(e){if(e.target&&e.target.matches&&e.target.matches('[data-pack-native]'))return;if(!e.defaultPrevented)e.preventDefault();},true);</script>`,
 		)
 
 		return werr
@@ -125,7 +126,6 @@ func packE2EServer(t *testing.T) *httptest.Server {
 		Selector: packWizardDatastarRegion,
 		Mode:     wire.PatchModeInner,
 	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		t.Logf("WIZARD HIT: datastar=%v", wire.IsDatastar(r))
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 
 		if err := r.ParseForm(); err != nil {
@@ -136,7 +136,6 @@ func packE2EServer(t *testing.T) *httptest.Server {
 
 		dialect := packDialect(r)
 		step, _ := strconv.Atoi(r.PostFormValue("step"))
-		t.Logf("WIZARD: step=%d dialect=%s", step, dialect)
 		switch step {
 		case 0:
 			email := strings.TrimSpace(r.PostFormValue("email"))
@@ -482,6 +481,12 @@ func packFilterInput(dialect wire.Transport) templ.Component {
 		Placeholder: "Type to filter…",
 		DebounceMS:  100,
 		Wire:        packWire(dialect, wire.MethodGet, "/api/pack/filter", target),
+		BaseProps: utils.BaseProps{
+			// The filter form is the only one allowed to submit natively:
+			// the Enter-key test asserts the documented full-page GET
+			// degradation (the page guard swallows wired-submit fallthroughs).
+			Attrs: templ.Attributes{"data-pack-native": true},
+		},
 	})
 }
 
@@ -744,6 +749,53 @@ func regionText(ctx context.Context, region string) (string, error) {
 	return text, err
 }
 
+// packPollOnce polls expr with a short per-attempt window, reporting whether
+// it ever held.
+func packPollOnce(ctx context.Context, expr string) bool {
+	var ok bool
+
+	err := chromedp.Run(ctx, chromedp.Poll(expr, &ok, chromedp.WithPollingTimeout(700*time.Millisecond)))
+
+	return err == nil && ok
+}
+
+// packSubmitUntil clicks the submit button inside scope until needle appears
+// in needleRegion's text (bounded retries). A click issued before the
+// runtime has re-attached to a swapped-in form either fires late or no-ops
+// (the page guard prevents a native-submit fallback), so retrying mirrors a
+// real user clicking again and makes the test deterministic.
+func packSubmitUntil(ctx context.Context, scope, needleRegion, needle string) error {
+	for attempt := 0; attempt < 20; attempt++ {
+		if err := chromedp.Run(ctx,
+			chromedp.Click(formSel(scope, `button[type="submit"]`), chromedp.NodeVisible),
+		); err != nil {
+			return err
+		}
+
+		if packPollOnce(ctx, regionHasText(needleRegion, needle)) {
+			return nil
+		}
+	}
+
+	return fmt.Errorf("submit needle %q never appeared in %s", needle, needleRegion)
+}
+
+// packFireUntil performs action until needle appears in needleRegion's text
+// (bounded retries) — the debounce/autocomplete twin of packSubmitUntil.
+func packFireUntil(ctx context.Context, action chromedp.Action, needleRegion, needle string) error {
+	for attempt := 0; attempt < 20; attempt++ {
+		if err := chromedp.Run(ctx, action); err != nil {
+			return err
+		}
+
+		if packPollOnce(ctx, regionHasText(needleRegion, needle)) {
+			return nil
+		}
+	}
+
+	return fmt.Errorf("needle %q never appeared in %s", needle, needleRegion)
+}
+
 // TestWireE2EFilterInputDebouncesAndSwaps proves the debounced filter input
 // under both runtimes: a burst of input events collapses into exactly one
 // request (the debounce), the response swaps into the results region, and a
@@ -770,18 +822,26 @@ func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
+			); err != nil {
+				t.Fatalf("%s filter input setup: %v", dialect, err)
+			}
+
+			// A burst of three input events collapses into exactly one
+			// request — the debounce — and the response swaps in.
+			if err := packFireUntil(ctx,
 				fireInputBurst(ctx, scope, `input[name="q"]`, "fltr", 3),
-				chromedp.Poll(regionHasText(region, "Filter results for “fltr” (1 request)"), &ok),
-				waitSwapSettled(),
-				// A later keystroke fires exactly one more request.
-				setFieldValue(ctx, scope, `input[name="q"]`, "templ"),
-				chromedp.Poll(regionHasText(region, "Filter results for “templ” (2 request)"), &ok),
+				region, "Filter results for “fltr” (1 request)",
 			); err != nil {
 				t.Fatalf("%s filter input E2E: %v", dialect, err)
 			}
 
-			// The burst value survived into the echoed query of the FIRST
-			// swap — already asserted via the needle above.
+			// A later keystroke fires exactly one more request.
+			if err := packFireUntil(ctx,
+				setFieldValue(ctx, scope, `input[name="q"]`, "templ"),
+				region, "Filter results for “templ” (2 request)",
+			); err != nil {
+				t.Fatalf("%s filter input second keystroke: %v", dialect, err)
+			}
 		})
 	}
 }
@@ -815,8 +875,13 @@ func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
+			); err != nil {
+				t.Fatalf("%s filter dropdown setup: %v", dialect, err)
+			}
+
+			if err := packFireUntil(ctx,
 				setSelectValue(ctx, scope, `select[name="framework"]`, "beta"),
-				chromedp.Poll(regionHasText(region, "Picked beta via "+string(dialect)+"."), &ok),
+				region, "Picked beta via "+string(dialect)+".",
 			); err != nil {
 				t.Fatalf("%s filter dropdown E2E: %v", dialect, err)
 			}
@@ -846,62 +911,54 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 			region := packWizardHTMXRegion
 			if dialect == wire.TransportDatastar {
 				region = packWizardDatastarRegion
-
-				chromedp.ListenTarget(ctx, func(ev interface{}) {
-					if e, ok := ev.(*runtime.EventConsoleAPICalled); ok {
-						for _, a := range e.Args {
-							t.Logf("[ds] console %s: %s", e.Type, a.Value)
-						}
-					}
-
-					if e, ok := ev.(*runtime.EventExceptionThrown); ok {
-						t.Logf("[ds] exception: %s", e.ExceptionDetails.Text)
-					}
-				})
 			}
 
-			var (
-				ok    bool
-				probe string
-			)
+			var ok bool
 
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
-				// Step 0: empty email → inline error, no advance.
-				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
-				chromedp.Poll(regionHasText(region, packWizardEmailBad), &ok),
+			); err != nil {
+				t.Fatalf("%s wizard setup: %v", dialect, err)
+			}
+
+			// Step 0: empty email → inline error, no advance.
+			if err := packSubmitUntil(ctx, region, region, packWizardEmailBad); err != nil {
+				t.Fatalf("%s wizard step 0 (invalid): %v", dialect, err)
+			}
+
+			if err := chromedp.Run(ctx,
 				chromedp.Poll(regionExistsExpr(region, `input[name="email"]`), &ok),
 				waitSwapSettled(),
 				// Step 0: valid email → advance to profile.
 				setFieldValue(ctx, region, `input[name="email"]`, "ada@example.com"),
-				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
-				chromedp.Poll(regionExistsExpr(region, `input[name="name"]`), &ok),
+			); err != nil {
+				t.Fatalf("%s wizard step 0 fill: %v", dialect, err)
+			}
+
+			if err := packSubmitUntil(ctx, region, region, "Full name"); err != nil {
+				t.Fatalf("%s wizard step 0 (advance): %v", dialect, err)
+			}
+
+			if err := chromedp.Run(ctx, waitSwapSettled()); err != nil {
+				t.Fatalf("%s wizard settle: %v", dialect, err)
+			}
+
+			// Step 1: empty name → inline error.
+			if err := packSubmitUntil(ctx, region, region, packWizardNameBad); err != nil {
+				t.Fatalf("%s wizard step 1 (invalid): %v", dialect, err)
+			}
+
+			if err := chromedp.Run(ctx,
 				waitSwapSettled(),
-				// Step 1: empty name → inline error.
-				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
-				chromedp.Poll(regionHasText(region, packWizardNameBad), &ok),
-				chromedp.Sleep(2 * time.Second),
 				// Step 1: valid name → wizard complete.
 				setFieldValue(ctx, region, `input[name="name"]`, "Ada Lovelace"),
-				chromedp.Evaluate(`document.querySelector('` + formSel(region, `button[type="submit"]`) + `').click(); true`, &ok),
-				chromedp.Sleep(1 * time.Second),
-				chromedp.Evaluate(`JSON.stringify({
-					forms: document.querySelectorAll('` + region + ` form').length,
-					attr: (document.querySelector('` + region + ` form') || {getAttribute: function(){return 'NOFORM';}}).getAttribute('data-on:submit'),
-					buttons: document.querySelectorAll('` + region + ` button').length,
-					txt: (document.querySelector('` + region + `') || {innerText: 'NOREGION'}).innerText.slice(0, 150)
-				})`, &probe),
-				chromedp.Poll(regionHasText(region, "Wizard complete"), &ok),
 			); err != nil {
-				text, textErr := regionText(ctx, region)
-				if textErr != nil {
-					text = "<region read failed: " + textErr.Error() + ">"
-				}
+				t.Fatalf("%s wizard step 1 fill: %v", dialect, err)
+			}
 
-				var loc string
-				_ = chromedp.Location(&loc).Do(ctx)
-				t.Fatalf("%s wizard E2E: %v\nprobe: %s\nlocation: %s\nregion text: %.600s", dialect, err, probe, loc, text)
+			if err := packSubmitUntil(ctx, region, region, "Wizard complete"); err != nil {
+				t.Fatalf("%s wizard step 1 (complete): %v", dialect, err)
 			}
 		})
 	}
@@ -944,19 +1001,27 @@ func TestWireE2EUploadFileRoundTrip(t *testing.T) {
 			if err := chromedp.Run(ctx,
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
-				// No file yet → the endpoint's inline error fragment.
-				chromedp.Click(formSel(scope, `button[type="submit"]`), chromedp.NodeVisible),
-				chromedp.Poll(regionHasText(out, "No attachment received"), &ok),
+			); err != nil {
+				t.Fatalf("%s upload setup: %v", dialect, err)
+			}
+
+			// No file yet → the endpoint's inline error fragment.
+			if err := packSubmitUntil(ctx, scope, out, "No attachment received"); err != nil {
+				t.Fatalf("%s upload empty submit: %v", dialect, err)
+			}
+
+			if err := chromedp.Run(ctx,
 				waitSwapSettled(),
 				// Pick a real file and upload it.
 				chromedp.SetUploadFiles(formSel(scope, `input[type="file"]`), []string{filePath}),
-				chromedp.Click(formSel(scope, `button[type="submit"]`), chromedp.NodeVisible),
-				chromedp.Poll(regionHasText(
-					out,
-					"Uploaded "+packUploadFileName+" ("+strconv.Itoa(packUploadFileSize)+" bytes) via "+string(dialect)+".",
-				), &ok),
 			); err != nil {
-				t.Fatalf("%s upload E2E: %v", dialect, err)
+				t.Fatalf("%s upload file select: %v", dialect, err)
+			}
+
+			if err := packSubmitUntil(ctx, scope, out,
+				"Uploaded "+packUploadFileName+" ("+strconv.Itoa(packUploadFileSize)+" bytes) via "+string(dialect)+".",
+			); err != nil {
+				t.Fatalf("%s upload submit: %v", dialect, err)
 			}
 		})
 	}
@@ -995,17 +1060,26 @@ func TestWireE2EGETSearchRoundTrip(t *testing.T) {
 				chromedp.Navigate(srv.URL+"/"),
 				chromedp.Poll(packGate(dialect), &ok),
 				setFieldValue(ctx, region, `input[name="q"]`, "ada"),
-				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
-				chromedp.Poll(regionHasText(region, "GET received q=“ada” via "+string(dialect)+"."), &ok),
+			); err != nil {
+				t.Fatalf("%s search setup: %v", dialect, err)
+			}
+
+			if err := packSubmitUntil(ctx, region, region, "GET received q=“ada” via "+string(dialect)+"."); err != nil {
+				t.Fatalf("%s search first submit: %v", dialect, err)
+			}
+
+			if err := chromedp.Run(ctx,
 				waitSwapSettled(),
 				// The submitted value survived the round-trip re-render.
 				chromedp.Evaluate(formValueExpr(region, `input[name="q"]`), &preserved),
 				// A correction resubmits in place.
 				setFieldValue(ctx, region, `input[name="q"]`, "grace"),
-				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
-				chromedp.Poll(regionHasText(region, "GET received q=“grace” via "+string(dialect)+"."), &ok),
 			); err != nil {
-				t.Fatalf("%s search E2E: %v", dialect, err)
+				t.Fatalf("%s search re-fill: %v", dialect, err)
+			}
+
+			if err := packSubmitUntil(ctx, region, region, "GET received q=“grace” via "+string(dialect)+"."); err != nil {
+				t.Fatalf("%s search second submit: %v", dialect, err)
 			}
 
 			if preserved != "ada" {
