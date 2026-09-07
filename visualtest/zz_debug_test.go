@@ -73,6 +73,17 @@ func TestDebugWireFormValidation(t *testing.T) {
 	}
 	t.Logf("SWAPPED FORM: %s", attrs)
 	setEmail("ada@example.com")
+	var btnType string
+	if err := chromedp.Run(ctx, chromedp.Evaluate(`window.__gotSubmit=false; window.__gotSubmitDefaultPrevented=null; var f=document.querySelector('#wire-form-htmx-region form'); f.addEventListener('submit', function(e){ window.__gotSubmit=true; window.__gotSubmitDefaultPrevented=e.defaultPrevented; }); var b=f.querySelector('button'); b ? b.type : 'NO BUTTON'`, &btnType)); err != nil {
+		t.Fatalf("arm spy: %v", err)
+	}
+	t.Logf("button type: %s", btnType)
+	step("click submit #2", chromedp.Click(formSel(wireFormHTMXRegion, `button[type="submit"]`), chromedp.NodeVisible))
+	var spyRes string
+	if err := chromedp.Run(ctx, chromedp.Evaluate(`'gotSubmit=' + window.__gotSubmit + ' prevented=' + window.__gotSubmitDefaultPrevented`, &spyRes)); err != nil {
+		t.Fatalf("read spy: %v", err)
+	}
+	t.Logf("SPY RESULT: %s", spyRes)
 	var dispatched string
 	if err := chromedp.Run(ctx, chromedp.Evaluate(`document.querySelector('#wire-form-htmx-region form').dispatchEvent(new Event('submit', {bubbles:true, cancelable:true})); 'dispatched'`, &dispatched)); err != nil {
 		t.Fatalf("dispatch: %v", err)
