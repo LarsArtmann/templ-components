@@ -691,7 +691,7 @@ func setSelectValue(ctx context.Context, region, sel, value string) chromedp.Act
 			`; s.dispatchEvent(new Event('change',{bubbles:true})); s.value`
 		var out string
 
-		return chromedp.Evaluate(expr, &out).Do(cctx)
+		return chromedp.Evaluate(expr, &out).Do(cctx) //nolint:staticcheck // action inside Run
 	})
 }
 
@@ -732,10 +732,10 @@ func fireInputBurst(ctx context.Context, region, sel, value string, n int) chrom
 func beforeUnloadPrevented(ctx context.Context) (bool, error) {
 	var prevented bool
 
-	err := chromedp.Evaluate(
+	err := chromedp.Run(ctx, chromedp.Evaluate(
 		`var e=new Event('beforeunload',{cancelable:true}); window.dispatchEvent(e); e.defaultPrevented`,
 		&prevented,
-	).Do(ctx)
+	))
 
 	return prevented, err
 }
@@ -744,7 +744,7 @@ func beforeUnloadPrevented(ctx context.Context) (bool, error) {
 func regionText(ctx context.Context, region string) (string, error) {
 	var text string
 
-	err := chromedp.Evaluate(`document.querySelector('` + region + `').innerText`, &text).Do(ctx)
+	err := chromedp.Run(ctx, chromedp.Evaluate(`document.querySelector('` + region + `').innerText`, &text))
 
 	return text, err
 }
@@ -777,7 +777,12 @@ func packSubmitUntil(ctx context.Context, scope, needleRegion, needle string) er
 		}
 	}
 
-	return fmt.Errorf("submit needle %q never appeared in %s", needle, needleRegion)
+	text, textErr := regionText(ctx, needleRegion)
+	if textErr != nil {
+		text = "<region read failed: " + textErr.Error() + ">"
+	}
+
+	return fmt.Errorf("submit needle %q never appeared in %s; region text: %.300s", needle, needleRegion, text)
 }
 
 // packFireUntil performs action until needle appears in needleRegion's text
@@ -793,7 +798,12 @@ func packFireUntil(ctx context.Context, action chromedp.Action, needleRegion, ne
 		}
 	}
 
-	return fmt.Errorf("needle %q never appeared in %s", needle, needleRegion)
+	text, textErr := regionText(ctx, needleRegion)
+	if textErr != nil {
+		text = "<region read failed: " + textErr.Error() + ">"
+	}
+
+	return fmt.Errorf("needle %q never appeared in %s; region text: %.300s", needle, needleRegion, text)
 }
 
 // TestWireE2EFilterInputDebouncesAndSwaps proves the debounced filter input
@@ -801,11 +811,9 @@ func packFireUntil(ctx context.Context, action chromedp.Action, needleRegion, ne
 // request (the debounce), the response swaps into the results region, and a
 // later keystroke fires exactly one more request.
 func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
-	t.Parallel()
 
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-			t.Parallel()
 
 			srv := packE2EServer(t)
 
@@ -850,11 +858,9 @@ func TestWireE2EFilterInputDebouncesAndSwaps(t *testing.T) {
 // runtimes: changing the select fires the wired request and the region
 // receives the verdict naming the picked value and the transport.
 func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
-	t.Parallel()
 
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-			t.Parallel()
 
 			srv := packE2EServer(t)
 
@@ -894,11 +900,9 @@ func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
 // a valid one advances to the profile step, and a valid name completes the
 // wizard — every response swapped into the same region.
 func TestWireE2EWizardStepsAdvances(t *testing.T) {
-	t.Parallel()
 
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-			t.Parallel()
 
 			srv := packE2EServer(t)
 
@@ -969,7 +973,6 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 // file selected via the browser's file input uploads and the shared results
 // region names the file, its size, and the transport.
 func TestWireE2EUploadFileRoundTrip(t *testing.T) {
-	t.Parallel()
 
 	dir := t.TempDir()
 	filePath := filepath.Join(dir, packUploadFileName)
@@ -980,7 +983,6 @@ func TestWireE2EUploadFileRoundTrip(t *testing.T) {
 
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-			t.Parallel()
 
 			srv := packE2EServer(t)
 
@@ -1032,11 +1034,9 @@ func TestWireE2EUploadFileRoundTrip(t *testing.T) {
 // verdict naming the transport, the submitted value survives into the fresh
 // form, and a correction resubmits in place.
 func TestWireE2EGETSearchRoundTrip(t *testing.T) {
-	t.Parallel()
 
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-			t.Parallel()
 
 			srv := packE2EServer(t)
 
@@ -1094,7 +1094,6 @@ func TestWireE2EGETSearchRoundTrip(t *testing.T) {
 // typing marks the form dirty, the wired submit clears the flag, and the
 // swapped-in form starts clean — then can be dirtied again.
 func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
-	t.Parallel()
 
 	srv := packE2EServer(t)
 
@@ -1117,7 +1116,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	}
 
 	// The singleton attached (the page really executed the guard script).
-	if err := chromedp.Evaluate(`window.tcDirtyGuardAttached===true`, &attached).Do(ctx); err != nil {
+	if err := chromedp.Run(ctx, chromedp.Evaluate(`window.tcDirtyGuardAttached===true`, &attached)); err != nil {
 		t.Fatalf("read guard singleton: %v", err)
 	}
 	if !attached {
@@ -1140,7 +1139,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 	assertPrevented(false, "clean form")
 
 	// Typing marks the form dirty (capture-phase input listener).
-	if err := setFieldValue(ctx, packDirtyRegion, `input[name="project"]`, "Graf Zeppelin").Do(ctx); err != nil {
+	if err := chromedp.Run(ctx, setFieldValue(ctx, packDirtyRegion, `input[name="project"]`, "Graf Zeppelin")); err != nil {
 		t.Fatalf("dirty the form: %v", err)
 	}
 	assertPrevented(true, "dirty form")
@@ -1158,7 +1157,7 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 
 	// The swapped-in form starts clean — and tracks dirt again.
 	assertPrevented(false, "swapped-in form")
-	if err := setFieldValue(ctx, packDirtyRegion, `input[name="project"]`, "Hindenburg").Do(ctx); err != nil {
+	if err := chromedp.Run(ctx, setFieldValue(ctx, packDirtyRegion, `input[name="project"]`, "Hindenburg")); err != nil {
 		t.Fatalf("dirty the swapped-in form: %v", err)
 	}
 	assertPrevented(true, "swapped-in form dirty")
@@ -1169,11 +1168,9 @@ func TestWireE2EDirtyGuardLifecycle(t *testing.T) {
 // native GET form submits full-page with the field as a query parameter and
 // the reloaded page stays interactive.
 func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
-	t.Parallel()
 
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-			t.Parallel()
 
 			srv := packE2EServer(t)
 
@@ -1203,7 +1200,7 @@ func TestWireE2EFilterInputEnterKeySubmitsNatively(t *testing.T) {
 				chromedp.Poll(`window.location.search.indexOf('q=enter-test')>-1 && document.readyState==='complete'`, &ok),
 			); err != nil {
 				var current string
-				_ = chromedp.Location(&current).Do(ctx)
+				_ = chromedp.Run(ctx, chromedp.Location(&current))
 				t.Fatalf("%s Enter-key E2E: %v (location=%s)", dialect, err, current)
 			}
 		})
