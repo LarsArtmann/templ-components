@@ -39,7 +39,7 @@ const (
 
 	// wireFormSettleWait gives htmx's settle phase (default 20ms) time to
 	// process swapped-in nodes before the test interacts with them again —
-// a click inside that window hits an unwired form and falls through to a
+	// a click inside that window hits an unwired form and falls through to a
 	// native submit. Real users cannot click this fast; e2e clients can.
 	wireFormSettleWait = 250 * time.Millisecond
 )
