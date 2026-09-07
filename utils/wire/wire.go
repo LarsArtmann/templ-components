@@ -162,6 +162,16 @@ type Action struct {
 	// the runtime default (signals as JSON). htmx ignores this field — hx-*
 	// requests serialize the enclosing form natively either way.
 	ContentType ContentType
+	// DebounceMS delays the wired exchange until the event has stopped
+	// firing for this many milliseconds — the auto-submit filter-input
+	// pattern. htmx renders it as the delay:<n>ms trigger modifier (plus
+	// `changed` for value events, so an unchanged value never re-requests);
+	// Datastar renders it as the __debounce.<n>ms event modifier (spelling
+	// decoded from the pinned v1.0.3 bundle — see
+	// docs/datastar-runtime-facts.md). Zero (the default) emits no debounce.
+	// Under htmx it requires an explicit Event (the zero event renders no
+	// hx-trigger at all, so the delay would be silently dropped).
+	DebounceMS int
 }
 
 // Attributes renders the action as templ attributes in the transport's
@@ -197,7 +207,14 @@ func (a Action) htmxAttributes() templ.Attributes {
 	}
 
 	if a.Event != EventUnspecified && EventIsValid(a.Event) {
-		attrs["hx-trigger"] = string(a.Event)
+		trigger := string(a.Event)
+		if a.DebounceMS > 0 {
+			if a.Event == EventInput || a.Event == EventChange {
+				trigger += " changed"
+			}
+			trigger += fmt.Sprintf(" delay:%dms", a.DebounceMS)
+		}
+		attrs["hx-trigger"] = trigger
 	}
 
 	if a.Target != "" {
@@ -214,8 +231,13 @@ func (a Action) datastarAttributes() templ.Attributes {
 		event = string(EventClick)
 	}
 
+	key := "data-on:" + event
+	if a.DebounceMS > 0 {
+		key += fmt.Sprintf("__debounce.%dms", a.DebounceMS)
+	}
+
 	return templ.Attributes{
-		"data-on:" + event: datastarActionExpr(a.method(), a.URL, a.ContentType),
+		key: datastarActionExpr(a.method(), a.URL, a.ContentType),
 	}
 }
 

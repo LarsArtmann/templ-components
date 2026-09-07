@@ -324,6 +324,115 @@ func TestActionAttributes(t *testing.T) {
 	}
 }
 
+// TestActionDebounce pins the DebounceMS rendering in both dialects: the
+// htmx delay trigger modifier (with `changed` on value events so an
+// unchanged value never re-requests) and the Datastar __debounce.<n>ms
+// event-key modifier decoded from the pinned bundle.
+func TestActionDebounce(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name     string
+		action   Action
+		expected templ.Attributes
+	}{
+		{
+			name: "htmx input debounce adds changed + delay",
+			action: Action{
+				Transport:  TransportHTMX,
+				URL:        "/api/search",
+				Event:      EventInput,
+				DebounceMS: 300,
+			},
+			expected: templ.Attributes{
+				"hx-get":     "/api/search",
+				"hx-trigger": "input changed delay:300ms",
+			},
+		},
+		{
+			name: "htmx change debounce adds changed + delay",
+			action: Action{
+				Transport:  TransportHTMX,
+				URL:        "/api/filter",
+				Event:      EventChange,
+				DebounceMS: 500,
+			},
+			expected: templ.Attributes{
+				"hx-get":     "/api/filter",
+				"hx-trigger": "change changed delay:500ms",
+			},
+		},
+		{
+			name: "htmx non-value event debounce omits changed",
+			action: Action{
+				Transport:  TransportHTMX,
+				URL:        "/api/search",
+				Event:      EventKeyUp,
+				DebounceMS: 250,
+			},
+			expected: templ.Attributes{
+				"hx-get":     "/api/search",
+				"hx-trigger": "keyup delay:250ms",
+			},
+		},
+		{
+			name: "htmx zero debounce emits no modifier",
+			action: Action{
+				Transport:  TransportHTMX,
+				URL:        "/api/search",
+				Event:      EventInput,
+				DebounceMS: 0,
+			},
+			expected: templ.Attributes{
+				"hx-get":     "/api/search",
+				"hx-trigger": "input",
+			},
+		},
+		{
+			name: "datastar input debounce uses __debounce key modifier",
+			action: Action{
+				Transport:  TransportDatastar,
+				URL:        "/api/search",
+				Event:      EventInput,
+				DebounceMS: 300,
+			},
+			expected: templ.Attributes{
+				"data-on:input__debounce.300ms": "@get('/api/search')",
+			},
+		},
+		{
+			name: "datastar zero debounce emits plain key",
+			action: Action{
+				Transport:  TransportDatastar,
+				URL:        "/api/search",
+				Event:      EventInput,
+				DebounceMS: 0,
+			},
+			expected: templ.Attributes{
+				"data-on:input": "@get('/api/search')",
+			},
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			got := tt.action.Attributes()
+
+			if len(got) != len(tt.expected) {
+				t.Fatalf("Attributes() = %v, want %v", got, tt.expected)
+			}
+
+			for key, want := range tt.expected {
+				if got[key] != want {
+					t.Errorf("Attributes()[%q] = %v, want %v", key, got[key], want)
+				}
+			}
+		})
+	}
+}
+
 // TestActionAttributesRender proves the rendered attribute spelling: htmx
 // dialect keys and the data-on:<event> colon key must survive templ's
 // attribute writer verbatim.
