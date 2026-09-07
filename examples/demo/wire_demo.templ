@@ -125,20 +125,36 @@ templ wireDemo(transport demoTransport) {
 		</p>
 		@demoCodeSnippet(
 			"Go",
-			`&wire.Action{Method: wire.MethodPost, URL: "/api/wire/form", Target: "#wire-form-out"} // hx-post + hx-target
+			`&wire.Action{Method: wire.MethodPost, URL: "/api/wire/form", Target: "#wire-form-htmx-region"} // hx-post + hx-target
 &wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/wire/form"} // data-on:submit="@post(…, {contentType: 'form'})"`,
 		)
 		<div class="max-w-md">
 			if transport == demoTransportBoth {
 				<div class="space-y-6">
-					@wireDemoForm(wire.TransportHTMX)
-					@wireDemoForm(wire.TransportDatastar)
+					<div id="wire-form-htmx-region" aria-live="polite">
+						@wireDemoForm(wire.TransportHTMX, wireFormState{})
+					</div>
+					<div id="wire-form-out" aria-live="polite">
+						@wireDemoForm(wire.TransportDatastar, wireFormState{})
+					</div>
+				</div>
+			} else if transport.wireTransport() == wire.TransportDatastar {
+				<div id="wire-form-out" aria-live="polite">
+					@wireDemoForm(wire.TransportDatastar, wireFormState{})
 				</div>
 			} else {
-				@wireDemoForm(transport.wireTransport())
+				<div id="wire-form-htmx-region" aria-live="polite">
+					@wireDemoForm(wire.TransportHTMX, wireFormState{})
+				</div>
 			}
-			<div id="wire-form-out" class="mt-3" aria-live="polite"></div>
 		</div>
+		<p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+			Submit invalid data (an email without a domain): the server re-renders the form with a
+			<code>ValidationSummary</code> and inline field errors, preserving what you typed — on either
+			runtime. Valid data renders the success verdict plus a fresh form. Errors travel as 200 OK:
+			htmx 2's default response handling does not swap 4xx responses, and Datastar dispatches a
+			fetch error event at status >= 400 — 200 keeps both zero-config.
+		</p>
 	</div>
 }
 
@@ -181,31 +197,64 @@ templ wireValidateResult(message string, ok bool) {
 	}
 }
 
+// wireFormState carries a subscribe form's submitted values and server-side
+// validation verdicts — the round-trip state the endpoint re-renders.
+type wireFormState struct {
+	Name     string
+	Email    string
+	NameErr  string
+	EmailErr string
+}
+
+func (s wireFormState) invalid() bool {
+	return s.NameErr != "" || s.EmailErr != ""
+}
+
+func (s wireFormState) summaryErrors() []forms.ValidationError {
+	errs := make([]forms.ValidationError, 0, 2)
+	if s.NameErr != "" {
+		errs = append(errs, forms.ValidationError{Field: "name", Message: s.NameErr})
+	}
+	if s.EmailErr != "" {
+		errs = append(errs, forms.ValidationError{Field: "email", Message: s.EmailErr})
+	}
+
+	return errs
+}
+
 // wireDemoForm wires a subscribe form in the given dialect. The fields
 // serialize under both transports (htmx natively; Datastar via
 // contentType:'form' — the Form component applies that default), and the
-// htmx Target lands the verdict in the shared output region; Datastar
+// form renders inside its swap region so the endpoint's re-render (errors
+// inline, values preserved — or the success verdict plus a fresh form)
+// replaces it wholesale. The htmx dialect carries hx-target; Datastar
 // targeting is response-driven via wire.Handler.
-templ wireDemoForm(dialect wire.Transport) {
+templ wireDemoForm(dialect wire.Transport, st wireFormState) {
+	if errs := st.summaryErrors(); len(errs) > 0 {
+		@forms.ValidationSummary(forms.ValidationSummaryProps{Errors: errs})
+	}
 	@forms.Form(forms.FormProps{
 		Method: forms.FormPost,
 		Wire: &wire.Action{
 			Transport: dialect,
 			Method:    wire.MethodPost,
 			URL:       "/api/wire/form",
-			Target:    "#wire-form-out",
+			Target:    utils.Ternary(dialect == wire.TransportHTMX, "#wire-form-htmx-region", ""),
 		},
 	}) {
 		@forms.Input(forms.InputProps{
 			Name:        "name",
 			Label:       "Name",
 			Placeholder: "Ada Lovelace",
+			Value:       st.Name,
+			Error:       st.NameErr,
 		})
 		@forms.Input(forms.InputProps{
-			Name:        "email",
-			Type:        forms.InputEmail,
-			Label:       "Email address",
-			Placeholder: "ada@example.com",
+			Name:  "email",
+			Type:  forms.InputEmail,
+			Label: "Email address",
+			Value: st.Email,
+			Error: st.EmailErr,
 		})
 		<div>
 			@display.Button(display.ButtonProps{
@@ -218,15 +267,10 @@ templ wireDemoForm(dialect wire.Transport) {
 	}
 }
 
-// wireFormResult is the form-submission verdict fragment: it proves the
+// wireFormVerdict is the form-submission success verdict: it proves the
 // form's fields traveled under the active transport by echoing them back.
-templ wireFormResult(name, email string) {
-	if email == "" {
-		@feedback.InlineError("No email submitted — the form's fields did not travel.")
-	} else {
-		{{ who := utils.Ternary(name != "", name, "anonymous subscriber") }}
-		@feedback.InlineSuccess("Subscribed " + who + " (" + email + ") - the fields arrived via the active transport.")
-	}
+templ wireFormVerdict(name, email, transport string) {
+	@feedback.InlineSuccess("Subscribed " + name + " (" + email + ") via " + transport + ".")
 }
 
 // wireTransportLink renders one segmented-control option as a plain link

@@ -2,6 +2,7 @@
 package main
 
 import (
+	"context"
 	"flag"
 	"fmt"
 	"io"
@@ -356,11 +357,23 @@ func newMux() *http.ServeMux {
 		}
 	})))
 
-	// Wire demo: dual-transport form submission. Both dialects serialize the
-	// form's fields (htmx natively; Datastar via contentType:'form' — see
-	// forms.FormProps.Wire), so one ParseForm-driven handler serves both:
-	// htmx swaps the verdict into #wire-form-out client-side via hx-target,
-	// Datastar callers get the region via response headers.
+	// Demo wire-form validation messages — shared by the endpoint and tests.
+const (
+	wireFormNameMissing = "Name is required."
+	wireFormEmailBad    = "Enter an email address with a domain."
+)
+
+// Wire demo: dual-transport form submission with server-side validation.
+	// Both dialects serialize the form's fields (htmx natively; Datastar via
+	// contentType:'form' — see forms.FormProps.Wire), so one ParseForm-driven
+	// handler serves both: htmx swaps the region client-side via hx-target,
+	// Datastar callers get the region via response headers. The form renders
+	// INSIDE its region, so the response replaces it: invalid input re-renders
+	// the form with a ValidationSummary + inline field errors (values
+	// preserved); valid input renders the success verdict plus a fresh form.
+	// Errors always travel as 200 OK — htmx 2's default responseHandling does
+	// not swap 4xx, and the pinned Datastar bundle dispatches a fetch error
+	// event at status >= 400 (both verified against the runtime bundles).
 	mux.Handle("/api/wire/form", wire.Handler(wire.PatchTarget{
 		Selector: "#wire-form-out",
 		Mode:     wire.PatchModeInner,
@@ -374,9 +387,36 @@ func newMux() *http.ServeMux {
 			return
 		}
 
-		name := strings.TrimSpace(r.PostFormValue("name"))
-		email := strings.TrimSpace(r.PostFormValue("email"))
-		componentOr500(w, r, wireFormResult(name, email))
+		st := wireFormState{
+			Name:  strings.TrimSpace(r.PostFormValue("name")),
+			Email: strings.TrimSpace(r.PostFormValue("email")),
+		}
+		if st.Name == "" {
+			st.NameErr = wireFormNameMissing
+		}
+		if !strings.Contains(st.Email, "@") || !strings.Contains(st.Email, ".") {
+			st.EmailErr = wireFormEmailBad
+		}
+
+		dialect := wire.TransportHTMX
+		transport := "htmx"
+		if wire.IsDatastar(r) {
+			dialect = wire.TransportDatastar
+			transport = "datastar"
+		}
+
+		response := wireDemoForm(dialect, st)
+		if !st.invalid() {
+			response = templ.ComponentFunc(func(ctx context.Context, bw io.Writer) error {
+				if err := wireFormVerdict(st.Name, st.Email, transport).Render(ctx, bw); err != nil {
+					return err
+				}
+
+				return wireDemoForm(dialect, wireFormState{}).Render(ctx, bw)
+			})
+		}
+
+		componentOr500(w, r, response)
 	})))
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
