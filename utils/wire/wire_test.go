@@ -363,7 +363,7 @@ func TestActionDebounce(t *testing.T) {
 			},
 		},
 		{
-			name: "htmx non-value event debounce omits changed",
+			name: "htmx keyup debounce adds changed + delay",
 			action: Action{
 				Transport:  TransportHTMX,
 				URL:        "/api/search",
@@ -372,7 +372,20 @@ func TestActionDebounce(t *testing.T) {
 			},
 			expected: templ.Attributes{
 				"hx-get":     "/api/search",
-				"hx-trigger": "keyup delay:250ms",
+				"hx-trigger": "keyup changed delay:250ms",
+			},
+		},
+		{
+			name: "htmx non-value event debounce omits changed",
+			action: Action{
+				Transport:  TransportHTMX,
+				URL:        "/api/ping",
+				Event:      EventClick,
+				DebounceMS: 250,
+			},
+			expected: templ.Attributes{
+				"hx-get":     "/api/ping",
+				"hx-trigger": "click delay:250ms",
 			},
 		},
 		{

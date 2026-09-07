@@ -165,9 +165,9 @@ type Action struct {
 	// DebounceMS delays the wired exchange until the event has stopped
 	// firing for this many milliseconds — the auto-submit filter-input
 	// pattern. htmx renders it as the delay:<n>ms trigger modifier (plus
-	// `changed` for value events, so an unchanged value never re-requests);
-	// Datastar renders it as the __debounce.<n>ms event modifier (spelling
-	// decoded from the pinned v1.0.3 bundle — see
+	// `changed` on value events — input, change, keyup — so an unchanged
+	// value never re-requests); Datastar renders it as the __debounce.<n>ms
+	// event modifier (spelling decoded from the pinned v1.0.3 bundle — see
 	// docs/datastar-runtime-facts.md). Zero (the default) emits no debounce.
 	// Under htmx it requires an explicit Event (the zero event renders no
 	// hx-trigger at all, so the delay would be silently dropped).
@@ -209,7 +209,8 @@ func (a Action) htmxAttributes() templ.Attributes {
 	if a.Event != EventUnspecified && EventIsValid(a.Event) {
 		trigger := string(a.Event)
 		if a.DebounceMS > 0 {
-			if a.Event == EventInput || a.Event == EventChange {
+			switch a.Event {
+			case EventInput, EventChange, EventKeyUp:
 				trigger += " changed"
 			}
 			trigger += fmt.Sprintf(" delay:%dms", a.DebounceMS)
