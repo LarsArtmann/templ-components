@@ -552,3 +552,60 @@ func FuzzAction(f *testing.F) {
 		}
 	})
 }
+
+// TestActionSelector pins the Datastar selector option: rendered as a
+// client-side fetch option, composing with contentType, escaping single
+// quotes, and never appearing in the htmx dialect (see the invariants test).
+func TestActionSelector(t *testing.T) {
+	t.Parallel()
+
+	t.Run("selector renders as a fetch option", func(t *testing.T) {
+		t.Parallel()
+		action := Action{
+			Transport: TransportDatastar,
+			URL:       "/api/search",
+			Event:     EventInput,
+			Selector:  "#results",
+		}
+		expected := templ.Attributes{
+			"data-on:input": `@get('/api/search', {selector: '#results'})`,
+		}
+
+		got := action.Attributes()
+		if len(got) != len(expected) || got["data-on:input"] != expected["data-on:input"] {
+			t.Fatalf("Attributes() = %v, want %v", got, expected)
+		}
+	})
+
+	t.Run("selector composes with contentType form", func(t *testing.T) {
+		t.Parallel()
+		action := Action{
+			Transport:   TransportDatastar,
+			URL:         "/api/save",
+			Selector:    "#form-region",
+			ContentType: ContentTypeForm,
+		}
+		expected := templ.Attributes{
+			"data-on:click": `@get('/api/save', {selector: '#form-region'}, {contentType: 'form'})`,
+		}
+		_ = expected
+		got := action.Attributes()["data-on:click"]
+		want := `@get('/api/save', {selector: '#form-region'}, {contentType: 'form'})`
+		if got != want {
+			t.Fatalf("expression = %q, want %q", got, want)
+		}
+	})
+
+	t.Run("selector single quotes are escaped", func(t *testing.T) {
+		t.Parallel()
+		action := Action{
+			Transport: TransportDatastar,
+			URL:       "/api/save",
+			Selector:  `#it's`,
+		}
+		got, _ := action.Attributes()["data-on:click"].(string)
+		if strings.Contains(got, `#it's`) {
+			t.Fatalf("selector not escaped: %q", got)
+		}
+	})
+}

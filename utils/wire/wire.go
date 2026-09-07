@@ -162,6 +162,15 @@ type Action struct {
 	// the runtime default (signals as JSON). htmx ignores this field — hx-*
 	// requests serialize the enclosing form natively either way.
 	ContentType ContentType
+	// Selector is the Datastar-dialect patch target: rendered as the fetch
+	// option {selector: '<sel>'}, which patches the response into the
+	// element(s) matching the selector client-side — overriding the
+	// response-header targeting (Datastar-Selector) when both are present
+	// (option wins, verified against the pinned v1.0.3 bundle). Under
+	// contentType form it also selects which form serializes, falling back
+	// to the action element's closest form. It renders for Datastar only —
+	// the htmx twin is Target. Empty renders nothing (response-driven).
+	Selector string
 	// DebounceMS delays the wired exchange until the event has stopped
 	// firing for this many milliseconds — the auto-submit filter-input
 	// pattern. htmx renders it as the delay:<n>ms trigger modifier (plus
@@ -239,7 +248,7 @@ func (a Action) datastarAttributes() templ.Attributes {
 	}
 
 	return templ.Attributes{
-		key: datastarActionExpr(a.method(), a.URL, a.ContentType),
+		key: datastarActionExpr(a.method(), a.URL, a.ContentType, a.Selector),
 	}
 }
 
@@ -262,17 +271,25 @@ func htmxMethod(m Method) string {
 }
 
 // datastarActionExpr builds a @<method>('<url>') expression, appending
-// {contentType: 'form'} when the action selects form encoding — the only
-// non-default option the common subset expresses (JSON is the runtime
-// default and is omitted; unknown values degrade to the default). Single
-// quotes are escaped so a URL cannot inject into the expression (mirrors the
-// datastar package's actionExpr).
-func datastarActionExpr(method Method, url string, contentType ContentType) string {
+// {contentType: 'form'} / {selector: '…'} when the action selects them —
+// the only non-default options the common subset expresses (JSON is the
+// runtime default and is omitted; unknown values degrade to the default).
+// Single quotes are escaped so a URL or selector cannot inject into the
+// expression (mirrors the datastar package's actionExpr).
+func datastarActionExpr(method Method, url string, contentType ContentType, selector string) string {
 	escaped := strings.ReplaceAll(url, `'`, `\'`)
 
+	var opts []string
+	if selector != "" {
+		opts = append(opts, fmt.Sprintf("{selector: '%s'}", strings.ReplaceAll(selector, `'`, `\'`)))
+	}
 	if contentType == ContentTypeForm {
-		return fmt.Sprintf("@%s('%s', {contentType: 'form'})", method, escaped)
+		opts = append(opts, "{contentType: 'form'}")
 	}
 
-	return fmt.Sprintf("@%s('%s')", method, escaped)
+	if len(opts) == 0 {
+		return fmt.Sprintf("@%s('%s')", method, escaped)
+	}
+
+	return fmt.Sprintf("@%s('%s', %s)", method, escaped, strings.Join(opts, ", "))
 }

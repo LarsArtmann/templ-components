@@ -131,6 +131,30 @@ func assertURLReferenced(t *testing.T, action Action, url string) {
 	}
 }
 
+func TestSelectorNeverRenderedForHTMX(t *testing.T) {
+	t.Parallel()
+
+	for _, event := range []Event{EventUnspecified, EventClick, EventSubmit, EventChange, EventInput, EventKeyDown, EventKeyUp, EventFocus, EventBlur} {
+		action := Action{
+			Transport: TransportHTMX,
+			Method:    MethodGet,
+			URL:       "/api/items",
+			Event:     event,
+			Selector:  "#out",
+		}
+
+		for key, value := range action.Attributes() {
+			if vs, isStr := value.(string); isStr && strings.Contains(vs, "#out") {
+				t.Fatalf("htmx dialect must never render the datastar selector option, got %q=%q", key, value)
+			}
+
+			if strings.Contains(strings.ToLower(key), "selector") {
+				t.Fatalf("htmx dialect must never render a selector attribute, got %q", key)
+			}
+		}
+	}
+}
+
 func TestTargetNeverRenderedForDatastar(t *testing.T) {
 	t.Parallel()
 
