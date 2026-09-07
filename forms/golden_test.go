@@ -5,6 +5,7 @@ import (
 
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/golden"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 func TestGoldenFilterDropdown(t *testing.T) {
@@ -22,6 +23,44 @@ func TestGoldenFilterDropdown(t *testing.T) {
 		HxTarget: "#user-list",
 	}))
 	golden.Assert(t, "filter_dropdown_basic", output)
+}
+
+func TestGoldenFilterDropdownWiredHTMX(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, FilterDropdown(FilterDropdownProps{
+		Name:  "status",
+		Label: "Status",
+		Value: "active",
+		Options: []SelectOption{
+			{Value: "all", Label: "All"},
+			{Value: "active", Label: "Active"},
+			{Value: "inactive", Label: "Inactive"},
+		},
+		Wire: &wire.Action{
+			URL:    "/api/users",
+			Target: "#user-list",
+		},
+	}))
+	golden.Assert(t, "filter_dropdown_wired_htmx", output)
+}
+
+func TestGoldenFilterDropdownWiredDatastar(t *testing.T) {
+	t.Parallel()
+	output := utils.Render(t, FilterDropdown(FilterDropdownProps{
+		Name:  "status",
+		Label: "Status",
+		Value: "active",
+		Options: []SelectOption{
+			{Value: "all", Label: "All"},
+			{Value: "active", Label: "Active"},
+			{Value: "inactive", Label: "Inactive"},
+		},
+		Wire: &wire.Action{
+			Transport: wire.TransportDatastar,
+			URL:       "/api/users",
+		},
+	}))
+	golden.Assert(t, "filter_dropdown_wired_datastar", output)
 }
 
 func TestGoldenSlider(t *testing.T) {

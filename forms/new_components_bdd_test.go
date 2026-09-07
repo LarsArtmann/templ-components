@@ -466,3 +466,39 @@ func TestFilterInputUserCanSearchAsTheyType(t *testing.T) {
 		utils.AssertContains(t, output, `method="GET"`)
 	})
 }
+
+func TestFilterDropdownUserCanFilterUnderEitherTransport(t *testing.T) {
+	t.Parallel()
+
+	t.Run("selecting an option refreshes the results region without a page load", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterDropdown(FilterDropdownProps{
+			Name:  "status",
+			Label: "Status",
+			Options: []SelectOption{
+				{Value: "active", Label: "Active"},
+				{Value: "inactive", Label: "Inactive"},
+			},
+			Wire: &wire.Action{
+				URL:    "/api/filter",
+				Target: "#user-list",
+			},
+		}))
+		utils.AssertContains(t, output, `hx-trigger="change"`)
+		utils.AssertContains(t, output, `hx-target="#user-list"`)
+	})
+
+	t.Run("without javascript the user can still apply the filter", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, FilterDropdown(FilterDropdownProps{
+			Name:  "status",
+			Label: "Status",
+			Options: []SelectOption{
+				{Value: "active", Label: "Active"},
+			},
+			Wire: &wire.Action{URL: "/api/filter"},
+		}))
+		utils.AssertContains(t, output, "<noscript>")
+		utils.AssertContains(t, output, "Apply")
+	})
+}

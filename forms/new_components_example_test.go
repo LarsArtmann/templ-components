@@ -63,3 +63,19 @@ func ExampleFilterInput() {
 	})
 	// Output:
 }
+
+func ExampleFilterDropdown_wired() {
+	_ = FilterDropdown(FilterDropdownProps{
+		Name:  "status",
+		Label: "Status",
+		Options: []SelectOption{
+			{Value: "active", Label: "Active"},
+			{Value: "inactive", Label: "Inactive"},
+		},
+		Wire: &wire.Action{
+			URL:    "/api/users/filter",
+			Target: "#user-list",
+		},
+	})
+	// Output:
+}

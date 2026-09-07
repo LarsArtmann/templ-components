@@ -225,6 +225,27 @@ One timing note for test automation: htmx wires swapped-in nodes during its
 inside that window falls through to a native submit. Humans cannot click
 that fast — e2e drivers must wait for the swap to settle first.
 
+### Auto-submit filter components (FilterInput, FilterDropdown)
+
+`forms.FilterInput` (debounced search) and `FilterDropdown.Wire`
+(dual-transport select) share one design decision, made here in writing:
+**when the component is wired, it wraps its field in a GET form rather than
+binding Datastar signals.** The wrapper form wins because:
+
+1. The pinned bundle's `contentType: 'form'` path serializes
+   `closest("form")` — without an enclosing form a standalone field cannot
+   use form encoding, and the signals default would force servers to parse
+   `?datastar=<json>` instead of a clean `?q=<value>`.
+2. htmx includes the closest form's values for free, so multi-field filter
+   bars serialize all controls under both transports with zero extra
+   attributes (the same job `HxInclude` does by hand).
+3. The no-JS fallback is a plain GET form — `FilterInput` submits natively
+   on Enter; `FilterDropdown` renders a `<noscript>` Apply button.
+
+The alternative (binding the value to a signal and string-building the URL
+in the expression) was rejected: expression-concatenated URLs are an
+injection surface and cannot be validated as complete literals.
+
 ## Deliberate scope boundaries
 
 `wire` covers only the dialects' common subset. Transport-specific machinery

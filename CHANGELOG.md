@@ -8,6 +8,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`FilterDropdown.Wire` — dual-transport auto-submit for the filter
+  select.** When `Wire` is set (non-empty URL), the component owns the
+  wiring in both dialects (`change` event + form encoding by default) and
+  the legacy `HxGet`/`HxTarget`/`HxSwap`/`HxTrigger` fields are ignored
+  (`HxInclude`/`HxIndicator` still render — htmx-dialect extras). The
+  select wraps in a GET form with a `<noscript>` Apply button, so the
+  no-JS path still applies the filter with a full page load while either
+  runtime swaps the results region in place. Wrapper-form over
+  signal-binding decided in `docs/transport-wiring.md` (`contentType:
+  'form'` needs a `closest("form")`; the form also gives htmx whole-form
+  serialization for multi-field filter bars for free).
 - **`forms.FilterInput` — debounced dual-transport search input** (forms is
   now 22 components). A `<search>` landmark wrapping a GET form whose input
   auto-submits as the user types: htmx renders

@@ -114,7 +114,7 @@ Don't know what to look for? Find your page type:
 | `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                                     |
 | `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                                      |
 | `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                                      |
-| `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | HTMX auto-submit select for filter bars                                                                       |
+| `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | Auto-submit select for filter bars — HTMX-native or dual-transport via `Wire`                                 |
 | `FilterInput`       | `FilterInput(props FilterInputProps)`             | Debounced dual-transport search input — `<search>` form, auto-submits as you type (`Wire` + `DebounceMS`)     |
 | `Slider`            | `Slider(props SliderProps)`                       | Range input slider with label, value display, help text                                                       |
 | `Rating`            | `Rating(props RatingProps)`                       | Accessible star rating — radio inputs, read-only mode, 3 sizes                                                |
