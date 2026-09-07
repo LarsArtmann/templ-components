@@ -14,7 +14,6 @@ import (
 	"log"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 
 	"github.com/chromedp/chromedp"
@@ -35,7 +34,7 @@ var pages = []page{
 	{"recipes-auth", "/recipes/auth"},
 }
 
-const settle = 700 * time.Millisecond
+const settle = 600 * time.Millisecond
 
 func main() {
 	base := flag.String("base", "http://localhost:8901", "demo server base URL")
@@ -57,7 +56,7 @@ func main() {
 
 	browserCtx, cancelBrowser := chromedp.NewContext(allocCtx)
 	defer cancelBrowser()
-	browserCtx, cancelBrowserTimeout := context.WithTimeout(browserCtx, 10*time.Minute)
+	browserCtx, cancelBrowserTimeout := context.WithTimeout(browserCtx, 30*time.Minute)
 	defer cancelBrowserTimeout()
 
 	if err := chromedp.Run(browserCtx); err != nil {
@@ -65,11 +64,8 @@ func main() {
 	}
 
 	for _, p := range pages {
-		for _, mode := range []string{"light", "dark"} {
-			if err := capturePage(browserCtx, *base, *out, p, mode); err != nil {
-				log.Fatalf("capture %s (%s): %v", p.name, mode, err)
-			}
-			fmt.Printf("  captured %s_%s\n", p.name, mode)
+		if err := capturePage(browserCtx, *base, *out, p); err != nil {
+			log.Fatalf("capture %s: %v", p.name, err)
 		}
 	}
 
@@ -84,62 +80,35 @@ func chromePath() string {
 	return "chromium"
 }
 
-func capturePage(parent context.Context, base, out string, p page, mode string) error {
+// capturePage screenshots one page in light mode, then toggles the dark
+// class on the same tab and screenshots again (no second navigation).
+func capturePage(parent context.Context, base, out string, p page) error {
 	ctx, cancel := chromedp.NewContext(parent)
 	defer cancel()
-	ctx, cancelTimeout := context.WithTimeout(ctx, 90*time.Second)
+	ctx, cancelTimeout := context.WithTimeout(ctx, 180*time.Second)
 	defer cancelTimeout()
 
-	var png []byte
+	var light, dark []byte
 
-	tasks := []chromedp.Action{
-		chromedp.EmulateViewport(1280, 900),
-		chromedp.Navigate(base + p.path),
-		chromedp.WaitReady("body", chromedp.ByQuery),
-		chromedp.Sleep(settle),
-	}
-
-	if mode == "dark" {
-		tasks = append(tasks,
-			chromedp.Evaluate(`document.documentElement.classList.add('dark'); localStorage.setItem('theme','dark');`, nil),
-			chromedp.Sleep(settle),
-		)
-	}
-
-	tasks = append(tasks, chromedp.Sleep(settle), chromedp.FullScreenshot(&png, 92))
-
-	if err := chromedp.Run(ctx, tasks...); err != nil {
-		return err
-	}
-
-	name := p.name + "_" + mode + ".png"
-
-	return os.WriteFile(filepath.Join(out, name), png, 0o644)
-}
-
-// nolint:unused // kept for reference: section-level capture helper
-func captureSection(parent context.Context, base, out, name, sel string) error {
-	ctx, cancel := chromedp.NewContext(parent)
-	defer cancel()
-	ctx, cancelTimeout := context.WithTimeout(ctx, 90*time.Second)
-	defer cancelTimeout()
-
-	var png []byte
+	start := time.Now()
 
 	err := chromedp.Run(ctx,
 		chromedp.EmulateViewport(1280, 900),
-		chromedp.Navigate(base),
-		chromedp.WaitVisible(sel, chromedp.ByID),
+		chromedp.Navigate(base+p.path),
+		chromedp.WaitReady("body", chromedp.ByQuery),
 		chromedp.Sleep(settle),
-		chromedp.Screenshot(sel, &png, chromedp.ByID, chromedp.NodeVisible),
+		chromedp.FullScreenshot(&light, 92),
+		chromedp.Evaluate(`document.documentElement.classList.add('dark');`, nil),
+		chromedp.Sleep(2*settle),
+		chromedp.FullScreenshot(&dark, 92),
 	)
 	if err != nil {
+		return fmt.Errorf("after %s: %w", time.Since(start).Round(time.Second), err)
+	}
+
+	if err := os.WriteFile(filepath.Join(out, p.name+"_light.png"), light, 0o644); err != nil {
 		return err
 	}
 
-	if strings.TrimSpace(sel) == "" {
-		return fmt.Errorf("empty selector")
-	}
-
-	return os.WriteFile(filepath.Join(out, "section_"+name+".png"), png, 0o644)
+	return os.WriteFile(filepath.Join(out, p.name+"_dark.png"), dark, 0o644)
 }

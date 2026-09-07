@@ -865,7 +865,7 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 				// Step 1: empty name → inline error.
 				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
 				chromedp.Poll(regionHasText(region, packWizardNameBad), &ok),
-				waitSwapSettled(),
+				chromedp.Sleep(2 * time.Second),
 				// Step 1: valid name → wizard complete.
 				setFieldValue(ctx, region, `input[name="name"]`, "Ada Lovelace"),
 				chromedp.Click(formSel(region, `button[type="submit"]`), chromedp.NodeVisible),
