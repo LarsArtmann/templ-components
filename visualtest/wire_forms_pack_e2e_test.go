@@ -473,14 +473,12 @@ func packDirtyRoundTrip(value string) templ.Component {
 // test shortens the shipped 300ms default to 100ms so bursts settle fast
 // without changing what is proven.
 func packFilterInput(dialect wire.Transport) templ.Component {
-	target := utils.Ternary(dialect == wire.TransportDatastar, "", packFilterDatastarOut)
-
 	return forms.FilterInput(forms.FilterInputProps{
 		Name:        "q",
 		Label:       "Filter",
 		Placeholder: "Type to filter…",
 		DebounceMS:  100,
-		Wire:        packWire(dialect, wire.MethodGet, "/api/pack/filter", target),
+		Wire:        packWire(dialect, wire.MethodGet, "/api/pack/filter", packFilterHTMXOut),
 		BaseProps: utils.BaseProps{
 			// The filter form is the only one allowed to submit natively:
 			// the Enter-key test asserts the documented full-page GET
