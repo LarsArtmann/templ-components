@@ -38,6 +38,24 @@ type BaseProps struct {
 }
 ```
 
+### wire.Action
+
+One typed wiring spec, rendered as htmx or Datastar attributes (see the
+Transport Wiring guide):
+
+```go
+type Action struct {
+    Transport   Transport    // "" (htmx default) | "htmx" | "datastar"
+    Method      Method       // "" (GET) | get | post | put | patch | delete
+    URL         string       // empty = inert (no wiring)
+    Event       Event        // dialect default when empty
+    Target      string       // htmx only (hx-target)
+    Selector    string       // datastar only ({selector: …} fetch option)
+    ContentType ContentType  // "" (json) | json | form (form encoding)
+    DebounceMS  int          // htmx delay:<n>ms / datastar __debounce.<n>ms
+}
+```
+
 ### Override Props
 
 Some components expose additional typed class overrides so you can tweak their
@@ -56,7 +74,7 @@ includes `TitleClass` and `HeaderClass`:
 
 ### Typed Enums
 
-37 typed string enums make invalid states unrepresentable. Each ships with an `IsValid()` method.
+58 typed string enums make invalid states unrepresentable. Each ships with an `IsValid()` method.
 
 ```go
 type BadgeType string

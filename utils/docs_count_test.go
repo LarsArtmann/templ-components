@@ -30,6 +30,21 @@ func TestDocsCountDrift(t *testing.T) {
 	componentsRe := `(\d+)\s+components across \d+ packages`
 	assertCount(t, skill, componentsRe, "SKILL.md components", actualComponents)
 
+	// Per-package counts (single-sourcing, M21): the per-package headings in
+	// README and SKILL must match the actual exported templ function count
+	// per package — the numbers that historically drifted by hand.
+	packageCounts := countPackageComponents(t, root)
+	for pkg, want := range packageCounts {
+		if want == 0 {
+			continue
+		}
+
+		readmePkgRe := fmt.Sprintf("`%s` — [^(]*\(%d components\)", pkg, want)
+		assertCount(t, readme, readmePkgRe, "README.md "+pkg+" heading", want)
+		skillPkgRe := fmt.Sprintf("`%s` — %d components", pkg, want)
+		assertCount(t, skill, skillPkgRe, "SKILL.md "+pkg+" heading", want)
+	}
+
 	sections := readDoc(t, "website", "src", "data", "sections.ts")
 	assertCount(t, sections, componentsRe, "website sections.ts components", actualComponents)
 	assertCount(t, sections, `(\d+)\s+typed string enums`, "website sections.ts typed string enums", actualIsValid)
@@ -75,6 +90,40 @@ func countExportedTemplFunctions(t *testing.T, root string) int {
 	}
 
 	return count
+}
+
+// countPackageComponents counts exported templ functions per package — the
+// single source for the per-package "N components" headings in README.md and
+// skill/SKILL.md.
+func countPackageComponents(t *testing.T, root string) map[string]int {
+	t.Helper()
+
+	templFuncRe := regexp.MustCompile(`^templ\s+([A-Z][A-Za-z0-9]*)\s*\(`)
+	packages := []string{"display", "feedback", "forms", "navigation", "layout"}
+	counts := map[string]int{}
+
+	for _, pkg := range packages {
+		files, err := filepath.Glob(filepath.Join(root, pkg, "*.templ"))
+		if err != nil {
+			t.Fatalf("glob error for %s: %v", pkg, err)
+		}
+
+		for _, file := range files {
+			data, err := os.ReadFile(file)
+			if err != nil {
+				t.Fatalf("read %s: %v", file, err)
+			}
+
+			for line := range strings.SplitSeq(string(data), "
+") {
+				if templFuncRe.MatchString(line) {
+					counts[pkg]++
+				}
+			}
+		}
+	}
+
+	return counts
 }
 
 func countGeneratedFiles(t *testing.T, root string) int {
