@@ -335,9 +335,10 @@ func TestWireDemoValidateInputDialects(t *testing.T) {
 
 // TestWireFormEndpointServesBothTransports verifies the dual-transport form
 // submission contract: both dialects serialize the form's fields into a
-// standard urlencoded POST body, so one ParseForm-driven handler echoes them
-// back; a Datastar caller additionally gets the patch region via response
-// headers while an htmx caller does not.
+// standard urlencoded POST body, so one ParseForm-driven handler serves both;
+// a Datastar caller additionally gets the patch region via response headers
+// while an htmx caller does not. Invalid input re-renders the form with a
+// ValidationSummary, inline field errors, and the submitted values preserved.
 func TestWireFormEndpointServesBothTransports(t *testing.T) {
 	t.Parallel()
 
@@ -345,25 +346,44 @@ func TestWireFormEndpointServesBothTransports(t *testing.T) {
 		name            string
 		datastarRequest bool
 		form            url.Values
-		wantContains    string
+		wantContains    []string
+		wantAbsent      string
 	}{
 		{
 			name:            "datastar caller submits form fields and gets response-header targeting",
 			datastarRequest: true,
 			form:            url.Values{"name": {"Ada Lovelace"}, "email": {"ada@example.com"}},
-			wantContains:    "Subscribed Ada Lovelace (ada@example.com)",
+			wantContains:    []string{"Subscribed Ada Lovelace (ada@example.com) via datastar.", `data-on:submit="@post(&#39;/api/wire/form&#39;, {contentType: &#39;form&#39;})"`},
 		},
 		{
 			name:            "htmx caller submits the same body without datastar routing headers",
 			datastarRequest: false,
 			form:            url.Values{"name": {"Grace Hopper"}, "email": {"grace@example.com"}},
-			wantContains:    "Subscribed Grace Hopper (grace@example.com)",
+			wantContains:    []string{"Subscribed Grace Hopper (grace@example.com) via htmx.", `hx-post="/api/wire/form"`},
 		},
 		{
-			name:            "missing email renders the error verdict",
+			name:            "invalid email re-renders the form with inline errors and preserved values",
 			datastarRequest: false,
-			form:            url.Values{"name": {"No Email"}},
-			wantContains:    "No email submitted",
+			form:            url.Values{"name": {"Ada Lovelace"}, "email": {"ada@example"}},
+			wantContains: []string{
+				"1 error found",
+				wireFormEmailBad,
+				`value="ada@example"`,
+				`aria-invalid="true"`,
+			},
+			wantAbsent: "Subscribed",
+		},
+		{
+			name:            "missing name re-renders with both errors under datastar",
+			datastarRequest: true,
+			form:            url.Values{},
+			wantContains: []string{
+				"2 errors found",
+				wireFormNameMissing,
+				wireFormEmailBad,
+				`data-on:submit="@post(&#39;/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
+			},
+			wantAbsent: "Subscribed",
 		},
 	}
 
@@ -409,8 +429,13 @@ func TestWireFormEndpointServesBothTransports(t *testing.T) {
 			if err != nil {
 				t.Fatal(err)
 			}
-			if !strings.Contains(string(body), tt.wantContains) {
-				t.Errorf("verdict body missing %q", tt.wantContains)
+			for _, want := range tt.wantContains {
+				if !strings.Contains(string(body), want) {
+					t.Errorf("verdict body missing %q", want)
+				}
+			}
+			if tt.wantAbsent != "" && strings.Contains(string(body), tt.wantAbsent) {
+				t.Errorf("error body must not contain %q", tt.wantAbsent)
 			}
 		})
 	}
@@ -441,8 +466,9 @@ func TestWireDemoFormRendersBothDialects(t *testing.T) {
 	for _, want := range []string{
 		`hx-post="/api/wire/form"`,
 		`hx-trigger="submit"`,
-		`hx-target="#wire-form-out"`,
+		`hx-target="#wire-form-htmx-region"`,
 		`data-on:submit="@post(&#39;/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
+		`id="wire-form-out"`,
 	} {
 		if !strings.Contains(html, want) {
 			t.Errorf("demo page missing %q", want)

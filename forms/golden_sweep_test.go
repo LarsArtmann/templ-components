@@ -1,6 +1,10 @@
 package forms
 
 import (
+	"bytes"
+	"context"
+	"io"
+	"strings"
 	"testing"
 
 	"github.com/a-h/templ"
@@ -125,7 +129,51 @@ func TestGoldenSweepForm(t *testing.T) {
 				URL:    "",
 			},
 		}))},
+		// The canonical server-side-validation round-trip fragment: the
+		// endpoint re-renders the wired form with a ValidationSummary and
+		// inline field errors, preserving the submitted values. Pinned so
+		// the error path's markup (aria-invalid, error ids, value echo)
+		// cannot drift.
+		{Name: "form_validation_errors", HTML: renderFormWithChildren(t, FormProps{
+			Method: FormPost,
+			Wire: &wire.Action{
+				Method: wire.MethodPost,
+				URL:    "/api/submit",
+				Target: "#form-region",
+			},
+		}, ValidationSummary(ValidationSummaryProps{
+			Errors: []ValidationError{
+				{Field: "email", Message: "Enter an email address with a domain."},
+			},
+		}), Input(InputProps{
+			Name: "email", Type: InputEmail, Label: "Email address",
+			Value: "ada@example", Error: "Enter an email address with a domain.",
+		}))},
 	})
+}
+
+// renderFormWithChildren renders a Form with child components — the shape a
+// server returns when re-rendering a form fragment on validation errors.
+func renderFormWithChildren(t *testing.T, props FormProps, children ...templ.Component) string {
+	t.Helper()
+
+	var buf bytes.Buffer
+
+	form := Form(props)
+	ctx := templ.WithChildren(context.Background(), templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		for _, child := range children {
+			if err := child.Render(ctx, w); err != nil {
+				return err
+			}
+		}
+
+		return nil
+	}))
+	if err := form.Render(ctx, &buf); err != nil {
+		t.Fatalf("failed to render form with children: %v", err)
+	}
+
+	return strings.TrimSpace(buf.String())
 }
 
 func TestGoldenSweepValidationSummary(t *testing.T) {

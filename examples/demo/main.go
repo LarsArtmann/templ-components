@@ -99,6 +99,12 @@ const (
 	demoTransportDatastar demoTransport = "datastar"
 )
 
+// Demo wire-form validation messages — shared by the endpoint and tests.
+const (
+	wireFormNameMissing = "Name is required."
+	wireFormEmailBad    = "Enter an email address with a domain."
+)
+
 // parseDemoTransport resolves the ?transport= query value; anything unknown
 // falls back to the both-dialect default (repo convention: graceful fallback).
 func parseDemoTransport(s string) demoTransport {
@@ -357,13 +363,7 @@ func newMux() *http.ServeMux {
 		}
 	})))
 
-	// Demo wire-form validation messages — shared by the endpoint and tests.
-const (
-	wireFormNameMissing = "Name is required."
-	wireFormEmailBad    = "Enter an email address with a domain."
-)
-
-// Wire demo: dual-transport form submission with server-side validation.
+	// Wire demo: dual-transport form submission with server-side validation.
 	// Both dialects serialize the form's fields (htmx natively; Datastar via
 	// contentType:'form' — see forms.FormProps.Wire), so one ParseForm-driven
 	// handler serves both: htmx swaps the region client-side via hx-target,
