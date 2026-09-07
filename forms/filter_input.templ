@@ -1,0 +1,130 @@
+package forms
+
+import (
+	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
+)
+
+// FilterInputProps configures a debounced search/filter text input that
+// auto-submits to a server endpoint as the user types — under either
+// transport. It is the input sibling of FilterDropdown: purpose-built for
+// filter bars, result tables, and live search regions.
+//
+// The component always renders a `<search>` landmark containing a GET form,
+// so a no-JS browser still submits natively and both runtimes serialize the
+// field as a query parameter (the form encoding path — see
+// docs/recipes/server-side-validation.md for the wire contract).
+type FilterInputProps struct {
+	utils.BaseProps
+	// Name is the field name submitted with the request (e.g. "q").
+	Name string
+	// Label shows a visible caption above the input. When empty, set
+	// AriaLabel so screen readers can still announce the field.
+	Label string
+	// Value pre-fills the input. Use this to preserve the query across
+	// server re-renders of the filter bar.
+	Value string
+	// Placeholder shows hint text inside the empty input.
+	Placeholder string
+	// HelpText shows a small caption below the input, linked via
+	// aria-describedby.
+	HelpText string
+	// Action is the no-JS fallback the form submits to via GET. When empty,
+	// the form has no action attribute (submits to the current URL).
+	Action string
+	// DebounceMS delays the wired request until typing pauses for this many
+	// milliseconds. Default 300 via DefaultFilterInputProps; 0 disables the
+	// debounce (a request fires on every keystroke). htmx renders it as the
+	// `input changed delay:<n>ms` trigger; Datastar as the
+	// `__debounce.<n>ms` event modifier (spelling decoded from the pinned
+	// v1.0.3 bundle — see docs/datastar-runtime-facts.md).
+	DebounceMS int
+	// Wire, when set with a non-empty URL, submits the input via the
+	// configured transport instead of a full page load (see the wire
+	// package, ADR-0036). Defaults applied by the component: Event resolves
+	// to input and ContentType to form encoding, so the request carries
+	// `?<Name>=<Value>` as a query parameter. Wire.Target renders for htmx
+	// only (hx-target); Datastar targeting is response-driven — wrap the
+	// handler in wire.Handler. An empty Wire.URL wires nothing.
+	Wire *wire.Action
+}
+
+// DefaultFilterInputProps returns sensible defaults (300ms debounce).
+func DefaultFilterInputProps() FilterInputProps {
+	return FilterInputProps{
+		DebounceMS: 300,
+	}
+}
+
+// filterInputClass returns the Tailwind classes for the input element.
+func filterInputClass() string {
+	return "block w-full rounded-md border-0 py-1.5 ps-3 pe-8 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-blue-600 dark:focus:ring-blue-500 caret-blue-600 dark:caret-blue-400 placeholder:text-gray-400 dark:placeholder:text-gray-500"
+}
+
+// filterInputWireAttributes renders the wiring for a FilterInput. The
+// component-level DebounceMS always wins — it is this component's single
+// source of truth for the trigger delay. Event and ContentType defaults
+// (input / form encoding) are shared with Form via
+// wireAttributesWithDefaults. An empty URL wires nothing (inert form).
+func filterInputWireAttributes(w *wire.Action, debounceMS int) templ.Attributes {
+	if w == nil {
+		return nil
+	}
+
+	action := *w
+	action.DebounceMS = debounceMS
+
+	return wireAttributesWithDefaults(&action, wire.EventInput)
+}
+
+// FilterInput renders a debounced search/filter input that auto-submits as
+// the user types. The `<search>` landmark wraps a GET form, so the request
+// carries the field as a query parameter under both transports and the
+// form still submits natively without JavaScript.
+//
+//	@forms.FilterInput(forms.FilterInputProps{
+//	   Name:        "q",
+//	   Label:       "Search users",
+//	   Placeholder: "Type to filter…",
+//	   Wire:        &wire.Action{URL: "/api/users/search", Target: "#user-list"},
+//	})
+templ FilterInput(props FilterInputProps) {
+	{{ inputID := utils.EnsureID("tc-filter-input", props.ID) }}
+	{{ wired := filterInputWireAttributes(props.Wire, props.DebounceMS) }}
+	<search>
+		<form
+			if props.Action != "" {
+				action={ props.Action }
+			}
+			method="GET"
+			class={ utils.Class("inline-flex flex-col", props.Class) }
+			{ props.Attrs... }
+		>
+			if props.Label != "" {
+				<label for={ inputID } class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+					{ props.Label }
+				</label>
+			}
+			<input
+				type="search"
+				id={ inputID }
+				name={ props.Name }
+				value={ props.Value }
+				if props.Placeholder != "" {
+					placeholder={ props.Placeholder }
+				}
+				class={ filterInputClass() }
+				if props.HelpText != "" {
+					aria-describedby={ inputID + "-help" }
+				}
+				if props.AriaLabel != "" {
+					aria-label={ props.AriaLabel }
+				}
+				{ wired... }
+			/>
+			if props.HelpText != "" {
+				<p id={ inputID + "-help" } class="mt-1 text-xs text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+			}
+		</form>
+	</search>
+}

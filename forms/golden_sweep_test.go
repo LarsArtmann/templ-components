@@ -189,6 +189,47 @@ func renderFormWithChildren(t *testing.T, props FormProps, children ...templ.Com
 	return strings.TrimSpace(buf.String())
 }
 
+func TestGoldenSweepFilterInput(t *testing.T) {
+	t.Parallel()
+
+	golden.AssertSnapshots(t, []golden.Snapshot{
+		{Name: "filter_input_unwired", HTML: utils.Render(t, FilterInput(FilterInputProps{
+			Name:        "q",
+			Label:       "Search users",
+			Placeholder: "Type to filter…",
+			HelpText:    "Matches name or email",
+			DebounceMS:  300,
+		}))},
+		{Name: "filter_input_wired_htmx", HTML: utils.Render(t, FilterInput(FilterInputProps{
+			Name:       "q",
+			Label:      "Search users",
+			Value:      "ada",
+			ID:         "user-search",
+			DebounceMS: 300,
+			Wire: &wire.Action{
+				URL:    "/api/search",
+				Target: "#user-list",
+			},
+		}))},
+		{Name: "filter_input_wired_datastar", HTML: utils.Render(t, FilterInput(FilterInputProps{
+			Name:       "q",
+			Label:      "Search users",
+			ID:         "user-search",
+			DebounceMS: 300,
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				URL:       "/api/search",
+			},
+		}))},
+		{Name: "filter_input_no_debounce", HTML: utils.Render(t, FilterInput(FilterInputProps{
+			Name:       "q",
+			AriaLabel:  "Search users",
+			DebounceMS: 0,
+			Wire:       &wire.Action{URL: "/api/search"},
+		}))},
+	})
+}
+
 func TestGoldenSweepValidationSummary(t *testing.T) {
 	t.Parallel()
 

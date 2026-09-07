@@ -168,13 +168,21 @@ func DefaultFormProps() FormProps {
 // unspecified ContentType becomes form encoding so the form's fields travel
 // under Datastar too. An empty URL wires nothing (inert HTML form).
 func formWireAttributes(w *wire.Action) templ.Attributes {
+	return wireAttributesWithDefaults(w, wire.EventSubmit)
+}
+
+// wireAttributesWithDefaults copies the action (never mutates the
+// consumer's) and applies the shared component defaults: an unspecified
+// Event becomes defaultEvent and an unspecified ContentType becomes form
+// encoding. An empty URL wires nothing (inert element).
+func wireAttributesWithDefaults(w *wire.Action, defaultEvent wire.Event) templ.Attributes {
 	if w == nil {
 		return nil
 	}
 
 	action := *w
 	if action.Event == wire.EventUnspecified {
-		action.Event = wire.EventSubmit
+		action.Event = defaultEvent
 	}
 	if action.ContentType == wire.ContentTypeUnspecified {
 		action.ContentType = wire.ContentTypeForm
