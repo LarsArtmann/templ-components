@@ -5,6 +5,7 @@ import (
 	"testing"
 	"time"
 
+	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 )
 
@@ -18,10 +19,22 @@ func TestDebugWireFormValidation(t *testing.T) {
 	ctx, cancelTimeout := context.WithTimeout(ctx, 20*time.Second)
 	defer cancelTimeout()
 
+	chromedp.ListenTarget(ctx, func(ev interface{}) {
+		switch e := ev.(type) {
+		case *network.EventRequestWillBeSent:
+			if e.Request.URL != srv.URL+"/" {
+				t.Logf("REQ %s %s", e.Request.Method, e.Request.URL)
+			}
+		case *network.EventResponseReceived:
+			if e.Response.URL != srv.URL+"/" {
+				t.Logf("RESP %d %s", e.Response.Status, e.Response.URL)
+			}
+		}
+	})
+
 	var (
-		ok        bool
-		preserved string
-		dump      string
+		ok   bool
+		dump string
 	)
 
 	step := func(label string, actions ...chromedp.Action) {
@@ -40,18 +53,30 @@ func TestDebugWireFormValidation(t *testing.T) {
 		t.Logf("after %s: %s", label, dump)
 	}
 
+	setEmail := func(value string) {
+		t.Helper()
+
+		step("set email="+value, chromedp.Evaluate(
+			`var i=document.querySelector('#wire-form-htmx-region input[name="email"]'); i.value=`+jsString(value)+
+				`; i.dispatchEvent(new Event('input',{bubbles:true})); i.value`, &dump))
+	}
+
 	step("navigate", chromedp.Navigate(srv.URL+"/"))
 	step("gate", chromedp.Poll(`document.readyState==='complete' && window.htmx!==undefined`, &ok))
 	step("fill name", chromedp.SendKeys(formSel(wireFormHTMXRegion, `input[name="name"]`), "Ada Lovelace", chromedp.NodeVisible))
-	step("fill email", chromedp.SendKeys(formSel(wireFormHTMXRegion, `input[name="email"]`), "ada@example", chromedp.NodeVisible))
+	setEmail("ada@example")
 	step("submit #1", chromedp.Click(formSel(wireFormHTMXRegion, `button[type="submit"]`), chromedp.NodeVisible))
 	step("poll summary", chromedp.Poll(regionHasText(wireFormHTMXRegion, "1 error found"), &ok))
-	step("evaluate value", chromedp.Evaluate(formValueExpr(wireFormHTMXRegion, `input[name="email"]`), &preserved))
-	t.Logf("preserved=%q", preserved)
-	step("dump form attrs", chromedp.Evaluate(`Array.from(document.querySelectorAll('#wire-form-htmx-region form')).map(f => f.getAttribute('hx-post') + '|' + f.getAttribute('hx-trigger') + '|' + (f.getAttribute('class')||'').slice(0,30)).join(' ;; ')`, &dump))
-	step("htmx.process region", chromedp.Evaluate(`htmx.process(document.querySelector('#wire-form-htmx-region')); 'processed'`, &dump))
-	t.Logf("form attrs: %s", dump)
-	step("fix email", chromedp.SendKeys(formSel(wireFormHTMXRegion, `input[name="email"]`), ".com", chromedp.NodeVisible))
-	step("submit #2", chromedp.Click(formSel(wireFormHTMXRegion, `button[type="submit"]`), chromedp.NodeVisible))
+	var attrs string
+	if err := chromedp.Run(ctx, chromedp.Evaluate(`document.querySelector('#wire-form-htmx-region form').outerHTML.slice(0, 500)`, &attrs)); err != nil {
+		t.Fatalf("attrs: %v", err)
+	}
+	t.Logf("SWAPPED FORM: %s", attrs)
+	setEmail("ada@example.com")
+	var dispatched string
+	if err := chromedp.Run(ctx, chromedp.Evaluate(`document.querySelector('#wire-form-htmx-region form').dispatchEvent(new Event('submit', {bubbles:true, cancelable:true})); 'dispatched'`, &dispatched)); err != nil {
+		t.Fatalf("dispatch: %v", err)
+	}
+	t.Logf("dispatched: %s", dispatched)
 	step("poll success", chromedp.Poll(regionHasText(wireFormHTMXRegion, "Subscribed Ada Lovelace (ada@example.com)"), &ok))
 }
