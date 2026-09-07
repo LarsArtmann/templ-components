@@ -169,7 +169,10 @@ func TestContentTypeHTMXInert(t *testing.T) {
 
 			for key, value := range action.Attributes() {
 				if strings.Contains(key, "contentType") || strings.Contains(fmt.Sprint(value), "contentType") {
-					t.Fatalf("htmx dialect must not render the content-type option, got %q=%v for %+v", key, value, action)
+					t.Fatalf(
+						"htmx dialect must not render the content-type option, got %q=%v for %+v",
+						key, value, action,
+					)
 				}
 			}
 		}
