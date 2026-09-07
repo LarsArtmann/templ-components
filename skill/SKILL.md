@@ -329,6 +329,7 @@ run `templ generate`. This is the standard pattern for publishable templ package
 | ----------------------------------------------------- | --------------------------------------------------- |
 | `docs/migration/play-cdn-to-tailwind-v4.md`           | Migrating from Tailwind Play CDN to CSS-first build |
 | `docs/recipes/server-rendered-htmx-error-feedback.md` | Wiring HTMX error feedback (toast/alert/page)       |
+| `docs/recipes/server-side-validation.md`              | Dual-transport form validation round-trip           |
 | `docs/recipes/horizontal-filter-bar.md`               | Horizontal HTMX filter bar vs `forms.Form`          |
 | `docs/tailwind-v4-adoption-guide.md`                  | Full Tailwind v4 setup with `@source` scanning      |
 | `docs/icons-only-adoption.md`                         | Adopting just the `icons` package (CSS-agnostic)    |

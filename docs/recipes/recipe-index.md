@@ -14,5 +14,6 @@ Practical guides for common templ-components patterns.
 | [Container Queries](container-queries.md)                     | The 8 `ContainerAware` components and the `@container` wrapper contract         |
 | [Fluid Typography](fluid-typography.md)                       | `.tc-fluid-*` classes: text that scales with its container via `cqi` units      |
 | [HTMX Error Feedback](server-rendered-htmx-error-feedback.md) | Server-rendered toast/error pipeline for HTMX responses                         |
+| [Server-Side Validation](server-side-validation.md)           | Dual-transport form validation round-trip (200-OK error fragments)              |
 | [Split Identity Page](split-identity-page.md)                 | Two-zone status page (identity + actions) with Eyebrow + Scrollback             |
 | [Vendored Tailwind Scanning](vendored-tailwind-scanning.md)   | Deterministic `@source` scanning for vendored consumers (class-inventory file)  |

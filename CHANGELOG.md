@@ -8,6 +8,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **Browser-proven dual-transport form submission + validation round-trip.**
+  New Chromium e2e tests (`visualtest/wire_form_e2e_test.go`) prove
+  `forms.FormProps.Wire` end-to-end against the real runtimes: fields fill +
+  submit under both self-hosted htmx and the pinned Datastar bundle, invalid
+  input re-renders the form fragment with `ValidationSummary` + inline field
+  errors (values preserved), and the re-rendered form stays interactive for a
+  corrected resubmit — on either transport, against one `wire.Handler`
+  endpoint. Two verified runtime facts drove the design: htmx 2.0.10's
+  default `responseHandling` does NOT swap 4xx/5xx responses
+  (`{code:"[45]..", swap:false, error:true}` in the pinned bundle), and the
+  pinned Datastar bundle dispatches a fetch lifecycle error event at
+  status >= 400 — so error fragments travel as 200 OK for zero-config parity
+  on both runtimes.
+- **Demo: server-side validation round-trip on the dual-transport form.**
+  `/api/wire/form` now validates (required name, domain-bearing email) and
+  re-renders the form inside its swap region: invalid input gets the summary
+  + inline errors + preserved values; valid input gets the success verdict
+  plus a fresh form. Demo tests cover both transports' bodies and headers,
+  and `form_validation_errors` pins the library-level error-fragment markup
+  (aria-invalid, error ids, value echo) as a golden.
 - **`wire.Action.ContentType` — form-field serialization for both transports.**
   The pinned Datastar v1.0.3 runtime accepts `{contentType: 'form'}` on fetch
   actions (verified against the embedded bundle — see the new facts in

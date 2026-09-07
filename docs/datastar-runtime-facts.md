@@ -58,6 +58,21 @@ new bundle unless marked otherwise:
     spelling was not decoded from the minified parser. Re-audit before
     adopting any modifier into the wire contract (trigger syntax stays
     dialect-specific per ADR-0036's scope rule regardless).
+  - **NEW (2026-09-07, e2e-proven) — fetch error status dispatches a
+    lifecycle error event**: the fetch options include an error hook that
+    fires when `response.status >= 400` (dispatches the `datastar-fetch`
+    error with the status). Combined with htmx 2.0.10's default
+    `responseHandling` (`{code: "[45]..", swap: false, error: true}` — 4xx/5xx
+    responses DO NOT swap), server-side validation errors must travel as
+    **200 OK + error fragment** for zero-config parity on both runtimes. The
+    422 variant needs client configuration in each runtime; see
+    `docs/recipes/server-side-validation.md`.
+  - **NEW (2026-09-07, e2e-proven) — patched-in `data-on:submit` forms keep
+    working**: the runtime's MutationObserver initializes `data-*` attributes
+    on nodes patched in by `datastar-patch-elements`, so a re-rendered form
+    (validation errors round-trip) submits again without any manual
+    re-initialization. Browser-proven by
+    `visualtest/wire_form_e2e_test.go` (`TestWireE2EFormValidationRoundTrip`).
 
 Full audit context: `docs/research/2026-08-21_go-sse-go-datastar-deep-dive.html`.
 

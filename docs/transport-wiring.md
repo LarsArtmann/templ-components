@@ -207,6 +207,24 @@ follows wire's zero-value contract (GET) — set `MethodPost` for mutating
 submissions. The demo implements this end-to-end in
 `examples/demo/wire_demo.templ` (`/api/wire/form`).
 
+### Server-side validation round-trip
+
+The #1 forms use case — submit → validate → inline errors — is proven
+dual-transport in Chromium (`visualtest/wire_form_e2e_test.go`) and
+documented as a copy-pasteable recipe:
+**[`docs/recipes/server-side-validation.md`](recipes/server-side-validation.md)**.
+The essentials: render the form INSIDE its swap region, wrap the handler in
+`wire.Handler`, re-render the form with `ValidationSummary` + `Input.Error`
+(values preserved) on invalid input, and answer **200 OK even for errors** —
+htmx 2.0.10's default `responseHandling` does not swap 4xx/5xx, and the
+pinned Datastar bundle dispatches a fetch error event at status >= 400
+(both verified against the runtime bundles).
+
+One timing note for test automation: htmx wires swapped-in nodes during its
+~20ms settle phase; a client that clicks a freshly swapped submit button
+inside that window falls through to a native submit. Humans cannot click
+that fast — e2e drivers must wait for the swap to settle first.
+
 ## Deliberate scope boundaries
 
 `wire` covers only the dialects' common subset. Transport-specific machinery
