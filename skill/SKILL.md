@@ -49,7 +49,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 40 components
+#### `display` — 42 components
 
 | Component            | Signature                                           | One-liner                                                                                                                                        |
 | -------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -121,7 +121,7 @@ Don't know what to look for? Find your page type:
 | `TagsInput`         | `TagsInput(props TagsInputProps)`                 | Tag input with add/remove — hidden inputs for submission, MaxTags/AllowDuplicate                              |
 | `Calendar`          | `Calendar(props CalendarProps)`                   | Month-view calendar — server-side navigation, day links, MinDate/MaxDate disabling                            |
 
-#### `feedback` — 13 components
+#### `feedback` — 14 components
 
 | Component          | Signature                                       | One-liner                                                                      |
 | ------------------ | ----------------------------------------------- | ------------------------------------------------------------------------------ |

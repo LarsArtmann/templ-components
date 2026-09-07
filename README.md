@@ -185,6 +185,10 @@ both runtimes.
 
 Nav bars, breadcrumbs, pagination, mobile menus, sidebar, load-more.
 
+### `layout` — Page Layout (10 components)
+
+Page shells and layout primitives: `Base`/`Minimal` HTML documents, theme script/toggle, CSP-safe `Script`/`Stylesheet`, `AppShell`, `Container`, `Split`, `Stack`.
+
 ```templ
 @navigation.SimpleNav(navigation.SimpleNavProps{BrandText: "MyApp", CurrentPath: "/"})
 @navigation.Breadcrumbs(navigation.BreadcrumbsProps{Items: []navigation.BreadcrumbItem{

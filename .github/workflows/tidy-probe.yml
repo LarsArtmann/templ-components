@@ -1,0 +1,62 @@
+name: Tidy Probe
+
+# Post-propagation tidy probe (the v1.11/12/13 lesson, automated).
+#
+# After a release is pushed, the five replace-less published sub-modules keep
+# stale go.sum files until the tags propagate through the module proxy and a
+# GOWORK=off `go mod tidy` sweep can resolve the new sibling versions. That
+# sweep finalizes go.sum — until it lands, master CI stays red in "Verify no
+# untracked changes" and the Lint job (missing go.sum entries). This probe
+# runs on a schedule and fails loudly with the exact remediation when any
+# module's go.mod/go.sum is stale relative to the propagated tags.
+
+on:
+  schedule:
+    - cron: "23 4 * * *" # daily, deliberately off the hour
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+env:
+  GOEXPERIMENT: jsonv2
+
+jobs:
+  tidy-probe:
+    name: Post-propagation tidy probe
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-go@b7ad1dad31e06c5925ef5d2fc7ad053ef454303e # v7.0.0
+        with:
+          go-version: "1.26"
+
+      - name: Probe every module for stale go.mod/go.sum
+        run: |
+          set -euo pipefail
+
+          failed=0
+          for mod in . utils icons errorpage charts/echarts datastar htmx visualtest; do
+            echo "::group::tidy $mod"
+            if ! (cd "$mod" && GOWORK=off go mod tidy); then
+              echo "::error::$mod: go mod tidy failed — if this is 'unknown revision', the release tags have not propagated yet; retry tomorrow"
+              echo "::endgroup::"
+              failed=1
+              continue
+            fi
+            echo "::endgroup::"
+
+            if ! git diff --exit-code -- "$mod/go.mod" "$mod/go.sum" > /dev/null; then
+              echo "::error::$mod: go.mod/go.sum stale after tidy — run the post-propagation sweep and commit the refresh (see AGENTS.md, v1.11.0 lesson)"
+              git diff -- "$mod/go.mod" "$mod/go.sum" | head -40
+              failed=1
+            fi
+          done
+
+          if [ "$failed" -ne 0 ]; then
+            echo "::error::Stale module files detected — run: for mod in . utils icons errorpage charts/echarts datastar htmx visualtest; do (cd \"$mod\" && GOWORK=off go mod tidy); done && git commit -m 'chore: post-propagation go.sum refresh'"
+            exit 1
+          fi
+
+          echo "All modules tidy-clean against the propagated tags."

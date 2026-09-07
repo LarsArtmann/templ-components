@@ -15,6 +15,8 @@
 #   scripts/ci-repro.sh --vuln       # also run the vulnerability gates: govulncheck (all Go modules)
 #                                    # + pnpm audit --prod (website/; needs real node — the bun shim breaks pnpm,
 #                                    # so run under `nix develop` or with the PATH workaround)
+#   scripts/ci-repro.sh --tidy       # run the tidy-probe (Tidy Probe workflow): GOWORK=off tidy
+#                                    # per module + fail on go.mod/go.sum drift (needs propagated tags)
 #   scripts/ci-repro.sh --cold       # use a throwaway GOCACHE (simulates a cache-less runner;
 #                                    # module downloads still hit the local GOMODCACHE)
 #
@@ -26,6 +28,7 @@ RUN_LINT=0
 RUN_CSS=0
 RUN_VISUAL=0
 RUN_VULN=0
+RUN_TIDY=0
 COLD=0
 for arg in "$@"; do
 	case "$arg" in
@@ -33,10 +36,11 @@ for arg in "$@"; do
 	--css) RUN_CSS=1 ;;
 	--visual) RUN_VISUAL=1 ;;
 	--vuln) RUN_VULN=1 ;;
+	--tidy) RUN_TIDY=1 ;;
 	--cold) COLD=1 ;;
 	*)
 		echo "Unknown flag: $arg" >&2
-		echo "Usage: $0 [--lint] [--css] [--visual] [--vuln] [--cold]" >&2
+		echo "Usage: $0 [--lint] [--css] [--visual] [--vuln] [--tidy] [--cold]" >&2
 		exit 2
 		;;
 	esac
@@ -162,6 +166,27 @@ fi
 if [ "$RUN_VISUAL" = "1" ]; then
 	step "Visual Regression (Nix Chromium; hard gate in CI)"
 	nix run .#visual
+fi
+
+if [ "$RUN_TIDY" = "1" ]; then
+	step "tidy probe (Tidy Probe workflow): GOWORK=off tidy per module + drift check"
+	failed=0
+	for mod in . $MODULES visualtest; do
+		echo "---- $mod"
+		if ! (cd "$mod" && GOWORK=off go mod tidy); then
+			echo "ERROR: $mod tidy failed — release tags may not have propagated yet" >&2
+			failed=1
+			continue
+		fi
+		if ! git diff --exit-code -- "$mod/go.mod" "$mod/go.sum" > /dev/null; then
+			echo "ERROR: $mod go.mod/go.sum stale after tidy — commit the refresh" >&2
+			failed=1
+		fi
+	done
+	if [ "$failed" -ne 0 ]; then
+		exit 1
+	fi
+	echo "tidy probe clean."
 fi
 
 if [ "$RUN_VULN" = "1" ]; then
