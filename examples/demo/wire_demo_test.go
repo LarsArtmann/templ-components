@@ -332,3 +332,120 @@ func TestWireDemoValidateInputDialects(t *testing.T) {
 		})
 	}
 }
+
+// TestWireFormEndpointServesBothTransports verifies the dual-transport form
+// submission contract: both dialects serialize the form's fields into a
+// standard urlencoded POST body, so one ParseForm-driven handler echoes them
+// back; a Datastar caller additionally gets the patch region via response
+// headers while an htmx caller does not.
+func TestWireFormEndpointServesBothTransports(t *testing.T) {
+	t.Parallel()
+
+	tests := []struct {
+		name            string
+		datastarRequest bool
+		form            url.Values
+		wantContains    string
+	}{
+		{
+			name:            "datastar caller submits form fields and gets response-header targeting",
+			datastarRequest: true,
+			form:            url.Values{"name": {"Ada Lovelace"}, "email": {"ada@example.com"}},
+			wantContains:    "Subscribed Ada Lovelace (ada@example.com)",
+		},
+		{
+			name:            "htmx caller submits the same body without datastar routing headers",
+			datastarRequest: false,
+			form:            url.Values{"name": {"Grace Hopper"}, "email": {"grace@example.com"}},
+			wantContains:    "Subscribed Grace Hopper (grace@example.com)",
+		},
+		{
+			name:            "missing email renders the error verdict",
+			datastarRequest: false,
+			form:            url.Values{"name": {"No Email"}},
+			wantContains:    "No email submitted",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			t.Parallel()
+
+			server := httptest.NewServer(newMux())
+			t.Cleanup(server.Close)
+
+			req, err := http.NewRequestWithContext(
+				context.Background(),
+				http.MethodPost,
+				server.URL+"/api/wire/form",
+				strings.NewReader(tt.form.Encode()),
+			)
+			if err != nil {
+				t.Fatal(err)
+			}
+			req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+
+			wantSelector := ""
+			if tt.datastarRequest {
+				req.Header.Set(wire.HeaderDatastarRequest, "true")
+				wantSelector = "#wire-form-out"
+			}
+
+			resp, err := server.Client().Do(req)
+			if err != nil {
+				t.Fatal(err)
+			}
+			t.Cleanup(func() { _ = resp.Body.Close() })
+
+			if resp.StatusCode != http.StatusOK {
+				t.Errorf("status = %d, want 200", resp.StatusCode)
+			}
+
+			if got := resp.Header.Get(wire.HeaderDatastarSelector); got != wantSelector {
+				t.Errorf("Datastar-Selector = %q, want %q", got, wantSelector)
+			}
+
+			body, err := io.ReadAll(resp.Body)
+			if err != nil {
+				t.Fatal(err)
+			}
+			if !strings.Contains(string(body), tt.wantContains) {
+				t.Errorf("verdict body missing %q", tt.wantContains)
+			}
+		})
+	}
+}
+
+// TestWireDemoFormRendersBothDialects pins the rendered wiring of the
+// dual-transport form on the demo page: the htmx dialect carries
+// hx-post/hx-trigger/hx-target, the Datastar dialect carries the
+// form-serialized submit expression (the pinned v1.0.3 contentType option).
+func TestWireDemoFormRendersBothDialects(t *testing.T) {
+	t.Parallel()
+
+	server := httptest.NewServer(newMux())
+	t.Cleanup(server.Close)
+
+	resp, err := server.Client().Get(server.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = resp.Body.Close() })
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	html := string(body)
+	for _, want := range []string{
+		`hx-post="/api/wire/form"`,
+		`hx-trigger="submit"`,
+		`hx-target="#wire-form-out"`,
+		`data-on:submit="@post(&#39;/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
+	} {
+		if !strings.Contains(html, want) {
+			t.Errorf("demo page missing %q", want)
+		}
+	}
+}

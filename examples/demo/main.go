@@ -356,6 +356,29 @@ func newMux() *http.ServeMux {
 		}
 	})))
 
+	// Wire demo: dual-transport form submission. Both dialects serialize the
+	// form's fields (htmx natively; Datastar via contentType:'form' — see
+	// forms.FormProps.Wire), so one ParseForm-driven handler serves both:
+	// htmx swaps the verdict into #wire-form-out client-side via hx-target,
+	// Datastar callers get the region via response headers.
+	mux.Handle("/api/wire/form", wire.Handler(wire.PatchTarget{
+		Selector: "#wire-form-out",
+		Mode:     wire.PatchModeInner,
+	}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		noStore(w)
+
+		if err := r.ParseForm(); err != nil {
+			http.Error(w, "invalid form body", http.StatusBadRequest)
+
+			return
+		}
+
+		name := strings.TrimSpace(r.PostFormValue("name"))
+		email := strings.TrimSpace(r.PostFormValue("email"))
+		componentOr500(w, r, wireFormResult(name, email))
+	})))
+
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case "/forms":
