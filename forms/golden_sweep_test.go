@@ -6,6 +6,7 @@ import (
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/golden"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // Golden sweep for forms components that previously lacked golden tests.
@@ -98,6 +99,31 @@ func TestGoldenSweepForm(t *testing.T) {
 	golden.AssertSnapshots(t, []golden.Snapshot{
 		{Name: "form_basic", HTML: utils.Render(t, Form(FormProps{
 			Action: "/submit", Method: FormPost,
+		}))},
+		{Name: "form_wired_htmx", HTML: utils.Render(t, Form(FormProps{
+			Action: "/submit",
+			Method: FormPost,
+			Wire: &wire.Action{
+				Method: wire.MethodPost,
+				URL:    "/api/submit",
+				Target: "#form-out",
+			},
+		}))},
+		{Name: "form_wired_datastar", HTML: utils.Render(t, Form(FormProps{
+			Method: FormPost,
+			Wire: &wire.Action{
+				Transport: wire.TransportDatastar,
+				Method:    wire.MethodPost,
+				URL:       "/api/submit",
+			},
+		}))},
+		{Name: "form_wired_empty_url_inert", HTML: utils.Render(t, Form(FormProps{
+			Action: "/submit",
+			Method: FormPost,
+			Wire: &wire.Action{
+				Method: wire.MethodPost,
+				URL:    "",
+			},
 		}))},
 	})
 }

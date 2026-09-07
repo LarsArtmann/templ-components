@@ -49,6 +49,13 @@ func TestPinnedRuntimeBundleContract(t *testing.T) {
 		// LiveRegionProps.Cancellation — under cleanup mode the runtime
 		// aborts the in-flight stream when the element leaves the DOM.
 		"requestCancellation",
+		// Form-serialization machinery consumed by wire.ContentTypeForm
+		// (forms.Form Wires dual-transport submission): the fetch option
+		// selecting form-field serialization over the signals-JSON default,
+		// and the two failure paths (no enclosing form / unknown type).
+		"contentType",
+		"FetchFormNotFound",
+		"FetchInvalidContentType",
 	} {
 		if !strings.Contains(bundle, token) {
 			t.Errorf(

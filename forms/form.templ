@@ -133,7 +133,9 @@ type FormProps struct {
 	//
 	// Field defaults: an unspecified Event resolves to submit, an unspecified
 	// ContentType resolves to form encoding (set ContentTypeJSON explicitly to
-	// submit Datastar signals instead — then no form fields travel). Wire.URL
+	// submit Datastar signals instead — then no form fields travel). Method
+	// follows wire's zero-value contract (GET) — set MethodPost for mutating
+	// submissions, mirroring DefaultFormProps's native Method. Wire.URL
 	// replaces Action for the wired request; Action/Method stay as the no-JS
 	// fallback. Wire.Target renders only for htmx (hx-target); Datastar
 	// targeting is response-driven — wrap the handler in wire.Handler.

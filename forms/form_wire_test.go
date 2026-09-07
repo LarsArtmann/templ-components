@@ -210,7 +210,7 @@ func TestFormWireAttributesDefaults(t *testing.T) {
 		Transport: wire.TransportDatastar,
 		URL:       "/api/save",
 	})
-	if got := attrs["data-on:submit"]; got != "@post('/api/save', {contentType: 'form'})" {
+	if got := attrs["data-on:submit"]; got != "@get('/api/save', {contentType: 'form'})" {
 		t.Fatalf("defaulted datastar expression = %v, want form-encoded submit", got)
 	}
 }

@@ -30,6 +30,34 @@ new bundle unless marked otherwise:
   OUTDATED. `wire.Action` still renders `Target` for htmx only — adopting
   `{selector: …}` for Datastar is a deliberate future contract change (the
   response-driven targeting contract, ADR-0036, stands until then).
+- **NEW (2026-09-07) — fetch actions accept `contentType: 'form'`** for
+  whole-form serialization (consumed by `wire.ContentTypeForm` /
+  `forms.FormProps.Wire`):
+  - Default is `contentType: 'json'` (signals object as JSON body; on
+    body-less GET requests the JSON rides in a `?datastar=<json>` query
+    param). Any other value throws `FetchInvalidContentType`.
+  - Under `'form'` the action serializes the action element's
+    `closest("form")` (or the form matched by the `selector` option); no
+    enclosing form throws `FetchFormNotFound`.
+  - **HTML5 constraint validation gates the request**: unless the form has
+    `novalidate`, an invalid form calls `checkValidity` + `reportValidity`
+    and the fetch never fires.
+  - The **submitter button's** `name`/`value` is appended (the
+    `SubmitEvent.submitter` when the action element is the form, else an
+    `input[type=submit]`/`button[type=submit]` the browser would submit).
+  - `enctype="multipart/form-data"` sends a `FormData` body (file uploads
+    work); anything else sends `application/x-www-form-urlencoded`.
+  - GET requests carry the form fields as query parameters instead of a body.
+  - The `data-on` plugin **auto-calls `preventDefault()` when the element is
+    a `HTMLFormElement` and the event is `submit`** — so
+    `data-on:submit="@post('/x', {contentType: 'form'})"` on a `<form>`
+    suppresses the native full-page submission with no explicit modifier.
+  - Event modifier MACHINERY exists in the bundle (`debounce` with duration
+    parsing + `leading`/`notrailing` flags, `throttle`, `delay`,
+    `prevent`/`stop` flags) — verified as tokens, but the exact attribute-key
+    spelling was not decoded from the minified parser. Re-audit before
+    adopting any modifier into the wire contract (trigger syntax stays
+    dialect-specific per ADR-0036's scope rule regardless).
 
 Full audit context: `docs/research/2026-08-21_go-sse-go-datastar-deep-dive.html`.
 
