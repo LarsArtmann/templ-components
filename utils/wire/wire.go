@@ -209,12 +209,13 @@ func (a Action) htmxAttributes() templ.Attributes {
 	if a.Event != EventUnspecified && EventIsValid(a.Event) {
 		trigger := string(a.Event)
 		if a.DebounceMS > 0 {
-			switch a.Event {
-			case EventInput, EventChange, EventKeyUp:
+			if a.Event == EventInput || a.Event == EventChange || a.Event == EventKeyUp {
 				trigger += " changed"
 			}
+
 			trigger += fmt.Sprintf(" delay:%dms", a.DebounceMS)
 		}
+
 		attrs["hx-trigger"] = trigger
 	}
 

@@ -68,7 +68,7 @@ func TestFormNoValidate(t *testing.T) {
 	t.Run("composes with datastar wire", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, Form(FormProps{
-			Wire: &wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/save"},
+			Wire:       &wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/save"},
 			NoValidate: true,
 		}))
 		utils.AssertContains(t, output, "novalidate")

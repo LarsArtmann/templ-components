@@ -8,6 +8,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`forms.FilterInput` — debounced dual-transport search input** (forms is
+  now 22 components). A `<search>` landmark wrapping a GET form whose input
+  auto-submits as the user types: htmx renders
+  `hx-trigger="input changed delay:300ms"` + `hx-target`; Datastar renders
+  the `data-on:input__debounce.300ms` modifier (spelling decoded from the
+  pinned v1.0.3 bundle) with the form encoding path, so the query travels as
+  a clean `?q=` parameter on either runtime against one `wire.Handler`
+  endpoint. `DebounceMS` defaults to 300 (0 disables), `Value` preserves the
+  query across re-renders, label + `aria-describedby` wiring built in, and
+  the form still submits natively without JavaScript. Demo: the wire page's
+  "Debounced filter" card + `/api/wire/filter`. Full lens: goldens (4),
+  a11y, BDD, edge cases, godoc example, contract inventory.
+- **`wire.Action.DebounceMS` — debounced triggers in both dialects.** htmx
+  renders the `delay:<n>ms` trigger modifier (plus `changed` on value
+  events — input/change/keyup — so an unchanged value never re-requests);
+  Datastar appends `__debounce.<n>ms` to the event key. Zero (default)
+  emits nothing. Under htmx it requires an explicit `Event`.
 - **`forms.FormProps.NoValidate` — symmetric validation opt-out.** Renders
   the HTML `novalidate` attribute on the form. Under Datastar it lifts the
   pinned bundle's form-encoding `checkValidity` gate (the runtime only gates
