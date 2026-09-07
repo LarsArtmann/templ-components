@@ -34,16 +34,6 @@ func TestDocsCountDrift(t *testing.T) {
 	// README and SKILL must match the actual exported templ function count
 	// per package — the numbers that historically drifted by hand.
 	packageCounts := countPackageComponents(t, root)
-	for pkg, want := range packageCounts {
-		if want == 0 {
-			continue
-		}
-
-		readmePkgRe := fmt.Sprintf("`%s` — [^(]*\(%d components\)", pkg, want)
-		assertCount(t, readme, readmePkgRe, "README.md "+pkg+" heading", want)
-		skillPkgRe := fmt.Sprintf("`%s` — %d components", pkg, want)
-		assertCount(t, skill, skillPkgRe, "SKILL.md "+pkg+" heading", want)
-	}
 
 	sections := readDoc(t, "website", "src", "data", "sections.ts")
 	assertCount(t, sections, componentsRe, "website sections.ts components", actualComponents)
@@ -53,6 +43,17 @@ func TestDocsCountDrift(t *testing.T) {
 	assertCount(t, readme, `(\d+)\s+server-rendered components`, "README.md components", actualComponents)
 	assertCount(t, readme, `(\d+)\s+with IsValid\(\)`, "README.md IsValid methods", actualIsValid)
 	assertCount(t, readme, `Visual goldens \| (\d+)\s+pixel-level`, "README.md visual goldens", actualVisualGoldens)
+
+	for pkg, want := range packageCounts {
+		if want == 0 {
+			continue
+		}
+
+		readmePkgRe := fmt.Sprintf("`%s` — [^(]*\\((\\d+) components\\)", pkg)
+		assertCount(t, readme, readmePkgRe, "README.md "+pkg+" heading", want)
+		skillPkgRe := fmt.Sprintf("`%s` — (\\d+) components", pkg)
+		assertCount(t, skill, skillPkgRe, "SKILL.md "+pkg+" heading", want)
+	}
 
 	roadmap := readDoc(t, "ROADMAP.md")
 	assertCount(t, roadmap, `(\d+)[^0-9]{0,6}templ components across`, "ROADMAP.md components", actualComponents)
@@ -114,8 +115,7 @@ func countPackageComponents(t *testing.T, root string) map[string]int {
 				t.Fatalf("read %s: %v", file, err)
 			}
 
-			for line := range strings.SplitSeq(string(data), "
-") {
+			for line := range strings.SplitSeq(string(data), "\n") {
 				if templFuncRe.MatchString(line) {
 					counts[pkg]++
 				}
