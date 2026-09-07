@@ -461,7 +461,7 @@ func wireBusyButtonDatastar() templ.Component {
 			Text:    "Run job",
 			Variant: display.ButtonPrimary,
 			Size:    display.ButtonSizeSM,
-			Wire:    &wire.Action{Transport: wire.TransportDatastar, URL: "/api/wire/busy"},
+			Wire:    &wire.Action{Transport: wire.TransportDatastar, Method: wire.MethodPost, URL: "/api/wire/busy"},
 			BaseProps: utils.BaseProps{
 				Attrs: templ.Attributes{"data-indicator:saving": true},
 			},

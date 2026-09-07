@@ -689,7 +689,7 @@ func TestWireDemoBusyCardRendersBothDialects(t *testing.T) {
 	for _, want := range []string{
 		`hx-post="/api/wire/busy"`,
 		`hx-target="#wire-busy-htmx-out"`,
-		`data-on:click="@post('/api/wire/busy')"`,
+		`data-on:click="@post(&#39;/api/wire/busy&#39;)"`,
 		`data-indicator:saving`,
 		`role="status"`,
 		`id="wire-busy-datastar-out"`,

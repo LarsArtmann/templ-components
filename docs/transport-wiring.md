@@ -246,6 +246,29 @@ The alternative (binding the value to a signal and string-building the URL
 in the expression) was rejected: expression-concatenated URLs are an
 injection surface and cannot be validated as complete literals.
 
+### Busy state on wired submits
+
+Perceived performance: acknowledge the submit instantly. Each runtime has a
+native busy mechanism; both compose with `wire` because busy styling is
+orthogonal to the wiring attributes.
+
+- **htmx** — wrap `htmx.LoadingButton(defaultText, loadingText, spinner)` in
+  the button element that carries the `hx-*` attributes. While the request
+  runs, htmx puts `.htmx-request` on that element, hiding the default label
+  (`[.htmx-request_&]:hidden`) and revealing the loading label + spinner
+  (`.htmx-indicator`). The wired `forms.Form` case is the same: the form
+  carries `.htmx-request`, so a `LoadingButton` inside the form reacts
+  automatically.
+- **Datastar** — set an indicator signal on the trigger and toggle it
+  elsewhere: `data-indicator:saving` on the wired `display.Button` (via
+  `BaseProps.Attrs` — it composes with `Wire`), plus
+  `@datastar.Indicator(datastar.IndicatorProps{Signal: "saving"})` anywhere
+  on the page. The Indicator renders `role="status" aria-live="polite"`, so
+  screen readers announce the busy state.
+
+Both patterns are live in the demo's "Busy state" card (the endpoint sleeps
+800ms so the state is visible): `examples/demo/wire_demo.templ`.
+
 ## Deliberate scope boundaries
 
 `wire` covers only the dialects' common subset. Transport-specific machinery

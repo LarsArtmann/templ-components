@@ -36,6 +36,38 @@ func formMethod(m FormMethod) string {
 	return string(m)
 }
 
+// FormEnctype is a typed enum for the form's enctype attribute — how field
+// values are encoded in the POST body. Both runtimes honor it: htmx
+// serializes natively per enctype, and the pinned Datastar bundle sends a
+// FormData body exactly when enctype is multipart (see
+// docs/datastar-runtime-facts.md).
+type FormEnctype string
+
+const (
+	// FormEnctypeUrlencoded is the HTML default
+	// (application/x-www-form-urlencoded). The zero value resolves here.
+	FormEnctypeUrlencoded FormEnctype = "application/x-www-form-urlencoded"
+	// FormEnctypeMultipart is multipart/form-data — required for file
+	// uploads (input type=file).
+	FormEnctypeMultipart FormEnctype = "multipart/form-data"
+)
+
+// FormEnctypeIsValid reports whether e is a recognized FormEnctype. The zero
+// value counts as valid: it means "use the HTML default".
+func FormEnctypeIsValid(e FormEnctype) bool {
+	return e == FormEnctypeUrlencoded || e == FormEnctypeMultipart || e == ""
+}
+
+// formEnctype resolves the zero value (and unknown values, defensively) to
+// the HTML default.
+func formEnctype(e FormEnctype) string {
+	if e == FormEnctypeMultipart {
+		return string(FormEnctypeMultipart)
+	}
+
+	return string(FormEnctypeUrlencoded)
+}
+
 // FormLayout is a typed enum controlling the visual layout of a Form. Unknown
 // values fall back to FormLayoutStack. See ADR-0016 for when to use each.
 type FormLayout string
@@ -108,6 +140,12 @@ type FormProps struct {
 	utils.BaseProps
 	Action        string
 	Method        FormMethod
+	// Enctype selects the encoding of a POST body. Zero value (and unknown
+	// values) resolve to the HTML default, urlencoded; set
+	// FormEnctypeMultipart for file uploads. Under both transports the
+	// runtime honors it: htmx serializes natively, the pinned Datastar
+	// bundle sends a FormData body exactly when enctype is multipart.
+	Enctype       FormEnctype
 	CSRFToken     string
 	CSRFTokenName string // Hidden input name attribute; defaults to "csrf_token"
 	// Layout selects the visual layout: Stack (default), Inline (horizontal
@@ -226,6 +264,9 @@ templ formInner(props FormProps) {
 		}
 		action={ props.Action }
 		method={ formMethod(props.Method) }
+		if props.Enctype == FormEnctypeMultipart {
+			enctype={ formEnctype(props.Enctype) }
+		}
 		if props.Validate {
 			hx-validate="true"
 		}
