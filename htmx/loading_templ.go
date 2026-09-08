@@ -113,11 +113,15 @@ func InlineLoadingOverlay(id string, spinner templ.Component) templ.Component {
 }
 
 // LoadingButton renders a button with built-in loading state.
-// The default text hides during an HTMX request (htmx-request on the form
-// toggles htmx-indicator visibility); loadingText is the htmx-indicator.
+// During an HTMX request (htmx-request on the button or an ancestor) the
+// default text hides and the loading text + spinner show; at rest only the
+// default text is visible. The spinner is wrapped in htmx-indicator so it is
+// gated regardless of the color classes passed in. The tc-btn-loading wrapper
+// is a stable hook for hx-indicator when a different indicator scope is
+// needed.
 //
-//	<button class="btn-primary" hx-post="/save" hx-indicator=".tc-btn-loading">
-//	   @htmx.LoadingButton("Save", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "htmx-indicator"}))
+//	<button class="btn-primary" hx-post="/save">
+//	   @htmx.LoadingButton("Save", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-white"}))
 //	</button>
 func LoadingButton(defaultText, loadingText string, spinner templ.Component) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
@@ -140,7 +144,7 @@ func LoadingButton(defaultText, loadingText string, spinner templ.Component) tem
 			templ_7745c5c3_Var4 = templ.NopComponent
 		}
 		ctx = templ.ClearChildren(ctx)
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<span class=\"tc-btn-loading\"><span class=\"inline-flex items-center gap-2\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "<span class=\"tc-btn-loading\"><span class=\"inline-flex items-center gap-2\"><span class=\"htmx-indicator inline-flex\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -148,14 +152,14 @@ func LoadingButton(defaultText, loadingText string, spinner templ.Component) tem
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "<span class=\"htmx-indicator\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "</span> <span class=\"htmx-indicator\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(loadingText)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/loading.templ`, Line: 52, Col: 45}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/loading.templ`, Line: 58, Col: 45}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -168,7 +172,7 @@ func LoadingButton(defaultText, loadingText string, spinner templ.Component) tem
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(defaultText)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/loading.templ`, Line: 53, Col: 55}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/loading.templ`, Line: 59, Col: 55}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {

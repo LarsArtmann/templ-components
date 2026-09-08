@@ -211,7 +211,7 @@ func recipesAuthPage(props layout.PageProps) templ.Component {
 				PanelTitle: "templ-components",
 				PanelText:  "Server-rendered UI components for Go. Type-safe, accessible, CSP-ready.",
 				PanelFeatures: []string{
-					"116 components, zero JS required for most",
+					componentCount + " components, zero JS required for most",
 					"Native dialog, details, and popover APIs",
 					"Dark mode + RTL out of the box",
 				},

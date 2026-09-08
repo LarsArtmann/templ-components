@@ -873,3 +873,20 @@ details[open] [data-tc-chevron] {
     stroke-dashoffset: 0 !important;
   }
 }
+
+/* --- Heatmap brand color -----------------------------------------------
+ * display.Heatmap colors cells via `rgba(var(--ds-brand-rgb), alpha)` and
+ * rings the peak cell via `var(--ds-brand)`. Define both here so the
+ * component renders out of the box; consumers override either variable in
+ * their own CSS (RGB triplets must be space-separated, e.g. "124 58 237").
+ * Light uses violet-600, dark uses violet-500 (the -600/-500 convention).
+ * ---------------------------------------------------------------------- */
+:root {
+  --ds-brand-rgb: 124 58 237;
+  --ds-brand: #7c3aed;
+}
+
+.dark {
+  --ds-brand-rgb: 139 92 246;
+  --ds-brand: #8b5cf6;
+}

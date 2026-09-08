@@ -242,14 +242,18 @@ templ displayDemo() {
 			SubTitle: "SectionHeading — configurable h1–h6 level, alignment, subtitle",
 			Level:    display.HeadingLevelH2,
 		})
-		@display.DateRange(display.DateRangeProps{
-			Start: demoDate(2023, 3, 1),
-		})
-		@display.DateRange(display.DateRangeProps{
-			Start:  demoDate(2024, 1, 15),
-			End:    demoDate(2025, 6, 30),
-			Layout: display.DateFormatJan2_2006,
-		})
+		<div>
+			@display.DateRange(display.DateRangeProps{
+				Start: demoDate(2023, 3, 1),
+			})
+		</div>
+		<div>
+			@display.DateRange(display.DateRangeProps{
+				Start:  demoDate(2024, 1, 15),
+				End:    demoDate(2025, 6, 30),
+				Layout: display.DateFormatJan2_2006,
+			})
+		</div>
 	</div>
 	@demoCodeSnippet("Go", `@display.DateRange(display.DateRangeProps{
 	Start: &start, // End nil renders "Present"

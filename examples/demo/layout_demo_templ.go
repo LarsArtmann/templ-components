@@ -12,6 +12,7 @@ import (
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 func layoutDemo() templ.Component {
@@ -124,7 +125,7 @@ func layoutContainerDemo() templ.Component {
 				var templ_7745c5c3_Var4 string
 				templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinStringErrs(w.name)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/layout_demo.templ`, Line: 33, Col: 14}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/layout_demo.templ`, Line: 34, Col: 14}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 				if templ_7745c5c3_Err != nil {
@@ -287,7 +288,8 @@ func layoutAppShellDemo() templ.Component {
 			return templ_7745c5c3_Err
 		}
 		templ_7745c5c3_Err = layout.AppShell(layout.AppShellProps{
-			SidebarWidth: layout.SidebarWidthSM,
+			BaseProps:    utils.BaseProps{Class: "min-h-0"},
+			SidebarWidth: layout.SidebarWidthMD,
 			StickyHeader: false,
 			Container:    false,
 			Sidebar:      appShellDemoSidebar(),
@@ -511,7 +513,7 @@ func demoCard(text string, _ layout.StackGap) templ.Component {
 		var templ_7745c5c3_Var15 string
 		templ_7745c5c3_Var15, templ_7745c5c3_Err = templ.JoinStringErrs(text)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/layout_demo.templ`, Line: 137, Col: 60}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/layout_demo.templ`, Line: 139, Col: 60}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var15))
 		if templ_7745c5c3_Err != nil {

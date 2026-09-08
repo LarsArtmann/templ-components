@@ -25,6 +25,7 @@ templ navigationDemo() {
 	@demoSection("Full Nav", "nav-full")
 	@navigation.Nav(navigation.NavProps{
 		CurrentPath: "/",
+		Brand:       templ.Raw(`<span class="text-base font-bold text-gray-900 dark:text-white">Demo App</span>`),
 		Links: []navigation.NavLinkProps{
 			{Href: "/", Text: "Home"},
 			{Href: "/users", Text: "Users"},

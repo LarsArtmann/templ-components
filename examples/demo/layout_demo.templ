@@ -4,6 +4,7 @@ import (
 	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
+	"github.com/larsartmann/templ-components/utils"
 )
 
 templ layoutDemo() {
@@ -70,7 +71,8 @@ templ layoutAppShellDemo() {
 		<p class="text-sm text-gray-500 dark:text-gray-400 mb-4">The #1 admin dashboard pattern. Uses <code class="text-xs">minmax(0,1fr)</code> to prevent grid blowout from wide tables. Sidebar hidden on mobile (use MobileNav slot for drawer).</p>
 		<div class="rounded-lg border border-gray-200 dark:border-gray-700 overflow-hidden" style="min-height: 320px;">
 			@layout.AppShell(layout.AppShellProps{
-				SidebarWidth: layout.SidebarWidthSM,
+				BaseProps:    utils.BaseProps{Class: "min-h-0"},
+				SidebarWidth: layout.SidebarWidthMD,
 				StickyHeader: false,
 				Container:    false,
 				Sidebar:      appShellDemoSidebar(),
