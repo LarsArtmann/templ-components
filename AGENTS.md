@@ -281,111 +281,28 @@ ground truth.
 - **BuildFlow `eslint-fix` breaks commits touching any `.ts`/`.js` file** (TODO #108): ESLint 10 runs at the repo root, which has no eslint config → exit 2. When a changeset includes website JS/TS, run the full verify matrix manually and commit with `--no-verify`, noting why in the body.
 - **Never patch Go/test code via python heredocs.** A 2026-09-07 session logged ~5 self-inflicted failures from escaping: backslash-n sequences becoming literal newlines inside Go strings, `\(` escape warnings, dropped match tails (a splice that forgot the suffix), and even a self-mangled 101k-line file. The `edit`/`multiedit` tools handle Go strings, backticks, and escapes correctly and show diffs — use them for ALL code edits; reserve shell/python one-liners for docs tables and mechanical count updates (and even then, verify with `git diff`). This very bullet was mangled by a heredoc on first insert and repaired with `edit`.
 - **Daemon commits can regress same-day fixes.** During the v1.9.0 cut, daemon auto-commits prettier-un-minified `examples/demo/static/app.css` (+4780 lines → CSS Freshness CI failure) and flipped `website/package.json` typescript back to `^7.0.2` (astro check crashes on TS 7 — needs 6.x until `astro check` supports the native compiler). After any daemon commit lands, re-check: `nix run .#css` byte-stability, the website typescript pin, and CI status. The daemon also pushes master (and once, the release tags) without being asked — always `git fetch` before assuming local-only state.
+- **Compiled binaries must never be tracked.** `visualtest/shots` (10MB, built by `nix run .#shots`) sat in git for months until go-structure-linter flagged it; binaries are gitignored — they exist only on disk and are rebuildable from source.
 
 ## Release Convention: One-Commit Release
 
-Established with v0.4.0 → v0.5.0 → v0.6.0. Each version is cut with a **single
-release commit** at the tip of `master`, even if many feature/fix commits preceded it.
-The release commit message is the canonical user-facing description of what changed.
+Each version is cut with a **single release commit** at the tip of `master`; its message is the
+canonical user-facing description of the release. **`[Unreleased]` must be warm at all times** —
+every feature/fix commit adds its CHANGELOG entry immediately, never at release time
+(`scripts/release.sh` refuses to cut with an empty `[Unreleased]`).
 
-**`[Unreleased]` must be warm at all times.** Every feature/fix commit that lands on
-`master` must add its changelog entry to the `[Unreleased]` section immediately — not
-deferred to release time. The release script (`scripts/release.sh`) enforces this by
-failing if `[Unreleased]` has no body.
+The script automates: the version triple-bump (`utils/version.go` + CHANGELOG heading +
+FEATURES.md `**Version:**`, enforced by the `TestVersionMatches*` drift guards), full verify
+**while local `replace` directives are still present**, replace-strip + one commit, and
+annotated SSH-signed tags for root + every published sub-module in lockstep
+(`scripts/check-release-tags.sh` guards the set — a root-only release breaks every consumer).
+It does NOT push — review `git show v<version>`, then push manually. Never retag a version;
+the proxy caches tags permanently.
 
-**Release commit message structure:**
+**Read `docs/release-checklist.md` BEFORE cutting or refactoring the script** — it maps every
+hardening step to the incident that caused it (verify-before-strip, the single EXIT trap,
+re-add-replaces + re-tidy, the post-propagation tidy sweep, the daemon race window, SIGPIPE in
+tree assertions, late-abort recovery).
 
-```
-release: <version> — <one-line summary>
-
-<one-paragraph "why this version" / headline summary>
-<one-paragraph "what's in it" / feature highlights>
-<one-paragraph "notes" / breaking changes, deprecations, migration paths>
-
-💘 Generated with Crush
-Assisted-by: Crush:MiniMax-M3
-```
-
-**Release commit body must include:**
-
-- The version bump in `utils/version.go`
-- The CHANGELOG heading (e.g., `## [0.6.0] — YYYY-MM-DD`) replacing `[Unreleased]`,
-  with a fresh empty `## [Unreleased]` inserted above it
-- The release notes in the commit body **and** the CHANGELOG (both kept in sync)
-
-**Tag format:** annotated + SSH-signed, message `<version>: <one-line summary>` (same key as v0.5.0).
-
-**Post-release commits** (backfilling tests, doc fixes, post-release regeneration) land
-normally on `master` and roll into the next release. Never retag the same version.
-
-**To cut a release:** use `scripts/release.sh` (see "Release Script" below).
-
-## Release Script
-
-The operational audit for cutting a release lives in **`docs/release-checklist.md`** — read it
-before running the script (it maps every hardening step to the incident that caused it).
-
-`scripts/release.sh` automates the full release cut in one command:
-
-```bash
-scripts/release.sh <new-version> "<release-summary>"
-# Example: scripts/release.sh 0.7.0 "typed HTMX retry, Drawer motion-reduce"
-```
-
-What it does:
-
-1. Validates the working tree is clean and on `master`
-2. Confirms the new version is greater than the current one (via `sort -V`)
-3. Collects release notes (`--notes-file FILE`, or auto-extracted from CHANGELOG `[Unreleased]`)
-4. Installs an `EXIT`-trap rollback (`release_cleanup`) that restores `utils/version.go`, all `go.mod` files, `CHANGELOG.md`, and `FEATURES.md` if any later step fails — so a failed verify never leaves a dirty tree
-5. Bumps `utils.Version` via in-place sed
-6. Moves the `[Unreleased]` body under a new `## [<version>] — YYYY-MM-DD` heading (inserts a fresh empty `[Unreleased]` above)
-7. Bumps `FEATURES.md` `**Version:**` + `**Updated:**` date (the three version files must move together; `utils.TestVersionMatchesFeatures` enforces it)
-8. Regenerates `*_templ.go` and runs the full verify suite (build + test + lint)
-9. Asserts the version drift-guard (`TestVersionMatches(Changelog|Features)`)
-10. Strips the local `replace` directives (tagged `go.mod` files must be consumer-clean) and re-parses every `go.mod` as a sanity check
-11. Stages and commits as `release: <version> — <summary>` (one-commit convention; body carries the release notes, `Assisted-by: Crush:${CRUSH_MODEL}`)
-12. Creates annotated, SSH-signed tags: root `v<version>` plus one `<sub-module>/v<version>` per published sub-module, in lockstep. Guard with `scripts/check-release-tags.sh` before pushing — a root-only release (like v1.8.3) breaks every consumer.
-
-The script does **not** push. House rule: "NEVER PUSH TO REMOTE". Push manually
-after reviewing the release commit and tag with `git show v<version>` and
-`git show <commit>`.
-
-**Verify-before-strip (v1.9.0 lesson):** the script's build/test/lint phase MUST
-run while the local `replace` directives are still present. go1.26.5 workspace
-mode does NOT preempt module-graph resolution of `require` entries at unpushed
-versions — with replaces stripped and the new tags not yet on the proxy, every
-build fails with `unknown revision <sub>/v<version>` (GOPRIVATE is not a factor;
-proven with a 2x2 replaces/GOPRIVATE matrix during the v1.9.0 cut). Stripping
-now happens after verification. Also fixed then: bash keeps only ONE `EXIT`
-trap, so the script's second `trap` silently disabled the rollback trap — both
-cleanups now share one hook.
-
-**Re-add-replaces lesson (v1.11.0):** the post-release `chore: re-add replace
-directives` commit must ALSO refresh module checksums — with the cut's stripped
-replaces, the sub-module `go.sum` files kept the previous version's hashes and
-the `visualtest` module kept stale sibling `require`s, so master CI stayed red
-for 9 days (Build & Test "Verify no untracked changes" via CI's per-module
-`go mod tidy`, Visual Regression aborting on `go mod tidy`-needed, plus the
-website typescript manifest/lockfile split from v1.9.0). After every
-release-cut/re-add cycle, run `go mod tidy` with `GOWORK=off` in all 7 modules
-plus `visualtest`, commit the diff, and confirm the master CI + Website runs
-are green before walking away.
-
-**Post-propagation tidy lesson (v1.12.0, repeats v1.11.0):** the pre-push tidy
-sweep CANNOT finalize the five replace-less published sub-modules
-(icons, errorpage, charts/echarts, datastar, htmx) — their sibling checksums
-resolve against the module proxy, where the new tags don't exist yet, so the
-sweep no-ops and the stale `go.sum` files ship. Once the tags propagate
-(`go list -m <module>@<version>` resolves), re-run the GOWORK=off tidy sweep and
-commit the go.sum refresh — CI's Build & Test ("Verify no untracked changes")
-and Lint (missing go.sum entries) stay red until then. Also from v1.12.0:
-`release.sh`'s 8b tree assertions must use `grep -c` not `grep -q` (`git show |
-grep -q` under `set -o pipefail` self-aborts with exit 141 via SIGPIPE once the
-asserted file exceeds the 64KB pipe buffer — CHANGELOG.md was 155KB); the
-visualtest harness settles every FINITE document animation before capture
-(scrollback's ~2.5s stagger was captured mid-fade; infinite animations like
-spinners are filtered out) — goldens regenerated to the settled state.
 
 ## Lint Command
 
@@ -440,6 +357,7 @@ package also uses `encoding/json/v2`. Remaining packages (tests) still use
 - **Fuzz tests:** `forms.FuzzInputType`, `forms.FuzzFormMethod`, `display.FuzzButtonHTMLType` verify enum validation never panics on arbitrary input. Run via `go test -fuzz=. -run=Fuzz ./...`.
 - **Benchmark suites:** Now in 7 packages (display, feedback, navigation, forms, layout, htmx, icons, utils). Run via `go test -bench=. -benchmem ./...`.
 - **goconst zero issues:** all repeated string literals are named constants — keep it that way.
+- **No samber/lo or similar combinator libraries.** BuildFlow's `go-auto-upgrade` keeps suggesting `lo.Map`/`lo.Filter`/`lo.SliceToMap` over manual range loops — rejected: the dependency budget is closed (templ + tailwind-merge-go + go-error-family), manual loops are idiomatic Go, ADR-0009 protects accepted duplication, and some flagged sites are generated `*_templ.go` files.
 - **CSRFTokenName:** `forms.FormProps` has a `CSRFTokenName` field (defaults to `"csrf_token"`) for framework compatibility.
 - **ErrorPage/NotFound404 landmark:** Both use `<main>` (not `<div role="region">`) for WCAG 2.4.1 Bypass Blocks compliance.
 - **FromError fallback:** Unknown errors return `FamilyCorruption` (→500), not `FamilyInfrastructure` (→503). An unrecognized error is a bug, not a transient outage.
