@@ -40,13 +40,7 @@
       ...
     }:
     flake-parts.lib.mkFlake { inherit inputs; } {
-      # Only the evaluating system: `nix flake check` (and BuildFlow's
-      # nix-build) build every system listed here, and a cross-system
-      # derivation always fails with a platform mismatch (darwin checks on
-      # linux and vice versa). There is no cross-compilation and no darwin CI
-      # runner, so each machine checking its own system is the honest scope.
-      # The `systems` input stays pinned for reference/future re-widening.
-      systems = [ builtins.currentSystem ];
+      systems = import inputs.systems;
 
       # treefmt-nix provides the `treefmt` config module and a `formatter` app
       # automatically (replacing the former bare `formatter = pkgs.nixfmt;`).

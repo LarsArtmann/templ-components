@@ -128,38 +128,16 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 
 	var light, dark []byte
 
-	tasks := []chromedp.Action{
-		chromedp.EmulateViewport(int64(width), 900),
-		network.Enable(),
-		chromedp.Navigate(base + p.path),
-		chromedp.WaitReady("body", chromedp.ByQuery),
-		chromedp.Sleep(settle),
-	}
-
-	has := func(m string) bool {
-		return slices.Contains(modes, m)
-	}
-
-	if has("light") {
-		tasks = append(tasks, chromedp.FullScreenshot(&light, 92))
-	}
-
-	if has("dark") {
-		tasks = append(tasks,
-			chromedp.Evaluate(`document.documentElement.classList.add('dark');`, nil),
-			chromedp.Sleep(2*settle),
-			chromedp.FullScreenshot(&dark, 92),
-		)
-	}
+	tasks := captureTasks(base, p.path, modes, width, &light, &dark)
 
 	start := time.Now()
 
 	if err := chromedp.Run(ctx, tasks...); err != nil {
-		return fmt.Errorf("chromium (execPath=%s) after %s: %w", execPath, time.Since(start).Round(time.Second), err)
+		return fmt.Errorf("chromium (execPath=%s, docStatus=%d) after %s: %w", execPath, docStatus, time.Since(start).Round(time.Second), err)
 	}
 
 	if err := rejectErrorPage(p, execPath, docStatus); err != nil {
-		return err
+		return fmt.Errorf("capture %s (execPath=%s, docStatus=%d): %w", p.path, execPath, docStatus, err)
 	}
 
 	for _, mode := range modes {
@@ -169,11 +147,42 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 		}
 
 		if err := os.WriteFile(filepath.Join(out, p.name+"_"+mode+".png"), buf, 0o644); err != nil {
-			return fmt.Errorf("write capture (execPath=%s): %w", execPath, err)
+			return fmt.Errorf("write capture (execPath=%s, docStatus=%d): %w", execPath, docStatus, err)
 		}
 	}
 
 	return nil
+}
+
+// captureTasks builds the chromedp action sequence: navigate, wait for layout
+// to settle, then screenshot every requested mode (dark toggles the class in
+// place on the same tab — no re-navigation).
+func captureTasks(base, path string, modes []string, width int, light, dark *[]byte) []chromedp.Action {
+	has := func(m string) bool {
+		return slices.Contains(modes, m)
+	}
+
+	tasks := []chromedp.Action{
+		chromedp.EmulateViewport(int64(width), 900),
+		network.Enable(),
+		chromedp.Navigate(base + path),
+		chromedp.WaitReady("body", chromedp.ByQuery),
+		chromedp.Sleep(settle),
+	}
+
+	if has("light") {
+		tasks = append(tasks, chromedp.FullScreenshot(light, 92))
+	}
+
+	if has("dark") {
+		tasks = append(tasks,
+			chromedp.Evaluate(`document.documentElement.classList.add('dark');`, nil),
+			chromedp.Sleep(2*settle),
+			chromedp.FullScreenshot(dark, 92),
+		)
+	}
+
+	return tasks
 }
 
 // rejectErrorPage refuses to capture when the main-frame response was an HTTP
