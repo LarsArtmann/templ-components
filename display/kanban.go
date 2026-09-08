@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/a-h/templ"
-
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
@@ -37,14 +36,14 @@ func kanbanColumnID(boardID string, index int, col KanbanColumn) string {
 
 // kanbanCountLabel returns the screen-reader text for a column's card
 // count badge ("3 cards" / "1 card" / "no cards").
-func kanbanCountLabel(n int) string {
-	switch n {
+func kanbanCountLabel(count int) string {
+	switch count {
 	case 0:
 		return "no cards"
 	case 1:
 		return "1 card"
 	default:
-		return strconv.Itoa(n) + " cards"
+		return strconv.Itoa(count) + " cards"
 	}
 }
 
@@ -114,15 +113,19 @@ func kanbanWireAttributes(w *wire.Action, boardID string) templ.Attributes {
 	}
 
 	action := *w
+
 	if action.Method == wire.MethodUnspecified {
 		action.Method = wire.MethodPost
 	}
+
 	if action.Event == wire.EventUnspecified {
 		action.Event = wire.EventSubmit
 	}
+
 	if action.ContentType == wire.ContentTypeUnspecified {
 		action.ContentType = wire.ContentTypeForm
 	}
+
 	if action.Target == "" && action.Transport != wire.TransportDatastar {
 		action.Target = "#" + boardID
 	}
@@ -170,7 +173,18 @@ func kanbanJS() string {
 		`if(tcKbZone&&tcKbZone!==zone){tcKbZone.removeAttribute('data-tc-kanban-over');tcKbZone.classList.remove('tc-kanban-drop-end');}` +
 		`if(tcKbZone){var prev=tcKbZone.querySelector(':scope > .tc-kanban-drop-before');if(prev)prev.classList.remove('tc-kanban-drop-before');}` +
 		`}` +
-		`document.addEventListener('dragstart',function(e){` +
+		kanbanDragJS() +
+		kanbanClickJS() +
+		`}`
+}
+
+// kanbanDragJS returns the HTML5 drag-and-drop listeners: dragstart marks
+// the source card, dragover computes the insertion index from the pointer
+// position between cards (showing the drop indicator), drop submits the move
+// (adjusting the index for the dragged card's own removal when reordering
+// within a column, and skipping no-op drops), dragend/dragleave clean up.
+func kanbanDragJS() string {
+	return `document.addEventListener('dragstart',function(e){` +
 		`var card=e.target.closest('[data-tc-kanban-card]');if(!card)return;` +
 		`var b=tcKbBoard(card);if(!b||!tcKbForm(b))return;` +
 		`tcKbSrc=card;` +
@@ -224,8 +238,14 @@ func kanbanJS() string {
 		`document.addEventListener('dragleave',function(e){` +
 		`var zone=e.target.closest('[data-tc-kanban-column-body]');if(!zone)return;` +
 		`if(!zone.contains(e.relatedTarget))tcKbClear(null);` +
-		`});` +
-		`document.addEventListener('click',function(e){` +
+		`});`
+}
+
+// kanbanClickJS returns the click listener behind the per-card keyboard
+// move buttons: it resolves the adjacent column, appends the card to its
+// end, and submits the same hidden form as a drop.
+func kanbanClickJS() string {
+	return `document.addEventListener('click',function(e){` +
 		`var btn=e.target.closest('[data-tc-kanban-move]');if(!btn)return;` +
 		`var card=btn.closest('[data-tc-kanban-card]');if(!card)return;` +
 		`var b=tcKbBoard(card);if(!b)return;` +
@@ -236,8 +256,7 @@ func kanbanJS() string {
 		`var target=zones[ci+dir];if(!target)return;` +
 		`var index=tcKbCards(target).length;` +
 		`tcKbSubmit(b,card.getAttribute('data-tc-kanban-card'),target.getAttribute('data-tc-kanban-column-body'),index);` +
-		`});` +
-		`}`
+		`});`
 }
 
 // kanbanScriptComponent renders the kanban singleton script CSP-safe.

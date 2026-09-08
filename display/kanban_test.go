@@ -131,6 +131,7 @@ func TestKanbanBoardWire(t *testing.T) {
 			for _, want := range tt.contains {
 				utils.AssertContains(t, html, want)
 			}
+
 			for _, notWant := range tt.notContains {
 				utils.AssertNotContains(t, html, notWant)
 			}
@@ -200,7 +201,12 @@ func TestParseKanbanMove(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			t.Parallel()
 
-			r := httptest.NewRequest(http.MethodPost, "/api/kanban/move", strings.NewReader(tt.body))
+			r := httptest.NewRequestWithContext(
+				t.Context(),
+				http.MethodPost,
+				"/api/kanban/move",
+				strings.NewReader(tt.body),
+			)
 			r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 			got, err := ParseKanbanMove(r)

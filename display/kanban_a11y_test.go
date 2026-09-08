@@ -61,7 +61,7 @@ func TestKanbanA11yKeyboardButtonsOnlyWhereMovesExist(t *testing.T) {
 		Wire:    &wire.Action{URL: "/api/kanban/move"},
 	}))
 
-	firstCard := html[strings.Index(html, `data-tc-kanban-card="c1"`):strings.Index(html, `data-tc-kanban-card="c2"`)]
+	firstCard := html[mustIndex(t, html, `data-tc-kanban-card="c1"`):mustIndex(t, html, `data-tc-kanban-card="c2"`)]
 	if !strings.Contains(firstCard, `data-tc-kanban-move="next"`) {
 		t.Error("first-column card lacks a next button")
 	}
@@ -70,7 +70,7 @@ func TestKanbanA11yKeyboardButtonsOnlyWhereMovesExist(t *testing.T) {
 		t.Error("first-column card has a prev button but has no previous column")
 	}
 
-	middleCard := html[strings.Index(html, `data-tc-kanban-card="c3"`):]
+	middleCard := html[mustIndex(t, html, `data-tc-kanban-card="c3"`):]
 	if !strings.Contains(middleCard, `data-tc-kanban-move="next"`) {
 		t.Error("middle-column card lacks a next button")
 	}
@@ -97,6 +97,19 @@ func TestKanbanA11yReadonlyBoardIsSemantic(t *testing.T) {
 	utils.AssertNotContains(t, html, "draggable")
 	utils.AssertNotContains(t, html, "data-tc-kanban-move")
 	utils.AssertNotContains(t, html, "aria-live")
+}
+
+// mustIndex returns strings.Index(s, substr) or fails the test when the
+// substring is absent (a -1 index would slice out of range).
+func mustIndex(t *testing.T, s, substr string) int {
+	t.Helper()
+
+	idx := strings.Index(s, substr)
+	if idx < 0 {
+		t.Fatalf("substring %q not found", substr)
+	}
+
+	return idx
 }
 
 // TestKanbanMotionReduce verifies the reveal transition on the move buttons

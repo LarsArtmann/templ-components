@@ -59,11 +59,11 @@ func TestKanbanBehaviourEmptyColumnPlaceholder(t *testing.T) {
 	t.Parallel()
 
 	html := utils.Render(t, KanbanBoard(KanbanBoardProps{
-		Columns:        kanbanTestColumns(),
+		Columns:         kanbanTestColumns(),
 		EmptyColumnText: "Nothing here yet",
 	}))
 
-	done := html[strings.Index(html, `data-tc-kanban-column-body="done"`):]
+	done := html[mustIndex(t, html, `data-tc-kanban-column-body="done"`):]
 	if !strings.Contains(done, "Nothing here yet") {
 		t.Error("empty column does not show the custom placeholder")
 	}
