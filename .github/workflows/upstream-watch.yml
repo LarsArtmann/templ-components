@@ -1,62 +1,111 @@
 name: Upstream watch
 
-# Weekly check that a newer go-datastar/static bundle has not been published
-# upstream. The pinned bundle's wire format is guarded by
-# datastar.TestPinnedRuntimeBundleContract (a silent upstream break turns into
-# a red test), but a VERSION bump still needs a human to re-audit the bundle
-# bytes against docs/datastar-runtime-facts.md. This workflow opens a single
-# tracking issue when a new version appears upstream so that re-audit gets
-# scheduled instead of silently never happening.
+# Weekly check that a newer pinned upstream has not been published: the
+# go-datastar/static bundle, the templ generator, and golangci-lint.
+#
+# - go-datastar/static: the pinned bundle's wire format is guarded by
+#   datastar.TestPinnedRuntimeBundleContract (a silent upstream break turns
+#   into a red test), but a VERSION bump still needs a human to re-audit the
+#   bundle bytes against docs/datastar-runtime-facts.md per
+#   docs/external-dependency-bumps.md.
+# - templ: go.mod pins v0.3.1020 (latest published on the module proxy); the
+#   AGENTS.md "templ Version Pin" rule forbids bumping to unreleased
+#   versions — the watcher surfaces when a real release lands.
+# - golangci-lint: CI installs a pinned v2.x; a new minor can add/change
+#   default behaviors, so bumps are deliberate (nix run .#lint parity).
+#
+# This workflow opens ONE tracking issue per tool when a new version appears
+# upstream so the re-audit gets scheduled instead of silently never happening.
+#
+# Manual testing: workflow_dispatch accepts a `dry-run` input (default true)
+# that compares versions and logs what it WOULD do without creating issues —
+# the jq/proxy parsing had zero runs when written, so exercise it before
+# trusting a scheduled run.
 
 on:
   schedule:
     - cron: "23 5 * * 1" # Mondays 05:23 UTC
   workflow_dispatch:
+    inputs:
+      dry-run:
+        description: "Compare pinned vs latest without creating a tracking issue"
+        type: boolean
+        default: true
 
 permissions:
   contents: read
   issues: write
 
 jobs:
-  go-datastar-static:
-    name: go-datastar/static new-tag watch
+  watch:
+    name: ${{ matrix.name }} new-tag watch
     runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: go-datastar/static
+            pin_file: datastar/go.mod
+            pin_pattern: "github\\.com/larsartmann/go-datastar/static v[0-9]+\\.[0-9]+\\.[0-9]+"
+            proxy_module: github.com/larsartmann/go-datastar/static
+            reaudit: |
+              1. Follow docs/external-dependency-bumps.md end to end (verify-at-source, subtree diff, sha256)
+              2. Re-run TestPinnedRuntimeBundleContract and update pinnedBundleSHA256 in datastar/bundle_guard_test.go
+              3. Re-audit every fact in docs/datastar-runtime-facts.md
+          - name: templ
+            pin_file: go.mod
+            pin_pattern: "github\\.com/a-h/templ v[0-9]+\\.[0-9]+\\.[0-9]+"
+            proxy_module: github.com/a-h/templ
+            reaudit: |
+              1. Confirm the new version is on the module proxy (AGENTS.md "templ Version Pin" — never pin unreleased builds)
+              2. Bump go.mod, regenerate ALL *_templ.go with the matching pinned binary (nix develop), commit the diff
+              3. Check flake.nix pkgs.templ still matches or bump the nixpkgs pin deliberately
+          - name: golangci-lint
+            pin_file: .github/workflows/ci.yaml
+            pin_pattern: "golangci-lint@v[0-9]+\\.[0-9]+\\.[0-9]+"
+            proxy_module: github.com/golangci/golangci-lint/v2
+            reaudit: |
+              1. Bump the go install pin in .github/workflows/ci.yaml
+              2. Run the full per-module lint; fix any NEW findings before landing
+              3. Confirm nixpkgs-go ships the same version (local nix run .#lint parity) or note the skew
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - name: Compare pinned go-datastar/static with the latest published version
+      - name: Compare pinned ${{ matrix.name }} with the latest published version
         env:
           GH_TOKEN: ${{ github.token }}
+          DRY_RUN: ${{ inputs.dry-run }}
         run: |
-          PINNED="$(grep -oE 'github\.com/larsartmann/go-datastar/static v[0-9]+\.[0-9]+\.[0-9]+' datastar/go.mod | awk '{print $2}')"
+          set -euo pipefail
+          PINNED="$(grep -oE '${{ matrix.pin_pattern }}' '${{ matrix.pin_file }}' | head -1 | grep -oE 'v[0-9][0-9A-Za-z.-]*')"
           if [ -z "$PINNED" ]; then
-            echo "::error::Could not extract the pinned go-datastar/static version from datastar/go.mod"
+            echo "::error::Could not extract the pinned ${{ matrix.name }} version from ${{ matrix.pin_file }}"
             exit 1
           fi
-          LATEST="$(curl -fsSL https://proxy.golang.org/github.com/larsartmann/go-datastar/static/@latest | jq -r .Version)"
+          LATEST="$(curl -fsSL "https://proxy.golang.org/${{ matrix.proxy_module }}/@latest" | jq -r .Version)"
           echo "Pinned: ${PINNED}"
           echo "Latest upstream: ${LATEST}"
           if [ "$PINNED" = "$LATEST" ]; then
-            echo "Upstream is in sync with the pin."
+            echo "${{ matrix.name }} is in sync with the pin."
             exit 0
           fi
-          TITLE="upstream-watch: go-datastar/static ${LATEST} published (pinned: ${PINNED})"
-          if gh issue list --state open --search "upstream-watch go-datastar in:title" | grep -q .; then
+          TITLE="upstream-watch: ${{ matrix.name }} ${LATEST} published (pinned: ${PINNED})"
+          if gh issue list --state open --search "upstream-watch ${{ matrix.name }} in:title" | grep -q .; then
             echo "A watch issue is already open — not duplicating."
             exit 0
           fi
+          if [ "$DRY_RUN" = "true" ]; then
+            echo "DRY-RUN: would create issue: ${TITLE}"
+            exit 0
+          fi
           BODY="$(cat <<BODY_EOF
-          A new go-datastar/static bundle ($LATEST) is published upstream; this repo pins $PINNED.
+          A new ${{ matrix.name }} (\`${LATEST}\`) is published upstream; this repo pins \`${PINNED}\`.
 
           **What to do (human required, by design):**
 
-          1. \`go get github.com/larsartmann/go-datastar/static@$LATEST\` in \`datastar/\`
-          2. Re-run \`go test ./...\` in \`datastar/\` — \`TestPinnedRuntimeBundleContract\` pins the bundle bytes and will flag wire-format changes
-          3. Re-audit the new bundle against \`docs/datastar-runtime-facts.md\` (event names, CSP requirements, retry semantics)
-          4. Bump the version reference in \`docs/datastar-runtime-facts.md\` + \`datastar/doc.go\` if changed
-          5. Warm \`[Unreleased]\` in CHANGELOG.md, then release per \`docs/release-checklist.md\`
+          ${{ matrix.reaudit }}
 
-          The red test only fires AFTER the bump — this issue is the proactive signal.
+          The red tests only fire AFTER the bump — this issue is the proactive signal.
 
           _Automated by the \`Upstream watch\` workflow. Close this issue after the bump lands._
           BODY_EOF

@@ -9,7 +9,7 @@
 #
 # Usage:
 #   scripts/ci-repro.sh              # core: generate + tidy + verify + test (the Build & Test job)
-#   scripts/ci-repro.sh --lint       # also run the Lint job (guards + golangci-lint per module)
+#   scripts/ci-repro.sh --lint       # also run the Lint job (guards + actionlint + golangci-lint per module)
 #   scripts/ci-repro.sh --css        # also run the CSS Freshness job (needs Nix)
 #   scripts/ci-repro.sh --visual     # also run the Visual Regression job (needs Nix + Chromium)
 #   scripts/ci-repro.sh --vuln       # also run the vulnerability gates: govulncheck (all Go modules)
@@ -137,6 +137,15 @@ if [ "$RUN_LINT" = "1" ]; then
 	scripts/check-module-sync.sh
 	scripts/check-module-layers.sh
 	scripts/test-release-assertions.sh
+
+	step "Actionlint (GitHub Actions workflows — same as CI's Actionlint step)"
+	if command -v actionlint >/dev/null 2>&1; then
+		actionlint
+	else
+		echo "actionlint not found — run under nix develop (nix run .#lint includes it) or:" >&2
+		echo "  nix shell nixpkgs#actionlint -c $0 --lint" >&2
+		exit 1
+	fi
 
 	step "golangci-lint (root module)"
 	golangci-lint run --timeout=5m \

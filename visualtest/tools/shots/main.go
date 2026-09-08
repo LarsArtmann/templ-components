@@ -30,6 +30,11 @@ type page struct {
 
 var pages = []page{
 	{"index", "/"},
+	// The wire section renders per ?transport= (audit f14): capture both
+	// single-transport variants so the htmx/datastar dialects are eyeballed,
+	// not just the default both-view.
+	{"index-htmx", "/?transport=htmx"},
+	{"index-datastar", "/?transport=datastar"},
 	{"forms", "/forms"},
 	{"users", "/users"},
 	{"recipes-dashboard", "/recipes/dashboard"},
