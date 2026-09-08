@@ -143,7 +143,8 @@ func packWizardSection() templ.Component {
 func packUploadSection() templ.Component {
 	return packWrap(templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		uploadChildren := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-			if err := forms.FileInput(forms.FileInputProps{Name: "attachment", Label: "Attachment"}).Render(ctx, w); err != nil {
+			if err := forms.FileInput(forms.FileInputProps{Name: "attachment", Label: "Attachment"}).
+				Render(ctx, w); err != nil {
 				return err
 			}
 

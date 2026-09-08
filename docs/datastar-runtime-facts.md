@@ -86,6 +86,18 @@ new bundle unless marked otherwise:
     (validation errors round-trip) submits again without any manual
     re-initialization. Browser-proven by
     `visualtest/wire_form_e2e_test.go` (`TestWireE2EFormValidationRoundTrip`).
+  - **NEW (2026-09-07, e2e-proven) — inner-mode patches MORPH, preserving
+    form values across DIFFERENT forms**: when a patch replaces a region
+    containing a form with a re-rendered DIFFERENT form (e.g. a wizard
+    advancing from an email field to a name field), the runtime morphs the
+    subtree and the previously typed value leaks into the positionally
+    corresponding NEW input (observed: email value appearing as the name
+    field's submission). Consequences for consumers: (a) a wizard's server
+    step machine must treat "unexpectedly non-empty" fields as plausible
+    input, not an invariant violation; (b) e2e flows that rely on an empty
+    field must CLEAR it explicitly before submitting. Browser-proven by
+    request-body capture in `visualtest/wire_forms_pack_e2e_test.go`
+    (`TestWireE2EWizardStepsAdvances`).
 
 Full audit context: `docs/research/2026-08-21_go-sse-go-datastar-deep-dive.html`.
 

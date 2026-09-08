@@ -35,6 +35,14 @@
 
 **Post-round adoption (2026-09-07) — `forms.FormProps.Wire` (TODO #153's named candidate).** Form submission IS transport-symmetric, but only after verifying a new runtime fact against the pinned v1.0.3 bundle: fetch actions accept `{contentType: 'form'}` for whole-form serialization (HTML5 validation gate, submitter name/value, enctype-aware bodies, GET-as-query-params). That adoption followed the D3 rule's spirit — the capability is runtime surface the counterparty already ships, verified at the bundle level (`datastar.TestPinnedRuntimeBundleContract` pins the tokens), not invented dialect mapping. Test lens: `forms/form_wire_test.go` (10 table cases + non-mutation + CSRF travel + defaults), three goldens (`form_wired_htmx`, `form_wired_datastar`, `form_wired_empty_url_inert`, plus `form_validation_errors` for the round-trip fragment), and — the trust pin — Chromium e2e (`visualtest/wire_form_e2e_test.go`): fill/submit/validate/re-submit under BOTH real runtimes against one `wire.Handler` endpoint. Next survey candidate: `SimpleNav` (TODO #155).
 
+**v1.14.0 forms pattern pack (2026-09-07) — three more D3-rule adoptions.** All three reuse only bundle-verified runtime surface:
+
+- **`forms.FilterInput.Wire`** — debounced auto-submit search. Transport-symmetric after the v1.14.0 common-subset extension (ADR-0038): htmx renders `input changed delay:<n>ms`, Datastar the `__debounce.<n>ms` modifier (spelling decoded from the pinned bundle). The component wraps the field in a `<search><form>` landmark so no-JS browsers still GET.
+- **`forms.FilterDropdownProps.Wire`** — select-change auto-submit via the same change-event subset; wrapper-form decision documented in `docs/transport-wiring.md` (noscript Apply button, legacy-field precedence pinned by tests).
+- **`forms.FormProps.DirtyGuard`** — not a transport axis at all: an opt-in page-level unsaved-changes guard (WeakSet + capture-phase delegation + beforeunload) that composes with EITHER transport because wired submits still dispatch the DOM `submit` event. Browser-proven by `TestWireE2EDirtyGuardLifecycle` (real beforeunload dispatch through the real listener).
+
+Browser-level proof for all v1.14.0 surfaces lives in `visualtest/wire_forms_pack_e2e_test.go` — debounced filter (burst → exactly one request per dialect), dropdown swap, the 4-phase server-owned wizard (including the Datastar morph value-leak discovery), multipart upload (chromedp `SetUploadFiles`), GET search round-trip, DirtyGuard lifecycle, and the Enter-key native-GET degradation. Pixel goldens: `wire/pack_*_{light,dark}.png` (12).
+
 ---
 
 **Standing effect:** with D1 closed (no), D2 closed (fallback, pinned), D3 closed (symmetric-only rule), the gated workstreams resolve: T17.2+/T18 dropped (with cause), T11–T13 unblocked and executed per the outcomes above.
