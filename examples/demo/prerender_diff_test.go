@@ -39,6 +39,14 @@ var (
 	// render — same normalization class as utils/golden). Prefixes may be
 	// multi-word (tc-mobile-menu-<hex>).
 	ensureIDRe = regexp.MustCompile(`tc-[a-z0-9]+(?:-[a-z0-9]+)*-[0-9a-f]{16}`)
+	// buildStampRe normalizes the demo's CollapsibleSection build stamp
+	// (time.Now at render — ticks between the prerender and live renders).
+	buildStampRe = regexp.MustCompile(`Build: 20\d{2}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}Z`)
+	// relativeTimeTextRe normalizes RelativeTime output — the demo computes
+	// its bases from time.Now() at render, so a minute boundary between the
+	// two renders flips "12 minutes ago" to "13 minutes ago". The component's
+	// own formatting is unit-tested; this guard is about page structure.
+	relativeTimeTextRe = regexp.MustCompile(`\d+ (second|minute|hour|day|week|month|year)s? ago`)
 )
 
 // normalizePrerenderDiff removes the expected prerender/live differences so
@@ -48,6 +56,8 @@ func normalizePrerenderDiff(page string) string {
 	page = datetimeAttrRe.ReplaceAllString(page, `datetime="T"`)
 	page = updatedAtTextRe.ReplaceAllString(page, "Updated T")
 	page = ensureIDRe.ReplaceAllString(page, "tc-X-NORMALIZED")
+	page = buildStampRe.ReplaceAllString(page, "Build: T")
+	page = relativeTimeTextRe.ReplaceAllString(page, "N ago")
 
 	return page
 }
