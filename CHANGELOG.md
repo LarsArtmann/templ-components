@@ -6,6 +6,42 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Changed
+
+- **Error paths keep their context.** All 33 BuildFlow/erraudit findings resolved
+  with zero suppressions: `errorpage` handlers log write failures via `slog.Warn`
+  and the HTML-shell renderer checks its writes (byte-identical output); the demo
+  prerenderer includes `outPath`/`outputDir` in wrapped errors; `visualtest`
+  capture errors include `execPath`; the multipart upload demo reports
+  `header.Size` instead of error-blind `Seek`; the wizard treats a garbage
+  `step` field as an explicit restart-to-zero.
+
+### Fixed
+
+- **`visualtest/shots` binary untracked.** The 10MB compiled screenshot tool sat
+  in git for months (go-structure-linter error); it is gitignored — rebuild with
+  `nix run .#shots`.
+- **`.golangci.yml` schema-valid again.** The invalid `exhaustruct_v5.exclude`
+  block (dead: no `exec.Cmd{}` literals exist) made `golangci-lint config verify`
+  fail; removed.
+- **Docs link rot.** Replaced four dead URLs (web.dev popover/container-query
+  articles, Tailwind container-queries page) with live MDN/Tailwind targets;
+  `lychee.toml` now excludes private-repo 404 false positives.
+- **Lint-noise configs.** `.codespellrc` (184 → 0 findings; all verified false
+  positives: camelCase fragments, icon names, lockfile hashes, hyphenated house
+  style) and `.markdownlint.json` (MD013 line-length off — the sole source of
+  23k+ findings in this long-line/tables-heavy repo). One real typo fixed
+  (STARTTED → STARTED in a status report).
+
+### Docs
+
+- **AGENTS.md trimmed to 368 lines** (structure-linter max: 377). Release-cut
+  mechanics consolidated into `docs/release-checklist.md` (which already owned
+  them); `.buildflow.yml` `skip_steps` for the two structurally-failing steps
+  (`eslint-fix` — no root eslint config, TODO #108; `nix-build` — builds every
+  flake system's checks, so cross-system platform mismatch is guaranteed).
+  samber/lo adoption formally rejected (closed dependency budget).
+
 ## [1.15.0] — 2026-09-08
 
 ### Added

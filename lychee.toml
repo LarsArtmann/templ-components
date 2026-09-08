@@ -1,0 +1,11 @@
+# lychee link-checker config (auto-discovered from the repo root).
+# LarsArtmann/* private repos return 404 to unauthenticated checkers — these
+# are false positives, not dead links. Everything else is checked for real.
+exclude = [
+  'github\.com/larsartmann/buildflow',
+  'github\.com/larsartmann/crush-skills',
+  'github\.com/LarsArtmann/DiscordSync',
+  'github\.com/larsartmann/dnsblockd',
+  'github\.com/larsartmann/overview',
+  'github\.com/larsartmann/sec',
+]
