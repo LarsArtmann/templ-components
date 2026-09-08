@@ -297,6 +297,28 @@
                 '';
               };
             };
+
+            shots = {
+              type = "app";
+              meta.description = "Capture full-page demo screenshots (light + dark) for manual visual inspection";
+              program = pkgs.writeShellApplication {
+                name = "run-shots";
+                runtimeInputs = [
+                  goToolchain
+                  inputs'.nixpkgs-chromium.legacyPackages.chromium
+                ];
+                text = ''
+                  export GOEXPERIMENT=jsonv2
+                  export GOWORK=off
+                  export CHROMEDP_CHROME_PATH="${inputs'.nixpkgs-chromium.legacyPackages.chromium}/bin/chromium"
+                  # Requires a running demo server (PORT=8901 go run ./examples/demo
+                  # from the repo root, or pass -base to point elsewhere).
+                  # All args are forwarded to the shots tool (-base/-out/-mode/-width/-page).
+                  cd visualtest
+                  exec go run ./tools/shots "$@"
+                '';
+              };
+            };
           };
 
           # treefmt: format .nix (nixfmt) and .go (gofumpt + goimports).
