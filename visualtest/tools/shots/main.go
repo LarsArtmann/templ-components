@@ -155,13 +155,14 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	start := time.Now()
 
 	if err := chromedp.Run(ctx, tasks...); err != nil {
-		return fmt.Errorf("after %s: %w", time.Since(start).Round(time.Second), err)
+		return fmt.Errorf("chromium (execPath=%s) after %s: %w", execPath, time.Since(start).Round(time.Second), err)
 	}
 
 	if docStatus >= 400 {
 		return fmt.Errorf(
-			"route %s returned HTTP %d — refusing to capture an error page (route list stale?)",
+			"route %s (execPath=%s) returned HTTP %d — refusing to capture an error page (route list stale?)",
 			p.path,
+			execPath,
 			docStatus,
 		)
 	}
@@ -173,7 +174,7 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 		}
 
 		if err := os.WriteFile(filepath.Join(out, p.name+"_"+mode+".png"), buf, 0o644); err != nil {
-			return err
+			return fmt.Errorf("write capture (execPath=%s): %w", execPath, err)
 		}
 	}
 

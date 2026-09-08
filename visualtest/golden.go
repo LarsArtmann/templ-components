@@ -68,7 +68,12 @@ func writeFailureArtifacts(t *testing.T, name string, actual []byte, diff *image
 	if len(actual) > 0 {
 		p := filepath.Join(goldenDir, ".fail", name+".actual.png")
 
-		_ = os.MkdirAll(filepath.Dir(p), 0o750)
+		if err := os.MkdirAll(filepath.Dir(p), 0o750); err != nil {
+			t.Logf("visualtest: create fail dir %s: %v", filepath.Dir(p), err)
+
+			return
+		}
+
 		if err := os.WriteFile(p, actual, 0o600); err != nil {
 			t.Logf("visualtest: write actual %s: %v", p, err)
 		}
@@ -78,7 +83,11 @@ func writeFailureArtifacts(t *testing.T, name string, actual []byte, diff *image
 
 	if diff != nil {
 		p := filepath.Join(goldenDir, ".fail", name+".diff.png")
-		_ = os.MkdirAll(filepath.Dir(p), 0o750)
+		if err := os.MkdirAll(filepath.Dir(p), 0o750); err != nil {
+			t.Logf("visualtest: create fail dir %s: %v", filepath.Dir(p), err)
+
+			return
+		}
 
 		var buf bytes.Buffer
 		if err := png.Encode(&buf, diff); err != nil {
@@ -104,6 +113,6 @@ func goldenPath(name string) string {
 // genuinely-failing tests leave artifacts behind.
 func cleanFailureArtifacts(name string) {
 	for _, suffix := range []string{".actual.png", ".diff.png"} {
-		_ = os.Remove(filepath.Join(goldenDir, ".fail", name+suffix))
+		os.Remove(filepath.Join(goldenDir, ".fail", name+suffix))
 	}
 }

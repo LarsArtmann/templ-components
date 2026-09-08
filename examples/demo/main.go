@@ -176,14 +176,14 @@ func newMux() *http.ServeMux {
 	mux.HandleFunc("/health", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		_, _ = w.Write([]byte(`{"status":"ok"}`))
+		w.Write([]byte(`{"status":"ok"}`))
 	})
 
 	// Serve pre-compiled CSS (embedded in binary, no CDN dependency)
 	mux.HandleFunc("/css/app.css", func(w http.ResponseWriter, _ *http.Request) {
 		w.Header().Set("Content-Type", "text/css; charset=utf-8")
 		w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
-		_, _ = w.Write(embeddedCSS)
+		w.Write(embeddedCSS)
 	})
 
 	// SVG favicon (matches indigo theme)
@@ -263,7 +263,7 @@ func newMux() *http.ServeMux {
 		// The demo server sets WriteTimeout globally (see below), which would
 		// cut the stream off mid-flight. SSE connections live as long as the
 		// client stays connected, so clear the deadline for this connection.
-		_ = http.NewResponseController(w).SetWriteDeadline(time.Time{})
+		http.NewResponseController(w).SetWriteDeadline(time.Time{})
 
 		w.Header().Set("Content-Type", "text/event-stream")
 		w.Header().Set("Cache-Control", "no-cache")
@@ -468,10 +468,7 @@ func newMux() *http.ServeMux {
 		}
 		defer file.Close()
 
-		size, _ := file.Seek(0, io.SeekEnd)
-		_, _ = file.Seek(0, io.SeekStart)
-
-		componentOr500(w, r, wireUploadResult(header.Filename, size, transport))
+		componentOr500(w, r, wireUploadResult(header.Filename, header.Size, transport))
 	})
 
 	// GET search demo: fields travel as query parameters on both dialects
@@ -512,7 +509,11 @@ func newMux() *http.ServeMux {
 			return
 		}
 
-		step, _ := strconv.Atoi(r.PostFormValue("step"))
+		step, stepErr := strconv.Atoi(r.PostFormValue("step"))
+		if stepErr != nil {
+			step = 0 // missing/garbage step field restarts the wizard
+		}
+
 		switch step {
 		case 0:
 			email := strings.TrimSpace(r.PostFormValue("email"))
