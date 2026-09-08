@@ -3,12 +3,13 @@ package utils
 import (
 	"fmt"
 	"os"
+	"os/exec"
 	"path/filepath"
 	"strings"
 	"testing"
 )
 
-// TestCSSFreshness warns (or, in CI, FAILS) when the committed demo CSS might
+// TestCSSFreshness warns (or FAILS) when the committed demo CSS might
 // be stale — older than the most recently modified .templ or .go source file.
 // A stale CSS means new Tailwind classes added in source may not be in the
 // compiled CSS.
@@ -21,6 +22,10 @@ import (
 // the test fails there. The root cause of a real stale-CSS incident
 // (bg-amber-50 missing from compiled CSS) is documented in the
 // 2026-07-28 status report, section d.1/838016c.
+//
+// Set TC_CSS_FRESHNESS_STRICT=1 to make the local run fail-capable — the
+// complement of `scripts/ci-repro.sh --css` (which does the proper content
+// diff via `nix run .#css`) for environments without Nix.
 func TestCSSFreshness(t *testing.T) {
 	t.Parallel()
 
@@ -62,11 +67,45 @@ func TestCSSFreshness(t *testing.T) {
 				"recompile with: nix run .#css  OR  tailwindcss -i examples/demo/demo.css -o examples/demo/static/app.css --minify",
 			cssInfo.ModTime().Format("2006-01-02 15:04"),
 		)
-		// Informational only — the CSS Freshness CI job does a proper content
-		// diff (nix run .#css → diff). This timestamp check is too fragile for
-		// CI because templ generate touches source files before tests run,
-		// giving them newer mtimes than the committed CSS.
+		// Informational by default — the CSS Freshness CI job does a proper
+		// content diff (nix run .#css → diff). This timestamp check is too
+		// fragile for CI because templ generate touches source files before
+		// tests run, giving them newer mtimes than the committed CSS.
+		// TC_CSS_FRESHNESS_STRICT=1 opts into a hard local failure.
+		if os.Getenv("TC_CSS_FRESHNESS_STRICT") != "" {
+			t.Fatalf("STRICT: %s", msg)
+		}
+
 		t.Logf("WARNING: %s", msg)
+	}
+}
+
+// TestVisualFailArtifactsIgnored guards against committing visual-regression
+// failure artifacts: the `.fail/` directory (actual + diff PNGs from a red
+// visual run) must stay gitignored AND untracked. A committed .fail PNG has
+// happened (broad `git add -A` before the daemon guards) and pollutes the
+// repo with one-off debugging output.
+func TestVisualFailArtifactsIgnored(t *testing.T) {
+	t.Parallel()
+
+	gitignore, err := os.ReadFile("../visualtest/.gitignore")
+	if err != nil {
+		t.Fatalf("read visualtest/.gitignore: %v\nIf it was deliberately removed, delete this test too.", err)
+	}
+
+	if !strings.Contains(string(gitignore), ".fail/") {
+		t.Errorf("visualtest/.gitignore no longer ignores .fail/ — failure artifacts (actual/diff PNGs) can be committed by broad `git add`")
+	}
+
+	tracked, err := exec.Command("git", "-C", "..", "ls-files", "visualtest/testdata/.fail").Output()
+	if err != nil {
+		t.Skipf("git not usable here (CI clone edge): %v", err)
+
+		return
+	}
+
+	if len(strings.TrimSpace(string(tracked))) > 0 {
+		t.Errorf("visual-regression .fail artifacts are TRACKED in git:\n%s\nRemove them (they are per-run debugging output).", strings.TrimSpace(string(tracked)))
 	}
 }
 

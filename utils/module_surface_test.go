@@ -21,12 +21,12 @@ var goDirectivePattern = regexp.MustCompile(`(?m)^go (\d+\.\d+(?:\.\d+)?)\s*$`)
 func TestGoWorkDirectiveMatchesRootGoMod(t *testing.T) {
 	t.Parallel()
 
-	goWork, err := os.ReadFile(filepath.Join("..", "..", "go.work"))
+	goWork, err := os.ReadFile(filepath.Join("..", "go.work"))
 	if err != nil {
 		t.Skipf("go.work not present (release tags strip it? expected in dev): %v", err)
 	}
 
-	goMod, err := os.ReadFile(filepath.Join("..", "..", "go.mod"))
+	goMod, err := os.ReadFile(filepath.Join("..", "go.mod"))
 	if err != nil {
 		t.Fatalf("read root go.mod: %v", err)
 	}
@@ -63,11 +63,11 @@ func TestGoDatastarStaticPinSurface(t *testing.T) {
 	want := []string{"datastar/go.mod", "go.mod", "visualtest/go.mod"}
 	sort.Strings(want)
 
-	mods, err := filepath.Glob(filepath.Join("..", "..", "*", "go.mod"))
+	mods, err := filepath.Glob(filepath.Join("..", "*", "go.mod"))
 	if err != nil {
 		t.Fatalf("glob go.mods: %v", err)
 	}
-	mods = append(mods, filepath.Join("..", "..", "go.mod"))
+	mods = append(mods, filepath.Join("..", "go.mod"))
 
 	var got []string
 	for _, mod := range mods {
@@ -77,7 +77,7 @@ func TestGoDatastarStaticPinSurface(t *testing.T) {
 		}
 
 		if strings.Contains(string(content), dep) {
-			rel, err := filepath.Rel(filepath.Join("..", ".."), mod)
+			rel, err := filepath.Rel("..", mod)
 			if err != nil {
 				t.Fatalf("rel %s: %v", mod, err)
 			}
