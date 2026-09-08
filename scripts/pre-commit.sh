@@ -13,6 +13,10 @@ export GOEXPERIMENT=jsonv2
 
 echo "Running templ-components pre-commit checks..."
 
+# Fast guard: committed demo CSS must be minified (BuildFlow's tailwind-build
+# provider rewrites it un-minified — TODO #125). Fails in <50ms.
+scripts/check-css-minified.sh
+
 # Remove stale generated files and regenerate
 find . -name '*_templ.go' -print0 | xargs -0 rm -f
 templ generate ./...

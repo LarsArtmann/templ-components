@@ -150,3 +150,68 @@ func TestAppShellSidebarFitsTrack(t *testing.T) {
 		)
 	}
 }
+
+// TestAppShellSidebarOverflowDetected is the negative control for
+// TestAppShellSidebarFitsTrack: the documented misconfiguration (SidebarWidthSM
+// = 12rem track + SidebarNav's hardcoded w-64 = 16rem) MUST measurably overflow
+// the track. If this ever stops overflowing, the fits-track measurement above
+// is no longer detecting the bug class it exists for (e.g. the selector or the
+// grid changed) — both tests would silently pass while protecting nothing.
+func TestAppShellSidebarOverflowDetected(t *testing.T) {
+	t.Parallel()
+
+	props := layout.DefaultAppShellProps()
+	props.SidebarWidth = layout.SidebarWidthSM
+	props.Sidebar = appShellSidebar()
+	props.Header = appShellTestHeader()
+	props.Content = appShellTestContent()
+
+	page, err := renderHTML(layout.AppShell(props), defaultOptions(Options{
+		Viewport: Viewport{Width: viewportDesktopWidth, Height: viewportDesktopHeight},
+	}))
+	if err != nil {
+		t.Fatalf("build page: %v", err)
+	}
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = io.WriteString(w, page)
+	}))
+	t.Cleanup(srv.Close)
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	var overflow float64
+
+	err = chromedp.Run(ctx,
+		chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
+		chromedp.Navigate(srv.URL),
+		chromedp.WaitVisible("#tc-root", chromedp.ByQuery),
+		chromedp.Evaluate(`(() => {
+			const wrapper = document.querySelector('.hidden.lg\\:block');
+			if (!wrapper) return -1;
+			const aside = wrapper.querySelector('aside') || wrapper.firstElementChild;
+			if (!aside) return -1;
+			return aside.getBoundingClientRect().width - wrapper.getBoundingClientRect().width;
+		})()`, &overflow),
+	)
+	if err != nil {
+		t.Fatalf("chromedp: %v", err)
+	}
+
+	if overflow < 0 {
+		t.Fatal("could not locate the sidebar wrapper/aside in the rendered shell")
+	}
+
+	// w-64 (16rem) in a 12rem SM track overflows by exactly 4rem = 64px.
+	// Threshold 32px: far above sub-pixel noise, far below the real delta —
+	// tight enough that a grid change (track no longer clamps the wrapper)
+	// trips it.
+	if overflow < 32 {
+		t.Errorf(
+			"expected the SM track (12rem) to be overflowed by the w-64 SidebarNav (16rem, ~64px), measured only %.1fpx — the fits-track guard is no longer measuring the bug class",
+			overflow,
+		)
+	}
+}
