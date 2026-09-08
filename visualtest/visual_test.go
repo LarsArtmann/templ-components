@@ -886,6 +886,12 @@ func TestHeatmap(t *testing.T) {
 	}
 	props.HighlightPeak = true
 	visualtest.AssertScreenshot(t, "heatmap/light", display.Heatmap(props))
+	// Dark golden pins the --ds-brand-rgb/--ds-brand dark-mode values: the
+	// light golden alone cannot catch the dark fallback triplet being wrong
+	// (the 2026-09-08 audit found the vars undefined entirely).
+	visualtest.AssertScreenshot(t, "heatmap/dark", display.Heatmap(props),
+		visualtest.Options{Dark: visualtest.Bool(true)},
+	)
 }
 
 // TestSparkline covers a sparkline with a filled area.

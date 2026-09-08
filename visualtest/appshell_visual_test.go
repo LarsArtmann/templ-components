@@ -1,21 +1,21 @@
 package visualtest
 
 import (
-	"fmt"
+	"context"
 	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 
+	"github.com/a-h/templ"
 	"github.com/chromedp/chromedp"
-	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/navigation"
 )
 
 // appShellTestContent is the main column of the AppShell goldens.
 func appShellTestContent() templ.Component {
-	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
 		_, err := io.WriteString(w, `<div class="p-6">
 			<h2 class="text-lg font-semibold text-gray-900">Dashboard</h2>
 			<p class="mt-1 text-sm text-gray-500">Shell content column</p>
@@ -42,9 +42,9 @@ func appShellTestHeader() templ.Component {
 func appShellSidebar() templ.Component {
 	props := navigation.DefaultSidebarNavProps()
 	props.Items = []navigation.SidebarNavItem{
-		{Href: "/", Text: "Overview"},
-		{Href: "/reports", Text: "Reports"},
-		{Href: "/settings", Text: "Settings"},
+		{Href: "/", Label: "Overview"},
+		{Href: "/reports", Label: "Reports"},
+		{Href: "/settings", Label: "Settings"},
 	}
 	props.CurrentPath = "/"
 
@@ -61,21 +61,18 @@ func appShellForTest() templ.Component {
 	return layout.AppShell(props)
 }
 
-// TestAppShellFull is AppShell's first visual golden (#164): the shell with a
+// TestAppShellFull is AppShell's first visual golden: the shell with a
 // SidebarNav sidebar, header, and content at a desktop (lg+) viewport so the
 // two-track grid is active. The no-sidebar collapse regression is unit-guarded
 // (layout/appshell_test.go); this pins the WITH-sidebar layout at pixel level.
 func TestAppShellFull(t *testing.T) {
 	t.Parallel()
 
-	visualtest.AssertScreenshot(t, "appshell/light", appShellForTest(),
-		visualtest.Options{Viewport: visualtest.Viewport{Width: 1280, Height: 800}},
+	AssertScreenshot(t, "appshell/light", appShellForTest(),
+		Options{Viewport: ViewportDesktop},
 	)
-	visualtest.AssertScreenshot(t, "appshell/dark", appShellForTest(),
-		visualtest.Options{
-			Dark:     visualtest.Bool(true),
-			Viewport: visualtest.Viewport{Width: 1280, Height: 800},
-		},
+	AssertScreenshot(t, "appshell/dark", appShellForTest(),
+		Options{Dark: Bool(true), Viewport: ViewportDesktop},
 	)
 }
 
@@ -90,12 +87,12 @@ func TestAppShellNoSidebar(t *testing.T) {
 	props.Header = appShellTestHeader()
 	props.Content = appShellTestContent()
 
-	visualtest.AssertScreenshot(t, "appshell/no_sidebar_light", layout.AppShell(props),
-		visualtest.Options{Viewport: visualtest.Viewport{Width: 1280, Height: 600}},
+	AssertScreenshot(t, "appshell/no_sidebar_light", layout.AppShell(props),
+		Options{Viewport: Viewport{Width: viewportDesktopWidth, Height: 600}},
 	)
 }
 
-// TestAppShellSidebarFitsTrack DOM-measures the documented SidebarWidth ×
+// TestAppShellSidebarFitsTrack DOM-measures the documented SidebarWidth x
 // SidebarNav interaction (audit f18, replacing pixel estimates): at the MD
 // default the SidebarNav (w-64, 16rem) must fit inside its 16rem grid track.
 // Overflow here is the "SM track vs w-64 sidebar" bug class — measurable in
@@ -104,7 +101,7 @@ func TestAppShellSidebarFitsTrack(t *testing.T) {
 	t.Parallel()
 
 	page, err := renderHTML(appShellForTest(), defaultOptions(Options{
-		Viewport: Viewport{Width: 1280, Height: 800},
+		Viewport: Viewport{Width: viewportDesktopWidth, Height: viewportDesktopHeight},
 	}))
 	if err != nil {
 		t.Fatalf("build page: %v", err)
@@ -121,13 +118,14 @@ func TestAppShellSidebarFitsTrack(t *testing.T) {
 
 	var overflow float64
 	err = chromedp.Run(ctx,
-		chromedp.EmulateViewport(1280, 800),
+		chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
 		chromedp.Navigate(srv.URL),
 		chromedp.WaitVisible("#tc-root", chromedp.ByQuery),
 		chromedp.Evaluate(`(() => {
 			const wrapper = document.querySelector('.hidden.lg\\:block');
+			if (!wrapper) return -1;
 			const aside = wrapper.querySelector('aside') || wrapper.firstElementChild;
-			if (!wrapper || !aside) return -1;
+			if (!aside) return -1;
 			return aside.getBoundingClientRect().width - wrapper.getBoundingClientRect().width;
 		})()`, &overflow),
 	)
