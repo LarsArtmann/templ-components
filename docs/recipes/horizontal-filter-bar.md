@@ -257,3 +257,27 @@ tabnabbing prevention:
     Text: "View profile",
 })
 ```
+
+## Debounced auto-submit filtering
+
+When the filter bar should submit AS THE USER TYPES (no Apply button), reach
+for `forms.FilterInput` — a debounced, dual-transport search input built for
+exactly this layout. It renders the same `<search><form>` landmark the
+recipe's no-JS fallback needs, and its `Wire` field submits through either
+transport (htmx `input changed delay:<n>ms`, Datastar
+`data-on:input__debounce.<n>ms`) with results swapping into a sibling region:
+
+```templ
+@forms.FilterInput(forms.FilterInputProps{
+    Name:       "q",
+    Label:      "Filter users",
+    DebounceMS: 300,
+    Wire:       &wire.Action{URL: "/api/users/search", Target: "#user-list"},
+})
+<div id="user-list" aria-live="polite"><!-- server-rendered results --></div>
+```
+
+For select-based filters, `forms.FilterDropdownProps.Wire` is the sibling
+component (change-event auto-submit, noscript Apply button). See
+`docs/transport-wiring.md` for the wire contract and
+`docs/wire-gates-d1-d2-d3.md` for the adoption rationale.
