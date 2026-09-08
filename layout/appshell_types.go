@@ -18,7 +18,12 @@ const (
 	SidebarWidthLG SidebarWidth = "lg"
 	// SidebarWidthAuto sizes the sidebar to its content via `auto` in the grid
 	// template. Use when the sidebar (e.g. SidebarNav) sets its own width and
-	// the grid should not constrain it.
+	// the grid should not constrain it. CAUTION with SidebarNav specifically:
+	// SidebarNav hardcodes `w-64` (16rem). Under SidebarWidthAuto the grid
+	// track sizes to that element, which is fine — but under SidebarWidthSM
+	// (12rem) the fixed `w-64` sidebar OVERFLOWS its 12rem track (the demo hit
+	// this: it now uses the MD default). Either widen SidebarWidth, override
+	// SidebarNav's width via its Class, or use Auto and let `w-64` win.
 	SidebarWidthAuto SidebarWidth = "auto"
 	// SidebarWidthDefault is the canonical default (MD).
 	SidebarWidthDefault SidebarWidth = SidebarWidthMD
@@ -85,6 +90,28 @@ func shellClassFor(sidebar templ.Component) string {
 // any other mobile pattern) and pass it as the MobileNav slot. AppShell will
 // render that slot only below lg. This keeps layout free of the display
 // import and gives the consumer full control over mobile UX.
+//
+// # Empty-slot contract
+//
+// Every slot is optional; nil renders predictably:
+//
+//	Sidebar    nil → no sidebar wrapper, NO --tc-sidebar-w style, single-column
+//	             shell (the two-track grid is only emitted when a sidebar
+//	             exists — emitting it anyway collapses the shell; fixed
+//	             2026-09-08 after the dashboard recipe rendered ~16rem wide)
+//	Header     nil → no <header> element
+//	MobileNav  nil → nothing rendered below lg
+//	Footer     nil → no <footer> element
+//	Content    nil → empty content column (the shell frame still renders)
+//
+// # Embedded contexts and min-h-dvh
+//
+// The shell stretches to the full viewport height (`min-h-dvh`) because it
+// is designed as the direct child of `layout.Base`'s <main>. When embedding
+// an AppShell inside a card or other non-page container (like the demo
+// does), override the height via Class: `utils.Class` merges consumer
+// classes last, so `Class: "min-h-0"` (or an explicit height) wins over the
+// shell default.
 type AppShellProps struct {
 	utils.BaseProps
 

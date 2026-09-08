@@ -60,12 +60,18 @@ const appshellContentColumnClass = "flex min-w-0 flex-col"
 // "minmax(0, 1fr) grid blowout footgun" recipe.
 templ AppShell(props AppShellProps) {
 	{{ sidebarW := sidebarWidthValue(props.SidebarWidth) }}
+	<!-- Only shells WITH a sidebar consume the width token: a leftover
+	     sidebar-width custom property on a sidebar-less shell misleads
+	     consumer CSS (the two-track grid template is not emitted either;
+	     see shellClassFor). -->
 	<div
 		if props.ID != "" {
 			id={ props.ID }
 		}
 		class={ utils.Class(shellClassFor(props.Sidebar), props.Class) }
-		style={ "--tc-sidebar-w: " + sidebarW }
+		if props.Sidebar != nil {
+			style={ "--tc-sidebar-w: " + sidebarW }
+		}
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
 		}

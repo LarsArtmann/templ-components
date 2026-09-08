@@ -50,6 +50,7 @@ func TestAppShell(t *testing.T) {
 		for _, tc := range cases {
 			output := utils.Render(t, AppShell(AppShellProps{
 				Content:      templ.Raw(`<p>x</p>`),
+				Sidebar:      templ.Raw(`<aside>nav</aside>`),
 				SidebarWidth: tc.width,
 			}))
 
@@ -58,12 +59,21 @@ func TestAppShell(t *testing.T) {
 				t.Errorf("width %q: output missing %q", tc.width, want)
 			}
 		}
+
+		// The width token is only meaningful with a sidebar: without one there is
+		// no two-track grid, so the custom property must not leak either.
+		output := utils.Render(t, AppShell(AppShellProps{
+			Content:      templ.Raw(`<p>x</p>`),
+			SidebarWidth: SidebarWidthLG,
+		}))
+		utils.AssertNotContains(t, output, "--tc-sidebar-w")
 	})
 
 	t.Run("unknown sidebar width falls back to default (16rem)", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, AppShell(AppShellProps{
 			Content:      templ.Raw(`<p>x</p>`),
+			Sidebar:      templ.Raw(`<aside>nav</aside>`),
 			SidebarWidth: SidebarWidth("bogus"),
 		}))
 		utils.AssertContains(t, output, "--tc-sidebar-w: 16rem")
