@@ -94,11 +94,7 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 				return
 			}
 
-			w.Header().Set("Content-Type", "text/html; charset=utf-8")
-			w.WriteHeader(statusCode)
-			if _, err := w.Write(html); err != nil {
-				slog.Warn("error page write failed", "error", err)
-			}
+			writeBody(w, statusCode, html)
 
 			return
 		}
@@ -111,12 +107,8 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 			return
 		}
 
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.WriteHeader(statusCode)
-		if _, err := w.Write(buf); err != nil {
-			slog.Warn("error page write failed", "error", err)
-		}
-})
+		writeBody(w, statusCode, buf)
+	})
 }
 
 // WriteError writes an error page to an http.ResponseWriter.
@@ -147,11 +139,7 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(statusCode)
-	if _, err := w.Write(buf); err != nil {
-		slog.Warn("error page write failed", "error", err)
-	}
+	writeBody(w, statusCode, buf)
 }
 
 // WriteNotFound404 writes a NotFound404 page to an http.ResponseWriter with a
@@ -176,11 +164,7 @@ func WriteNotFound404(w http.ResponseWriter, r *http.Request, props NotFound404P
 		return
 	}
 
-	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	w.WriteHeader(http.StatusNotFound)
-	if _, err := w.Write(buf); err != nil {
-		slog.Warn("not found page write failed", "error", err)
-	}
+	writeBody(w, http.StatusNotFound, buf)
 }
 
 func writeJSONError(w http.ResponseWriter, statusCode int, props ErrorPageProps) {
@@ -230,7 +214,8 @@ func renderShellToBuffer(ctx context.Context, title, lang string, props ErrorPag
 	shell := templ.ComponentFunc(func(_ context.Context, bw io.Writer) error {
 		prologue := fmt.Sprintf(
 			`<!DOCTYPE html><html lang="%s"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>%s</title></head><body>`,
-			html.EscapeString(lang), html.EscapeString(title),
+			html.EscapeString(lang),
+			html.EscapeString(title),
 		)
 		if _, err := io.WriteString(bw, prologue); err != nil {
 			return fmt.Errorf("write error page shell prologue: %w", err)
@@ -256,6 +241,19 @@ func renderShellToBuffer(ctx context.Context, title, lang string, props ErrorPag
 	return buf.Bytes(), nil
 }
 
+// writeBody writes a rendered error page with the correct status code and
+// content type. Write failures are logged, not propagated: the headers are
+// already sent, so the only recovery is the server log (a failed client
+// disconnects on its own).
+func writeBody(w http.ResponseWriter, statusCode int, body []byte) {
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(statusCode)
+
+	if _, err := w.Write(body); err != nil {
+		slog.Warn("error page write failed", "error", err)
+	}
+}
+
 // writeFallbackError writes a minimal plain-text error response when
 // the templ error page itself fails to render. This ensures the client
 // always receives a response with the correct status code.
@@ -264,6 +262,7 @@ func writeFallbackError(w http.ResponseWriter, statusCode int) {
 	// If headers haven't been written yet, WriteHeader will succeed.
 	// If they have (e.g. superedge case), this is a no-op.
 	w.WriteHeader(statusCode)
+
 	if _, err := fmt.Fprintf(w, "Error %d\n", statusCode); err != nil {
 		slog.Warn("fallback error write failed", "error", err)
 	}

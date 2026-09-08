@@ -158,13 +158,8 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 		return fmt.Errorf("chromium (execPath=%s) after %s: %w", execPath, time.Since(start).Round(time.Second), err)
 	}
 
-	if docStatus >= 400 {
-		return fmt.Errorf(
-			"route %s (execPath=%s) returned HTTP %d — refusing to capture an error page (route list stale?)",
-			p.path,
-			execPath,
-			docStatus,
-		)
+	if err := rejectErrorPage(p, execPath, docStatus); err != nil {
+		return err
 	}
 
 	for _, mode := range modes {
@@ -179,4 +174,21 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	}
 
 	return nil
+}
+
+// rejectErrorPage refuses to capture when the main-frame response was an HTTP
+// error: without this check the tool happily captures the server's error page
+// as a "golden" route capture (it captured 404 pages without complaint until
+// 2026-09-08).
+func rejectErrorPage(p page, execPath string, docStatus int64) error {
+	if docStatus < 400 {
+		return nil
+	}
+
+	return fmt.Errorf( //nolint:err113 // terminal status message; there is nothing to wrap
+		"route %s (execPath=%s) returned HTTP %d — refusing to capture an error page (route list stale?)",
+		p.path,
+		execPath,
+		docStatus,
+	)
 }
