@@ -40,6 +40,7 @@ func TestCollapsiblePersist_RequiresStorageKey(t *testing.T) {
 	if strings.Contains(output, "tcCollapsiblePersist") {
 		t.Error("PersistState without StorageKey must not ship the script")
 	}
+
 	if !strings.Contains(output, `data-collapsible`) && strings.Contains(output, "details") {
 		t.Log("no data-collapsible attribute without StorageKey — expected")
 	}
@@ -103,6 +104,7 @@ func TestCollapsiblePersist_RestoresBeforeGuard(t *testing.T) {
 	if applyIdx == -1 || guardIdx == -1 {
 		t.Fatal("script should contain applyAll() and the singleton guard")
 	}
+
 	if applyIdx > guardIdx {
 		t.Error("applyAll() must run before the singleton guard so re-renders restore state")
 	}

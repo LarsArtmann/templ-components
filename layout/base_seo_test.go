@@ -92,7 +92,10 @@ func TestBase_SEOMeta_JSONLD(t *testing.T) {
 	props.SEO.JSONLD = `{"@context":"https://schema.org","@type":"Person","name":"Test"}`
 	output := seoRender(t, props)
 
-	if !strings.Contains(output, `<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Test"}</script>`) {
+	const wantJSONLD = `<script type="application/ld+json">` +
+		`{"@context":"https://schema.org","@type":"Person","name":"Test"}` +
+		`</script>`
+	if !strings.Contains(output, wantJSONLD) {
 		t.Error("JSONLD should be embedded verbatim as an ld+json script")
 	}
 }

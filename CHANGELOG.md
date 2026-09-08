@@ -59,6 +59,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `htmx-indicator` like the loading text, so only the default text shows
   until a request starts. The `tc-btn-loading` wrapper remains as the
   documented `hx-indicator` hook.
+- **Visual harness: focus states now fire focus events.** The harness's
+  focus action relied on programmatic `.focus()`, which current Chromium
+  headless performs WITHOUT dispatching focus/focusin events — components
+  that open on a delegated `focusin` (Combobox) never opened and the
+  capture deadline-exceeded. The harness now dispatches `focus` + a
+  bubbling `focusin` after the programmatic focus, and the open-state
+  Combobox goldens are committed (`combobox/open_{light,dark}.png`).
 - **Demo fixes:** removed a leftover "HELLO" debug line from the hero; the
   embedded AppShell demo now uses the MD sidebar width (its `w-64` SidebarNav
   overflowed the SM track) and opts out of `min-h-dvh` (the shell stretched

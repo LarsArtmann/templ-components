@@ -317,12 +317,21 @@ func hoverAction(sel string) chromedp.Action {
 // focusable element exists.
 func focusAction(sel string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
+		// f.focus() alone is not enough on current Chromium headless: it moves
+		// document.activeElement (so :focus/:focus-visible CSS still matches)
+		// but dispatches NO focus events, so any component that opens on a
+		// delegated focusin (e.g. Combobox) never opens and the capture
+		// deadline-exceeds. A real user focus fires focus + bubbling focusin,
+		// so dispatch both after the programmatic focus.
 		script := `(() => {
 			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
 			if (!root) return false;
 			const f = root.querySelector('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-			if (f) { f.focus(); return true; }
-			return false;
+			if (!f) return false;
+			f.focus();
+			f.dispatchEvent(new FocusEvent('focus'));
+			f.dispatchEvent(new FocusEvent('focusin', { bubbles: true }));
+			return true;
 		})()`
 
 		var focused bool
