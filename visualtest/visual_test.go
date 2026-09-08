@@ -518,7 +518,7 @@ func TestTooltipOpen(t *testing.T) {
 	visualtest.AssertScreenshot(t, "tooltip/open_light", tooltipWithTrigger, light)
 
 	dark := light
-	dark.Dark = visualtest.Bool(true)
+	dark.Dark = new(true)
 	visualtest.AssertScreenshot(t, "tooltip/open_dark", tooltipWithTrigger, dark)
 }
 
@@ -549,7 +549,7 @@ func TestComboboxOpen(t *testing.T) {
 	visualtest.AssertScreenshot(t, "combobox/open_light", forms.Combobox(cb), light)
 
 	dark := light
-	dark.Dark = visualtest.Bool(true)
+	dark.Dark = new(true)
 	visualtest.AssertScreenshot(t, "combobox/open_dark", forms.Combobox(cb), dark)
 }
 
@@ -576,9 +576,21 @@ func TestCarouselNext(t *testing.T) {
 
 	carousel := display.DefaultCarouselProps()
 	carousel.Slides = []display.CarouselSlide{
-		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-blue-600 text-2xl font-bold text-white">1</div>`)},
-		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-emerald-600 text-2xl font-bold text-white">2</div>`)},
-		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-violet-600 text-2xl font-bold text-white">3</div>`)},
+		{
+			Content: templ.Raw(
+				`<div class="flex h-32 items-center justify-center rounded-xl bg-blue-600 text-2xl font-bold text-white">1</div>`,
+			),
+		},
+		{
+			Content: templ.Raw(
+				`<div class="flex h-32 items-center justify-center rounded-xl bg-emerald-600 text-2xl font-bold text-white">2</div>`,
+			),
+		},
+		{
+			Content: templ.Raw(
+				`<div class="flex h-32 items-center justify-center rounded-xl bg-violet-600 text-2xl font-bold text-white">3</div>`,
+			),
+		},
 	}
 	carousel.ShowArrows = true
 	carousel.ShowIndicators = true

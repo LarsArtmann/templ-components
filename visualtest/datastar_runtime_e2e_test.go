@@ -32,18 +32,22 @@ func writeSSEPatch(w io.Writer, selector, mode, html string) {
 	var b strings.Builder
 
 	b.WriteString("event: datastar-patch-elements\n")
+
 	if selector != "" {
 		b.WriteString("data: selector " + selector + "\n")
 	}
+
 	if mode != "" {
 		b.WriteString("data: mode " + mode + "\n")
 	}
+
 	for line := range strings.SplitSeq(strings.TrimSpace(html), "\n") {
 		b.WriteString("data: elements " + strings.TrimSuffix(line, "\r") + "\n")
 	}
+
 	b.WriteString("\n")
 
-	_, _ = io.WriteString(w, b.String()) //nolint:errcheck // best-effort; client-gone ends the stream
+	_, _ = io.WriteString(w, b.String())
 }
 
 // datastarRuntimeE2EServer serves a page with the pinned Datastar runtime,
@@ -71,7 +75,7 @@ func datastarRuntimeE2EServer(t *testing.T) *httptest.Server {
 	})
 
 	liveProps := datastar.DefaultLiveRegionProps()
-	liveProps.BaseProps.ID = "live-region"
+	liveProps.ID = "live-region"
 	liveProps.URL = "/api/good-sse"
 	liveProps.AutoStart = true
 

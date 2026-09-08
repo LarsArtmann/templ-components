@@ -141,18 +141,18 @@ Don't know what to look for? Find your page type:
 
 #### `layout` — 10 components
 
-| Component     | Signature                              | One-liner                                                                            |
-| ------------- | -------------------------------------- | ------------------------------------------------------------------------------------ |
+| Component     | Signature                              | One-liner                                                                                             |
+| ------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
 | `Base`        | `Base(props PageProps)`                | Full HTML5 shell — head, meta, theme, HTMX, CSS auto-inject, SEO (noindex/canonical/hreflang/JSON-LD) |
-| `Minimal`     | `Minimal(props MinimalProps)`          | Minimal HTML doc — no dependencies, for static/PDF                                   |
-| `ThemeScript` | `ThemeScript(nonce string)`            | Dark mode script — prevents FOUC, include in `<head>`                                |
-| `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                                         |
-| `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                                         |
-| `Stylesheet`  | `Stylesheet(href, attrs)`              | CSP-safe `<link rel="stylesheet">`                                                   |
-| `AppShell`    | `AppShell(props AppShellProps)`        | Sidebar + header + main app shell — the #1 admin dashboard pattern                   |
-| `Container`   | `Container(props ContainerProps)`      | Centered max-width wrapper — replaces `max-w-Nxl mx-auto px-4 sm:px-6 lg:px-8`       |
-| `Split`       | `Split(props SplitProps)`              | 2-col content+aside — article+sidebar, detail+metadata (RTL-aware), `ContainerAware` |
-| `Stack`       | `Stack(props StackProps)`              | Vertical rhythm — typed Gap enum, replaces repeated `space-y-N`                      |
+| `Minimal`     | `Minimal(props MinimalProps)`          | Minimal HTML doc — no dependencies, for static/PDF                                                    |
+| `ThemeScript` | `ThemeScript(nonce string)`            | Dark mode script — prevents FOUC, include in `<head>`                                                 |
+| `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                                                          |
+| `Script`      | `Script(nonce, src string, attrs)`     | CSP-safe `<script src>` — auto-injects nonce                                                          |
+| `Stylesheet`  | `Stylesheet(href, attrs)`              | CSP-safe `<link rel="stylesheet">`                                                                    |
+| `AppShell`    | `AppShell(props AppShellProps)`        | Sidebar + header + main app shell — the #1 admin dashboard pattern                                    |
+| `Container`   | `Container(props ContainerProps)`      | Centered max-width wrapper — replaces `max-w-Nxl mx-auto px-4 sm:px-6 lg:px-8`                        |
+| `Split`       | `Split(props SplitProps)`              | 2-col content+aside — article+sidebar, detail+metadata (RTL-aware), `ContainerAware`                  |
+| `Stack`       | `Stack(props StackProps)`              | Vertical rhythm — typed Gap enum, replaces repeated `space-y-N`                                       |
 
 #### `navigation` — 12 components
 
@@ -199,17 +199,17 @@ Don't know what to look for? Find your page type:
 
 #### `icons` — 102 icons + 3 functions
 
-| Function                                        | One-liner                                          |
-| ----------------------------------------------- | -------------------------------------------------- |
-| `Icon(name, class)`                             | Inline SVG icon by name (101 path icons + Spinner) |
-| `IconWithStrokeWidth(name, class, strokeWidth)` | Same, custom stroke width (default 1.5)            |
-| `IconPathData(name) []string`                   | Raw path data for custom SVG wrapper               |
-| `IconPathJS(name) string`                       | Path data formatted for JS injection               |
+| Function                                        | One-liner                                                      |
+| ----------------------------------------------- | -------------------------------------------------------------- |
+| `Icon(name, class)`                             | Inline SVG icon by name (101 path icons + Spinner)             |
+| `IconWithStrokeWidth(name, class, strokeWidth)` | Same, custom stroke width (default 1.5)                        |
+| `IconPathData(name) []string`                   | Raw path data for custom SVG wrapper                           |
+| `IconPathJS(name) string`                       | Path data formatted for JS injection                           |
 | `Render(icon CustomIcon, class)`                | Render a consumer-provided icon (arbitrary viewBox/paths/fill) |
-| `AnimatedIcon(name, class)`                     | Icon with hover animation (default per-icon)       |
-| `AnimatedIconWithAnimation(name, anim, class)`  | Icon with explicit animation preset                |
-| `DefaultAnimation(name) Animation`              | Get default animation for an icon                  |
-| `AllAnimations() []Animation`                   | All 11 animation presets, sorted                   |
+| `AnimatedIcon(name, class)`                     | Icon with hover animation (default per-icon)                   |
+| `AnimatedIconWithAnimation(name, anim, class)`  | Icon with explicit animation preset                            |
+| `DefaultAnimation(name) Animation`              | Get default animation for an icon                              |
+| `AllAnimations() []Animation`                   | All 11 animation presets, sorted                               |
 
 #### `utils` — shared types + helpers
 

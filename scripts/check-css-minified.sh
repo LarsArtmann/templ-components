@@ -12,14 +12,14 @@ set -euo pipefail
 CSS="examples/demo/static/app.css"
 
 if [ ! -f "$CSS" ]; then
-    exit 0
+	exit 0
 fi
 
-LINES=$(wc -l < "$CSS")
+LINES=$(wc -l <"$CSS")
 if [ "$LINES" -gt 5 ]; then
-    echo "ERROR: $CSS has $LINES lines — it is NOT minified."
-    echo "BuildFlow's tailwind-build provider rewrote it without --minify"
-    echo "(TODO #125 recurrence). Re-minify and re-stage:"
-    echo "  nix run .#css && git add $CSS"
-    exit 1
+	echo "ERROR: $CSS has $LINES lines — it is NOT minified."
+	echo "BuildFlow's tailwind-build provider rewrote it without --minify"
+	echo "(TODO #125 recurrence). Re-minify and re-stage:"
+	echo "  nix run .#css && git add $CSS"
+	exit 1
 fi

@@ -159,7 +159,11 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	}
 
 	if docStatus >= 400 {
-		return fmt.Errorf("route %s returned HTTP %d — refusing to capture an error page (route list stale?)", p.path, docStatus)
+		return fmt.Errorf(
+			"route %s returned HTTP %d — refusing to capture an error page (route list stale?)",
+			p.path,
+			docStatus,
+		)
 	}
 
 	for _, mode := range modes {

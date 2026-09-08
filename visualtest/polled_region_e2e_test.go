@@ -26,7 +26,7 @@ func polledRegionE2EPage() templ.Component {
 	props.CSSPath = "/app.css"
 
 	regionA := htmx.DefaultPolledRegionProps()
-	regionA.BaseProps.ID = "region-a"
+	regionA.ID = "region-a"
 	regionA.URL = "/api/region"
 	regionA.Every = "10s"
 	regionA.Eager = true
@@ -34,7 +34,7 @@ func polledRegionE2EPage() templ.Component {
 	regionA.ShowTimestamp = false
 
 	regionB := regionA
-	regionB.BaseProps.ID = "region-b"
+	regionB.ID = "region-b"
 
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		for _, region := range []htmx.PolledRegionProps{regionA, regionB} {
@@ -116,9 +116,13 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 		syntheticCleared           bool
 	)
 
-	if err := chromedp.Run(ctx,
+	if err := chromedp.Run(
+		ctx,
 		chromedp.Navigate(srv.URL+"/"),
-		chromedp.Poll(`document.readyState==='complete' && window.htmx!==undefined && document.querySelector('#region-a')!==null`, nil),
+		chromedp.Poll(
+			`document.readyState==='complete' && window.htmx!==undefined && document.querySelector('#region-a')!==null`,
+			nil,
+		),
 		chromedp.Evaluate(regionBusyJS("region-a"), &initialBusyA),
 		chromedp.Evaluate(regionBusyJS("region-b"), &initialBusyB),
 		// The eager `load` trigger fires the real request; htmx dispatches the
@@ -142,11 +146,19 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 	}
 
 	if !initialBusyA || !initialBusyB {
-		t.Errorf("initial render: both eager regions must carry aria-busy + marker (a=%v b=%v)", initialBusyA, initialBusyB)
+		t.Errorf(
+			"initial render: both eager regions must carry aria-busy + marker (a=%v b=%v)",
+			initialBusyA,
+			initialBusyB,
+		)
 	}
 
 	if !clearedA || !clearedB {
-		t.Errorf("after real htmx:afterRequest: cue not cleared on both regions (a=%v b=%v) — SwapNone means only the script could clear it", clearedA, clearedB)
+		t.Errorf(
+			"after real htmx:afterRequest: cue not cleared on both regions (a=%v b=%v) — SwapNone means only the script could clear it",
+			clearedA,
+			clearedB,
+		)
 	}
 
 	if contentIntact != "initial content" {
@@ -154,6 +166,8 @@ func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {
 	}
 
 	if !syntheticCleared {
-		t.Error("synthetic htmx:afterRequest dispatch did not clear the re-armed cue — listener not attached or wrong element targeting")
+		t.Error(
+			"synthetic htmx:afterRequest dispatch did not clear the re-armed cue — listener not attached or wrong element targeting",
+		)
 	}
 }

@@ -19,7 +19,7 @@ This repo is a **7-module Go workspace** (`github.com/larsartmann/templ-componen
 | `internal/contract` | Contract tests                                      | Cross-package interface verification                                                                                                                                          |
 | `integration`       | CSP nonce tests                                     | Asserts nonce on all inline scripts                                                                                                                                           |
 | `examples/demo`     | Demo binary                                         | Showcases components                                                                                                                                                          |
-| `cmd/tc`            | CLI tool                                            | Component scaffolding (linted like every other package — follows the same conventions)                                                                                       |
+| `cmd/tc`            | CLI tool                                            | Component scaffolding (linted like every other package — follows the same conventions)                                                                                        |
 
 > **Note:** `go.work` and `go.work.sum` are in `.gitignore` (local dev only). CI and consumers use `replace` directives in each module's `go.mod`. `internal/` packages (`svg`, `cdn`, `golden`) were promoted to `utils/` sub-packages because Go's `internal/` rule blocks cross-module access.
 

@@ -6,13 +6,13 @@ that ships pixel-checked PDF exports.
 
 ## CSS primitives
 
-| Need | Tailwind |
-|------|----------|
+| Need                             | Tailwind                                                                                                |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------- |
 | Never split a block across pages | `break-inside-avoid` (+ a custom `print-break-avoid` alias class if you also target a print stylesheet) |
-| Keep a heading with its content | `break-after-avoid` on the heading |
-| Start a section on a new page | `break-before-page` |
-| Hide screen chrome | `print:hidden` on nav/toolbars/buttons |
-| Force light ink | design the print page light-only; do not rely on `print-color-adjust` for brand backgrounds |
+| Keep a heading with its content  | `break-after-avoid` on the heading                                                                      |
+| Start a section on a new page    | `break-before-page`                                                                                     |
+| Hide screen chrome               | `print:hidden` on nav/toolbars/buttons                                                                  |
+| Force light ink                  | design the print page light-only; do not rely on `print-color-adjust` for brand backgrounds             |
 
 ## Structure rules that actually prevent bugs
 
