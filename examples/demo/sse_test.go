@@ -295,3 +295,44 @@ func readUntilBlankLine(r io.Reader) (string, error) {
 		}
 	}
 }
+
+// TestDemoIndexSDKScriptRender closes the render-side gap of the Datastar
+// contract: sse_test.go pins the STREAM (wire format, endpoint headers), but
+// the page-level SDKScript tag — the thing that actually loads the runtime —
+// was only ever string-asserted in the datastar package's own golden tests,
+// never against the assembled demo page. Asserts the counterparty-relevant
+// attributes: ES-module type (the bundle is a module), the pinned CDN URL
+// shape, the CSP nonce, and the preconnect hint.
+func TestDemoIndexSDKScriptRender(t *testing.T) {
+	t.Parallel()
+
+	server := httptest.NewServer(newMux())
+	t.Cleanup(server.Close)
+
+	resp, err := server.Client().Get(server.URL + "/")
+	if err != nil {
+		t.Fatal(err)
+	}
+	t.Cleanup(func() { _ = resp.Body.Close() })
+
+	if resp.StatusCode != http.StatusOK {
+		t.Fatalf("status = %d, want 200", resp.StatusCode)
+	}
+
+	body, err := io.ReadAll(resp.Body)
+	if err != nil {
+		t.Fatal(err)
+	}
+	page := string(body)
+
+	for _, want := range []string{
+		`<script type="module" nonce="`,                       // CSP + module loader contract
+		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@`, // pinned CDN URL prefix
+		`/bundles/datastar.js"`,                               // bundle path suffix
+		`<link rel="preconnect" href="https://cdn.jsdelivr.net"`,      // critical-path hint
+	} {
+		if !strings.Contains(page, want) {
+			t.Errorf("demo index page missing SDKScript contract fragment %q\n(page renders the Datastar runtime wrong — check datastarDemo + layout head)", want)
+		}
+	}
+}

@@ -29,6 +29,13 @@ func polledSwapValue(swap SwapStyle) SwapStyle {
 // Include a "Updated HH:MM:SS" timestamp (ShowTimestamp: true) so operators
 // can verify polling is active — if the timestamp freezes, polling has stalled.
 //
+// When Eager fires the first fetch on load, the region renders with an
+// aria-busy="true" busy cue (data-tc-polled-busy marker) that a singleton
+// script clears on the first completed request (htmx:afterRequest fires for
+// success AND error completions) — parity with datastar.LiveRegion's busy
+// cue, so screen readers wait for the fresh content instead of announcing
+// the stale initial render twice.
+//
 //	@htmx.PolledRegion(htmx.PolledRegionProps{URL: "/partials/stats", Every: "10s", Eager: true}) {
 //	   @display.StatCard(display.StatCardProps{Label: "Messages", Value: "1,234"})
 //	}
@@ -43,6 +50,7 @@ templ PolledRegion(props PolledRegionProps) {
 				trigger = "load, every " + props.Every
 			}
 		}
+		eager := props.Eager && props.Trigger == ""
 		updatedAt := time.Now()
 		timeFormat := props.TimeFormat
 		if timeFormat == "" {
@@ -57,6 +65,10 @@ templ PolledRegion(props PolledRegionProps) {
 		hx-trigger={ trigger }
 		hx-swap={ string(swap) }
 		aria-live={ string(live) }
+		if eager {
+			aria-busy="true"
+			data-tc-polled-busy
+		}
 		class={ utils.Class("", props.Class) }
 		{ props.Attrs... }
 	>
@@ -72,4 +84,29 @@ templ PolledRegion(props PolledRegionProps) {
 			</div>
 		}
 	</div>
+	if eager {
+		@polledRegionBusyScript(props.Nonce)
+	}
+}
+
+// polledRegionBusyScript clears the aria-busy loading cue once the region's
+// first poll completes (htmx:afterRequest fires after every request
+// completion — success or error — so a failing endpoint also un-busies the
+// region and leaves the initial content readable). Singleton-guarded: safe
+// across HTMX re-renders and multiple regions on one page.
+templ polledRegionBusyScript(nonce string) {
+	<script { polledRegionBusyScriptAttrs(nonce)... }>
+		(function() {
+			'use strict';
+			if (window.tcPolledBusyAttached) return;
+			window.tcPolledBusyAttached = true;
+			document.addEventListener('htmx:afterRequest', function(evt) {
+				var el = (evt.detail && evt.detail.elt) || evt.target;
+				if (el && el.hasAttribute && el.hasAttribute('data-tc-polled-busy')) {
+					el.removeAttribute('aria-busy');
+					el.removeAttribute('data-tc-polled-busy');
+				}
+			});
+		})();
+	</script>
 }

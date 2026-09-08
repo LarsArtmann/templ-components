@@ -1,6 +1,9 @@
 package htmx
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/utils"
+)
 
 // defaultPollInterval is the default HTMX polling interval for PolledRegion.
 const defaultPollInterval = "10s"
@@ -69,4 +72,16 @@ func DefaultPolledRegionProps() PolledRegionProps {
 // PolledLiveIsValid reports whether v is one of the defined PolledLive constants.
 func PolledLiveIsValid(v PolledLive) bool {
 	return v == PolledLivePolite || v == PolledLiveAssertive || v == PolledLiveOff
+}
+
+// polledRegionBusyScriptAttrs returns the nonce attribute for the PolledRegion
+// busy-cue script. An empty nonce emits NO attribute at all — rendering
+// nonce="" breaks no-nonce and strict-CSP pages (issue #7); the datastar
+// package's liveRegionBusyScriptAttrs follows the same omit-when-empty rule.
+func polledRegionBusyScriptAttrs(nonce string) templ.Attributes {
+	if nonce == "" {
+		return nil
+	}
+
+	return templ.Attributes{"nonce": nonce}
 }
