@@ -11,9 +11,10 @@ import (
 func TestAppShell(t *testing.T) {
 	t.Parallel()
 
-	t.Run("default props produce grid + minmax + dvh", func(t *testing.T) {
+	t.Run("sidebar present produces grid + minmax + dvh", func(t *testing.T) {
 		t.Parallel()
 		output := utils.Render(t, AppShell(AppShellProps{
+			Sidebar: templ.Raw(`<aside>nav</aside>`),
 			Content: templ.Raw(`<p>body</p>`),
 		}))
 		utils.AssertContainsAll(
@@ -22,6 +23,15 @@ func TestAppShell(t *testing.T) {
 			"lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]",
 			"min-h-dvh",
 		)
+	})
+
+	t.Run("nil sidebar emits no two-track grid (content must not land in the sidebar track)", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, AppShell(AppShellProps{
+			Content: templ.Raw(`<p>body</p>`),
+		}))
+		utils.AssertContains(t, output, "min-h-dvh")
+		utils.AssertNotContains(t, output, "lg:grid-cols-")
 	})
 
 	t.Run("sidebar width CSS var emitted", func(t *testing.T) {
@@ -214,6 +224,7 @@ func TestAppShell(t *testing.T) {
 		t.Parallel()
 
 		output := utils.Render(t, AppShell(AppShellProps{
+			Sidebar: templ.Raw(`<aside>nav</aside>`),
 			Content: templ.Raw(`<p>x</p>`),
 		}))
 		if !strings.Contains(output, "minmax(0,1fr)") {
