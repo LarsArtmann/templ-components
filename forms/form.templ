@@ -299,6 +299,10 @@ templ formInner(props FormProps) {
 			{{ csrfName := utils.Ternary(props.CSRFTokenName != "", props.CSRFTokenName, "csrf_token") }}
 			<input type="hidden" name={ csrfName } value={ props.CSRFToken }/>
 		}
-		{ children... }
+		if formLayoutEffective(props) == FormLayoutInline {
+			@formInlineFields(ctx)
+		} else {
+			{ children... }
+		}
 	</form>
 }

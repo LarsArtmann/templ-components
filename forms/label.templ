@@ -58,10 +58,31 @@ type FormFieldProps struct {
 // optional Label, children (input/select/textarea), optional Error, optional HelpText.
 // Use this to DRY up all form control components.
 //
+// Inside an Inline-layout Form, the whole field is grouped into a single flex
+// item (`min-w-40 basis-56 flex-1` div) — without the group div the label,
+// control, error, and help text become SEPARATE flex items and the w-full
+// controls force one field per row, degenerating the Inline layout to a stack
+// (#166). The grouping is automatic via the form-layout context; consumers
+// never wire it themselves.
+//
 //	@forms.FormFieldWrapper(forms.FormFieldProps{ID: "email", Label: "Email", Required: true, Error: "Invalid", HelpText: "Use work email"}) {
 //	   <input type="email" name="email" />
 //	}
 templ FormFieldWrapper(props FormFieldProps) {
+	if formFieldInline(ctx) {
+		<div class="min-w-40 flex-1 basis-56">
+			@formFieldInner(props) {
+				{ children... }
+			}
+		</div>
+	} else {
+		@formFieldInner(props) {
+			{ children... }
+		}
+	}
+}
+
+templ formFieldInner(props FormFieldProps) {
 	if props.Label != "" {
 		@Label(props.ID, props.Label, props.Required)
 	}
