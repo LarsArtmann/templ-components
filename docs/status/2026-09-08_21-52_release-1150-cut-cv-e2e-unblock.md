@@ -6,11 +6,11 @@
 
 **Repo states at report time:**
 
-| Repo | Tip | CI |
-| --- | --- | --- |
-| templ-components | `3d44773` (go.sum refresh after tag propagation) | **success** (CI + Website + Dependency Graph) |
-| templ-components tags | `v1.15.0` + 6 sub-module tags, all SSH-signed, pushed | release content verified byte-identical through a daemon-race reconciliation |
-| CV | `5392159c` on master, **0 ahead of origin** (daemon pushed everything incl. this session's fixes) | e2e is local-only; 64 pass / 4 skip / 7 fail (chromium project) |
+| Repo                  | Tip                                                                                               | CI                                                                           |
+| --------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| templ-components      | `3d44773` (go.sum refresh after tag propagation)                                                  | **success** (CI + Website + Dependency Graph)                                |
+| templ-components tags | `v1.15.0` + 6 sub-module tags, all SSH-signed, pushed                                             | release content verified byte-identical through a daemon-race reconciliation |
+| CV                    | `5392159c` on master, **0 ahead of origin** (daemon pushed everything incl. this session's fixes) | e2e is local-only; 64 pass / 4 skip / 7 fail (chromium project)              |
 
 ---
 
@@ -67,6 +67,7 @@
 ## f) NEXT — up to 50 things (brainstorm, impact-sorted; harvest into TODO_LIST/ROADMAP, don't treat as commitments)
 
 **templ-components:**
+
 1. `go get github.com/larsartmann/templ-components@v1.15.0` consumer smoke test once pkg.go.dev ingests.
 2. Check CI runs triggered by the 7 pushed tags (only master pushes were verified).
 3. Execute the 24-hour watch: CSS byte-stability + website pin re-checks after each daemon commit.

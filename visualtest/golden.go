@@ -113,6 +113,8 @@ func goldenPath(name string) string {
 // genuinely-failing tests leave artifacts behind.
 func cleanFailureArtifacts(name string) {
 	for _, suffix := range []string{".actual.png", ".diff.png"} {
-		os.Remove(filepath.Join(goldenDir, ".fail", name+suffix)) //nolint:errcheck,gosec // best-effort cleanup; ErrNotExist is the expected case
+		os.Remove(
+			filepath.Join(goldenDir, ".fail", name+suffix),
+		) //nolint:errcheck,gosec // best-effort cleanup; ErrNotExist is the expected case
 	}
 }

@@ -133,7 +133,13 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	start := time.Now()
 
 	if err := chromedp.Run(ctx, tasks...); err != nil {
-		return fmt.Errorf("chromium (execPath=%s, docStatus=%d) after %s: %w", execPath, docStatus, time.Since(start).Round(time.Second), err)
+		return fmt.Errorf(
+			"chromium (execPath=%s, docStatus=%d) after %s: %w",
+			execPath,
+			docStatus,
+			time.Since(start).Round(time.Second),
+			err,
+		)
 	}
 
 	if err := rejectErrorPage(p, execPath, docStatus); err != nil {

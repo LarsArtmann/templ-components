@@ -303,7 +303,6 @@ hardening step to the incident that caused it (verify-before-strip, the single E
 re-add-replaces + re-tidy, the post-propagation tidy sweep, the daemon race window, SIGPIPE in
 tree assertions, late-abort recovery).
 
-
 ## Lint Command
 
 ```bash
