@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
+	"github.com/larsartmann/templ-components/display"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
@@ -544,6 +545,41 @@ func newMux() *http.ServeMux {
 
 		componentOr500(w, r, wireFilterResults(r.URL.Query().Get("q")))
 	})))
+
+	// Kanban demo: the move endpoint a wired KanbanBoard expects. One handler
+	// shape serves both transports: decode with display.ParseKanbanMove,
+	// apply, re-render the board with the SAME id. htmx targets the board
+	// client-side (hx-target + outerHTML swap); Datastar gets its patch
+	// target from the response headers wire.Handler sets.
+	kanbanMoveHandler := func(state *kanbanDemoState, id string, action wire.Action) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			noStore(w)
+
+			move, err := display.ParseKanbanMove(r)
+			if err != nil {
+				http.Error(w, err.Error(), http.StatusBadRequest)
+
+				return
+			}
+
+			state.move(move)
+			componentOr500(w, r, display.KanbanBoard(state.kanbanDemoBoardProps(id, action)))
+		})
+	}
+	mux.Handle("POST /api/kanban/htmx", kanbanMoveHandler(
+		kanbanHTMXState,
+		"kanban-demo-htmx",
+		wire.Action{URL: "/api/kanban/htmx"},
+	))
+	mux.Handle("POST /api/kanban/datastar", wire.Handler(wire.PatchTarget{
+		Selector: "#kanban-demo-datastar",
+		Mode:     wire.PatchModeOuter,
+	}, kanbanMoveHandler(
+		kanbanDatastarState,
+		"kanban-demo-datastar",
+		wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},
+	)))
 
 	mux.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {

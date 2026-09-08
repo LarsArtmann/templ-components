@@ -1,0 +1,40 @@
+package main
+
+import (
+	"github.com/larsartmann/templ-components/display"
+	"github.com/larsartmann/templ-components/utils/wire"
+)
+
+// kanbanDemo renders the Kanban board section: two boards side by side, the
+// same display.KanbanBoard markup moved under htmx and Datastar. Each board
+// owns its endpoint and server state; the move contract (card, column,
+// index) is identical for both.
+templ kanbanDemo() {
+	@demoSection("Kanban — Drag-and-Drop, Both Transports", "kanban-board")
+	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
+		Drag cards between columns (or use the per-card move buttons revealed on
+		hover/focus — the keyboard path). Every move submits one hidden form with
+		<code>card</code>, <code>column</code>, and <code>index</code>; the server
+		applies the move and re-renders the board. The htmx board swaps via
+		<code>hx-post</code>, the Datastar board via <code>&#64;post</code> with form
+		encoding — same component, same endpoint shape.
+	</p>
+	@demoCodeSnippet("Go", `props.Wire = &wire.Action{URL: "/api/kanban/htmx"}                                  // hx-post
+props.Wire = &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"} // data-on:submit="@post(...)"`)
+	<div class="mt-4 grid gap-4 xl:grid-cols-2">
+		<div class="rounded-lg border border-gray-200 p-4 dark:border-gray-800">
+			<h3 class="mb-2 text-sm font-semibold text-gray-900 dark:text-white">HTMX transport</h3>
+			@display.KanbanBoard(kanbanHTMXState.kanbanDemoBoardProps(
+				"kanban-demo-htmx",
+				wire.Action{URL: "/api/kanban/htmx"},
+			))
+		</div>
+		<div class="rounded-lg border border-gray-200 p-4 dark:border-gray-800">
+			<h3 class="mb-2 text-sm font-semibold text-gray-900 dark:text-white">Datastar transport</h3>
+			@display.KanbanBoard(kanbanDatastarState.kanbanDemoBoardProps(
+				"kanban-demo-datastar",
+				wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/datastar"},
+			))
+		</div>
+	</div>
+}

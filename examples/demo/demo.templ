@@ -14,7 +14,7 @@ import (
 // Canonical counts from FEATURES.md ("Totals:" line, drift-guard verified).
 // demo_counts_test.go asserts these against FEATURES.md so they cannot drift.
 const (
-	componentCount = "120"
+	componentCount = "121"
 	packageCount   = "11"
 )
 
@@ -48,6 +48,7 @@ templ demoContent(transport demoTransport) {
 				@htmxDemo()
 				@datastarDemo()
 				@wireDemo(transport)
+			@kanbanDemo()
 				@echartsDemo()
 				@errorpageDemo()
 				@iconsDemo()
@@ -116,6 +117,7 @@ templ demoStickyNav() {
 			{"HTMX", "htmx-loading-indicator"},
 			{"Datastar", "datastar-sdk-script"},
 			{"Wire", "wire-transport"},
+			{"Kanban", "kanban-board"},
 			{"ECharts", "echarts-sdk"},
 			{"Error Pages", "errorpage-404"},
 			{"Icons", "icons-all"},

@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`display.KanbanBoard` — dual-transport kanban board.** Horizontally
+  scrolling columns of draggable cards with per-card keyboard move buttons
+  ("move to previous/next column"), so the board is fully operable without a
+  mouse. Both affordances submit one hidden form carrying the move contract
+  (`card`, `column`, `index`) — wired through `KanbanBoardProps.Wire`
+  (`wire.Action`), it moves cards under htmx (`hx-post`, self-targeting
+  `outerHTML` swap) and Datastar (`@post` with form encoding, response-driven
+  targeting via `wire.Handler`) from the same markup. The server decodes with
+  `display.ParseKanbanMove`. Unwired boards render read-only. ARIA: region
+  landmark, labelled columns, polite live-region announcements, card-count
+  labels; CSP-safe singleton script; dark-mode + RTL aware; drag feedback CSS
+  in `templates/custom.css`. Browser-proven under both runtimes by
+  `visualtest/kanban_e2e_test.go`; demo section + `/api/kanban/*` endpoints in
+  `examples/demo`.
+
 ## [1.15.1] — 2026-09-08
 
 ### Changed
