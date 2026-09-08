@@ -101,6 +101,13 @@ new bundle unless marked otherwise:
     `outside`, `prevent`, `stop`, `viewtransition`, and `case.<x>`
     (event-name casing; `on` defaults to kebab). Trigger syntax stays
     dialect-specific per ADR-0036's scope rule regardless.
+  - **(2026-09-08, e2e-discovered) — `data-on:load` on a plain `<div>` never
+    fires**: `load` is a window/asset event, not an element event — a
+    non-bubbling `load` on a bare div simply does not exist, so the action
+    never runs (30s e2e timeout with zero dispatched `datastar-fetch` events).
+    Use a real user event (`data-on:click` on a `<button>`) or
+    `data-on:load__window`. Browser-proven by
+    `visualtest/datastar_runtime_e2e_test.go` (`TestDatastarSSEErrorHandlingBrowser`).
   - **NEW (2026-09-07, e2e-proven) — fetch error status dispatches a
     lifecycle error event**: the fetch options include an error hook that
     fires when `response.status >= 400` (dispatches the `datastar-fetch`
