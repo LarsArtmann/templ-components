@@ -8,6 +8,9 @@ import (
 	"strings"
 	"testing"
 	"time"
+
+	echarts "github.com/larsartmann/templ-components/charts/echarts"
+	"github.com/larsartmann/templ-components/datastar"
 )
 
 // TestDatastarPatchWireFormat pins the Datastar v1 SSE wire format this demo
@@ -296,15 +299,10 @@ func readUntilBlankLine(r io.Reader) (string, error) {
 	}
 }
 
-// TestDemoIndexSDKScriptRender closes the render-side gap of the Datastar
-// contract: sse_test.go pins the STREAM (wire format, endpoint headers), but
-// the page-level SDKScript tag — the thing that actually loads the runtime —
-// was only ever string-asserted in the datastar package's own golden tests,
-// never against the assembled demo page. Asserts the counterparty-relevant
-// attributes: ES-module type (the bundle is a module), the pinned CDN URL
-// shape, the CSP nonce, and the preconnect hint.
-func TestDemoIndexSDKScriptRender(t *testing.T) {
-	t.Parallel()
+// fetchDemoPage renders the assembled demo index page and returns its body —
+// the shared fixture for page-level SDK contract tests.
+func fetchDemoPage(t *testing.T) string {
+	t.Helper()
 
 	server := httptest.NewServer(newMux())
 	t.Cleanup(server.Close)
@@ -323,16 +321,54 @@ func TestDemoIndexSDKScriptRender(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	page := string(body)
+
+	return string(body)
+}
+
+// TestDemoIndexSDKScriptRender closes the render-side gap of the Datastar
+// contract: sse_test.go pins the STREAM (wire format, endpoint headers), but
+// the page-level SDKScript tag — the thing that actually loads the runtime —
+// was only ever string-asserted in the datastar package's own golden tests,
+// never against the assembled demo page. Asserts the counterparty-relevant
+// attributes: ES-module type (the bundle is a module), the EXACT pinned CDN
+// URL (version derived from the pin constant, so a bump that forgets the demo
+// page fails here), the CSP nonce, and the preconnect hint.
+func TestDemoIndexSDKScriptRender(t *testing.T) {
+	t.Parallel()
+
+	page := fetchDemoPage(t)
+	pinnedURL := "https://cdn.jsdelivr.net/gh/starfederation/datastar@" +
+		string(datastar.DefaultSDKScriptProps().Version) + "/bundles/datastar.js"
 
 	for _, want := range []string{
-		`<script type="module" nonce="`,                             // CSP + module loader contract
-		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@`, // pinned CDN URL prefix
-		`/bundles/datastar.js"`,                                     // bundle path suffix
-		`<link rel="preconnect" href="https://cdn.jsdelivr.net"`,    // critical-path hint
+		`<script type="module" nonce="`,                          // CSP + module loader contract
+		`src="` + pinnedURL + `"`,                                // exact pinned CDN URL
+		`<link rel="preconnect" href="https://cdn.jsdelivr.net"`, // critical-path hint
 	} {
 		if !strings.Contains(page, want) {
 			t.Errorf("demo index page missing SDKScript contract fragment %q\n(page renders the Datastar runtime wrong — check datastarDemo + layout head)", want)
+		}
+	}
+}
+
+// TestDemoIndexEChartsSDKScriptRender is the ECharts mirror of the Datastar
+// SDKScript contract test: the echarts-sdk demo section renders
+// echarts.SDKScript with DEFAULT props, so the assembled page must carry the
+// exact pinned runtime URL (jsDelivr npm path at DefaultEChartsVersion) with a
+// CSP nonce. Guards the same drift class: an ECharts version bump that misses
+// the demo page, or a CDN-host regression in echartsScriptURL.
+func TestDemoIndexEChartsSDKScriptRender(t *testing.T) {
+	t.Parallel()
+
+	page := fetchDemoPage(t)
+	pinnedURL := "https://cdn.jsdelivr.net/npm/echarts@" +
+		string(echarts.DefaultSDKScriptProps().Version) + "/dist/echarts.min.js"
+
+	for _, want := range []string{
+		`<script src="` + pinnedURL + `" nonce="`, // exact pinned URL + CSP nonce
+	} {
+		if !strings.Contains(page, want) {
+			t.Errorf("demo index page missing ECharts SDKScript contract fragment %q\n(check echartsDemo + charts/echarts/sdk_script URL builder)", want)
 		}
 	}
 }

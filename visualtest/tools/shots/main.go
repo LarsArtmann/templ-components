@@ -20,6 +20,7 @@ import (
 	"slices"
 	"time"
 
+	"github.com/chromedp/cdproto/network"
 	"github.com/chromedp/chromedp"
 )
 
@@ -95,6 +96,9 @@ func chromePath() string {
 
 // capturePage screenshots one page per requested mode on a single tab,
 // toggling the dark class in place between captures (no re-navigation).
+// A main-frame response with status >= 400 is an error — without this check
+// the tool happily captures the server's error page as a "golden" route
+// capture (it captured 404 pages without complaint until 2026-09-08).
 func capturePage(execPath, base, out string, p page, modes []string, width int) error {
 	allocCtx, cancelAlloc := chromedp.NewExecAllocator(
 		context.Background(),
@@ -111,10 +115,22 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	ctx, cancelTimeout := context.WithTimeout(browserCtx, 120*time.Second)
 	defer cancelTimeout()
 
+	var docStatus int64
+
+	chromedp.ListenTarget(ctx, func(ev any) {
+		received, ok := ev.(*network.EventResponseReceived)
+		if !ok || received.Type != network.ResourceTypeDocument {
+			return
+		}
+
+		docStatus = received.Response.Status
+	})
+
 	var light, dark []byte
 
 	tasks := []chromedp.Action{
 		chromedp.EmulateViewport(int64(width), 900),
+		network.Enable(),
 		chromedp.Navigate(base + p.path),
 		chromedp.WaitReady("body", chromedp.ByQuery),
 		chromedp.Sleep(settle),
@@ -140,6 +156,10 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 
 	if err := chromedp.Run(ctx, tasks...); err != nil {
 		return fmt.Errorf("after %s: %w", time.Since(start).Round(time.Second), err)
+	}
+
+	if docStatus >= 400 {
+		return fmt.Errorf("route %s returned HTTP %d — refusing to capture an error page (route list stale?)", p.path, docStatus)
 	}
 
 	for _, mode := range modes {

@@ -71,6 +71,11 @@
               golangciLint
               templ
               tailwindcss_4
+              # Same version the #lint app and CI use, so `actionlint` works
+              # directly in the dev shell (2026-09-08: it was only inside the
+              # lint app's runtimeInputs — `nix shell nixpkgs#actionlint` was
+              # needed for ad-hoc workflow checks).
+              actionlint
             ];
             shellHook = ''
               # GOEXPERIMENT=jsonv2: required until Go 1.27 stabilizes it.
