@@ -205,6 +205,7 @@ Don't know what to look for? Find your page type:
 | `IconWithStrokeWidth(name, class, strokeWidth)` | Same, custom stroke width (default 1.5)            |
 | `IconPathData(name) []string`                   | Raw path data for custom SVG wrapper               |
 | `IconPathJS(name) string`                       | Path data formatted for JS injection               |
+| `Render(icon CustomIcon, class)`                | Render a consumer-provided icon (arbitrary viewBox/paths/fill) |
 | `AnimatedIcon(name, class)`                     | Icon with hover animation (default per-icon)       |
 | `AnimatedIconWithAnimation(name, anim, class)`  | Icon with explicit animation preset                |
 | `DefaultAnimation(name) Animation`              | Get default animation for an icon                  |
