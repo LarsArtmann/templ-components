@@ -1,14 +1,10 @@
 // The forms pattern pack e2e file runs its tests SERIALLY on purpose (a
 // shared Chromium degrades under parallel tab load) and renders templ
-// fragments with background contexts inside test-server handlers — hence the
-// file-scoped linter waivers:
-//
-//	nolint:paralleltest — serial-by-design, see the comment above.
-//	nolint:contextcheck — fragment handlers intentionally render with
-//	context.Background(); the templ call chains carry the context internally.
-//	nolint:wrapcheck — test helpers return chromedp/templ errors unwrapped by
-//	design; the action stack identifies the failure point.
-package visualtest //nolint:contextcheck,paralleltest,wrapcheck
+// fragments with background contexts inside test-server handlers. Linter
+// waivers for the resulting paralleltest/contextcheck/wrapcheck findings
+// live in the repo .golangci.yml exclusions (this module is outside CI
+// lint; the exclusion documents intent, not noise).
+package visualtest
 
 import (
 	"context"
@@ -1011,82 +1007,88 @@ func TestWireE2EFilterDropdownWireSwaps(t *testing.T) {
 func TestWireE2EWizardStepsAdvances(t *testing.T) {
 	for _, dialect := range packDialects() {
 		t.Run(string(dialect), func(t *testing.T) {
-			srv := packE2EServer(t)
-
-			ctx, cancel := newTab(t)
-			defer cancel()
-
-			ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
-			defer cancelTimeout()
-
-			region := packWizardHTMXRegion
-			if dialect == wire.TransportDatastar {
-				region = packWizardDatastarRegion
-			}
-
-			// packWizardExpect settles a swap (optionally filling a field
-			// first), submits until the needle appears, and wraps failures
-			// with the phase name.
-			packWizardExpect := func(phase string, fill chromedp.Action, needle string) error {
-				pre := []chromedp.Action{waitSwapSettled()}
-				if fill != nil {
-					pre = append(pre, fill)
-				}
-
-				if err := chromedp.Run(ctx, pre...); err != nil {
-					return fmt.Errorf("%s prepare: %w", phase, err)
-				}
-
-				if err := packSubmitUntil(ctx, region, region, needle); err != nil {
-					return fmt.Errorf("%s: %w", phase, err)
-				}
-
-				return nil
-			}
-
-			var ok bool
-
-			if err := chromedp.Run(ctx,
-				chromedp.Navigate(srv.URL+"/"),
-				chromedp.Poll(packGate(dialect), &ok),
-			); err != nil {
-				t.Fatalf("%s wizard setup: %v", dialect, err)
-			}
-
-			// Step 0: empty email → inline error, no advance.
-			if err := packWizardExpect("step 0 (invalid)", nil, packWizardEmailBad); err != nil {
-				t.Fatalf("%s wizard: %v", dialect, err)
-			}
-
-			if err := chromedp.Run(ctx,
-				chromedp.Poll(regionExistsExpr(region, `input[name="email"]`), &ok),
-			); err != nil {
-				t.Fatalf("%s wizard step 0 still present: %v", dialect, err)
-			}
-
-			// Step 0: valid email → advance to profile.
-			fillEmail := setFieldValue(region, `input[name="email"]`, "ada@example.com")
-			if err := packWizardExpect("step 0 (advance)", fillEmail, "Full name"); err != nil {
-				t.Fatalf("%s wizard: %v", dialect, err)
-			}
-
-			// Step 1: empty name → inline error. The field is cleared
-			// EXPLICITLY first: Datastar's inner-mode patch morphs swapped-in
-			// forms and preserves the previous field's value by position
-			// (the typed email leaks into the name field), so "just submit
-			// empty" is not a runtime-invariant — clearing is.
-			clearName := setFieldValue(region, `input[name="name"]`, "")
-			if err := packWizardExpect("step 1 (invalid)", clearName, packWizardNameBad); err != nil {
-				t.Fatalf("%s wizard: %v", dialect, err)
-			}
-
-			// Step 1: valid name → wizard complete.
-			fillName := setFieldValue(region, `input[name="name"]`, "Ada Lovelace")
-			if err := packWizardExpect("step 1 (complete)", fillName, "Wizard complete"); err != nil {
-				t.Fatalf("%s wizard: %v", dialect, err)
-			}
+			packWizardFlow(t, dialect)
 		})
 	}
+}
+
+func packWizardFlow(t *testing.T, dialect wire.Transport) {
+	t.Helper()
+
+	srv := packE2EServer(t)
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	ctx, cancelTimeout := context.WithTimeout(ctx, 60*time.Second)
+	defer cancelTimeout()
+
+	region := packWizardHTMXRegion
+	if dialect == wire.TransportDatastar {
+		region = packWizardDatastarRegion
+	}
+
+	var ok bool
+
+	if err := chromedp.Run(ctx,
+		chromedp.Navigate(srv.URL+"/"),
+		chromedp.Poll(packGate(dialect), &ok),
+	); err != nil {
+		t.Fatalf("%s wizard setup: %v", dialect, err)
+	}
+
+	// The fill actions capture the region and run at execution time; the
+	// step-1 name field is CLEARED explicitly because Datastar's inner-mode
+	// patch morphs swapped-in forms and preserves the previous field's value
+	// by position (the typed email leaks into the name field), so "just
+	// submit empty" is not a runtime-invariant — clearing is.
+	phases := []struct {
+		phase  string
+		fill   chromedp.Action
+		needle string
+	}{
+		{phase: "step 0 (invalid)", needle: packWizardEmailBad},
+		{
+			phase:  "step 0 (advance)",
+			fill:   setFieldValue(region, `input[name="email"]`, "ada@example.com"),
+			needle: "Full name",
+		},
+		{
+			phase:  "step 1 (invalid)",
+			fill:   setFieldValue(region, `input[name="name"]`, ""),
+			needle: packWizardNameBad,
+		},
+		{
+			phase:  "step 1 (complete)",
+			fill:   setFieldValue(region, `input[name="name"]`, "Ada Lovelace"),
+			needle: "Wizard complete",
+		},
+	}
+
+	for _, ph := range phases {
+		if err := packWizardExpect(ctx, region, ph.phase, ph.fill, ph.needle); err != nil {
+			t.Fatalf("%s wizard: %v", dialect, err)
+		}
+	}
+}
+
+// packWizardExpect settles a swap (optionally filling a field first),
+// submits until the needle appears, and wraps failures with the phase name.
+func packWizardExpect(ctx context.Context, region, phase string, fill chromedp.Action, needle string) error {
+	pre := []chromedp.Action{waitSwapSettled()}
+	if fill != nil {
+		pre = append(pre, fill)
+	}
+
+	if err := chromedp.Run(ctx, pre...); err != nil {
+		return fmt.Errorf("%s prepare: %w", phase, err)
+	}
+
+	if err := packSubmitUntil(ctx, region, region, needle); err != nil {
+		return fmt.Errorf("%s: %w", phase, err)
+	}
+
+	return nil
 }
 
 // TestWireE2EUploadFileRoundTrip proves the multipart upload under both

@@ -268,6 +268,16 @@ linters:
         text: unused
         linters:
           - unused
+      # The dual-transport e2e suite drives a real Chromium over a shared
+      # browser: tests run serially by design, fragment handlers render with
+      # background contexts (templ chains the context internally), and test
+      # helpers return chromedp/templ errors unwrapped so the CDP action
+      # stack identifies the failure point.
+      - path: visualtest/wire_forms_pack_e2e_test\.go
+        linters:
+          - contextcheck
+          - paralleltest
+          - wrapcheck
     paths:
       - \.gen\.go$
       - _templ\.go$
