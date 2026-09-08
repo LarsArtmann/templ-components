@@ -4,6 +4,7 @@ import (
 	"context"
 	"io"
 	"testing"
+	"time"
 
 	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/datastar"
@@ -594,6 +595,37 @@ func TestCarouselNext(t *testing.T) {
 	)
 }
 
+// TestDateRangeAdjacent pins the documented stacking pattern for adjacent
+// DateRanges (#176): the root <time> is inline, so back-to-back ranges need
+// `Class: "block"` (or a gap container) or their text glues together. The
+// golden proves the two ranges render as separate stacked lines.
+func TestDateRangeAdjacent(t *testing.T) {
+	t.Parallel()
+
+	jan2024 := time.Date(2024, time.January, 1, 0, 0, 0, 0, time.UTC)
+	apr2024 := time.Date(2024, time.April, 1, 0, 0, 0, 0, time.UTC)
+
+	first := display.DateRangeProps{
+		BaseProps: utils.BaseProps{Class: "block"},
+		Start:     &jan2024,
+		End:       &apr2024,
+	}
+	second := display.DateRangeProps{
+		BaseProps: utils.BaseProps{Class: "block"},
+		Start:     &apr2024,
+	}
+
+	stack := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		if err := display.DateRange(first).Render(ctx, w); err != nil {
+			return err
+		}
+
+		return display.DateRange(second).Render(ctx, w)
+	})
+
+	visualtest.AssertScreenshot(t, "daterange/adjacent_light", stack)
+}
+
 // withChildren returns a component that renders parent with the given child
 // injected into the context, so components that consume { children... }
 // (Popover, ContextMenu) show their content in a visual golden.
@@ -785,6 +817,43 @@ func TestErrorPage(t *testing.T) {
 	props.Fix = "Check that the database is running and accessible from the application server."
 	props.Nonce = "test-nonce"
 	visualtest.AssertScreenshot(t, "errorpage/light", errorpage.ErrorPage(props))
+}
+
+// TestErrorPageFamilyMatrix pins one golden per error family (#177): each
+// family has a distinct visual treatment (color, icon, tone) and only two
+// were ever captured. Constructors cover four families; corruption and
+// orchestration are built directly (no constructor ships for them yet).
+func TestErrorPageFamilyMatrix(t *testing.T) {
+	t.Parallel()
+
+	corruption := errorpage.DefaultErrorPageProps()
+	corruption.Family = errorpage.FamilyCorruption
+	corruption.Why = "The stored record failed its integrity check."
+	corruption.Fix = "Restore the record from the last known-good backup."
+
+	orchestration := errorpage.DefaultErrorPageProps()
+	orchestration.Family = errorpage.FamilyOrchestration
+	orchestration.Why = "An internal step received data it did not expect."
+	orchestration.Fix = "This is a bug — report it and include the request ID."
+
+	conflict := errorpage.Conflict("A newer version of this record already exists.")
+	transient := errorpage.ServiceUnavailable()
+	infrastructure := errorpage.InternalError()
+
+	for _, tc := range []struct {
+		name  string
+		props errorpage.ErrorPageProps
+	}{
+		{"family_rejection", errorpage.NotFound()},
+		{"family_conflict", conflict},
+		{"family_transient", transient},
+		{"family_corruption", corruption},
+		{"family_infrastructure", infrastructure},
+		{"family_orchestration", orchestration},
+	} {
+		tc.props.Nonce = "test-nonce"
+		visualtest.AssertScreenshot(t, "errorpage/"+tc.name, errorpage.ErrorPage(tc.props))
+	}
 }
 
 // TestNotFound404 covers the dedicated 404 navigation page.

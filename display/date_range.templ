@@ -49,6 +49,13 @@ type DateRangeProps struct {
 // the PresentText is shown. When Start is nil, only End is shown. When both are
 // equal, only one date is shown (no range).
 //
+// Block vs inline: the root is a <time> element, which is INLINE — two
+// DateRanges rendered back-to-back (e.g. in a résumé/experience list) glue
+// their text together because templ emits no whitespace between components.
+// Stack ranges with `Class: "block"` on each (vertical list) or wrap them in
+// a flex container with a gap. Pinned by the `daterange/adjacent_light`
+// visual golden.
+//
 //	@display.DateRange(display.DateRangeProps{
 //	   Start: &start,
 //	   End:   nil, // shows "Present"

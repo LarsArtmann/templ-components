@@ -143,7 +143,7 @@ Don't know what to look for? Find your page type:
 
 | Component     | Signature                              | One-liner                                                                            |
 | ------------- | -------------------------------------- | ------------------------------------------------------------------------------------ |
-| `Base`        | `Base(props PageProps)`                | Full HTML5 shell — head, meta, theme, HTMX, CSS auto-inject                          |
+| `Base`        | `Base(props PageProps)`                | Full HTML5 shell — head, meta, theme, HTMX, CSS auto-inject, SEO (noindex/canonical/hreflang/JSON-LD) |
 | `Minimal`     | `Minimal(props MinimalProps)`          | Minimal HTML doc — no dependencies, for static/PDF                                   |
 | `ThemeScript` | `ThemeScript(nonce string)`            | Dark mode script — prevents FOUC, include in `<head>`                                |
 | `ThemeToggle` | `ThemeToggle(ariaLabel, nonce string)` | Dark/light toggle button with sun/moon icons                                         |

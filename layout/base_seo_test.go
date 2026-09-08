@@ -41,7 +41,7 @@ func TestBase_SEOMeta_NoIndex(t *testing.T) {
 	props.SEO.NoIndex = true
 	output := seoRender(t, props)
 
-	if !strings.Contains(output, `<meta name="robots" content="noindex"/>`) {
+	if !strings.Contains(output, `<meta name="robots" content="noindex">`) {
 		t.Error("NoIndex should emit the robots noindex meta tag")
 	}
 }
@@ -54,7 +54,7 @@ func TestBase_SEOMeta_Canonical(t *testing.T) {
 	props.SEO.Canonical = "https://example.com/cv"
 	output := seoRender(t, props)
 
-	if !strings.Contains(output, `<link rel="canonical" href="https://example.com/cv"/>`) {
+	if !strings.Contains(output, `<link rel="canonical" href="https://example.com/cv">`) {
 		t.Error("Canonical should emit the canonical link tag")
 	}
 }
@@ -71,9 +71,9 @@ func TestBase_SEOMeta_Alternates(t *testing.T) {
 	}
 	output := seoRender(t, props)
 
-	enIdx := strings.Index(output, `<link rel="alternate" hreflang="en" href="https://example.com/cv"/>`)
-	deIdx := strings.Index(output, `<link rel="alternate" hreflang="de" href="https://example.com/de/cv"/>`)
-	xdIdx := strings.Index(output, `<link rel="alternate" hreflang="x-default" href="https://example.com/cv"/>`)
+	enIdx := strings.Index(output, `<link rel="alternate" hreflang="en" href="https://example.com/cv">`)
+	deIdx := strings.Index(output, `<link rel="alternate" hreflang="de" href="https://example.com/de/cv">`)
+	xdIdx := strings.Index(output, `<link rel="alternate" hreflang="x-default" href="https://example.com/cv">`)
 
 	if enIdx == -1 || deIdx == -1 || xdIdx == -1 {
 		t.Fatalf("all three alternates should render, indices: en=%d de=%d x-default=%d", enIdx, deIdx, xdIdx)
@@ -118,8 +118,8 @@ func TestBase_SEOMeta_ImplementationExample(t *testing.T) {
 	output := seoRender(t, props)
 
 	for _, want := range []string{
-		`<meta name="robots" content="noindex"/>`,
-		`<link rel="canonical" href="https://lars.software/cv"/>`,
+		`<meta name="robots" content="noindex">`,
+		`<link rel="canonical" href="https://lars.software/cv">`,
 		`hreflang="en"`,
 		`hreflang="de"`,
 		`application/ld+json`,
