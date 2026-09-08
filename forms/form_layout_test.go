@@ -79,6 +79,7 @@ func TestFormLayoutIsValid(t *testing.T) {
 func TestFormLayoutInlineFieldGrouping(t *testing.T) {
 	t.Parallel()
 
+	//nolint:contextcheck,wrapcheck // test-only component closures mirroring consumer usage
 	page := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		return Form(FormProps{Action: "/filter", Method: FormGet, Layout: FormLayoutInline}).
 			Render(templ.WithChildren(ctx, templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
@@ -102,7 +103,8 @@ func TestFormLayoutInlineFieldGrouping(t *testing.T) {
 	// class tokens — never assert ordered substrings, AGENTS.md convention).
 	groups := strings.Count(output, "basis-56")
 	if groups != 2 {
-		t.Errorf("Inline form must group each field into one flex item; found %d group divs, want 2\noutput:\n%s", groups, output)
+		t.Errorf("Inline form must group each field into one flex item; found %d group divs, want 2\noutput:\n%s",
+			groups, output)
 	}
 
 	utils.AssertContainsAll(t, output, "min-w-40", "flex-1", "basis-56")
@@ -115,6 +117,7 @@ func TestFormLayoutInlineFieldGrouping(t *testing.T) {
 
 	labels := strings.Count(output, "<label")
 	inputs := strings.Count(output, "<input")
+
 	if labels != 2 || inputs != 2 {
 		t.Errorf("two labeled inputs expected; got %d labels, %d inputs", labels, inputs)
 	}

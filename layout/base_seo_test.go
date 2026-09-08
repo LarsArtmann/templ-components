@@ -79,7 +79,7 @@ func TestBase_SEOMeta_Alternates(t *testing.T) {
 		t.Fatalf("all three alternates should render, indices: en=%d de=%d x-default=%d", enIdx, deIdx, xdIdx)
 	}
 
-	if !(enIdx < deIdx && deIdx < xdIdx) {
+	if enIdx >= deIdx || deIdx >= xdIdx {
 		t.Error("alternates should render in declaration order")
 	}
 }
@@ -92,7 +92,10 @@ func TestBase_SEOMeta_JSONLD(t *testing.T) {
 	props.SEO.JSONLD = `{"@context":"https://schema.org","@type":"Person","name":"Test"}`
 	output := seoRender(t, props)
 
-	if !strings.Contains(output, `<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Test"}</script>`) {
+	if !strings.Contains(
+		output,
+		`<script type="application/ld+json">{"@context":"https://schema.org","@type":"Person","name":"Test"}</script>`,
+	) {
 		t.Error("JSONLD should be embedded verbatim as an ld+json script")
 	}
 }
