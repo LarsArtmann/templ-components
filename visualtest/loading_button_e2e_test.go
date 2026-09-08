@@ -27,11 +27,15 @@ func loadingButtonE2EPage() templ.Component {
 	props.CSSPath = "/app.css"
 
 	body := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-		if _, err := io.WriteString(w, `<button id="btn-loading-e2e" hx-post="/api/save-slow" hx-swap="none" class="inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white">`); err != nil {
+		if _, err := io.WriteString(
+			w,
+			`<button id="btn-loading-e2e" hx-post="/api/save-slow" hx-swap="none" class="inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white">`,
+		); err != nil {
 			return err
 		}
 
-		if err := htmx.LoadingButton("Save changes", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-white"})).Render(ctx, w); err != nil {
+		if err := htmx.LoadingButton("Save changes", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-white"})).
+			Render(ctx, w); err != nil {
 			return err
 		}
 

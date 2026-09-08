@@ -17,6 +17,7 @@ import (
 	"log"
 	"os"
 	"path/filepath"
+	"slices"
 	"time"
 
 	"github.com/chromedp/chromedp"
@@ -45,6 +46,7 @@ func main() {
 	mode := flag.String("mode", "both", "light | dark | both")
 	width := flag.Int("width", 1280, "viewport width")
 	only := flag.String("page", "", "capture a single page by name (e.g. index)")
+
 	flag.Parse()
 
 	if err := os.MkdirAll(*out, 0o755); err != nil {
@@ -52,6 +54,7 @@ func main() {
 	}
 
 	modes := []string{"light", "dark"}
+
 	switch *mode {
 	case "light":
 		modes = []string{"light"}
@@ -99,6 +102,7 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 
 	browserCtx, cancelBrowser := chromedp.NewContext(allocCtx)
 	defer cancelBrowser()
+
 	ctx, cancelTimeout := context.WithTimeout(browserCtx, 120*time.Second)
 	defer cancelTimeout()
 
@@ -112,13 +116,7 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	}
 
 	has := func(m string) bool {
-		for _, mode := range modes {
-			if mode == m {
-				return true
-			}
-		}
-
-		return false
+		return slices.Contains(modes, m)
 	}
 
 	if has("light") {
