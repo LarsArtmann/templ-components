@@ -101,3 +101,4 @@ yarn-error.log*
 
 examples/demo/demo
 /tc
+/visualtest/shots
