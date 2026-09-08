@@ -106,6 +106,12 @@ func TestAllInlineScriptsHaveNonce(t *testing.T) {
 				{Cells: []display.TableCell{{Text: "Alice"}}, Href: "/users/1"},
 			},
 		}))},
+		{"PolledRegionEager", utils.Render(t, htmx.PolledRegion(htmx.PolledRegionProps{
+			BaseProps: utils.BaseProps{Nonce: testNonce},
+			URL:       "/stats",
+			Every:     "10s",
+			Eager:     true,
+		}))},
 	}
 
 	for _, r := range renderings {

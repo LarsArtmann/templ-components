@@ -37,6 +37,13 @@ func polledSwapValue(swap SwapStyle) SwapStyle {
 // Include a "Updated HH:MM:SS" timestamp (ShowTimestamp: true) so operators
 // can verify polling is active — if the timestamp freezes, polling has stalled.
 //
+// When Eager fires the first fetch on load, the region renders with an
+// aria-busy="true" busy cue (data-tc-polled-busy marker) that a singleton
+// script clears on the first completed request (htmx:afterRequest fires for
+// success AND error completions) — parity with datastar.LiveRegion's busy
+// cue, so screen readers wait for the fresh content instead of announcing
+// the stale initial render twice.
+//
 //	@htmx.PolledRegion(htmx.PolledRegionProps{URL: "/partials/stats", Every: "10s", Eager: true}) {
 //	   @display.StatCard(display.StatCardProps{Label: "Messages", Value: "1,234"})
 //	}
@@ -70,6 +77,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 				trigger = "load, every " + props.Every
 			}
 		}
+		eager := props.Eager && props.Trigger == ""
 		updatedAt := time.Now()
 		timeFormat := props.TimeFormat
 		if timeFormat == "" {
@@ -92,7 +100,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 			var templ_7745c5c3_Var3 string
 			templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 54, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 62, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 			if templ_7745c5c3_Err != nil {
@@ -110,7 +118,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var4 string
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(templ.SafeURL(props.URL))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 56, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 64, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 		if templ_7745c5c3_Err != nil {
@@ -123,7 +131,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(trigger)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 57, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 65, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
@@ -136,7 +144,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(swap))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 58, Col: 24}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 66, Col: 24}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 		if templ_7745c5c3_Err != nil {
@@ -149,13 +157,23 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(string(live))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 59, Col: 26}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 67, Col: 26}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\" class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if eager {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, " aria-busy=\"true\" data-tc-polled-busy")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, " class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -168,7 +186,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -176,7 +194,7 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, ">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, ">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -185,38 +203,86 @@ func PolledRegion(props PolledRegionProps) templ.Component {
 			return templ_7745c5c3_Err
 		}
 		if props.ShowTimestamp {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div class=\"mt-3 flex justify-end\"><time class=\"text-xs tabular-nums text-gray-400 dark:text-gray-500\" datetime=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "<div class=\"mt-3 flex justify-end\"><time class=\"text-xs tabular-nums text-gray-400 dark:text-gray-500\" datetime=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(updatedAt.Format(time.RFC3339))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 68, Col: 46}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 80, Col: 46}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, "\">Updated ")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "\">Updated ")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(updatedAt.Format(timeFormat))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 70, Col: 43}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `htmx/polled_region.templ`, Line: 82, Col: 43}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "</time></div>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "</time></div>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</div>")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if eager {
+			templ_7745c5c3_Err = polledRegionBusyScript(props.Nonce).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		return nil
+	})
+}
+
+// polledRegionBusyScript clears the aria-busy loading cue once the region's
+// first poll completes (htmx:afterRequest fires after every request
+// completion — success or error — so a failing endpoint also un-busies the
+// region and leaves the initial content readable). Singleton-guarded: safe
+// across HTMX re-renders and multiple regions on one page.
+func polledRegionBusyScript(nonce string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var11 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var11 == nil {
+			templ_7745c5c3_Var11 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "<script")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templ.RenderAttributes(ctx, templ_7745c5c3_Buffer, polledRegionBusyScriptAttrs(nonce))
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, ">\n\t\t(function() {\n\t\t\t'use strict';\n\t\t\tif (window.tcPolledBusyAttached) return;\n\t\t\twindow.tcPolledBusyAttached = true;\n\t\t\tdocument.addEventListener('htmx:afterRequest', function(evt) {\n\t\t\t\tvar el = (evt.detail && evt.detail.elt) || evt.target;\n\t\t\t\tif (el && el.hasAttribute && el.hasAttribute('data-tc-polled-busy')) {\n\t\t\t\t\tel.removeAttribute('aria-busy');\n\t\t\t\t\tel.removeAttribute('data-tc-polled-busy');\n\t\t\t\t}\n\t\t\t});\n\t\t})();\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

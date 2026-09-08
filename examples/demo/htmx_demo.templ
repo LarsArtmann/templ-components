@@ -21,11 +21,13 @@ templ htmxDemo() {
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Click — the button swaps to its loading state during the request:</p>
 	<button
 		hx-post="/api/save"
-		hx-swap="none"
+		hx-target="#save-result"
+		hx-swap="innerHTML"
 		class="inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0"
 	>
 		@htmx.LoadingButton("Save changes", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-white"}))
 	</button>
+	<span id="save-result" class="ms-3 inline-flex items-center align-middle" role="status" aria-live="polite"></span>
 	@demoSection("HTMX ConfirmDelete", "htmx-confirm-delete")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">Deletes the item below via HTMX after a confirmation dialog:</p>
 	<div id="item-123" class="max-w-md">

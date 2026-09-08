@@ -67,7 +67,7 @@ func htmxDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Click — the button swaps to its loading state during the request:</p><button hx-post=\"/api/save\" hx-swap=\"none\" class=\"inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Click — the button swaps to its loading state during the request:</p><button hx-post=\"/api/save\" hx-target=\"#save-result\" hx-swap=\"innerHTML\" class=\"inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 dark:hover:bg-blue-600 transition-colors motion-reduce:transition-none motion-reduce:duration-0\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -75,7 +75,7 @@ func htmxDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</button>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "</button> <span id=\"save-result\" class=\"ms-3 inline-flex items-center align-middle\" role=\"status\" aria-live=\"polite\"></span>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -256,7 +256,7 @@ func polledStatsContent(tick int, live bool) templ.Component {
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.JoinStringErrs(fmt.Sprintf("%d", 48_210+tick*137))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/htmx_demo.templ`, Line: 86, Col: 117}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/htmx_demo.templ`, Line: 88, Col: 117}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var5))
 		if templ_7745c5c3_Err != nil {
@@ -269,7 +269,7 @@ func polledStatsContent(tick int, live bool) templ.Component {
 		var templ_7745c5c3_Var6 string
 		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(time.Now().Format("15:04:05"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/htmx_demo.templ`, Line: 87, Col: 101}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/htmx_demo.templ`, Line: 89, Col: 101}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 		if templ_7745c5c3_Err != nil {

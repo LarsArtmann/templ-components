@@ -133,3 +133,61 @@ func TestPolledRegionCustomTrigger(t *testing.T) {
 	utils.AssertNotContains(t, output, "every")
 	utils.AssertNotContains(t, output, "load,")
 }
+
+// TestPolledRegionBusyCue pins the aria-busy loading cue (parity with
+// datastar.LiveRegion): eager regions render busy + the marker + the
+// clearing script; non-eager and custom-trigger regions render neither.
+func TestPolledRegionBusyCue(t *testing.T) {
+	t.Parallel()
+
+	t.Run("eager region renders busy cue and clearing script", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PolledRegion(PolledRegionProps{
+			URL:   "/stats",
+			Every: "5s",
+			Eager: true,
+			BaseProps: utils.BaseProps{
+				Nonce: "test-nonce",
+			},
+		}))
+		utils.AssertContains(t, output, `aria-busy="true"`)
+		utils.AssertContains(t, output, "data-tc-polled-busy")
+		utils.AssertContains(t, output, `nonce="test-nonce"`)
+		utils.AssertContains(t, output, "htmx:afterRequest")
+		utils.AssertContains(t, output, "window.tcPolledBusyAttached")
+	})
+
+	t.Run("non-eager region renders no busy cue", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PolledRegion(PolledRegionProps{
+			URL:   "/stats",
+			Every: "5s",
+		}))
+		utils.AssertNotContains(t, output, "aria-busy")
+		utils.AssertNotContains(t, output, "data-tc-polled-busy")
+		utils.AssertNotContains(t, output, "tcPolledBusyAttached")
+	})
+
+	t.Run("custom trigger region renders no busy cue", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PolledRegion(PolledRegionProps{
+			URL:     "/stats",
+			Trigger: "stats-refresh from:body",
+			Eager:   true, // ignored when Trigger is set — timing is consumer-owned
+		}))
+		utils.AssertNotContains(t, output, "aria-busy")
+		utils.AssertNotContains(t, output, "tcPolledBusyAttached")
+	})
+
+	t.Run("empty nonce omits the nonce attribute entirely", func(t *testing.T) {
+		t.Parallel()
+		output := utils.Render(t, PolledRegion(PolledRegionProps{
+			URL:   "/stats",
+			Every: "5s",
+			Eager: true,
+		}))
+		utils.AssertContains(t, output, "tcPolledBusyAttached")
+		utils.AssertNotContains(t, output, `nonce=""`)
+		utils.AssertNotContains(t, output, "nonce=")
+	})
+}

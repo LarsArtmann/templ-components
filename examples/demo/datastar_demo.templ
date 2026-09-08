@@ -17,7 +17,9 @@ templ datastarDemo() {
 		SSE-powered region that auto-connects on page load and self-heals across
 		server restarts (<code>retry: 'always'</code>). The server pushes
 		<code>datastar-patch-elements</code> events to patch the content in real-time
-		(no polling):
+		(no polling). The stream also sends invisible 15s keep-alive comment frames
+		(<code>: ping</code>) so proxies and firewalls keep the connection open —
+		the "streamed at" timestamps below are the visible proof of liveness:
 	</p>
 	@datastar.LiveRegion(datastar.LiveRegionProps{
 		BaseProps: demoBaseProps(),

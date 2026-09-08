@@ -51,7 +51,7 @@ func datastarDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">SSE-powered region that auto-connects on page load and self-heals across server restarts (<code>retry: 'always'</code>). The server pushes <code>datastar-patch-elements</code> events to patch the content in real-time (no polling):</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">SSE-powered region that auto-connects on page load and self-heals across server restarts (<code>retry: 'always'</code>). The server pushes <code>datastar-patch-elements</code> events to patch the content in real-time (no polling). The stream also sends invisible 15s keep-alive comment frames (<code>: ping</code>) so proxies and firewalls keep the connection open — the \"streamed at\" timestamps below are the visible proof of liveness:</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -93,7 +93,7 @@ func datastarDemo() templ.Component {
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(datastar.Post("/api/datastar/action"))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/datastar_demo.templ`, Line: 41, Col: 56}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `examples/demo/datastar_demo.templ`, Line: 43, Col: 56}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {

@@ -1,1 +1,14 @@
-<div hx-get="/partials/live" hx-trigger="load, every 5s" hx-swap="outerHTML" aria-live="polite" class=""></div>
+<div hx-get="/partials/live" hx-trigger="load, every 5s" hx-swap="outerHTML" aria-live="polite" aria-busy="true" data-tc-polled-busy class=""></div><script>
+		(function() {
+			'use strict';
+			if (window.tcPolledBusyAttached) return;
+			window.tcPolledBusyAttached = true;
+			document.addEventListener('htmx:afterRequest', function(evt) {
+				var el = (evt.detail && evt.detail.elt) || evt.target;
+				if (el && el.hasAttribute && el.hasAttribute('data-tc-polled-busy')) {
+					el.removeAttribute('aria-busy');
+					el.removeAttribute('data-tc-polled-busy');
+				}
+			});
+		})();
+	</script>

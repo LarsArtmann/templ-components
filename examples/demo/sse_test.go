@@ -228,7 +228,7 @@ func TestHTMXEndpointHeaders(t *testing.T) {
 		{name: "load-more", method: http.MethodGet, path: "/api/items?cursor=1", wantIn: []string{"hx-get", "/api/items?cursor=2", "Item"}},
 		{name: "load-more last page settles with end-of-list", method: http.MethodGet, path: "/api/items?cursor=2", wantIn: []string{"You&#39;ve reached the end"}},
 		{name: "confirm-delete target fragment", method: http.MethodDelete, path: "/api/items/123", wantIn: []string{"deleted successfully"}},
-		{name: "save acknowledges without swapping", method: http.MethodPost, path: "/api/save", wantIn: []string{"Saved."}, skipDur: true},
+		{name: "save confirmation swaps into the target span", method: http.MethodPost, path: "/api/save", wantIn: []string{"Saved."}, skipDur: true},
 		{name: "polled region re-arms with next tick", method: http.MethodGet, path: "/api/demo-stats?tick=1", wantIn: []string{"tick=2", "hx-get"}},
 		{name: "polled region settles on final tick", method: http.MethodGet, path: "/api/demo-stats?tick=3", wantIn: []string{"Requests served"}},
 		{name: "filter dropdown fragment", method: http.MethodGet, path: "/api/users?status=active&sort=name"},
