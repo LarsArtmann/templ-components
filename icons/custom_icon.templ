@@ -1,0 +1,56 @@
+package icons
+
+// CustomIcon describes one consumer-provided icon: arbitrary viewBox and
+// path data for icon sets outside the built-in catalogue (tech brand
+// logos, social glyphs, product marks). Paths are the raw SVG `d`
+// attributes; a `|`-joined string from IconPathJS splits with
+// strings.Split(s, "|").
+type CustomIcon struct {
+	// ViewBox is the SVG viewBox. Default "0 0 24 24" when empty — most
+	// 24px icon sets (including this library's) work unchanged.
+	ViewBox string
+	// Paths are the raw SVG path `d` attributes, one per path, in order.
+	// Empty strings are skipped (graceful — no panic in render paths).
+	Paths []string
+	// Fill is the SVG fill for every path. Default "currentColor" so the
+	// icon inherits text color like the built-in icons; set a hex (brand
+	// logos) or "none" (stroke icons drawn via CSS) to override.
+	Fill string
+	// Title, when set, renders an accessible <title> and drops
+	// aria-hidden (role="img"). Empty keeps the icon decorative
+	// (aria-hidden="true") — pass the name via the consumer's text
+	// instead.
+	Title string
+}
+
+// Render renders a consumer-provided icon with the same markup contract
+// as the built-in icons: class on the <svg>, fill on the svg element,
+// paths inside. This is the extension point for consumer icon sets —
+// register your own map of CustomIcon values and render through it.
+//
+//	@icons.Render(icons.CustomIcon{ViewBox: "0 0 24 24", Paths: []string{goLogoPath}}, "h-4 w-4")
+templ Render(icon CustomIcon, class string) {
+	{{ viewBox := icon.ViewBox }}
+	{{ if viewBox == "" { viewBox = "0 0 24 24" } }}
+	{{ fill := icon.Fill }}
+	{{ if fill == "" { fill = "currentColor" } }}
+	<svg
+		class={ class }
+		viewBox={ viewBox }
+		fill={ fill }
+		if icon.Title == "" {
+			aria-hidden="true"
+		} else {
+			role="img"
+		}
+	>
+		if icon.Title != "" {
+			<title>{ icon.Title }</title>
+		}
+		for _, p := range icon.Paths {
+			if p != "" {
+				<path d={ p }></path>
+			}
+		}
+	</svg>
+}

@@ -8,6 +8,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`icons.Render` — the extension point for consumer icon sets.** New
+  `CustomIcon` value (ViewBox defaulting to 0 0 24 24, []string path
+  data — strings.Split(IconPathJS(s), "|") compatible — Fill defaulting
+  to currentColor, optional accessible Title that drops aria-hidden and
+  adds role=img) renders arbitrary SVG icons with the same markup
+  contract as the built-in catalogue. Empty path segments are skipped
+  gracefully (no panic in render paths). Demand: the CV consumer
+  maintains its own simple-icons brand set and hand-rolls three SVG
+  scaffolds around it.
 - **`layout.PageProps.SEO` — crawler/SEO head tags natively.** New
   `SEOMeta` struct (`NoIndex bool`, `Canonical string`,
   `Alternates []SEOAlternate`, `JSONLD string`) rendered by `layout.Base`:
