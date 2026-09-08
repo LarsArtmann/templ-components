@@ -46,12 +46,16 @@ func newRegistry() *registry {
 		},
 	}
 
-	_ = fs.WalkDir(sourcesFS, "_sources", func(path string, d fs.DirEntry, err error) error {
+	fs.WalkDir(sourcesFS, "_sources", func(path string, d fs.DirEntry, err error) error {
 		if d == nil || d.IsDir() {
 			return nil
 		}
 
-		rel, _ := filepath.Rel("_sources", path)
+		rel, relErr := filepath.Rel("_sources", path)
+		if relErr != nil {
+			return fmt.Errorf("resolve %s: %w", path, relErr)
+		}
+
 		parts := strings.Split(rel, string(filepath.Separator))
 		if len(parts) < 2 {
 			return nil
@@ -252,7 +256,7 @@ func main() {
 }
 
 func usage() {
-	_, _ = fmt.Fprintln(os.Stderr, `tc — templ-components scaffolding
+	fmt.Fprintln(os.Stderr, `tc — templ-components scaffolding
 
 Usage:
   tc init                   Scaffold a starter app.css + custom.css in the current directory.
@@ -313,7 +317,7 @@ func cmdList(r *registry, _ []string) {
 func cmdAdd(r *registry, args []string) {
 	out, listDeps, positional := parseAddArgs(args)
 	if len(positional) < 1 {
-		_, _ = fmt.Fprintln(os.Stderr, "tc add <component> [--out DIR] [--list-deps]")
+		fmt.Fprintln(os.Stderr, "tc add <component> [--out DIR] [--list-deps]")
 
 		return
 	}
@@ -421,7 +425,7 @@ func parseAddArgs(args []string) (out string, listDeps bool, positional []string
 			listDeps = true
 			i++
 		case a == "-h" || a == "--help":
-			_, _ = fmt.Fprintln(os.Stderr, "tc add <component> [--out DIR] [--list-deps]")
+			fmt.Fprintln(os.Stderr, "tc add <component> [--out DIR] [--list-deps]")
 
 			return out, listDeps, positional
 		default:

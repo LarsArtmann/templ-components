@@ -53,17 +53,17 @@ func prerender(outputDir string) error {
 
 		outPath := filepath.Join(outputDir, page.filename)
 		if err := os.MkdirAll(filepath.Dir(outPath), 0o755); err != nil {
-			return fmt.Errorf("create dir for %s: %w", page.filename, err)
+			return fmt.Errorf("create dir for %s (outPath=%s, outputDir=%s): %w", page.filename, outPath, outputDir, err)
 		}
 
 		f, err := os.Create(outPath)
 		if err != nil {
-			return fmt.Errorf("create %s: %w", page.filename, err)
+			return fmt.Errorf("create outPath=%s: %w", outPath, err)
 		}
 
 		if err := page.render(props).Render(ctx, f); err != nil {
 			f.Close()
-			return fmt.Errorf("render %s: %w", page.filename, err)
+			return fmt.Errorf("render outPath=%s: %w", outPath, err)
 		}
 		f.Close()
 		fmt.Printf("  wrote %s\n", outPath)

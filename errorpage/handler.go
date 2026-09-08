@@ -96,7 +96,9 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 
 			w.Header().Set("Content-Type", "text/html; charset=utf-8")
 			w.WriteHeader(statusCode)
-			_, _ = w.Write(html)
+			if _, err := w.Write(html); err != nil {
+				slog.Warn("error page write failed", "error", err)
+			}
 
 			return
 		}
@@ -111,8 +113,10 @@ func ErrorHandler(err error, cfg ErrorHandlerConfig) http.Handler {
 
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
 		w.WriteHeader(statusCode)
-		_, _ = w.Write(buf)
-	})
+		if _, err := w.Write(buf); err != nil {
+			slog.Warn("error page write failed", "error", err)
+		}
+})
 }
 
 // WriteError writes an error page to an http.ResponseWriter.
@@ -145,7 +149,9 @@ func WriteErrorPage(w http.ResponseWriter, r *http.Request, statusCode int, prop
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(statusCode)
-	_, _ = w.Write(buf)
+	if _, err := w.Write(buf); err != nil {
+		slog.Warn("error page write failed", "error", err)
+	}
 }
 
 // WriteNotFound404 writes a NotFound404 page to an http.ResponseWriter with a
@@ -172,7 +178,9 @@ func WriteNotFound404(w http.ResponseWriter, r *http.Request, props NotFound404P
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(http.StatusNotFound)
-	_, _ = w.Write(buf)
+	if _, err := w.Write(buf); err != nil {
+		slog.Warn("not found page write failed", "error", err)
+	}
 }
 
 func writeJSONError(w http.ResponseWriter, statusCode int, props ErrorPageProps) {
@@ -220,19 +228,22 @@ func renderToBuffer(ctx context.Context, comp templ.Component) ([]byte, error) {
 // writing to the ResponseWriter.
 func renderShellToBuffer(ctx context.Context, title, lang string, props ErrorPageProps) ([]byte, error) {
 	shell := templ.ComponentFunc(func(_ context.Context, bw io.Writer) error {
-		_, _ = fmt.Fprint(bw, `<!DOCTYPE html>`)
-		_, _ = fmt.Fprintf(bw, `<html lang="%s"><head>`, html.EscapeString(lang))
-		_, _ = fmt.Fprint(bw, `<meta charset="UTF-8">`)
-		_, _ = fmt.Fprint(bw, `<meta name="viewport" content="width=device-width, initial-scale=1.0">`)
-		_, _ = fmt.Fprintf(bw, `<title>%s</title>`, html.EscapeString(title))
-		_, _ = fmt.Fprint(bw, `</head><body>`)
+		prologue := fmt.Sprintf(
+			`<!DOCTYPE html><html lang="%s"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>%s</title></head><body>`,
+			html.EscapeString(lang), html.EscapeString(title),
+		)
+		if _, err := io.WriteString(bw, prologue); err != nil {
+			return fmt.Errorf("write error page shell prologue: %w", err)
+		}
 
 		renderErr := ErrorPage(props).Render(ctx, bw) //nolint:contextcheck // intentional passthrough
 		if renderErr != nil {
 			return fmt.Errorf("render error page: %w", renderErr)
 		}
 
-		_, _ = fmt.Fprint(bw, `</body></html>`)
+		if _, err := io.WriteString(bw, `</body></html>`); err != nil {
+			return fmt.Errorf("write error page shell epilogue: %w", err)
+		}
 
 		return nil
 	})
@@ -253,7 +264,9 @@ func writeFallbackError(w http.ResponseWriter, statusCode int) {
 	// If headers haven't been written yet, WriteHeader will succeed.
 	// If they have (e.g. superedge case), this is a no-op.
 	w.WriteHeader(statusCode)
-	_, _ = fmt.Fprintf(w, "Error %d\n", statusCode)
+	if _, err := fmt.Fprintf(w, "Error %d\n", statusCode); err != nil {
+		slog.Warn("fallback error write failed", "error", err)
+	}
 }
 
 // Verify interface compliance.
