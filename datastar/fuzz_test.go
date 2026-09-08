@@ -32,12 +32,15 @@ func FuzzGetActionExpr(f *testing.F) {
 		if !hasOpts {
 			wantSuffix = "')"
 		}
+
 		if !strings.HasSuffix(out, wantSuffix) {
 			t.Fatalf("missing %s suffix: %q", wantSuffix, out)
 		}
+
 		// The URL literal is always the escaped URL, immediately after the
 		// opening quote (single quotes become backslash-escaped).
 		inner := strings.TrimPrefix(out, "@get('")
+
 		if escaped := strings.ReplaceAll(url, "'", "\\'"); !strings.HasPrefix(inner, escaped) {
 			t.Fatalf("URL literal not the escaped URL:\n got prefix: %q\nwant: %q", inner, escaped)
 		}
@@ -50,9 +53,11 @@ func FuzzGetActionExpr(f *testing.F) {
 		if retryModeValue(RetryMode(retry)) != RetryAuto {
 			wantQuotes += 2
 		}
+
 		if requestCancellationValue(RequestCancellation(cancellation)) == CancellationCleanup {
 			wantQuotes += 2
 		}
+
 		if got := strings.Count(out, "'"); got != wantQuotes {
 			t.Fatalf("quote count = %d, want %d (expression shape broken): %q", got, wantQuotes, out)
 		}
