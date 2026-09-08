@@ -32,7 +32,10 @@ func appShellTestContent() templ.Component {
 // appShellTestHeader is a simple shell header bar.
 func appShellTestHeader() templ.Component {
 	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
-		_, err := io.WriteString(w, `<div class="flex items-center justify-between px-6 py-3"><span class="text-sm font-medium">Header</span><span class="text-xs text-gray-500">v1</span></div>`)
+		_, err := io.WriteString(
+			w,
+			`<div class="flex items-center justify-between px-6 py-3"><span class="text-sm font-medium">Header</span><span class="text-xs text-gray-500">v1</span></div>`,
+		)
 
 		return err
 	})
@@ -72,7 +75,7 @@ func TestAppShellFull(t *testing.T) {
 		Options{Viewport: ViewportDesktop},
 	)
 	AssertScreenshot(t, "appshell/dark", appShellForTest(),
-		Options{Dark: Bool(true), Viewport: ViewportDesktop},
+		Options{Dark: new(true), Viewport: ViewportDesktop},
 	)
 }
 
@@ -117,6 +120,7 @@ func TestAppShellSidebarFitsTrack(t *testing.T) {
 	defer cancel()
 
 	var overflow float64
+
 	err = chromedp.Run(ctx,
 		chromedp.EmulateViewport(viewportDesktopWidth, viewportDesktopHeight),
 		chromedp.Navigate(srv.URL),
@@ -140,6 +144,9 @@ func TestAppShellSidebarFitsTrack(t *testing.T) {
 	// Sub-pixel tolerance only: any real overflow (like a w-64 sidebar in a
 	// 12rem SM track) is >= tens of pixels.
 	if overflow > 1 {
-		t.Errorf("sidebar overflows its grid track by %.1fpx — SidebarWidth must be >= the sidebar's own width (SidebarNav is w-64/16rem; the MD default fits exactly)", overflow)
+		t.Errorf(
+			"sidebar overflows its grid track by %.1fpx — SidebarWidth must be >= the sidebar's own width (SidebarNav is w-64/16rem; the MD default fits exactly)",
+			overflow,
+		)
 	}
 }

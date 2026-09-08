@@ -890,7 +890,7 @@ func TestHeatmap(t *testing.T) {
 	// light golden alone cannot catch the dark fallback triplet being wrong
 	// (the 2026-09-08 audit found the vars undefined entirely).
 	visualtest.AssertScreenshot(t, "heatmap/dark", display.Heatmap(props),
-		visualtest.Options{Dark: visualtest.Bool(true)},
+		visualtest.Options{Dark: new(true)},
 	)
 }
 

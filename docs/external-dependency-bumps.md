@@ -65,12 +65,12 @@ integration was 100% inert. The ground truth is always the pinned bytes.
 
 5. **Contract guards.** Update and re-run:
 
-   | Guard                                        | What it pins                                      |
-   | -------------------------------------------- | ------------------------------------------------- |
-   | `datastar.TestPinnedRuntimeBundleContract`   | bundle sha256 + integration tokens                |
-   | `examples/demo/sse_test.go`                  | SSE wire format + endpoint response headers       |
-   | `datastar.TestDatastarVersionConstantNameMatchesValue` | version constant name tells the truth     |
-   | `errorpage` handler/constructor tests        | go-error-family classification + status mapping   |
+   | Guard                                                  | What it pins                                    |
+   | ------------------------------------------------------ | ----------------------------------------------- |
+   | `datastar.TestPinnedRuntimeBundleContract`             | bundle sha256 + integration tokens              |
+   | `examples/demo/sse_test.go`                            | SSE wire format + endpoint response headers     |
+   | `datastar.TestDatastarVersionConstantNameMatchesValue` | version constant name tells the truth           |
+   | `errorpage` handler/constructor tests                  | go-error-family classification + status mapping |
 
    A red guard after the bump is the system working: it caught a contract
    change you must consciously adopt.

@@ -11,13 +11,13 @@ the bundle if the version pin ever bumps. Enforcement lives in tests:
 
 ## Bundle provenance (re-audit reproducibility)
 
-| Field   | Value                                                                                            |
-| ------- | ------------------------------------------------------------------------------------------------ |
-| Module  | `github.com/larsartmann/go-datastar/static`                                                      |
-| Pin     | `v0.5.0` (`datastar/go.mod`)                                                                     |
-| Runtime | Datastar `1.0.3` (`static.Version`)                                                              |
-| Bundle  | `datastar.js`, 33538 bytes                                                                       |
-| sha256  | `5d6b7794a50a83d82da962aec5e382f5ae83ac7afbc751f903f7a9c6bd433c65`                               |
+| Field   | Value                                                              |
+| ------- | ------------------------------------------------------------------ |
+| Module  | `github.com/larsartmann/go-datastar/static`                        |
+| Pin     | `v0.5.0` (`datastar/go.mod`)                                       |
+| Runtime | Datastar `1.0.3` (`static.Version`)                                |
+| Bundle  | `datastar.js`, 33538 bytes                                         |
+| sha256  | `5d6b7794a50a83d82da962aec5e382f5ae83ac7afbc751f903f7a9c6bd433c65` |
 
 The hash is machine-enforced by `datastar.TestPinnedRuntimeBundleContract`
 (`datastar/bundle_guard_test.go`) — any byte-level bundle change fails CI until
