@@ -19,9 +19,64 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Consumers no longer hand-roll these in `HeadContent` (demand: the CV
   project implements all four twice, `nsfw-classifier` cites missing head
   support in TODO #156). Guarded by `layout/base_seo_test.go`.
+- **Route-level visual goldens (`testdata/routes/`, 8 PNGs).** The demo
+  binary is built and served in-process by the visual suite; every demo
+  route (dashboard light+dark, settings, login, auth, forms, users, plus the
+  index above-the-fold) is captured and pixel-compared — the tier that would
+  have caught the recipes-dashboard collapse while every component golden
+  was green. Includes `ClickSelector` and `WaitExpr` harness options
+  (explicit click targets; poll a JS expression until settled — the
+  scroll-snap carousel convergence).
+- **Browser-level proofs for the JS-only paths** (`visualtest/`):
+  `datastar.SSEErrorHandling` toasts + announces on a REAL runtime-dispatched
+  fetch error (HTTP 500 via the pinned bundle), `datastar.LiveRegion` clears
+  its aria-busy cue on a REAL `datastar-patch-elements` SSE event, and
+  `htmx.PolledRegion` clears its busy cue on the real `htmx:afterRequest`
+  (plus a synthetic re-arm). New runtime fact recorded: `data-on:load` on a
+  plain `<div>` never fires (window-only event).
+- **Overlay open-state + sweep goldens (+28 PNGs, 140 total).** Tooltip
+  visible (hover), Combobox expanded (focus), Carousel scrolled (next-arrow
+  click), the full ErrorPage family matrix (6 families), adjacent DateRange
+  stacking, the Inline form grouping, a 375px mobile sweep (Nav hamburger,
+  MobileMenu, stacked form, table overflow, stacked Split), and an RTL sweep
+  (Nav, Split, Carousel, right Drawer, open Dropdown).
+- **Prerender/live parity guard.** `TestPrerenderMatchesLiveServer` renders
+  all 7 routes through both the `-prerender` pipeline and the live mux and
+  diffs the markup (normalizing stylesheet link, timestamps, and EnsureID
+  suffixes) — prerendered pages can no longer silently drift from the
+  server.
+- **`actionlint` is in the `nix develop` devShell** (was only inside the
+  `#lint` app's runtimeInputs — ad-hoc workflow checks needed
+  `nix shell nixpkgs#actionlint`).
+- **`nix run .#shots` refuses error pages.** A main-frame response ≥ 400
+  aborts the capture with a non-zero exit (it previously captured 404 pages
+  as if they were routes).
 
 ### Fixed
 
+- **`forms.FormLayoutInline` groups each field into one flex item.** The
+  field's label + control + error + help were separate flex children, so the
+  w-full controls forced one field per row and the Inline layout silently
+  degenerated to a stack (consumers had to hand-patch every field with
+  `Class: "sm:w-auto sm:min-w-40"` — the demo did). Inside an Inline form,
+  `FormFieldWrapper` now groups the field (`min-w-40 flex-1 basis-56`) via a
+  form-layout context value; Stack/Grid output is unchanged. The demo's
+  per-field workaround is removed. Guarded by
+  `TestFormLayoutInlineFieldGrouping` + the `form/inline_light` golden.
+- **visualtest `StateFocus` now dispatches a synthetic `focusin`.** Under
+  headless Chromium the window often lacks document focus, so `.focus()`
+  moved activeElement without firing focus/focusin — every delegated
+  focusin listener (the Combobox dropdown) stayed inert in visual tests.
+- **Commit-time CSS minification guard (Guard 6).**
+  `scripts/check-css-minified.sh` (wired into the pre-commit hook and
+  `scripts/pre-commit.sh`) rejects any commit while
+  `examples/demo/static/app.css` exceeds 5 lines — BuildFlow's tailwind-build
+  provider keeps rewriting it un-minified (4th recurrence 2026-09-08;
+  root fix tracked in TODO #125).
+- **FEATURES.md: `htmx.PolledRegion` was missing from the component table**
+  (and the package count said 8 of 9). Row added with the eager aria-busy
+  behavior; AGENTS.md's stale "cmd/tc excluded from lint" claim corrected
+  (it is linted like every other package).
 - **`layout.AppShell`: no-sidebar shells no longer collapse.** The two-track
   grid template (`sidebar | content`) was emitted even when `Sidebar` was nil,
   so the single content column landed in the sidebar-width track — the
