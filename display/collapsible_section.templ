@@ -8,12 +8,15 @@ import (
 // CollapsibleSection wraps content in a native <details>/<summary> pair so
 // users can collapse detail-heavy regions. The section renders open by
 // default. When StorageKey is set, the open/closed state can be persisted
-// to localStorage by a consumer-side script reading the data-collapsible
-// attribute.
+// to localStorage: either by a consumer-side script reading the
+// data-collapsible attribute, or — with PersistState and Nonce set — by
+// the built-in nonce'd persistence script this component ships.
 //
 //	@display.CollapsibleSection(display.CollapsibleSectionProps{
 //	   Title: "Advanced Filters",
 //	   StorageKey: "advanced-filters",
+//	   PersistState: true,
+//	   Nonce: nonce,
 //	}) {
 //	   <p>Collapsible content here.</p>
 //	}
@@ -52,4 +55,40 @@ templ CollapsibleSection(props CollapsibleSectionProps) {
 			{ children... }
 		</div>
 	</details>
+	if p.PersistState && p.StorageKey != "" && p.Nonce != "" {
+		@collapsiblePersistScript(p.Nonce)
+	}
+}
+
+// collapsiblePersistScript is the built-in persistence singleton (ADR-0005):
+// first run restores every details[data-collapsible] from localStorage and
+// attaches one capture-phase toggle listener (toggle does not bubble);
+// re-runs after HTMX swaps only re-apply saved state to (re)rendered
+// elements — the listener is never double-bound. localStorage is wrapped
+// in try/catch for Safari private mode.
+templ collapsiblePersistScript(nonce string) {
+	<script nonce={ nonce }>
+		(function () {
+			"use strict";
+			function applyAll() {
+				document.querySelectorAll("details[data-collapsible]").forEach(function (el) {
+					try {
+						var saved = localStorage.getItem(el.getAttribute("data-collapsible"));
+						if (saved === "open") el.open = true;
+						else if (saved === "closed") el.open = false;
+					} catch (err) { /* private mode */ }
+				});
+			}
+			applyAll();
+			if (window.tcCollapsiblePersistAttached) return;
+			window.tcCollapsiblePersistAttached = true;
+			document.addEventListener("toggle", function (e) {
+				var el = e.target;
+				if (!el.matches || !el.matches("details[data-collapsible]")) return;
+				try {
+					localStorage.setItem(el.getAttribute("data-collapsible"), el.open ? "open" : "closed");
+				} catch (err) { /* private mode */ }
+			}, true);
+		})();
+	</script>
 }
