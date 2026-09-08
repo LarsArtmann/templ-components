@@ -67,6 +67,27 @@ templ MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID 
 		<script nonce={ nonce }>
 			if (!window.tcMobileMenuAttached) {
 				window.tcMobileMenuAttached = true;
+				function tcMobileMenuSet(menu, btn, open) {
+					var nav = btn.closest('nav');
+					if (!nav) return;
+					var openIcon = nav.querySelector('.tc-menu-open');
+					var closeIcon = nav.querySelector('.tc-menu-close');
+					if (!openIcon || !closeIcon) return;
+					if (open) {
+						menu.classList.remove('hidden');
+						openIcon.classList.add('hidden');
+						closeIcon.classList.remove('hidden');
+						btn.setAttribute('aria-expanded', 'true');
+						var first = menu.querySelector('a[href],button:not([disabled]),input,select,textarea,[tabindex]:not([tabindex="-1"])');
+						if (first) first.focus();
+					} else {
+						menu.classList.add('hidden');
+						openIcon.classList.remove('hidden');
+						closeIcon.classList.add('hidden');
+						btn.setAttribute('aria-expanded', 'false');
+						btn.focus();
+					}
+				}
 				document.addEventListener('click', function(e) {
 					var btn = e.target.closest('[data-mobile-menu-toggle]');
 					if (!btn) return;
@@ -74,21 +95,19 @@ templ MobileMenu(links []NavLinkProps, currentPath string, nonce string, menuID 
 					var nav = btn.closest('nav');
 					if (!nav) return;
 					var menu = nav.querySelector('[data-mobile-menu-id="' + menuId + '"]');
-					var openIcon = nav.querySelector('.tc-menu-open');
-					var closeIcon = nav.querySelector('.tc-menu-close');
-					if (!menu || !openIcon || !closeIcon) return;
-					var isHidden = menu.classList.contains('hidden');
-					if (isHidden) {
-						menu.classList.remove('hidden');
-						openIcon.classList.add('hidden');
-						closeIcon.classList.remove('hidden');
-						btn.setAttribute('aria-expanded', 'true');
-					} else {
-						menu.classList.add('hidden');
-						openIcon.classList.remove('hidden');
-						closeIcon.classList.add('hidden');
-						btn.setAttribute('aria-expanded', 'false');
-					}
+					if (!menu) return;
+					tcMobileMenuSet(menu, btn, menu.classList.contains('hidden'));
+				});
+				document.addEventListener('keydown', function(e) {
+					if (e.key !== 'Escape') return;
+					var menu = e.target.closest('[data-mobile-menu-id]');
+					if (!menu) return;
+					if (menu.classList.contains('hidden')) return;
+					var menuId = menu.getAttribute('data-mobile-menu-id');
+					var btn = document.querySelector('[data-mobile-menu-toggle="' + menuId + '"]');
+					if (!btn) return;
+					e.preventDefault();
+					tcMobileMenuSet(menu, btn, false);
 				});
 			}
 		</script>

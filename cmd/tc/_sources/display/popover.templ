@@ -33,41 +33,24 @@ func DefaultPopoverProps() PopoverProps {
 	}
 }
 
-type popoverPositionStyles struct {
-	Panel string
-}
-
-//nolint:gochecknoglobals // Package-level lookup table for popover position styles
-var popoverPositionMap = map[PopoverPosition]popoverPositionStyles{
-	PopoverPositionTop: {
-		Panel: "bottom-full left-1/2 -translate-x-1/2 mb-2",
-	},
-	PopoverPositionBottom: {
-		Panel: "top-full left-1/2 -translate-x-1/2 mt-2",
-	},
-	PopoverPositionLeft: {
-		Panel: "right-full top-1/2 -translate-y-1/2 me-2",
-	},
-	PopoverPositionRight: {
-		Panel: "left-full top-1/2 -translate-y-1/2 ms-2",
-	},
-}
-
-func popoverLookupPosition(pos PopoverPosition) popoverPositionStyles {
-	return utils.Lookup(popoverPositionMap, pos, popoverPositionMap[PopoverPositionBottom])
-}
-
 // Popover renders a button-triggered floating panel with arbitrary content.
 // Uses the native Popover API (popover="auto") for click-toggle via
 // popovertarget, light-dismiss, Escape-to-close, and top-layer rendering.
-// No JavaScript is emitted. See ADR-0017 for the migration strategy.
+//
+// Positioning: the Popover API promotes the panel to the top layer with
+// position:fixed (UA stylesheet), detaching it from the trigger's DOM
+// subtree. CSS classes therefore cannot anchor to the trigger. A thin
+// singleton script (popoverPositionScriptComponent) reads the trigger's
+// getBoundingClientRect() on open and sets style.left/top with viewport
+// clamping. See ADR-0017.
 //
 //	@display.Popover(display.PopoverProps{TriggerText: "Details"}) {
 //	   <p class="text-sm">Popover content goes here.</p>
 //	}
 templ Popover(props PopoverProps) {
 	{{ id := utils.EnsureID("popover", props.ID) }}
-	{{ pos := popoverLookupPosition(props.Position) }}
+	{{ pos := props.Position }}
+	{{ if pos == "" || !PopoverPositionIsValid(pos) { pos = PopoverPositionBottom } }}
 	<div
 		id={ id }
 		class={ utils.Class("relative inline-block text-start", props.Class) }
@@ -91,14 +74,14 @@ templ Popover(props PopoverProps) {
 		<div
 			id={ id + "-content" }
 			popover="auto"
-			class={ utils.Class(
-				"w-72 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 p-4 text-sm text-gray-900 dark:text-white",
-				pos.Panel,
-			) }
+			data-tc-anchor={ id + "-trigger" }
+			data-tc-position={ string(pos) }
+			class="w-72 rounded-md bg-white dark:bg-gray-800 shadow-lg dark:shadow-black/20 ring-1 ring-black/5 p-4 text-sm text-gray-900 dark:text-white"
 			role="dialog"
 			aria-labelledby={ id + "-trigger" }
 		>
 			{ children... }
 		</div>
 	</div>
+	@popoverPositionScriptComponent(props.Nonce)
 }

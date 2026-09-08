@@ -1,6 +1,9 @@
 package forms
 
-import "github.com/larsartmann/templ-components/utils"
+import (
+	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
+)
 
 // FilterDropdownProps configures a compact select dropdown purpose-built
 // for HTMX filter bars. On change, it auto-submits a GET request to HxGet
@@ -33,6 +36,21 @@ type FilterDropdownProps struct {
 	HxIndicator string
 	// HelpText shows a small caption below the select.
 	HelpText string
+	// Action is the no-JS fallback the wired form submits to via GET. When
+	// Wire is set, the component wraps the select in a GET form with a
+	// <noscript> Apply button so browsers without JavaScript still apply the
+	// filter (with a full-page load). Ignored when Wire is unset.
+	Action string
+	// Wire, when set with a non-empty URL, owns the auto-submit wiring in
+	// both dialects and the legacy HxGet/HxTarget/HxSwap/HxTrigger fields are
+	// ignored (HxInclude/HxIndicator still render — they are htmx-dialect
+	// extras outside the wire common subset, ADR-0036). Defaults applied by
+	// the component: Event resolves to change and ContentType to form
+	// encoding, so the request carries the filter fields as query parameters
+	// via the wrapping form. Wire.Target renders for htmx only; Datastar
+	// targeting is response-driven — wrap the handler in wire.Handler. An
+	// empty Wire.URL wires nothing (plain HTMX select).
+	Wire *wire.Action
 }
 
 // DefaultFilterDropdownProps returns sensible defaults.
@@ -78,48 +96,101 @@ func filterDropdownPreselect(opts []SelectOption, value string) []SelectOption {
 //	})
 templ FilterDropdown(props FilterDropdownProps) {
 	{{ opts := normalizeSelectOptions(filterDropdownPreselect(props.Options, props.Value)) }}
+	{{ wired := wireAttributesWithDefaults(props.Wire, wire.EventChange) }}
+	{{ isWired := props.Wire != nil && props.Wire.URL != "" }}
 	<div class={ utils.Class("inline-flex flex-col", props.Class) } { props.Attrs... }>
-		if props.Label != "" {
-			<label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
-				{ props.Label }
-			</label>
-		}
-		<select
-			name={ props.Name }
-			if props.ID != "" {
-				id={ props.ID }
-			}
-			class={ filterDropdownInputClass() }
-			hx-get={ templ.SafeURL(props.HxGet) }
-			hx-target={ props.HxTarget }
-			hx-trigger={ utils.Ternary(props.HxTrigger != "", props.HxTrigger, "change") }
-			if props.HxSwap != "" {
-				hx-swap={ props.HxSwap }
-			}
-			if props.HxInclude != "" {
-				hx-include={ props.HxInclude }
-			}
-			if props.HxIndicator != "" {
-				hx-indicator={ props.HxIndicator }
-			}
-			if props.AriaLabel != "" {
-				aria-label={ props.AriaLabel }
-			}
-		>
-			for _, opt := range opts {
-				<option
-					value={ opt.Value }
-					if opt.Disabled {
-						disabled
+		if isWired {
+			<form
+				if props.Action != "" {
+					action={ props.Action }
+				}
+				method="GET"
+				class="inline-flex flex-col"
+			>
+				if props.Label != "" {
+					<label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+						{ props.Label }
+					</label>
+				}
+				<select
+					name={ props.Name }
+					if props.ID != "" {
+						id={ props.ID }
 					}
-					if opt.Selected {
-						selected
+					class={ filterDropdownInputClass() }
+					{ wired... }
+					if props.HxInclude != "" {
+						hx-include={ props.HxInclude }
 					}
-				>{ opt.Label }</option>
+					if props.HxIndicator != "" {
+						hx-indicator={ props.HxIndicator }
+					}
+					if props.AriaLabel != "" {
+						aria-label={ props.AriaLabel }
+					}
+				>
+					@filterDropdownOptions(opts)
+				</select>
+				<noscript>
+					<button type="submit" class="mt-2 inline-flex items-center rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-1.5 text-sm font-semibold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600 dark:focus-visible:outline-blue-500">
+						Apply
+					</button>
+				</noscript>
+				if props.HelpText != "" {
+					<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+				}
+			</form>
+		} else {
+			if props.Label != "" {
+				<label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+					{ props.Label }
+				</label>
 			}
-		</select>
-		if props.HelpText != "" {
-			<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+			<select
+				name={ props.Name }
+				if props.ID != "" {
+					id={ props.ID }
+				}
+				class={ filterDropdownInputClass() }
+				hx-get={ templ.SafeURL(props.HxGet) }
+				hx-target={ props.HxTarget }
+				hx-trigger={ utils.Ternary(props.HxTrigger != "", props.HxTrigger, "change") }
+				if props.HxSwap != "" {
+					hx-swap={ props.HxSwap }
+				}
+				if props.HxInclude != "" {
+					hx-include={ props.HxInclude }
+				}
+				if props.HxIndicator != "" {
+					hx-indicator={ props.HxIndicator }
+				}
+				if props.AriaLabel != "" {
+					aria-label={ props.AriaLabel }
+				}
+			>
+				@filterDropdownOptions(opts)
+			</select>
+			if props.HelpText != "" {
+				<p class="mt-1 text-xs text-gray-500 dark:text-gray-400">{ props.HelpText }</p>
+			}
 		}
 	</div>
+}
+
+// filterDropdownOptions renders the shared option loop for both FilterDropdown
+// branches (the legacy HTMX select and the wired dual-transport form).
+// Duplicated branch inners are required by the templ DSL — a tag cannot open
+// in one if-branch and close in another (see ADR-0009).
+templ filterDropdownOptions(opts []SelectOption) {
+	for _, opt := range opts {
+		<option
+			value={ opt.Value }
+			if opt.Disabled {
+				disabled
+			}
+			if opt.Selected {
+				selected
+			}
+		>{ opt.Label }</option>
+	}
 }

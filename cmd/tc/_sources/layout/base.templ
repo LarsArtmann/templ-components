@@ -39,12 +39,41 @@ func darkThemeColor(props PageProps) string {
 	return DefaultDarkThemeColor
 }
 
+// resolveLocale returns locale if non-empty, otherwise the default "en".
+// Used by Base and Minimal so the html lang attribute always has a valid value.
+func resolveLocale(locale string) string {
+	if locale == "" {
+		return "en"
+	}
+	return locale
+}
+
+// ogType returns the Open Graph type, defaulting to "website" when empty.
+func ogType(props PageProps) string {
+	if props.OGType != "" {
+		return props.OGType
+	}
+	return "website"
+}
+
+// skipLinkText returns the accessibility skip-link text, defaulting to
+// "Skip to main content" when empty.
+func skipLinkText(text string) string {
+	if text != "" {
+		return text
+	}
+	return "Skip to main content"
+}
+
 // PageProps configures the base page layout
 type PageProps struct {
 	Title          string
 	Description    string
 	Locale         string
 	OGImage        string
+	// OGType sets the Open Graph type for the og:type meta tag. Defaults to
+	// "website" when empty. Common values: "website", "profile", "article".
+	OGType         string
 	ThemeColor     string
 	DarkThemeColor string
 	// CSSPath auto-injects `<link rel="stylesheet" href={CSSPath}>` into the
@@ -73,13 +102,21 @@ type PageProps struct {
 	// to a self-hosted path. The value becomes the <script src> attribute verbatim.
 	// Example: "/static/htmx.min.js". When set, HTMXVersion/HTMXCDN/HTMXUseSRI
 	// are ignored for the main script (no SRI is emitted because the asset is
-	// same-origin). The response-targets extension still uses HTMXCDN unless
-	// HTMXResponseTargets is false. See ADR-0007.
+	// same-origin). The CDN response-targets extension is also suppressed — a
+	// self-hoster manages extensions too. Add your own <script> tag for it if
+	// needed. See ADR-0007.
 	HTMXSrc string
 	// HTMXResponseTargets controls whether the htmx response-targets extension
-	// is loaded alongside htmx. Defaults to true for backward compatibility;
-	// set to false to skip the extra request when you don't use it.
+	// is loaded from the CDN alongside htmx. Defaults to true for backward
+	// compatibility; set to false to skip the extra request. Ignored when
+	// HTMXSrc is set (self-host implies you manage extensions).
 	HTMXResponseTargets bool
+	// SkipLinkText overrides the default "Skip to main content" text for the
+	// accessibility skip link. Useful for i18n.
+	SkipLinkText        string
+	// BodyDataAttrs adds extra attributes to the <body> element (e.g.
+	// data-language). Keys are rendered as-is. Pass nil for no extra attributes.
+	BodyDataAttrs       templ.Attributes
 	BodyClass           string
 	Nonce               string
 	HeadContent         templ.Component
@@ -101,11 +138,14 @@ type PageProps struct {
 func DefaultPageProps() PageProps {
 	return PageProps{
 		Locale:              "en",
+		OGType:              "website",
+		SkipLinkText:        "Skip to main content",
 		ThemeColor:          DefaultThemeColor,
 		DarkThemeColor:      DefaultDarkThemeColor,
 		CSSPath:             "/app.css",
 		Favicon:             "/favicon.svg",
 		HTMXVersion:         HTMXVersion2_0_10,
+		HTMXSrc:             HTMXSelfHost,
 		HTMXUseSRI:          true,
 		HTMXResponseTargets: true,
 		SecurityHeaders:     true,
@@ -120,12 +160,7 @@ func DefaultPageProps() PageProps {
 //	  <h1>My Page</h1>
 //	}
 templ Base(props PageProps) {
-	{{
-		locale := props.Locale
-		if locale == "" {
-			locale = "en"
-		}
-	}}
+	{{ locale := resolveLocale(props.Locale) }}
 	<!DOCTYPE html>
 	<html lang={ locale } class="h-full">
 		<head>
@@ -149,7 +184,7 @@ templ Base(props PageProps) {
 			if props.Description != "" {
 				<meta property="og:description" content={ props.Description }/>
 			}
-			<meta property="og:type" content="website"/>
+			<meta property="og:type" content={ ogType(props) }/>
 			if props.OGImage != "" {
 				<meta property="og:image" content={ props.OGImage }/>
 			}
@@ -178,7 +213,9 @@ templ Base(props PageProps) {
 					<link rel="preconnect" href={ cdnOrigin } crossorigin/>
 					<link rel="dns-prefetch" href={ cdnOrigin }/>
 				}
-				if props.HTMXSrc != "" {
+				if props.HTMXSrc == HTMXSelfHost {
+					@htmxSelfHostComponent(props.Nonce)
+				} else if props.HTMXSrc != "" {
 					<script src={ props.HTMXSrc }></script>
 				} else if props.HTMXUseSRI {
 					{{ mainSRI := htmxMainSRI(props.HTMXVersion) }}
@@ -190,7 +227,7 @@ templ Base(props PageProps) {
 				} else {
 					<script src={ htmxScriptURL(props.HTMXVersion, props.HTMXCDN) }></script>
 				}
-				if props.HTMXResponseTargets {
+				if props.HTMXResponseTargets && props.HTMXSrc == "" {
 					if props.HTMXUseSRI {
 						<script src={ responseTargetsURL(props.HTMXCDN) } integrity={ sriResponseTargets } crossorigin="anonymous"></script>
 					} else {
@@ -202,9 +239,9 @@ templ Base(props PageProps) {
 				@props.HeadContent
 			}
 		</head>
-		<body class={ props.BodyClass }>
+		<body class={ props.BodyClass } { props.BodyDataAttrs... }>
 			<a href="#main-content" class="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:start-2 focus:z-50 focus:bg-blue-600 dark:focus:bg-blue-500 focus:text-white focus:px-4 focus:py-2 focus:rounded-md focus:shadow-lg focus:outline-hidden focus:ring-2 focus:ring-offset-2 dark:focus:ring-offset-gray-900 focus:ring-blue-500 dark:focus:ring-blue-400">
-				Skip to main content
+				{ skipLinkText(props.SkipLinkText) }
 			</a>
 			<main id="main-content" tabindex="-1" class="flex-1">
 				{ children... }
@@ -237,12 +274,7 @@ func DefaultMinimalProps() MinimalProps {
 //	  <h1>Hello</h1>
 //	}
 templ Minimal(props MinimalProps) {
-	{{
-		locale := props.Locale
-		if locale == "" {
-			locale = "en"
-		}
-	}}
+	{{ locale := resolveLocale(props.Locale) }}
 	<!DOCTYPE html>
 	<html lang={ locale }>
 		<head>

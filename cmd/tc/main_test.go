@@ -42,6 +42,10 @@ func TestSourcesMatchPackageFiles(t *testing.T) {
 			// Starter CSS is a curated template, not a copy of a package file.
 			return nil
 		}
+		if rel == filepath.Join("datastar", datastarBumpProtocolDoc) {
+			// Scaffolder-owned checklist — no package-file counterpart.
+			return nil
+		}
 
 		embedded, err := sourcesFS.ReadFile(path)
 		if err != nil {

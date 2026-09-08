@@ -66,9 +66,7 @@ templ FormFieldWrapper(props FormFieldProps) {
 		@Label(props.ID, props.Label, props.Required)
 	}
 	{ children... }
-	if props.Error != "" {
-		@FieldError(props.ID, props.Error)
-	}
+	@FieldError(props.ID, props.Error)
 	if props.HelpText != "" {
 		@helpText(props.ID, props.HelpText)
 	}

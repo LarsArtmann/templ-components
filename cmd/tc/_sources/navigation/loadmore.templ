@@ -4,6 +4,7 @@ import (
 	"net/url"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 // LoadMoreProps configures a "Load more" button for cursor-based pagination.
@@ -20,8 +21,20 @@ type LoadMoreProps struct {
 	// Label is the button text. Defaults to "Load more".
 	Label string
 	// InfiniteScroll, when true, adds hx-trigger="revealed" so the button
-	// auto-fires when scrolled into view (infinite scroll pattern).
+	// auto-fires when scrolled into view (infinite scroll pattern). This is
+	// htmx-specific: the Datastar dialect cannot express it in the wire
+	// contract's common subset, so it is ignored when Wire is set to the
+	// Datastar transport.
 	InfiniteScroll bool
+	// Wire, when set, re-renders the request wiring in the configured
+	// transport (see the utils/wire package, ADR-0036). Wire.URL replaces
+	// Endpoint (the cursor is appended to it exactly the same way); swap
+	// semantics stay self-replacement: under htmx the button keeps
+	// hx-swap="outerHTML" hx-target="this", under Datastar the fragment
+	// replaces this region by id-matching — set ID explicitly so the server
+	// can echo the wrapper id back (wire.Handler-style). Wire.Target and
+	// Wire.Method are ignored: pagination is a GET that replaces itself.
+	Wire *wire.Action
 }
 
 // DefaultLoadMoreProps returns sensible defaults.
@@ -40,6 +53,14 @@ func DefaultLoadMoreProps() LoadMoreProps {
 //	   Endpoint: "/api/items",
 //	   Cursor:   nextCursor,
 //	})
+//
+// Pass Wire to switch the dialect while keeping the semantics identical:
+//
+//	@navigation.LoadMore(navigation.LoadMoreProps{
+//	   ID:        "items-load-more",
+//	   Wire:      &wire.Action{Transport: wire.TransportDatastar, URL: "/api/items"},
+//	   Cursor:    nextCursor,
+//	})
 templ LoadMore(props LoadMoreProps) {
 	{{
 		label := props.Label
@@ -47,6 +68,9 @@ templ LoadMore(props LoadMoreProps) {
 			label = "Load more"
 		}
 		href := props.Endpoint
+		if props.Wire != nil {
+			href = props.Wire.URL
+		}
 		if props.Cursor != "" {
 			parsed, err := url.Parse(href)
 			if err == nil {
@@ -58,6 +82,15 @@ templ LoadMore(props LoadMoreProps) {
 				href = href + "?cursor=" + url.QueryEscape(props.Cursor)
 			}
 		}
+		wired := templ.Attributes{}
+		isDatastar := false
+		if props.Wire != nil {
+			a := *props.Wire
+			a.URL = href
+			a.Target = ""
+			wired = a.Attributes()
+			isDatastar = a.Transport == wire.TransportDatastar
+		}
 	}}
 	<div
 		id={ utils.EnsureID("load-more", props.ID) }
@@ -66,11 +99,22 @@ templ LoadMore(props LoadMoreProps) {
 	>
 		<button
 			type="button"
-			hx-get={ href }
-			hx-swap="outerHTML"
-			hx-target="this"
-			if props.InfiniteScroll {
-				hx-trigger="revealed"
+			{ wired... }
+			if props.Wire == nil {
+				hx-get={ href }
+				hx-swap="outerHTML"
+				hx-target="this"
+				if props.InfiniteScroll {
+					hx-trigger="revealed"
+				}
+			} else {
+				if !isDatastar && href != "" {
+					hx-swap="outerHTML"
+					hx-target="this"
+					if props.InfiniteScroll {
+						hx-trigger="revealed"
+					}
+				}
 			}
 			class={ "inline-flex items-center gap-2 rounded-md bg-white dark:bg-gray-800 px-4 py-2 text-sm font-semibold text-gray-700 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 cursor-pointer " + utils.TransitionColors + " focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:focus-visible:ring-blue-400" }
 			if props.AriaLabel != "" {

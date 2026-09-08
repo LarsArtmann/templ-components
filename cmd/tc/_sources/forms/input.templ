@@ -257,7 +257,5 @@ templ Checkbox(props CheckboxProps) {
 		</div>
 		@checkboxLabel(props.ID, props.Label, props.HelpText)
 	</div>
-	if props.Error != "" {
-		@FieldError(props.ID, props.Error)
-	}
+	@FieldError(props.ID, props.Error)
 }

@@ -12,7 +12,31 @@ import (
 // inactivePageLinkClass is the shared class for a non-current pagination page link.
 const inactivePageLinkClass = "relative inline-flex items-center px-4 py-2 text-sm font-semibold text-gray-900 dark:text-gray-200 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800 focus:z-20 focus:outline-offset-0"
 
-// PaginationProps configures a pagination component
+// paginationMobileClass returns the class for the mobile-only pagination row,
+// swapping sm: for @sm: when container-aware so the row responds to the
+// container's width. Both strings are complete Tailwind literals.
+func paginationMobileClass(containerAware bool) string {
+	if containerAware {
+		return "flex flex-1 justify-between @sm:hidden"
+	}
+	return "flex flex-1 justify-between sm:hidden"
+}
+
+// paginationDesktopClass returns the class for the desktop pagination row,
+// swapping sm: for @sm: when container-aware. Both strings are complete literals.
+func paginationDesktopClass(containerAware bool) string {
+	if containerAware {
+		return "hidden @sm:flex @sm:flex-1 @sm:items-center @sm:justify-between"
+	}
+	return "hidden sm:flex sm:flex-1 sm:items-center sm:justify-between"
+}
+
+// PaginationProps configures a pagination component.
+//
+// Set ContainerAware: true to make the mobile/desktop pagination controls
+// respond to the parent container's width (CSS @container) instead of the
+// viewport. Useful when Pagination is placed inside a card footer, drawer,
+// sidebar, or other constrained layout. See ADR-0018.
 type PaginationProps struct {
 	utils.BaseProps
 	CurrentPage uint
@@ -20,6 +44,10 @@ type PaginationProps struct {
 	BaseURL     string
 	QueryParam  string
 	MaxVisible  uint
+	// ContainerAware, when true, adds @container to the nav and swaps sm:
+	// breakpoint classes for @sm: so mobile/desktop controls respond to the
+	// container width, not the viewport. Default false (viewport breakpoints).
+	ContainerAware bool
 }
 
 // DefaultPaginationProps returns sensible defaults
@@ -157,14 +185,15 @@ templ Pagination(props PaginationProps) {
 				id={ props.ID }
 			}
 			aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Pagination") }
-			class={ utils.Class("flex items-center justify-between", props.Class) }
+			class={ utils.Class("flex items-center justify-between", props.Class),
+				templ.KV("@container", props.ContainerAware) }
 			{ props.Attrs... }
 		>
-			<div class="flex flex-1 justify-between sm:hidden">
+			<div class={ paginationMobileClass(props.ContainerAware) }>
 				@mobilePageButton(props.CurrentPage > 1, props.pageURL(props.CurrentPage-1), "", "Previous")
 				@mobilePageButton(props.CurrentPage < props.TotalPages, props.pageURL(props.CurrentPage+1), "ms-3", "Next")
 			</div>
-			<div class="hidden sm:flex sm:flex-1 sm:items-center sm:justify-between">
+			<div class={ paginationDesktopClass(props.ContainerAware) }>
 				<div>
 					<p class="text-sm text-gray-700 dark:text-gray-300">
 						Showing page

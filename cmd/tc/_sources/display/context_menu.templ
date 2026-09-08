@@ -23,11 +23,12 @@ func DefaultContextMenuProps() ContextMenuProps {
 }
 
 // ContextMenu wraps children in a container that shows a custom context
-// menu on right-click. Uses the native Popover API (popover="auto") for
-// light-dismiss, Escape-to-close, and top-layer rendering. A small
-// CSP-safe singleton script handles the contextmenu event → showPopover()
-// call and positions the menu at the cursor (via style.inset).
-// See ADR-0017 for the migration strategy.
+// menu on right-click or via the keyboard (Shift+F10 / the Menu key). Uses
+// the native Popover API (popover="auto") for light-dismiss,
+// Escape-to-close, and top-layer rendering. CSP-safe singleton scripts handle
+// the contextmenu → showPopover() cursor positioning, the Shift+F10/ContextMenu
+// trigger-position opener, and shared menu keyboard navigation (ArrowUp/Down
+// with RTL mapping, Home/End, focus-first-on-open). See ADR-0017.
 //
 //	@display.ContextMenu(display.ContextMenuProps{Items: []display.ContextMenuItem{
 //	   {Text: "Edit", Href: "/edit"},
@@ -59,9 +60,10 @@ templ ContextMenu(props ContextMenuProps) {
 					<a
 						href={ templ.SafeURL(item.Href) }
 						role="menuitem"
-						class="block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+						tabindex="-1"
+						class={ utils.Class("block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700", utils.Ternary(item.Disabled, "opacity-50 pointer-events-none", "")) }
 						if item.Disabled {
-							class="opacity-50 pointer-events-none"
+							aria-disabled="true"
 						}
 					>
 						{ item.Text }
@@ -69,9 +71,10 @@ templ ContextMenu(props ContextMenuProps) {
 				} else {
 					<span
 						role="menuitem"
-						class="block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300"
+						tabindex="-1"
+						class={ utils.Class("block px-3 py-1.5 text-sm text-gray-700 dark:text-gray-300", utils.Ternary(item.Disabled, "opacity-50 pointer-events-none", "")) }
 						if item.Disabled {
-							class="opacity-50 pointer-events-none"
+							aria-disabled="true"
 						}
 					>
 						{ item.Text }
@@ -93,7 +96,22 @@ templ ContextMenu(props ContextMenuProps) {
 					menu.style.inset = e.clientY + 'px auto auto ' + e.clientX + 'px';
 					menu.showPopover();
 				});
+				document.addEventListener('keydown', function(e) {
+					var isCtxKey = e.key === 'ContextMenu';
+					var isShiftF10 = e.key === 'F10' && e.shiftKey;
+					if (!isCtxKey && !isShiftF10) return;
+					var trigger = e.target.closest('[data-tc-ctxmenu-trigger]');
+					if (!trigger) return;
+					e.preventDefault();
+					var id = trigger.getAttribute('data-tc-ctxmenu-trigger');
+					var menu = document.getElementById(id);
+					if (!menu) return;
+					var r = trigger.getBoundingClientRect();
+					menu.style.inset = r.bottom + 'px auto auto ' + r.left + 'px';
+					menu.showPopover();
+				});
 			})();
 		</script>
+		@menuKeyboardNavScriptComponent(props.Nonce)
 	}
 }

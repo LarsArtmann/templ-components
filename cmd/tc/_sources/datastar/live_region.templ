@@ -78,23 +78,35 @@ templ LiveRegion(props LiveRegionProps) {
 // clear the busy state too so the static region content stays readable
 // (the global SSEErrorHandling handler announces the failure itself).
 templ liveRegionBusyScript(nonce string) {
-	<script nonce={ nonce }>
-		(function() {
-			'use strict';
-			if (window.tcLiveBusyAttached) return;
-			window.tcLiveBusyAttached = true;
-			function tcClearLiveBusy() {
-				document.querySelectorAll('[data-tc-live-busy]').forEach(function(el) {
-					el.removeAttribute('aria-busy');
-					el.removeAttribute('data-tc-live-busy');
-				});
-			}
-			document.addEventListener('datastar-fetch', function(evt) {
-				var type = (evt.detail || {}).type;
-				if (type === 'datastar-patch-elements' || type === 'datastar-patch-signals' || type === 'error' || type === 'retries-failed') {
-					tcClearLiveBusy();
+	<script { liveRegionBusyScriptAttrs(nonce)... }>
+			(function() {
+				'use strict';
+				if (window.tcLiveBusyAttached) return;
+				window.tcLiveBusyAttached = true;
+				function tcClearLiveBusy() {
+					document.querySelectorAll('[data-tc-live-busy]').forEach(function(el) {
+						el.removeAttribute('aria-busy');
+						el.removeAttribute('data-tc-live-busy');
+					});
 				}
-			});
-		})();
-	</script>
+				document.addEventListener('datastar-fetch', function(evt) {
+					var type = (evt.detail || {}).type;
+					if (type === 'datastar-patch-elements' || type === 'datastar-patch-signals' || type === 'error' || type === 'retries-failed') {
+						tcClearLiveBusy();
+					}
+				});
+			})();
+		</script>
+}
+
+// liveRegionBusyScriptAttrs returns the nonce attribute for the busy
+// script. An empty nonce emits NO attribute at all — rendering
+// nonce="" breaks no-nonce and strict-CSP pages (issue #7), and the
+// theme scripts follow the same omit-when-empty rule.
+func liveRegionBusyScriptAttrs(nonce string) templ.Attributes {
+	if nonce == "" {
+		return nil
+	}
+
+	return templ.Attributes{"nonce": nonce}
 }

@@ -5,17 +5,6 @@ import (
 	"github.com/larsartmann/templ-components/utils"
 )
 
-// FeedbackType represents the visual style of an alert
-// Deprecated: Use FeedbackType instead. Will be removed in v1.0.
-type FeedbackType = FeedbackType
-
-const (
-	FeedbackSuccess = FeedbackSuccess
-	FeedbackError   = FeedbackError
-	FeedbackWarning = FeedbackWarning
-	FeedbackInfo    = FeedbackInfo
-)
-
 // AlertProps configures an alert banner
 type AlertProps struct {
 	utils.BaseProps
@@ -62,6 +51,7 @@ templ Alert(props AlertProps) {
 				}
 				<div class={ "text-sm", s.Text }>
 					<p>{ props.Message }</p>
+					{ children... }
 				</div>
 			</div>
 			if props.Dismissible {
@@ -69,7 +59,15 @@ templ Alert(props AlertProps) {
 			}
 		</div>
 		if props.Dismissible {
-			@templ.Raw("<script nonce=\"" + props.Nonce + "\">" + utils.DismissScript() + "</script>")
+			{{ nonce := props.Nonce }}
+			if nonce == "" {
+				{{ nonce = templ.GetNonce(ctx) }}
+			}
+			if nonce != "" {
+				@templ.Raw("<script nonce=\"" + nonce + "\">" + utils.DismissScript() + "</script>")
+			} else {
+				@templ.Raw("<script>" + utils.DismissScript() + "</script>")
+			}
 		}
 	</div>
 }

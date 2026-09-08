@@ -2,12 +2,79 @@ package layout
 
 import "github.com/larsartmann/templ-components/utils"
 
+// Lookup maps live in this .templ file (not split_types.go) so Tailwind's
+// content scanner detects the class strings — it only scans *.templ files.
+
+//nolint:gochecknoglobals // Package-level lookup table for split ratios
+var splitRatioLookup = map[SplitRatio]string{
+	SplitRatio1To2: "md:grid-cols-2",
+	SplitRatio1To3: "md:grid-cols-3",
+	SplitRatio1To4: "md:grid-cols-4",
+}
+
+// splitRatioLookupContainer mirrors splitRatioLookup with @container-keyed
+// breakpoints (@md:) so container-aware Splits respond to their parent's
+// width instead of the viewport. See ADR-0018.
+//
+//nolint:gochecknoglobals // Package-level lookup table for container-aware variant
+var splitRatioLookupContainer = map[SplitRatio]string{
+	SplitRatio1To2: "@md:grid-cols-2",
+	SplitRatio1To3: "@md:grid-cols-3",
+	SplitRatio1To4: "@md:grid-cols-4",
+}
+
+// splitRatioCols returns the grid-template-columns class for a ratio.
+func splitRatioCols(r SplitRatio, containerAware bool) string {
+	if containerAware {
+		return utils.Lookup(splitRatioLookupContainer, r, splitRatioLookupContainer[SplitRatioDefault])
+	}
+
+	return utils.Lookup(splitRatioLookup, r, splitRatioLookup[SplitRatioDefault])
+}
+
+//nolint:gochecknoglobals // Package-level lookup table
+var splitRatioMainSpanLookup = map[SplitRatio]string{
+	SplitRatio1To2: "md:col-span-1",
+	SplitRatio1To3: "md:col-span-2",
+	SplitRatio1To4: "md:col-span-3",
+}
+
+//nolint:gochecknoglobals // Package-level lookup table
+var splitRatioMainSpanLookupContainer = map[SplitRatio]string{
+	SplitRatio1To2: "@md:col-span-1",
+	SplitRatio1To3: "@md:col-span-2",
+	SplitRatio1To4: "@md:col-span-3",
+}
+
+// splitRatioMainSpan returns the col-span-N class for the Main column.
+func splitRatioMainSpan(r SplitRatio, containerAware bool) string {
+	if containerAware {
+		return utils.Lookup(splitRatioMainSpanLookupContainer, r, splitRatioMainSpanLookupContainer[SplitRatio1To3])
+	}
+
+	return utils.Lookup(splitRatioMainSpanLookup, r, splitRatioMainSpanLookup[SplitRatio1To3])
+}
+
+// splitAsideSpan returns the col-span-1 class for the Aside column.
+func splitAsideSpan(containerAware bool) string {
+	if containerAware {
+		return "@md:col-span-1"
+	}
+
+	return "md:col-span-1"
+}
+
 // Split renders a 2-column main + aside layout. It is the second most common
 // 2D pattern after AppShell: article+sidebar, detail+metadata, primary
 // content + related links.
 //
 // Both columns use minmax(0,1fr) per grid track to prevent grid blowout
 // (see ADR-0016). The layout stacks to a single column below md (mobile).
+//
+// Set ContainerAware: true to make the 2-column collapse respond to the
+// parent container's width (CSS @container) instead of the viewport. Useful
+// when Split is placed inside a sidebar, card body, drawer, or other
+// constrained layout. See ADR-0018.
 //
 // # RTL / logical ordering
 //
@@ -22,6 +89,16 @@ import "github.com/larsartmann/templ-components/utils"
 //	   Ratio:  layout.SplitRatio1To3,
 //	})
 templ Split(props SplitProps) {
+	if props.ContainerAware {
+		<div class="@container">
+			@splitInner(props)
+		</div>
+	} else {
+		@splitInner(props)
+	}
+}
+
+templ splitInner(props SplitProps) {
 	{{ gap := props.Gap }}
 	if gap == "" {
 		{{ gap = "gap-6" }}
@@ -32,7 +109,7 @@ templ Split(props SplitProps) {
 		}
 		class={ utils.Class(
 			"grid grid-cols-1",
-			splitRatioCols(props.Ratio),
+			splitRatioCols(props.Ratio, props.ContainerAware),
 			gap,
 			props.Class,
 		) }
@@ -42,17 +119,17 @@ templ Split(props SplitProps) {
 		{ props.Attrs... }
 	>
 		if props.AsidePosition == AsidePositionStart && props.Aside != nil {
-			<aside class="md:col-span-1 min-w-0">
+			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") }>
 				@props.Aside
 			</aside>
 		}
 		if props.Main != nil {
-			<div class={ utils.Class("min-w-0", splitRatioMainSpan(props.Ratio)) }>
+			<div class={ utils.Class("min-w-0", splitRatioMainSpan(props.Ratio, props.ContainerAware)) }>
 				@props.Main
 			</div>
 		}
 		if props.AsidePosition != AsidePositionStart && props.Aside != nil {
-			<aside class="md:col-span-1 min-w-0">
+			<aside class={ utils.Class(splitAsideSpan(props.ContainerAware), "min-w-0") }>
 				@props.Aside
 			</aside>
 		}

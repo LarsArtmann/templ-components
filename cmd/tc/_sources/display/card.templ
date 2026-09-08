@@ -1,13 +1,15 @@
 package display
 
 import (
+	"strings"
+
 	"github.com/larsartmann/templ-components/htmx"
 	"github.com/larsartmann/templ-components/icons"
-	"github.com/larsartmann/templ-components/utils/svg"
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
 )
 
-const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs"
+const cardShellClass = "bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-lg shadow-xs print:shadow-none print:border-0 print:bg-transparent"
 
 // CardPadding defines the internal padding of a card
 type CardPadding string
@@ -41,6 +43,11 @@ type CardProps struct {
 	// composition. If both are set, Body takes precedence.
 	Body    templ.Component
 	Padding CardPadding
+	// TitleTag overrides the heading element for the card title.
+	// Defaults to "h3" when empty. Set to "h2" when the card is the
+	// first heading level after a page <h1> to maintain correct heading
+	// order for screen-reader navigation.
+	TitleTag string
 	// TitleClass, when set, overrides the default <h3> title classes. Consumer
 	// classes are merged LAST so they win via tailwind-merge.
 	TitleClass string
@@ -49,7 +56,12 @@ type CardProps struct {
 	HeaderClass string
 	// ContainerAware, when true, wraps the card in a @container div and swaps
 	// sm: breakpoint classes for @sm: so padding adapts to container width,
-	// not the viewport. Default false (viewport breakpoints).
+	// not the viewport. Default false (viewport breakpoints). The @container
+	// wrapper applies container-type: inline-size containment, which
+	// suppresses the card's intrinsic width: inside shrink-to-fit parents
+	// (flex rows, inline-block, auto-sized grid columns) a container-aware
+	// card collapses to zero width unless the parent provides a definite
+	// width. That is why Card is opt-in. See ADR-0018.
 	ContainerAware bool
 }
 
@@ -115,7 +127,20 @@ templ cardInner(props CardProps) {
 			<div class={ utils.Class("flex items-center justify-between "+cardHeaderPaddingClass(props.ContainerAware)+" border-b border-gray-200 dark:border-gray-700", props.HeaderClass) }>
 				<div>
 					if props.Title != "" {
-						<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white", props.TitleClass) }>{ props.Title }</h3>
+						switch props.TitleTag {
+							case "h1":
+								<h1 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h1>
+							case "h2":
+								<h2 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h2>
+							case "h4":
+								<h4 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h4>
+							case "h5":
+								<h5 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h5>
+							case "h6":
+								<h6 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h6>
+							default:
+								<h3 class={ utils.Class("text-base font-semibold leading-6 text-gray-900 dark:text-white break-after-avoid", props.TitleClass) }>{ props.Title }</h3>
+						}
 					}
 					if props.Subtitle != "" {
 						<p class={ utils.Class(mutedTextClass, "mt-1") }>{ props.Subtitle }</p>
@@ -217,6 +242,28 @@ const (
 	TrendNone TrendDirection = "none"
 )
 
+// StatTone selects the semantic color of the StatCard icon tile. The zero
+// value is the neutral default (blue) so existing call sites are unaffected.
+type StatTone string
+
+// Stat tile tones. Match the palette of Badge/BadgeType: blue (default),
+// green, yellow, red, purple.
+const (
+	StatToneBlue   StatTone = "blue"
+	StatToneGreen  StatTone = "green"
+	StatToneYellow StatTone = "yellow"
+	StatToneRed    StatTone = "red"
+	StatTonePurple StatTone = "purple"
+)
+
+// StatToneIsValid reports whether v is one of the defined StatTone constants.
+// Map-driven off statTileLookup, so adding a tone constant keeps it in sync.
+func StatToneIsValid(v StatTone) bool {
+	_, ok := statTileLookup[v]
+
+	return ok
+}
+
 // StatCardProps configures a dashboard stat card
 type StatCardProps struct {
 	utils.BaseProps
@@ -224,6 +271,9 @@ type StatCardProps struct {
 	Label  string
 	Change string
 	Trend  TrendDirection
+	// Tone selects the semantic color of the Icon tile. Empty/unknown
+	// values fall back to the blue default.
+	Tone StatTone
 	// Icon optionally renders a leading icon tile (e.g. icons.Users).
 	Icon icons.Name
 	// Href, when non-empty, wraps the whole card in an <a> so the card acts
@@ -237,6 +287,11 @@ type StatCardProps struct {
 	HxTarget string
 	// HxSwap specifies the hx-swap attribute (e.g. htmx.SwapInnerHTML, htmx.SwapOuterHTML).
 	HxSwap htmx.SwapStyle
+	// ValueID, when non-empty, sets the id attribute on the value <dd> node.
+	// Use on live-updating dashboards whose scripts address the value
+	// directly instead of querying the card's internal structure — so a
+	// markup refactor inside the card cannot break the script's selector.
+	ValueID string
 }
 
 // DefaultStatCardProps returns sensible defaults
@@ -260,6 +315,31 @@ func normalizeTrend(t TrendDirection) TrendDirection {
 		return t
 	}
 	return TrendNone
+}
+
+// statTileLookup maps each StatTone onto the icon tile background and icon
+// color classes. Unknown/empty tones fall back to the blue default.
+//
+//nolint:gochecknoglobals // Package-level lookup table, same pattern as button variants
+var statTileLookup = map[StatTone]string{
+	StatToneBlue:   "bg-blue-50 dark:bg-blue-900/30|h-6 w-6 text-blue-600 dark:text-blue-400",
+	StatToneGreen:  "bg-green-50 dark:bg-green-900/30|h-6 w-6 text-green-600 dark:text-green-400",
+	StatToneYellow: "bg-yellow-50 dark:bg-yellow-900/30|h-6 w-6 text-yellow-600 dark:text-yellow-400",
+	StatToneRed:    "bg-red-50 dark:bg-red-900/30|h-6 w-6 text-red-600 dark:text-red-400",
+	StatTonePurple: "bg-purple-50 dark:bg-purple-900/30|h-6 w-6 text-purple-600 dark:text-purple-400",
+}
+
+// statTileClasses returns the tile background class and icon class for the
+// tone, falling back to blue for unknown values.
+func statTileClasses(tone StatTone) (tile, icon string) {
+	classes, ok := statTileLookup[tone]
+	if !ok {
+		classes = statTileLookup[StatToneBlue]
+	}
+
+	tile, icon, _ = strings.Cut(classes, "|")
+
+	return tile, icon
 }
 
 // StatCard renders a dashboard stat card with value, label, optional change
@@ -322,9 +402,7 @@ templ StatCard(props StatCardProps) {
 templ statCardInner(props StatCardProps) {
 	if props.Icon != "" {
 		<div class="flex items-center gap-4">
-			<div class="flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg bg-blue-50 dark:bg-blue-900/30">
-				@icons.Icon(props.Icon, "h-6 w-6 text-blue-600 dark:text-blue-400")
-			</div>
+			@statTile(props.Tone, props.Icon)
 			<dl class="min-w-0 flex-1">
 				@statCardFigures(props)
 			</dl>
@@ -336,15 +414,29 @@ templ statCardInner(props StatCardProps) {
 	}
 }
 
+// statTile renders the colored icon tile; the tone picks the semantic color.
+templ statTile(tone StatTone, icon icons.Name) {
+	{{ tile, iconClass := statTileClasses(tone) }}
+	<div class={ "flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-lg", tile }>
+		@icons.Icon(icon, iconClass)
+	</div>
+}
+
 // statCardFigures renders the label, value, and optional change indicator shared
 // by both the icon and no-icon StatCard layouts.
 templ statCardFigures(props StatCardProps) {
 	{{ trend := normalizeTrend(props.Trend) }}
-	<dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{ props.Label }</dt>
-	<div class="mt-1 flex items-baseline">
-		<dd class="text-2xl font-semibold text-gray-900 dark:text-white">{ props.Value }</dd>
+	<div class="mt-1 flex flex-col">
+		<dt class="text-sm font-medium text-gray-500 dark:text-gray-400 truncate">{ props.Label }</dt>
+		<dd
+			if props.ValueID != "" {
+				id={ props.ValueID }
+			}
+			class={ "text-2xl font-semibold text-gray-900 dark:text-white",
+				templ.KV("flex flex-wrap items-baseline", props.Change != "") }
+		>{ props.Value }
 		if props.Change != "" {
-			<div
+			<span
 				class={ "ms-2 flex items-baseline text-sm font-semibold",
 				templ.KV("text-green-600 dark:text-green-400", trend == TrendUp),
 				templ.KV("text-red-600 dark:text-red-400", trend == TrendDown),
@@ -368,8 +460,9 @@ templ statCardFigures(props StatCardProps) {
 							Holding at
 					}
 				</span>
-				{ props.Change }
-			</div>
-		}
+					{ props.Change }
+				</span>
+			}
+		</dd>
 	</div>
 }
