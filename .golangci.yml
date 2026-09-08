@@ -278,6 +278,13 @@ linters:
           - contextcheck
           - paralleltest
           - wrapcheck
+      # The forms pattern pack visual goldens render the same card
+      # compositions as static templ components (contextcheck/wrapcheck
+      # misfire on chained component renders).
+      - path: visualtest/wire_pack_visual_test\.go
+        linters:
+          - contextcheck
+          - wrapcheck
     paths:
       - \.gen\.go$
       - _templ\.go$
