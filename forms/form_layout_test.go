@@ -98,9 +98,19 @@ func TestFormLayoutInlineFieldGrouping(t *testing.T) {
 
 	output := utils.Render(t, page)
 
-	groups := strings.Count(output, `<div class="basis-56 flex-1 min-w-40">`)
+	// Count by a single stable token (utils.Class/tailwind-merge reorders
+	// class tokens — never assert ordered substrings, AGENTS.md convention).
+	groups := strings.Count(output, "basis-56")
 	if groups != 2 {
 		t.Errorf("Inline form must group each field into one flex item; found %d group divs, want 2\noutput:\n%s", groups, output)
+	}
+
+	utils.AssertContainsAll(t, output, "min-w-40", "flex-1", "basis-56")
+
+	// Structural: each group div must open immediately before its label, so
+	// label + control live inside ONE flex item (not scattered siblings).
+	if n := strings.Count(output, `basis-56"><label`); n != 2 {
+		t.Errorf("group div must wrap the label; found %d label-adjacent groups, want 2", n)
 	}
 
 	labels := strings.Count(output, "<label")
@@ -109,12 +119,8 @@ func TestFormLayoutInlineFieldGrouping(t *testing.T) {
 		t.Errorf("two labeled inputs expected; got %d labels, %d inputs", labels, inputs)
 	}
 
-	// Structural check: the label must sit INSIDE the group div (group div
-	// opens before each label, no group close between them). The exact
-	// ordering assertion: group div count == label count == input count means
-	// nothing was scattered between groups.
 	stacked := utils.Render(t, Form(FormProps{Action: "/x"}))
-	if strings.Contains(stacked, "min-w-40") {
+	if strings.Contains(stacked, "basis-56") {
 		t.Error("Stack layout must NOT emit the inline grouping div")
 	}
 }
