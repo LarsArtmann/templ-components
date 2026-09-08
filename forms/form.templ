@@ -300,7 +300,9 @@ templ formInner(props FormProps) {
 			<input type="hidden" name={ csrfName } value={ props.CSRFToken }/>
 		}
 		if formLayoutEffective(props) == FormLayoutInline {
-			@formInlineFields(ctx)
+			@formInlineFields(ctx) {
+				{ children... }
+			}
 		} else {
 			{ children... }
 		}

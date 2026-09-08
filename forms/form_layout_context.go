@@ -19,13 +19,18 @@ type formLayoutContextKey struct{}
 // demo audit's f25 finding; the demo had to hand-patch every field with
 // Class: "sm:w-auto sm:min-w-40" to work around it).
 //
-// The ctx argument is the templ render context carrying the Form's children;
-// they are re-rendered under the marker context unchanged otherwise.
+// The children are injected via the templ block syntax (read from the render
+// context — templ clears children from the template ctx before the body
+// renders), then re-rendered under the marker context unchanged otherwise.
 func formInlineFields(ctx context.Context) templ.Component {
-	children := templ.GetChildren(ctx)
 	inlineCtx := context.WithValue(ctx, formLayoutContextKey{}, FormLayoutInline)
 
-	return templ.ComponentFunc(func(_ context.Context, w io.Writer) error {
+	return templ.ComponentFunc(func(renderCtx context.Context, w io.Writer) error {
+		children := templ.GetChildren(renderCtx)
+		if children == nil {
+			children = templ.NopComponent
+		}
+
 		return children.Render(inlineCtx, w)
 	})
 }
