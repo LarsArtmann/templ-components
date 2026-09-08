@@ -1,4 +1,14 @@
-package visualtest
+// The forms pattern pack e2e file runs its tests SERIALLY on purpose (a
+// shared Chromium degrades under parallel tab load) and renders templ
+// fragments with background contexts inside test-server handlers — hence the
+// file-scoped linter waivers:
+//
+//	nolint:paralleltest — serial-by-design, see the comment above.
+//	nolint:contextcheck — fragment handlers intentionally render with
+//	context.Background(); the templ call chains carry the context internally.
+//	nolint:wrapcheck — test helpers return chromedp/templ errors unwrapped by
+//	design; the action stack identifies the failure point.
+package visualtest //nolint:contextcheck,paralleltest,wrapcheck
 
 import (
 	"context"
@@ -530,211 +540,241 @@ func packE2EPage(props layout.PageProps) templ.Component {
 			return err
 		}
 
-		write := func(s string) error {
-			_, err := io.WriteString(w, s)
+		pane := packPaneWriter{w: w}
 
+		if err := pane.write(`<div class="p-4 grid grid-cols-2 gap-8 items-start">`); err != nil {
 			return err
 		}
 
-		if err := write(`<div class="p-4 grid grid-cols-2 gap-8 items-start">`); err != nil {
+		for _, dialect := range packDialects() {
+			if err := pane.filterPane(ctx, dialect); err != nil {
+				return err
+			}
+
+			if err := pane.dropdownPane(ctx, dialect); err != nil {
+				return err
+			}
+
+			if err := pane.wizardPane(ctx, dialect); err != nil {
+				return err
+			}
+
+			if err := pane.uploadPane(ctx, dialect); err != nil {
+				return err
+			}
+
+			if err := pane.searchPane(ctx, dialect); err != nil {
+				return err
+			}
+		}
+
+		if err := pane.dirtyPane(ctx); err != nil {
 			return err
 		}
 
-		// Filter pane per dialect.
-		for _, dialect := range []wire.Transport{wire.TransportHTMX, wire.TransportDatastar} {
-			outID := packFilterOutRegion(dialect)
-			if err := write(
-				`<section id="` + strings.TrimPrefix(
-					packScopeID("filter", dialect),
-					"#",
-				) + `"><h2 class="text-sm font-semibold mb-2">filter ` + string(
-					dialect,
-				) + `</h2>`,
-			); err != nil {
-				return err
-			}
-
-			if err := packFilterInput(dialect).Render(ctx, w); err != nil {
-				return err
-			}
-
-			if err := write(
-				`<div id="` + strings.TrimPrefix(outID, "#") + `" aria-live="polite"></div></section>`,
-			); err != nil {
-				return err
-			}
-		}
-
-		// Dropdown pane per dialect.
-		for _, dialect := range []wire.Transport{wire.TransportHTMX, wire.TransportDatastar} {
-			outID := packDropdownDatastarOut
-			target := ""
-
-			if dialect == wire.TransportHTMX {
-				outID = packDropdownHTMXOut
-				target = outID
-			}
-
-			if err := write(
-				`<section id="` + strings.TrimPrefix(
-					packScopeID("dropdown", dialect),
-					"#",
-				) + `"><h2 class="text-sm font-semibold mb-2">dropdown ` + string(
-					dialect,
-				) + `</h2>`,
-			); err != nil {
-				return err
-			}
-
-			if err := forms.FilterDropdown(forms.FilterDropdownProps{
-				Name:  "framework",
-				Label: "Framework",
-				Options: []forms.SelectOption{
-					{Value: "alpha", Label: "Alpha"},
-					{Value: "beta", Label: "Beta"},
-					{Value: "gamma", Label: "Gamma"},
-				},
-				Wire: packWire(dialect, wire.MethodGet, "/api/pack/dropdown", target),
-			}).Render(ctx, w); err != nil {
-				return err
-			}
-
-			if err := write(
-				`<div id="` + strings.TrimPrefix(outID, "#") + `" aria-live="polite"></div></section>`,
-			); err != nil {
-				return err
-			}
-		}
-
-		// Wizard pane per dialect.
-		for _, dialect := range []wire.Transport{wire.TransportHTMX, wire.TransportDatastar} {
-			regionID := packWizardHTMXRegion
-			if dialect == wire.TransportDatastar {
-				regionID = packWizardDatastarRegion
-			}
-
-			if err := write(
-				`<section><h2 class="text-sm font-semibold mb-2">wizard ` + string(
-					dialect,
-				) + `</h2><div id="` + strings.TrimPrefix(
-					regionID,
-					"#",
-				) + `">`,
-			); err != nil {
-				return err
-			}
-
-			if err := packWizardStep(dialect, 0, "").Render(ctx, w); err != nil {
-				return err
-			}
-
-			if err := write(`</div></section>`); err != nil {
-				return err
-			}
-		}
-
-		// Upload pane per dialect (results regions per dialect).
-		for _, dialect := range []wire.Transport{wire.TransportHTMX, wire.TransportDatastar} {
-			outID := packUploadDatastarOut
-			target := ""
-
-			if dialect == wire.TransportHTMX {
-				outID = packUploadHTMXOut
-				target = outID
-			}
-
-			if err := write(
-				`<section id="` + strings.TrimPrefix(
-					packScopeID("upload", dialect),
-					"#",
-				) + `"><h2 class="text-sm font-semibold mb-2">upload ` + string(
-					dialect,
-				) + `</h2>`,
-			); err != nil {
-				return err
-			}
-
-			uploadChildren := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
-				if err := forms.FileInput(forms.FileInputProps{Name: "attachment", Label: "Attachment"}).
-					Render(ctx, w); err != nil {
-					return err
-				}
-
-				return display.Button(display.ButtonProps{
-					Text:    "Upload",
-					Variant: display.ButtonPrimary,
-					Size:    display.ButtonSizeSM,
-					Type:    display.ButtonHTMLSubmit,
-				}).Render(ctx, w)
-			})
-
-			if err := forms.Form(forms.FormProps{
-				Action:  "/api/pack/upload",
-				Method:  forms.FormPost,
-				Enctype: forms.FormEnctypeMultipart,
-				BaseProps: utils.BaseProps{
-					Class: "space-y-3",
-				},
-				Wire: packWire(dialect, wire.MethodPost, "/api/pack/upload", target),
-			}).Render(templ.WithChildren(ctx, uploadChildren), w); err != nil {
-				return err
-			}
-
-			if err := write(
-				`<div id="` + strings.TrimPrefix(outID, "#") + `" class="mt-3" aria-live="polite"></div></section>`,
-			); err != nil {
-				return err
-			}
-		}
-
-		// Search pane per dialect (region wraps result + form: round-trip).
-		for _, dialect := range []wire.Transport{wire.TransportHTMX, wire.TransportDatastar} {
-			regionID := packSearchHTMXRegion
-			if dialect == wire.TransportDatastar {
-				regionID = packSearchDatastarRegion
-			}
-
-			if err := write(
-				`<section><h2 class="text-sm font-semibold mb-2">search ` + string(
-					dialect,
-				) + `</h2><div id="` + strings.TrimPrefix(
-					regionID,
-					"#",
-				) + `" aria-live="polite">`,
-			); err != nil {
-				return err
-			}
-
-			if err := packSearchForm(dialect, "").Render(ctx, w); err != nil {
-				return err
-			}
-
-			if err := write(`</div></section>`); err != nil {
-				return err
-			}
-		}
-
-		// DirtyGuard pane (htmx only — the lifecycle is transport-agnostic).
-		if err := write(
-			`<section><h2 class="text-sm font-semibold mb-2">dirty guard</h2><div id="pack-dirty-region" aria-live="polite">`,
-		); err != nil {
-			return err
-		}
-
-		if err := packDirtyForm("").Render(ctx, w); err != nil {
-			return err
-		}
-
-		if err := write(`</div></section></div>`); err != nil {
-			return err
-		}
-
-		return nil
+		return pane.write(`</div>`)
 	})
 
 	return templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
 		return layout.Base(props).Render(templ.WithChildren(ctx, body), w)
 	})
+}
+
+// packPaneWriter renders the E2E page's HTML scaffolding (sections, region
+// divs) around library components. The render context is passed per call
+// (containedctx), the writer lives on the struct.
+type packPaneWriter struct {
+	w io.Writer
+}
+
+func (p packPaneWriter) write(s string) error {
+	_, err := io.WriteString(p.w, s)
+
+	return err
+}
+
+// render renders a library component into the pane.
+func (p packPaneWriter) render(ctx context.Context, c templ.Component) error {
+	return c.Render(ctx, p.w)
+}
+
+// openSection opens a section, optionally with an interaction-scope id.
+func (p packPaneWriter) openSection(scopeID, title string) error {
+	attr := ""
+	if scopeID != "" {
+		attr = ` id="` + strings.TrimPrefix(scopeID, "#") + `"`
+	}
+
+	return p.write(`<section` + attr + `><h2 class="text-sm font-semibold mb-2">` + title + `</h2>`)
+}
+
+// openRegion opens the results/swap region div for one pane.
+func (p packPaneWriter) openRegion(id, extraAttrs string) error {
+	if extraAttrs != "" {
+		extraAttrs = " " + extraAttrs
+	}
+
+	return p.write(`<div id="` + strings.TrimPrefix(id, "#") + `"` + extraAttrs + `>`)
+}
+
+func (p packPaneWriter) filterPane(ctx context.Context, dialect wire.Transport) error {
+	if err := p.openSection(packScopeID("filter", dialect), "filter "+string(dialect)); err != nil {
+		return err
+	}
+
+	if err := p.render(ctx, packFilterInput(dialect)); err != nil {
+		return err
+	}
+
+	if err := p.openRegion(packFilterOutRegion(dialect), `aria-live="polite"`); err != nil {
+		return err
+	}
+
+	return p.write(`</div></section>`)
+}
+
+func (p packPaneWriter) dropdownPane(ctx context.Context, dialect wire.Transport) error {
+	target := ""
+	if dialect == wire.TransportHTMX {
+		target = packDropdownHTMXOut
+	}
+
+	if err := p.openSection(packScopeID("dropdown", dialect), "dropdown "+string(dialect)); err != nil {
+		return err
+	}
+
+	if err := p.render(ctx, forms.FilterDropdown(forms.FilterDropdownProps{
+		Name:  "framework",
+		Label: "Framework",
+		Options: []forms.SelectOption{
+			{Value: "alpha", Label: "Alpha"},
+			{Value: "beta", Label: "Beta"},
+			{Value: "gamma", Label: "Gamma"},
+		},
+		Wire: packWire(dialect, wire.MethodGet, "/api/pack/dropdown", target),
+	})); err != nil {
+		return err
+	}
+
+	outID := packDropdownDatastarOut
+	if target != "" {
+		outID = target
+	}
+
+	if err := p.openRegion(outID, `aria-live="polite"`); err != nil {
+		return err
+	}
+
+	return p.write(`</div></section>`)
+}
+
+func (p packPaneWriter) wizardPane(ctx context.Context, dialect wire.Transport) error {
+	regionID := packWizardHTMXRegion
+	if dialect == wire.TransportDatastar {
+		regionID = packWizardDatastarRegion
+	}
+
+	if err := p.openSection("", "wizard "+string(dialect)); err != nil {
+		return err
+	}
+
+	if err := p.openRegion(regionID, ""); err != nil {
+		return err
+	}
+
+	if err := p.render(ctx, packWizardStep(dialect, 0, "")); err != nil {
+		return err
+	}
+
+	return p.write(`</div></section>`)
+}
+
+func (p packPaneWriter) uploadPane(ctx context.Context, dialect wire.Transport) error {
+	target := ""
+	if dialect == wire.TransportHTMX {
+		target = packUploadHTMXOut
+	}
+
+	if err := p.openSection(packScopeID("upload", dialect), "upload "+string(dialect)); err != nil {
+		return err
+	}
+
+	uploadChildren := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		if err := forms.FileInput(forms.FileInputProps{Name: "attachment", Label: "Attachment"}).
+			Render(ctx, w); err != nil {
+			return err
+		}
+
+		return display.Button(display.ButtonProps{
+			Text:    "Upload",
+			Variant: display.ButtonPrimary,
+			Size:    display.ButtonSizeSM,
+			Type:    display.ButtonHTMLSubmit,
+		}).Render(ctx, w)
+	})
+
+	if err := forms.Form(forms.FormProps{
+		Action:  "/api/pack/upload",
+		Method:  forms.FormPost,
+		Enctype: forms.FormEnctypeMultipart,
+		BaseProps: utils.BaseProps{
+			Class: "space-y-3",
+		},
+		Wire: packWire(dialect, wire.MethodPost, "/api/pack/upload", target),
+	}).Render(templ.WithChildren(ctx, uploadChildren), p.w); err != nil {
+		return err
+	}
+
+	outID := packUploadDatastarOut
+	if target != "" {
+		outID = target
+	}
+
+	if err := p.openRegion(outID, `class="mt-3" aria-live="polite"`); err != nil {
+		return err
+	}
+
+	return p.write(`</div></section>`)
+}
+
+// searchPane wraps the search region AROUND the form: the round-trip
+// response (verdict + fresh form) replaces the region's content.
+func (p packPaneWriter) searchPane(ctx context.Context, dialect wire.Transport) error {
+	regionID := packSearchHTMXRegion
+	if dialect == wire.TransportDatastar {
+		regionID = packSearchDatastarRegion
+	}
+
+	if err := p.openSection("", "search "+string(dialect)); err != nil {
+		return err
+	}
+
+	if err := p.openRegion(regionID, `aria-live="polite"`); err != nil {
+		return err
+	}
+
+	if err := p.render(ctx, packSearchForm(dialect, "")); err != nil {
+		return err
+	}
+
+	return p.write(`</div></section>`)
+}
+
+// dirtyPane is htmx only — the guard lifecycle is transport-agnostic.
+func (p packPaneWriter) dirtyPane(ctx context.Context) error {
+	if err := p.openSection("", "dirty guard"); err != nil {
+		return err
+	}
+
+	if err := p.openRegion(packDirtyRegion, `aria-live="polite"`); err != nil {
+		return err
+	}
+
+	if err := p.render(ctx, packDirtyForm("")); err != nil {
+		return err
+	}
+
+	return p.write(`</div></section>`)
 }
 
 // packGate returns the readiness poll expression for a dialect.
@@ -984,6 +1024,26 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 				region = packWizardDatastarRegion
 			}
 
+			// packWizardExpect settles a swap (optionally filling a field
+			// first), submits until the needle appears, and wraps failures
+			// with the phase name.
+			packWizardExpect := func(phase string, fill chromedp.Action, needle string) error {
+				pre := []chromedp.Action{waitSwapSettled()}
+				if fill != nil {
+					pre = append(pre, fill)
+				}
+
+				if err := chromedp.Run(ctx, pre...); err != nil {
+					return fmt.Errorf("%s prepare: %w", phase, err)
+				}
+
+				if err := packSubmitUntil(ctx, region, region, needle); err != nil {
+					return fmt.Errorf("%s: %w", phase, err)
+				}
+
+				return nil
+			}
+
 			var ok bool
 
 			if err := chromedp.Run(ctx,
@@ -994,25 +1054,20 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 			}
 
 			// Step 0: empty email → inline error, no advance.
-			if err := packSubmitUntil(ctx, region, region, packWizardEmailBad); err != nil {
-				t.Fatalf("%s wizard step 0 (invalid): %v", dialect, err)
+			if err := packWizardExpect("step 0 (invalid)", nil, packWizardEmailBad); err != nil {
+				t.Fatalf("%s wizard: %v", dialect, err)
 			}
 
 			if err := chromedp.Run(ctx,
 				chromedp.Poll(regionExistsExpr(region, `input[name="email"]`), &ok),
-				waitSwapSettled(),
-				// Step 0: valid email → advance to profile.
-				setFieldValue(region, `input[name="email"]`, "ada@example.com"),
 			); err != nil {
-				t.Fatalf("%s wizard step 0 fill: %v", dialect, err)
+				t.Fatalf("%s wizard step 0 still present: %v", dialect, err)
 			}
 
-			if err := packSubmitUntil(ctx, region, region, "Full name"); err != nil {
-				t.Fatalf("%s wizard step 0 (advance): %v", dialect, err)
-			}
-
-			if err := chromedp.Run(ctx, waitSwapSettled()); err != nil {
-				t.Fatalf("%s wizard settle: %v", dialect, err)
+			// Step 0: valid email → advance to profile.
+			fillEmail := setFieldValue(region, `input[name="email"]`, "ada@example.com")
+			if err := packWizardExpect("step 0 (advance)", fillEmail, "Full name"); err != nil {
+				t.Fatalf("%s wizard: %v", dialect, err)
 			}
 
 			// Step 1: empty name → inline error. The field is cleared
@@ -1020,27 +1075,15 @@ func TestWireE2EWizardStepsAdvances(t *testing.T) {
 			// forms and preserves the previous field's value by position
 			// (the typed email leaks into the name field), so "just submit
 			// empty" is not a runtime-invariant — clearing is.
-			if err := chromedp.Run(ctx,
-				waitSwapSettled(),
-				setFieldValue(region, `input[name="name"]`, ""),
-			); err != nil {
-				t.Fatalf("%s wizard step 1 clear: %v", dialect, err)
+			clearName := setFieldValue(region, `input[name="name"]`, "")
+			if err := packWizardExpect("step 1 (invalid)", clearName, packWizardNameBad); err != nil {
+				t.Fatalf("%s wizard: %v", dialect, err)
 			}
 
-			if err := packSubmitUntil(ctx, region, region, packWizardNameBad); err != nil {
-				t.Fatalf("%s wizard step 1 (invalid): %v", dialect, err)
-			}
-
-			if err := chromedp.Run(ctx,
-				waitSwapSettled(),
-				// Step 1: valid name → wizard complete.
-				setFieldValue(region, `input[name="name"]`, "Ada Lovelace"),
-			); err != nil {
-				t.Fatalf("%s wizard step 1 fill: %v", dialect, err)
-			}
-
-			if err := packSubmitUntil(ctx, region, region, "Wizard complete"); err != nil {
-				t.Fatalf("%s wizard step 1 (complete): %v", dialect, err)
+			// Step 1: valid name → wizard complete.
+			fillName := setFieldValue(region, `input[name="name"]`, "Ada Lovelace")
+			if err := packWizardExpect("step 1 (complete)", fillName, "Wizard complete"); err != nil {
+				t.Fatalf("%s wizard: %v", dialect, err)
 			}
 		})
 	}
