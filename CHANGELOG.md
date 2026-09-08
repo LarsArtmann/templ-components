@@ -19,6 +19,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   Consumers no longer hand-roll these in `HeadContent` (demand: the CV
   project implements all four twice, `nsfw-classifier` cites missing head
   support in TODO #156). Guarded by `layout/base_seo_test.go`.
+- **`display.CollapsibleSection`: built-in opt-in state persistence.** New
+  `PersistState bool`: with `StorageKey` and `Nonce` set, the component
+  ships a CSP-safe nonce'd singleton script that restores the saved
+  open/closed state for every `details[data-collapsible]` on the page
+  (re-applied after HTMX swaps) and writes back on toggle via a
+  capture-phase listener (toggle does not bubble); localStorage wrapped
+  in try/catch for Safari private mode. Default stays false — consumers
+  with their own persistence script (the documented data-collapsible
+  contract) are unaffected, and pages without a nonce never receive
+  un-nonced inline JS. Demand: the CV consumer re-implements the
+  persistence loop in its pipeline dashboard script.
 
 ### Fixed
 

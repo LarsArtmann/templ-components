@@ -16,12 +16,15 @@ import (
 // CollapsibleSection wraps content in a native <details>/<summary> pair so
 // users can collapse detail-heavy regions. The section renders open by
 // default. When StorageKey is set, the open/closed state can be persisted
-// to localStorage by a consumer-side script reading the data-collapsible
-// attribute.
+// to localStorage: either by a consumer-side script reading the
+// data-collapsible attribute, or — with PersistState and Nonce set — by
+// the built-in nonce'd persistence script this component ships.
 //
 //	@display.CollapsibleSection(display.CollapsibleSectionProps{
 //	   Title: "Advanced Filters",
 //	   StorageKey: "advanced-filters",
+//	   PersistState: true,
+//	   Nonce: nonce,
 //	}) {
 //	   <p>Collapsible content here.</p>
 //	}
@@ -81,7 +84,7 @@ func CollapsibleSection(props CollapsibleSectionProps) templ.Component {
 			var templ_7745c5c3_Var4 string
 			templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.ResolveAttributeValue(p.StorageKey)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 30, Col: 57}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 33, Col: 57}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var4)
 			if templ_7745c5c3_Err != nil {
@@ -100,7 +103,7 @@ func CollapsibleSection(props CollapsibleSectionProps) templ.Component {
 			var templ_7745c5c3_Var5 string
 			templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(p.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 31, Col: 27}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 34, Col: 27}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 			if templ_7745c5c3_Err != nil {
@@ -133,7 +136,7 @@ func CollapsibleSection(props CollapsibleSectionProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.JoinStringErrs(p.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 37, Col: 47}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 40, Col: 47}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var6))
 			if templ_7745c5c3_Err != nil {
@@ -151,7 +154,7 @@ func CollapsibleSection(props CollapsibleSectionProps) templ.Component {
 			var templ_7745c5c3_Var7 string
 			templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinStringErrs(p.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 39, Col: 47}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 42, Col: 47}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 			if templ_7745c5c3_Err != nil {
@@ -169,7 +172,7 @@ func CollapsibleSection(props CollapsibleSectionProps) templ.Component {
 			var templ_7745c5c3_Var8 string
 			templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.JoinStringErrs(p.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 41, Col: 47}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 44, Col: 47}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var8))
 			if templ_7745c5c3_Err != nil {
@@ -187,7 +190,7 @@ func CollapsibleSection(props CollapsibleSectionProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(p.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 43, Col: 47}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 46, Col: 47}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 			if templ_7745c5c3_Err != nil {
@@ -205,7 +208,7 @@ func CollapsibleSection(props CollapsibleSectionProps) templ.Component {
 			var templ_7745c5c3_Var10 string
 			templ_7745c5c3_Var10, templ_7745c5c3_Err = templ.JoinStringErrs(p.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 45, Col: 47}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 48, Col: 47}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var10))
 			if templ_7745c5c3_Err != nil {
@@ -223,7 +226,7 @@ func CollapsibleSection(props CollapsibleSectionProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.JoinStringErrs(p.Title)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 47, Col: 47}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 50, Col: 47}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var11))
 			if templ_7745c5c3_Err != nil {
@@ -246,7 +249,61 @@ func CollapsibleSection(props CollapsibleSectionProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div></details>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div></details> ")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		if p.PersistState && p.StorageKey != "" && p.Nonce != "" {
+			templ_7745c5c3_Err = collapsiblePersistScript(p.Nonce).Render(ctx, templ_7745c5c3_Buffer)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+		}
+		return nil
+	})
+}
+
+// collapsiblePersistScript is the built-in persistence singleton (ADR-0005):
+// first run restores every details[data-collapsible] from localStorage and
+// attaches one capture-phase toggle listener (toggle does not bubble);
+// re-runs after HTMX swaps only re-apply saved state to (re)rendered
+// elements — the listener is never double-bound. localStorage is wrapped
+// in try/catch for Safari private mode.
+func collapsiblePersistScript(nonce string) templ.Component {
+	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
+		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
+		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
+			return templ_7745c5c3_CtxErr
+		}
+		templ_7745c5c3_Buffer, templ_7745c5c3_IsBuffer := templruntime.GetBuffer(templ_7745c5c3_W)
+		if !templ_7745c5c3_IsBuffer {
+			defer func() {
+				templ_7745c5c3_BufErr := templruntime.ReleaseBuffer(templ_7745c5c3_Buffer)
+				if templ_7745c5c3_Err == nil {
+					templ_7745c5c3_Err = templ_7745c5c3_BufErr
+				}
+			}()
+		}
+		ctx = templ.InitializeContext(ctx)
+		templ_7745c5c3_Var12 := templ.GetChildren(ctx)
+		if templ_7745c5c3_Var12 == nil {
+			templ_7745c5c3_Var12 = templ.NopComponent
+		}
+		ctx = templ.ClearChildren(ctx)
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<script nonce=\"")
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		var templ_7745c5c3_Var13 string
+		templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(nonce)
+		if templ_7745c5c3_Err != nil {
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/collapsible_section.templ`, Line: 70, Col: 22}
+		}
+		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
+		if templ_7745c5c3_Err != nil {
+			return templ_7745c5c3_Err
+		}
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\">\n\t\t(function () {\n\t\t\t\"use strict\";\n\t\t\tfunction applyAll() {\n\t\t\t\tdocument.querySelectorAll(\"details[data-collapsible]\").forEach(function (el) {\n\t\t\t\t\ttry {\n\t\t\t\t\t\tvar saved = localStorage.getItem(el.getAttribute(\"data-collapsible\"));\n\t\t\t\t\t\tif (saved === \"open\") el.open = true;\n\t\t\t\t\t\telse if (saved === \"closed\") el.open = false;\n\t\t\t\t\t} catch (err) { /* private mode */ }\n\t\t\t\t});\n\t\t\t}\n\t\t\tapplyAll();\n\t\t\tif (window.tcCollapsiblePersistAttached) return;\n\t\t\twindow.tcCollapsiblePersistAttached = true;\n\t\t\tdocument.addEventListener(\"toggle\", function (e) {\n\t\t\t\tvar el = e.target;\n\t\t\t\tif (!el.matches || !el.matches(\"details[data-collapsible]\")) return;\n\t\t\t\ttry {\n\t\t\t\t\tlocalStorage.setItem(el.getAttribute(\"data-collapsible\"), el.open ? \"open\" : \"closed\");\n\t\t\t\t} catch (err) { /* private mode */ }\n\t\t\t}, true);\n\t\t})();\n\t</script>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

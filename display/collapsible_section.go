@@ -25,6 +25,16 @@ type CollapsibleSectionProps struct {
 	// data-collapsible attribute and toggles accordingly.
 	StorageKey string
 
+	// PersistState, when true, ships the persistence script with the
+	// component: a CSP-safe, nonce'd singleton that restores the saved
+	// open/closed state for every details[data-collapsible] on the page
+	// and writes back on toggle (capture phase — toggle does not bubble).
+	// Requires StorageKey AND BaseProps.Nonce; without a nonce the script
+	// is skipped so strict-CSP pages never receive un-nonced inline JS.
+	// Consumers who bring their own persistence script leave this false
+	// (the default) and keep reading data-collapsible themselves.
+	PersistState bool
+
 	// Icon overrides the default chevron. Default: icons.ChevronDown.
 	Icon icons.Name
 }
