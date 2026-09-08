@@ -6,6 +6,20 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Added
+
+- **`layout.PageProps.SEO` — crawler/SEO head tags natively.** New
+  `SEOMeta` struct (`NoIndex bool`, `Canonical string`,
+  `Alternates []SEOAlternate`, `JSONLD string`) rendered by `layout.Base`:
+  robots noindex, `<link rel="canonical">`, one
+  `<link rel="alternate" hreflang>` per entry, and verbatim
+  `<script type="application/ld+json">` (documented trust contract — the
+  string bypasses templ's auto-escaping by design; marshal server-side).
+  Zero value emits nothing, so existing pages stay byte-identical.
+  Consumers no longer hand-roll these in `HeadContent` (demand: the CV
+  project implements all four twice, `nsfw-classifier` cites missing head
+  support in TODO #156). Guarded by `layout/base_seo_test.go`.
+
 ### Fixed
 
 - **`layout.AppShell`: no-sidebar shells no longer collapse.** The two-track

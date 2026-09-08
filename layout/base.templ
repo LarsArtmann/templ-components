@@ -65,6 +65,34 @@ func skipLinkText(text string) string {
 	return "Skip to main content"
 }
 
+// SEOAlternate is one language-alternate URL for hreflang annotation. Lang
+// is the hreflang tag ("en", "de", or "x-default"); URL must be absolute.
+type SEOAlternate struct {
+	Lang string
+	URL  string
+}
+
+// SEOMeta carries the crawler/SEO head tags consumers otherwise hand-roll:
+// robots noindex, canonical URL, hreflang alternates, and JSON-LD
+// structured data. Empty fields emit nothing.
+type SEOMeta struct {
+	// NoIndex emits <meta name="robots" content="noindex"> for transient
+	// pages (tailored variants, operator surfaces) that must stay out of
+	// search results.
+	NoIndex bool
+	// Canonical emits <link rel="canonical">; empty omits the tag. Should
+	// be an absolute URL.
+	Canonical string
+	// Alternates emits one <link rel="alternate" hreflang> per entry, in
+	// order. Empty omits all.
+	Alternates []SEOAlternate
+	// JSONLD is embedded VERBATIM as <script type="application/ld+json">
+	// via templ.Raw — it bypasses templ's auto-escaping by design. Only
+	// pass trusted, correctly serialized JSON (marshal your struct with
+	// encoding/json before handing it here); never interpolate user input.
+	JSONLD string
+}
+
 // PageProps configures the base page layout
 type PageProps struct {
 	Title          string
@@ -119,6 +147,10 @@ type PageProps struct {
 	BodyDataAttrs       templ.Attributes
 	BodyClass           string
 	Nonce               string
+	// SEO carries crawler/SEO head tags (noindex, canonical, hreflang
+	// alternates, JSON-LD). Zero value emits nothing — existing pages keep
+	// byte-identical output.
+	SEO                 SEOMeta
 	HeadContent         templ.Component
 	Footer              templ.Component
 	// SecurityHeaders controls whether security meta tags are included
@@ -174,6 +206,18 @@ templ Base(props PageProps) {
 			<title>{ props.Title }</title>
 			if props.Description != "" {
 				<meta name="description" content={ props.Description }/>
+			}
+			if props.SEO.NoIndex {
+				<meta name="robots" content="noindex"/>
+			}
+			if props.SEO.Canonical != "" {
+				<link rel="canonical" href={ props.SEO.Canonical }/>
+			}
+			for _, alt := range props.SEO.Alternates {
+				<link rel="alternate" hreflang={ alt.Lang } href={ alt.URL }/>
+			}
+			if props.SEO.JSONLD != "" {
+				@templ.Raw("<script type=\"application/ld+json\">" + props.SEO.JSONLD + "</script>")
 			}
 			if props.Favicon != "" {
 				<link rel="icon" href={ props.Favicon }/>
