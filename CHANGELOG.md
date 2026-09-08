@@ -13,7 +13,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   so the single content column landed in the sidebar-width track — the
   dashboard recipe rendered squeezed to ~16rem. The grid template is now only
   emitted when a sidebar slot exists (`shellClassFor`). Caught by the new
-  full-page demo screenshot audit; golden updated.
+  full-page demo screenshot audit; guarded by new unit tests asserting the
+  two-track grid is emitted only when a sidebar slot exists.
 - **`display.Heatmap`: cells render by default.** The component colors cells
   via `rgba(var(--ds-brand-rgb), alpha)` but `--ds-brand-rgb` was defined
   nowhere, so every cell was transparent (only the peak ring showed).

@@ -203,8 +203,11 @@ func TestAppShell(t *testing.T) {
 	t.Run("nil Content does not panic and renders empty content area", func(t *testing.T) {
 		t.Parallel()
 		// Content is the only required-ish slot; nil must not panic.
+		// DefaultAppShellProps has no Sidebar, so the shell renders the
+		// single-column wrapper (no two-track grid).
 		output := utils.Render(t, AppShell(DefaultAppShellProps()))
-		utils.AssertContainsAll(t, output, "min-h-dvh", "lg:grid", "minmax(0,1fr)")
+		utils.AssertContainsAll(t, output, "min-h-dvh")
+		utils.AssertNotContains(t, output, "lg:grid-cols-")
 	})
 
 	t.Run("dark mode: header has dark:border-gray-800 + dark:bg-gray-900", func(t *testing.T) {
