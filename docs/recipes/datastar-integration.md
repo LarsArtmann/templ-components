@@ -325,6 +325,9 @@ round-trip recipe (`docs/recipes/server-side-validation.md`).
 - `docs/datastar-runtime-facts.md` — audited runtime facts (SSE wire format,
   lifecycle events, CSP, reconnect matrix); the source of truth for everything
   summarized above
+- `docs/external-dependency-bumps.md` — the bump protocol for
+  `go-datastar/static` (and `go-error-family`): a pin bump is a contract
+  re-audit, never a mechanical `go get`
 - [Datastar official docs](https://data-star.dev/)
 - [go-datastar](https://github.com/LarsArtmann/go-datastar) — Go protocol library (patches as values)
 - [go-datastar/static](https://pkg.go.dev/github.com/larsartmann/go-datastar/static) — embedded JS bundle (zero deps)

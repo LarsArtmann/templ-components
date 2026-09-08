@@ -9,6 +9,36 @@ the bundle if the version pin ever bumps. Enforcement lives in tests:
 `examples/demo/sse_test.go` (wire format) and
 `datastar/sse_error_handling_test.go` (lifecycle event names).
 
+## Bundle provenance (re-audit reproducibility)
+
+| Field   | Value                                                                                            |
+| ------- | ------------------------------------------------------------------------------------------------ |
+| Module  | `github.com/larsartmann/go-datastar/static`                                                      |
+| Pin     | `v0.5.0` (`datastar/go.mod`)                                                                     |
+| Runtime | Datastar `1.0.3` (`static.Version`)                                                              |
+| Bundle  | `datastar.js`, 33538 bytes                                                                       |
+| sha256  | `5d6b7794a50a83d82da962aec5e382f5ae83ac7afbc751f903f7a9c6bd433c65`                               |
+
+The hash is machine-enforced by `datastar.TestPinnedRuntimeBundleContract`
+(`datastar/bundle_guard_test.go`) — any byte-level bundle change fails CI until
+the pin is consciously re-audited. Extract the exact bytes a re-audit must
+inspect with:
+
+```bash
+BUNDLE="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.5.0/datastar.js"
+sha256sum "$BUNDLE"   # must match the table above
+cp "$BUNDLE" /tmp/datastar-pinned.js
+# Diff against the PREVIOUS pin to scope the bump re-audit (adjust versions):
+OLD="$(go env GOMODCACHE)/github.com/larsartmann/go-datastar/static@v0.4.0/datastar.js"
+diff "$OLD" /tmp/datastar-pinned.js | head -100
+```
+
+`static.Bytes()` in Go returns the same bytes, so a throwaway
+`go run` that prints `static.Bytes()` is equivalent when hand-navigating the
+module cache is impractical. Follow `docs/external-dependency-bumps.md` for the
+full bump protocol (verify-at-source → subtree diff → bump → re-audit →
+contract guards).
+
 ## v1.0.3 re-audit (2026-09-05, `go-datastar/static` v0.5.0)
 
 The bundle CHANGED (sha256 `4df1f98a…` → `5d6b7794…`, 56330 → 33538 bytes —

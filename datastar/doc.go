@@ -81,6 +81,24 @@
 // real-time streaming, reactive client-side state, or when the consumer's app
 // already uses Datastar.
 //
+// # Re-audit contract (for contributors)
+//
+// The runtime bundle this package integrates against is an EXTERNAL
+// dependency pinned in go.mod (go-datastar/static). Its wire behavior is
+// documented in docs/datastar-runtime-facts.md (with a bundle-provenance
+// block: pin version, byte size, sha256, extraction commands) and enforced
+// by tests:
+//
+//   - datastar.TestPinnedRuntimeBundleContract pins the bundle sha256 plus
+//     every integration token (event names, retry literals) — a pin bump
+//     that changes any pinned byte fails there first.
+//   - examples/demo/sse_test.go pins the SSE wire format the demo streams.
+//
+// When bumping the pin, follow docs/external-dependency-bumps.md end to end:
+// verify-at-source, diff old-vs-new bundle, bump, re-audit every fact in
+// docs/datastar-runtime-facts.md, update pinnedBundleSHA256 in
+// bundle_guard_test.go, and warm [Unreleased] in CHANGELOG.md.
+//
 // [Datastar]: https://data-star.dev/
 // [htmx]: https://htmx.org
 package datastar
