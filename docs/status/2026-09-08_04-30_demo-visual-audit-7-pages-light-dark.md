@@ -11,19 +11,22 @@
 ## Self-Critique (asked directly: what did I forget / could do better / still improve?)
 
 **Forgot:**
-- **Interactive states.** Every overlay component (Modal, Drawer, Dropdown, Popover, Tooltip, ContextMenu, Combobox, Carousel) was captured only in its *closed* state. `visualtest` already supports `State: Click/Hover` + `FullViewport` for opened top-layer elements — I reinvented a capture tool instead of reusing that harness and consequently have no opened-state screenshots.
+
+- **Interactive states.** Every overlay component (Modal, Drawer, Dropdown, Popover, Tooltip, ContextMenu, Combobox, Carousel) was captured only in its _closed_ state. `visualtest` already supports `State: Click/Hover` + `FullViewport` for opened top-layer elements — I reinvented a capture tool instead of reusing that harness and consequently have no opened-state screenshots.
 - **Responsive + RTL.** Only one viewport (1280px). The library's core promises (container queries, MobileMenu hamburger, RTL logical-property mirroring) went visually unverified — one `EmulateViewport(375,…)` and one `dir="rtl"` JS call away.
 - **Transport variants.** Only `?transport=both` captured; the `htmx`/`datastar` single-dialect index variants were never screenshotted.
 - **A flagged item was dropped.** The 45% ProgressBar fill looked washed-out in both modes; I noted "check against goldens" and never resolved it. A finding without a verdict is a loose end.
-- **Daemon exposure.** I created the temp capture tool *inside* the repo module. The BuildFlow daemon auto-committed it (then its deletion) into master history — 2 polluted commits. It should have lived in `/tmp` or a sanctioned tooling location from the first write.
+- **Daemon exposure.** I created the temp capture tool _inside_ the repo module. The BuildFlow daemon auto-committed it (then its deletion) into master history — 2 polluted commits. It should have lived in `/tmp` or a sanctioned tooling location from the first write.
 
 **Could have done better:**
+
 - The capture tool took 3 iterations (shared-browser multi-minute hangs → probe → fresh-browser-per-page). Reading chromedp's known gotchas (or the existing `visualtest` lifecycle code) before writing would have made it one iteration.
 - Root-cause confidence was uneven: the Heatmap and LoadingButton findings are proven by code read; the AppShell SM-vs-`w-64` overlap mechanism is confirmed by code + screenshots but not DOM-measured (no `getBoundingClientRect` numbers).
 - I confirmed the Heatmap root cause statically but never ran the 30-second dynamic check (set a defined var, re-screenshot) to close the loop experimentally.
 - Demo server log was glanced at, not systematically grepped for 500s/warnings during the capture run.
 
 **Could still improve:**
+
 - Turn ad-hoc inspection into a repeatable, sanctioned workflow (see f-items 1–3) so the next "how is our demo?" is one command, not a session.
 - Pair every found defect with a failing guard (visual golden or unit test) in the same fix commit, per repo convention.
 - Add a11y (axe scan, keyboard-only pass) and offline/CDN-failure rendering to the audit checklist.
@@ -32,28 +35,28 @@
 
 ## a) FULLY DONE
 
-| # | Item | Evidence |
-|---|------|----------|
-| 1 | Full visual audit executed: 7 routes (`/`, `/forms`, `/users`, `/recipes/dashboard`, `/recipes/settings`, `/recipes/login`, `/recipes/auth`) × light+dark = 14 full-page captures; index (29,084px tall) tiled into 14+14 chunks and **every chunk viewed** | `/tmp/tc-shots/` |
-| 2 | All three component-level defects root-caused to exact lines | `layout/appshell.templ:10`, `display/heatmap.go:136`, `htmx/loading.templ:48-55` |
-| 3 | All demo-content defects verified in source (not just visually) | `demo.templ:66-67`, `layout_demo.templ:72-80`, `display_demo.templ:245-252`, `forms_section.templ:91-107`, `recipes_demo.templ:69`, `navigation_demo.templ:26-33` |
-| 4 | Icon count ground-truthed by an actual test run: `iconPathData=101`, `AllIconNames=102` — docs claiming 106 are stale | temp test in `icons` module, since removed |
-| 5 | Capture tooling proven: fresh-browser-per-page pattern captures any demo page in ~3s (shared-browser sessions hang after very tall captures) | session-validated |
-| 6 | Repo hygiene: temp tool removed, demo server stopped, unrelated in-flight edits from another session (docs/DOMAIN_LANGUAGE.md, docs/recipes/horizontal-filter-bar.md) detected and **left untouched** | `git status` |
-| 7 | Findings delivered with severity ordering and mechanism explanations | previous message |
+| # | Item                                                                                                                                                                                                                                                        | Evidence                                                                                                                                                          |
+| - | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | Full visual audit executed: 7 routes (`/`, `/forms`, `/users`, `/recipes/dashboard`, `/recipes/settings`, `/recipes/login`, `/recipes/auth`) × light+dark = 14 full-page captures; index (29,084px tall) tiled into 14+14 chunks and **every chunk viewed** | `/tmp/tc-shots/`                                                                                                                                                  |
+| 2 | All three component-level defects root-caused to exact lines                                                                                                                                                                                                | `layout/appshell.templ:10`, `display/heatmap.go:136`, `htmx/loading.templ:48-55`                                                                                  |
+| 3 | All demo-content defects verified in source (not just visually)                                                                                                                                                                                             | `demo.templ:66-67`, `layout_demo.templ:72-80`, `display_demo.templ:245-252`, `forms_section.templ:91-107`, `recipes_demo.templ:69`, `navigation_demo.templ:26-33` |
+| 4 | Icon count ground-truthed by an actual test run: `iconPathData=101`, `AllIconNames=102` — docs claiming 106 are stale                                                                                                                                       | temp test in `icons` module, since removed                                                                                                                        |
+| 5 | Capture tooling proven: fresh-browser-per-page pattern captures any demo page in ~3s (shared-browser sessions hang after very tall captures)                                                                                                                | session-validated                                                                                                                                                 |
+| 6 | Repo hygiene: temp tool removed, demo server stopped, unrelated in-flight edits from another session (docs/DOMAIN_LANGUAGE.md, docs/recipes/horizontal-filter-bar.md) detected and **left untouched**                                                       | `git status`                                                                                                                                                      |
+| 7 | Findings delivered with severity ordering and mechanism explanations                                                                                                                                                                                        | previous message                                                                                                                                                  |
 
 ## b) PARTIALLY DONE
 
-| # | Item | Gap |
-|---|------|-----|
-| 1 | Overlay/interactive inspection | closed states only; no opened Modal/Drawer/Dropdown/Popover/Tooltip/ContextMenu captures |
-| 2 | Responsive audit | 1280px only; no 375px/768px captures; MobileMenu + ContainerAware collapse unverified visually |
-| 3 | RTL audit | zero `dir="rtl"` captures despite the library's logical-property promise |
-| 4 | Wire transport variants | only `?transport=both` screenshotted |
-| 5 | E2E interaction | only `/health` + one raw HTML fetch; no browser click-throughs (LoadMore, ConfirmDelete, wire form roundtrip in *this* demo context) |
-| 6 | AppShell SM-overlap finding | mechanism confirmed, but not DOM-measured for the exact overflow amount |
-| 7 | ProgressBar 45% fill-color suspicion | flagged, never resolved against `visualtest/testdata/progressbar/*` goldens |
-| 8 | Daemon pollution cleanup | temp tool deleted, but its add+delete daemon commits remain in master history |
+| # | Item                                 | Gap                                                                                                                                  |
+| - | ------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 1 | Overlay/interactive inspection       | closed states only; no opened Modal/Drawer/Dropdown/Popover/Tooltip/ContextMenu captures                                             |
+| 2 | Responsive audit                     | 1280px only; no 375px/768px captures; MobileMenu + ContainerAware collapse unverified visually                                       |
+| 3 | RTL audit                            | zero `dir="rtl"` captures despite the library's logical-property promise                                                             |
+| 4 | Wire transport variants              | only `?transport=both` screenshotted                                                                                                 |
+| 5 | E2E interaction                      | only `/health` + one raw HTML fetch; no browser click-throughs (LoadMore, ConfirmDelete, wire form roundtrip in _this_ demo context) |
+| 6 | AppShell SM-overlap finding          | mechanism confirmed, but not DOM-measured for the exact overflow amount                                                              |
+| 7 | ProgressBar 45% fill-color suspicion | flagged, never resolved against `visualtest/testdata/progressbar/*` goldens                                                          |
+| 8 | Daemon pollution cleanup             | temp tool deleted, but its add+delete daemon commits remain in master history                                                        |
 
 ## c) NOT STARTED
 
@@ -69,18 +72,18 @@
 
 **Product breakage found (severity-ordered):**
 
-| # | What | Root cause | Severity |
-|---|------|-----------|----------|
-| 1 | `/recipes/dashboard` renders **collapsed** — stat cards clipped to slivers ("$4", "2.5"), charts/activity one word per line, ~75% of viewport empty. Both modes. | `layout/appshell.templ:10` — grid template `lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]` is **unconditional**; with `Sidebar == nil` the single content column lands in the 16rem sidebar track, the second column stays empty. The flagship recipe is unusable. | CRITICAL |
-| 2 | `display.Heatmap` shows **no cells at all** — only row/column labels + the peak cell's ring outline. Both modes. | `display/heatmap.go:136` emits `rgba(var(--ds-brand-rgb), α)`; `--ds-brand-rgb` is defined **nowhere** (not in `templates/custom.css`, `templ-components-theme.css`, or demo CSS) → invalid CSS → declaration dropped → transparent cells. Ships broken by default; only `HighlightPeak` ring (different property) is visible. | CRITICAL |
-| 3 | `htmx.LoadingButton` spinner **always visible at rest** — "⟳ Save changes", "⟳ Run job" (wire Busy-state HTMX side; the Datastar twin is correct). | `htmx/loading.templ:48-55`: the spinner `templ.Component` renders un-gated; only `loadingText` carries `htmx-indicator`. Bonus: `tc-btn-loading` class (loading.templ:49) is defined nowhere in `templates/custom.css`. No visual golden exists for this component — which is exactly why it slipped through. | HIGH |
-| 4 | Demo hero says **"HELLO"** — leftover debug line, the first content visitors read. | `examples/demo/demo.templ:66-67` | HIGH (credibility) |
-| 5 | AppShell inline demo doubly broken: sidebar nav overlaps content ("Ma\|in content area" clipped) **and** a ~900px black column bleeds into the Cards section. | `layout_demo.templ:72-80` passes `SidebarWidthSM` (12rem) but `SidebarNav` hardcodes `w-64` = 16rem (`navigation/sidebar_nav.templ:123`) → 64px overflow over the content column; AppShell's `min-h-dvh` (appshell.templ:10) inside a bounded demo card stretches the black column to viewport height. | HIGH |
-| 6 | DateRange run-together: "March 2023 – Present**Jan 15, 2024** – Jun 30, 2025". | `display_demo.templ:245-252` — two inline DateRange spans adjacent; vertical margins don't apply to inline boxes. | MEDIUM |
-| 7 | Index filter bar: `Status` select spans the full 1280px container while `Sort`+button sit compact below — looks broken next to the correct hand-rolled filter bar on `/forms`. | `forms_section.templ:91-107` — `forms.Select` inside `FormLayoutInline` ignores inline layout (renders full width). | MEDIUM |
-| 8 | Component-count chaos: auth recipe claims **116** (`recipes_demo.templ:69`), hero const/FEATURES say **120**, SKILL.md says **118**. Three numbers in circulation. | hardcoded copy, never swept when counts moved | MEDIUM |
-| 9 | Icon-count docs drift: AGENTS.md says 106, SKILL.md implies 105; reality (test-verified) **102**. The demo computes it correctly — docs lie. | stale docs after icon set changes | LOW |
-| 10 | "Full Nav" demo renders **no brand**, no right slot — reads as unfinished next to SimpleNav two sections up. | `navigation_demo.templ:26-33` passes none | LOW |
+| #  | What                                                                                                                                                                           | Root cause                                                                                                                                                                                                                                                                                                                     | Severity           |
+| -- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------ |
+| 1  | `/recipes/dashboard` renders **collapsed** — stat cards clipped to slivers ("$4", "2.5"), charts/activity one word per line, ~75% of viewport empty. Both modes.               | `layout/appshell.templ:10` — grid template `lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)]` is **unconditional**; with `Sidebar == nil` the single content column lands in the 16rem sidebar track, the second column stays empty. The flagship recipe is unusable.                                                          | CRITICAL           |
+| 2  | `display.Heatmap` shows **no cells at all** — only row/column labels + the peak cell's ring outline. Both modes.                                                               | `display/heatmap.go:136` emits `rgba(var(--ds-brand-rgb), α)`; `--ds-brand-rgb` is defined **nowhere** (not in `templates/custom.css`, `templ-components-theme.css`, or demo CSS) → invalid CSS → declaration dropped → transparent cells. Ships broken by default; only `HighlightPeak` ring (different property) is visible. | CRITICAL           |
+| 3  | `htmx.LoadingButton` spinner **always visible at rest** — "⟳ Save changes", "⟳ Run job" (wire Busy-state HTMX side; the Datastar twin is correct).                             | `htmx/loading.templ:48-55`: the spinner `templ.Component` renders un-gated; only `loadingText` carries `htmx-indicator`. Bonus: `tc-btn-loading` class (loading.templ:49) is defined nowhere in `templates/custom.css`. No visual golden exists for this component — which is exactly why it slipped through.                  | HIGH               |
+| 4  | Demo hero says **"HELLO"** — leftover debug line, the first content visitors read.                                                                                             | `examples/demo/demo.templ:66-67`                                                                                                                                                                                                                                                                                               | HIGH (credibility) |
+| 5  | AppShell inline demo doubly broken: sidebar nav overlaps content ("Ma\|in content area" clipped) **and** a ~900px black column bleeds into the Cards section.                  | `layout_demo.templ:72-80` passes `SidebarWidthSM` (12rem) but `SidebarNav` hardcodes `w-64` = 16rem (`navigation/sidebar_nav.templ:123`) → 64px overflow over the content column; AppShell's `min-h-dvh` (appshell.templ:10) inside a bounded demo card stretches the black column to viewport height.                         | HIGH               |
+| 6  | DateRange run-together: "March 2023 – Present**Jan 15, 2024** – Jun 30, 2025".                                                                                                 | `display_demo.templ:245-252` — two inline DateRange spans adjacent; vertical margins don't apply to inline boxes.                                                                                                                                                                                                              | MEDIUM             |
+| 7  | Index filter bar: `Status` select spans the full 1280px container while `Sort`+button sit compact below — looks broken next to the correct hand-rolled filter bar on `/forms`. | `forms_section.templ:91-107` — `forms.Select` inside `FormLayoutInline` ignores inline layout (renders full width).                                                                                                                                                                                                            | MEDIUM             |
+| 8  | Component-count chaos: auth recipe claims **116** (`recipes_demo.templ:69`), hero const/FEATURES say **120**, SKILL.md says **118**. Three numbers in circulation.             | hardcoded copy, never swept when counts moved                                                                                                                                                                                                                                                                                  | MEDIUM             |
+| 9  | Icon-count docs drift: AGENTS.md says 106, SKILL.md implies 105; reality (test-verified) **102**. The demo computes it correctly — docs lie.                                   | stale docs after icon set changes                                                                                                                                                                                                                                                                                              | LOW                |
+| 10 | "Full Nav" demo renders **no brand**, no right slot — reads as unfinished next to SimpleNav two sections up.                                                                   | `navigation_demo.templ:26-33` passes none                                                                                                                                                                                                                                                                                      | LOW                |
 
 **Session's own fuckup (owned):** temp capture tool placed inside `visualtest/tools/` → BuildFlow daemon auto-committed the file AND its deletion into master history. Tooling that touches the repo must be sanctioned or live outside it.
 
@@ -98,6 +101,7 @@
 ## f) NEXT — up to 50 things to get done
 
 **P0 — broken user-visible behavior (fix now)**
+
 1. AppShell: emit the single-column template (no sidebar track) when `Sidebar == nil`; add golden `appshell/nosidebar_light` + fix `/recipes/dashboard` render.
 2. Heatmap: define `--ds-brand-rgb` (and dark variant) in `templates/custom.css`, or flip default `ColorVar` to a Tailwind-defined var — decide per g2; add default-render golden.
 3. LoadingButton: wrap the spinner in `<span class="htmx-indicator">`; add rest-state + `.htmx-request` goldens; delete or define `tc-btn-loading`.
@@ -115,7 +119,7 @@
 13. RTL sweep (`dir="rtl"`): verify logical-property mirroring on Nav, Split, Carousel, Drawer, Dropdown.
 14. Capture `?transport=htmx` and `?transport=datastar` index variants.
 15. Resolve the ProgressBar 45% fill-color suspicion against `visualtest/testdata/progressbar/half_light.png`.
-16. Browser-verify LoadingButton *during* request (default text hides, loading text + spinner show) — the rest state is proven, the request state is not.
+16. Browser-verify LoadingButton _during_ request (default text hides, loading text + spinner show) — the rest state is proven, the request state is not.
 17. Dynamically confirm the Heatmap fix hypothesis (define var → cells appear) before cutting the fix.
 18. DOM-measure the AppShell SM-vs-`w-64` overflow (getBoundingClientRect) to replace pixel estimates.
 19. Click-through E2E on the demo itself: LoadMore → EndOfList, ConfirmDelete → row removal, wire form roundtrip, busy-state 800ms sleep, file upload echo.
@@ -167,4 +171,4 @@
 
 ---
 
-*Report generated per the status-report skill. Format override: user explicitly requested `.md`; the skill's canonical HTML dashboard was skipped this once. Section (f) is the primary input for a future `docs-health` HARVEST run.*
+_Report generated per the status-report skill. Format override: user explicitly requested `.md`; the skill's canonical HTML dashboard was skipped this once. Section (f) is the primary input for a future `docs-health` HARVEST run._

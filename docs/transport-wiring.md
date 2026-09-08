@@ -57,24 +57,24 @@ Any component, even without a `Wire` field — spread the attributes yourself:
 
 ### Zero values and validation
 
-| Field       | Zero value behavior                                                                       |
-| ----------- | ----------------------------------------------------------------------------------------- |
-| `Transport` | `""` → htmx (library default)                                                             |
-| `Method`    | `""` → GET                                                                                |
-| `Event`     | `""` → htmx: attribute omitted (element defaults: click/submit/change); Datastar: `click` |
-| `URL`       | `""` → renders nothing (inert)                                                            |
+| Field         | Zero value behavior                                                                                                          |
+| ------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `Transport`   | `""` → htmx (library default)                                                                                                |
+| `Method`      | `""` → GET                                                                                                                   |
+| `Event`       | `""` → htmx: attribute omitted (element defaults: click/submit/change); Datastar: `click`                                    |
+| `URL`         | `""` → renders nothing (inert)                                                                                               |
 | `ContentType` | `""` → Datastar signals as JSON (runtime default); `ContentTypeForm` serializes the enclosing form's fields; htmx ignores it |
-| unknowns    | `TransportIsValid`/`MethodIsValid`/`EventIsValid`/`ContentTypeIsValid` exist; rendering falls back to defaults |
+| unknowns      | `TransportIsValid`/`MethodIsValid`/`EventIsValid`/`ContentTypeIsValid` exist; rendering falls back to defaults               |
 
 ## Dialect mapping
 
-| `wire.Action`        | htmx rendering           | Datastar rendering                      |
-| -------------------- | ------------------------ | --------------------------------------- |
-| `Method` + `URL`     | `hx-get="/api/fragment"` | `data-on:click="@get('/api/fragment')"` |
-| `Event: EventSubmit` | `hx-trigger="submit"`    | event key: `data-on:submit="…"`         |
-| `Target: "#out"`     | `hx-target="#out"`       | _not rendered_ — see below              |
+| `wire.Action`                  | htmx rendering                             | Datastar rendering                                               |
+| ------------------------------ | ------------------------------------------ | ---------------------------------------------------------------- |
+| `Method` + `URL`               | `hx-get="/api/fragment"`                   | `data-on:click="@get('/api/fragment')"`                          |
+| `Event: EventSubmit`           | `hx-trigger="submit"`                      | event key: `data-on:submit="…"`                                  |
+| `Target: "#out"`               | `hx-target="#out"`                         | _not rendered_ — see below                                       |
 | `ContentType: ContentTypeForm` | _not rendered_ (native form serialization) | `{contentType: 'form'}` appended — serializes the enclosing form |
-| `URL: ""`            | nothing                  | nothing                                 |
+| `URL: ""`                      | nothing                                    | nothing                                                          |
 
 ### Why Target is htmx-only (the #1 FAQ)
 
@@ -194,13 +194,13 @@ CSRF hidden input — traveling in both dialects.
 }
 ```
 
-| Aspect             | htmx dialect                                                 | Datastar dialect (`ContentTypeForm`, applied by Form)          |
-| ------------------ | ------------------------------------------------------------ | -------------------------------------------------------------- |
-| Rendering          | `hx-post="/api/save" hx-trigger="submit"` (implicit trigger) | `data-on:submit="@post('/api/save', {contentType: 'form'})"`  |
-| Field values       | native serialization (urlencoded; multipart with `enctype`)  | same — FormData → urlencoded (or multipart with `enctype`)      |
-| HTML5 validation   | `Validate: true` adds `hx-validate="true"`; `NoValidate: true` renders `novalidate` | automatic (`checkValidity` gate); `NoValidate: true` renders `novalidate`, which skips the gate |
-| Submitter button   | name/value included                                          | name/value appended by the runtime                             |
-| Response targeting | `Wire.Target` → `hx-target` (default swaps into the form)    | response-driven (`wire.Handler`), or client-side `Wire.Selector` → `{selector: …}` (overrides the response header) |
+| Aspect             | htmx dialect                                                                        | Datastar dialect (`ContentTypeForm`, applied by Form)                                                              |
+| ------------------ | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Rendering          | `hx-post="/api/save" hx-trigger="submit"` (implicit trigger)                        | `data-on:submit="@post('/api/save', {contentType: 'form'})"`                                                       |
+| Field values       | native serialization (urlencoded; multipart with `enctype`)                         | same — FormData → urlencoded (or multipart with `enctype`)                                                         |
+| HTML5 validation   | `Validate: true` adds `hx-validate="true"`; `NoValidate: true` renders `novalidate` | automatic (`checkValidity` gate); `NoValidate: true` renders `novalidate`, which skips the gate                    |
+| Submitter button   | name/value included                                                                 | name/value appended by the runtime                                                                                 |
+| Response targeting | `Wire.Target` → `hx-target` (default swaps into the form)                           | response-driven (`wire.Handler`), or client-side `Wire.Selector` → `{selector: …}` (overrides the response header) |
 
 The form-level defaults: an unspecified `Event` becomes `submit`, an
 unspecified `ContentType` becomes `ContentTypeForm` (set `ContentTypeJSON`

@@ -334,6 +334,7 @@ shipped in v1.13.3 + v1.14.0).
 ## f) Up to 50 things to do next (prioritized)
 
 **Immediate hygiene (this week)**
+
 1. Warm CHANGELOG `[Unreleased]` with this session's work (e2e suite, 12
    goldens + count bumps, wizard duplicate-id fix, website pin fix, docs).
 2. Verify the daemon commits from 21:00–04:30 are green in CI once pushed
@@ -349,15 +350,15 @@ shipped in v1.13.3 + v1.14.0).
 
 **Trust & coverage debt**
 6. T08 second-source cross-check of the `data-on` modifier decoding AND the
-   new morph fact against unminified upstream v1.0.3.
+new morph fact against unminified upstream v1.0.3.
 7. Record the wire benchmark numbers in `docs/` (or a benchstat baseline
-   file) — regressions are currently invisible.
+file) — regressions are currently invisible.
 8. FormEnctype fuzz test (parity with InputType/ButtonHTMLType).
 9. Duplicate-region-id static guard for demo pages (item 66).
 10. axe audit for FilterInput's `<search><form>` nesting.
 11. Interaction-state + RTL goldens for the six pack cards.
 12. htmx `afterSettle`-based waits replacing the 250 ms settle smell in BOTH
-    e2e suites.
+e2e suites.
 13. DirtyGuard programmatic clear hook (`data-tc-dirty-guard-clear`).
 14. FilterDropdown DebounceMS parity decision (decide + document).
 15. FilterInput `pe-8` / webkit search-clear normalization investigation.
@@ -369,64 +370,64 @@ shipped in v1.13.3 + v1.14.0).
 19. TODO #156a: AppShell theming (CSS vars) + breakpoint prop + SSE-bar slot.
 20. TODO #156b: `Minimal` head-content support.
 21. TODO #157: Calendar month-nav Wire candidate (design first; e2e IN THE
-    SAME plan now mandatory).
+SAME plan now mandatory).
 22. TODO #155: SimpleNav links as the next transport-symmetric Wire
-    candidate (same-plan e2e mandate).
+candidate (same-plan e2e mandate).
 23. Revisit ADR-0038's "closed otherwise" clause after 2–3 real consumers
-    adopt the pack components.
+adopt the pack components.
 
 **Docs debt (small, high-leverage)**
 24. `docs/e2e-testing.md` (or extend visual-testing.md): chromedp patterns,
-    retry-until-needle, page guard, serial rationale, morph workaround.
+retry-until-needle, page guard, serial rationale, morph workaround.
 25. transport-wiring.md: add the morph fact to the targeting/practical-notes
-    section.
+section.
 26. visual-testing.md: document the pack goldens + the serial e2e suite.
 27. SKILL.md: "By use case" rows for search/filter, wizard, dirty-guard;
-    reference the pack e2e pattern.
+reference the pack e2e pattern.
 28. Website: "Transports" guide page; verify api-reference mentions the new
-    goldens count only if it displays one.
+goldens count only if it displays one.
 29. multi-step-forms.md: complete the snippet imports (strconv).
 30. Release checklist: add the "expected red window" note + the
-    warm-[Unreleased] reminder.
+warm-[Unreleased] reminder.
 
 **Library polish / demo**
 31. Demo `/wire/forms` subpage split (7 cards).
 32. Demo `noStore` + rate-limit middleware.
 33. Demo `main.go` gopls fixes (writestring, unused `heroWireLine`).
 34. `TestDocsCountDrift`: FEATURES.md per-package rows + the README enum
-    -total narrative.
+-total narrative.
 35. Website components count / sections consistency re-check after the next
-    release.
+release.
 
 **Process / tooling**
 36. Release pre-flight script (assert clean tree, govulncheck present,
-    disk headroom, lint+touched-package tests) — biggest process win.
+disk headroom, lint+touched-package tests) — biggest process win.
 37. GOCACHE monitor or relocation off /mnt/buildcache.
 38. BuildFlow pause/sentinel around releases.
 39. Debug-scratch hygiene rule (outside worktree) — enforce via .gitignore
-    `zz_*` maybe.
+`zz_*` maybe.
 40. Consider a repo-wide `visualtest/` lint exclusion decision: either fix
-    the 31 pre-existing baseline findings or exclude the module explicitly
-    with a comment (current state is implicit).
+the 31 pre-existing baseline findings or exclude the module explicitly
+with a comment (current state is implicit).
 41. Add `-parallel 4` documentation for local visual runs (machine
-    -dependent flakes).
+-dependent flakes).
 42. chromedp version audit (go.mod pin vs module-cache version observed in
-    tooling output — confirm the pin is what runs).
+tooling output — confirm the pin is what runs).
 43. Consider tagging `website/` separately if release cadence keeps doubling.
 44. Evaluate pinning a `pnpm`/node PATH note for website builds into the
-    devShell (the bun-shim workaround was needed again this session).
+devShell (the bun-shim workaround was needed again this session).
 
 **Watchlist**
 45. The lockfile-split regression class (see g2) — if it recurs a 4th time,
-    escalate to a structural fix.
+escalate to a structural fix.
 46. The e2e suite under CI's runner (first real CI exercise is pending —
-    local green ≠ runner green; watch the first Visual job after push).
+local green ≠ runner green; watch the first Visual job after push).
 47. Disk: monitor after the next heavy phase (90% at session end).
 48. The foreign `d4be2c0` "demo visual audit status report" commit appeared
-    on master mid-session — confirm it is yours/expected.
+on master mid-session — confirm it is yours/expected.
 49. ADR-0038 consumer feedback loop (item 23) once adoption data exists.
 50. Next session should START by writing the `[Unreleased]` entries (item 1)
-    before any new code.
+before any new code.
 
 ---
 
@@ -456,5 +457,5 @@ at the next deliberate commit/release?
 
 ---
 
-*Everything in a) is committed (daemon snapshots, final tree clean). Nothing
-is pushed — house rule. The working tree at session end: clean.*
+_Everything in a) is committed (daemon snapshots, final tree clean). Nothing
+is pushed — house rule. The working tree at session end: clean._

@@ -9,26 +9,26 @@
 
 ## a) FULLY DONE
 
-| # | Item | Evidence |
-|---|------|----------|
-| 1 | Full inventory of CV's templ surface: 38 files, ~7,242 lines, per-package import counts (icons ×16, utils ×11, display ×8, layout ×5, feedback ×5, forms ×3, htmx ×1, errorpage ×1) | `rg` counts + `wc -l` over all files |
-| 2 | CV dependency profile: templ v0.3.1020 (same pin as library), templ-components v1.13.2 (root + errorpage + htmx + icons + utils + datastar indirect) | CV `go.mod` |
+| # | Item                                                                                                                                                                                                                                                                                                                                                                                                                    | Evidence                                                                    |
+| - | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| 1 | Full inventory of CV's templ surface: 38 files, ~7,242 lines, per-package import counts (icons ×16, utils ×11, display ×8, layout ×5, feedback ×5, forms ×3, htmx ×1, errorpage ×1)                                                                                                                                                                                                                                     | `rg` counts + `wc -l` over all files                                        |
+| 2 | CV dependency profile: templ v0.3.1020 (same pin as library), templ-components v1.13.2 (root + errorpage + htmx + icons + utils + datastar indirect)                                                                                                                                                                                                                                                                    | CV `go.mod`                                                                 |
 | 3 | Library-side verification of **every** recommendation: `StatCard.ValueID` exists; `EmptyState` props match CV's hand-rolled empty states; `PolledRegion.Trigger` accepts `"load, every 30s"` verbatim; `Table` headers/padding; `Skeleton` 7 variants; `ProgressBar`; `FormProps{CSRFToken, Wire, Validate, DirtyGuard, Enctype}`; `ModalProps{Title,Open,Size}`; `htmx` loading components; library `Version = 1.14.0` | Direct source reads in display/, forms/, htmx/, feedback/, utils/version.go |
-| 4 | RelativeTime nonce claim verified to tag level: AutoRefresh + nonce shipped in **v1.12.0** → CV's comment at `internal/features/pipeline/handlers/recent_events_fragment.templ:38` is stale; CV can enable AutoRefresh today | `git tag --contains f81ae66` → v1.12.0+ |
-| 5 | Confirmed library gap: `layout.Base`/`PageProps` has `OGImage` but **no** `NoIndex`/`Canonical`/hreflang `Alternates`/`JSON-LD` — CV hand-implements all four twice (`components/layout/base.templ:34`, `screen_base.templ:73`) | `rg` over layout/ = zero hits |
-| 6 | Delivered structured final answer: 10-row CV adoption table + 6 library improvement proposals, all with `file:line` references | Chat deliverable, 2026-09-07 |
-| 7 | Read the majority of the 38 files in full (≈28 files completely, including all shared component libraries, ats_dashboard, ateam_form, dashboard_page markup+controller, chat, coaching, stage_rail, fragments) | View transcripts this session |
+| 4 | RelativeTime nonce claim verified to tag level: AutoRefresh + nonce shipped in **v1.12.0** → CV's comment at `internal/features/pipeline/handlers/recent_events_fragment.templ:38` is stale; CV can enable AutoRefresh today                                                                                                                                                                                            | `git tag --contains f81ae66` → v1.12.0+                                     |
+| 5 | Confirmed library gap: `layout.Base`/`PageProps` has `OGImage` but **no** `NoIndex`/`Canonical`/hreflang `Alternates`/`JSON-LD` — CV hand-implements all four twice (`components/layout/base.templ:34`, `screen_base.templ:73`)                                                                                                                                                                                         | `rg` over layout/ = zero hits                                               |
+| 6 | Delivered structured final answer: 10-row CV adoption table + 6 library improvement proposals, all with `file:line` references                                                                                                                                                                                                                                                                                          | Chat deliverable, 2026-09-07                                                |
+| 7 | Read the majority of the 38 files in full (≈28 files completely, including all shared component libraries, ats_dashboard, ateam_form, dashboard_page markup+controller, chat, coaching, stage_rail, fragments)                                                                                                                                                                                                          | View transcripts this session                                               |
 
 ## b) PARTIALLY DONE
 
-| # | Item | Gap |
-|---|------|-----|
-| 1 | "Read all 38 .templ files" | Honest count: ~1,800 lines were **grep-skimmed, not read**: `admin_page.templ` 760–1669 (910 lines), `approvals_fragment.templ` 200–297, `applications_fragment.templ` 200–313, `dashboard_fragments.templ` 200–285, `psychological_impact.templ` 80–247 |
-| 2 | CV project discovery | Never read CV's `AGENTS.md`, `README.md`, or `TODO_LIST.md`. The templ-components skill itself tells consumers to keep an adoption table in AGENTS.md — CV may already have one; my findings may duplicate or contradict tracked plans |
-| 3 | Duplication check for the 6 library proposals | Did not check templ-components' own `TODO_LIST.md`/`FEATURES.md`/ROADMAP for already-planned versions of the SEO-fields, CollapsibleSection-persistence, SSE-recipe, or icon-renderer ideas |
-| 4 | Motion-reduce / RTL findings | Verified by eyeball in 3–4 files (`ats_dashboard.templ:303+`, `ui_common.templ:27`, `ateam_form.templ:210+`); no repo-wide `rg` sweep, so the violation list is illustrative, not exhaustive |
-| 5 | "Execute and verify step by step" | The analysis steps were executed and each claim verified — but nothing was *implemented*; every deliverable is advisory. Zero render-level or build-level verification |
-| 6 | `htmx.LoadingButton` fit for the A.Team submit button | Asserted a near-certain fit from signature only; did not byte-compare its markup against CV's hand-rolled `#submission-loading` indicator pattern |
+| # | Item                                                  | Gap                                                                                                                                                                                                                                                      |
+| - | ----------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 | "Read all 38 .templ files"                            | Honest count: ~1,800 lines were **grep-skimmed, not read**: `admin_page.templ` 760–1669 (910 lines), `approvals_fragment.templ` 200–297, `applications_fragment.templ` 200–313, `dashboard_fragments.templ` 200–285, `psychological_impact.templ` 80–247 |
+| 2 | CV project discovery                                  | Never read CV's `AGENTS.md`, `README.md`, or `TODO_LIST.md`. The templ-components skill itself tells consumers to keep an adoption table in AGENTS.md — CV may already have one; my findings may duplicate or contradict tracked plans                   |
+| 3 | Duplication check for the 6 library proposals         | Did not check templ-components' own `TODO_LIST.md`/`FEATURES.md`/ROADMAP for already-planned versions of the SEO-fields, CollapsibleSection-persistence, SSE-recipe, or icon-renderer ideas                                                              |
+| 4 | Motion-reduce / RTL findings                          | Verified by eyeball in 3–4 files (`ats_dashboard.templ:303+`, `ui_common.templ:27`, `ateam_form.templ:210+`); no repo-wide `rg` sweep, so the violation list is illustrative, not exhaustive                                                             |
+| 5 | "Execute and verify step by step"                     | The analysis steps were executed and each claim verified — but nothing was _implemented_; every deliverable is advisory. Zero render-level or build-level verification                                                                                   |
+| 6 | `htmx.LoadingButton` fit for the A.Team submit button | Asserted a near-certain fit from signature only; did not byte-compare its markup against CV's hand-rolled `#submission-loading` indicator pattern                                                                                                        |
 
 ## c) NOT STARTED
 
@@ -62,6 +62,7 @@ Nothing destructive or wrong-at-the-core. Honest defects found in self-review:
 ## f) NEXT — up to 50 things to get done (brainstorm, sorted: CV adoption → library → session debt; HARVEST input for TODO_LIST/ROADMAP)
 
 **CV-side adoption (`~/projects/CV`):**
+
 1. Bump CV `go.mod` templ-components v1.13.2 → v1.14.0; `go mod tidy` per module; run CV test suite
 2. Replace `emptyPanel` (`ui_common.templ:16`) with `display.EmptyState` (3 call sites)
 3. Replace `dashboardEmptyState` (`dashboard_fragments.templ:157`) with `display.EmptyState` (`TitleTag: "h2"` where section-level)
@@ -125,4 +126,4 @@ Nothing destructive or wrong-at-the-core. Honest defects found in self-review:
 
 ---
 
-*Point-in-time snapshot. Section (f) is HARVEST input for `TODO_LIST.md`/`ROADMAP.md` — it should not live only in this timestamped file.*
+_Point-in-time snapshot. Section (f) is HARVEST input for `TODO_LIST.md`/`ROADMAP.md` — it should not live only in this timestamped file._

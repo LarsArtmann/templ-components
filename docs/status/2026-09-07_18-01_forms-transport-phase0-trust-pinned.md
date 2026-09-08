@@ -150,13 +150,13 @@ Also: CHANGELOG `[Unreleased]` warmed with the session's two Added entries.
    - Root cause was a ~20ms test race — findable in minutes with the right
      probe. Lesson recorded below (e).
 2. **Transient disk-full failure** (`/mnt/buildcache` at 92%, 19G free):
-  `nix run .#verify` died mid-run with "no space left on device" during the
-  parallel lint/test phase. Retried clean minutes later — build, tests, lint
-  all green. Pre-existing machine state, not repo state, but the verify
-  battery on this machine is one big build away from flaking.
+   `nix run .#verify` died mid-run with "no space left on device" during the
+   parallel lint/test phase. Retried clean minutes later — build, tests, lint
+   all green. Pre-existing machine state, not repo state, but the verify
+   battery on this machine is one big build away from flaking.
 3. Minor: the demo test initially asserted `hx-swap="#wire-form-out"` (an
-  attribute wire never renders) — I wrote the assertion from memory instead
-  of from the rendered output; caught on first run.
+   attribute wire never renders) — I wrote the assertion from memory instead
+   of from the rendered output; caught on first run.
 
 None of these left residue: debug scaffolding (`zz_debug_test.go`,
 `zz_control_test.go`) was trashed; all committed code is verified green.
@@ -191,6 +191,7 @@ None of these left residue: debug scaffolding (`zz_debug_test.go`,
 ## f) NEXT — up to 50 things, in execution order
 
 **Release v1.13.3 (T06 — the immediate next unit):**
+
 1. `go clean -cache` (or buildcache GC) — kill the disk-flake class.
 2. Re-run `nix run .#verify` from a clean tree; confirm 0 issues.
 3. Run `scripts/ci-repro.sh --lint` (CI reproduction, lint job).
@@ -223,7 +224,9 @@ None of these left residue: debug scaffolding (`zz_debug_test.go`,
 28. T10: FilterDropdown.Wire tradeoff note (wrapper form vs signals).
 29. T10: Wire field + dialect rendering + tests + goldens + docs rows.
 30. T11: busy-state demo (LoadingButton vs `data-indicator`) + recipe section
-    + `role=status` pin.
+
+- `role=status` pin.
+
 31. T12: file-upload demo (multipart + FileInput + enctype) + recipe + limits
     notes (CSRF, size).
 32. T13: GET search-form demo (query-param parity) + recipe + golden.

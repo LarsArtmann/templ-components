@@ -73,12 +73,12 @@ describes ONE exchange, not to change htmx behavior.
 
 **Rejected alternatives:**
 
-- *Per-component dialect attributes* (`HxGet`-style fields) — already the
+- _Per-component dialect attributes_ (`HxGet`-style fields) — already the
   legacy `FilterDropdown` shape; it cannot express Datastar at all and
   forks per component.
-- *Signal binding + expression-built URLs* — expression string
+- _Signal binding + expression-built URLs_ — expression string
   concatenation is an injection surface and cannot be a complete literal.
-- *Extending the subset further (polling, indicators, confirm)* — remains
+- _Extending the subset further (polling, indicators, confirm)_ — remains
   rejected: those have no common semantics to render; the scope boundary
   stays.
 
@@ -95,8 +95,8 @@ serializes (`querySelector(sel)` over `closest("form")`).
 Decision: `wire.Action.Selector` renders that option, Datastar-only — the
 exact twin of `Target` (htmx-only). Response-driven targeting stays the
 default when `Selector` is empty; ADR-0036's rule is narrowed, not
-replaced: *Target renders for htmx only; Selector renders for Datastar
-only; empty Selector keeps response-header targeting authoritative.* The
+replaced: _Target renders for htmx only; Selector renders for Datastar
+only; empty Selector keeps response-header targeting authoritative._ The
 invariant tests pin both directions, and the busy-state demo endpoint now
 runs with zero response-header routing to prove the client-side path.
 

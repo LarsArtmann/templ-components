@@ -96,30 +96,30 @@ Don't know what to look for? Find your page type:
 
 #### `forms` — 23 components
 
-| Component           | Signature                                         | One-liner                                                                                                     |
-| ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
-| `Input`             | `Input(props InputProps)`                         | Typed input (text, email, password, search, url, tel, number) with label, error, help text                    |
-| `Checkbox`          | `Checkbox(props CheckboxProps)`                   | Checkbox with label, help text, error                                                                         |
-| `Select`            | `Select(props SelectProps)`                       | Select dropdown with typed options, disabled, selected, optgroups; `Stylable` for customizable `<select>` API |
-| `Textarea`          | `Textarea(props TextareaProps)`                   | Multi-line text input with label, rows, max length; `AutoGrow` (field-sizing), `EnterKeyHint`                 |
-| `Toggle`            | `Toggle(props ToggleProps)`                       | Toggle switch with label, required, error, help text                                                          |
-| `Radio`             | `Radio(props RadioProps)`                         | Radio button with label                                                                                       |
-| `RadioGroup`        | `RadioGroup(props RadioGroupProps)`               | Group of radios with options                                                                                  |
-| `Combobox`          | `Combobox(props ComboboxProps)`                   | Autocomplete input with filterable dropdown                                                                   |
-| `DatePicker`        | `DatePicker(props DatePickerProps)`               | Date input with label                                                                                         |
-| `FileInput`         | `FileInput(props FileInputProps)`                 | File upload input with label, accept types                                                                    |
+| Component           | Signature                                         | One-liner                                                                                                                            |
+| ------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `Input`             | `Input(props InputProps)`                         | Typed input (text, email, password, search, url, tel, number) with label, error, help text                                           |
+| `Checkbox`          | `Checkbox(props CheckboxProps)`                   | Checkbox with label, help text, error                                                                                                |
+| `Select`            | `Select(props SelectProps)`                       | Select dropdown with typed options, disabled, selected, optgroups; `Stylable` for customizable `<select>` API                        |
+| `Textarea`          | `Textarea(props TextareaProps)`                   | Multi-line text input with label, rows, max length; `AutoGrow` (field-sizing), `EnterKeyHint`                                        |
+| `Toggle`            | `Toggle(props ToggleProps)`                       | Toggle switch with label, required, error, help text                                                                                 |
+| `Radio`             | `Radio(props RadioProps)`                         | Radio button with label                                                                                                              |
+| `RadioGroup`        | `RadioGroup(props RadioGroupProps)`               | Group of radios with options                                                                                                         |
+| `Combobox`          | `Combobox(props ComboboxProps)`                   | Autocomplete input with filterable dropdown                                                                                          |
+| `DatePicker`        | `DatePicker(props DatePickerProps)`               | Date input with label                                                                                                                |
+| `FileInput`         | `FileInput(props FileInputProps)`                 | File upload input with label, accept types                                                                                           |
 | `Form`              | `Form(props FormProps)`                           | Form wrapper with action, method, CSRF token, `ContainerAware`, `Wire` for dual-transport submit (fields serialize in both dialects) |
-| `Label`             | `Label(forID, text string, required bool)`        | Form label element                                                                                            |
-| `FieldError`        | `FieldError(fieldID, message string)`             | Inline field error message                                                                                    |
-| `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                                     |
-| `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                                      |
-| `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                                      |
-| `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | Auto-submit select for filter bars — HTMX-native or dual-transport via `Wire`                                 |
-| `FilterInput`       | `FilterInput(props FilterInputProps)`             | Debounced dual-transport search input — `<search>` form, auto-submits as you type (`Wire` + `DebounceMS`)     |
-| `Slider`            | `Slider(props SliderProps)`                       | Range input slider with label, value display, help text                                                       |
-| `Rating`            | `Rating(props RatingProps)`                       | Accessible star rating — radio inputs, read-only mode, 3 sizes                                                |
-| `TagsInput`         | `TagsInput(props TagsInputProps)`                 | Tag input with add/remove — hidden inputs for submission, MaxTags/AllowDuplicate                              |
-| `Calendar`          | `Calendar(props CalendarProps)`                   | Month-view calendar — server-side navigation, day links, MinDate/MaxDate disabling                            |
+| `Label`             | `Label(forID, text string, required bool)`        | Form label element                                                                                                                   |
+| `FieldError`        | `FieldError(fieldID, message string)`             | Inline field error message                                                                                                           |
+| `FormFieldWrapper`  | `FormFieldWrapper(props FormFieldProps)`          | Wraps inputs with label, error, help text                                                                                            |
+| `InputGroup`        | `InputGroup(props InputGroupProps)`               | Input with prefix/suffix                                                                                                             |
+| `ValidationSummary` | `ValidationSummary(props ValidationSummaryProps)` | Accessible error summary with icon, count, linked fields                                                                             |
+| `FilterDropdown`    | `FilterDropdown(props FilterDropdownProps)`       | Auto-submit select for filter bars — HTMX-native or dual-transport via `Wire`                                                        |
+| `FilterInput`       | `FilterInput(props FilterInputProps)`             | Debounced dual-transport search input — `<search>` form, auto-submits as you type (`Wire` + `DebounceMS`)                            |
+| `Slider`            | `Slider(props SliderProps)`                       | Range input slider with label, value display, help text                                                                              |
+| `Rating`            | `Rating(props RatingProps)`                       | Accessible star rating — radio inputs, read-only mode, 3 sizes                                                                       |
+| `TagsInput`         | `TagsInput(props TagsInputProps)`                 | Tag input with add/remove — hidden inputs for submission, MaxTags/AllowDuplicate                                                     |
+| `Calendar`          | `Calendar(props CalendarProps)`                   | Month-view calendar — server-side navigation, day links, MinDate/MaxDate disabling                                                   |
 
 #### `feedback` — 14 components
 
@@ -224,13 +224,13 @@ Don't know what to look for? Find your page type:
 
 #### `utils/wire` — transport-agnostic wiring (ADR-0036)
 
-| Function                                        | One-liner                                                                           |
-| ----------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Function                                                     | One-liner                                                                                                                                                                                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `Action{Transport, Method, URL, Event, Target, ContentType}` | One typed wiring spec; `.Attributes()` renders the htmx or Datastar dialect; `ContentTypeForm` serializes the enclosing form's fields under Datastar (`{contentType: 'form'}`, verified v1.0.3 runtime), ignored by htmx |
-| `Handler(target PatchTarget, next)`             | Both-transports endpoint middleware: Datastar callers get response-header targeting |
-| `IsDatastar(r)` / `IsHTMX(r)`                   | Request predicates on `Datastar-Request` / `HX-Request` headers                     |
-| `PatchTarget{Selector, Mode}`                   | Server-side patch region for Datastar callers (`PatchMode` typed enum, 7 modes)     |
-| `HeaderDatastarRequest` etc.                    | Typed constants for the request/response marker headers                             |
+| `Handler(target PatchTarget, next)`                          | Both-transports endpoint middleware: Datastar callers get response-header targeting                                                                                                                                      |
+| `IsDatastar(r)` / `IsHTMX(r)`                                | Request predicates on `Datastar-Request` / `HX-Request` headers                                                                                                                                                          |
+| `PatchTarget{Selector, Mode}`                                | Server-side patch region for Datastar callers (`PatchMode` typed enum, 7 modes)                                                                                                                                          |
+| `HeaderDatastarRequest` etc.                                 | Typed constants for the request/response marker headers                                                                                                                                                                  |
 
 Scope: common subset only (ADR-0036) — polling/OOB/confirm/indicators/SSE stay in the `htmx`/`datastar` modules. `Action.Target` renders only for htmx (Datastar targeting is response-driven). Whole-form submission IS symmetric (`forms.FormProps.Wire` defaults to `ContentTypeForm`). Per-field value binding stays asymmetric under Datastar (bound signals escape hatch). Components take wiring via `BaseProps.Attrs` or a typed `Wire` field (`display.Button`, `navigation.LoadMore`, `forms.Form`).
 

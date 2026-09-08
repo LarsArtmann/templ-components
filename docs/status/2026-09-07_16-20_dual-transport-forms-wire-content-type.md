@@ -186,13 +186,14 @@ green under `GOWORK=off`; `nix run .#lint` **0 issues in every module**;
    alias collision cost a build cycle; one AGENTS.md line prevents the next
    occurrence.
 6. **Post-release tidy sweep is still manual and still bites** — 5 sub-modules
-   + visualtest were stale 2 days after v1.13.2. The release script's
-   post-propagation step should be a CI job (e.g. daily `go list -m` probe +
-   auto-PR) instead of a memory-dependent lesson.
+   - visualtest were stale 2 days after v1.13.2. The release script's
+     post-propagation step should be a CI job (e.g. daily `go list -m` probe +
+     auto-PR) instead of a memory-dependent lesson.
 
 ## f) NEXT — up to 50 things, rough priority order
 
 **Close out this session's gaps (do first):**
+
 1. Extend `visualtest/wire_e2e_test.go`: fill + submit the dual-transport form in real Chromium under the locally-served Datastar bundle; assert the verdict region updates.
 2. Run the missed `visualtest` compile check; `go mod tidy` (GOWORK=off) there if it shares the staleness.
 3. Close/update TODO_LIST.md #153 (Form shipped; next survey candidate: SimpleNav links).

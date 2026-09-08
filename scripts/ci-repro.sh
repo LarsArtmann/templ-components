@@ -178,7 +178,7 @@ if [ "$RUN_TIDY" = "1" ]; then
 			failed=1
 			continue
 		fi
-		if ! git diff --exit-code -- "$mod/go.mod" "$mod/go.sum" > /dev/null; then
+		if ! git diff --exit-code -- "$mod/go.mod" "$mod/go.sum" >/dev/null; then
 			echo "ERROR: $mod go.mod/go.sum stale after tidy — commit the refresh" >&2
 			failed=1
 		fi
