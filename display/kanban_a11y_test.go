@@ -123,3 +123,24 @@ func TestKanbanMotionReduce(t *testing.T) {
 	}))
 	utils.AssertContains(t, html, "motion-reduce:transition-none")
 }
+
+// TestKanbanTouchButtonsHook verifies the move buttons live under the
+// tc-kanban-buttons hook — the selector templates/custom.css targets with a
+// pointer:coarse rule so touch devices (no hover) still see them. Browser
+// proof of the computed style lives in visualtest/kanban_e2e_test.go.
+func TestKanbanTouchButtonsHook(t *testing.T) {
+	t.Parallel()
+
+	html := utils.Render(t, KanbanBoard(KanbanBoardProps{
+		Columns: kanbanTestColumns(),
+		Wire:    &wire.Action{URL: "/api/kanban/move"},
+	}))
+	utils.AssertContainsAll(t, html,
+		`class="tc-kanban-buttons`,
+		`opacity-0 group-hover:opacity-100 group-focus-within:opacity-100`,
+	)
+
+	// Read-only boards render no button wrapper at all.
+	readonly := utils.Render(t, KanbanBoard(KanbanBoardProps{Columns: kanbanTestColumns()}))
+	utils.AssertNotContains(readonly, "tc-kanban-buttons")
+}
