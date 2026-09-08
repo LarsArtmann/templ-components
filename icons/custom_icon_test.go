@@ -43,6 +43,7 @@ func TestRender_CustomViewBoxAndFill(t *testing.T) {
 	if !strings.Contains(out, `viewBox="0 0 128 128"`) {
 		t.Error("custom viewBox should render")
 	}
+
 	if !strings.Contains(out, `fill="#316192"`) {
 		t.Error("custom fill (brand hex) should render")
 	}
@@ -56,6 +57,7 @@ func TestRender_MultiPathSkipsEmpty(t *testing.T) {
 	if !strings.Contains(out, `d="M1 1"`) || !strings.Contains(out, `d="M2 2"`) {
 		t.Error("both non-empty paths should render")
 	}
+
 	if strings.Count(out, "<path") != 2 {
 		t.Errorf("empty path should be skipped, got %d path nodes", strings.Count(out, "<path"))
 	}
@@ -73,6 +75,7 @@ func TestRender_TitleAccessibility(t *testing.T) {
 	if !strings.Contains(labelled, "<title>Go logo</title>") || strings.Contains(labelled, `aria-hidden="true"`) {
 		t.Error("titled icon should render <title> and drop aria-hidden")
 	}
+
 	if !strings.Contains(labelled, `role="img"`) {
 		t.Error("titled icon should carry role=img")
 	}
@@ -83,6 +86,7 @@ func TestRender_SplitIconPathJSConvention(t *testing.T) {
 
 	joined := "M1 1|M2 2"
 	out := renderCustom(t, CustomIcon{Paths: strings.Split(joined, "|")}, "")
+
 	if strings.Count(out, "<path") != 2 {
 		t.Error("IconPathJS-style | split should produce one path per segment")
 	}
