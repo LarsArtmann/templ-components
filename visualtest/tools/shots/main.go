@@ -105,7 +105,7 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	var light, dark []byte
 
 	tasks := []chromedp.Action{
-		chromedp.EmulateViewport(width, 900),
+		chromedp.EmulateViewport(int64(width), 900),
 		chromedp.Navigate(base + p.path),
 		chromedp.WaitReady("body", chromedp.ByQuery),
 		chromedp.Sleep(settle),

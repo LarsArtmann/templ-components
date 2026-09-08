@@ -60,15 +60,11 @@ const appshellContentColumnClass = "flex min-w-0 flex-col"
 // "minmax(0, 1fr) grid blowout footgun" recipe.
 templ AppShell(props AppShellProps) {
 	{{ sidebarW := sidebarWidthValue(props.SidebarWidth) }}
-	{{ shellClass := appshellShellClass }}
-	if props.Sidebar == nil {
-		shellClass = appshellShellNoSidebarClass
-	}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class(shellClass, props.Class) }
+		class={ utils.Class(shellClassFor(props.Sidebar), props.Class) }
 		style={ "--tc-sidebar-w: " + sidebarW }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
