@@ -626,6 +626,45 @@ func TestDateRangeAdjacent(t *testing.T) {
 	visualtest.AssertScreenshot(t, "daterange/adjacent_light", stack)
 }
 
+// TestFormInline pins the Inline layout's field grouping at pixel level
+// (#166): two labeled fields share one row, labels above controls, each
+// field constrained to its flex-basis width instead of stretching full-width.
+func TestFormInline(t *testing.T) {
+	t.Parallel()
+
+	page := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		return forms.Form(forms.FormProps{Action: "/filter", Method: forms.FormGet, Layout: forms.FormLayoutInline}).
+			Render(templ.WithChildren(ctx, templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+				status := forms.DefaultSelectProps()
+				status.Name = "status"
+				status.Label = "Status"
+				status.Options = []forms.SelectOption{
+					{Value: "all", Label: "All"},
+					{Value: "active", Label: "Active"},
+				}
+
+				if err := forms.Select(status).Render(ctx, w); err != nil {
+					return err
+				}
+
+				query := forms.DefaultInputProps()
+				query.Name = "q"
+				query.Label = "Search"
+				query.Placeholder = "Name contains…"
+
+				if err := forms.Input(query).Render(ctx, w); err != nil {
+					return err
+				}
+
+				return display.Button(display.ButtonProps{Text: "Filter", Type: display.ButtonHTMLSubmit}).Render(ctx, w)
+			})), w)
+	})
+
+	visualtest.AssertScreenshot(t, "form/inline_light", page,
+		visualtest.Options{Viewport: visualtest.Viewport{Width: 640, Height: 320}},
+	)
+}
+
 // withChildren returns a component that renders parent with the given child
 // injected into the context, so components that consume { children... }
 // (Popover, ContextMenu) show their content in a visual golden.

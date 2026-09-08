@@ -228,9 +228,8 @@ func formsDemoSection() templ.Component {
 			}
 			ctx = templ.InitializeContext(ctx)
 			templ_7745c5c3_Err = forms.Select(forms.SelectProps{
-				BaseProps: utils.BaseProps{Class: "sm:w-auto sm:min-w-40"},
-				Name:      "status",
-				Label:     "Status",
+				Name:  "status",
+				Label: "Status",
 				Options: []forms.SelectOption{
 					{Value: "all", Label: "All"},
 					{Value: "active", Label: "Active"},
