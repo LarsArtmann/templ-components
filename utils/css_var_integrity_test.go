@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -40,10 +41,88 @@ func TestHeatmapBrandVarsDefined(t *testing.T) {
 		if got := strings.Count(string(css), token+":"); got < 2 {
 			t.Errorf(
 				"templates/custom.css defines %s %d time(s), want >= 2 (light + dark) — the Heatmap renders transparent without it (2026-09-08 audit f23/f24)",
-				token, got,
+				token,
+				got,
 			)
 		}
 	}
+}
+
+// collectVarDefsFromCSS reads one stylesheet and adds every custom-property
+// definition it declares. A missing optional file is not an error.
+func collectVarDefsFromCSS(defs map[string]bool, file string) error {
+	content, err := os.ReadFile(file)
+	if err != nil {
+		if os.IsNotExist(err) {
+			return nil // optional file (e.g. compiled CSS absent in fresh clones)
+		}
+
+		return fmt.Errorf("read %s: %w", file, err)
+	}
+
+	for _, def := range varDefPattern.FindAllStringSubmatch(string(content), -1) {
+		defs[def[1]] = true
+	}
+
+	return nil
+}
+
+// collectComponentVarRefs walks one library package's component sources and
+// committed golden renderings, collecting var(--token) references plus any
+// inline-style definitions the components emit themselves (e.g. AppShell's
+// --tc-sidebar-w).
+func collectComponentVarRefs(defs map[string]bool) (map[string][]string, error) {
+	refs := map[string][]string{}
+
+	for _, pkg := range libraryPackages {
+		err := filepath.Walk(filepath.Join("..", pkg), func(path string, info os.FileInfo, walkErr error) error {
+			if walkErr != nil || info.IsDir() {
+				return walkErr
+			}
+
+			name := info.Name()
+			if !isSweepableSource(name) {
+				return nil
+			}
+
+			//nolint:gosec // fixed repo-relative test paths walked from a constant list; no untrusted input
+			content, err := os.ReadFile(path)
+			if err != nil {
+				return fmt.Errorf("read %s: %w", path, err)
+			}
+
+			for _, ref := range varRefPattern.FindAllStringSubmatch(string(content), -1) {
+				refs[ref[1]] = append(refs[ref[1]], path)
+			}
+
+			if strings.Contains(string(content), "\"--") {
+				for _, def := range varDefPattern.FindAllStringSubmatch(string(content), -1) {
+					if strings.Contains(string(content), "\""+def[1]+":") {
+						defs[def[1]] = true
+					}
+				}
+			}
+
+			return nil
+		})
+		if err != nil {
+			return nil, fmt.Errorf("walk %s: %w", pkg, err)
+		}
+	}
+
+	return refs, nil
+}
+
+// isSweepableSource reports whether a walked file is a component source or a
+// committed golden rendering (generated and test files are excluded).
+func isSweepableSource(name string) bool {
+	if strings.HasSuffix(name, "_templ.go") || strings.HasSuffix(name, "_test.go") {
+		return false
+	}
+
+	return strings.HasSuffix(name, ".templ") ||
+		strings.HasSuffix(name, ".go") ||
+		strings.HasSuffix(name, ".golden")
 }
 
 // TestNoUndefinedCSSVarReferences sweeps every library component source AND
@@ -63,81 +142,35 @@ func TestNoUndefinedCSSVarReferences(t *testing.T) {
 		filepath.Join("..", "templ-components-theme.css"),
 		filepath.Join("..", "examples", "demo", "static", "app.css"),
 	} {
-		content, err := os.ReadFile(file)
-		if err != nil {
-			if os.IsNotExist(err) {
-				continue // optional file (e.g. compiled CSS absent in fresh clones)
-			}
-
-			t.Fatalf("read %s: %v", file, err)
-		}
-
-		for _, def := range varDefPattern.FindAllStringSubmatch(string(content), -1) {
-			defs[def[1]] = true
+		if err := collectVarDefsFromCSS(defs, file); err != nil {
+			t.Fatal(err)
 		}
 	}
 
-	refs := map[string][]string{}
-
-	addRefs := func(content, origin string) {
-		for _, ref := range varRefPattern.FindAllStringSubmatch(content, -1) {
-			refs[ref[1]] = append(refs[ref[1]], origin)
-		}
+	refs, err := collectComponentVarRefs(defs)
+	if err != nil {
+		t.Fatal(err)
 	}
 
-	for _, pkg := range libraryPackages {
-		err := filepath.Walk(filepath.Join("..", pkg), func(path string, info os.FileInfo, walkErr error) error {
-			if walkErr != nil || info.IsDir() {
-				return walkErr
-			}
-
-			name := info.Name()
-			if strings.HasSuffix(name, "_templ.go") || strings.HasSuffix(name, "_test.go") {
-				return nil
-			}
-			if !strings.HasSuffix(name, ".templ") && !strings.HasSuffix(name, ".go") && !strings.HasSuffix(name, ".golden") {
-				return nil
-			}
-
-			content, err := os.ReadFile(path)
-			if err != nil {
-				return err
-			}
-
-			addRefs(string(content), path)
-
-			// Inline style definitions emitted by the component itself count
-			// as definitions (e.g. AppShell's "--tc-sidebar-w: " + width).
-			for _, def := range varDefPattern.FindAllStringSubmatch(string(content), -1) {
-				if strings.Contains(string(content), "\""+def[1]+":") {
-					defs[def[1]] = true
-				}
-			}
-
-			return nil
-		})
-		if err != nil {
-			t.Fatalf("walk %s: %v", pkg, err)
-		}
-	}
-
-	// custom.css may reference tokens defined by Tailwind theme or itself.
 	customCSS, err := os.ReadFile(filepath.Join("..", "templates", "custom.css"))
 	if err != nil {
 		t.Fatalf("read templates/custom.css: %v", err)
 	}
-	addRefs(string(customCSS), "templates/custom.css")
+
+	// custom.css may reference tokens defined by the Tailwind theme or itself.
+	for _, ref := range varRefPattern.FindAllStringSubmatch(string(customCSS), -1) {
+		refs[ref[1]] = append(refs[ref[1]], "templates/custom.css")
+	}
 
 	for token, origins := range refs {
-		if strings.HasPrefix(token, "--tw-") {
-			continue // Tailwind internal runtime tokens
+		if strings.HasPrefix(token, "--tw-") || defs[token] {
+			continue // Tailwind internal runtime tokens / defined somewhere
 		}
 
-		if !defs[token] {
-			t.Errorf(
-				"CSS custom property %s is referenced (e.g. %s) but defined NOWHERE (custom.css, compiled demo CSS, semantic theme, or inline styles) — it silently renders as nothing. Define it in templates/custom.css or emit it inline.",
-				token, origins[0],
-			)
-		}
+		t.Errorf(
+			"CSS custom property %s is referenced (e.g. %s) but defined NOWHERE (custom.css, compiled demo CSS, semantic theme, or inline styles) — it silently renders as nothing. Define it in templates/custom.css or emit it inline.",
+			token,
+			origins[0],
+		)
 	}
 }

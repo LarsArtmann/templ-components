@@ -41,8 +41,8 @@ func newRegistry() *registry {
 		files: map[string][]string{},
 		pkg:   map[string]string{},
 		pkgs: []string{
-			"display", "feedback", "forms", "layout",
-			"navigation", "htmx", "datastar", "errorpage", "recipes",
+			pkgDisplay, pkgFeedback, pkgForms, pkgLayout,
+			pkgNav, pkgHTMX, pkgDatastar, pkgErrorpage, pkgRecipes,
 		},
 	}
 
@@ -79,6 +79,38 @@ func newRegistry() *registry {
 
 const enumsGoFile = "enums_go.go"
 
+// Package-name constants: the literals repeat across the registry list, the
+// packageDeps/packageImports maps, and the datastar copy special-casing
+// (goconst keeps them single-sourced).
+const (
+	pkgDisplay   = "display"
+	pkgFeedback  = "feedback"
+	pkgForms     = "forms"
+	pkgLayout    = "layout"
+	pkgNav       = "navigation"
+	pkgHTMX      = "htmx"
+	pkgDatastar  = "datastar"
+	pkgErrorpage = "errorpage"
+	pkgRecipes   = "recipes"
+)
+
+// Import-path constants for the packageImports checklist: the same literals
+// repeat across entries (goconst), and centralizing them keeps the map
+// diffable against the drift test.
+const (
+	impTempl        = "github.com/a-h/templ"
+	impUtils        = "github.com/larsartmann/templ-components/utils"
+	impUtilsSVG     = impUtils + "/svg"
+	impUtilsWire    = impUtils + "/wire"
+	impUtilsCDN     = impUtils + "/cdn"
+	impIcons        = "github.com/larsartmann/templ-components/icons"
+	impDisplay      = "github.com/larsartmann/templ-components/display"
+	impLayout       = "github.com/larsartmann/templ-components/layout"
+	impDatastarStat = "github.com/larsartmann/go-datastar/static"
+	impErrorFamily  = "github.com/larsartmann/go-error-family"
+	impHTMX         = "github.com/larsartmann/templ-components/htmx"
+)
+
 // datastarBumpProtocolDoc is copied alongside every datastar component add:
 // the package integrates with the pinned go-datastar/static runtime bundle,
 // so vendored copies inherit the bump/re-audit checklist by construction.
@@ -89,59 +121,62 @@ const datastarBumpProtocolDoc = "DATASTAR-BUMP-PROTOCOL.md"
 // go.mod checklist a vendoring consumer needs. Guarded against drift by
 // TestPackageImportsMatchSources.
 var packageImports = map[string][]string{
-	"display": {
-		"github.com/a-h/templ",
-		"github.com/larsartmann/templ-components/htmx",
-		"github.com/larsartmann/templ-components/icons",
-		"github.com/larsartmann/templ-components/utils",
-		"github.com/larsartmann/templ-components/utils/svg",
-		"github.com/larsartmann/templ-components/utils/wire",
+	pkgDisplay: {
+		impTempl,
+		impHTMX,
+		impIcons,
+		impUtils,
+		impUtilsSVG,
+		impUtilsWire,
 	},
-	"feedback": {
-		"github.com/larsartmann/templ-components/icons",
-		"github.com/larsartmann/templ-components/utils",
-		"github.com/larsartmann/templ-components/utils/svg",
+
+	pkgFeedback: {
+		impIcons,
+		impUtils,
+		impUtilsSVG,
 	},
-	"forms": {
-		"github.com/a-h/templ",
-		"github.com/larsartmann/templ-components/icons",
-		"github.com/larsartmann/templ-components/utils",
-		"github.com/larsartmann/templ-components/utils/wire",
+	pkgForms: {
+		impTempl,
+		impIcons,
+		impUtils,
+		impUtilsWire,
 	},
-	"layout": {
-		"github.com/a-h/templ",
-		"github.com/larsartmann/templ-components/icons",
-		"github.com/larsartmann/templ-components/utils",
-		"github.com/larsartmann/templ-components/utils/cdn",
+	pkgLayout: {
+		impTempl,
+		impIcons,
+		impUtils,
+		impUtilsCDN,
 	},
-	"navigation": {
-		"github.com/larsartmann/templ-components/icons",
-		"github.com/larsartmann/templ-components/utils",
-		"github.com/larsartmann/templ-components/utils/svg",
-		"github.com/larsartmann/templ-components/utils/wire",
+	pkgNav: {
+		impIcons,
+		impUtils,
+		impUtilsSVG,
+		impUtilsWire,
 	},
-	"htmx": {
-		"github.com/a-h/templ",
-		"github.com/larsartmann/templ-components/utils",
+	pkgHTMX: {
+		impTempl,
+		impUtils,
 	},
-	"datastar": {
-		"github.com/a-h/templ",
-		"github.com/larsartmann/go-datastar/static",
-		"github.com/larsartmann/templ-components/utils",
-		"github.com/larsartmann/templ-components/utils/cdn",
+
+	pkgDatastar: {
+		impTempl,
+		impDatastarStat,
+		impUtils,
+		impUtilsCDN,
 	},
-	"errorpage": {
-		"github.com/a-h/templ",
-		"github.com/larsartmann/go-error-family",
-		"github.com/larsartmann/templ-components/icons",
-		"github.com/larsartmann/templ-components/utils",
+
+	pkgErrorpage: {
+		impTempl,
+		impErrorFamily,
+		impIcons,
+		impUtils,
 	},
-	"recipes": {
-		"github.com/a-h/templ",
-		"github.com/larsartmann/templ-components/display",
-		"github.com/larsartmann/templ-components/icons",
-		"github.com/larsartmann/templ-components/layout",
-		"github.com/larsartmann/templ-components/utils",
+	pkgRecipes: {
+		impTempl,
+		impDisplay,
+		impIcons,
+		impLayout,
+		impUtils,
 	},
 }
 
@@ -150,37 +185,40 @@ var packageImports = map[string][]string{
 // .templ source references (class lookups, enums, shared helpers, etc.).
 // Use 'tc add <component> --list-deps' to print them.
 var packageDeps = map[string][]string{
-	"display": {
+	pkgDisplay: {
 		"bar_chart.go", "button_go.go", "collapsible_section.go",
 		"drawer_go.go", enumsGoFile, "external_link.go",
 		"heatmap.go", "modal_go.go", "shared.go", "sparkline.go",
 	},
-	"feedback": {enumsGoFile, "styles.go"},
-	"forms": {
+	pkgFeedback: {enumsGoFile, "styles.go"},
+	pkgForms: {
 		"aria.go", enumsGoFile, "ids.go",
 		"input_classes.go", "radio.go",
 	},
-	"layout": {
+	pkgLayout: {
 		"appshell_types.go", "container_types.go",
 		"sri.go", "split_types.go", "stack_types.go",
 	},
-	"navigation": {},
-	"htmx": {
+
+	pkgNav: {},
+	pkgHTMX: {
 		enumsGoFile, "polled_region.go",
 		"view_transitions.go",
 	},
-	"datastar": {
+
+	pkgDatastar: {
 		"cancellation.go", enumsGoFile, "indicator.go",
 		"live_region.go", "retry.go", "sdk_script.go",
 		// version.go additionally pulls in go-datastar/static (embedded
 		// runtime bundle) + utils/cdn — SDKScript consumers only.
 		"version.go",
 	},
-	"errorpage": {
+
+	pkgErrorpage: {
 		"constructors.go", "fromerror.go", "handler.go",
 		"notfound404_types.go", "styles.go",
 	},
-	"recipes": {
+	pkgRecipes: {
 		"dashboard_types.go", "login_card_types.go",
 		"settings_layout_types.go",
 	},
@@ -301,9 +339,10 @@ func cmdAdd(r *registry, args []string) {
 		for _, imp := range imports {
 			fmt.Fprintf(os.Stdout, "  %s\n", imp)
 		}
-		if pkg == "datastar" {
+		if pkg == pkgDatastar {
 			fmt.Fprintf(os.Stderr, "\ntc: datastar vendors an external runtime bundle — the add copies\n")
-			fmt.Fprintf(os.Stderr, "      %s with the re-audit checklist. Follow it on every\n", datastarBumpProtocolDoc)
+			fmt.Fprintf(os.Stderr, "      %s with the re-audit checklist. Follow it on every\n",
+				datastarBumpProtocolDoc)
 			fmt.Fprintf(os.Stderr, "      go-datastar/static bump.\n")
 		}
 		fmt.Fprintf(os.Stderr, "\ntc: %d file(s). These are NOT copied by 'tc add'.\n", len(deps))
@@ -324,8 +363,8 @@ func cmdAdd(r *registry, args []string) {
 	// datastar components vendor an external runtime integration: always
 	// drop the bump/re-audit checklist next to them (post-audit patterns by
 	// construction).
-	if pkg == "datastar" {
-		copyFile(filepath.Join("_sources", "datastar", datastarBumpProtocolDoc),
+	if pkg == pkgDatastar {
+		copyFile(filepath.Join("_sources", pkgDatastar, datastarBumpProtocolDoc),
 			filepath.Join(out, datastarBumpProtocolDoc))
 	}
 

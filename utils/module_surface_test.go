@@ -44,7 +44,8 @@ func TestGoWorkDirectiveMatchesRootGoMod(t *testing.T) {
 	if string(workMatch[1]) != string(modMatch[1]) {
 		t.Errorf(
 			"go.work go directive (%s) != root go.mod go directive (%s) — align them (bump go.work when the toolchain input moves)",
-			workMatch[1], modMatch[1],
+			workMatch[1],
+			modMatch[1],
 		)
 	}
 }
@@ -67,9 +68,11 @@ func TestGoDatastarStaticPinSurface(t *testing.T) {
 	if err != nil {
 		t.Fatalf("glob go.mods: %v", err)
 	}
+
 	mods = append(mods, filepath.Join("..", "go.mod"))
 
 	var got []string
+
 	for _, mod := range mods {
 		content, err := os.ReadFile(mod)
 		if err != nil {
@@ -85,12 +88,14 @@ func TestGoDatastarStaticPinSurface(t *testing.T) {
 			got = append(got, filepath.ToSlash(rel))
 		}
 	}
+
 	sort.Strings(got)
 
 	if strings.Join(got, ",") != strings.Join(want, ",") {
 		t.Errorf(
 			"go-datastar/static pin surface drifted:\n got: %v\nwant: %v\n(direct: datastar; indirect: root, visualtest — a change here is a release-script + consumer-graph decision, not a mechanical bump)",
-			got, want,
+			got,
+			want,
 		)
 	}
 }

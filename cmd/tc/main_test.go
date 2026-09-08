@@ -38,10 +38,12 @@ func TestSourcesMatchPackageFiles(t *testing.T) {
 
 		rel, _ := filepath.Rel("_sources", path)
 		parts := strings.Split(rel, string(filepath.Separator))
+
 		if parts[0] == "starter" {
 			// Starter CSS is a curated template, not a copy of a package file.
 			return nil
 		}
+
 		if rel == filepath.Join("datastar", datastarBumpProtocolDoc) {
 			// Scaffolder-owned checklist — no package-file counterpart.
 			return nil
@@ -50,12 +52,14 @@ func TestSourcesMatchPackageFiles(t *testing.T) {
 		embedded, err := sourcesFS.ReadFile(path)
 		if err != nil {
 			t.Errorf("read embedded %s: %v", rel, err)
+
 			return nil
 		}
 
 		original, err := os.ReadFile(filepath.Join(repoRoot, rel))
 		if err != nil {
 			t.Errorf("package file for embedded source missing: %s: %v", rel, err)
+
 			return nil
 		}
 
@@ -76,16 +80,43 @@ func TestSourcesMatchPackageFiles(t *testing.T) {
 func TestPackageImportsMatchSources(t *testing.T) {
 	t.Parallel()
 
-	repoRoot := filepath.Join("..", "..")
-	importPattern := regexp.MustCompile(`"github\.com/[^"]+"`)
-	selfPrefix := "github.com/larsartmann/templ-components/"
-
 	for pkg := range packageImports {
-		got := map[string]bool{}
+		got := collectPackageImports(t, pkg)
+		want := map[string]bool{}
 
-		files, err := filepath.Glob(filepath.Join(repoRoot, pkg, "*.go"))
+		for _, imp := range packageImports[pkg] {
+			want[imp] = true
+		}
+
+		for imp := range want {
+			if !got[imp] {
+				t.Errorf("packageImports[%q] lists %q but %s does not import it — prune the checklist", pkg, imp, pkg)
+			}
+		}
+
+		for imp := range got {
+			if !want[imp] {
+				t.Errorf("%s imports %q but packageImports[%q] misses it — add it", pkg, imp, pkg)
+			}
+		}
+	}
+}
+
+// collectPackageImports scans a package's non-test, non-generated .go and
+// .templ sources for module-level imports (the go.mod surface a vendoring
+// consumer pulls in). Test-only helpers (/golden) and the package's own path
+// are excluded.
+func collectPackageImports(t *testing.T, pkg string) map[string]bool {
+	t.Helper()
+
+	const selfPrefix = "github.com/larsartmann/templ-components/"
+
+	got := map[string]bool{}
+
+	for _, pattern := range []string{"*.go", "*.templ"} {
+		files, err := filepath.Glob(filepath.Join("..", "..", pkg, pattern))
 		if err != nil {
-			t.Fatalf("glob %s: %v", pkg, err)
+			t.Fatalf("glob %s %s: %v", pkg, pattern, err)
 		}
 
 		for _, file := range files {
@@ -101,50 +132,19 @@ func TestPackageImportsMatchSources(t *testing.T) {
 
 			for _, imp := range importPattern.FindAllString(string(content), -1) {
 				imp = strings.Trim(imp, `"`)
-				// Test-only helpers and the package itself are not go.mod surface.
 				if strings.Contains(imp, "/golden") || imp == selfPrefix+pkg {
 					continue
 				}
+
 				got[imp] = true
-			}
-		}
-
-		templFiles, err := filepath.Glob(filepath.Join(repoRoot, pkg, "*.templ"))
-		if err != nil {
-			t.Fatalf("glob %s templ: %v", pkg, err)
-		}
-		for _, file := range templFiles {
-			content, err := os.ReadFile(file)
-			if err != nil {
-				t.Fatalf("read %s: %v", file, err)
-			}
-
-			for _, imp := range importPattern.FindAllString(string(content), -1) {
-				imp = strings.Trim(imp, `"`)
-				if strings.Contains(imp, "/golden") || imp == selfPrefix+pkg {
-					continue
-				}
-				got[imp] = true
-			}
-		}
-
-		want := map[string]bool{}
-		for _, imp := range packageImports[pkg] {
-			want[imp] = true
-		}
-
-		for imp := range want {
-			if !got[imp] {
-				t.Errorf("packageImports[%q] lists %q but %s does not import it — prune the checklist", pkg, imp, pkg)
-			}
-		}
-		for imp := range got {
-			if !want[imp] {
-				t.Errorf("%s imports %q but packageImports[%q] misses it — add it so --list-deps stays honest", pkg, imp, pkg)
 			}
 		}
 	}
+
+	return got
 }
+
+var importPattern = regexp.MustCompile(`"github\.com/[^"]+"`)
 
 func TestCmdAddDatastarIncludesBumpProtocol(t *testing.T) {
 	t.Parallel()
@@ -159,6 +159,7 @@ func TestCmdAddDatastarIncludesBumpProtocol(t *testing.T) {
 	// Non-datastar adds must NOT get the checklist.
 	tmp2 := t.TempDir()
 	cmdAdd(newRegistry(), []string{"button", "--out", tmp2})
+
 	if _, err := os.Stat(filepath.Join(tmp2, datastarBumpProtocolDoc)); err == nil {
 		t.Errorf("%s copied for a non-datastar component", datastarBumpProtocolDoc)
 	}

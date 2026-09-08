@@ -94,10 +94,13 @@ func TestVisualFailArtifactsIgnored(t *testing.T) {
 	}
 
 	if !strings.Contains(string(gitignore), ".fail/") {
-		t.Errorf("visualtest/.gitignore no longer ignores .fail/ — failure artifacts (actual/diff PNGs) can be committed by broad `git add`")
+		t.Errorf(
+			"visualtest/.gitignore no longer ignores .fail/ — failure artifacts (actual/diff PNGs) can be committed by broad `git add`",
+		)
 	}
 
-	tracked, err := exec.Command("git", "-C", "..", "ls-files", "visualtest/testdata/.fail").Output()
+	tracked, err := exec.CommandContext(t.Context(), "git", "-C", "..", "ls-files", "visualtest/testdata/.fail").
+		Output()
 	if err != nil {
 		t.Skipf("git not usable here (CI clone edge): %v", err)
 
@@ -105,7 +108,10 @@ func TestVisualFailArtifactsIgnored(t *testing.T) {
 	}
 
 	if len(strings.TrimSpace(string(tracked))) > 0 {
-		t.Errorf("visual-regression .fail artifacts are TRACKED in git:\n%s\nRemove them (they are per-run debugging output).", strings.TrimSpace(string(tracked)))
+		t.Errorf(
+			"visual-regression .fail artifacts are TRACKED in git:\n%s\nRemove them (they are per-run debugging output).",
+			strings.TrimSpace(string(tracked)),
+		)
 	}
 }
 

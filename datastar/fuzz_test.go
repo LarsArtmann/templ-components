@@ -22,11 +22,13 @@ func FuzzGetActionExpr(f *testing.F) {
 		if !strings.HasPrefix(out, "@get('") {
 			t.Fatalf("missing @get(' prefix: %q", out)
 		}
+
 		// Suffix depends on option presence (deterministic from the validated
 		// enums): ') with no options, }) with an options object.
 		hasOpts := retryModeValue(RetryMode(retry)) != RetryAuto ||
 			requestCancellationValue(RequestCancellation(cancellation)) == CancellationCleanup
 		wantSuffix := "})"
+
 		if !hasOpts {
 			wantSuffix = "')"
 		}
@@ -44,6 +46,7 @@ func FuzzGetActionExpr(f *testing.F) {
 		// keep their quote) + 2 per emitted option value. Anything else means
 		// an option or the URL broke the expression shape.
 		wantQuotes := 2 + strings.Count(url, "'")
+
 		if retryModeValue(RetryMode(retry)) != RetryAuto {
 			wantQuotes += 2
 		}
@@ -72,6 +75,7 @@ func FuzzActionExpr(f *testing.F) {
 		if !strings.HasPrefix(out, "@") {
 			t.Fatalf("missing @ prefix: %q", out)
 		}
+
 		if !strings.HasSuffix(out, "')") {
 			t.Fatalf("missing ') suffix: %q", out)
 		}
