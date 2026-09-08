@@ -34,7 +34,7 @@ func componentTypes() []any {
 		datastar.LiveRegionProps{},
 		datastar.IndicatorProps{},
 
-		// display (32)
+		// display (33)
 		display.BadgeProps{},
 		display.AvatarProps{},
 		display.EyebrowProps{},
@@ -65,6 +65,7 @@ func componentTypes() []any {
 		display.HoverCardProps{},
 		display.ContextMenuProps{},
 		display.CarouselProps{},
+		display.KanbanBoardProps{},
 		display.SectionHeadingProps{},
 		display.DateRangeProps{},
 

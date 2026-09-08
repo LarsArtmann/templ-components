@@ -22,7 +22,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-120 server-rendered components. 59 typed string enums (58 with IsValid()). 106 SVG icons. Zero client-side framework.
+121 server-rendered components. 59 typed string enums (58 with IsValid()). 106 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -31,7 +31,7 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **CSS approach**       | Tailwind v4 (CSS-first)                        | Tailwind + CSS vars           | Tailwind + DaisyUI                             |
 | **JavaScript**         | HATEOAS (enhances HTML)                        | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js**   | No                                             | No                            | Yes                                            |
-| **Components**         | 118                                            | 40+                           | —                                              |
+| **Components**         | 121                                            | 40+                           | —                                              |
 | **Typed props**        | 52 enums                                       | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)                              | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts)                     | Yes                           | —                                              |
@@ -101,9 +101,9 @@ templ generate && go run .
 
 ## Component Catalog
 
-### `display` — Data Display (42 components)
+### `display` — Data Display (43 components)
 
-Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, collapsible sections, heatmaps, **native SVG charts** (LineChart, AreaChart, PieChart/Donut), eyebrows, terminal-style log scrollbacks, and more.
+Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, tooltips, accordions, dropdowns, stat cards, page headers, definition lists, responsive grid, carousel, sparklines, bar charts, external links, collapsible sections, heatmaps, **native SVG charts** (LineChart, AreaChart, PieChart/Donut), **dual-transport kanban boards** (drag-and-drop + keyboard moves), eyebrows, terminal-style log scrollbacks, and more.
 
 ```templ
 @display.Card(display.CardProps{Title: "Users", Subtitle: "Manage users"}) {
@@ -146,6 +146,14 @@ Cards, tables (Table + DataTable), tabs, modals, badges, buttons, avatars, toolt
         {Timestamp: "12:47:03.184", Tag: "query", Text: "ads.example.com A", Tone: display.ScrollbackToneInfo},
         {Timestamp: "12:47:03.185", Tag: "action", Text: "NXDOMAIN", Tone: display.ScrollbackToneDanger},
     },
+})
+
+@display.KanbanBoard(display.KanbanBoardProps{
+    Columns: []display.KanbanColumn{
+        {ID: "todo", Title: "To do", Cards: []display.KanbanCard{{ID: "c1", Title: "Write docs"}}},
+        {ID: "done", Title: "Done"},
+    },
+    Wire: &wire.Action{URL: "/api/kanban/move"},
 })
 ```
 
@@ -343,7 +351,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 
 | Metric         | Value                                               |
 | -------------- | --------------------------------------------------- |
-| Components     | 118                                                 |
+| Components     | 121                                                 |
 | SVG icons      | 102                                                 |
 | Typed enums    | 53 (50 with IsValid)                                |
 | Packages       | 15                                                  |

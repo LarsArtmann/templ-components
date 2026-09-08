@@ -26,7 +26,7 @@ it's about _how to make a new component fit the library_, Part 2 answers.
 
 ## Component catalogue
 
-120 components across 11 packages + 102 icons. If you're about to hand-roll
+121 components across 11 packages + 102 icons. If you're about to hand-roll
 something, check this table first — 4 of the top 6 consumer "missing components"
 already existed.
 
@@ -37,6 +37,7 @@ Don't know what to look for? Find your page type:
 | You're building...             | Reach for                                                                                                                                                                                                                          |
 | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Dashboard / metrics page**   | `AppShell`, `Container`, `Grid`, `StatCard`, `Card`, `ProgressBar`, `SkeletonCardGrid`, `PageHeader`, `Sparkline`, `BarChart`, `LineChart`, `PieChart`, `AreaChart`, `PolledRegion`                                                |
+| **Kanban / pipeline board**    | `KanbanBoard` — HTML5 drag-and-drop + keyboard move buttons, `Wire` move exchange (htmx or Datastar), `ParseKanbanMove` server helper                                                                                              |
 | **List / table page**          | `Table` (`Flush` for card nesting, `CellPadding` for compact rows, `Table.Body` for custom rows, `Row.Href` for clickable rows), `Badge`, `StatusBadge`, `Avatar`, `Pagination`, `LoadMore`, `EndOfList`, `EmptyState`, `ListNote` |
 | **Detail page**                | `Split`, `Card`, `DefinitionList`, `DefinitionGrid`, `Tabs`, `PageHeader`, `Breadcrumbs`                                                                                                                                           |
 | **Settings / data-entry form** | `Form`, `Input`, `Select` (supports `Groups` for optgroups), `Textarea`, `Toggle`, `Checkbox`, `RadioGroup`, `ValidationSummary`                                                                                                   |
@@ -49,7 +50,7 @@ Don't know what to look for? Find your page type:
 
 ### By package (import path reference)
 
-#### `display` — 42 components
+#### `display` — 43 components
 
 | Component            | Signature                                           | One-liner                                                                                                                                        |
 | -------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
@@ -85,6 +86,7 @@ Don't know what to look for? Find your page type:
 | `HoverCard`          | `HoverCard(props HoverCardProps)`                   | CSS-only hover-activated card — 4 positions, focus-within support                                                                                |
 | `ContextMenu`        | `ContextMenu(props ContextMenuProps)`               | Right-click context menu — CSP-safe JS, role=menu, Escape/click-outside dismiss                                                                  |
 | `Carousel`           | `Carousel(props CarouselProps)`                     | Slide carousel with prev/next arrows and dot indicators                                                                                          |
+| `KanbanBoard`        | `KanbanBoard(props KanbanBoardProps)`               | Kanban board — drag-and-drop + per-card keyboard moves, `Wire` move exchange (htmx or Datastar), `ParseKanbanMove` server helper                                 |
 | `Sparkline`          | `Sparkline(props SparklineProps)`                   | Pure SVG mini line chart — trend visualization, `Filled`, `AriaLabel`, customizable dims                                                         |
 | `BarChart`           | `BarChart(props BarChartProps)`                     | CSS bar chart (horizontal/vertical) — per-bar colors, links, value formatting, empty state                                                       |
 | `ExternalLink`       | `ExternalLink(props ExternalLinkProps)`             | Safe off-site link — `target="_blank" rel="noopener"`, URL-sanitized href, optional arrow icon                                                   |
