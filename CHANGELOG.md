@@ -6,6 +6,41 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **`layout.AppShell`: no-sidebar shells no longer collapse.** The two-track
+  grid template (`sidebar | content`) was emitted even when `Sidebar` was nil,
+  so the single content column landed in the sidebar-width track — the
+  dashboard recipe rendered squeezed to ~16rem. The grid template is now only
+  emitted when a sidebar slot exists (`shellClassFor`). Caught by the new
+  full-page demo screenshot audit; golden updated.
+- **`display.Heatmap`: cells render by default.** The component colors cells
+  via `rgba(var(--ds-brand-rgb), alpha)` but `--ds-brand-rgb` was defined
+  nowhere, so every cell was transparent (only the peak ring showed).
+  `templates/custom.css` now defines `--ds-brand-rgb` / `--ds-brand`
+  (violet-600 light / violet-500 dark — override either variable to rebrand).
+- **`htmx.LoadingButton`: spinner hidden at rest.** The spinner was rendered
+  un-gated and stayed visible next to the default text; it is now wrapped in
+  `htmx-indicator` like the loading text, so only the default text shows
+  until a request starts. The `tc-btn-loading` wrapper remains as the
+  documented `hx-indicator` hook.
+- **Demo fixes:** removed a leftover "HELLO" debug line from the hero; the
+  embedded AppShell demo now uses the MD sidebar width (its `w-64` SidebarNav
+  overflowed the SM track) and opts out of `min-h-dvh` (the shell stretched
+  ~900px inside the demo card); the two inline DateRange demo items render
+  on separate lines; the index filter-bar Status select no longer spans the
+  full page width inside `FormLayoutInline`; the auth recipe panel now reads
+  its component count from the drift-guarded constant (was a stale "116");
+  the Full Nav demo shows a brand.
+
+### Added
+
+- **`nix run .#shots` — sanctioned demo screenshot tool** (`visualtest/tools/shots`):
+  full-page light+dark captures of every demo route via a fresh browser per
+  page (a long-lived shared browser degrades across very tall captures).
+  For manual visual inspection between releases; goldens stay owned by
+  `nix run .#visual`.
+
 ## [1.14.0] — 2026-09-07
 
 ### Added
