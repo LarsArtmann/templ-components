@@ -39,16 +39,22 @@ templ InlineLoadingOverlay(id string, spinner templ.Component) {
 }
 
 // LoadingButton renders a button with built-in loading state.
-// The default text hides during an HTMX request (htmx-request on the form
-// toggles htmx-indicator visibility); loadingText is the htmx-indicator.
+// During an HTMX request (htmx-request on the button or an ancestor) the
+// default text hides and the loading text + spinner show; at rest only the
+// default text is visible. The spinner is wrapped in htmx-indicator so it is
+// gated regardless of the color classes passed in. The tc-btn-loading wrapper
+// is a stable hook for hx-indicator when a different indicator scope is
+// needed.
 //
-//	<button class="btn-primary" hx-post="/save" hx-indicator=".tc-btn-loading">
-//	   @htmx.LoadingButton("Save", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "htmx-indicator"}))
+//	<button class="btn-primary" hx-post="/save">
+//	   @htmx.LoadingButton("Save", "Saving...", feedback.Spinner(feedback.SpinnerProps{Size: feedback.SpinnerSM, Color: "text-white"}))
 //	</button>
 templ LoadingButton(defaultText, loadingText string, spinner templ.Component) {
 	<span class="tc-btn-loading">
 		<span class="inline-flex items-center gap-2">
-			@defaultSpinner(spinner)
+			<span class="htmx-indicator inline-flex">
+				@defaultSpinner(spinner)
+			</span>
 			<span class="htmx-indicator">{ loadingText }</span>
 			<span class="[.htmx-request_&]:hidden">{ defaultText }</span>
 		</span>

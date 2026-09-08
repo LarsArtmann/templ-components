@@ -2,12 +2,20 @@ package layout
 
 import "github.com/larsartmann/templ-components/utils"
 
-// appshellShellClass is the outer grid wrapper. min-h-dvh ensures the shell
-// fills the viewport height; the grid is lg-gated so mobile collapses to a
-// single column (sidebar hidden, content full-width). The main column uses
-// minmax(0, 1fr) — never bare 1fr — to prevent grid blowout when a wide
-// <table>, long URL, or <pre> lives in the content (see ADR-0016).
+// appshellShellClass is the outer grid wrapper for shells WITH a sidebar.
+// min-h-dvh ensures the shell fills the viewport height; the grid is lg-gated
+// so mobile collapses to a single column (sidebar hidden, content full-width).
+// The main column uses minmax(0, 1fr) — never bare 1fr — to prevent grid
+// blowout when a wide <table>, long URL, or <pre> lives in the content (see
+// ADR-0016).
 const appshellShellClass = "lg:grid lg:grid-cols-[var(--tc-sidebar-w)_minmax(0,1fr)] min-h-dvh"
+
+// appshellShellNoSidebarClass is the outer wrapper class when no Sidebar slot
+// is provided. The two-track grid template MUST NOT be emitted in that case:
+// with a single child it would place the content column into the
+// sidebar-width track, leaving the second track empty and collapsing the
+// whole shell to the sidebar width.
+const appshellShellNoSidebarClass = "min-h-dvh"
 
 // appshellSidebarWrapperClass hides the sidebar below lg so it doesn't take
 // up mobile real estate. The sidebar slot itself (e.g. SidebarNav) renders
@@ -52,11 +60,15 @@ const appshellContentColumnClass = "flex min-w-0 flex-col"
 // "minmax(0, 1fr) grid blowout footgun" recipe.
 templ AppShell(props AppShellProps) {
 	{{ sidebarW := sidebarWidthValue(props.SidebarWidth) }}
+	{{ shellClass := appshellShellClass }}
+	if props.Sidebar == nil {
+		shellClass = appshellShellNoSidebarClass
+	}
 	<div
 		if props.ID != "" {
 			id={ props.ID }
 		}
-		class={ utils.Class(appshellShellClass, props.Class) }
+		class={ utils.Class(shellClass, props.Class) }
 		style={ "--tc-sidebar-w: " + sidebarW }
 		if props.AriaLabel != "" {
 			aria-label={ props.AriaLabel }
