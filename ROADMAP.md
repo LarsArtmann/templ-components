@@ -122,17 +122,17 @@ and CI docs-health drift guard. See `CHANGELOG.md` for the full entry.
 
 ### Demo, visual-audit & showcase ideas (harvested 2026-09-08 from the demo visual audit)
 
-| Direction                      | Description                                                                                                                    |
-| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ |
-| Interactive-state goldens tier | Click-to-open captures as a first-class visualtest tier for all overlay/interactive components. (audit f41)                    |
-| Multi-viewport golden matrix   | 1280/768/375 for the shell primitives (AppShell, Nav, Split, Grid). (audit f42)                                                |
-| Demo theme-override toggle     | Showcase `@theme` remapping live in the demo — sells the theming model visually. (audit f44)                                   |
-| Print/PDF rendering check      | The library claims Minimal/static-friendliness; prove it on the demo. (audit f45)                                              |
-| Index mega-page performance    | Demo index is ~29k px tall / ~1.4MB HTML — lazy sections or pagination. (audit f46)                                            |
-| CSP negative test              | Serve the demo with a strict CSP header; assert zero console violations during a capture run. (audit f47)                      |
-| Icon gallery interactions      | Copy-to-clipboard feedback verification + keyboard operability (click-to-copy may be mouse-only). (audit f48)                  |
-| Offline fonts check            | Block fonts.googleapis.com and confirm fallback typography is acceptable. (audit f33)                                          |
-| Audit-session convention       | Codify "audit sessions produce reports + failing guards, never drive-by fixes" so fix scope stays reviewable. (audit f50)      |
+| Direction                      | Description                                                                                                               |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------- |
+| Interactive-state goldens tier | Click-to-open captures as a first-class visualtest tier for all overlay/interactive components. (audit f41)               |
+| Multi-viewport golden matrix   | 1280/768/375 for the shell primitives (AppShell, Nav, Split, Grid). (audit f42)                                           |
+| Demo theme-override toggle     | Showcase `@theme` remapping live in the demo — sells the theming model visually. (audit f44)                              |
+| Print/PDF rendering check      | The library claims Minimal/static-friendliness; prove it on the demo. (audit f45)                                         |
+| Index mega-page performance    | Demo index is ~29k px tall / ~1.4MB HTML — lazy sections or pagination. (audit f46)                                       |
+| CSP negative test              | Serve the demo with a strict CSP header; assert zero console violations during a capture run. (audit f47)                 |
+| Icon gallery interactions      | Copy-to-clipboard feedback verification + keyboard operability (click-to-copy may be mouse-only). (audit f48)             |
+| Offline fonts check            | Block fonts.googleapis.com and confirm fallback typography is acceptable. (audit f33)                                     |
+| Audit-session convention       | Codify "audit sessions produce reports + failing guards, never drive-by fixes" so fix scope stays reviewable. (audit f50) |
 
 ### General
 

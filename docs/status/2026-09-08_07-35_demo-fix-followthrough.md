@@ -25,7 +25,7 @@
 
 ## b) PARTIALLY DONE
 
-1. **LoadingButton visual golden:** the audit asked for rest + `.htmx-request` *pixel* goldens; shipped the e2e state-gate guard instead (stronger contract, no flaky golden). The golden itself is routed as TODO #164 — deliberately open, not forgotten.
+1. **LoadingButton visual golden:** the audit asked for rest + `.htmx-request` _pixel_ goldens; shipped the e2e state-gate guard instead (stronger contract, no flaky golden). The golden itself is routed as TODO #164 — deliberately open, not forgotten.
 2. **Heatmap dark-mode coverage:** verified only at page level (index dark capture shows violet cells); no isolated `heatmap/dark.png` golden — routed in TODO #169.
 3. **§g questions:** re-posed in the session summary, still unanswered — see g).
 
@@ -50,6 +50,7 @@ Nothing destructive this session. Two honest misses, both caught in self-critiqu
 ## f) NEXT — up to 50 things to get done next
 
 **P0 — decisions unblocking the cycle**
+
 1. Answer §g: daemon-history record (q1), violet keep (q2), release cut (q3).
 2. If release approved: `scripts/release.sh <ver> "<summary>"` — verify-before-strip, tag all 7 modules, `check-release-tags.sh`, manual push after review.
 3. Post-propagation `GOWORK=off go mod tidy` sweep in all 7 modules + visualtest after tags hit the proxy (v1.12.0 lesson); confirm master CI + Website green.
@@ -115,4 +116,4 @@ Nothing destructive this session. Two honest misses, both caught in self-critiqu
 
 ---
 
-*Report per the status-report skill (markdown format per standing user override). Evidence: captures in `/tmp/tc-shots-final/` (volatile — see f8), e2e guard at `visualtest/loading_button_e2e_test.go`, harvest diff in `TODO_LIST.md` (#158–177) + `ROADMAP.md`. Now WAITING FOR INSTRUCTIONS.*
+_Report per the status-report skill (markdown format per standing user override). Evidence: captures in `/tmp/tc-shots-final/` (volatile — see f8), e2e guard at `visualtest/loading_button_e2e_test.go`, harvest diff in `TODO_LIST.md` (#158–177) + `ROADMAP.md`. Now WAITING FOR INSTRUCTIONS._
