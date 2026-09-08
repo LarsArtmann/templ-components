@@ -315,13 +315,26 @@ func hoverAction(sel string) chromedp.Action {
 // sel. The wrapper (#tc-root) is a <div> and not itself focusable, so we
 // descend to the interactive element (button/a/input) it wraps. No-op if no
 // focusable element exists.
+//
+// A synthetic bubbling focusin event is dispatched in addition to the real
+// .focus() call: under headless Chromium the window often lacks document
+// focus (document.hasFocus() === false, e.g. with parallel background tabs),
+// in which case .focus() still moves activeElement but the browser does NOT
+// fire focus/focusin — every delegated focusin listener (the Combobox
+// dropdown opener) stays inert. The synthetic event reaches those listeners
+// directly; components with idempotent focus handlers are unaffected by the
+// double dispatch. Same rationale as contextAction's synthetic contextmenu.
 func focusAction(sel string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
 		script := `(() => {
 			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
 			if (!root) return false;
 			const f = root.querySelector('button, a[href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
-			if (f) { f.focus(); return true; }
+			if (f) {
+				f.focus();
+				f.dispatchEvent(new FocusEvent('focusin', {bubbles: true}));
+				return true;
+			}
 			return false;
 		})()`
 
