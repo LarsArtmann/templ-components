@@ -148,4 +148,4 @@ writing modes and is the canonical choice for horizontal text scaling.
 - [Container Queries](container-queries.md) — the 8 container-aware components and the
   `@container` wrapper contract (ADR-0018)
 - [ADR-0018: Container-Query-Native Contract](../adr/0018-container-query-native-contract.md)
-- [Tailwind v4 Container Queries](https://tailwindcss.com/docs/container-queries)
+- [Tailwind v4 Container Queries](https://tailwindcss.com/docs/responsive-design#container-queries)

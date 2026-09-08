@@ -181,4 +181,4 @@ No data migrations, no API breakage.
 - [ADR-0014: Native `<dialog>` element for Modal and Drawer](0014-dialog-migration.md) — the
   precedent for platform-over-JS migrations
 - [MDN: Popover API](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API)
-- [Baseline: `popover` attribute](https://web.dev/articles/popover-api) — April 2024
+- [Baseline: `popover` attribute](https://developer.mozilla.org/en-US/docs/Web/API/Popover_API) — April 2024

@@ -1,0 +1,19 @@
+# codespell config — also picked up by BuildFlow's codespell step for options
+# BuildFlow does not pass on its CLI (--skip/--quiet-level ARE overridden by
+# BuildFlow, so file-level noise is handled via ignore-words-list below).
+#
+# ignore-words-list entries are all verified false positives:
+#   te, ue, ore, Te, Ue, BU, Ot, ot, vEw, PtD — camelCase identifier fragments
+#   (htmx.min.js vendored bundle, SVG diagrams, lockfile integrity hashes)
+#   MapPin  — icon name (icons.IconPin family)
+#   wantIn  — Go test variable in examples/demo/sse_test.go
+#   devlop, trough — substrings of pnpm-lock.yaml integrity hashes (lockfiles
+#   are never hand-edited)
+#   STARTTED — historical status-report typo, fixed in place 2026-09-08
+#   crasher — deliberate term in incident reports ("a crasher")
+#   pre-select* / re-declares / pre-empt* — hyphenated house style
+ignore-words-list =
+    te, ue, ore, Te, Ue, BU, Ot, ot, vEw, PtD,
+    MapPin, wantIn, devlop, trough, STARTTED, crasher,
+    pre-select, pre-selected, pre-selects, pre-selecting, Pre-select,
+    pre-empt, pre-empts, Pre-emptive, re-declares

@@ -143,5 +143,5 @@ wrapper-div pattern because an element cannot query its own containment context.
 
 - [ADR-0016: Grid-first for 2D layouts](0016-grid-first-for-2d-layouts.md)
 - [CSS Container Queries on MDN](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries)
-- [Tailwind v4 Container Queries](https://tailwindcss.com/docs/container-queries)
-- [Baseline: Container Queries](https://web.dev/articles/container-query) — 2023
+- [Tailwind v4 Container Queries](https://tailwindcss.com/docs/responsive-design#container-queries)
+- [Baseline: Container Queries](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_containment/Container_queries) — 2023
