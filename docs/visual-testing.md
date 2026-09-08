@@ -72,6 +72,41 @@ go test ./... -update      # regenerate goldens
 If no browser is found, every test **skips** (not fails), so `go test ./...`
 from the repo root stays green in environments without Chromium.
 
+### CI parity locally (`ci-repro --visual`)
+
+CI's Visual Regression job runs `nix run .#visual` as a hard gate on every
+push. Reproduce that exact step locally before pushing (it also runs the full
+Build & Test sequence first, mirroring the CI job order):
+
+```bash
+scripts/ci-repro.sh --visual   # core Build & Test steps + the visual gate
+```
+
+Use it when a push got flagged red on the Visual Regression job but your local
+`nix run .#visual` was green — the difference is usually stale demo CSS or an
+un-regenerated `*_templ.go`, both of which the core steps refresh first.
+
+## Manual demo screenshots (`nix run .#shots`)
+
+For human visual inspection BETWEEN releases (not a gate — goldens are owned
+by `nix run .#visual`): `nix run .#shots` captures full-page light+dark JPEGs
+of every demo route. It requires a running demo server and launches a fresh
+Chromium per page on purpose — a long-lived shared browser degrades across
+very tall full-page captures (the 29k-px index page) and can hang mid-run.
+
+```bash
+# Terminal 1:
+PORT=8901 go run ./examples/demo
+# Terminal 2:
+nix run .#shots                       # all routes, light + dark, /tmp/tc-shots/
+nix run .#shots -- -page index        # single route
+nix run .#shots -- -base http://localhost:8902 -out /tmp/shots
+```
+
+The demo binary embeds `static/app.css` — after ANY `templates/custom.css`
+change, recompile the CSS (`nix run .#css`) AND rebuild/restart the demo
+binary, or captures silently serve stale styles.
+
 ## Writing a new visual test
 
 ```go

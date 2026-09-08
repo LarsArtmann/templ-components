@@ -397,6 +397,8 @@ golangci-lint run ./display/... ./feedback/... ./forms/... ./integration/... ./i
 for mod in utils icons errorpage charts/echarts htmx datastar; do (cd "$mod" && golangci-lint run ./...); done
 ```
 
+**Line-splitting policy (golines):** `.golangci.yml` formatters enable `golines` with `max-len: 120` — that IS the policy. Do not hand-wrap long lines differently; run the local autofix instead: `golangci-lint fmt` (root module) or per sub-module `(cd <mod> && golangci-lint fmt)`. `nix fmt` (treefmt: gofumpt + goimports) does NOT split long lines — after it, a `golines` finding means run `golangci-lint fmt`, not hand-edit.
+
 **Disabled linters (do NOT re-enable — fundamentally incompatible with this codebase):**
 
 - `ireturn` — every component returns `templ.Component` (an interface) by design; the linter's premise is antithetical to templ.

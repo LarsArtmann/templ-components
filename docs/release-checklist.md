@@ -101,8 +101,30 @@ git push origin master --follow-tags
 The proxy picks up the tags asynchronously; a `go get` immediately after push can
 still 404 until ingestion completes.
 
+### The verify→tag daemon window
+
+Between step 7 (verify) and step 9 (tags) the script writes commits — and the
+auto-commit daemon can land AND PUSH its own commits inside that window (it
+has pushed tags before). After the release commit exists, before creating
+tags, run `git log --oneline -3`: if a daemon commit sits on top of the
+release commit, verify it changed NOTHING the verify phase proved
+(`git diff <release-commit>..<daemon-commit> -- utils/version.go **/go.mod **/go.sum examples/demo/static/app.css website/package.json` —
+empty diff or trivially-safe changes only), and re-run the four fast guards.
+A daemon commit that touches those paths means the tree you are about to tag
+was never verified: abort the tagging, re-run the script's verify steps on
+the new tip, then tag.
+
 ## After pushing — the 24-hour watch
 
+- [ ] **Daemon pre-mortem:** the watch window is exactly when the daemon
+      regresses things — it auto-commits and pushes master without being
+      asked, and it has flipped the website TS pin and un-minified the demo
+      CSS before. Expect daemon commits during the window; after EACH one,
+      re-check: CI on the new tip, `nix run .#css` byte-stability, the
+      `website/package.json` typescript 6.x pin, and that no `go.mod`/
+      `go.sum` moved. A red master inside the watch window with a daemon
+      commit on top of the release is this failure mode until proven
+      otherwise.
 - [ ] **CI + Website green on master AND on the tag.**
 - [ ] **Post-propagation tidy sweep:** once `go list -m
       github.com/larsartmann/templ-components@<version>` resolves, re-run the

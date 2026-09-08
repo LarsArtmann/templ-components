@@ -33,6 +33,16 @@ find . -name '*_templ.go' -print0 | xargs -0 rm && templ generate ./... && go bu
 go test ./...
 ```
 
+Visual regression tests (pixel-level, headless Chromium) and manual demo
+screenshot captures run through Nix:
+
+```bash
+nix run .#visual   # golden PNG comparison (CI gate)
+nix run .#shots    # full-page demo captures for manual review (needs a running demo server)
+```
+
+See [`docs/visual-testing.md`](docs/visual-testing.md).
+
 ## Lint
 
 ```bash
