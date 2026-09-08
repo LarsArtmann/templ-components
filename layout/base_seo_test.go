@@ -79,7 +79,7 @@ func TestBase_SEOMeta_Alternates(t *testing.T) {
 		t.Fatalf("all three alternates should render, indices: en=%d de=%d x-default=%d", enIdx, deIdx, xdIdx)
 	}
 
-	if !(enIdx < deIdx && deIdx < xdIdx) {
+	if enIdx >= deIdx || deIdx >= xdIdx {
 		t.Error("alternates should render in declaration order")
 	}
 }
