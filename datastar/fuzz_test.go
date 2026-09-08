@@ -76,12 +76,14 @@ func FuzzActionExpr(f *testing.F) {
 			t.Fatalf("missing ') suffix: %q", out)
 		}
 
-		// Quote accounting: exactly the two delimiters plus one per URL quote
-		// (escaped quotes keep their quote character). With an arbitrary
-		// method string the URL-literal boundaries are ambiguous, so the
-		// count is the unambiguous shape check.
-		if got, want := strings.Count(out, "'"), 2+strings.Count(url, "'"); got != want {
-			t.Fatalf("quote count = %d, want %d (expression shape broken): %q", got, want, out)
+		// Quote accounting: exactly the two delimiters plus one quote per URL
+		// quote and one per METHOD quote (escaped URL quotes keep their quote
+		// character; the method is interpolated verbatim). With arbitrary
+		// strings the URL-literal boundaries are ambiguous, so the count is
+		// the unambiguous shape check.
+		wantQuotes := 2 + strings.Count(url, "'") + strings.Count(method, "'")
+		if got := strings.Count(out, "'"); got != wantQuotes {
+			t.Fatalf("quote count = %d, want %d (expression shape broken): %q", got, wantQuotes, out)
 		}
 	})
 }
