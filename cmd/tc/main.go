@@ -79,6 +79,72 @@ func newRegistry() *registry {
 
 const enumsGoFile = "enums_go.go"
 
+// datastarBumpProtocolDoc is copied alongside every datastar component add:
+// the package integrates with the pinned go-datastar/static runtime bundle,
+// so vendored copies inherit the bump/re-audit checklist by construction.
+const datastarBumpProtocolDoc = "DATASTAR-BUMP-PROTOCOL.md"
+
+// packageImports lists the module-level imports each package's non-test,
+// non-generated sources use. 'tc add --list-deps' prints them as the
+// go.mod checklist a vendoring consumer needs. Guarded against drift by
+// TestPackageImportsMatchSources.
+var packageImports = map[string][]string{
+	"display": {
+		"github.com/a-h/templ",
+		"github.com/larsartmann/templ-components/htmx",
+		"github.com/larsartmann/templ-components/icons",
+		"github.com/larsartmann/templ-components/utils",
+		"github.com/larsartmann/templ-components/utils/svg",
+		"github.com/larsartmann/templ-components/utils/wire",
+	},
+	"feedback": {
+		"github.com/larsartmann/templ-components/icons",
+		"github.com/larsartmann/templ-components/utils",
+		"github.com/larsartmann/templ-components/utils/svg",
+	},
+	"forms": {
+		"github.com/a-h/templ",
+		"github.com/larsartmann/templ-components/icons",
+		"github.com/larsartmann/templ-components/utils",
+		"github.com/larsartmann/templ-components/utils/wire",
+	},
+	"layout": {
+		"github.com/a-h/templ",
+		"github.com/larsartmann/templ-components/icons",
+		"github.com/larsartmann/templ-components/utils",
+		"github.com/larsartmann/templ-components/utils/cdn",
+	},
+	"navigation": {
+		"github.com/larsartmann/templ-components/icons",
+		"github.com/larsartmann/templ-components/utils",
+		"github.com/larsartmann/templ-components/utils/svg",
+		"github.com/larsartmann/templ-components/utils/wire",
+	},
+	"htmx": {
+		"github.com/a-h/templ",
+		"github.com/larsartmann/templ-components/utils",
+	},
+	"datastar": {
+		"github.com/a-h/templ",
+		"github.com/larsartmann/go-datastar/static",
+		"github.com/larsartmann/templ-components/utils",
+		"github.com/larsartmann/templ-components/utils/cdn",
+	},
+	"errorpage": {
+		"github.com/a-h/templ",
+		"github.com/larsartmann/go-error-family",
+		"github.com/larsartmann/templ-components/icons",
+		"github.com/larsartmann/templ-components/utils",
+	},
+	"recipes": {
+		"github.com/a-h/templ",
+		"github.com/larsartmann/templ-components/display",
+		"github.com/larsartmann/templ-components/icons",
+		"github.com/larsartmann/templ-components/layout",
+		"github.com/larsartmann/templ-components/utils",
+	},
+}
+
 // packageDeps lists the non-test, non-generated, non-types .go files in each
 // package. These are the sibling files that 'tc add' does NOT copy but that the
 // .templ source references (class lookups, enums, shared helpers, etc.).
@@ -229,6 +295,17 @@ func cmdAdd(r *registry, args []string) {
 		for _, dep := range deps {
 			fmt.Fprintf(os.Stdout, "  %s/%s\n", pkg, dep)
 		}
+		imports := packageImports[pkg]
+		sort.Strings(imports)
+		fmt.Fprintf(os.Stdout, "\n# imports the vendored '%s' package pulls into go.mod:\n", pkg)
+		for _, imp := range imports {
+			fmt.Fprintf(os.Stdout, "  %s\n", imp)
+		}
+		if pkg == "datastar" {
+			fmt.Fprintf(os.Stderr, "\ntc: datastar vendors an external runtime bundle — the add copies\n")
+			fmt.Fprintf(os.Stderr, "      %s with the re-audit checklist. Follow it on every\n", datastarBumpProtocolDoc)
+			fmt.Fprintf(os.Stderr, "      go-datastar/static bump.\n")
+		}
 		fmt.Fprintf(os.Stderr, "\ntc: %d file(s). These are NOT copied by 'tc add'.\n", len(deps))
 		fmt.Fprintf(os.Stderr, "tc: to get a working component, vendor the full package:\n")
 		fmt.Fprintf(os.Stderr, "      go get github.com/larsartmann/templ-components/%s\n", pkg)
@@ -242,6 +319,14 @@ func cmdAdd(r *registry, args []string) {
 
 	for _, src := range files {
 		copyFile(src, filepath.Join(out, filepath.Base(src)))
+	}
+
+	// datastar components vendor an external runtime integration: always
+	// drop the bump/re-audit checklist next to them (post-audit patterns by
+	// construction).
+	if pkg == "datastar" {
+		copyFile(filepath.Join("_sources", "datastar", datastarBumpProtocolDoc),
+			filepath.Join(out, datastarBumpProtocolDoc))
 	}
 
 	for _, src := range files {
