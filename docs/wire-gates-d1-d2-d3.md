@@ -46,3 +46,7 @@ Browser-level proof for all v1.14.0 surfaces lives in `visualtest/wire_forms_pac
 ---
 
 **Standing effect:** with D1 closed (no), D2 closed (fallback, pinned), D3 closed (symmetric-only rule), the gated workstreams resolve: T17.2+/T18 dropped (with cause), T11–T13 unblocked and executed per the outcomes above.
+
+---
+
+**Post-round adoption (2026-09-09) — `display.KanbanBoard.Wire` (first display-package D3 adoption).** Card moves are transport-symmetric without any new runtime facts: drag-and-drop and the keyboard move buttons both fill a hidden form (`card`/`column`/`index`) and `requestSubmit()` it, so the exchange is whole-form submission — the capability `forms.FormProps.Wire` already established. Component-owned defaults (POST/submit/form-encoding, self-targeting `outerHTML` swap under htmx) keep the consumer surface to one `wire.Action`; `display.ParseKanbanMove` pins the server side. Test lens per the D3 rule: both-dialect rendering tests (`display/kanban_test.go`), goldens (`kanban_wired_{htmx,datastar}` + read-only + CSRF), and Chromium e2e under BOTH real runtimes for BOTH interaction paths (`visualtest/kanban_e2e_test.go`: keyboard buttons + synthetic drag events). Demo: `examples/demo/kanban_demo.templ` + `/api/kanban/{htmx,datastar}`.

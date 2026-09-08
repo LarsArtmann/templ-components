@@ -309,6 +309,58 @@ Both runtimes produce `/api/wire/search?q=<value>` — pinned by the demo's
 form-encoding path with multipart — see
 **[`docs/recipes/file-upload.md`](recipes/file-upload.md)**.
 
+## Dual-transport kanban board
+
+`display.KanbanBoard` is the move-heavy extreme of the same idea: cards
+move between columns under either runtime, and the component — not the
+consumer — owns the plumbing. Every move (HTML5 drag-and-drop OR the
+per-card "move to previous/next column" keyboard buttons) fills three
+hidden inputs (`card`, `column`, `index`) in a hidden form and calls
+`requestSubmit()`; the `Wire` attributes on that form do the rest.
+
+```go
+@display.KanbanBoard(display.KanbanBoardProps{
+    Columns: []display.KanbanColumn{
+        {ID: "todo", Title: "To do", Cards: []display.KanbanCard{{ID: "c1", Title: "Write docs"}}},
+        {ID: "done", Title: "Done"},
+    },
+    Wire: &wire.Action{URL: "/api/kanban/move"},
+})
+```
+
+The component applies the form defaults itself (POST, `submit`, form
+encoding) and, under htmx, self-targets its own id with
+`hx-swap="outerHTML"` — so the documented response is always "the freshly
+rendered board element":
+
+```go
+mux.Handle("POST /api/kanban/move", wire.Handler(wire.PatchTarget{
+    Selector: "#<board id>",       // matches the htmx hx-target
+    Mode:     wire.PatchModeOuter, // matches the htmx hx-swap
+}, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+    move, err := display.ParseKanbanMove(r) // card, column, index (0 = top)
+    if err != nil { http.Error(w, err.Error(), http.StatusBadRequest); return }
+    applyMove(move)                          // your persistence
+    render(w, r, board())                    // re-render the SAME board id
+})))
+```
+
+Facts worth knowing:
+
+- **Card/column IDs are consumer-owned and must be stable** across
+  re-renders — they ARE the move contract. Cards or columns without an ID
+  render fine but do not participate in moves.
+- **Insertion index is 0-based, 0 = top.** The drag script computes it from
+  the pointer position between cards and adjusts for the dragged card's own
+  removal when reordering within a column; the keyboard buttons append to
+  the end of the adjacent column. A no-op drop (same position) never fires
+  a request.
+- **Without `Wire` (or with an empty URL) the board is a read-only view** —
+  no drag handles, no buttons, no script.
+- **Browser-proven**: `visualtest/kanban_e2e_test.go` clicks the keyboard
+  buttons AND dispatches synthetic drag events under both real runtimes
+  against one `wire.Handler` endpoint set.
+
 ## Practical notes (audited 2026-09-07)
 
 - **Button vs `Form.Wire`**: prefer `FormProps.Wire` (submit on the form).

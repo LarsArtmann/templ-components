@@ -269,16 +269,19 @@ func kanbanClickMoveUntil(ctx context.Context, t *testing.T, buttonSel, orderExp
 	poll := orderExpr + "===" + strconv.Quote(want)
 
 	for attempt := 0; attempt < 3; attempt++ {
+		// No NodeVisible: the move buttons are opacity-0 until hover/focus,
+		// which chromedp's visibility check treats as hidden. Clicking the
+		// coordinates still delivers the event.
 		if err := chromedp.Run(ctx,
-			chromedp.Click(buttonSel, chromedp.NodeVisible),
+			chromedp.Click(buttonSel),
 		); err != nil {
 			t.Fatalf("click %s: %v", buttonSel, err)
 		}
 
-		var got string
+		var got bool
 
 		err := chromedp.Run(ctx, chromedp.Poll(poll, &got))
-		if err == nil && got == "true" {
+		if err == nil && got {
 			return
 		}
 
@@ -363,7 +366,7 @@ func TestKanbanE2EDropMovesBothTransports(t *testing.T) {
 	ctx, cancelTimeout := context.WithTimeout(ctx, 45*time.Second)
 	defer cancelTimeout()
 
-	var ready string
+	var ready bool
 
 	if err := chromedp.Run(ctx,
 		chromedp.Navigate(srv.URL+"/"),
@@ -395,12 +398,12 @@ func TestKanbanE2EDropMovesBothTransports(t *testing.T) {
 			t.Fatalf("%s drop dispatch returned %q", drop.boardID, dropped)
 		}
 
-		var ok string
+		var ok bool
 
-		poll := kanbanColumnOrderExpr(drop.boardID, drop.column) + "===" + fmt.Sprintf("%q", drop.want)
-		if err := chromedp.Run(ctx, chromedp.Poll(poll, &ok)); err != nil || ok != "true" {
-			t.Fatalf("%s: card %s never landed at the top of %q (want order %q): err=%v got=%q",
-				drop.boardID, drop.card, drop.column, drop.want, err, ok)
+		poll := kanbanColumnOrderExpr(drop.boardID, drop.column) + "===" + strconv.Quote(drop.want)
+		if err := chromedp.Run(ctx, chromedp.Poll(poll, &ok)); err != nil || !ok {
+			t.Fatalf("%s: card %s never landed at the top of %q (want order %q): err=%v",
+				drop.boardID, drop.card, drop.column, drop.want, err)
 		}
 	}
 
