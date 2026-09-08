@@ -326,10 +326,10 @@ func TestDemoIndexSDKScriptRender(t *testing.T) {
 	page := string(body)
 
 	for _, want := range []string{
-		`<script type="module" nonce="`,                       // CSP + module loader contract
+		`<script type="module" nonce="`,                             // CSP + module loader contract
 		`src="https://cdn.jsdelivr.net/gh/starfederation/datastar@`, // pinned CDN URL prefix
-		`/bundles/datastar.js"`,                               // bundle path suffix
-		`<link rel="preconnect" href="https://cdn.jsdelivr.net"`,      // critical-path hint
+		`/bundles/datastar.js"`,                                     // bundle path suffix
+		`<link rel="preconnect" href="https://cdn.jsdelivr.net"`,    // critical-path hint
 	} {
 		if !strings.Contains(page, want) {
 			t.Errorf("demo index page missing SDKScript contract fragment %q\n(page renders the Datastar runtime wrong — check datastarDemo + layout head)", want)

@@ -33,6 +33,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   full page width inside `FormLayoutInline`; the auth recipe panel now reads
   its component count from the drift-guarded constant (was a stale "116");
   the Full Nav demo shows a brand.
+- **`layout.AppShell`: no `--tc-sidebar-w` without a sidebar.** The width
+  custom property is now emitted only when a Sidebar slot exists (matching
+  the conditional two-track grid), so sidebar-less shells no longer leak a
+  misleading token into consumer CSS.
+- **Demo: `/api/save` feedback is visible.** The LoadingButton demo swapped
+  with `hx-swap="none"`, making the "Saved." response invisible; it now
+  targets a `role="status"` result span next to the button.
+- **`tc` scaffolder: 35 stale embedded sources re-synced.** The new mirror
+  guard found `_sources/` lagging the packages (tooltip aria script,
+  appshell no-sidebar fix, and more) — the scaffolder had been serving
+  outdated components.
 
 ### Added
 
@@ -41,6 +52,60 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   page (a long-lived shared browser degrades across very tall captures).
   For manual visual inspection between releases; goldens stay owned by
   `nix run .#visual`.
+- **External-dependency bump protocol (`docs/external-dependency-bumps.md`).**
+  One page for `go-datastar/static` + `go-error-family` bumps:
+  verify-at-source → subtree diff + sha256 → bump → re-audit vs the facts
+  doc → contract guards. Linked from the AGENTS.md Datastar blockquote and
+  `docs/recipes/datastar-integration.md`. Companion pieces: a bundle
+  provenance block (pin, size, sha256, extraction commands) in
+  `docs/datastar-runtime-facts.md`, a re-audit contract section in the
+  `datastar` package doc, and `tc add <datastar component>` now drops a
+  vendored `DATASTAR-BUMP-PROTOCOL.md` checklist next to the copied sources.
+- **`htmx.PolledRegion`: aria-busy loading cue.** Eager regions render
+  `aria-busy="true"` (+ `data-tc-polled-busy` marker), cleared by a
+  CSP-safe singleton script on the first completed poll
+  (`htmx:afterRequest` fires for success AND error) — parity with
+  `datastar.LiveRegion`'s busy cue, so screen readers wait for the fresh
+  content instead of announcing the stale initial render twice.
+- **New drift guards** (all fast, deterministic):
+  `TestGoWorkDirectiveMatchesRootGoMod` (go.work ↔ go.mod toolchain sync),
+  `TestGoDatastarStaticPinSurface` (the static pin appears in exactly 3
+  go.mods), `TestSourcesMatchPackageFiles` + `TestPackageImportsMatchSources`
+  (the `tc` scaffolder's embedded `_sources/` must mirror the packages, and
+  `--list-deps` prints a verified go.mod import checklist),
+  `TestHeatmapBrandVarsDefined` + `TestNoUndefinedCSSVarReferences`
+  (every `var(--token)` in library sources, custom.css, or golden renderings
+  must be defined somewhere — the `--ds-brand-rgb` silent-failure class),
+  `TestVisualFailArtifactsIgnored` (`.fail/` stays gitignored and
+  untracked), and `TC_CSS_FRESHNESS_STRICT=1` makes the local
+  `TestCSSFreshness` fail-capable.
+- **Fuzz tests for the Datastar action-expression builders**
+  (`FuzzGetActionExpr`, `FuzzActionExpr`): arbitrary URL + retry +
+  cancellation input never panics and always emits a structurally valid
+  expression (prefix/suffix shape + quote accounting).
+- **`htmx` package doc: the `tc-btn-loading` hook is public.**
+  `LoadingButton`'s wrapper class is documented as the stable `hx-indicator`
+  scoping hook (with example) instead of an incidental implementation
+  detail.
+- **Upstream watch workflow: dry-run input + templ/golangci-lint jobs.**
+  `workflow_dispatch` accepts `dry-run` (compare without creating issues) so
+  the previously-never-run jq/proxy parsing can be exercised safely; the
+  watcher now also tracks templ and golangci-lint releases with per-tool
+  re-audit instructions (all three pins currently in sync). Local pin
+  extraction + proxy queries validated end-to-end.
+- **AppShell's first visual goldens** (`appshell/{light,dark,no_sidebar_light}.png`)
+  plus a DOM-measure test asserting the SidebarNav (`w-64`) fits its MD
+  grid track (the "SM track overflow" bug class, measured instead of
+  estimated). **Heatmap dark golden** added, pinning the dark-mode
+  `--ds-brand-rgb`/`--ds-brand` values.
+- **`scripts/ci-repro.sh --lint` now runs actionlint** (same as CI's
+  Actionlint step); `nix run .#shots` captures the `?transport=htmx` and
+  `?transport=datastar` index variants; both tools documented in
+  CONTRIBUTING.md + `docs/visual-testing.md`.
+- **Demo contracts:** the index page must render the Datastar runtime
+  `<script type="module">` with nonce, pinned CDN URL shape, and preconnect
+  (`TestDemoIndexSDKScriptRender`); the Datastar LiveRegion copy explains
+  the invisible 15s keep-alive comment frames.
 
 ## [1.14.0] — 2026-09-07
 

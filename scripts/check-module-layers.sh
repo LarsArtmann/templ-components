@@ -3,10 +3,15 @@
 #
 # Verifies that no module imports from a higher layer (upward dependency).
 # The DAG is:
-#   Layer 0: utils           (leaf)
-#   Layer 1: icons, charts/echarts, datastar, htmx  (depend on utils)
-#   Layer 2: errorpage       (depends on utils, icons)
-#   Layer 3: root            (depends on all above)
+#   Layer 0: utils               (leaf)
+#   Layer 1: icons, charts/echarts, datastar, htmx   (depend on utils)
+#   Layer 2: errorpage           (depends on utils, icons)
+#   Layer 3: root                (depends on all above)
+#   Layer 4: visualtest          (consumer/test module — depends on all above;
+#                                 nothing may depend on it. Its sibling pins
+#                                 are local replace directives, so an upward
+#                                 import here breaks standalone builds, same
+#                                 as for the published modules.)
 #
 # An upward dependency (e.g., utils importing display) would create a cycle
 # or break the standalone-build invariant. This script catches it at commit time.
@@ -71,7 +76,17 @@ check_layer "htmx" "utils" "htmx"
 # Layer 2: errorpage — can import utils, icons (+ self)
 check_layer "errorpage" "utils" "icons" "errorpage"
 
-# Root module (layer 3) is not checked — it can import everything.
+# Root module (layer 3) is not checked per-package — it can import everything.
+
+# Layer 4: visualtest — the consumer/test module. Explicitly modeled (it
+# previously passed only by skip): it may import every library module but is
+# imported by none. The allow-list is exhaustive on purpose — a new import
+# outside it (e.g. a stray cmd/ or examples/ dependency) fails here and forces
+# a conscious DAG decision.
+check_layer "visualtest" \
+	"utils" "icons" "errorpage" "charts/echarts" "datastar" "htmx" \
+	"display" "feedback" "forms" "layout" "navigation" "recipes" \
+	"visualtest"
 
 if [[ $errors -gt 0 ]]; then
 	echo ""
@@ -80,4 +95,4 @@ if [[ $errors -gt 0 ]]; then
 	exit 1
 fi
 
-echo "Module layer check: OK (no upward dependencies in 6 sub-modules)"
+echo "Module layer check: OK (no upward dependencies in 6 sub-modules + visualtest consumer)"
