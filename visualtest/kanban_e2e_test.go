@@ -251,7 +251,8 @@ func (b *kanbanE2EBoard) kanbanE2EBoardProps(id string, action wire.Action) disp
 func kanbanColumnOrderExpr(boardID, columnID string) string {
 	return fmt.Sprintf(
 		`Array.from(document.querySelectorAll('#%s [data-tc-kanban-column-body="%s"] > [data-tc-kanban-card]')).map(function(el){return el.getAttribute('data-tc-kanban-card');}).join(',')`,
-		boardID, columnID,
+		boardID,
+		columnID,
 	)
 }
 
@@ -268,7 +269,7 @@ func kanbanClickMoveUntil(ctx context.Context, t *testing.T, buttonSel, orderExp
 
 	poll := orderExpr + "===" + strconv.Quote(want)
 
-	for attempt := 0; attempt < 3; attempt++ {
+	for range 3 {
 		// No NodeVisible: the move buttons are opacity-0 until hover/focus,
 		// which chromedp's visibility check treats as hidden. Clicking the
 		// coordinates still delivers the event.

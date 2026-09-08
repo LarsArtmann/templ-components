@@ -275,6 +275,13 @@ linters:
           - contextcheck
           - paralleltest
           - wrapcheck
+      # The kanban e2e suite shares the wire pack's serial-over-shared-browser
+      # design and background-context fragment renders.
+      - path: visualtest/kanban_e2e_test\.go
+        linters:
+          - contextcheck
+          - paralleltest
+          - wrapcheck
       # The forms pattern pack visual goldens render the same card
       # compositions as static templ components (contextcheck/wrapcheck
       # misfire on chained component renders).
