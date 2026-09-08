@@ -117,6 +117,14 @@ func resolveOptions(opts []Options) Options {
 		if opt.WaitSelector != "" {
 			merged.WaitSelector = opt.WaitSelector
 		}
+
+		if opt.ClickSelector != "" {
+			merged.ClickSelector = opt.ClickSelector
+		}
+
+		if opt.WaitExpr != "" {
+			merged.WaitExpr = opt.WaitExpr
+		}
 	}
 
 	return defaultOptions(merged)
@@ -157,7 +165,7 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	case StateFocus:
 		tasks = append(tasks, focusAction(rootSel))
 	case StateClick:
-		tasks = append(tasks, clickAction(rootSel))
+		tasks = append(tasks, clickAction(rootSel, opts.ClickSelector))
 	case StateContext:
 		tasks = append(tasks, contextAction(rootSel))
 	}
@@ -168,6 +176,13 @@ func capture(ctx context.Context, page string, opts Options) ([]byte, error) {
 	// (see waitAnimationsSettled below).
 	if opts.WaitSelector != "" {
 		tasks = append(tasks, chromedp.WaitVisible(opts.WaitSelector, chromedp.ByQuery))
+	}
+
+	// Optionally poll a JS expression until truthy — for states that settle
+	// asynchronously without a DOM visibility change (smooth scrolling,
+	// requestAnimationFrame chains).
+	if opts.WaitExpr != "" {
+		tasks = append(tasks, waitExprAction(opts.WaitExpr))
 	}
 
 	var capture chromedp.Action = chromedp.Screenshot(rootSel, &screenshot, chromedp.ByQuery, chromedp.NodeVisible)
@@ -324,17 +339,24 @@ func focusAction(sel string) chromedp.Action {
 }
 
 // clickAction clicks the first interactive descendant of the element matching
-// sel. It prefers a Popover API trigger ([popovertarget]) so Dropdown/Popover/
-// ContextMenu open natively, then falls back to any button/link. A real mouse
-// click is dispatched at the element's centre so the native :active state and
-// popovertarget invoker both fire (synthetic .click() is enough for the
-// invoker, but a dispatched event also exercises hover/active paint).
-func clickAction(sel string) chromedp.Action {
+// sel, or — when override is non-empty — the first descendant of sel matching
+// the override selector. It prefers a Popover API trigger ([popovertarget]) so
+// Dropdown/Popover/ContextMenu open natively, then falls back to any
+// button/link. A real mouse click is dispatched at the element's centre so the
+// native :active state and popovertarget invoker both fire (synthetic .click()
+// is enough for the invoker, but a dispatched event also exercises
+// hover/active paint).
+func clickAction(sel, override string) chromedp.Action {
 	return chromedp.ActionFunc(func(ctx context.Context) error {
+		selector := `[popovertarget], button, a[href], [role="button"]`
+		if override != "" {
+			selector = override
+		}
+
 		script := `(() => {
 			const root = document.querySelector(` + fmt.Sprintf("%q", sel) + `);
 			if (!root) return null;
-			const e = root.querySelector('[popovertarget], button, a[href], [role="button"]');
+			const e = root.querySelector(` + fmt.Sprintf("%q", selector) + `);
 			if (!e) return null;
 			const r = e.getBoundingClientRect();
 			return [r.x + r.width/2, r.y + r.height/2];
@@ -389,3 +411,37 @@ func contextAction(sel string) chromedp.Action {
 		return nil
 	})
 }
+
+// waitExprAction polls a JavaScript expression until it evaluates to truthy
+// (every waitExprPollDelay, up to waitExprMaxWait). For states that settle
+// asynchronously without a DOM visibility change — e.g. a scroll-snap track
+// whose smooth scroll converges after the next-arrow click, which neither
+// WaitVisible nor waitAnimationsSettled can observe.
+func waitExprAction(expr string) chromedp.Action {
+	return chromedp.ActionFunc(func(ctx context.Context) error {
+		deadline := time.Now().Add(waitExprMaxWait)
+
+		for time.Now().Before(deadline) {
+			var done bool
+
+			if err := chromedp.Evaluate(expr, &done).Do(ctx); err != nil {
+				return fmt.Errorf("wait expr: evaluate: %w", err)
+			}
+
+			if done {
+				return nil
+			}
+
+			if err := chromedp.Sleep(waitExprPollDelay).Do(ctx); err != nil {
+				return fmt.Errorf("wait expr: sleep: %w", err)
+			}
+		}
+
+		return fmt.Errorf("wait expr: %q never became truthy within %s", expr, waitExprMaxWait)
+	})
+}
+
+const (
+	waitExprPollDelay = 100 * time.Millisecond
+	waitExprMaxWait   = 8 * time.Second
+)

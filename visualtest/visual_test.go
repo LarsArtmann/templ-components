@@ -488,6 +488,112 @@ func TestContextMenuOpen(t *testing.T) {
 	)
 }
 
+// TestTooltipOpen covers the pure-CSS tooltip's VISIBLE state (#158): the
+// bubble fades in on trigger hover. FullViewport because the absolutely
+// positioned bubble paints outside #tc-root's box and would be cropped by an
+// element screenshot.
+func TestTooltipOpen(t *testing.T) {
+	t.Parallel()
+
+	props := display.DefaultTooltipProps()
+	props.Text = "Helpful information"
+
+	tooltipWithTrigger := templ.ComponentFunc(func(ctx context.Context, w io.Writer) error {
+		ctx = templ.WithChildren(
+			ctx,
+			templ.Raw(
+				`<button class="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white">Hover for info</button>`,
+			),
+		)
+
+		//nolint:contextcheck // generated Tooltip$1 closure has a non-context-passing inner branch
+		return display.Tooltip(props).Render(ctx, w)
+	})
+
+	light := visualtest.Options{
+		State:        visualtest.StateHover,
+		FullViewport: true,
+		Viewport:     visualtest.Viewport{Width: 480, Height: 360},
+	}
+	visualtest.AssertScreenshot(t, "tooltip/open_light", tooltipWithTrigger, light)
+
+	dark := light
+	dark.Dark = visualtest.Bool(true)
+	visualtest.AssertScreenshot(t, "tooltip/open_dark", tooltipWithTrigger, dark)
+}
+
+// TestComboboxOpen covers the Combobox's expanded state (#158): focusing the
+// input opens the options listbox (JS removes the hidden class), which an
+// element screenshot would crop — FullViewport captures it. WaitSelector
+// gates on the listbox becoming visible.
+func TestComboboxOpen(t *testing.T) {
+	t.Parallel()
+
+	cb := forms.DefaultComboboxProps()
+	cb.Label = "Country"
+	cb.Placeholder = "Select a country..."
+	cb.Options = []forms.ComboboxOption{
+		{Label: "United States", Value: "us"},
+		{Label: "Canada", Value: "ca"},
+		{Label: "Germany", Value: "de"},
+	}
+	cb.Nonce = "test-nonce"
+
+	light := visualtest.Options{
+		State:        visualtest.StateFocus,
+		WaitSelector: `[role="listbox"]`,
+		FullViewport: true,
+		Viewport:     visualtest.Viewport{Width: 480, Height: 420},
+		MaxMismatch:  0.01,
+	}
+	visualtest.AssertScreenshot(t, "combobox/open_light", forms.Combobox(cb), light)
+
+	dark := light
+	dark.Dark = visualtest.Bool(true)
+	visualtest.AssertScreenshot(t, "combobox/open_dark", forms.Combobox(cb), dark)
+}
+
+// carouselScrollSettled polls until the carousel track's scroll position has
+// stopped changing AND moved off the origin — two consecutive polls see the
+// same non-zero scrollLeft. The smooth scroll-snap animation is invisible to
+// both WaitVisible and waitAnimationsSettled, so without this the capture
+// races the scroll.
+const carouselScrollSettled = `(() => {
+	const t = document.querySelector('[data-tc-carousel-track]');
+	if (!t) return false;
+	const s = t.scrollLeft;
+	const done = window.__tcCarouselLastScroll === s && s > 0;
+	window.__tcCarouselLastScroll = s;
+	return done;
+})()`
+
+// TestCarouselNext covers the Carousel's scrolled state (#158): clicking the
+// next arrow advances the track by one slide-width. ClickSelector targets the
+// NEXT arrow explicitly — the first interactive descendant is the prev arrow,
+// which no-ops on slide 1.
+func TestCarouselNext(t *testing.T) {
+	t.Parallel()
+
+	carousel := display.DefaultCarouselProps()
+	carousel.Slides = []display.CarouselSlide{
+		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-blue-600 text-2xl font-bold text-white">1</div>`)},
+		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-emerald-600 text-2xl font-bold text-white">2</div>`)},
+		{Content: templ.Raw(`<div class="flex h-32 items-center justify-center rounded-xl bg-violet-600 text-2xl font-bold text-white">3</div>`)},
+	}
+	carousel.ShowArrows = true
+	carousel.ShowIndicators = true
+	carousel.Nonce = "test-nonce"
+
+	visualtest.AssertScreenshot(t, "carousel/next_light", display.Carousel(carousel),
+		visualtest.Options{
+			State:         visualtest.StateClick,
+			ClickSelector: "[data-tc-carousel-next]",
+			WaitExpr:      carouselScrollSettled,
+			Viewport:      visualtest.Viewport{Width: 480, Height: 300},
+		},
+	)
+}
+
 // withChildren returns a component that renders parent with the given child
 // injected into the context, so components that consume { children... }
 // (Popover, ContextMenu) show their content in a visual golden.

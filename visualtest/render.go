@@ -122,6 +122,18 @@ type Options struct {
 	// interaction state is applied and BEFORE capture. Use it with StateClick
 	// to wait for an overlay menu to appear, e.g. WaitSelector: "[popover]".
 	WaitSelector string
+	// ClickSelector overrides the StateClick heuristic (first interactive
+	// descendant) with an explicit target INSIDE #tc-root, e.g.
+	// "[data-tc-carousel-next]". Use when the first interactive element is
+	// not the one that produces the state under test.
+	ClickSelector string
+	// WaitExpr, when set, is polled (every 100ms, up to 8s) after the
+	// interaction state and must evaluate to truthy before capture. Use for
+	// states that settle asynchronously without a DOM visibility change,
+	// e.g. a scroll-snap carousel whose smooth scroll converges:
+	//
+	//	WaitExpr: `document.querySelector('[data-tc-carousel-track]').scrollLeft > 50`
+	WaitExpr string
 }
 
 // defaultOptions fills zero values with sensible defaults.
