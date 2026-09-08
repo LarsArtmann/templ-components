@@ -9,7 +9,6 @@ import (
 
 	"github.com/a-h/templ"
 
-	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/wire"
 )
 
@@ -244,39 +243,4 @@ func kanbanJS() string {
 // kanbanScriptComponent renders the kanban singleton script CSP-safe.
 func kanbanScriptComponent(nonce string) templ.Component {
 	return scriptComponent(nonce, kanbanJS(), "kanban script")
-}
-
-// kanbanColumnClass returns the Tailwind classes for a board column.
-func kanbanColumnClass(extra string) string {
-	return utils.Class(
-		"flex w-72 shrink-0 flex-col rounded-lg border border-gray-200 bg-gray-50 p-3 "+
-			"dark:border-gray-700 dark:bg-gray-900",
-		extra,
-	)
-}
-
-// kanbanColumnBodyClass returns the Tailwind classes for a column's drop
-// zone (the card list). relative anchors the drop indicators, min-h keeps
-// empty columns droppable.
-func kanbanColumnBodyClass() string {
-	return "relative flex min-h-24 flex-col gap-2 list-none p-0 m-0"
-}
-
-// kanbanCardClass returns the Tailwind classes for a card.
-func kanbanCardClass(extra string) string {
-	return utils.Class(
-		"group relative cursor-grab rounded-lg border border-gray-200 bg-white p-3 shadow-sm "+
-			"hover:border-blue-300 active:cursor-grabbing dark:border-gray-700 dark:bg-gray-800 "+
-			"dark:hover:border-blue-600",
-		extra,
-	)
-}
-
-// kanbanMoveButtonClass returns the Tailwind classes for the per-card
-// keyboard move buttons.
-func kanbanMoveButtonClass() string {
-	return "inline-flex h-6 w-6 items-center justify-center rounded text-gray-400 " +
-		"hover:bg-gray-100 hover:text-gray-600 focus:outline-none focus-visible:ring-2 " +
-		"focus-visible:ring-blue-500 dark:text-gray-500 dark:hover:bg-gray-700 dark:hover:text-gray-300 " +
-		"dark:focus-visible:ring-blue-400"
 }

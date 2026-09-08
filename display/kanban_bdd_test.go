@@ -99,7 +99,7 @@ func TestKanbanBehaviourSingleColumnHasNoMoveButtons(t *testing.T) {
 		Wire:    &wire.Action{URL: "/api/kanban/move"},
 	}))
 
-	utils.AssertNotContains(t, html, "data-tc-kanban-move")
+	utils.AssertNotContains(t, html, `data-tc-kanban-move=`)
 	utils.AssertContains(t, html, `draggable="true"`)
 }
 

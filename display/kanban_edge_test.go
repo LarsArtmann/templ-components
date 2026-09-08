@@ -17,7 +17,7 @@ func TestKanbanEdgeNoColumns(t *testing.T) {
 		Wire: &wire.Action{URL: "/api/kanban/move"},
 	}))
 	utils.AssertContains(t, html, `role="region"`)
-	utils.AssertNotContains(t, html, "data-tc-kanban-column")
+	utils.AssertNotContains(t, html, "<section")
 }
 
 // TestKanbanEdgeCardsWithoutIDs verifies cards lacking a stable ID render

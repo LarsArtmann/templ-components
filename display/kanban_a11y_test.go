@@ -25,7 +25,7 @@ func TestKanbanA11y(t *testing.T) {
 		`aria-label="Kanban board"`,
 		`aria-labelledby="kb-a11y-col-todo-title"`,
 		`aria-labelledby="kb-a11y-col-doing-title"`,
-		`<h3 id="kb-a11y-col-todo-title">`,
+		`<h3 id="kb-a11y-col-todo-title"`,
 		`aria-live="polite"`,
 		`role="status"`,
 		`aria-label="Move Write docs to next column"`,
@@ -50,8 +50,9 @@ func TestKanbanA11yAriaLabelOverride(t *testing.T) {
 }
 
 // TestKanbanA11yKeyboardButtonsOnlyWhereMovesExist verifies first-column
-// cards get no "previous" button and last-column cards no "next" button —
-// keyboard affordances match the possible moves.
+// cards get no "previous" button and middle cards get both — keyboard
+// affordances match the possible moves (the last column is empty here, so
+// the middle column's card is the deepest with buttons).
 func TestKanbanA11yKeyboardButtonsOnlyWhereMovesExist(t *testing.T) {
 	t.Parallel()
 
@@ -69,13 +70,13 @@ func TestKanbanA11yKeyboardButtonsOnlyWhereMovesExist(t *testing.T) {
 		t.Error("first-column card has a prev button but has no previous column")
 	}
 
-	lastCard := html[strings.Index(html, `data-tc-kanban-card="c3"`):]
-	if strings.Contains(lastCard, `data-tc-kanban-move="next"`) {
-		t.Error("last-column card has a next button but has no next column")
+	middleCard := html[strings.Index(html, `data-tc-kanban-card="c3"`):]
+	if !strings.Contains(middleCard, `data-tc-kanban-move="next"`) {
+		t.Error("middle-column card lacks a next button")
 	}
 
-	if !strings.Contains(lastCard, `data-tc-kanban-move="prev"`) {
-		t.Error("last-column card lacks a prev button")
+	if !strings.Contains(middleCard, `data-tc-kanban-move="prev"`) {
+		t.Error("middle-column card lacks a prev button")
 	}
 }
 

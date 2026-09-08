@@ -84,8 +84,9 @@ func TestKanbanBoardWire(t *testing.T) {
 				Columns:   kanbanTestColumns(),
 				Wire:      &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/move"},
 			},
+			// templ escapes the apostrophes inside the attribute value.
 			contains: []string{
-				`data-on:submit="@post('/api/kanban/move', {contentType: 'form'})"`,
+				`data-on:submit="@post(&#39;/api/kanban/move&#39;, {contentType: &#39;form&#39;})"`,
 			},
 			notContains: []string{"hx-post", "hx-target", "hx-swap"},
 		},
