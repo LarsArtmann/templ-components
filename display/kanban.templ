@@ -1,0 +1,254 @@
+package display
+
+import (
+	"strconv"
+
+	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/svg"
+	"github.com/larsartmann/templ-components/utils/wire"
+)
+
+// KanbanCard is one work item in a KanbanBoard column. ID is the
+// consumer-supplied stable identity used by the move exchange — a card
+// without an ID renders fine but is not draggable (the server could not
+// route the move).
+type KanbanCard struct {
+	// ID is the stable card identity submitted as the move's card field.
+	// It must survive re-renders (never auto-generate it per request).
+	ID string
+	// Title is the card's heading text.
+	Title string
+	// Href, when set, links the card title to a detail page.
+	Href string
+	// Content renders arbitrary card body below the title (labels, avatars,
+	// metadata). Compose with Badge, Avatar, RelativeTime, …
+	Content templ.Component
+	// Class overrides the card's Tailwind classes.
+	Class string
+}
+
+// KanbanColumn is one swimlane of a KanbanBoard. Like cards, columns need a
+// stable ID to be droppable targets of the move exchange.
+type KanbanColumn struct {
+	// ID is the stable column identity submitted as the move's column field.
+	ID string
+	// Title is the column heading.
+	Title string
+	// Cards renders in order, top to bottom.
+	Cards []KanbanCard
+	// Class overrides the column's Tailwind classes.
+	Class string
+}
+
+// KanbanBoardProps configures a Kanban board: horizontal swimlanes of
+// draggable cards, movable via HTML5 drag-and-drop or per-card keyboard
+// buttons, under either transport.
+//
+// The move exchange: when Wire is set (non-empty URL), the component
+// renders a hidden form carrying the Wire attributes plus three hidden
+// inputs — card, column, index. Every move (drop or keyboard button) fills
+// those inputs and submits the form, so the request travels as a plain form
+// POST under htmx (hx-post) and Datastar (@post with form encoding) alike.
+// The documented response is the freshly rendered board element itself:
+// under htmx the component auto-targets its own id with hx-swap="outerHTML";
+// under Datastar wrap the endpoint in wire.Handler with
+// PatchTarget{Selector: "#<board id>", Mode: wire.PatchModeOuter}. Decode
+// submissions with ParseKanbanMove.
+//
+// A board without Wire (or with an empty Wire.URL) is a read-only view: no
+// drag handles, no move buttons, no script.
+type KanbanBoardProps struct {
+	utils.BaseProps
+	// Columns renders left to right (right to left under dir="rtl").
+	Columns []KanbanColumn
+	// Wire is the move exchange. nil or empty URL renders a read-only board.
+	// Method defaults to POST, Event to submit, ContentType to form
+	// encoding; under htmx, Target defaults to the board root with
+	// hx-swap="outerHTML".
+	Wire *wire.Action
+	// EmptyColumnText shows inside a column with no cards. Default "No cards".
+	EmptyColumnText string
+	// CSRFToken, when set, renders a hidden CSRF input (name from
+	// CSRFTokenName) inside the move form so submissions pass token checks.
+	CSRFToken string
+	// CSRFTokenName is the hidden input's name. Default "csrf_token".
+	CSRFTokenName string
+}
+
+// kanbanEmptyColumnTextDefault is the muted placeholder for empty columns.
+const kanbanEmptyColumnTextDefault = "No cards"
+
+// DefaultKanbanBoardProps returns sensible defaults.
+func DefaultKanbanBoardProps() KanbanBoardProps {
+	return KanbanBoardProps{
+		CSRFTokenName: "csrf_token",
+	}
+}
+
+// KanbanBoard renders a kanban board: horizontally scrolling columns of
+// cards. With Wire set, cards drag between columns (HTML5 drag-and-drop,
+// CSP-safe singleton script) and carry per-card "move to previous/next
+// column" buttons so the board is fully keyboard operable; both affordances
+// submit the same hidden form.
+//
+//	@display.KanbanBoard(display.KanbanBoardProps{
+//	   Columns: []display.KanbanColumn{
+//	     {ID: "todo", Title: "To do", Cards: []display.KanbanCard{{ID: "c1", Title: "Write docs"}}},
+//	     {ID: "done", Title: "Done"},
+//	   },
+//	   Wire: &wire.Action{URL: "/api/kanban/move"},
+//	})
+templ KanbanBoard(props KanbanBoardProps) {
+	{{ boardID := utils.EnsureID("kanban", props.ID) }}
+	{{ moveAttrs := kanbanWireAttributes(props.Wire, boardID) }}
+	{{ wired := len(moveAttrs) > 0 }}
+	<div
+		id={ boardID }
+		data-tc-kanban
+		class={ utils.Class("rounded-xl", props.Class) }
+		role="region"
+		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Kanban board") }
+		{ props.Attrs... }
+	>
+		if wired {
+			<form
+				data-tc-kanban-form
+				method="POST"
+				action={ templ.SafeURL(props.Wire.URL) }
+				class="hidden"
+				{ moveAttrs... }
+			>
+				<input type="hidden" name={ kanbanFieldCard } value="" data-tc-kanban-f-card/>
+				<input type="hidden" name={ kanbanFieldColumn } value="" data-tc-kanban-f-column/>
+				<input type="hidden" name={ kanbanFieldIndex } value="" data-tc-kanban-f-index/>
+				if props.CSRFToken != "" {
+					<input
+						type="hidden"
+						name={ utils.Ternary(props.CSRFTokenName != "", props.CSRFTokenName, "csrf_token") }
+						value={ props.CSRFToken }
+					/>
+				}
+			</form>
+			<p data-tc-kanban-live class="sr-only" role="status" aria-live="polite"></p>
+		}
+		<div class="flex gap-4 overflow-x-auto pb-2">
+			for ci, col := range props.Columns {
+				{{ colID := kanbanColumnID(boardID, ci, col) }}
+				{{ draggable := wired && col.ID != "" }}
+				<section
+					if col.ID != "" {
+						data-tc-kanban-column={ col.ID }
+					}
+					class={ kanbanColumnClass(col.Class) }
+					aria-labelledby={ colID + "-title" }
+				>
+					<div class="mb-3 flex items-center justify-between gap-2 px-1">
+						<h3 id={ colID + "-title" } class="truncate text-sm font-semibold text-gray-900 dark:text-white">
+							{ col.Title }
+						</h3>
+						<span
+							class="inline-flex items-center rounded-md bg-gray-100 px-2 py-0.5 text-xs font-medium text-gray-800 dark:bg-gray-800 dark:text-gray-300"
+							aria-label={ col.Title + ": " + kanbanCountLabel(len(col.Cards)) }
+						>
+							{ strconv.Itoa(len(col.Cards)) }
+						</span>
+					</div>
+					<ul
+						data-tc-kanban-column-body={ col.ID }
+						data-tc-kanban-col-title={ col.Title }
+						class={ kanbanColumnBodyClass() }
+					>
+						if len(col.Cards) == 0 {
+							<li class="rounded-lg py-6 text-center text-sm text-gray-400 dark:text-gray-500">
+								{ utils.Ternary(props.EmptyColumnText != "", props.EmptyColumnText, kanbanEmptyColumnTextDefault) }
+							</li>
+						}
+						for _, card := range col.Cards {
+							if draggable && card.ID != "" {
+								<li
+									data-tc-kanban-card={ card.ID }
+									draggable="true"
+									class={ kanbanCardClass(card.Class) }
+								>
+									@kanbanCardInner(card, ci, len(props.Columns), wired)
+								</li>
+							} else {
+								<li class={ utils.Class(kanbanCardClass(card.Class), "cursor-default") }>
+									@kanbanCardInner(card, ci, len(props.Columns), wired)
+								</li>
+							}
+						}
+					</ul>
+				</section>
+			}
+		</div>
+		if wired {
+			@kanbanScriptComponent(props.Nonce)
+		}
+	</div>
+}
+
+// kanbanCardInner renders a card's content plus, on a wired board, the
+// keyboard move buttons (hidden until hover or keyboard focus reveals them).
+templ kanbanCardInner(card KanbanCard, columnIndex, columnCount int, wired bool) {
+	<div class="flex items-start justify-between gap-1">
+		<div class="min-w-0">
+			if card.Href != "" {
+				<a
+					href={ templ.SafeURL(card.Href) }
+					data-tc-kanban-title
+					class="text-sm font-medium text-gray-900 hover:text-blue-600 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 dark:text-white dark:hover:text-blue-400 dark:focus-visible:ring-blue-400"
+				>
+					{ card.Title }
+				</a>
+			} else {
+				<span data-tc-kanban-title class="text-sm font-medium text-gray-900 dark:text-white">
+					{ card.Title }
+				</span>
+			}
+			if card.Content != nil {
+				<div class="mt-1.5">
+					@card.Content
+				</div>
+			}
+		</div>
+		if wired && columnIndex > 0 {
+			<button
+				type="button"
+				data-tc-kanban-move="prev"
+				class={ kanbanMoveButtonClass(), "shrink-0 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100", utils.TransitionFast }
+				aria-label={ "Move " + card.Title + " to previous column" }
+			>
+				<svg
+					class="h-4 w-4 rtl:rotate-180"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke="currentColor"
+					aria-hidden="true"
+				>
+					<path stroke-linecap="round" stroke-linejoin="round" d={ svg.PathArrowLeft }></path>
+				</svg>
+			</button>
+		}
+		if wired && columnIndex < columnCount-1 {
+			<button
+				type="button"
+				data-tc-kanban-move="next"
+				class={ kanbanMoveButtonClass(), "shrink-0 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100", utils.TransitionFast }
+				aria-label={ "Move " + card.Title + " to next column" }
+			>
+				<svg
+					class="h-4 w-4 rtl:rotate-180"
+					fill="none"
+					viewBox="0 0 24 24"
+					stroke-width="1.5"
+					stroke="currentColor"
+					aria-hidden="true"
+				>
+					<path stroke-linecap="round" stroke-linejoin="round" d={ svg.PathArrowRight }></path>
+				</svg>
+			</button>
+		}
+	</div>
+}

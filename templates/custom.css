@@ -890,3 +890,47 @@ details[open] [data-tc-chevron] {
   --ds-brand-rgb: 139, 92, 246;
   --ds-brand: #8b5cf6;
 }
+
+/* --- Kanban board: drag-and-drop feedback --------------------------------
+ * display.KanbanBoard's script toggles these classes while a card is
+ * dragged: the dragged card dims, the hovered column highlights, and a
+ * blue insertion line shows where the card would land (before a card via
+ * ::before, or at the column end via ::after on the list). Logical
+ * inset-inline properties keep the line RTL-correct.
+ * ---------------------------------------------------------------------- */
+[data-tc-kanban] [data-tc-kanban-card].tc-kanban-dragging {
+  opacity: 0.5;
+}
+
+[data-tc-kanban] [data-tc-kanban-column-body].tc-kanban-over {
+  background-color: rgb(219 234 254 / 0.6);
+  border-radius: 0.5rem;
+}
+
+.dark [data-tc-kanban] [data-tc-kanban-column-body].tc-kanban-over {
+  background-color: rgb(30 58 138 / 0.35);
+}
+
+[data-tc-kanban] .tc-kanban-drop-before::before,
+[data-tc-kanban] .tc-kanban-drop-end::after {
+  content: "";
+  position: absolute;
+  inset-inline-start: 0;
+  inset-inline-end: 0;
+  height: 0.125rem;
+  border-radius: 0.125rem;
+  background-color: #2563eb;
+}
+
+[data-tc-kanban] .tc-kanban-drop-before::before {
+  top: -0.25rem;
+}
+
+[data-tc-kanban] .tc-kanban-drop-end::after {
+  bottom: -0.25rem;
+}
+
+.dark [data-tc-kanban] .tc-kanban-drop-before::before,
+.dark [data-tc-kanban] .tc-kanban-drop-end::after {
+  background-color: #3b82f6;
+}
