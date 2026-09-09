@@ -42,7 +42,12 @@ func TestDemoMobile375NoHorizontalOverflow(t *testing.T) {
 			}
 
 			if overflow > 1 {
-				t.Errorf("visualtest[demo]: %s overflows a %dpx viewport by %dpx — find the element widening the page, not a scroll container", route, demoMobileViewport, overflow)
+				t.Errorf(
+					"visualtest[demo]: %s overflows a %dpx viewport by %dpx — find the element widening the page, not a scroll container",
+					route,
+					demoMobileViewport,
+					overflow,
+				)
 			}
 		})
 	}
@@ -107,7 +112,11 @@ func TestDemoMobile375KanbanReachable(t *testing.T) {
 	}
 
 	if pageOverflow > 1 {
-		t.Errorf("visualtest[demo]: kanban board widens the page by %dpx at %dpx width — the board must scroll internally", pageOverflow, demoMobileViewport)
+		t.Errorf(
+			"visualtest[demo]: kanban board widens the page by %dpx at %dpx width — the board must scroll internally",
+			pageOverflow,
+			demoMobileViewport,
+		)
 	}
 
 	server.FailIfServerErrors(t)

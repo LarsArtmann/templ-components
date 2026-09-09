@@ -8,6 +8,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Fixed
 
+- **`display.KanbanBoard` no longer widens the page on phone-width viewports.**
+  The board's fixed-width columns (~1200px intrinsic) propagated their
+  min-content width through any grid/flex ancestor that lacked `min-w-0`,
+  so on a 375px phone the whole document scrolled sideways instead of the
+  board scrolling internally. The board root now carries `min-w-0` — found
+  by the new mobile sweep, not by a human.
 - **Labeled form controls are now always associated with their labels.**
   `forms.Input`, `Textarea`, `Select`, `DatePicker`, `FileInput`, `Checkbox`,
   `Radio`, `RadioGroup` options, `Rating` stars, `Slider`, `TagsInput`, and

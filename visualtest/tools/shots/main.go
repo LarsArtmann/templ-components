@@ -29,6 +29,7 @@ type page struct {
 	path string
 }
 
+//nolint:gochecknoglobals // declarative page list; a package-level table is the point
 var pages = []page{
 	{"index", "/"},
 	// The wire section renders per ?transport= (audit f14): capture both
@@ -44,28 +45,49 @@ var pages = []page{
 	{"recipes-auth", "/recipes/auth"},
 }
 
-const settle = 600 * time.Millisecond
+const (
+	settle = 600 * time.Millisecond
+
+	// shotsViewportHeight pairs with the -width flag: full-page captures
+	// grow past it, the height only seeds the initial viewport.
+	shotsViewportHeight = 900
+
+	// defaultShotsWidth is the desktop capture width matching the visual
+	// suite's viewportDesktopWidth.
+	defaultShotsWidth = 1280
+
+	// shotsTimeout bounds one page's browser session (navigate + settle +
+	// captures + dark-class toggle) before the context is cancelled.
+	shotsTimeout = 120 * time.Second
+
+	// screenshotQuality is the image quality passed to FullScreenshot.
+	screenshotQuality = 92
+
+	// Capture modes; the dark mode toggles the page's .dark class in place.
+	modeLight = "light"
+	modeDark  = "dark"
+)
 
 func main() {
 	base := flag.String("base", "http://localhost:8901", "demo server base URL")
 	out := flag.String("out", "/tmp/tc-shots", "output directory")
 	mode := flag.String("mode", "both", "light | dark | both")
-	width := flag.Int("width", 1280, "viewport width")
+	width := flag.Int("width", defaultShotsWidth, "viewport width")
 	only := flag.String("page", "", "capture a single page by name (e.g. index)")
 
 	flag.Parse()
 
-	if err := os.MkdirAll(*out, 0o755); err != nil {
+	if err := os.MkdirAll(*out, 0o750); err != nil {
 		log.Fatal(err)
 	}
 
-	modes := []string{"light", "dark"}
+	modes := []string{modeLight, modeDark}
 
 	switch *mode {
-	case "light":
-		modes = []string{"light"}
-	case "dark":
-		modes = []string{"dark"}
+	case modeLight:
+		modes = []string{modeLight}
+	case modeDark:
+		modes = []string{modeDark}
 	}
 
 	for _, p := range pages {
@@ -80,10 +102,10 @@ func main() {
 			log.Fatalf("capture %s: %v", p.name, err)
 		}
 
-		fmt.Printf("captured %s\n", p.name)
+		fmt.Fprintf(os.Stdout, "captured %s\n", p.name)
 	}
 
-	fmt.Println("done")
+	fmt.Fprintln(os.Stdout, "done")
 }
 
 func chromePath() string {
@@ -104,7 +126,7 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 		context.Background(),
 		append(chromedp.DefaultExecAllocatorOptions[:],
 			chromedp.ExecPath(execPath),
-			chromedp.Flag("window-size", fmt.Sprintf("%d,900", width)),
+			chromedp.Flag("window-size", fmt.Sprintf("%d,%d", width, shotsViewportHeight)),
 			chromedp.Flag("force-device-scale-factor", "1"),
 		)...)
 	defer cancelAlloc()
@@ -112,7 +134,7 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 	browserCtx, cancelBrowser := chromedp.NewContext(allocCtx)
 	defer cancelBrowser()
 
-	ctx, cancelTimeout := context.WithTimeout(browserCtx, 120*time.Second)
+	ctx, cancelTimeout := context.WithTimeout(browserCtx, shotsTimeout)
 	defer cancelTimeout()
 
 	var docStatus int64
@@ -148,11 +170,11 @@ func capturePage(execPath, base, out string, p page, modes []string, width int) 
 
 	for _, mode := range modes {
 		buf := light
-		if mode == "dark" {
+		if mode == modeDark {
 			buf = dark
 		}
 
-		if err := os.WriteFile(filepath.Join(out, p.name+"_"+mode+".png"), buf, 0o644); err != nil {
+		if err := os.WriteFile(filepath.Join(out, p.name+"_"+mode+".png"), buf, 0o600); err != nil {
 			return fmt.Errorf("write capture (execPath=%s, docStatus=%d): %w", execPath, docStatus, err)
 		}
 	}
@@ -169,22 +191,22 @@ func captureTasks(base, path string, modes []string, width int, light, dark *[]b
 	}
 
 	tasks := []chromedp.Action{
-		chromedp.EmulateViewport(int64(width), 900),
+		chromedp.EmulateViewport(int64(width), shotsViewportHeight),
 		network.Enable(),
 		chromedp.Navigate(base + path),
 		chromedp.WaitReady("body", chromedp.ByQuery),
 		chromedp.Sleep(settle),
 	}
 
-	if has("light") {
-		tasks = append(tasks, chromedp.FullScreenshot(light, 92))
+	if has(modeLight) {
+		tasks = append(tasks, chromedp.FullScreenshot(light, screenshotQuality))
 	}
 
-	if has("dark") {
+	if has(modeDark) {
 		tasks = append(tasks,
 			chromedp.Evaluate(`document.documentElement.classList.add('dark');`, nil),
 			chromedp.Sleep(2*settle),
-			chromedp.FullScreenshot(dark, 92),
+			chromedp.FullScreenshot(dark, screenshotQuality),
 		)
 	}
 
