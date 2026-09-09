@@ -3,6 +3,7 @@ package visualtest
 import (
 	"bytes"
 	"context"
+	"errors"
 	"fmt"
 	"image/png"
 	"io"
@@ -92,13 +93,7 @@ func resolveOptions(opts []Options) Options {
 			merged.RTL = opt.RTL
 		}
 
-		if opt.Viewport.Width != 0 {
-			merged.Viewport.Width = opt.Viewport.Width
-		}
-
-		if opt.Viewport.Height != 0 {
-			merged.Viewport.Height = opt.Viewport.Height
-		}
+		mergeViewportOptions(&merged.Viewport, opt.Viewport)
 
 		if opt.MaxMismatch != 0 {
 			merged.MaxMismatch = opt.MaxMismatch
@@ -128,6 +123,55 @@ func resolveOptions(opts []Options) Options {
 	}
 
 	return defaultOptions(merged)
+}
+
+// mergeViewportOptions copies the non-zero dimensions of src into dst —
+// extracted from resolveOptions to keep its cyclomatic complexity in budget.
+func mergeViewportOptions(dst *Viewport, src Viewport) {
+	if src.Width != 0 {
+		dst.Width = src.Width
+	}
+
+	if src.Height != 0 {
+		dst.Height = src.Height
+	}
+}
+
+// e2ePageServer serves the compiled demo CSS at /app.css and renders the
+// page component at / — the minimal standalone fixture per-component e2e
+// suites need (AssertScreenshot's capture flow, but with custom API routes).
+// register runs before the server starts; the server closes on test cleanup.
+func e2ePageServer(t *testing.T, page func() templ.Component, register func(*http.ServeMux)) *httptest.Server {
+	t.Helper()
+
+	css, err := loadCSS()
+	if err != nil {
+		t.Fatalf("load compiled CSS: %v", err)
+	}
+
+	mux := http.NewServeMux()
+
+	if register != nil {
+		register(mux)
+	}
+
+	mux.HandleFunc("/app.css", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/css; charset=utf-8")
+		_, _ = w.Write(css)
+	})
+
+	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+
+		if err := page().Render(context.Background(), w); err != nil {
+			http.Error(w, err.Error(), http.StatusInternalServerError)
+		}
+	})
+
+	srv := httptest.NewServer(mux)
+	t.Cleanup(srv.Close)
+
+	return srv
 }
 
 // capture serves the page on an ephemeral in-process HTTP server (a data:
@@ -446,9 +490,14 @@ func waitExprAction(expr string) chromedp.Action {
 			}
 		}
 
-		return fmt.Errorf("wait expr: %q never became truthy within %s", expr, waitExprMaxWait)
+		return fmt.Errorf("wait expr: %w: %q within %s", errWaitExprTimedOut, expr, waitExprMaxWait)
 	})
 }
+
+// errWaitExprTimedOut is the static base of the wait-expression timeout
+// error (err113: dynamic error strings go through wrapping, not literal
+// construction at the return site).
+var errWaitExprTimedOut = errors.New("never became truthy")
 
 const (
 	waitExprPollDelay = 100 * time.Millisecond

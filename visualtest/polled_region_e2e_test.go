@@ -59,36 +59,13 @@ func polledRegionE2EPage() templ.Component {
 func polledRegionE2EServer(t *testing.T) *httptest.Server {
 	t.Helper()
 
-	css, err := loadCSS()
-	if err != nil {
-		t.Fatalf("load compiled CSS: %v", err)
-	}
-
-	mux := http.NewServeMux()
-
-	mux.HandleFunc("/app.css", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "text/css; charset=utf-8")
-		_, _ = w.Write(css)
+	return e2ePageServer(t, polledRegionE2EPage, func(mux *http.ServeMux) {
+		mux.HandleFunc("/api/region", func(w http.ResponseWriter, _ *http.Request) {
+			time.Sleep(800 * time.Millisecond)
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			_, _ = w.Write([]byte(`<span>fresh content</span>`))
+		})
 	})
-
-	mux.HandleFunc("/api/region", func(w http.ResponseWriter, _ *http.Request) {
-		time.Sleep(800 * time.Millisecond)
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		_, _ = w.Write([]byte(`<span>fresh content</span>`))
-	})
-
-	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-		if err := polledRegionE2EPage().Render(context.Background(), w); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	})
-
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-
-	return srv
 }
 
 func TestPolledRegionBusyCueClearsBrowser(t *testing.T) {

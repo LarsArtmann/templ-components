@@ -52,36 +52,13 @@ func loadingButtonE2EPage() templ.Component {
 func loadingButtonE2EServer(t *testing.T) *httptest.Server {
 	t.Helper()
 
-	css, err := loadCSS()
-	if err != nil {
-		t.Fatalf("load compiled CSS: %v", err)
-	}
-
-	mux := http.NewServeMux()
-
-	mux.HandleFunc("/app.css", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "text/css; charset=utf-8")
-		_, _ = w.Write(css)
+	return e2ePageServer(t, loadingButtonE2EPage, func(mux *http.ServeMux) {
+		mux.HandleFunc("/api/save-slow", func(w http.ResponseWriter, _ *http.Request) {
+			time.Sleep(600 * time.Millisecond)
+			w.Header().Set("Content-Type", "text/html; charset=utf-8")
+			_, _ = w.Write([]byte(`<span class="text-sm text-green-700 dark:text-green-300">Saved.</span>`))
+		})
 	})
-
-	mux.HandleFunc("/api/save-slow", func(w http.ResponseWriter, _ *http.Request) {
-		time.Sleep(600 * time.Millisecond)
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		_, _ = w.Write([]byte(`<span class="text-sm text-green-700 dark:text-green-300">Saved.</span>`))
-	})
-
-	mux.HandleFunc("/", func(w http.ResponseWriter, _ *http.Request) {
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-
-		if err := loadingButtonE2EPage().Render(context.Background(), w); err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-		}
-	})
-
-	srv := httptest.NewServer(mux)
-	t.Cleanup(srv.Close)
-
-	return srv
 }
 
 func TestLoadingButtonE2EStateGatesDuringRequest(t *testing.T) {

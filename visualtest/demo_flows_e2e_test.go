@@ -244,15 +244,25 @@ func TestDemoUploadEcho(t *testing.T) {
 	}
 
 	// transport=htmx renders exactly one upload form, keeping selectors stable.
-	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/?transport=htmx"), chromedp.WaitReady("body")); err != nil {
+	if err := chromedp.Run(
+		ctx,
+		chromedp.Navigate(server.BaseURL()+"/?transport=htmx"),
+		chromedp.WaitReady("body"),
+	); err != nil {
 		t.Fatalf("visualtest[demo]: load index: %v", err)
 	}
 
-	if err := chromedp.Run(ctx, chromedp.SetUploadFiles(`form[action="/api/wire/upload"] input[type="file"]`, []string{uploadFile})); err != nil {
+	if err := chromedp.Run(
+		ctx,
+		chromedp.SetUploadFiles(`form[action="/api/wire/upload"] input[type="file"]`, []string{uploadFile}),
+	); err != nil {
 		t.Fatalf("visualtest[demo]: set upload file: %v", err)
 	}
 
-	if err := chromedp.Run(ctx, chromedp.Click(`form[action="/api/wire/upload"] button[type="submit"]`, chromedp.ByQuery)); err != nil {
+	if err := chromedp.Run(
+		ctx,
+		chromedp.Click(`form[action="/api/wire/upload"] button[type="submit"]`, chromedp.ByQuery),
+	); err != nil {
 		t.Fatalf("visualtest[demo]: submit upload: %v", err)
 	}
 

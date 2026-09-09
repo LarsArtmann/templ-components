@@ -44,6 +44,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 - **Demo pages pass the axe sweep.** Raw demo inputs/selects gained labels,
   scrollable code blocks are focusable, and in-paragraph links are underlined.
 
+- **Tooltip dismiss/re-show scripts no longer throw on document-targeted
+  events.** The shared tooltip singleton's `keydown`/`mouseenter`/`focusin`
+  listeners called `e.target.closest(...)` unguarded; a `mouseenter` fired on
+  `document` itself (every time the pointer enters the window on a page with
+  a tooltip) threw a console `TypeError`. All three now route through a
+  target guard.
+
 ### Added
 
 - **axe-core accessibility sweep over the live demo routes** (`visualtest`):
@@ -53,6 +60,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   (`visualtest/testdata/axe_baseline.json`) that fails CI on any new
   critical/serious finding. Accepted palette-convention contrast debt is
   documented in the baseline.
+- **Demo click-through e2e suite** (`visualtest/demo_flows_e2e_test.go`):
+  browser-level proof of five headline demo flows against the real demo
+  server — LoadMore through EndOfList, ConfirmDelete (native confirm
+  auto-accepted), LoadingButton busy gate, multipart upload echo, and kanban
+  move buttons on both htmx and Datastar boards. Every flow test bounds its
+  tab context (2 min) so a wedged renderer fails the test instead of hanging
+  the binary.
 
 ## [1.16.0] — 2026-09-09
 
