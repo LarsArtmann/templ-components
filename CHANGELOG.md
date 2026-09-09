@@ -59,6 +59,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Added
 
+- **`layout.Minimal` gains optional `SEO` head tags** — robots noindex,
+  canonical, hreflang alternates, and JSON-LD, with identical semantics to
+  `PageProps.SEO`. Both shells now emit the tags through one shared
+  sub-template, so static/print documents (the Minimal use case) can opt
+  into structured data without giving up the zero-dependency default (the
+  zero value emits nothing). Unblocks the #156 adoption reason.
 - **axe-core accessibility sweep over the live demo routes** (`visualtest`):
   the vendored axe-core 4.11.1 runtime (MPL-2.0) audits all 7 demo pages
   (light + dark for index/forms) in real Chromium, with a positive-control
