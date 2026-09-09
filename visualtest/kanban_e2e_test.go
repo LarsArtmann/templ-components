@@ -13,6 +13,7 @@ import (
 	"time"
 
 	"github.com/a-h/templ"
+	"github.com/chromedp/cdproto/emulation"
 	"github.com/chromedp/chromedp"
 	"github.com/larsartmann/go-datastar/static"
 	"github.com/larsartmann/templ-components/datastar"
@@ -415,5 +416,62 @@ func TestKanbanE2EDropMovesBothTransports(t *testing.T) {
 		chromedp.Evaluate(kanbanColumnOrderExpr("kb-htmx", "todo"), &todo),
 	); err != nil || strings.TrimSpace(todo) != "e1" {
 		t.Fatalf("htmx todo column after drop = %q, want e1 (err %v)", todo, err)
+	}
+}
+
+// kanbanButtonsOpacityExpr evaluates to the computed opacity of one card's
+// hover-revealed move-button wrapper.
+const kanbanButtonsOpacityExpr = `getComputedStyle(document.querySelector('#kb-htmx [data-tc-kanban-card="e1"] .tc-kanban-buttons')).opacity`
+
+// TestKanbanE2ECoarsePointerButtonsVisible proves the touch fallback in a
+// real browser: emulating a coarse pointer flips the wrapper's computed
+// opacity from 0 to 1 via the unlayered @media (pointer: coarse) rule in
+// templates/custom.css, so touch users always see the move buttons. The
+// fine-pointer control leg asserts the hidden starting state first, so the
+// flip can never pass vacuously.
+func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
+	srv := kanbanE2EServer(t)
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	ctx, cancelTimeout := context.WithTimeout(ctx, 30*time.Second)
+	defer cancelTimeout()
+
+	var ready bool
+
+	if err := chromedp.Run(ctx,
+		chromedp.Navigate(srv.URL+"/"),
+		chromedp.Poll(kanbanE2EReady, &ready),
+	); err != nil {
+		t.Fatalf("navigate + readiness: %v", err)
+	}
+
+	var fine string
+
+	if err := chromedp.Run(ctx, chromedp.Evaluate(kanbanButtonsOpacityExpr, &fine)); err != nil {
+		t.Fatalf("fine-pointer opacity eval: %v", err)
+	}
+
+	if fine != "0" {
+		t.Fatalf("fine pointer computed opacity = %q, want 0 (control leg)", fine)
+	}
+
+	if err := chromedp.Run(ctx, chromedp.ActionFunc(func(ctx context.Context) error {
+		return emulation.SetEmulatedMedia().
+			WithFeatures([]*emulation.MediaFeature{{Name: "pointer", Value: "coarse"}}).
+			Do(ctx)
+	})); err != nil {
+		t.Fatalf("emulate coarse pointer: %v", err)
+	}
+
+	var coarse string
+
+	if err := chromedp.Run(ctx, chromedp.Evaluate(kanbanButtonsOpacityExpr, &coarse)); err != nil {
+		t.Fatalf("coarse-pointer opacity eval: %v", err)
+	}
+
+	if coarse != "1" {
+		t.Fatalf("coarse pointer computed opacity = %q, want 1 (touch fallback)", coarse)
 	}
 }
