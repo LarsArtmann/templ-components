@@ -54,3 +54,51 @@ func TestGoldenSweepErrorDetail(t *testing.T) {
 		}))},
 	})
 }
+
+// TestGoldenSweepErrorFamilyMatrix pins the full five-family matrix —
+// every go-error-family renders through ErrorAlert (rejection, conflict,
+// transient, corruption, infrastructure) so a family color/icon/text
+// regression is caught for ANY family, not just the two that previously
+// had goldens. ErrorDetail gains the missing infrastructure family too.
+func TestGoldenSweepErrorFamilyMatrix(t *testing.T) {
+	t.Parallel()
+
+	families := []struct {
+		name   string
+		family Family
+		title  string
+	}{
+		{"rejection", FamilyRejection, "Invalid Input"},
+		{"conflict", FamilyConflict, "Version Conflict"},
+		{"transient", FamilyTransient, "Service Unavailable"},
+		{"corruption", FamilyCorruption, "Data Corruption"},
+		{"infrastructure", FamilyInfrastructure, "Infrastructure Failure"},
+	}
+
+	alerts := make([]golden.Snapshot, 0, len(families))
+
+	for _, f := range families {
+		family := f
+
+		alerts = append(alerts, golden.Snapshot{
+			Name: "error_alert_family_" + family.name,
+			HTML: utils.Render(t, ErrorAlert(ErrorAlertProps{
+				Family:  family.family,
+				Title:   family.title,
+				Message: "Matrix message for " + string(family.family) + ".",
+				Fix:     "Matrix fix for " + string(family.family) + ".",
+			})),
+		})
+	}
+
+	golden.AssertSnapshots(t, alerts)
+
+	golden.Assert(t, "error_detail_infrastructure", utils.Render(t, ErrorDetail(ErrorDetailProps{
+		Family:    FamilyInfrastructure,
+		Code:      Code("infra.upstream_unreachable"),
+		Title:     "Upstream Unreachable",
+		Message:   "The upstream dependency did not respond in time.",
+		Fix:       "Retry shortly; if it persists, check the status page.",
+		Timestamp: "2026-09-09T12:00:00Z",
+	})))
+}
