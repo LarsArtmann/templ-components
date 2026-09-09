@@ -252,14 +252,14 @@ func Calendar(props CalendarProps) templ.Component {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</div><div class=\"grid grid-cols-7 gap-1\" role=\"grid\" aria-label=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, "</div><div class=\"grid grid-cols-7 gap-1\" role=\"group\" aria-label=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(monthName)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/calendar.templ`, Line: 121, Col: 72}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/calendar.templ`, Line: 121, Col: 73}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 		if templ_7745c5c3_Err != nil {
@@ -282,7 +282,7 @@ func Calendar(props CalendarProps) templ.Component {
 			if props.HrefBase != "" && !disabled {
 				dayHref = calendarReplacePlaceholders(props.HrefBase, props.Year, props.Month, day)
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, " <div role=\"gridcell\" class=\"flex justify-center\">")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, " <div class=\"flex justify-center\">")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}

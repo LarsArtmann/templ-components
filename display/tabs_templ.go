@@ -75,8 +75,10 @@ func resolveActiveTabID(activeTabID string, tabs []Tab) string {
 	return ""
 }
 
-// tabLink renders a single tab link with the given class based on active state
-func tabLink(tab Tab, isActive bool, activeClass, inactiveClass string) templ.Component {
+// tabLink renders a single tab link with the given class based on active state.
+// aria-controls is emitted only when the tab owns a panel — referencing a
+// non-existent id is an axe aria-valid-attr-value violation.
+func tabLink(tab Tab, hasPanel bool, isActive bool, activeClass, inactiveClass string) templ.Component {
 	return templruntime.GeneratedTemplate(func(templ_7745c5c3_Input templruntime.GeneratedComponentInput) (templ_7745c5c3_Err error) {
 		templ_7745c5c3_W, ctx := templ_7745c5c3_Input.Writer, templ_7745c5c3_Input.Context
 		if templ_7745c5c3_CtxErr := ctx.Err(); templ_7745c5c3_CtxErr != nil {
@@ -109,7 +111,7 @@ func tabLink(tab Tab, isActive bool, activeClass, inactiveClass string) templ.Co
 		var templ_7745c5c3_Var3 string
 		templ_7745c5c3_Var3, templ_7745c5c3_Err = templ.ResolveAttributeValue(tab.ID + "-tab")
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 73, Col: 22}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 75, Col: 22}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var3)
 		if templ_7745c5c3_Err != nil {
@@ -122,7 +124,7 @@ func tabLink(tab Tab, isActive bool, activeClass, inactiveClass string) templ.Co
 		var templ_7745c5c3_Var4 templ.SafeURL
 		templ_7745c5c3_Var4, templ_7745c5c3_Err = templ.JoinURLErrs(templ.SafeURL("#" + tab.ID))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 74, Col: 36}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 76, Col: 36}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var4))
 		if templ_7745c5c3_Err != nil {
@@ -135,39 +137,49 @@ func tabLink(tab Tab, isActive bool, activeClass, inactiveClass string) templ.Co
 		var templ_7745c5c3_Var5 string
 		templ_7745c5c3_Var5, templ_7745c5c3_Err = templ.ResolveAttributeValue(fmt.Sprintf("%t", isActive))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 76, Col: 45}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 78, Col: 45}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var5)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\" aria-controls=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 4, "\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		var templ_7745c5c3_Var6 string
-		templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(tab.ID)
-		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 77, Col: 24}
+		if hasPanel {
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, " aria-controls=\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			var templ_7745c5c3_Var6 string
+			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(tab.ID)
+			if templ_7745c5c3_Err != nil {
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 80, Col: 25}
+			}
+			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\"")
+			if templ_7745c5c3_Err != nil {
+				return templ_7745c5c3_Err
+			}
 		}
-		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
-		if templ_7745c5c3_Err != nil {
-			return templ_7745c5c3_Err
-		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 5, "\" tabindex=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, " tabindex=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var7 string
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.ResolveAttributeValue(utils.Ternary(isActive, 0, -1))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 78, Col: 43}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 82, Col: 43}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var7)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 6, "\" class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "\" class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -180,20 +192,20 @@ func tabLink(tab Tab, isActive bool, activeClass, inactiveClass string) templ.Co
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 7, "\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		var templ_7745c5c3_Var9 string
 		templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.JoinStringErrs(tab.Label)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 81, Col: 13}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 85, Col: 13}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var9))
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 8, "</a>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "</a>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -238,30 +250,30 @@ func Tabs(props TabsProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 9, "<div")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "<div")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if props.ID != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, " id=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, " id=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 99, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 103, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 11, "\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 12, " class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, " class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -274,31 +286,31 @@ func Tabs(props TabsProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 13, "\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		if props.AriaLabel != "" {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 14, " aria-label=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, " aria-label=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var14 string
 			templ_7745c5c3_Var14, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 103, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 107, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var14)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 15, "\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
 		if props.ClientSide {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 16, " data-tc-tabs=\"\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, " data-tc-tabs=\"\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
@@ -307,7 +319,7 @@ func Tabs(props TabsProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 17, "><div role=\"tablist\" aria-label=\"Tabs\" class=\"border-b border-gray-200 dark:border-gray-700\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "><div role=\"tablist\" aria-label=\"Tabs\" class=\"border-b border-gray-200 dark:border-gray-700\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -316,7 +328,7 @@ func Tabs(props TabsProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 18, "<div class=\"")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "<div class=\"")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -329,14 +341,14 @@ func Tabs(props TabsProps) templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 19, "\">")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "\">")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, tab := range tabs {
 			active := isActiveTab(tab.ID, activeID)
 			if props.Variant == TabsPills {
-				templ_7745c5c3_Err = tabLink(tab, active,
+				templ_7745c5c3_Err = tabLink(tab, tab.Content != nil, active,
 					"rounded-md bg-blue-600 dark:bg-blue-500 px-3 py-2 text-sm font-medium text-white",
 					"rounded-md px-3 py-2 text-sm font-medium text-gray-500 hover:text-gray-700 dark:text-gray-400 dark:hover:text-gray-200",
 				).Render(ctx, templ_7745c5c3_Buffer)
@@ -344,7 +356,7 @@ func Tabs(props TabsProps) templ.Component {
 					return templ_7745c5c3_Err
 				}
 			} else {
-				templ_7745c5c3_Err = tabLink(tab, active,
+				templ_7745c5c3_Err = tabLink(tab, tab.Content != nil, active,
 					"whitespace-nowrap border-b-2 border-blue-500 px-1 py-4 text-sm font-medium text-blue-600 dark:text-blue-400",
 					"whitespace-nowrap border-b-2 border-transparent px-1 py-4 text-sm font-medium text-gray-500 hover:border-gray-300 hover:text-gray-700 dark:text-gray-400 dark:hover:border-gray-600 dark:hover:text-gray-200",
 				).Render(ctx, templ_7745c5c3_Buffer)
@@ -353,49 +365,49 @@ func Tabs(props TabsProps) templ.Component {
 				}
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 20, "</div></div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "</div></div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
 		for _, tab := range tabs {
 			if tab.Content != nil {
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 21, "<div id=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "<div id=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var17 string
 				templ_7745c5c3_Var17, templ_7745c5c3_Err = templ.ResolveAttributeValue(tab.ID)
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 133, Col: 16}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 137, Col: 16}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var17)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 22, "\" role=\"tabpanel\" aria-labelledby=\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, "\" role=\"tabpanel\" aria-labelledby=\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				var templ_7745c5c3_Var18 string
 				templ_7745c5c3_Var18, templ_7745c5c3_Err = templ.ResolveAttributeValue(tab.ID + "-tab")
 				if templ_7745c5c3_Err != nil {
-					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 135, Col: 38}
+					return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 139, Col: 38}
 				}
 				_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var18)
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 23, "\"")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, "\"")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 				if !isActiveTab(tab.ID, activeID) {
-					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 24, " hidden")
+					templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, " hidden")
 					if templ_7745c5c3_Err != nil {
 						return templ_7745c5c3_Err
 					}
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 25, " class=\"mt-4\">")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, " class=\"mt-4\">")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
@@ -403,32 +415,32 @@ func Tabs(props TabsProps) templ.Component {
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
-				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 26, "</div>")
+				templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "</div>")
 				if templ_7745c5c3_Err != nil {
 					return templ_7745c5c3_Err
 				}
 			}
 		}
 		if props.ClientSide {
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 27, "<script nonce=\"")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "<script nonce=\"")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 			var templ_7745c5c3_Var19 string
 			templ_7745c5c3_Var19, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.Nonce)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 146, Col: 30}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `display/tabs.templ`, Line: 150, Col: 30}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var19)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
-			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 28, "\">\n\t\t\t\tif (!window.tcTabsAttached) {\n\t\t\t\t\twindow.tcTabsAttached = true;\n\t\t\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\t\t\tvar link = e.target.closest('[data-tc-tabs] [role=\"tab\"]');\n\t\t\t\t\t\tif (!link) return;\n\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\tactivateTab(link);\n\t\t\t\t\t});\n\t\t\t\t\tdocument.addEventListener('keydown', function(e) {\n\t\t\t\t\t\tvar tab = e.target.closest('[data-tc-tabs] [role=\"tab\"]');\n\t\t\t\t\t\tif (!tab) return;\n\t\t\t\t\t\tvar tabs = Array.from(tab.closest('[role=\"tablist\"]').querySelectorAll('[role=\"tab\"]'));\n\t\t\t\t\t\tvar idx = tabs.indexOf(tab);\n\t\t\t\t\t\tvar next = -1;\n\t\t\t\t\t\tvar rtl = document.documentElement.getAttribute('dir') === 'rtl';\n\t\t\t\t\t\tvar nextKey = rtl ? 'ArrowLeft' : 'ArrowRight';\n\t\t\t\t\t\tvar prevKey = rtl ? 'ArrowRight' : 'ArrowLeft';\n\t\t\t\t\t\tif (e.key === nextKey || e.key === 'ArrowDown') { next = (idx + 1) % tabs.length; }\n\t\t\t\t\t\telse if (e.key === prevKey || e.key === 'ArrowUp') { next = (idx - 1 + tabs.length) % tabs.length; }\n\t\t\t\t\t\telse if (e.key === 'Home') { next = 0; }\n\t\t\t\t\t\telse if (e.key === 'End') { next = tabs.length - 1; }\n\t\t\t\t\t\tif (next >= 0) { e.preventDefault(); tabs[next].focus(); activateTab(tabs[next]); }\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t\tfunction activateTab(link) {\n\t\t\t\t\tvar container = link.closest('[data-tc-tabs]');\n\t\t\t\t\tcontainer.querySelectorAll('[role=\"tab\"]').forEach(function(t) {\n\t\t\t\t\t\tt.setAttribute('aria-selected','false');\n\t\t\t\t\t\tt.setAttribute('tabindex','-1');\n\t\t\t\t\t});\n\t\t\t\t\tlink.setAttribute('aria-selected','true');\n\t\t\t\t\tlink.setAttribute('tabindex','0');\n\t\t\t\t\tcontainer.querySelectorAll('[role=\"tabpanel\"]').forEach(function(p) { p.hidden = true; });\n\t\t\t\t\tvar panel = container.querySelector('#' + link.getAttribute('aria-controls'));\n\t\t\t\t\tif (panel) panel.hidden = false;\n\t\t\t\t}\n\t\t\t</script>")
+			templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 30, "\">\n\t\t\t\tif (!window.tcTabsAttached) {\n\t\t\t\t\twindow.tcTabsAttached = true;\n\t\t\t\t\tdocument.addEventListener('click', function(e) {\n\t\t\t\t\t\tvar link = e.target.closest('[data-tc-tabs] [role=\"tab\"]');\n\t\t\t\t\t\tif (!link) return;\n\t\t\t\t\t\te.preventDefault();\n\t\t\t\t\t\tactivateTab(link);\n\t\t\t\t\t});\n\t\t\t\t\tdocument.addEventListener('keydown', function(e) {\n\t\t\t\t\t\tvar tab = e.target.closest('[data-tc-tabs] [role=\"tab\"]');\n\t\t\t\t\t\tif (!tab) return;\n\t\t\t\t\t\tvar tabs = Array.from(tab.closest('[role=\"tablist\"]').querySelectorAll('[role=\"tab\"]'));\n\t\t\t\t\t\tvar idx = tabs.indexOf(tab);\n\t\t\t\t\t\tvar next = -1;\n\t\t\t\t\t\tvar rtl = document.documentElement.getAttribute('dir') === 'rtl';\n\t\t\t\t\t\tvar nextKey = rtl ? 'ArrowLeft' : 'ArrowRight';\n\t\t\t\t\t\tvar prevKey = rtl ? 'ArrowRight' : 'ArrowLeft';\n\t\t\t\t\t\tif (e.key === nextKey || e.key === 'ArrowDown') { next = (idx + 1) % tabs.length; }\n\t\t\t\t\t\telse if (e.key === prevKey || e.key === 'ArrowUp') { next = (idx - 1 + tabs.length) % tabs.length; }\n\t\t\t\t\t\telse if (e.key === 'Home') { next = 0; }\n\t\t\t\t\t\telse if (e.key === 'End') { next = tabs.length - 1; }\n\t\t\t\t\t\tif (next >= 0) { e.preventDefault(); tabs[next].focus(); activateTab(tabs[next]); }\n\t\t\t\t\t});\n\t\t\t\t}\n\t\t\t\tfunction activateTab(link) {\n\t\t\t\t\tvar container = link.closest('[data-tc-tabs]');\n\t\t\t\t\tcontainer.querySelectorAll('[role=\"tab\"]').forEach(function(t) {\n\t\t\t\t\t\tt.setAttribute('aria-selected','false');\n\t\t\t\t\t\tt.setAttribute('tabindex','-1');\n\t\t\t\t\t});\n\t\t\t\t\tlink.setAttribute('aria-selected','true');\n\t\t\t\t\tlink.setAttribute('tabindex','0');\n\t\t\t\t\tcontainer.querySelectorAll('[role=\"tabpanel\"]').forEach(function(p) { p.hidden = true; });\n\t\t\t\t\tvar panel = container.querySelector('#' + link.getAttribute('aria-controls'));\n\t\t\t\t\tif (panel) panel.hidden = false;\n\t\t\t\t}\n\t\t\t</script>")
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
 			}
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 29, "</div>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 31, "</div>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

@@ -1449,9 +1449,9 @@ func statCardFigures(props StatCardProps) templ.Component {
 		}
 		if props.Change != "" {
 			var templ_7745c5c3_Var66 = []any{"ms-2 flex items-baseline text-sm font-semibold",
-				templ.KV("text-green-600 dark:text-green-400", trend == TrendUp),
+				templ.KV("text-green-700 dark:text-green-400", trend == TrendUp),
 				templ.KV("text-red-600 dark:text-red-400", trend == TrendDown),
-				templ.KV("text-amber-600 dark:text-amber-400", trend == TrendWarn)}
+				templ.KV("text-amber-700 dark:text-amber-400", trend == TrendWarn)}
 			templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var66...)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err

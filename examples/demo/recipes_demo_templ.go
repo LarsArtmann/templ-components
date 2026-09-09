@@ -67,7 +67,7 @@ func recipesLoginPage(props layout.PageProps) templ.Component {
 				Title:    "Sign in",
 				Subtitle: "Welcome back. Enter your credentials to continue.",
 				FormBody: loginForm(),
-				Footer:   templ.Raw(`<p class="text-center text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a href="#" class="font-medium text-blue-600 dark:text-blue-400 hover:underline">Sign up</a></p>`),
+				Footer:   templ.Raw(`<p class="text-center text-sm text-gray-500 dark:text-gray-400">Don't have an account? <a href="#" class="font-medium underline text-blue-600 dark:text-blue-400 hover:underline">Sign up</a></p>`),
 			}).Render(ctx, templ_7745c5c3_Buffer)
 			if templ_7745c5c3_Err != nil {
 				return templ_7745c5c3_Err
