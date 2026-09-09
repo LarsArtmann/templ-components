@@ -1,11 +1,10 @@
 package display
 
 import (
-	"github.com/a-h/templ"
-
 	"testing"
 	"time"
 
+	"github.com/a-h/templ"
 	"github.com/larsartmann/templ-components/utils"
 	"github.com/larsartmann/templ-components/utils/golden"
 )
