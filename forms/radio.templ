@@ -74,3 +74,40 @@ templ Radio(props RadioProps) {
 //	     {Value: "pro", Label: "Pro"},
 //	   },
 //	})
+templ RadioGroup(props RadioGroupProps) {
+	{{ errorAttrs := ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), "")) }}
+	<fieldset
+		if props.ID != "" {
+			id={ props.ID }
+		}
+		class={ utils.Class("", props.Class) }
+		if props.AriaLabel != "" {
+			aria-label={ props.AriaLabel }
+		}
+		if props.Required {
+			aria-required="true"
+		}
+		{ errorAttrs... }
+		{ props.Attrs... }
+	>
+		if props.Label != "" {
+			<legend class="block text-sm font-medium leading-6 text-gray-900 dark:text-white">
+				{ props.Label }
+				if props.Required {
+					<span class="text-red-500 dark:text-red-400 ms-0.5" aria-hidden="true">*</span>
+				}
+			</legend>
+		}
+		<div class={ utils.Ternary(props.Inline, "mt-2 flex space-x-6", "mt-2 space-y-2") }>
+			for _, opt := range props.Options {
+				@Radio(radioItemProps(props.ID, props.Name, opt, props.Required, errorAttrs))
+			}
+		</div>
+		if props.Error != "" {
+			@FieldError(props.ID, props.Error)
+		}
+		if props.HelpText != "" {
+			@helpText(props.ID, props.HelpText)
+		}
+	</fieldset>
+}
