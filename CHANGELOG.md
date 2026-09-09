@@ -67,6 +67,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   move buttons on both htmx and Datastar boards. Every flow test bounds its
   tab context (2 min) so a wedged renderer fails the test instead of hanging
   the binary.
+- **Demo route smoke test** (`visualtest/demo_smoke_test.go`): all 7 demo
+  routes must render their unique page title with zero 500s in the server
+  log, so CI's existing Visual Regression job now fails when the demo a
+  consumer copies from is broken — previously nothing in CI exercised the
+  demo server at all.
 
 ## [1.16.0] — 2026-09-09
 
