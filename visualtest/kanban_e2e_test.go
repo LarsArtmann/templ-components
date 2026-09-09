@@ -477,8 +477,9 @@ func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
 		t.Fatalf("pointer:coarse media feature not emulated (matches=%v, err=%v)", coarseMatches, err)
 	}
 
-	var settled bool
-	if err := chromedp.Run(ctx, chromedp.Poll(kanbanButtonsOpacityExpr+`==="1"`, &settled)); err != nil || !settled {
+	var visible bool
+
+	if err := chromedp.Run(ctx, chromedp.Poll(kanbanButtonsOpacityExpr+`==="1"`, &visible)); err != nil || !visible {
 		t.Fatalf("coarse pointer computed opacity never settled at 1 (visible=%v, err=%v) — touch fallback broken", visible, err)
 	}
 }
@@ -542,8 +543,8 @@ func TestKanbanE2ECrossBoardDropIgnored(t *testing.T) {
 		t.Fatal("cross-board drop script could not find the card or zone")
 	}
 
-	if accepted == "accepted" {
-		t.Fatal("cross-board dragover was accepted (preventDefault ran) — guard missing from dragover listener")
+	if accepted == "claimed" {
+		t.Fatal("cross-board dragover was claimed (preventDefault ran) — guard missing from dragover listener")
 	}
 
 	// Both boards must still be in their initial order a moment later: no

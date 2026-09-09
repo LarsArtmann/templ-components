@@ -255,14 +255,17 @@ func kanbanDragJS() string {
 // once the re-rendered board actually lands in the DOM, so screen-reader
 // users hear the completed state change, not just the intent.
 //
-// It deliberately polls for the board's replacement instead of listening for
+// It deliberately polls the board's live region instead of listening for
 // transport events: htmx's afterSwap detail.target is invalidated by the
 // outerHTML swap the board mandates, and Datastar has no global swap event
-// at all. The poll is swap-agnostic: when the submitted board element is
-// disconnected and its id resolves to a fresh node, the pending message is
-// written into the NEW board's live region. Boards without a stable id (or
-// inner-mode patches that keep the old root connected) degrade to no
-// post-swap announcement — the immediate "Moving" message still fires.
+// at all. The signal is swap-agnostic: tcKbSubmit writes "Moving ..." into
+// the live region before submitting, and the server always re-renders the
+// region empty — so an EMPTY region after submit means the response landed,
+// whether the runtime replaced the board element (htmx outerHTML: resolve
+// the new node by id) or morphed it in place (Datastar outer patches keep
+// the old element connected). Boards whose patch never touches the live
+// region degrade to no post-swap announcement — the immediate "Moving"
+// message still fires.
 func kanbanAnnounceJS() string {
 	return `function tcKbAnnounceIn(b){` +
 		`if(!tcKbAnnounce||!b)return;` +
@@ -271,13 +274,15 @@ func kanbanAnnounceJS() string {
 		`if(live){live.textContent=msg;}` +
 		`}` +
 		`function tcKbAnnounceAfter(old){` +
-		`if(!old.id)return;` +
 		`var tries=0;` +
 		`var timer=setInterval(function(){` +
 		`tries++;` +
-		`var nb=document.getElementById(old.id);` +
-		`if(!old.isConnected&&nb&&nb!==old){clearInterval(timer);tcKbAnnounceIn(nb);}` +
-		`else if(tries>50){clearInterval(timer);}` +
+		`var b=old.isConnected?old:(old.id?document.getElementById(old.id):null);` +
+		`if(b){` +
+		`var live=b.querySelector('[data-tc-kanban-live]');` +
+		`if(live&&live.textContent===''){clearInterval(timer);tcKbAnnounceIn(b);return;}` +
+		`}` +
+		`if(tries>50){clearInterval(timer);}` +
 		`},100);` +
 		`}`
 }

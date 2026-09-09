@@ -307,7 +307,8 @@ func TestKanbanJSPostSwapAnnouncement(t *testing.T) {
 		"function tcKbAnnounceIn(b){",
 		"function tcKbAnnounceAfter(old){",
 		"var live=b.querySelector('[data-tc-kanban-live]');",
-		"if(!old.isConnected&&nb&&nb!==old){clearInterval(timer);tcKbAnnounceIn(nb);}",
+		"var b=old.isConnected?old:(old.id?document.getElementById(old.id):null);",
+		"if(live&&live.textContent===''){clearInterval(timer);tcKbAnnounceIn(b);return;}",
 	} {
 		if !strings.Contains(js, token) {
 			t.Errorf("kanban script lacks post-swap announcement token %q", token)
