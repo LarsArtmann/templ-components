@@ -17,24 +17,20 @@ jobs:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Require a CHANGELOG.md diff when library code changes
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
+          # Policy lives in scripts/check-changelog-guard.sh (#133): library
+          # code (*.templ, non-test library .go) requires a CHANGELOG diff;
+          # test-only, docs-only, examples, cmd, and website diffs are
+          # exempt. The script is locally runnable for shakedowns.
           FILES="$(gh api "repos/${{ github.repository }}/pulls/${PR_NUMBER}/files" --paginate --jq '.[].filename')"
           echo "Changed files:"
           echo "$FILES"
-          if echo "$FILES" | grep -Eq '\.templ$|^(display|feedback|forms|layout|navigation|htmx|datastar|errorpage|icons|utils|charts)/.*\.go$'; then
-            if ! echo "$FILES" | grep -q '^CHANGELOG.md$'; then
-              echo "::error::This PR changes library components but does not touch CHANGELOG.md."
-              echo "::error::House rule: every feature/fix change warms [Unreleased] in the same change."
-              exit 1
-            fi
-            echo "CHANGELOG.md is part of the diff — guard satisfied."
-          else
-            echo "No library component code changed; CHANGELOG not required."
-          fi
+          xargs -d '\n' scripts/check-changelog-guard.sh <<< "$FILES"
 
   release-tags:
     name: Release tag completeness
