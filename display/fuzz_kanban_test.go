@@ -25,7 +25,8 @@ func FuzzParseKanbanMove(f *testing.F) {
 		form.Set(kanbanFieldColumn, column)
 		form.Set(kanbanFieldIndex, index)
 
-		r := httptest.NewRequest(http.MethodPost, "/api/kanban", strings.NewReader(form.Encode()))
+		r := httptest.NewRequestWithContext(
+			t.Context(), http.MethodPost, "/api/kanban", strings.NewReader(form.Encode()))
 		r.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 		move, err := ParseKanbanMove(r)
