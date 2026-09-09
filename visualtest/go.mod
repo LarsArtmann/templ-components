@@ -29,6 +29,8 @@ require (
 
 replace github.com/larsartmann/templ-components => ..
 
+replace github.com/larsartmann/templ-components/charts/echarts => ../charts/echarts
+
 replace github.com/larsartmann/templ-components/datastar => ../datastar
 
 replace github.com/larsartmann/templ-components/errorpage => ../errorpage

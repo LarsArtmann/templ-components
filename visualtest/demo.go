@@ -53,13 +53,13 @@ func StartDemoServer(t *testing.T) *DemoServer {
 	binary := buildDemoBinary(t)
 	port := reserveFreePort(t)
 
+	cmdCtx := context.Background()
+	cmd := exec.CommandContext(cmdCtx, binary) //nolint:gosec,noctx // test fixture: locally built binary, fixed path
+
 	server := &DemoServer{
 		baseURL: "http://127.0.0.1:" + strconv.Itoa(port),
-		cmd: exec.CommandContext(
-			context.Background(),
-			binary,
-		), //nolint:gosec,noctx // test fixture: locally built binary from a fixed path, no user input; lifetime owned by t.Cleanup
-		Log: bytes.Buffer{},
+		cmd:     cmd,
+		Log:     bytes.Buffer{},
 	}
 	server.cmd.Stdout = &server.Log
 	server.cmd.Stderr = &server.Log
@@ -95,14 +95,9 @@ func buildDemoBinary(t *testing.T) string {
 
 	binary := filepath.Join(t.TempDir(), "tc-demo")
 
-	build := exec.CommandContext(
-		context.Background(),
-		"go",
-		"build",
-		"-o",
-		binary,
-		demoPackagePath,
-	) //nolint:gosec // test fixture: fixed package path, no user input
+	buildCtx := context.Background()
+	//nolint:gosec // test fixture: fixed package path, no user input
+	build := exec.CommandContext(buildCtx, "go", "build", "-o", binary, demoPackagePath)
 
 	build.Env = append(os.Environ(), "GOEXPERIMENT=jsonv2", "GOWORK=off")
 
