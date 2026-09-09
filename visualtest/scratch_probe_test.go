@@ -68,6 +68,19 @@ func TestScratchLoadMoreProbe(t *testing.T) {
 
 	t.Log("phase 4 ok: click returned")
 
+	var html string
+
+	if err := chromedp.Run(ctx, chromedp.Evaluate(
+		`document.documentElement.outerHTML`, &html)); err != nil {
+		t.Fatalf("dump html: %v", err)
+	}
+
+	if werr := os.WriteFile("/tmp/tc-demo-index.html", []byte(html), 0o600); werr != nil {
+		t.Fatalf("write html: %v", werr)
+	}
+
+	t.Logf("phase 4b: dumped %d bytes to /tmp/tc-demo-index.html", len(html))
+
 	t.Log("phase 5: poll for >= 4 cards")
 
 	var got string
