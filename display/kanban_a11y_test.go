@@ -142,5 +142,5 @@ func TestKanbanTouchButtonsHook(t *testing.T) {
 
 	// Read-only boards render no button wrapper at all.
 	readonly := utils.Render(t, KanbanBoard(KanbanBoardProps{Columns: kanbanTestColumns()}))
-	utils.AssertNotContains(readonly, "tc-kanban-buttons")
+	utils.AssertNotContains(t, readonly, "tc-kanban-buttons")
 }
