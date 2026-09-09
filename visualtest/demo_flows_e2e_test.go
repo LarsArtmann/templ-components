@@ -161,7 +161,11 @@ func TestDemoConfirmDeleteRemovesRow(t *testing.T) {
 
 	var removed bool
 	if err := chromedp.Run(ctx, chromedp.Poll(
-		`Boolean(document.querySelector('#item-123') && document.querySelector('#item-123').innerText.indexOf('deleted successfully') >= 0)`,
+		// Success = the row was REPLACED: #item-123 no longer exists and
+		// the mock endpoint's confirmation text is on the page. Checking
+		// querySelector('#item-123') for the text can never succeed — the
+		// swap removes the element that carried the id.
+		`Boolean(!document.querySelector('#item-123') && document.body.innerText.indexOf('deleted successfully') >= 0)`,
 		&removed,
 		chromedp.WithPollingTimeout(demoFlowTimeout),
 	)); err != nil {
