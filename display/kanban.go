@@ -149,7 +149,10 @@ func kanbanWireAttributes(w *wire.Action, boardID string) templ.Attributes {
 // itself is transport-agnostic. Drag-and-drop computes the insertion index
 // from the pointer position between cards (adjusting for the dragged card's
 // own removal when moving within a column); the keyboard buttons move a card
-// to the end of the adjacent column.
+// to the end of the adjacent column. A drop whose source card lives on a
+// DIFFERENT board is ignored (each wired board owns its cards), and every
+// submitted move announces its completion into the board's live region once
+// the re-rendered board lands (kanbanAnnounceJS).
 func kanbanJS() string {
 	return `if(!window.tcKanbanAttached){window.tcKanbanAttached=true;` +
 		`function tcKbBoard(el){return el.closest('[data-tc-kanban]');}` +
@@ -162,18 +165,22 @@ func kanbanJS() string {
 		`f.querySelector('[data-tc-kanban-f-column]').value=colId;` +
 		`f.querySelector('[data-tc-kanban-f-index]').value=String(index);` +
 		`var live=b.querySelector('[data-tc-kanban-live]');` +
-		`if(live){var t=b.querySelector('[data-tc-kanban-card="'+tcKbEsc(cardId)+'"] [data-tc-kanban-title]');` +
+		`var t=b.querySelector('[data-tc-kanban-card="'+tcKbEsc(cardId)+'"] [data-tc-kanban-title]');` +
 		`var c=b.querySelector('[data-tc-kanban-column-body="'+tcKbEsc(colId)+'"]');` +
 		`var cn=c?c.getAttribute('data-tc-kanban-col-title'):colId;` +
-		`live.textContent='Moving '+(t?t.textContent:cardId)+' to '+(cn||colId)+'.';}` +
+		`var title=t?t.textContent:cardId;` +
+		`if(live){live.textContent='Moving '+title+' to '+(cn||colId)+'.';}` +
+		`tcKbAnnounce='Moved '+title+' to '+(cn||colId)+'.';` +
+		`tcKbAnnounceAfter(b);` +
 		`if(typeof f.requestSubmit==='function'){f.requestSubmit();}else{f.submit();}` +
 		`return true;}` +
-		`var tcKbSrc=null,tcKbZone=null,tcKbIdx=0;` +
+		`var tcKbSrc=null,tcKbZone=null,tcKbIdx=0,tcKbAnnounce=null;` +
 		`function tcKbClear(zone){` +
 		`if(tcKbZone&&tcKbZone!==zone){tcKbZone.removeAttribute('data-tc-kanban-over');tcKbZone.classList.remove('tc-kanban-drop-end');}` +
 		`if(tcKbZone){var prev=tcKbZone.querySelector(':scope > .tc-kanban-drop-before');if(prev)prev.classList.remove('tc-kanban-drop-before');}` +
 		`}` +
 		kanbanDragJS() +
+		kanbanAnnounceJS() +
 		kanbanClickJS() +
 		`}`
 }
@@ -200,6 +207,7 @@ func kanbanDragJS() string {
 		`document.addEventListener('dragover',function(e){` +
 		`var zone=e.target.closest('[data-tc-kanban-column-body]');if(!zone)return;` +
 		`var b=tcKbBoard(zone);if(!b||!tcKbForm(b)||!tcKbSrc)return;` +
+		`if(tcKbBoard(tcKbSrc)!==b)return;` +
 		`e.preventDefault();` +
 		`e.dataTransfer.dropEffect='move';` +
 		`tcKbClear(zone);` +
@@ -225,6 +233,7 @@ func kanbanDragJS() string {
 		`tcKbClear(null);tcKbZone=null;` +
 		`var src=tcKbSrc;tcKbSrc=null;` +
 		`if(!cardId||!src)return;` +
+		`if(tcKbBoard(src)!==b)return;` +
 		`if(src.closest('[data-tc-kanban-column-body]')===zone){` +
 		`var cards=tcKbCards(zone);` +
 		`var srcIdx=cards.indexOf(src);` +
