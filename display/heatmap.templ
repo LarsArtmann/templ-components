@@ -51,7 +51,7 @@ templ Heatmap(props HeatmapProps) {
 	if len(rows) == 0 {
 		<p class="text-sm text-gray-500 dark:text-gray-400">{ emptyMsg }</p>
 	} else {
-		<div class="overflow-x-auto" role="img" if props.AriaLabel != "" { aria-label={ props.AriaLabel } }>
+		<div class="overflow-x-auto" role="img" aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, heatmapFallbackName) }>
 			<table class="min-w-full border-collapse text-xs">
 				if len(props.ColumnLabels) > 0 {
 					<thead>
