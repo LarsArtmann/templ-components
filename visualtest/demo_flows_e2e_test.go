@@ -69,9 +69,9 @@ func demoClickUntil(ctx context.Context, t *testing.T, buttonSel, conditionExpr 
 
 	for time.Now().Before(deadline) {
 		if err := chromedp.Run(ctx, chromedp.Click(buttonSel, chromedp.ByQuery)); err == nil {
-			var got string
+			var held bool
 
-			pollErr := chromedp.Run(ctx, chromedp.Poll(conditionExpr, &got,
+			pollErr := chromedp.Run(ctx, chromedp.Poll("Boolean("+conditionExpr+")", &held,
 				chromedp.WithPollingTimeout(3*time.Second)))
 			if pollErr == nil {
 				return
@@ -160,10 +160,10 @@ func TestDemoConfirmDeleteRemovesRow(t *testing.T) {
 		t.Fatalf("visualtest[demo]: ConfirmDelete click: %v", err)
 	}
 
-	var body string
+	var removed bool
 	if err := chromedp.Run(ctx, chromedp.Poll(
-		`document.querySelector('#item-123') !== null && document.querySelector('#item-123').innerText.indexOf('deleted successfully') >= 0`,
-		&body,
+		`Boolean(document.querySelector('#item-123') && document.querySelector('#item-123').innerText.indexOf('deleted successfully') >= 0)`,
+		&removed,
 		chromedp.WithPollingTimeout(demoFlowTimeout),
 	)); err != nil {
 		t.Fatalf("visualtest[demo]: row was not replaced by the delete response: %v", err)
@@ -202,13 +202,20 @@ func TestDemoLoadingButtonBusyGate(t *testing.T) {
 		t.Logf("visualtest[demo]: busy class not observed (may have completed too fast): %v", err)
 	}
 
-	var result string
+	var appeared bool
 	if err := chromedp.Run(ctx, chromedp.Poll(
-		`document.querySelector('#save-result').innerText.length > 0`,
-		&result,
+		`Boolean(document.querySelector('#save-result') && document.querySelector('#save-result').innerText.length > 0)`,
+		&appeared,
 		chromedp.WithPollingTimeout(demoFlowTimeout),
 	)); err != nil {
 		t.Fatalf("visualtest[demo]: save result never appeared: %v", err)
+	}
+
+	var result string
+	if err := chromedp.Run(ctx, chromedp.Evaluate(
+		`document.querySelector('#save-result').innerText`, &result,
+	)); err != nil {
+		t.Fatalf("visualtest[demo]: read save result: %v", err)
 	}
 
 	if !strings.Contains(result, "Saved") && !busySeen {
@@ -248,11 +255,15 @@ func TestDemoUploadEcho(t *testing.T) {
 
 	var out string
 	if err := chromedp.Run(ctx, chromedp.Poll(
-		`document.querySelector('#wire-upload-out').innerText.toLowerCase().indexOf('echo-me.txt') >= 0`,
+		`(document.querySelector('#wire-upload-out') ? document.querySelector('#wire-upload-out').innerText : '').toLowerCase()`,
 		&out,
 		chromedp.WithPollingTimeout(demoFlowTimeout),
 	)); err != nil {
 		t.Fatalf("visualtest[demo]: upload echo never appeared in #wire-upload-out: %v", err)
+	}
+
+	if !strings.Contains(out, "echo-me.txt") {
+		t.Fatalf("visualtest[demo]: upload echo region never showed the filename, got %q", out)
 	}
 
 	server.FailIfServerErrors(t)
