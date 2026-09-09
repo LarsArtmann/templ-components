@@ -429,6 +429,12 @@ const kanbanButtonsOpacityExpr = `getComputedStyle(document.querySelector('#kb-h
 // templates/custom.css, so touch users always see the move buttons. The
 // fine-pointer control leg asserts the hidden starting state first, so the
 // flip can never pass vacuously.
+//
+// Emulation notes (verified empirically): Emulation.setEmulatedMedia IGNORES
+// the pointer/hover features in this Chromium build — only
+// Emulation.setTouchEmulationEnabled flips matchMedia('(pointer:coarse)').
+// And because the wrapper carries utils.TransitionFast (150ms), the computed
+// opacity must be POLLED to its settled value, not read immediately.
 func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
 	srv := kanbanE2EServer(t)
 
@@ -458,20 +464,22 @@ func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
 	}
 
 	if err := chromedp.Run(ctx, chromedp.ActionFunc(func(ctx context.Context) error {
-		return emulation.SetEmulatedMedia().
-			WithFeatures([]*emulation.MediaFeature{{Name: "pointer", Value: "coarse"}}).
-			Do(ctx)
+		return emulation.SetTouchEmulationEnabled(true).WithMaxTouchPoints(5).Do(ctx)
 	})); err != nil {
 		t.Fatalf("emulate coarse pointer: %v", err)
 	}
 
-	var coarse string
+	var coarseMatches bool
 
-	if err := chromedp.Run(ctx, chromedp.Evaluate(kanbanButtonsOpacityExpr, &coarse)); err != nil {
-		t.Fatalf("coarse-pointer opacity eval: %v", err)
+	if err := chromedp.Run(ctx,
+		chromedp.Evaluate(`matchMedia('(pointer:coarse)').matches`, &coarseMatches),
+	); err != nil || !coarseMatches {
+		t.Fatalf("pointer:coarse media feature not emulated (matches=%v, err=%v)", coarseMatches, err)
 	}
 
-	if coarse != "1" {
-		t.Fatalf("coarse pointer computed opacity = %q, want 1 (touch fallback)", coarse)
+	var visible bool
+
+	if err := chromedp.Run(ctx, chromedp.Poll(kanbanButtonsOpacityExpr+`==="1"`, &visible)); err != nil || !visible {
+		t.Fatalf("coarse pointer computed opacity never settled at 1 (visible=%v, err=%v) — touch fallback broken", visible, err)
 	}
 }
