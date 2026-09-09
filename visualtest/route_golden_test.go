@@ -26,17 +26,28 @@ import (
 //
 // Run via `nix run .#visual`; update goldens with -update.
 
-//nolint:gochecknoglobals // process-wide demo server shared by all route tests
+// demoRouteBase lazily builds and serves the demo binary once per process;
+// all route tests share the server.
 var demoRouteBase = sync.OnceValue(func() string {
 	binDir, err := os.MkdirTemp("", "tc-route-golden-")
 	if err != nil {
 		return fmt.Sprintf("TMPDIR-FAILED: %v", err)
 	}
 
+	defer os.RemoveAll(binDir) //nolint:errcheck // best-effort cleanup of the temp dir
+
 	bin := filepath.Join(binDir, "tc-demo-route")
 
-	build := exec.CommandContext(context.Background(), "go", "build", "-o", bin, "./examples/demo")
+	build := exec.CommandContext( //nolint:gosec // test fixture: fixed package path, locally built binary
+		context.Background(),
+		"go",
+		"build",
+		"-o",
+		bin,
+		"./examples/demo",
+	)
 	build.Dir = ".."
+
 	build.Env = append(os.Environ(), "GOEXPERIMENT=jsonv2", "GOWORK=off")
 
 	if out, err := build.CombinedOutput(); err != nil {
@@ -48,11 +59,20 @@ var demoRouteBase = sync.OnceValue(func() string {
 		return fmt.Sprintf("LISTEN-FAILED: %v", err)
 	}
 
-	port := listener.Addr().(*net.TCPAddr).Port
+	addr, ok := listener.Addr().(*net.TCPAddr)
+	if !ok {
+		_ = listener.Close()
+
+		return "LISTEN-FAILED: address is not TCP"
+	}
+
+	port := addr.Port
 	_ = listener.Close()
 
-	server := exec.Command(bin)
+	server := exec.Command(bin) //nolint:gosec // test fixture: locally built binary at a fixed path
+
 	server.Env = append(os.Environ(), fmt.Sprintf("PORT=%d", port))
+
 	if err := server.Start(); err != nil {
 		return fmt.Sprintf("START-FAILED: %v", err)
 	}
@@ -60,8 +80,14 @@ var demoRouteBase = sync.OnceValue(func() string {
 	base := fmt.Sprintf("http://127.0.0.1:%d", port)
 
 	deadline := time.Now().Add(15 * time.Second)
+
 	for time.Now().Before(deadline) {
-		resp, err := http.Get(base + "/health") //nolint:noctx // one-shot readiness probe with explicit deadline
+		req, reqErr := http.NewRequestWithContext(context.Background(), http.MethodGet, base+"/health", nil)
+		if reqErr != nil {
+			return fmt.Sprintf("HEALTH-REQUEST-FAILED: %v", reqErr)
+		}
+
+		resp, err := http.DefaultClient.Do(req)
 		if err == nil {
 			_ = resp.Body.Close()
 
@@ -127,7 +153,11 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, fullPage bool) 
 	golden, exists := readGolden(t, "routes/"+name)
 	if !exists {
 		writeGolden(t, "routes/"+name, shot)
-		t.Errorf("route golden[%s]: no golden yet — wrote %s (re-run without -update to verify)", name, goldenPath("routes/"+name))
+		t.Errorf(
+			"route golden[%s]: no golden yet — wrote %s (re-run without -update to verify)",
+			name,
+			goldenPath("routes/"+name),
+		)
 
 		return
 	}
@@ -137,7 +167,12 @@ func assertRouteScreenshot(t *testing.T, name, url string, dark, fullPage bool) 
 		t.Fatalf("route golden[%s]: decode actual: %v", name, err)
 	}
 
-	result, diff := comparePixels(golden, actualImg, defaultOptions(Options{}).Threshold, defaultOptions(Options{}).MaxMismatch*percentMultiplier)
+	result, diff := comparePixels(
+		golden,
+		actualImg,
+		defaultOptions(Options{}).Threshold,
+		defaultOptions(Options{}).MaxMismatch*percentMultiplier,
+	)
 	if !result.Match {
 		writeFailureArtifacts(t, "routes/"+name, shot, diff)
 		t.Errorf("route golden[%s]: visual mismatch — %s (max %.4f%%).\n"+
