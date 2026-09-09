@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "embed"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"time"
 
@@ -18,8 +19,11 @@ import (
 //go:embed testdata/axe.min.js
 var axeSource string
 
+// errAxeRuntime wraps in-page axe failures; the payload carries axe's message.
+var errAxeRuntime = errors.New("axe runtime error")
+
 // AxeImpact is the axe-core severity of a violation. Only Critical and Serious
-// block the sweep (see AxeViolation.Blocking); Moderate and Minor are recorded
+// block the sweep (see AxeImpact.Blocking); Moderate and Minor are recorded
 // for trending but never gate CI.
 type AxeImpact string
 
@@ -121,7 +125,7 @@ true`
 	}
 
 	if len(payload) > 4 && payload[:4] == "ERR:" {
-		return AxeResults{}, fmt.Errorf("axe runtime error: %s", payload[4:])
+		return AxeResults{}, fmt.Errorf("%w: %s", errAxeRuntime, payload[4:])
 	}
 
 	var results AxeResults

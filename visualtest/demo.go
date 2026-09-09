@@ -2,6 +2,8 @@ package visualtest
 
 import (
 	"bytes"
+	"context"
+	"io"
 	"net"
 	"net/http"
 	"os"
@@ -18,6 +20,7 @@ import (
 const (
 	demoHealthPollInterval = 100 * time.Millisecond
 	demoStartTimeout       = 60 * time.Second
+	demoHTTPTimeout        = 2 * time.Second
 	demoPackagePath        = "github.com/larsartmann/templ-components/examples/demo"
 )
 
@@ -28,6 +31,7 @@ const (
 type DemoServer struct {
 	baseURL string
 	cmd     *exec.Cmd
+
 	// Log accumulates the server's combined stdout+stderr so tests (and the
 	// CI smoke) can assert absence of 500 responses.
 	Log bytes.Buffer
@@ -51,12 +55,15 @@ func StartDemoServer(t *testing.T) *DemoServer {
 
 	server := &DemoServer{
 		baseURL: "http://127.0.0.1:" + strconv.Itoa(port),
-		cmd: exec.Command(
+		cmd: exec.CommandContext(
+			context.Background(),
 			binary,
-		), //nolint:gosec,noctx // test fixture: locally built binary, lifecycle owned by the test
+		), //nolint:gosec,noctx // test fixture: locally built binary from a fixed path, no user input; lifetime owned by t.Cleanup
+		Log: bytes.Buffer{},
 	}
 	server.cmd.Stdout = &server.Log
 	server.cmd.Stderr = &server.Log
+
 	server.cmd.Env = append(os.Environ(), "PORT="+strconv.Itoa(port))
 
 	if err := server.cmd.Start(); err != nil {
@@ -73,6 +80,7 @@ func StartDemoServer(t *testing.T) *DemoServer {
 		if server.cmd.Process != nil {
 			_ = server.cmd.Process.Kill()
 		}
+
 		<-done
 	})
 
@@ -87,14 +95,15 @@ func buildDemoBinary(t *testing.T) string {
 
 	binary := filepath.Join(t.TempDir(), "tc-demo")
 
-	build := exec.Command(
+	build := exec.CommandContext(
+		context.Background(),
 		"go",
 		"build",
 		"-o",
 		binary,
 		demoPackagePath,
-	) //nolint:gosec,noctx // test fixture: fixed package path, no user input
-	build.Dir = "."
+	) //nolint:gosec // test fixture: fixed package path, no user input
+
 	build.Env = append(os.Environ(), "GOEXPERIMENT=jsonv2", "GOWORK=off")
 
 	if output, err := build.CombinedOutput(); err != nil {
@@ -110,37 +119,50 @@ func buildDemoBinary(t *testing.T) string {
 func reserveFreePort(t *testing.T) int {
 	t.Helper()
 
-	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	var listenConfig net.ListenConfig
+
+	listener, err := listenConfig.Listen(context.Background(), "tcp", "127.0.0.1:0")
 	if err != nil {
 		t.Fatalf("visualtest[demo]: reserve port: %v", err)
 	}
 
-	defer listener.Close()
-
-	port, ok := listener.Addr().(*net.TCPAddr)
+	addr, ok := listener.Addr().(*net.TCPAddr)
 	if !ok {
+		_ = listener.Close()
 		t.Fatalf("visualtest[demo]: reserved address is not TCP: %v", listener.Addr())
 	}
 
-	return port.Port
+	port := addr.Port
+
+	if err := listener.Close(); err != nil {
+		t.Logf("visualtest[demo]: closing reserved port %d: %v", port, err)
+	}
+
+	return port
 }
 
 // waitForDemoHealth polls /health until the server responds 200, failing the
-// test (with the accumulated server log) if it never comes up.
+// test if it never comes up.
 func waitForDemoHealth(t *testing.T, baseURL string) {
 	t.Helper()
 
 	healthURL := baseURL + "/health"
 	deadline := time.Now().Add(demoStartTimeout)
 
-	client := &http.Client{Timeout: 2 * time.Second}
+	client := &http.Client{ //nolint:exhaustruct_v5 // test fixture: default transport/redirect/jar behavior is exactly what we want
+		Timeout: demoHTTPTimeout,
+	}
 
 	for time.Now().Before(deadline) {
-		resp, err := client.Get(
-			healthURL,
-		) //nolint:noctx,bodyclose // test fixture: URL is a local fixture server; body is tiny and closed below
+		req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, healthURL, nil)
+		if err != nil {
+			t.Fatalf("visualtest[demo]: build health request: %v", err)
+		}
+
+		resp, err := client.Do(req)
 		if err == nil {
-			resp.Body.Close()
+			_, _ = io.Copy(io.Discard, resp.Body)
+			_ = resp.Body.Close()
 
 			if resp.StatusCode == http.StatusOK {
 				return

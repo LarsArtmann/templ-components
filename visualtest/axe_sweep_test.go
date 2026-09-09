@@ -1,10 +1,12 @@
 package visualtest
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/chromedp/chromedp"
@@ -18,11 +20,15 @@ import (
 //
 // Baseline format: {"<route>": {"<rule>|<impact>": <accepted-node-count>, ...}}
 // Accepted entries must carry a justification in the audit trail (git history
-// of the baseline file) — an accepted violation is a documented a11y debt,
+// of the baseline file) — an accepted violation is documented a11y debt,
 // not a pass.
 
 // axeBaselinePath points at the accepted-violations ledger.
 const axeBaselinePath = "testdata/axe_baseline.json"
+
+// axeMaxReportedNodes caps the per-violation node report so one widespread
+// rule failure cannot flood the test output.
+const axeMaxReportedNodes = 5
 
 // axeSweepRoutes enumerates the demo pages under audit. index/forms get light
 // + dark passes (the dark palette is where contrast regressions hide); the
@@ -56,98 +62,109 @@ func TestAxeSweepDemoRoutes(t *testing.T) {
 			ctx, cancel := newTab(t)
 			defer cancel()
 
-			var loadErr error
-			actions := []chromedp.Action{
-				chromedp.Navigate(server.BaseURL() + route.path),
-				chromedp.WaitReady("body"),
-			}
-			if route.dark {
-				actions = append(actions,
-					chromedp.Evaluate(`document.documentElement.classList.add('dark'); true`, nil),
-					chromedp.Sleep(settleDelay), // let the dark class re-paint before auditing
-				)
-			}
-
-			if loadErr = chromedp.Run(ctx, actions...); loadErr != nil {
-				t.Fatalf("load %s%s: %v", server.BaseURL(), route.path, loadErr)
-			}
-
-			results, err := RunAxe(ctx)
-			if err != nil {
-				t.Fatalf("axe run on %s: %v", route.path, err)
-			}
-
-			blocking := results.BlockingViolations()
-			if len(blocking) == 0 {
-				return
-			}
-
-			accepted, ok := baseline[route.name]
-			var failures []string
-
-			for _, violation := range blocking {
-				key := AxeViolationKey(violation)
-
-				if ok {
-					if allowed, seen := accepted[key]; seen && len(violation.Nodes) <= allowed {
-						t.Logf(
-							"accepted violation %s on %s (%d nodes): %s",
-							key,
-							route.name,
-							len(violation.Nodes),
-							violation.Help,
-						)
-
-						continue
-					}
-				}
-
-				failures = append(failures, describeAxeViolation(route.name, violation))
-			}
-
-			if len(failures) > 0 {
-				for _, failure := range failures {
-					t.Error(failure)
-				}
-
-				t.Errorf("axe sweep found %d unaccepted critical/serious violation(s) on %s. "+
-					"Fix the markup, or extend testdata/axe_baseline.json with a justification if the finding is a false positive.",
-					len(failures), route.name)
-			}
+			results := axeAuditRoute(t, ctx, server.BaseURL(), route.path, route.dark)
+			assertNoUnacceptedViolations(t, route.name, baseline, results)
 		})
 	}
+}
+
+// axeAuditRoute loads one demo page (optionally forced to dark mode) and runs
+// the axe audit against it.
+func axeAuditRoute(t *testing.T, ctx context.Context, baseURL, path string, dark bool) AxeResults {
+	t.Helper()
+
+	actions := []chromedp.Action{
+		chromedp.Navigate(baseURL + path),
+		chromedp.WaitReady("body"),
+	}
+
+	if dark {
+		actions = append(actions,
+			chromedp.Evaluate(`document.documentElement.classList.add('dark'); true`, nil),
+			chromedp.Sleep(settleDelay),
+		)
+	}
+
+	if err := chromedp.Run(ctx, actions...); err != nil {
+		t.Fatalf("visualtest[axe]: load %s%s: %v", baseURL, path, err)
+	}
+
+	results, err := RunAxe(ctx)
+	if err != nil {
+		t.Fatalf("visualtest[axe]: audit %s%s: %v", baseURL, path, err)
+	}
+
+	return results
+}
+
+// assertNoUnacceptedViolations fails the test for every blocking violation
+// that the baseline does not explicitly accept (same rule + impact, node
+// count within the accepted budget).
+func assertNoUnacceptedViolations(t *testing.T, route string, baseline map[string]map[string]int, results AxeResults) {
+	t.Helper()
+
+	blocking := results.BlockingViolations()
+	if len(blocking) == 0 {
+		return
+	}
+
+	accepted := baseline[route]
+
+	failures := make([]string, 0, len(blocking))
+
+	for _, violation := range blocking {
+		key := AxeViolationKey(violation)
+
+		if budget, ok := accepted[key]; ok && len(violation.Nodes) <= budget {
+			t.Logf("accepted violation %s on %s (%d nodes): %s", key, route, len(violation.Nodes), violation.Help)
+
+			continue
+		}
+
+		failures = append(failures, describeAxeViolation(route, violation))
+	}
+
+	if len(failures) == 0 {
+		return
+	}
+
+	for _, failure := range failures {
+		t.Error(failure)
+	}
+
+	t.Errorf("axe sweep found %d unaccepted critical/serious violation(s) on %s. "+
+		"Fix the markup, or extend testdata/axe_baseline.json with a justification if the finding is a false positive.",
+		len(failures), route)
 }
 
 // describeAxeViolation renders one violation as a self-contained failure line:
 // rule, impact, and every offending selector with axe's failure explanation.
 func describeAxeViolation(route string, violation AxeViolation) string {
-	summary := fmt.Sprintf("axe[%s/%s]: %s (%s)\n  docs: %s",
+	var report strings.Builder
+
+	fmt.Fprintf(&report, "axe[%s/%s]: %s (%s)\n  docs: %s",
 		route, violation.ID, violation.Help, violation.Impact, violation.HelpURL)
 
 	for i, node := range violation.Nodes {
 		if i >= axeMaxReportedNodes {
-			summary += fmt.Sprintf("\n  ... and %d more nodes", len(violation.Nodes)-axeMaxReportedNodes)
+			fmt.Fprintf(&report, "\n  ... and %d more nodes", len(violation.Nodes)-axeMaxReportedNodes)
 
 			break
 		}
 
-		summary += fmt.Sprintf("\n  target %v\n    %s", node.Target, node.FailureSummary)
+		fmt.Fprintf(&report, "\n  target %v\n    %s", node.Target, node.FailureSummary)
 	}
 
-	return summary
+	return report.String()
 }
-
-// axeMaxReportedNodes caps the per-violation node report so one widespread
-// rule failure cannot flood the test output.
-const axeMaxReportedNodes = 5
 
 // readAxeBaseline loads the accepted-violations ledger. A missing file is the
 // strictest possible baseline (nothing accepted); a malformed one is a setup
-// bug and fails loud.
+// defect and fails loud.
 func readAxeBaseline(t *testing.T) map[string]map[string]int {
 	t.Helper()
 
-	raw, err := os.ReadFile(filepath.FromSlash(axeBaselinePath)) //nolint:gosec // path is a package-level constant
+	raw, err := os.ReadFile(filepath.FromSlash(axeBaselinePath))
 	if os.IsNotExist(err) {
 		return map[string]map[string]int{}
 	}
