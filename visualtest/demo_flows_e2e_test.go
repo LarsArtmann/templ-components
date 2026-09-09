@@ -10,7 +10,6 @@ import (
 	"testing"
 	"time"
 
-	"github.com/chromedp/cdproto/page"
 	"github.com/chromedp/chromedp"
 )
 
@@ -141,19 +140,19 @@ func TestDemoConfirmDeleteRemovesRow(t *testing.T) {
 	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
-	// Handle the native confirm() dialog OUT of band: a synchronous
-	// chromedp.Run inside the ListenTarget callback deadlocks the target's
-	// event loop (the 10-minute binary timeout class). Dispatch and return.
-	chromedp.ListenTarget(ctx, func(ev any) {
-		if _, ok := ev.(*page.EventJavascriptDialogOpening); ok {
-			go func() {
-				_ = page.HandleJavaScriptDialog(true).Do(ctx)
-			}()
-		}
-	})
-
+	// ConfirmDelete renders hx-confirm; the browser's native confirm()
+	// dialog pauses the renderer and chromedp's dialog-accept path stalls
+	// with it (the CDP command queue stops draining on a paused target —
+	// verified by CDP trace). Stub confirm() to auto-accept instead: the
+	// htmx flow under test (hx-confirm gate → DELETE → swap) is identical.
 	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/"), chromedp.WaitReady("body")); err != nil {
 		t.Fatalf("visualtest[demo]: load index: %v", err)
+	}
+
+	if err := chromedp.Run(ctx, chromedp.Evaluate(
+		`window.confirm = function(){return true;}`, nil,
+	)); err != nil {
+		t.Fatalf("visualtest[demo]: stub confirm: %v", err)
 	}
 
 	if err := chromedp.Run(ctx, chromedp.Click(`#item-123 button[hx-delete]`, chromedp.ByQuery)); err != nil {
