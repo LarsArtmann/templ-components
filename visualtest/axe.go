@@ -93,8 +93,11 @@ func RunAxe(ctx context.Context) (AxeResults, error) {
 	runCtx, cancel := context.WithTimeout(ctx, axeRunTimeout)
 	defer cancel()
 
-	if err := chromedp.Evaluate(axeSource, nil).Do(runCtx); err != nil {
-		return AxeResults{}, fmt.Errorf("inject axe runtime: %w", err)
+	// chromedp.Run, never action.Do: Do on a tab context hits the documented
+	// "invalid context" flakiness (see visualtest e2e lessons).
+	inject := chromedp.Run(runCtx, chromedp.Evaluate(axeSource, nil))
+	if inject != nil {
+		return AxeResults{}, fmt.Errorf("inject axe runtime: %w", inject)
 	}
 
 	const bootScript = `window.__tcAxeJSON = null; window.__tcAxeErr = null;
@@ -103,25 +106,29 @@ axe.run(document, {resultTypes: ['violations']})
   .catch(e => { window.__tcAxeErr = String(e); });
 true`
 
-	if err := chromedp.Evaluate(bootScript, nil).Do(runCtx); err != nil {
-		return AxeResults{}, fmt.Errorf("start axe run: %w", err)
+	boot := chromedp.Run(runCtx, chromedp.Evaluate(bootScript, nil))
+	if boot != nil {
+		return AxeResults{}, fmt.Errorf("start axe run: %w", boot)
 	}
 
-	if err := chromedp.Poll(
+	settle := chromedp.Run(runCtx, chromedp.Poll(
 		`window.__tcAxeJSON !== null || window.__tcAxeErr !== null`,
 		nil,
 		chromedp.WithPollingInterval(axePollInterval),
 		chromedp.WithPollingTimeout(axeResultTimeout),
-	).Do(runCtx); err != nil {
-		return AxeResults{}, fmt.Errorf("axe run did not settle: %w", err)
+	))
+	if settle != nil {
+		return AxeResults{}, fmt.Errorf("axe run did not settle: %w", settle)
 	}
 
 	var payload string
-	if err := chromedp.Evaluate(
+
+	fetchErr := chromedp.Run(runCtx, chromedp.Evaluate(
 		`window.__tcAxeErr !== null ? "ERR:" + window.__tcAxeErr : window.__tcAxeJSON`,
 		&payload,
-	).Do(runCtx); err != nil {
-		return AxeResults{}, fmt.Errorf("fetch axe result: %w", err)
+	))
+	if fetchErr != nil {
+		return AxeResults{}, fmt.Errorf("fetch axe result: %w", fetchErr)
 	}
 
 	if len(payload) > 4 && payload[:4] == "ERR:" {

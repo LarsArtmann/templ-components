@@ -4,6 +4,9 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"net/http/httptest"
 	"os"
 	"path/filepath"
 	"strings"
@@ -63,8 +66,53 @@ func TestAxeSweepDemoRoutes(t *testing.T) {
 			defer cancel()
 
 			results := axeAuditRoute(t, ctx, server.BaseURL(), route.path, route.dark)
+
+			t.Logf("axe[%s]: %d total violation rule(s), %d blocking", route.name, len(results.Violations), len(results.BlockingViolations()))
 			assertNoUnacceptedViolations(t, route.name, baseline, results)
 		})
+	}
+}
+
+// TestAxeHarnessDetectsViolations is the sweep's positive control: a page with
+// a textbook violation (image without alt text = critical "image-alt") must
+// be caught, proving the harness can fail — a guard that cannot fail guards
+// nothing.
+func TestAxeHarnessDetectsViolations(t *testing.T) {
+	t.Parallel()
+
+	const badPage = `<!DOCTYPE html><html><head><title>axe positive control</title></head>` +
+		`<body><img src="x.png"><a href="#"></a></body></html>`
+
+	srv := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, _ *http.Request) {
+		w.Header().Set("Content-Type", "text/html; charset=utf-8")
+		_, _ = io.WriteString(w, badPage)
+	}))
+	defer srv.Close()
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	if err := chromedp.Run(ctx, chromedp.Navigate(srv.URL), chromedp.WaitReady("body")); err != nil {
+		t.Fatalf("visualtest[axe]: load control page: %v", err)
+	}
+
+	results, err := RunAxe(ctx)
+	if err != nil {
+		t.Fatalf("visualtest[axe]: control audit: %v", err)
+	}
+
+	blocking := results.BlockingViolations()
+	if len(blocking) == 0 {
+		t.Fatal("visualtest[axe]: positive control FAILED — axe reported no critical/serious violations on a page with an unlabeled image and an empty link; the sweep harness is broken")
+	}
+
+	found := map[string]bool{}
+	for _, violation := range blocking {
+		found[violation.ID] = true
+	}
+
+	if !found["image-alt"] {
+		t.Errorf("visualtest[axe]: expected image-alt among blocking rules, got %v", found)
 	}
 }
 

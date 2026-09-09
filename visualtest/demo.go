@@ -54,7 +54,7 @@ func StartDemoServer(t *testing.T) *DemoServer {
 	port := reserveFreePort(t)
 
 	cmdCtx := context.Background()
-	cmd := exec.CommandContext(cmdCtx, binary) //nolint:gosec,noctx // test fixture: locally built binary, fixed path
+	cmd := exec.CommandContext(cmdCtx, binary) //nolint:gosec // test fixture: locally built binary, fixed path
 
 	server := &DemoServer{
 		baseURL: "http://127.0.0.1:" + strconv.Itoa(port),
