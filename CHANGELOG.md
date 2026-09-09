@@ -23,6 +23,30 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
   `visualtest/kanban_e2e_test.go`; demo section + `/api/kanban/*` endpoints in
   `examples/demo`.
 
+### Fixed
+
+- **KanbanBoard move buttons are always visible on touch devices.** The
+  hover-revealed keyboard-move buttons (`opacity-0 group-hover:opacity-100`)
+  were unreachable on coarse pointers — there is no hover on touch. A new
+  `tc-kanban-buttons` wrapper groups them and an intentionally unlayered
+  `@media (pointer: coarse)` rule in `templates/custom.css` keeps the group
+  at full opacity (unlayered CSS beats Tailwind v4's `@layer utilities` in
+  the cascade). Browser-proven by emulated-touch computed-style checks in
+  `TestKanbanE2ECoarsePointerButtonsVisible`.
+
+### Changed
+
+- **KanbanBoard ignores cross-board drops and confirms completed moves.** A
+  drop whose dragged card lives on a different board no longer submits —
+  `dragover` does not claim the drop and `drop` returns early (each wired
+  board owns its cards). Every submitted move now also announces
+  "Moved \<card\> to \<column\>." into the board's live region once the
+  re-rendered board lands: a swap-agnostic poll detects the response whether
+  the runtime replaces the board element (htmx `outerHTML`) or morphs it in
+  place (Datastar outer patches keep the element connected). Proven under
+  both runtimes by `TestKanbanE2ECrossBoardDropIgnored` and
+  `TestKanbanE2EAnnouncesMove`.
+
 ## [1.15.1] — 2026-09-08
 
 ### Changed
