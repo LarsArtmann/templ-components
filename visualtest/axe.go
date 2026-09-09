@@ -37,12 +37,12 @@ func (i AxeImpact) Blocking() bool { return i == AxeImpactCritical || i == AxeIm
 // AxeViolation is one axe-core rule failure: a rule ID, its severity, and the
 // DOM nodes that violated it.
 type AxeViolation struct {
-	ID       string    `json:"id"`
-	Impact   AxeImpact `json:"impact"`
-	Help     string    `json:"help"`
-	HelpURL  string    `json:"helpUrl"`
-	Nodes    []AxeNode `json:"nodes"`
-	Tags     []string  `json:"tags"`
+	ID      string    `json:"id"`
+	Impact  AxeImpact `json:"impact"`
+	Help    string    `json:"help"`
+	HelpURL string    `json:"helpUrl"`
+	Nodes   []AxeNode `json:"nodes"`
+	Tags    []string  `json:"tags"`
 }
 
 // AxeNode is a single offending DOM node: its outer HTML, a CSS selector path,

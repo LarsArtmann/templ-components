@@ -49,9 +49,6 @@ func TestAxeSweepDemoRoutes(t *testing.T) {
 	baseline := readAxeBaseline(t)
 	server := StartDemoServer(t)
 
-	newTabForTest := newTab // shared-Chromium allocator
-	_ = newTabForTest
-
 	for _, route := range axeSweepRoutes {
 		t.Run(route.name, func(t *testing.T) {
 			t.Parallel()
@@ -67,7 +64,7 @@ func TestAxeSweepDemoRoutes(t *testing.T) {
 			if route.dark {
 				actions = append(actions,
 					chromedp.Evaluate(`document.documentElement.classList.add('dark'); true`, nil),
-					chromedp.Sleep(haltDelay), // let the dark class re-paint before auditing
+					chromedp.Sleep(settleDelay), // let the dark class re-paint before auditing
 				)
 			}
 
@@ -93,7 +90,13 @@ func TestAxeSweepDemoRoutes(t *testing.T) {
 
 				if ok {
 					if allowed, seen := accepted[key]; seen && len(violation.Nodes) <= allowed {
-						t.Logf("accepted violation %s on %s (%d nodes): %s", key, route.name, len(violation.Nodes), violation.Help)
+						t.Logf(
+							"accepted violation %s on %s (%d nodes): %s",
+							key,
+							route.name,
+							len(violation.Nodes),
+							violation.Help,
+						)
 
 						continue
 					}
@@ -118,7 +121,7 @@ func TestAxeSweepDemoRoutes(t *testing.T) {
 // describeAxeViolation renders one violation as a self-contained failure line:
 // rule, impact, and every offending selector with axe's failure explanation.
 func describeAxeViolation(route string, violation AxeViolation) string {
-	summary := fmt.Sprintf("axe[%s/%s]: %s (%s)\n  %s\n  docs: %s",
+	summary := fmt.Sprintf("axe[%s/%s]: %s (%s)\n  docs: %s",
 		route, violation.ID, violation.Help, violation.Impact, violation.HelpURL)
 
 	for i, node := range violation.Nodes {

@@ -51,7 +51,9 @@ func StartDemoServer(t *testing.T) *DemoServer {
 
 	server := &DemoServer{
 		baseURL: "http://127.0.0.1:" + strconv.Itoa(port),
-		cmd:     exec.Command(binary), //nolint:gosec,noctx // test fixture: locally built binary, lifecycle owned by the test
+		cmd: exec.Command(
+			binary,
+		), //nolint:gosec,noctx // test fixture: locally built binary, lifecycle owned by the test
 	}
 	server.cmd.Stdout = &server.Log
 	server.cmd.Stderr = &server.Log
@@ -85,7 +87,13 @@ func buildDemoBinary(t *testing.T) string {
 
 	binary := filepath.Join(t.TempDir(), "tc-demo")
 
-	build := exec.Command("go", "build", "-o", binary, demoPackagePath) //nolint:gosec,noctx // test fixture: fixed package path, no user input
+	build := exec.Command(
+		"go",
+		"build",
+		"-o",
+		binary,
+		demoPackagePath,
+	) //nolint:gosec,noctx // test fixture: fixed package path, no user input
 	build.Dir = "."
 	build.Env = append(os.Environ(), "GOEXPERIMENT=jsonv2", "GOWORK=off")
 
@@ -128,7 +136,9 @@ func waitForDemoHealth(t *testing.T, baseURL string) {
 	client := &http.Client{Timeout: 2 * time.Second}
 
 	for time.Now().Before(deadline) {
-		resp, err := client.Get(healthURL) //nolint:noctx,bodyclose // test fixture: URL is a local fixture server; body is tiny and closed below
+		resp, err := client.Get(
+			healthURL,
+		) //nolint:noctx,bodyclose // test fixture: URL is a local fixture server; body is tiny and closed below
 		if err == nil {
 			resp.Body.Close()
 
