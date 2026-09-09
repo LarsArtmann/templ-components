@@ -88,7 +88,7 @@ func TestDemoRTLKanbanMoveWorks(t *testing.T) {
 // firstCSV returns the first token of a comma-separated list, or "" when
 // the list is empty.
 func firstCSV(list string) string {
-	for i := 0; i < len(list); i++ {
+	for i := range len(list) {
 		if list[i] == ',' {
 			return list[:i]
 		}
