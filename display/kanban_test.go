@@ -264,3 +264,53 @@ func TestKanbanJSSingletonGuard(t *testing.T) {
 		t.Error("kanban script lacks the tcKanbanAttached singleton guard")
 	}
 }
+
+// TestKanbanJSCrossBoardGuard pins the two guards that make each wired board
+// ignore drops of cards owned by a DIFFERENT board: dragover must not claim
+// the drop (no preventDefault) and drop must not submit. Behavior is proven
+// browser-level by TestKanbanE2ECrossBoardDropIgnored; this catches silent
+// JS regressions in unit time.
+func TestKanbanJSCrossBoardGuard(t *testing.T) {
+	t.Parallel()
+
+	js := kanbanJS()
+
+	for _, token := range []string{
+		"if(tcKbBoard(tcKbSrc)!==b)return;",
+		"if(tcKbBoard(src)!==b)return;",
+	} {
+		if !strings.Contains(js, token) {
+			t.Errorf("kanban script lacks cross-board guard %q", token)
+		}
+	}
+
+	dragOver := js[strings.Index(js, "dragover"):strings.Index(js, "drop',")]
+	if dropGuard := strings.Index(dragOver, "if(tcKbBoard(tcKbSrc)!==b)return;"); dropGuard == -1 {
+		t.Error("cross-board guard missing from the dragover listener")
+	} else if prevent := strings.Index(dragOver, "e.preventDefault();"); prevent < dropGuard {
+		t.Error("dragover preventDefault must come AFTER the cross-board guard")
+	}
+}
+
+// TestKanbanJSPostSwapAnnouncement pins the post-swap confirmation pipeline:
+// every submit stages a "Moved ..." message and arms a swap-agnostic poll
+// that writes it into the REPLACED board's live region (the old region dies
+// with the outerHTML swap). Browser-level proof: TestKanbanE2EAnnouncesMove.
+func TestKanbanJSPostSwapAnnouncement(t *testing.T) {
+	t.Parallel()
+
+	js := kanbanJS()
+
+	for _, token := range []string{
+		"tcKbAnnounce='Moved '+title+' to '+(cn||colId)+'.';",
+		"tcKbAnnounceAfter(b);",
+		"function tcKbAnnounceIn(b){",
+		"function tcKbAnnounceAfter(old){",
+		"var live=b.querySelector('[data-tc-kanban-live]');",
+		"if(!old.isConnected&&nb&&nb!==old){clearInterval(timer);tcKbAnnounceIn(nb);}",
+	} {
+		if !strings.Contains(js, token) {
+			t.Errorf("kanban script lacks post-swap announcement token %q", token)
+		}
+	}
+}

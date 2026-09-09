@@ -250,6 +250,38 @@ func kanbanDragJS() string {
 		`});`
 }
 
+// kanbanAnnounceJS returns the post-swap confirmation mechanism. tcKbSubmit
+// already announces "Moving X to Y." immediately; this adds "Moved X to Y."
+// once the re-rendered board actually lands in the DOM, so screen-reader
+// users hear the completed state change, not just the intent.
+//
+// It deliberately polls for the board's replacement instead of listening for
+// transport events: htmx's afterSwap detail.target is invalidated by the
+// outerHTML swap the board mandates, and Datastar has no global swap event
+// at all. The poll is swap-agnostic: when the submitted board element is
+// disconnected and its id resolves to a fresh node, the pending message is
+// written into the NEW board's live region. Boards without a stable id (or
+// inner-mode patches that keep the old root connected) degrade to no
+// post-swap announcement — the immediate "Moving" message still fires.
+func kanbanAnnounceJS() string {
+	return `function tcKbAnnounceIn(b){` +
+		`if(!tcKbAnnounce||!b)return;` +
+		`var msg=tcKbAnnounce;tcKbAnnounce=null;` +
+		`var live=b.querySelector('[data-tc-kanban-live]');` +
+		`if(live){live.textContent=msg;}` +
+		`}` +
+		`function tcKbAnnounceAfter(old){` +
+		`if(!old.id)return;` +
+		`var tries=0;` +
+		`var timer=setInterval(function(){` +
+		`tries++;` +
+		`var nb=document.getElementById(old.id);` +
+		`if(!old.isConnected&&nb&&nb!==old){clearInterval(timer);tcKbAnnounceIn(nb);}` +
+		`else if(tries>50){clearInterval(timer);}` +
+		`},100);` +
+		`}`
+}
+
 // kanbanClickJS returns the click listener behind the per-card keyboard
 // move buttons: it resolves the adjacent column, appends the card to its
 // end, and submits the same hidden form as a drop.

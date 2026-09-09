@@ -477,9 +477,144 @@ func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
 		t.Fatalf("pointer:coarse media feature not emulated (matches=%v, err=%v)", coarseMatches, err)
 	}
 
-	var visible bool
-
-	if err := chromedp.Run(ctx, chromedp.Poll(kanbanButtonsOpacityExpr+`==="1"`, &visible)); err != nil || !visible {
+	var settled bool
+	if err := chromedp.Run(ctx, chromedp.Poll(kanbanButtonsOpacityExpr+`==="1"`, &settled)); err != nil || !settled {
 		t.Fatalf("coarse pointer computed opacity never settled at 1 (visible=%v, err=%v) — touch fallback broken", visible, err)
+	}
+}
+
+// kanbanCrossBoardDropScript drags a card from one board and drops it on a
+// DIFFERENT board's column — a move the component must ignore (each wired
+// board owns its cards).
+func kanbanCrossBoardDropScript(srcBoardID, cardID, dstBoardID, columnID string) string {
+	return fmt.Sprintf(`(function(){
+		var sb=document.getElementById(%q);
+		var db=document.getElementById(%q);
+		var dt=new DataTransfer();
+		var card=sb.querySelector('[data-tc-kanban-card="%s"]');
+		var zone=db.querySelector('[data-tc-kanban-column-body="%s"]');
+		if(!card||!zone){return 'missing';}
+		card.dispatchEvent(new DragEvent('dragstart',{bubbles:true,cancelable:true,dataTransfer:dt}));
+		var over=zone.dispatchEvent(new DragEvent('dragover',{bubbles:true,cancelable:true,clientY:0,dataTransfer:dt}));
+		zone.dispatchEvent(new DragEvent('drop',{bubbles:true,cancelable:true,dataTransfer:dt}));
+		card.dispatchEvent(new DragEvent('dragend',{bubbles:true,cancelable:true,dataTransfer:dt}));
+		return over?'accepted':'rejected';
+	})()`, srcBoardID, dstBoardID, cardID, columnID)
+}
+
+// TestKanbanE2ECrossBoardDropIgnored proves the cross-board guard under a
+// real drag sequence: dropping a card from the htmx board onto the Datastar
+// board must not submit anything — both boards keep their exact card order
+// and the dragover is not even accepted (no preventDefault).
+func TestKanbanE2ECrossBoardDropIgnored(t *testing.T) {
+	kanbanHTMXBoard.reset()
+	kanbanDatastarBoard.reset()
+
+	srv := kanbanE2EServer(t)
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	ctx, cancelTimeout := context.WithTimeout(ctx, 45*time.Second)
+	defer cancelTimeout()
+
+	var ready bool
+
+	if err := chromedp.Run(ctx,
+		chromedp.Navigate(srv.URL+"/"),
+		chromedp.Poll(kanbanE2EReady, &ready),
+	); err != nil {
+		t.Fatalf("navigate + readiness: %v", err)
+	}
+
+	var accepted string
+
+	if err := chromedp.Run(ctx,
+		chromedp.Evaluate(
+			kanbanCrossBoardDropScript("kb-htmx", "e2", "kb-ds", "done"),
+			&accepted,
+		),
+	); err != nil {
+		t.Fatalf("cross-board drop dispatch: %v", err)
+	}
+
+	if accepted == "missing" {
+		t.Fatal("cross-board drop script could not find the card or zone")
+	}
+
+	if accepted == "accepted" {
+		t.Fatal("cross-board dragover was accepted (preventDefault ran) — guard missing from dragover listener")
+	}
+
+	// Both boards must still be in their initial order a moment later: no
+	// request was submitted, no swap happened.
+	time.Sleep(500 * time.Millisecond)
+
+	for _, check := range []struct {
+		boardID string
+		column  string
+		want    string
+	}{
+		{boardID: "kb-htmx", column: "todo", want: "e1,e2"},
+		{boardID: "kb-htmx", column: "done", want: "e3"},
+		{boardID: "kb-ds", column: "todo", want: "e1,e2"},
+		{boardID: "kb-ds", column: "done", want: "e3"},
+	} {
+		var got string
+
+		if err := chromedp.Run(ctx,
+			chromedp.Evaluate(kanbanColumnOrderExpr(check.boardID, check.column), &got),
+		); err != nil || got != check.want {
+			t.Fatalf("%s %s after cross-board drop = %q, want %q (err %v)",
+				check.boardID, check.column, got, check.want, err)
+		}
+	}
+}
+
+// TestKanbanE2EAnnouncesMove proves the post-swap live-region confirmation
+// under both runtimes: after a keyboard move lands, the REPLACED board's
+// live region reads "Moved <card> to <column>." — the poll-based mechanism
+// from kanbanAnnounceJS, exercised through htmx's outerHTML swap AND the
+// Datastar patch flow.
+func TestKanbanE2EAnnouncesMove(t *testing.T) {
+	kanbanHTMXBoard.reset()
+	kanbanDatastarBoard.reset()
+
+	srv := kanbanE2EServer(t)
+
+	ctx, cancel := newTab(t)
+	defer cancel()
+
+	ctx, cancelTimeout := context.WithTimeout(ctx, 45*time.Second)
+	defer cancelTimeout()
+
+	var ready bool
+
+	if err := chromedp.Run(ctx,
+		chromedp.Navigate(srv.URL+"/"),
+		chromedp.Poll(kanbanE2EReady, &ready),
+	); err != nil {
+		t.Fatalf("navigate + readiness: %v", err)
+	}
+
+	const want = "Moved First to In progress."
+
+	for _, boardID := range []string{"kb-htmx", "kb-ds"} {
+		kanbanClickMoveUntil(ctx, t,
+			fmt.Sprintf(`#%s [data-tc-kanban-card="e1"] [data-tc-kanban-move="next"]`, boardID),
+			kanbanColumnOrderExpr(boardID, "doing"), "e1",
+		)
+
+		var announced bool
+
+		livePoll := fmt.Sprintf(
+			`document.getElementById(%q).querySelector('[data-tc-kanban-live]').textContent===%q`,
+			boardID, want,
+		)
+
+		if err := chromedp.Run(ctx, chromedp.Poll(livePoll, &announced)); err != nil || !announced {
+			t.Fatalf("%s: post-swap live region never announced %q (announced=%v, err=%v)",
+				boardID, want, announced, err)
+		}
 	}
 }
