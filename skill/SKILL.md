@@ -610,6 +610,7 @@ generated files:
 | `TestDarkModeCompliance` / `…SemanticColors` | `utils/darkmode_compliance_test.go`        | Neutral/semantic colors without `dark:` variants.                                                                                                   |
 | `TestMotionReduceCompliance`                 | `utils/motion_compliance_test.go`          | `transition-*`/`animate-*` without `motion-reduce:` fallbacks.                                                                                      |
 | `TestRTLLogicalProperties`                   | `utils/rtl_compliance_test.go`             | Physical properties (`ml-`/`mr-`/`left-`) instead of logical (`ms-`/`me-`/`start-`).                                                                |
+| `TestCoarsePointerCompliance`                | `utils/coarse_pointer_compliance_test.go`  | Hover-revealed functionality (`opacity-0`/`hidden` + `group-hover:`/`peer-hover:`) without a `tc-*` hook kept visible in custom.css's `@media (pointer: coarse)` block, or a documented exemption. |
 | `integration` CSP nonce test                 | `integration/csp_nonce_test.go`            | An inline `<script>` without `nonce=`.                                                                                                              |
 
 **When you add a new cross-cutting rule, add a guard test here, not just a
