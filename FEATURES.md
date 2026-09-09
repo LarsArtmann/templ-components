@@ -131,7 +131,7 @@ Scope note: Datastar fetch actions accept no target option on the audited pin (v
 | `HoverCard`          | FULLY_FUNCTIONAL | Hover card panel                | CSS-only hover/focus, `role="dialog"`, arbitrary content via children                                                                                                                                                                           |
 | `ContextMenu`        | FULLY_FUNCTIONAL | Right-click menu                | Native Popover API, cursor positioning, shared WAI-ARIA menu keyboard nav, Shift+F10 and ContextMenu key support                                                                                                                                |
 | `Carousel`           | FULLY_FUNCTIONAL | Image/content carousel          | CSS scroll-snap + keyboard nav (ArrowLeft/Right, Home/End), RTL-aware, dots, prev/next buttons                                                                                                                                                  |
-| `KanbanBoard`        | FULLY_FUNCTIONAL | Kanban board                    | HTML5 drag-and-drop between columns + per-card keyboard move buttons, `Wire` move exchange (htmx or Datastar via one hidden form), `ParseKanbanMove` server helper, live-region announcements, read-only mode without Wire                      |
+| `KanbanBoard`        | FULLY_FUNCTIONAL | Kanban board                    | HTML5 drag-and-drop between columns + per-card keyboard move buttons, `Wire` move exchange (htmx or Datastar via one hidden form), `ParseKanbanMove` server helper, live-region announcements, read-only mode without Wire, move buttons stay visible on touch (`pointer:coarse`)                      |
 
 ### Enums
 

@@ -193,3 +193,13 @@ Full audit context: `docs/research/2026-08-21_go-sse-go-datastar-deep-dive.html`
   `data-show="$<signal>"`.
 - Bare `$` is the signals object itself and is **always truthy** — never emit
   `data-show="$"` (the empty-signal Indicator bug).
+
+## Fragments carry no executable scripts (innerHTML semantics)
+
+Patched elements arrive through DOM insertion with innerHTML/morph
+semantics: `<script>` tags inside an SSE-delivered fragment are inserted
+into the DOM but NEVER execute (HTML5 spec — script content inserted via
+innerHTML is inert). This differs from htmx, which re-evaluates scripts in
+swapped content by default. Consumers should ship behaviour as page-level
+scripts, `data-on:*` attributes, or Web Components — never inline
+`<script>` inside a Datastar patch fragment.
