@@ -27,8 +27,8 @@ import (
 // fluctuate). Every accepted entry must carry a justification here or in the
 // commit history — an accepted violation is documented a11y debt, not a pass.
 //
-// Accepted today (palette-convention debt, owner review tracked in
-// TODO_LIST #175 follow-up):
+// Accepted today (palette-convention debt, tracked for owner review as the
+// backlog item #175 follow-up):
 //
 //	index/index_dark/forms_dark color-contrast — muted gray-400 caption text,
 //	white-on-blue-500 dark buttons (4.46 vs 4.5, the -600/-500 shade
@@ -77,7 +77,8 @@ func TestAxeSweepDemoRoutes(t *testing.T) {
 
 			results := axeAuditRoute(t, ctx, server.BaseURL(), route.path, route.dark)
 
-			t.Logf("axe[%s]: %d total violation rule(s), %d blocking", route.name, len(results.Violations), len(results.BlockingViolations()))
+			blocking := results.BlockingViolations()
+			t.Logf("axe[%s]: %d rule(s) total, %d blocking", route.name, len(results.Violations), len(blocking))
 			assertNoUnacceptedViolations(t, route.name, baseline, results)
 		})
 	}
@@ -86,7 +87,8 @@ func TestAxeSweepDemoRoutes(t *testing.T) {
 // TestAxeHarnessDetectsViolations is the sweep's positive control: a page with
 // a textbook violation (image without alt text = critical "image-alt") must
 // be caught, proving the harness can fail — a guard that cannot fail guards
-// nothing.func TestAxeHarnessDetectsViolations(t *testing.T) {
+// nothing.
+func TestAxeHarnessDetectsViolations(t *testing.T) {
 	t.Parallel()
 
 	const badPage = `<!DOCTYPE html><html><head><title>axe positive control</title></head>` +
