@@ -17,6 +17,10 @@ const (
 	BarVertical BarOrient = "vertical"
 )
 
+// barChartFallbackName names the role="img" wrapper when the consumer provides
+// no AriaLabel — role="img" must never render unnamed.
+const barChartFallbackName = "Bar chart"
+
 // BarOrientIsValid reports whether v is one of the defined BarOrient constants.
 func BarOrientIsValid(v BarOrient) bool {
 	return v == BarHorizontal || v == BarVertical

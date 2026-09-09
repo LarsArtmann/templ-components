@@ -139,7 +139,7 @@ func htmxDemo() templ.Component {
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Enables native <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API\" class=\"text-blue-600 dark:text-blue-400 hover:underline\">View Transitions</a> on HTMX swaps — pages cross-fade instead of hard-cutting, with graceful degradation in browsers without support.</p>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 10, "<p class=\"text-sm text-gray-500 dark:text-gray-400 mb-2\">Enables native <a href=\"https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API\" class=\"underline text-blue-600 dark:text-blue-400 hover:underline\">View Transitions</a> on HTMX swaps — pages cross-fade instead of hard-cutting, with graceful degradation in browsers without support.</p>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

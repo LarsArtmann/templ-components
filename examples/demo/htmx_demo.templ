@@ -55,7 +55,7 @@ templ htmxDemo() {
 	@htmx.GlobalErrorHandling(htmx.DefaultErrorHandlingConfig())
 	@demoSection("HTMX ViewTransitions", "htmx-view-transitions")
 	<p class="text-sm text-gray-500 dark:text-gray-400 mb-2">
-		Enables native <a href="https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API" class="text-blue-600 dark:text-blue-400 hover:underline">View Transitions</a> on HTMX swaps —
+		Enables native <a href="https://developer.mozilla.org/en-US/docs/Web/API/View_Transitions_API" class="underline text-blue-600 dark:text-blue-400 hover:underline">View Transitions</a> on HTMX swaps —
 		pages cross-fade instead of hard-cutting, with graceful degradation in browsers without support.
 	</p>
 	@htmx.ViewTransitions(htmx.ViewTransitionsProps{Global: true, BaseProps: utils.BaseProps{Nonce: "demo-nonce"}})
