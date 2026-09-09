@@ -36,6 +36,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ### Changed
 
+- **New guard: hover-revealed controls must have a touch fallback.**
+  `utils.TestCoarsePointerCompliance` scans every `.templ` file for
+  functionality gated behind `group-hover:`/`peer-hover:` reveals
+  (opacity or display) and requires either a `tc-*` hook class kept
+  visible by an `@media (pointer: coarse)` rule in `templates/custom.css`
+  (the pattern `KanbanBoard` shipped) or an explicit documented exemption
+  (tooltips and hover cards: ADR-0017 progressive enhancement). The
+  convention comment in `templates/custom.css` now states the rule.
 - **KanbanBoard ignores cross-board drops and confirms completed moves.** A
   drop whose dragged card lives on a different board no longer submits —
   `dragover` does not claim the drop and `drop` returns early (each wired

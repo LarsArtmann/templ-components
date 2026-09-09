@@ -935,11 +935,15 @@ details[open] [data-tc-chevron] {
   background-color: #3b82f6;
 }
 
-/* Touch devices have no hover, so the hover-revealed kanban move buttons
- * would stay opacity-0 forever. Coarse pointers get them always visible.
- * This rule is intentionally UNLAYERED: unlayered CSS beats Tailwind v4's
- * @layer utilities in the cascade, so opacity-1 wins over the wrapper's
- * opacity-0 utility without !important. */
+/* Touch devices have no hover, so hover-revealed FUNCTIONALITY would stay
+ * hidden forever. Library convention (enforced by
+ * utils.TestCoarsePointerCompliance): any control gated behind
+ * group-hover/peer-hover gets a tc-* hook class here, kept visible for
+ * coarse pointers. Tooltips and hover cards are exempt as hover/focus
+ * progressive enhancement (ADR-0017 family).
+ * These rules are intentionally UNLAYERED: unlayered CSS beats Tailwind
+ * v4's @layer utilities in the cascade, so opacity-1 wins over the
+ * element's opacity-0 utility without !important. */
 @media (pointer: coarse) {
   .tc-kanban-buttons {
     opacity: 1;
