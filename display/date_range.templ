@@ -49,6 +49,12 @@ type DateRangeProps struct {
 // the PresentText is shown. When Start is nil, only End is shown. When both are
 // equal, only one date is shown (no range).
 //
+// Layout semantics: DateRange renders an INLINE <time> element. Adjacent
+// ranges flow on the same line with no injected separator — wrap them in a
+// block/flex container or add margin classes via Class to stack or space
+// them (e.g. two parallel roles on a resume). The adjacency output is
+// pinned by TestGoldenDateRangeAdjacent.
+//
 //	@display.DateRange(display.DateRangeProps{
 //	   Start: &start,
 //	   End:   nil, // shows "Present"

@@ -1,6 +1,8 @@
 package display
 
 import (
+	"github.com/a-h/templ"
+
 	"testing"
 	"time"
 
@@ -49,4 +51,25 @@ func TestGoldenDateRange(t *testing.T) {
 			golden.Assert(t, "date_range_"+tt.name, output)
 		})
 	}
+}
+
+// TestGoldenDateRangeAdjacent pins the block-vs-inline semantics: DateRange
+// renders an INLINE <time> element, so two adjacent ranges flow on the same
+// line separated only by natural whitespace — the component injects no
+// separator or line break between instances. The golden documents the exact
+// adjacency output consumers stacking two ranges (e.g. parallel roles) get.
+func TestGoldenDateRangeAdjacent(t *testing.T) {
+	t.Parallel()
+
+	start := time.Date(2023, 1, 15, 0, 0, 0, 0, time.UTC)
+	end := time.Date(2024, 6, 1, 0, 0, 0, 0, time.UTC)
+
+	first := utils.Render(t, DateRange(DateRangeProps{Start: &start, End: &end}))
+	second := utils.Render(t, DateRange(DateRangeProps{
+		BaseProps: utils.BaseProps{Attrs: templ.Attributes{"data-test": "second"}},
+		Start:     &start,
+		End:       &end,
+	}))
+
+	golden.Assert(t, "date_range_adjacent", first+"\n"+second)
 }
