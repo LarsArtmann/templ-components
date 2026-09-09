@@ -118,7 +118,7 @@ templ Calendar(props CalendarProps) {
 				<div class="flex h-8 w-9 items-center justify-center text-xs font-medium text-gray-500 dark:text-gray-400">{ dow }</div>
 			}
 		</div>
-		<div class="grid grid-cols-7 gap-1" role="grid" aria-label={ monthName }>
+		<div class="grid grid-cols-7 gap-1" role="group" aria-label={ monthName }>
 			for _ = range startWeekday {
 				<div class="h-9 w-9"></div>
 			}
@@ -129,7 +129,7 @@ templ Calendar(props CalendarProps) {
 				if props.HrefBase != "" && !disabled {
 					{{ dayHref = calendarReplacePlaceholders(props.HrefBase, props.Year, props.Month, day) }}
 				}
-				<div role="gridcell" class="flex justify-center">
+				<div class="flex justify-center">
 					if dayHref != "" {
 						<a href={ templ.SafeURL(dayHref) } class={ calendarDayClass(selected, false, isToday(day)) }>
 							{ fmt.Sprintf("%d", day) }

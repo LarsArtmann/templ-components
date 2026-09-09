@@ -53,6 +53,8 @@ templ Carousel(props CarouselProps) {
 		<div
 			class="flex overflow-x-auto snap-x snap-mandatory scroll-smooth tc-no-scrollbar"
 			data-tc-carousel-track
+			tabindex="0"
+			aria-label="Slides"
 		>
 			for i, slide := range props.Slides {
 				<div

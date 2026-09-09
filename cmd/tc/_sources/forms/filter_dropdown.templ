@@ -58,6 +58,11 @@ func DefaultFilterDropdownProps() FilterDropdownProps {
 	return FilterDropdownProps{}
 }
 
+// filterDropdownFallbackName is the accessible name for a FilterDropdown whose
+// consumer set neither Label nor AriaLabel — a select must never render
+// unnamed (axe select-name).
+const filterDropdownFallbackName = "Filter"
+
 // filterDropdownInputClass returns the Tailwind classes for the select element.
 func filterDropdownInputClass() string {
 	return "block rounded-md border-0 py-1.5 ps-3 pe-8 text-sm text-gray-900 dark:text-white bg-white dark:bg-gray-800 ring-1 ring-inset ring-gray-300 dark:ring-gray-600 focus:ring-2 focus:ring-inset focus:ring-blue-600 dark:focus:ring-blue-500 caret-blue-600 dark:caret-blue-400"
@@ -98,6 +103,8 @@ templ FilterDropdown(props FilterDropdownProps) {
 	{{ opts := normalizeSelectOptions(filterDropdownPreselect(props.Options, props.Value)) }}
 	{{ wired := wireAttributesWithDefaults(props.Wire, wire.EventChange) }}
 	{{ isWired := props.Wire != nil && props.Wire.URL != "" }}
+	{{ props.ID = fieldID(props.ID, props.Name) }}
+	{{ selectName := utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, filterDropdownFallbackName)) }}
 	<div class={ utils.Class("inline-flex flex-col", props.Class) } { props.Attrs... }>
 		if isWired {
 			<form
@@ -108,15 +115,13 @@ templ FilterDropdown(props FilterDropdownProps) {
 				class="inline-flex flex-col"
 			>
 				if props.Label != "" {
-					<label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+					<label for={ props.ID } class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
 						{ props.Label }
 					</label>
 				}
 				<select
 					name={ props.Name }
-					if props.ID != "" {
-						id={ props.ID }
-					}
+					id={ props.ID }
 					class={ filterDropdownInputClass() }
 					{ wired... }
 					if props.HxInclude != "" {
@@ -125,9 +130,7 @@ templ FilterDropdown(props FilterDropdownProps) {
 					if props.HxIndicator != "" {
 						hx-indicator={ props.HxIndicator }
 					}
-					if props.AriaLabel != "" {
-						aria-label={ props.AriaLabel }
-					}
+					aria-label={ selectName }
 				>
 					@filterDropdownOptions(opts)
 				</select>
@@ -142,15 +145,13 @@ templ FilterDropdown(props FilterDropdownProps) {
 			</form>
 		} else {
 			if props.Label != "" {
-				<label class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
+				<label for={ props.ID } class="mb-1 block text-xs font-medium text-gray-600 dark:text-gray-400">
 					{ props.Label }
 				</label>
 			}
 			<select
 				name={ props.Name }
-				if props.ID != "" {
-					id={ props.ID }
-				}
+				id={ props.ID }
 				class={ filterDropdownInputClass() }
 				hx-get={ templ.SafeURL(props.HxGet) }
 				hx-target={ props.HxTarget }
@@ -164,9 +165,7 @@ templ FilterDropdown(props FilterDropdownProps) {
 				if props.HxIndicator != "" {
 					hx-indicator={ props.HxIndicator }
 				}
-				if props.AriaLabel != "" {
-					aria-label={ props.AriaLabel }
-				}
+				aria-label={ selectName }
 			>
 				@filterDropdownOptions(opts)
 			</select>

@@ -2,6 +2,20 @@ package forms
 
 import "github.com/larsartmann/templ-components/utils"
 
+// fieldID derives the DOM id used for label/control association: the explicit
+// ID, falling back to the field Name. A labeled control without an id can
+// never be associated with its label (invalid for="" or no association at
+// all) — an axe `label`/`select-name` critical violation and a WCAG 1.3.1 /
+// 4.1.2 failure. Name is the natural fallback: it is required for form
+// submission anyway, so the derived id stays deterministic across re-renders.
+func fieldID(id, name string) string {
+	if id != "" {
+		return id
+	}
+
+	return name
+}
+
 // radioInputClass returns the shared Tailwind classes for radio inputs
 func radioInputClass() string {
 	return "h-4 w-4 border-gray-300 text-blue-600 dark:text-blue-400 focus:ring-blue-600 dark:focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-800 dark:checked:bg-blue-600"
@@ -17,14 +31,13 @@ func radioInputClass() string {
 //	   Checked: true,
 //	})
 templ Radio(props RadioProps) {
+	{{ props.ID = fieldID(props.ID, props.Name) }}
 	<div class={ utils.Class("flex items-center", props.Class) }>
 		<input
 			type="radio"
 			name={ props.Name }
 			value={ props.Value }
-			if props.ID != "" {
-				id={ props.ID }
-			}
+			id={ props.ID }
 			class={ radioInputClass() }
 			if props.Checked {
 				checked
@@ -42,9 +55,7 @@ templ Radio(props RadioProps) {
 		/>
 		if props.Label != "" {
 			<label
-				if props.ID != "" {
-					for={ props.ID }
-				}
+				for={ props.ID }
 				class="ms-3 text-sm font-medium text-gray-900 dark:text-white"
 			>
 				{ props.Label }

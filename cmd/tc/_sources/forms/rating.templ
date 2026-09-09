@@ -65,6 +65,7 @@ func DefaultRatingProps() RatingProps {
 //	   Max:   5,
 //	})
 templ Rating(props RatingProps) {
+	{{ props.ID = fieldID(props.ID, props.Name) }}
 	{{
 		maxStars := props.Max
 		if maxStars <= 0 {
@@ -106,9 +107,7 @@ templ Rating(props RatingProps) {
 						type="radio"
 						name={ props.Name }
 						value={ fmt.Sprintf("%d", i) }
-						if props.ID != "" {
-							id={ fmt.Sprintf("%s-%d", props.ID, i) }
-						}
+						id={ fmt.Sprintf("%s-%d", props.ID, i) }
 						class="sr-only peer"
 						if i == props.Value {
 							checked
@@ -118,9 +117,7 @@ templ Rating(props RatingProps) {
 						}
 					/>
 					<label
-						if props.ID != "" {
-							for={ fmt.Sprintf("%s-%d", props.ID, i) }
-						}
+						for={ fmt.Sprintf("%s-%d", props.ID, i) }
 						class={ ratingStarLabelClass() }
 					>
 						<span class="sr-only">{ fmt.Sprintf("%d star%s", i, pluralStars(i)) }</span>

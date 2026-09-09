@@ -114,7 +114,9 @@ func TestAxeHarnessDetectsViolations(t *testing.T) {
 
 	blocking := results.BlockingViolations()
 	if len(blocking) == 0 {
-		t.Fatal("visualtest[axe]: positive control FAILED — axe reported no critical/serious violations on a page with an unlabeled image and an empty link; the sweep harness is broken")
+		t.Fatal(
+			"visualtest[axe]: positive control FAILED — axe reported no critical/serious violations on a page with an unlabeled image and an empty link; the sweep harness is broken",
+		)
 	}
 
 	found := map[string]bool{}
