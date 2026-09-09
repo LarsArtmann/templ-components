@@ -6,6 +6,54 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## [Unreleased]
 
+### Fixed
+
+- **Labeled form controls are now always associated with their labels.**
+  `forms.Input`, `Textarea`, `Select`, `DatePicker`, `FileInput`, `Checkbox`,
+  `Radio`, `RadioGroup` options, `Rating` stars, `Slider`, `TagsInput`, and
+  `Combobox` derive the control's DOM `id` from the field `Name` when no
+  explicit `ID` is set, so the rendered `<label>` always points at its control.
+  Previously, a labeled field rendered without an `ID` produced an unassociated
+  label (or an invalid `for=""`) — a WCAG 1.3.1/4.1.2 failure that axe-core
+  reports as a critical `label` violation. `FilterDropdown` additionally gains
+  an accessible name fallback ("Filter") and `TagsInput` ("Add tag").
+
+### Changed
+
+- **Form controls with `role="progressbar"`/`role="img"` are never unnamed.**
+  `feedback.ProgressBar` now emits an accessible name (AriaLabel → Label →
+  "Progress"), and `display.BarChart`/`Heatmap` fall back to "Bar chart" /
+  "Heatmap" for their `role="img"` wrappers when no `AriaLabel` is set —
+  fixing axe `aria-progressbar-name`/`role-img-alt` violations for consumers
+  who skipped the label props.
+- **`display.Tabs` emits `aria-controls` only for tabs that own a panel.**
+  Content-less tab links previously referenced non-existent panel ids (axe
+  `aria-valid-attr-value` critical).
+- **`forms.Calendar` uses `role="group"` instead of an invalid bare
+  `role="grid"`.** Grid semantics require row structure the day-picker does
+  not have (axe `aria-required-children`/`aria-required-parent`).
+- **`display.Carousel`'s scroll-snap track is keyboard-focusable** (`tabindex`
+  + "Slides" label), satisfying axe `scrollable-region-focusable` for the
+  horizontally scrolling element itself.
+- **`display.StatCard` trend colors meet WCAG contrast in light mode**
+  (`text-green-700`/`text-amber-700` instead of -600 shades that measured
+  3.2:1 on white).
+- **`charts/echarts.EChart` renders `role="img"` when an AriaLabel is set** —
+  `aria-label` on a bare `<div>` is a prohibited attribute (axe
+  `aria-prohibited-attr`).
+- **Demo pages pass the axe sweep.** Raw demo inputs/selects gained labels,
+  scrollable code blocks are focusable, and in-paragraph links are underlined.
+
+### Added
+
+- **axe-core accessibility sweep over the live demo routes** (`visualtest`):
+  the vendored axe-core 4.11.1 runtime (MPL-2.0) audits all 7 demo pages
+  (light + dark for index/forms) in real Chromium, with a positive-control
+  test proving the harness detects violations and a baseline ledger
+  (`visualtest/testdata/axe_baseline.json`) that fails CI on any new
+  critical/serious finding. Accepted palette-convention contrast debt is
+  documented in the baseline.
+
 ## [1.16.0] — 2026-09-09
 
 ### Added
