@@ -341,18 +341,22 @@ func tooltipAriaJS() string {
 		`}` +
 		`tcTooltipAriaSync();` +
 		`document.body.addEventListener("htmx:afterSettle",tcTooltipAriaSync);` +
+		`function tcTooltipWrap(e){` +
+		`if(!e||!e.target||!e.target.closest)return null;` +
+		`return e.target.closest("[data-tc-tooltip]");` +
+		`}` +
 		`document.addEventListener("keydown",function(e){` +
 		`if(e.key!=="Escape")return;` +
-		`var wrap=e.target.closest("[data-tc-tooltip]");` +
+		`var wrap=tcTooltipWrap(e);` +
 		`if(!wrap)return;` +
 		`wrap.setAttribute("data-tc-tooltip-dismissed","true");` +
 		`});` +
 		`document.addEventListener("mouseenter",function(e){` +
-		`var wrap=e.target.closest("[data-tc-tooltip]");` +
+		`var wrap=tcTooltipWrap(e);` +
 		`if(wrap)wrap.removeAttribute("data-tc-tooltip-dismissed");` +
 		`},true);` +
 		`document.addEventListener("focusin",function(e){` +
-		`var wrap=e.target.closest("[data-tc-tooltip]");` +
+		`var wrap=tcTooltipWrap(e);` +
 		`if(wrap)wrap.removeAttribute("data-tc-tooltip-dismissed");` +
 		`});` +
 		`}` +

@@ -23,6 +23,14 @@ const (
 	// demoFlowTimeout bounds each individual flow's waits.
 	demoFlowTimeout = 30 * time.Second
 
+	// demoTabTimeout bounds each flow test's whole browser context. chromedp
+	// actions have NO built-in timeout: a command whose target stops
+	// responding (renderer wedge, orphaned-browser contention) would
+	// otherwise block until the 10-minute go-test alarm kills the binary —
+	// leaking the Chromium and demo processes because panic skips cleanup.
+	// Bounding the tab turns any wedge into a normal test failure.
+	demoTabTimeout = 120 * time.Second
+
 	// endOfListText is navigation.EndOfList's default message; its appearance
 	// proves the LoadMore chain exhausted server-side.
 	endOfListText = "You've reached the end"
@@ -76,10 +84,26 @@ func demoClickUntil(ctx context.Context, t *testing.T, buttonSel, conditionExpr 
 	t.Fatalf("visualtest[demo]: condition never held after repeated clicks on %s: %s", buttonSel, conditionExpr)
 }
 
+// newFlowTab returns a bounded tab context for one flow test: the context
+// (and therefore every chromedp action on it) hard-fails after
+// demoTabTimeout instead of hanging the test binary.
+func newFlowTab(t *testing.T) (context.Context, context.CancelFunc) {
+	t.Helper()
+
+	tabCtx, tabCancel := newTab(t)
+
+	ctx, cancel := context.WithTimeout(tabCtx, demoTabTimeout)
+
+	return ctx, func() {
+		cancel()
+		tabCancel()
+	}
+}
+
 func TestDemoLoadMoreReachesEndOfList(t *testing.T) {
 	server := StartDemoServer(t)
 
-	ctx, cancel := newTab(t)
+	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
 	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/"), chromedp.WaitReady("body")); err != nil {
@@ -114,7 +138,7 @@ func TestDemoLoadMoreReachesEndOfList(t *testing.T) {
 func TestDemoConfirmDeleteRemovesRow(t *testing.T) {
 	server := StartDemoServer(t)
 
-	ctx, cancel := newTab(t)
+	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
 	// Handle the native confirm() dialog OUT of band: a synchronous
@@ -151,7 +175,7 @@ func TestDemoConfirmDeleteRemovesRow(t *testing.T) {
 func TestDemoLoadingButtonBusyGate(t *testing.T) {
 	server := StartDemoServer(t)
 
-	ctx, cancel := newTab(t)
+	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
 	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/"), chromedp.WaitReady("body")); err != nil {
@@ -201,7 +225,7 @@ func TestDemoLoadingButtonBusyGate(t *testing.T) {
 func TestDemoUploadEcho(t *testing.T) {
 	server := StartDemoServer(t)
 
-	ctx, cancel := newTab(t)
+	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
 	uploadFile := filepath.Join(t.TempDir(), "echo-me.txt")
@@ -237,7 +261,7 @@ func TestDemoUploadEcho(t *testing.T) {
 func TestDemoKanbanMoveButtonsBothTransports(t *testing.T) {
 	server := StartDemoServer(t)
 
-	ctx, cancel := newTab(t)
+	ctx, cancel := newFlowTab(t)
 	defer cancel()
 
 	if err := chromedp.Run(ctx, chromedp.Navigate(server.BaseURL()+"/"), chromedp.WaitReady("body")); err != nil {
