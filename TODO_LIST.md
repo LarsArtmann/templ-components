@@ -1,6 +1,6 @@
 # TODO List — templ-components
 
-**Updated:** 2026-09-09 | **Version:** 1.15.1
+**Updated:** 2026-09-09 | **Version:** 1.16.0
 
 > Only open, actionable items. Completed work is tracked in [`CHANGELOG.md`](CHANGELOG.md).
 > Statuses: ⬜ deferred, ⚫ blocked (needs external resources).
@@ -25,7 +25,7 @@
 
 | 190 | KanbanBoard touch-drag story (long-press / pointer-events DnD polyfill) | **Owner decision Q1.** The CSS-only visibility fix shipped (plan M1); a real touch-drag story needs JS and possibly a polyfill — the dependency budget is deliberately closed (templ + tailwind-merge-go + go-error-family). (2026-09-09 report §g1) |
 | 191 | KanbanBoard feature-scope props: within-column keyboard reorder, per-column add-card wiring, WIP limits, card/column tone accents | **Owner decision Q2.** Which belong IN the component vs consumer composition? Each addition needs the full test ladder. (2026-09-09 report §g2) |
-| 192 | Release timing for v1.16.0 (KanbanBoard + touch fix) | **Owner decision Q3.** Cut now (verified end-to-end, `[Unreleased]` warm, CI green) or accumulate #181–#184 (goldens, guard, fuzz, docs) first. Gates #188. (2026-09-09 report §g3) |
+| 192 | Release timing for v1.17.0 (a11y batch, tooltip TypeError fix, kanban phone-overflow fix, Minimal SEO, route goldens, synthetics) | **Owner decision.** v1.16.0 shipped 2026-09-09; `[Unreleased]` is warm and verified green — cut via release script (~15 min) or batch more. Supersedes the answered v1.16.0 instance. (2026-09-09 23:21 report §g1) |
 
 ---
 
@@ -87,3 +87,23 @@ _2026-09-09 execution session shipped M1–M7 + M9 (rows #181–#185, #187 dropp
 | #   | Task                                                                                                                   | Why / source                                                                                             |
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
 | 189 | Demo niceties: file-backed kanban state, Dashboard-recipe kanban section                                               | Demo depth. (plan M25)                                                                                   |
+
+---
+
+## Harvested 2026-09-09 — docs-health pass (docs/status/2026-09-09_23-21, section f)
+
+_Top of the ranked queue; the full 50-row ranked list lives in the report. Citations `f<nn>` = that report._
+
+| #   | Task                                                                                                   | Why / source                                                                                                     |
+| --- | ------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| 193 | Add `pollBool`/`pollText` helpers to the visualtest harness; migrate the flow tests onto them           | The bool-into-string Poll mistake then cannot be written. (f5)                                                   |
+| 194 | Route goldens: dark variants for all 7 demo routes (only dashboard_dark exists)                         | Pixel-pin dark rendering per route. (f6)                                                                         |
+| 195 | Route goldens: 375px mobile captures for the 4 swept routes                                             | Pins the mobile sweep in goldens. (f7)                                                                           |
+| 196 | Route goldens: RTL captures (sweep asserts overflow; pixels pin mirroring)                              | (f8)                                                                                                             |
+| 197 | Keyboard-only demo traversal (Tab-order UX)                                                             | Residue of #175: axe sweep covers DOM, not focus order. (f9)                                                     |
+| 198 | Triage display/kanban LSP warnings (unused funcs) against real lint; delete or wire                     | LSP shows stale diagnostics on kanban — verify with `golangci-lint`, ground truth. (f10)                          |
+| 199 | Document or file upstream the stale-gopls kanban diagnostics (false "closing brace" error)              | Recurs every session. (f11)                                                                                      |
+| 200 | Mirror the Datastar innerHTML-no-scripts runtime fact into the datastar package doc.go                   | (f16)                                                                                                            |
+| 201 | `ci-repro.sh --lint`: include the changelog-guard script in local parity                                | (f29)                                                                                                            |
+| 202 | visualtest `.fail/` stale-subdirectory disk hygiene (pre-session dirs linger; prune after green runs)    | Merges f30 + f39.                                                                                                |
+

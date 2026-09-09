@@ -3,7 +3,7 @@
 [![CI](https://img.shields.io/github/actions/workflow/status/larsartmann/templ-components/ci.yaml?branch=master&style=flat-square)](https://github.com/larsartmann/templ-components/actions)
 [![Go Reference](https://img.shields.io/badge/go-pkg.go.dev-blue?style=flat-square)](https://pkg.go.dev/github.com/larsartmann/templ-components)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=flat-square)](https://github.com/larsartmann/templ-components/blob/master/LICENSE)
-[![Version](https://img.shields.io/badge/version-v1.8.0-blue?style=flat-square)](https://github.com/larsartmann/templ-components/releases)
+[![Version](https://img.shields.io/badge/version-v1.16.0-blue?style=flat-square)](https://github.com/larsartmann/templ-components/releases)
 
 **Server-rendered Go components that ship real HTML — no JavaScript framework required. Built on [templ](https://templ.guide), [HTMX](https://htmx.org), and [Tailwind CSS v4](https://tailwindcss.com).**
 
@@ -22,7 +22,7 @@ No DaisyUI. No Node.js. No framework lock-in.
 
 ## Why templ-components?
 
-121 server-rendered components. 59 typed string enums (58 with IsValid()). 106 SVG icons. Zero client-side framework.
+121 server-rendered components. 59 typed string enums (58 with IsValid()). 102 SVG icons. Zero client-side framework.
 
 templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the server renders HTML, JavaScript enhances it rather than replacing it. Every component uses Tailwind CSS v4 utility classes with built-in dark mode, CSP nonce support, and ARIA accessibility.
 
@@ -32,7 +32,7 @@ templ-components follows [HATEOAS](https://htmx.org/essays/hateoas/) — the ser
 | **JavaScript**         | HATEOAS (enhances HTML)                        | Alpine.js                     | DaisyUI JS                                     |
 | **Requires Node.js**   | No                                             | No                            | Yes                                            |
 | **Components**         | 121                                            | 40+                           | —                                              |
-| **Typed props**        | 52 enums                                       | —                             | —                                              |
+| **Typed props**        | 59 enums                                       | —                             | —                                              |
 | **Dark mode**          | Built-in (tested)                              | CSS custom properties         | Via DaisyUI                                    |
 | **CSP compliant**      | Yes (nonce on all scripts)                     | Yes                           | —                                              |
 | **Container queries**  | 8 opt-in components + fluid typography (`cqi`) | —                             | —                                              |
@@ -285,7 +285,7 @@ Structured error pages with family-aware styling, HTTP handler integration, dedi
 
 ## Design Principles
 
-**Type-safe.** 58 typed string enums (57 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
+**Type-safe.** 59 typed string enums (58 with IsValid()) make invalid states unrepresentable. Props structs embed `utils.BaseProps` for consistent ID, class, attributes, ARIA label, and CSP nonce propagation.
 
 **Accessible.** ARIA attributes, roles, keyboard navigation, and screen-reader text across all interactive components. Native `<dialog>` for modals, `<details>` for accordions, `<search>` landmark for search inputs.
 
@@ -353,7 +353,7 @@ See the [Theming guide](https://templcomponents.lars.software/guides/theming/) f
 | -------------- | --------------------------------------------------- |
 | Components     | 121                                                 |
 | SVG icons      | 102                                                 |
-| Typed enums    | 53 (50 with IsValid)                                |
+| Typed enums    | 59 (58 with IsValid)                                |
 | Packages       | 15                                                  |
 | Tests          | ~1,070 test functions + ~1,240 subtests             |
 | Visual goldens | 125 pixel-level regression tests (chromedp)         |
