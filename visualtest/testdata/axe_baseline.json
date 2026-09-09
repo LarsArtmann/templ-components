@@ -1,0 +1,11 @@
+{
+  "index": {
+    "color-contrast|serious": 5
+  },
+  "index_dark": {
+    "color-contrast|serious": 5
+  },
+  "forms_dark": {
+    "color-contrast|serious": 1
+  }
+}

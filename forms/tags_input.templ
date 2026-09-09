@@ -28,6 +28,11 @@ func DefaultTagsInputProps() TagsInputProps {
 	return TagsInputProps{} //nolint:exhaustruct // intentionally minimal
 }
 
+// tagsInputFallbackName is the accessible name for the TagsInput text field
+// when the consumer set neither Label nor AriaLabel — a text input must never
+// render unnamed (axe label).
+const tagsInputFallbackName = "Add tag"
+
 // tagsInputContainerClass returns the container classes for the tags input.
 func tagsInputContainerClass(hasError bool) string {
 	base := "flex flex-wrap items-center gap-2 rounded-md bg-white dark:bg-gray-800 px-3 py-2 border-0 ring-1 ring-inset focus-within:ring-2 focus-within:ring-inset transition-shadow motion-reduce:transition-none"
@@ -52,9 +57,7 @@ templ TagsInput(props TagsInputProps) {
 	<div class={ utils.Class("space-y-1", props.Class) } { props.Attrs... }>
 		if props.Label != "" {
 			<label
-				if props.ID != "" {
-					for={ props.ID }
-				}
+				for={ id }
 				class="block text-sm font-medium text-gray-900 dark:text-white"
 			>
 				{ props.Label }
@@ -94,6 +97,7 @@ templ TagsInput(props TagsInputProps) {
 			}
 			<input
 				type="text"
+				id={ id }
 				class="flex-1 min-w-[120px] bg-transparent border-0 outline-none text-sm text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 caret-blue-600 dark:caret-blue-400"
 				placeholder={ props.Placeholder }
 				if props.Disabled {
@@ -102,9 +106,7 @@ templ TagsInput(props TagsInputProps) {
 				if props.Required {
 					required
 				}
-				if props.AriaLabel != "" {
-					aria-label={ props.AriaLabel }
-				}
+				aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, utils.Ternary(props.Label != "", props.Label, tagsInputFallbackName)) }
 				data-tc-tags-input
 				{ ErrorAttrs(props.ID, props.Error, utils.Ternary(props.HelpText != "", HelpTextID(props.ID), ""))... }
 				{ props.Attrs... }
