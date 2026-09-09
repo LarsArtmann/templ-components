@@ -3,17 +3,12 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-    # Separate rolling nixpkgs pin for the GO TOOLCHAIN. The security-fix
-    # patches (GO-2026-5972 encoding/asn1, GO-2026-6089 net/http,
-    # GO-2026-6090 crypto/tls — all reachable via the demo's http.Server)
-    # landed in go 1.26.6, but the locked `nixpkgs` input still packages
-    # 1.26.5. Updating `nixpkgs` wholesale would ALSO drift pkgs.templ
-    # (breaking the v0.3.1020 generate pin — see AGENTS.md "templ Version
-    # Pin") and pkgs.golangci-lint (breaking lint reproducibility), so the
-    # toolchain rides its own input — same isolation pattern as
-    # nixpkgs-chromium. Fold this input back into `nixpkgs` at the next
-    # deliberate full-flake update.
-    nixpkgs-go.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # NOTE (2026-09-09): `nixpkgs-go` (the separate rolling input that once
+    # insulated the Go toolchain from the locked nixpkgs while shipping the
+    # GO-2026-5972/6089/6090 fixes) is FOLDED back into `nixpkgs` — both
+    # inputs had locked the identical rev, so the split no longer insulated
+    # anything. Re-split deliberately if pkgs.templ (v0.3.1020 generate
+    # pin, see AGENTS.md) and pkgs.go_1_26 versioning diverge again.
     # Separate nixpkgs pin for Chromium. Visual regression tests are
     # pixel-sensitive: a Chromium major bump can shift font AA, sub-pixel
     # layout, or rendering timings enough to flip goldens. Pinning Chromium
@@ -54,14 +49,14 @@
           ...
         }:
         let
-          # Go toolchain from the dedicated nixpkgs-go input (1.26.6+ for the
-          # security fixes above); everything else stays on the locked
-          # nixpkgs so the templ pin holds. golangci-lint also rides this
-          # input: its locked rev ships 2.13.2, the exact version CI pins
-          # (.github/workflows/ci.yaml), so local `nix run .#lint` and CI
-          # run the same scanner.
-          goToolchain = inputs'.nixpkgs-go.legacyPackages.go_1_26;
-          golangciLint = inputs'.nixpkgs-go.legacyPackages.golangci-lint;
+          # Go toolchain from nixpkgs (folded from the former nixpkgs-go
+          # input, 2026-09-09 — identical locked rev at fold time); the
+          # security fixes GO-2026-5972/6089/6090 are in this rev.
+          # golangci-lint rides the same input: its version matches the CI
+          # pin (.github/workflows/ci.yaml), so local `nix run .#lint` and
+          # CI run the same scanner.
+          goToolchain = inputs'.nixpkgs.legacyPackages.go_1_26;
+          golangciLint = inputs'.nixpkgs.legacyPackages.golangci-lint;
         in
         {
           devShells.default = pkgs.mkShellNoCC {
@@ -349,7 +344,7 @@
               # DOWNLOAD the newer toolchain, which fails inside the
               # flake-check sandbox (no network). Same input as
               # goToolchain.
-              goimports.package = inputs'.nixpkgs-go.legacyPackages.gotools;
+              goimports.package = inputs'.nixpkgs.legacyPackages.gotools;
             };
           };
 
