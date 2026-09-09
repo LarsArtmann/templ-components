@@ -41,7 +41,11 @@ func TestDemoRTLNoHorizontalOverflow(t *testing.T) {
 			}
 
 			if overflow > 1 {
-				t.Errorf("visualtest[demo]: %s overflows an RTL viewport by %dpx — a physical property or unmirrored offset is breaking mirroring", route, overflow)
+				t.Errorf(
+					"visualtest[demo]: %s overflows an RTL viewport by %dpx — a physical property or unmirrored offset is breaking mirroring",
+					route,
+					overflow,
+				)
 			}
 		})
 	}
