@@ -7,6 +7,7 @@ import (
 	"time"
 
 	"github.com/larsartmann/templ-components/utils"
+	"github.com/larsartmann/templ-components/utils/wire"
 )
 
 func BenchmarkHotPaths(b *testing.B) {
@@ -236,4 +237,39 @@ func BenchmarkHotPaths_Heatmap_render(b *testing.B) {
 
 		_ = Heatmap(props).Render(context.Background(), &buf)
 	}
+}
+
+func BenchmarkHotPaths_KanbanBoard_render(b *testing.B) {
+	columns := make([]KanbanColumn, 3)
+	for ci := range columns {
+		cards := make([]KanbanCard, 5)
+		for i := range cards {
+			cards[i] = KanbanCard{ID: "c", Title: "Card title"}
+		}
+
+		columns[ci] = KanbanColumn{ID: "col", Title: "Column", Cards: cards}
+	}
+
+	readonly := KanbanBoardProps{Columns: columns}
+
+	wired := DefaultKanbanBoardProps()
+	wired.BaseProps = utils.BaseProps{ID: "kb-bench"}
+	wired.Columns = columns
+	wired.Wire = &wire.Action{URL: "/api/kanban"}
+
+	b.Run("readonly", func(b *testing.B) {
+		for b.Loop() {
+			var buf bytes.Buffer
+
+			_ = KanbanBoard(readonly).Render(context.Background(), &buf)
+		}
+	})
+
+	b.Run("wired", func(b *testing.B) {
+		for b.Loop() {
+			var buf bytes.Buffer
+
+			_ = KanbanBoard(wired).Render(context.Background(), &buf)
+		}
+	})
 }
