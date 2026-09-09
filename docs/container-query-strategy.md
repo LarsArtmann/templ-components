@@ -154,13 +154,13 @@ The ROADMAP lists five container-aware candidates. Here is the rigorous evaluati
 ADR-0018's three criteria (viewport-responsive today, plausibly placed in a constrained
 container, clear named behavior change):
 
-| Candidate     | Responsive today?            | In constrained container?   | Named behavior change?     | Verdict                                  |
-| ------------- | ---------------------------- | --------------------------- | -------------------------- | ---------------------------------------- |
-| `Container`   | No (it IS the width limiter) | N/A (it sets the width)     | None                       | **Reject** — circular                    |
-| `Breadcrumbs` | Minimal (separator)          | Sometimes (header in split) | Weak — truncate vs wrap    | **Defer** — no strong behavior change    |
-| `EmptyState`  | Minimal                      | Yes (card, drawer)          | Weak — icon/text size only | **Reject** — cosmetic only               |
-| `NotFound404` | Yes (hero numeral)           | No (always full page)       | N/A                        | **Reject** — never constrained           |
-| `Footer`      | Yes (columns)                | Rarely (usually full-width) | Column collapse            | **Defer** — rarely placed in a container |
+| Candidate     | Responsive today?            | In constrained container?          | Named behavior change?                  | Verdict                                           |
+| ------------- | ---------------------------- | ---------------------------------- | --------------------------------------- | ------------------------------------------------- |
+| `Container`   | No (it IS the width limiter) | N/A (it sets the width)            | None                                    | **Reject** — circular                             |
+| `Breadcrumbs` | Minimal (separator)          | Sometimes (header in split)        | Weak — truncate vs wrap                 | **Defer** — no strong behavior change             |
+| `EmptyState`  | Minimal                      | Yes (card, drawer)                 | Weak — icon/text size only              | **Reject** — cosmetic only                        |
+| `NotFound404` | Yes (hero numeral)           | No (always full page)              | N/A                                     | **Reject** — never constrained                    |
+| `Footer`      | Yes (columns)                | Rarely (usually full-width)        | Column collapse                         | **Defer** — rarely placed in a container          |
 | `KanbanBoard` | Yes (horizontal scroll)      | No (the board IS the wide element) | None — column min-widths are the design | **Reject** (2026-09-09) — the scroll is the model |
 
 `KanbanBoard` (evaluated 2026-09-09, kanban follow-through plan): columns

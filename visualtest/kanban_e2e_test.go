@@ -480,7 +480,11 @@ func TestKanbanE2ECoarsePointerButtonsVisible(t *testing.T) {
 	var visible bool
 
 	if err := chromedp.Run(ctx, chromedp.Poll(kanbanButtonsOpacityExpr+`==="1"`, &visible)); err != nil || !visible {
-		t.Fatalf("coarse pointer computed opacity never settled at 1 (visible=%v, err=%v) — touch fallback broken", visible, err)
+		t.Fatalf(
+			"coarse pointer computed opacity never settled at 1 (visible=%v, err=%v) — touch fallback broken",
+			visible,
+			err,
+		)
 	}
 }
 

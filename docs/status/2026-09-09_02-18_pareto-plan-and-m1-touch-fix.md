@@ -8,23 +8,23 @@
 
 ## a) FULLY DONE
 
-| # | Item | Proof |
-|---|------|-------|
-| 1 | **Pareto breakdown** of ALL TODOs (TODO_LIST 55 rows + status-report §f 30 items + gates): 1%→51%, 4%→64%, 20%→80%, other-20%→100% | reported in chat |
-| 2 | **Medium plan: 26 tasks** (30–100m, ≤27 cap), sorted by impact/effort/value — table reported | chat + plan file |
-| 3 | **Fine plan: 92 tasks** (≤12m), sorted — table reported | chat + plan file |
-| 4 | **Plan file** `docs/planning/2026-09-09_01-53_kanban-pareto-execution-plan.md`: context, sources, tiers, both tables, mermaid execution graph with dependencies, per-tier verification strategy, gated-items list | committed `8b199a7` |
-| 5 | **Commit + push** (explicitly requested): `3694b4d..8b199a7` on origin — kanban component work, status report, and plan all public; also resolves the "did the daemon push?" uncertainty | `git push` OK |
+| # | Item                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            | Proof                        |
+| - | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
+| 1 | **Pareto breakdown** of ALL TODOs (TODO_LIST 55 rows + status-report §f 30 items + gates): 1%→51%, 4%→64%, 20%→80%, other-20%→100%                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              | reported in chat             |
+| 2 | **Medium plan: 26 tasks** (30–100m, ≤27 cap), sorted by impact/effort/value — table reported                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                    | chat + plan file             |
+| 3 | **Fine plan: 92 tasks** (≤12m), sorted — table reported                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | chat + plan file             |
+| 4 | **Plan file** `docs/planning/2026-09-09_01-53_kanban-pareto-execution-plan.md`: context, sources, tiers, both tables, mermaid execution graph with dependencies, per-tier verification strategy, gated-items list                                                                                                                                                                                                                                                                                                                                                                                                                                               | committed `8b199a7`          |
+| 5 | **Commit + push** (explicitly requested): `3694b4d..8b199a7` on origin — kanban component work, status report, and plan all public; also resolves the "did the daemon push?" uncertainty                                                                                                                                                                                                                                                                                                                                                                                                                                                                        | `git push` OK                |
 | 6 | **M1 — kanban touch fix IMPLEMENTED + VERIFIED** (f1.1–f1.6): `tc-kanban-buttons` wrapper around the move buttons (buttons grouped; reveal classes moved to wrapper), `@media (pointer: coarse)` always-visible rule in `templates/custom.css` — intentionally UNLAYERED so it beats Tailwind v4's `@layer utilities` (cascade reasoning documented in the CSS), templ regenerated, demo CSS recompiled (rule confirmed in minified `app.css`), `TestKanbanTouchButtonsHook` (hook + reveal classes + read-only-no-wrapper), goldens updated (wrapper markup, 2 files, diff eyeballed), display suite green, **kanban e2e green in Chromium after restructure** | `ce4ae91` + daemon `c49deb2` |
-| 7 | **Tree stabilized + committed** before this report: mid-task red state (stale goldens) was detected and fixed; M1 committed with detailed message (daemon had already taken 5 of the files under `c49deb2`) | tree clean |
+| 7 | **Tree stabilized + committed** before this report: mid-task red state (stale goldens) was detected and fixed; M1 committed with detailed message (daemon had already taken 5 of the files under `c49deb2`)                                                                                                                                                                                                                                                                                                                                                                                                                                                     | tree clean                   |
 
 ## b) PARTIALLY DONE
 
-| Item | State | Remaining |
-|------|-------|-----------|
-| **M1 completeness** | Fix live, all tests green | (i) computed-style browser proof under emulated `pointer: coarse` (cdproto `emulation` API research was interrupted by this report request) — string-level + compiled-CSS proofs exist, the computed-style proof is belt-and-braces; (ii) full `nix run .#verify` not re-run post-M1 (display tests + e2e green; lint/per-module pending) |
-| **Plan execution** | 1 of 26 medium tasks done (M1); 9 of 92 fine tasks (f1.1–f1.6 + stabilization) | M2–M26 untouched |
-| **TODO_LIST.md harvest (M2)** | Not started — the plan file is a snapshot; the 30 new items still have no TODO_LIST IDs | M2 is the first task to resume with |
+| Item                          | State                                                                                   | Remaining                                                                                                                                                                                                                                                                                                                                 |
+| ----------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **M1 completeness**           | Fix live, all tests green                                                               | (i) computed-style browser proof under emulated `pointer: coarse` (cdproto `emulation` API research was interrupted by this report request) — string-level + compiled-CSS proofs exist, the computed-style proof is belt-and-braces; (ii) full `nix run .#verify` not re-run post-M1 (display tests + e2e green; lint/per-module pending) |
+| **Plan execution**            | 1 of 26 medium tasks done (M1); 9 of 92 fine tasks (f1.1–f1.6 + stabilization)          | M2–M26 untouched                                                                                                                                                                                                                                                                                                                          |
+| **TODO_LIST.md harvest (M2)** | Not started — the plan file is a snapshot; the 30 new items still have no TODO_LIST IDs | M2 is the first task to resume with                                                                                                                                                                                                                                                                                                       |
 
 ## c) NOT STARTED (per plan IDs)
 
@@ -48,7 +48,7 @@ M2 harvest · M3 pixel goldens light/dark/RTL · M4 cross-board drop guard + pos
 
 ## f) Up to 50 things we should get done next
 
-*(authoritative list = plan `2026-09-09_01-53` fine table; here the resume order)*
+_(authoritative list = plan `2026-09-09_01-53` fine table; here the resume order)_
 
 1. f1.7 — coarse-pointer computed-style e2e proof (cdproto emulated media) [finish M1]
 2. Full `nix run .#verify` post-M1
@@ -81,7 +81,7 @@ M2 harvest · M3 pixel goldens light/dark/RTL · M4 cross-board drop guard + pos
 29. Push `ce4ae91` with the next explicitly-authorized push (or the daemon may do it)
 30. Re-check CI green on origin after `8b199a7` (first push of the kanban work — CI runs the full matrix on it)
 
-*(30 items; the plan file's 92-row fine table is the exhaustive source.)*
+_(30 items; the plan file's 92-row fine table is the exhaustive source.)_
 
 ## g) Questions I can NOT figure out myself
 
@@ -91,4 +91,4 @@ M2 harvest · M3 pixel goldens light/dark/RTL · M4 cross-board drop guard + pos
 
 ---
 
-*Point-in-time snapshot. Written by the 2026-09-09 pareto-planning + M1 session. WAITING FOR INSTRUCTIONS.*
+_Point-in-time snapshot. Written by the 2026-09-09 pareto-planning + M1 session. WAITING FOR INSTRUCTIONS._
