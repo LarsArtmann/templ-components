@@ -153,7 +153,7 @@ func KanbanBoard(props KanbanBoardProps) templ.Component {
 		boardID := utils.EnsureID("kanban", props.ID)
 		moveAttrs := kanbanWireAttributes(props.Wire, boardID)
 		wired := len(moveAttrs) > 0
-		var templ_7745c5c3_Var2 = []any{utils.Class("rounded-xl", props.Class)}
+		var templ_7745c5c3_Var2 = []any{utils.Class("min-w-0 rounded-xl", props.Class)}
 		templ_7745c5c3_Err = templ.RenderCSSItems(ctx, templ_7745c5c3_Buffer, templ_7745c5c3_Var2...)
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err

@@ -23,9 +23,14 @@ func prerender(outputDir string) error {
 	cssHead := demoFonts(nonce)
 
 	pages := []prerenderPage{
-		{"index.html", "templ-components Demo", "Showcase of all templ-components", func(props layout.PageProps) templ.Component {
-			return demoPage(props, demoTransportBoth)
-		}},
+		{
+			"index.html",
+			"templ-components Demo",
+			"Showcase of all templ-components",
+			func(props layout.PageProps) templ.Component {
+				return demoPage(props, demoTransportBoth)
+			},
+		},
 		{"forms/index.html", "Forms Demo - templ-components", "Complete form showcase with validation", formsDemoPage},
 		{
 			"recipes/dashboard.html",
@@ -36,9 +41,14 @@ func prerender(outputDir string) error {
 		{"recipes/settings.html", "Settings Recipe - templ-components", "Settings recipe demo", recipesSettingsPage},
 		{"recipes/login.html", "Login Recipe - templ-components", "Login card recipe demo", recipesLoginPage},
 		{"recipes/auth.html", "Auth Layout Recipe - templ-components", "Auth layout recipe demo", recipesAuthPage},
-		{"users/index.html", "Users - templ-components", "Server-driven data table with sorting and pagination", func(props layout.PageProps) templ.Component {
-			return usersDemoPage(props, "Name", display.SortAsc, 1, usersTotalPages(len(demoUsers())))
-		}},
+		{
+			"users/index.html",
+			"Users - templ-components",
+			"Server-driven data table with sorting and pagination",
+			func(props layout.PageProps) templ.Component {
+				return usersDemoPage(props, "Name", display.SortAsc, 1, usersTotalPages(len(demoUsers())))
+			},
+		},
 	}
 
 	ctx := context.Background()
@@ -53,7 +63,13 @@ func prerender(outputDir string) error {
 
 		outPath := filepath.Join(outputDir, page.filename)
 		if err := os.MkdirAll(filepath.Dir(outPath), 0o755); err != nil {
-			return fmt.Errorf("create dir for %s (outPath=%s, outputDir=%s): %w", page.filename, outPath, outputDir, err)
+			return fmt.Errorf(
+				"create dir for %s (outPath=%s, outputDir=%s): %w",
+				page.filename,
+				outPath,
+				outputDir,
+				err,
+			)
 		}
 
 		f, err := os.Create(outPath)

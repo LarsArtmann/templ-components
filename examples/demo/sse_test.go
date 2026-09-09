@@ -228,12 +228,43 @@ func TestHTMXEndpointHeaders(t *testing.T) {
 		wantIn  []string // substrings the response body must contain
 		skipDur bool     // endpoint has an artificial delay
 	}{
-		{name: "load-more", method: http.MethodGet, path: "/api/items?cursor=1", wantIn: []string{"hx-get", "/api/items?cursor=2", "Item"}},
-		{name: "load-more last page settles with end-of-list", method: http.MethodGet, path: "/api/items?cursor=2", wantIn: []string{"You&#39;ve reached the end"}},
-		{name: "confirm-delete target fragment", method: http.MethodDelete, path: "/api/items/123", wantIn: []string{"deleted successfully"}},
-		{name: "save confirmation swaps into the target span", method: http.MethodPost, path: "/api/save", wantIn: []string{"Saved."}, skipDur: true},
-		{name: "polled region re-arms with next tick", method: http.MethodGet, path: "/api/demo-stats?tick=1", wantIn: []string{"tick=2", "hx-get"}},
-		{name: "polled region settles on final tick", method: http.MethodGet, path: "/api/demo-stats?tick=3", wantIn: []string{"Requests served"}},
+		{
+			name:   "load-more",
+			method: http.MethodGet,
+			path:   "/api/items?cursor=1",
+			wantIn: []string{"hx-get", "/api/items?cursor=2", "Item"},
+		},
+		{
+			name:   "load-more last page settles with end-of-list",
+			method: http.MethodGet,
+			path:   "/api/items?cursor=2",
+			wantIn: []string{"You&#39;ve reached the end"},
+		},
+		{
+			name:   "confirm-delete target fragment",
+			method: http.MethodDelete,
+			path:   "/api/items/123",
+			wantIn: []string{"deleted successfully"},
+		},
+		{
+			name:    "save confirmation swaps into the target span",
+			method:  http.MethodPost,
+			path:    "/api/save",
+			wantIn:  []string{"Saved."},
+			skipDur: true,
+		},
+		{
+			name:   "polled region re-arms with next tick",
+			method: http.MethodGet,
+			path:   "/api/demo-stats?tick=1",
+			wantIn: []string{"tick=2", "hx-get"},
+		},
+		{
+			name:   "polled region settles on final tick",
+			method: http.MethodGet,
+			path:   "/api/demo-stats?tick=3",
+			wantIn: []string{"Requests served"},
+		},
 		{name: "filter dropdown fragment", method: http.MethodGet, path: "/api/users?status=active&sort=name"},
 	}
 
@@ -346,7 +377,10 @@ func TestDemoIndexSDKScriptRender(t *testing.T) {
 		`<link rel="preconnect" href="https://cdn.jsdelivr.net"`, // critical-path hint
 	} {
 		if !strings.Contains(page, want) {
-			t.Errorf("demo index page missing SDKScript contract fragment %q\n(page renders the Datastar runtime wrong — check datastarDemo + layout head)", want)
+			t.Errorf(
+				"demo index page missing SDKScript contract fragment %q\n(page renders the Datastar runtime wrong — check datastarDemo + layout head)",
+				want,
+			)
 		}
 	}
 }
@@ -368,7 +402,10 @@ func TestDemoIndexEChartsSDKScriptRender(t *testing.T) {
 		`<script src="` + pinnedURL + `" nonce="`, // exact pinned URL + CSP nonce
 	} {
 		if !strings.Contains(page, want) {
-			t.Errorf("demo index page missing ECharts SDKScript contract fragment %q\n(check echartsDemo + charts/echarts/sdk_script URL builder)", want)
+			t.Errorf(
+				"demo index page missing ECharts SDKScript contract fragment %q\n(check echartsDemo + charts/echarts/sdk_script URL builder)",
+				want,
+			)
 		}
 	}
 }

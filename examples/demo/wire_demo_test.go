@@ -49,7 +49,12 @@ func TestWireFragmentEndpointServesBothTransports(t *testing.T) {
 			server := httptest.NewServer(newMux())
 			t.Cleanup(server.Close)
 
-			req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, server.URL+"/api/wire/fragment", nil)
+			req, err := http.NewRequestWithContext(
+				context.Background(),
+				http.MethodGet,
+				server.URL+"/api/wire/fragment",
+				nil,
+			)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -136,7 +141,12 @@ func TestWireDemoTransportToggle(t *testing.T) {
 		wantDatastar bool
 	}{
 		{name: "htmx param renders only the htmx dialect", transport: "htmx", wantHTMX: true, wantDatastar: false},
-		{name: "datastar param renders only the datastar dialect", transport: "datastar", wantHTMX: false, wantDatastar: true},
+		{
+			name:         "datastar param renders only the datastar dialect",
+			transport:    "datastar",
+			wantHTMX:     false,
+			wantDatastar: true,
+		},
 		{name: "both param renders both dialects", transport: "both", wantHTMX: true, wantDatastar: true},
 		{name: "unknown param falls back to both", transport: "webcomponents", wantHTMX: true, wantDatastar: true},
 	}
@@ -232,7 +242,12 @@ func TestWireValidateEndpoint(t *testing.T) {
 			server := httptest.NewServer(newMux())
 			t.Cleanup(server.Close)
 
-			req, err := http.NewRequestWithContext(context.Background(), http.MethodGet, server.URL+"/api/wire/validate?value="+url.QueryEscape(tt.value), nil)
+			req, err := http.NewRequestWithContext(
+				context.Background(),
+				http.MethodGet,
+				server.URL+"/api/wire/validate?value="+url.QueryEscape(tt.value),
+				nil,
+			)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -355,13 +370,19 @@ func TestWireFormEndpointServesBothTransports(t *testing.T) {
 			name:            "datastar caller submits form fields and gets response-header targeting",
 			datastarRequest: true,
 			form:            url.Values{"name": {"Ada Lovelace"}, "email": {"ada@example.com"}},
-			wantContains:    []string{"Subscribed Ada Lovelace (ada@example.com) via datastar.", `data-on:submit="@post(&#39;/api/wire/form&#39;, {contentType: &#39;form&#39;})"`},
+			wantContains: []string{
+				"Subscribed Ada Lovelace (ada@example.com) via datastar.",
+				`data-on:submit="@post(&#39;/api/wire/form&#39;, {contentType: &#39;form&#39;})"`,
+			},
 		},
 		{
 			name:            "htmx caller submits the same body without datastar routing headers",
 			datastarRequest: false,
 			form:            url.Values{"name": {"Grace Hopper"}, "email": {"grace@example.com"}},
-			wantContains:    []string{"Subscribed Grace Hopper (grace@example.com) via htmx.", `hx-post="/api/wire/form"`},
+			wantContains: []string{
+				"Subscribed Grace Hopper (grace@example.com) via htmx.",
+				`hx-post="/api/wire/form"`,
+			},
 		},
 		{
 			name:            "invalid email re-renders the form with inline errors and preserved values",
@@ -642,7 +663,12 @@ func TestWireBusyEndpoint(t *testing.T) {
 			server := httptest.NewServer(newMux())
 			t.Cleanup(server.Close)
 
-			req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, server.URL+"/api/wire/busy", nil)
+			req, err := http.NewRequestWithContext(
+				context.Background(),
+				http.MethodPost,
+				server.URL+"/api/wire/busy",
+				nil,
+			)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -759,7 +785,12 @@ func TestWireUploadEndpoint(t *testing.T) {
 				t.Fatal(err)
 			}
 
-			req, err := http.NewRequestWithContext(context.Background(), http.MethodPost, server.URL+"/api/wire/upload", body)
+			req, err := http.NewRequestWithContext(
+				context.Background(),
+				http.MethodPost,
+				server.URL+"/api/wire/upload",
+				body,
+			)
 			if err != nil {
 				t.Fatal(err)
 			}

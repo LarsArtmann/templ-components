@@ -51,7 +51,7 @@ props.Wire = &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/d
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"mt-4 grid gap-4 xl:grid-cols-2\"><div class=\"rounded-lg border border-gray-200 p-4 dark:border-gray-800\"><h3 class=\"mb-2 text-sm font-semibold text-gray-900 dark:text-white\">HTMX transport</h3>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 2, "<div class=\"mt-4 grid gap-4 xl:grid-cols-2\"><div class=\"min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800\"><h3 class=\"mb-2 text-sm font-semibold text-gray-900 dark:text-white\">HTMX transport</h3>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
@@ -62,7 +62,7 @@ props.Wire = &wire.Action{Transport: wire.TransportDatastar, URL: "/api/kanban/d
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}
-		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div><div class=\"rounded-lg border border-gray-200 p-4 dark:border-gray-800\"><h3 class=\"mb-2 text-sm font-semibold text-gray-900 dark:text-white\">Datastar transport</h3>")
+		templ_7745c5c3_Err = templruntime.WriteString(templ_7745c5c3_Buffer, 3, "</div><div class=\"min-w-0 rounded-lg border border-gray-200 p-4 dark:border-gray-800\"><h3 class=\"mb-2 text-sm font-semibold text-gray-900 dark:text-white\">Datastar transport</h3>")
 		if templ_7745c5c3_Err != nil {
 			return templ_7745c5c3_Err
 		}

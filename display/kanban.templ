@@ -128,7 +128,7 @@ templ KanbanBoard(props KanbanBoardProps) {
 	<div
 		id={ boardID }
 		data-tc-kanban
-		class={ utils.Class("rounded-xl", props.Class) }
+		class={ utils.Class("min-w-0 rounded-xl", props.Class) }
 		role="region"
 		aria-label={ utils.Ternary(props.AriaLabel != "", props.AriaLabel, "Kanban board") }
 		{ props.Attrs... }

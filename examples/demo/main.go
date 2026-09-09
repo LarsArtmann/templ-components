@@ -592,9 +592,15 @@ func newMux() *http.ServeMux {
 			renderPage(w, r, "Auth Layout Recipe - templ-components", "Auth layout recipe demo", recipesAuthPage)
 		case "/":
 			transport := parseDemoTransport(r.URL.Query().Get("transport"))
-			renderPage(w, r, "templ-components Demo", "Showcase of all templ-components", func(props layout.PageProps) templ.Component {
-				return demoPage(props, transport)
-			})
+			renderPage(
+				w,
+				r,
+				"templ-components Demo",
+				"Showcase of all templ-components",
+				func(props layout.PageProps) templ.Component {
+					return demoPage(props, transport)
+				},
+			)
 		default:
 			http.NotFound(w, r)
 		}
