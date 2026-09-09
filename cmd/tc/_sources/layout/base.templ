@@ -207,17 +207,8 @@ templ Base(props PageProps) {
 			if props.Description != "" {
 				<meta name="description" content={ props.Description }/>
 			}
-			if props.SEO.NoIndex {
-				<meta name="robots" content="noindex"/>
-			}
-			if props.SEO.Canonical != "" {
-				<link rel="canonical" href={ props.SEO.Canonical }/>
-			}
-			for _, alt := range props.SEO.Alternates {
-				<link rel="alternate" hreflang={ alt.Lang } href={ alt.URL }/>
-			}
-			if props.SEO.JSONLD != "" {
-				@templ.Raw("<script type=\"application/ld+json\">" + props.SEO.JSONLD + "</script>")
+			if props.SEO.NoIndex || props.SEO.Canonical != "" || len(props.SEO.Alternates) > 0 || props.SEO.JSONLD != "" {
+				@seoHeadTags(props.SEO)
 			}
 			if props.Favicon != "" {
 				<link rel="icon" href={ props.Favicon }/>
@@ -301,6 +292,11 @@ templ Base(props PageProps) {
 type MinimalProps struct {
 	Title  string
 	Locale string
+	// SEO optionally emits the crawler/SEO head tags (robots noindex,
+	// canonical, hreflang alternates, JSON-LD) with the same semantics as
+	// PageProps.SEO. Zero value emits nothing — Minimal stays
+	// dependency-free unless a tag is explicitly requested.
+	SEO SEOMeta
 }
 
 // DefaultMinimalProps returns sensible defaults for MinimalProps
@@ -325,9 +321,28 @@ templ Minimal(props MinimalProps) {
 			<meta charset="UTF-8"/>
 			<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 			<title>{ props.Title }</title>
+			@seoHeadTags(props.SEO)
 		</head>
 		<body>
 			{ children... }
 		</body>
 	</html>
+}
+
+// seoHeadTags renders the crawler/SEO head tags shared by Base and Minimal:
+// robots noindex, canonical URL, hreflang alternates, and JSON-LD. Empty
+// fields emit nothing, so callers can always pass the struct through.
+templ seoHeadTags(seo SEOMeta) {
+	if seo.NoIndex {
+		<meta name="robots" content="noindex"/>
+	}
+	if seo.Canonical != "" {
+		<link rel="canonical" href={ seo.Canonical }/>
+	}
+	for _, alt := range seo.Alternates {
+		<link rel="alternate" hreflang={ alt.Lang } href={ alt.URL }/>
+	}
+	if seo.JSONLD != "" {
+		@templ.Raw("<script type=\"application/ld+json\">" + seo.JSONLD + "</script>")
+	}
 }

@@ -80,6 +80,13 @@ const (
 	// bars and toolbars where fields are short and should sit on one line.
 	// Deprecated in favor of FormLayoutGrid when label alignment matters
 	// across wrapped rows (flex-wrap misaligns labels).
+	//
+	// Width contract: fields size to their content, never to the form's
+	// full width. This works because field wrappers are shrink-to-fit flex
+	// items — do NOT wrap fields in `w-full` containers here, and prefer
+	// short inputs (the w-full on the input element itself resolves to the
+	// intrinsic width). Pinned by the browser guard
+	// visualtest.TestFormLayoutInlineWidthContract.
 	FormLayoutInline FormLayout = "inline"
 	// FormLayoutGrid — horizontal grid with auto-sized label column and a
 	// flexible value column. Use for settings forms and admin panels where
