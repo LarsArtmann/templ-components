@@ -114,7 +114,7 @@ func TestStatCardRender(t *testing.T) {
 			Trend:  TrendUp,
 		}))
 		utils.AssertContains(t, output, "1234")
-		utils.AssertContains(t, output, "text-green-600")
+		utils.AssertContains(t, output, "text-green-700")
 		utils.AssertContains(t, output, "Increased by")
 		utils.AssertNotContains(t, output, "Decreased by")
 	})

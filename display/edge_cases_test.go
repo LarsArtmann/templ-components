@@ -103,7 +103,7 @@ func TestStatCardEdgeCases(t *testing.T) {
 		want  []string
 	}{
 		{"no change", StatCardProps{Value: "100", Label: "Users", Trend: TrendNone}, []string{"100", "Users"}},
-		{"up trend", StatCardProps{Value: "100", Label: "Users", Change: "+12%", Trend: TrendUp}, []string{"100", "+12%", "text-green-600"}},
+		{"up trend", StatCardProps{Value: "100", Label: "Users", Change: "+12%", Trend: TrendUp}, []string{"100", "+12%", "text-green-700"}},
 		{"down trend", StatCardProps{Value: "100", Label: "Users", Change: "-5%", Trend: TrendDown}, []string{"100", "-5%", "text-red-600"}},
 		{"empty", StatCardProps{}, []string{"<dl>"}},
 		{"custom id/class", StatCardProps{BaseProps: utils.BaseProps{ID: "stat-1", Class: "mt-4"}, Value: "42", Label: "Count"}, []string{`id="stat-1"`, "mt-4"}},

@@ -27,7 +27,7 @@ func TestCalendarBasicRender(t *testing.T) {
 	}))
 	utils.AssertContains(t, output, "July")
 	utils.AssertContains(t, output, "2026")
-	utils.AssertContains(t, output, `role="grid"`)
+	utils.AssertContains(t, output, `role="group"`)
 }
 
 func TestCalendarGolden(t *testing.T) {

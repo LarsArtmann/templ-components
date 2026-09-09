@@ -63,7 +63,7 @@ func TestCompositionCardWithStatCards(t *testing.T) {
 		utils.AssertContains(t, output, "1,234")
 		utils.AssertContains(t, output, "Total Users")
 		utils.AssertContains(t, output, "+12%")
-		utils.AssertContains(t, output, "text-green-600")
+		utils.AssertContains(t, output, "text-green-700")
 	})
 }
 
