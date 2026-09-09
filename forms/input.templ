@@ -225,6 +225,7 @@ templ checkboxLabel(id, label, helpMsg string) {
 //
 //	@forms.Checkbox(forms.CheckboxProps{Name: "terms", ID: "terms", Label: "I agree to the terms"})
 templ Checkbox(props CheckboxProps) {
+	{{ props.ID = fieldID(props.ID, props.Name) }}
 	<div class="flex items-start">
 		<div class="flex h-6 items-center">
 			<input

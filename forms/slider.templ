@@ -48,6 +48,7 @@ func sliderInputClass() string {
 //	   Step:  5,
 //	})
 templ Slider(props SliderProps) {
+	{{ props.ID = fieldID(props.ID, props.Name) }}
 	{{
 		step := props.Step
 		if step == 0 {

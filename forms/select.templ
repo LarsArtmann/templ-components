@@ -99,6 +99,7 @@ func DefaultSelectProps() SelectProps {
 //	   },
 //	})
 templ Select(props SelectProps) {
+	{{ props.ID = fieldID(props.ID, props.Name) }}
 	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
 		<select
 			name={ props.Name }

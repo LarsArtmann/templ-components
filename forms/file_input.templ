@@ -38,6 +38,7 @@ func fileInputClass(hasError bool) string {
 //	   Accept: "image/*",
 //	})
 templ FileInput(props FileInputProps) {
+	{{ props.ID = fieldID(props.ID, props.Name) }}
 	@FormFieldWrapper(FormFieldProps{ID: props.ID, Label: props.Label, Required: props.Required, Error: props.Error, HelpText: props.HelpText}) {
 		<input
 			type="file"
