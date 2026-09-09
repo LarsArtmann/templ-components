@@ -88,6 +88,13 @@ const (
 	// bars and toolbars where fields are short and should sit on one line.
 	// Deprecated in favor of FormLayoutGrid when label alignment matters
 	// across wrapped rows (flex-wrap misaligns labels).
+	//
+	// Width contract: fields size to their content, never to the form's
+	// full width. This works because field wrappers are shrink-to-fit flex
+	// items — do NOT wrap fields in `w-full` containers here, and prefer
+	// short inputs (the w-full on the input element itself resolves to the
+	// intrinsic width). Pinned by the browser guard
+	// visualtest.TestFormLayoutInlineWidthContract.
 	FormLayoutInline FormLayout = "inline"
 	// FormLayoutGrid — horizontal grid with auto-sized label column and a
 	// flexible value column. Use for settings forms and admin panels where
@@ -381,7 +388,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var6 string
 			templ_7745c5c3_Var6, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.ID)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 275, Col: 16}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 282, Col: 16}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var6)
 			if templ_7745c5c3_Err != nil {
@@ -399,7 +406,7 @@ func formInner(props FormProps) templ.Component {
 		var templ_7745c5c3_Var7 templ.SafeURL
 		templ_7745c5c3_Var7, templ_7745c5c3_Err = templ.JoinURLErrs(props.Action)
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 277, Col: 23}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 284, Col: 23}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ.EscapeString(templ_7745c5c3_Var7))
 		if templ_7745c5c3_Err != nil {
@@ -412,7 +419,7 @@ func formInner(props FormProps) templ.Component {
 		var templ_7745c5c3_Var8 string
 		templ_7745c5c3_Var8, templ_7745c5c3_Err = templ.ResolveAttributeValue(formMethod(props.Method))
 		if templ_7745c5c3_Err != nil {
-			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 278, Col: 35}
+			return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 285, Col: 35}
 		}
 		_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var8)
 		if templ_7745c5c3_Err != nil {
@@ -430,7 +437,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var9 string
 			templ_7745c5c3_Var9, templ_7745c5c3_Err = templ.ResolveAttributeValue(formEnctype(props.Enctype))
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 280, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 287, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var9)
 			if templ_7745c5c3_Err != nil {
@@ -484,7 +491,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var11 string
 			templ_7745c5c3_Var11, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.AriaLabel)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 293, Col: 31}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 300, Col: 31}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var11)
 			if templ_7745c5c3_Err != nil {
@@ -516,7 +523,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var12 string
 			templ_7745c5c3_Var12, templ_7745c5c3_Err = templ.ResolveAttributeValue(csrfName)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 300, Col: 39}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 307, Col: 39}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var12)
 			if templ_7745c5c3_Err != nil {
@@ -529,7 +536,7 @@ func formInner(props FormProps) templ.Component {
 			var templ_7745c5c3_Var13 string
 			templ_7745c5c3_Var13, templ_7745c5c3_Err = templ.ResolveAttributeValue(props.CSRFToken)
 			if templ_7745c5c3_Err != nil {
-				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 300, Col: 65}
+				return templ.Error{Err: templ_7745c5c3_Err, FileName: `forms/form.templ`, Line: 307, Col: 65}
 			}
 			_, templ_7745c5c3_Err = templ_7745c5c3_Buffer.WriteString(templ_7745c5c3_Var13)
 			if templ_7745c5c3_Err != nil {
