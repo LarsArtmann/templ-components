@@ -99,16 +99,10 @@ _2026-09-08 hardening session: 27 items closed (docs, guards, components, workfl
 
 ## Harvested 2026-09-09 — kanban follow-through (docs/planning/2026-09-09_01-53)
 
-_Medium tasks M1 (touch fix) and M2 (this harvest) shipped. The plan file's 92-row fine table stays the exhaustive source. Cross-referenced existing IDs, no duplicates created: M10→#168, M11→#175, M12→#159, M13→#160, M14→#158, M16→#173, M17→#163, M18→#152, M19→#147, M20→#166, M21→#176, M22→#177, M23→#167, M24→#128, M26→#157 (deferred)._
+_2026-09-09 execution session shipped M1–M7 + M9 (rows #181–#185, #187 dropped — see CHANGELOG `[Unreleased]`). Remaining: #186 (M8) and #188/#189 (M15/M25). The successor plan is `docs/planning/2026-09-09_04-24_quality-tier-and-release-plan.md`; cross-references: M10→#168, M11→#175, M12→#159, M13→#160, M14→#158, M16→#173, M17→#163, M18→#152, M19→#147, M20→#166, M21→#176, M22→#177, M23→#167, M24→#128, M26→#157 (deferred)._
 
 | #   | Task                                                                                                                   | Why / source                                                                                             |
 | --- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
-| 181 | Kanban pixel goldens: light + dark + RTL via `AssertScreenshot`, capture with `nix run .#visual -update`               | Visual contract pinned; catches layout regressions. Human-eyeball caveat applies (#80 family). (plan M3) |
-| 182 | Kanban cross-board drop guard (src board === target board) + post-swap live-region announcement                        | Correct multi-board pages; SR confirmation of completed moves. (plan M4)                                 |
-| 183 | `FuzzParseKanbanMove` + `BenchmarkKanbanBoard` in display                                                              | Library-standard robustness/perf signals. (plan M5)                                                      |
-| 184 | Docs pack: DOMAIN_LANGUAGE kanban terms, container-query rejection note, transport-wiring touch + cross-board sections | Discoverability; preempts re-litigation. (plan M6)                                                       |
-| 185 | Coarse-pointer audit of ALL hover-revealed controls (`opacity-0 group-hover`) + fixes + shared guard                   | Library-wide mobile UX uplift — the kanban M1 fix generalized. (plan M7)                                 |
 | 186 | visualtest orphan-lint triage: bucket the 68 findings, fix mechanical ones, exemption/lint-matrix decision             | Repo hygiene; lint parity across modules. (plan M8)                                                      |
-| 187 | Demo polish: remove unused `heroWireLine`, writestring warnings, kanban transport toggle, `nix run .#shots`            | Demo correctness + showcase. (plan M9)                                                                   |
 | 188 | **[GATED by #192]** Release v1.16.0: pre-verify, changelog cut, `scripts/release.sh`, lockstep tags                    | Ships KanbanBoard to consumers. (plan M15)                                                               |
 | 189 | Demo niceties: file-backed kanban state, Dashboard-recipe kanban section                                               | Demo depth. (plan M25)                                                                                   |
