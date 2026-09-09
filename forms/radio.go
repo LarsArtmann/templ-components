@@ -60,9 +60,11 @@ func radioItemProps(groupID, name string, opt RadioOption, required bool, ariaAt
 		Required: required,
 		Disabled: opt.Disabled,
 	}
-	if groupID != "" {
-		p.ID = groupID + "-" + SanitizeID(opt.Value)
+	if groupID == "" {
+		groupID = name
 	}
+
+	p.ID = groupID + "-" + SanitizeID(opt.Value)
 
 	if len(ariaAttrs) > 0 {
 		p.Attrs = ariaAttrs

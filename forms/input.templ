@@ -120,13 +120,12 @@ func DefaultInputProps() InputProps {
 //	   Required: true,
 //	})
 templ Input(props InputProps) {
+	{{ props.ID = fieldID(props.ID, props.Name) }}
 	if props.Type == InputHidden {
 		<input
 			type="hidden"
 			name={ props.Name }
-			if props.ID != "" {
-				id={ props.ID }
-			}
+			id={ props.ID }
 			value={ props.Value }
 			{ props.Attrs... }
 		/>
