@@ -7,7 +7,6 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/chromedp/chromedp"
-
 	"github.com/larsartmann/templ-components/forms"
 	"github.com/larsartmann/templ-components/layout"
 	"github.com/larsartmann/templ-components/utils"
@@ -99,11 +98,19 @@ func TestFormLayoutInlineWidthContract(t *testing.T) {
 	// Contract 1: neither input stretches to (half of) the form width —
 	// fields are content-sized, not full-width.
 	if widths.Input*2 >= widths.Form {
-		t.Errorf("visualtest[forms]: input width %dpx means fields render (near) full-width in a %dpx form — the inline width contract is broken", widths.Input, widths.Form)
+		t.Errorf(
+			"visualtest[forms]: input width %dpx means fields render (near) full-width in a %dpx form — the inline width contract is broken",
+			widths.Input,
+			widths.Form,
+		)
 	}
 
 	// Contract 2: both fields sit on the SAME row (inline, not stacked).
 	if widths.TopA != widths.TopB {
-		t.Errorf("visualtest[forms]: inputs wrapped onto separate rows (tops %v vs %v) — inline layout no longer inline", widths.TopA, widths.TopB)
+		t.Errorf(
+			"visualtest[forms]: inputs wrapped onto separate rows (tops %v vs %v) — inline layout no longer inline",
+			widths.TopA,
+			widths.TopB,
+		)
 	}
 }
