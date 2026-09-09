@@ -29,6 +29,7 @@ templ EChart(props EChartsProps) {
 				id={ props.ID }
 			}
 			if props.AriaLabel != "" {
+				role="img"
 				aria-label={ props.AriaLabel }
 			}
 			{ props.Attrs... }
